@@ -1,0 +1,52 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "jobs": "Jobs",
+    "companies": "Companies",
+    "about": "About",
+    "join": "Join",
+    "getStarted": "Get Started",
+    "theme": "Theme",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "auth": {
+    "shared": {
+      "email": "Email Address",
+      "emailPlaceholder": "jane@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Jane Doe",
+      "errorGeneric": "Something went wrong.",
+      "errorEmailInUse": "This email is already registered.",
+      "errorPasswordTooShort": "Password must be at least 8 characters."
+    },
+    "sign-up": {
+      "title": "Create account",
+      "subtitle": "Enter your details to continue",
+      "submit": "Sign Up",
+      "submitting": "Creating account...",
+      "footer": "Already have an account?",
+      "footerLink": "Login",
+      "pageTitle": "Sign up"
+    },
+    "sign-in": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your account",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "forgotPassword": "Forgot password?",
+      "footer": "Don't have an account?",
+      "footerLink": "Sign up",
+      "pageTitle": "Sign in"
+    }
+  }
+}

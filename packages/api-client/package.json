@@ -1,0 +1,25 @@
+{
+  "name": "api-client",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/fetcher.ts"
+  },
+  "scripts": {
+    "sdk:generate": "orval --config orval.config.ts && bun run scripts/generate-barrel.ts"
+  },
+  "peerDependencies": {
+    "@tanstack/svelte-query": ">=6.0.0",
+    "svelte": ">=5.0.0",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@tanstack/svelte-query": "^6.0.0",
+    "@types/bun": "latest",
+    "@types/node": "^25.5.2",
+    "orval": "^8.2.0",
+    "svelte": "^5.0.0",
+    "typescript": "^5.7.2"
+  }
+}
