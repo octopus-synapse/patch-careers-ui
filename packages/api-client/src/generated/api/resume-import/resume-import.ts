@@ -478,7 +478,7 @@ export function createResumeImportGetStatusSuspense<TData = Awaited<ReturnType<t
 
 
 /**
- * Cancels pending or processing import. Cannot cancel completed/failed imports.
+ * Cancels pending or processing import. Cannot cancel completed imports.
  * @summary Cancel import job
  */
 export type resumeImportCancelResponse204 = {

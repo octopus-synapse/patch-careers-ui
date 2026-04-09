@@ -19,6 +19,8 @@
 	import StepperMobile from '$lib/components/onboarding/stepper-mobile.svelte';
 	import StepForm from '$lib/components/onboarding/step-form.svelte';
 	import StepMultiItems from '$lib/components/onboarding/step-multi-items.svelte';
+	import StepTheme from '$lib/components/onboarding/step-theme.svelte';
+	import StepReview from '$lib/components/onboarding/step-review.svelte';
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
@@ -113,11 +115,17 @@
 		}
 	}));
 
+	const isSectionStep = $derived(currentStepId.startsWith('section:'));
+
 	function handleNext() {
 		const body = currentStep?.multipleItems
 			? { items: multiItems }
 			: stepData;
 		nextStep.mutate({ data: body, params: { locale: locale.current } });
+	}
+
+	function handleSkip() {
+		nextStep.mutate({ data: { noData: true }, params: { locale: locale.current } });
 	}
 
 	function handleBack() {
@@ -146,8 +154,8 @@
 		<Loader2 size={24} class="animate-spin {muted}" />
 	</div>
 {:else if t && onboardingData && currentStep}
-	<div class="min-h-screen font-sans antialiased transition-colors duration-300">
-		<main class="mx-auto max-w-5xl px-6 pt-20 pb-12">
+	<div class="font-sans antialiased transition-colors duration-300">
+		<main class="mx-auto max-w-5xl px-6 pt-20">
 			<!-- Mobile stepper -->
 			<div class="md:hidden">
 				<StepperMobile
@@ -159,9 +167,9 @@
 				/>
 			</div>
 
-			<div class="flex gap-10">
-				<!-- Desktop sidebar -->
-				<div class="hidden md:block">
+			<div class="flex h-[calc(100vh-6rem)] gap-10">
+				<!-- Desktop sidebar — fixed height container, centered -->
+				<div class="hidden items-center md:flex">
 					<Sidebar
 						{steps}
 						currentStep={currentStepId}
@@ -173,8 +181,8 @@
 					/>
 				</div>
 
-				<!-- Content -->
-				<div class="min-w-0 flex-1">
+				<!-- Content — aligned with sidebar -->
+				<div class="min-w-0 flex-1 self-center overflow-y-auto pb-12">
 					<div class="mb-8">
 						<span class="text-[10px] font-semibold uppercase tracking-widest {muted}">
 							{t('onboarding.title')}
@@ -187,7 +195,22 @@
 						{/if}
 					</div>
 
-					{#if currentStep.multipleItems}
+					{#if currentStep.component === 'review'}
+						<StepReview
+							session={onboardingData}
+							{steps}
+							{completedSteps}
+							colorSchema={cs}
+							ongoto={handleGoto}
+						/>
+					{:else if currentStep.component === 'template' && currentStep.data?.length}
+						<StepTheme
+							themes={currentStep.data}
+							selectedThemeId={stepData.templateId ?? ''}
+							colorSchema={cs}
+							onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
+						/>
+					{:else if currentStep.multipleItems}
 						<StepMultiItems
 							fields={currentStep.fields ?? []}
 							items={multiItems}
@@ -202,6 +225,16 @@
 							colorSchema={cs}
 							onupdate={(d) => (stepData = d)}
 						/>
+					{/if}
+
+					{#if isSectionStep}
+						<button
+							onclick={handleSkip}
+							disabled={isPending}
+							class="mt-6 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 {muted}"
+						>
+							{t('onboarding.skip')}
+						</button>
 					{/if}
 
 					<div class="mt-10 flex items-center justify-between">

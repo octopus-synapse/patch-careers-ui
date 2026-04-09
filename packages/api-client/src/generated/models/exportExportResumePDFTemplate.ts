@@ -35,23 +35,11 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { ExportExportResumePDFTemplate } from './exportExportResumePDFTemplate';
 
-export type ExportExportResumePDFParams = {
-/**
- * Color palette name for styling
- */
-palette?: string;
-/**
- * Language code (e.g., en, pt)
- */
-lang?: string;
-/**
- * Custom banner color (hex)
- */
-bannerColor?: string;
-/**
- * Template variant: "default" or "ats" (ATS-optimized for perfect score)
- */
-template?: ExportExportResumePDFTemplate;
-};
+export type ExportExportResumePDFTemplate = typeof ExportExportResumePDFTemplate[keyof typeof ExportExportResumePDFTemplate];
+
+
+export const ExportExportResumePDFTemplate = {
+  default: 'default',
+  ats: 'ats',
+} as const;

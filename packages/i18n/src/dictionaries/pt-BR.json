@@ -36,7 +36,8 @@
     "noData": "Nada adicionado ainda",
     "modalTitle": "Adicionar item",
     "modalSave": "Salvar",
-    "progress": "{{value}}% completo"
+    "progress": "{{value}}% completo",
+    "skip": "Pular esta etapa"
   },
   "auth": {
     "shared": {

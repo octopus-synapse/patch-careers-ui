@@ -2122,3 +2122,205 @@ export function createThemesFindAllSystemThemesSuspense<TData = Awaited<ReturnTy
 
 
 
+/**
+ * @summary Get or generate theme preview PDF
+ */
+export type themesGetThemePreviewResponse200 = {
+  data: void
+  status: 200
+}
+
+export type themesGetThemePreviewResponseSuccess = (themesGetThemePreviewResponse200) & {
+  headers: Headers;
+};
+;
+
+export type themesGetThemePreviewResponse = (themesGetThemePreviewResponseSuccess)
+
+export const getThemesGetThemePreviewUrl = (themeId: string,) => {
+
+
+
+
+  return `/api/v1/themes/${themeId}/preview.pdf`
+}
+
+export const themesGetThemePreview = async (themeId: string, options?: RequestInit): Promise<themesGetThemePreviewResponse> => {
+
+  return customFetch<themesGetThemePreviewResponse>(getThemesGetThemePreviewUrl(themeId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getThemesGetThemePreviewInfiniteQueryKey = (themeId: string,) => {
+    return [
+    'infinite', `/api/v1/themes/${themeId}/preview.pdf`
+    ] as const;
+    }
+
+export const getThemesGetThemePreviewQueryKey = (themeId: string,) => {
+    return [
+    `/api/v1/themes/${themeId}/preview.pdf`
+    ] as const;
+    }
+
+
+export const getThemesGetThemePreviewInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof themesGetThemePreview>>>, TError = unknown>(themeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getThemesGetThemePreviewInfiniteQueryKey(themeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesGetThemePreview>>> = ({ signal }) => themesGetThemePreview(themeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(themeId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ThemesGetThemePreviewInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof themesGetThemePreview>>>
+export type ThemesGetThemePreviewInfiniteQueryError = unknown
+
+
+/**
+ * @summary Get or generate theme preview PDF
+ */
+
+export function createThemesGetThemePreviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof themesGetThemePreview>>>, TError = unknown>(
+ themeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getThemesGetThemePreviewInfiniteQueryOptions(themeId(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get or generate theme preview PDF
+ */
+export const prefetchThemesGetThemePreviewInfiniteQuery = async <TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(
+ queryClient: QueryClient, themeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getThemesGetThemePreviewInfiniteQueryOptions(themeId,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getThemesGetThemePreviewQueryOptions = <TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(themeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getThemesGetThemePreviewQueryKey(themeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesGetThemePreview>>> = ({ signal }) => themesGetThemePreview(themeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(themeId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ThemesGetThemePreviewQueryResult = NonNullable<Awaited<ReturnType<typeof themesGetThemePreview>>>
+export type ThemesGetThemePreviewQueryError = unknown
+
+
+/**
+ * @summary Get or generate theme preview PDF
+ */
+
+export function createThemesGetThemePreview<TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(
+ themeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getThemesGetThemePreviewQueryOptions(themeId(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get or generate theme preview PDF
+ */
+export const prefetchThemesGetThemePreviewQuery = async <TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(
+ queryClient: QueryClient, themeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getThemesGetThemePreviewQueryOptions(themeId,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getThemesGetThemePreviewSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(themeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getThemesGetThemePreviewQueryKey(themeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesGetThemePreview>>> = ({ signal }) => themesGetThemePreview(themeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ThemesGetThemePreviewSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesGetThemePreview>>>
+export type ThemesGetThemePreviewSuspenseQueryError = unknown
+
+
+/**
+ * @summary Get or generate theme preview PDF
+ */
+
+export function createThemesGetThemePreviewSuspense<TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(
+ themeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getThemesGetThemePreviewSuspenseQueryOptions(themeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+
+
+

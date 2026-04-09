@@ -184,6 +184,7 @@ export * from './exportExportJsonParams';
 export * from './exportExportLatexParams';
 export * from './exportExportLatexTemplate';
 export * from './exportExportResumePDFParams';
+export * from './exportExportResumePDFTemplate';
 export * from './exportFormatsDataDto';
 export * from './exportFormatsDataDtoFormatsItem';
 export * from './exportFormatsDataDtoFormatsItemFormat';
