@@ -2,12 +2,14 @@
 	import '../app.css';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { colorSchema } from '$lib/color-schema.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import Navbar from '$lib/components/navbar.svelte';
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
 
 	colorSchema.init();
+	locale.init();
 
 	const queryClient = new QueryClient({
 		defaultOptions: {

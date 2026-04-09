@@ -2,27 +2,20 @@
 	import { createAuthLogin } from 'api-client';
 	import type { LoginDto } from 'api-client';
 	import { isApiError } from 'api-client/client';
-	import { loadDictionary, createTranslator, DEFAULT_LOCALE } from 'i18n';
-	import type { Translator } from 'i18n';
 	import { Button, Input, Label } from 'ui';
 	import { goto } from '$app/navigation';
 	import { Loader2 } from 'lucide-svelte';
 	import { colorSchema } from '$lib/color-schema.svelte';
+	import { locale } from '$lib/locale.svelte';
 
 	let email = $state('');
 	let password = $state('');
 	let error = $state('');
-	let t = $state<Translator | null>(null);
 
+	const t = $derived(locale.t);
 	const cs = $derived(colorSchema.mode);
 	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
 	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-
-	$effect(() => {
-		loadDictionary(DEFAULT_LOCALE).then((dict) => {
-			t = createTranslator(dict);
-		});
-	});
 
 	const login = createAuthLogin(() => ({
 		mutation: {

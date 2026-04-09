@@ -1,33 +1,60 @@
 <script lang="ts">
 	import { colorSchema } from '$lib/color-schema.svelte';
-	import { createAuthSession } from 'api-client';
-	import { loadDictionary, createTranslator, DEFAULT_LOCALE } from 'i18n';
-	import type { Translator } from 'i18n';
-	import { Menu, X } from 'lucide-svelte';
-	import ColorSchemaToggle from './color-schema-toggle.svelte';
+	import { locale } from '$lib/locale.svelte';
+	import { createAuthSession, createAuthLogout } from 'api-client';
+	import type { Locale } from 'i18n';
+	import { Menu, X, Sun, Moon, Globe, LogOut, ChevronDown } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
+	import { useQueryClient } from '@tanstack/svelte-query';
 
 	const cs = $derived(colorSchema.mode);
+	const t = $derived(locale.t);
 
 	let isMenuOpen = $state(false);
-	let t = $state<Translator | null>(null);
-
-	$effect(() => {
-		loadDictionary(DEFAULT_LOCALE).then((dict) => {
-			t = createTranslator(dict);
-		});
-	});
+	let isDropdownOpen = $state(false);
 
 	const session = createAuthSession(() => ({
-		query: {
-			retry: false
-		}
+		query: { retry: false }
 	}));
 	const user = $derived(session.data?.data?.data?.user);
 	const authenticated = $derived(session.data?.data?.data?.authenticated ?? false);
 
+	const queryClient = useQueryClient();
+	const logout = createAuthLogout(() => ({
+		mutation: {
+			onSuccess() {
+				queryClient.invalidateQueries({ queryKey: ['authSession'] });
+				isDropdownOpen = false;
+				goto('/login');
+			}
+		}
+	}));
+
 	function closeMenu() {
 		isMenuOpen = false;
 	}
+
+	function toggleDropdown() {
+		isDropdownOpen = !isDropdownOpen;
+	}
+
+	function closeDropdown() {
+		isDropdownOpen = false;
+	}
+
+	function handleClickOutside(e: MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (!target.closest('[data-dropdown]')) {
+			isDropdownOpen = false;
+		}
+	}
+
+	$effect(() => {
+		if (isDropdownOpen) {
+			document.addEventListener('click', handleClickOutside);
+			return () => document.removeEventListener('click', handleClickOutside);
+		}
+	});
 
 	const s = {
 		border: { light: 'border-gray-200/60', dark: 'border-neutral-800/60' },
@@ -35,6 +62,9 @@
 		muted: { light: 'text-gray-500', dark: 'text-neutral-500' },
 		bg: { light: 'bg-gray-50/80', dark: 'bg-neutral-900/80' },
 		mobileBg: { light: 'bg-gray-50', dark: 'bg-neutral-900' },
+		dropdownBg: { light: 'bg-white', dark: 'bg-neutral-800' },
+		dropdownBorder: { light: 'border-gray-200', dark: 'border-neutral-700' },
+		dropdownHover: { light: 'hover:bg-gray-50', dark: 'hover:bg-neutral-700/50' },
 		link: {
 			light: 'text-gray-500 hover:text-gray-800',
 			dark: 'text-neutral-500 hover:text-neutral-200'
@@ -46,6 +76,10 @@
 		cta: {
 			light: 'bg-gray-800 text-gray-50',
 			dark: 'bg-neutral-200 text-neutral-900'
+		},
+		active: {
+			light: 'bg-gray-100',
+			dark: 'bg-neutral-700'
 		}
 	};
 
@@ -75,36 +109,95 @@
 			</div>
 
 			<div class="flex items-center gap-4">
-				<div class="hidden md:block">
-					<ColorSchemaToggle />
-				</div>
-
 				{#if authenticated && user}
-					<a
-						href="/dashboard"
-						class="hidden items-center gap-3 md:flex"
-					>
-						<div class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold {s.cta[cs]}">
-							{(user.name ?? user.email).charAt(0).toUpperCase()}
-						</div>
-						<div class="hidden lg:block">
-							<p class="text-xs font-semibold leading-tight {s.text[cs]}">{user.name ?? user.email.split('@')[0]}</p>
-							<p class="text-[10px] leading-tight {s.muted[cs]}">{user.email}</p>
-						</div>
-					</a>
+					<div class="relative hidden md:block" data-dropdown>
+						<button
+							onclick={toggleDropdown}
+							class="flex items-center gap-2 rounded-full p-1 transition-colors {s.dropdownHover[cs]}"
+						>
+							<div class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold {s.cta[cs]}">
+								{(user.name ?? user.email).charAt(0).toUpperCase()}
+							</div>
+							<ChevronDown size={14} class="transition-transform {s.muted[cs]} {isDropdownOpen ? 'rotate-180' : ''}" />
+						</button>
+
+						{#if isDropdownOpen}
+							<div class="absolute right-0 mt-2 w-64 rounded-xl border shadow-lg {s.dropdownBg[cs]} {s.dropdownBorder[cs]}">
+								<div class="border-b p-4 {s.dropdownBorder[cs]}">
+									<p class="text-sm font-semibold {s.text[cs]}">{user.name ?? user.email.split('@')[0]}</p>
+									<p class="text-xs {s.muted[cs]}">{user.email}</p>
+								</div>
+
+								<div class="p-2">
+									<button
+										onclick={() => colorSchema.toggle()}
+										class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs transition-colors {s.text[cs]} {s.dropdownHover[cs]}"
+									>
+										{#if cs === 'dark'}
+											<Sun size={15} class="{s.muted[cs]}" />
+										{:else}
+											<Moon size={15} class="{s.muted[cs]}" />
+										{/if}
+										<span>{t('nav.theme')}</span>
+										<span class="ml-auto text-[10px] {s.muted[cs]}">
+											{cs === 'dark' ? 'Dark' : 'Light'}
+										</span>
+									</button>
+
+									<div class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs {s.text[cs]}">
+										<Globe size={15} class="{s.muted[cs]}" />
+										<span>Language</span>
+										<div class="ml-auto flex gap-1">
+											{#each locale.locales as loc}
+												<button
+													onclick={() => locale.set(loc as Locale)}
+													class="rounded px-1.5 py-0.5 text-[10px] font-semibold transition-colors {locale.current === loc ? s.active[cs] + ' ' + s.text[cs] : s.muted[cs] + ' ' + s.dropdownHover[cs]}"
+												>
+													{loc === 'pt-BR' ? 'PT' : 'EN'}
+												</button>
+											{/each}
+										</div>
+									</div>
+								</div>
+
+								<div class="border-t p-2 {s.dropdownBorder[cs]}">
+									<button
+										onclick={() => logout.mutate({ data: {} })}
+										class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs text-red-500 transition-colors hover:bg-red-500/10"
+									>
+										<LogOut size={15} />
+										<span>{t('dashboard.logout')}</span>
+									</button>
+								</div>
+							</div>
+						{/if}
+					</div>
 				{:else}
-					<a
-						href="/login"
-						class="hidden text-[10px] font-semibold uppercase tracking-widest transition-colors md:block {s.link[cs]}"
-					>
-						{t('nav.login')}
-					</a>
-					<a
-						href="/signup"
-						class="hidden rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all md:block {s.join[cs]}"
-					>
-						{t('nav.join')}
-					</a>
+					<div class="hidden items-center gap-4 md:flex">
+						<button
+							onclick={() => colorSchema.toggle()}
+							class="rounded-lg p-2 transition-colors {s.muted[cs]} {s.dropdownHover[cs]}"
+							aria-label="Toggle color schema"
+						>
+							{#if cs === 'dark'}
+								<Sun size={16} />
+							{:else}
+								<Moon size={16} />
+							{/if}
+						</button>
+						<a
+							href="/login"
+							class="text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+						>
+							{t('nav.login')}
+						</a>
+						<a
+							href="/signup"
+							class="rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all {s.join[cs]}"
+						>
+							{t('nav.join')}
+						</a>
+					</div>
 				{/if}
 
 				<button
@@ -148,19 +241,41 @@
 								</div>
 							</div>
 
-							<a
-								href="/dashboard"
-								onclick={closeMenu}
-								class="w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest transition-transform active:scale-[0.98] {s.cta[cs]}"
+							<div class="flex items-center justify-between">
+								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">{t('nav.theme')}</span>
+								<button onclick={() => colorSchema.toggle()} class="rounded-lg p-2 {s.muted[cs]}">
+									{#if cs === 'dark'}<Sun size={18} />{:else}<Moon size={18} />{/if}
+								</button>
+							</div>
+
+							<div class="flex items-center justify-between">
+								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">Language</span>
+								<div class="flex gap-2">
+									{#each locale.locales as loc}
+										<button
+											onclick={() => locale.set(loc as Locale)}
+											class="rounded px-2 py-1 text-xs font-semibold transition-colors {locale.current === loc ? s.active[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+										>
+											{loc === 'pt-BR' ? 'PT' : 'EN'}
+										</button>
+									{/each}
+								</div>
+							</div>
+
+							<button
+								onclick={() => logout.mutate({ data: {} })}
+								class="w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest text-red-500 transition-transform active:scale-[0.98]"
 							>
-								Dashboard
-							</a>
+								{t('dashboard.logout')}
+							</button>
 						{:else}
 							<div class="flex items-center justify-between border-t pt-6 {s.border[cs]}">
 								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">
 									{t('nav.theme')}
 								</span>
-								<ColorSchemaToggle />
+								<button onclick={() => colorSchema.toggle()} class="rounded-lg p-2 {s.muted[cs]}">
+									{#if cs === 'dark'}<Sun size={18} />{:else}<Moon size={18} />{/if}
+								</button>
 							</div>
 
 							<a

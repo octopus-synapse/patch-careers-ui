@@ -1,14 +1,7 @@
 <script lang="ts">
-	import { loadDictionary, createTranslator, DEFAULT_LOCALE } from 'i18n';
-	import type { Translator } from 'i18n';
+	import { locale } from '$lib/locale.svelte';
 
-	let t = $state<Translator | null>(null);
-
-	$effect(() => {
-		loadDictionary(DEFAULT_LOCALE).then((dict) => {
-			t = createTranslator(dict);
-		});
-	});
+	const t = $derived(locale.t);
 </script>
 
 <svelte:head>
@@ -18,7 +11,5 @@
 <main class="flex min-h-screen items-center justify-center">
 	{#if t}
 		<h1 class="text-4xl font-bold">{t('auth.greeting', { name: 'Patch Careers' })}</h1>
-	{:else}
-		<p>Loading...</p>
 	{/if}
 </main>

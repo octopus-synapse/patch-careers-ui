@@ -1,26 +1,18 @@
 <script lang="ts">
 	import { createAuthSession, createAuthLogout } from 'api-client';
-	import { loadDictionary, createTranslator, DEFAULT_LOCALE } from 'i18n';
-	import type { Translator } from 'i18n';
 	import { Button } from 'ui';
 	import { goto } from '$app/navigation';
 	import { LogOut, Loader2 } from 'lucide-svelte';
 	import { colorSchema } from '$lib/color-schema.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 
-	let t = $state<Translator | null>(null);
-
+	const t = $derived(locale.t);
 	const cs = $derived(colorSchema.mode);
 	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
 	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
 	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
 	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-
-	$effect(() => {
-		loadDictionary(DEFAULT_LOCALE).then((dict) => {
-			t = createTranslator(dict);
-		});
-	});
 
 	const session = createAuthSession(() => ({
 		query: {
