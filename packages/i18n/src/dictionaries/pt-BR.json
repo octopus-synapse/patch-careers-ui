@@ -23,6 +23,21 @@
     "welcome": "Bem-vindo, {{name}}!",
     "logout": "Sair"
   },
+  "onboarding": {
+    "pageTitle": "Onboarding",
+    "title": "Complete seu perfil",
+    "subtitle": "Vamos configurar seu perfil profissional",
+    "next": "Continuar",
+    "back": "Voltar",
+    "complete": "Concluir",
+    "completing": "Concluindo...",
+    "addItem": "Adicionar",
+    "removeItem": "Remover",
+    "noData": "Nada adicionado ainda",
+    "modalTitle": "Adicionar item",
+    "modalSave": "Salvar",
+    "progress": "{{value}}% completo"
+  },
   "auth": {
     "shared": {
       "email": "E-mail",

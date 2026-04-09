@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createAuthSession, createAuthLogout } from 'api-client';
+	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import { Button } from 'ui';
 	import { goto } from '$app/navigation';
 	import { LogOut, Loader2 } from 'lucide-svelte';
@@ -28,12 +28,15 @@
 		if (!session.isLoading && !authenticated) {
 			goto('/login');
 		}
+		if (!session.isLoading && authenticated && user?.needsOnboarding) {
+			goto('/onboarding');
+		}
 	});
 
 	const logout = createAuthLogout(() => ({
 		mutation: {
 			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: ['authSession'] });
+				queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
 				goto('/login');
 			}
 		}

@@ -21,7 +21,7 @@
 	const signup = createAccountsSignup(() => ({
 		mutation: {
 			onSuccess() {
-				goto('/');
+				goto('/onboarding');
 			},
 			onError(err: unknown) {
 				if (!t) return;

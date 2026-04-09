@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
-	import { createAuthSession, createAuthLogout } from 'api-client';
+	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import type { Locale } from 'i18n';
 	import { Menu, X, Sun, Moon, Globe, LogOut, ChevronDown } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
@@ -23,7 +23,7 @@
 	const logout = createAuthLogout(() => ({
 		mutation: {
 			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: ['authSession'] });
+				queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
 				isDropdownOpen = false;
 				goto('/login');
 			}
@@ -36,10 +36,6 @@
 
 	function toggleDropdown() {
 		isDropdownOpen = !isDropdownOpen;
-	}
-
-	function closeDropdown() {
-		isDropdownOpen = false;
 	}
 
 	function handleClickOutside(e: MouseEvent) {
@@ -63,8 +59,8 @@
 		bg: { light: 'bg-gray-50/80', dark: 'bg-neutral-900/80' },
 		mobileBg: { light: 'bg-gray-50', dark: 'bg-neutral-900' },
 		dropdownBg: { light: 'bg-white', dark: 'bg-neutral-800' },
-		dropdownBorder: { light: 'border-gray-200', dark: 'border-neutral-700' },
-		dropdownHover: { light: 'hover:bg-gray-50', dark: 'hover:bg-neutral-700/50' },
+		segmentBg: { light: 'bg-gray-100', dark: 'bg-neutral-700/50' },
+		segmentActive: { light: 'bg-white shadow-sm', dark: 'bg-neutral-600' },
 		link: {
 			light: 'text-gray-500 hover:text-gray-800',
 			dark: 'text-neutral-500 hover:text-neutral-200'
@@ -76,10 +72,6 @@
 		cta: {
 			light: 'bg-gray-800 text-gray-50',
 			dark: 'bg-neutral-200 text-neutral-900'
-		},
-		active: {
-			light: 'bg-gray-100',
-			dark: 'bg-neutral-700'
 		}
 	};
 
@@ -113,60 +105,66 @@
 					<div class="relative hidden md:block" data-dropdown>
 						<button
 							onclick={toggleDropdown}
-							class="flex items-center gap-2 rounded-full p-1 transition-colors {s.dropdownHover[cs]}"
+							class="flex items-center gap-2 p-1"
 						>
 							<div class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold {s.cta[cs]}">
 								{(user.name ?? user.email).charAt(0).toUpperCase()}
 							</div>
-							<ChevronDown size={14} class="transition-transform {s.muted[cs]} {isDropdownOpen ? 'rotate-180' : ''}" />
+							<ChevronDown size={14} class="transition-transform duration-200 {s.muted[cs]} {isDropdownOpen ? 'rotate-180' : ''}" />
 						</button>
 
 						{#if isDropdownOpen}
-							<div class="absolute right-0 mt-2 w-64 rounded-xl border shadow-lg {s.dropdownBg[cs]} {s.dropdownBorder[cs]}">
-								<div class="border-b p-4 {s.dropdownBorder[cs]}">
+							<div class="absolute right-0 mt-3 w-56 rounded-lg {s.dropdownBg[cs]}">
+								<div class="px-4 pt-4 pb-3">
 									<p class="text-sm font-semibold {s.text[cs]}">{user.name ?? user.email.split('@')[0]}</p>
-									<p class="text-xs {s.muted[cs]}">{user.email}</p>
+									<p class="text-[11px] {s.muted[cs]}">{user.email}</p>
 								</div>
 
-								<div class="p-2">
-									<button
-										onclick={() => colorSchema.toggle()}
-										class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs transition-colors {s.text[cs]} {s.dropdownHover[cs]}"
-									>
-										{#if cs === 'dark'}
-											<Sun size={15} class="{s.muted[cs]}" />
-										{:else}
-											<Moon size={15} class="{s.muted[cs]}" />
-										{/if}
-										<span>{t('nav.theme')}</span>
-										<span class="ml-auto text-[10px] {s.muted[cs]}">
-											{cs === 'dark' ? 'Dark' : 'Light'}
-										</span>
-									</button>
-
-									<div class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs {s.text[cs]}">
-										<Globe size={15} class="{s.muted[cs]}" />
-										<span>Language</span>
-										<div class="ml-auto flex gap-1">
-											{#each locale.locales as loc}
+								<div class="border-t {s.border[cs]}">
+									<div class="px-4 py-3">
+										<div class="flex items-center justify-between">
+											<div class="flex items-center gap-2 {s.muted[cs]}">
+												{#if cs === 'dark'}<Sun size={13} />{:else}<Moon size={13} />{/if}
+												<span class="text-[10px] font-semibold uppercase tracking-widest">{t('nav.theme')}</span>
+											</div>
+											<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
 												<button
-													onclick={() => locale.set(loc as Locale)}
-													class="rounded px-1.5 py-0.5 text-[10px] font-semibold transition-colors {locale.current === loc ? s.active[cs] + ' ' + s.text[cs] : s.muted[cs] + ' ' + s.dropdownHover[cs]}"
-												>
-													{loc === 'pt-BR' ? 'PT' : 'EN'}
-												</button>
-											{/each}
+													onclick={() => { if (cs === 'dark') colorSchema.toggle(); }}
+													class="rounded px-2 py-0.5 text-[10px] font-semibold transition-all {cs === 'light' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+												>Light</button>
+												<button
+													onclick={() => { if (cs === 'light') colorSchema.toggle(); }}
+													class="rounded px-2 py-0.5 text-[10px] font-semibold transition-all {cs === 'dark' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+												>Dark</button>
+											</div>
+										</div>
+									</div>
+
+									<div class="px-4 py-3">
+										<div class="flex items-center justify-between">
+											<div class="flex items-center gap-2 {s.muted[cs]}">
+												<Globe size={13} />
+												<span class="text-[10px] font-semibold uppercase tracking-widest">Language</span>
+											</div>
+											<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
+												{#each locale.locales as loc}
+													<button
+														onclick={() => locale.set(loc as Locale)}
+														class="rounded px-2 py-0.5 text-[10px] font-semibold transition-all {locale.current === loc ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+													>{loc === 'pt-BR' ? 'PT' : 'EN'}</button>
+												{/each}
+											</div>
 										</div>
 									</div>
 								</div>
 
-								<div class="border-t p-2 {s.dropdownBorder[cs]}">
+								<div class="border-t {s.border[cs]}">
 									<button
 										onclick={() => logout.mutate({ data: {} })}
-										class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs text-red-500 transition-colors hover:bg-red-500/10"
+										class="flex w-full items-center gap-2 px-4 py-3 text-[11px] text-red-500 transition-opacity hover:opacity-70"
 									>
-										<LogOut size={15} />
-										<span>{t('dashboard.logout')}</span>
+										<LogOut size={13} />
+										{t('dashboard.logout')}
 									</button>
 								</div>
 							</div>
@@ -176,14 +174,10 @@
 					<div class="hidden items-center gap-4 md:flex">
 						<button
 							onclick={() => colorSchema.toggle()}
-							class="rounded-lg p-2 transition-colors {s.muted[cs]} {s.dropdownHover[cs]}"
+							class="rounded-lg p-2 transition-colors {s.muted[cs]}"
 							aria-label="Toggle color schema"
 						>
-							{#if cs === 'dark'}
-								<Sun size={16} />
-							{:else}
-								<Moon size={16} />
-							{/if}
+							{#if cs === 'dark'}<Sun size={16} />{:else}<Moon size={16} />{/if}
 						</button>
 						<a
 							href="/login"
@@ -205,11 +199,7 @@
 					class="rounded-lg p-1.5 transition-colors md:hidden {s.muted[cs]}"
 					aria-label={isMenuOpen ? t('nav.close') : t('nav.menu')}
 				>
-					{#if isMenuOpen}
-						<X size={20} />
-					{:else}
-						<Menu size={20} />
-					{/if}
+					{#if isMenuOpen}<X size={20} />{:else}<Menu size={20} />{/if}
 				</button>
 			</div>
 		</div>
@@ -229,7 +219,7 @@
 						{/each}
 					</div>
 
-					<div class="flex flex-col gap-6 pb-8">
+					<div class="flex flex-col gap-5 pb-8">
 						{#if authenticated && user}
 							<div class="flex items-center gap-3 border-t pt-6 {s.border[cs]}">
 								<div class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold {s.cta[cs]}">
@@ -243,39 +233,49 @@
 
 							<div class="flex items-center justify-between">
 								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">{t('nav.theme')}</span>
-								<button onclick={() => colorSchema.toggle()} class="rounded-lg p-2 {s.muted[cs]}">
-									{#if cs === 'dark'}<Sun size={18} />{:else}<Moon size={18} />{/if}
-								</button>
+								<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
+									<button
+										onclick={() => { if (cs === 'dark') colorSchema.toggle(); }}
+										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'light' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+									>Light</button>
+									<button
+										onclick={() => { if (cs === 'light') colorSchema.toggle(); }}
+										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'dark' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+									>Dark</button>
+								</div>
 							</div>
 
 							<div class="flex items-center justify-between">
 								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">Language</span>
-								<div class="flex gap-2">
+								<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
 									{#each locale.locales as loc}
 										<button
 											onclick={() => locale.set(loc as Locale)}
-											class="rounded px-2 py-1 text-xs font-semibold transition-colors {locale.current === loc ? s.active[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-										>
-											{loc === 'pt-BR' ? 'PT' : 'EN'}
-										</button>
+											class="rounded px-3 py-1 text-xs font-semibold transition-all {locale.current === loc ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+										>{loc === 'pt-BR' ? 'PT' : 'EN'}</button>
 									{/each}
 								</div>
 							</div>
 
 							<button
 								onclick={() => logout.mutate({ data: {} })}
-								class="w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest text-red-500 transition-transform active:scale-[0.98]"
+								class="mt-2 w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest text-red-500 transition-transform active:scale-[0.98]"
 							>
 								{t('dashboard.logout')}
 							</button>
 						{:else}
 							<div class="flex items-center justify-between border-t pt-6 {s.border[cs]}">
-								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">
-									{t('nav.theme')}
-								</span>
-								<button onclick={() => colorSchema.toggle()} class="rounded-lg p-2 {s.muted[cs]}">
-									{#if cs === 'dark'}<Sun size={18} />{:else}<Moon size={18} />{/if}
-								</button>
+								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">{t('nav.theme')}</span>
+								<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
+									<button
+										onclick={() => { if (cs === 'dark') colorSchema.toggle(); }}
+										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'light' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+									>Light</button>
+									<button
+										onclick={() => { if (cs === 'light') colorSchema.toggle(); }}
+										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'dark' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
+									>Dark</button>
+								</div>
 							</div>
 
 							<a
