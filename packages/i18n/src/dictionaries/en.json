@@ -15,11 +15,18 @@
     "getStarted": "Get Started",
     "theme": "Theme",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "login": "Login"
+  },
+  "dashboard": {
+    "pageTitle": "Dashboard",
+    "welcome": "Welcome, {{name}}!",
+    "logout": "Sign out"
   },
   "auth": {
     "shared": {
       "email": "Email Address",
+      "errorInvalidCredentials": "Invalid email or password.",
       "emailPlaceholder": "jane@example.com",
       "password": "Password",
       "passwordPlaceholder": "••••••••",

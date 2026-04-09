@@ -25,8 +25,8 @@
 </script>
 
 <div class="min-h-screen transition-colors duration-200 {bg[colorSchema.mode]}">
-	<Navbar />
 	<QueryClientProvider client={queryClient}>
+		<Navbar />
 		{@render children()}
 	</QueryClientProvider>
 </div>
