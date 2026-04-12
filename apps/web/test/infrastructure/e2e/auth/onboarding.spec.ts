@@ -84,9 +84,9 @@ test.describe('Onboarding page', () => {
 			const page = await authContext.newPage();
 			await page.goto('/onboarding');
 
-			const h1 = page.locator('h1');
-			await expect(h1).toBeVisible({ timeout: 10000 });
-			const text = await h1.textContent();
+			const h2 = page.locator('h2');
+			await expect(h2).toBeVisible({ timeout: 10000 });
+			const text = await h2.textContent();
 			expect(text?.length).toBeGreaterThan(0);
 			await page.close();
 		});
@@ -124,7 +124,7 @@ test.describe('Onboarding page', () => {
 			await page.setViewportSize({ width: 375, height: 667 });
 			await page.goto('/onboarding');
 
-			await expect(page.locator('h1')).toBeVisible({ timeout: 10000 });
+			await expect(page.locator('h2')).toBeVisible({ timeout: 10000 });
 
 			const sidebar = page.locator('aside');
 			await expect(sidebar).not.toBeVisible();

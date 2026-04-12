@@ -58,7 +58,7 @@
 	const progress = $derived(onboardingData?.progress ?? 0);
 	const strength = $derived((onboardingData as Record<string, unknown> | undefined)?.strength as { score: number; message: string; level: string } | undefined);
 	const missingRequired = $derived(((onboardingData as Record<string, unknown> | undefined)?.missingRequired as string[]) ?? []);
-	const isLastStep = $derived(!onboardingData?.nextStep);
+	const isLastStep = $derived(!onboardingData?.nextStep || currentStep?.component === 'review');
 
 	let stepData = $state<Record<string, string>>({});
 	let multiItems = $state<Array<{ id?: string; content?: Record<string, unknown> }>>([]);
