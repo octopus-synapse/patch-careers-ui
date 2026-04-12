@@ -1,4 +1,4 @@
-import { o as setContext, j as getContext, g as derived, a as sanitize_props, r as rest_props, p as fallback, m as attributes, q as clsx, h as ensure_array_like, t as element, c as slot, n as bind_props } from "./renderer.js";
+import { q as setContext, m as getContext, h as derived, b as sanitize_props, r as rest_props, t as fallback, o as attributes, v as clsx, i as ensure_array_like, w as element, d as slot, p as bind_props } from "./renderer.js";
 var Subscribable = class {
   constructor() {
     this.listeners = /* @__PURE__ */ new Set();
@@ -1150,25 +1150,6 @@ function createMutation(options, queryClient) {
   }));
   return resultProxy();
 }
-let mode = "light";
-const colorSchema = {
-  get mode() {
-    return mode;
-  },
-  toggle() {
-    mode = mode === "light" ? "dark" : "light";
-    save();
-  },
-  init() {
-    if (typeof window === "undefined") return;
-    const saved = localStorage.getItem("colorSchema");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    mode = saved ?? (prefersDark ? "dark" : "light");
-  }
-};
-function save() {
-  localStorage.setItem("colorSchema", mode);
-}
 let baseUrl = "http://localhost:3001";
 function isApiError(error) {
   return typeof error === "object" && error !== null && "code" in error && "statusCode" in error;
@@ -1286,14 +1267,13 @@ function Icon($$renderer, $$props) {
   });
 }
 export {
-  canFetch as A,
-  pendingThenable as B,
+  pendingThenable as A,
+  shallowEqualObjects as B,
   CancelledError as C,
-  shallowEqualObjects as D,
-  environmentManager as E,
-  isValidTimeout as F,
-  timeoutManager as G,
-  getIsRestoringContext as H,
+  environmentManager as D,
+  isValidTimeout as E,
+  timeoutManager as F,
+  getIsRestoringContext as G,
   Icon as I,
   Mutation as M,
   Removable as R,
@@ -1309,19 +1289,19 @@ export {
   functionalUpdate as i,
   hashKey as j,
   setQueryClientContext as k,
-  colorSchema as l,
+  createMutation as l,
   matchMutation as m,
   notifyManager as n,
   onlineManager as o,
   partialMatchKey as p,
-  isApiError as q,
+  customFetch as q,
   resolveStaleTime as r,
   skipToken as s,
-  createMutation as t,
+  isApiError as t,
   useQueryClient as u,
-  customFetch as v,
-  replaceData as w,
-  resolveEnabled as x,
-  timeUntilStale as y,
-  createRetryer as z
+  replaceData as v,
+  resolveEnabled as w,
+  timeUntilStale as x,
+  createRetryer as y,
+  canFetch as z
 };

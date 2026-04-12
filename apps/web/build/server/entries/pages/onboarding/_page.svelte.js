@@ -1,10 +1,13 @@
-import { a as sanitize_props, b as spread_props, c as slot, d as attr_class, e as stringify, f as escape_html, l as attr_style, h as ensure_array_like, i as attr, g as derived, k as head } from "../../../chunks/renderer.js";
-import { d as createQuery, c as createAuthSession, g as getAuthSessionQueryKey } from "../../../chunks/auth.js";
-import { t as createMutation, v as customFetch, I as Icon, u as useQueryClient, l as colorSchema } from "../../../chunks/Icon.js";
-import { L as Loader_circle, B as Button } from "../../../chunks/button.js";
+import { b as sanitize_props, c as spread_props, d as slot, e as attr_class, f as stringify, l as attr_style, i as ensure_array_like, h as derived, g as attr, j as head } from "../../../chunks/renderer.js";
+import { c as createQuery, a as createAuthSession, g as getAuthSessionQueryKey } from "../../../chunks/auth.js";
+import { l as createMutation, q as customFetch, I as Icon, u as useQueryClient } from "../../../chunks/Icon.js";
+import { B as Button } from "../../../chunks/button.js";
 import { g as goto } from "../../../chunks/client.js";
+import { c as colorSchema } from "../../../chunks/color-schema.svelte.js";
 import { l as locale } from "../../../chunks/locale.svelte.js";
+import { e as escape_html } from "../../../chunks/escaping.js";
 import { L as Label, I as Input } from "../../../chunks/label.js";
+import { L as Loader_circle } from "../../../chunks/loader-circle.js";
 const getOnboardingGetSessionUrl = (params) => {
   const normalizedParams = new URLSearchParams();
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -140,6 +143,41 @@ const getOnboardingGotoStepMutationOptions = (options) => {
 };
 const createOnboardingGotoStep = (options, queryClient) => {
   return createMutation(() => ({ ...getOnboardingGotoStepMutationOptions(options?.()) }));
+};
+const getOnboardingSaveStepDataUrl = (params) => {
+  const normalizedParams = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== void 0) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+  const stringifiedParams = normalizedParams.toString();
+  return stringifiedParams.length > 0 ? `/api/v1/onboarding/session/save?${stringifiedParams}` : `/api/v1/onboarding/session/save`;
+};
+const onboardingSaveStepData = async (onboardingSaveStepDataBody, params, options) => {
+  return customFetch(
+    getOnboardingSaveStepDataUrl(params),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(
+        onboardingSaveStepDataBody
+      )
+    }
+  );
+};
+const getOnboardingSaveStepDataMutationOptions = (options) => {
+  const mutationKey = ["onboardingSaveStepData"];
+  const { mutation: mutationOptions, request: requestOptions } = { mutation: { mutationKey }, request: void 0 };
+  const mutationFn = (props) => {
+    const { data, params } = props ?? {};
+    return onboardingSaveStepData(data, params, requestOptions);
+  };
+  return { mutationFn, ...mutationOptions };
+};
+const createOnboardingSaveStepData = (options, queryClient) => {
+  return createMutation(() => ({ ...getOnboardingSaveStepDataMutationOptions() }));
 };
 const getOnboardingCompleteFromSessionUrl = () => {
   return `/api/v1/onboarding/session/complete`;
@@ -534,36 +572,53 @@ function Sidebar($$renderer, $$props) {
       currentStep,
       completedSteps,
       progress,
-      colorSchema: colorSchema2 = "light",
-      t
+      strength,
+      missingRequired = [],
+      colorSchema: colorSchema2 = "light"
     } = $$props;
     const text = derived(() => colorSchema2 === "dark" ? "text-neutral-200" : "text-gray-800");
     const muted = derived(() => colorSchema2 === "dark" ? "text-neutral-500" : "text-gray-500");
     const border = derived(() => colorSchema2 === "dark" ? "border-neutral-700" : "border-gray-300");
-    const barBg = derived(() => colorSchema2 === "dark" ? "bg-neutral-700" : "bg-gray-300");
-    const barFill = derived(() => colorSchema2 === "dark" ? "bg-neutral-200" : "bg-gray-800");
+    const barBg = derived(() => colorSchema2 === "dark" ? "bg-neutral-700" : "bg-gray-200");
     const checkBg = derived(() => colorSchema2 === "dark" ? "bg-neutral-200 text-neutral-900" : "bg-gray-800 text-white");
     const activeBg = derived(() => colorSchema2 === "dark" ? "bg-neutral-700/50" : "bg-white");
+    const strengthScore = derived(() => strength?.score ?? progress);
+    const strengthMessage = derived(() => strength?.message ?? "");
+    const barColor = derived(() => strengthScore() >= 75 ? "bg-emerald-500" : strengthScore() >= 50 ? "bg-blue-500" : strengthScore() >= 25 ? "bg-blue-400" : colorSchema2 === "dark" ? "bg-neutral-500" : "bg-gray-400");
     function isCompleted(stepId) {
       return completedSteps.includes(stepId);
     }
-    function isAccessible(stepId) {
-      return isCompleted(stepId) || stepId === currentStep;
+    function isMissing(stepId) {
+      return missingRequired.includes(stepId);
     }
-    $$renderer2.push(`<aside${attr_class(`flex w-56 flex-shrink-0 flex-col border-r pr-6 ${stringify(border())}`)}><div class="mb-6"><div class="mb-2 flex items-center justify-between"><span${attr_class(`text-[10px] font-semibold uppercase tracking-widest ${stringify(muted())}`)}>${escape_html(t("onboarding.progress", { value: String(progress) }))}</span></div> <div${attr_class(`h-1 rounded-full ${stringify(barBg())}`)}><div${attr_class(`h-1 rounded-full transition-all duration-500 ${stringify(barFill())}`)}${attr_style(`width: ${stringify(progress)}%`)}></div></div></div> <nav class="flex flex-col gap-1"><!--[-->`);
+    $$renderer2.push(`<aside${attr_class(`flex w-56 flex-shrink-0 flex-col border-r pr-6 ${stringify(border())}`)}><div class="mb-6"><div${attr_class(`h-1 rounded-full ${stringify(barBg())}`)}><div${attr_class(`h-1 rounded-full transition-all duration-700 ${stringify(barColor())}`)}${attr_style(`width: ${stringify(strengthScore())}%`)}></div></div> `);
+    if (strengthMessage()) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<p${attr_class(`mt-2 text-[10px] font-semibold uppercase tracking-widest transition-all duration-500 ${stringify(muted())}`)}>${escape_html(strengthMessage())}</p>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--></div> <nav class="flex flex-col gap-1"><!--[-->`);
     const each_array = ensure_array_like(steps);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let step = each_array[$$index];
       const completed = isCompleted(step.id);
       const active = step.id === currentStep;
-      const accessible = isAccessible(step.id);
-      $$renderer2.push(`<button${attr("disabled", !accessible, true)}${attr_class(`flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs transition-colors ${stringify(active ? activeBg() : "")} ${stringify(accessible ? "cursor-pointer" : "cursor-default opacity-50")}`)}><div${attr_class(`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${stringify(completed ? checkBg() : active ? text() + " border " + border() : muted() + " border " + border())}`)}>`);
+      const missing = isMissing(step.id);
+      $$renderer2.push(`<button${attr_class(`flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors ${stringify(active ? activeBg() : "")}`)}><div${attr_class(`relative flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${stringify(completed ? checkBg() : active ? text() + " border " + border() : muted() + " border " + border())}`)}>`);
       if (completed) {
         $$renderer2.push("<!--[0-->");
         Check($$renderer2, { size: 11 });
       } else {
         $$renderer2.push("<!--[-1-->");
         $$renderer2.push(`${escape_html(steps.indexOf(step) + 1)}`);
+      }
+      $$renderer2.push(`<!--]--> `);
+      if (missing && !completed) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<span class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
       }
       $$renderer2.push(`<!--]--></div> <span${attr_class(active ? "font-semibold " + text() : muted())}>${escape_html(step.label)}</span></button>`);
     }
@@ -574,20 +629,32 @@ function Stepper_mobile($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let {
       progress,
+      strength,
       colorSchema: colorSchema2 = "light"
     } = $$props;
-    const barBg = derived(() => colorSchema2 === "dark" ? "bg-neutral-700" : "bg-gray-300");
-    const barFill = derived(() => colorSchema2 === "dark" ? "bg-neutral-200" : "bg-gray-800");
+    const barBg = derived(() => colorSchema2 === "dark" ? "bg-neutral-700" : "bg-gray-200");
+    const muted = derived(() => colorSchema2 === "dark" ? "text-neutral-500" : "text-gray-500");
+    const strengthScore = derived(() => strength?.score ?? progress);
+    const strengthMessage = derived(() => strength?.message ?? "");
+    const barColor = derived(() => strengthScore() >= 75 ? "bg-emerald-500" : strengthScore() >= 50 ? "bg-blue-500" : strengthScore() >= 25 ? "bg-blue-400" : colorSchema2 === "dark" ? "bg-neutral-500" : "bg-gray-400");
     $$renderer2.push(`<div class="mb-6">`);
     {
       $$renderer2.push("<!--[-1-->");
     }
-    $$renderer2.push(`<!--]--> <div${attr_class(`mt-3 h-1 rounded-full ${stringify(barBg())}`)}><div${attr_class(`h-1 rounded-full transition-all duration-500 ${stringify(barFill())}`)}${attr_style(`width: ${stringify(progress)}%`)}></div></div></div>`);
+    $$renderer2.push(`<!--]--> <div${attr_class(`mt-3 h-1 rounded-full ${stringify(barBg())}`)}><div${attr_class(`h-1 rounded-full transition-all duration-700 ${stringify(barColor())}`)}${attr_style(`width: ${stringify(strengthScore())}%`)}></div></div> `);
+    if (strengthMessage()) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<p${attr_class(`mt-1.5 text-center text-[10px] font-semibold uppercase tracking-widest transition-all duration-500 ${stringify(muted())}`)}>${escape_html(strengthMessage())}</p>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--></div>`);
   });
 }
 function Field_renderer($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let { field, value, colorSchema: colorSchema2 = "light", onchange } = $$props;
+    const muted = derived(() => colorSchema2 === "dark" ? "text-neutral-500" : "text-gray-400");
     const selectStyles = {
       light: "border-gray-300 text-gray-900 focus:border-gray-900",
       dark: "border-neutral-700 text-neutral-200 focus:border-neutral-200"
@@ -596,6 +663,12 @@ function Field_renderer($$renderer, $$props) {
       light: "border-gray-300 text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900",
       dark: "border-neutral-700 text-neutral-200 placeholder:text-neutral-500/50 focus:border-neutral-200"
     };
+    const examples = derived(() => field.examples ?? []);
+    let exampleIndex = 0;
+    let focused = false;
+    const placeholder = derived(() => focused || !examples().length ? "" : examples()[exampleIndex % examples().length]);
+    const isSummary = derived(() => field.type === "textarea" || field.widget === "textarea");
+    const summaryExamples = derived(() => isSummary() && examples().length ? examples() : []);
     function inputType(fieldType) {
       if (fieldType === "email") return "email";
       if (fieldType === "url") return "url";
@@ -613,14 +686,25 @@ function Field_renderer($$renderer, $$props) {
       $$slots: { default: true }
     });
     $$renderer2.push(`<!----> `);
-    if (field.type === "textarea" || field.widget === "textarea") {
+    if (isSummary()) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<textarea${attr("id", field.key)}${attr("required", field.required, true)}${attr("rows", 3)}${attr_class(`w-full resize-none rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all ${stringify(textareaStyles[colorSchema2])}`)}>`);
+      $$renderer2.push(`<textarea${attr("id", field.key)}${attr("placeholder", placeholder())}${attr("required", field.required, true)}${attr("rows", 3)}${attr_class(`w-full resize-none rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all ${stringify(textareaStyles[colorSchema2])}`)}>`);
       const $$body = escape_html(value);
       if ($$body) {
         $$renderer2.push(`${$$body}`);
       }
-      $$renderer2.push(`</textarea>`);
+      $$renderer2.push(`</textarea> `);
+      if (summaryExamples().length && !value) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<button type="button"${attr_class(`mt-1 text-[10px] font-semibold uppercase tracking-widest underline transition-opacity hover:opacity-60 ${stringify(muted())}`)}>${escape_html("see example")}</button> `);
+        {
+          $$renderer2.push("<!--[-1-->");
+        }
+        $$renderer2.push(`<!--]-->`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]-->`);
     } else if (field.type === "select" || field.options && field.options.length > 0) {
       $$renderer2.push("<!--[1-->");
       $$renderer2.select(
@@ -636,9 +720,9 @@ function Field_renderer($$renderer, $$props) {
             $$renderer4.push(`—`);
           });
           $$renderer3.push(`<!--[-->`);
-          const each_array = ensure_array_like(field.options ?? []);
-          for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
-            let opt = each_array[$$index];
+          const each_array_1 = ensure_array_like(field.options ?? []);
+          for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
+            let opt = each_array_1[$$index_1];
             $$renderer3.option({ value: opt }, ($$renderer4) => {
               $$renderer4.push(`${escape_html(opt)}`);
             });
@@ -652,7 +736,10 @@ function Field_renderer($$renderer, $$props) {
         id: field.key,
         type: inputType(field.type),
         value,
+        placeholder: placeholder(),
         required: field.required,
+        onfocus: () => focused = true,
+        onblur: () => focused = false,
         oninput: (e) => onchange(e.currentTarget.value),
         colorSchema: colorSchema2
       });
@@ -920,6 +1007,25 @@ function Step_review($$renderer, $$props) {
     $$renderer2.push(`<!--]--></div>`);
   });
 }
+function Preview_panel($$renderer, $$props) {
+  $$renderer.component(($$renderer2) => {
+    let { colorSchema: colorSchema2 = "light" } = $$props;
+    const bg = derived(() => colorSchema2 === "dark" ? "bg-neutral-800/80" : "bg-gray-100");
+    const border = derived(() => colorSchema2 === "dark" ? "border-neutral-700" : "border-gray-200");
+    const muted = derived(() => colorSchema2 === "dark" ? "text-neutral-500" : "text-gray-400");
+    $$renderer2.push(`<div${attr_class(`w-48 rounded-lg border shadow-sm overflow-hidden ${stringify(bg())} ${stringify(border())}`)}>`);
+    {
+      $$renderer2.push("<!--[-1-->");
+      $$renderer2.push(`<div class="flex h-72 items-center justify-center">`);
+      {
+        $$renderer2.push("<!--[0-->");
+        Loader_circle($$renderer2, { size: 16, class: `animate-spin ${stringify(muted())}` });
+      }
+      $$renderer2.push(`<!--]--></div>`);
+    }
+    $$renderer2.push(`<!--]--></div>`);
+  });
+}
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     const cs = derived(() => colorSchema.mode);
@@ -940,7 +1046,9 @@ function _page($$renderer, $$props) {
     const currentStep = derived(() => steps().find((s) => s.id === currentStepId()));
     const completedSteps = derived(() => onboardingData()?.completedSteps ?? []);
     const progress = derived(() => onboardingData()?.progress ?? 0);
-    const isLastStep = derived(() => !onboardingData()?.nextStep);
+    const strength = derived(() => onboardingData()?.strength);
+    const missingRequired = derived(() => onboardingData()?.missingRequired ?? []);
+    const isLastStep = derived(() => !onboardingData()?.nextStep || currentStep()?.component === "review");
     let stepData = {};
     let multiItems = [];
     const nextStep = createOnboardingNextStep(() => ({ mutation: { onSuccess: invalidateSession } }));
@@ -954,6 +1062,7 @@ function _page($$renderer, $$props) {
         }
       }
     }));
+    createOnboardingSaveStepData();
     const isSectionStep = derived(() => currentStepId().startsWith("section:"));
     function handleNext() {
       const body = currentStep()?.multipleItems ? { items: multiItems } : stepData;
@@ -968,31 +1077,38 @@ function _page($$renderer, $$props) {
         $$renderer4.push(`<title>${escape_html(t()?.("onboarding.pageTitle") ?? "")}</title>`);
       });
     });
-    if (auth.isLoading || session.isLoading || !t()) {
+    if (auth.isLoading || session.isLoading) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<div class="flex min-h-screen items-center justify-center pt-14">`);
       Loader_circle($$renderer2, { size: 24, class: `animate-spin ${stringify(muted())}` });
       $$renderer2.push(`<!----></div>`);
-    } else if (onboardingData() && currentStep()) {
+    } else if (t() && onboardingData() && currentStep()) {
       $$renderer2.push("<!--[1-->");
-      $$renderer2.push(`<div class="font-sans antialiased transition-colors duration-300"><main class="mx-auto max-w-5xl px-6 pt-20"><div class="md:hidden">`);
+      $$renderer2.push(`<div class="font-sans antialiased transition-colors duration-300"><main class="mx-auto max-w-6xl px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));"><div class="md:hidden">`);
       Stepper_mobile($$renderer2, {
         steps: steps(),
         currentStep: currentStepId(),
         completedSteps: completedSteps(),
         progress: progress(),
+        strength: strength(),
         colorSchema: cs()
       });
-      $$renderer2.push(`<!----></div> <div class="flex h-[calc(100vh-6rem)] gap-10"><div class="hidden items-center md:flex">`);
+      $$renderer2.push(`<!----></div> <div class="flex gap-10"><div class="hidden md:block flex-shrink-0">`);
       Sidebar($$renderer2, {
         steps: steps(),
         currentStep: currentStepId(),
         completedSteps: completedSteps(),
         progress: progress(),
+        strength: strength(),
+        missingRequired: missingRequired(),
         colorSchema: cs(),
         t: t()
       });
-      $$renderer2.push(`<!----></div> <div class="min-w-0 flex-1 self-center overflow-y-auto pb-12"><div class="mb-8"><span${attr_class(`text-[10px] font-semibold uppercase tracking-widest ${stringify(muted())}`)}>${escape_html(t()("onboarding.title"))}</span></div> <div class="mb-8 text-center"><h2${attr_class(`text-sm font-bold ${stringify(text())}`)}>${escape_html(currentStep().label)}</h2> `);
+      $$renderer2.push(`<!----></div> <div class="min-w-0 flex-1 max-w-lg pb-12"><div class="mb-8 flex items-center justify-between"><span${attr_class(`text-[10px] font-semibold uppercase tracking-widest ${stringify(muted())}`)}>${escape_html(t()("onboarding.title"))}</span> `);
+      {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--></div> <div class="mb-8 text-center"><h2${attr_class(`text-sm font-bold ${stringify(text())}`)}>${escape_html(currentStep().label)}</h2> `);
       if (currentStep().description) {
         $$renderer2.push("<!--[0-->");
         $$renderer2.push(`<p${attr_class(`mt-1 text-[10px] ${stringify(muted())}`)}>${escape_html(currentStep().description)}</p>`);
@@ -1054,7 +1170,7 @@ function _page($$renderer, $$props) {
         $$renderer2.push("<!--[0-->");
         Button($$renderer2, {
           onclick: handleComplete,
-          disabled: isPending(),
+          disabled: isPending() || missingRequired().length > 0,
           variant: "solid",
           colorSchema: cs(),
           class: "max-w-[200px]",
@@ -1093,7 +1209,9 @@ function _page($$renderer, $$props) {
           $$slots: { default: true }
         });
       }
-      $$renderer2.push(`<!--]--></div></div></div></main></div>`);
+      $$renderer2.push(`<!--]--></div></div> <div class="hidden xl:block flex-shrink-0">`);
+      Preview_panel($$renderer2, { token: auth.data?.data?.data?.accessToken, colorSchema: cs() });
+      $$renderer2.push(`<!----></div></div></main></div>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }

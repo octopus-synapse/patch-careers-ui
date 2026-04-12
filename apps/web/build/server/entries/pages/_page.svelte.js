@@ -1,5 +1,6 @@
-import { k as head, f as escape_html, g as derived } from "../../chunks/renderer.js";
+import { j as head, h as derived } from "../../chunks/renderer.js";
 import { l as locale } from "../../chunks/locale.svelte.js";
+import { e as escape_html } from "../../chunks/escaping.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     const t = derived(() => locale.t);

@@ -46,7 +46,7 @@
 
 <div
 	bind:this={container}
-	class="flex flex-1 flex-col overflow-y-auto px-6 py-4"
+	class="flex flex-1 flex-col overflow-y-auto px-6 py-4 scrollbar-thin"
 	style="min-height: 0;"
 >
 	<!-- Spacer pushes messages to bottom when few -->
@@ -61,7 +61,7 @@
 			<div class="flex {own ? 'justify-end' : 'justify-start'} {consecutive ? '' : 'mt-3'}">
 				{#if !own && showAvatar}
 					<div class="mr-2 flex-shrink-0 self-end mb-5">
-						<Avatar name={msg.sender.displayName ?? '?'} {colorSchema} size="sm" />
+						<Avatar name={msg.sender.displayName ?? '?'} photoURL={msg.sender.photoURL} {colorSchema} size="sm" />
 					</div>
 				{:else if !own}
 					<div class="mr-2 w-8 flex-shrink-0"></div>

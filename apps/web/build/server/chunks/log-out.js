@@ -1,4 +1,4 @@
-import { a as sanitize_props, b as spread_props, c as slot } from "./renderer.js";
+import { b as sanitize_props, c as spread_props, d as slot } from "./renderer.js";
 import { I as Icon } from "./Icon.js";
 function Log_out($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);

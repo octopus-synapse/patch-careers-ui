@@ -1,9 +1,13 @@
-import { s as ssr_context, a as sanitize_props, b as spread_props, c as slot, d as attr_class, e as stringify, f as escape_html, g as derived, h as ensure_array_like, i as attr } from "../../chunks/renderer.js";
-import { e as ensureQueryFn, a as addToStart, b as addToEnd, c as addConsumeAwareSignal, S as Subscribable, M as Mutation, n as notifyManager, m as matchMutation, d as noop, h as hashQueryKeyByOptions, f as matchQuery, g as focusManager, o as onlineManager, r as resolveStaleTime, i as functionalUpdate, j as hashKey, p as partialMatchKey, s as skipToken, k as setQueryClientContext, I as Icon, u as useQueryClient, l as colorSchema } from "../../chunks/Icon.js";
+import { a as ssr_context, b as sanitize_props, c as spread_props, d as slot, e as attr_class, f as stringify, g as attr, h as derived, i as ensure_array_like } from "../../chunks/renderer.js";
+import { c as colorSchema } from "../../chunks/color-schema.svelte.js";
 import { l as locale } from "../../chunks/locale.svelte.js";
-import { Q as Query, c as createAuthSession, a as createAuthLogout, g as getAuthSessionQueryKey } from "../../chunks/auth.js";
+import { Q as Query, c as createQuery, a as createAuthSession, b as createAuthLogout, g as getAuthSessionQueryKey } from "../../chunks/auth.js";
 import { g as goto } from "../../chunks/client.js";
+import { e as escape_html } from "../../chunks/escaping.js";
+import { e as ensureQueryFn, a as addToStart, b as addToEnd, c as addConsumeAwareSignal, S as Subscribable, M as Mutation, n as notifyManager, m as matchMutation, d as noop, h as hashQueryKeyByOptions, f as matchQuery, g as focusManager, o as onlineManager, r as resolveStaleTime, i as functionalUpdate, j as hashKey, p as partialMatchKey, s as skipToken, k as setQueryClientContext, l as createMutation, q as customFetch, I as Icon, u as useQueryClient } from "../../chunks/Icon.js";
+import { G as Globe, M as Message_circle } from "../../chunks/message-circle.js";
 import { L as Log_out } from "../../chunks/log-out.js";
+import { B as BROWSER } from "../../chunks/render-context.js";
 function onDestroy(fn) {
   /** @type {SSRContext} */
   ssr_context.r.on_destroy(fn);
@@ -606,6 +610,273 @@ function QueryClientProvider($$renderer, $$props) {
     $$renderer2.push(`<!---->`);
   });
 }
+const getChatSendMessageUrl = () => {
+  return `/api/chat/messages`;
+};
+const chatSendMessage = async (sendMessageDto, options) => {
+  return customFetch(
+    getChatSendMessageUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(
+        sendMessageDto
+      )
+    }
+  );
+};
+const getChatSendMessageMutationOptions = (options) => {
+  const mutationKey = ["chatSendMessage"];
+  const { mutation: mutationOptions, request: requestOptions } = { mutation: { mutationKey }, request: void 0 };
+  const mutationFn = (props) => {
+    const { data } = props ?? {};
+    return chatSendMessage(data, requestOptions);
+  };
+  return { mutationFn, ...mutationOptions };
+};
+const createChatSendMessage = (options, queryClient) => {
+  return createMutation(() => ({ ...getChatSendMessageMutationOptions() }));
+};
+const getChatSendMessageToConversationUrl = (conversationId) => {
+  return `/api/chat/conversations/${conversationId}/messages`;
+};
+const chatSendMessageToConversation = async (conversationId, sendMessageToConversationDto, options) => {
+  return customFetch(
+    getChatSendMessageToConversationUrl(conversationId),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(
+        sendMessageToConversationDto
+      )
+    }
+  );
+};
+const getChatSendMessageToConversationMutationOptions = (options) => {
+  const mutationKey = ["chatSendMessageToConversation"];
+  const { mutation: mutationOptions, request: requestOptions } = options ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey ? options : { ...options, mutation: { ...options.mutation, mutationKey } } : { mutation: { mutationKey }, request: void 0 };
+  const mutationFn = (props) => {
+    const { conversationId, data } = props ?? {};
+    return chatSendMessageToConversation(conversationId, data, requestOptions);
+  };
+  return { mutationFn, ...mutationOptions };
+};
+const createChatSendMessageToConversation = (options, queryClient) => {
+  return createMutation(() => ({ ...getChatSendMessageToConversationMutationOptions(options?.()) }));
+};
+const getChatGetMessagesUrl = (conversationId, params) => {
+  const normalizedParams = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== void 0) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+  const stringifiedParams = normalizedParams.toString();
+  return stringifiedParams.length > 0 ? `/api/chat/conversations/${conversationId}/messages?${stringifiedParams}` : `/api/chat/conversations/${conversationId}/messages`;
+};
+const chatGetMessages = async (conversationId, params, options) => {
+  return customFetch(
+    getChatGetMessagesUrl(conversationId, params),
+    {
+      ...options,
+      method: "GET"
+    }
+  );
+};
+const getChatGetMessagesQueryKey = (conversationId, params) => {
+  return [
+    `/api/chat/conversations/${conversationId}/messages`,
+    ...params ? [params] : []
+  ];
+};
+const getChatGetMessagesQueryOptions = (conversationId, params, options) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getChatGetMessagesQueryKey(conversationId, params);
+  const queryFn = ({ signal }) => chatGetMessages(conversationId, params, { signal, ...requestOptions });
+  return { queryKey, queryFn, enabled: !!conversationId, ...queryOptions };
+};
+function createChatGetMessages(conversationId, params, options, queryClient) {
+  const query = createQuery(() => getChatGetMessagesQueryOptions(
+    conversationId(),
+    params?.(),
+    options?.()
+  ));
+  return query;
+}
+const getChatGetConversationsUrl = (params) => {
+  const normalizedParams = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== void 0) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+  const stringifiedParams = normalizedParams.toString();
+  return stringifiedParams.length > 0 ? `/api/chat/conversations?${stringifiedParams}` : `/api/chat/conversations`;
+};
+const chatGetConversations = async (params, options) => {
+  return customFetch(
+    getChatGetConversationsUrl(params),
+    {
+      ...options,
+      method: "GET"
+    }
+  );
+};
+const getChatGetConversationsQueryKey = (params) => {
+  return [
+    `/api/chat/conversations`,
+    ...params ? [params] : []
+  ];
+};
+const getChatGetConversationsQueryOptions = (params, options) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getChatGetConversationsQueryKey(params);
+  const queryFn = ({ signal }) => chatGetConversations(params, { signal, ...requestOptions });
+  return { queryKey, queryFn, ...queryOptions };
+};
+function createChatGetConversations(params, options, queryClient) {
+  const query = createQuery(() => getChatGetConversationsQueryOptions(params?.(), options?.()));
+  return query;
+}
+const getChatMarkConversationAsReadUrl = (conversationId) => {
+  return `/api/chat/conversations/${conversationId}/read`;
+};
+const chatMarkConversationAsRead = async (conversationId, options) => {
+  return customFetch(
+    getChatMarkConversationAsReadUrl(conversationId),
+    {
+      ...options,
+      method: "POST"
+    }
+  );
+};
+const getChatMarkConversationAsReadMutationOptions = (options) => {
+  const mutationKey = ["chatMarkConversationAsRead"];
+  const { mutation: mutationOptions, request: requestOptions } = { mutation: { mutationKey }, request: void 0 };
+  const mutationFn = (props) => {
+    const { conversationId } = props ?? {};
+    return chatMarkConversationAsRead(conversationId, requestOptions);
+  };
+  return { mutationFn, ...mutationOptions };
+};
+const createChatMarkConversationAsRead = (options, queryClient) => {
+  return createMutation(() => ({ ...getChatMarkConversationAsReadMutationOptions() }));
+};
+function Briefcase($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  /**
+   * @license lucide-svelte v0.475.0 - ISC
+   *
+   * ISC License
+   *
+   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2022.
+   *
+   * Permission to use, copy, modify, and/or distribute this software for any
+   * purpose with or without fee is hereby granted, provided that the above
+   * copyright notice and this permission notice appear in all copies.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   *
+   */
+  const iconNode = [
+    [
+      "path",
+      { "d": "M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" }
+    ],
+    [
+      "rect",
+      { "width": "20", "height": "14", "x": "2", "y": "6", "rx": "2" }
+    ]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "briefcase" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name Briefcase
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTYgMjBWNGEyIDIgMCAwIDAtMi0yaC00YTIgMiAwIDAgMC0yIDJ2MTYiIC8+CiAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjE0IiB4PSIyIiB5PSI2IiByeD0iMiIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/briefcase
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
+function Building_2($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  /**
+   * @license lucide-svelte v0.475.0 - ISC
+   *
+   * ISC License
+   *
+   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2022.
+   *
+   * Permission to use, copy, modify, and/or distribute this software for any
+   * purpose with or without fee is hereby granted, provided that the above
+   * copyright notice and this permission notice appear in all copies.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   *
+   */
+  const iconNode = [
+    ["path", { "d": "M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" }],
+    ["path", { "d": "M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" }],
+    ["path", { "d": "M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" }],
+    ["path", { "d": "M10 6h4" }],
+    ["path", { "d": "M10 10h4" }],
+    ["path", { "d": "M10 14h4" }],
+    ["path", { "d": "M10 18h4" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "building-2" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name Building2
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNNiAyMlY0YTIgMiAwIDAgMSAyLTJoOGEyIDIgMCAwIDEgMiAydjE4WiIgLz4KICA8cGF0aCBkPSJNNiAxMkg0YTIgMiAwIDAgMC0yIDJ2NmEyIDIgMCAwIDAgMiAyaDIiIC8+CiAgPHBhdGggZD0iTTE4IDloMmEyIDIgMCAwIDEgMiAydjlhMiAyIDAgMCAxLTIgMmgtMiIgLz4KICA8cGF0aCBkPSJNMTAgNmg0IiAvPgogIDxwYXRoIGQ9Ik0xMCAxMGg0IiAvPgogIDxwYXRoIGQ9Ik0xMCAxNGg0IiAvPgogIDxwYXRoIGQ9Ik0xMCAxOGg0IiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/building-2
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
 function Chevron_down($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   /**
@@ -638,61 +909,6 @@ function Chevron_down($$renderer, $$props) {
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
        * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJtNiA5IDYgNiA2LTYiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/chevron-down
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
-function Globe($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  /**
-   * @license lucide-svelte v0.475.0 - ISC
-   *
-   * ISC License
-   *
-   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2022.
-   *
-   * Permission to use, copy, modify, and/or distribute this software for any
-   * purpose with or without fee is hereby granted, provided that the above
-   * copyright notice and this permission notice appear in all copies.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-   *
-   */
-  const iconNode = [
-    ["circle", { "cx": "12", "cy": "12", "r": "10" }],
-    [
-      "path",
-      { "d": "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" }
-    ],
-    ["path", { "d": "M2 12h20" }]
-  ];
-  Icon($$renderer, spread_props([
-    { name: "globe" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name Globe
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIgLz4KICA8cGF0aCBkPSJNMTIgMmExNC41IDE0LjUgMCAwIDAgMCAyMCAxNC41IDE0LjUgMCAwIDAgMC0yMCIgLz4KICA8cGF0aCBkPSJNMiAxMmgyMCIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/globe
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -809,6 +1025,57 @@ function Moon($$renderer, $$props) {
     }
   ]));
 }
+function Search($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  /**
+   * @license lucide-svelte v0.475.0 - ISC
+   *
+   * ISC License
+   *
+   * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2022.
+   *
+   * Permission to use, copy, modify, and/or distribute this software for any
+   * purpose with or without fee is hereby granted, provided that the above
+   * copyright notice and this permission notice appear in all copies.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+   * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   *
+   */
+  const iconNode = [
+    ["circle", { "cx": "11", "cy": "11", "r": "8" }],
+    ["path", { "d": "m21 21-4.3-4.3" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "search" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name Search
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8Y2lyY2xlIGN4PSIxMSIgY3k9IjExIiByPSI4IiAvPgogIDxwYXRoIGQ9Im0yMSAyMS00LjMtNC4zIiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/search
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
 function Sun($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   /**
@@ -873,14 +1140,26 @@ function Nav_logo($$renderer, $$props) {
 }
 function Avatar($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
-    let { name, colorSchema: colorSchema2 = "light", size = "sm" } = $$props;
+    let { name, photoURL, colorSchema: colorSchema2 = "light", size = "sm" } = $$props;
     const initial = derived(() => name.charAt(0).toUpperCase());
     const bg = {
       light: "bg-gray-800 text-gray-50",
       dark: "bg-neutral-200 text-neutral-900"
     };
-    const sizeClass = { sm: "h-8 w-8 text-xs", md: "h-10 w-10 text-sm" };
-    $$renderer2.push(`<div${attr_class(`flex items-center justify-center rounded-full font-bold ${stringify(bg[colorSchema2])} ${stringify(sizeClass[size])}`)}>${escape_html(initial())}</div>`);
+    const sizeClass = {
+      sm: "h-8 w-8 text-xs",
+      md: "h-10 w-10 text-sm",
+      lg: "h-12 w-12 text-base"
+    };
+    const imgSize = { sm: "h-8 w-8", md: "h-10 w-10", lg: "h-12 w-12" };
+    if (photoURL) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<img${attr("src", photoURL)}${attr("alt", name)}${attr_class(`rounded-full object-cover ${stringify(imgSize[size])}`)}/>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+      $$renderer2.push(`<div${attr_class(`flex items-center justify-center rounded-full font-bold ${stringify(bg[colorSchema2])} ${stringify(sizeClass[size])}`)}>${escape_html(initial())}</div>`);
+    }
+    $$renderer2.push(`<!--]-->`);
   });
 }
 function Segment_toggle($$renderer, $$props) {
@@ -911,7 +1190,7 @@ function Nav_user_dropdown($$renderer, $$props) {
     let {
       user,
       cs,
-      isOpen,
+      isOpen: isOpen2,
       styles: s,
       themeLabel,
       logoutLabel,
@@ -932,10 +1211,10 @@ function Nav_user_dropdown($$renderer, $$props) {
     $$renderer2.push(`<!----> `);
     Chevron_down($$renderer2, {
       size: 14,
-      class: `transition-transform duration-200 ${stringify(s.muted[cs])} ${stringify(isOpen ? "rotate-180" : "")}`
+      class: `transition-transform duration-200 ${stringify(s.muted[cs])} ${stringify(isOpen2 ? "rotate-180" : "")}`
     });
     $$renderer2.push(`<!----></button> `);
-    if (isOpen) {
+    if (isOpen2) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<div${attr_class(`absolute right-0 mt-3 w-56 rounded-lg ${stringify(s.dropdownBg[cs])}`)}><div class="px-4 pt-4 pb-3"><p${attr_class(`text-sm font-semibold ${stringify(s.text[cs])}`)}>${escape_html(displayName())}</p> <p${attr_class(`text-[11px] ${stringify(s.muted[cs])}`)}>${escape_html(user.email)}</p></div> <div${attr_class(`border-t ${stringify(s.border[cs])}`)}><div class="px-4 py-3"><div class="flex items-center justify-between"><div${attr_class(`flex items-center gap-2 ${stringify(s.muted[cs])}`)}>`);
       if (cs === "dark") {
@@ -970,12 +1249,26 @@ function Nav_user_dropdown($$renderer, $$props) {
     $$renderer2.push(`<!--]--></div>`);
   });
 }
+let isOpen = false;
+const chatState = {
+  get isOpen() {
+    return isOpen;
+  }
+};
+function Nav_search_modal($$renderer, $$props) {
+  $$renderer.component(($$renderer2) => {
+    {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]-->`);
+  });
+}
 function Navbar($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     const cs = derived(() => colorSchema.mode);
     const t = derived(() => locale.t);
     let isDropdownOpen = false;
-    const session = createAuthSession(() => ({ query: { retry: false } }));
+    const session = createAuthSession(() => ({ query: { retry: false, enabled: BROWSER } }));
     const user = derived(() => session.data?.data?.data?.user);
     const authenticated = derived(() => session.data?.data?.data?.authenticated ?? false);
     const queryClient = useQueryClient();
@@ -1014,24 +1307,51 @@ function Navbar($$renderer, $$props) {
       cta: {
         light: "bg-gray-800 text-gray-50",
         dark: "bg-neutral-200 text-neutral-900"
+      },
+      search: {
+        light: "bg-gray-100/80 text-gray-400 placeholder-gray-400 border-gray-200/60",
+        dark: "bg-neutral-800/80 text-neutral-500 placeholder-neutral-500 border-neutral-700/60"
       }
     };
     const navLinks = [
-      { key: "nav.jobs", href: "/jobs" },
-      { key: "nav.companies", href: "/companies" },
-      { key: "nav.about", href: "/about" }
+      { key: "nav.jobs", href: "/jobs", icon: Briefcase },
+      { key: "nav.companies", href: "/companies", icon: Building_2 }
     ];
     if (t()) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<nav${attr_class(`fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 ${stringify(s.border[cs()])} ${stringify("backdrop-blur-md " + s.bg[cs()])}`)}><div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">`);
+      Nav_search_modal($$renderer2, {
+        cs: cs(),
+        t: t()
+      });
+      $$renderer2.push(`<!----> <nav${attr_class(`fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 ${stringify(s.border[cs()])} ${stringify("backdrop-blur-md " + s.bg[cs()])}`)}><div class="mx-auto flex h-14 max-w-7xl items-center px-6"><div class="flex shrink-0 items-center">`);
       Nav_logo($$renderer2, { textClass: s.text[cs()] });
-      $$renderer2.push(`<!----> <div class="hidden items-center gap-8 md:flex"><!--[-->`);
+      $$renderer2.push(`<!----></div> <div class="mx-auto hidden max-w-md flex-1 px-8 md:block"><button${attr_class(`flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors ${stringify(s.search[cs()])}`)}>`);
+      Search($$renderer2, { size: 14, class: s.muted[cs()] });
+      $$renderer2.push(`<!----> <span class="flex-1 text-left text-xs">${escape_html(t()("nav.search"))}</span> <kbd${attr_class(`rounded border px-1.5 py-0.5 text-[10px] font-medium ${stringify(s.search[cs()])}`)}>⌘K</kbd></button></div> <div class="flex shrink-0 items-center gap-1"><div class="hidden items-center gap-1 md:flex"><!--[-->`);
       const each_array = ensure_array_like(navLinks);
       for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
         let link = each_array[$$index];
-        $$renderer2.push(`<a${attr("href", link.href)}${attr_class(`text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>${escape_html(t()(link.key))}</a>`);
+        $$renderer2.push(`<a${attr("href", link.href)}${attr_class(`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>`);
+        if (link.icon) {
+          $$renderer2.push("<!--[-->");
+          link.icon($$renderer2, { size: 14 });
+          $$renderer2.push("<!--]-->");
+        } else {
+          $$renderer2.push("<!--[!-->");
+          $$renderer2.push("<!--]-->");
+        }
+        $$renderer2.push(` ${escape_html(t()(link.key))}</a>`);
       }
-      $$renderer2.push(`<!--]--></div> <div class="flex items-center gap-4">`);
+      $$renderer2.push(`<!--]--> `);
+      if (authenticated()) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<button${attr_class(`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>`);
+        Message_circle($$renderer2, { size: 14 });
+        $$renderer2.push(`<!----> ${escape_html(t()("nav.messages"))}</button>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> <div${attr_class(`mx-2 h-4 w-px ${stringify(s.border[cs()])} bg-current opacity-20`)}></div></div> `);
       if (authenticated() && user()) {
         $$renderer2.push("<!--[0-->");
         Nav_user_dropdown($$renderer2, {
@@ -1046,17 +1366,11 @@ function Navbar($$renderer, $$props) {
           onthemetoggle: handleThemeToggle,
           onlocalechange: handleLocaleChange
         });
+      } else if (!session.isLoading) {
+        $$renderer2.push("<!--[1-->");
+        $$renderer2.push(`<div class="hidden items-center gap-4 md:flex"><a href="/login"${attr_class(`text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>${escape_html(t()("nav.login"))}</a> <a href="/signup"${attr_class(`rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all ${stringify(s.join[cs()])}`)}>${escape_html(t()("nav.join"))}</a></div>`);
       } else {
         $$renderer2.push("<!--[-1-->");
-        $$renderer2.push(`<div class="hidden items-center gap-4 md:flex"><button${attr_class(`rounded-lg p-2 transition-colors ${stringify(s.muted[cs()])}`)} aria-label="Toggle color schema">`);
-        if (cs() === "dark") {
-          $$renderer2.push("<!--[0-->");
-          Sun($$renderer2, { size: 16 });
-        } else {
-          $$renderer2.push("<!--[-1-->");
-          Moon($$renderer2, { size: 16 });
-        }
-        $$renderer2.push(`<!--]--></button> <a href="/login"${attr_class(`text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>${escape_html(t()("nav.login"))}</a> <a href="/signup"${attr_class(`rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all ${stringify(s.join[cs()])}`)}>${escape_html(t()("nav.join"))}</a></div>`);
       }
       $$renderer2.push(`<!--]--> <button${attr_class(`rounded-lg p-1.5 transition-colors md:hidden ${stringify(s.muted[cs()])}`)}${attr("aria-label", t()("nav.menu"))}>`);
       {
@@ -1069,6 +1383,28 @@ function Navbar($$renderer, $$props) {
       }
       $$renderer2.push(`<!--]--></nav>`);
     } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]-->`);
+  });
+}
+function Chat_widget($$renderer, $$props) {
+  $$renderer.component(($$renderer2) => {
+    const auth = createAuthSession(() => ({ query: { retry: false, enabled: BROWSER } }));
+    const authData = derived(() => auth.data?.data?.data);
+    const authenticated = derived(() => authData()?.authenticated ?? false);
+    createChatGetConversations(() => ({ limit: 50 }), () => ({ query: { enabled: authenticated() && chatState.isOpen } }));
+    createChatGetMessages(() => "", () => ({ limit: 100 }), () => ({ query: { enabled: false } }));
+    useQueryClient();
+    createChatSendMessageToConversation(() => ({
+      mutation: {
+        onSuccess() {
+        }
+      }
+    }));
+    createChatMarkConversationAsRead();
+    createChatSendMessage();
+    {
       $$renderer2.push("<!--[-1-->");
     }
     $$renderer2.push(`<!--]-->`);
@@ -1093,6 +1429,8 @@ function _layout($$renderer, $$props) {
         Navbar($$renderer3);
         $$renderer3.push(`<!----> `);
         children($$renderer3);
+        $$renderer3.push(`<!----> `);
+        Chat_widget($$renderer3);
         $$renderer3.push(`<!---->`);
       }
     });

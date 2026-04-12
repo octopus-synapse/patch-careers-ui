@@ -1,4 +1,4 @@
-import { m as attributes, n as bind_props, e as stringify } from "./renderer.js";
+import { o as attributes, p as bind_props, f as stringify } from "./renderer.js";
 function Input($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     const styles = {

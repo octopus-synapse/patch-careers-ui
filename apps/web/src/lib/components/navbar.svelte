@@ -11,6 +11,7 @@
 	import NavMobileMenu from './nav-mobile-menu.svelte';
 	import NavSearchModal from './nav-search-modal.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
+	import { browser } from '$app/environment';
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
@@ -20,7 +21,7 @@
 	let isSearchOpen = $state(false);
 
 	const session = createAuthSession(() => ({
-		query: { retry: false }
+		query: { retry: false, enabled: browser }
 	}));
 	const user = $derived(session.data?.data?.data?.user);
 	const authenticated = $derived(session.data?.data?.data?.authenticated ?? false);
@@ -164,15 +165,8 @@
 						onlocalechange={handleLocaleChange}
 						onlogout={handleLogout}
 					/>
-				{:else}
+				{:else if !session.isLoading}
 					<div class="hidden items-center gap-4 md:flex">
-						<button
-							onclick={() => colorSchema.toggle()}
-							class="rounded-lg p-2 transition-colors {s.muted[cs]}"
-							aria-label="Toggle color schema"
-						>
-							{#if cs === 'dark'}<Sun size={16} />{:else}<Moon size={16} />{/if}
-						</button>
 						<a
 							href="/login"
 							class="text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"

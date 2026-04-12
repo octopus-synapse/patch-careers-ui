@@ -1,10 +1,13 @@
-import { k as head, f as escape_html, d as attr_class, e as stringify, g as derived } from "../../../chunks/renderer.js";
-import { l as colorSchema, q as isApiError } from "../../../chunks/Icon.js";
-import { b as createAuthLogin } from "../../../chunks/auth.js";
-import { B as Button, L as Loader_circle } from "../../../chunks/button.js";
+import { j as head, e as attr_class, f as stringify, h as derived } from "../../../chunks/renderer.js";
+import { t as isApiError } from "../../../chunks/Icon.js";
+import { d as createAuthLogin } from "../../../chunks/auth.js";
+import { B as Button } from "../../../chunks/button.js";
 import { L as Label, I as Input } from "../../../chunks/label.js";
 import { g as goto } from "../../../chunks/client.js";
+import { c as colorSchema } from "../../../chunks/color-schema.svelte.js";
 import { l as locale } from "../../../chunks/locale.svelte.js";
+import { L as Loader_circle } from "../../../chunks/loader-circle.js";
+import { e as escape_html } from "../../../chunks/escaping.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let email = "";

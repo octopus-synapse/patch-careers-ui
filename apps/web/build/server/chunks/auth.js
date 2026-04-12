@@ -1,5 +1,5 @@
-import { R as Removable, w as replaceData, d as noop, x as resolveEnabled, s as skipToken, r as resolveStaleTime, y as timeUntilStale, z as createRetryer, C as CancelledError, n as notifyManager, e as ensureQueryFn, A as canFetch, S as Subscribable, B as pendingThenable, D as shallowEqualObjects, E as environmentManager, F as isValidTimeout, G as timeoutManager, g as focusManager, H as getIsRestoringContext, u as useQueryClient, t as createMutation, v as customFetch } from "./Icon.js";
-import { g as derived } from "./renderer.js";
+import { R as Removable, v as replaceData, d as noop, w as resolveEnabled, s as skipToken, r as resolveStaleTime, x as timeUntilStale, y as createRetryer, C as CancelledError, n as notifyManager, e as ensureQueryFn, z as canFetch, S as Subscribable, A as pendingThenable, B as shallowEqualObjects, D as environmentManager, E as isValidTimeout, F as timeoutManager, g as focusManager, G as getIsRestoringContext, u as useQueryClient, l as createMutation, q as customFetch } from "./Icon.js";
+import { h as derived } from "./renderer.js";
 var Query = class extends Removable {
   #initialState;
   #revertState;
@@ -1069,9 +1069,9 @@ function createAuthSession(options, queryClient) {
 }
 export {
   Query as Q,
-  createAuthLogout as a,
-  createAuthLogin as b,
-  createAuthSession as c,
-  createQuery as d,
+  createAuthSession as a,
+  createAuthLogout as b,
+  createQuery as c,
+  createAuthLogin as d,
   getAuthSessionQueryKey as g
 };

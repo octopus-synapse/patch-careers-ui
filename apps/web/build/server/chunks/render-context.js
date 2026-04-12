@@ -1,3 +1,4 @@
+const BROWSER = false;
 const escaped = {
   "<": "\\u003C",
   "\\": "\\\\",
@@ -544,6 +545,7 @@ function get_render_context() {
 }
 let als = null;
 export {
+  BROWSER as B,
   DevalueError as D,
   is_plain_object as a,
   stringify_string as b,

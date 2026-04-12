@@ -10,7 +10,7 @@ return {
 	assets: new Set([]),
 	mimeTypes: {},
 	_: {
-		client: {start:"_app/immutable/entry/start.PrA0ANNj.js",app:"_app/immutable/entry/app.685EwPmJ.js",imports:["_app/immutable/entry/start.PrA0ANNj.js","_app/immutable/chunks/D3Iw2ZAM.js","_app/immutable/chunks/C0gvsygg.js","_app/immutable/chunks/-FHjlfxn.js","_app/immutable/entry/app.685EwPmJ.js","_app/immutable/chunks/BqCWK9tG.js","_app/immutable/chunks/C0gvsygg.js","_app/immutable/chunks/DF_bOkbo.js","_app/immutable/chunks/-FHjlfxn.js","_app/immutable/chunks/CBcoFzGA.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.DBbFUYFX.js",app:"_app/immutable/entry/app.wIH8mOTH.js",imports:["_app/immutable/entry/start.DBbFUYFX.js","_app/immutable/chunks/CMLqRSM9.js","_app/immutable/chunks/CWERkfRM.js","_app/immutable/chunks/CSbr1D8P.js","_app/immutable/entry/app.wIH8mOTH.js","_app/immutable/chunks/Dp1pzeXC.js","_app/immutable/chunks/CWERkfRM.js","_app/immutable/chunks/C6jbi-ZX.js","_app/immutable/chunks/DsEfZl_f.js","_app/immutable/chunks/CSbr1D8P.js","_app/immutable/chunks/D2gFTUrA.js","_app/immutable/chunks/BbiRenty.js","_app/immutable/chunks/loKv-cgS.js","_app/immutable/chunks/DAU_Yhjc.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./server/nodes/0.js')),
 			__memo(() => import('./server/nodes/1.js')),
@@ -18,7 +18,10 @@ return {
 			__memo(() => import('./server/nodes/3.js')),
 			__memo(() => import('./server/nodes/4.js')),
 			__memo(() => import('./server/nodes/5.js')),
-			__memo(() => import('./server/nodes/6.js'))
+			__memo(() => import('./server/nodes/6.js')),
+			__memo(() => import('./server/nodes/7.js')),
+			__memo(() => import('./server/nodes/8.js')),
+			__memo(() => import('./server/nodes/9.js'))
 		],
 		remotes: {
 			
@@ -32,31 +35,52 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/@[username]",
+				pattern: /^\/@([^/]+?)\/?$/,
+				params: [{"name":"username","optional":false,"rest":false,"chained":false}],
+				page: { layouts: [0,], errors: [1,], leaf: 3 },
+				endpoint: null
+			},
+			{
 				id: "/dashboard",
 				pattern: /^\/dashboard\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 3 },
+				page: { layouts: [0,], errors: [1,], leaf: 5 },
 				endpoint: null
 			},
 			{
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 4 },
+				page: { layouts: [0,], errors: [1,], leaf: 6 },
 				endpoint: null
 			},
 			{
 				id: "/onboarding",
 				pattern: /^\/onboarding\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 5 },
+				page: { layouts: [0,], errors: [1,], leaf: 7 },
 				endpoint: null
 			},
 			{
 				id: "/signup",
 				pattern: /^\/signup\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 6 },
+				page: { layouts: [0,], errors: [1,], leaf: 8 },
+				endpoint: null
+			},
+			{
+				id: "/test-404",
+				pattern: /^\/test-404\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 9 },
+				endpoint: null
+			},
+			{
+				id: "/[...rest]",
+				pattern: /^(?:\/([^]*))?\/?$/,
+				params: [{"name":"rest","optional":false,"rest":true,"chained":true}],
+				page: { layouts: [0,], errors: [1,], leaf: 4 },
 				endpoint: null
 			}
 		],

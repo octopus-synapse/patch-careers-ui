@@ -1,12 +1,12 @@
-import { E as ENDPOINT_METHODS, P as PAGE_METHODS, n as negotiate, m as method_not_allowed, h as handle_error_and_jsonify, g as get_status, i as is_form_content_type, a as normalize_error, s as stringify, b as get_global_name, c as serialize_uses, d as clarify_devalue_error, e as get_node_type, f as noop, j as escape_html, S as SVELTE_KIT_ASSETS, k as create_remote_key, l as static_error_page, r as redirect_response, p as parse_remote_arg, o as stringify$1, q as deserialize_binary_form, t as split_remote_key, u as once, v as has_prerendered_path, T as TRAILING_SLASH_PARAM, I as INVALIDATED_PARAM, w as handle_fatal_error, x as format_server_error } from "./chunks/shared.js";
-import { B as BROWSER } from "./chunks/false.js";
+import { E as ENDPOINT_METHODS, P as PAGE_METHODS, n as negotiate, m as method_not_allowed, h as handle_error_and_jsonify, g as get_status, i as is_form_content_type, a as normalize_error, s as stringify, b as get_global_name, c as serialize_uses, d as clarify_devalue_error, e as get_node_type, f as noop$1, j as escape_html, S as SVELTE_KIT_ASSETS, k as create_remote_key, l as static_error_page, r as redirect_response, p as parse_remote_arg, o as stringify$1, q as deserialize_binary_form, t as split_remote_key, u as once, v as has_prerendered_path, T as TRAILING_SLASH_PARAM, I as INVALIDATED_PARAM, w as handle_fatal_error, x as format_server_error } from "./chunks/shared.js";
+import { B as BROWSER, u as uneval } from "./chunks/render-context.js";
 import { json, text, isRedirect, error } from "@sveltejs/kit";
 import { Redirect, SvelteKitError, ActionFailure, HttpError } from "@sveltejs/kit/internal";
 import { with_request_store, merge_tracing, try_get_request_store } from "@sveltejs/kit/internal/server";
 import { a as assets, b as base, c as app_dir, r as relative, o as override, d as reset } from "./chunks/environment.js";
-import { u as uneval } from "./chunks/render-context.js";
-import { m as make_trackable, d as disable_search, a as decode_params, S as SCHEME, w as writable, r as readable, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, f as resolve, g as decode_pathname, h as validate_server_exports } from "./chunks/exports.js";
+import { m as make_trackable, d as disable_search, a as decode_params, S as SCHEME, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, r as resolve, f as decode_pathname, g as validate_server_exports } from "./chunks/exports.js";
 import { b as base64_encode, t as text_decoder, a as text_encoder, g as get_relative_path } from "./chunks/utils.js";
+import { n as noop, s as safe_not_equal } from "./chunks/renderer.js";
 import { p as public_env, r as read_implementation, o as options, s as set_private_env, a as set_public_env, g as get_hooks, b as set_read_implementation } from "./chunks/internal.js";
 function with_resolvers() {
   let resolve2;
@@ -627,6 +627,59 @@ function server_data_serializer_json(event, event_state, options2) {
     }
   };
 }
+const subscriber_queue = [];
+function readable(value, start) {
+  return {
+    subscribe: writable(value, start).subscribe
+  };
+}
+function writable(value, start = noop) {
+  let stop = null;
+  const subscribers = /* @__PURE__ */ new Set();
+  function set(new_value) {
+    if (safe_not_equal(value, new_value)) {
+      value = new_value;
+      if (stop) {
+        const run_queue = !subscriber_queue.length;
+        for (const subscriber of subscribers) {
+          subscriber[1]();
+          subscriber_queue.push(subscriber, value);
+        }
+        if (run_queue) {
+          for (let i = 0; i < subscriber_queue.length; i += 2) {
+            subscriber_queue[i][0](subscriber_queue[i + 1]);
+          }
+          subscriber_queue.length = 0;
+        }
+      }
+    }
+  }
+  function update(fn) {
+    set(fn(
+      /** @type {T} */
+      value
+    ));
+  }
+  function subscribe(run, invalidate = noop) {
+    const subscriber = [run, invalidate];
+    subscribers.add(subscriber);
+    if (subscribers.size === 1) {
+      stop = start(set, update) || noop;
+    }
+    run(
+      /** @type {T} */
+      value
+    );
+    return () => {
+      subscribers.delete(subscriber);
+      if (subscribers.size === 0 && stop) {
+        stop();
+        stop = null;
+      }
+    };
+  }
+  return { set, update, subscribe };
+}
 async function load_server_data({ event, event_state, state, node, parent }) {
   if (!node?.server) return null;
   let is_tracking = true;
@@ -767,7 +820,7 @@ async function load_data({
           route: event.route,
           fetch: create_universal_fetch(event, state, fetched, csr, resolve_opts),
           setHeaders: event.setHeaders,
-          depends: noop,
+          depends: noop$1,
           parent,
           untrack: (fn) => fn(),
           tracing: traced_event.tracing
@@ -927,7 +980,7 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
   };
   return (input, init2) => {
     const response = universal_fetch(input, init2);
-    response.catch(noop);
+    response.catch(noop$1);
     return response;
   };
 }
@@ -2621,8 +2674,8 @@ async function render_page(event, event_state, page, options2, manifest, state, 
         }
       });
     });
-    for (const p of server_promises) p.catch(noop);
-    for (const p of load_promises) p.catch(noop);
+    for (const p of server_promises) p.catch(noop$1);
+    for (const p of load_promises) p.catch(noop$1);
     for (let i = 0; i < nodes.data.length; i += 1) {
       const node = nodes.data[i];
       if (node) {
@@ -3494,7 +3547,7 @@ function create_fetch({ event, options: options2, manifest, state, get_cookie_he
   };
   return (input, init2) => {
     const response = server_fetch(input, init2);
-    response.catch(noop);
+    response.catch(noop$1);
     return response;
   };
 }
@@ -3509,7 +3562,7 @@ async function internal_fetch(request, options2, manifest, state) {
     if (request.signal.aborted) {
       throw new DOMException("The operation was aborted.", "AbortError");
     }
-    let remove_abort_listener = noop;
+    let remove_abort_listener = noop$1;
     const abort_promise = new Promise((_, reject) => {
       const on_abort = () => {
         reject(new DOMException("The operation was aborted.", "AbortError"));
@@ -4157,7 +4210,7 @@ handle: module.handle || (({ event, resolve: resolve2 }) => resolve2(event)),
             console.error("Remote function schema validation failed:", issues);
             return { message: "Bad Request" };
           }),
-          reroute: module.reroute || noop,
+          reroute: module.reroute || noop$1,
           transport: module.transport || {}
         };
         set_app({

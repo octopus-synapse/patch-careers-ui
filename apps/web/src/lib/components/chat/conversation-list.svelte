@@ -51,7 +51,7 @@
 		class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors
 			{active ? activeBg : hoverBg}"
 	>
-		<Avatar name={o.displayName ?? o.name ?? o.username ?? '?'} {colorSchema} size="md" />
+		<Avatar name={o.displayName ?? o.name ?? o.username ?? '?'} photoURL={o.photoURL} {colorSchema} size="md" />
 
 		<div class="min-w-0 flex-1">
 			<div class="flex items-baseline justify-between gap-2">
