@@ -4,6 +4,7 @@
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import Navbar from '$lib/components/navbar.svelte';
+	import ChatWidget from '$lib/components/chat/chat-widget.svelte';
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -30,5 +31,6 @@
 	<QueryClientProvider client={queryClient}>
 		<Navbar />
 		{@render children()}
+		<ChatWidget />
 	</QueryClientProvider>
 </div>

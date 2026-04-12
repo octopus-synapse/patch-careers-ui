@@ -2,6 +2,9 @@
 	import { Avatar, SegmentToggle } from 'ui';
 	import type { ColorSchema } from 'ui';
 	import type { Locale } from 'i18n';
+	import type { ComponentType } from 'svelte';
+	import { MessageCircle } from 'lucide-svelte';
+	import { chatState } from '$lib/chat-state.svelte';
 
 	type User = {
 		name?: string | null;
@@ -11,6 +14,7 @@
 	type NavLink = {
 		key: string;
 		href: string;
+		icon: ComponentType;
 	};
 
 	type Props = {
@@ -41,11 +45,22 @@
 				<a
 					href={link.href}
 					onclick={onclose}
-					class="text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 {s.text[cs]}"
+					class="flex items-center gap-4 text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 {s.text[cs]}"
 				>
+					<link.icon size={24} class={s.muted[cs]} />
 					{t(link.key)}
 				</a>
 			{/each}
+
+			{#if authenticated}
+				<button
+					onclick={() => { chatState.toggle(); onclose(); }}
+					class="flex items-center gap-4 text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 {s.text[cs]}"
+				>
+					<MessageCircle size={24} class={s.muted[cs]} />
+					{t('nav.messages')}
+				</button>
+			{/if}
 		</div>
 
 		<div class="flex flex-col gap-5 pb-8">

@@ -3,18 +3,21 @@
 	import { locale } from '$lib/locale.svelte';
 	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import type { Locale } from 'i18n';
-	import { Menu, X, Sun, Moon } from 'lucide-svelte';
+	import { Menu, X, Sun, Moon, Search, Briefcase, Building2, MessageCircle } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import NavLogo from './nav-logo.svelte';
 	import NavUserDropdown from './nav-user-dropdown.svelte';
 	import NavMobileMenu from './nav-mobile-menu.svelte';
+	import NavSearchModal from './nav-search-modal.svelte';
+	import { chatState } from '$lib/chat-state.svelte';
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
 
 	let isMenuOpen = $state(false);
 	let isDropdownOpen = $state(false);
+	let isSearchOpen = $state(false);
 
 	const session = createAuthSession(() => ({
 		query: { retry: false }
@@ -59,6 +62,13 @@
 		logout.mutate({ data: {} });
 	}
 
+	function handleGlobalKeydown(e: KeyboardEvent) {
+		if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+			e.preventDefault();
+			isSearchOpen = !isSearchOpen;
+		}
+	}
+
 	const s = {
 		border: { light: 'border-gray-200/60', dark: 'border-neutral-800/60' },
 		text: { light: 'text-gray-800', dark: 'text-neutral-200' },
@@ -79,33 +89,66 @@
 		cta: {
 			light: 'bg-gray-800 text-gray-50',
 			dark: 'bg-neutral-200 text-neutral-900'
+		},
+		search: {
+			light: 'bg-gray-100/80 text-gray-400 placeholder-gray-400 border-gray-200/60',
+			dark: 'bg-neutral-800/80 text-neutral-500 placeholder-neutral-500 border-neutral-700/60'
 		}
 	};
 
 	const navLinks = [
-		{ key: 'nav.jobs', href: '/jobs' },
-		{ key: 'nav.companies', href: '/companies' },
-		{ key: 'nav.about', href: '/about' }
+		{ key: 'nav.jobs', href: '/jobs', icon: Briefcase },
+		{ key: 'nav.companies', href: '/companies', icon: Building2 }
 	];
 </script>
 
-{#if t}
-	<nav class="fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 {s.border[cs]} {isMenuOpen ? s.mobileBg[cs] : 'backdrop-blur-md ' + s.bg[cs]}">
-		<div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-			<NavLogo textClass={s.text[cs]} />
+<svelte:window onkeydown={handleGlobalKeydown} />
 
-			<div class="hidden items-center gap-8 md:flex">
-				{#each navLinks as link}
-					<a
-						href={link.href}
-						class="text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
-					>
-						{t(link.key)}
-					</a>
-				{/each}
+{#if t}
+	<NavSearchModal open={isSearchOpen} {cs} {t} onclose={() => isSearchOpen = false} />
+
+	<nav class="fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 {s.border[cs]} {isMenuOpen ? s.mobileBg[cs] : 'backdrop-blur-md ' + s.bg[cs]}">
+		<div class="mx-auto flex h-14 max-w-7xl items-center px-6">
+			<div class="flex shrink-0 items-center">
+				<NavLogo textClass={s.text[cs]} />
 			</div>
 
-			<div class="flex items-center gap-4">
+			<div class="mx-auto hidden max-w-md flex-1 px-8 md:block">
+				<button
+					onclick={() => isSearchOpen = true}
+					class="flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors {s.search[cs]}"
+				>
+					<Search size={14} class={s.muted[cs]} />
+					<span class="flex-1 text-left text-xs">{t('nav.search')}</span>
+					<kbd class="rounded border px-1.5 py-0.5 text-[10px] font-medium {s.search[cs]}">⌘K</kbd>
+				</button>
+			</div>
+
+			<div class="flex shrink-0 items-center gap-1">
+				<div class="hidden items-center gap-1 md:flex">
+					{#each navLinks as link}
+						<a
+							href={link.href}
+							class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+						>
+							<link.icon size={14} />
+							{t(link.key)}
+						</a>
+					{/each}
+
+					{#if authenticated}
+						<button
+							onclick={() => chatState.toggle()}
+							class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+						>
+							<MessageCircle size={14} />
+							{t('nav.messages')}
+						</button>
+					{/if}
+
+					<div class="mx-2 h-4 w-px {s.border[cs]} bg-current opacity-20"></div>
+				</div>
+
 				{#if authenticated && user}
 					<NavUserDropdown
 						{user}

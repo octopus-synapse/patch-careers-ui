@@ -11,12 +11,21 @@
     "jobs": "Jobs",
     "companies": "Companies",
     "about": "About",
+    "messages": "Messages",
     "join": "Join",
     "getStarted": "Get Started",
     "theme": "Theme",
     "menu": "Menu",
     "close": "Close",
-    "login": "Login"
+    "login": "Login",
+    "search": "Search...",
+    "searchPlaceholder": "Search jobs, companies, and more...",
+    "searchRecent": "Recent",
+    "searchQuickLinks": "Quick links",
+    "searchNoRecent": "No recent searches",
+    "searchTip": "to navigate",
+    "searchTipClose": "to close",
+    "searchTipSelect": "to select"
   },
   "dashboard": {
     "pageTitle": "Dashboard",

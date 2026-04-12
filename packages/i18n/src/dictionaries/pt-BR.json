@@ -11,12 +11,21 @@
     "jobs": "Vagas",
     "companies": "Empresas",
     "about": "Sobre",
+    "messages": "Mensagens",
     "join": "Criar conta",
     "getStarted": "Começar",
     "theme": "Tema",
     "menu": "Menu",
     "close": "Fechar",
-    "login": "Entrar"
+    "login": "Entrar",
+    "search": "Pesquisar...",
+    "searchPlaceholder": "Buscar vagas, empresas e mais...",
+    "searchRecent": "Recentes",
+    "searchQuickLinks": "Links rápidos",
+    "searchNoRecent": "Nenhuma busca recente",
+    "searchTip": "para navegar",
+    "searchTipClose": "para fechar",
+    "searchTipSelect": "para selecionar"
   },
   "dashboard": {
     "pageTitle": "Painel",
