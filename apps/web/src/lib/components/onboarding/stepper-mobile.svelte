@@ -7,22 +7,38 @@
 		label: string;
 	};
 
+	type Strength = {
+		score: number;
+		message: string;
+		level: string;
+	};
+
 	type Props = {
 		steps: Step[];
 		currentStep: string;
 		completedSteps: string[];
 		progress: number;
+		strength?: Strength;
 		colorSchema?: ColorSchema;
 	};
 
-	let { steps, currentStep, completedSteps, progress, colorSchema = 'light' }: Props = $props();
+	let { steps, currentStep, completedSteps, progress, strength, colorSchema = 'light' }: Props = $props();
 
-	const barBg = $derived(colorSchema === 'dark' ? 'bg-neutral-700' : 'bg-gray-300');
-	const barFill = $derived(colorSchema === 'dark' ? 'bg-neutral-200' : 'bg-gray-800');
+	const barBg = $derived(colorSchema === 'dark' ? 'bg-neutral-700' : 'bg-gray-200');
 	const text = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
 	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-500');
 	const checkBg = $derived(colorSchema === 'dark' ? 'bg-neutral-200 text-neutral-900' : 'bg-gray-800 text-white');
 	const activeBg = $derived(colorSchema === 'dark' ? 'bg-neutral-700/50' : 'bg-white');
+
+	const strengthScore = $derived(strength?.score ?? progress);
+	const strengthMessage = $derived(strength?.message ?? '');
+
+	const barColor = $derived(
+		strengthScore >= 75 ? 'bg-emerald-500'
+		: strengthScore >= 50 ? 'bg-blue-500'
+		: strengthScore >= 25 ? 'bg-blue-400'
+		: colorSchema === 'dark' ? 'bg-neutral-500' : 'bg-gray-400'
+	);
 
 	let containerWidth = $state(0);
 	const ITEM_MIN_WIDTH = 72;
@@ -68,8 +84,13 @@
 
 	<div class="mt-3 h-1 rounded-full {barBg}">
 		<div
-			class="h-1 rounded-full transition-all duration-500 {barFill}"
-			style="width: {progress}%"
+			class="h-1 rounded-full transition-all duration-700 {barColor}"
+			style="width: {strengthScore}%"
 		></div>
 	</div>
+	{#if strengthMessage}
+		<p class="mt-1.5 text-center text-[10px] font-semibold uppercase tracking-widest transition-all duration-500 {muted}">
+			{strengthMessage}
+		</p>
+	{/if}
 </div>

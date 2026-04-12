@@ -21,15 +21,13 @@
 
 	let { themes, selectedThemeId, colorSchema = 'light', onselect }: Props = $props();
 
-	const cs = colorSchema;
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700' : 'border-gray-200');
-	const cardSelected = $derived(cs === 'dark' ? 'border-neutral-200 ring-1 ring-neutral-200' : 'border-gray-800 ring-1 ring-gray-800');
-	const badgeBg = $derived(cs === 'dark' ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-50 text-emerald-700');
-	const tagBg = $derived(cs === 'dark' ? 'bg-neutral-700/50' : 'bg-gray-100');
-	const previewBg = $derived(cs === 'dark' ? 'bg-neutral-700/30' : 'bg-gray-50');
+	const text = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
+	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-500');
+	const cardBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
+	const cardBorder = $derived(colorSchema === 'dark' ? 'border-neutral-700' : 'border-gray-200');
+	const cardSelected = $derived(colorSchema === 'dark' ? 'border-neutral-200 ring-1 ring-neutral-200' : 'border-gray-800 ring-1 ring-gray-800');
+	const badgeBg = $derived(colorSchema === 'dark' ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-50 text-emerald-700');
+	const tagBg = $derived(colorSchema === 'dark' ? 'bg-neutral-700/50' : 'bg-gray-100');
 </script>
 
 <div class="flex flex-wrap justify-center gap-4">

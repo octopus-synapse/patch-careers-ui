@@ -3,9 +3,12 @@
 	import { locale } from '$lib/locale.svelte';
 	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import type { Locale } from 'i18n';
-	import { Menu, X, Sun, Moon, Globe, LogOut, ChevronDown } from 'lucide-svelte';
+	import { Menu, X, Sun, Moon } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { useQueryClient } from '@tanstack/svelte-query';
+	import NavLogo from './nav-logo.svelte';
+	import NavUserDropdown from './nav-user-dropdown.svelte';
+	import NavMobileMenu from './nav-mobile-menu.svelte';
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
@@ -30,14 +33,6 @@
 		}
 	}));
 
-	function closeMenu() {
-		isMenuOpen = false;
-	}
-
-	function toggleDropdown() {
-		isDropdownOpen = !isDropdownOpen;
-	}
-
 	function handleClickOutside(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (!target.closest('[data-dropdown]')) {
@@ -51,6 +46,18 @@
 			return () => document.removeEventListener('click', handleClickOutside);
 		}
 	});
+
+	function handleThemeToggle(value: string) {
+		if (value !== cs) colorSchema.toggle();
+	}
+
+	function handleLocaleChange(value: string) {
+		locale.set(value as Locale);
+	}
+
+	function handleLogout() {
+		logout.mutate({ data: {} });
+	}
 
 	const s = {
 		border: { light: 'border-gray-200/60', dark: 'border-neutral-800/60' },
@@ -85,9 +92,7 @@
 {#if t}
 	<nav class="fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 {s.border[cs]} {isMenuOpen ? s.mobileBg[cs] : 'backdrop-blur-md ' + s.bg[cs]}">
 		<div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-			<a href="/" class="text-sm font-bold tracking-tight {s.text[cs]}">
-				patch<span class="font-light opacity-40">careers</span>
-			</a>
+			<NavLogo textClass={s.text[cs]} />
 
 			<div class="hidden items-center gap-8 md:flex">
 				{#each navLinks as link}
@@ -102,74 +107,20 @@
 
 			<div class="flex items-center gap-4">
 				{#if authenticated && user}
-					<div class="relative hidden md:block" data-dropdown>
-						<button
-							onclick={toggleDropdown}
-							class="flex items-center gap-2 p-1"
-						>
-							<div class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold {s.cta[cs]}">
-								{(user.name ?? user.email).charAt(0).toUpperCase()}
-							</div>
-							<ChevronDown size={14} class="transition-transform duration-200 {s.muted[cs]} {isDropdownOpen ? 'rotate-180' : ''}" />
-						</button>
-
-						{#if isDropdownOpen}
-							<div class="absolute right-0 mt-3 w-56 rounded-lg {s.dropdownBg[cs]}">
-								<div class="px-4 pt-4 pb-3">
-									<p class="text-sm font-semibold {s.text[cs]}">{user.name ?? user.email.split('@')[0]}</p>
-									<p class="text-[11px] {s.muted[cs]}">{user.email}</p>
-								</div>
-
-								<div class="border-t {s.border[cs]}">
-									<div class="px-4 py-3">
-										<div class="flex items-center justify-between">
-											<div class="flex items-center gap-2 {s.muted[cs]}">
-												{#if cs === 'dark'}<Sun size={13} />{:else}<Moon size={13} />{/if}
-												<span class="text-[10px] font-semibold uppercase tracking-widest">{t('nav.theme')}</span>
-											</div>
-											<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
-												<button
-													onclick={() => { if (cs === 'dark') colorSchema.toggle(); }}
-													class="rounded px-2 py-0.5 text-[10px] font-semibold transition-all {cs === 'light' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-												>Light</button>
-												<button
-													onclick={() => { if (cs === 'light') colorSchema.toggle(); }}
-													class="rounded px-2 py-0.5 text-[10px] font-semibold transition-all {cs === 'dark' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-												>Dark</button>
-											</div>
-										</div>
-									</div>
-
-									<div class="px-4 py-3">
-										<div class="flex items-center justify-between">
-											<div class="flex items-center gap-2 {s.muted[cs]}">
-												<Globe size={13} />
-												<span class="text-[10px] font-semibold uppercase tracking-widest">Language</span>
-											</div>
-											<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
-												{#each locale.locales as loc}
-													<button
-														onclick={() => locale.set(loc as Locale)}
-														class="rounded px-2 py-0.5 text-[10px] font-semibold transition-all {locale.current === loc ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-													>{loc === 'pt-BR' ? 'PT' : 'EN'}</button>
-												{/each}
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="border-t {s.border[cs]}">
-									<button
-										onclick={() => logout.mutate({ data: {} })}
-										class="flex w-full items-center gap-2 px-4 py-3 text-[11px] text-red-500 transition-opacity hover:opacity-70"
-									>
-										<LogOut size={13} />
-										{t('dashboard.logout')}
-									</button>
-								</div>
-							</div>
-						{/if}
-					</div>
+					<NavUserDropdown
+						{user}
+						{cs}
+						isOpen={isDropdownOpen}
+						styles={s}
+						themeLabel={t('nav.theme')}
+						logoutLabel={t('dashboard.logout')}
+						locales={locale.locales}
+						currentLocale={locale.current}
+						ontoggle={() => isDropdownOpen = !isDropdownOpen}
+						onthemetoggle={handleThemeToggle}
+						onlocalechange={handleLocaleChange}
+						onlogout={handleLogout}
+					/>
 				{:else}
 					<div class="hidden items-center gap-4 md:flex">
 						<button
@@ -205,90 +156,20 @@
 		</div>
 
 		{#if isMenuOpen}
-			<div class="fixed inset-0 top-[57px] z-40 p-8 md:hidden {s.mobileBg[cs]}">
-				<div class="flex h-full flex-col justify-between">
-					<div class="flex flex-col gap-8 pt-4">
-						{#each navLinks as link}
-							<a
-								href={link.href}
-								onclick={closeMenu}
-								class="text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 {s.text[cs]}"
-							>
-								{t(link.key)}
-							</a>
-						{/each}
-					</div>
-
-					<div class="flex flex-col gap-5 pb-8">
-						{#if authenticated && user}
-							<div class="flex items-center gap-3 border-t pt-6 {s.border[cs]}">
-								<div class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold {s.cta[cs]}">
-									{(user.name ?? user.email).charAt(0).toUpperCase()}
-								</div>
-								<div>
-									<p class="text-sm font-semibold {s.text[cs]}">{user.name ?? user.email.split('@')[0]}</p>
-									<p class="text-xs {s.muted[cs]}">{user.email}</p>
-								</div>
-							</div>
-
-							<div class="flex items-center justify-between">
-								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">{t('nav.theme')}</span>
-								<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
-									<button
-										onclick={() => { if (cs === 'dark') colorSchema.toggle(); }}
-										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'light' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-									>Light</button>
-									<button
-										onclick={() => { if (cs === 'light') colorSchema.toggle(); }}
-										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'dark' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-									>Dark</button>
-								</div>
-							</div>
-
-							<div class="flex items-center justify-between">
-								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">Language</span>
-								<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
-									{#each locale.locales as loc}
-										<button
-											onclick={() => locale.set(loc as Locale)}
-											class="rounded px-3 py-1 text-xs font-semibold transition-all {locale.current === loc ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-										>{loc === 'pt-BR' ? 'PT' : 'EN'}</button>
-									{/each}
-								</div>
-							</div>
-
-							<button
-								onclick={() => logout.mutate({ data: {} })}
-								class="mt-2 w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest text-red-500 transition-transform active:scale-[0.98]"
-							>
-								{t('dashboard.logout')}
-							</button>
-						{:else}
-							<div class="flex items-center justify-between border-t pt-6 {s.border[cs]}">
-								<span class="text-[10px] font-semibold uppercase tracking-widest {s.muted[cs]}">{t('nav.theme')}</span>
-								<div class="flex rounded-md {s.segmentBg[cs]} p-0.5">
-									<button
-										onclick={() => { if (cs === 'dark') colorSchema.toggle(); }}
-										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'light' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-									>Light</button>
-									<button
-										onclick={() => { if (cs === 'light') colorSchema.toggle(); }}
-										class="rounded px-3 py-1 text-xs font-semibold transition-all {cs === 'dark' ? s.segmentActive[cs] + ' ' + s.text[cs] : s.muted[cs]}"
-									>Dark</button>
-								</div>
-							</div>
-
-							<a
-								href="/signup"
-								onclick={closeMenu}
-								class="w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest transition-transform active:scale-[0.98] {s.cta[cs]}"
-							>
-								{t('nav.getStarted')}
-							</a>
-						{/if}
-					</div>
-				</div>
-			</div>
+			<NavMobileMenu
+				{cs}
+				{authenticated}
+				{user}
+				{navLinks}
+				styles={s}
+				{t}
+				locales={locale.locales}
+				currentLocale={locale.current}
+				onclose={() => isMenuOpen = false}
+				onthemetoggle={handleThemeToggle}
+				onlocalechange={handleLocaleChange}
+				onlogout={handleLogout}
+			/>
 		{/if}
 	</nav>
 {/if}

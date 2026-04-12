@@ -19,21 +19,19 @@
 
 	let { session, steps, completedSteps, colorSchema = 'light', ongoto }: Props = $props();
 
-	const cs = colorSchema;
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-	const skippedBg = $derived(cs === 'dark' ? 'bg-neutral-800/30' : 'bg-gray-50');
+	const text = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
+	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-500');
+	const cardBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
+	const cardBorder = $derived(colorSchema === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
+	const skippedBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/30' : 'bg-gray-50');
 
 	type ReviewEntry = { label: string; value: string; long?: boolean };
 	type ReviewSection = { label: string; stepId: string; entries: ReviewEntry[]; skipped?: boolean; themePreview?: string | null; themeName?: string };
-	const hoverStyle = $derived(cs === 'dark' ? 'hover:border-neutral-500' : 'hover:border-gray-400');
+	const hoverStyle = $derived(colorSchema === 'dark' ? 'hover:border-neutral-500' : 'hover:border-gray-400');
 
-	const sections = $derived<ReviewSection[]>(() => {
+	const sections = $derived.by(() => {
 		const result: ReviewSection[] = [];
 
-		// Personal info
 		const pi = session.personalInfo as Record<string, string> | undefined;
 		if (pi) {
 			const step = steps.find((s) => s.id === 'personal-info');
@@ -43,14 +41,12 @@
 			if (entries.length) result.push({ label: step?.label ?? 'Personal Info', stepId: 'personal-info', entries });
 		}
 
-		// Username
 		const username = session.username as string | undefined;
 		if (username) {
 			const step = steps.find((s) => s.id === 'username');
 			result.push({ label: step?.label ?? 'Username', stepId: 'username', entries: [{ label: '', value: `@${username}` }] });
 		}
 
-		// Professional profile
 		const pp = session.professionalProfile as Record<string, string> | undefined;
 		if (pp) {
 			const step = steps.find((s) => s.id === 'professional-profile');
@@ -64,7 +60,6 @@
 			if (entries.length) result.push({ label: step?.label ?? 'Profile', stepId: 'professional-profile', entries });
 		}
 
-		// Sections (work, education, skills, languages)
 		const secs = session.sections as Array<{
 			sectionTypeKey: string;
 			items?: Array<{ content?: Record<string, unknown> }>;
@@ -89,7 +84,6 @@
 			}
 		}
 
-		// Template / Theme
 		const ts = session.templateSelection as Record<string, string> | undefined;
 		if (ts?.templateId) {
 			const step = steps.find((s) => s.id === 'template');
@@ -108,7 +102,7 @@
 </script>
 
 <div class="space-y-3">
-	{#each sections() as section}
+	{#each sections as section}
 		<button
 			onclick={() => ongoto(section.stepId)}
 			class="w-full cursor-pointer rounded-lg border p-5 text-left transition-colors {section.skipped ? skippedBg : cardBg} {cardBorder} {hoverStyle}"

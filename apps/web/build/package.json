@@ -1,0 +1,20 @@
+{
+	"name": "web",
+	"version": "0.0.1",
+	"type": "module",
+	"private": true,
+	"main": "index.js",
+	"scripts": {
+		"start": "bun ./index.js"
+	},
+	"dependencies": {
+		"@tanstack/svelte-query": "^6.0.0",
+		"api-client": "workspace:*",
+		"i18n": "workspace:*",
+		"lucide-svelte": "^0.475.0",
+		"ui": "workspace:*",
+		"cookie": "latest",
+		"devalue": "latest",
+		"set-cookie-parser": "latest"
+	}
+}

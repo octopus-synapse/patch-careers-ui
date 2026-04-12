@@ -1,0 +1,258 @@
+{
+  "../../node_modules/.bun/@sveltejs+kit@2.57.0+12b737ac5423a2b7/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
+    "file": "remote-entry.js",
+    "name": "remote-entry",
+    "src": "../../node_modules/.bun/@sveltejs+kit@2.57.0+12b737ac5423a2b7/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js",
+    "isEntry": true,
+    "imports": [
+      "_shared.js",
+      "_false.js",
+      "_environment.js"
+    ]
+  },
+  "../../node_modules/.bun/@sveltejs+kit@2.57.0+12b737ac5423a2b7/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "../../node_modules/.bun/@sveltejs+kit@2.57.0+12b737ac5423a2b7/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_client.js"
+    ]
+  },
+  "../../node_modules/.bun/@sveltejs+kit@2.57.0+12b737ac5423a2b7/node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "../../node_modules/.bun/@sveltejs+kit@2.57.0+12b737ac5423a2b7/node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_shared.js",
+      "_false.js",
+      "_environment.js",
+      "_render-context.js",
+      "_exports.js",
+      "_utils.js",
+      "_internal.js"
+    ]
+  },
+  "../../packages/i18n/src/dictionaries/en.json": {
+    "file": "chunks/en.js",
+    "name": "en",
+    "src": "../../packages/i18n/src/dictionaries/en.json",
+    "isDynamicEntry": true
+  },
+  "../../packages/i18n/src/dictionaries/pt-BR.json": {
+    "file": "chunks/pt-BR.js",
+    "name": "pt-BR",
+    "src": "../../packages/i18n/src/dictionaries/pt-BR.json",
+    "isDynamicEntry": true
+  },
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_root.js",
+      "_environment.js",
+      "_internal.js"
+    ]
+  },
+  "_Icon.js": {
+    "file": "chunks/Icon.js",
+    "name": "Icon",
+    "imports": [
+      "_renderer.js"
+    ]
+  },
+  "_auth.js": {
+    "file": "chunks/auth.js",
+    "name": "auth",
+    "imports": [
+      "_Icon.js",
+      "_renderer.js"
+    ]
+  },
+  "_button.js": {
+    "file": "chunks/button.js",
+    "name": "button",
+    "imports": [
+      "_renderer.js",
+      "_Icon.js"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js",
+      "_utils.js",
+      "_root.js",
+      "_renderer.js"
+    ]
+  },
+  "_environment.js": {
+    "file": "chunks/environment.js",
+    "name": "environment"
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports",
+    "imports": [
+      "_renderer.js",
+      "_root.js"
+    ]
+  },
+  "_false.js": {
+    "file": "chunks/false.js",
+    "name": "false"
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_root.js",
+      "_environment.js"
+    ]
+  },
+  "_label.js": {
+    "file": "chunks/label.js",
+    "name": "label",
+    "imports": [
+      "_renderer.js"
+    ]
+  },
+  "_locale.svelte.js": {
+    "file": "chunks/locale.svelte.js",
+    "name": "locale.svelte",
+    "dynamicImports": [
+      "../../packages/i18n/src/dictionaries/en.json",
+      "../../packages/i18n/src/dictionaries/pt-BR.json"
+    ]
+  },
+  "_log-out.js": {
+    "file": "chunks/log-out.js",
+    "name": "log-out",
+    "imports": [
+      "_renderer.js",
+      "_Icon.js"
+    ]
+  },
+  "_render-context.js": {
+    "file": "chunks/render-context.js",
+    "name": "render-context"
+  },
+  "_renderer.js": {
+    "file": "chunks/renderer.js",
+    "name": "renderer",
+    "imports": [
+      "_render-context.js"
+    ]
+  },
+  "_root.js": {
+    "file": "chunks/root.js",
+    "name": "root",
+    "imports": [
+      "_renderer.js",
+      "_false.js"
+    ]
+  },
+  "_shared.js": {
+    "file": "chunks/shared.js",
+    "name": "shared",
+    "imports": [
+      "_utils.js",
+      "_render-context.js"
+    ]
+  },
+  "_utils.js": {
+    "file": "chunks/utils.js",
+    "name": "utils"
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_Icon.js",
+      "_locale.svelte.js",
+      "_auth.js",
+      "_client.js",
+      "_log-out.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.OdlLQV8_.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_locale.svelte.js"
+    ]
+  },
+  "src/routes/dashboard/+page.svelte": {
+    "file": "entries/pages/dashboard/_page.svelte.js",
+    "name": "entries/pages/dashboard/_page.svelte",
+    "src": "src/routes/dashboard/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_auth.js",
+      "_button.js",
+      "_client.js",
+      "_Icon.js",
+      "_locale.svelte.js",
+      "_log-out.js"
+    ]
+  },
+  "src/routes/login/+page.svelte": {
+    "file": "entries/pages/login/_page.svelte.js",
+    "name": "entries/pages/login/_page.svelte",
+    "src": "src/routes/login/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_Icon.js",
+      "_auth.js",
+      "_button.js",
+      "_label.js",
+      "_client.js",
+      "_locale.svelte.js"
+    ]
+  },
+  "src/routes/onboarding/+page.svelte": {
+    "file": "entries/pages/onboarding/_page.svelte.js",
+    "name": "entries/pages/onboarding/_page.svelte",
+    "src": "src/routes/onboarding/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_auth.js",
+      "_Icon.js",
+      "_button.js",
+      "_client.js",
+      "_locale.svelte.js",
+      "_label.js"
+    ]
+  },
+  "src/routes/signup/+page.svelte": {
+    "file": "entries/pages/signup/_page.svelte.js",
+    "name": "entries/pages/signup/_page.svelte",
+    "src": "src/routes/signup/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_renderer.js",
+      "_Icon.js",
+      "_button.js",
+      "_label.js",
+      "_client.js",
+      "_locale.svelte.js"
+    ]
+  }
+}

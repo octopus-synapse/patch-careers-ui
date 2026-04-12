@@ -1,0 +1,20 @@
+const common = { "save": "Salvar", "cancel": "Cancelar", "confirm": "Confirmar", "back": "Voltar", "next": "Próximo", "loading": "Carregando..." };
+const nav = { "jobs": "Vagas", "companies": "Empresas", "about": "Sobre", "join": "Criar conta", "getStarted": "Começar", "theme": "Tema", "menu": "Menu", "close": "Fechar", "login": "Entrar" };
+const dashboard = { "pageTitle": "Painel", "welcome": "Bem-vindo, {{name}}!", "logout": "Sair" };
+const onboarding = { "pageTitle": "Onboarding", "title": "Complete seu perfil", "subtitle": "Vamos configurar seu perfil profissional", "next": "Continuar", "back": "Voltar", "complete": "Concluir", "completing": "Concluindo...", "addItem": "Adicionar", "removeItem": "Remover", "noData": "Nada adicionado ainda", "modalTitle": "Adicionar item", "modalSave": "Salvar", "progress": "{{value}}% completo", "skip": "Pular esta etapa" };
+const auth = { "shared": { "email": "E-mail", "errorInvalidCredentials": "E-mail ou senha inválidos.", "emailPlaceholder": "jane@exemplo.com", "password": "Senha", "passwordPlaceholder": "••••••••", "fullName": "Nome Completo", "fullNamePlaceholder": "Jane Doe", "errorGeneric": "Algo deu errado.", "errorEmailInUse": "Este e-mail já está em uso.", "errorPasswordTooShort": "A senha deve ter pelo menos 8 caracteres." }, "sign-up": { "title": "Criar conta", "subtitle": "Preencha seus dados para continuar", "submit": "Criar Conta", "submitting": "Criando conta...", "footer": "Já tem uma conta?", "footerLink": "Entrar", "pageTitle": "Criar conta" }, "sign-in": { "title": "Bem-vindo de volta", "subtitle": "Entre na sua conta", "submit": "Entrar", "submitting": "Entrando...", "forgotPassword": "Esqueceu a senha?", "footer": "Não tem uma conta?", "footerLink": "Criar conta", "pageTitle": "Entrar" } };
+const ptBR = {
+  common,
+  nav,
+  dashboard,
+  onboarding,
+  auth
+};
+export {
+  auth,
+  common,
+  dashboard,
+  ptBR as default,
+  nav,
+  onboarding
+};

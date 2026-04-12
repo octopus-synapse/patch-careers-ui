@@ -6,12 +6,13 @@
 		createOnboardingPreviousStep,
 		createOnboardingGotoStep,
 		createOnboardingCompleteFromSession,
+		createOnboardingSaveStepData,
 		getOnboardingGetSessionQueryKey,
 		getAuthSessionQueryKey
 	} from 'api-client';
 	import { Button } from 'ui';
 	import { goto } from '$app/navigation';
-	import { Loader2, ArrowRight, ArrowLeft } from 'lucide-svelte';
+	import { Loader2, ArrowRight, ArrowLeft, Check } from 'lucide-svelte';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
@@ -21,6 +22,7 @@
 	import StepMultiItems from '$lib/components/onboarding/step-multi-items.svelte';
 	import StepTheme from '$lib/components/onboarding/step-theme.svelte';
 	import StepReview from '$lib/components/onboarding/step-review.svelte';
+	import PreviewPanel from '$lib/components/onboarding/preview-panel.svelte';
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
@@ -54,6 +56,8 @@
 	const currentStep = $derived(steps.find((s) => s.id === currentStepId));
 	const completedSteps = $derived(onboardingData?.completedSteps ?? []);
 	const progress = $derived(onboardingData?.progress ?? 0);
+	const strength = $derived((onboardingData as Record<string, unknown> | undefined)?.strength as { score: number; message: string; level: string } | undefined);
+	const missingRequired = $derived(((onboardingData as Record<string, unknown> | undefined)?.missingRequired as string[]) ?? []);
 	const isLastStep = $derived(!onboardingData?.nextStep);
 
 	let stepData = $state<Record<string, string>>({});
@@ -115,6 +119,37 @@
 		}
 	}));
 
+	const saveStep = createOnboardingSaveStepData();
+	let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
+	let saveTimer: ReturnType<typeof setTimeout> | null = null;
+	let lastSavedJson = '';
+
+	$effect(() => {
+		const dataJson = JSON.stringify(stepData);
+		if (dataJson === lastSavedJson || dataJson === '{}') return;
+		if (!currentStepId || currentStep?.component === 'review' || currentStep?.component === 'welcome') return;
+
+		saveStatus = 'idle';
+		if (saveTimer) clearTimeout(saveTimer);
+		saveTimer = setTimeout(() => {
+			if (currentStep?.multipleItems) return;
+			saveStatus = 'saving';
+			saveStep.mutate(
+				{ data: stepData, params: { locale: locale.current } },
+				{
+					onSuccess() {
+						lastSavedJson = dataJson;
+						saveStatus = 'saved';
+						setTimeout(() => { if (saveStatus === 'saved') saveStatus = 'idle'; }, 2000);
+					},
+					onError() { saveStatus = 'idle'; }
+				}
+			);
+		}, 2000);
+
+		return () => { if (saveTimer) clearTimeout(saveTimer); };
+	});
+
 	const isSectionStep = $derived(currentStepId.startsWith('section:'));
 
 	function handleNext() {
@@ -155,7 +190,7 @@
 	</div>
 {:else if t && onboardingData && currentStep}
 	<div class="font-sans antialiased transition-colors duration-300">
-		<main class="mx-auto max-w-5xl px-6 pt-20">
+		<main class="mx-auto max-w-6xl px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
 			<!-- Mobile stepper -->
 			<div class="md:hidden">
 				<StepperMobile
@@ -163,30 +198,38 @@
 					currentStep={currentStepId}
 					{completedSteps}
 					{progress}
+					{strength}
 					colorSchema={cs}
 				/>
 			</div>
 
-			<div class="flex h-[calc(100vh-6rem)] gap-10">
-				<!-- Desktop sidebar — fixed height container, centered -->
-				<div class="hidden items-center md:flex">
+			<div class="flex gap-10">
+				<!-- Desktop sidebar — always at same position -->
+				<div class="hidden md:block flex-shrink-0">
 					<Sidebar
 						{steps}
 						currentStep={currentStepId}
 						{completedSteps}
 						{progress}
+						{strength}
+						{missingRequired}
 						colorSchema={cs}
 						{t}
 						ongoto={handleGoto}
 					/>
 				</div>
 
-				<!-- Content — aligned with sidebar -->
-				<div class="min-w-0 flex-1 self-center overflow-y-auto pb-12">
-					<div class="mb-8">
+				<!-- Content — fixed start position, scrolls independently -->
+				<div class="min-w-0 flex-1 max-w-lg pb-12">
+					<div class="mb-8 flex items-center justify-between">
 						<span class="text-[10px] font-semibold uppercase tracking-widest {muted}">
 							{t('onboarding.title')}
 						</span>
+						{#if saveStatus === 'saving'}
+							<Loader2 size={10} class="animate-spin {muted}" />
+						{:else if saveStatus === 'saved'}
+							<Check size={10} class="text-green-500" />
+						{/if}
 					</div>
 					<div class="mb-8 text-center">
 						<h2 class="text-sm font-bold {text}">{currentStep.label}</h2>
@@ -254,7 +297,7 @@
 						{#if isLastStep}
 							<Button
 								onclick={handleComplete}
-								disabled={isPending}
+								disabled={isPending || missingRequired.length > 0}
 								variant="solid"
 								colorSchema={cs}
 								class="max-w-[200px]"
@@ -285,7 +328,11 @@
 						{/if}
 					</div>
 				</div>
+			<!-- Desktop preview -->
+			<div class="hidden xl:block flex-shrink-0">
+				<PreviewPanel token={auth.data?.data?.data?.accessToken} colorSchema={cs} />
 			</div>
+		</div>
 		</main>
 	</div>
 {/if}

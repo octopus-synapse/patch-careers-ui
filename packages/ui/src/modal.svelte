@@ -29,12 +29,13 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if open}
-	<!-- svelte-ignore a11y_click_events_have_key_events a11y_interactive_supports_focus -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-6"
 		onclick={handleBackdrop}
 		role="dialog"
 		aria-modal="true"
+		tabindex="-1"
 	>
 		<div class="w-full max-w-md rounded-lg {bg[colorSchema]}">
 			{#if title}
@@ -42,7 +43,7 @@
 					<div class="text-sm font-semibold {text[colorSchema]}">
 						{@render title()}
 					</div>
-					<button onclick={onClose} class="rounded-lg p-1 transition-opacity hover:opacity-60 {muted[colorSchema]}">
+					<button onclick={onClose} aria-label="Close" class="rounded-lg p-1 transition-opacity hover:opacity-60 {muted[colorSchema]}">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
 					</button>
 				</div>
