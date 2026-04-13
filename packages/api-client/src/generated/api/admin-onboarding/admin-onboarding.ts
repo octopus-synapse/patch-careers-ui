@@ -235,47 +235,6 @@ export const prefetchAdminOnboardingListStepsQuery = async <TData = Awaited<Retu
 
 
 
-export const getAdminOnboardingListStepsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingListSteps>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingListSteps>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingListStepsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingListSteps>>> = ({ signal }) => adminOnboardingListSteps({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingListSteps>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminOnboardingListStepsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingListSteps>>>
-export type AdminOnboardingListStepsSuspenseQueryError = void
-
-
-/**
- * @summary List all onboarding steps
- */
-
-export function createAdminOnboardingListStepsSuspense<TData = Awaited<ReturnType<typeof adminOnboardingListSteps>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingListSteps>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminOnboardingListStepsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create onboarding step
  */
@@ -542,47 +501,6 @@ export const prefetchAdminOnboardingGetStatsQuery = async <TData = Awaited<Retur
 
 
 
-export const getAdminOnboardingGetStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingGetStatsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingGetStats>>> = ({ signal }) => adminOnboardingGetStats({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminOnboardingGetStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingGetStats>>>
-export type AdminOnboardingGetStatsSuspenseQueryError = void
-
-
-/**
- * @summary Get onboarding funnel statistics
- */
-
-export function createAdminOnboardingGetStatsSuspense<TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminOnboardingGetStatsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get onboarding step by key
  */
@@ -753,47 +671,6 @@ export const prefetchAdminOnboardingGetStepQuery = async <TData = Awaited<Return
 
   return queryClient;
 }
-
-
-
-export const getAdminOnboardingGetStepSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingGetStep>>, TError = void>(key: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStep>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingGetStepQueryKey(key);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingGetStep>>> = ({ signal }) => adminOnboardingGetStep(key, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStep>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminOnboardingGetStepSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingGetStep>>>
-export type AdminOnboardingGetStepSuspenseQueryError = void
-
-
-/**
- * @summary Get onboarding step by key
- */
-
-export function createAdminOnboardingGetStepSuspense<TData = Awaited<ReturnType<typeof adminOnboardingGetStep>>, TError = void>(
- key: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStep>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminOnboardingGetStepSuspenseQueryOptions(key(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1153,47 +1030,6 @@ export const prefetchAdminOnboardingGetConfigQuery = async <TData = Awaited<Retu
 
   return queryClient;
 }
-
-
-
-export const getAdminOnboardingGetConfigSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingGetConfig>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingGetConfigQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingGetConfig>>> = ({ signal }) => adminOnboardingGetConfig({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetConfig>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminOnboardingGetConfigSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingGetConfig>>>
-export type AdminOnboardingGetConfigSuspenseQueryError = void
-
-
-/**
- * @summary Get onboarding config (strength levels)
- */
-
-export function createAdminOnboardingGetConfigSuspense<TData = Awaited<ReturnType<typeof adminOnboardingGetConfig>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminOnboardingGetConfigSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

@@ -336,47 +336,6 @@ export const prefetchChatBlockUsersGetBlockedUsersQuery = async <TData = Awaited
 
 
 
-export const getChatBlockUsersGetBlockedUsersSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatBlockUsersGetBlockedUsersQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>> = ({ signal }) => chatBlockUsersGetBlockedUsers({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatBlockUsersGetBlockedUsersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>>
-export type ChatBlockUsersGetBlockedUsersSuspenseQueryError = void
-
-
-/**
- * @summary Get all blocked users
- */
-
-export function createChatBlockUsersGetBlockedUsersSuspense<TData = Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatBlockUsersGetBlockedUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatBlockUsersGetBlockedUsersSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Unblock a user
  */
@@ -640,47 +599,6 @@ export const prefetchChatBlockUsersIsBlockedQuery = async <TData = Awaited<Retur
 
   return queryClient;
 }
-
-
-
-export const getChatBlockUsersIsBlockedSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>, TError = void>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatBlockUsersIsBlockedQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>> = ({ signal }) => chatBlockUsersIsBlocked(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatBlockUsersIsBlockedSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>>
-export type ChatBlockUsersIsBlockedSuspenseQueryError = void
-
-
-/**
- * @summary Check if a user is blocked
- */
-
-export function createChatBlockUsersIsBlockedSuspense<TData = Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>, TError = void>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatBlockUsersIsBlocked>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatBlockUsersIsBlockedSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

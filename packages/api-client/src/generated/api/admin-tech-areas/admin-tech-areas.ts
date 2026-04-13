@@ -246,47 +246,6 @@ export const prefetchAdminTechAreasFindAllQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getAdminTechAreasFindAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminTechAreasFindAll>>, TError = void>(params?: AdminTechAreasFindAllParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechAreasFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminTechAreasFindAllQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminTechAreasFindAll>>> = ({ signal }) => adminTechAreasFindAll(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechAreasFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminTechAreasFindAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechAreasFindAll>>>
-export type AdminTechAreasFindAllSuspenseQueryError = void
-
-
-/**
- * @summary List all tech areas
- */
-
-export function createAdminTechAreasFindAllSuspense<TData = Awaited<ReturnType<typeof adminTechAreasFindAll>>, TError = void>(
- params?: () =>  AdminTechAreasFindAllParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechAreasFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminTechAreasFindAllSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create tech area
  */
@@ -550,47 +509,6 @@ export const prefetchAdminTechAreasFindOneQuery = async <TData = Awaited<ReturnT
 
   return queryClient;
 }
-
-
-
-export const getAdminTechAreasFindOneSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminTechAreasFindOne>>, TError = void>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechAreasFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminTechAreasFindOneQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminTechAreasFindOne>>> = ({ signal }) => adminTechAreasFindOne(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechAreasFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminTechAreasFindOneSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechAreasFindOne>>>
-export type AdminTechAreasFindOneSuspenseQueryError = void
-
-
-/**
- * @summary Get tech area by ID
- */
-
-export function createAdminTechAreasFindOneSuspense<TData = Awaited<ReturnType<typeof adminTechAreasFindOne>>, TError = void>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechAreasFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminTechAreasFindOneSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

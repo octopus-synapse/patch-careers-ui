@@ -235,47 +235,6 @@ export const prefetchMecInstitutionsListInstitutionsQuery = async <TData = Await
 
 
 
-export const getMecInstitutionsListInstitutionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>, TError = unknown>(params?: MecInstitutionsListInstitutionsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecInstitutionsListInstitutionsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>> = ({ signal }) => mecInstitutionsListInstitutions(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecInstitutionsListInstitutionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>>
-export type MecInstitutionsListInstitutionsSuspenseQueryError = unknown
-
-
-/**
- * @summary List institutions
- */
-
-export function createMecInstitutionsListInstitutionsSuspense<TData = Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>, TError = unknown>(
- params?: () =>  MecInstitutionsListInstitutionsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsListInstitutions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecInstitutionsListInstitutionsSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Search institutions
  */
@@ -444,47 +403,6 @@ export const prefetchMecInstitutionsSearchInstitutionsByNameQuery = async <TData
 
 
 
-export const getMecInstitutionsSearchInstitutionsByNameSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>, TError = unknown>(params: MecInstitutionsSearchInstitutionsByNameParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecInstitutionsSearchInstitutionsByNameQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>> = ({ signal }) => mecInstitutionsSearchInstitutionsByName(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecInstitutionsSearchInstitutionsByNameSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>>
-export type MecInstitutionsSearchInstitutionsByNameSuspenseQueryError = unknown
-
-
-/**
- * @summary Search institutions
- */
-
-export function createMecInstitutionsSearchInstitutionsByNameSuspense<TData = Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>, TError = unknown>(
- params: () =>  MecInstitutionsSearchInstitutionsByNameParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearchInstitutionsByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecInstitutionsSearchInstitutionsByNameSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get institution by MEC code
  */
@@ -646,47 +564,6 @@ export const prefetchMecInstitutionsGetInstitutionByCodeWithCoursesQuery = async
 
 
 
-export const getMecInstitutionsGetInstitutionByCodeWithCoursesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>, TError = unknown>(codigoIes: number, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecInstitutionsGetInstitutionByCodeWithCoursesQueryKey(codigoIes);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>> = ({ signal }) => mecInstitutionsGetInstitutionByCodeWithCourses(codigoIes, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecInstitutionsGetInstitutionByCodeWithCoursesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>>
-export type MecInstitutionsGetInstitutionByCodeWithCoursesSuspenseQueryError = unknown
-
-
-/**
- * @summary Get institution by MEC code
- */
-
-export function createMecInstitutionsGetInstitutionByCodeWithCoursesSuspense<TData = Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>, TError = unknown>(
- codigoIes: () =>  number, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetInstitutionByCodeWithCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecInstitutionsGetInstitutionByCodeWithCoursesSuspenseQueryOptions(codigoIes(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get courses by institution
  */
@@ -845,47 +722,6 @@ export const prefetchMecInstitutionsListCoursesByInstitutionCodeQuery = async <T
 
   return queryClient;
 }
-
-
-
-export const getMecInstitutionsListCoursesByInstitutionCodeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>, TError = unknown>(codigoIes: number, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecInstitutionsListCoursesByInstitutionCodeQueryKey(codigoIes);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>> = ({ signal }) => mecInstitutionsListCoursesByInstitutionCode(codigoIes, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecInstitutionsListCoursesByInstitutionCodeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>>
-export type MecInstitutionsListCoursesByInstitutionCodeSuspenseQueryError = unknown
-
-
-/**
- * @summary Get courses by institution
- */
-
-export function createMecInstitutionsListCoursesByInstitutionCodeSuspense<TData = Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>, TError = unknown>(
- codigoIes: () =>  number, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInstitutionsListCoursesByInstitutionCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecInstitutionsListCoursesByInstitutionCodeSuspenseQueryOptions(codigoIes(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

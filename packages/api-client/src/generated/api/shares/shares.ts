@@ -334,47 +334,6 @@ export const prefetchResumesListResumeSharesQuery = async <TData = Awaited<Retur
 
 
 
-export const getResumesListResumeSharesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesListResumeSharesQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesListResumeShares>>> = ({ signal }) => resumesListResumeShares(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesListResumeSharesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListResumeShares>>>
-export type ResumesListResumeSharesSuspenseQueryError = void
-
-
-/**
- * @summary List share links for a resume
- */
-
-export function createResumesListResumeSharesSuspense<TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = void>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesListResumeSharesSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Delete a share link
  */

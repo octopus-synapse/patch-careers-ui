@@ -339,47 +339,6 @@ export const prefetchCollaborationGetCollaboratorsQuery = async <TData = Awaited
 
 
 
-export const getCollaborationGetCollaboratorsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof collaborationGetCollaborators>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof collaborationGetCollaborators>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getCollaborationGetCollaboratorsQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof collaborationGetCollaborators>>> = ({ signal }) => collaborationGetCollaborators(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof collaborationGetCollaborators>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CollaborationGetCollaboratorsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationGetCollaborators>>>
-export type CollaborationGetCollaboratorsSuspenseQueryError = void
-
-
-/**
- * @summary Get collaborators for a resume
- */
-
-export function createCollaborationGetCollaboratorsSuspense<TData = Awaited<ReturnType<typeof collaborationGetCollaborators>>, TError = void>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof collaborationGetCollaborators>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getCollaborationGetCollaboratorsSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Update collaborator role
  */
@@ -742,47 +701,6 @@ export const prefetchCollaborationGetSharedWithMeQuery = async <TData = Awaited<
 
   return queryClient;
 }
-
-
-
-export const getCollaborationGetSharedWithMeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof collaborationGetSharedWithMe>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof collaborationGetSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getCollaborationGetSharedWithMeQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof collaborationGetSharedWithMe>>> = ({ signal }) => collaborationGetSharedWithMe({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof collaborationGetSharedWithMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CollaborationGetSharedWithMeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationGetSharedWithMe>>>
-export type CollaborationGetSharedWithMeSuspenseQueryError = void
-
-
-/**
- * @summary Get resumes shared with current user
- */
-
-export function createCollaborationGetSharedWithMeSuspense<TData = Awaited<ReturnType<typeof collaborationGetSharedWithMe>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof collaborationGetSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getCollaborationGetSharedWithMeSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

@@ -237,47 +237,6 @@ export const prefetchActivityGetFeedQuery = async <TData = Awaited<ReturnType<ty
 
 
 
-export const getActivityGetFeedSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = void>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getActivityGetFeedQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof activityGetFeed>>> = ({ signal }) => activityGetFeed(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ActivityGetFeedSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof activityGetFeed>>>
-export type ActivityGetFeedSuspenseQueryError = void
-
-
-/**
- * @summary Get authenticated user activity feed
- */
-
-export function createActivityGetFeedSuspense<TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = void>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getActivityGetFeedSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get public activities for a user
  */
@@ -436,47 +395,6 @@ export const prefetchActivityGetUserActivitiesQuery = async <TData = Awaited<Ret
 
   return queryClient;
 }
-
-
-
-export const getActivityGetUserActivitiesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof activityGetUserActivities>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetUserActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getActivityGetUserActivitiesQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof activityGetUserActivities>>> = ({ signal }) => activityGetUserActivities(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetUserActivities>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ActivityGetUserActivitiesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof activityGetUserActivities>>>
-export type ActivityGetUserActivitiesSuspenseQueryError = unknown
-
-
-/**
- * @summary Get public activities for a user
- */
-
-export function createActivityGetUserActivitiesSuspense<TData = Awaited<ReturnType<typeof activityGetUserActivities>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetUserActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getActivityGetUserActivitiesSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -650,50 +568,6 @@ export const prefetchActivityGetActivitiesByTypeQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getActivityGetActivitiesByTypeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof activityGetActivitiesByType>>, TError = unknown>(userId: string,
-    type: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getActivityGetActivitiesByTypeQueryKey(userId,type);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof activityGetActivitiesByType>>> = ({ signal }) => activityGetActivitiesByType(userId,type, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetActivitiesByType>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ActivityGetActivitiesByTypeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof activityGetActivitiesByType>>>
-export type ActivityGetActivitiesByTypeSuspenseQueryError = unknown
-
-
-/**
- * @summary Get user activities filtered by type
- */
-
-export function createActivityGetActivitiesByTypeSuspense<TData = Awaited<ReturnType<typeof activityGetActivitiesByType>>, TError = unknown>(
- userId: () =>  string,
-    type: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof activityGetActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getActivityGetActivitiesByTypeSuspenseQueryOptions(userId(),
-    type(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

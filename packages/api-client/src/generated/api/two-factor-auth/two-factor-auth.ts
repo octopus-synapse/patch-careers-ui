@@ -479,47 +479,6 @@ export const prefetchTwoFactorAuthGetStatusQuery = async <TData = Awaited<Return
 
 
 
-export const getTwoFactorAuthGetStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof twoFactorAuthGetStatus>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof twoFactorAuthGetStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTwoFactorAuthGetStatusQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof twoFactorAuthGetStatus>>> = ({ signal }) => twoFactorAuthGetStatus({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof twoFactorAuthGetStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TwoFactorAuthGetStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthGetStatus>>>
-export type TwoFactorAuthGetStatusSuspenseQueryError = unknown
-
-
-/**
- * @summary Get 2FA status
- */
-
-export function createTwoFactorAuthGetStatusSuspense<TData = Awaited<ReturnType<typeof twoFactorAuthGetStatus>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof twoFactorAuthGetStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTwoFactorAuthGetStatusSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Generates new backup codes, replacing existing ones. Shown only once.
  * @summary Regenerate backup codes

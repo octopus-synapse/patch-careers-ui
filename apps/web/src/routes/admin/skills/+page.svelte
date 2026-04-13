@@ -30,7 +30,7 @@
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { SegmentToggle, Input } from 'ui';
+	import { Button, SegmentToggle, Input } from 'ui';
 	import { Loader2, Trash2, Pencil, Plus, ToggleLeft, ToggleRight } from 'lucide-svelte';
 	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
 	import FormModal from '$lib/components/admin/form-modal.svelte';
@@ -45,7 +45,6 @@
 	const itemHover = $derived(cs === 'dark' ? 'hover:bg-neutral-700/50' : 'hover:bg-gray-50');
 	const activeBg = $derived(cs === 'dark' ? 'bg-neutral-700' : 'bg-gray-100');
 	const labelClass = $derived(`text-[10px] font-bold uppercase tracking-widest ${muted}`);
-	const addBtnClass = $derived(cs === 'dark' ? 'text-neutral-400 hover:bg-neutral-700' : 'text-gray-500 hover:bg-gray-100');
 	const queryClient = useQueryClient();
 
 	let activeTab = $state<'hierarchy' | 'languages'>('hierarchy');
@@ -193,7 +192,7 @@
 			<div class="rounded-xl border {cardBg} {cardBorder}">
 				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
 					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.areas') ?? 'Tech Areas'}</span>
-					<button onclick={() => openCreate('area')} class="rounded p-1 transition-colors {addBtnClass}"><Plus size={14} /></button>
+					<Button variant="icon" size="xs" onclick={() => openCreate('area')} colorSchema={cs}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
 					{#if areasQuery.isLoading}
@@ -212,11 +211,11 @@
 									<span class="ml-2 text-xs {muted}">{area.namePtBr}</span>
 								</div>
 								<div class="flex items-center gap-1">
-									<button onclick={(e) => { e.stopPropagation(); handleToggleActive('area', area); }} class="transition-colors">
+									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleToggleActive('area', area); }} colorSchema={cs}>
 										{#if area.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class={muted} />{/if}
-									</button>
-									<button onclick={(e) => { e.stopPropagation(); openEdit('area', area); }} class="rounded p-0.5 transition-colors {addBtnClass}"><Pencil size={12} /></button>
-									<button onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id as string }; }} class="rounded p-0.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={12} /></button>
+									</Button>
+									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('area', area); }} colorSchema={cs}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id as string }; }} colorSchema={cs}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -229,7 +228,7 @@
 			<div class="rounded-xl border {cardBg} {cardBorder}">
 				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
 					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.niches') ?? 'Tech Niches'}</span>
-					{#if selectedAreaId}<button onclick={() => openCreate('niche')} class="rounded p-1 transition-colors {addBtnClass}"><Plus size={14} /></button>{/if}
+					{#if selectedAreaId}<Button variant="icon" size="xs" onclick={() => openCreate('niche')} colorSchema={cs}><Plus size={14} /></Button>{/if}
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
 					{#if !selectedAreaId}
@@ -247,8 +246,8 @@
 							>
 								<div><span>{niche.nameEn}</span><span class="ml-2 text-xs {muted}">{niche.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<button onclick={(e) => { e.stopPropagation(); openEdit('niche', niche); }} class="rounded p-0.5 transition-colors {addBtnClass}"><Pencil size={12} /></button>
-									<button onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id as string }; }} class="rounded p-0.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={12} /></button>
+									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('niche', niche); }} colorSchema={cs}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id as string }; }} colorSchema={cs}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -261,7 +260,7 @@
 			<div class="rounded-xl border {cardBg} {cardBorder}">
 				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
 					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.skillsList') ?? 'Skills'}</span>
-					{#if selectedNicheId}<button onclick={() => openCreate('skill')} class="rounded p-1 transition-colors {addBtnClass}"><Plus size={14} /></button>{/if}
+					{#if selectedNicheId}<Button variant="icon" size="xs" onclick={() => openCreate('skill')} colorSchema={cs}><Plus size={14} /></Button>{/if}
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
 					{#if !selectedNicheId}
@@ -273,11 +272,11 @@
 							<div class="flex items-center justify-between px-4 py-2.5 text-sm {text}">
 								<div><span>{skill.nameEn}</span><span class="ml-2 text-xs {muted}">{skill.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<button onclick={() => handleToggleActive('skill', skill)} class="transition-colors">
+									<Button variant="icon" size="xs" onclick={() => handleToggleActive('skill', skill)} colorSchema={cs}>
 										{#if skill.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class={muted} />{/if}
-									</button>
-									<button onclick={() => openEdit('skill', skill)} class="rounded p-0.5 transition-colors {addBtnClass}"><Pencil size={12} /></button>
-									<button onclick={() => deleteTarget = { type: 'skill', id: skill.id as string }} class="rounded p-0.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={12} /></button>
+									</Button>
+									<Button variant="icon" size="xs" onclick={() => openEdit('skill', skill)} colorSchema={cs}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id as string }} colorSchema={cs}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -292,7 +291,7 @@
 			<div class="rounded-xl border {cardBg} {cardBorder}">
 				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
 					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.spokenLanguages') ?? 'Spoken Languages'}</span>
-					<button onclick={() => openCreate('spoken')} class="rounded p-1 transition-colors {addBtnClass}"><Plus size={14} /></button>
+					<Button variant="icon" size="xs" onclick={() => openCreate('spoken')} colorSchema={cs}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[400px] overflow-y-auto">
 					{#if spokenQuery.isLoading}
@@ -302,8 +301,8 @@
 							<div class="flex items-center justify-between px-4 py-2.5 text-sm {text}">
 								<div><span class="font-mono text-xs {muted}">{lang.code}</span><span class="ml-2">{lang.nameEn}</span><span class="ml-1 text-xs {muted}">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<button onclick={() => openEdit('spoken', lang)} class="rounded p-0.5 transition-colors {addBtnClass}"><Pencil size={12} /></button>
-									<button onclick={() => deleteTarget = { type: 'spoken', id: lang.code as string }} class="rounded p-0.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={12} /></button>
+									<Button variant="icon" size="xs" onclick={() => openEdit('spoken', lang)} colorSchema={cs}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code as string }} colorSchema={cs}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -315,7 +314,7 @@
 			<div class="rounded-xl border {cardBg} {cardBorder}">
 				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
 					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.programmingLanguages') ?? 'Programming Languages'}</span>
-					<button onclick={() => openCreate('programming')} class="rounded p-1 transition-colors {addBtnClass}"><Plus size={14} /></button>
+					<Button variant="icon" size="xs" onclick={() => openCreate('programming')} colorSchema={cs}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[400px] overflow-y-auto">
 					{#if progQuery.isLoading}
@@ -325,8 +324,8 @@
 							<div class="flex items-center justify-between px-4 py-2.5 text-sm {text}">
 								<div><span>{lang.nameEn}</span><span class="ml-2 text-xs {muted}">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<button onclick={() => openEdit('programming', lang)} class="rounded p-0.5 transition-colors {addBtnClass}"><Pencil size={12} /></button>
-									<button onclick={() => deleteTarget = { type: 'programming', id: lang.slug as string }} class="rounded p-0.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={12} /></button>
+									<Button variant="icon" size="xs" onclick={() => openEdit('programming', lang)} colorSchema={cs}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug as string }} colorSchema={cs}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}

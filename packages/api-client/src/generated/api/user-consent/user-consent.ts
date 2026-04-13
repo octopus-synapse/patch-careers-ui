@@ -314,47 +314,6 @@ export const prefetchGetConsentStatusCheckConsentStatusQuery = async <TData = Aw
 
 
 
-export const getGetConsentStatusCheckConsentStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetConsentStatusCheckConsentStatusQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>> = ({ signal }) => getConsentStatusCheckConsentStatus({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConsentStatusCheckConsentStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>>
-export type GetConsentStatusCheckConsentStatusSuspenseQueryError = unknown
-
-
-/**
- * @summary Check consent acceptance status
- */
-
-export function createGetConsentStatusCheckConsentStatusSuspense<TData = Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof getConsentStatusCheckConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getGetConsentStatusCheckConsentStatusSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Retrieves all consent records for the authenticated user
  * @summary Get consent acceptance history
@@ -514,47 +473,6 @@ export const prefetchGetConsentHistoryGetConsentHistoryQuery = async <TData = Aw
 
   return queryClient;
 }
-
-
-
-export const getGetConsentHistoryGetConsentHistorySuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetConsentHistoryGetConsentHistoryQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>> = ({ signal }) => getConsentHistoryGetConsentHistory({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConsentHistoryGetConsentHistorySuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>>
-export type GetConsentHistoryGetConsentHistorySuspenseQueryError = unknown
-
-
-/**
- * @summary Get consent acceptance history
- */
-
-export function createGetConsentHistoryGetConsentHistorySuspense<TData = Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof getConsentHistoryGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getGetConsentHistoryGetConsentHistorySuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from 'ui';
 	import type { ColorSchema } from 'ui';
 	import {
 		LayoutDashboard,
@@ -54,9 +55,11 @@
 		{#if !collapsed}
 			<span class="text-[10px] font-bold uppercase tracking-widest {labelColor}">Admin</span>
 		{/if}
-		<button
+		<Button
+			variant="icon"
+			size="sm"
 			onclick={() => collapsed = !collapsed}
-			class="rounded-lg p-1.5 transition-colors {hoverBg} {text}"
+			colorSchema={cs}
 			aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 		>
 			{#if collapsed}
@@ -64,7 +67,7 @@
 			{:else}
 				<PanelLeftClose size={16} />
 			{/if}
-		</button>
+		</Button>
 	</div>
 
 	<nav class="flex-1 space-y-0.5 px-2">

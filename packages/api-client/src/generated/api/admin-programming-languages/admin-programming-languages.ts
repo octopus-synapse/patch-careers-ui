@@ -246,47 +246,6 @@ export const prefetchAdminProgrammingLanguagesFindAllQuery = async <TData = Awai
 
 
 
-export const getAdminProgrammingLanguagesFindAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = void>(params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminProgrammingLanguagesFindAllQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>> = ({ signal }) => adminProgrammingLanguagesFindAll(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminProgrammingLanguagesFindAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>
-export type AdminProgrammingLanguagesFindAllSuspenseQueryError = void
-
-
-/**
- * @summary List all programming languages
- */
-
-export function createAdminProgrammingLanguagesFindAllSuspense<TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = void>(
- params?: () =>  AdminProgrammingLanguagesFindAllParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminProgrammingLanguagesFindAllSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create programming language
  */
@@ -550,47 +509,6 @@ export const prefetchAdminProgrammingLanguagesFindOneQuery = async <TData = Awai
 
   return queryClient;
 }
-
-
-
-export const getAdminProgrammingLanguagesFindOneSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = void>(slug: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminProgrammingLanguagesFindOneQueryKey(slug);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>> = ({ signal }) => adminProgrammingLanguagesFindOne(slug, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminProgrammingLanguagesFindOneSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>
-export type AdminProgrammingLanguagesFindOneSuspenseQueryError = void
-
-
-/**
- * @summary Get programming language by slug
- */
-
-export function createAdminProgrammingLanguagesFindOneSuspense<TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = void>(
- slug: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminProgrammingLanguagesFindOneSuspenseQueryOptions(slug(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

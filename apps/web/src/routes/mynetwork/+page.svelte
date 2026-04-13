@@ -3,7 +3,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 	import { browser } from '$app/environment';
-	import { Avatar } from 'ui';
+	import { Avatar, Button } from 'ui';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Loader2, UserPlus, MessageCircle, Users, UserCheck, Eye } from 'lucide-svelte';
 	import {
@@ -215,18 +215,12 @@
 										<p class="text-[11px] {muted}">@{sender.username}</p>
 									{/if}
 								</div>
-								<button
-									onclick={() => handleReject(reqId)}
-									class="rounded-full border px-4 py-1.5 text-[11px] font-semibold transition-all {btnSecondary}"
-								>
+								<Button variant="outline" size="sm" onclick={() => handleReject(reqId)} colorSchema={cs}>
 									{t?.('network.ignore') ?? 'Ignore'}
-								</button>
-								<button
-									onclick={() => handleAccept(reqId)}
-									class="rounded-full px-4 py-1.5 text-[11px] font-semibold transition-all {btnGreen}"
-								>
+								</Button>
+								<Button variant="solid" size="sm" onclick={() => handleAccept(reqId)} colorSchema={cs}>
 									{t?.('network.accept') ?? 'Accept'}
-								</button>
+								</Button>
 							</div>
 						{/each}
 					</div>
@@ -260,13 +254,10 @@
 										{t?.('network.requestSent') ?? 'Sent'}
 									</span>
 								{:else}
-									<button
-										onclick={() => handleConnect(userId)}
-										class="flex w-full items-center justify-center gap-1 rounded-full py-1.5 text-[10px] font-semibold transition-all {btnPrimary}"
-									>
+									<Button variant="solid" size="sm" fullWidth onclick={() => handleConnect(userId)} colorSchema={cs}>
 										<UserPlus size={11} />
 										{t?.('network.connect') ?? 'Connect'}
-									</button>
+									</Button>
 								{/if}
 							</div>
 						{/each}
@@ -307,19 +298,13 @@
 										<p class="text-[11px] {muted}">@{user.username}</p>
 									{/if}
 								</div>
-								<button
-									onclick={() => handleMessage(userId)}
-									class="flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-all {btnSecondary}"
-								>
+								<Button variant="outline" size="sm" onclick={() => handleMessage(userId)} colorSchema={cs}>
 									<MessageCircle size={12} />
 									{t?.('network.message') ?? 'Message'}
-								</button>
-								<button
-									onclick={() => handleRemove(connId)}
-									class="text-[10px] font-medium transition-colors {muted} hover:text-red-500"
-								>
+								</Button>
+								<Button variant="danger" size="xs" onclick={() => handleRemove(connId)} colorSchema={cs}>
 									{t?.('network.remove') ?? 'Remove'}
-								</button>
+								</Button>
 							</div>
 						{/each}
 					</div>

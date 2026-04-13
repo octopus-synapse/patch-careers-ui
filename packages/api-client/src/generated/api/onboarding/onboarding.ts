@@ -253,47 +253,6 @@ export const prefetchOnboardingGetSessionQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getOnboardingGetSessionSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof onboardingGetSession>>, TError = unknown>(params?: OnboardingGetSessionParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getOnboardingGetSessionQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof onboardingGetSession>>> = ({ signal }) => onboardingGetSession(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetSession>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type OnboardingGetSessionSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingGetSession>>>
-export type OnboardingGetSessionSuspenseQueryError = unknown
-
-
-/**
- * @summary Get onboarding session with field definitions and navigation
- */
-
-export function createOnboardingGetSessionSuspense<TData = Awaited<ReturnType<typeof onboardingGetSession>>, TError = unknown>(
- params?: () =>  OnboardingGetSessionParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getOnboardingGetSessionSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Save current step data and advance to next step
  */
@@ -894,47 +853,6 @@ export const prefetchOnboardingGetProgressQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getOnboardingGetProgressSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof onboardingGetProgress>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetProgress>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getOnboardingGetProgressQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof onboardingGetProgress>>> = ({ signal }) => onboardingGetProgress({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetProgress>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type OnboardingGetProgressSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingGetProgress>>>
-export type OnboardingGetProgressSuspenseQueryError = unknown
-
-
-/**
- * @summary [Legacy] Get onboarding progress
- */
-
-export function createOnboardingGetProgressSuspense<TData = Awaited<ReturnType<typeof onboardingGetProgress>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetProgress>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getOnboardingGetProgressSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary [Legacy] Save onboarding progress
  */
@@ -1175,47 +1093,6 @@ export const prefetchOnboardingGetStatusQuery = async <TData = Awaited<ReturnTyp
 
   return queryClient;
 }
-
-
-
-export const getOnboardingGetStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof onboardingGetStatus>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getOnboardingGetStatusQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof onboardingGetStatus>>> = ({ signal }) => onboardingGetStatus({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type OnboardingGetStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingGetStatus>>>
-export type OnboardingGetStatusSuspenseQueryError = unknown
-
-
-/**
- * @summary [Legacy] Get onboarding completion status
- */
-
-export function createOnboardingGetStatusSuspense<TData = Awaited<ReturnType<typeof onboardingGetStatus>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof onboardingGetStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getOnboardingGetStatusSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

@@ -265,47 +265,6 @@ export const prefetchResumesGetAllUserResumesQuery = async <TData = Awaited<Retu
 
 
 
-export const getResumesGetAllUserResumesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetAllUserResumes>>, TError = void>(params: ResumesGetAllUserResumesParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetAllUserResumes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesGetAllUserResumesQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetAllUserResumes>>> = ({ signal }) => resumesGetAllUserResumes(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetAllUserResumes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesGetAllUserResumesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetAllUserResumes>>>
-export type ResumesGetAllUserResumesSuspenseQueryError = void
-
-
-/**
- * @summary Get all resumes for current user
- */
-
-export function createResumesGetAllUserResumesSuspense<TData = Awaited<ReturnType<typeof resumesGetAllUserResumes>>, TError = void>(
- params: () =>  ResumesGetAllUserResumesParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetAllUserResumes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesGetAllUserResumesSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create a new resume
  */
@@ -573,47 +532,6 @@ export const prefetchResumesGetRemainingSlotsQuery = async <TData = Awaited<Retu
 
 
 
-export const getResumesGetRemainingSlotsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetRemainingSlots>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetRemainingSlots>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesGetRemainingSlotsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetRemainingSlots>>> = ({ signal }) => resumesGetRemainingSlots({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetRemainingSlots>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesGetRemainingSlotsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetRemainingSlots>>>
-export type ResumesGetRemainingSlotsSuspenseQueryError = void
-
-
-/**
- * @summary Get remaining resume slots for current user
- */
-
-export function createResumesGetRemainingSlotsSuspense<TData = Awaited<ReturnType<typeof resumesGetRemainingSlots>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetRemainingSlots>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesGetRemainingSlotsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get a resume with all sections
  */
@@ -787,47 +705,6 @@ export const prefetchResumesGetResumeByIdWithAllSectionsQuery = async <TData = A
 
 
 
-export const getResumesGetResumeByIdWithAllSectionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>, TError = void>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesGetResumeByIdWithAllSectionsQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>> = ({ signal }) => resumesGetResumeByIdWithAllSections(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesGetResumeByIdWithAllSectionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>>
-export type ResumesGetResumeByIdWithAllSectionsSuspenseQueryError = void
-
-
-/**
- * @summary Get a resume with all sections
- */
-
-export function createResumesGetResumeByIdWithAllSectionsSuspense<TData = Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>, TError = void>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeByIdWithAllSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesGetResumeByIdWithAllSectionsSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get a specific resume
  */
@@ -998,47 +875,6 @@ export const prefetchResumesGetResumeByIdForUserQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getResumesGetResumeByIdForUserSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>, TError = void>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesGetResumeByIdForUserQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>> = ({ signal }) => resumesGetResumeByIdForUser(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesGetResumeByIdForUserSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>>
-export type ResumesGetResumeByIdForUserSuspenseQueryError = void
-
-
-/**
- * @summary Get a specific resume
- */
-
-export function createResumesGetResumeByIdForUserSuspense<TData = Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>, TError = void>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeByIdForUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesGetResumeByIdForUserSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1403,47 +1239,6 @@ export const prefetchResumesListResumesForUserQuery = async <TData = Awaited<Ret
 
 
 
-export const getResumesListResumesForUserSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesListResumesForUser>>, TError = void>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumesForUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesListResumesForUserQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesListResumesForUser>>> = ({ signal }) => resumesListResumesForUser(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumesForUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesListResumesForUserSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListResumesForUser>>>
-export type ResumesListResumesForUserSuspenseQueryError = void
-
-
-/**
- * @summary List all resumes for a specific user
- */
-
-export function createResumesListResumesForUserSuspense<TData = Awaited<ReturnType<typeof resumesListResumesForUser>>, TError = void>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumesForUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesListResumesForUserSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get full resume details
  */
@@ -1614,47 +1409,6 @@ export const prefetchResumesGetResumeDetailsQuery = async <TData = Awaited<Retur
 
   return queryClient;
 }
-
-
-
-export const getResumesGetResumeDetailsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetResumeDetails>>, TError = void>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeDetails>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesGetResumeDetailsQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetResumeDetails>>> = ({ signal }) => resumesGetResumeDetails(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeDetails>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesGetResumeDetailsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetResumeDetails>>>
-export type ResumesGetResumeDetailsSuspenseQueryError = void
-
-
-/**
- * @summary Get full resume details
- */
-
-export function createResumesGetResumeDetailsSuspense<TData = Awaited<ReturnType<typeof resumesGetResumeDetails>>, TError = void>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetResumeDetails>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesGetResumeDetailsSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1943,50 +1697,6 @@ export const prefetchResumesListTypesQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export const getResumesListTypesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesListTypes>>, TError = void>(resumeId: string,
-    params?: ResumesListTypesParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesListTypesQueryKey(resumeId,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesListTypes>>> = ({ signal }) => resumesListTypes(resumeId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesListTypesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListTypes>>>
-export type ResumesListTypesSuspenseQueryError = void
-
-
-/**
- * @summary List active dynamic section types with resolved translations
- */
-
-export function createResumesListTypesSuspense<TData = Awaited<ReturnType<typeof resumesListTypes>>, TError = void>(
- resumeId: () =>  string,
-    params?: () =>  ResumesListTypesParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesListTypesSuspenseQueryOptions(resumeId(),
-    params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary List sections and items for a resume
  */
@@ -2145,47 +1855,6 @@ export const prefetchResumesListResumeSectionsQuery = async <TData = Awaited<Ret
 
   return queryClient;
 }
-
-
-
-export const getResumesListResumeSectionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesListResumeSections>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumeSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesListResumeSectionsQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesListResumeSections>>> = ({ signal }) => resumesListResumeSections(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumeSections>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesListResumeSectionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListResumeSections>>>
-export type ResumesListResumeSectionsSuspenseQueryError = unknown
-
-
-/**
- * @summary List sections and items for a resume
- */
-
-export function createResumesListResumeSectionsSuspense<TData = Awaited<ReturnType<typeof resumesListResumeSections>>, TError = unknown>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesListResumeSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesListResumeSectionsSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

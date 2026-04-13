@@ -246,47 +246,6 @@ export const prefetchAdminSpokenLanguagesFindAllQuery = async <TData = Awaited<R
 
 
 
-export const getAdminSpokenLanguagesFindAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>, TError = void>(params?: AdminSpokenLanguagesFindAllParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminSpokenLanguagesFindAllQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>> = ({ signal }) => adminSpokenLanguagesFindAll(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminSpokenLanguagesFindAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>>
-export type AdminSpokenLanguagesFindAllSuspenseQueryError = void
-
-
-/**
- * @summary List all spoken languages
- */
-
-export function createAdminSpokenLanguagesFindAllSuspense<TData = Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>, TError = void>(
- params?: () =>  AdminSpokenLanguagesFindAllParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSpokenLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminSpokenLanguagesFindAllSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create spoken language
  */
@@ -550,47 +509,6 @@ export const prefetchAdminSpokenLanguagesFindOneQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getAdminSpokenLanguagesFindOneSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>, TError = void>(code: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminSpokenLanguagesFindOneQueryKey(code);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>> = ({ signal }) => adminSpokenLanguagesFindOne(code, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminSpokenLanguagesFindOneSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>>
-export type AdminSpokenLanguagesFindOneSuspenseQueryError = void
-
-
-/**
- * @summary Get spoken language by code
- */
-
-export function createAdminSpokenLanguagesFindOneSuspense<TData = Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>, TError = void>(
- code: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSpokenLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminSpokenLanguagesFindOneSuspenseQueryOptions(code(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

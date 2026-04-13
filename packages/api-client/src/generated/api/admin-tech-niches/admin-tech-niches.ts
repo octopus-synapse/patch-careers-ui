@@ -246,47 +246,6 @@ export const prefetchAdminTechNichesFindAllQuery = async <TData = Awaited<Return
 
 
 
-export const getAdminTechNichesFindAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = void>(params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminTechNichesFindAllQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminTechNichesFindAll>>> = ({ signal }) => adminTechNichesFindAll(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminTechNichesFindAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesFindAll>>>
-export type AdminTechNichesFindAllSuspenseQueryError = void
-
-
-/**
- * @summary List all tech niches
- */
-
-export function createAdminTechNichesFindAllSuspense<TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = void>(
- params?: () =>  AdminTechNichesFindAllParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminTechNichesFindAllSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create tech niche
  */
@@ -550,47 +509,6 @@ export const prefetchAdminTechNichesFindOneQuery = async <TData = Awaited<Return
 
   return queryClient;
 }
-
-
-
-export const getAdminTechNichesFindOneSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = void>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminTechNichesFindOneQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminTechNichesFindOne>>> = ({ signal }) => adminTechNichesFindOne(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminTechNichesFindOneSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesFindOne>>>
-export type AdminTechNichesFindOneSuspenseQueryError = void
-
-
-/**
- * @summary Get tech niche by ID
- */
-
-export function createAdminTechNichesFindOneSuspense<TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = void>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminTechNichesFindOneSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

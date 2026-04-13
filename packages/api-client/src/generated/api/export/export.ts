@@ -246,47 +246,6 @@ export const prefetchExportExportBannerQuery = async <TData = Awaited<ReturnType
 
 
 
-export const getExportExportBannerSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportExportBanner>>, TError = void>(params?: ExportExportBannerParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getExportExportBannerQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportExportBanner>>> = ({ signal }) => exportExportBanner(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportBanner>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ExportExportBannerSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportExportBanner>>>
-export type ExportExportBannerSuspenseQueryError = void
-
-
-/**
- * @summary Export LinkedIn banner image
- */
-
-export function createExportExportBannerSuspense<TData = Awaited<ReturnType<typeof exportExportBanner>>, TError = void>(
- params?: () =>  ExportExportBannerParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getExportExportBannerSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Export resume as PDF document
  */
@@ -467,47 +426,6 @@ export const prefetchExportExportResumePDFQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getExportExportResumePDFSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportExportResumePDF>>, TError = void>(params?: ExportExportResumePDFParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getExportExportResumePDFQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportExportResumePDF>>> = ({ signal }) => exportExportResumePDF(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportResumePDF>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ExportExportResumePDFSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportExportResumePDF>>>
-export type ExportExportResumePDFSuspenseQueryError = void
-
-
-/**
- * @summary Export resume as PDF document
- */
-
-export function createExportExportResumePDFSuspense<TData = Awaited<ReturnType<typeof exportExportResumePDF>>, TError = void>(
- params?: () =>  ExportExportResumePDFParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getExportExportResumePDFSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Generate another user's resume as PDF (base64)
  */
@@ -666,47 +584,6 @@ export const prefetchExportDownloadUserResumePDFQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getExportDownloadUserResumePDFSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getExportDownloadUserResumePDFQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>> = ({ signal }) => exportDownloadUserResumePDF(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ExportDownloadUserResumePDFSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>>
-export type ExportDownloadUserResumePDFSuspenseQueryError = unknown
-
-
-/**
- * @summary Generate another user's resume as PDF (base64)
- */
-
-export function createExportDownloadUserResumePDFSuspense<TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getExportDownloadUserResumePDFSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -880,47 +757,6 @@ export const prefetchExportExportResumeDOCXQuery = async <TData = Awaited<Return
 
   return queryClient;
 }
-
-
-
-export const getExportExportResumeDOCXSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportExportResumeDOCX>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportResumeDOCX>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getExportExportResumeDOCXQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportExportResumeDOCX>>> = ({ signal }) => exportExportResumeDOCX({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportResumeDOCX>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ExportExportResumeDOCXSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportExportResumeDOCX>>>
-export type ExportExportResumeDOCXSuspenseQueryError = void
-
-
-/**
- * @summary Export resume as DOCX document
- */
-
-export function createExportExportResumeDOCXSuspense<TData = Awaited<ReturnType<typeof exportExportResumeDOCX>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportResumeDOCX>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getExportExportResumeDOCXSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1116,50 +952,6 @@ export const prefetchExportExportJsonQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export const getExportExportJsonSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportExportJson>>, TError = void>(resumeId: string,
-    params?: ExportExportJsonParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getExportExportJsonQueryKey(resumeId,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportExportJson>>> = ({ signal }) => exportExportJson(resumeId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportJson>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ExportExportJsonSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportExportJson>>>
-export type ExportExportJsonSuspenseQueryError = void
-
-
-/**
- * @summary Export resume as JSON
- */
-
-export function createExportExportJsonSuspense<TData = Awaited<ReturnType<typeof exportExportJson>>, TError = void>(
- resumeId: () =>  string,
-    params?: () =>  ExportExportJsonParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getExportExportJsonSuspenseQueryOptions(resumeId(),
-    params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Export resume as LaTeX
  */
@@ -1349,50 +1141,6 @@ export const prefetchExportExportLatexQuery = async <TData = Awaited<ReturnType<
 
   return queryClient;
 }
-
-
-
-export const getExportExportLatexSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportExportLatex>>, TError = void>(resumeId: string,
-    params?: ExportExportLatexParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getExportExportLatexQueryKey(resumeId,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportExportLatex>>> = ({ signal }) => exportExportLatex(resumeId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportLatex>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ExportExportLatexSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportExportLatex>>>
-export type ExportExportLatexSuspenseQueryError = void
-
-
-/**
- * @summary Export resume as LaTeX
- */
-
-export function createExportExportLatexSuspense<TData = Awaited<ReturnType<typeof exportExportLatex>>, TError = void>(
- resumeId: () =>  string,
-    params?: () =>  ExportExportLatexParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getExportExportLatexSuspenseQueryOptions(resumeId(),
-    params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

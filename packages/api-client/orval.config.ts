@@ -26,7 +26,7 @@ export default defineConfig({
           useQuery: true,
           useMutation: true,
           useInfinite: true,
-          useSuspenseQuery: true,
+          useSuspenseQuery: false,
           usePrefetch: true,
           signal: true,
         },

@@ -313,47 +313,6 @@ export const prefetchMecInternalGetSyncStatusQuery = async <TData = Awaited<Retu
 
 
 
-export const getMecInternalGetSyncStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecInternalGetSyncStatus>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInternalGetSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecInternalGetSyncStatusQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecInternalGetSyncStatus>>> = ({ signal }) => mecInternalGetSyncStatus({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInternalGetSyncStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecInternalGetSyncStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecInternalGetSyncStatus>>>
-export type MecInternalGetSyncStatusSuspenseQueryError = unknown
-
-
-/**
- * @summary Get sync status
- */
-
-export function createMecInternalGetSyncStatusSuspense<TData = Awaited<ReturnType<typeof mecInternalGetSyncStatus>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInternalGetSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecInternalGetSyncStatusSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get sync history
  */
@@ -519,47 +478,6 @@ export const prefetchMecInternalGetSyncHistoryQuery = async <TData = Awaited<Ret
 
   return queryClient;
 }
-
-
-
-export const getMecInternalGetSyncHistorySuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecInternalGetSyncHistory>>, TError = unknown>(params?: MecInternalGetSyncHistoryParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInternalGetSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecInternalGetSyncHistoryQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecInternalGetSyncHistory>>> = ({ signal }) => mecInternalGetSyncHistory(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInternalGetSyncHistory>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecInternalGetSyncHistorySuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecInternalGetSyncHistory>>>
-export type MecInternalGetSyncHistorySuspenseQueryError = unknown
-
-
-/**
- * @summary Get sync history
- */
-
-export function createMecInternalGetSyncHistorySuspense<TData = Awaited<ReturnType<typeof mecInternalGetSyncHistory>>, TError = unknown>(
- params?: () =>  MecInternalGetSyncHistoryParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecInternalGetSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecInternalGetSyncHistorySuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

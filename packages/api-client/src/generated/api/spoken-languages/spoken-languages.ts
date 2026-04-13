@@ -238,47 +238,6 @@ export const prefetchSkillsFindAllActiveLanguagesQuery = async <TData = Awaited<
 
 
 
-export const getSkillsFindAllActiveLanguagesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSkillsFindAllActiveLanguagesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>> = ({ signal }) => skillsFindAllActiveLanguages({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SkillsFindAllActiveLanguagesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>
-export type SkillsFindAllActiveLanguagesSuspenseQueryError = void
-
-
-/**
- * @summary Get all active spoken languages
- */
-
-export function createSkillsFindAllActiveLanguagesSuspense<TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSkillsFindAllActiveLanguagesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Search spoken languages by name
  */
@@ -459,47 +418,6 @@ export const prefetchSkillsSearchLanguagesByNameQuery = async <TData = Awaited<R
 
 
 
-export const getSkillsSearchLanguagesByNameSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = void>(params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSkillsSearchLanguagesByNameQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>> = ({ signal }) => skillsSearchLanguagesByName(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SkillsSearchLanguagesByNameSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>
-export type SkillsSearchLanguagesByNameSuspenseQueryError = void
-
-
-/**
- * @summary Search spoken languages by name
- */
-
-export function createSkillsSearchLanguagesByNameSuspense<TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = void>(
- params: () =>  SkillsSearchLanguagesByNameParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSkillsSearchLanguagesByNameSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get spoken language by code
  */
@@ -670,47 +588,6 @@ export const prefetchSkillsFindLanguageByCodeQuery = async <TData = Awaited<Retu
 
   return queryClient;
 }
-
-
-
-export const getSkillsFindLanguageByCodeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = void>(code: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSkillsFindLanguageByCodeQueryKey(code);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof skillsFindLanguageByCode>>> = ({ signal }) => skillsFindLanguageByCode(code, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SkillsFindLanguageByCodeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>
-export type SkillsFindLanguageByCodeSuspenseQueryError = void
-
-
-/**
- * @summary Get spoken language by code
- */
-
-export function createSkillsFindLanguageByCodeSuspense<TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = void>(
- code: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSkillsFindLanguageByCodeSuspenseQueryOptions(code(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

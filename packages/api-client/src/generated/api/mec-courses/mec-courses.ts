@@ -232,47 +232,6 @@ export const prefetchMecCoursesSearchCoursesByNameQuery = async <TData = Awaited
 
 
 
-export const getMecCoursesSearchCoursesByNameSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>, TError = unknown>(params: MecCoursesSearchCoursesByNameParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecCoursesSearchCoursesByNameQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>> = ({ signal }) => mecCoursesSearchCoursesByName(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecCoursesSearchCoursesByNameSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>>
-export type MecCoursesSearchCoursesByNameSuspenseQueryError = unknown
-
-
-/**
- * @summary Search courses
- */
-
-export function createMecCoursesSearchCoursesByNameSuspense<TData = Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>, TError = unknown>(
- params: () =>  MecCoursesSearchCoursesByNameParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecCoursesSearchCoursesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecCoursesSearchCoursesByNameSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get course by MEC code
  */
@@ -431,47 +390,6 @@ export const prefetchMecCoursesGetCourseByCodeQuery = async <TData = Awaited<Ret
 
   return queryClient;
 }
-
-
-
-export const getMecCoursesGetCourseByCodeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>, TError = unknown>(codigoCurso: number, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecCoursesGetCourseByCodeQueryKey(codigoCurso);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>> = ({ signal }) => mecCoursesGetCourseByCode(codigoCurso, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecCoursesGetCourseByCodeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>>
-export type MecCoursesGetCourseByCodeSuspenseQueryError = unknown
-
-
-/**
- * @summary Get course by MEC code
- */
-
-export function createMecCoursesGetCourseByCodeSuspense<TData = Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>, TError = unknown>(
- codigoCurso: () =>  number, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecCoursesGetCourseByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecCoursesGetCourseByCodeSuspenseQueryOptions(codigoCurso(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

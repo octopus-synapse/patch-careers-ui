@@ -225,47 +225,6 @@ export const prefetchAppGetHelloQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
-export const getAppGetHelloSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof appGetHello>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetHello>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAppGetHelloQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appGetHello>>> = ({ signal }) => appGetHello({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetHello>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AppGetHelloSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof appGetHello>>>
-export type AppGetHelloSuspenseQueryError = unknown
-
-
-/**
- * @summary Default application hello endpoint
- */
-
-export function createAppGetHelloSuspense<TData = Awaited<ReturnType<typeof appGetHello>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetHello>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAppGetHelloSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get service version and deployment metadata
  */
@@ -424,47 +383,6 @@ export const prefetchAppGetVersionQuery = async <TData = Awaited<ReturnType<type
 
   return queryClient;
 }
-
-
-
-export const getAppGetVersionSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof appGetVersion>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetVersion>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAppGetVersionQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appGetVersion>>> = ({ signal }) => appGetVersion({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetVersion>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AppGetVersionSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof appGetVersion>>>
-export type AppGetVersionSuspenseQueryError = unknown
-
-
-/**
- * @summary Get service version and deployment metadata
- */
-
-export function createAppGetVersionSuspense<TData = Awaited<ReturnType<typeof appGetVersion>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetVersion>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAppGetVersionSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -627,47 +545,6 @@ export const prefetchAppGetOpenApiSpecQuery = async <TData = Awaited<ReturnType<
 
   return queryClient;
 }
-
-
-
-export const getAppGetOpenApiSpecSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof appGetOpenApiSpec>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetOpenApiSpec>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAppGetOpenApiSpecQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appGetOpenApiSpec>>> = ({ signal }) => appGetOpenApiSpec({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetOpenApiSpec>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AppGetOpenApiSpecSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof appGetOpenApiSpec>>>
-export type AppGetOpenApiSpecSuspenseQueryError = unknown
-
-
-/**
- * @summary Get OpenAPI specification
- */
-
-export function createAppGetOpenApiSpecSuspense<TData = Awaited<ReturnType<typeof appGetOpenApiSpec>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof appGetOpenApiSpec>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAppGetOpenApiSpecSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

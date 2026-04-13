@@ -232,47 +232,6 @@ export const prefetchGithubGetGitHubSummaryQuery = async <TData = Awaited<Return
 
 
 
-export const getGithubGetGitHubSummarySuspenseQueryOptions = <TData = Awaited<ReturnType<typeof githubGetGitHubSummary>>, TError = unknown>(username: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof githubGetGitHubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGithubGetGitHubSummaryQueryKey(username);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof githubGetGitHubSummary>>> = ({ signal }) => githubGetGitHubSummary(username, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof githubGetGitHubSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GithubGetGitHubSummarySuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof githubGetGitHubSummary>>>
-export type GithubGetGitHubSummarySuspenseQueryError = unknown
-
-
-/**
- * @summary Get GitHub profile summary for a username
- */
-
-export function createGithubGetGitHubSummarySuspense<TData = Awaited<ReturnType<typeof githubGetGitHubSummary>>, TError = unknown>(
- username: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof githubGetGitHubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getGithubGetGitHubSummarySuspenseQueryOptions(username(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Sync GitHub data to user resume
  */
@@ -596,47 +555,6 @@ export const prefetchGithubGetSyncStatusQuery = async <TData = Awaited<ReturnTyp
 
   return queryClient;
 }
-
-
-
-export const getGithubGetSyncStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof githubGetSyncStatus>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof githubGetSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGithubGetSyncStatusQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof githubGetSyncStatus>>> = ({ signal }) => githubGetSyncStatus(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof githubGetSyncStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GithubGetSyncStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof githubGetSyncStatus>>>
-export type GithubGetSyncStatusSuspenseQueryError = unknown
-
-
-/**
- * @summary Get GitHub sync status for a resume
- */
-
-export function createGithubGetSyncStatusSuspense<TData = Awaited<ReturnType<typeof githubGetSyncStatus>>, TError = unknown>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof githubGetSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getGithubGetSyncStatusSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

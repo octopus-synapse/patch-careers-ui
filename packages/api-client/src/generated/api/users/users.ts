@@ -248,47 +248,6 @@ export const prefetchUsersGetPublicProfileByUsernameQuery = async <TData = Await
 
 
 
-export const getUsersGetPublicProfileByUsernameSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>, TError = unknown>(username: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersGetPublicProfileByUsernameQueryKey(username);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>> = ({ signal }) => usersGetPublicProfileByUsername(username, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersGetPublicProfileByUsernameSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>>
-export type UsersGetPublicProfileByUsernameSuspenseQueryError = unknown
-
-
-/**
- * @summary Get a user's public profile by username
- */
-
-export function createUsersGetPublicProfileByUsernameSuspense<TData = Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>, TError = unknown>(
- username: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetPublicProfileByUsername>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersGetPublicProfileByUsernameSuspenseQueryOptions(username(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get current user profile
  */
@@ -459,47 +418,6 @@ export const prefetchUsersGetProfileQuery = async <TData = Awaited<ReturnType<ty
 
   return queryClient;
 }
-
-
-
-export const getUsersGetProfileSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersGetProfile>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetProfile>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersGetProfileQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetProfile>>> = ({ signal }) => usersGetProfile({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetProfile>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersGetProfileSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetProfile>>>
-export type UsersGetProfileSuspenseQueryError = void
-
-
-/**
- * @summary Get current user profile
- */
-
-export function createUsersGetProfileSuspense<TData = Awaited<ReturnType<typeof usersGetProfile>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetProfile>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersGetProfileSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -871,47 +789,6 @@ export const prefetchUsersCheckUsernameAvailabilityQuery = async <TData = Awaite
 
 
 
-export const getUsersCheckUsernameAvailabilitySuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersCheckUsernameAvailability>>, TError = void>(params: UsersCheckUsernameAvailabilityParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersCheckUsernameAvailability>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersCheckUsernameAvailabilityQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersCheckUsernameAvailability>>> = ({ signal }) => usersCheckUsernameAvailability(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersCheckUsernameAvailability>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersCheckUsernameAvailabilitySuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersCheckUsernameAvailability>>>
-export type UsersCheckUsernameAvailabilitySuspenseQueryError = void
-
-
-/**
- * @summary Check if a username is available
- */
-
-export function createUsersCheckUsernameAvailabilitySuspense<TData = Awaited<ReturnType<typeof usersCheckUsernameAvailability>>, TError = void>(
- params: () =>  UsersCheckUsernameAvailabilityParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersCheckUsernameAvailability>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersCheckUsernameAvailabilitySuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get user preferences (basic)
  */
@@ -1082,47 +959,6 @@ export const prefetchUsersGetPreferencesQuery = async <TData = Awaited<ReturnTyp
 
   return queryClient;
 }
-
-
-
-export const getUsersGetPreferencesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersGetPreferences>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersGetPreferencesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetPreferences>>> = ({ signal }) => usersGetPreferences({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetPreferences>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersGetPreferencesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetPreferences>>>
-export type UsersGetPreferencesSuspenseQueryError = void
-
-
-/**
- * @summary Get user preferences (basic)
- */
-
-export function createUsersGetPreferencesSuspense<TData = Awaited<ReturnType<typeof usersGetPreferences>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersGetPreferencesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1389,47 +1225,6 @@ export const prefetchUsersGetFullPreferencesQuery = async <TData = Awaited<Retur
 
   return queryClient;
 }
-
-
-
-export const getUsersGetFullPreferencesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersGetFullPreferences>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetFullPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersGetFullPreferencesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetFullPreferences>>> = ({ signal }) => usersGetFullPreferences({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetFullPreferences>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersGetFullPreferencesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetFullPreferences>>>
-export type UsersGetFullPreferencesSuspenseQueryError = void
-
-
-/**
- * @summary Get all user preferences
- */
-
-export function createUsersGetFullPreferencesSuspense<TData = Awaited<ReturnType<typeof usersGetFullPreferences>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetFullPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersGetFullPreferencesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1706,47 +1501,6 @@ export const prefetchUsersListUsersQuery = async <TData = Awaited<ReturnType<typ
 
 
 
-export const getUsersListUsersSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersListUsers>>, TError = void>(params?: UsersListUsersParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersListUsersQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersListUsers>>> = ({ signal }) => usersListUsers(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersListUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersListUsersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersListUsers>>>
-export type UsersListUsersSuspenseQueryError = void
-
-
-/**
- * @summary List all users with pagination
- */
-
-export function createUsersListUsersSuspense<TData = Awaited<ReturnType<typeof usersListUsers>>, TError = void>(
- params?: () =>  UsersListUsersParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersListUsersSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create a new user
  */
@@ -2011,47 +1765,6 @@ export const prefetchUsersGetUserDetailsQuery = async <TData = Awaited<ReturnTyp
 
   return queryClient;
 }
-
-
-
-export const getUsersGetUserDetailsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof usersGetUserDetails>>, TError = void>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetUserDetails>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getUsersGetUserDetailsQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetUserDetails>>> = ({ signal }) => usersGetUserDetails(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetUserDetails>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type UsersGetUserDetailsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetUserDetails>>>
-export type UsersGetUserDetailsSuspenseQueryError = void
-
-
-/**
- * @summary Get user details by ID
- */
-
-export function createUsersGetUserDetailsSuspense<TData = Awaited<ReturnType<typeof usersGetUserDetails>>, TError = void>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof usersGetUserDetails>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getUsersGetUserDetailsSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

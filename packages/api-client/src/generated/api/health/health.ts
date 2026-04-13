@@ -239,47 +239,6 @@ export const prefetchPlatformCheckQuery = async <TData = Awaited<ReturnType<type
 
 
 
-export const getPlatformCheckSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheck>>, TError = PlatformCheck503>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheck>>> = ({ signal }) => platformCheck({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PlatformCheckSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheck>>>
-export type PlatformCheckSuspenseQueryError = PlatformCheck503
-
-
-/**
- * @summary Run all health checks
- */
-
-export function createPlatformCheckSuspense<TData = Awaited<ReturnType<typeof platformCheck>>, TError = PlatformCheck503>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getPlatformCheckSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Run database health check
  */
@@ -445,47 +404,6 @@ export const prefetchPlatformCheckDatabaseQuery = async <TData = Awaited<ReturnT
 
   return queryClient;
 }
-
-
-
-export const getPlatformCheckDatabaseSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = PlatformCheckDatabase503>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckDatabaseQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckDatabase>>> = ({ signal }) => platformCheckDatabase({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PlatformCheckDatabaseSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckDatabase>>>
-export type PlatformCheckDatabaseSuspenseQueryError = PlatformCheckDatabase503
-
-
-/**
- * @summary Run database health check
- */
-
-export function createPlatformCheckDatabaseSuspense<TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = PlatformCheckDatabase503>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getPlatformCheckDatabaseSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -657,47 +575,6 @@ export const prefetchPlatformCheckRedisQuery = async <TData = Awaited<ReturnType
 
 
 
-export const getPlatformCheckRedisSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = PlatformCheckRedis503>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckRedisQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckRedis>>> = ({ signal }) => platformCheckRedis({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PlatformCheckRedisSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckRedis>>>
-export type PlatformCheckRedisSuspenseQueryError = PlatformCheckRedis503
-
-
-/**
- * @summary Run redis health check
- */
-
-export function createPlatformCheckRedisSuspense<TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = PlatformCheckRedis503>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getPlatformCheckRedisSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Run storage health check
  */
@@ -866,47 +743,6 @@ export const prefetchPlatformCheckStorageQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getPlatformCheckStorageSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = PlatformCheckStorage503>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckStorageQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckStorage>>> = ({ signal }) => platformCheckStorage({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PlatformCheckStorageSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckStorage>>>
-export type PlatformCheckStorageSuspenseQueryError = PlatformCheckStorage503
-
-
-/**
- * @summary Run storage health check
- */
-
-export function createPlatformCheckStorageSuspense<TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = PlatformCheckStorage503>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getPlatformCheckStorageSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Run translation service health check
  */
@@ -1072,47 +908,6 @@ export const prefetchPlatformCheckTranslateQuery = async <TData = Awaited<Return
 
   return queryClient;
 }
-
-
-
-export const getPlatformCheckTranslateSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = PlatformCheckTranslate503>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckTranslateQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckTranslate>>> = ({ signal }) => platformCheckTranslate({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PlatformCheckTranslateSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckTranslate>>>
-export type PlatformCheckTranslateSuspenseQueryError = PlatformCheckTranslate503
-
-
-/**
- * @summary Run translation service health check
- */
-
-export function createPlatformCheckTranslateSuspense<TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = PlatformCheckTranslate503>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getPlatformCheckTranslateSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

@@ -587,47 +587,6 @@ export const prefetchConnectionGetConnectionsQuery = async <TData = Awaited<Retu
 
 
 
-export const getConnectionGetConnectionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getConnectionGetConnectionsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionGetConnections>>> = ({ signal }) => connectionGetConnections({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ConnectionGetConnectionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnections>>>
-export type ConnectionGetConnectionsSuspenseQueryError = void
-
-
-/**
- * @summary Get accepted connections
- */
-
-export function createConnectionGetConnectionsSuspense<TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getConnectionGetConnectionsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get pending connection requests
  */
@@ -798,47 +757,6 @@ export const prefetchConnectionGetPendingRequestsQuery = async <TData = Awaited<
 
   return queryClient;
 }
-
-
-
-export const getConnectionGetPendingRequestsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getConnectionGetPendingRequestsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionGetPendingRequests>>> = ({ signal }) => connectionGetPendingRequests({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ConnectionGetPendingRequestsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetPendingRequests>>>
-export type ConnectionGetPendingRequestsSuspenseQueryError = void
-
-
-/**
- * @summary Get pending connection requests
- */
-
-export function createConnectionGetPendingRequestsSuspense<TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getConnectionGetPendingRequestsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1015,47 +933,6 @@ export const prefetchConnectionGetConnectionSuggestionsQuery = async <TData = Aw
 
 
 
-export const getConnectionGetConnectionSuggestionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getConnectionGetConnectionSuggestionsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>> = ({ signal }) => connectionGetConnectionSuggestions({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ConnectionGetConnectionSuggestionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>
-export type ConnectionGetConnectionSuggestionsSuspenseQueryError = void
-
-
-/**
- * @summary Get connection suggestions
- */
-
-export function createConnectionGetConnectionSuggestionsSuspense<TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getConnectionGetConnectionSuggestionsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get connection stats for a user
  */
@@ -1214,47 +1091,6 @@ export const prefetchConnectionGetConnectionStatsQuery = async <TData = Awaited<
 
   return queryClient;
 }
-
-
-
-export const getConnectionGetConnectionStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnectionStats>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getConnectionGetConnectionStatsQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionGetConnectionStats>>> = ({ signal }) => connectionGetConnectionStats(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ConnectionGetConnectionStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnectionStats>>>
-export type ConnectionGetConnectionStatsSuspenseQueryError = unknown
-
-
-/**
- * @summary Get connection stats for a user
- */
-
-export function createConnectionGetConnectionStatsSuspense<TData = Awaited<ReturnType<typeof connectionGetConnectionStats>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getConnectionGetConnectionStatsSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1428,47 +1264,6 @@ export const prefetchConnectionIsConnectedQuery = async <TData = Awaited<ReturnT
 
   return queryClient;
 }
-
-
-
-export const getConnectionIsConnectedSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = void>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getConnectionIsConnectedQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionIsConnected>>> = ({ signal }) => connectionIsConnected(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ConnectionIsConnectedSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof connectionIsConnected>>>
-export type ConnectionIsConnectedSuspenseQueryError = void
-
-
-/**
- * @summary Check connection status
- */
-
-export function createConnectionIsConnectedSuspense<TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = void>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getConnectionIsConnectedSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

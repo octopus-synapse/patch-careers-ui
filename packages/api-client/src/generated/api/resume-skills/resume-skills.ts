@@ -335,47 +335,6 @@ export const prefetchResumeSkillsListSkillsForResumeQuery = async <TData = Await
 
 
 
-export const getResumeSkillsListSkillsForResumeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeSkillsListSkillsForResumeQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>> = ({ signal }) => resumeSkillsListSkillsForResume(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeSkillsListSkillsForResumeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>
-export type ResumeSkillsListSkillsForResumeSuspenseQueryError = void
-
-
-/**
- * @summary List skills for a resume
- */
-
-export function createResumeSkillsListSkillsForResumeSuspense<TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = void>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeSkillsListSkillsForResumeSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Update a resume skill
  */

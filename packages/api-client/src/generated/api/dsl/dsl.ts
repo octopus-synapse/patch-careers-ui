@@ -436,50 +436,6 @@ export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof d
 
 
 
-export const getDslRenderSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof dslRender>>, TError = void>(resumeId: string,
-    params?: DslRenderParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getDslRenderQueryKey(resumeId,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof dslRender>>> = ({ signal }) => dslRender(resumeId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type DslRenderSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof dslRender>>>
-export type DslRenderSuspenseQueryError = void
-
-
-/**
- * @summary Get compiled AST for a resume
- */
-
-export function createDslRenderSuspense<TData = Awaited<ReturnType<typeof dslRender>>, TError = void>(
- resumeId: () =>  string,
-    params?: () =>  DslRenderParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getDslRenderSuspenseQueryOptions(resumeId(),
-    params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get compiled AST for a public resume
  */
@@ -657,50 +613,6 @@ export const prefetchDslRenderPublicQuery = async <TData = Awaited<ReturnType<ty
 
   return queryClient;
 }
-
-
-
-export const getDslRenderPublicSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = unknown>(slug: string,
-    params?: DslRenderPublicParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getDslRenderPublicQueryKey(slug,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof dslRenderPublic>>> = ({ signal }) => dslRenderPublic(slug,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type DslRenderPublicSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof dslRenderPublic>>>
-export type DslRenderPublicSuspenseQueryError = unknown
-
-
-/**
- * @summary Get compiled AST for a public resume
- */
-
-export function createDslRenderPublicSuspense<TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = unknown>(
- slug: () =>  string,
-    params?: () =>  DslRenderPublicParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getDslRenderPublicSuspenseQueryOptions(slug(),
-    params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

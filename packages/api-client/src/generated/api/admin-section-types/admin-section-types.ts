@@ -251,47 +251,6 @@ export const prefetchAdminSectionTypesFindAllQuery = async <TData = Awaited<Retu
 
 
 
-export const getAdminSectionTypesFindAllSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesFindAll>>, TError = void>(params?: AdminSectionTypesFindAllParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminSectionTypesFindAllQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminSectionTypesFindAll>>> = ({ signal }) => adminSectionTypesFindAll(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminSectionTypesFindAllSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesFindAll>>>
-export type AdminSectionTypesFindAllSuspenseQueryError = void
-
-
-/**
- * @summary List all section types with pagination
- */
-
-export function createAdminSectionTypesFindAllSuspense<TData = Awaited<ReturnType<typeof adminSectionTypesFindAll>>, TError = void>(
- params?: () =>  AdminSectionTypesFindAllParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminSectionTypesFindAllSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create a new section type
  */
@@ -558,47 +517,6 @@ export const prefetchAdminSectionTypesGetSemanticKindsQuery = async <TData = Awa
 
 
 
-export const getAdminSectionTypesGetSemanticKindsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminSectionTypesGetSemanticKindsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>> = ({ signal }) => adminSectionTypesGetSemanticKinds({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminSectionTypesGetSemanticKindsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>>
-export type AdminSectionTypesGetSemanticKindsSuspenseQueryError = void
-
-
-/**
- * @summary Get all unique semantic kinds
- */
-
-export function createAdminSectionTypesGetSemanticKindsSuspense<TData = Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminSectionTypesGetSemanticKindsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get a section type by key
  */
@@ -769,47 +687,6 @@ export const prefetchAdminSectionTypesFindOneQuery = async <TData = Awaited<Retu
 
   return queryClient;
 }
-
-
-
-export const getAdminSectionTypesFindOneSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesFindOne>>, TError = void>(key: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminSectionTypesFindOneQueryKey(key);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminSectionTypesFindOne>>> = ({ signal }) => adminSectionTypesFindOne(key, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminSectionTypesFindOneSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesFindOne>>>
-export type AdminSectionTypesFindOneSuspenseQueryError = void
-
-
-/**
- * @summary Get a section type by key
- */
-
-export function createAdminSectionTypesFindOneSuspense<TData = Awaited<ReturnType<typeof adminSectionTypesFindOne>>, TError = void>(
- key: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminSectionTypesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminSectionTypesFindOneSuspenseQueryOptions(key(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

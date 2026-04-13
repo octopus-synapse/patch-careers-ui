@@ -225,47 +225,6 @@ export const prefetchMecMetadataListAllStateCodesQuery = async <TData = Awaited<
 
 
 
-export const getMecMetadataListAllStateCodesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecMetadataListAllStateCodesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>> = ({ signal }) => mecMetadataListAllStateCodes({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecMetadataListAllStateCodesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>>
-export type MecMetadataListAllStateCodesSuspenseQueryError = unknown
-
-
-/**
- * @summary List all states (UFs)
- */
-
-export function createMecMetadataListAllStateCodesSuspense<TData = Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataListAllStateCodes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecMetadataListAllStateCodesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary List knowledge areas
  */
@@ -427,47 +386,6 @@ export const prefetchMecMetadataListAllKnowledgeAreasQuery = async <TData = Awai
 
 
 
-export const getMecMetadataListAllKnowledgeAreasSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecMetadataListAllKnowledgeAreasQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>> = ({ signal }) => mecMetadataListAllKnowledgeAreas({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecMetadataListAllKnowledgeAreasSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>>
-export type MecMetadataListAllKnowledgeAreasSuspenseQueryError = unknown
-
-
-/**
- * @summary List knowledge areas
- */
-
-export function createMecMetadataListAllKnowledgeAreasSuspense<TData = Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataListAllKnowledgeAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecMetadataListAllKnowledgeAreasSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get MEC statistics
  */
@@ -626,47 +544,6 @@ export const prefetchMecMetadataGetMecStatisticsQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getMecMetadataGetMecStatisticsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getMecMetadataGetMecStatisticsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>> = ({ signal }) => mecMetadataGetMecStatistics({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type MecMetadataGetMecStatisticsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>>
-export type MecMetadataGetMecStatisticsSuspenseQueryError = unknown
-
-
-/**
- * @summary Get MEC statistics
- */
-
-export function createMecMetadataGetMecStatisticsSuspense<TData = Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof mecMetadataGetMecStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getMecMetadataGetMecStatisticsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

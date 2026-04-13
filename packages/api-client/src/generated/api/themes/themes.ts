@@ -242,47 +242,6 @@ export const prefetchThemesGetAllThemesByUserQuery = async <TData = Awaited<Retu
 
 
 
-export const getThemesGetAllThemesByUserSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesGetAllThemesByUser>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetAllThemesByUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesGetAllThemesByUserQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesGetAllThemesByUser>>> = ({ signal }) => themesGetAllThemesByUser({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetAllThemesByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesGetAllThemesByUserSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesGetAllThemesByUser>>>
-export type ThemesGetAllThemesByUserSuspenseQueryError = unknown
-
-
-/**
- * @summary Get my themes
- */
-
-export function createThemesGetAllThemesByUserSuspense<TData = Awaited<ReturnType<typeof themesGetAllThemesByUser>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetAllThemesByUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesGetAllThemesByUserSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Create theme
  */
@@ -530,47 +489,6 @@ export const prefetchThemesFindAllThemesWithPaginationQuery = async <TData = Awa
 
   return queryClient;
 }
-
-
-
-export const getThemesFindAllThemesWithPaginationSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>, TError = unknown>(params?: ThemesFindAllThemesWithPaginationParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesFindAllThemesWithPaginationQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>> = ({ signal }) => themesFindAllThemesWithPagination(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesFindAllThemesWithPaginationSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>>
-export type ThemesFindAllThemesWithPaginationSuspenseQueryError = unknown
-
-
-/**
- * @summary List published themes
- */
-
-export function createThemesFindAllThemesWithPaginationSuspense<TData = Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>, TError = unknown>(
- params?: () =>  ThemesFindAllThemesWithPaginationParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindAllThemesWithPagination>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesFindAllThemesWithPaginationSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -899,47 +817,6 @@ export const prefetchThemesFindThemeByIdQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getThemesFindThemeByIdSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesFindThemeById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindThemeById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesFindThemeByIdQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesFindThemeById>>> = ({ signal }) => themesFindThemeById(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindThemeById>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesFindThemeByIdSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesFindThemeById>>>
-export type ThemesFindThemeByIdSuspenseQueryError = unknown
-
-
-/**
- * @summary Get theme by ID
- */
-
-export function createThemesFindThemeByIdSuspense<TData = Awaited<ReturnType<typeof themesFindThemeById>>, TError = unknown>(
- id: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindThemeById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesFindThemeByIdSuspenseQueryOptions(id(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Fork a theme
  */
@@ -1265,47 +1142,6 @@ export const prefetchThemesGetResolvedConfigQuery = async <TData = Awaited<Retur
 
 
 
-export const getThemesGetResolvedConfigSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesGetResolvedConfig>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetResolvedConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesGetResolvedConfigQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesGetResolvedConfig>>> = ({ signal }) => themesGetResolvedConfig(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetResolvedConfig>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesGetResolvedConfigSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesGetResolvedConfig>>>
-export type ThemesGetResolvedConfigSuspenseQueryError = unknown
-
-
-/**
- * @summary Get resolved config for resume
- */
-
-export function createThemesGetResolvedConfigSuspense<TData = Awaited<ReturnType<typeof themesGetResolvedConfig>>, TError = unknown>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetResolvedConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesGetResolvedConfigSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get popular themes
  */
@@ -1474,47 +1310,6 @@ export const prefetchThemesFindPopularThemesQuery = async <TData = Awaited<Retur
 
 
 
-export const getThemesFindPopularThemesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesFindPopularThemes>>, TError = unknown>(params: ThemesFindPopularThemesParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindPopularThemes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesFindPopularThemesQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesFindPopularThemes>>> = ({ signal }) => themesFindPopularThemes(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindPopularThemes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesFindPopularThemesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesFindPopularThemes>>>
-export type ThemesFindPopularThemesSuspenseQueryError = unknown
-
-
-/**
- * @summary Get popular themes
- */
-
-export function createThemesFindPopularThemesSuspense<TData = Awaited<ReturnType<typeof themesFindPopularThemes>>, TError = unknown>(
- params: () =>  ThemesFindPopularThemesParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindPopularThemes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesFindPopularThemesSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get system themes
  */
@@ -1676,47 +1471,6 @@ export const prefetchThemesFindAllSystemThemesQuery = async <TData = Awaited<Ret
 
 
 
-export const getThemesFindAllSystemThemesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesFindAllSystemThemes>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindAllSystemThemes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesFindAllSystemThemesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesFindAllSystemThemes>>> = ({ signal }) => themesFindAllSystemThemes({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindAllSystemThemes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesFindAllSystemThemesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesFindAllSystemThemes>>>
-export type ThemesFindAllSystemThemesSuspenseQueryError = unknown
-
-
-/**
- * @summary Get system themes
- */
-
-export function createThemesFindAllSystemThemesSuspense<TData = Awaited<ReturnType<typeof themesFindAllSystemThemes>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesFindAllSystemThemes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesFindAllSystemThemesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get or generate theme preview PDF
  */
@@ -1875,47 +1629,6 @@ export const prefetchThemesGetThemePreviewQuery = async <TData = Awaited<ReturnT
 
   return queryClient;
 }
-
-
-
-export const getThemesGetThemePreviewSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(themeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getThemesGetThemePreviewQueryKey(themeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof themesGetThemePreview>>> = ({ signal }) => themesGetThemePreview(themeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ThemesGetThemePreviewSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof themesGetThemePreview>>>
-export type ThemesGetThemePreviewSuspenseQueryError = unknown
-
-
-/**
- * @summary Get or generate theme preview PDF
- */
-
-export function createThemesGetThemePreviewSuspense<TData = Awaited<ReturnType<typeof themesGetThemePreview>>, TError = unknown>(
- themeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof themesGetThemePreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getThemesGetThemePreviewSuspenseQueryOptions(themeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

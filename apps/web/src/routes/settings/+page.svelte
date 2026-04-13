@@ -324,7 +324,8 @@
 	}
 
 	// Sidebar sections
-	const sections = [
+	type SectionId = 'profile' | 'username' | 'password' | 'twoFactor' | 'preferences' | 'danger';
+	const sections: { id: SectionId; icon: typeof User; labelKey: string }[] = [
 		{ id: 'profile', icon: User, labelKey: 'settings.profile' },
 		{ id: 'username', icon: AtSign, labelKey: 'settings.username' },
 		{ id: 'password', icon: Lock, labelKey: 'settings.password' },
@@ -332,6 +333,8 @@
 		{ id: 'preferences', icon: Palette, labelKey: 'settings.preferences' },
 		{ id: 'danger', icon: AlertTriangle, labelKey: 'settings.dangerZone' }
 	];
+	let activeSection = $state<SectionId>('profile');
+	const activeLabel = $derived(t?.(sections.find(s => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile');
 </script>
 
 <svelte:head>
@@ -355,30 +358,33 @@
 							</h2>
 						</div>
 						<nav class="flex flex-col gap-1">
-							{#each sections as section, i}
-								<a href="#{section.id}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors {sidebarLink}">
-									<div class="relative flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[9px] font-bold
-										{cs === 'dark' ? 'border border-neutral-700 text-neutral-500' : 'border border-gray-300 text-gray-500'}"
-									>
-										{i + 1}
-									</div>
-									<span class={muted}>
+							{#each sections as section}
+								{@const active = activeSection === section.id}
+								<button
+									onclick={() => activeSection = section.id}
+									class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors
+										{active ? (cs === 'dark' ? 'bg-neutral-700/50' : 'bg-white') : sidebarLink}"
+								>
+									<section.icon size={15} class={active ? text : muted} />
+									<span class={active ? 'font-bold ' + text : muted}>
 										{t(section.labelKey)}
 									</span>
-								</a>
+								</button>
 							{/each}
 						</nav>
 					</div>
 				</aside>
 
 				<!-- Main content -->
-				<div class="flex-1 max-w-lg pb-12 flex flex-col gap-6">
-					<div class="mb-2">
+				<div class="flex-1 max-w-lg pb-12">
+					<div class="mb-4">
 						<span class="text-[10px] font-semibold uppercase tracking-widest {muted}">
 							{t('settings.pageTitle')}
 						</span>
+						<h3 class="text-sm font-bold {text}">{activeLabel}</h3>
 					</div>
 
+					{#if activeSection === 'profile'}
 					<!-- Profile Section -->
 					<section id="profile" class="rounded-xl border {border} {cardBg} overflow-hidden">
 						<div class="flex items-center justify-between px-5 py-4 border-b {border}">
@@ -469,6 +475,9 @@
 						</div>
 					</section>
 
+					{/if}
+
+					{#if activeSection === 'username'}
 					<!-- Username Section -->
 					<section id="username" class="rounded-xl border {border} {cardBg} overflow-hidden">
 						<div class="flex items-center justify-between px-5 py-4 border-b {border}">
@@ -534,6 +543,9 @@
 						</div>
 					</section>
 
+					{/if}
+
+					{#if activeSection === 'password'}
 					<!-- Password Section -->
 					<section id="password" class="rounded-xl border {border} {cardBg} overflow-hidden">
 						<div class="px-5 py-4 border-b {border}">
@@ -613,6 +625,9 @@
 						</div>
 					</section>
 
+					{/if}
+
+					{#if activeSection === 'twoFactor'}
 					<!-- Two-Factor Authentication Section -->
 					<section id="twoFactor" class="rounded-xl border {border} {cardBg} overflow-hidden">
 						<div class="flex items-center justify-between px-5 py-4 border-b {border}">
@@ -750,6 +765,9 @@
 						</div>
 					</section>
 
+					{/if}
+
+					{#if activeSection === 'preferences'}
 					<!-- Preferences Section -->
 					<section id="preferences" class="rounded-xl border {border} {cardBg} overflow-hidden">
 						<div class="px-5 py-4 border-b {border}">
@@ -775,6 +793,9 @@
 						</div>
 					</section>
 
+					{/if}
+
+					{#if activeSection === 'danger'}
 					<!-- Danger Zone Section -->
 					<section id="danger" class="rounded-xl border border-red-500/30 {cardBg} overflow-hidden">
 						<div class="px-5 py-4 border-b border-red-500/30">
@@ -817,6 +838,7 @@
 							</div>
 						</div>
 					</section>
+					{/if}
 				</div>
 			</div>
 		</main>

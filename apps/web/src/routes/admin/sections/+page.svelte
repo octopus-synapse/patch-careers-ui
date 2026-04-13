@@ -11,7 +11,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-svelte';
-	import { Input, Tooltip } from 'ui';
+	import { Button, Input, Tooltip } from 'ui';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 	import Pagination from '$lib/components/admin/pagination.svelte';
@@ -141,9 +141,9 @@
 		<h1 class="text-xl font-semibold tracking-tight {text}">Section Types</h1>
 		<div class="flex items-center gap-2">
 			<ExportButton data={sections} filename="section-types.csv" colorSchema={cs} />
-			<button onclick={openCreate} class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {cs === 'dark' ? 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300' : 'bg-gray-800 text-gray-50 hover:bg-gray-700'}">
+			<Button variant="solid" size="sm" onclick={openCreate} colorSchema={cs}>
 				<Plus size={14} /> Add
-			</button>
+			</Button>
 		</div>
 	</div>
 
@@ -157,19 +157,19 @@
 	<DataTable {columns} data={sections} loading={sectionsQuery.isLoading} emptyMessage="No section types" colorSchema={cs}>
 		{#snippet cell({ row, key })}
 			{#if key === 'isActive'}
-				<button onclick={() => handleToggleActive(row)} class="transition-colors">
+				<Button variant="icon" size="xs" onclick={() => handleToggleActive(row)} colorSchema={cs}>
 					{#if row.isActive}<ToggleRight size={18} class="text-emerald-500" />{:else}<ToggleLeft size={18} class={muted} />{/if}
-				</button>
+				</Button>
 			{:else if key === 'isSystem'}
 				<span class="text-xs {row.isSystem ? 'text-amber-500' : muted}">{row.isSystem ? 'Yes' : 'No'}</span>
 			{:else if key === 'actions'}
 				<div class="flex items-center gap-1">
 					<Tooltip text="Edit" colorSchema={cs}>
-						<button onclick={() => openEdit(row)} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}"><Pencil size={14} /></button>
+						<Button variant="icon" size="xs" onclick={() => openEdit(row)} colorSchema={cs}><Pencil size={14} /></Button>
 					</Tooltip>
 					{#if !row.isSystem}
 						<Tooltip text="Delete" colorSchema={cs}>
-							<button onclick={() => deleteKey = row.key as string} class="rounded p-1 text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={14} /></button>
+							<Button variant="danger" size="xs" onclick={() => deleteKey = row.key as string} colorSchema={cs}><Trash2 size={14} /></Button>
 						</Tooltip>
 					{/if}
 				</div>

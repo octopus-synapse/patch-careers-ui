@@ -250,50 +250,6 @@ export const prefetchShareAnalyticsGetAnalyticsNestedQuery = async <TData = Awai
 
 
 
-export const getShareAnalyticsGetAnalyticsNestedSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = void>(resumeId: string,
-    shareId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getShareAnalyticsGetAnalyticsNestedQueryKey(resumeId,shareId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>> = ({ signal }) => shareAnalyticsGetAnalyticsNested(resumeId,shareId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ShareAnalyticsGetAnalyticsNestedSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>
-export type ShareAnalyticsGetAnalyticsNestedSuspenseQueryError = void
-
-
-/**
- * @summary Get analytics for a shared resume (nested route)
- */
-
-export function createShareAnalyticsGetAnalyticsNestedSuspense<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = void>(
- resumeId: () =>  string,
-    shareId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getShareAnalyticsGetAnalyticsNestedSuspenseQueryOptions(resumeId(),
-    shareId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get analytics for a share id
  */
@@ -464,47 +420,6 @@ export const prefetchShareAnalyticsGetAnalyticsQuery = async <TData = Awaited<Re
 
   return queryClient;
 }
-
-
-
-export const getShareAnalyticsGetAnalyticsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = void>(shareId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getShareAnalyticsGetAnalyticsQueryKey(shareId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>> = ({ signal }) => shareAnalyticsGetAnalytics(shareId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ShareAnalyticsGetAnalyticsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>
-export type ShareAnalyticsGetAnalyticsSuspenseQueryError = void
-
-
-/**
- * @summary Get analytics for a share id
- */
-
-export function createShareAnalyticsGetAnalyticsSuspense<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = void>(
- shareId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getShareAnalyticsGetAnalyticsSuspenseQueryOptions(shareId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -697,50 +612,6 @@ export const prefetchShareAnalyticsGetAnalyticsEventsQuery = async <TData = Awai
 
   return queryClient;
 }
-
-
-
-export const getShareAnalyticsGetAnalyticsEventsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = void>(shareId: string,
-    params: ShareAnalyticsGetAnalyticsEventsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getShareAnalyticsGetAnalyticsEventsQueryKey(shareId,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>> = ({ signal }) => shareAnalyticsGetAnalyticsEvents(shareId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ShareAnalyticsGetAnalyticsEventsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>
-export type ShareAnalyticsGetAnalyticsEventsSuspenseQueryError = void
-
-
-/**
- * @summary Get analytics events for a share id
- */
-
-export function createShareAnalyticsGetAnalyticsEventsSuspense<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = void>(
- shareId: () =>  string,
-    params: () =>  ShareAnalyticsGetAnalyticsEventsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getShareAnalyticsGetAnalyticsEventsSuspenseQueryOptions(shareId(),
-    params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

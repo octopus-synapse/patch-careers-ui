@@ -11,7 +11,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { ArrowLeft, Loader2, Pencil, Save, X, Shield, ShieldOff } from 'lucide-svelte';
-	import { Avatar, Input } from 'ui';
+	import { Avatar, Button, Input } from 'ui';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
 	import StatusBadge from '$lib/components/admin/status-badge.svelte';
 	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
@@ -140,36 +140,22 @@
 
 				<div class="flex items-center gap-1">
 					{#if editing}
-						<button
-							onclick={saveEditing}
-							disabled={editLoading}
-							class="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {cs === 'dark' ? 'bg-neutral-200 text-neutral-900' : 'bg-gray-800 text-gray-50'}"
-						>
+						<Button variant="solid" size="sm" onclick={saveEditing} disabled={editLoading} colorSchema={cs}>
 							{#if editLoading}<Loader2 size={12} class="animate-spin" />{:else}<Save size={12} />{/if}
 							Save
-						</button>
-						<button
-							onclick={cancelEditing}
-							class="rounded-lg p-1.5 transition-colors {cs === 'dark' ? 'text-neutral-400 hover:bg-neutral-700' : 'text-gray-400 hover:bg-gray-100'}"
-						>
+						</Button>
+						<Button variant="icon" size="xs" onclick={cancelEditing} colorSchema={cs}>
 							<X size={16} />
-						</button>
+						</Button>
 					{:else}
-						<button
-							onclick={startEditing}
-							class="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {cs === 'dark' ? 'text-neutral-400 hover:bg-neutral-700' : 'text-gray-500 hover:bg-gray-100'}"
-						>
+						<Button variant="ghost" size="sm" onclick={startEditing} colorSchema={cs}>
 							<Pencil size={12} />
 							Edit
-						</button>
-						<button
-							onclick={() => roleConfirm = true}
-							class="flex items-center gap-1 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {isAdmin ? 'text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20' : cs === 'dark' ? 'text-neutral-400 hover:bg-neutral-700' : 'text-gray-500 hover:bg-gray-100'}"
-							title={isAdmin ? 'Remove admin' : 'Make admin'}
-						>
+						</Button>
+						<Button variant="ghost" size="sm" onclick={() => roleConfirm = true} colorSchema={cs} class={isAdmin ? 'text-purple-400' : ''} title={isAdmin ? 'Remove admin' : 'Make admin'}>
 							{#if isAdmin}<ShieldOff size={12} />{:else}<Shield size={12} />{/if}
 							{isAdmin ? 'Revoke Admin' : 'Make Admin'}
-						</button>
+						</Button>
 					{/if}
 				</div>
 			</div>

@@ -226,47 +226,6 @@ export const prefetchEnumsGetExportFormatsQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getEnumsGetExportFormatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof enumsGetExportFormats>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getEnumsGetExportFormatsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof enumsGetExportFormats>>> = ({ signal }) => enumsGetExportFormats({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetExportFormats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type EnumsGetExportFormatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof enumsGetExportFormats>>>
-export type EnumsGetExportFormatsSuspenseQueryError = unknown
-
-
-/**
- * @summary Get available export formats
- */
-
-export function createEnumsGetExportFormatsSuspense<TData = Awaited<ReturnType<typeof enumsGetExportFormats>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getEnumsGetExportFormatsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Returns all available user roles in the system
  * @summary Get available user roles
@@ -429,47 +388,6 @@ export const prefetchEnumsGetUserRolesQuery = async <TData = Awaited<ReturnType<
 
 
 
-export const getEnumsGetUserRolesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof enumsGetUserRoles>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getEnumsGetUserRolesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof enumsGetUserRoles>>> = ({ signal }) => enumsGetUserRoles({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetUserRoles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type EnumsGetUserRolesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof enumsGetUserRoles>>>
-export type EnumsGetUserRolesSuspenseQueryError = unknown
-
-
-/**
- * @summary Get available user roles
- */
-
-export function createEnumsGetUserRolesSuspense<TData = Awaited<ReturnType<typeof enumsGetUserRoles>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getEnumsGetUserRolesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Returns all available resume section types from definitions
  * @summary Get available section types
@@ -629,47 +547,6 @@ export const prefetchEnumsGetSectionTypesQuery = async <TData = Awaited<ReturnTy
 
   return queryClient;
 }
-
-
-
-export const getEnumsGetSectionTypesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof enumsGetSectionTypes>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getEnumsGetSectionTypesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof enumsGetSectionTypes>>> = ({ signal }) => enumsGetSectionTypes({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetSectionTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type EnumsGetSectionTypesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof enumsGetSectionTypes>>>
-export type EnumsGetSectionTypesSuspenseQueryError = unknown
-
-
-/**
- * @summary Get available section types
- */
-
-export function createEnumsGetSectionTypesSuspense<TData = Awaited<ReturnType<typeof enumsGetSectionTypes>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof enumsGetSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getEnumsGetSectionTypesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

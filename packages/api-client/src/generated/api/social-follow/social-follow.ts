@@ -418,47 +418,6 @@ export const prefetchFollowGetFollowersQuery = async <TData = Awaited<ReturnType
 
 
 
-export const getFollowGetFollowersSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowersQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowers>>> = ({ signal }) => followGetFollowers(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type FollowGetFollowersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof followGetFollowers>>>
-export type FollowGetFollowersSuspenseQueryError = unknown
-
-
-/**
- * @summary Get followers for a user
- */
-
-export function createFollowGetFollowersSuspense<TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getFollowGetFollowersSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get users followed by a user
  */
@@ -617,47 +576,6 @@ export const prefetchFollowGetFollowingQuery = async <TData = Awaited<ReturnType
 
   return queryClient;
 }
-
-
-
-export const getFollowGetFollowingSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowingQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowing>>> = ({ signal }) => followGetFollowing(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type FollowGetFollowingSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof followGetFollowing>>>
-export type FollowGetFollowingSuspenseQueryError = unknown
-
-
-/**
- * @summary Get users followed by a user
- */
-
-export function createFollowGetFollowingSuspense<TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getFollowGetFollowingSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -834,47 +752,6 @@ export const prefetchFollowIsFollowingQuery = async <TData = Awaited<ReturnType<
 
 
 
-export const getFollowIsFollowingSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof followIsFollowing>>, TError = void>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getFollowIsFollowingQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followIsFollowing>>> = ({ signal }) => followIsFollowing(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followIsFollowing>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type FollowIsFollowingSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof followIsFollowing>>>
-export type FollowIsFollowingSuspenseQueryError = void
-
-
-/**
- * @summary Check following relationship
- */
-
-export function createFollowIsFollowingSuspense<TData = Awaited<ReturnType<typeof followIsFollowing>>, TError = void>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getFollowIsFollowingSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get social stats for a user
  */
@@ -1033,47 +910,6 @@ export const prefetchFollowGetSocialStatsQuery = async <TData = Awaited<ReturnTy
 
   return queryClient;
 }
-
-
-
-export const getFollowGetSocialStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof followGetSocialStats>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetSocialStatsQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetSocialStats>>> = ({ signal }) => followGetSocialStats(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetSocialStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type FollowGetSocialStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof followGetSocialStats>>>
-export type FollowGetSocialStatsSuspenseQueryError = unknown
-
-
-/**
- * @summary Get social stats for a user
- */
-
-export function createFollowGetSocialStatsSuspense<TData = Awaited<ReturnType<typeof followGetSocialStats>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof followGetSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getFollowGetSocialStatsSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

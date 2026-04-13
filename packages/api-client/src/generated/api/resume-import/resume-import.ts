@@ -436,47 +436,6 @@ export const prefetchResumeImportGetStatusQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getResumeImportGetStatusSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeImportGetStatus>>, TError = void>(importId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeImportGetStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeImportGetStatusQueryKey(importId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeImportGetStatus>>> = ({ signal }) => resumeImportGetStatus(importId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeImportGetStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeImportGetStatusSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeImportGetStatus>>>
-export type ResumeImportGetStatusSuspenseQueryError = void
-
-
-/**
- * @summary Get import job status
- */
-
-export function createResumeImportGetStatusSuspense<TData = Awaited<ReturnType<typeof resumeImportGetStatus>>, TError = void>(
- importId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeImportGetStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeImportGetStatusSuspenseQueryOptions(importId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Cancels pending or processing import. Cannot cancel completed imports.
  * @summary Cancel import job
@@ -742,47 +701,6 @@ export const prefetchResumeImportGetHistoryQuery = async <TData = Awaited<Return
 
   return queryClient;
 }
-
-
-
-export const getResumeImportGetHistorySuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeImportGetHistory>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeImportGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeImportGetHistoryQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeImportGetHistory>>> = ({ signal }) => resumeImportGetHistory({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeImportGetHistory>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeImportGetHistorySuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeImportGetHistory>>>
-export type ResumeImportGetHistorySuspenseQueryError = void
-
-
-/**
- * @summary Get import history
- */
-
-export function createResumeImportGetHistorySuspense<TData = Awaited<ReturnType<typeof resumeImportGetHistory>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeImportGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeImportGetHistorySuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

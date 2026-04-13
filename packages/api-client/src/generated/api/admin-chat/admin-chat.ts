@@ -235,47 +235,6 @@ export const prefetchAdminChatGetStatsQuery = async <TData = Awaited<ReturnType<
 
 
 
-export const getAdminChatGetStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminChatGetStatsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminChatGetStats>>> = ({ signal }) => adminChatGetStats({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminChatGetStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminChatGetStats>>>
-export type AdminChatGetStatsSuspenseQueryError = void
-
-
-/**
- * @summary Get chat statistics
- */
-
-export function createAdminChatGetStatsSuspense<TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminChatGetStatsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary List all conversations
  */
@@ -453,47 +412,6 @@ export const prefetchAdminChatGetConversationsQuery = async <TData = Awaited<Ret
 
   return queryClient;
 }
-
-
-
-export const getAdminChatGetConversationsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = void>(params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminChatGetConversationsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminChatGetConversations>>> = ({ signal }) => adminChatGetConversations(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminChatGetConversationsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminChatGetConversations>>>
-export type AdminChatGetConversationsSuspenseQueryError = void
-
-
-/**
- * @summary List all conversations
- */
-
-export function createAdminChatGetConversationsSuspense<TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = void>(
- params?: () =>  AdminChatGetConversationsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminChatGetConversationsSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

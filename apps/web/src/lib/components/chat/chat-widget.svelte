@@ -10,6 +10,7 @@
 		getChatGetMessagesQueryKey
 	} from 'api-client';
 	import { customFetch } from 'api-client/client';
+	import { Button } from 'ui';
 	import { Loader2, Maximize2, Minimize2, X, ArrowLeft } from 'lucide-svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { colorSchema } from '$lib/color-schema.svelte';
@@ -136,9 +137,9 @@
 		<div class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 {border} {headerBg}">
 			<div class="flex items-center gap-2">
 				{#if chatState.activeConversationId && !chatState.isFullscreen}
-					<button onclick={() => chatState.setActiveConversation(null)} class="p-0.5 {muted} hover:opacity-70">
+					<Button variant="icon" size="xs" onclick={() => chatState.setActiveConversation(null)} colorSchema={cs}>
 						<ArrowLeft size={16} />
-					</button>
+					</Button>
 				{/if}
 				{#if activeOther && !chatState.isFullscreen}
 					<a href="/@{activeOther.username}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -157,16 +158,16 @@
 				{/if}
 			</div>
 			<div class="flex items-center gap-1">
-				<button onclick={() => chatState.toggleFullscreen()} class="p-1 {muted} hover:opacity-70">
+				<Button variant="icon" size="xs" onclick={() => chatState.toggleFullscreen()} colorSchema={cs}>
 					{#if chatState.isFullscreen}
 						<Minimize2 size={14} />
 					{:else}
 						<Maximize2 size={14} />
 					{/if}
-				</button>
-				<button onclick={() => chatState.close()} class="p-1 {muted} hover:opacity-70">
+				</Button>
+				<Button variant="icon" size="xs" onclick={() => chatState.close()} colorSchema={cs}>
 					<X size={14} />
-				</button>
+				</Button>
 			</div>
 		</div>
 

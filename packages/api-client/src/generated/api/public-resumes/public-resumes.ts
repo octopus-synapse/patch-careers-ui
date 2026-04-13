@@ -224,47 +224,6 @@ export const prefetchResumesGetPublicResumeQuery = async <TData = Awaited<Return
 
 
 
-export const getResumesGetPublicResumeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetPublicResume>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetPublicResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesGetPublicResumeQueryKey(slug);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetPublicResume>>> = ({ signal }) => resumesGetPublicResume(slug, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetPublicResume>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesGetPublicResumeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetPublicResume>>>
-export type ResumesGetPublicResumeSuspenseQueryError = unknown
-
-
-/**
- * @summary Get public resume by share slug
- */
-
-export function createResumesGetPublicResumeSuspense<TData = Awaited<ReturnType<typeof resumesGetPublicResume>>, TError = unknown>(
- slug: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesGetPublicResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesGetPublicResumeSuspenseQueryOptions(slug(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Download public resume by share slug
  */
@@ -423,47 +382,6 @@ export const prefetchResumesDownloadPublicResumeQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getResumesDownloadPublicResumeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumesDownloadPublicResume>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesDownloadPublicResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumesDownloadPublicResumeQueryKey(slug);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesDownloadPublicResume>>> = ({ signal }) => resumesDownloadPublicResume(slug, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesDownloadPublicResume>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumesDownloadPublicResumeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumesDownloadPublicResume>>>
-export type ResumesDownloadPublicResumeSuspenseQueryError = unknown
-
-
-/**
- * @summary Download public resume by share slug
- */
-
-export function createResumesDownloadPublicResumeSuspense<TData = Awaited<ReturnType<typeof resumesDownloadPublicResume>>, TError = unknown>(
- slug: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumesDownloadPublicResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumesDownloadPublicResumeSuspenseQueryOptions(slug(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

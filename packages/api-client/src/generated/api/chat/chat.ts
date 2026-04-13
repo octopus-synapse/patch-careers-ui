@@ -459,50 +459,6 @@ export const prefetchChatGetMessagesQuery = async <TData = Awaited<ReturnType<ty
 
 
 
-export const getChatGetMessagesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatGetMessages>>, TError = void>(conversationId: string,
-    params?: ChatGetMessagesParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetMessages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatGetMessagesQueryKey(conversationId,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatGetMessages>>> = ({ signal }) => chatGetMessages(conversationId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetMessages>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatGetMessagesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatGetMessages>>>
-export type ChatGetMessagesSuspenseQueryError = void
-
-
-/**
- * @summary Get messages for a conversation
- */
-
-export function createChatGetMessagesSuspense<TData = Awaited<ReturnType<typeof chatGetMessages>>, TError = void>(
- conversationId: () =>  string,
-    params?: () =>  ChatGetMessagesParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetMessages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatGetMessagesSuspenseQueryOptions(conversationId(),
-    params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get all conversations for the current user
  */
@@ -683,47 +639,6 @@ export const prefetchChatGetConversationsQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getChatGetConversationsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatGetConversations>>, TError = void>(params?: ChatGetConversationsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatGetConversationsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatGetConversations>>> = ({ signal }) => chatGetConversations(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatGetConversationsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatGetConversations>>>
-export type ChatGetConversationsSuspenseQueryError = void
-
-
-/**
- * @summary Get all conversations for the current user
- */
-
-export function createChatGetConversationsSuspense<TData = Awaited<ReturnType<typeof chatGetConversations>>, TError = void>(
- params?: () =>  ChatGetConversationsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatGetConversationsSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get a single conversation
  */
@@ -894,47 +809,6 @@ export const prefetchChatGetConversationQuery = async <TData = Awaited<ReturnTyp
 
   return queryClient;
 }
-
-
-
-export const getChatGetConversationSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatGetConversation>>, TError = void>(conversationId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversation>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatGetConversationQueryKey(conversationId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatGetConversation>>> = ({ signal }) => chatGetConversation(conversationId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatGetConversationSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatGetConversation>>>
-export type ChatGetConversationSuspenseQueryError = void
-
-
-/**
- * @summary Get a single conversation
- */
-
-export function createChatGetConversationSuspense<TData = Awaited<ReturnType<typeof chatGetConversation>>, TError = void>(
- conversationId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversation>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatGetConversationSuspenseQueryOptions(conversationId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1204,47 +1078,6 @@ export const prefetchChatGetUnreadCountQuery = async <TData = Awaited<ReturnType
 
 
 
-export const getChatGetUnreadCountSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatGetUnreadCount>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatGetUnreadCountQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatGetUnreadCount>>> = ({ signal }) => chatGetUnreadCount({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetUnreadCount>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatGetUnreadCountSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatGetUnreadCount>>>
-export type ChatGetUnreadCountSuspenseQueryError = void
-
-
-/**
- * @summary Get unread message count
- */
-
-export function createChatGetUnreadCountSuspense<TData = Awaited<ReturnType<typeof chatGetUnreadCount>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatGetUnreadCountSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get or create conversation with a user
  */
@@ -1415,47 +1248,6 @@ export const prefetchChatGetConversationWithQuery = async <TData = Awaited<Retur
 
   return queryClient;
 }
-
-
-
-export const getChatGetConversationWithSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatGetConversationWith>>, TError = void>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversationWith>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatGetConversationWithQueryKey(userId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatGetConversationWith>>> = ({ signal }) => chatGetConversationWith(userId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversationWith>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatGetConversationWithSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatGetConversationWith>>>
-export type ChatGetConversationWithSuspenseQueryError = void
-
-
-/**
- * @summary Get or create conversation with a user
- */
-
-export function createChatGetConversationWithSuspense<TData = Awaited<ReturnType<typeof chatGetConversationWith>>, TError = void>(
- userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatGetConversationWith>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatGetConversationWithSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1636,47 +1428,6 @@ export const prefetchChatSearchUsersQuery = async <TData = Awaited<ReturnType<ty
 
   return queryClient;
 }
-
-
-
-export const getChatSearchUsersSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(params: ChatSearchUsersParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getChatSearchUsersQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatSearchUsers>>> = ({ signal }) => chatSearchUsers(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChatSearchUsersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatSearchUsers>>>
-export type ChatSearchUsersSuspenseQueryError = void
-
-
-/**
- * @summary Search users to start a conversation
- */
-
-export function createChatSearchUsersSuspense<TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(
- params: () =>  ChatSearchUsersParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getChatSearchUsersSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

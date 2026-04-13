@@ -235,47 +235,6 @@ export const prefetchAdminCollaborationsGetStatsQuery = async <TData = Awaited<R
 
 
 
-export const getAdminCollaborationsGetStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminCollaborationsGetStatsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminCollaborationsGetStats>>> = ({ signal }) => adminCollaborationsGetStats({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminCollaborationsGetStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>
-export type AdminCollaborationsGetStatsSuspenseQueryError = void
-
-
-/**
- * @summary Get collaboration statistics
- */
-
-export function createAdminCollaborationsGetStatsSuspense<TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminCollaborationsGetStatsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary List all collaborations
  */
@@ -453,47 +412,6 @@ export const prefetchAdminCollaborationsGetCollaborationsQuery = async <TData = 
 
   return queryClient;
 }
-
-
-
-export const getAdminCollaborationsGetCollaborationsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = void>(params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAdminCollaborationsGetCollaborationsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>> = ({ signal }) => adminCollaborationsGetCollaborations(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AdminCollaborationsGetCollaborationsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>
-export type AdminCollaborationsGetCollaborationsSuspenseQueryError = void
-
-
-/**
- * @summary List all collaborations
- */
-
-export function createAdminCollaborationsGetCollaborationsSuspense<TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = void>(
- params?: () =>  AdminCollaborationsGetCollaborationsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAdminCollaborationsGetCollaborationsSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

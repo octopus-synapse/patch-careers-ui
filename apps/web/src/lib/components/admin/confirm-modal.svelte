@@ -27,7 +27,6 @@
 	}: Props = $props();
 
 	const cs = $derived(colorSchema);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
 	const muted = $derived(cs === 'dark' ? 'text-neutral-400' : 'text-gray-500');
 </script>
 
@@ -36,15 +35,12 @@
 	<p class="mb-6 text-sm {muted}">{message}</p>
 	<div class="flex gap-3">
 		<div class="flex-1">
-			<button
-				onclick={oncancel}
-				class="w-full rounded-full border py-2.5 text-xs font-bold uppercase tracking-widest transition-colors {cs === 'dark' ? 'border-neutral-600 text-neutral-300 hover:bg-neutral-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}"
-			>
+			<Button variant="outline" size="md" fullWidth onclick={oncancel} colorSchema={cs}>
 				{cancelLabel}
-			</button>
+			</Button>
 		</div>
 		<div class="flex-1">
-			<Button onclick={onconfirm} disabled={loading} colorSchema={cs}>
+			<Button variant="solid" size="md" fullWidth onclick={onconfirm} disabled={loading} colorSchema={cs}>
 				{loading ? '...' : confirmLabel}
 			</Button>
 		</div>

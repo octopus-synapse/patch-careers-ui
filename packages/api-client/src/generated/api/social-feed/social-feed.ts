@@ -225,47 +225,6 @@ export const prefetchSocialSubscribeToFeedQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getSocialSubscribeToFeedSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof socialSubscribeToFeed>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof socialSubscribeToFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSocialSubscribeToFeedQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof socialSubscribeToFeed>>> = ({ signal }) => socialSubscribeToFeed({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof socialSubscribeToFeed>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SocialSubscribeToFeedSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof socialSubscribeToFeed>>>
-export type SocialSubscribeToFeedSuspenseQueryError = void
-
-
-/**
- * @summary Subscribe to activity feed stream
- */
-
-export function createSocialSubscribeToFeedSuspense<TData = Awaited<ReturnType<typeof socialSubscribeToFeed>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof socialSubscribeToFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSocialSubscribeToFeedSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Streams real-time feed updates filtered by activity type.
  * @summary Subscribe to activity type stream
@@ -430,47 +389,6 @@ export const prefetchSocialSubscribeToActivityTypeQuery = async <TData = Awaited
 
   return queryClient;
 }
-
-
-
-export const getSocialSubscribeToActivityTypeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof socialSubscribeToActivityType>>, TError = void>(type: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof socialSubscribeToActivityType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSocialSubscribeToActivityTypeQueryKey(type);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof socialSubscribeToActivityType>>> = ({ signal }) => socialSubscribeToActivityType(type, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof socialSubscribeToActivityType>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SocialSubscribeToActivityTypeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof socialSubscribeToActivityType>>>
-export type SocialSubscribeToActivityTypeSuspenseQueryError = void
-
-
-/**
- * @summary Subscribe to activity type stream
- */
-
-export function createSocialSubscribeToActivityTypeSuspense<TData = Awaited<ReturnType<typeof socialSubscribeToActivityType>>, TError = void>(
- type: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof socialSubscribeToActivityType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSocialSubscribeToActivityTypeSuspenseQueryOptions(type(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

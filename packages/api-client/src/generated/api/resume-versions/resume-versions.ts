@@ -231,47 +231,6 @@ export const prefetchResumeVersionGetVersionsNestedQuery = async <TData = Awaite
 
 
 
-export const getResumeVersionGetVersionsNestedSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeVersionGetVersionsNestedQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>> = ({ signal }) => resumeVersionGetVersionsNested(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeVersionGetVersionsNestedSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>>
-export type ResumeVersionGetVersionsNestedSuspenseQueryError = unknown
-
-
-/**
- * @summary List resume versions (nested route)
- */
-
-export function createResumeVersionGetVersionsNestedSuspense<TData = Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>, TError = unknown>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersionsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeVersionGetVersionsNestedSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Restore resume version (nested route)
  */
@@ -516,47 +475,6 @@ export const prefetchResumeVersionGetVersionsQuery = async <TData = Awaited<Retu
 
 
 
-export const getResumeVersionGetVersionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionGetVersions>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeVersionGetVersionsQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeVersionGetVersions>>> = ({ signal }) => resumeVersionGetVersions(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeVersionGetVersionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionGetVersions>>>
-export type ResumeVersionGetVersionsSuspenseQueryError = unknown
-
-
-/**
- * @summary List resume versions
- */
-
-export function createResumeVersionGetVersionsSuspense<TData = Awaited<ReturnType<typeof resumeVersionGetVersions>>, TError = unknown>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeVersionGetVersionsSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get a specific resume version
  */
@@ -727,50 +645,6 @@ export const prefetchResumeVersionGetVersionQuery = async <TData = Awaited<Retur
 
   return queryClient;
 }
-
-
-
-export const getResumeVersionGetVersionSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionGetVersion>>, TError = unknown>(resumeId: string,
-    versionId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersion>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeVersionGetVersionQueryKey(resumeId,versionId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeVersionGetVersion>>> = ({ signal }) => resumeVersionGetVersion(resumeId,versionId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersion>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeVersionGetVersionSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionGetVersion>>>
-export type ResumeVersionGetVersionSuspenseQueryError = unknown
-
-
-/**
- * @summary Get a specific resume version
- */
-
-export function createResumeVersionGetVersionSuspense<TData = Awaited<ReturnType<typeof resumeVersionGetVersion>>, TError = unknown>(
- resumeId: () =>  string,
-    versionId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeVersionGetVersion>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeVersionGetVersionSuspenseQueryOptions(resumeId(),
-    versionId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

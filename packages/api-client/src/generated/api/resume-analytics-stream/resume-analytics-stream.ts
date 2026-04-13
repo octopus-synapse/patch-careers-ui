@@ -225,47 +225,6 @@ export const prefetchResumeAnalyticsSubscribeToResumeAnalyticsQuery = async <TDa
 
 
 
-export const getResumeAnalyticsSubscribeToResumeAnalyticsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeAnalyticsSubscribeToResumeAnalyticsQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>> = ({ signal }) => resumeAnalyticsSubscribeToResumeAnalytics(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeAnalyticsSubscribeToResumeAnalyticsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>>
-export type ResumeAnalyticsSubscribeToResumeAnalyticsSuspenseQueryError = void
-
-
-/**
- * @summary Subscribe to live analytics stream
- */
-
-export function createResumeAnalyticsSubscribeToResumeAnalyticsSuspense<TData = Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>, TError = void>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToResumeAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeAnalyticsSubscribeToResumeAnalyticsSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Streams only view-count updates for a resume.
  * @summary Subscribe to live views stream
@@ -433,47 +392,6 @@ export const prefetchResumeAnalyticsSubscribeToViewsQuery = async <TData = Await
 
 
 
-export const getResumeAnalyticsSubscribeToViewsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeAnalyticsSubscribeToViewsQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>> = ({ signal }) => resumeAnalyticsSubscribeToViews(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeAnalyticsSubscribeToViewsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>>
-export type ResumeAnalyticsSubscribeToViewsSuspenseQueryError = void
-
-
-/**
- * @summary Subscribe to live views stream
- */
-
-export function createResumeAnalyticsSubscribeToViewsSuspense<TData = Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>, TError = void>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToViews>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeAnalyticsSubscribeToViewsSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * Streams only ATS-score updates for a resume.
  * @summary Subscribe to live ATS stream
@@ -638,47 +556,6 @@ export const prefetchResumeAnalyticsSubscribeToAtsScoreQuery = async <TData = Aw
 
   return queryClient;
 }
-
-
-
-export const getResumeAnalyticsSubscribeToAtsScoreSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getResumeAnalyticsSubscribeToAtsScoreQueryKey(resumeId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>> = ({ signal }) => resumeAnalyticsSubscribeToAtsScore(resumeId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ResumeAnalyticsSubscribeToAtsScoreSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>>
-export type ResumeAnalyticsSubscribeToAtsScoreSuspenseQueryError = void
-
-
-/**
- * @summary Subscribe to live ATS stream
- */
-
-export function createResumeAnalyticsSubscribeToAtsScoreSuspense<TData = Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>, TError = void>(
- resumeId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsSubscribeToAtsScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getResumeAnalyticsSubscribeToAtsScoreSuspenseQueryOptions(resumeId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

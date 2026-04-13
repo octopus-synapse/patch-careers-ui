@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from 'ui';
 	import type { ColorSchema } from 'ui';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
@@ -12,9 +13,6 @@
 	let { page, totalPages, colorSchema = 'light', onpagechange }: Props = $props();
 
 	const cs = $derived(colorSchema);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-400');
-	const btnBg = $derived(cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100');
 	const activeBg = $derived(cs === 'dark' ? 'bg-neutral-700 text-neutral-200' : 'bg-gray-200 text-gray-800');
 
 	const pages = $derived(() => {
@@ -32,39 +30,48 @@
 		result.push(totalPages);
 		return result;
 	});
+
+	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-400');
 </script>
 
 {#if totalPages > 1}
 	<div class="flex items-center gap-1">
-		<button
+		<Button
+			variant="icon"
+			size="sm"
 			onclick={() => onpagechange(page - 1)}
 			disabled={page <= 1}
-			class="rounded-lg p-1.5 transition-colors disabled:opacity-30 {btnBg} {text}"
+			colorSchema={cs}
 			aria-label="Previous page"
 		>
 			<ChevronLeft size={16} />
-		</button>
+		</Button>
 
 		{#each pages() as p}
 			{#if p === '...'}
 				<span class="px-2 text-xs {muted}">...</span>
 			{:else}
-				<button
+				<Button
+					variant="ghost"
+					size="xs"
 					onclick={() => onpagechange(p)}
-					class="rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {p === page ? activeBg : btnBg + ' ' + text}"
+					colorSchema={cs}
+					class={p === page ? activeBg : ''}
 				>
 					{p}
-				</button>
+				</Button>
 			{/if}
 		{/each}
 
-		<button
+		<Button
+			variant="icon"
+			size="sm"
 			onclick={() => onpagechange(page + 1)}
 			disabled={page >= totalPages}
-			class="rounded-lg p-1.5 transition-colors disabled:opacity-30 {btnBg} {text}"
+			colorSchema={cs}
 			aria-label="Next page"
 		>
 			<ChevronRight size={16} />
-		</button>
+		</Button>
 	</div>
 {/if}

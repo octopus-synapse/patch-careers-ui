@@ -27,7 +27,6 @@
 	}: Props = $props();
 
 	const cs = $derived(colorSchema);
-	const muted = $derived(cs === 'dark' ? 'text-neutral-400' : 'text-gray-500');
 
 	function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
@@ -41,18 +40,14 @@
 		{@render children()}
 		<div class="flex gap-3 pt-2">
 			<div class="flex-1">
-				<button
-					type="button"
-					onclick={oncancel}
-					class="w-full rounded-full border py-2.5 text-xs font-bold uppercase tracking-widest transition-colors {cs === 'dark' ? 'border-neutral-600 text-neutral-300 hover:bg-neutral-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}"
-				>
+				<Button type="button" variant="outline" size="md" fullWidth onclick={oncancel} colorSchema={cs}>
 					Cancel
-				</button>
+				</Button>
 			</div>
 			<div class="flex-1">
-				<Button type="submit" disabled={loading} colorSchema={cs}>
+				<Button type="submit" variant="solid" size="md" fullWidth disabled={loading} colorSchema={cs}>
 					{#if loading}
-						<Loader2 size={14} class="mx-auto animate-spin" />
+						<Loader2 size={14} class="animate-spin" />
 					{:else}
 						{submitLabel}
 					{/if}

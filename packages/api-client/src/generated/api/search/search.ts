@@ -235,47 +235,6 @@ export const prefetchSearchSearchQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export const getSearchSearchSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof searchSearch>>, TError = unknown>(params: SearchSearchParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSearchSearchQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchSearch>>> = ({ signal }) => searchSearch(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSearch>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SearchSearchSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof searchSearch>>>
-export type SearchSearchSuspenseQueryError = unknown
-
-
-/**
- * @summary Search public resumes
- */
-
-export function createSearchSearchSuspense<TData = Awaited<ReturnType<typeof searchSearch>>, TError = unknown>(
- params: () =>  SearchSearchParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSearchSearchSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get search autocomplete suggestions
  */
@@ -441,47 +400,6 @@ export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<
 
   return queryClient;
 }
-
-
-
-export const getSearchSuggestionsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = unknown>(params: SearchSuggestionsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSearchSuggestionsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchSuggestions>>> = ({ signal }) => searchSuggestions(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SearchSuggestionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof searchSuggestions>>>
-export type SearchSuggestionsSuspenseQueryError = unknown
-
-
-/**
- * @summary Get search autocomplete suggestions
- */
-
-export function createSearchSuggestionsSuspense<TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = unknown>(
- params: () =>  SearchSuggestionsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSearchSuggestionsSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -662,50 +580,6 @@ export const prefetchSearchSimilarQuery = async <TData = Awaited<ReturnType<type
 
   return queryClient;
 }
-
-
-
-export const getSearchSimilarSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = unknown>(id: string,
-    params: SearchSimilarParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSearchSimilarQueryKey(id,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchSimilar>>> = ({ signal }) => searchSimilar(id,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SearchSimilarSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof searchSimilar>>>
-export type SearchSimilarSuspenseQueryError = unknown
-
-
-/**
- * @summary Find similar resumes by resume id
- */
-
-export function createSearchSimilarSuspense<TData = Awaited<ReturnType<typeof searchSimilar>>, TError = unknown>(
- id: () =>  string,
-    params: () =>  SearchSimilarParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getSearchSimilarSuspenseQueryOptions(id(),
-    params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

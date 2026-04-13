@@ -3,6 +3,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import type { Locale } from 'i18n';
+	import { Button } from 'ui';
 	import { Menu, X, Sun, Moon, Search, Briefcase, Users, MessageCircle, Shield } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { useQueryClient } from '@tanstack/svelte-query';
@@ -150,13 +151,10 @@
 						{/each}
 
 						{#if authenticated}
-							<button
-								onclick={() => chatState.toggle()}
-								class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
-							>
+							<Button variant="ghost" size="sm" onclick={() => chatState.toggle()} colorSchema={cs}>
 								<MessageCircle size={14} />
 								{t('nav.messages')}
-							</button>
+							</Button>
 						{/if}
 
 						{#if isAdmin}
@@ -206,13 +204,16 @@
 					</div>
 				{/if}
 
-				<button
+				<Button
+					variant="icon"
+					size="sm"
 					onclick={() => (isMenuOpen = !isMenuOpen)}
-					class="rounded-lg p-1.5 transition-colors md:hidden {s.muted[cs]}"
+					colorSchema={cs}
+					class="md:hidden"
 					aria-label={isMenuOpen ? t('nav.close') : t('nav.menu')}
 				>
 					{#if isMenuOpen}<X size={20} />{:else}<Menu size={20} />{/if}
-				</button>
+				</Button>
 			</div>
 		</div>
 

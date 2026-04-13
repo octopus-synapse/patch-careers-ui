@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from 'ui';
 	import type { ColorSchema } from 'ui';
 	import { Download } from 'lucide-svelte';
 
@@ -9,13 +10,6 @@
 	};
 
 	let { data, filename = 'export.csv', colorSchema = 'light' }: Props = $props();
-
-	const cs = $derived(colorSchema);
-	const btnClass = $derived(
-		cs === 'dark'
-			? 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700'
-			: 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
-	);
 
 	function exportCsv() {
 		if (data.length === 0) return;
@@ -42,12 +36,13 @@
 	}
 </script>
 
-<button
+<Button
+	variant="ghost"
+	size="sm"
 	onclick={exportCsv}
 	disabled={data.length === 0}
-	class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors disabled:opacity-30 {btnClass}"
-	title="Export CSV"
+	colorSchema={colorSchema}
 >
 	<Download size={14} />
 	CSV
-</button>
+</Button>

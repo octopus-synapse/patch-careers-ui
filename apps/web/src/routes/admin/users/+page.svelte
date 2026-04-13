@@ -12,7 +12,7 @@
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Avatar, Input, Dropdown } from 'ui';
+	import { Avatar, Button, Input, Dropdown } from 'ui';
 	import { Plus, Shield, ShieldOff, MoreVertical, KeyRound, Trash2 } from 'lucide-svelte';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
@@ -51,9 +51,6 @@
 
 	// --- Dropdown state ---
 	let openDropdownId = $state<string | null>(null);
-	const dropdownItemClass = $derived(
-		`flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors ${cs === 'dark' ? 'text-neutral-300 hover:bg-neutral-700' : 'text-gray-700 hover:bg-gray-50'}`
-	);
 
 	// --- Actions state ---
 	let deleteUserId = $state<string | null>(null);
@@ -197,13 +194,10 @@
 		</h1>
 		<div class="flex items-center gap-2">
 			<ExportButton data={users} filename="users.csv" colorSchema={cs} />
-			<button
-				onclick={() => createModal = true}
-				class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {cs === 'dark' ? 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300' : 'bg-gray-800 text-gray-50 hover:bg-gray-700'}"
-			>
+			<Button variant="solid" size="sm" onclick={() => createModal = true} colorSchema={cs}>
 				<Plus size={14} />
 				New User
-			</button>
+			</Button>
 		</div>
 	</div>
 
@@ -219,18 +213,12 @@
 	{#if selectedIds.size > 0}
 		<div class="flex items-center gap-3 rounded-lg border px-4 py-2 {cs === 'dark' ? 'border-neutral-700 bg-neutral-800/50' : 'border-gray-200 bg-gray-50'}">
 			<span class="text-xs font-medium {text}">{selectedIds.size} selected</span>
-			<button
-				onclick={() => bulkDeleteConfirm = true}
-				class="text-[10px] font-semibold uppercase tracking-wider text-red-400 transition-colors hover:text-red-300"
-			>
+			<Button variant="danger" size="xs" onclick={() => bulkDeleteConfirm = true} colorSchema={cs}>
 				Delete Selected
-			</button>
-			<button
-				onclick={() => selectedIds = new Set()}
-				class="text-[10px] font-semibold uppercase tracking-wider {muted}"
-			>
+			</Button>
+			<Button variant="ghost" size="xs" onclick={() => selectedIds = new Set()} colorSchema={cs}>
 				Clear
-			</button>
+			</Button>
 		</div>
 	{/if}
 
@@ -272,23 +260,20 @@
 					onclose={() => openDropdownId = null}
 				>
 					{#snippet trigger()}
-						<button
-							onclick={(e) => { e.stopPropagation(); openDropdownId = openDropdownId === rowId ? null : rowId; }}
-							class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700 text-neutral-400' : 'hover:bg-gray-100 text-gray-400'}"
-						>
+						<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openDropdownId = openDropdownId === rowId ? null : rowId; }} colorSchema={cs}>
 							<MoreVertical size={16} />
-						</button>
+						</Button>
 					{/snippet}
-					<button onclick={(e) => { e.stopPropagation(); openDropdownId = null; toggleRoleUser = row; }} class={dropdownItemClass}>
+					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; toggleRoleUser = row; }} colorSchema={cs}>
 						{#if isRowAdmin}<ShieldOff size={14} class="text-purple-400" />{:else}<Shield size={14} />{/if}
 						{isRowAdmin ? 'Revoke Admin' : 'Make Admin'}
-					</button>
-					<button onclick={(e) => { e.stopPropagation(); openDropdownId = null; resetPasswordUserId = rowId; }} class={dropdownItemClass}>
+					</Button>
+					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; resetPasswordUserId = rowId; }} colorSchema={cs}>
 						<KeyRound size={14} /> Reset Password
-					</button>
-					<button onclick={(e) => { e.stopPropagation(); openDropdownId = null; deleteUserId = rowId; }} class="{dropdownItemClass} !text-red-400">
+					</Button>
+					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; deleteUserId = rowId; }} colorSchema={cs} class="!text-red-400">
 						<Trash2 size={14} /> Delete
-					</button>
+					</Button>
 				</Dropdown>
 			{:else}
 				{row[key] ?? '—'}

@@ -234,47 +234,6 @@ export const prefetchTranslationHealthCheckQuery = async <TData = Awaited<Return
 
 
 
-export const getTranslationHealthCheckSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof translationHealthCheck>>, TError = unknown>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof translationHealthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTranslationHealthCheckQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof translationHealthCheck>>> = ({ signal }) => translationHealthCheck({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof translationHealthCheck>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TranslationHealthCheckSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof translationHealthCheck>>>
-export type TranslationHealthCheckSuspenseQueryError = unknown
-
-
-/**
- * @summary Check translation service health
- */
-
-export function createTranslationHealthCheckSuspense<TData = Awaited<ReturnType<typeof translationHealthCheck>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof translationHealthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTranslationHealthCheckSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Translate a single text
  */

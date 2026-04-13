@@ -246,47 +246,6 @@ export const prefetchTechSkillsQueryGetAreasQuery = async <TData = Awaited<Retur
 
 
 
-export const getTechSkillsQueryGetAreasSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetAreas>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetAreasQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetAreas>>> = ({ signal }) => techSkillsQueryGetAreas({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetAreas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetAreasSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetAreas>>>
-export type TechSkillsQueryGetAreasSuspenseQueryError = void
-
-
-/**
- * @summary Get all tech areas
- */
-
-export function createTechSkillsQueryGetAreasSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetAreas>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetAreasSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get all tech niches
  */
@@ -457,47 +416,6 @@ export const prefetchTechSkillsQueryGetNichesQuery = async <TData = Awaited<Retu
 
   return queryClient;
 }
-
-
-
-export const getTechSkillsQueryGetNichesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetNiches>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetNichesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetNiches>>> = ({ signal }) => techSkillsQueryGetNiches({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetNiches>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetNichesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetNiches>>>
-export type TechSkillsQueryGetNichesSuspenseQueryError = void
-
-
-/**
- * @summary Get all tech niches
- */
-
-export function createTechSkillsQueryGetNichesSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetNiches>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetNichesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -674,47 +592,6 @@ export const prefetchTechSkillsQueryGetNichesByAreaQuery = async <TData = Awaite
 
 
 
-export const getTechSkillsQueryGetNichesByAreaSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>, TError = void>(areaType: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetNichesByAreaQueryKey(areaType);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>> = ({ signal }) => techSkillsQueryGetNichesByArea(areaType, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetNichesByAreaSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>>
-export type TechSkillsQueryGetNichesByAreaSuspenseQueryError = void
-
-
-/**
- * @summary Get niches by tech area type
- */
-
-export function createTechSkillsQueryGetNichesByAreaSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>, TError = void>(
- areaType: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetNichesByArea>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetNichesByAreaSuspenseQueryOptions(areaType(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get all programming languages
  */
@@ -885,47 +762,6 @@ export const prefetchTechSkillsQueryGetLanguagesQuery = async <TData = Awaited<R
 
   return queryClient;
 }
-
-
-
-export const getTechSkillsQueryGetLanguagesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetLanguagesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>> = ({ signal }) => techSkillsQueryGetLanguages({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetLanguagesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>>
-export type TechSkillsQueryGetLanguagesSuspenseQueryError = void
-
-
-/**
- * @summary Get all programming languages
- */
-
-export function createTechSkillsQueryGetLanguagesSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetLanguagesSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1109,47 +945,6 @@ export const prefetchTechSkillsQuerySearchLanguagesQuery = async <TData = Awaite
 
 
 
-export const getTechSkillsQuerySearchLanguagesSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>, TError = void>(params: TechSkillsQuerySearchLanguagesParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQuerySearchLanguagesQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>> = ({ signal }) => techSkillsQuerySearchLanguages(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQuerySearchLanguagesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>>
-export type TechSkillsQuerySearchLanguagesSuspenseQueryError = void
-
-
-/**
- * @summary Search programming languages
- */
-
-export function createTechSkillsQuerySearchLanguagesSuspense<TData = Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>, TError = void>(
- params: () =>  TechSkillsQuerySearchLanguagesParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearchLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQuerySearchLanguagesSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get all tech skills
  */
@@ -1320,47 +1115,6 @@ export const prefetchTechSkillsQueryGetSkillsQuery = async <TData = Awaited<Retu
 
   return queryClient;
 }
-
-
-
-export const getTechSkillsQueryGetSkillsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetSkills>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetSkillsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetSkills>>> = ({ signal }) => techSkillsQueryGetSkills({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkills>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetSkillsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetSkills>>>
-export type TechSkillsQueryGetSkillsSuspenseQueryError = void
-
-
-/**
- * @summary Get all tech skills
- */
-
-export function createTechSkillsQueryGetSkillsSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetSkills>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetSkillsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1544,47 +1298,6 @@ export const prefetchTechSkillsQuerySearchSkillsQuery = async <TData = Awaited<R
 
 
 
-export const getTechSkillsQuerySearchSkillsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>, TError = void>(params: TechSkillsQuerySearchSkillsParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQuerySearchSkillsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>> = ({ signal }) => techSkillsQuerySearchSkills(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQuerySearchSkillsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>>
-export type TechSkillsQuerySearchSkillsSuspenseQueryError = void
-
-
-/**
- * @summary Search tech skills
- */
-
-export function createTechSkillsQuerySearchSkillsSuspense<TData = Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>, TError = void>(
- params: () =>  TechSkillsQuerySearchSkillsParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearchSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQuerySearchSkillsSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get skills by niche
  */
@@ -1755,47 +1468,6 @@ export const prefetchTechSkillsQueryGetSkillsByNicheQuery = async <TData = Await
 
   return queryClient;
 }
-
-
-
-export const getTechSkillsQueryGetSkillsByNicheSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>, TError = void>(nicheSlug: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetSkillsByNicheQueryKey(nicheSlug);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>> = ({ signal }) => techSkillsQueryGetSkillsByNiche(nicheSlug, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetSkillsByNicheSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>>
-export type TechSkillsQueryGetSkillsByNicheSuspenseQueryError = void
-
-
-/**
- * @summary Get skills by niche
- */
-
-export function createTechSkillsQueryGetSkillsByNicheSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>, TError = void>(
- nicheSlug: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetSkillsByNicheSuspenseQueryOptions(nicheSlug(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
@@ -1988,50 +1660,6 @@ export const prefetchTechSkillsQueryGetSkillsByTypeQuery = async <TData = Awaite
 
   return queryClient;
 }
-
-
-
-export const getTechSkillsQueryGetSkillsByTypeSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>, TError = void>(type: string,
-    params: TechSkillsQueryGetSkillsByTypeParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechSkillsQueryGetSkillsByTypeQueryKey(type,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>> = ({ signal }) => techSkillsQueryGetSkillsByType(type,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechSkillsQueryGetSkillsByTypeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>>
-export type TechSkillsQueryGetSkillsByTypeSuspenseQueryError = void
-
-
-/**
- * @summary Get skills by type
- */
-
-export function createTechSkillsQueryGetSkillsByTypeSuspense<TData = Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>, TError = void>(
- type: () =>  string,
-    params: () =>  TechSkillsQueryGetSkillsByTypeParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techSkillsQueryGetSkillsByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechSkillsQueryGetSkillsByTypeSuspenseQueryOptions(type(),
-    params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 

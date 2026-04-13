@@ -236,47 +236,6 @@ export const prefetchTechAreasGetAreasQuery = async <TData = Awaited<ReturnType<
 
 
 
-export const getTechAreasGetAreasSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techAreasGetAreas>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techAreasGetAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechAreasGetAreasQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techAreasGetAreas>>> = ({ signal }) => techAreasGetAreas({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techAreasGetAreas>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechAreasGetAreasSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techAreasGetAreas>>>
-export type TechAreasGetAreasSuspenseQueryError = void
-
-
-/**
- * @summary Get all tech areas
- */
-
-export function createTechAreasGetAreasSuspense<TData = Awaited<ReturnType<typeof techAreasGetAreas>>, TError = void>(
-  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techAreasGetAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechAreasGetAreasSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-
-
-
 /**
  * @summary Get niches by area type
  */
@@ -447,47 +406,6 @@ export const prefetchTechAreasGetNichesByAreaQuery = async <TData = Awaited<Retu
 
   return queryClient;
 }
-
-
-
-export const getTechAreasGetNichesByAreaSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof techAreasGetNichesByArea>>, TError = void>(areaType: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techAreasGetNichesByArea>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getTechAreasGetNichesByAreaQueryKey(areaType);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof techAreasGetNichesByArea>>> = ({ signal }) => techAreasGetNichesByArea(areaType, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techAreasGetNichesByArea>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type TechAreasGetNichesByAreaSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof techAreasGetNichesByArea>>>
-export type TechAreasGetNichesByAreaSuspenseQueryError = void
-
-
-/**
- * @summary Get niches by area type
- */
-
-export function createTechAreasGetNichesByAreaSuspense<TData = Awaited<ReturnType<typeof techAreasGetNichesByArea>>, TError = void>(
- areaType: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof techAreasGetNichesByArea>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getTechAreasGetNichesByAreaSuspenseQueryOptions(areaType(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
 
 
 
