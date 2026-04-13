@@ -37,6 +37,7 @@
 
 {#if isLanding}
 	<QueryClientProvider client={queryClient}>
+		<Navbar />
 		{@render children()}
 	</QueryClientProvider>
 {:else}

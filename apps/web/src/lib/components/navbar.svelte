@@ -12,6 +12,9 @@
 	import NavSearchModal from './nav-search-modal.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+
+	const isLanding = $derived($page.url.pathname === '/');
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
@@ -110,10 +113,12 @@
 {#if t}
 	<NavSearchModal open={isSearchOpen} {cs} {t} onclose={() => isSearchOpen = false} />
 
-	<nav class="fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 {s.border[cs]} {isMenuOpen ? s.mobileBg[cs] : 'backdrop-blur-md ' + s.bg[cs]}">
+	<nav class="fixed top-0 right-0 left-0 z-50 transition-colors duration-300
+		{isLanding ? 'border-transparent' : 'border-b ' + s.border[cs]}
+		{isLanding ? 'bg-transparent' : isMenuOpen ? s.mobileBg[cs] : 'backdrop-blur-md ' + s.bg[cs]}">
 		<div class="mx-auto flex h-14 max-w-7xl items-center px-6">
 			<div class="flex shrink-0 items-center">
-				<NavLogo textClass={s.text[cs]} />
+				<NavLogo textClass={isLanding ? 'text-white' : s.text[cs]} />
 			</div>
 
 			{#if hasCompletedOnboarding}
@@ -187,13 +192,13 @@
 					<div class="hidden items-center gap-4 md:flex">
 						<a
 							href="/login"
-							class="text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+							class="text-[10px] font-semibold uppercase tracking-widest transition-colors {isLanding ? 'text-zinc-400 hover:text-white' : s.link[cs]}"
 						>
 							{t('nav.login')}
 						</a>
 						<a
 							href="/signup"
-							class="rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all {s.join[cs]}"
+							class="rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all {isLanding ? 'border-zinc-600 text-white hover:bg-white hover:text-black' : s.join[cs]}"
 						>
 							{t('nav.join')}
 						</a>
