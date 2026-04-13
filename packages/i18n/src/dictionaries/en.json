@@ -51,6 +51,7 @@
   },
   "network": {
     "pageTitle": "My Network",
+    "manageNetwork": "Manage my network",
     "invitations": "Invitations",
     "connections": "Connections",
     "followersFollowing": "Followers & Following",

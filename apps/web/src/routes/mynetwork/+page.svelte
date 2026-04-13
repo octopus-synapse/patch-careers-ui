@@ -5,7 +5,7 @@
 	import { browser } from '$app/environment';
 	import { Avatar } from 'ui';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Loader2, UserPlus, MessageCircle } from 'lucide-svelte';
+	import { Loader2, UserPlus, MessageCircle, Users, UserCheck, Eye } from 'lucide-svelte';
 	import {
 		createAuthSession,
 		createConnectionGetPendingRequests,
@@ -62,35 +62,18 @@
 	const connectionsList = $derived(
 		((connectionsQuery.data?.data?.data as Record<string, unknown>)?.connections as Record<string, unknown>)?.data as Record<string, unknown>[] ?? []
 	);
+	const connectionsTotal = $derived(
+		((connectionsQuery.data?.data?.data as Record<string, unknown>)?.connections as Record<string, number>)?.total ?? 0
+	);
 	const suggestionsList = $derived(
 		((suggestionsQuery.data?.data?.data as Record<string, unknown>)?.suggestions as Record<string, unknown>[]) ?? []
 	);
-	const followersList = $derived(
-		((followersQuery.data?.data?.data as Record<string, unknown>)?.followers as Record<string, unknown>)?.data as Record<string, unknown>[] ?? []
+	const followersTotal = $derived(
+		((followersQuery.data?.data?.data as Record<string, unknown>)?.followers as Record<string, number>)?.total ?? 0
 	);
-	const followingList = $derived(
-		((followingQuery.data?.data?.data as Record<string, unknown>)?.following as Record<string, unknown>)?.data as Record<string, unknown>[] ?? []
+	const followingTotal = $derived(
+		((followingQuery.data?.data?.data as Record<string, unknown>)?.following as Record<string, number>)?.total ?? 0
 	);
-
-	// Tabs
-	type Tab = 'invitations' | 'connections' | 'follow' | 'suggestions';
-	const tabs: Tab[] = ['invitations', 'connections', 'follow', 'suggestions'];
-	let activeTab = $state<Tab>('connections');
-	let initialTabSet = $state(false);
-
-	$effect(() => {
-		if (!initialTabSet && !pendingQuery.isLoading) {
-			activeTab = pendingTotal > 0 ? 'invitations' : 'connections';
-			initialTabSet = true;
-		}
-	});
-
-	const tabLabels = $derived({
-		invitations: t?.('network.invitations') ?? 'Invitations',
-		connections: t?.('network.connections') ?? 'Connections',
-		follow: t?.('network.followersFollowing') ?? 'Followers & Following',
-		suggestions: t?.('network.suggestions') ?? 'People you may know'
-	});
 
 	// Mutations
 	const queryClient = useQueryClient();
@@ -130,32 +113,21 @@
 
 	let sentRequests = $state<Set<string>>(new Set());
 
-	function handleAccept(id: string) {
-		acceptMutation.mutate({ id });
-	}
-
-	function handleReject(id: string) {
-		rejectMutation.mutate({ id });
-	}
-
-	function handleRemove(id: string) {
-		removeMutation.mutate({ id });
-	}
-
+	function handleAccept(id: string) { acceptMutation.mutate({ id }); }
+	function handleReject(id: string) { rejectMutation.mutate({ id }); }
+	function handleRemove(id: string) { removeMutation.mutate({ id }); }
 	function handleConnect(userId: string) {
 		connectMutation.mutate({ userId });
 		sentRequests = new Set([...sentRequests, userId]);
 	}
-
-	function handleMessage(userId: string) {
-		chatState.startConversationWith(userId);
-	}
+	function handleMessage(userId: string) { chatState.startConversationWith(userId); }
 
 	// Styles
 	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
 	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-gray-50');
+	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
 	const border = $derived(cs === 'dark' ? 'border-neutral-800' : 'border-gray-200');
+	const sidebarBg = $derived(cs === 'dark' ? 'bg-neutral-800/30' : 'bg-white');
 	const btnPrimary = $derived(cs === 'dark'
 		? 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300'
 		: 'bg-gray-800 text-white hover:bg-gray-700');
@@ -165,12 +137,10 @@
 	const btnGreen = $derived(cs === 'dark'
 		? 'bg-emerald-600 text-white hover:bg-emerald-500'
 		: 'bg-emerald-600 text-white hover:bg-emerald-700');
-	const tabActive = $derived(cs === 'dark'
-		? 'text-neutral-200 border-neutral-200'
-		: 'text-gray-800 border-gray-800');
-	const tabInactive = $derived(cs === 'dark'
-		? 'text-neutral-500 border-transparent hover:text-neutral-300'
-		: 'text-gray-500 border-transparent hover:text-gray-700');
+	const sidebarLink = $derived(cs === 'dark'
+		? 'text-neutral-300 hover:bg-neutral-700/50'
+		: 'text-gray-700 hover:bg-gray-50');
+	const sectionTitle = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
 </script>
 
 <svelte:head>
@@ -178,262 +148,230 @@
 </svelte:head>
 
 <div class="min-h-screen pt-20 pb-12">
-	<div class="mx-auto max-w-3xl px-6">
-		<h1 class="text-2xl font-bold tracking-tight {text}">
-			{t?.('network.pageTitle') ?? 'My Network'}
-		</h1>
-
-		<!-- Tab bar -->
-		<div class="mt-6 flex gap-6 border-b {border} overflow-x-auto">
-			{#each tabs as tab}
-				<button
-					onclick={() => activeTab = tab}
-					class="whitespace-nowrap border-b-2 pb-3 text-[11px] font-semibold uppercase tracking-widest transition-colors {activeTab === tab ? tabActive : tabInactive}"
-				>
-					{tabLabels[tab]}
-					{#if tab === 'invitations' && pendingTotal > 0}
-						<span class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
-							{pendingTotal}
+	<div class="mx-auto flex max-w-5xl gap-6 px-6">
+		<!-- Sidebar -->
+		<aside class="hidden w-56 flex-shrink-0 md:block">
+			<div class="sticky top-20 rounded-xl border {border} {sidebarBg} overflow-hidden">
+				<div class="px-4 pt-4 pb-2">
+					<h2 class="text-[11px] font-bold uppercase tracking-widest {muted}">
+						{t?.('network.manageNetwork') ?? 'Manage my network'}
+					</h2>
+				</div>
+				<nav class="flex flex-col py-1">
+					<a href="#connections" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors {sidebarLink}">
+						<span class="flex items-center gap-2.5">
+							<Users size={16} class={muted} />
+							{t?.('network.connections') ?? 'Connections'}
 						</span>
-					{/if}
-				</button>
-			{/each}
-		</div>
+						<span class="text-xs font-semibold {text}">{connectionsTotal}</span>
+					</a>
+					<a href="#followers" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors {sidebarLink}">
+						<span class="flex items-center gap-2.5">
+							<Eye size={16} class={muted} />
+							{t?.('network.followersFollowing') ?? 'Followers & Following'}
+						</span>
+						<span class="text-xs font-semibold {text}">{followersTotal + followingTotal}</span>
+					</a>
+					<a href="#invitations" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors {sidebarLink}">
+						<span class="flex items-center gap-2.5">
+							<UserCheck size={16} class={muted} />
+							{t?.('network.invitations') ?? 'Invitations'}
+						</span>
+						{#if pendingTotal > 0}
+							<span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+								{pendingTotal}
+							</span>
+						{:else}
+							<span class="text-xs font-semibold {text}">0</span>
+						{/if}
+					</a>
+				</nav>
+			</div>
+		</aside>
 
-		<!-- Tab content -->
-		<div class="mt-6">
-			{#if activeTab === 'invitations'}
-				{#if pendingQuery.isLoading}
-					<div class="flex items-center justify-center py-16">
-						<Loader2 size={18} class="animate-spin {muted}" />
+		<!-- Main content -->
+		<main class="flex-1 min-w-0 flex flex-col gap-6">
+			<!-- Invitations -->
+			{#if pendingTotal > 0}
+				<section id="invitations" class="rounded-xl border {border} {cardBg} overflow-hidden">
+					<div class="flex items-center justify-between px-5 py-4 border-b {border}">
+						<h2 class="text-sm font-semibold {sectionTitle}">
+							{t?.('network.invitations') ?? 'Invitations'} ({pendingTotal})
+						</h2>
 					</div>
-				{:else if pendingList.length === 0}
-					<p class="py-16 text-center text-sm {muted}">
-						{t?.('network.noInvitations') ?? 'No pending invitations'}
-					</p>
-				{:else}
-					<div class="flex flex-col gap-3">
-						{#each pendingList as request}
+					<div class="divide-y {border}">
+						{#each pendingList.slice(0, 5) as request}
 							{@const sender = (request.sender ?? request.user ?? request) as Record<string, string | null>}
 							{@const reqId = String(request.id ?? '')}
-							<div class="flex items-center gap-3 rounded-xl border p-4 {border} {cardBg}">
+							<div class="flex items-center gap-3 px-5 py-3.5">
 								<a href="/@{sender.username ?? ''}">
-									<Avatar
-										name={sender.name ?? sender.username ?? '?'}
-										photoURL={sender.photoURL}
-										colorSchema={cs}
-										size="md"
-									/>
+									<Avatar name={sender.name ?? sender.username ?? '?'} photoURL={sender.photoURL} colorSchema={cs} size="md" />
 								</a>
 								<div class="min-w-0 flex-1">
 									<a href="/@{sender.username ?? ''}" class="text-sm font-semibold {text} hover:underline">
 										{sender.name ?? sender.username ?? '?'}
 									</a>
 									{#if sender.username}
-										<p class="text-xs {muted}">@{sender.username}</p>
+										<p class="text-[11px] {muted}">@{sender.username}</p>
 									{/if}
 								</div>
-								<div class="flex items-center gap-2">
-									<button
-										onclick={() => handleAccept(reqId)}
-										class="rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnGreen}"
-									>
-										{t?.('network.accept') ?? 'Accept'}
-									</button>
-									<button
-										onclick={() => handleReject(reqId)}
-										class="rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnSecondary}"
-									>
-										{t?.('network.ignore') ?? 'Ignore'}
-									</button>
-								</div>
+								<button
+									onclick={() => handleReject(reqId)}
+									class="rounded-full border px-4 py-1.5 text-[11px] font-semibold transition-all {btnSecondary}"
+								>
+									{t?.('network.ignore') ?? 'Ignore'}
+								</button>
+								<button
+									onclick={() => handleAccept(reqId)}
+									class="rounded-full px-4 py-1.5 text-[11px] font-semibold transition-all {btnGreen}"
+								>
+									{t?.('network.accept') ?? 'Accept'}
+								</button>
 							</div>
 						{/each}
 					</div>
-				{/if}
+				</section>
+			{/if}
 
-			{:else if activeTab === 'connections'}
-				{#if connectionsQuery.isLoading}
-					<div class="flex items-center justify-center py-16">
-						<Loader2 size={18} class="animate-spin {muted}" />
+			<!-- People you may know -->
+			{#if suggestionsList.length > 0}
+				<section id="suggestions" class="rounded-xl border {border} {cardBg} overflow-hidden">
+					<div class="flex items-center justify-between px-5 py-4 border-b {border}">
+						<h2 class="text-sm font-semibold {sectionTitle}">
+							{t?.('network.suggestions') ?? 'People you may know'}
+						</h2>
 					</div>
-				{:else if connectionsList.length === 0}
-					<p class="py-16 text-center text-sm {muted}">
-						{t?.('network.noConnections') ?? 'No connections yet'}
-					</p>
-				{:else}
-					<div class="flex flex-col gap-3">
-						{#each connectionsList as connection}
-							{@const user = (connection.user ?? connection) as Record<string, string | null>}
-							{@const connId = String(connection.id ?? '')}
-							{@const userId = String(user.id ?? '')}
-							<div class="flex items-center gap-3 rounded-xl border p-4 {border} {cardBg}">
-								<a href="/@{user.username ?? ''}">
-									<Avatar
-										name={user.name ?? user.username ?? '?'}
-										photoURL={user.photoURL}
-										colorSchema={cs}
-										size="md"
-									/>
-								</a>
-								<div class="min-w-0 flex-1">
-									<a href="/@{user.username ?? ''}" class="text-sm font-semibold {text} hover:underline">
-										{user.name ?? user.username ?? '?'}
-									</a>
-									{#if user.username}
-										<p class="text-xs {muted}">@{user.username}</p>
-									{/if}
-								</div>
-								<div class="flex items-center gap-2">
-									<button
-										onclick={() => handleMessage(userId)}
-										class="flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnSecondary}"
-									>
-										<MessageCircle size={12} />
-										{t?.('network.message') ?? 'Message'}
-									</button>
-									<button
-										onclick={() => handleRemove(connId)}
-										class="text-[11px] font-medium transition-colors {muted} hover:text-red-500"
-									>
-										{t?.('network.remove') ?? 'Remove'}
-									</button>
-								</div>
-							</div>
-						{/each}
-					</div>
-				{/if}
-
-			{:else if activeTab === 'follow'}
-				<!-- Followers -->
-				<div>
-					<h2 class="text-xs font-semibold uppercase tracking-widest {muted}">
-						{t?.('network.followers') ?? 'Followers'}
-					</h2>
-					{#if followersQuery.isLoading}
-						<div class="flex items-center justify-center py-10">
-							<Loader2 size={18} class="animate-spin {muted}" />
-						</div>
-					{:else if followersList.length === 0}
-						<p class="py-10 text-center text-sm {muted}">
-							{t?.('network.noFollowers') ?? 'No followers yet'}
-						</p>
-					{:else}
-						<div class="mt-3 flex flex-col gap-3">
-							{#each followersList as follower}
-								{@const user = (follower.user ?? follower) as Record<string, string | null>}
-								<div class="flex items-center gap-3 rounded-xl border p-4 {border} {cardBg}">
-									<a href="/@{user.username ?? ''}">
-										<Avatar
-											name={user.name ?? user.username ?? '?'}
-											photoURL={user.photoURL}
-											colorSchema={cs}
-											size="md"
-										/>
-									</a>
-									<div class="min-w-0 flex-1">
-										<a href="/@{user.username ?? ''}" class="text-sm font-semibold {text} hover:underline">
-											{user.name ?? user.username ?? '?'}
-										</a>
-										{#if user.username}
-											<p class="text-xs {muted}">@{user.username}</p>
-										{/if}
-									</div>
-								</div>
-							{/each}
-						</div>
-					{/if}
-				</div>
-
-				<!-- Following -->
-				<div class="mt-8">
-					<h2 class="text-xs font-semibold uppercase tracking-widest {muted}">
-						{t?.('network.following') ?? 'Following'}
-					</h2>
-					{#if followingQuery.isLoading}
-						<div class="flex items-center justify-center py-10">
-							<Loader2 size={18} class="animate-spin {muted}" />
-						</div>
-					{:else if followingList.length === 0}
-						<p class="py-10 text-center text-sm {muted}">
-							{t?.('network.noFollowing') ?? 'Not following anyone yet'}
-						</p>
-					{:else}
-						<div class="mt-3 flex flex-col gap-3">
-							{#each followingList as followedUser}
-								{@const user = (followedUser.user ?? followedUser) as Record<string, string | null>}
-								<div class="flex items-center gap-3 rounded-xl border p-4 {border} {cardBg}">
-									<a href="/@{user.username ?? ''}">
-										<Avatar
-											name={user.name ?? user.username ?? '?'}
-											photoURL={user.photoURL}
-											colorSchema={cs}
-											size="md"
-										/>
-									</a>
-									<div class="min-w-0 flex-1">
-										<a href="/@{user.username ?? ''}" class="text-sm font-semibold {text} hover:underline">
-											{user.name ?? user.username ?? '?'}
-										</a>
-										{#if user.username}
-											<p class="text-xs {muted}">@{user.username}</p>
-										{/if}
-									</div>
-								</div>
-							{/each}
-						</div>
-					{/if}
-				</div>
-
-			{:else if activeTab === 'suggestions'}
-				{#if suggestionsQuery.isLoading}
-					<div class="flex items-center justify-center py-16">
-						<Loader2 size={18} class="animate-spin {muted}" />
-					</div>
-				{:else if suggestionsList.length === 0}
-					<p class="py-16 text-center text-sm {muted}">
-						{t?.('network.noSuggestions') ?? 'No suggestions available'}
-					</p>
-				{:else}
-					<div class="flex flex-col gap-3">
+					<div class="flex gap-4 overflow-x-auto px-5 py-4 scrollbar-thin">
 						{#each suggestionsList as suggestion}
 							{@const user = suggestion as Record<string, string | null>}
 							{@const userId = String(user.id ?? '')}
-							<div class="flex items-center gap-3 rounded-xl border p-4 {border} {cardBg}">
+							<div class="flex w-40 flex-shrink-0 flex-col items-center gap-2 rounded-xl border p-4 {border}">
 								<a href="/@{user.username ?? ''}">
-									<Avatar
-										name={user.name ?? user.username ?? '?'}
-										photoURL={user.photoURL}
-										colorSchema={cs}
-										size="md"
-									/>
+									<Avatar name={user.name ?? user.username ?? '?'} photoURL={user.photoURL} colorSchema={cs} size="lg" />
 								</a>
-								<div class="min-w-0 flex-1">
-									<a href="/@{user.username ?? ''}" class="text-sm font-semibold {text} hover:underline">
-										{user.name ?? user.username ?? '?'}
-									</a>
-									{#if user.username}
-										<p class="text-xs {muted}">@{user.username}</p>
-									{/if}
-								</div>
+								<a href="/@{user.username ?? ''}" class="text-center text-xs font-semibold {text} hover:underline">
+									{user.name ?? user.username ?? '?'}
+								</a>
+								{#if user.username}
+									<span class="text-[10px] {muted}">@{user.username}</span>
+								{/if}
 								{#if sentRequests.has(userId)}
-									<span class="rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider {btnSecondary} opacity-60">
+									<span class="w-full rounded-full border py-1.5 text-center text-[10px] font-semibold opacity-60 {btnSecondary}">
 										{t?.('network.requestSent') ?? 'Sent'}
 									</span>
 								{:else}
 									<button
 										onclick={() => handleConnect(userId)}
-										class="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnPrimary}"
+										class="flex w-full items-center justify-center gap-1 rounded-full py-1.5 text-[10px] font-semibold transition-all {btnPrimary}"
 									>
-										<UserPlus size={12} />
+										<UserPlus size={11} />
 										{t?.('network.connect') ?? 'Connect'}
 									</button>
 								{/if}
 							</div>
 						{/each}
 					</div>
-				{/if}
+				</section>
 			{/if}
-		</div>
+
+			<!-- Connections -->
+			<section id="connections" class="rounded-xl border {border} {cardBg} overflow-hidden">
+				<div class="flex items-center justify-between px-5 py-4 border-b {border}">
+					<h2 class="text-sm font-semibold {sectionTitle}">
+						{t?.('network.connections') ?? 'Connections'} ({connectionsTotal})
+					</h2>
+				</div>
+				{#if connectionsQuery.isLoading}
+					<div class="flex items-center justify-center py-12">
+						<Loader2 size={16} class="animate-spin {muted}" />
+					</div>
+				{:else if connectionsList.length === 0}
+					<p class="py-12 text-center text-sm {muted}">
+						{t?.('network.noConnections') ?? 'No connections yet'}
+					</p>
+				{:else}
+					<div class="divide-y {border}">
+						{#each connectionsList as connection}
+							{@const user = (connection.user ?? connection) as Record<string, string | null>}
+							{@const connId = String(connection.id ?? '')}
+							{@const userId = String(user.id ?? '')}
+							<div class="flex items-center gap-3 px-5 py-3.5">
+								<a href="/@{user.username ?? ''}">
+									<Avatar name={user.name ?? user.username ?? '?'} photoURL={user.photoURL} colorSchema={cs} size="md" />
+								</a>
+								<div class="min-w-0 flex-1">
+									<a href="/@{user.username ?? ''}" class="text-sm font-semibold {text} hover:underline">
+										{user.name ?? user.username ?? '?'}
+									</a>
+									{#if user.username}
+										<p class="text-[11px] {muted}">@{user.username}</p>
+									{/if}
+								</div>
+								<button
+									onclick={() => handleMessage(userId)}
+									class="flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-all {btnSecondary}"
+								>
+									<MessageCircle size={12} />
+									{t?.('network.message') ?? 'Message'}
+								</button>
+								<button
+									onclick={() => handleRemove(connId)}
+									class="text-[10px] font-medium transition-colors {muted} hover:text-red-500"
+								>
+									{t?.('network.remove') ?? 'Remove'}
+								</button>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</section>
+
+			<!-- Followers & Following -->
+			<section id="followers" class="rounded-xl border {border} {cardBg} overflow-hidden">
+				<div class="px-5 py-4 border-b {border}">
+					<h2 class="text-sm font-semibold {sectionTitle}">
+						{t?.('network.followers') ?? 'Followers'} ({followersTotal}) · {t?.('network.following') ?? 'Following'} ({followingTotal})
+					</h2>
+				</div>
+				{#if followersQuery.isLoading}
+					<div class="flex items-center justify-center py-8">
+						<Loader2 size={16} class="animate-spin {muted}" />
+					</div>
+				{:else if followersTotal === 0 && followingTotal === 0}
+					<p class="py-8 text-center text-sm {muted}">{t?.('network.noFollowers') ?? 'No followers yet'}</p>
+				{:else}
+					<div class="divide-y {border}">
+						{#each followersList as follower}
+							{@const user = (follower.follower ?? follower.user ?? follower) as Record<string, string | null>}
+							<div class="flex items-center gap-3 px-5 py-3">
+								<a href="/@{user.username ?? ''}">
+									<Avatar name={user.name ?? user.username ?? '?'} photoURL={user.photoURL} colorSchema={cs} size="sm" />
+								</a>
+								<div class="min-w-0 flex-1">
+									<a href="/@{user.username ?? ''}" class="text-sm font-medium {text} hover:underline">
+										{user.name ?? user.username ?? '?'}
+									</a>
+								</div>
+								<span class="text-[10px] uppercase tracking-wider {muted}">follower</span>
+							</div>
+						{/each}
+						{#each followingList as followed}
+							{@const user = (followed.following ?? followed.user ?? followed) as Record<string, string | null>}
+							<div class="flex items-center gap-3 px-5 py-3">
+								<a href="/@{user.username ?? ''}">
+									<Avatar name={user.name ?? user.username ?? '?'} photoURL={user.photoURL} colorSchema={cs} size="sm" />
+								</a>
+								<div class="min-w-0 flex-1">
+									<a href="/@{user.username ?? ''}" class="text-sm font-medium {text} hover:underline">
+										{user.name ?? user.username ?? '?'}
+									</a>
+								</div>
+								<span class="text-[10px] uppercase tracking-wider {muted}">following</span>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</section>
+		</main>
 	</div>
 </div>

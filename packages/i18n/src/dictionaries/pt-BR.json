@@ -51,6 +51,7 @@
   },
   "network": {
     "pageTitle": "Minha Rede",
+    "manageNetwork": "Gerenciar minha rede",
     "invitations": "Convites",
     "connections": "Conexões",
     "followersFollowing": "Seguidores & Seguindo",
