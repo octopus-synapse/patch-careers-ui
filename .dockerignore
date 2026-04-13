@@ -1,0 +1,12 @@
+node_modules
+.git
+.github
+*.md
+.svelte-kit
+.vscode
+.idea
+.env*
+!.env.example
+dist
+coverage
+.turbo
