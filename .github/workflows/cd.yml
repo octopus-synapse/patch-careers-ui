@@ -70,7 +70,7 @@ jobs:
             cd ${{ env.DEPLOY_PATH }}
             docker compose up -d --force-recreate
             sleep 10
-            docker ps --filter name=patchcareers-web --format '{{.Names}} {{.Status}}'
+            docker ps --filter name=patchcareers-web
           DEPLOY
 
       - name: Health Check
