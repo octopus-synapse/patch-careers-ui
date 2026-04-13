@@ -1,4 +1,6 @@
-let baseUrl = 'http://localhost:3001';
+let baseUrl = typeof window !== 'undefined'
+  ? (import.meta.env?.VITE_API_URL ?? 'http://localhost:3001')
+  : 'http://localhost:3001';
 
 export function setBaseUrl(url: string) {
   baseUrl = url;

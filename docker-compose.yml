@@ -1,0 +1,16 @@
+services:
+  web:
+    image: ${DOCKER_IMAGE:-ghcr.io/octopus-synapse/patch-careers-ui:${IMAGE_TAG:-latest}}
+    container_name: patchcareers-web
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT:-7142}
+      ORIGIN: ${ORIGIN:-https://patchcareers.org}
+    ports:
+      - "${PORT:-7142}:${PORT:-7142}"
+    healthcheck:
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:${PORT:-7142}').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
