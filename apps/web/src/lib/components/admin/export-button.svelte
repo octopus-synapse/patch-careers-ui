@@ -3,14 +3,14 @@
 	import { Download } from 'lucide-svelte';
 
 	type Props = {
-		data: Record<string, unknown>[];
+		data?: Record<string, unknown>[];
 		filename?: string;
 	};
 
 	let { data, filename = 'export.csv' }: Props = $props();
 
 	function exportCsv() {
-		if (data.length === 0) return;
+		if (!data?.length) return;
 
 		const headers = Object.keys(data[0]);
 		const rows = data.map((row) =>
@@ -38,7 +38,7 @@
 	variant="ghost"
 	size="sm"
 	onclick={exportCsv}
-	disabled={data.length === 0}
+	disabled={!data?.length}
 >
 	<Download size={14} />
 	CSV

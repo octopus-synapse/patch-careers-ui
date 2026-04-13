@@ -62,15 +62,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Streams real-time feed updates for the authenticated user.
  * @summary Subscribe to activity feed stream
  */
-export type socialSubscribeToFeedResponse401 = {
-  data: void
-  status: 401
-}
+export type socialSubscribeToFeedResponse401 = void
 
-export type socialSubscribeToFeedResponse403 = {
-  data: void
-  status: 403
-}
+export type socialSubscribeToFeedResponse403 = void
 
 ;
 export type socialSubscribeToFeedResponseError = (socialSubscribeToFeedResponse401 | socialSubscribeToFeedResponse403) & {
@@ -229,15 +223,9 @@ export const prefetchSocialSubscribeToFeedQuery = async <TData = Awaited<ReturnT
  * Streams real-time feed updates filtered by activity type.
  * @summary Subscribe to activity type stream
  */
-export type socialSubscribeToActivityTypeResponse401 = {
-  data: void
-  status: 401
-}
+export type socialSubscribeToActivityTypeResponse401 = void
 
-export type socialSubscribeToActivityTypeResponse403 = {
-  data: void
-  status: 403
-}
+export type socialSubscribeToActivityTypeResponse403 = void
 
 ;
 export type socialSubscribeToActivityTypeResponseError = (socialSubscribeToActivityTypeResponse401 | socialSubscribeToActivityTypeResponse403) & {

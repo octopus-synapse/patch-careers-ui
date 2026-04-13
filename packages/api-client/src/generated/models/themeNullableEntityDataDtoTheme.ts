@@ -39,4 +39,42 @@ All errors follow a consistent format:
 /**
  * @nullable
  */
-export type ThemeNullableEntityDataDtoTheme = {[key: string]: unknown} | null;
+export type ThemeNullableEntityDataDtoTheme = {
+  id: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  authorId: string;
+  category: string;
+  tags: string[];
+  styleConfig: unknown;
+  sectionStyles: unknown;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  previewImages: string[];
+  status: string;
+  isSystemTheme: boolean;
+  /** @nullable */
+  atsScore: number | null;
+  usageCount: number;
+  /** @nullable */
+  rating: number | null;
+  ratingCount: number;
+  version: string;
+  /** @nullable */
+  parentThemeId: string | null;
+  createdAt: unknown;
+  updatedAt: unknown;
+  publishedAt: unknown | null;
+  author?: {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  username: string | null;
+};
+  _count?: {
+  resumes: number;
+  forks: number;
+};
+} | null;

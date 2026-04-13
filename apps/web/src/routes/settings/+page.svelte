@@ -195,8 +195,7 @@
 	const setupTfa = createTwoFactorAuthSetup(() => ({
 		mutation: {
 			onSuccess(data) {
-				const result = (data as Record<string, unknown>)?.data as Record<string, string> | undefined;
-				tfaSetupData = { qrCode: result?.qrCode, secret: result?.secret };
+				tfaSetupData = { qrCode: data.qrCode, secret: data.secret };
 				tfaStep = 'verify';
 			}
 		}
@@ -205,8 +204,7 @@
 	const verifyTfa = createTwoFactorAuthVerify(() => ({
 		mutation: {
 			onSuccess(data) {
-				const result = (data as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
-				tfaBackupCodes = (result?.backupCodes as string[]) ?? null;
+				tfaBackupCodes = data.backupCodes;
 				tfaStep = 'idle';
 				tfaCode = '';
 				queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
@@ -226,8 +224,7 @@
 	const regenerateCodes = createTwoFactorAuthRegenerate(() => ({
 		mutation: {
 			onSuccess(data) {
-				const result = (data as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
-				tfaBackupCodes = (result?.backupCodes as string[]) ?? null;
+				tfaBackupCodes = data.backupCodes;
 				queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
 			}
 		}

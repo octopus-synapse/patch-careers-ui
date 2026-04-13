@@ -61,24 +61,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Issues new access and refresh tokens using a valid refresh token.
  * @summary Refresh access token
  */
-export type authRefreshResponse200 = {
-  data: RefreshTokenResponseDto
-  status: 200
-}
+export type authRefreshResponse200 = RefreshTokenResponseDto
 
-export type authRefreshResponse401 = {
-  data: void
-  status: 401
-}
+export type authRefreshResponseSuccess = authRefreshResponse200
+;
 
-export type authRefreshResponseSuccess = (authRefreshResponse200) & {
-  headers: Headers;
-};
-export type authRefreshResponseError = (authRefreshResponse401) & {
-  headers: Headers;
-};
-
-export type authRefreshResponse = (authRefreshResponseSuccess | authRefreshResponseError)
+export type authRefreshResponse = (authRefreshResponseSuccess)
 
 export const getAuthRefreshUrl = () => {
 
@@ -103,7 +91,7 @@ export const authRefresh = async (refreshTokenDto: RefreshTokenDto, options?: Re
 
 
 
-export const getAuthRefreshMutationOptions = <TError = void,
+export const getAuthRefreshMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRefresh>>, TError,{data: RefreshTokenDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authRefresh>>, TError,{data: RefreshTokenDto}, TContext> => {
 
@@ -132,12 +120,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthRefreshMutationResult = NonNullable<Awaited<ReturnType<typeof authRefresh>>>
     export type AuthRefreshMutationBody = RefreshTokenDto
-    export type AuthRefreshMutationError = void
+    export type AuthRefreshMutationError = unknown
 
     /**
  * @summary Refresh access token
  */
-export const createAuthRefresh = <TError = void,
+export const createAuthRefresh = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRefresh>>, TError,{data: RefreshTokenDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authRefresh>>,

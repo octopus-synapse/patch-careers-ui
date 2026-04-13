@@ -74,29 +74,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get network summary for authenticated user
  */
-export type connectionGetNetworkSummaryResponse200 = {
-  data: NetworkSummaryDataDto
-  status: 200
-}
+export type connectionGetNetworkSummaryResponse200 = NetworkSummaryDataDto
 
-export type connectionGetNetworkSummaryResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionGetNetworkSummaryResponseSuccess = connectionGetNetworkSummaryResponse200
+;
 
-export type connectionGetNetworkSummaryResponse403 = {
-  data: void
-  status: 403
-}
-
-export type connectionGetNetworkSummaryResponseSuccess = (connectionGetNetworkSummaryResponse200) & {
-  headers: Headers;
-};
-export type connectionGetNetworkSummaryResponseError = (connectionGetNetworkSummaryResponse401 | connectionGetNetworkSummaryResponse403) & {
-  headers: Headers;
-};
-
-export type connectionGetNetworkSummaryResponse = (connectionGetNetworkSummaryResponseSuccess | connectionGetNetworkSummaryResponseError)
+export type connectionGetNetworkSummaryResponse = (connectionGetNetworkSummaryResponseSuccess)
 
 export const getConnectionGetNetworkSummaryUrl = () => {
 
@@ -134,7 +117,7 @@ export const getConnectionGetNetworkSummaryQueryKey = () => {
     }
 
 
-export const getConnectionGetNetworkSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetNetworkSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -153,14 +136,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetNetworkSummaryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>
-export type ConnectionGetNetworkSummaryInfiniteQueryError = void
+export type ConnectionGetNetworkSummaryInfiniteQueryError = unknown
 
 
 /**
  * @summary Get network summary for authenticated user
  */
 
-export function createConnectionGetNetworkSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>, TError = void>(
+export function createConnectionGetNetworkSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -175,7 +158,7 @@ export function createConnectionGetNetworkSummaryInfinite<TData = InfiniteData<A
 /**
  * @summary Get network summary for authenticated user
  */
-export const prefetchConnectionGetNetworkSummaryInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>(
+export const prefetchConnectionGetNetworkSummaryInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -189,7 +172,7 @@ export const prefetchConnectionGetNetworkSummaryInfiniteQuery = async <TData = A
 
 
 
-export const getConnectionGetNetworkSummaryQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetNetworkSummaryQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -208,14 +191,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetNetworkSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>
-export type ConnectionGetNetworkSummaryQueryError = void
+export type ConnectionGetNetworkSummaryQueryError = unknown
 
 
 /**
  * @summary Get network summary for authenticated user
  */
 
-export function createConnectionGetNetworkSummary<TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>(
+export function createConnectionGetNetworkSummary<TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -230,7 +213,7 @@ export function createConnectionGetNetworkSummary<TData = Awaited<ReturnType<typ
 /**
  * @summary Get network summary for authenticated user
  */
-export const prefetchConnectionGetNetworkSummaryQuery = async <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>(
+export const prefetchConnectionGetNetworkSummaryQuery = async <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -247,15 +230,9 @@ export const prefetchConnectionGetNetworkSummaryQuery = async <TData = Awaited<R
 /**
  * @summary Send a connection request
  */
-export type connectionSendConnectionRequestResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionSendConnectionRequestResponse401 = void
 
-export type connectionSendConnectionRequestResponse403 = {
-  data: void
-  status: 403
-}
+export type connectionSendConnectionRequestResponse403 = void
 
 ;
 export type connectionSendConnectionRequestResponseError = (connectionSendConnectionRequestResponse401 | connectionSendConnectionRequestResponse403) & {
@@ -333,15 +310,9 @@ export const createConnectionSendConnectionRequest = <TError = void,
     /**
  * @summary Accept a connection request
  */
-export type connectionAcceptConnectionResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionAcceptConnectionResponse401 = void
 
-export type connectionAcceptConnectionResponse403 = {
-  data: void
-  status: 403
-}
+export type connectionAcceptConnectionResponse403 = void
 
 ;
 export type connectionAcceptConnectionResponseError = (connectionAcceptConnectionResponse401 | connectionAcceptConnectionResponse403) & {
@@ -419,15 +390,9 @@ export const createConnectionAcceptConnection = <TError = void,
     /**
  * @summary Reject a connection request
  */
-export type connectionRejectConnectionResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionRejectConnectionResponse401 = void
 
-export type connectionRejectConnectionResponse403 = {
-  data: void
-  status: 403
-}
+export type connectionRejectConnectionResponse403 = void
 
 ;
 export type connectionRejectConnectionResponseError = (connectionRejectConnectionResponse401 | connectionRejectConnectionResponse403) & {
@@ -505,15 +470,9 @@ export const createConnectionRejectConnection = <TError = void,
     /**
  * @summary Remove a connection
  */
-export type connectionRemoveConnectionResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionRemoveConnectionResponse401 = void
 
-export type connectionRemoveConnectionResponse403 = {
-  data: void
-  status: 403
-}
+export type connectionRemoveConnectionResponse403 = void
 
 ;
 export type connectionRemoveConnectionResponseError = (connectionRemoveConnectionResponse401 | connectionRemoveConnectionResponse403) & {
@@ -591,29 +550,12 @@ export const createConnectionRemoveConnection = <TError = void,
     /**
  * @summary Get accepted connections
  */
-export type connectionGetConnectionsResponse200 = {
-  data: ConnectionListDataDto
-  status: 200
-}
+export type connectionGetConnectionsResponse200 = ConnectionListDataDto
 
-export type connectionGetConnectionsResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionGetConnectionsResponseSuccess = connectionGetConnectionsResponse200
+;
 
-export type connectionGetConnectionsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type connectionGetConnectionsResponseSuccess = (connectionGetConnectionsResponse200) & {
-  headers: Headers;
-};
-export type connectionGetConnectionsResponseError = (connectionGetConnectionsResponse401 | connectionGetConnectionsResponse403) & {
-  headers: Headers;
-};
-
-export type connectionGetConnectionsResponse = (connectionGetConnectionsResponseSuccess | connectionGetConnectionsResponseError)
+export type connectionGetConnectionsResponse = (connectionGetConnectionsResponseSuccess)
 
 export const getConnectionGetConnectionsUrl = () => {
 
@@ -651,7 +593,7 @@ export const getConnectionGetConnectionsQueryKey = () => {
     }
 
 
-export const getConnectionGetConnectionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnections>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetConnectionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnections>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -670,14 +612,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetConnectionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnections>>>
-export type ConnectionGetConnectionsInfiniteQueryError = void
+export type ConnectionGetConnectionsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get accepted connections
  */
 
-export function createConnectionGetConnectionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnections>>>, TError = void>(
+export function createConnectionGetConnectionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnections>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -692,7 +634,7 @@ export function createConnectionGetConnectionsInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get accepted connections
  */
-export const prefetchConnectionGetConnectionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = void>(
+export const prefetchConnectionGetConnectionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -706,7 +648,7 @@ export const prefetchConnectionGetConnectionsInfiniteQuery = async <TData = Awai
 
 
 
-export const getConnectionGetConnectionsQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetConnectionsQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -725,14 +667,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetConnectionsQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnections>>>
-export type ConnectionGetConnectionsQueryError = void
+export type ConnectionGetConnectionsQueryError = unknown
 
 
 /**
  * @summary Get accepted connections
  */
 
-export function createConnectionGetConnections<TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = void>(
+export function createConnectionGetConnections<TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -747,7 +689,7 @@ export function createConnectionGetConnections<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get accepted connections
  */
-export const prefetchConnectionGetConnectionsQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = void>(
+export const prefetchConnectionGetConnectionsQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnections>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -764,29 +706,12 @@ export const prefetchConnectionGetConnectionsQuery = async <TData = Awaited<Retu
 /**
  * @summary Get pending connection requests
  */
-export type connectionGetPendingRequestsResponse200 = {
-  data: PendingRequestsDataDto
-  status: 200
-}
+export type connectionGetPendingRequestsResponse200 = PendingRequestsDataDto
 
-export type connectionGetPendingRequestsResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionGetPendingRequestsResponseSuccess = connectionGetPendingRequestsResponse200
+;
 
-export type connectionGetPendingRequestsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type connectionGetPendingRequestsResponseSuccess = (connectionGetPendingRequestsResponse200) & {
-  headers: Headers;
-};
-export type connectionGetPendingRequestsResponseError = (connectionGetPendingRequestsResponse401 | connectionGetPendingRequestsResponse403) & {
-  headers: Headers;
-};
-
-export type connectionGetPendingRequestsResponse = (connectionGetPendingRequestsResponseSuccess | connectionGetPendingRequestsResponseError)
+export type connectionGetPendingRequestsResponse = (connectionGetPendingRequestsResponseSuccess)
 
 export const getConnectionGetPendingRequestsUrl = () => {
 
@@ -824,7 +749,7 @@ export const getConnectionGetPendingRequestsQueryKey = () => {
     }
 
 
-export const getConnectionGetPendingRequestsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetPendingRequests>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetPendingRequestsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetPendingRequests>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -843,14 +768,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetPendingRequestsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetPendingRequests>>>
-export type ConnectionGetPendingRequestsInfiniteQueryError = void
+export type ConnectionGetPendingRequestsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get pending connection requests
  */
 
-export function createConnectionGetPendingRequestsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetPendingRequests>>>, TError = void>(
+export function createConnectionGetPendingRequestsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetPendingRequests>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -865,7 +790,7 @@ export function createConnectionGetPendingRequestsInfinite<TData = InfiniteData<
 /**
  * @summary Get pending connection requests
  */
-export const prefetchConnectionGetPendingRequestsInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = void>(
+export const prefetchConnectionGetPendingRequestsInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -879,7 +804,7 @@ export const prefetchConnectionGetPendingRequestsInfiniteQuery = async <TData = 
 
 
 
-export const getConnectionGetPendingRequestsQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetPendingRequestsQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -898,14 +823,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetPendingRequestsQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetPendingRequests>>>
-export type ConnectionGetPendingRequestsQueryError = void
+export type ConnectionGetPendingRequestsQueryError = unknown
 
 
 /**
  * @summary Get pending connection requests
  */
 
-export function createConnectionGetPendingRequests<TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = void>(
+export function createConnectionGetPendingRequests<TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -920,7 +845,7 @@ export function createConnectionGetPendingRequests<TData = Awaited<ReturnType<ty
 /**
  * @summary Get pending connection requests
  */
-export const prefetchConnectionGetPendingRequestsQuery = async <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = void>(
+export const prefetchConnectionGetPendingRequestsQuery = async <TData = Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetPendingRequests>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -937,29 +862,12 @@ export const prefetchConnectionGetPendingRequestsQuery = async <TData = Awaited<
 /**
  * @summary Get connection suggestions
  */
-export type connectionGetConnectionSuggestionsResponse200 = {
-  data: SuggestionsDataDto
-  status: 200
-}
+export type connectionGetConnectionSuggestionsResponse200 = SuggestionsDataDto
 
-export type connectionGetConnectionSuggestionsResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionGetConnectionSuggestionsResponseSuccess = connectionGetConnectionSuggestionsResponse200
+;
 
-export type connectionGetConnectionSuggestionsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type connectionGetConnectionSuggestionsResponseSuccess = (connectionGetConnectionSuggestionsResponse200) & {
-  headers: Headers;
-};
-export type connectionGetConnectionSuggestionsResponseError = (connectionGetConnectionSuggestionsResponse401 | connectionGetConnectionSuggestionsResponse403) & {
-  headers: Headers;
-};
-
-export type connectionGetConnectionSuggestionsResponse = (connectionGetConnectionSuggestionsResponseSuccess | connectionGetConnectionSuggestionsResponseError)
+export type connectionGetConnectionSuggestionsResponse = (connectionGetConnectionSuggestionsResponseSuccess)
 
 export const getConnectionGetConnectionSuggestionsUrl = () => {
 
@@ -997,7 +905,7 @@ export const getConnectionGetConnectionSuggestionsQueryKey = () => {
     }
 
 
-export const getConnectionGetConnectionSuggestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetConnectionSuggestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1016,14 +924,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetConnectionSuggestionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>
-export type ConnectionGetConnectionSuggestionsInfiniteQueryError = void
+export type ConnectionGetConnectionSuggestionsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get connection suggestions
  */
 
-export function createConnectionGetConnectionSuggestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>, TError = void>(
+export function createConnectionGetConnectionSuggestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1038,7 +946,7 @@ export function createConnectionGetConnectionSuggestionsInfinite<TData = Infinit
 /**
  * @summary Get connection suggestions
  */
-export const prefetchConnectionGetConnectionSuggestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = void>(
+export const prefetchConnectionGetConnectionSuggestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1052,7 +960,7 @@ export const prefetchConnectionGetConnectionSuggestionsInfiniteQuery = async <TD
 
 
 
-export const getConnectionGetConnectionSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionGetConnectionSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1071,14 +979,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionGetConnectionSuggestionsQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>>
-export type ConnectionGetConnectionSuggestionsQueryError = void
+export type ConnectionGetConnectionSuggestionsQueryError = unknown
 
 
 /**
  * @summary Get connection suggestions
  */
 
-export function createConnectionGetConnectionSuggestions<TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = void>(
+export function createConnectionGetConnectionSuggestions<TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1093,7 +1001,7 @@ export function createConnectionGetConnectionSuggestions<TData = Awaited<ReturnT
 /**
  * @summary Get connection suggestions
  */
-export const prefetchConnectionGetConnectionSuggestionsQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = void>(
+export const prefetchConnectionGetConnectionSuggestionsQuery = async <TData = Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetConnectionSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1110,14 +1018,9 @@ export const prefetchConnectionGetConnectionSuggestionsQuery = async <TData = Aw
 /**
  * @summary Get connection stats for a user
  */
-export type connectionGetConnectionStatsResponse200 = {
-  data: ConnectionStatsDto
-  status: 200
-}
+export type connectionGetConnectionStatsResponse200 = ConnectionStatsDto
 
-export type connectionGetConnectionStatsResponseSuccess = (connectionGetConnectionStatsResponse200) & {
-  headers: Headers;
-};
+export type connectionGetConnectionStatsResponseSuccess = connectionGetConnectionStatsResponse200
 ;
 
 export type connectionGetConnectionStatsResponse = (connectionGetConnectionStatsResponseSuccess)
@@ -1271,29 +1174,12 @@ export const prefetchConnectionGetConnectionStatsQuery = async <TData = Awaited<
 /**
  * @summary Check connection status
  */
-export type connectionIsConnectedResponse200 = {
-  data: ConnectionCheckDto
-  status: 200
-}
+export type connectionIsConnectedResponse200 = ConnectionCheckDto
 
-export type connectionIsConnectedResponse401 = {
-  data: void
-  status: 401
-}
+export type connectionIsConnectedResponseSuccess = connectionIsConnectedResponse200
+;
 
-export type connectionIsConnectedResponse403 = {
-  data: void
-  status: 403
-}
-
-export type connectionIsConnectedResponseSuccess = (connectionIsConnectedResponse200) & {
-  headers: Headers;
-};
-export type connectionIsConnectedResponseError = (connectionIsConnectedResponse401 | connectionIsConnectedResponse403) & {
-  headers: Headers;
-};
-
-export type connectionIsConnectedResponse = (connectionIsConnectedResponseSuccess | connectionIsConnectedResponseError)
+export type connectionIsConnectedResponse = (connectionIsConnectedResponseSuccess)
 
 export const getConnectionIsConnectedUrl = (userId: string,) => {
 
@@ -1331,7 +1217,7 @@ export const getConnectionIsConnectedQueryKey = (userId: string,) => {
     }
 
 
-export const getConnectionIsConnectedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionIsConnected>>>, TError = void>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionIsConnectedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionIsConnected>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1350,14 +1236,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionIsConnectedInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof connectionIsConnected>>>
-export type ConnectionIsConnectedInfiniteQueryError = void
+export type ConnectionIsConnectedInfiniteQueryError = unknown
 
 
 /**
  * @summary Check connection status
  */
 
-export function createConnectionIsConnectedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionIsConnected>>>, TError = void>(
+export function createConnectionIsConnectedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionIsConnected>>>, TError = unknown>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1372,7 +1258,7 @@ export function createConnectionIsConnectedInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Check connection status
  */
-export const prefetchConnectionIsConnectedInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = void>(
+export const prefetchConnectionIsConnectedInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = unknown>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1386,7 +1272,7 @@ export const prefetchConnectionIsConnectedInfiniteQuery = async <TData = Awaited
 
 
 
-export const getConnectionIsConnectedQueryOptions = <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = void>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getConnectionIsConnectedQueryOptions = <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1405,14 +1291,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ConnectionIsConnectedQueryResult = NonNullable<Awaited<ReturnType<typeof connectionIsConnected>>>
-export type ConnectionIsConnectedQueryError = void
+export type ConnectionIsConnectedQueryError = unknown
 
 
 /**
  * @summary Check connection status
  */
 
-export function createConnectionIsConnected<TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = void>(
+export function createConnectionIsConnected<TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = unknown>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1427,7 +1313,7 @@ export function createConnectionIsConnected<TData = Awaited<ReturnType<typeof co
 /**
  * @summary Check connection status
  */
-export const prefetchConnectionIsConnectedQuery = async <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = void>(
+export const prefetchConnectionIsConnectedQuery = async <TData = Awaited<ReturnType<typeof connectionIsConnected>>, TError = unknown>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionIsConnected>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

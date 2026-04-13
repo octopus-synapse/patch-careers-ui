@@ -62,15 +62,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Streams view and ATS score updates for a resume in real time.
  * @summary Subscribe to live analytics stream
  */
-export type resumeAnalyticsSubscribeToResumeAnalyticsResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsSubscribeToResumeAnalyticsResponse401 = void
 
-export type resumeAnalyticsSubscribeToResumeAnalyticsResponse403 = {
-  data: void
-  status: 403
-}
+export type resumeAnalyticsSubscribeToResumeAnalyticsResponse403 = void
 
 ;
 export type resumeAnalyticsSubscribeToResumeAnalyticsResponseError = (resumeAnalyticsSubscribeToResumeAnalyticsResponse401 | resumeAnalyticsSubscribeToResumeAnalyticsResponse403) & {
@@ -229,15 +223,9 @@ export const prefetchResumeAnalyticsSubscribeToResumeAnalyticsQuery = async <TDa
  * Streams only view-count updates for a resume.
  * @summary Subscribe to live views stream
  */
-export type resumeAnalyticsSubscribeToViewsResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsSubscribeToViewsResponse401 = void
 
-export type resumeAnalyticsSubscribeToViewsResponse403 = {
-  data: void
-  status: 403
-}
+export type resumeAnalyticsSubscribeToViewsResponse403 = void
 
 ;
 export type resumeAnalyticsSubscribeToViewsResponseError = (resumeAnalyticsSubscribeToViewsResponse401 | resumeAnalyticsSubscribeToViewsResponse403) & {
@@ -396,15 +384,9 @@ export const prefetchResumeAnalyticsSubscribeToViewsQuery = async <TData = Await
  * Streams only ATS-score updates for a resume.
  * @summary Subscribe to live ATS stream
  */
-export type resumeAnalyticsSubscribeToAtsScoreResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsSubscribeToAtsScoreResponse401 = void
 
-export type resumeAnalyticsSubscribeToAtsScoreResponse403 = {
-  data: void
-  status: 403
-}
+export type resumeAnalyticsSubscribeToAtsScoreResponse403 = void
 
 ;
 export type resumeAnalyticsSubscribeToAtsScoreResponseError = (resumeAnalyticsSubscribeToAtsScoreResponse401 | resumeAnalyticsSubscribeToAtsScoreResponse403) & {

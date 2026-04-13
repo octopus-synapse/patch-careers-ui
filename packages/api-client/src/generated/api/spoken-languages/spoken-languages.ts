@@ -67,29 +67,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get all active spoken languages
  */
-export type skillsFindAllActiveLanguagesResponse200 = {
-  data: SpokenLanguagesListDataDto
-  status: 200
-}
+export type skillsFindAllActiveLanguagesResponse200 = SpokenLanguagesListDataDto
 
-export type skillsFindAllActiveLanguagesResponse401 = {
-  data: void
-  status: 401
-}
+export type skillsFindAllActiveLanguagesResponseSuccess = skillsFindAllActiveLanguagesResponse200
+;
 
-export type skillsFindAllActiveLanguagesResponse403 = {
-  data: void
-  status: 403
-}
-
-export type skillsFindAllActiveLanguagesResponseSuccess = (skillsFindAllActiveLanguagesResponse200) & {
-  headers: Headers;
-};
-export type skillsFindAllActiveLanguagesResponseError = (skillsFindAllActiveLanguagesResponse401 | skillsFindAllActiveLanguagesResponse403) & {
-  headers: Headers;
-};
-
-export type skillsFindAllActiveLanguagesResponse = (skillsFindAllActiveLanguagesResponseSuccess | skillsFindAllActiveLanguagesResponseError)
+export type skillsFindAllActiveLanguagesResponse = (skillsFindAllActiveLanguagesResponseSuccess)
 
 export const getSkillsFindAllActiveLanguagesUrl = () => {
 
@@ -127,7 +110,7 @@ export const getSkillsFindAllActiveLanguagesQueryKey = () => {
     }
 
 
-export const getSkillsFindAllActiveLanguagesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsFindAllActiveLanguagesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -146,14 +129,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsFindAllActiveLanguagesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>
-export type SkillsFindAllActiveLanguagesInfiniteQueryError = void
+export type SkillsFindAllActiveLanguagesInfiniteQueryError = unknown
 
 
 /**
  * @summary Get all active spoken languages
  */
 
-export function createSkillsFindAllActiveLanguagesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>, TError = void>(
+export function createSkillsFindAllActiveLanguagesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -168,7 +151,7 @@ export function createSkillsFindAllActiveLanguagesInfinite<TData = InfiniteData<
 /**
  * @summary Get all active spoken languages
  */
-export const prefetchSkillsFindAllActiveLanguagesInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = void>(
+export const prefetchSkillsFindAllActiveLanguagesInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -182,7 +165,7 @@ export const prefetchSkillsFindAllActiveLanguagesInfiniteQuery = async <TData = 
 
 
 
-export const getSkillsFindAllActiveLanguagesQueryOptions = <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsFindAllActiveLanguagesQueryOptions = <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -201,14 +184,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsFindAllActiveLanguagesQueryResult = NonNullable<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>>
-export type SkillsFindAllActiveLanguagesQueryError = void
+export type SkillsFindAllActiveLanguagesQueryError = unknown
 
 
 /**
  * @summary Get all active spoken languages
  */
 
-export function createSkillsFindAllActiveLanguages<TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = void>(
+export function createSkillsFindAllActiveLanguages<TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -223,7 +206,7 @@ export function createSkillsFindAllActiveLanguages<TData = Awaited<ReturnType<ty
 /**
  * @summary Get all active spoken languages
  */
-export const prefetchSkillsFindAllActiveLanguagesQuery = async <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = void>(
+export const prefetchSkillsFindAllActiveLanguagesQuery = async <TData = Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindAllActiveLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -240,29 +223,12 @@ export const prefetchSkillsFindAllActiveLanguagesQuery = async <TData = Awaited<
 /**
  * @summary Search spoken languages by name
  */
-export type skillsSearchLanguagesByNameResponse200 = {
-  data: SpokenLanguagesListDataDto
-  status: 200
-}
+export type skillsSearchLanguagesByNameResponse200 = SpokenLanguagesListDataDto
 
-export type skillsSearchLanguagesByNameResponse401 = {
-  data: void
-  status: 401
-}
+export type skillsSearchLanguagesByNameResponseSuccess = skillsSearchLanguagesByNameResponse200
+;
 
-export type skillsSearchLanguagesByNameResponse403 = {
-  data: void
-  status: 403
-}
-
-export type skillsSearchLanguagesByNameResponseSuccess = (skillsSearchLanguagesByNameResponse200) & {
-  headers: Headers;
-};
-export type skillsSearchLanguagesByNameResponseError = (skillsSearchLanguagesByNameResponse401 | skillsSearchLanguagesByNameResponse403) & {
-  headers: Headers;
-};
-
-export type skillsSearchLanguagesByNameResponse = (skillsSearchLanguagesByNameResponseSuccess | skillsSearchLanguagesByNameResponseError)
+export type skillsSearchLanguagesByNameResponse = (skillsSearchLanguagesByNameResponseSuccess)
 
 export const getSkillsSearchLanguagesByNameUrl = (params: SkillsSearchLanguagesByNameParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -307,7 +273,7 @@ export const getSkillsSearchLanguagesByNameQueryKey = (params?: SkillsSearchLang
     }
 
 
-export const getSkillsSearchLanguagesByNameInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>, TError = void>(params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsSearchLanguagesByNameInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>, TError = unknown>(params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -326,14 +292,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsSearchLanguagesByNameInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>
-export type SkillsSearchLanguagesByNameInfiniteQueryError = void
+export type SkillsSearchLanguagesByNameInfiniteQueryError = unknown
 
 
 /**
  * @summary Search spoken languages by name
  */
 
-export function createSkillsSearchLanguagesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>, TError = void>(
+export function createSkillsSearchLanguagesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>, TError = unknown>(
  params: () =>  SkillsSearchLanguagesByNameParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -348,7 +314,7 @@ export function createSkillsSearchLanguagesByNameInfinite<TData = InfiniteData<A
 /**
  * @summary Search spoken languages by name
  */
-export const prefetchSkillsSearchLanguagesByNameInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = void>(
+export const prefetchSkillsSearchLanguagesByNameInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = unknown>(
  queryClient: QueryClient, params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -362,7 +328,7 @@ export const prefetchSkillsSearchLanguagesByNameInfiniteQuery = async <TData = A
 
 
 
-export const getSkillsSearchLanguagesByNameQueryOptions = <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = void>(params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsSearchLanguagesByNameQueryOptions = <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = unknown>(params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -381,14 +347,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsSearchLanguagesByNameQueryResult = NonNullable<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>>
-export type SkillsSearchLanguagesByNameQueryError = void
+export type SkillsSearchLanguagesByNameQueryError = unknown
 
 
 /**
  * @summary Search spoken languages by name
  */
 
-export function createSkillsSearchLanguagesByName<TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = void>(
+export function createSkillsSearchLanguagesByName<TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = unknown>(
  params: () =>  SkillsSearchLanguagesByNameParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -403,7 +369,7 @@ export function createSkillsSearchLanguagesByName<TData = Awaited<ReturnType<typ
 /**
  * @summary Search spoken languages by name
  */
-export const prefetchSkillsSearchLanguagesByNameQuery = async <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = void>(
+export const prefetchSkillsSearchLanguagesByNameQuery = async <TData = Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError = unknown>(
  queryClient: QueryClient, params: SkillsSearchLanguagesByNameParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsSearchLanguagesByName>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -420,29 +386,12 @@ export const prefetchSkillsSearchLanguagesByNameQuery = async <TData = Awaited<R
 /**
  * @summary Get spoken language by code
  */
-export type skillsFindLanguageByCodeResponse200 = {
-  data: SpokenLanguageDataDto
-  status: 200
-}
+export type skillsFindLanguageByCodeResponse200 = SpokenLanguageDataDto
 
-export type skillsFindLanguageByCodeResponse401 = {
-  data: void
-  status: 401
-}
+export type skillsFindLanguageByCodeResponseSuccess = skillsFindLanguageByCodeResponse200
+;
 
-export type skillsFindLanguageByCodeResponse403 = {
-  data: void
-  status: 403
-}
-
-export type skillsFindLanguageByCodeResponseSuccess = (skillsFindLanguageByCodeResponse200) & {
-  headers: Headers;
-};
-export type skillsFindLanguageByCodeResponseError = (skillsFindLanguageByCodeResponse401 | skillsFindLanguageByCodeResponse403) & {
-  headers: Headers;
-};
-
-export type skillsFindLanguageByCodeResponse = (skillsFindLanguageByCodeResponseSuccess | skillsFindLanguageByCodeResponseError)
+export type skillsFindLanguageByCodeResponse = (skillsFindLanguageByCodeResponseSuccess)
 
 export const getSkillsFindLanguageByCodeUrl = (code: string,) => {
 
@@ -480,7 +429,7 @@ export const getSkillsFindLanguageByCodeQueryKey = (code: string,) => {
     }
 
 
-export const getSkillsFindLanguageByCodeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>, TError = void>(code: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsFindLanguageByCodeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>, TError = unknown>(code: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -499,14 +448,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsFindLanguageByCodeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>
-export type SkillsFindLanguageByCodeInfiniteQueryError = void
+export type SkillsFindLanguageByCodeInfiniteQueryError = unknown
 
 
 /**
  * @summary Get spoken language by code
  */
 
-export function createSkillsFindLanguageByCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>, TError = void>(
+export function createSkillsFindLanguageByCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>, TError = unknown>(
  code: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -521,7 +470,7 @@ export function createSkillsFindLanguageByCodeInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get spoken language by code
  */
-export const prefetchSkillsFindLanguageByCodeInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = void>(
+export const prefetchSkillsFindLanguageByCodeInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = unknown>(
  queryClient: QueryClient, code: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -535,7 +484,7 @@ export const prefetchSkillsFindLanguageByCodeInfiniteQuery = async <TData = Awai
 
 
 
-export const getSkillsFindLanguageByCodeQueryOptions = <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = void>(code: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsFindLanguageByCodeQueryOptions = <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = unknown>(code: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -554,14 +503,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsFindLanguageByCodeQueryResult = NonNullable<Awaited<ReturnType<typeof skillsFindLanguageByCode>>>
-export type SkillsFindLanguageByCodeQueryError = void
+export type SkillsFindLanguageByCodeQueryError = unknown
 
 
 /**
  * @summary Get spoken language by code
  */
 
-export function createSkillsFindLanguageByCode<TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = void>(
+export function createSkillsFindLanguageByCode<TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = unknown>(
  code: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -576,7 +525,7 @@ export function createSkillsFindLanguageByCode<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get spoken language by code
  */
-export const prefetchSkillsFindLanguageByCodeQuery = async <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = void>(
+export const prefetchSkillsFindLanguageByCodeQuery = async <TData = Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError = unknown>(
  queryClient: QueryClient, code: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsFindLanguageByCode>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

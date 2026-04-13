@@ -65,14 +65,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get public resume by share slug
  */
-export type resumesGetPublicResumeResponse200 = {
-  data: PublicResumeDataDto
-  status: 200
-}
+export type resumesGetPublicResumeResponse200 = PublicResumeDataDto
 
-export type resumesGetPublicResumeResponseSuccess = (resumesGetPublicResumeResponse200) & {
-  headers: Headers;
-};
+export type resumesGetPublicResumeResponseSuccess = resumesGetPublicResumeResponse200
 ;
 
 export type resumesGetPublicResumeResponse = (resumesGetPublicResumeResponseSuccess)
@@ -226,14 +221,9 @@ export const prefetchResumesGetPublicResumeQuery = async <TData = Awaited<Return
 /**
  * @summary Download public resume by share slug
  */
-export type resumesDownloadPublicResumeResponse200 = {
-  data: PublicResumeDataDto
-  status: 200
-}
+export type resumesDownloadPublicResumeResponse200 = PublicResumeDataDto
 
-export type resumesDownloadPublicResumeResponseSuccess = (resumesDownloadPublicResumeResponse200) & {
-  headers: Headers;
-};
+export type resumesDownloadPublicResumeResponseSuccess = resumesDownloadPublicResumeResponse200
 ;
 
 export type resumesDownloadPublicResumeResponse = (resumesDownloadPublicResumeResponseSuccess)

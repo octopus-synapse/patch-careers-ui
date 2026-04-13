@@ -73,14 +73,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Trigger MEC data synchronization
  */
-export type mecInternalTriggerSyncResponse201 = {
-  data: MecSyncExecutionDataDto
-  status: 201
-}
+export type mecInternalTriggerSyncResponse201 = MecSyncExecutionDataDto
 
-export type mecInternalTriggerSyncResponseSuccess = (mecInternalTriggerSyncResponse201) & {
-  headers: Headers;
-};
+export type mecInternalTriggerSyncResponseSuccess = mecInternalTriggerSyncResponse201
 ;
 
 export type mecInternalTriggerSyncResponse = (mecInternalTriggerSyncResponseSuccess)
@@ -155,14 +150,9 @@ export const createMecInternalTriggerSync = <TError = unknown,
     /**
  * @summary Get sync status
  */
-export type mecInternalGetSyncStatusResponse200 = {
-  data: MecSyncStatusDataDto
-  status: 200
-}
+export type mecInternalGetSyncStatusResponse200 = MecSyncStatusDataDto
 
-export type mecInternalGetSyncStatusResponseSuccess = (mecInternalGetSyncStatusResponse200) & {
-  headers: Headers;
-};
+export type mecInternalGetSyncStatusResponseSuccess = mecInternalGetSyncStatusResponse200
 ;
 
 export type mecInternalGetSyncStatusResponse = (mecInternalGetSyncStatusResponseSuccess)
@@ -316,14 +306,9 @@ export const prefetchMecInternalGetSyncStatusQuery = async <TData = Awaited<Retu
 /**
  * @summary Get sync history
  */
-export type mecInternalGetSyncHistoryResponse200 = {
-  data: MecSyncHistoryDataDto
-  status: 200
-}
+export type mecInternalGetSyncHistoryResponse200 = MecSyncHistoryDataDto
 
-export type mecInternalGetSyncHistoryResponseSuccess = (mecInternalGetSyncHistoryResponse200) & {
-  headers: Headers;
-};
+export type mecInternalGetSyncHistoryResponseSuccess = mecInternalGetSyncHistoryResponse200
 ;
 
 export type mecInternalGetSyncHistoryResponse = (mecInternalGetSyncHistoryResponseSuccess)

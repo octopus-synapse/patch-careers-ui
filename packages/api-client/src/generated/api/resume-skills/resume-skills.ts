@@ -71,29 +71,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Add a skill to a resume
  */
-export type resumeSkillsAddSkillToResumeResponse200 = {
-  data: SkillDataDto
-  status: 200
-}
+export type resumeSkillsAddSkillToResumeResponse200 = SkillDataDto
 
-export type resumeSkillsAddSkillToResumeResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeSkillsAddSkillToResumeResponseSuccess = resumeSkillsAddSkillToResumeResponse200
+;
 
-export type resumeSkillsAddSkillToResumeResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeSkillsAddSkillToResumeResponseSuccess = (resumeSkillsAddSkillToResumeResponse200) & {
-  headers: Headers;
-};
-export type resumeSkillsAddSkillToResumeResponseError = (resumeSkillsAddSkillToResumeResponse401 | resumeSkillsAddSkillToResumeResponse403) & {
-  headers: Headers;
-};
-
-export type resumeSkillsAddSkillToResumeResponse = (resumeSkillsAddSkillToResumeResponseSuccess | resumeSkillsAddSkillToResumeResponseError)
+export type resumeSkillsAddSkillToResumeResponse = (resumeSkillsAddSkillToResumeResponseSuccess)
 
 export const getResumeSkillsAddSkillToResumeUrl = (resumeId: string,) => {
 
@@ -117,7 +100,7 @@ export const resumeSkillsAddSkillToResume = async (resumeId: string, options?: R
 
 
 
-export const getResumeSkillsAddSkillToResumeMutationOptions = <TError = void,
+export const getResumeSkillsAddSkillToResumeMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsAddSkillToResume>>, TError,{resumeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsAddSkillToResume>>, TError,{resumeId: string}, TContext> => {
 
@@ -146,12 +129,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeSkillsAddSkillToResumeMutationResult = NonNullable<Awaited<ReturnType<typeof resumeSkillsAddSkillToResume>>>
 
-    export type ResumeSkillsAddSkillToResumeMutationError = void
+    export type ResumeSkillsAddSkillToResumeMutationError = unknown
 
     /**
  * @summary Add a skill to a resume
  */
-export const createResumeSkillsAddSkillToResume = <TError = void,
+export const createResumeSkillsAddSkillToResume = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsAddSkillToResume>>, TError,{resumeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeSkillsAddSkillToResume>>,
@@ -164,29 +147,12 @@ export const createResumeSkillsAddSkillToResume = <TError = void,
     /**
  * @summary List skills for a resume
  */
-export type resumeSkillsListSkillsForResumeResponse200 = {
-  data: SkillsDataDto
-  status: 200
-}
+export type resumeSkillsListSkillsForResumeResponse200 = SkillsDataDto
 
-export type resumeSkillsListSkillsForResumeResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeSkillsListSkillsForResumeResponseSuccess = resumeSkillsListSkillsForResumeResponse200
+;
 
-export type resumeSkillsListSkillsForResumeResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeSkillsListSkillsForResumeResponseSuccess = (resumeSkillsListSkillsForResumeResponse200) & {
-  headers: Headers;
-};
-export type resumeSkillsListSkillsForResumeResponseError = (resumeSkillsListSkillsForResumeResponse401 | resumeSkillsListSkillsForResumeResponse403) & {
-  headers: Headers;
-};
-
-export type resumeSkillsListSkillsForResumeResponse = (resumeSkillsListSkillsForResumeResponseSuccess | resumeSkillsListSkillsForResumeResponseError)
+export type resumeSkillsListSkillsForResumeResponse = (resumeSkillsListSkillsForResumeResponseSuccess)
 
 export const getResumeSkillsListSkillsForResumeUrl = (resumeId: string,) => {
 
@@ -224,7 +190,7 @@ export const getResumeSkillsListSkillsForResumeQueryKey = (resumeId: string,) =>
     }
 
 
-export const getResumeSkillsListSkillsForResumeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeSkillsListSkillsForResumeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -243,14 +209,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeSkillsListSkillsForResumeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>
-export type ResumeSkillsListSkillsForResumeInfiniteQueryError = void
+export type ResumeSkillsListSkillsForResumeInfiniteQueryError = unknown
 
 
 /**
  * @summary List skills for a resume
  */
 
-export function createResumeSkillsListSkillsForResumeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>, TError = void>(
+export function createResumeSkillsListSkillsForResumeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -265,7 +231,7 @@ export function createResumeSkillsListSkillsForResumeInfinite<TData = InfiniteDa
 /**
  * @summary List skills for a resume
  */
-export const prefetchResumeSkillsListSkillsForResumeInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = void>(
+export const prefetchResumeSkillsListSkillsForResumeInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -279,7 +245,7 @@ export const prefetchResumeSkillsListSkillsForResumeInfiniteQuery = async <TData
 
 
 
-export const getResumeSkillsListSkillsForResumeQueryOptions = <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeSkillsListSkillsForResumeQueryOptions = <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -298,14 +264,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeSkillsListSkillsForResumeQueryResult = NonNullable<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>>
-export type ResumeSkillsListSkillsForResumeQueryError = void
+export type ResumeSkillsListSkillsForResumeQueryError = unknown
 
 
 /**
  * @summary List skills for a resume
  */
 
-export function createResumeSkillsListSkillsForResume<TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = void>(
+export function createResumeSkillsListSkillsForResume<TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -320,7 +286,7 @@ export function createResumeSkillsListSkillsForResume<TData = Awaited<ReturnType
 /**
  * @summary List skills for a resume
  */
-export const prefetchResumeSkillsListSkillsForResumeQuery = async <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = void>(
+export const prefetchResumeSkillsListSkillsForResumeQuery = async <TData = Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeSkillsListSkillsForResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -337,29 +303,12 @@ export const prefetchResumeSkillsListSkillsForResumeQuery = async <TData = Await
 /**
  * @summary Update a resume skill
  */
-export type resumeSkillsUpdateSkillResponse200 = {
-  data: SkillDataDto
-  status: 200
-}
+export type resumeSkillsUpdateSkillResponse200 = SkillDataDto
 
-export type resumeSkillsUpdateSkillResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeSkillsUpdateSkillResponseSuccess = resumeSkillsUpdateSkillResponse200
+;
 
-export type resumeSkillsUpdateSkillResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeSkillsUpdateSkillResponseSuccess = (resumeSkillsUpdateSkillResponse200) & {
-  headers: Headers;
-};
-export type resumeSkillsUpdateSkillResponseError = (resumeSkillsUpdateSkillResponse401 | resumeSkillsUpdateSkillResponse403) & {
-  headers: Headers;
-};
-
-export type resumeSkillsUpdateSkillResponse = (resumeSkillsUpdateSkillResponseSuccess | resumeSkillsUpdateSkillResponseError)
+export type resumeSkillsUpdateSkillResponse = (resumeSkillsUpdateSkillResponseSuccess)
 
 export const getResumeSkillsUpdateSkillUrl = (resumeId: string,
     skillId: string,) => {
@@ -385,7 +334,7 @@ export const resumeSkillsUpdateSkill = async (resumeId: string,
 
 
 
-export const getResumeSkillsUpdateSkillMutationOptions = <TError = void,
+export const getResumeSkillsUpdateSkillMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsUpdateSkill>>, TError,{resumeId: string;skillId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsUpdateSkill>>, TError,{resumeId: string;skillId: string}, TContext> => {
 
@@ -414,12 +363,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeSkillsUpdateSkillMutationResult = NonNullable<Awaited<ReturnType<typeof resumeSkillsUpdateSkill>>>
 
-    export type ResumeSkillsUpdateSkillMutationError = void
+    export type ResumeSkillsUpdateSkillMutationError = unknown
 
     /**
  * @summary Update a resume skill
  */
-export const createResumeSkillsUpdateSkill = <TError = void,
+export const createResumeSkillsUpdateSkill = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsUpdateSkill>>, TError,{resumeId: string;skillId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeSkillsUpdateSkill>>,
@@ -432,29 +381,12 @@ export const createResumeSkillsUpdateSkill = <TError = void,
     /**
  * @summary Delete a resume skill
  */
-export type resumeSkillsDeleteSkillResponse200 = {
-  data: DeleteSkillDataDto
-  status: 200
-}
+export type resumeSkillsDeleteSkillResponse200 = DeleteSkillDataDto
 
-export type resumeSkillsDeleteSkillResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeSkillsDeleteSkillResponseSuccess = resumeSkillsDeleteSkillResponse200
+;
 
-export type resumeSkillsDeleteSkillResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeSkillsDeleteSkillResponseSuccess = (resumeSkillsDeleteSkillResponse200) & {
-  headers: Headers;
-};
-export type resumeSkillsDeleteSkillResponseError = (resumeSkillsDeleteSkillResponse401 | resumeSkillsDeleteSkillResponse403) & {
-  headers: Headers;
-};
-
-export type resumeSkillsDeleteSkillResponse = (resumeSkillsDeleteSkillResponseSuccess | resumeSkillsDeleteSkillResponseError)
+export type resumeSkillsDeleteSkillResponse = (resumeSkillsDeleteSkillResponseSuccess)
 
 export const getResumeSkillsDeleteSkillUrl = (resumeId: string,
     skillId: string,) => {
@@ -480,7 +412,7 @@ export const resumeSkillsDeleteSkill = async (resumeId: string,
 
 
 
-export const getResumeSkillsDeleteSkillMutationOptions = <TError = void,
+export const getResumeSkillsDeleteSkillMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsDeleteSkill>>, TError,{resumeId: string;skillId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsDeleteSkill>>, TError,{resumeId: string;skillId: string}, TContext> => {
 
@@ -509,12 +441,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeSkillsDeleteSkillMutationResult = NonNullable<Awaited<ReturnType<typeof resumeSkillsDeleteSkill>>>
 
-    export type ResumeSkillsDeleteSkillMutationError = void
+    export type ResumeSkillsDeleteSkillMutationError = unknown
 
     /**
  * @summary Delete a resume skill
  */
-export const createResumeSkillsDeleteSkill = <TError = void,
+export const createResumeSkillsDeleteSkill = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeSkillsDeleteSkill>>, TError,{resumeId: string;skillId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeSkillsDeleteSkill>>,

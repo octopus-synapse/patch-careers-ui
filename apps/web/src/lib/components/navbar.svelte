@@ -29,9 +29,9 @@
 		query: { retry: false, enabled: browser }
 	}));
 	const user = $derived(session.data?.user);
-	const authenticated = $derived(session.data?.authenticated ?? false);
-	const hasCompletedOnboarding = $derived((user as Record<string, unknown> | undefined)?.hasCompletedOnboarding ?? false);
-	const isAdmin = $derived(Boolean((user as Record<string, unknown> | undefined)?.isAdmin));
+	const authenticated = $derived(session.data?.authenticated);
+	const hasCompletedOnboarding = $derived(user?.hasCompletedOnboarding);
+	const isAdmin = $derived(Boolean(user?.isAdmin));
 
 	const queryClient = useQueryClient();
 	const logout = createAuthLogout(() => ({
@@ -193,7 +193,7 @@
 
 		{#if isMenuOpen}
 			<NavMobileMenu
-				{authenticated}
+				authenticated={authenticated ?? false}
 				user={user as { name?: string | null; email: string } | undefined}
 				{navLinks}
 				{isAdmin}

@@ -72,29 +72,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Upload a CV (PDF or DOCX) to validate its compatibility with Applicant Tracking Systems. Returns detailed validation results including issues and suggestions.
  * @summary Validate CV for ATS compatibility
  */
-export type atsValidationValidateCVResponse200 = {
-  data: ATSValidationResponseDto
-  status: 200
-}
+export type atsValidationValidateCVResponse200 = ATSValidationResponseDto
 
-export type atsValidationValidateCVResponse401 = {
-  data: void
-  status: 401
-}
+export type atsValidationValidateCVResponseSuccess = atsValidationValidateCVResponse200
+;
 
-export type atsValidationValidateCVResponse403 = {
-  data: void
-  status: 403
-}
-
-export type atsValidationValidateCVResponseSuccess = (atsValidationValidateCVResponse200) & {
-  headers: Headers;
-};
-export type atsValidationValidateCVResponseError = (atsValidationValidateCVResponse401 | atsValidationValidateCVResponse403) & {
-  headers: Headers;
-};
-
-export type atsValidationValidateCVResponse = (atsValidationValidateCVResponseSuccess | atsValidationValidateCVResponseError)
+export type atsValidationValidateCVResponse = (atsValidationValidateCVResponseSuccess)
 
 export const getAtsValidationValidateCVUrl = () => {
 
@@ -141,7 +124,7 @@ if(validateCVOptionsDto.checkSemantic !== undefined) {
 
 
 
-export const getAtsValidationValidateCVMutationOptions = <TError = void,
+export const getAtsValidationValidateCVMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof atsValidationValidateCV>>, TError,{data: ValidateCVOptionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof atsValidationValidateCV>>, TError,{data: ValidateCVOptionsDto}, TContext> => {
 
@@ -170,12 +153,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AtsValidationValidateCVMutationResult = NonNullable<Awaited<ReturnType<typeof atsValidationValidateCV>>>
     export type AtsValidationValidateCVMutationBody = ValidateCVOptionsDto
-    export type AtsValidationValidateCVMutationError = void
+    export type AtsValidationValidateCVMutationError = unknown
 
     /**
  * @summary Validate CV for ATS compatibility
  */
-export const createAtsValidationValidateCV = <TError = void,
+export const createAtsValidationValidateCV = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof atsValidationValidateCV>>, TError,{data: ValidateCVOptionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof atsValidationValidateCV>>,
@@ -189,29 +172,12 @@ export const createAtsValidationValidateCV = <TError = void,
  * Calculates the ATS compatibility score for a specific theme based on its layout, typography, colors, and other visual properties. Returns a detailed breakdown and recommendations.
  * @summary Calculate ATS score for a theme
  */
-export type atsValidationCalculateThemeScoreResponse200 = {
-  data: ThemeATSScoreResponseDto
-  status: 200
-}
+export type atsValidationCalculateThemeScoreResponse200 = ThemeATSScoreResponseDto
 
-export type atsValidationCalculateThemeScoreResponse401 = {
-  data: void
-  status: 401
-}
+export type atsValidationCalculateThemeScoreResponseSuccess = atsValidationCalculateThemeScoreResponse200
+;
 
-export type atsValidationCalculateThemeScoreResponse403 = {
-  data: void
-  status: 403
-}
-
-export type atsValidationCalculateThemeScoreResponseSuccess = (atsValidationCalculateThemeScoreResponse200) & {
-  headers: Headers;
-};
-export type atsValidationCalculateThemeScoreResponseError = (atsValidationCalculateThemeScoreResponse401 | atsValidationCalculateThemeScoreResponse403) & {
-  headers: Headers;
-};
-
-export type atsValidationCalculateThemeScoreResponse = (atsValidationCalculateThemeScoreResponseSuccess | atsValidationCalculateThemeScoreResponseError)
+export type atsValidationCalculateThemeScoreResponse = (atsValidationCalculateThemeScoreResponseSuccess)
 
 export const getAtsValidationCalculateThemeScoreUrl = (themeId: string,) => {
 
@@ -249,7 +215,7 @@ export const getAtsValidationCalculateThemeScoreQueryKey = (themeId: string,) =>
     }
 
 
-export const getAtsValidationCalculateThemeScoreInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>>, TError = void>(themeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAtsValidationCalculateThemeScoreInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>>, TError = unknown>(themeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -268,14 +234,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AtsValidationCalculateThemeScoreInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>>
-export type AtsValidationCalculateThemeScoreInfiniteQueryError = void
+export type AtsValidationCalculateThemeScoreInfiniteQueryError = unknown
 
 
 /**
  * @summary Calculate ATS score for a theme
  */
 
-export function createAtsValidationCalculateThemeScoreInfinite<TData = InfiniteData<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>>, TError = void>(
+export function createAtsValidationCalculateThemeScoreInfinite<TData = InfiniteData<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>>, TError = unknown>(
  themeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -290,7 +256,7 @@ export function createAtsValidationCalculateThemeScoreInfinite<TData = InfiniteD
 /**
  * @summary Calculate ATS score for a theme
  */
-export const prefetchAtsValidationCalculateThemeScoreInfiniteQuery = async <TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = void>(
+export const prefetchAtsValidationCalculateThemeScoreInfiniteQuery = async <TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = unknown>(
  queryClient: QueryClient, themeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -304,7 +270,7 @@ export const prefetchAtsValidationCalculateThemeScoreInfiniteQuery = async <TDat
 
 
 
-export const getAtsValidationCalculateThemeScoreQueryOptions = <TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = void>(themeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAtsValidationCalculateThemeScoreQueryOptions = <TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = unknown>(themeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -323,14 +289,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AtsValidationCalculateThemeScoreQueryResult = NonNullable<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>>
-export type AtsValidationCalculateThemeScoreQueryError = void
+export type AtsValidationCalculateThemeScoreQueryError = unknown
 
 
 /**
  * @summary Calculate ATS score for a theme
  */
 
-export function createAtsValidationCalculateThemeScore<TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = void>(
+export function createAtsValidationCalculateThemeScore<TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = unknown>(
  themeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -345,7 +311,7 @@ export function createAtsValidationCalculateThemeScore<TData = Awaited<ReturnTyp
 /**
  * @summary Calculate ATS score for a theme
  */
-export const prefetchAtsValidationCalculateThemeScoreQuery = async <TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = void>(
+export const prefetchAtsValidationCalculateThemeScoreQuery = async <TData = Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError = unknown>(
  queryClient: QueryClient, themeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof atsValidationCalculateThemeScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

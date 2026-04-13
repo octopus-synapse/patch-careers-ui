@@ -7,6 +7,7 @@
 		usersResetPassword,
 		usersAssignRoles,
 	} from 'api-client';
+	import type { UserManagementListDataDtoUsersItem } from 'api-client';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { locale } from '$lib/locale.svelte';
@@ -37,12 +38,8 @@
 		query: { enabled: browser }
 	}));
 
-	const users = $derived(
-		(usersQuery.data?.users as Record<string, unknown>[] | undefined) ?? []
-	);
-	const pagination = $derived(
-		usersQuery.data?.pagination as { page: number; totalPages: number; total: number } | undefined
-	);
+	const users = $derived(usersQuery.data?.users);
+	const pagination = $derived(usersQuery.data?.pagination);
 
 	// --- Dropdown state ---
 	let openDropdownId = $state<string | null>(null);
@@ -50,7 +47,7 @@
 	// --- Actions state ---
 	let deleteUserId = $state<string | null>(null);
 	let resetPasswordUserId = $state<string | null>(null);
-	let toggleRoleUser = $state<Record<string, unknown> | null>(null);
+	let toggleRoleUser = $state<UserManagementListDataDtoUsersItem | null>(null);
 	let actionLoading = $state(false);
 
 	// --- Create user ---
@@ -65,13 +62,13 @@
 	let bulkDeleteConfirm = $state(false);
 	let bulkLoading = $state(false);
 
-	const allSelected = $derived(users.length > 0 && users.every(u => selectedIds.has(u.id as string)));
+	const allSelected = $derived(!!users?.length && users.every(u => selectedIds.has(u.id)));
 
 	function toggleSelectAll() {
 		if (allSelected) {
 			selectedIds = new Set();
 		} else {
-			selectedIds = new Set(users.map(u => u.id as string));
+			selectedIds = new Set((users ?? []).map(u => u.id));
 		}
 	}
 
@@ -126,11 +123,10 @@
 	async function handleToggleRole() {
 		if (!toggleRoleUser) return;
 		actionLoading = true;
-		const currentRoles = (toggleRoleUser.roles as string[]) ?? [];
-		const isAdmin = currentRoles.includes('role_admin');
+		const isAdmin = toggleRoleUser.role === 'ADMIN';
 		const newRoles = isAdmin ? ['role_user'] : ['role_user', 'role_admin'];
 		try {
-			await usersAssignRoles((toggleRoleUser.id as string), {
+			await usersAssignRoles(toggleRoleUser.id, {
 				body: JSON.stringify({ roles: newRoles }),
 				headers: { 'Content-Type': 'application/json' },
 			});
@@ -155,7 +151,7 @@
 		}
 	}
 
-	const columns = [
+	const columns = $derived([
 		{ key: 'checkbox', label: '', width: '40px' },
 		{ key: 'name', label: t('admin.users.name') },
 		{ key: 'email', label: t('admin.users.email') },
@@ -163,7 +159,7 @@
 		{ key: 'status', label: t('admin.users.status'), width: '100px' },
 		{ key: 'createdAt', label: t('admin.users.created'), width: '120px' },
 		{ key: 'actions', label: '', width: '60px' },
-	];
+	]);
 
 	const filters = $derived([
 		{
@@ -223,30 +219,28 @@
 		emptyMessage={t('admin.users.noUsers')}
 		onrowclick={(row) => goto(`/admin/users/${row.id}`)}
 	>
-		{#snippet cell({ row, key })}
+		{#snippet cell({ row, key, value })}
 			{#if key === 'checkbox'}
 				<input
 					type="checkbox"
-					checked={selectedIds.has(row.id as string)}
-					onclick={(e) => { e.stopPropagation(); toggleSelect(row.id as string); }}
+					checked={selectedIds.has(row.id)}
+					onclick={(e) => { e.stopPropagation(); toggleSelect(row.id); }}
 					class="rounded"
 				/>
 			{:else if key === 'name'}
 				<div class="flex items-center gap-2">
-					<Avatar name={(row.name as string) ?? (row.email as string)} size="sm" />
+					<Avatar name={row.name ?? row.email ?? '—'} size="sm" />
 					<span>{row.name ?? '—'}</span>
 				</div>
 			{:else if key === 'role'}
-				{@const roles = (row.roles as string[]) ?? []}
-				<StatusBadge status={roles.includes('role_admin') ? 'admin' : 'user'} />
+				<StatusBadge status={row.role === 'ADMIN' ? 'admin' : 'user'} />
 			{:else if key === 'status'}
 				<StatusBadge status={row.isActive ? 'active' : 'inactive'} />
 			{:else if key === 'createdAt'}
-				{new Date(row.createdAt as string).toLocaleDateString()}
+				{new Date(row.createdAt).toLocaleDateString()}
 			{:else if key === 'actions'}
-				{@const roles = (row.roles as string[]) ?? []}
-				{@const isRowAdmin = roles.includes('role_admin')}
-				{@const rowId = row.id as string}
+				{@const isRowAdmin = row.role === 'ADMIN'}
+				{@const rowId = row.id}
 				<Dropdown
 					open={openDropdownId === rowId}
 					onclose={() => openDropdownId = null}
@@ -268,7 +262,7 @@
 					</Button>
 				</Dropdown>
 			{:else}
-				{row[key] ?? '—'}
+				{value ?? '—'}
 			{/if}
 		{/snippet}
 	</DataTable>
@@ -294,14 +288,17 @@
 >
 	<div class="space-y-3">
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Email *</label>
 			<Input bind:value={newEmail} type="email" placeholder="user@example.com" required />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name</label>
 			<Input bind:value={newName} placeholder="John Doe" />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Password *</label>
 			<Input bind:value={newPassword} type="password" placeholder="Min 8 characters" required minlength={8} />
 		</div>
@@ -330,7 +327,7 @@
 <ConfirmModal
 	open={toggleRoleUser !== null}
 	title="Change Role"
-	message={toggleRoleUser ? ((toggleRoleUser.roles as string[])?.includes('role_admin') ? 'Remove admin privileges from this user?' : 'Grant admin privileges to this user?') : ''}
+	message={toggleRoleUser ? (toggleRoleUser.role === 'ADMIN' ? 'Remove admin privileges from this user?' : 'Grant admin privileges to this user?') : ''}
 	loading={actionLoading}
 	onconfirm={handleToggleRole}
 	oncancel={() => toggleRoleUser = null}

@@ -82,14 +82,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get onboarding session with field definitions and navigation
  */
-export type onboardingGetSessionResponse200 = {
-  data: OnboardingSessionDto
-  status: 200
-}
+export type onboardingGetSessionResponse200 = OnboardingSessionDto
 
-export type onboardingGetSessionResponseSuccess = (onboardingGetSessionResponse200) & {
-  headers: Headers;
-};
+export type onboardingGetSessionResponseSuccess = onboardingGetSessionResponse200
 ;
 
 export type onboardingGetSessionResponse = (onboardingGetSessionResponseSuccess)
@@ -250,14 +245,9 @@ export const prefetchOnboardingGetSessionQuery = async <TData = Awaited<ReturnTy
 /**
  * @summary Save current step data and advance to next step
  */
-export type onboardingNextStepResponse200 = {
-  data: OnboardingSessionDto
-  status: 200
-}
+export type onboardingNextStepResponse200 = OnboardingSessionDto
 
-export type onboardingNextStepResponseSuccess = (onboardingNextStepResponse200) & {
-  headers: Headers;
-};
+export type onboardingNextStepResponseSuccess = onboardingNextStepResponse200
 ;
 
 export type onboardingNextStepResponse = (onboardingNextStepResponseSuccess)
@@ -340,14 +330,9 @@ export const createOnboardingNextStep = <TError = unknown,
     /**
  * @summary Go back to previous step
  */
-export type onboardingPreviousStepResponse200 = {
-  data: OnboardingSessionDto
-  status: 200
-}
+export type onboardingPreviousStepResponse200 = OnboardingSessionDto
 
-export type onboardingPreviousStepResponseSuccess = (onboardingPreviousStepResponse200) & {
-  headers: Headers;
-};
+export type onboardingPreviousStepResponseSuccess = onboardingPreviousStepResponse200
 ;
 
 export type onboardingPreviousStepResponse = (onboardingPreviousStepResponseSuccess)
@@ -428,14 +413,9 @@ export const createOnboardingPreviousStep = <TError = unknown,
     /**
  * @summary Jump to an accessible step
  */
-export type onboardingGotoStepResponse200 = {
-  data: OnboardingSessionDto
-  status: 200
-}
+export type onboardingGotoStepResponse200 = OnboardingSessionDto
 
-export type onboardingGotoStepResponseSuccess = (onboardingGotoStepResponse200) & {
-  headers: Headers;
-};
+export type onboardingGotoStepResponseSuccess = onboardingGotoStepResponse200
 ;
 
 export type onboardingGotoStepResponse = (onboardingGotoStepResponseSuccess)
@@ -518,14 +498,9 @@ export const createOnboardingGotoStep = <TError = unknown,
     /**
  * @summary Save current step data without advancing
  */
-export type onboardingSaveStepDataResponse200 = {
-  data: OnboardingSessionDto
-  status: 200
-}
+export type onboardingSaveStepDataResponse200 = OnboardingSessionDto
 
-export type onboardingSaveStepDataResponseSuccess = (onboardingSaveStepDataResponse200) & {
-  headers: Headers;
-};
+export type onboardingSaveStepDataResponseSuccess = onboardingSaveStepDataResponse200
 ;
 
 export type onboardingSaveStepDataResponse = (onboardingSaveStepDataResponseSuccess)
@@ -608,14 +583,9 @@ export const createOnboardingSaveStepData = <TError = unknown,
     /**
  * @summary Complete onboarding — backend builds payload from saved progress
  */
-export type onboardingCompleteFromSessionResponse200 = {
-  data: CompleteOnboardingResponseDto
-  status: 200
-}
+export type onboardingCompleteFromSessionResponse200 = CompleteOnboardingResponseDto
 
-export type onboardingCompleteFromSessionResponseSuccess = (onboardingCompleteFromSessionResponse200) & {
-  headers: Headers;
-};
+export type onboardingCompleteFromSessionResponseSuccess = onboardingCompleteFromSessionResponse200
 ;
 
 export type onboardingCompleteFromSessionResponse = (onboardingCompleteFromSessionResponseSuccess)
@@ -689,14 +659,9 @@ export const createOnboardingCompleteFromSession = <TError = unknown,
     /**
  * @summary [Legacy] Get onboarding progress
  */
-export type onboardingGetProgressResponse200 = {
-  data: OnboardingSessionDto
-  status: 200
-}
+export type onboardingGetProgressResponse200 = OnboardingSessionDto
 
-export type onboardingGetProgressResponseSuccess = (onboardingGetProgressResponse200) & {
-  headers: Headers;
-};
+export type onboardingGetProgressResponseSuccess = onboardingGetProgressResponse200
 ;
 
 export type onboardingGetProgressResponse = (onboardingGetProgressResponseSuccess)
@@ -850,14 +815,9 @@ export const prefetchOnboardingGetProgressQuery = async <TData = Awaited<ReturnT
 /**
  * @summary [Legacy] Save onboarding progress
  */
-export type onboardingSaveProgressResponse200 = {
-  data: SaveProgressResponseDto
-  status: 200
-}
+export type onboardingSaveProgressResponse200 = SaveProgressResponseDto
 
-export type onboardingSaveProgressResponseSuccess = (onboardingSaveProgressResponse200) & {
-  headers: Headers;
-};
+export type onboardingSaveProgressResponseSuccess = onboardingSaveProgressResponse200
 ;
 
 export type onboardingSaveProgressResponse = (onboardingSaveProgressResponseSuccess)
@@ -932,14 +892,9 @@ export const createOnboardingSaveProgress = <TError = unknown,
     /**
  * @summary [Legacy] Get onboarding completion status
  */
-export type onboardingGetStatusResponse200 = {
-  data: OnboardingStatusResponseDto
-  status: 200
-}
+export type onboardingGetStatusResponse200 = OnboardingStatusResponseDto
 
-export type onboardingGetStatusResponseSuccess = (onboardingGetStatusResponse200) & {
-  headers: Headers;
-};
+export type onboardingGetStatusResponseSuccess = onboardingGetStatusResponse200
 ;
 
 export type onboardingGetStatusResponse = (onboardingGetStatusResponseSuccess)
@@ -1093,14 +1048,9 @@ export const prefetchOnboardingGetStatusQuery = async <TData = Awaited<ReturnTyp
 /**
  * @summary [Legacy] Complete onboarding with explicit payload
  */
-export type onboardingCompleteOnboardingResponse200 = {
-  data: CompleteOnboardingResponseDto
-  status: 200
-}
+export type onboardingCompleteOnboardingResponse200 = CompleteOnboardingResponseDto
 
-export type onboardingCompleteOnboardingResponseSuccess = (onboardingCompleteOnboardingResponse200) & {
-  headers: Headers;
-};
+export type onboardingCompleteOnboardingResponseSuccess = onboardingCompleteOnboardingResponse200
 ;
 
 export type onboardingCompleteOnboardingResponse = (onboardingCompleteOnboardingResponseSuccess)

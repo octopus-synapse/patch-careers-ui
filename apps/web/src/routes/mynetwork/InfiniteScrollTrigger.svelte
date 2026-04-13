@@ -19,5 +19,5 @@
 </script>
 
 {#if hasMore}
-	<div bind:this={sentinel} class="h-1" />
+	<div bind:this={sentinel} class="h-1"></div>
 {/if}

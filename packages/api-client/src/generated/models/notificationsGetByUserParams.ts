@@ -37,6 +37,6 @@ All errors follow a consistent format:
  */
 
 export type NotificationsGetByUserParams = {
-cursor: string;
-limit: number;
+cursor?: string;
+limit?: number;
 };

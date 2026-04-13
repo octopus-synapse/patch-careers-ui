@@ -42,10 +42,10 @@
 	let selectedAreaId = $state<string | null>(null);
 	let selectedNicheId = $state<string | null>(null);
 
-	const tabOptions = [
+	const tabOptions = $derived([
 		{ value: 'hierarchy', label: t('admin.skills.hierarchy') },
 		{ value: 'languages', label: t('admin.skills.languages') },
-	];
+	]);
 
 	// --- Queries ---
 	const areasQuery = createAdminTechAreasFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'hierarchy' } }));
@@ -54,11 +54,11 @@
 	const spokenQuery = createAdminSpokenLanguagesFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'languages' } }));
 	const progQuery = createAdminProgrammingLanguagesFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'languages' } }));
 
-	const areas = $derived((areasQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const niches = $derived((nichesQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const skills = $derived((skillsQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const spokenLangs = $derived((spokenQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const progLangs = $derived((progQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
+	const areas = $derived(areasQuery.data?.items);
+	const niches = $derived(nichesQuery.data?.items);
+	const skills = $derived(skillsQuery.data?.items);
+	const spokenLangs = $derived(spokenQuery.data?.items);
+	const progLangs = $derived(progQuery.data?.items);
 
 	// --- Delete ---
 	let deleteTarget = $state<{ type: string; id: string } | null>(null);
@@ -89,17 +89,17 @@
 	}
 
 	function openEdit(type: FormType, item: Record<string, unknown>) {
-		const id = (type === 'spoken' ? item.code : type === 'programming' ? item.slug : item.id) as string;
+		const id = String(type === 'spoken' ? item.code : type === 'programming' ? item.slug : item.id);
 		formModal = { type, mode: 'edit', id };
-		formNameEn = (item.nameEn as string) ?? '';
-		formNamePtBr = (item.namePtBr as string) ?? '';
-		formSlug = (item.slug as string) ?? '';
-		formCode = (item.code as string) ?? '';
-		formIcon = (item.icon as string) ?? '';
-		formColor = (item.color as string) ?? '';
-		formOrder = String((item.order as number) ?? 0);
-		formNameEs = (item.nameEs as string) ?? '';
-		formNativeName = (item.nativeName as string) ?? '';
+		formNameEn = String(item.nameEn ?? '');
+		formNamePtBr = String(item.namePtBr ?? '');
+		formSlug = String(item.slug ?? '');
+		formCode = String(item.code ?? '');
+		formIcon = String(item.icon ?? '');
+		formColor = String(item.color ?? '');
+		formOrder = String(item.order ?? 0);
+		formNameEs = String(item.nameEs ?? '');
+		formNativeName = String(item.nativeName ?? '');
 	}
 
 	async function handleFormSubmit() {
@@ -140,11 +140,12 @@
 
 	async function handleToggleActive(type: FormType, item: Record<string, unknown>) {
 		const newActive = !item.isActive;
+		const id = String(item.id);
 		if (type === 'area') {
-			await adminTechAreasUpdate(item.id as string, jsonBody({ isActive: newActive }));
+			await adminTechAreasUpdate(id, jsonBody({ isActive: newActive }));
 			queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() });
 		} else if (type === 'skill') {
-			await adminTechSkillsUpdate(item.id as string, jsonBody({ isActive: newActive }));
+			await adminTechSkillsUpdate(id, jsonBody({ isActive: newActive }));
 			queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() });
 		}
 	}
@@ -172,7 +173,7 @@
 	<div class="flex items-center justify-between">
 		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t('admin.skills.title')}</h1>
 		<div class="flex items-center gap-2">
-			<ExportButton data={activeTab === 'hierarchy' ? [...areas, ...niches, ...skills] : [...spokenLangs, ...progLangs]} filename="skills.csv" />
+			<ExportButton data={activeTab === 'hierarchy' ? [...(areas ?? []), ...(niches ?? []), ...(skills ?? [])] : [...(spokenLangs ?? []), ...(progLangs ?? [])]} filename="skills.csv" />
 			<SegmentToggle options={tabOptions} selected={activeTab} onchange={(v) => { activeTab = v as 'hierarchy' | 'languages'; selectedAreaId = null; selectedNicheId = null; }} />
 		</div>
 	</div>
@@ -189,11 +190,11 @@
 					{#if areasQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
-						{#each areas as area}
+						{#each areas ?? [] as area}
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
-								onclick={() => { selectedAreaId = area.id as string; selectedNicheId = null; }}
-								onkeydown={(e) => { if (e.key === 'Enter') { selectedAreaId = area.id as string; selectedNicheId = null; } }}
+								onclick={() => { selectedAreaId = area.id; selectedNicheId = null; }}
+								onkeydown={(e) => { if (e.key === 'Enter') { selectedAreaId = area.id; selectedNicheId = null; } }}
 								role="button" tabindex="0"
 								class="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left text-sm transition-colors text-gray-800 dark:text-neutral-200 {selectedAreaId === area.id ? 'bg-gray-100 dark:bg-neutral-700' : 'hover:bg-gray-50 dark:hover:bg-neutral-700/50'}"
 							>
@@ -206,11 +207,11 @@
 										{#if area.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class="text-gray-500 dark:text-neutral-500" />{/if}
 									</Button>
 									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('area', area); }}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id as string }; }}><Trash2 size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id }; }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
-						{#if areas.length === 0}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
+						{#if !areas?.length}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
 					{/if}
 				</div>
 			</div>
@@ -227,22 +228,22 @@
 					{:else if nichesQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
-						{#each niches as niche}
+						{#each niches ?? [] as niche}
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
-								onclick={() => selectedNicheId = niche.id as string}
-								onkeydown={(e) => { if (e.key === 'Enter') selectedNicheId = niche.id as string; }}
+								onclick={() => selectedNicheId = niche.id}
+								onkeydown={(e) => { if (e.key === 'Enter') selectedNicheId = niche.id; }}
 								role="button" tabindex="0"
 								class="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left text-sm transition-colors text-gray-800 dark:text-neutral-200 {selectedNicheId === niche.id ? 'bg-gray-100 dark:bg-neutral-700' : 'hover:bg-gray-50 dark:hover:bg-neutral-700/50'}"
 							>
 								<div><span>{niche.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{niche.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
 									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('niche', niche); }}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id as string }; }}><Trash2 size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id }; }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
-						{#if niches.length === 0}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
+						{#if !niches?.length}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
 					{/if}
 				</div>
 			</div>
@@ -259,7 +260,7 @@
 					{:else if skillsQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
-						{#each skills as skill}
+						{#each skills ?? [] as skill}
 							<div class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-800 dark:text-neutral-200">
 								<div><span>{skill.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{skill.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
@@ -267,11 +268,11 @@
 										{#if skill.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class="text-gray-500 dark:text-neutral-500" />{/if}
 									</Button>
 									<Button variant="icon" size="xs" onclick={() => openEdit('skill', skill)}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id as string }}><Trash2 size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
-						{#if skills.length === 0}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
+						{#if !skills?.length}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
 					{/if}
 				</div>
 			</div>
@@ -288,12 +289,12 @@
 					{#if spokenQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
-						{#each spokenLangs as lang}
+						{#each spokenLangs ?? [] as lang}
 							<div class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-800 dark:text-neutral-200">
 								<div><span class="font-mono text-xs text-gray-500 dark:text-neutral-500">{lang.code}</span><span class="ml-2">{lang.nameEn}</span><span class="ml-1 text-xs text-gray-500 dark:text-neutral-500">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
 									<Button variant="icon" size="xs" onclick={() => openEdit('spoken', lang)}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code as string }}><Trash2 size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -311,12 +312,12 @@
 					{#if progQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
-						{#each progLangs as lang}
+						{#each progLangs ?? [] as lang}
 							<div class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-800 dark:text-neutral-200">
 								<div><span>{lang.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
 									<Button variant="icon" size="xs" onclick={() => openEdit('programming', lang)}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug as string }}><Trash2 size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -331,26 +332,26 @@
 <FormModal open={formModal !== null} title={formTitle} loading={formLoading} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
 	<div class="space-y-3">
 		{#if formModal?.type === 'spoken'}
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Code *</label><Input bind:value={formCode} placeholder="en" required disabled={formModal.mode === 'edit'} /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="English" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Inglês" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (ES)</label><Input bind:value={formNameEs} placeholder="Inglés" /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Native Name</label><Input bind:value={formNativeName} placeholder="English" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Code *</label><Input bind:value={formCode} placeholder="en" required disabled={formModal.mode === 'edit'} /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="English" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Inglês" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (ES)</label><Input bind:value={formNameEs} placeholder="Inglés" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Native Name</label><Input bind:value={formNativeName} placeholder="English" /></div>
 		{:else if formModal?.type === 'programming'}
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="javascript" required disabled={formModal.mode === 'edit'} /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="JavaScript" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="JavaScript" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="javascript" required disabled={formModal.mode === 'edit'} /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="JavaScript" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="JavaScript" required /></div>
 		{:else if formModal?.type === 'skill'}
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="react" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="React" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="React" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="react" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="React" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="React" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
 		{:else}
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="Development" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Desenvolvimento" required /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={formIcon} placeholder="code" /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Color</label><Input bind:value={formColor} placeholder="#3B82F6" /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="Development" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Desenvolvimento" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={formIcon} placeholder="code" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Color</label><Input bind:value={formColor} placeholder="#3B82F6" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
 		{/if}
 	</div>
 </FormModal>

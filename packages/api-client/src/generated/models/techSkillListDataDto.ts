@@ -35,8 +35,12 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { TechSkillListDataDtoSkillsItem } from './techSkillListDataDtoSkillsItem';
+import type { TechSkillListDataDtoItemsItem } from './techSkillListDataDtoItemsItem';
 
 export interface TechSkillListDataDto {
-  skills: TechSkillListDataDtoSkillsItem[];
+  items: TechSkillListDataDtoItemsItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 }

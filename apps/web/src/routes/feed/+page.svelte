@@ -24,10 +24,10 @@
 		query: { retry: false, enabled: browser }
 	}));
 	const user = $derived(session.data?.user);
-	const authenticated = $derived(session.data?.authenticated ?? false);
-	const currentUserId = $derived(String((user as Record<string, unknown> | undefined)?.id ?? ''));
-	const userName = $derived(String((user as Record<string, unknown> | undefined)?.name ?? ''));
-	const userPhoto = $derived(((user as Record<string, unknown> | undefined)?.photoURL ?? null) as string | null);
+	const authenticated = $derived(session.data?.authenticated);
+	const currentUserId = $derived(String(user?.id ?? ''));
+	const userName = $derived(String(user?.name ?? ''));
+	const userPhoto = $derived((user as Record<string, unknown>)?.photoURL as string | null ?? null);
 
 	$effect(() => {
 		if (!session.isLoading && !authenticated) {
@@ -76,20 +76,15 @@
 		})
 	);
 
-	const rawData = $derived(
-		feedQuery.data as Record<string, unknown> | undefined
-	);
+	const rawData = $derived(feedQuery.data);
 
 	// When data arrives, append to allPosts
 	$effect(() => {
 		if (!rawData) return;
-		const postsArr = (
-			Array.isArray(rawData)
-				? rawData
-				: (rawData as Record<string, unknown>)?.posts ?? []
-		) as Record<string, unknown>[];
+		const postsArr = (Array.isArray(rawData) ? rawData : rawData?.posts) as Record<string, unknown>[] | undefined;
+		if (!postsArr) return;
 
-		const nextCursor = (rawData as Record<string, unknown>)?.nextCursor as string | undefined;
+		const nextCursor = rawData?.nextCursor;
 
 		if (cursor === undefined) {
 			// First page or filter change
@@ -139,7 +134,7 @@
 
 	function loadNextPage() {
 		if (!rawData || loadingMore) return;
-		const nextCursor = (rawData as Record<string, unknown>)?.nextCursor as string | undefined;
+		const nextCursor = rawData?.nextCursor;
 		if (nextCursor) {
 			loadingMore = true;
 			cursor = nextCursor;

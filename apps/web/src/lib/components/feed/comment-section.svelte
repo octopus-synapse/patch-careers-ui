@@ -30,12 +30,7 @@
 		})
 	);
 
-	const rawData = $derived(
-		commentsQuery.data as Record<string, unknown>
-	);
-	const comments = $derived(
-		(Array.isArray(rawData) ? rawData : (rawData as Record<string, unknown>)?.comments ?? []) as Record<string, unknown>[]
-	);
+	const comments = $derived(commentsQuery.data?.comments);
 
 	function formatRelativeTime(dateStr?: string): string {
 		if (!dateStr) return '';
@@ -138,25 +133,26 @@
 	{/if}
 
 	<!-- Comments list -->
+	{#if comments}
 	{#each comments as comment}
-		{@const commentAuthor = comment.author as Record<string, unknown> | undefined}
+		{@const commentAuthor = comment.author}
 		{@const commentId = String(comment.id ?? '')}
-		{@const isOwnComment = String(commentAuthor?.id ?? comment.userId ?? '') === currentUserId}
-		{@const replies = (comment.replies ?? []) as Record<string, unknown>[]}
+		{@const isOwnComment = String(commentAuthor?.id ?? comment.authorId ?? '') === currentUserId}
+		{@const replies = comment.replies}
 		{@const isExpanded = expandedReplies.has(commentId)}
-		{@const visibleReplies = isExpanded ? replies : replies.slice(0, 2)}
+		{@const visibleReplies = isExpanded ? replies : replies?.slice(0, 2)}
 
 		<div class="space-y-2">
 			<div class="flex items-start gap-2">
 				<Avatar
 					name={String(commentAuthor?.name ?? commentAuthor?.username ?? '?')}
-					photoURL={(commentAuthor?.photoURL ?? commentAuthor?.avatarUrl ?? null) as string | null}
+					photoURL={commentAuthor?.photoURL}
 					size="sm"
 				/>
 				<div class="min-w-0 flex-1">
 					<div class="flex items-center gap-1.5">
 						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{commentAuthor?.name ?? commentAuthor?.username ?? 'Unknown'}</span>
-						<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(comment.createdAt as string | undefined)}</span>
+						<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(comment.createdAt)}</span>
 					</div>
 					<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{comment.content}</p>
 					<div class="mt-1 flex items-center gap-2">
@@ -197,23 +193,23 @@
 			{/if}
 
 			<!-- Replies -->
-			{#if replies.length > 0}
+			{#if replies && replies.length > 0}
 				<div class="ml-10 space-y-2 border-l-2 pl-3 border-gray-100 dark:border-neutral-700/50">
 					{#each visibleReplies as reply}
-						{@const replyAuthor = reply.author as Record<string, unknown> | undefined}
+						{@const replyAuthor = reply.author}
 						{@const replyId = String(reply.id ?? '')}
-						{@const isOwnReply = String(replyAuthor?.id ?? reply.userId ?? '') === currentUserId}
+						{@const isOwnReply = String(replyAuthor?.id ?? reply.authorId ?? '') === currentUserId}
 
 						<div class="flex items-start gap-2">
 							<Avatar
 								name={String(replyAuthor?.name ?? replyAuthor?.username ?? '?')}
-								photoURL={(replyAuthor?.photoURL ?? replyAuthor?.avatarUrl ?? null) as string | null}
+								photoURL={replyAuthor?.photoURL}
 								size="sm"
 							/>
 							<div class="min-w-0 flex-1">
 								<div class="flex items-center gap-1.5">
 									<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{replyAuthor?.name ?? replyAuthor?.username ?? 'Unknown'}</span>
-									<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(reply.createdAt as string | undefined)}</span>
+									<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(reply.createdAt)}</span>
 								</div>
 								<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{reply.content}</p>
 								{#if isOwnReply}
@@ -247,8 +243,9 @@
 			{/if}
 		</div>
 	{/each}
+	{/if}
 
-	{#if !commentsQuery.isLoading && comments.length === 0}
+	{#if !commentsQuery.isLoading && (!comments || comments.length === 0)}
 		<p class="py-2 text-center text-xs text-gray-400 dark:text-neutral-500">No comments yet</p>
 	{/if}
 </div>

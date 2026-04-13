@@ -62,29 +62,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Sends a verification email to the authenticated user.
  * @summary Send verification email
  */
-export type sendVerificationHandleResponse200 = {
-  data: SendVerificationEmailResponseDto
-  status: 200
-}
+export type sendVerificationHandleResponse200 = SendVerificationEmailResponseDto
 
-export type sendVerificationHandleResponse409 = {
-  data: void
-  status: 409
-}
+export type sendVerificationHandleResponseSuccess = sendVerificationHandleResponse200
+;
 
-export type sendVerificationHandleResponse429 = {
-  data: void
-  status: 429
-}
-
-export type sendVerificationHandleResponseSuccess = (sendVerificationHandleResponse200) & {
-  headers: Headers;
-};
-export type sendVerificationHandleResponseError = (sendVerificationHandleResponse409 | sendVerificationHandleResponse429) & {
-  headers: Headers;
-};
-
-export type sendVerificationHandleResponse = (sendVerificationHandleResponseSuccess | sendVerificationHandleResponseError)
+export type sendVerificationHandleResponse = (sendVerificationHandleResponseSuccess)
 
 export const getSendVerificationHandleUrl = () => {
 
@@ -109,7 +92,7 @@ export const sendVerificationHandle = async (sendVerificationHandleBody?: string
 
 
 
-export const getSendVerificationHandleMutationOptions = <TError = void,
+export const getSendVerificationHandleMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,{data: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,{data: string}, TContext> => {
 
@@ -138,12 +121,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SendVerificationHandleMutationResult = NonNullable<Awaited<ReturnType<typeof sendVerificationHandle>>>
     export type SendVerificationHandleMutationBody = string
-    export type SendVerificationHandleMutationError = void
+    export type SendVerificationHandleMutationError = unknown
 
     /**
  * @summary Send verification email
  */
-export const createSendVerificationHandle = <TError = void,
+export const createSendVerificationHandle = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,{data: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof sendVerificationHandle>>,
@@ -157,24 +140,12 @@ export const createSendVerificationHandle = <TError = void,
  * Verifies the user email using the token received via email.
  * @summary Verify email with token
  */
-export type verifyEmailHandleResponse200 = {
-  data: VerifyEmailResponseDto
-  status: 200
-}
+export type verifyEmailHandleResponse200 = VerifyEmailResponseDto
 
-export type verifyEmailHandleResponse400 = {
-  data: void
-  status: 400
-}
+export type verifyEmailHandleResponseSuccess = verifyEmailHandleResponse200
+;
 
-export type verifyEmailHandleResponseSuccess = (verifyEmailHandleResponse200) & {
-  headers: Headers;
-};
-export type verifyEmailHandleResponseError = (verifyEmailHandleResponse400) & {
-  headers: Headers;
-};
-
-export type verifyEmailHandleResponse = (verifyEmailHandleResponseSuccess | verifyEmailHandleResponseError)
+export type verifyEmailHandleResponse = (verifyEmailHandleResponseSuccess)
 
 export const getVerifyEmailHandleUrl = () => {
 
@@ -199,7 +170,7 @@ export const verifyEmailHandle = async (verifyEmailDto: VerifyEmailDto, options?
 
 
 
-export const getVerifyEmailHandleMutationOptions = <TError = void,
+export const getVerifyEmailHandleMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof verifyEmailHandle>>, TError,{data: VerifyEmailDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof verifyEmailHandle>>, TError,{data: VerifyEmailDto}, TContext> => {
 
@@ -228,12 +199,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type VerifyEmailHandleMutationResult = NonNullable<Awaited<ReturnType<typeof verifyEmailHandle>>>
     export type VerifyEmailHandleMutationBody = VerifyEmailDto
-    export type VerifyEmailHandleMutationError = void
+    export type VerifyEmailHandleMutationError = unknown
 
     /**
  * @summary Verify email with token
  */
-export const createVerifyEmailHandle = <TError = void,
+export const createVerifyEmailHandle = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof verifyEmailHandle>>, TError,{data: VerifyEmailDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof verifyEmailHandle>>,

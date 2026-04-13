@@ -62,14 +62,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns service metrics in Prometheus exposition format.
  * @summary Get Prometheus metrics
  */
-export type metricsGetMetricsResponse200 = {
-  data: Blob
-  status: 200
-}
+export type metricsGetMetricsResponse200 = Blob
 
-export type metricsGetMetricsResponseSuccess = (metricsGetMetricsResponse200) & {
-  headers: Headers;
-};
+export type metricsGetMetricsResponseSuccess = metricsGetMetricsResponse200
 ;
 
 export type metricsGetMetricsResponse = (metricsGetMetricsResponseSuccess)

@@ -35,5 +35,43 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { ResumeDetailsDataDtoResumeResumeSectionsItem } from './resumeDetailsDataDtoResumeResumeSectionsItem';
+import type { ResumeDetailsDataDtoResumeUser } from './resumeDetailsDataDtoResumeUser';
 
-export type ResumeDetailsDataDtoResume = {[key: string]: unknown};
+export type ResumeDetailsDataDtoResume = {
+  id: string;
+  userId: string;
+  /** @nullable */
+  title: string | null;
+  template: string;
+  language: string;
+  isPublic: boolean;
+  /** @nullable */
+  slug: string | null;
+  /** @nullable */
+  fullName: string | null;
+  /** @nullable */
+  jobTitle: string | null;
+  /** @nullable */
+  phone: string | null;
+  /** @nullable */
+  emailContact: string | null;
+  /** @nullable */
+  location: string | null;
+  /** @nullable */
+  linkedin: string | null;
+  /** @nullable */
+  github: string | null;
+  /** @nullable */
+  website: string | null;
+  /** @nullable */
+  summary: string | null;
+  /** @nullable */
+  accentColor: string | null;
+  /** @nullable */
+  activeThemeId: string | null;
+  createdAt: unknown;
+  updatedAt: unknown;
+  user: ResumeDetailsDataDtoResumeUser;
+  resumeSections: ResumeDetailsDataDtoResumeResumeSectionsItem[];
+};

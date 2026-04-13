@@ -63,14 +63,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Toggle section visibility
  */
-export type resumeConfigToggleSectionResponse200 = {
-  data: ResumeConfigOperationDataDto
-  status: 200
-}
+export type resumeConfigToggleSectionResponse200 = ResumeConfigOperationDataDto
 
-export type resumeConfigToggleSectionResponseSuccess = (resumeConfigToggleSectionResponse200) & {
-  headers: Headers;
-};
+export type resumeConfigToggleSectionResponseSuccess = resumeConfigToggleSectionResponse200
 ;
 
 export type resumeConfigToggleSectionResponse = (resumeConfigToggleSectionResponseSuccess)
@@ -148,14 +143,9 @@ export const createResumeConfigToggleSection = <TError = unknown,
     /**
  * @summary Reorder section
  */
-export type resumeConfigReorderSectionResponse200 = {
-  data: ResumeConfigOperationDataDto
-  status: 200
-}
+export type resumeConfigReorderSectionResponse200 = ResumeConfigOperationDataDto
 
-export type resumeConfigReorderSectionResponseSuccess = (resumeConfigReorderSectionResponse200) & {
-  headers: Headers;
-};
+export type resumeConfigReorderSectionResponseSuccess = resumeConfigReorderSectionResponse200
 ;
 
 export type resumeConfigReorderSectionResponse = (resumeConfigReorderSectionResponseSuccess)
@@ -233,14 +223,9 @@ export const createResumeConfigReorderSection = <TError = unknown,
     /**
  * @summary Toggle item visibility
  */
-export type resumeConfigToggleItemResponse200 = {
-  data: ResumeConfigOperationDataDto
-  status: 200
-}
+export type resumeConfigToggleItemResponse200 = ResumeConfigOperationDataDto
 
-export type resumeConfigToggleItemResponseSuccess = (resumeConfigToggleItemResponse200) & {
-  headers: Headers;
-};
+export type resumeConfigToggleItemResponseSuccess = resumeConfigToggleItemResponse200
 ;
 
 export type resumeConfigToggleItemResponse = (resumeConfigToggleItemResponseSuccess)
@@ -318,14 +303,9 @@ export const createResumeConfigToggleItem = <TError = unknown,
     /**
  * @summary Reorder item
  */
-export type resumeConfigReorderItemResponse200 = {
-  data: ResumeConfigOperationDataDto
-  status: 200
-}
+export type resumeConfigReorderItemResponse200 = ResumeConfigOperationDataDto
 
-export type resumeConfigReorderItemResponseSuccess = (resumeConfigReorderItemResponse200) & {
-  headers: Headers;
-};
+export type resumeConfigReorderItemResponseSuccess = resumeConfigReorderItemResponse200
 ;
 
 export type resumeConfigReorderItemResponse = (resumeConfigReorderItemResponseSuccess)
@@ -403,14 +383,9 @@ export const createResumeConfigReorderItem = <TError = unknown,
     /**
  * @summary Batch update sections
  */
-export type resumeConfigBatchUpdateResponse200 = {
-  data: ResumeConfigOperationDataDto
-  status: 200
-}
+export type resumeConfigBatchUpdateResponse200 = ResumeConfigOperationDataDto
 
-export type resumeConfigBatchUpdateResponseSuccess = (resumeConfigBatchUpdateResponse200) & {
-  headers: Headers;
-};
+export type resumeConfigBatchUpdateResponseSuccess = resumeConfigBatchUpdateResponse200
 ;
 
 export type resumeConfigBatchUpdateResponse = (resumeConfigBatchUpdateResponseSuccess)

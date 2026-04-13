@@ -65,29 +65,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get platform statistics
  */
-export type platformGetStatisticsResponse200 = {
-  data: PlatformStatsResponseDto
-  status: 200
-}
+export type platformGetStatisticsResponse200 = PlatformStatsResponseDto
 
-export type platformGetStatisticsResponse401 = {
-  data: void
-  status: 401
-}
+export type platformGetStatisticsResponseSuccess = platformGetStatisticsResponse200
+;
 
-export type platformGetStatisticsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type platformGetStatisticsResponseSuccess = (platformGetStatisticsResponse200) & {
-  headers: Headers;
-};
-export type platformGetStatisticsResponseError = (platformGetStatisticsResponse401 | platformGetStatisticsResponse403) & {
-  headers: Headers;
-};
-
-export type platformGetStatisticsResponse = (platformGetStatisticsResponseSuccess | platformGetStatisticsResponseError)
+export type platformGetStatisticsResponse = (platformGetStatisticsResponseSuccess)
 
 export const getPlatformGetStatisticsUrl = () => {
 
@@ -125,7 +108,7 @@ export const getPlatformGetStatisticsQueryKey = () => {
     }
 
 
-export const getPlatformGetStatisticsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformGetStatistics>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformGetStatisticsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformGetStatistics>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -144,14 +127,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformGetStatisticsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformGetStatistics>>>
-export type PlatformGetStatisticsInfiniteQueryError = void
+export type PlatformGetStatisticsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get platform statistics
  */
 
-export function createPlatformGetStatisticsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformGetStatistics>>>, TError = void>(
+export function createPlatformGetStatisticsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformGetStatistics>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -166,7 +149,7 @@ export function createPlatformGetStatisticsInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Get platform statistics
  */
-export const prefetchPlatformGetStatisticsInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = void>(
+export const prefetchPlatformGetStatisticsInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -180,7 +163,7 @@ export const prefetchPlatformGetStatisticsInfiniteQuery = async <TData = Awaited
 
 
 
-export const getPlatformGetStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformGetStatisticsQueryOptions = <TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -199,14 +182,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformGetStatisticsQueryResult = NonNullable<Awaited<ReturnType<typeof platformGetStatistics>>>
-export type PlatformGetStatisticsQueryError = void
+export type PlatformGetStatisticsQueryError = unknown
 
 
 /**
  * @summary Get platform statistics
  */
 
-export function createPlatformGetStatistics<TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = void>(
+export function createPlatformGetStatistics<TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -221,7 +204,7 @@ export function createPlatformGetStatistics<TData = Awaited<ReturnType<typeof pl
 /**
  * @summary Get platform statistics
  */
-export const prefetchPlatformGetStatisticsQuery = async <TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = void>(
+export const prefetchPlatformGetStatisticsQuery = async <TData = Awaited<ReturnType<typeof platformGetStatistics>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformGetStatistics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

@@ -10,11 +10,11 @@
 
 	type Props = {
 		columns: Column[];
-		data: T[];
+		data?: T[];
 		loading?: boolean;
 		emptyMessage?: string;
 		onrowclick?: (row: T) => void;
-		cell?: Snippet<[{ row: T; key: string }]>;
+		cell?: Snippet<[{ row: T; key: string; value: unknown }]>;
 	};
 
 	let {
@@ -49,7 +49,7 @@
 							<Loader2 size={20} class="mx-auto animate-spin text-gray-400 dark:text-neutral-500" />
 						</td>
 					</tr>
-				{:else if data.length === 0}
+				{:else if !data?.length}
 					<tr>
 						<td colspan={columns.length} class="px-4 py-12 text-center text-xs text-gray-400 dark:text-neutral-500">
 							{emptyMessage}
@@ -64,7 +64,7 @@
 							{#each columns as col}
 								<td class="px-4 py-3 text-sm text-gray-800 dark:text-neutral-200">
 									{#if cell}
-										{@render cell({ row, key: col.key })}
+										{@render cell({ row, key: col.key, value: row[col.key] })}
 									{:else}
 										{row[col.key] ?? '—'}
 									{/if}

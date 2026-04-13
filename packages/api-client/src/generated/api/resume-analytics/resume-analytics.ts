@@ -85,14 +85,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Track resume view (public endpoint)
  */
-export type resumeAnalyticsTrackViewResponse201 = {
-  data: MessageResponseDto
-  status: 201
-}
+export type resumeAnalyticsTrackViewResponse201 = MessageResponseDto
 
-export type resumeAnalyticsTrackViewResponseSuccess = (resumeAnalyticsTrackViewResponse201) & {
-  headers: Headers;
-};
+export type resumeAnalyticsTrackViewResponseSuccess = resumeAnalyticsTrackViewResponse201
 ;
 
 export type resumeAnalyticsTrackViewResponse = (resumeAnalyticsTrackViewResponseSuccess)
@@ -168,29 +163,12 @@ export const createResumeAnalyticsTrackView = <TError = unknown,
     /**
  * @summary Get view statistics
  */
-export type resumeAnalyticsGetViewStatsResponse200 = {
-  data: ResumeAnalyticsGetViewStats200
-  status: 200
-}
+export type resumeAnalyticsGetViewStatsResponse200 = ResumeAnalyticsGetViewStats200
 
-export type resumeAnalyticsGetViewStatsResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetViewStatsResponseSuccess = resumeAnalyticsGetViewStatsResponse200
+;
 
-export type resumeAnalyticsGetViewStatsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetViewStatsResponseSuccess = (resumeAnalyticsGetViewStatsResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetViewStatsResponseError = (resumeAnalyticsGetViewStatsResponse401 | resumeAnalyticsGetViewStatsResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetViewStatsResponse = (resumeAnalyticsGetViewStatsResponseSuccess | resumeAnalyticsGetViewStatsResponseError)
+export type resumeAnalyticsGetViewStatsResponse = (resumeAnalyticsGetViewStatsResponseSuccess)
 
 export const getResumeAnalyticsGetViewStatsUrl = (resumeId: string,
     params: ResumeAnalyticsGetViewStatsParams,) => {
@@ -239,7 +217,7 @@ export const getResumeAnalyticsGetViewStatsQueryKey = (resumeId: string,
     }
 
 
-export const getResumeAnalyticsGetViewStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetViewStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>>, TError = unknown>(resumeId: string,
     params: ResumeAnalyticsGetViewStatsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -259,14 +237,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetViewStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>>
-export type ResumeAnalyticsGetViewStatsInfiniteQueryError = void
+export type ResumeAnalyticsGetViewStatsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get view statistics
  */
 
-export function createResumeAnalyticsGetViewStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>>, TError = void>(
+export function createResumeAnalyticsGetViewStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>>, TError = unknown>(
  resumeId: () =>  string,
     params: () =>  ResumeAnalyticsGetViewStatsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -283,7 +261,7 @@ export function createResumeAnalyticsGetViewStatsInfinite<TData = InfiniteData<A
 /**
  * @summary Get view statistics
  */
-export const prefetchResumeAnalyticsGetViewStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = void>(
+export const prefetchResumeAnalyticsGetViewStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeAnalyticsGetViewStatsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -298,7 +276,7 @@ export const prefetchResumeAnalyticsGetViewStatsInfiniteQuery = async <TData = A
 
 
 
-export const getResumeAnalyticsGetViewStatsQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetViewStatsQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = unknown>(resumeId: string,
     params: ResumeAnalyticsGetViewStatsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -318,14 +296,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetViewStatsQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>>
-export type ResumeAnalyticsGetViewStatsQueryError = void
+export type ResumeAnalyticsGetViewStatsQueryError = unknown
 
 
 /**
  * @summary Get view statistics
  */
 
-export function createResumeAnalyticsGetViewStats<TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = void>(
+export function createResumeAnalyticsGetViewStats<TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = unknown>(
  resumeId: () =>  string,
     params: () =>  ResumeAnalyticsGetViewStatsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -342,7 +320,7 @@ export function createResumeAnalyticsGetViewStats<TData = Awaited<ReturnType<typ
 /**
  * @summary Get view statistics
  */
-export const prefetchResumeAnalyticsGetViewStatsQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = void>(
+export const prefetchResumeAnalyticsGetViewStatsQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeAnalyticsGetViewStatsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetViewStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -360,29 +338,12 @@ export const prefetchResumeAnalyticsGetViewStatsQuery = async <TData = Awaited<R
 /**
  * @summary Calculate ATS compatibility score
  */
-export type resumeAnalyticsGetATSScoreResponse200 = {
-  data: ResumeAnalyticsGetATSScore200
-  status: 200
-}
+export type resumeAnalyticsGetATSScoreResponse200 = ResumeAnalyticsGetATSScore200
 
-export type resumeAnalyticsGetATSScoreResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetATSScoreResponseSuccess = resumeAnalyticsGetATSScoreResponse200
+;
 
-export type resumeAnalyticsGetATSScoreResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetATSScoreResponseSuccess = (resumeAnalyticsGetATSScoreResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetATSScoreResponseError = (resumeAnalyticsGetATSScoreResponse401 | resumeAnalyticsGetATSScoreResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetATSScoreResponse = (resumeAnalyticsGetATSScoreResponseSuccess | resumeAnalyticsGetATSScoreResponseError)
+export type resumeAnalyticsGetATSScoreResponse = (resumeAnalyticsGetATSScoreResponseSuccess)
 
 export const getResumeAnalyticsGetATSScoreUrl = (resumeId: string,) => {
 
@@ -420,7 +381,7 @@ export const getResumeAnalyticsGetATSScoreQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumeAnalyticsGetATSScoreInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeAnalyticsGetATSScoreInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -439,14 +400,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetATSScoreInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>>
-export type ResumeAnalyticsGetATSScoreInfiniteQueryError = void
+export type ResumeAnalyticsGetATSScoreInfiniteQueryError = unknown
 
 
 /**
  * @summary Calculate ATS compatibility score
  */
 
-export function createResumeAnalyticsGetATSScoreInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>>, TError = void>(
+export function createResumeAnalyticsGetATSScoreInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -461,7 +422,7 @@ export function createResumeAnalyticsGetATSScoreInfinite<TData = InfiniteData<Aw
 /**
  * @summary Calculate ATS compatibility score
  */
-export const prefetchResumeAnalyticsGetATSScoreInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = void>(
+export const prefetchResumeAnalyticsGetATSScoreInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -475,7 +436,7 @@ export const prefetchResumeAnalyticsGetATSScoreInfiniteQuery = async <TData = Aw
 
 
 
-export const getResumeAnalyticsGetATSScoreQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeAnalyticsGetATSScoreQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -494,14 +455,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetATSScoreQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>>
-export type ResumeAnalyticsGetATSScoreQueryError = void
+export type ResumeAnalyticsGetATSScoreQueryError = unknown
 
 
 /**
  * @summary Calculate ATS compatibility score
  */
 
-export function createResumeAnalyticsGetATSScore<TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = void>(
+export function createResumeAnalyticsGetATSScore<TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -516,7 +477,7 @@ export function createResumeAnalyticsGetATSScore<TData = Awaited<ReturnType<type
 /**
  * @summary Calculate ATS compatibility score
  */
-export const prefetchResumeAnalyticsGetATSScoreQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = void>(
+export const prefetchResumeAnalyticsGetATSScoreQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetATSScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -533,29 +494,12 @@ export const prefetchResumeAnalyticsGetATSScoreQuery = async <TData = Awaited<Re
 /**
  * @summary Get keyword optimization suggestions
  */
-export type resumeAnalyticsGetKeywordSuggestionsResponse200 = {
-  data: ResumeAnalyticsGetKeywordSuggestions200
-  status: 200
-}
+export type resumeAnalyticsGetKeywordSuggestionsResponse200 = ResumeAnalyticsGetKeywordSuggestions200
 
-export type resumeAnalyticsGetKeywordSuggestionsResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetKeywordSuggestionsResponseSuccess = resumeAnalyticsGetKeywordSuggestionsResponse200
+;
 
-export type resumeAnalyticsGetKeywordSuggestionsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetKeywordSuggestionsResponseSuccess = (resumeAnalyticsGetKeywordSuggestionsResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetKeywordSuggestionsResponseError = (resumeAnalyticsGetKeywordSuggestionsResponse401 | resumeAnalyticsGetKeywordSuggestionsResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetKeywordSuggestionsResponse = (resumeAnalyticsGetKeywordSuggestionsResponseSuccess | resumeAnalyticsGetKeywordSuggestionsResponseError)
+export type resumeAnalyticsGetKeywordSuggestionsResponse = (resumeAnalyticsGetKeywordSuggestionsResponseSuccess)
 
 export const getResumeAnalyticsGetKeywordSuggestionsUrl = (resumeId: string,
     params: ResumeAnalyticsGetKeywordSuggestionsParams,) => {
@@ -604,7 +548,7 @@ export const getResumeAnalyticsGetKeywordSuggestionsQueryKey = (resumeId: string
     }
 
 
-export const getResumeAnalyticsGetKeywordSuggestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetKeywordSuggestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>>, TError = unknown>(resumeId: string,
     params: ResumeAnalyticsGetKeywordSuggestionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -624,14 +568,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetKeywordSuggestionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>>
-export type ResumeAnalyticsGetKeywordSuggestionsInfiniteQueryError = void
+export type ResumeAnalyticsGetKeywordSuggestionsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get keyword optimization suggestions
  */
 
-export function createResumeAnalyticsGetKeywordSuggestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>>, TError = void>(
+export function createResumeAnalyticsGetKeywordSuggestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>>, TError = unknown>(
  resumeId: () =>  string,
     params: () =>  ResumeAnalyticsGetKeywordSuggestionsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -648,7 +592,7 @@ export function createResumeAnalyticsGetKeywordSuggestionsInfinite<TData = Infin
 /**
  * @summary Get keyword optimization suggestions
  */
-export const prefetchResumeAnalyticsGetKeywordSuggestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = void>(
+export const prefetchResumeAnalyticsGetKeywordSuggestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeAnalyticsGetKeywordSuggestionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -663,7 +607,7 @@ export const prefetchResumeAnalyticsGetKeywordSuggestionsInfiniteQuery = async <
 
 
 
-export const getResumeAnalyticsGetKeywordSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetKeywordSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = unknown>(resumeId: string,
     params: ResumeAnalyticsGetKeywordSuggestionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -683,14 +627,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetKeywordSuggestionsQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>>
-export type ResumeAnalyticsGetKeywordSuggestionsQueryError = void
+export type ResumeAnalyticsGetKeywordSuggestionsQueryError = unknown
 
 
 /**
  * @summary Get keyword optimization suggestions
  */
 
-export function createResumeAnalyticsGetKeywordSuggestions<TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = void>(
+export function createResumeAnalyticsGetKeywordSuggestions<TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = unknown>(
  resumeId: () =>  string,
     params: () =>  ResumeAnalyticsGetKeywordSuggestionsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -707,7 +651,7 @@ export function createResumeAnalyticsGetKeywordSuggestions<TData = Awaited<Retur
 /**
  * @summary Get keyword optimization suggestions
  */
-export const prefetchResumeAnalyticsGetKeywordSuggestionsQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = void>(
+export const prefetchResumeAnalyticsGetKeywordSuggestionsQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeAnalyticsGetKeywordSuggestionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetKeywordSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -725,29 +669,12 @@ export const prefetchResumeAnalyticsGetKeywordSuggestionsQuery = async <TData = 
 /**
  * @summary Match resume against job description
  */
-export type resumeAnalyticsMatchJobResponse200 = {
-  data: ResumeAnalyticsMatchJob200
-  status: 200
-}
+export type resumeAnalyticsMatchJobResponse200 = ResumeAnalyticsMatchJob200
 
-export type resumeAnalyticsMatchJobResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsMatchJobResponseSuccess = resumeAnalyticsMatchJobResponse200
+;
 
-export type resumeAnalyticsMatchJobResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsMatchJobResponseSuccess = (resumeAnalyticsMatchJobResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsMatchJobResponseError = (resumeAnalyticsMatchJobResponse401 | resumeAnalyticsMatchJobResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsMatchJobResponse = (resumeAnalyticsMatchJobResponseSuccess | resumeAnalyticsMatchJobResponseError)
+export type resumeAnalyticsMatchJobResponse = (resumeAnalyticsMatchJobResponseSuccess)
 
 export const getResumeAnalyticsMatchJobUrl = (resumeId: string,) => {
 
@@ -773,7 +700,7 @@ export const resumeAnalyticsMatchJob = async (resumeId: string,
 
 
 
-export const getResumeAnalyticsMatchJobMutationOptions = <TError = void,
+export const getResumeAnalyticsMatchJobMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeAnalyticsMatchJob>>, TError,{resumeId: string;data: JobMatchRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeAnalyticsMatchJob>>, TError,{resumeId: string;data: JobMatchRequestDto}, TContext> => {
 
@@ -802,12 +729,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeAnalyticsMatchJobMutationResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsMatchJob>>>
     export type ResumeAnalyticsMatchJobMutationBody = JobMatchRequestDto
-    export type ResumeAnalyticsMatchJobMutationError = void
+    export type ResumeAnalyticsMatchJobMutationError = unknown
 
     /**
  * @summary Match resume against job description
  */
-export const createResumeAnalyticsMatchJob = <TError = void,
+export const createResumeAnalyticsMatchJob = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeAnalyticsMatchJob>>, TError,{resumeId: string;data: JobMatchRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeAnalyticsMatchJob>>,
@@ -820,29 +747,12 @@ export const createResumeAnalyticsMatchJob = <TError = void,
     /**
  * @summary Get industry benchmark comparison
  */
-export type resumeAnalyticsGetBenchmarkResponse200 = {
-  data: ResumeAnalyticsGetBenchmark200
-  status: 200
-}
+export type resumeAnalyticsGetBenchmarkResponse200 = ResumeAnalyticsGetBenchmark200
 
-export type resumeAnalyticsGetBenchmarkResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetBenchmarkResponseSuccess = resumeAnalyticsGetBenchmarkResponse200
+;
 
-export type resumeAnalyticsGetBenchmarkResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetBenchmarkResponseSuccess = (resumeAnalyticsGetBenchmarkResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetBenchmarkResponseError = (resumeAnalyticsGetBenchmarkResponse401 | resumeAnalyticsGetBenchmarkResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetBenchmarkResponse = (resumeAnalyticsGetBenchmarkResponseSuccess | resumeAnalyticsGetBenchmarkResponseError)
+export type resumeAnalyticsGetBenchmarkResponse = (resumeAnalyticsGetBenchmarkResponseSuccess)
 
 export const getResumeAnalyticsGetBenchmarkUrl = (resumeId: string,
     params: ResumeAnalyticsGetBenchmarkParams,) => {
@@ -891,7 +801,7 @@ export const getResumeAnalyticsGetBenchmarkQueryKey = (resumeId: string,
     }
 
 
-export const getResumeAnalyticsGetBenchmarkInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetBenchmarkInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>>, TError = unknown>(resumeId: string,
     params: ResumeAnalyticsGetBenchmarkParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -911,14 +821,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetBenchmarkInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>>
-export type ResumeAnalyticsGetBenchmarkInfiniteQueryError = void
+export type ResumeAnalyticsGetBenchmarkInfiniteQueryError = unknown
 
 
 /**
  * @summary Get industry benchmark comparison
  */
 
-export function createResumeAnalyticsGetBenchmarkInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>>, TError = void>(
+export function createResumeAnalyticsGetBenchmarkInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>>, TError = unknown>(
  resumeId: () =>  string,
     params: () =>  ResumeAnalyticsGetBenchmarkParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -935,7 +845,7 @@ export function createResumeAnalyticsGetBenchmarkInfinite<TData = InfiniteData<A
 /**
  * @summary Get industry benchmark comparison
  */
-export const prefetchResumeAnalyticsGetBenchmarkInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = void>(
+export const prefetchResumeAnalyticsGetBenchmarkInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeAnalyticsGetBenchmarkParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -950,7 +860,7 @@ export const prefetchResumeAnalyticsGetBenchmarkInfiniteQuery = async <TData = A
 
 
 
-export const getResumeAnalyticsGetBenchmarkQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetBenchmarkQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = unknown>(resumeId: string,
     params: ResumeAnalyticsGetBenchmarkParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -970,14 +880,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetBenchmarkQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>>
-export type ResumeAnalyticsGetBenchmarkQueryError = void
+export type ResumeAnalyticsGetBenchmarkQueryError = unknown
 
 
 /**
  * @summary Get industry benchmark comparison
  */
 
-export function createResumeAnalyticsGetBenchmark<TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = void>(
+export function createResumeAnalyticsGetBenchmark<TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = unknown>(
  resumeId: () =>  string,
     params: () =>  ResumeAnalyticsGetBenchmarkParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -994,7 +904,7 @@ export function createResumeAnalyticsGetBenchmark<TData = Awaited<ReturnType<typ
 /**
  * @summary Get industry benchmark comparison
  */
-export const prefetchResumeAnalyticsGetBenchmarkQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = void>(
+export const prefetchResumeAnalyticsGetBenchmarkQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeAnalyticsGetBenchmarkParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetBenchmark>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -1012,29 +922,12 @@ export const prefetchResumeAnalyticsGetBenchmarkQuery = async <TData = Awaited<R
 /**
  * @summary Get complete analytics dashboard
  */
-export type resumeAnalyticsGetDashboardResponse200 = {
-  data: ResumeAnalyticsGetDashboard200
-  status: 200
-}
+export type resumeAnalyticsGetDashboardResponse200 = ResumeAnalyticsGetDashboard200
 
-export type resumeAnalyticsGetDashboardResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetDashboardResponseSuccess = resumeAnalyticsGetDashboardResponse200
+;
 
-export type resumeAnalyticsGetDashboardResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetDashboardResponseSuccess = (resumeAnalyticsGetDashboardResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetDashboardResponseError = (resumeAnalyticsGetDashboardResponse401 | resumeAnalyticsGetDashboardResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetDashboardResponse = (resumeAnalyticsGetDashboardResponseSuccess | resumeAnalyticsGetDashboardResponseError)
+export type resumeAnalyticsGetDashboardResponse = (resumeAnalyticsGetDashboardResponseSuccess)
 
 export const getResumeAnalyticsGetDashboardUrl = (resumeId: string,) => {
 
@@ -1072,7 +965,7 @@ export const getResumeAnalyticsGetDashboardQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumeAnalyticsGetDashboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeAnalyticsGetDashboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1091,14 +984,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetDashboardInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>>
-export type ResumeAnalyticsGetDashboardInfiniteQueryError = void
+export type ResumeAnalyticsGetDashboardInfiniteQueryError = unknown
 
 
 /**
  * @summary Get complete analytics dashboard
  */
 
-export function createResumeAnalyticsGetDashboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>>, TError = void>(
+export function createResumeAnalyticsGetDashboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1113,7 +1006,7 @@ export function createResumeAnalyticsGetDashboardInfinite<TData = InfiniteData<A
 /**
  * @summary Get complete analytics dashboard
  */
-export const prefetchResumeAnalyticsGetDashboardInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = void>(
+export const prefetchResumeAnalyticsGetDashboardInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1127,7 +1020,7 @@ export const prefetchResumeAnalyticsGetDashboardInfiniteQuery = async <TData = A
 
 
 
-export const getResumeAnalyticsGetDashboardQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeAnalyticsGetDashboardQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1146,14 +1039,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>>
-export type ResumeAnalyticsGetDashboardQueryError = void
+export type ResumeAnalyticsGetDashboardQueryError = unknown
 
 
 /**
  * @summary Get complete analytics dashboard
  */
 
-export function createResumeAnalyticsGetDashboard<TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = void>(
+export function createResumeAnalyticsGetDashboard<TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1168,7 +1061,7 @@ export function createResumeAnalyticsGetDashboard<TData = Awaited<ReturnType<typ
 /**
  * @summary Get complete analytics dashboard
  */
-export const prefetchResumeAnalyticsGetDashboardQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = void>(
+export const prefetchResumeAnalyticsGetDashboardQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1185,29 +1078,12 @@ export const prefetchResumeAnalyticsGetDashboardQuery = async <TData = Awaited<R
 /**
  * @summary Save analytics snapshot for tracking progress
  */
-export type resumeAnalyticsCreateSnapshotResponse201 = {
-  data: ResumeAnalyticsCreateSnapshot201
-  status: 201
-}
+export type resumeAnalyticsCreateSnapshotResponse201 = ResumeAnalyticsCreateSnapshot201
 
-export type resumeAnalyticsCreateSnapshotResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsCreateSnapshotResponseSuccess = resumeAnalyticsCreateSnapshotResponse201
+;
 
-export type resumeAnalyticsCreateSnapshotResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsCreateSnapshotResponseSuccess = (resumeAnalyticsCreateSnapshotResponse201) & {
-  headers: Headers;
-};
-export type resumeAnalyticsCreateSnapshotResponseError = (resumeAnalyticsCreateSnapshotResponse401 | resumeAnalyticsCreateSnapshotResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsCreateSnapshotResponse = (resumeAnalyticsCreateSnapshotResponseSuccess | resumeAnalyticsCreateSnapshotResponseError)
+export type resumeAnalyticsCreateSnapshotResponse = (resumeAnalyticsCreateSnapshotResponseSuccess)
 
 export const getResumeAnalyticsCreateSnapshotUrl = (resumeId: string,) => {
 
@@ -1233,7 +1109,7 @@ export const resumeAnalyticsCreateSnapshot = async (resumeId: string,
 
 
 
-export const getResumeAnalyticsCreateSnapshotMutationOptions = <TError = void,
+export const getResumeAnalyticsCreateSnapshotMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeAnalyticsCreateSnapshot>>, TError,{resumeId: string;data: CreateSnapshotRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeAnalyticsCreateSnapshot>>, TError,{resumeId: string;data: CreateSnapshotRequestDto}, TContext> => {
 
@@ -1262,12 +1138,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeAnalyticsCreateSnapshotMutationResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsCreateSnapshot>>>
     export type ResumeAnalyticsCreateSnapshotMutationBody = CreateSnapshotRequestDto
-    export type ResumeAnalyticsCreateSnapshotMutationError = void
+    export type ResumeAnalyticsCreateSnapshotMutationError = unknown
 
     /**
  * @summary Save analytics snapshot for tracking progress
  */
-export const createResumeAnalyticsCreateSnapshot = <TError = void,
+export const createResumeAnalyticsCreateSnapshot = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeAnalyticsCreateSnapshot>>, TError,{resumeId: string;data: CreateSnapshotRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeAnalyticsCreateSnapshot>>,
@@ -1280,29 +1156,12 @@ export const createResumeAnalyticsCreateSnapshot = <TError = void,
     /**
  * @summary Get analytics history
  */
-export type resumeAnalyticsGetHistoryResponse200 = {
-  data: ResumeAnalyticsGetHistory200
-  status: 200
-}
+export type resumeAnalyticsGetHistoryResponse200 = ResumeAnalyticsGetHistory200
 
-export type resumeAnalyticsGetHistoryResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetHistoryResponseSuccess = resumeAnalyticsGetHistoryResponse200
+;
 
-export type resumeAnalyticsGetHistoryResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetHistoryResponseSuccess = (resumeAnalyticsGetHistoryResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetHistoryResponseError = (resumeAnalyticsGetHistoryResponse401 | resumeAnalyticsGetHistoryResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetHistoryResponse = (resumeAnalyticsGetHistoryResponseSuccess | resumeAnalyticsGetHistoryResponseError)
+export type resumeAnalyticsGetHistoryResponse = (resumeAnalyticsGetHistoryResponseSuccess)
 
 export const getResumeAnalyticsGetHistoryUrl = (resumeId: string,
     params?: ResumeAnalyticsGetHistoryParams,) => {
@@ -1351,7 +1210,7 @@ export const getResumeAnalyticsGetHistoryQueryKey = (resumeId: string,
     }
 
 
-export const getResumeAnalyticsGetHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>>, TError = unknown>(resumeId: string,
     params?: ResumeAnalyticsGetHistoryParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -1371,14 +1230,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetHistoryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>>
-export type ResumeAnalyticsGetHistoryInfiniteQueryError = void
+export type ResumeAnalyticsGetHistoryInfiniteQueryError = unknown
 
 
 /**
  * @summary Get analytics history
  */
 
-export function createResumeAnalyticsGetHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>>, TError = void>(
+export function createResumeAnalyticsGetHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>>, TError = unknown>(
  resumeId: () =>  string,
     params?: () =>  ResumeAnalyticsGetHistoryParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -1395,7 +1254,7 @@ export function createResumeAnalyticsGetHistoryInfinite<TData = InfiniteData<Awa
 /**
  * @summary Get analytics history
  */
-export const prefetchResumeAnalyticsGetHistoryInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = void>(
+export const prefetchResumeAnalyticsGetHistoryInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params?: ResumeAnalyticsGetHistoryParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -1410,7 +1269,7 @@ export const prefetchResumeAnalyticsGetHistoryInfiniteQuery = async <TData = Awa
 
 
 
-export const getResumeAnalyticsGetHistoryQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = void>(resumeId: string,
+export const getResumeAnalyticsGetHistoryQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = unknown>(resumeId: string,
     params?: ResumeAnalyticsGetHistoryParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -1430,14 +1289,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>>
-export type ResumeAnalyticsGetHistoryQueryError = void
+export type ResumeAnalyticsGetHistoryQueryError = unknown
 
 
 /**
  * @summary Get analytics history
  */
 
-export function createResumeAnalyticsGetHistory<TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = void>(
+export function createResumeAnalyticsGetHistory<TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = unknown>(
  resumeId: () =>  string,
     params?: () =>  ResumeAnalyticsGetHistoryParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -1454,7 +1313,7 @@ export function createResumeAnalyticsGetHistory<TData = Awaited<ReturnType<typeo
 /**
  * @summary Get analytics history
  */
-export const prefetchResumeAnalyticsGetHistoryQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = void>(
+export const prefetchResumeAnalyticsGetHistoryQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params?: ResumeAnalyticsGetHistoryParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -1472,29 +1331,12 @@ export const prefetchResumeAnalyticsGetHistoryQuery = async <TData = Awaited<Ret
 /**
  * @summary Get score progression over time
  */
-export type resumeAnalyticsGetProgressionResponse200 = {
-  data: ResumeAnalyticsGetProgression200
-  status: 200
-}
+export type resumeAnalyticsGetProgressionResponse200 = ResumeAnalyticsGetProgression200
 
-export type resumeAnalyticsGetProgressionResponse401 = {
-  data: void
-  status: 401
-}
+export type resumeAnalyticsGetProgressionResponseSuccess = resumeAnalyticsGetProgressionResponse200
+;
 
-export type resumeAnalyticsGetProgressionResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumeAnalyticsGetProgressionResponseSuccess = (resumeAnalyticsGetProgressionResponse200) & {
-  headers: Headers;
-};
-export type resumeAnalyticsGetProgressionResponseError = (resumeAnalyticsGetProgressionResponse401 | resumeAnalyticsGetProgressionResponse403) & {
-  headers: Headers;
-};
-
-export type resumeAnalyticsGetProgressionResponse = (resumeAnalyticsGetProgressionResponseSuccess | resumeAnalyticsGetProgressionResponseError)
+export type resumeAnalyticsGetProgressionResponse = (resumeAnalyticsGetProgressionResponseSuccess)
 
 export const getResumeAnalyticsGetProgressionUrl = (resumeId: string,) => {
 
@@ -1532,7 +1374,7 @@ export const getResumeAnalyticsGetProgressionQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumeAnalyticsGetProgressionInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeAnalyticsGetProgressionInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1551,14 +1393,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetProgressionInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>>
-export type ResumeAnalyticsGetProgressionInfiniteQueryError = void
+export type ResumeAnalyticsGetProgressionInfiniteQueryError = unknown
 
 
 /**
  * @summary Get score progression over time
  */
 
-export function createResumeAnalyticsGetProgressionInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>>, TError = void>(
+export function createResumeAnalyticsGetProgressionInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1573,7 +1415,7 @@ export function createResumeAnalyticsGetProgressionInfinite<TData = InfiniteData
 /**
  * @summary Get score progression over time
  */
-export const prefetchResumeAnalyticsGetProgressionInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = void>(
+export const prefetchResumeAnalyticsGetProgressionInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1587,7 +1429,7 @@ export const prefetchResumeAnalyticsGetProgressionInfiniteQuery = async <TData =
 
 
 
-export const getResumeAnalyticsGetProgressionQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeAnalyticsGetProgressionQueryOptions = <TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1606,14 +1448,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeAnalyticsGetProgressionQueryResult = NonNullable<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>>
-export type ResumeAnalyticsGetProgressionQueryError = void
+export type ResumeAnalyticsGetProgressionQueryError = unknown
 
 
 /**
  * @summary Get score progression over time
  */
 
-export function createResumeAnalyticsGetProgression<TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = void>(
+export function createResumeAnalyticsGetProgression<TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1628,7 +1470,7 @@ export function createResumeAnalyticsGetProgression<TData = Awaited<ReturnType<t
 /**
  * @summary Get score progression over time
  */
-export const prefetchResumeAnalyticsGetProgressionQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = void>(
+export const prefetchResumeAnalyticsGetProgressionQuery = async <TData = Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeAnalyticsGetProgression>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

@@ -59,29 +59,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Trigger tech skills synchronization
  */
-export type techSkillsSyncTriggerSyncResponse200 = {
-  data: TechSkillsSyncDataDto
-  status: 200
-}
+export type techSkillsSyncTriggerSyncResponse200 = TechSkillsSyncDataDto
 
-export type techSkillsSyncTriggerSyncResponse401 = {
-  data: void
-  status: 401
-}
+export type techSkillsSyncTriggerSyncResponseSuccess = techSkillsSyncTriggerSyncResponse200
+;
 
-export type techSkillsSyncTriggerSyncResponse403 = {
-  data: void
-  status: 403
-}
-
-export type techSkillsSyncTriggerSyncResponseSuccess = (techSkillsSyncTriggerSyncResponse200) & {
-  headers: Headers;
-};
-export type techSkillsSyncTriggerSyncResponseError = (techSkillsSyncTriggerSyncResponse401 | techSkillsSyncTriggerSyncResponse403) & {
-  headers: Headers;
-};
-
-export type techSkillsSyncTriggerSyncResponse = (techSkillsSyncTriggerSyncResponseSuccess | techSkillsSyncTriggerSyncResponseError)
+export type techSkillsSyncTriggerSyncResponse = (techSkillsSyncTriggerSyncResponseSuccess)
 
 export const getTechSkillsSyncTriggerSyncUrl = () => {
 
@@ -105,7 +88,7 @@ export const techSkillsSyncTriggerSync = async ( options?: RequestInit): Promise
 
 
 
-export const getTechSkillsSyncTriggerSyncMutationOptions = <TError = void,
+export const getTechSkillsSyncTriggerSyncMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof techSkillsSyncTriggerSync>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof techSkillsSyncTriggerSync>>, TError,void, TContext> => {
 
@@ -134,12 +117,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TechSkillsSyncTriggerSyncMutationResult = NonNullable<Awaited<ReturnType<typeof techSkillsSyncTriggerSync>>>
 
-    export type TechSkillsSyncTriggerSyncMutationError = void
+    export type TechSkillsSyncTriggerSyncMutationError = unknown
 
     /**
  * @summary Trigger tech skills synchronization
  */
-export const createTechSkillsSyncTriggerSync = <TError = void,
+export const createTechSkillsSyncTriggerSync = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof techSkillsSyncTriggerSync>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof techSkillsSyncTriggerSync>>,

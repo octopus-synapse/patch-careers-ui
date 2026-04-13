@@ -35,8 +35,17 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { SpokenLanguageDataDtoLanguage } from './spokenLanguageDataDtoLanguage';
 
 export interface SpokenLanguageDataDto {
-  language: SpokenLanguageDataDtoLanguage;
+  id: string;
+  code: string;
+  nameEn: string;
+  namePtBr: string;
+  nameEs: string;
+  /** @nullable */
+  nativeName: string | null;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

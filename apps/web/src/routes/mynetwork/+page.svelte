@@ -31,7 +31,7 @@
 	// Auth — after customFetch unwrap, data is the DTO directly
 	const auth = useAuth();
 	const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
-	const authenticated = $derived(auth.data?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.authenticated);
 
 	// Queries
 	const pendingQuery = createConnectionGetPendingRequests(() => ({
@@ -52,13 +52,14 @@
 		() => ({ query: { enabled: browser && !!currentUserId } })
 	);
 
-	// Derived data — after customFetch unwrap, query.data IS the payload DTO
 	function paged(queryData: unknown, key: string) {
-		const inner = ((queryData as Record<string, unknown>)?.data as Record<string, unknown>)?.[key] as Record<string, unknown> | undefined;
+		const outer = queryData as Record<string, unknown> | undefined;
+		const inner = outer?.data as Record<string, unknown> | undefined;
+		const section = inner?.[key] as Record<string, unknown> | undefined;
 		return {
-			data: (inner?.data as Record<string, unknown>[]) ?? [],
-			total: (inner?.total as number) ?? 0,
-			totalPages: (inner?.totalPages as number) ?? 0,
+			data: section?.data as Record<string, unknown>[],
+			total: section?.total as number | undefined,
+			totalPages: section?.totalPages as number | undefined,
 		};
 	}
 
@@ -76,8 +77,8 @@
 	let suggestionsPage = $state(1);
 	let suggestionsLoading = $state(false);
 
-	const connectionsList = $derived([...connections.data, ...connectionsExtra]);
-	const suggestionsList = $derived([...suggestions.data, ...suggestionsExtra]);
+	const connectionsList = $derived(connections.data ? [...connections.data, ...connectionsExtra] : connectionsExtra);
+	const suggestionsList = $derived(suggestions.data ? [...suggestions.data, ...suggestionsExtra] : suggestionsExtra);
 
 	async function loadMoreConnections() {
 		if (connectionsLoading) return;
@@ -85,8 +86,9 @@
 		try {
 			const next = connectionsPage + 1;
 			const res = await customFetch<Record<string, unknown>>(`/api/v1/users/me/connections?page=${next}&limit=10`);
-			const items = (res?.connections as Record<string, unknown>)?.data as Record<string, unknown>[] ?? [];
-			connectionsExtra = [...connectionsExtra, ...items];
+			const connectionsData = res?.connections as Record<string, unknown> | undefined;
+			const items = connectionsData?.data as Record<string, unknown>[] | undefined;
+			if (items) connectionsExtra = [...connectionsExtra, ...items];
 			connectionsPage = next;
 		} finally { connectionsLoading = false; }
 	}
@@ -97,8 +99,9 @@
 		try {
 			const next = suggestionsPage + 1;
 			const res = await customFetch<Record<string, unknown>>(`/api/v1/users/me/connections/suggestions?page=${next}&limit=20`);
-			const items = (res?.suggestions as Record<string, unknown>)?.data as Record<string, unknown>[] ?? [];
-			suggestionsExtra = [...suggestionsExtra, ...items];
+			const suggestionsData = res?.suggestions as Record<string, unknown> | undefined;
+			const items = suggestionsData?.data as Record<string, unknown>[] | undefined;
+			if (items) suggestionsExtra = [...suggestionsExtra, ...items];
 			suggestionsPage = next;
 		} finally { suggestionsLoading = false; }
 	}
@@ -177,14 +180,14 @@
 							<Eye size={16} class="text-gray-500 dark:text-neutral-500" />
 							{t('network.followersFollowing')}
 						</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{followers.total + following.total}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{(followers.total ?? 0) + (following.total ?? 0)}</span>
 					</a>
 					<a href="#invitations" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span class="flex items-center gap-2.5">
 							<UserCheck size={16} class="text-gray-500 dark:text-neutral-500" />
 							{t('network.invitations')}
 						</span>
-						{#if pending.total > 0}
+						{#if (pending.total ?? 0) > 0}
 							<span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{pending.total}</span>
 						{:else}
 							<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">0</span>
@@ -197,23 +200,25 @@
 		<!-- Main -->
 		<main class="flex-1 min-w-0 flex flex-col gap-6">
 			<!-- Invitations -->
-			{#if pending.total > 0}
+			{#if (pending.total ?? 0) > 0}
 				<section id="invitations" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 					<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.invitations')} ({pending.total})</h2>
 					</div>
-					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-						{#each pending.data as request}
-							{@const user = (request.user ?? request.requester ?? request) as Record<string, string | null>}
-							{@const reqId = String(request.id ?? '')}
-							<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }}>
-								{#snippet actions()}
-									<Button variant="outline" size="sm" onclick={() => rejectMutation.mutate({ id: reqId })}>{t('network.ignore')}</Button>
-									<Button variant="solid" size="sm" onclick={() => acceptMutation.mutate({ id: reqId })}>{t('network.accept')}</Button>
-								{/snippet}
-							</UserRow>
-						{/each}
-					</div>
+					{#if pending.data}
+						<div class="divide-y divide-gray-200 dark:divide-neutral-800">
+							{#each pending.data as request}
+								{@const user = (request.user ?? request.requester ?? request) as Record<string, string | null>}
+								{@const reqId = String(request.id ?? '')}
+								<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }}>
+									{#snippet actions()}
+										<Button variant="outline" size="sm" onclick={() => rejectMutation.mutate({ id: reqId })}>{t('network.ignore')}</Button>
+										<Button variant="solid" size="sm" onclick={() => acceptMutation.mutate({ id: reqId })}>{t('network.accept')}</Button>
+									{/snippet}
+								</UserRow>
+							{/each}
+						</div>
+					{/if}
 				</section>
 			{/if}
 
@@ -226,10 +231,10 @@
 					<div class="grid grid-cols-2 gap-4 px-5 py-4 sm:grid-cols-3 lg:grid-cols-4">
 						{#each Array(4) as _}
 							<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800 animate-pulse">
-								<div class="h-14 w-14 rounded-full bg-gray-200 dark:bg-neutral-700" />
-								<div class="h-3 w-20 rounded bg-gray-200 dark:bg-neutral-700" />
-								<div class="h-2 w-14 rounded bg-gray-200 dark:bg-neutral-700" />
-								<div class="h-8 w-full rounded-full bg-gray-200 dark:bg-neutral-700" />
+								<div class="h-14 w-14 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+								<div class="h-3 w-20 rounded bg-gray-200 dark:bg-neutral-700"></div>
+								<div class="h-2 w-14 rounded bg-gray-200 dark:bg-neutral-700"></div>
+								<div class="h-8 w-full rounded-full bg-gray-200 dark:bg-neutral-700"></div>
 							</div>
 						{/each}
 					</div>
@@ -259,7 +264,7 @@
 							</UserCard>
 						{/each}
 					</div>
-					<InfiniteScrollTrigger onLoadMore={loadMoreSuggestions} hasMore={suggestionsPage < suggestions.totalPages} isLoading={suggestionsLoading} />
+					<InfiniteScrollTrigger onLoadMore={loadMoreSuggestions} hasMore={suggestionsPage < (suggestions.totalPages ?? 0)} isLoading={suggestionsLoading} />
 				</section>
 			{/if}
 
@@ -272,10 +277,10 @@
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(3) as _}
 							<div class="flex items-center gap-3 px-5 py-3.5 animate-pulse">
-								<div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-700" />
+								<div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
 								<div class="flex-1 space-y-2">
-									<div class="h-3 w-32 rounded bg-gray-200 dark:bg-neutral-700" />
-									<div class="h-2 w-20 rounded bg-gray-200 dark:bg-neutral-700" />
+									<div class="h-3 w-32 rounded bg-gray-200 dark:bg-neutral-700"></div>
+									<div class="h-2 w-20 rounded bg-gray-200 dark:bg-neutral-700"></div>
 								</div>
 							</div>
 						{/each}
@@ -300,7 +305,7 @@
 								{/snippet}
 							</UserRow>
 						{/each}
-						<InfiniteScrollTrigger onLoadMore={loadMoreConnections} hasMore={connectionsPage < connections.totalPages} isLoading={connectionsLoading} />
+						<InfiniteScrollTrigger onLoadMore={loadMoreConnections} hasMore={connectionsPage < (connections.totalPages ?? 0)} isLoading={connectionsLoading} />
 					</div>
 				{/if}
 			</section>
@@ -316,23 +321,27 @@
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(3) as _}
 							<div class="flex items-center gap-3 px-5 py-3 animate-pulse">
-								<div class="h-8 w-8 rounded-full bg-gray-200 dark:bg-neutral-700" />
-								<div class="flex-1"><div class="h-3 w-28 rounded bg-gray-200 dark:bg-neutral-700" /></div>
+								<div class="h-8 w-8 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+								<div class="flex-1"><div class="h-3 w-28 rounded bg-gray-200 dark:bg-neutral-700"></div></div>
 							</div>
 						{/each}
 					</div>
-				{:else if followers.total === 0 && following.total === 0}
+				{:else if !followers.total && !following.total}
 					<p class="py-8 text-center text-sm text-gray-500 dark:text-neutral-500">{t('network.noFollowers')}</p>
 				{:else}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-						{#each followers.data as follower}
-							{@const user = (follower.user ?? follower.follower ?? follower) as Record<string, string | null>}
-							<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }} badge="follower" />
-						{/each}
-						{#each following.data as followed}
-							{@const user = (followed.user ?? followed.following ?? followed) as Record<string, string | null>}
-							<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }} badge="following" />
-						{/each}
+						{#if followers.data}
+							{#each followers.data as follower}
+								{@const user = (follower.user ?? follower.follower ?? follower) as Record<string, string | null>}
+								<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }} badge="follower" />
+							{/each}
+						{/if}
+						{#if following.data}
+							{#each following.data as followed}
+								{@const user = (followed.user ?? followed.following ?? followed) as Record<string, string | null>}
+								<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }} badge="following" />
+							{/each}
+						{/if}
 					</div>
 				{/if}
 			</section>

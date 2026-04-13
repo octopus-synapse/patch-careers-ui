@@ -44,10 +44,10 @@
 		<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 			{#each Array(3) as _}
 				<div class="flex items-center gap-3 px-5 py-3.5 animate-pulse">
-					<div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-700" />
+					<div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
 					<div class="flex-1 space-y-2">
-						<div class="h-3 w-32 rounded bg-gray-200 dark:bg-neutral-700" />
-						<div class="h-2 w-20 rounded bg-gray-200 dark:bg-neutral-700" />
+						<div class="h-3 w-32 rounded bg-gray-200 dark:bg-neutral-700"></div>
+						<div class="h-2 w-20 rounded bg-gray-200 dark:bg-neutral-700"></div>
 					</div>
 				</div>
 			{/each}
@@ -64,6 +64,6 @@
 		{/each}
 	</div>
 	{#if hasMore}
-		<div bind:this={sentinel} class="h-1" />
+		<div bind:this={sentinel} class="h-1"></div>
 	{/if}
 {/if}

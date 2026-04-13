@@ -62,14 +62,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Streams PNG preview as base64 when onboarding data changes.
  * @summary Subscribe to live resume preview updates
  */
-export type onboardingPreviewStreamPreviewResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingPreviewStreamPreviewResponse200 = void
 
-export type onboardingPreviewStreamPreviewResponseSuccess = (onboardingPreviewStreamPreviewResponse200) & {
-  headers: Headers;
-};
+export type onboardingPreviewStreamPreviewResponseSuccess = onboardingPreviewStreamPreviewResponse200
 ;
 
 export type onboardingPreviewStreamPreviewResponse = (onboardingPreviewStreamPreviewResponseSuccess)

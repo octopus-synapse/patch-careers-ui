@@ -67,14 +67,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Default application hello endpoint
  */
-export type appGetHelloResponse200 = {
-  data: HelloDataDto
-  status: 200
-}
+export type appGetHelloResponse200 = HelloDataDto
 
-export type appGetHelloResponseSuccess = (appGetHelloResponse200) & {
-  headers: Headers;
-};
+export type appGetHelloResponseSuccess = appGetHelloResponse200
 ;
 
 export type appGetHelloResponse = (appGetHelloResponseSuccess)
@@ -228,14 +223,9 @@ export const prefetchAppGetHelloQuery = async <TData = Awaited<ReturnType<typeof
 /**
  * @summary Get service version and deployment metadata
  */
-export type appGetVersionResponse200 = {
-  data: VersionDataDto
-  status: 200
-}
+export type appGetVersionResponse200 = VersionDataDto
 
-export type appGetVersionResponseSuccess = (appGetVersionResponse200) & {
-  headers: Headers;
-};
+export type appGetVersionResponseSuccess = appGetVersionResponse200
 ;
 
 export type appGetVersionResponse = (appGetVersionResponseSuccess)
@@ -390,14 +380,9 @@ export const prefetchAppGetVersionQuery = async <TData = Awaited<ReturnType<type
  * Returns the complete OpenAPI 3.0 specification for SDK generation. This is the single source of truth for all API contracts.
  * @summary Get OpenAPI specification
  */
-export type appGetOpenApiSpecResponse200 = {
-  data: OpenApiSpecDataDto
-  status: 200
-}
+export type appGetOpenApiSpecResponse200 = OpenApiSpecDataDto
 
-export type appGetOpenApiSpecResponseSuccess = (appGetOpenApiSpecResponse200) & {
-  headers: Headers;
-};
+export type appGetOpenApiSpecResponseSuccess = appGetOpenApiSpecResponse200
 ;
 
 export type appGetOpenApiSpecResponse = (appGetOpenApiSpecResponseSuccess)

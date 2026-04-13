@@ -52,7 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AdminCollaborationsGetCollaborationsParams
+  AdminCollaborationStatsDataDto,
+  AdminCollaborationsGetCollaborationsParams,
+  AdminCollaborationsListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -65,29 +67,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get collaboration statistics
  */
-export type adminCollaborationsGetStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminCollaborationsGetStatsResponse200 = AdminCollaborationStatsDataDto
 
-export type adminCollaborationsGetStatsResponse401 = {
-  data: void
-  status: 401
-}
+export type adminCollaborationsGetStatsResponseSuccess = adminCollaborationsGetStatsResponse200
+;
 
-export type adminCollaborationsGetStatsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminCollaborationsGetStatsResponseSuccess = (adminCollaborationsGetStatsResponse200) & {
-  headers: Headers;
-};
-export type adminCollaborationsGetStatsResponseError = (adminCollaborationsGetStatsResponse401 | adminCollaborationsGetStatsResponse403) & {
-  headers: Headers;
-};
-
-export type adminCollaborationsGetStatsResponse = (adminCollaborationsGetStatsResponseSuccess | adminCollaborationsGetStatsResponseError)
+export type adminCollaborationsGetStatsResponse = (adminCollaborationsGetStatsResponseSuccess)
 
 export const getAdminCollaborationsGetStatsUrl = () => {
 
@@ -125,7 +110,7 @@ export const getAdminCollaborationsGetStatsQueryKey = () => {
     }
 
 
-export const getAdminCollaborationsGetStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminCollaborationsGetStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -144,14 +129,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminCollaborationsGetStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>
-export type AdminCollaborationsGetStatsInfiniteQueryError = void
+export type AdminCollaborationsGetStatsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get collaboration statistics
  */
 
-export function createAdminCollaborationsGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>, TError = void>(
+export function createAdminCollaborationsGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -166,7 +151,7 @@ export function createAdminCollaborationsGetStatsInfinite<TData = InfiniteData<A
 /**
  * @summary Get collaboration statistics
  */
-export const prefetchAdminCollaborationsGetStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = void>(
+export const prefetchAdminCollaborationsGetStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -180,7 +165,7 @@ export const prefetchAdminCollaborationsGetStatsInfiniteQuery = async <TData = A
 
 
 
-export const getAdminCollaborationsGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminCollaborationsGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -199,14 +184,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminCollaborationsGetStatsQueryResult = NonNullable<Awaited<ReturnType<typeof adminCollaborationsGetStats>>>
-export type AdminCollaborationsGetStatsQueryError = void
+export type AdminCollaborationsGetStatsQueryError = unknown
 
 
 /**
  * @summary Get collaboration statistics
  */
 
-export function createAdminCollaborationsGetStats<TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = void>(
+export function createAdminCollaborationsGetStats<TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -221,7 +206,7 @@ export function createAdminCollaborationsGetStats<TData = Awaited<ReturnType<typ
 /**
  * @summary Get collaboration statistics
  */
-export const prefetchAdminCollaborationsGetStatsQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = void>(
+export const prefetchAdminCollaborationsGetStatsQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -238,29 +223,12 @@ export const prefetchAdminCollaborationsGetStatsQuery = async <TData = Awaited<R
 /**
  * @summary List all collaborations
  */
-export type adminCollaborationsGetCollaborationsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminCollaborationsGetCollaborationsResponse200 = AdminCollaborationsListDataDto
 
-export type adminCollaborationsGetCollaborationsResponse401 = {
-  data: void
-  status: 401
-}
+export type adminCollaborationsGetCollaborationsResponseSuccess = adminCollaborationsGetCollaborationsResponse200
+;
 
-export type adminCollaborationsGetCollaborationsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminCollaborationsGetCollaborationsResponseSuccess = (adminCollaborationsGetCollaborationsResponse200) & {
-  headers: Headers;
-};
-export type adminCollaborationsGetCollaborationsResponseError = (adminCollaborationsGetCollaborationsResponse401 | adminCollaborationsGetCollaborationsResponse403) & {
-  headers: Headers;
-};
-
-export type adminCollaborationsGetCollaborationsResponse = (adminCollaborationsGetCollaborationsResponseSuccess | adminCollaborationsGetCollaborationsResponseError)
+export type adminCollaborationsGetCollaborationsResponse = (adminCollaborationsGetCollaborationsResponseSuccess)
 
 export const getAdminCollaborationsGetCollaborationsUrl = (params?: AdminCollaborationsGetCollaborationsParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -305,7 +273,7 @@ export const getAdminCollaborationsGetCollaborationsQueryKey = (params?: AdminCo
     }
 
 
-export const getAdminCollaborationsGetCollaborationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>, TError = void>(params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminCollaborationsGetCollaborationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>, TError = unknown>(params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -324,14 +292,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminCollaborationsGetCollaborationsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>
-export type AdminCollaborationsGetCollaborationsInfiniteQueryError = void
+export type AdminCollaborationsGetCollaborationsInfiniteQueryError = unknown
 
 
 /**
  * @summary List all collaborations
  */
 
-export function createAdminCollaborationsGetCollaborationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>, TError = void>(
+export function createAdminCollaborationsGetCollaborationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>, TError = unknown>(
  params?: () =>  AdminCollaborationsGetCollaborationsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -346,7 +314,7 @@ export function createAdminCollaborationsGetCollaborationsInfinite<TData = Infin
 /**
  * @summary List all collaborations
  */
-export const prefetchAdminCollaborationsGetCollaborationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = void>(
+export const prefetchAdminCollaborationsGetCollaborationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -360,7 +328,7 @@ export const prefetchAdminCollaborationsGetCollaborationsInfiniteQuery = async <
 
 
 
-export const getAdminCollaborationsGetCollaborationsQueryOptions = <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = void>(params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminCollaborationsGetCollaborationsQueryOptions = <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = unknown>(params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -379,14 +347,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminCollaborationsGetCollaborationsQueryResult = NonNullable<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>>
-export type AdminCollaborationsGetCollaborationsQueryError = void
+export type AdminCollaborationsGetCollaborationsQueryError = unknown
 
 
 /**
  * @summary List all collaborations
  */
 
-export function createAdminCollaborationsGetCollaborations<TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = void>(
+export function createAdminCollaborationsGetCollaborations<TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = unknown>(
  params?: () =>  AdminCollaborationsGetCollaborationsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -401,7 +369,7 @@ export function createAdminCollaborationsGetCollaborations<TData = Awaited<Retur
 /**
  * @summary List all collaborations
  */
-export const prefetchAdminCollaborationsGetCollaborationsQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = void>(
+export const prefetchAdminCollaborationsGetCollaborationsQuery = async <TData = Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminCollaborationsGetCollaborationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminCollaborationsGetCollaborations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

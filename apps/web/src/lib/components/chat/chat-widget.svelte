@@ -22,19 +22,18 @@
 	import { browser } from '$app/environment';
 
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authData = $derived(auth.data as Record<string, unknown> | undefined);
-	const authenticated = $derived(authData?.authenticated ?? false);
-	const currentUserId = $derived(String((authData?.user as Record<string, unknown>)?.id ?? ''));
+	const authenticated = $derived(auth.data?.authenticated);
+	const currentUserId = $derived(String(auth.data?.user?.id));
 
 	const conversations = createChatGetConversations(
 		() => ({ limit: 50 }),
 		() => ({ query: { enabled: authenticated && chatState.isOpen } })
 	);
 
-	const convListRaw = $derived(
-		(conversations.data as unknown as Record<string, unknown>)?.conversations as Record<string, unknown> ?? {}
-	);
-	const convList = $derived((Array.isArray(convListRaw) ? convListRaw : (convListRaw as Record<string, unknown>)?.conversations as Array<Record<string, unknown>>) ?? []);
+	type Conversation = { id: string; participant: { id: string; name: string | null; photoURL: string | null; username: string | null }; lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null; unreadCount?: number };
+	type Message = { id: string; content: string; senderId: string; createdAt: string; isRead: boolean; sender: { id: string; name: string | null; photoURL: string | null } };
+
+	const convList = $derived((conversations.data?.conversations?.conversations ?? []) as Conversation[]);
 
 	const messages = createChatGetMessages(
 		() => chatState.activeConversationId ?? '',
@@ -42,10 +41,7 @@
 		() => ({ query: { enabled: !!chatState.activeConversationId } })
 	);
 
-	const msgListRaw = $derived(
-		(messages.data as unknown as Record<string, unknown>)?.messages as Record<string, unknown> ?? {}
-	);
-	const msgList = $derived((Array.isArray(msgListRaw) ? msgListRaw : (msgListRaw as Record<string, unknown>)?.messages as Array<Record<string, unknown>>) ?? []);
+	const msgList = $derived((messages.data?.messages?.messages ?? []) as Message[]);
 
 	const queryClient = useQueryClient();
 
@@ -88,9 +84,9 @@
 
 	const activeOther = $derived.by(() => {
 		if (!chatState.activeConversationId) return null;
-		const conv = convList.find((c) => c.id === chatState.activeConversationId);
+		const conv = convList?.find((c) => c.id === chatState.activeConversationId);
 		if (!conv) return null;
-		return conv.participant as Record<string, string> ?? null;
+		return conv.participant;
 	});
 
 	// Handle pending recipient (from profile "Message" button)
@@ -171,7 +167,7 @@
 					</div>
 					<div class="flex-1 overflow-y-auto scrollbar-thin">
 						<ConversationList
-							conversations={convList as any}
+							conversations={convList}
 							{currentUserId}
 							activeConversationId={chatState.activeConversationId ?? undefined}
 							onselect={selectConversation}
@@ -191,10 +187,10 @@
 								{/if}
 							</div>
 						</a>
-						<MessageThread messages={msgList as any} {currentUserId} />
+						<MessageThread messages={msgList} {currentUserId} />
 						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}
-						<MessageThread messages={msgList as any} {currentUserId} />
+						<MessageThread messages={msgList} {currentUserId} />
 						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else}
 						<div class="flex flex-1 items-center justify-center">
@@ -217,7 +213,7 @@
 							</div>
 						{:else}
 							<ConversationList
-								conversations={convList as any}
+								conversations={convList}
 								{currentUserId}
 								activeConversationId={undefined}
 								onselect={selectConversation}
@@ -226,7 +222,7 @@
 					</div>
 				{:else}
 					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
-						<MessageThread messages={msgList as any} {currentUserId} />
+						<MessageThread messages={msgList} {currentUserId} />
 						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					</div>
 				{/if}

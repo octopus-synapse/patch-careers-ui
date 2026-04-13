@@ -24,19 +24,19 @@
 		query: { enabled: browser }
 	}));
 
-	const data = $derived(analyticsQuery.data as Record<string, unknown> | undefined);
-	const metrics = $derived(metricsQuery.data as Record<string, unknown> | undefined);
+	const data = $derived(analyticsQuery.data);
+	const metrics = $derived(metricsQuery.data);
 
-	const periodOptions = [
+	const periodOptions = $derived([
 		{ value: 'day', label: t?.('admin.analytics.last30Days') ?? '30 Days' },
 		{ value: 'week', label: '12 Weeks' },
 		{ value: 'month', label: t?.('admin.analytics.lastYear') ?? '12 Months' },
-	];
+	]);
 
-	const atsDist = $derived((data?.atsScoreDistribution as { bucket: string; count: number }[]) ?? []);
-	const byLang = $derived((data?.resumesByLanguage as { language: string; count: number }[]) ?? []);
-	const sections = $derived((data?.mostUsedSections as { title: string; count: number }[]) ?? []);
-	const imports = $derived((data?.importSources as { source: string; count: number }[]) ?? []);
+	const atsDist = $derived(data?.atsScoreDistribution);
+	const byLang = $derived(data?.resumesByLanguage);
+	const sections = $derived(data?.mostUsedSections);
+	const imports = $derived(data?.importSources);
 
 	function maxValue(arr: { count: number }[]): number {
 		return Math.max(...arr.map(i => i.count), 1);
@@ -53,7 +53,7 @@
 			{t?.('admin.analytics.title') ?? 'Global Analytics'}
 		</h1>
 		<div class="flex items-center gap-2">
-			<ExportButton data={[...atsDist, ...byLang, ...sections, ...imports]} filename="analytics.csv" />
+			<ExportButton data={[...(atsDist ?? []), ...(byLang ?? []), ...(sections ?? []), ...(imports ?? [])]} filename="analytics.csv" />
 			<SegmentToggle
 			options={periodOptions}
 			selected={period}
@@ -64,9 +64,9 @@
 
 	{#if metrics}
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-			<StatCard label={t?.('admin.dashboard.signupsWeek') ?? 'Signups This Week'} value={metrics.signupsThisWeek as number} />
-			<StatCard label={t?.('admin.dashboard.signupsMonth') ?? 'Signups This Month'} value={metrics.signupsThisMonth as number} />
-			<StatCard label={t?.('admin.dashboard.avgAtsScore') ?? 'Avg ATS Score'} value={metrics.averageAtsScore as number} />
+			<StatCard label={t?.('admin.dashboard.signupsWeek') ?? 'Signups This Week'} value={metrics.signupsThisWeek} />
+			<StatCard label={t?.('admin.dashboard.signupsMonth') ?? 'Signups This Month'} value={metrics.signupsThisMonth} />
+			<StatCard label={t?.('admin.dashboard.avgAtsScore') ?? 'Avg ATS Score'} value={metrics.averageAtsScore} />
 			<StatCard label={t?.('admin.dashboard.onboardingRate') ?? 'Onboarding Rate'} value={`${metrics.onboardingCompletionRate}%`} />
 		</div>
 	{/if}
@@ -83,8 +83,8 @@
 					{t?.('admin.analytics.atsDistribution') ?? 'ATS Score Distribution'}
 				</h3>
 				<div class="flex items-end gap-2" style="height: 120px">
-					{#each atsDist as bucket}
-						{@const pct = (bucket.count / maxValue(atsDist)) * 100}
+					{#each atsDist ?? [] as bucket}
+						{@const pct = (bucket.count / maxValue(atsDist ?? [])) * 100}
 						<div class="flex flex-1 flex-col items-center gap-1">
 							<span class="text-[9px] text-gray-500 dark:text-neutral-500">{bucket.count}</span>
 							<div class="w-full rounded-t bg-gray-700 dark:bg-neutral-400" style="height: {pct}%; min-height: 2px"></div>
@@ -100,8 +100,8 @@
 					{t?.('admin.analytics.resumesByLanguage') ?? 'Resumes by Language'}
 				</h3>
 				<div class="space-y-3">
-					{#each byLang as lang}
-						{@const pct = (lang.count / maxValue(byLang)) * 100}
+					{#each byLang ?? [] as lang}
+						{@const pct = (lang.count / maxValue(byLang ?? [])) * 100}
 						<div>
 							<div class="flex items-center justify-between text-xs text-gray-800 dark:text-neutral-200">
 								<span>{lang.language}</span>
@@ -121,7 +121,7 @@
 					{t?.('admin.analytics.topSections') ?? 'Most Used Sections'}
 				</h3>
 				<div class="space-y-2">
-					{#each sections as section}
+					{#each sections ?? [] as section}
 						<div class="flex items-center justify-between text-sm">
 							<span class="text-gray-800 dark:text-neutral-200">{section.title}</span>
 							<span class="text-gray-500 dark:text-neutral-500">{section.count}</span>
@@ -136,13 +136,13 @@
 					{t?.('admin.analytics.importSources') ?? 'Import Sources'}
 				</h3>
 				<div class="space-y-2">
-					{#each imports as src}
+					{#each imports ?? [] as src}
 						<div class="flex items-center justify-between text-sm">
 							<span class="text-gray-800 dark:text-neutral-200">{src.source}</span>
 							<span class="text-gray-500 dark:text-neutral-500">{src.count}</span>
 						</div>
 					{/each}
-					{#if imports.length === 0}
+					{#if !imports?.length}
 						<p class="text-xs text-gray-500 dark:text-neutral-500">No imports yet</p>
 					{/if}
 				</div>

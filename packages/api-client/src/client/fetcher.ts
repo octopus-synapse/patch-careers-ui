@@ -48,8 +48,6 @@ export async function customFetch<T>(url: string, options?: RequestInit): Promis
 
   const json = await response.json();
 
-  // Unwrap the backend's { success, data } envelope so consumers
-  // access payload directly: query.data.user instead of query.data.data.data.user
   if (json && typeof json === 'object' && 'success' in json && 'data' in json) {
     return json.data as T;
   }

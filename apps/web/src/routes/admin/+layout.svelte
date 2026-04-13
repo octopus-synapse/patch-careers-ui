@@ -14,9 +14,9 @@
 		query: { retry: false, enabled: browser }
 	}));
 
-	const user = $derived(session.data?.user as Record<string, unknown> | null);
-	const authenticated = $derived(session.data?.authenticated ?? false);
-	const isAdmin = $derived(user?.isAdmin ?? false);
+	const user = $derived(session.data?.user);
+	const authenticated = $derived(session.data?.authenticated);
+	const isAdmin = $derived(user?.isAdmin);
 
 	const t = $derived(locale.t);
 	const currentPath = $derived($page.url.pathname);

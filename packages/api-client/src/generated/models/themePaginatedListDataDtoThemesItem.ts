@@ -35,5 +35,36 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { _ThemePaginatedListDataDtoThemesItemCount } from './_themePaginatedListDataDtoThemesItemCount';
+import type { ThemePaginatedListDataDtoThemesItemAuthor } from './themePaginatedListDataDtoThemesItemAuthor';
 
-export type ThemePaginatedListDataDtoThemesItem = {[key: string]: unknown};
+export type ThemePaginatedListDataDtoThemesItem = {
+  id: string;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  authorId: string;
+  category: string;
+  tags: string[];
+  styleConfig: unknown;
+  sectionStyles: unknown;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  previewImages: string[];
+  status: string;
+  isSystemTheme: boolean;
+  /** @nullable */
+  atsScore: number | null;
+  usageCount: number;
+  /** @nullable */
+  rating: number | null;
+  ratingCount: number;
+  version: string;
+  /** @nullable */
+  parentThemeId: string | null;
+  createdAt: unknown;
+  updatedAt: unknown;
+  publishedAt: unknown | null;
+  author?: ThemePaginatedListDataDtoThemesItemAuthor;
+  _count?: _ThemePaginatedListDataDtoThemesItemCount;
+};

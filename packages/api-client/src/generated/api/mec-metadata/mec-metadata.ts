@@ -67,14 +67,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary List all states (UFs)
  */
-export type mecMetadataListAllStateCodesResponse200 = {
-  data: MecStateCodesDataDto
-  status: 200
-}
+export type mecMetadataListAllStateCodesResponse200 = MecStateCodesDataDto
 
-export type mecMetadataListAllStateCodesResponseSuccess = (mecMetadataListAllStateCodesResponse200) & {
-  headers: Headers;
-};
+export type mecMetadataListAllStateCodesResponseSuccess = mecMetadataListAllStateCodesResponse200
 ;
 
 export type mecMetadataListAllStateCodesResponse = (mecMetadataListAllStateCodesResponseSuccess)
@@ -228,14 +223,9 @@ export const prefetchMecMetadataListAllStateCodesQuery = async <TData = Awaited<
 /**
  * @summary List knowledge areas
  */
-export type mecMetadataListAllKnowledgeAreasResponse200 = {
-  data: MecKnowledgeAreasDataDto
-  status: 200
-}
+export type mecMetadataListAllKnowledgeAreasResponse200 = MecKnowledgeAreasDataDto
 
-export type mecMetadataListAllKnowledgeAreasResponseSuccess = (mecMetadataListAllKnowledgeAreasResponse200) & {
-  headers: Headers;
-};
+export type mecMetadataListAllKnowledgeAreasResponseSuccess = mecMetadataListAllKnowledgeAreasResponse200
 ;
 
 export type mecMetadataListAllKnowledgeAreasResponse = (mecMetadataListAllKnowledgeAreasResponseSuccess)
@@ -389,14 +379,9 @@ export const prefetchMecMetadataListAllKnowledgeAreasQuery = async <TData = Awai
 /**
  * @summary Get MEC statistics
  */
-export type mecMetadataGetMecStatisticsResponse200 = {
-  data: MecStatisticsDataDto
-  status: 200
-}
+export type mecMetadataGetMecStatisticsResponse200 = MecStatisticsDataDto
 
-export type mecMetadataGetMecStatisticsResponseSuccess = (mecMetadataGetMecStatisticsResponse200) & {
-  headers: Headers;
-};
+export type mecMetadataGetMecStatisticsResponseSuccess = mecMetadataGetMecStatisticsResponse200
 ;
 
 export type mecMetadataGetMecStatisticsResponse = (mecMetadataGetMecStatisticsResponseSuccess)

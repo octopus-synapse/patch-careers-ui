@@ -56,6 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  PostByIdDataDto,
+  PostCreatedDataDto,
+  PostDeletedDataDto,
+  PostImageUploadDataDto,
   PostsUploadImageBody
 } from '../../models';
 
@@ -69,29 +73,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Create a new post
  */
-export type postsCreateResponse201 = {
-  data: void
-  status: 201
-}
+export type postsCreateResponse201 = PostCreatedDataDto
 
-export type postsCreateResponse401 = {
-  data: void
-  status: 401
-}
+export type postsCreateResponseSuccess = postsCreateResponse201
+;
 
-export type postsCreateResponse403 = {
-  data: void
-  status: 403
-}
-
-export type postsCreateResponseSuccess = (postsCreateResponse201) & {
-  headers: Headers;
-};
-export type postsCreateResponseError = (postsCreateResponse401 | postsCreateResponse403) & {
-  headers: Headers;
-};
-
-export type postsCreateResponse = (postsCreateResponseSuccess | postsCreateResponseError)
+export type postsCreateResponse = (postsCreateResponseSuccess)
 
 export const getPostsCreateUrl = () => {
 
@@ -115,7 +102,7 @@ export const postsCreate = async ( options?: RequestInit): Promise<postsCreateRe
 
 
 
-export const getPostsCreateMutationOptions = <TError = void,
+export const getPostsCreateMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,void, TContext> => {
 
@@ -144,12 +131,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof postsCreate>>>
 
-    export type PostsCreateMutationError = void
+    export type PostsCreateMutationError = unknown
 
     /**
  * @summary Create a new post
  */
-export const createPostsCreate = <TError = void,
+export const createPostsCreate = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsCreate>>,
@@ -162,29 +149,12 @@ export const createPostsCreate = <TError = void,
     /**
  * @summary Get a post by ID
  */
-export type postsFindByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type postsFindByIdResponse200 = PostByIdDataDto
 
-export type postsFindByIdResponse401 = {
-  data: void
-  status: 401
-}
+export type postsFindByIdResponseSuccess = postsFindByIdResponse200
+;
 
-export type postsFindByIdResponse403 = {
-  data: void
-  status: 403
-}
-
-export type postsFindByIdResponseSuccess = (postsFindByIdResponse200) & {
-  headers: Headers;
-};
-export type postsFindByIdResponseError = (postsFindByIdResponse401 | postsFindByIdResponse403) & {
-  headers: Headers;
-};
-
-export type postsFindByIdResponse = (postsFindByIdResponseSuccess | postsFindByIdResponseError)
+export type postsFindByIdResponse = (postsFindByIdResponseSuccess)
 
 export const getPostsFindByIdUrl = (id: string,) => {
 
@@ -222,7 +192,7 @@ export const getPostsFindByIdQueryKey = (id: string,) => {
     }
 
 
-export const getPostsFindByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof postsFindById>>>, TError = void>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPostsFindByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof postsFindById>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -241,14 +211,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PostsFindByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof postsFindById>>>
-export type PostsFindByIdInfiniteQueryError = void
+export type PostsFindByIdInfiniteQueryError = unknown
 
 
 /**
  * @summary Get a post by ID
  */
 
-export function createPostsFindByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof postsFindById>>>, TError = void>(
+export function createPostsFindByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof postsFindById>>>, TError = unknown>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -263,7 +233,7 @@ export function createPostsFindByIdInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Get a post by ID
  */
-export const prefetchPostsFindByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof postsFindById>>, TError = void>(
+export const prefetchPostsFindByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof postsFindById>>, TError = unknown>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -277,7 +247,7 @@ export const prefetchPostsFindByIdInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getPostsFindByIdQueryOptions = <TData = Awaited<ReturnType<typeof postsFindById>>, TError = void>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPostsFindByIdQueryOptions = <TData = Awaited<ReturnType<typeof postsFindById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -296,14 +266,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PostsFindByIdQueryResult = NonNullable<Awaited<ReturnType<typeof postsFindById>>>
-export type PostsFindByIdQueryError = void
+export type PostsFindByIdQueryError = unknown
 
 
 /**
  * @summary Get a post by ID
  */
 
-export function createPostsFindById<TData = Awaited<ReturnType<typeof postsFindById>>, TError = void>(
+export function createPostsFindById<TData = Awaited<ReturnType<typeof postsFindById>>, TError = unknown>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -318,7 +288,7 @@ export function createPostsFindById<TData = Awaited<ReturnType<typeof postsFindB
 /**
  * @summary Get a post by ID
  */
-export const prefetchPostsFindByIdQuery = async <TData = Awaited<ReturnType<typeof postsFindById>>, TError = void>(
+export const prefetchPostsFindByIdQuery = async <TData = Awaited<ReturnType<typeof postsFindById>>, TError = unknown>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -335,29 +305,12 @@ export const prefetchPostsFindByIdQuery = async <TData = Awaited<ReturnType<type
 /**
  * @summary Delete a post
  */
-export type postsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type postsDeleteResponse200 = PostDeletedDataDto
 
-export type postsDeleteResponse401 = {
-  data: void
-  status: 401
-}
+export type postsDeleteResponseSuccess = postsDeleteResponse200
+;
 
-export type postsDeleteResponse403 = {
-  data: void
-  status: 403
-}
-
-export type postsDeleteResponseSuccess = (postsDeleteResponse200) & {
-  headers: Headers;
-};
-export type postsDeleteResponseError = (postsDeleteResponse401 | postsDeleteResponse403) & {
-  headers: Headers;
-};
-
-export type postsDeleteResponse = (postsDeleteResponseSuccess | postsDeleteResponseError)
+export type postsDeleteResponse = (postsDeleteResponseSuccess)
 
 export const getPostsDeleteUrl = (id: string,) => {
 
@@ -381,7 +334,7 @@ export const postsDelete = async (id: string, options?: RequestInit): Promise<po
 
 
 
-export const getPostsDeleteMutationOptions = <TError = void,
+export const getPostsDeleteMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof postsDelete>>, TError,{id: string}, TContext> => {
 
@@ -410,12 +363,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof postsDelete>>>
 
-    export type PostsDeleteMutationError = void
+    export type PostsDeleteMutationError = unknown
 
     /**
  * @summary Delete a post
  */
-export const createPostsDelete = <TError = void,
+export const createPostsDelete = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsDelete>>,
@@ -428,29 +381,12 @@ export const createPostsDelete = <TError = void,
     /**
  * @summary Upload post image
  */
-export type postsUploadImageResponse200 = {
-  data: void
-  status: 200
-}
+export type postsUploadImageResponse200 = PostImageUploadDataDto
 
-export type postsUploadImageResponse401 = {
-  data: void
-  status: 401
-}
+export type postsUploadImageResponseSuccess = postsUploadImageResponse200
+;
 
-export type postsUploadImageResponse403 = {
-  data: void
-  status: 403
-}
-
-export type postsUploadImageResponseSuccess = (postsUploadImageResponse200) & {
-  headers: Headers;
-};
-export type postsUploadImageResponseError = (postsUploadImageResponse401 | postsUploadImageResponse403) & {
-  headers: Headers;
-};
-
-export type postsUploadImageResponse = (postsUploadImageResponseSuccess | postsUploadImageResponseError)
+export type postsUploadImageResponse = (postsUploadImageResponseSuccess)
 
 export const getPostsUploadImageUrl = () => {
 
@@ -479,7 +415,7 @@ if(postsUploadImageBody.file !== undefined) {
 
 
 
-export const getPostsUploadImageMutationOptions = <TError = void,
+export const getPostsUploadImageMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsUploadImage>>, TError,{data: PostsUploadImageBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof postsUploadImage>>, TError,{data: PostsUploadImageBody}, TContext> => {
 
@@ -508,12 +444,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostsUploadImageMutationResult = NonNullable<Awaited<ReturnType<typeof postsUploadImage>>>
     export type PostsUploadImageMutationBody = PostsUploadImageBody
-    export type PostsUploadImageMutationError = void
+    export type PostsUploadImageMutationError = unknown
 
     /**
  * @summary Upload post image
  */
-export const createPostsUploadImage = <TError = void,
+export const createPostsUploadImage = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsUploadImage>>, TError,{data: PostsUploadImageBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsUploadImage>>,

@@ -36,4 +36,29 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export type UserFullPreferencesDataDtoPreferences = {[key: string]: unknown};
+export type UserFullPreferencesDataDtoPreferences = {
+  id: string;
+  userId: string;
+  theme: string;
+  palette: string;
+  /** @nullable */
+  bannerColor: string | null;
+  language: string;
+  dateFormat: string;
+  timezone: string;
+  emailNotifications: boolean;
+  resumeExpiryAlerts: boolean;
+  weeklyDigest: boolean;
+  marketingEmails: boolean;
+  emailMilestones: boolean;
+  emailShareExpiring: boolean;
+  digestFrequency: string;
+  profileVisibility: string;
+  showEmail: boolean;
+  showPhone: boolean;
+  allowSearchEngineIndex: boolean;
+  defaultExportFormat: string;
+  includePhotoInExport: boolean;
+  createdAt: unknown;
+  updatedAt: unknown;
+};

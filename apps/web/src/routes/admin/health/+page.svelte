@@ -38,7 +38,7 @@
 
 	type HealthStatus = 'healthy' | 'degraded' | 'down';
 
-	function getStatus(query: { data?: { data?: { status?: string } }; isError?: boolean }): HealthStatus {
+	function getStatus(query: { data?: { status?: string }; isError?: boolean }): HealthStatus {
 		if (query.isError) return 'down';
 		const status = query.data?.status;
 		if (status === 'ok') return 'healthy';

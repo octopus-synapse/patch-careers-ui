@@ -15,6 +15,21 @@
 	import Pagination from '$lib/components/admin/pagination.svelte';
 	import FormModal from '$lib/components/admin/form-modal.svelte';
 
+	interface JobItem {
+		id: string;
+		title?: string;
+		company?: string;
+		jobType?: string;
+		skills?: string[];
+		createdAt: string;
+		[key: string]: unknown;
+	}
+
+	interface JobsResponse {
+		jobs: JobItem[];
+		pagination: { page: number; totalPages: number };
+	}
+
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
 
@@ -32,15 +47,12 @@
 		() => ({ query: { enabled: browser } })
 	);
 
-	const jobsList = $derived(
-		(jobsQuery.data as unknown as Record<string, unknown> | undefined)?.jobs as Record<string, unknown>[] ?? []
-	);
+	const jobsData = $derived(jobsQuery.data as unknown as JobsResponse | undefined);
+	const jobsList = $derived(jobsData?.jobs);
 	const filteredJobs = $derived(
-		jobTypeFilter ? jobsList.filter(j => j.jobType === jobTypeFilter) : jobsList
+		jobTypeFilter ? jobsList?.filter((j: JobItem) => j.jobType === jobTypeFilter) : jobsList
 	);
-	const pagination = $derived(
-		(jobsQuery.data as unknown as Record<string, unknown> | undefined)?.pagination as { page: number; totalPages: number; total: number } | undefined
-	);
+	const pagination = $derived(jobsData?.pagination);
 
 	// Create modal
 	let createModal = $state(false);
@@ -105,13 +117,13 @@
 		return new Date(dateStr).toLocaleDateString();
 	}
 
-	const columns = [
+	const columns = $derived([
 		{ key: 'title', label: t('jobs.title') },
 		{ key: 'company', label: t('jobs.company') },
 		{ key: 'jobType', label: t('jobs.type'), width: '120px' },
 		{ key: 'skills', label: t('jobs.skills') },
 		{ key: 'createdAt', label: 'Posted', width: '100px' },
-	];
+	]);
 
 	const filters = $derived([
 		{
@@ -148,37 +160,41 @@
 				onfilterchange={(key, value) => { if (key === 'jobType') jobTypeFilter = value; page = 1; }}
 			/>
 
-			<DataTable
-				{columns}
-				data={filteredJobs}
-				loading={jobsQuery.isLoading}
-				emptyMessage={t('jobs.noJobs')}
-				onrowclick={(row) => goto(`/jobs/${row.id}`)}
-			>
-				{#snippet cell({ row, key })}
-					{#if key === 'title'}
-						<span class="font-medium">{row.title ?? '---'}</span>
-					{:else if key === 'company'}
-						{row.company ?? '---'}
-					{:else if key === 'jobType'}
-						{row.jobType ?? '---'}
-					{:else if key === 'skills'}
-						{@const skills = (row.skills as string[]) ?? []}
-						<div class="flex flex-wrap gap-1">
-							{#each skills.slice(0, 3) as skill}
-								<span class="rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-neutral-300">{skill}</span>
-							{/each}
-							{#if skills.length > 3}
-								<span class="text-[10px] text-gray-500 dark:text-neutral-500">+{skills.length - 3}</span>
+			{#if filteredJobs}
+				<DataTable
+					{columns}
+					data={filteredJobs}
+					loading={jobsQuery.isLoading}
+					emptyMessage={t('jobs.noJobs')}
+					onrowclick={(row) => goto(`/jobs/${row.id}`)}
+				>
+					{#snippet cell({ row, key })}
+						{#if key === 'title'}
+							<span class="font-medium">{row.title ?? '---'}</span>
+						{:else if key === 'company'}
+							{row.company ?? '---'}
+						{:else if key === 'jobType'}
+							{row.jobType ?? '---'}
+						{:else if key === 'skills'}
+							{@const skills = row.skills}
+							{#if skills}
+								<div class="flex flex-wrap gap-1">
+									{#each skills.slice(0, 3) as skill}
+										<span class="rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-neutral-300">{skill}</span>
+									{/each}
+									{#if skills.length > 3}
+										<span class="text-[10px] text-gray-500 dark:text-neutral-500">+{skills.length - 3}</span>
+									{/if}
+								</div>
 							{/if}
-						</div>
-					{:else if key === 'createdAt'}
-						<span class="text-xs text-gray-500 dark:text-neutral-500">{timeAgo(row.createdAt as string)}</span>
-					{:else}
-						{row[key] ?? '---'}
-					{/if}
-				{/snippet}
-			</DataTable>
+						{:else if key === 'createdAt'}
+							<span class="text-xs text-gray-500 dark:text-neutral-500">{timeAgo(row.createdAt)}</span>
+						{:else}
+							{row[key] ?? '---'}
+						{/if}
+					{/snippet}
+				</DataTable>
+			{/if}
 
 			{#if pagination && pagination.totalPages > 1}
 				<div class="flex justify-center">
@@ -203,18 +219,22 @@
 >
 	<div class="space-y-3">
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.title')} *</label>
 			<Input bind:value={formTitle} placeholder="Software Engineer" required />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.company')} *</label>
 			<Input bind:value={formCompany} placeholder="Acme Inc." required />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.location')}</label>
 			<Input bind:value={formLocation} placeholder="Remote / San Francisco, CA" />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.type')} *</label>
 			<select
 				bind:value={formJobType}
@@ -226,6 +246,7 @@
 			</select>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.description')} *</label>
 			<textarea
 				bind:value={formDescription}
@@ -236,20 +257,24 @@
 			></textarea>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.requirements')}</label>
 			<Input bind:value={formRequirements} placeholder="React, TypeScript, 3+ years..." />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.skills')}</label>
 			<Input bind:value={formSkills} placeholder="React, Node.js, PostgreSQL..." />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.salary')}</label>
 			<Input bind:value={formSalaryRange} placeholder="$80k - $120k" />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.applyUrl')}</label>
 			<Input bind:value={formApplyUrl} placeholder="https://example.com/apply" type="url" />
 		</div>

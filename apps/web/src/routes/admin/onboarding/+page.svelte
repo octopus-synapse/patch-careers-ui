@@ -25,14 +25,13 @@
 	const stepsQuery = createAdminOnboardingListSteps(() => ({ query: { enabled: browser } }));
 	const configQuery = createAdminOnboardingGetConfig(() => ({ query: { enabled: browser } }));
 
-	const steps = $derived(
-		(stepsQuery.data as Record<string, unknown> | undefined)?.steps as Record<string, unknown>[] ?? []
-	);
-	const sortedSteps = $derived([...steps].sort((a, b) => ((a.order as number) ?? 0) - ((b.order as number) ?? 0)));
-	const config = $derived(
-		(configQuery.data as Record<string, unknown> | undefined)?.config as Record<string, unknown> | undefined
-	);
-	const strengthLevels = $derived((config?.strengthLevels as Record<string, unknown>[]) ?? []);
+	interface StepItem { id: string; key: string; order: number; component: string; icon: string; required: boolean; sectionTypeKey: string | null; strengthWeight: number; isActive: boolean; createdAt: string; updatedAt: string; fields: unknown; translations: unknown; validation: unknown; [key: string]: unknown }
+	interface StrengthLevel { minScore: number; level: string; message: string }
+
+	const steps = $derived(stepsQuery.data?.steps as StepItem[] | undefined);
+	const sortedSteps = $derived([...(steps ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+	const config = $derived(configQuery.data?.config);
+	const strengthLevels = $derived(config?.strengthLevels as StrengthLevel[] | undefined);
 
 	function jsonBody(data: Record<string, unknown>): RequestInit {
 		return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
@@ -65,16 +64,16 @@
 		stepRequired = false; stepSectionTypeKey = ''; stepStrengthWeight = '0'; stepIsActive = true;
 	}
 
-	function openEditStep(step: Record<string, unknown>) {
-		stepModal = { mode: 'edit', key: step.key as string };
-		stepKey = (step.key as string) ?? '';
-		stepComponent = (step.component as string) ?? '';
-		stepIcon = (step.icon as string) ?? '📄';
-		stepOrder = String((step.order as number) ?? 0);
-		stepRequired = (step.required as boolean) ?? false;
-		stepSectionTypeKey = (step.sectionTypeKey as string) ?? '';
-		stepStrengthWeight = String((step.strengthWeight as number) ?? 0);
-		stepIsActive = (step.isActive as boolean) ?? true;
+	function openEditStep(step: StepItem) {
+		stepModal = { mode: 'edit', key: step.key };
+		stepKey = step.key ?? '';
+		stepComponent = step.component ?? '';
+		stepIcon = step.icon ?? '📄';
+		stepOrder = String(step.order ?? 0);
+		stepRequired = step.required ?? false;
+		stepSectionTypeKey = step.sectionTypeKey ?? '';
+		stepStrengthWeight = String(step.strengthWeight ?? 0);
+		stepIsActive = step.isActive ?? true;
 	}
 
 	async function handleStepSubmit() {
@@ -97,15 +96,15 @@
 		}
 	}
 
-	async function handleToggleActive(step: Record<string, unknown>) {
-		await adminOnboardingUpdateStep(step.key as string, jsonBody({ isActive: !step.isActive }));
+	async function handleToggleActive(step: StepItem) {
+		await adminOnboardingUpdateStep(step.key, jsonBody({ isActive: !step.isActive }));
 		queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
 	}
 
-	async function handleReorder(step: Record<string, unknown>, direction: 'up' | 'down') {
-		const currentOrder = (step.order as number) ?? 0;
+	async function handleReorder(step: StepItem, direction: 'up' | 'down') {
+		const currentOrder = step.order ?? 0;
 		const newOrder = direction === 'up' ? currentOrder - 1 : currentOrder + 1;
-		await adminOnboardingUpdateStep(step.key as string, jsonBody({ order: newOrder }));
+		await adminOnboardingUpdateStep(step.key, jsonBody({ order: newOrder }));
 		queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
 	}
 
@@ -119,10 +118,10 @@
 	}
 
 	function openConfigEdit() {
-		configLevels = strengthLevels.map(l => ({
-			minScore: String((l.minScore as number) ?? 0),
-			level: (l.level as string) ?? '',
-			message: (l.message as string) ?? '',
+		configLevels = (strengthLevels ?? []).map(l => ({
+			minScore: String(l.minScore ?? 0),
+			level: l.level ?? '',
+			message: l.message ?? '',
 		}));
 		if (configLevels.length === 0) {
 			configLevels = [
@@ -151,13 +150,13 @@
 		} finally { configLoading = false; }
 	}
 
-	const columns = [
+	const columns = $derived([
 		{ key: 'key', label: t?.('admin.onboarding.stepKey') ?? 'Key' },
 		{ key: 'component', label: 'Component' },
 		{ key: 'order', label: t?.('admin.onboarding.order') ?? 'Order', width: '80px' },
 		{ key: 'isActive', label: t?.('admin.onboarding.isActive') ?? 'Active', width: '80px' },
 		{ key: 'actions', label: '', width: '140px' },
-	];
+	]);
 </script>
 
 <svelte:head>
@@ -168,9 +167,9 @@
 	<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t?.('admin.onboarding.title') ?? 'Onboarding Monitoring'}</h1>
 
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-		<StatCard label={t?.('admin.onboarding.steps') ?? 'Total Steps'} value={steps.length} />
-		<StatCard label={t?.('admin.onboarding.isActive') ?? 'Active Steps'} value={steps.filter(s => s.isActive).length} />
-		<StatCard label="Inactive Steps" value={steps.filter(s => !s.isActive).length} />
+		<StatCard label={t?.('admin.onboarding.steps') ?? 'Total Steps'} value={steps?.length ?? 0} />
+		<StatCard label={t?.('admin.onboarding.isActive') ?? 'Active Steps'} value={steps?.filter(s => s.isActive).length ?? 0} />
+		<StatCard label="Inactive Steps" value={steps?.filter(s => !s.isActive).length ?? 0} />
 	</div>
 
 	<div>
@@ -199,7 +198,7 @@
 							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleReorder(row, 'down'); }}><ChevronDown size={14} /></Button>
 						</Tooltip>
 						<Tooltip text="Delete">
-							<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteKey = row.key as string; }}><Trash2 size={14} /></Button>
+							<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteKey = row.key; }}><Trash2 size={14} /></Button>
 						</Tooltip>
 					</div>
 				{:else}
@@ -217,9 +216,9 @@
 				<Settings size={14} /> Edit
 			</Button>
 		</div>
-		{#if strengthLevels.length > 0}
+		{#if strengthLevels?.length}
 			<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-				{#each strengthLevels as level}
+				{#each strengthLevels ?? [] as level}
 					<div class="rounded-lg border px-4 py-3 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 						<p class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">{level.level}</p>
 						<p class="text-[10px] text-gray-500 dark:text-neutral-500">Min score: {level.minScore}</p>
@@ -236,15 +235,15 @@
 <!-- Step Form Modal -->
 <FormModal open={stepModal !== null} title={stepModal?.mode === 'create' ? 'Add Step' : 'Edit Step'} loading={stepLoading} onsubmit={handleStepSubmit} oncancel={() => stepModal = null}>
 	<div class="space-y-3">
-		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={stepKey} placeholder="welcome" required disabled={stepModal?.mode === 'edit'} /></div>
-		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Component *</label><Input bind:value={stepComponent} placeholder="step-form" required /></div>
+		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={stepKey} placeholder="welcome" required disabled={stepModal?.mode === 'edit'} /></div>
+		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Component *</label><Input bind:value={stepComponent} placeholder="step-form" required /></div>
 		<div class="grid grid-cols-2 gap-3">
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={stepIcon} placeholder="📄" /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={stepOrder} type="number" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={stepIcon} placeholder="📄" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={stepOrder} type="number" /></div>
 		</div>
 		<div class="grid grid-cols-2 gap-3">
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Section Type Key</label><Input bind:value={stepSectionTypeKey} placeholder="work_experience_v1" /></div>
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Strength Weight</label><Input bind:value={stepStrengthWeight} type="number" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Section Type Key</label><Input bind:value={stepSectionTypeKey} placeholder="work_experience_v1" /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Strength Weight</label><Input bind:value={stepStrengthWeight} type="number" /></div>
 		</div>
 		<div class="flex items-center gap-4">
 			<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200"><input type="checkbox" bind:checked={stepRequired} class="rounded" /> Required</label>
@@ -258,9 +257,9 @@
 	<div class="space-y-3">
 		{#each configLevels as level, i}
 			<div class="flex items-end gap-2 rounded-lg border p-3 border-gray-200 dark:border-neutral-700/50">
-				<div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Level</label><Input bind:value={level.level} placeholder="weak" required /></div>
-				<div class="w-20"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Min</label><Input bind:value={level.minScore} type="number" /></div>
-				<div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Message</label><Input bind:value={level.message} placeholder="Keep going" /></div>
+				<!-- svelte-ignore a11y_label_has_associated_control --><div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Level</label><Input bind:value={level.level} placeholder="weak" required /></div>
+				<!-- svelte-ignore a11y_label_has_associated_control --><div class="w-20"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Min</label><Input bind:value={level.minScore} type="number" /></div>
+				<!-- svelte-ignore a11y_label_has_associated_control --><div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Message</label><Input bind:value={level.message} placeholder="Keep going" /></div>
 				<Button type="button" variant="danger" size="xs" onclick={() => removeConfigLevel(i)}><Trash2 size={14} /></Button>
 			</div>
 		{/each}

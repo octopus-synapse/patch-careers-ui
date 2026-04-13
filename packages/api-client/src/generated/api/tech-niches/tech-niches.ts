@@ -66,29 +66,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get all tech niches
  */
-export type techNichesGetNichesResponse200 = {
-  data: TechNicheListDataDto
-  status: 200
-}
+export type techNichesGetNichesResponse200 = TechNicheListDataDto
 
-export type techNichesGetNichesResponse401 = {
-  data: void
-  status: 401
-}
+export type techNichesGetNichesResponseSuccess = techNichesGetNichesResponse200
+;
 
-export type techNichesGetNichesResponse403 = {
-  data: void
-  status: 403
-}
-
-export type techNichesGetNichesResponseSuccess = (techNichesGetNichesResponse200) & {
-  headers: Headers;
-};
-export type techNichesGetNichesResponseError = (techNichesGetNichesResponse401 | techNichesGetNichesResponse403) & {
-  headers: Headers;
-};
-
-export type techNichesGetNichesResponse = (techNichesGetNichesResponseSuccess | techNichesGetNichesResponseError)
+export type techNichesGetNichesResponse = (techNichesGetNichesResponseSuccess)
 
 export const getTechNichesGetNichesUrl = () => {
 
@@ -126,7 +109,7 @@ export const getTechNichesGetNichesQueryKey = () => {
     }
 
 
-export const getTechNichesGetNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetNiches>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechNichesGetNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetNiches>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -145,14 +128,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechNichesGetNichesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techNichesGetNiches>>>
-export type TechNichesGetNichesInfiniteQueryError = void
+export type TechNichesGetNichesInfiniteQueryError = unknown
 
 
 /**
  * @summary Get all tech niches
  */
 
-export function createTechNichesGetNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetNiches>>>, TError = void>(
+export function createTechNichesGetNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetNiches>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -167,7 +150,7 @@ export function createTechNichesGetNichesInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Get all tech niches
  */
-export const prefetchTechNichesGetNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = void>(
+export const prefetchTechNichesGetNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -181,7 +164,7 @@ export const prefetchTechNichesGetNichesInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getTechNichesGetNichesQueryOptions = <TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechNichesGetNichesQueryOptions = <TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -200,14 +183,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechNichesGetNichesQueryResult = NonNullable<Awaited<ReturnType<typeof techNichesGetNiches>>>
-export type TechNichesGetNichesQueryError = void
+export type TechNichesGetNichesQueryError = unknown
 
 
 /**
  * @summary Get all tech niches
  */
 
-export function createTechNichesGetNiches<TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = void>(
+export function createTechNichesGetNiches<TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -222,7 +205,7 @@ export function createTechNichesGetNiches<TData = Awaited<ReturnType<typeof tech
 /**
  * @summary Get all tech niches
  */
-export const prefetchTechNichesGetNichesQuery = async <TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = void>(
+export const prefetchTechNichesGetNichesQuery = async <TData = Awaited<ReturnType<typeof techNichesGetNiches>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -239,29 +222,12 @@ export const prefetchTechNichesGetNichesQuery = async <TData = Awaited<ReturnTyp
 /**
  * @summary Get skills by niche slug
  */
-export type techNichesGetSkillsByNicheResponse200 = {
-  data: TechSkillListDataDto
-  status: 200
-}
+export type techNichesGetSkillsByNicheResponse200 = TechSkillListDataDto
 
-export type techNichesGetSkillsByNicheResponse401 = {
-  data: void
-  status: 401
-}
+export type techNichesGetSkillsByNicheResponseSuccess = techNichesGetSkillsByNicheResponse200
+;
 
-export type techNichesGetSkillsByNicheResponse403 = {
-  data: void
-  status: 403
-}
-
-export type techNichesGetSkillsByNicheResponseSuccess = (techNichesGetSkillsByNicheResponse200) & {
-  headers: Headers;
-};
-export type techNichesGetSkillsByNicheResponseError = (techNichesGetSkillsByNicheResponse401 | techNichesGetSkillsByNicheResponse403) & {
-  headers: Headers;
-};
-
-export type techNichesGetSkillsByNicheResponse = (techNichesGetSkillsByNicheResponseSuccess | techNichesGetSkillsByNicheResponseError)
+export type techNichesGetSkillsByNicheResponse = (techNichesGetSkillsByNicheResponseSuccess)
 
 export const getTechNichesGetSkillsByNicheUrl = (nicheSlug: string,) => {
 
@@ -299,7 +265,7 @@ export const getTechNichesGetSkillsByNicheQueryKey = (nicheSlug: string,) => {
     }
 
 
-export const getTechNichesGetSkillsByNicheInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>>, TError = void>(nicheSlug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechNichesGetSkillsByNicheInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>>, TError = unknown>(nicheSlug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -318,14 +284,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechNichesGetSkillsByNicheInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>>
-export type TechNichesGetSkillsByNicheInfiniteQueryError = void
+export type TechNichesGetSkillsByNicheInfiniteQueryError = unknown
 
 
 /**
  * @summary Get skills by niche slug
  */
 
-export function createTechNichesGetSkillsByNicheInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>>, TError = void>(
+export function createTechNichesGetSkillsByNicheInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>>, TError = unknown>(
  nicheSlug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -340,7 +306,7 @@ export function createTechNichesGetSkillsByNicheInfinite<TData = InfiniteData<Aw
 /**
  * @summary Get skills by niche slug
  */
-export const prefetchTechNichesGetSkillsByNicheInfiniteQuery = async <TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = void>(
+export const prefetchTechNichesGetSkillsByNicheInfiniteQuery = async <TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = unknown>(
  queryClient: QueryClient, nicheSlug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -354,7 +320,7 @@ export const prefetchTechNichesGetSkillsByNicheInfiniteQuery = async <TData = Aw
 
 
 
-export const getTechNichesGetSkillsByNicheQueryOptions = <TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = void>(nicheSlug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechNichesGetSkillsByNicheQueryOptions = <TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = unknown>(nicheSlug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -373,14 +339,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechNichesGetSkillsByNicheQueryResult = NonNullable<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>>
-export type TechNichesGetSkillsByNicheQueryError = void
+export type TechNichesGetSkillsByNicheQueryError = unknown
 
 
 /**
  * @summary Get skills by niche slug
  */
 
-export function createTechNichesGetSkillsByNiche<TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = void>(
+export function createTechNichesGetSkillsByNiche<TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = unknown>(
  nicheSlug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -395,7 +361,7 @@ export function createTechNichesGetSkillsByNiche<TData = Awaited<ReturnType<type
 /**
  * @summary Get skills by niche slug
  */
-export const prefetchTechNichesGetSkillsByNicheQuery = async <TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = void>(
+export const prefetchTechNichesGetSkillsByNicheQuery = async <TData = Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError = unknown>(
  queryClient: QueryClient, nicheSlug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techNichesGetSkillsByNiche>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

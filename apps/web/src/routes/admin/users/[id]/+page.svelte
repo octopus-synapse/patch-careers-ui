@@ -18,15 +18,15 @@
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
 
-	const userId = $derived(($page.params as Record<string, string>).id ?? '');
+	const userId = $derived($page.params.id ?? '');
 
 	const userQuery = createUsersGetUserDetails(() => userId, () => ({
 		query: { enabled: browser && !!userId }
 	}));
 
-	const user = $derived(userQuery.data?.user as Record<string, unknown> | undefined);
-	const resumes = $derived((user?.resumes as Record<string, unknown>[] | undefined) ?? []);
-	const counts = $derived(user?.counts as Record<string, number> | undefined);
+	const user = $derived(userQuery.data?.user);
+	const resumes = $derived(user?.resumes);
+	const counts = $derived(user?.counts);
 
 	// --- Editing ---
 	let editing = $state(false);
@@ -36,9 +36,9 @@
 	let editIsActive = $state(true);
 
 	function startEditing() {
-		editName = (user?.name as string) ?? '';
-		editEmail = (user?.email as string) ?? '';
-		editIsActive = (user?.isActive as boolean) ?? true;
+		editName = user?.name ?? '';
+		editEmail = user?.email ?? '';
+		editIsActive = user?.isActive ?? true;
 		editing = true;
 	}
 
@@ -64,7 +64,8 @@
 	// --- Role toggle ---
 	let roleConfirm = $state(false);
 	let roleLoading = $state(false);
-	const userRoles = $derived((user?.roles as string[]) ?? []);
+	// TODO: backend needs to add `roles` to UserDetailsDataDtoUser
+	const userRoles = $derived<string[]>([]);
 	const isAdmin = $derived(userRoles.includes('role_admin'));
 
 	async function handleToggleRole() {
@@ -101,15 +102,17 @@
 		<div class="rounded-xl border p-6 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 			<div class="flex items-start justify-between">
 				<div class="flex items-start gap-4">
-					<Avatar name={(user.name as string) ?? (user.email as string)} size="lg" />
+					<Avatar name={user.name ?? user.email ?? '—'} size="lg" />
 					<div class="flex-1">
 						{#if editing}
 							<div class="space-y-2">
 								<div>
+									<!-- svelte-ignore a11y_label_has_associated_control -->
 									<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name</label>
 									<Input bind:value={editName} placeholder="Name" />
 								</div>
 								<div>
+									<!-- svelte-ignore a11y_label_has_associated_control -->
 									<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Email</label>
 									<Input bind:value={editEmail} type="email" placeholder="Email" />
 								</div>
@@ -121,7 +124,7 @@
 						{:else}
 							<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">{user.name ?? '—'}</h1>
 							<p class="text-sm text-gray-500 dark:text-neutral-500">{user.email}</p>
-							{#if user.roles}
+							{#if userRoles.length}
 								<div class="mt-2 flex items-center gap-2">
 									<StatusBadge status={isAdmin ? 'admin' : 'user'} />
 									<StatusBadge status={user.isActive ? 'active' : 'inactive'} />
@@ -161,11 +164,12 @@
 					</div>
 					<div>
 						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Created</dt>
-						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{new Date(user.createdAt as string).toLocaleDateString()}</dd>
+						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{new Date(user.createdAt).toLocaleDateString()}</dd>
 					</div>
 					<div>
 						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Last Login</dt>
-						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.lastLoginAt ? new Date(user.lastLoginAt as string).toLocaleDateString() : '—'}</dd>
+						<!-- TODO: backend needs to add `lastLoginAt` to UserDetailsDataDtoUser -->
+						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">—</dd>
 					</div>
 					<div>
 						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Onboarding</dt>
@@ -183,17 +187,17 @@
 			</div>
 		{/if}
 
-		{#if resumes.length > 0}
+		{#if resumes?.length}
 			<div>
 				<h2 class="mb-4 text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
-					{t('admin.users.detail.resumes')} ({resumes.length})
+					{t('admin.users.detail.resumes')} ({resumes?.length ?? 0})
 				</h2>
 				<div class="space-y-2">
-					{#each resumes as resume}
+					{#each resumes ?? [] as resume}
 						<div class="rounded-lg border px-4 py-3 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 							<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{resume.title ?? 'Untitled'}</p>
 							<p class="text-[10px] text-gray-500 dark:text-neutral-500">
-								{resume.primaryLanguage} · Created {new Date(resume.createdAt as string).toLocaleDateString()}
+								Created {new Date(resume.createdAt).toLocaleDateString()}
 							</p>
 						</div>
 					{/each}

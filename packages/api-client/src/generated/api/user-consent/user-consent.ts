@@ -73,14 +73,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Records user acceptance of legal documents with IP and user agent for audit trail. Required before accessing protected API endpoints.
  * @summary Accept Terms of Service or Privacy Policy
  */
-export type userConsentAcceptConsentResponse201 = {
-  data: AcceptConsentResponseDto
-  status: 201
-}
+export type userConsentAcceptConsentResponse201 = AcceptConsentResponseDto
 
-export type userConsentAcceptConsentResponseSuccess = (userConsentAcceptConsentResponse201) & {
-  headers: Headers;
-};
+export type userConsentAcceptConsentResponseSuccess = userConsentAcceptConsentResponse201
 ;
 
 export type userConsentAcceptConsentResponse = (userConsentAcceptConsentResponseSuccess)
@@ -156,14 +151,9 @@ export const createUserConsentAcceptConsent = <TError = unknown,
  * Returns which documents the user has accepted for the current versions
  * @summary Check consent acceptance status
  */
-export type getConsentStatusCheckConsentStatusResponse200 = {
-  data: ConsentStatusResponseDto
-  status: 200
-}
+export type getConsentStatusCheckConsentStatusResponse200 = ConsentStatusResponseDto
 
-export type getConsentStatusCheckConsentStatusResponseSuccess = (getConsentStatusCheckConsentStatusResponse200) & {
-  headers: Headers;
-};
+export type getConsentStatusCheckConsentStatusResponseSuccess = getConsentStatusCheckConsentStatusResponse200
 ;
 
 export type getConsentStatusCheckConsentStatusResponse = (getConsentStatusCheckConsentStatusResponseSuccess)
@@ -318,14 +308,9 @@ export const prefetchGetConsentStatusCheckConsentStatusQuery = async <TData = Aw
  * Retrieves all consent records for the authenticated user
  * @summary Get consent acceptance history
  */
-export type getConsentHistoryGetConsentHistoryResponse200 = {
-  data: ConsentHistoryResponseDto
-  status: 200
-}
+export type getConsentHistoryGetConsentHistoryResponse200 = ConsentHistoryResponseDto
 
-export type getConsentHistoryGetConsentHistoryResponseSuccess = (getConsentHistoryGetConsentHistoryResponse200) & {
-  headers: Headers;
-};
+export type getConsentHistoryGetConsentHistoryResponseSuccess = getConsentHistoryGetConsentHistoryResponse200
 ;
 
 export type getConsentHistoryGetConsentHistoryResponse = (getConsentHistoryGetConsentHistoryResponseSuccess)

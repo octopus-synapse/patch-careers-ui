@@ -35,9 +35,7 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { UnreadCountDataDtoByConversation } from './unreadCountDataDtoByConversation';
 
 export interface UnreadCountDataDto {
-  totalUnread: number;
-  byConversation: UnreadCountDataDtoByConversation;
+  count: number;
 }

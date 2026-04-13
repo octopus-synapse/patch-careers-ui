@@ -51,6 +51,10 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  AdminMetricsOverviewDataDto
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -61,29 +65,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get all metrics as JSON
  */
-export type adminMetricsGetOverviewResponse200 = {
-  data: void
-  status: 200
-}
+export type adminMetricsGetOverviewResponse200 = AdminMetricsOverviewDataDto
 
-export type adminMetricsGetOverviewResponse401 = {
-  data: void
-  status: 401
-}
+export type adminMetricsGetOverviewResponseSuccess = adminMetricsGetOverviewResponse200
+;
 
-export type adminMetricsGetOverviewResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminMetricsGetOverviewResponseSuccess = (adminMetricsGetOverviewResponse200) & {
-  headers: Headers;
-};
-export type adminMetricsGetOverviewResponseError = (adminMetricsGetOverviewResponse401 | adminMetricsGetOverviewResponse403) & {
-  headers: Headers;
-};
-
-export type adminMetricsGetOverviewResponse = (adminMetricsGetOverviewResponseSuccess | adminMetricsGetOverviewResponseError)
+export type adminMetricsGetOverviewResponse = (adminMetricsGetOverviewResponseSuccess)
 
 export const getAdminMetricsGetOverviewUrl = () => {
 
@@ -121,7 +108,7 @@ export const getAdminMetricsGetOverviewQueryKey = () => {
     }
 
 
-export const getAdminMetricsGetOverviewInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminMetricsGetOverview>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminMetricsGetOverviewInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminMetricsGetOverview>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -140,14 +127,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminMetricsGetOverviewInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminMetricsGetOverview>>>
-export type AdminMetricsGetOverviewInfiniteQueryError = void
+export type AdminMetricsGetOverviewInfiniteQueryError = unknown
 
 
 /**
  * @summary Get all metrics as JSON
  */
 
-export function createAdminMetricsGetOverviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminMetricsGetOverview>>>, TError = void>(
+export function createAdminMetricsGetOverviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminMetricsGetOverview>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -162,7 +149,7 @@ export function createAdminMetricsGetOverviewInfinite<TData = InfiniteData<Await
 /**
  * @summary Get all metrics as JSON
  */
-export const prefetchAdminMetricsGetOverviewInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = void>(
+export const prefetchAdminMetricsGetOverviewInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -176,7 +163,7 @@ export const prefetchAdminMetricsGetOverviewInfiniteQuery = async <TData = Await
 
 
 
-export const getAdminMetricsGetOverviewQueryOptions = <TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminMetricsGetOverviewQueryOptions = <TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -195,14 +182,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminMetricsGetOverviewQueryResult = NonNullable<Awaited<ReturnType<typeof adminMetricsGetOverview>>>
-export type AdminMetricsGetOverviewQueryError = void
+export type AdminMetricsGetOverviewQueryError = unknown
 
 
 /**
  * @summary Get all metrics as JSON
  */
 
-export function createAdminMetricsGetOverview<TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = void>(
+export function createAdminMetricsGetOverview<TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -217,7 +204,7 @@ export function createAdminMetricsGetOverview<TData = Awaited<ReturnType<typeof 
 /**
  * @summary Get all metrics as JSON
  */
-export const prefetchAdminMetricsGetOverviewQuery = async <TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = void>(
+export const prefetchAdminMetricsGetOverviewQuery = async <TData = Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminMetricsGetOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

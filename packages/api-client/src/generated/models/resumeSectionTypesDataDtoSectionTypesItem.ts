@@ -35,10 +35,6 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { ResumeSectionTypesDataDtoSectionTypesItemDefinition } from './resumeSectionTypesDataDtoSectionTypesItemDefinition';
-import type { ResumeSectionTypesDataDtoSectionTypesItemFieldStyles } from './resumeSectionTypesDataDtoSectionTypesItemFieldStyles';
-import type { ResumeSectionTypesDataDtoSectionTypesItemRenderHints } from './resumeSectionTypesDataDtoSectionTypesItemRenderHints';
-import type { ResumeSectionTypesDataDtoSectionTypesItemUiSchema } from './resumeSectionTypesDataDtoSectionTypesItemUiSchema';
 
 export type ResumeSectionTypesDataDtoSectionTypesItem = {
   id: string;
@@ -61,9 +57,8 @@ export type ResumeSectionTypesDataDtoSectionTypesItem = {
   minItems: number | null;
   /** @nullable */
   maxItems: number | null;
-  definition: ResumeSectionTypesDataDtoSectionTypesItemDefinition;
-  /** @nullable */
-  uiSchema: ResumeSectionTypesDataDtoSectionTypesItemUiSchema;
-  renderHints: ResumeSectionTypesDataDtoSectionTypesItemRenderHints;
-  fieldStyles: ResumeSectionTypesDataDtoSectionTypesItemFieldStyles;
+  definition: unknown;
+  uiSchema: unknown | null;
+  renderHints: unknown;
+  fieldStyles: unknown;
 };

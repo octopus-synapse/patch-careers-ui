@@ -24,26 +24,18 @@
 
 	const auth = createAuthSession(() => ({ query: { retry: false } }));
 	const currentUserId = $derived(
-		String((auth.data as unknown as Record<string, unknown>)?.user
-			? ((auth.data as unknown as Record<string, unknown>).user as Record<string, unknown>).id ?? ''
-			: '')
+		String(auth.data?.user?.id ?? '')
 	);
-	const authenticated = $derived((auth.data as unknown as Record<string, unknown>)?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.authenticated);
 
 	const profile = createUsersGetPublicProfileByUsername(
 		() => username ?? '',
 		() => ({ query: { enabled: !!username } })
 	);
 
-	const profileData = $derived(
-		(profile.data as unknown as Record<string, unknown>) ?? null
-	);
-	const user = $derived(
-		(profileData?.user as Record<string, string | null>) ?? null
-	);
-	const resume = $derived(
-		(profileData?.resume as Record<string, unknown>) ?? null
-	);
+	const profileData = $derived(profile.data);
+	const user = $derived(profileData?.user);
+	const resume = $derived(profileData?.resume);
 	let downloading = $state(false);
 	let downloadError = $state<string | null>(null);
 
@@ -53,14 +45,14 @@
 		downloadError = null;
 		try {
 			const res = await exportDownloadUserResumePDF(userId);
-			const data = (res as Record<string, unknown>)?.data as Record<string, string> | undefined;
-			if (!data?.pdf) throw new Error('No PDF data returned');
-			const bytes = Uint8Array.from(atob(data.pdf), (c) => c.charCodeAt(0));
+			const resData = res?.data as { pdf?: string; filename?: string } | undefined;
+			if (!resData?.pdf) throw new Error('No PDF data returned');
+			const bytes = Uint8Array.from(atob(resData.pdf), (c) => c.charCodeAt(0));
 			const blob = new Blob([bytes], { type: 'application/pdf' });
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = data.filename ?? `${user?.name ?? username ?? 'resume'}.pdf`;
+			a.download = resData.filename ?? `${user?.name ?? username ?? 'resume'}.pdf`;
 			a.click();
 			URL.revokeObjectURL(url);
 		} catch (err) {
@@ -77,17 +69,13 @@
 		() => userId,
 		() => ({ query: { enabled: !!userId } })
 	);
-	const stats = $derived(
-		(socialStats.data as unknown as Record<string, number>) ?? { followers: 0, following: 0 }
-	);
+	const stats = $derived(socialStats.data);
 
 	const isFollowingQuery = createFollowIsFollowing(
 		() => userId,
 		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
 	);
-	const isFollowing = $derived(
-		(isFollowingQuery.data as unknown as Record<string, boolean>)?.isFollowing ?? false
-	);
+	const isFollowing = $derived(isFollowingQuery.data?.isFollowing);
 
 	const queryClient = useQueryClient();
 
@@ -114,17 +102,13 @@
 		() => userId,
 		() => ({ query: { enabled: !!userId } })
 	);
-	const connectionCount = $derived(
-		(connectionStats.data as unknown as Record<string, number>)?.connections ?? 0
-	);
+	const connectionCount = $derived(connectionStats.data?.connections);
 
 	const isConnectedQuery = createConnectionIsConnected(
 		() => userId,
 		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
 	);
-	const isConnected = $derived(
-		(isConnectedQuery.data as unknown as Record<string, boolean>)?.isConnected ?? false
-	);
+	const isConnected = $derived(isConnectedQuery.data?.isConnected);
 
 	const connectMutation = createConnectionSendConnectionRequest(() => ({
 		mutation: {
@@ -276,11 +260,11 @@
 				<!-- Stats -->
 				<div class="flex items-center gap-4 text-sm">
 					<span>
-						<strong class="text-gray-800 dark:text-neutral-200">{stats.followers ?? 0}</strong>
+						<strong class="text-gray-800 dark:text-neutral-200">{stats?.followers}</strong>
 						<span class="text-gray-500 dark:text-neutral-500"> followers</span>
 					</span>
 					<span>
-						<strong class="text-gray-800 dark:text-neutral-200">{stats.following ?? 0}</strong>
+						<strong class="text-gray-800 dark:text-neutral-200">{stats?.following}</strong>
 						<span class="text-gray-500 dark:text-neutral-500"> following</span>
 					</span>
 					<span>

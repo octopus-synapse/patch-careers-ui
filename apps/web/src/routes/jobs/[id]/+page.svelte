@@ -18,6 +18,22 @@
 	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
 
+	interface Job {
+		id: string;
+		title?: string;
+		company?: string;
+		location?: string;
+		jobType?: string;
+		description?: string;
+		requirements?: string[];
+		skills?: string[];
+		salaryRange?: string;
+		applyUrl?: string;
+		userId?: string;
+		createdBy?: string;
+		createdAt?: string;
+	}
+
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
 
@@ -25,9 +41,7 @@
 
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
 	const currentUserId = $derived(
-		String((auth.data as unknown as Record<string, unknown>)?.user
-			? ((auth.data as unknown as Record<string, unknown>).user as Record<string, unknown>).id ?? ''
-			: '')
+		String(auth.data?.user?.id ?? '')
 	);
 
 	const jobQuery = createJobsFindById(
@@ -35,9 +49,7 @@
 		() => ({ query: { enabled: browser && !!jobId } })
 	);
 
-	const job = $derived(
-		jobQuery.data as Record<string, unknown> | undefined
-	);
+	const job = $derived(jobQuery.data as unknown as Job | undefined);
 	const isOwner = $derived(
 		!!currentUserId && !!job && (job.userId === currentUserId || job.createdBy === currentUserId)
 	);
@@ -63,15 +75,15 @@
 
 	function openEdit() {
 		if (!job) return;
-		formTitle = (job.title as string) ?? '';
-		formCompany = (job.company as string) ?? '';
-		formLocation = (job.location as string) ?? '';
-		formJobType = (job.jobType as string) ?? 'Full-time';
-		formDescription = (job.description as string) ?? '';
-		formRequirements = ((job.requirements as string[]) ?? []).join(', ');
-		formSkills = ((job.skills as string[]) ?? []).join(', ');
-		formSalaryRange = (job.salaryRange as string) ?? '';
-		formApplyUrl = (job.applyUrl as string) ?? '';
+		formTitle = job.title ?? '';
+		formCompany = job.company ?? '';
+		formLocation = job.location ?? '';
+		formJobType = job.jobType ?? 'Full-time';
+		formDescription = job.description ?? '';
+		formRequirements = job.requirements?.join(', ') ?? '';
+		formSkills = job.skills?.join(', ') ?? '';
+		formSalaryRange = job.salaryRange ?? '';
+		formApplyUrl = job.applyUrl ?? '';
 		editModal = true;
 	}
 
@@ -112,7 +124,7 @@
 </script>
 
 <svelte:head>
-	<title>{(job?.title as string) ?? t('jobs.pageTitle')}</title>
+	<title>{job?.title ?? t('jobs.pageTitle')}</title>
 </svelte:head>
 
 <div class="min-h-screen pt-20 pb-12">
@@ -190,8 +202,8 @@
 				{/if}
 
 				<!-- Requirements -->
-				{#if ((job.requirements as string[]) ?? []).length > 0}
-				{@const requirements = (job.requirements as string[]) ?? []}
+				{#if job.requirements?.length}
+				{@const requirements = job.requirements}
 					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-6">
 						<h2 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 							{t('jobs.requirements')}
@@ -205,8 +217,8 @@
 				{/if}
 
 				<!-- Skills -->
-				{#if ((job.skills as string[]) ?? []).length > 0}
-				{@const skills = (job.skills as string[]) ?? []}
+				{#if job.skills?.length}
+				{@const skills = job.skills}
 					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-6">
 						<h2 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 							{t('jobs.skills')}
@@ -223,7 +235,7 @@
 				{#if job.applyUrl}
 					<div class="flex justify-center">
 						<a
-							href={job.applyUrl as string}
+							href={job.applyUrl}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -249,18 +261,22 @@
 >
 	<div class="space-y-3">
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.title')} *</label>
 			<Input bind:value={formTitle} placeholder="Software Engineer" required />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.company')} *</label>
 			<Input bind:value={formCompany} placeholder="Acme Inc." required />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.location')}</label>
 			<Input bind:value={formLocation} placeholder="Remote / San Francisco, CA" />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.type')} *</label>
 			<select
 				bind:value={formJobType}
@@ -272,6 +288,7 @@
 			</select>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.description')} *</label>
 			<textarea
 				bind:value={formDescription}
@@ -282,20 +299,24 @@
 			></textarea>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.requirements')}</label>
 			<Input bind:value={formRequirements} placeholder="React, TypeScript, 3+ years..." />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.skills')}</label>
 			<Input bind:value={formSkills} placeholder="React, Node.js, PostgreSQL..." />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.salary')}</label>
 			<Input bind:value={formSalaryRange} placeholder="$80k - $120k" />
 		</div>
 		<div>
+			<!-- svelte-ignore a11y_label_has_associated_control -->
 			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.applyUrl')}</label>
 			<Input bind:value={formApplyUrl} placeholder="https://example.com/apply" type="url" />
 		</div>

@@ -66,29 +66,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get authenticated user activity feed
  */
-export type activityGetFeedResponse200 = {
-  data: ActivityFeedDataDto
-  status: 200
-}
+export type activityGetFeedResponse200 = ActivityFeedDataDto
 
-export type activityGetFeedResponse401 = {
-  data: void
-  status: 401
-}
+export type activityGetFeedResponseSuccess = activityGetFeedResponse200
+;
 
-export type activityGetFeedResponse403 = {
-  data: void
-  status: 403
-}
-
-export type activityGetFeedResponseSuccess = (activityGetFeedResponse200) & {
-  headers: Headers;
-};
-export type activityGetFeedResponseError = (activityGetFeedResponse401 | activityGetFeedResponse403) & {
-  headers: Headers;
-};
-
-export type activityGetFeedResponse = (activityGetFeedResponseSuccess | activityGetFeedResponseError)
+export type activityGetFeedResponse = (activityGetFeedResponseSuccess)
 
 export const getActivityGetFeedUrl = (userId: string,) => {
 
@@ -126,7 +109,7 @@ export const getActivityGetFeedQueryKey = (userId: string,) => {
     }
 
 
-export const getActivityGetFeedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof activityGetFeed>>>, TError = void>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getActivityGetFeedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof activityGetFeed>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -145,14 +128,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ActivityGetFeedInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof activityGetFeed>>>
-export type ActivityGetFeedInfiniteQueryError = void
+export type ActivityGetFeedInfiniteQueryError = unknown
 
 
 /**
  * @summary Get authenticated user activity feed
  */
 
-export function createActivityGetFeedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof activityGetFeed>>>, TError = void>(
+export function createActivityGetFeedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof activityGetFeed>>>, TError = unknown>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -167,7 +150,7 @@ export function createActivityGetFeedInfinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Get authenticated user activity feed
  */
-export const prefetchActivityGetFeedInfiniteQuery = async <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = void>(
+export const prefetchActivityGetFeedInfiniteQuery = async <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = unknown>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -181,7 +164,7 @@ export const prefetchActivityGetFeedInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getActivityGetFeedQueryOptions = <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = void>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getActivityGetFeedQueryOptions = <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -200,14 +183,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ActivityGetFeedQueryResult = NonNullable<Awaited<ReturnType<typeof activityGetFeed>>>
-export type ActivityGetFeedQueryError = void
+export type ActivityGetFeedQueryError = unknown
 
 
 /**
  * @summary Get authenticated user activity feed
  */
 
-export function createActivityGetFeed<TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = void>(
+export function createActivityGetFeed<TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = unknown>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -222,7 +205,7 @@ export function createActivityGetFeed<TData = Awaited<ReturnType<typeof activity
 /**
  * @summary Get authenticated user activity feed
  */
-export const prefetchActivityGetFeedQuery = async <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = void>(
+export const prefetchActivityGetFeedQuery = async <TData = Awaited<ReturnType<typeof activityGetFeed>>, TError = unknown>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof activityGetFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -239,14 +222,9 @@ export const prefetchActivityGetFeedQuery = async <TData = Awaited<ReturnType<ty
 /**
  * @summary Get public activities for a user
  */
-export type activityGetUserActivitiesResponse200 = {
-  data: ActivityListDataDto
-  status: 200
-}
+export type activityGetUserActivitiesResponse200 = ActivityListDataDto
 
-export type activityGetUserActivitiesResponseSuccess = (activityGetUserActivitiesResponse200) & {
-  headers: Headers;
-};
+export type activityGetUserActivitiesResponseSuccess = activityGetUserActivitiesResponse200
 ;
 
 export type activityGetUserActivitiesResponse = (activityGetUserActivitiesResponseSuccess)
@@ -400,14 +378,9 @@ export const prefetchActivityGetUserActivitiesQuery = async <TData = Awaited<Ret
 /**
  * @summary Get user activities filtered by type
  */
-export type activityGetActivitiesByTypeResponse200 = {
-  data: ActivityListDataDto
-  status: 200
-}
+export type activityGetActivitiesByTypeResponse200 = ActivityListDataDto
 
-export type activityGetActivitiesByTypeResponseSuccess = (activityGetActivitiesByTypeResponse200) & {
-  headers: Headers;
-};
+export type activityGetActivitiesByTypeResponseSuccess = activityGetActivitiesByTypeResponse200
 ;
 
 export type activityGetActivitiesByTypeResponse = (activityGetActivitiesByTypeResponseSuccess)

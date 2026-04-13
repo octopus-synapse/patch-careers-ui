@@ -35,5 +35,20 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { ResumeSectionsDataDtoSectionsItemItemsItem } from './resumeSectionsDataDtoSectionsItemItemsItem';
+import type { ResumeSectionsDataDtoSectionsItemSectionType } from './resumeSectionsDataDtoSectionsItemSectionType';
 
-export type ResumeSectionsDataDtoSectionsItem = {[key: string]: unknown};
+export type ResumeSectionsDataDtoSectionsItem = {
+  id: string;
+  resumeId: string;
+  sectionTypeId: string;
+  /** @nullable */
+  titleOverride: string | null;
+  isVisible: boolean;
+  order: number;
+  createdAt: unknown;
+  updatedAt: unknown;
+  /** @nullable */
+  sectionType: ResumeSectionsDataDtoSectionsItemSectionType;
+  items: ResumeSectionsDataDtoSectionsItemItemsItem[];
+};

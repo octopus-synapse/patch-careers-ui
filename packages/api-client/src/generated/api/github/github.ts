@@ -73,14 +73,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get GitHub profile summary for a username
  */
-export type githubGetGitHubSummaryResponse200 = {
-  data: GitHubSummaryDto
-  status: 200
-}
+export type githubGetGitHubSummaryResponse200 = GitHubSummaryDto
 
-export type githubGetGitHubSummaryResponseSuccess = (githubGetGitHubSummaryResponse200) & {
-  headers: Headers;
-};
+export type githubGetGitHubSummaryResponseSuccess = githubGetGitHubSummaryResponse200
 ;
 
 export type githubGetGitHubSummaryResponse = (githubGetGitHubSummaryResponseSuccess)
@@ -234,14 +229,9 @@ export const prefetchGithubGetGitHubSummaryQuery = async <TData = Awaited<Return
 /**
  * @summary Sync GitHub data to user resume
  */
-export type githubSyncGitHubResponse200 = {
-  data: GitHubSyncResponseDto
-  status: 200
-}
+export type githubSyncGitHubResponse200 = GitHubSyncResponseDto
 
-export type githubSyncGitHubResponseSuccess = (githubSyncGitHubResponse200) & {
-  headers: Headers;
-};
+export type githubSyncGitHubResponseSuccess = githubSyncGitHubResponse200
 ;
 
 export type githubSyncGitHubResponse = (githubSyncGitHubResponseSuccess)
@@ -316,14 +306,9 @@ export const createGithubSyncGitHub = <TError = unknown,
     /**
  * @summary Auto-sync GitHub from resume GitHub link
  */
-export type githubAutoSyncGitHubResponse200 = {
-  data: GitHubSyncResponseDto
-  status: 200
-}
+export type githubAutoSyncGitHubResponse200 = GitHubSyncResponseDto
 
-export type githubAutoSyncGitHubResponseSuccess = (githubAutoSyncGitHubResponse200) & {
-  headers: Headers;
-};
+export type githubAutoSyncGitHubResponseSuccess = githubAutoSyncGitHubResponse200
 ;
 
 export type githubAutoSyncGitHubResponse = (githubAutoSyncGitHubResponseSuccess)
@@ -399,14 +384,9 @@ export const createGithubAutoSyncGitHub = <TError = unknown,
     /**
  * @summary Get GitHub sync status for a resume
  */
-export type githubGetSyncStatusResponse200 = {
-  data: GitHubSyncStatusResponseDto
-  status: 200
-}
+export type githubGetSyncStatusResponse200 = GitHubSyncStatusResponseDto
 
-export type githubGetSyncStatusResponseSuccess = (githubGetSyncStatusResponse200) & {
-  headers: Headers;
-};
+export type githubGetSyncStatusResponseSuccess = githubGetSyncStatusResponse200
 ;
 
 export type githubGetSyncStatusResponse = (githubGetSyncStatusResponseSuccess)

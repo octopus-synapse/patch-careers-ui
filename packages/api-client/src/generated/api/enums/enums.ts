@@ -68,14 +68,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns all available export formats for resume export
  * @summary Get available export formats
  */
-export type enumsGetExportFormatsResponse200 = {
-  data: ExportFormatsDataDto
-  status: 200
-}
+export type enumsGetExportFormatsResponse200 = ExportFormatsDataDto
 
-export type enumsGetExportFormatsResponseSuccess = (enumsGetExportFormatsResponse200) & {
-  headers: Headers;
-};
+export type enumsGetExportFormatsResponseSuccess = enumsGetExportFormatsResponse200
 ;
 
 export type enumsGetExportFormatsResponse = (enumsGetExportFormatsResponseSuccess)
@@ -230,14 +225,9 @@ export const prefetchEnumsGetExportFormatsQuery = async <TData = Awaited<ReturnT
  * Returns all available user roles in the system
  * @summary Get available user roles
  */
-export type enumsGetUserRolesResponse200 = {
-  data: UserRolesDataDto
-  status: 200
-}
+export type enumsGetUserRolesResponse200 = UserRolesDataDto
 
-export type enumsGetUserRolesResponseSuccess = (enumsGetUserRolesResponse200) & {
-  headers: Headers;
-};
+export type enumsGetUserRolesResponseSuccess = enumsGetUserRolesResponse200
 ;
 
 export type enumsGetUserRolesResponse = (enumsGetUserRolesResponseSuccess)
@@ -392,14 +382,9 @@ export const prefetchEnumsGetUserRolesQuery = async <TData = Awaited<ReturnType<
  * Returns all available resume section types from definitions
  * @summary Get available section types
  */
-export type enumsGetSectionTypesResponse200 = {
-  data: SectionTypesDataDto
-  status: 200
-}
+export type enumsGetSectionTypesResponse200 = SectionTypesDataDto
 
-export type enumsGetSectionTypesResponseSuccess = (enumsGetSectionTypesResponse200) & {
-  headers: Headers;
-};
+export type enumsGetSectionTypesResponseSuccess = enumsGetSectionTypesResponse200
 ;
 
 export type enumsGetSectionTypesResponse = (enumsGetSectionTypesResponseSuccess)

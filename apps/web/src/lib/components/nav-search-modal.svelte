@@ -14,27 +14,27 @@
 
 	let inputRef: HTMLInputElement | undefined = $state();
 	let query = $state('');
-	let users = $state<Array<Record<string, string | null>>>([]);
+	let users = $state<Array<Record<string, string | null>> | undefined>();
 	let searching = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 	$effect(() => {
 		if (open) {
 			query = '';
-			users = [];
+			users = undefined;
 			setTimeout(() => inputRef?.focus(), 0);
 		}
 	});
 
 	$effect(() => {
 		if (debounceTimer) clearTimeout(debounceTimer);
-		if (query.trim().length < 2) { users = []; return; }
+		if (query.trim().length < 2) { users = undefined; return; }
 		searching = true;
 		debounceTimer = setTimeout(async () => {
 			try {
 				const res = await chatSearchUsers({ q: query.trim() });
-				users = ((res as Record<string, unknown>)?.users as Array<Record<string, string | null>>) ?? [];
-			} catch { users = []; }
+				users = res?.users;
+			} catch { users = undefined; }
 			searching = false;
 		}, 300);
 	});
@@ -90,7 +90,7 @@
 			</div>
 
 			<div class="max-h-80 overflow-y-auto px-2 py-3 scrollbar-thin">
-				{#if users.length > 0}
+				{#if users && users.length > 0}
 					<div class="px-2 pb-2">
 						<span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Users</span>
 					</div>

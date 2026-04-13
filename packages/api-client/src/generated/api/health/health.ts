@@ -53,15 +53,10 @@ import type {
 
 import type {
   PlatformCheck200,
-  PlatformCheck503,
   PlatformCheckDatabase200,
-  PlatformCheckDatabase503,
   PlatformCheckRedis200,
-  PlatformCheckRedis503,
   PlatformCheckStorage200,
-  PlatformCheckStorage503,
-  PlatformCheckTranslate200,
-  PlatformCheckTranslate503
+  PlatformCheckTranslate200
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -74,24 +69,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Run all health checks
  */
-export type platformCheckResponse200 = {
-  data: PlatformCheck200
-  status: 200
-}
+export type platformCheckResponse200 = PlatformCheck200
 
-export type platformCheckResponse503 = {
-  data: PlatformCheck503
-  status: 503
-}
+export type platformCheckResponseSuccess = platformCheckResponse200
+;
 
-export type platformCheckResponseSuccess = (platformCheckResponse200) & {
-  headers: Headers;
-};
-export type platformCheckResponseError = (platformCheckResponse503) & {
-  headers: Headers;
-};
-
-export type platformCheckResponse = (platformCheckResponseSuccess | platformCheckResponseError)
+export type platformCheckResponse = (platformCheckResponseSuccess)
 
 export const getPlatformCheckUrl = () => {
 
@@ -129,7 +112,7 @@ export const getPlatformCheckQueryKey = () => {
     }
 
 
-export const getPlatformCheckInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheck>>>, TError = PlatformCheck503>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheck>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -148,14 +131,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheck>>>
-export type PlatformCheckInfiniteQueryError = PlatformCheck503
+export type PlatformCheckInfiniteQueryError = unknown
 
 
 /**
  * @summary Run all health checks
  */
 
-export function createPlatformCheckInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheck>>>, TError = PlatformCheck503>(
+export function createPlatformCheckInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheck>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -170,7 +153,7 @@ export function createPlatformCheckInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Run all health checks
  */
-export const prefetchPlatformCheckInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheck>>, TError = PlatformCheck503>(
+export const prefetchPlatformCheckInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheck>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -184,7 +167,7 @@ export const prefetchPlatformCheckInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getPlatformCheckQueryOptions = <TData = Awaited<ReturnType<typeof platformCheck>>, TError = PlatformCheck503>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckQueryOptions = <TData = Awaited<ReturnType<typeof platformCheck>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -203,14 +186,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheck>>>
-export type PlatformCheckQueryError = PlatformCheck503
+export type PlatformCheckQueryError = unknown
 
 
 /**
  * @summary Run all health checks
  */
 
-export function createPlatformCheck<TData = Awaited<ReturnType<typeof platformCheck>>, TError = PlatformCheck503>(
+export function createPlatformCheck<TData = Awaited<ReturnType<typeof platformCheck>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -225,7 +208,7 @@ export function createPlatformCheck<TData = Awaited<ReturnType<typeof platformCh
 /**
  * @summary Run all health checks
  */
-export const prefetchPlatformCheckQuery = async <TData = Awaited<ReturnType<typeof platformCheck>>, TError = PlatformCheck503>(
+export const prefetchPlatformCheckQuery = async <TData = Awaited<ReturnType<typeof platformCheck>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -242,24 +225,12 @@ export const prefetchPlatformCheckQuery = async <TData = Awaited<ReturnType<type
 /**
  * @summary Run database health check
  */
-export type platformCheckDatabaseResponse200 = {
-  data: PlatformCheckDatabase200
-  status: 200
-}
+export type platformCheckDatabaseResponse200 = PlatformCheckDatabase200
 
-export type platformCheckDatabaseResponse503 = {
-  data: PlatformCheckDatabase503
-  status: 503
-}
+export type platformCheckDatabaseResponseSuccess = platformCheckDatabaseResponse200
+;
 
-export type platformCheckDatabaseResponseSuccess = (platformCheckDatabaseResponse200) & {
-  headers: Headers;
-};
-export type platformCheckDatabaseResponseError = (platformCheckDatabaseResponse503) & {
-  headers: Headers;
-};
-
-export type platformCheckDatabaseResponse = (platformCheckDatabaseResponseSuccess | platformCheckDatabaseResponseError)
+export type platformCheckDatabaseResponse = (platformCheckDatabaseResponseSuccess)
 
 export const getPlatformCheckDatabaseUrl = () => {
 
@@ -297,7 +268,7 @@ export const getPlatformCheckDatabaseQueryKey = () => {
     }
 
 
-export const getPlatformCheckDatabaseInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckDatabase>>>, TError = PlatformCheckDatabase503>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckDatabaseInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckDatabase>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -316,14 +287,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckDatabaseInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckDatabase>>>
-export type PlatformCheckDatabaseInfiniteQueryError = PlatformCheckDatabase503
+export type PlatformCheckDatabaseInfiniteQueryError = unknown
 
 
 /**
  * @summary Run database health check
  */
 
-export function createPlatformCheckDatabaseInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckDatabase>>>, TError = PlatformCheckDatabase503>(
+export function createPlatformCheckDatabaseInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckDatabase>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -338,7 +309,7 @@ export function createPlatformCheckDatabaseInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Run database health check
  */
-export const prefetchPlatformCheckDatabaseInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = PlatformCheckDatabase503>(
+export const prefetchPlatformCheckDatabaseInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -352,7 +323,7 @@ export const prefetchPlatformCheckDatabaseInfiniteQuery = async <TData = Awaited
 
 
 
-export const getPlatformCheckDatabaseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = PlatformCheckDatabase503>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckDatabaseQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -371,14 +342,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckDatabaseQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckDatabase>>>
-export type PlatformCheckDatabaseQueryError = PlatformCheckDatabase503
+export type PlatformCheckDatabaseQueryError = unknown
 
 
 /**
  * @summary Run database health check
  */
 
-export function createPlatformCheckDatabase<TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = PlatformCheckDatabase503>(
+export function createPlatformCheckDatabase<TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -393,7 +364,7 @@ export function createPlatformCheckDatabase<TData = Awaited<ReturnType<typeof pl
 /**
  * @summary Run database health check
  */
-export const prefetchPlatformCheckDatabaseQuery = async <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = PlatformCheckDatabase503>(
+export const prefetchPlatformCheckDatabaseQuery = async <TData = Awaited<ReturnType<typeof platformCheckDatabase>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckDatabase>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -410,24 +381,12 @@ export const prefetchPlatformCheckDatabaseQuery = async <TData = Awaited<ReturnT
 /**
  * @summary Run redis health check
  */
-export type platformCheckRedisResponse200 = {
-  data: PlatformCheckRedis200
-  status: 200
-}
+export type platformCheckRedisResponse200 = PlatformCheckRedis200
 
-export type platformCheckRedisResponse503 = {
-  data: PlatformCheckRedis503
-  status: 503
-}
+export type platformCheckRedisResponseSuccess = platformCheckRedisResponse200
+;
 
-export type platformCheckRedisResponseSuccess = (platformCheckRedisResponse200) & {
-  headers: Headers;
-};
-export type platformCheckRedisResponseError = (platformCheckRedisResponse503) & {
-  headers: Headers;
-};
-
-export type platformCheckRedisResponse = (platformCheckRedisResponseSuccess | platformCheckRedisResponseError)
+export type platformCheckRedisResponse = (platformCheckRedisResponseSuccess)
 
 export const getPlatformCheckRedisUrl = () => {
 
@@ -465,7 +424,7 @@ export const getPlatformCheckRedisQueryKey = () => {
     }
 
 
-export const getPlatformCheckRedisInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckRedis>>>, TError = PlatformCheckRedis503>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckRedisInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckRedis>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -484,14 +443,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckRedisInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckRedis>>>
-export type PlatformCheckRedisInfiniteQueryError = PlatformCheckRedis503
+export type PlatformCheckRedisInfiniteQueryError = unknown
 
 
 /**
  * @summary Run redis health check
  */
 
-export function createPlatformCheckRedisInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckRedis>>>, TError = PlatformCheckRedis503>(
+export function createPlatformCheckRedisInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckRedis>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -506,7 +465,7 @@ export function createPlatformCheckRedisInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Run redis health check
  */
-export const prefetchPlatformCheckRedisInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = PlatformCheckRedis503>(
+export const prefetchPlatformCheckRedisInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -520,7 +479,7 @@ export const prefetchPlatformCheckRedisInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getPlatformCheckRedisQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = PlatformCheckRedis503>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckRedisQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -539,14 +498,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckRedisQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckRedis>>>
-export type PlatformCheckRedisQueryError = PlatformCheckRedis503
+export type PlatformCheckRedisQueryError = unknown
 
 
 /**
  * @summary Run redis health check
  */
 
-export function createPlatformCheckRedis<TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = PlatformCheckRedis503>(
+export function createPlatformCheckRedis<TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -561,7 +520,7 @@ export function createPlatformCheckRedis<TData = Awaited<ReturnType<typeof platf
 /**
  * @summary Run redis health check
  */
-export const prefetchPlatformCheckRedisQuery = async <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = PlatformCheckRedis503>(
+export const prefetchPlatformCheckRedisQuery = async <TData = Awaited<ReturnType<typeof platformCheckRedis>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckRedis>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -578,24 +537,12 @@ export const prefetchPlatformCheckRedisQuery = async <TData = Awaited<ReturnType
 /**
  * @summary Run storage health check
  */
-export type platformCheckStorageResponse200 = {
-  data: PlatformCheckStorage200
-  status: 200
-}
+export type platformCheckStorageResponse200 = PlatformCheckStorage200
 
-export type platformCheckStorageResponse503 = {
-  data: PlatformCheckStorage503
-  status: 503
-}
+export type platformCheckStorageResponseSuccess = platformCheckStorageResponse200
+;
 
-export type platformCheckStorageResponseSuccess = (platformCheckStorageResponse200) & {
-  headers: Headers;
-};
-export type platformCheckStorageResponseError = (platformCheckStorageResponse503) & {
-  headers: Headers;
-};
-
-export type platformCheckStorageResponse = (platformCheckStorageResponseSuccess | platformCheckStorageResponseError)
+export type platformCheckStorageResponse = (platformCheckStorageResponseSuccess)
 
 export const getPlatformCheckStorageUrl = () => {
 
@@ -633,7 +580,7 @@ export const getPlatformCheckStorageQueryKey = () => {
     }
 
 
-export const getPlatformCheckStorageInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckStorage>>>, TError = PlatformCheckStorage503>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckStorageInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckStorage>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -652,14 +599,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckStorageInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckStorage>>>
-export type PlatformCheckStorageInfiniteQueryError = PlatformCheckStorage503
+export type PlatformCheckStorageInfiniteQueryError = unknown
 
 
 /**
  * @summary Run storage health check
  */
 
-export function createPlatformCheckStorageInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckStorage>>>, TError = PlatformCheckStorage503>(
+export function createPlatformCheckStorageInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckStorage>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -674,7 +621,7 @@ export function createPlatformCheckStorageInfinite<TData = InfiniteData<Awaited<
 /**
  * @summary Run storage health check
  */
-export const prefetchPlatformCheckStorageInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = PlatformCheckStorage503>(
+export const prefetchPlatformCheckStorageInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -688,7 +635,7 @@ export const prefetchPlatformCheckStorageInfiniteQuery = async <TData = Awaited<
 
 
 
-export const getPlatformCheckStorageQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = PlatformCheckStorage503>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckStorageQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -707,14 +654,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckStorageQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckStorage>>>
-export type PlatformCheckStorageQueryError = PlatformCheckStorage503
+export type PlatformCheckStorageQueryError = unknown
 
 
 /**
  * @summary Run storage health check
  */
 
-export function createPlatformCheckStorage<TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = PlatformCheckStorage503>(
+export function createPlatformCheckStorage<TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -729,7 +676,7 @@ export function createPlatformCheckStorage<TData = Awaited<ReturnType<typeof pla
 /**
  * @summary Run storage health check
  */
-export const prefetchPlatformCheckStorageQuery = async <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = PlatformCheckStorage503>(
+export const prefetchPlatformCheckStorageQuery = async <TData = Awaited<ReturnType<typeof platformCheckStorage>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckStorage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -746,24 +693,12 @@ export const prefetchPlatformCheckStorageQuery = async <TData = Awaited<ReturnTy
 /**
  * @summary Run translation service health check
  */
-export type platformCheckTranslateResponse200 = {
-  data: PlatformCheckTranslate200
-  status: 200
-}
+export type platformCheckTranslateResponse200 = PlatformCheckTranslate200
 
-export type platformCheckTranslateResponse503 = {
-  data: PlatformCheckTranslate503
-  status: 503
-}
+export type platformCheckTranslateResponseSuccess = platformCheckTranslateResponse200
+;
 
-export type platformCheckTranslateResponseSuccess = (platformCheckTranslateResponse200) & {
-  headers: Headers;
-};
-export type platformCheckTranslateResponseError = (platformCheckTranslateResponse503) & {
-  headers: Headers;
-};
-
-export type platformCheckTranslateResponse = (platformCheckTranslateResponseSuccess | platformCheckTranslateResponseError)
+export type platformCheckTranslateResponse = (platformCheckTranslateResponseSuccess)
 
 export const getPlatformCheckTranslateUrl = () => {
 
@@ -801,7 +736,7 @@ export const getPlatformCheckTranslateQueryKey = () => {
     }
 
 
-export const getPlatformCheckTranslateInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckTranslate>>>, TError = PlatformCheckTranslate503>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckTranslateInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckTranslate>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -820,14 +755,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckTranslateInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckTranslate>>>
-export type PlatformCheckTranslateInfiniteQueryError = PlatformCheckTranslate503
+export type PlatformCheckTranslateInfiniteQueryError = unknown
 
 
 /**
  * @summary Run translation service health check
  */
 
-export function createPlatformCheckTranslateInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckTranslate>>>, TError = PlatformCheckTranslate503>(
+export function createPlatformCheckTranslateInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckTranslate>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -842,7 +777,7 @@ export function createPlatformCheckTranslateInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Run translation service health check
  */
-export const prefetchPlatformCheckTranslateInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = PlatformCheckTranslate503>(
+export const prefetchPlatformCheckTranslateInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -856,7 +791,7 @@ export const prefetchPlatformCheckTranslateInfiniteQuery = async <TData = Awaite
 
 
 
-export const getPlatformCheckTranslateQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = PlatformCheckTranslate503>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformCheckTranslateQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -875,14 +810,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformCheckTranslateQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckTranslate>>>
-export type PlatformCheckTranslateQueryError = PlatformCheckTranslate503
+export type PlatformCheckTranslateQueryError = unknown
 
 
 /**
  * @summary Run translation service health check
  */
 
-export function createPlatformCheckTranslate<TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = PlatformCheckTranslate503>(
+export function createPlatformCheckTranslate<TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -897,7 +832,7 @@ export function createPlatformCheckTranslate<TData = Awaited<ReturnType<typeof p
 /**
  * @summary Run translation service health check
  */
-export const prefetchPlatformCheckTranslateQuery = async <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = PlatformCheckTranslate503>(
+export const prefetchPlatformCheckTranslateQuery = async <TData = Awaited<ReturnType<typeof platformCheckTranslate>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckTranslate>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

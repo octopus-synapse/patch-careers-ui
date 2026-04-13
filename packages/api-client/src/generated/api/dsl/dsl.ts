@@ -74,14 +74,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Validate DSL schema
  */
-export type dslValidateResponse200 = {
-  data: DslValidationResultDto
-  status: 200
-}
+export type dslValidateResponse200 = DslValidationResultDto
 
-export type dslValidateResponseSuccess = (dslValidateResponse200) & {
-  headers: Headers;
-};
+export type dslValidateResponseSuccess = dslValidateResponse200
 ;
 
 export type dslValidateResponse = (dslValidateResponseSuccess)
@@ -156,14 +151,9 @@ export const createDslValidate = <TError = unknown,
     /**
  * @summary Compile DSL to AST (preview, no persistence)
  */
-export type dslPreviewResponse200 = {
-  data: DslPreviewResultDto
-  status: 200
-}
+export type dslPreviewResponse200 = DslPreviewResultDto
 
-export type dslPreviewResponseSuccess = (dslPreviewResponse200) & {
-  headers: Headers;
-};
+export type dslPreviewResponseSuccess = dslPreviewResponse200
 ;
 
 export type dslPreviewResponse = (dslPreviewResponseSuccess)
@@ -246,29 +236,12 @@ export const createDslPreview = <TError = unknown,
     /**
  * @summary Get compiled AST for a resume
  */
-export type dslRenderResponse200 = {
-  data: DslAstResponseDto
-  status: 200
-}
+export type dslRenderResponse200 = DslAstResponseDto
 
-export type dslRenderResponse401 = {
-  data: void
-  status: 401
-}
+export type dslRenderResponseSuccess = dslRenderResponse200
+;
 
-export type dslRenderResponse403 = {
-  data: void
-  status: 403
-}
-
-export type dslRenderResponseSuccess = (dslRenderResponse200) & {
-  headers: Headers;
-};
-export type dslRenderResponseError = (dslRenderResponse401 | dslRenderResponse403) & {
-  headers: Headers;
-};
-
-export type dslRenderResponse = (dslRenderResponseSuccess | dslRenderResponseError)
+export type dslRenderResponse = (dslRenderResponseSuccess)
 
 export const getDslRenderUrl = (resumeId: string,
     params?: DslRenderParams,) => {
@@ -317,7 +290,7 @@ export const getDslRenderQueryKey = (resumeId: string,
     }
 
 
-export const getDslRenderInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = void>(resumeId: string,
+export const getDslRenderInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = unknown>(resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -337,14 +310,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type DslRenderInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof dslRender>>>
-export type DslRenderInfiniteQueryError = void
+export type DslRenderInfiniteQueryError = unknown
 
 
 /**
  * @summary Get compiled AST for a resume
  */
 
-export function createDslRenderInfinite<TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = void>(
+export function createDslRenderInfinite<TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = unknown>(
  resumeId: () =>  string,
     params?: () =>  DslRenderParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -361,7 +334,7 @@ export function createDslRenderInfinite<TData = InfiniteData<Awaited<ReturnType<
 /**
  * @summary Get compiled AST for a resume
  */
-export const prefetchDslRenderInfiniteQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = void>(
+export const prefetchDslRenderInfiniteQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -376,7 +349,7 @@ export const prefetchDslRenderInfiniteQuery = async <TData = Awaited<ReturnType<
 
 
 
-export const getDslRenderQueryOptions = <TData = Awaited<ReturnType<typeof dslRender>>, TError = void>(resumeId: string,
+export const getDslRenderQueryOptions = <TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -396,14 +369,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type DslRenderQueryResult = NonNullable<Awaited<ReturnType<typeof dslRender>>>
-export type DslRenderQueryError = void
+export type DslRenderQueryError = unknown
 
 
 /**
  * @summary Get compiled AST for a resume
  */
 
-export function createDslRender<TData = Awaited<ReturnType<typeof dslRender>>, TError = void>(
+export function createDslRender<TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(
  resumeId: () =>  string,
     params?: () =>  DslRenderParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -420,7 +393,7 @@ export function createDslRender<TData = Awaited<ReturnType<typeof dslRender>>, T
 /**
  * @summary Get compiled AST for a resume
  */
-export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = void>(
+export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -438,14 +411,9 @@ export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof d
 /**
  * @summary Get compiled AST for a public resume
  */
-export type dslRenderPublicResponse200 = {
-  data: DslAstResponseDto
-  status: 200
-}
+export type dslRenderPublicResponse200 = DslAstResponseDto
 
-export type dslRenderPublicResponseSuccess = (dslRenderPublicResponse200) & {
-  headers: Headers;
-};
+export type dslRenderPublicResponseSuccess = dslRenderPublicResponse200
 ;
 
 export type dslRenderPublicResponse = (dslRenderPublicResponseSuccess)

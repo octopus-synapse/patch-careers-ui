@@ -56,7 +56,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AdminTechNichesFindAllParams
+  AdminTechNichesFindAllParams,
+  TechNicheDataDto,
+  TechNicheListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -69,29 +71,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary List all tech niches
  */
-export type adminTechNichesFindAllResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesFindAllResponse200 = TechNicheListDataDto
 
-export type adminTechNichesFindAllResponse401 = {
-  data: void
-  status: 401
-}
+export type adminTechNichesFindAllResponseSuccess = adminTechNichesFindAllResponse200
+;
 
-export type adminTechNichesFindAllResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminTechNichesFindAllResponseSuccess = (adminTechNichesFindAllResponse200) & {
-  headers: Headers;
-};
-export type adminTechNichesFindAllResponseError = (adminTechNichesFindAllResponse401 | adminTechNichesFindAllResponse403) & {
-  headers: Headers;
-};
-
-export type adminTechNichesFindAllResponse = (adminTechNichesFindAllResponseSuccess | adminTechNichesFindAllResponseError)
+export type adminTechNichesFindAllResponse = (adminTechNichesFindAllResponseSuccess)
 
 export const getAdminTechNichesFindAllUrl = (params?: AdminTechNichesFindAllParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -136,7 +121,7 @@ export const getAdminTechNichesFindAllQueryKey = (params?: AdminTechNichesFindAl
     }
 
 
-export const getAdminTechNichesFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindAll>>>, TError = void>(params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechNichesFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindAll>>>, TError = unknown>(params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -155,14 +140,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechNichesFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesFindAll>>>
-export type AdminTechNichesFindAllInfiniteQueryError = void
+export type AdminTechNichesFindAllInfiniteQueryError = unknown
 
 
 /**
  * @summary List all tech niches
  */
 
-export function createAdminTechNichesFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindAll>>>, TError = void>(
+export function createAdminTechNichesFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindAll>>>, TError = unknown>(
  params?: () =>  AdminTechNichesFindAllParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -177,7 +162,7 @@ export function createAdminTechNichesFindAllInfinite<TData = InfiniteData<Awaite
 /**
  * @summary List all tech niches
  */
-export const prefetchAdminTechNichesFindAllInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = void>(
+export const prefetchAdminTechNichesFindAllInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -191,7 +176,7 @@ export const prefetchAdminTechNichesFindAllInfiniteQuery = async <TData = Awaite
 
 
 
-export const getAdminTechNichesFindAllQueryOptions = <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = void>(params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechNichesFindAllQueryOptions = <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = unknown>(params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -210,14 +195,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechNichesFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesFindAll>>>
-export type AdminTechNichesFindAllQueryError = void
+export type AdminTechNichesFindAllQueryError = unknown
 
 
 /**
  * @summary List all tech niches
  */
 
-export function createAdminTechNichesFindAll<TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = void>(
+export function createAdminTechNichesFindAll<TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = unknown>(
  params?: () =>  AdminTechNichesFindAllParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -232,7 +217,7 @@ export function createAdminTechNichesFindAll<TData = Awaited<ReturnType<typeof a
 /**
  * @summary List all tech niches
  */
-export const prefetchAdminTechNichesFindAllQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = void>(
+export const prefetchAdminTechNichesFindAllQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminTechNichesFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -249,29 +234,12 @@ export const prefetchAdminTechNichesFindAllQuery = async <TData = Awaited<Return
 /**
  * @summary Create tech niche
  */
-export type adminTechNichesCreateResponse201 = {
-  data: void
-  status: 201
-}
+export type adminTechNichesCreateResponse201 = TechNicheDataDto
 
-export type adminTechNichesCreateResponse401 = {
-  data: void
-  status: 401
-}
+export type adminTechNichesCreateResponseSuccess = adminTechNichesCreateResponse201
+;
 
-export type adminTechNichesCreateResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminTechNichesCreateResponseSuccess = (adminTechNichesCreateResponse201) & {
-  headers: Headers;
-};
-export type adminTechNichesCreateResponseError = (adminTechNichesCreateResponse401 | adminTechNichesCreateResponse403) & {
-  headers: Headers;
-};
-
-export type adminTechNichesCreateResponse = (adminTechNichesCreateResponseSuccess | adminTechNichesCreateResponseError)
+export type adminTechNichesCreateResponse = (adminTechNichesCreateResponseSuccess)
 
 export const getAdminTechNichesCreateUrl = () => {
 
@@ -295,7 +263,7 @@ export const adminTechNichesCreate = async ( options?: RequestInit): Promise<adm
 
 
 
-export const getAdminTechNichesCreateMutationOptions = <TError = void,
+export const getAdminTechNichesCreateMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesCreate>>, TError,void, TContext> => {
 
@@ -324,12 +292,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTechNichesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesCreate>>>
 
-    export type AdminTechNichesCreateMutationError = void
+    export type AdminTechNichesCreateMutationError = unknown
 
     /**
  * @summary Create tech niche
  */
-export const createAdminTechNichesCreate = <TError = void,
+export const createAdminTechNichesCreate = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTechNichesCreate>>,
@@ -342,29 +310,12 @@ export const createAdminTechNichesCreate = <TError = void,
     /**
  * @summary Get tech niche by ID
  */
-export type adminTechNichesFindOneResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesFindOneResponse200 = TechNicheDataDto
 
-export type adminTechNichesFindOneResponse401 = {
-  data: void
-  status: 401
-}
+export type adminTechNichesFindOneResponseSuccess = adminTechNichesFindOneResponse200
+;
 
-export type adminTechNichesFindOneResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminTechNichesFindOneResponseSuccess = (adminTechNichesFindOneResponse200) & {
-  headers: Headers;
-};
-export type adminTechNichesFindOneResponseError = (adminTechNichesFindOneResponse401 | adminTechNichesFindOneResponse403) & {
-  headers: Headers;
-};
-
-export type adminTechNichesFindOneResponse = (adminTechNichesFindOneResponseSuccess | adminTechNichesFindOneResponseError)
+export type adminTechNichesFindOneResponse = (adminTechNichesFindOneResponseSuccess)
 
 export const getAdminTechNichesFindOneUrl = (id: string,) => {
 
@@ -402,7 +353,7 @@ export const getAdminTechNichesFindOneQueryKey = (id: string,) => {
     }
 
 
-export const getAdminTechNichesFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindOne>>>, TError = void>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechNichesFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -421,14 +372,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechNichesFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesFindOne>>>
-export type AdminTechNichesFindOneInfiniteQueryError = void
+export type AdminTechNichesFindOneInfiniteQueryError = unknown
 
 
 /**
  * @summary Get tech niche by ID
  */
 
-export function createAdminTechNichesFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindOne>>>, TError = void>(
+export function createAdminTechNichesFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechNichesFindOne>>>, TError = unknown>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -443,7 +394,7 @@ export function createAdminTechNichesFindOneInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Get tech niche by ID
  */
-export const prefetchAdminTechNichesFindOneInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = void>(
+export const prefetchAdminTechNichesFindOneInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = unknown>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -457,7 +408,7 @@ export const prefetchAdminTechNichesFindOneInfiniteQuery = async <TData = Awaite
 
 
 
-export const getAdminTechNichesFindOneQueryOptions = <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = void>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechNichesFindOneQueryOptions = <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -476,14 +427,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechNichesFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesFindOne>>>
-export type AdminTechNichesFindOneQueryError = void
+export type AdminTechNichesFindOneQueryError = unknown
 
 
 /**
  * @summary Get tech niche by ID
  */
 
-export function createAdminTechNichesFindOne<TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = void>(
+export function createAdminTechNichesFindOne<TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = unknown>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -498,7 +449,7 @@ export function createAdminTechNichesFindOne<TData = Awaited<ReturnType<typeof a
 /**
  * @summary Get tech niche by ID
  */
-export const prefetchAdminTechNichesFindOneQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = void>(
+export const prefetchAdminTechNichesFindOneQuery = async <TData = Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError = unknown>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechNichesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -515,29 +466,12 @@ export const prefetchAdminTechNichesFindOneQuery = async <TData = Awaited<Return
 /**
  * @summary Update tech niche
  */
-export type adminTechNichesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesUpdateResponse200 = TechNicheDataDto
 
-export type adminTechNichesUpdateResponse401 = {
-  data: void
-  status: 401
-}
+export type adminTechNichesUpdateResponseSuccess = adminTechNichesUpdateResponse200
+;
 
-export type adminTechNichesUpdateResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminTechNichesUpdateResponseSuccess = (adminTechNichesUpdateResponse200) & {
-  headers: Headers;
-};
-export type adminTechNichesUpdateResponseError = (adminTechNichesUpdateResponse401 | adminTechNichesUpdateResponse403) & {
-  headers: Headers;
-};
-
-export type adminTechNichesUpdateResponse = (adminTechNichesUpdateResponseSuccess | adminTechNichesUpdateResponseError)
+export type adminTechNichesUpdateResponse = (adminTechNichesUpdateResponseSuccess)
 
 export const getAdminTechNichesUpdateUrl = (id: string,) => {
 
@@ -561,7 +495,7 @@ export const adminTechNichesUpdate = async (id: string, options?: RequestInit): 
 
 
 
-export const getAdminTechNichesUpdateMutationOptions = <TError = void,
+export const getAdminTechNichesUpdateMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesUpdate>>, TError,{id: string}, TContext> => {
 
@@ -590,12 +524,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTechNichesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesUpdate>>>
 
-    export type AdminTechNichesUpdateMutationError = void
+    export type AdminTechNichesUpdateMutationError = unknown
 
     /**
  * @summary Update tech niche
  */
-export const createAdminTechNichesUpdate = <TError = void,
+export const createAdminTechNichesUpdate = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTechNichesUpdate>>,
@@ -608,29 +542,12 @@ export const createAdminTechNichesUpdate = <TError = void,
     /**
  * @summary Delete tech niche
  */
-export type adminTechNichesRemoveResponse204 = {
-  data: void
-  status: 204
-}
+export type adminTechNichesRemoveResponse204 = void
 
-export type adminTechNichesRemoveResponse401 = {
-  data: void
-  status: 401
-}
+export type adminTechNichesRemoveResponseSuccess = adminTechNichesRemoveResponse204
+;
 
-export type adminTechNichesRemoveResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminTechNichesRemoveResponseSuccess = (adminTechNichesRemoveResponse204) & {
-  headers: Headers;
-};
-export type adminTechNichesRemoveResponseError = (adminTechNichesRemoveResponse401 | adminTechNichesRemoveResponse403) & {
-  headers: Headers;
-};
-
-export type adminTechNichesRemoveResponse = (adminTechNichesRemoveResponseSuccess | adminTechNichesRemoveResponseError)
+export type adminTechNichesRemoveResponse = (adminTechNichesRemoveResponseSuccess)
 
 export const getAdminTechNichesRemoveUrl = (id: string,) => {
 
@@ -654,7 +571,7 @@ export const adminTechNichesRemove = async (id: string, options?: RequestInit): 
 
 
 
-export const getAdminTechNichesRemoveMutationOptions = <TError = void,
+export const getAdminTechNichesRemoveMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesRemove>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesRemove>>, TError,{id: string}, TContext> => {
 
@@ -683,12 +600,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTechNichesRemoveMutationResult = NonNullable<Awaited<ReturnType<typeof adminTechNichesRemove>>>
 
-    export type AdminTechNichesRemoveMutationError = void
+    export type AdminTechNichesRemoveMutationError = unknown
 
     /**
  * @summary Delete tech niche
  */
-export const createAdminTechNichesRemove = <TError = void,
+export const createAdminTechNichesRemove = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechNichesRemove>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTechNichesRemove>>,

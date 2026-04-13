@@ -69,14 +69,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary List institutions
  */
-export type mecInstitutionsListInstitutionsResponse200 = {
-  data: MecInstitutionListDataDto
-  status: 200
-}
+export type mecInstitutionsListInstitutionsResponse200 = MecInstitutionListDataDto
 
-export type mecInstitutionsListInstitutionsResponseSuccess = (mecInstitutionsListInstitutionsResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsListInstitutionsResponseSuccess = mecInstitutionsListInstitutionsResponse200
 ;
 
 export type mecInstitutionsListInstitutionsResponse = (mecInstitutionsListInstitutionsResponseSuccess)
@@ -237,14 +232,9 @@ export const prefetchMecInstitutionsListInstitutionsQuery = async <TData = Await
 /**
  * @summary Search institutions
  */
-export type mecInstitutionsSearchInstitutionsByNameResponse200 = {
-  data: MecInstitutionListDataDto
-  status: 200
-}
+export type mecInstitutionsSearchInstitutionsByNameResponse200 = MecInstitutionListDataDto
 
-export type mecInstitutionsSearchInstitutionsByNameResponseSuccess = (mecInstitutionsSearchInstitutionsByNameResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsSearchInstitutionsByNameResponseSuccess = mecInstitutionsSearchInstitutionsByNameResponse200
 ;
 
 export type mecInstitutionsSearchInstitutionsByNameResponse = (mecInstitutionsSearchInstitutionsByNameResponseSuccess)
@@ -405,14 +395,9 @@ export const prefetchMecInstitutionsSearchInstitutionsByNameQuery = async <TData
 /**
  * @summary Get institution by MEC code
  */
-export type mecInstitutionsGetInstitutionByCodeWithCoursesResponse200 = {
-  data: MecInstitutionDataDto
-  status: 200
-}
+export type mecInstitutionsGetInstitutionByCodeWithCoursesResponse200 = MecInstitutionDataDto
 
-export type mecInstitutionsGetInstitutionByCodeWithCoursesResponseSuccess = (mecInstitutionsGetInstitutionByCodeWithCoursesResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsGetInstitutionByCodeWithCoursesResponseSuccess = mecInstitutionsGetInstitutionByCodeWithCoursesResponse200
 ;
 
 export type mecInstitutionsGetInstitutionByCodeWithCoursesResponse = (mecInstitutionsGetInstitutionByCodeWithCoursesResponseSuccess)
@@ -566,14 +551,9 @@ export const prefetchMecInstitutionsGetInstitutionByCodeWithCoursesQuery = async
 /**
  * @summary Get courses by institution
  */
-export type mecInstitutionsListCoursesByInstitutionCodeResponse200 = {
-  data: MecInstitutionCoursesDataDto
-  status: 200
-}
+export type mecInstitutionsListCoursesByInstitutionCodeResponse200 = MecInstitutionCoursesDataDto
 
-export type mecInstitutionsListCoursesByInstitutionCodeResponseSuccess = (mecInstitutionsListCoursesByInstitutionCodeResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsListCoursesByInstitutionCodeResponseSuccess = mecInstitutionsListCoursesByInstitutionCodeResponse200
 ;
 
 export type mecInstitutionsListCoursesByInstitutionCodeResponse = (mecInstitutionsListCoursesByInstitutionCodeResponseSuccess)

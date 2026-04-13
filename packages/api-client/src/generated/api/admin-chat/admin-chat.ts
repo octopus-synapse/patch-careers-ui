@@ -52,7 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AdminChatGetConversationsParams
+  AdminChatConversationsDataDto,
+  AdminChatGetConversationsParams,
+  AdminChatStatsDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -65,29 +67,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get chat statistics
  */
-export type adminChatGetStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminChatGetStatsResponse200 = AdminChatStatsDataDto
 
-export type adminChatGetStatsResponse401 = {
-  data: void
-  status: 401
-}
+export type adminChatGetStatsResponseSuccess = adminChatGetStatsResponse200
+;
 
-export type adminChatGetStatsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminChatGetStatsResponseSuccess = (adminChatGetStatsResponse200) & {
-  headers: Headers;
-};
-export type adminChatGetStatsResponseError = (adminChatGetStatsResponse401 | adminChatGetStatsResponse403) & {
-  headers: Headers;
-};
-
-export type adminChatGetStatsResponse = (adminChatGetStatsResponseSuccess | adminChatGetStatsResponseError)
+export type adminChatGetStatsResponse = (adminChatGetStatsResponseSuccess)
 
 export const getAdminChatGetStatsUrl = () => {
 
@@ -125,7 +110,7 @@ export const getAdminChatGetStatsQueryKey = () => {
     }
 
 
-export const getAdminChatGetStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetStats>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminChatGetStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetStats>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -144,14 +129,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminChatGetStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminChatGetStats>>>
-export type AdminChatGetStatsInfiniteQueryError = void
+export type AdminChatGetStatsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get chat statistics
  */
 
-export function createAdminChatGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetStats>>>, TError = void>(
+export function createAdminChatGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetStats>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -166,7 +151,7 @@ export function createAdminChatGetStatsInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Get chat statistics
  */
-export const prefetchAdminChatGetStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = void>(
+export const prefetchAdminChatGetStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -180,7 +165,7 @@ export const prefetchAdminChatGetStatsInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getAdminChatGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminChatGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -199,14 +184,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminChatGetStatsQueryResult = NonNullable<Awaited<ReturnType<typeof adminChatGetStats>>>
-export type AdminChatGetStatsQueryError = void
+export type AdminChatGetStatsQueryError = unknown
 
 
 /**
  * @summary Get chat statistics
  */
 
-export function createAdminChatGetStats<TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = void>(
+export function createAdminChatGetStats<TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -221,7 +206,7 @@ export function createAdminChatGetStats<TData = Awaited<ReturnType<typeof adminC
 /**
  * @summary Get chat statistics
  */
-export const prefetchAdminChatGetStatsQuery = async <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = void>(
+export const prefetchAdminChatGetStatsQuery = async <TData = Awaited<ReturnType<typeof adminChatGetStats>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -238,29 +223,12 @@ export const prefetchAdminChatGetStatsQuery = async <TData = Awaited<ReturnType<
 /**
  * @summary List all conversations
  */
-export type adminChatGetConversationsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminChatGetConversationsResponse200 = AdminChatConversationsDataDto
 
-export type adminChatGetConversationsResponse401 = {
-  data: void
-  status: 401
-}
+export type adminChatGetConversationsResponseSuccess = adminChatGetConversationsResponse200
+;
 
-export type adminChatGetConversationsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminChatGetConversationsResponseSuccess = (adminChatGetConversationsResponse200) & {
-  headers: Headers;
-};
-export type adminChatGetConversationsResponseError = (adminChatGetConversationsResponse401 | adminChatGetConversationsResponse403) & {
-  headers: Headers;
-};
-
-export type adminChatGetConversationsResponse = (adminChatGetConversationsResponseSuccess | adminChatGetConversationsResponseError)
+export type adminChatGetConversationsResponse = (adminChatGetConversationsResponseSuccess)
 
 export const getAdminChatGetConversationsUrl = (params?: AdminChatGetConversationsParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -305,7 +273,7 @@ export const getAdminChatGetConversationsQueryKey = (params?: AdminChatGetConver
     }
 
 
-export const getAdminChatGetConversationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetConversations>>>, TError = void>(params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminChatGetConversationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetConversations>>>, TError = unknown>(params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -324,14 +292,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminChatGetConversationsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminChatGetConversations>>>
-export type AdminChatGetConversationsInfiniteQueryError = void
+export type AdminChatGetConversationsInfiniteQueryError = unknown
 
 
 /**
  * @summary List all conversations
  */
 
-export function createAdminChatGetConversationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetConversations>>>, TError = void>(
+export function createAdminChatGetConversationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminChatGetConversations>>>, TError = unknown>(
  params?: () =>  AdminChatGetConversationsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -346,7 +314,7 @@ export function createAdminChatGetConversationsInfinite<TData = InfiniteData<Awa
 /**
  * @summary List all conversations
  */
-export const prefetchAdminChatGetConversationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = void>(
+export const prefetchAdminChatGetConversationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -360,7 +328,7 @@ export const prefetchAdminChatGetConversationsInfiniteQuery = async <TData = Awa
 
 
 
-export const getAdminChatGetConversationsQueryOptions = <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = void>(params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminChatGetConversationsQueryOptions = <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = unknown>(params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -379,14 +347,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminChatGetConversationsQueryResult = NonNullable<Awaited<ReturnType<typeof adminChatGetConversations>>>
-export type AdminChatGetConversationsQueryError = void
+export type AdminChatGetConversationsQueryError = unknown
 
 
 /**
  * @summary List all conversations
  */
 
-export function createAdminChatGetConversations<TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = void>(
+export function createAdminChatGetConversations<TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = unknown>(
  params?: () =>  AdminChatGetConversationsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -401,7 +369,7 @@ export function createAdminChatGetConversations<TData = Awaited<ReturnType<typeo
 /**
  * @summary List all conversations
  */
-export const prefetchAdminChatGetConversationsQuery = async <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = void>(
+export const prefetchAdminChatGetConversationsQuery = async <TData = Awaited<ReturnType<typeof adminChatGetConversations>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminChatGetConversationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminChatGetConversations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

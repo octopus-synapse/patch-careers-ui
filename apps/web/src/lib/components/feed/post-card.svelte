@@ -32,29 +32,33 @@
 	let showComments = $state(false);
 	let showMenu = $state(false);
 
-	const postId = $derived(String(post.id ?? ''));
-	const author = $derived(post.author as Record<string, unknown> | undefined);
+	interface PostAuthor { id?: string; name?: string; username?: string; photoURL?: string; avatarUrl?: string }
+	interface PostData { imageUrl?: string; options?: { text?: string; label?: string; votes?: number }[]; title?: string; question?: string; organization?: string; date?: string; commitment?: string; contact_method?: string; project_url?: string; application?: string }
+	interface PostLinkPreview { url?: string; image?: string; title?: string; description?: string }
+
+	const postId = $derived(String(post.id));
+	const author = $derived(post.author as PostAuthor | undefined);
 	const authorName = $derived(String(author?.name ?? author?.username ?? 'Unknown'));
-	const authorUsername = $derived(String(author?.username ?? ''));
-	const authorPhoto = $derived((author?.photoURL ?? author?.avatarUrl ?? null) as string | null);
-	const postType = $derived(String(post.type ?? ''));
-	const data = $derived(post.data as Record<string, unknown> | undefined);
-	const content = $derived(String(post.content ?? ''));
-	const imageUrl = $derived((post.imageUrl ?? data?.imageUrl ?? null) as string | null);
-	const linkPreview = $derived(post.linkPreview as Record<string, unknown> | null ?? null);
-	const linkUrl = $derived((post.linkUrl ?? null) as string | null);
-	const hardSkills = $derived((post.hardSkills ?? post.hard_skills ?? []) as string[]);
-	const softSkills = $derived((post.softSkills ?? post.soft_skills ?? []) as string[]);
-	const isLiked = $derived(Boolean(post.isLiked ?? post.liked ?? false));
-	const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked ?? false));
-	const isOwner = $derived(String(author?.id ?? post.userId ?? '') === currentUserId);
+	const authorUsername = $derived(String(author?.username));
+	const authorPhoto = $derived(author?.photoURL ?? author?.avatarUrl);
+	const postType = $derived(String(post.type));
+	const data = $derived(post.data as PostData | undefined);
+	const content = $derived(String(post.content));
+	const imageUrl = $derived((post.imageUrl ?? data?.imageUrl) as string | undefined);
+	const linkPreview = $derived(post.linkPreview as PostLinkPreview | undefined);
+	const linkUrl = $derived(post.linkUrl as string | undefined);
+	const hardSkills = $derived((post.hardSkills ?? post.hard_skills) as string[] | undefined);
+	const softSkills = $derived((post.softSkills ?? post.soft_skills) as string[] | undefined);
+	const isLiked = $derived(Boolean(post.isLiked ?? post.liked));
+	const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked));
+	const isOwner = $derived(String(author?.id ?? post.userId) === currentUserId);
 	const createdAt = $derived(post.createdAt as string | undefined);
 
 	const pollOptions = $derived(
-		postType === 'QUESTION' && data?.options ? (data.options as Record<string, unknown>[]) : null
+		postType === 'QUESTION' && data?.options ? data.options : null as PostData['options'] | null
 	);
 
-	const title = $derived(data?.title as string | undefined ?? data?.question as string | undefined ?? null);
+	const title = $derived(data?.title ?? data?.question);
 
 	function formatRelativeTime(dateStr?: string): string {
 		if (!dateStr) return '';
@@ -184,7 +188,7 @@
 	<!-- Image -->
 	{#if imageUrl}
 		<div class="mt-3 overflow-hidden rounded-lg">
-			<img src={imageUrl} alt="Post image" class="w-full object-cover" loading="lazy" />
+			<img src={imageUrl} alt="Post attachment" class="w-full object-cover" loading="lazy" />
 		</div>
 	{/if}
 
@@ -219,9 +223,9 @@
 	{#if pollOptions}
 		<div class="mt-3 space-y-2">
 			{#each pollOptions as option, i}
-				{@const label = String((option as Record<string, unknown>).text ?? (option as Record<string, unknown>).label ?? option)}
-				{@const votes = Number((option as Record<string, unknown>).votes ?? 0)}
-				{@const totalVotes = pollOptions.reduce((sum, o) => sum + Number((o as Record<string, unknown>).votes ?? 0), 0)}
+				{@const label = String(option.text ?? option.label ?? option)}
+				{@const votes = Number(option.votes)}
+				{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
 				{@const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0}
 				<div class="relative overflow-hidden rounded-lg border px-3 py-2 border-gray-200 dark:border-neutral-700/50">
 					<div class="absolute inset-y-0 left-0 bg-blue-500/10" style="width: {pct}%"></div>
@@ -235,14 +239,18 @@
 	{/if}
 
 	<!-- Skills tags -->
-	{#if (hardSkills.length > 0 || softSkills.length > 0)}
+	{#if (hardSkills && hardSkills.length > 0) || (softSkills && softSkills.length > 0)}
 		<div class="mt-3 flex flex-wrap gap-1.5">
+			{#if hardSkills}
 			{#each hardSkills as skill}
 				<span class="rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-neutral-700/50 dark:text-neutral-300">{skill}</span>
 			{/each}
+			{/if}
+			{#if softSkills}
 			{#each softSkills as skill}
 				<span class="rounded-full border px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-neutral-700/50 dark:text-neutral-300 border-current/10">{skill}</span>
 			{/each}
+			{/if}
 		</div>
 	{/if}
 

@@ -35,5 +35,14 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { ShareAnalyticsSummaryDataDtoAnalyticsByCountryItem } from './shareAnalyticsSummaryDataDtoAnalyticsByCountryItem';
+import type { ShareAnalyticsSummaryDataDtoAnalyticsRecentEventsItem } from './shareAnalyticsSummaryDataDtoAnalyticsRecentEventsItem';
 
-export type ShareAnalyticsSummaryDataDtoAnalytics = {[key: string]: unknown};
+export type ShareAnalyticsSummaryDataDtoAnalytics = {
+  shareId: string;
+  totalViews: number;
+  totalDownloads: number;
+  uniqueVisitors: number;
+  byCountry: ShareAnalyticsSummaryDataDtoAnalyticsByCountryItem[];
+  recentEvents: ShareAnalyticsSummaryDataDtoAnalyticsRecentEventsItem[];
+};

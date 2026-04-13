@@ -45,6 +45,16 @@ import type {
   QueryClient
 } from '@tanstack/svelte-query';
 
+import type {
+  BookmarkDataDto,
+  LikeDataDto,
+  ReportDataDto,
+  RepostDataDto,
+  UnbookmarkDataDto,
+  UnlikeDataDto,
+  VoteDataDto
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -55,29 +65,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Like a post
  */
-export type engagementLikeResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementLikeResponse200 = LikeDataDto
 
-export type engagementLikeResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementLikeResponseSuccess = engagementLikeResponse200
+;
 
-export type engagementLikeResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementLikeResponseSuccess = (engagementLikeResponse200) & {
-  headers: Headers;
-};
-export type engagementLikeResponseError = (engagementLikeResponse401 | engagementLikeResponse403) & {
-  headers: Headers;
-};
-
-export type engagementLikeResponse = (engagementLikeResponseSuccess | engagementLikeResponseError)
+export type engagementLikeResponse = (engagementLikeResponseSuccess)
 
 export const getEngagementLikeUrl = (id: string,) => {
 
@@ -101,7 +94,7 @@ export const engagementLike = async (id: string, options?: RequestInit): Promise
 
 
 
-export const getEngagementLikeMutationOptions = <TError = void,
+export const getEngagementLikeMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementLike>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementLike>>, TError,{id: string}, TContext> => {
 
@@ -130,12 +123,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementLikeMutationResult = NonNullable<Awaited<ReturnType<typeof engagementLike>>>
 
-    export type EngagementLikeMutationError = void
+    export type EngagementLikeMutationError = unknown
 
     /**
  * @summary Like a post
  */
-export const createEngagementLike = <TError = void,
+export const createEngagementLike = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementLike>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementLike>>,
@@ -148,29 +141,12 @@ export const createEngagementLike = <TError = void,
     /**
  * @summary Unlike a post
  */
-export type engagementUnlikeResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementUnlikeResponse200 = UnlikeDataDto
 
-export type engagementUnlikeResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementUnlikeResponseSuccess = engagementUnlikeResponse200
+;
 
-export type engagementUnlikeResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementUnlikeResponseSuccess = (engagementUnlikeResponse200) & {
-  headers: Headers;
-};
-export type engagementUnlikeResponseError = (engagementUnlikeResponse401 | engagementUnlikeResponse403) & {
-  headers: Headers;
-};
-
-export type engagementUnlikeResponse = (engagementUnlikeResponseSuccess | engagementUnlikeResponseError)
+export type engagementUnlikeResponse = (engagementUnlikeResponseSuccess)
 
 export const getEngagementUnlikeUrl = (id: string,) => {
 
@@ -194,7 +170,7 @@ export const engagementUnlike = async (id: string, options?: RequestInit): Promi
 
 
 
-export const getEngagementUnlikeMutationOptions = <TError = void,
+export const getEngagementUnlikeMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementUnlike>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementUnlike>>, TError,{id: string}, TContext> => {
 
@@ -223,12 +199,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementUnlikeMutationResult = NonNullable<Awaited<ReturnType<typeof engagementUnlike>>>
 
-    export type EngagementUnlikeMutationError = void
+    export type EngagementUnlikeMutationError = unknown
 
     /**
  * @summary Unlike a post
  */
-export const createEngagementUnlike = <TError = void,
+export const createEngagementUnlike = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementUnlike>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementUnlike>>,
@@ -241,29 +217,12 @@ export const createEngagementUnlike = <TError = void,
     /**
  * @summary Bookmark a post
  */
-export type engagementBookmarkResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementBookmarkResponse200 = BookmarkDataDto
 
-export type engagementBookmarkResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementBookmarkResponseSuccess = engagementBookmarkResponse200
+;
 
-export type engagementBookmarkResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementBookmarkResponseSuccess = (engagementBookmarkResponse200) & {
-  headers: Headers;
-};
-export type engagementBookmarkResponseError = (engagementBookmarkResponse401 | engagementBookmarkResponse403) & {
-  headers: Headers;
-};
-
-export type engagementBookmarkResponse = (engagementBookmarkResponseSuccess | engagementBookmarkResponseError)
+export type engagementBookmarkResponse = (engagementBookmarkResponseSuccess)
 
 export const getEngagementBookmarkUrl = (id: string,) => {
 
@@ -287,7 +246,7 @@ export const engagementBookmark = async (id: string, options?: RequestInit): Pro
 
 
 
-export const getEngagementBookmarkMutationOptions = <TError = void,
+export const getEngagementBookmarkMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementBookmark>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementBookmark>>, TError,{id: string}, TContext> => {
 
@@ -316,12 +275,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementBookmarkMutationResult = NonNullable<Awaited<ReturnType<typeof engagementBookmark>>>
 
-    export type EngagementBookmarkMutationError = void
+    export type EngagementBookmarkMutationError = unknown
 
     /**
  * @summary Bookmark a post
  */
-export const createEngagementBookmark = <TError = void,
+export const createEngagementBookmark = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementBookmark>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementBookmark>>,
@@ -334,29 +293,12 @@ export const createEngagementBookmark = <TError = void,
     /**
  * @summary Remove bookmark from a post
  */
-export type engagementUnbookmarkResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementUnbookmarkResponse200 = UnbookmarkDataDto
 
-export type engagementUnbookmarkResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementUnbookmarkResponseSuccess = engagementUnbookmarkResponse200
+;
 
-export type engagementUnbookmarkResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementUnbookmarkResponseSuccess = (engagementUnbookmarkResponse200) & {
-  headers: Headers;
-};
-export type engagementUnbookmarkResponseError = (engagementUnbookmarkResponse401 | engagementUnbookmarkResponse403) & {
-  headers: Headers;
-};
-
-export type engagementUnbookmarkResponse = (engagementUnbookmarkResponseSuccess | engagementUnbookmarkResponseError)
+export type engagementUnbookmarkResponse = (engagementUnbookmarkResponseSuccess)
 
 export const getEngagementUnbookmarkUrl = (id: string,) => {
 
@@ -380,7 +322,7 @@ export const engagementUnbookmark = async (id: string, options?: RequestInit): P
 
 
 
-export const getEngagementUnbookmarkMutationOptions = <TError = void,
+export const getEngagementUnbookmarkMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementUnbookmark>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementUnbookmark>>, TError,{id: string}, TContext> => {
 
@@ -409,12 +351,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementUnbookmarkMutationResult = NonNullable<Awaited<ReturnType<typeof engagementUnbookmark>>>
 
-    export type EngagementUnbookmarkMutationError = void
+    export type EngagementUnbookmarkMutationError = unknown
 
     /**
  * @summary Remove bookmark from a post
  */
-export const createEngagementUnbookmark = <TError = void,
+export const createEngagementUnbookmark = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementUnbookmark>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementUnbookmark>>,
@@ -427,29 +369,12 @@ export const createEngagementUnbookmark = <TError = void,
     /**
  * @summary Repost a post
  */
-export type engagementRepostResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementRepostResponse200 = RepostDataDto
 
-export type engagementRepostResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementRepostResponseSuccess = engagementRepostResponse200
+;
 
-export type engagementRepostResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementRepostResponseSuccess = (engagementRepostResponse200) & {
-  headers: Headers;
-};
-export type engagementRepostResponseError = (engagementRepostResponse401 | engagementRepostResponse403) & {
-  headers: Headers;
-};
-
-export type engagementRepostResponse = (engagementRepostResponseSuccess | engagementRepostResponseError)
+export type engagementRepostResponse = (engagementRepostResponseSuccess)
 
 export const getEngagementRepostUrl = (id: string,) => {
 
@@ -473,7 +398,7 @@ export const engagementRepost = async (id: string, options?: RequestInit): Promi
 
 
 
-export const getEngagementRepostMutationOptions = <TError = void,
+export const getEngagementRepostMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementRepost>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementRepost>>, TError,{id: string}, TContext> => {
 
@@ -502,12 +427,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementRepostMutationResult = NonNullable<Awaited<ReturnType<typeof engagementRepost>>>
 
-    export type EngagementRepostMutationError = void
+    export type EngagementRepostMutationError = unknown
 
     /**
  * @summary Repost a post
  */
-export const createEngagementRepost = <TError = void,
+export const createEngagementRepost = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementRepost>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementRepost>>,
@@ -520,29 +445,12 @@ export const createEngagementRepost = <TError = void,
     /**
  * @summary Report a post
  */
-export type engagementReportResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementReportResponse200 = ReportDataDto
 
-export type engagementReportResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementReportResponseSuccess = engagementReportResponse200
+;
 
-export type engagementReportResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementReportResponseSuccess = (engagementReportResponse200) & {
-  headers: Headers;
-};
-export type engagementReportResponseError = (engagementReportResponse401 | engagementReportResponse403) & {
-  headers: Headers;
-};
-
-export type engagementReportResponse = (engagementReportResponseSuccess | engagementReportResponseError)
+export type engagementReportResponse = (engagementReportResponseSuccess)
 
 export const getEngagementReportUrl = (id: string,) => {
 
@@ -566,7 +474,7 @@ export const engagementReport = async (id: string, options?: RequestInit): Promi
 
 
 
-export const getEngagementReportMutationOptions = <TError = void,
+export const getEngagementReportMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementReport>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementReport>>, TError,{id: string}, TContext> => {
 
@@ -595,12 +503,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementReportMutationResult = NonNullable<Awaited<ReturnType<typeof engagementReport>>>
 
-    export type EngagementReportMutationError = void
+    export type EngagementReportMutationError = unknown
 
     /**
  * @summary Report a post
  */
-export const createEngagementReport = <TError = void,
+export const createEngagementReport = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementReport>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementReport>>,
@@ -613,29 +521,12 @@ export const createEngagementReport = <TError = void,
     /**
  * @summary Vote on a poll
  */
-export type engagementVoteResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementVoteResponse200 = VoteDataDto
 
-export type engagementVoteResponse401 = {
-  data: void
-  status: 401
-}
+export type engagementVoteResponseSuccess = engagementVoteResponse200
+;
 
-export type engagementVoteResponse403 = {
-  data: void
-  status: 403
-}
-
-export type engagementVoteResponseSuccess = (engagementVoteResponse200) & {
-  headers: Headers;
-};
-export type engagementVoteResponseError = (engagementVoteResponse401 | engagementVoteResponse403) & {
-  headers: Headers;
-};
-
-export type engagementVoteResponse = (engagementVoteResponseSuccess | engagementVoteResponseError)
+export type engagementVoteResponse = (engagementVoteResponseSuccess)
 
 export const getEngagementVoteUrl = (id: string,) => {
 
@@ -659,7 +550,7 @@ export const engagementVote = async (id: string, options?: RequestInit): Promise
 
 
 
-export const getEngagementVoteMutationOptions = <TError = void,
+export const getEngagementVoteMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof engagementVote>>, TError,{id: string}, TContext> => {
 
@@ -688,12 +579,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EngagementVoteMutationResult = NonNullable<Awaited<ReturnType<typeof engagementVote>>>
 
-    export type EngagementVoteMutationError = void
+    export type EngagementVoteMutationError = unknown
 
     /**
  * @summary Vote on a poll
  */
-export const createEngagementVote = <TError = void,
+export const createEngagementVote = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof engagementVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof engagementVote>>,

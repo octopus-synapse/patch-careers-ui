@@ -80,14 +80,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get my themes
  */
-export type themesGetAllThemesByUserResponse200 = {
-  data: ThemeListDataDto
-  status: 200
-}
+export type themesGetAllThemesByUserResponse200 = ThemeListDataDto
 
-export type themesGetAllThemesByUserResponseSuccess = (themesGetAllThemesByUserResponse200) & {
-  headers: Headers;
-};
+export type themesGetAllThemesByUserResponseSuccess = themesGetAllThemesByUserResponse200
 ;
 
 export type themesGetAllThemesByUserResponse = (themesGetAllThemesByUserResponseSuccess)
@@ -241,14 +236,9 @@ export const prefetchThemesGetAllThemesByUserQuery = async <TData = Awaited<Retu
 /**
  * @summary Create theme
  */
-export type themesCreateThemeForUserResponse201 = {
-  data: ThemeEntityDataDto
-  status: 201
-}
+export type themesCreateThemeForUserResponse201 = ThemeEntityDataDto
 
-export type themesCreateThemeForUserResponseSuccess = (themesCreateThemeForUserResponse201) & {
-  headers: Headers;
-};
+export type themesCreateThemeForUserResponseSuccess = themesCreateThemeForUserResponse201
 ;
 
 export type themesCreateThemeForUserResponse = (themesCreateThemeForUserResponseSuccess)
@@ -323,14 +313,9 @@ export const createThemesCreateThemeForUser = <TError = unknown,
     /**
  * @summary List published themes
  */
-export type themesFindAllThemesWithPaginationResponse200 = {
-  data: ThemePaginatedListDataDto
-  status: 200
-}
+export type themesFindAllThemesWithPaginationResponse200 = ThemePaginatedListDataDto
 
-export type themesFindAllThemesWithPaginationResponseSuccess = (themesFindAllThemesWithPaginationResponse200) & {
-  headers: Headers;
-};
+export type themesFindAllThemesWithPaginationResponseSuccess = themesFindAllThemesWithPaginationResponse200
 ;
 
 export type themesFindAllThemesWithPaginationResponse = (themesFindAllThemesWithPaginationResponseSuccess)
@@ -491,14 +476,9 @@ export const prefetchThemesFindAllThemesWithPaginationQuery = async <TData = Awa
 /**
  * @summary Update theme
  */
-export type themesUpdateThemeForUserResponse200 = {
-  data: ThemeEntityDataDto
-  status: 200
-}
+export type themesUpdateThemeForUserResponse200 = ThemeEntityDataDto
 
-export type themesUpdateThemeForUserResponseSuccess = (themesUpdateThemeForUserResponse200) & {
-  headers: Headers;
-};
+export type themesUpdateThemeForUserResponseSuccess = themesUpdateThemeForUserResponse200
 ;
 
 export type themesUpdateThemeForUserResponse = (themesUpdateThemeForUserResponseSuccess)
@@ -574,14 +554,9 @@ export const createThemesUpdateThemeForUser = <TError = unknown,
     /**
  * @summary Delete theme
  */
-export type themesDeleteThemeForUserResponse204 = {
-  data: void
-  status: 204
-}
+export type themesDeleteThemeForUserResponse204 = void
 
-export type themesDeleteThemeForUserResponseSuccess = (themesDeleteThemeForUserResponse204) & {
-  headers: Headers;
-};
+export type themesDeleteThemeForUserResponseSuccess = themesDeleteThemeForUserResponse204
 ;
 
 export type themesDeleteThemeForUserResponse = (themesDeleteThemeForUserResponseSuccess)
@@ -655,14 +630,9 @@ export const createThemesDeleteThemeForUser = <TError = unknown,
     /**
  * @summary Get theme by ID
  */
-export type themesFindThemeByIdResponse200 = {
-  data: ThemeNullableEntityDataDto
-  status: 200
-}
+export type themesFindThemeByIdResponse200 = ThemeNullableEntityDataDto
 
-export type themesFindThemeByIdResponseSuccess = (themesFindThemeByIdResponse200) & {
-  headers: Headers;
-};
+export type themesFindThemeByIdResponseSuccess = themesFindThemeByIdResponse200
 ;
 
 export type themesFindThemeByIdResponse = (themesFindThemeByIdResponseSuccess)
@@ -816,14 +786,9 @@ export const prefetchThemesFindThemeByIdQuery = async <TData = Awaited<ReturnTyp
 /**
  * @summary Fork a theme
  */
-export type themesForkResponse200 = {
-  data: ThemeEntityDataDto
-  status: 200
-}
+export type themesForkResponse200 = ThemeEntityDataDto
 
-export type themesForkResponseSuccess = (themesForkResponse200) & {
-  headers: Headers;
-};
+export type themesForkResponseSuccess = themesForkResponse200
 ;
 
 export type themesForkResponse = (themesForkResponseSuccess)
@@ -898,14 +863,9 @@ export const createThemesFork = <TError = unknown,
     /**
  * @summary Apply theme to resume
  */
-export type themesApplyResponse200 = {
-  data: ThemeApplyDataDto
-  status: 200
-}
+export type themesApplyResponse200 = ThemeApplyDataDto
 
-export type themesApplyResponseSuccess = (themesApplyResponse200) & {
-  headers: Headers;
-};
+export type themesApplyResponseSuccess = themesApplyResponse200
 ;
 
 export type themesApplyResponse = (themesApplyResponseSuccess)
@@ -980,14 +940,9 @@ export const createThemesApply = <TError = unknown,
     /**
  * @summary Get resolved config for resume
  */
-export type themesGetResolvedConfigResponse200 = {
-  data: ThemeResolvedConfigDataDto
-  status: 200
-}
+export type themesGetResolvedConfigResponse200 = ThemeResolvedConfigDataDto
 
-export type themesGetResolvedConfigResponseSuccess = (themesGetResolvedConfigResponse200) & {
-  headers: Headers;
-};
+export type themesGetResolvedConfigResponseSuccess = themesGetResolvedConfigResponse200
 ;
 
 export type themesGetResolvedConfigResponse = (themesGetResolvedConfigResponseSuccess)
@@ -1141,14 +1096,9 @@ export const prefetchThemesGetResolvedConfigQuery = async <TData = Awaited<Retur
 /**
  * @summary Get popular themes
  */
-export type themesFindPopularThemesResponse200 = {
-  data: ThemeListDataDto
-  status: 200
-}
+export type themesFindPopularThemesResponse200 = ThemeListDataDto
 
-export type themesFindPopularThemesResponseSuccess = (themesFindPopularThemesResponse200) & {
-  headers: Headers;
-};
+export type themesFindPopularThemesResponseSuccess = themesFindPopularThemesResponse200
 ;
 
 export type themesFindPopularThemesResponse = (themesFindPopularThemesResponseSuccess)
@@ -1309,14 +1259,9 @@ export const prefetchThemesFindPopularThemesQuery = async <TData = Awaited<Retur
 /**
  * @summary Get system themes
  */
-export type themesFindAllSystemThemesResponse200 = {
-  data: ThemeListDataDto
-  status: 200
-}
+export type themesFindAllSystemThemesResponse200 = ThemeListDataDto
 
-export type themesFindAllSystemThemesResponseSuccess = (themesFindAllSystemThemesResponse200) & {
-  headers: Headers;
-};
+export type themesFindAllSystemThemesResponseSuccess = themesFindAllSystemThemesResponse200
 ;
 
 export type themesFindAllSystemThemesResponse = (themesFindAllSystemThemesResponseSuccess)
@@ -1470,14 +1415,9 @@ export const prefetchThemesFindAllSystemThemesQuery = async <TData = Awaited<Ret
 /**
  * @summary Get or generate theme preview PDF
  */
-export type themesGetThemePreviewResponse200 = {
-  data: void
-  status: 200
-}
+export type themesGetThemePreviewResponse200 = void
 
-export type themesGetThemePreviewResponseSuccess = (themesGetThemePreviewResponse200) & {
-  headers: Headers;
-};
+export type themesGetThemePreviewResponseSuccess = themesGetThemePreviewResponse200
 ;
 
 export type themesGetThemePreviewResponse = (themesGetThemePreviewResponseSuccess)

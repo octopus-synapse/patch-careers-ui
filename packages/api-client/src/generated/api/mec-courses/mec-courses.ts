@@ -67,14 +67,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Search courses
  */
-export type mecCoursesSearchCoursesByNameResponse200 = {
-  data: MecCourseListDataDto
-  status: 200
-}
+export type mecCoursesSearchCoursesByNameResponse200 = MecCourseListDataDto
 
-export type mecCoursesSearchCoursesByNameResponseSuccess = (mecCoursesSearchCoursesByNameResponse200) & {
-  headers: Headers;
-};
+export type mecCoursesSearchCoursesByNameResponseSuccess = mecCoursesSearchCoursesByNameResponse200
 ;
 
 export type mecCoursesSearchCoursesByNameResponse = (mecCoursesSearchCoursesByNameResponseSuccess)
@@ -235,14 +230,9 @@ export const prefetchMecCoursesSearchCoursesByNameQuery = async <TData = Awaited
 /**
  * @summary Get course by MEC code
  */
-export type mecCoursesGetCourseByCodeResponse200 = {
-  data: MecCourseDataDto
-  status: 200
-}
+export type mecCoursesGetCourseByCodeResponse200 = MecCourseDataDto
 
-export type mecCoursesGetCourseByCodeResponseSuccess = (mecCoursesGetCourseByCodeResponse200) & {
-  headers: Headers;
-};
+export type mecCoursesGetCourseByCodeResponseSuccess = mecCoursesGetCourseByCodeResponse200
 ;
 
 export type mecCoursesGetCourseByCodeResponse = (mecCoursesGetCourseByCodeResponseSuccess)

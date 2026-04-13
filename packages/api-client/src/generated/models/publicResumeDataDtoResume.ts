@@ -39,4 +39,42 @@ All errors follow a consistent format:
 /**
  * @nullable
  */
-export type PublicResumeDataDtoResume = {[key: string]: unknown} | null;
+export type PublicResumeDataDtoResume = {
+  id: string;
+  userId: string;
+  /** @nullable */
+  title: string | null;
+  template: string;
+  language: string;
+  isPublic: boolean;
+  /** @nullable */
+  slug: string | null;
+  /** @nullable */
+  fullName: string | null;
+  /** @nullable */
+  jobTitle: string | null;
+  /** @nullable */
+  phone: string | null;
+  /** @nullable */
+  emailContact: string | null;
+  /** @nullable */
+  location: string | null;
+  /** @nullable */
+  linkedin: string | null;
+  /** @nullable */
+  github: string | null;
+  /** @nullable */
+  website: string | null;
+  /** @nullable */
+  summary: string | null;
+  /** @nullable */
+  accentColor: string | null;
+  /** @nullable */
+  activeThemeId: string | null;
+  createdAt: unknown;
+  updatedAt: unknown;
+  sections: {
+  semanticKind: string;
+  items: unknown[];
+}[];
+} | null;

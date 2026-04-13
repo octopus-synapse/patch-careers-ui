@@ -65,14 +65,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Sends a password reset email if the account exists. Always returns success to prevent email enumeration.
  * @summary Request password reset
  */
-export type forgotPasswordHandleResponse200 = {
-  data: ForgotPasswordResponseDto
-  status: 200
-}
+export type forgotPasswordHandleResponse200 = ForgotPasswordResponseDto
 
-export type forgotPasswordHandleResponseSuccess = (forgotPasswordHandleResponse200) & {
-  headers: Headers;
-};
+export type forgotPasswordHandleResponseSuccess = forgotPasswordHandleResponse200
 ;
 
 export type forgotPasswordHandleResponse = (forgotPasswordHandleResponseSuccess)
@@ -148,24 +143,12 @@ export const createForgotPasswordHandle = <TError = unknown,
  * Resets the user password using a valid reset token received via email.
  * @summary Reset password with token
  */
-export type resetPasswordHandleResponse200 = {
-  data: ResetPasswordResponseDto
-  status: 200
-}
+export type resetPasswordHandleResponse200 = ResetPasswordResponseDto
 
-export type resetPasswordHandleResponse400 = {
-  data: void
-  status: 400
-}
+export type resetPasswordHandleResponseSuccess = resetPasswordHandleResponse200
+;
 
-export type resetPasswordHandleResponseSuccess = (resetPasswordHandleResponse200) & {
-  headers: Headers;
-};
-export type resetPasswordHandleResponseError = (resetPasswordHandleResponse400) & {
-  headers: Headers;
-};
-
-export type resetPasswordHandleResponse = (resetPasswordHandleResponseSuccess | resetPasswordHandleResponseError)
+export type resetPasswordHandleResponse = (resetPasswordHandleResponseSuccess)
 
 export const getResetPasswordHandleUrl = () => {
 
@@ -190,7 +173,7 @@ export const resetPasswordHandle = async (resetPasswordDto: ResetPasswordDto, op
 
 
 
-export const getResetPasswordHandleMutationOptions = <TError = void,
+export const getResetPasswordHandleMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resetPasswordHandle>>, TError,{data: ResetPasswordDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resetPasswordHandle>>, TError,{data: ResetPasswordDto}, TContext> => {
 
@@ -219,12 +202,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResetPasswordHandleMutationResult = NonNullable<Awaited<ReturnType<typeof resetPasswordHandle>>>
     export type ResetPasswordHandleMutationBody = ResetPasswordDto
-    export type ResetPasswordHandleMutationError = void
+    export type ResetPasswordHandleMutationError = unknown
 
     /**
  * @summary Reset password with token
  */
-export const createResetPasswordHandle = <TError = void,
+export const createResetPasswordHandle = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resetPasswordHandle>>, TError,{data: ResetPasswordDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resetPasswordHandle>>,
@@ -238,29 +221,12 @@ export const createResetPasswordHandle = <TError = void,
  * Changes the password for the authenticated user after verifying the current password.
  * @summary Change password
  */
-export type changePasswordHandleResponse200 = {
-  data: ChangePasswordResponseDto
-  status: 200
-}
+export type changePasswordHandleResponse200 = ChangePasswordResponseDto
 
-export type changePasswordHandleResponse400 = {
-  data: void
-  status: 400
-}
+export type changePasswordHandleResponseSuccess = changePasswordHandleResponse200
+;
 
-export type changePasswordHandleResponse401 = {
-  data: void
-  status: 401
-}
-
-export type changePasswordHandleResponseSuccess = (changePasswordHandleResponse200) & {
-  headers: Headers;
-};
-export type changePasswordHandleResponseError = (changePasswordHandleResponse400 | changePasswordHandleResponse401) & {
-  headers: Headers;
-};
-
-export type changePasswordHandleResponse = (changePasswordHandleResponseSuccess | changePasswordHandleResponseError)
+export type changePasswordHandleResponse = (changePasswordHandleResponseSuccess)
 
 export const getChangePasswordHandleUrl = () => {
 
@@ -285,7 +251,7 @@ export const changePasswordHandle = async (changePasswordDto: ChangePasswordDto,
 
 
 
-export const getChangePasswordHandleMutationOptions = <TError = void,
+export const getChangePasswordHandleMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof changePasswordHandle>>, TError,{data: ChangePasswordDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof changePasswordHandle>>, TError,{data: ChangePasswordDto}, TContext> => {
 
@@ -314,12 +280,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ChangePasswordHandleMutationResult = NonNullable<Awaited<ReturnType<typeof changePasswordHandle>>>
     export type ChangePasswordHandleMutationBody = ChangePasswordDto
-    export type ChangePasswordHandleMutationError = void
+    export type ChangePasswordHandleMutationError = unknown
 
     /**
  * @summary Change password
  */
-export const createChangePasswordHandle = <TError = void,
+export const createChangePasswordHandle = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof changePasswordHandle>>, TError,{data: ChangePasswordDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof changePasswordHandle>>,

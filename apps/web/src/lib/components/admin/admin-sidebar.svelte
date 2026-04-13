@@ -64,12 +64,13 @@
 	<nav class="flex-1 space-y-0.5 px-2">
 		{#each links as link}
 			{@const active = isActive(link.href, link.exact)}
+			{@const Icon = link.icon}
 			<a
 				href={link.href}
 				class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors {active ? 'bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-800/50'}"
 				title={collapsed ? link.label : undefined}
 			>
-				<svelte:component this={link.icon} size={18} />
+				<Icon size={18} />
 				{#if !collapsed}
 					<span>{link.label}</span>
 				{/if}

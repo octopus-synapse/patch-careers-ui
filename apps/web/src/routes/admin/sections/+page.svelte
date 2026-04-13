@@ -6,6 +6,7 @@
 		adminSectionTypesRemove,
 		getAdminSectionTypesFindAllQueryKey,
 	} from 'api-client';
+	import type { SectionTypeListDataDtoItemsItem } from 'api-client';
 	import { browser } from '$app/environment';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
@@ -32,9 +33,8 @@
 		query: { enabled: browser }
 	}));
 
-	const rawData = $derived(sectionsQuery.data as Record<string, unknown> | undefined);
-	const sections = $derived((rawData?.items as Record<string, unknown>[]) ?? []);
-	const totalPages = $derived((rawData?.totalPages as number) ?? 1);
+	const sections = $derived(sectionsQuery.data?.items);
+	const totalPages = $derived(sectionsQuery.data?.totalPages);
 
 	function jsonBody(data: Record<string, unknown>): RequestInit {
 		return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
@@ -66,16 +66,16 @@
 		formSemanticKind = ''; formIsActive = true; formIsRepeatable = true; formVersion = '1';
 	}
 
-	function openEdit(section: Record<string, unknown>) {
-		formModal = { mode: 'edit', key: section.key as string };
-		formKey = (section.key as string) ?? '';
-		formSlug = (section.slug as string) ?? '';
-		formTitle = (section.title as string) ?? '';
-		formDescription = (section.description as string) ?? '';
-		formSemanticKind = (section.semanticKind as string) ?? '';
-		formIsActive = (section.isActive as boolean) ?? true;
-		formIsRepeatable = (section.isRepeatable as boolean) ?? true;
-		formVersion = String((section.version as number) ?? 1);
+	function openEdit(section: SectionTypeListDataDtoItemsItem) {
+		formModal = { mode: 'edit', key: section.key };
+		formKey = section.key;
+		formSlug = section.slug;
+		formTitle = section.title;
+		formDescription = section.description ?? '';
+		formSemanticKind = section.semanticKind;
+		formIsActive = section.isActive;
+		formIsRepeatable = section.isRepeatable;
+		formVersion = String(section.version);
 	}
 
 	async function handleFormSubmit() {
@@ -103,8 +103,8 @@
 		}
 	}
 
-	async function handleToggleActive(section: Record<string, unknown>) {
-		await adminSectionTypesUpdate(section.key as string, jsonBody({ isActive: !section.isActive }));
+	async function handleToggleActive(section: SectionTypeListDataDtoItemsItem) {
+		await adminSectionTypesUpdate(section.key, jsonBody({ isActive: !section.isActive }));
 		invalidate();
 	}
 
@@ -149,7 +149,7 @@
 	/>
 
 	<DataTable {columns} data={sections} loading={sectionsQuery.isLoading} emptyMessage="No section types">
-		{#snippet cell({ row, key })}
+		{#snippet cell({ row, key, value })}
 			{#if key === 'isActive'}
 				<Button variant="icon" size="xs" onclick={() => handleToggleActive(row)}>
 					{#if row.isActive}<ToggleRight size={18} class="text-emerald-500" />{:else}<ToggleLeft size={18} class="text-gray-500 dark:text-neutral-500" />{/if}
@@ -163,17 +163,17 @@
 					</Tooltip>
 					{#if !row.isSystem}
 						<Tooltip text="Delete">
-							<Button variant="danger" size="xs" onclick={() => deleteKey = row.key as string}><Trash2 size={14} /></Button>
+							<Button variant="danger" size="xs" onclick={() => deleteKey = row.key}><Trash2 size={14} /></Button>
 						</Tooltip>
 					{/if}
 				</div>
 			{:else}
-				{row[key] ?? '—'}
+				{value ?? '—'}
 			{/if}
 		{/snippet}
 	</DataTable>
 
-	{#if totalPages > 1}
+	{#if totalPages && totalPages > 1}
 		<div class="flex justify-center">
 			<Pagination {page} {totalPages} onpagechange={(p) => page = p} />
 		</div>
@@ -182,14 +182,14 @@
 
 <FormModal open={formModal !== null} title={formModal?.mode === 'create' ? 'Add Section Type' : 'Edit Section Type'} loading={formLoading} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
 	<div class="space-y-3">
-		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
-		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
-		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Title *</label><Input bind:value={formTitle} placeholder="Work Experience" required /></div>
-		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Description</label><Input bind:value={formDescription} placeholder="Professional experience section" /></div>
+		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
+		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
+		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Title *</label><Input bind:value={formTitle} placeholder="Work Experience" required /></div>
+		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Description</label><Input bind:value={formDescription} placeholder="Professional experience section" /></div>
 		<div class="grid grid-cols-2 gap-3">
-			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Semantic Kind *</label><Input bind:value={formSemanticKind} placeholder="experience" required /></div>
+			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Semantic Kind *</label><Input bind:value={formSemanticKind} placeholder="experience" required /></div>
 			{#if formModal?.mode === 'create'}
-				<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Version</label><Input bind:value={formVersion} type="number" /></div>
+				<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Version</label><Input bind:value={formVersion} type="number" /></div>
 			{/if}
 		</div>
 		<div class="flex items-center gap-4">

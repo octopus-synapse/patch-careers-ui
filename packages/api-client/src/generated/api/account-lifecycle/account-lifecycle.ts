@@ -63,24 +63,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT".
  * @summary Delete account permanently
  */
-export type deleteAccountHandleResponse200 = {
-  data: DeleteAccountResponseDto
-  status: 200
-}
+export type deleteAccountHandleResponse200 = DeleteAccountResponseDto
 
-export type deleteAccountHandleResponse400 = {
-  data: void
-  status: 400
-}
+export type deleteAccountHandleResponseSuccess = deleteAccountHandleResponse200
+;
 
-export type deleteAccountHandleResponseSuccess = (deleteAccountHandleResponse200) & {
-  headers: Headers;
-};
-export type deleteAccountHandleResponseError = (deleteAccountHandleResponse400) & {
-  headers: Headers;
-};
-
-export type deleteAccountHandleResponse = (deleteAccountHandleResponseSuccess | deleteAccountHandleResponseError)
+export type deleteAccountHandleResponse = (deleteAccountHandleResponseSuccess)
 
 export const getDeleteAccountHandleUrl = () => {
 
@@ -105,7 +93,7 @@ export const deleteAccountHandle = async (deleteAccountDto: DeleteAccountDto, op
 
 
 
-export const getDeleteAccountHandleMutationOptions = <TError = void,
+export const getDeleteAccountHandleMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof deleteAccountHandle>>, TError,{data: DeleteAccountDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof deleteAccountHandle>>, TError,{data: DeleteAccountDto}, TContext> => {
 
@@ -134,12 +122,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type DeleteAccountHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAccountHandle>>>
     export type DeleteAccountHandleMutationBody = DeleteAccountDto
-    export type DeleteAccountHandleMutationError = void
+    export type DeleteAccountHandleMutationError = unknown
 
     /**
  * @summary Delete account permanently
  */
-export const createDeleteAccountHandle = <TError = void,
+export const createDeleteAccountHandle = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof deleteAccountHandle>>, TError,{data: DeleteAccountDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof deleteAccountHandle>>,
@@ -153,24 +141,12 @@ export const createDeleteAccountHandle = <TError = void,
  * Deactivates the authenticated user account (soft delete).
  * @summary Deactivate account
  */
-export type deactivateAccountHandleResponse200 = {
-  data: DeactivateAccountResponseDto
-  status: 200
-}
+export type deactivateAccountHandleResponse200 = DeactivateAccountResponseDto
 
-export type deactivateAccountHandleResponse409 = {
-  data: void
-  status: 409
-}
+export type deactivateAccountHandleResponseSuccess = deactivateAccountHandleResponse200
+;
 
-export type deactivateAccountHandleResponseSuccess = (deactivateAccountHandleResponse200) & {
-  headers: Headers;
-};
-export type deactivateAccountHandleResponseError = (deactivateAccountHandleResponse409) & {
-  headers: Headers;
-};
-
-export type deactivateAccountHandleResponse = (deactivateAccountHandleResponseSuccess | deactivateAccountHandleResponseError)
+export type deactivateAccountHandleResponse = (deactivateAccountHandleResponseSuccess)
 
 export const getDeactivateAccountHandleUrl = () => {
 
@@ -195,7 +171,7 @@ export const deactivateAccountHandle = async (deactivateAccountDto: DeactivateAc
 
 
 
-export const getDeactivateAccountHandleMutationOptions = <TError = void,
+export const getDeactivateAccountHandleMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof deactivateAccountHandle>>, TError,{data: DeactivateAccountDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof deactivateAccountHandle>>, TError,{data: DeactivateAccountDto}, TContext> => {
 
@@ -224,12 +200,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type DeactivateAccountHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deactivateAccountHandle>>>
     export type DeactivateAccountHandleMutationBody = DeactivateAccountDto
-    export type DeactivateAccountHandleMutationError = void
+    export type DeactivateAccountHandleMutationError = unknown
 
     /**
  * @summary Deactivate account
  */
-export const createDeactivateAccountHandle = <TError = void,
+export const createDeactivateAccountHandle = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof deactivateAccountHandle>>, TError,{data: DeactivateAccountDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof deactivateAccountHandle>>,

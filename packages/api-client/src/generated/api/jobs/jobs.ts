@@ -67,15 +67,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
-export type jobsFindAllResponse401 = {
-  data: void
-  status: 401
-}
+export type jobsFindAllResponse401 = void
 
-export type jobsFindAllResponse403 = {
-  data: void
-  status: 403
-}
+export type jobsFindAllResponse403 = void
 
 ;
 export type jobsFindAllResponseError = (jobsFindAllResponse401 | jobsFindAllResponse403) & {
@@ -225,15 +219,9 @@ export const prefetchJobsFindAllQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
-export type jobsCreateResponse401 = {
-  data: void
-  status: 401
-}
+export type jobsCreateResponse401 = void
 
-export type jobsCreateResponse403 = {
-  data: void
-  status: 403
-}
+export type jobsCreateResponse403 = void
 
 ;
 export type jobsCreateResponseError = (jobsCreateResponse401 | jobsCreateResponse403) & {
@@ -305,15 +293,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return createMutation(() => ({ ...getJobsCreateMutationOptions(options?.()) }), queryClient);
     }
-    export type jobsGetMyJobsResponse401 = {
-  data: void
-  status: 401
-}
+    export type jobsGetMyJobsResponse401 = void
 
-export type jobsGetMyJobsResponse403 = {
-  data: void
-  status: 403
-}
+export type jobsGetMyJobsResponse403 = void
 
 ;
 export type jobsGetMyJobsResponseError = (jobsGetMyJobsResponse401 | jobsGetMyJobsResponse403) & {
@@ -463,15 +445,9 @@ export const prefetchJobsGetMyJobsQuery = async <TData = Awaited<ReturnType<type
 
 
 
-export type jobsFindByIdResponse401 = {
-  data: void
-  status: 401
-}
+export type jobsFindByIdResponse401 = void
 
-export type jobsFindByIdResponse403 = {
-  data: void
-  status: 403
-}
+export type jobsFindByIdResponse403 = void
 
 ;
 export type jobsFindByIdResponseError = (jobsFindByIdResponse401 | jobsFindByIdResponse403) & {
@@ -614,15 +590,9 @@ export const prefetchJobsFindByIdQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export type jobsUpdateResponse401 = {
-  data: void
-  status: 401
-}
+export type jobsUpdateResponse401 = void
 
-export type jobsUpdateResponse403 = {
-  data: void
-  status: 403
-}
+export type jobsUpdateResponse403 = void
 
 ;
 export type jobsUpdateResponseError = (jobsUpdateResponse401 | jobsUpdateResponse403) & {
@@ -694,15 +664,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return createMutation(() => ({ ...getJobsUpdateMutationOptions(options?.()) }), queryClient);
     }
-    export type jobsDeleteResponse401 = {
-  data: void
-  status: 401
-}
+    export type jobsDeleteResponse401 = void
 
-export type jobsDeleteResponse403 = {
-  data: void
-  status: 403
-}
+export type jobsDeleteResponse403 = void
 
 ;
 export type jobsDeleteResponseError = (jobsDeleteResponse401 | jobsDeleteResponse403) & {

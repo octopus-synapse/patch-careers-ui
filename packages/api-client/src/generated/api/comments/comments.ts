@@ -56,7 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  CommentsGetByPostParams
+  CommentCreatedDataDto,
+  CommentDeletedDataDto,
+  CommentsGetByPostParams,
+  CommentsListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -69,29 +72,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get comments for a post
  */
-export type commentsGetByPostResponse200 = {
-  data: void
-  status: 200
-}
+export type commentsGetByPostResponse200 = CommentsListDataDto
 
-export type commentsGetByPostResponse401 = {
-  data: void
-  status: 401
-}
+export type commentsGetByPostResponseSuccess = commentsGetByPostResponse200
+;
 
-export type commentsGetByPostResponse403 = {
-  data: void
-  status: 403
-}
-
-export type commentsGetByPostResponseSuccess = (commentsGetByPostResponse200) & {
-  headers: Headers;
-};
-export type commentsGetByPostResponseError = (commentsGetByPostResponse401 | commentsGetByPostResponse403) & {
-  headers: Headers;
-};
-
-export type commentsGetByPostResponse = (commentsGetByPostResponseSuccess | commentsGetByPostResponseError)
+export type commentsGetByPostResponse = (commentsGetByPostResponseSuccess)
 
 export const getCommentsGetByPostUrl = (id: string,
     params?: CommentsGetByPostParams,) => {
@@ -140,7 +126,7 @@ export const getCommentsGetByPostQueryKey = (id: string,
     }
 
 
-export const getCommentsGetByPostInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsGetByPost>>>, TError = void>(id: string,
+export const getCommentsGetByPostInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsGetByPost>>>, TError = unknown>(id: string,
     params?: CommentsGetByPostParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof commentsGetByPost>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -160,14 +146,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CommentsGetByPostInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentsGetByPost>>>
-export type CommentsGetByPostInfiniteQueryError = void
+export type CommentsGetByPostInfiniteQueryError = unknown
 
 
 /**
  * @summary Get comments for a post
  */
 
-export function createCommentsGetByPostInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsGetByPost>>>, TError = void>(
+export function createCommentsGetByPostInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsGetByPost>>>, TError = unknown>(
  id: () =>  string,
     params?: () =>  CommentsGetByPostParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof commentsGetByPost>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -184,7 +170,7 @@ export function createCommentsGetByPostInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Get comments for a post
  */
-export const prefetchCommentsGetByPostInfiniteQuery = async <TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = void>(
+export const prefetchCommentsGetByPostInfiniteQuery = async <TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = unknown>(
  queryClient: QueryClient, id: string,
     params?: CommentsGetByPostParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof commentsGetByPost>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -199,7 +185,7 @@ export const prefetchCommentsGetByPostInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getCommentsGetByPostQueryOptions = <TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = void>(id: string,
+export const getCommentsGetByPostQueryOptions = <TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = unknown>(id: string,
     params?: CommentsGetByPostParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof commentsGetByPost>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -219,14 +205,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CommentsGetByPostQueryResult = NonNullable<Awaited<ReturnType<typeof commentsGetByPost>>>
-export type CommentsGetByPostQueryError = void
+export type CommentsGetByPostQueryError = unknown
 
 
 /**
  * @summary Get comments for a post
  */
 
-export function createCommentsGetByPost<TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = void>(
+export function createCommentsGetByPost<TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = unknown>(
  id: () =>  string,
     params?: () =>  CommentsGetByPostParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof commentsGetByPost>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -243,7 +229,7 @@ export function createCommentsGetByPost<TData = Awaited<ReturnType<typeof commen
 /**
  * @summary Get comments for a post
  */
-export const prefetchCommentsGetByPostQuery = async <TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = void>(
+export const prefetchCommentsGetByPostQuery = async <TData = Awaited<ReturnType<typeof commentsGetByPost>>, TError = unknown>(
  queryClient: QueryClient, id: string,
     params?: CommentsGetByPostParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof commentsGetByPost>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -261,29 +247,12 @@ export const prefetchCommentsGetByPostQuery = async <TData = Awaited<ReturnType<
 /**
  * @summary Create a comment
  */
-export type commentsCreateResponse201 = {
-  data: void
-  status: 201
-}
+export type commentsCreateResponse201 = CommentCreatedDataDto
 
-export type commentsCreateResponse401 = {
-  data: void
-  status: 401
-}
+export type commentsCreateResponseSuccess = commentsCreateResponse201
+;
 
-export type commentsCreateResponse403 = {
-  data: void
-  status: 403
-}
-
-export type commentsCreateResponseSuccess = (commentsCreateResponse201) & {
-  headers: Headers;
-};
-export type commentsCreateResponseError = (commentsCreateResponse401 | commentsCreateResponse403) & {
-  headers: Headers;
-};
-
-export type commentsCreateResponse = (commentsCreateResponseSuccess | commentsCreateResponseError)
+export type commentsCreateResponse = (commentsCreateResponseSuccess)
 
 export const getCommentsCreateUrl = (id: string,) => {
 
@@ -307,7 +276,7 @@ export const commentsCreate = async (id: string, options?: RequestInit): Promise
 
 
 
-export const getCommentsCreateMutationOptions = <TError = void,
+export const getCommentsCreateMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsCreate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof commentsCreate>>, TError,{id: string}, TContext> => {
 
@@ -336,12 +305,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CommentsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof commentsCreate>>>
 
-    export type CommentsCreateMutationError = void
+    export type CommentsCreateMutationError = unknown
 
     /**
  * @summary Create a comment
  */
-export const createCommentsCreate = <TError = void,
+export const createCommentsCreate = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsCreate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof commentsCreate>>,
@@ -354,29 +323,12 @@ export const createCommentsCreate = <TError = void,
     /**
  * @summary Delete a comment
  */
-export type commentsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type commentsDeleteResponse200 = CommentDeletedDataDto
 
-export type commentsDeleteResponse401 = {
-  data: void
-  status: 401
-}
+export type commentsDeleteResponseSuccess = commentsDeleteResponse200
+;
 
-export type commentsDeleteResponse403 = {
-  data: void
-  status: 403
-}
-
-export type commentsDeleteResponseSuccess = (commentsDeleteResponse200) & {
-  headers: Headers;
-};
-export type commentsDeleteResponseError = (commentsDeleteResponse401 | commentsDeleteResponse403) & {
-  headers: Headers;
-};
-
-export type commentsDeleteResponse = (commentsDeleteResponseSuccess | commentsDeleteResponseError)
+export type commentsDeleteResponse = (commentsDeleteResponseSuccess)
 
 export const getCommentsDeleteUrl = (id: string,) => {
 
@@ -400,7 +352,7 @@ export const commentsDelete = async (id: string, options?: RequestInit): Promise
 
 
 
-export const getCommentsDeleteMutationOptions = <TError = void,
+export const getCommentsDeleteMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof commentsDelete>>, TError,{id: string}, TContext> => {
 
@@ -429,12 +381,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CommentsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof commentsDelete>>>
 
-    export type CommentsDeleteMutationError = void
+    export type CommentsDeleteMutationError = unknown
 
     /**
  * @summary Delete a comment
  */
-export const createCommentsDelete = <TError = void,
+export const createCommentsDelete = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof commentsDelete>>,

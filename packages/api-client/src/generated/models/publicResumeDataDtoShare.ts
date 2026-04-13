@@ -38,6 +38,5 @@ All errors follow a consistent format:
 
 export type PublicResumeDataDtoShare = {
   slug: string;
-  /** @nullable */
-  expiresAt: string | null;
+  expiresAt: unknown | null;
 };

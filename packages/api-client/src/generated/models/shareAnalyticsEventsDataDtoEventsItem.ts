@@ -35,5 +35,18 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { ShareAnalyticsEventsDataDtoEventsItemEventType } from './shareAnalyticsEventsDataDtoEventsItemEventType';
 
-export type ShareAnalyticsEventsDataDtoEventsItem = {[key: string]: unknown};
+export type ShareAnalyticsEventsDataDtoEventsItem = {
+  eventType: ShareAnalyticsEventsDataDtoEventsItemEventType;
+  ipAddress: string;
+  /** @nullable */
+  userAgent: string | null;
+  /** @nullable */
+  referrer: string | null;
+  /** @nullable */
+  country: string | null;
+  /** @nullable */
+  city: string | null;
+  createdAt: unknown;
+};

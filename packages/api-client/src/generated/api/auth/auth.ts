@@ -75,24 +75,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Authenticates user with email and password. Returns twoFactorRequired when 2FA is enabled.
  * @summary Login
  */
-export type authLoginResponse200 = {
-  data: LoginResponseDto
-  status: 200
-}
+export type authLoginResponse200 = LoginResponseDto
 
-export type authLoginResponse401 = {
-  data: void
-  status: 401
-}
+export type authLoginResponseSuccess = authLoginResponse200
+;
 
-export type authLoginResponseSuccess = (authLoginResponse200) & {
-  headers: Headers;
-};
-export type authLoginResponseError = (authLoginResponse401) & {
-  headers: Headers;
-};
-
-export type authLoginResponse = (authLoginResponseSuccess | authLoginResponseError)
+export type authLoginResponse = (authLoginResponseSuccess)
 
 export const getAuthLoginUrl = () => {
 
@@ -117,7 +105,7 @@ export const authLogin = async (loginDto: LoginDto, options?: RequestInit): Prom
 
 
 
-export const getAuthLoginMutationOptions = <TError = void,
+export const getAuthLoginMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLogin>>, TError,{data: LoginDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authLogin>>, TError,{data: LoginDto}, TContext> => {
 
@@ -146,12 +134,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthLoginMutationResult = NonNullable<Awaited<ReturnType<typeof authLogin>>>
     export type AuthLoginMutationBody = LoginDto
-    export type AuthLoginMutationError = void
+    export type AuthLoginMutationError = unknown
 
     /**
  * @summary Login
  */
-export const createAuthLogin = <TError = void,
+export const createAuthLogin = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLogin>>, TError,{data: LoginDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authLogin>>,
@@ -165,24 +153,12 @@ export const createAuthLogin = <TError = void,
  * Completes login by validating a TOTP or backup code.
  * @summary Verify 2FA code during login
  */
-export type authLoginVerify2faResponse200 = {
-  data: LoginResponseDto
-  status: 200
-}
+export type authLoginVerify2faResponse200 = LoginResponseDto
 
-export type authLoginVerify2faResponse401 = {
-  data: void
-  status: 401
-}
+export type authLoginVerify2faResponseSuccess = authLoginVerify2faResponse200
+;
 
-export type authLoginVerify2faResponseSuccess = (authLoginVerify2faResponse200) & {
-  headers: Headers;
-};
-export type authLoginVerify2faResponseError = (authLoginVerify2faResponse401) & {
-  headers: Headers;
-};
-
-export type authLoginVerify2faResponse = (authLoginVerify2faResponseSuccess | authLoginVerify2faResponseError)
+export type authLoginVerify2faResponse = (authLoginVerify2faResponseSuccess)
 
 export const getAuthLoginVerify2faUrl = () => {
 
@@ -207,7 +183,7 @@ export const authLoginVerify2fa = async (loginVerify2faDto: LoginVerify2faDto, o
 
 
 
-export const getAuthLoginVerify2faMutationOptions = <TError = void,
+export const getAuthLoginVerify2faMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLoginVerify2fa>>, TError,{data: LoginVerify2faDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authLoginVerify2fa>>, TError,{data: LoginVerify2faDto}, TContext> => {
 
@@ -236,12 +212,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthLoginVerify2faMutationResult = NonNullable<Awaited<ReturnType<typeof authLoginVerify2fa>>>
     export type AuthLoginVerify2faMutationBody = LoginVerify2faDto
-    export type AuthLoginVerify2faMutationError = void
+    export type AuthLoginVerify2faMutationError = unknown
 
     /**
  * @summary Verify 2FA code during login
  */
-export const createAuthLoginVerify2fa = <TError = void,
+export const createAuthLoginVerify2fa = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLoginVerify2fa>>, TError,{data: LoginVerify2faDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authLoginVerify2fa>>,
@@ -255,14 +231,9 @@ export const createAuthLoginVerify2fa = <TError = void,
  * Logs out the user by invalidating refresh token(s) and clearing session cookie.
  * @summary Logout
  */
-export type authLogoutResponse200 = {
-  data: LogoutResponseDto
-  status: 200
-}
+export type authLogoutResponse200 = LogoutResponseDto
 
-export type authLogoutResponseSuccess = (authLogoutResponse200) & {
-  headers: Headers;
-};
+export type authLogoutResponseSuccess = authLogoutResponse200
 ;
 
 export type authLogoutResponse = (authLogoutResponseSuccess)
@@ -338,14 +309,9 @@ export const createAuthLogout = <TError = unknown,
  * Validates session cookie and returns current user data if authenticated.
  * @summary Get Session
  */
-export type authSessionResponse200 = {
-  data: SessionResponseDto
-  status: 200
-}
+export type authSessionResponse200 = SessionResponseDto
 
-export type authSessionResponseSuccess = (authSessionResponse200) & {
-  headers: Headers;
-};
+export type authSessionResponseSuccess = authSessionResponse200
 ;
 
 export type authSessionResponse = (authSessionResponseSuccess)

@@ -70,14 +70,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Search public resumes
  */
-export type searchSearchResponse200 = {
-  data: SearchResultsResponseDto
-  status: 200
-}
+export type searchSearchResponse200 = SearchResultsResponseDto
 
-export type searchSearchResponseSuccess = (searchSearchResponse200) & {
-  headers: Headers;
-};
+export type searchSearchResponseSuccess = searchSearchResponse200
 ;
 
 export type searchSearchResponse = (searchSearchResponseSuccess)
@@ -238,14 +233,9 @@ export const prefetchSearchSearchQuery = async <TData = Awaited<ReturnType<typeo
 /**
  * @summary Get search autocomplete suggestions
  */
-export type searchSuggestionsResponse200 = {
-  data: SearchSuggestionsResponseDto
-  status: 200
-}
+export type searchSuggestionsResponse200 = SearchSuggestionsResponseDto
 
-export type searchSuggestionsResponseSuccess = (searchSuggestionsResponse200) & {
-  headers: Headers;
-};
+export type searchSuggestionsResponseSuccess = searchSuggestionsResponse200
 ;
 
 export type searchSuggestionsResponse = (searchSuggestionsResponseSuccess)
@@ -406,14 +396,9 @@ export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<
 /**
  * @summary Find similar resumes by resume id
  */
-export type searchSimilarResponse200 = {
-  data: SimilarResumesResponseDto
-  status: 200
-}
+export type searchSimilarResponse200 = SimilarResumesResponseDto
 
-export type searchSimilarResponseSuccess = (searchSimilarResponse200) & {
-  headers: Headers;
-};
+export type searchSimilarResponseSuccess = searchSimilarResponse200
 ;
 
 export type searchSimilarResponse = (searchSimilarResponseSuccess)

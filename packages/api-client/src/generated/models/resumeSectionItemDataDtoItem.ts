@@ -36,4 +36,12 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export type ResumeSectionItemDataDtoItem = {[key: string]: unknown};
+export type ResumeSectionItemDataDtoItem = {
+  id: string;
+  resumeSectionId: string;
+  content: unknown;
+  isVisible: boolean;
+  order: number;
+  createdAt: unknown;
+  updatedAt: unknown;
+};

@@ -13,11 +13,11 @@
 		query: { enabled: browser, refetchInterval: 10000 }
 	}));
 
-	const rawData = $derived(metricsQuery.data as Record<string, unknown> | undefined);
-	const counters = $derived((rawData?.counters as Record<string, number> | undefined) ?? {});
-	const gauges = $derived((rawData?.gauges as Record<string, number> | undefined) ?? {});
-	const process = $derived((rawData?.process as Record<string, number> | undefined) ?? {});
-	const latency = $derived((rawData?.latency as Record<string, unknown>[] | undefined) ?? []);
+	const data = $derived(metricsQuery.data);
+	const counters = $derived(data?.counters);
+	const gauges = $derived(data?.gauges);
+	const process = $derived(data?.process);
+	const latency = $derived(data?.latency);
 
 	function formatUptime(seconds: number): string {
 		const days = Math.floor(seconds / 86400);
@@ -35,7 +35,7 @@
 	}
 
 	const maxRequests = $derived(
-		latency.length > 0 ? Math.max(...latency.map(r => r.totalRequests as number), 1) : 1
+		latency?.length ? Math.max(...latency.map(r => r.totalRequests), 1) : 1
 	);
 
 	const columns = [
@@ -66,30 +66,30 @@
 		<div class="flex items-center justify-center py-20">
 			<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 		</div>
-	{:else if rawData}
+	{:else if data}
 		<!-- Process Stats -->
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-			<StatCard label="Uptime" value={formatUptime(process.uptimeSeconds ?? 0)}>
+			<StatCard label="Uptime" value={formatUptime(process?.uptimeSeconds ?? 0)}>
 				{#snippet icon()}<Clock size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
-			<StatCard label="Heap Used" value={`${process.heapUsedMb ?? 0} MB`}>
+			<StatCard label="Heap Used" value={`${process?.heapUsedMb ?? 0} MB`}>
 				{#snippet icon()}<HardDrive size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
-			<StatCard label="Heap Total" value={`${process.heapTotalMb ?? 0} MB`}>
+			<StatCard label="Heap Total" value={`${process?.heapTotalMb ?? 0} MB`}>
 				{#snippet icon()}<Cpu size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
-			<StatCard label="Event Loop Lag" value={`${process.eventLoopLagMs ?? 0} ms`}>
+			<StatCard label="Event Loop Lag" value={`${process?.eventLoopLagMs ?? 0} ms`}>
 				{#snippet icon()}<Zap size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
 		</div>
 
 		<!-- Business Counters -->
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
-			<StatCard label="Resumes Created" value={counters.resumeCreated ?? 0} />
-			<StatCard label="User Signups" value={counters.userSignups ?? 0} />
-			<StatCard label="Exports Done" value={counters.exportCompleted ?? 0} />
-			<StatCard label="Active Users" value={gauges.activeUsers ?? 0} />
-			<StatCard label="Pending Exports" value={gauges.pendingExports ?? 0} />
+			<StatCard label="Resumes Created" value={counters?.resumeCreated ?? 0} />
+			<StatCard label="User Signups" value={counters?.userSignups ?? 0} />
+			<StatCard label="Exports Done" value={counters?.exportCompleted ?? 0} />
+			<StatCard label="Active Users" value={gauges?.activeUsers ?? 0} />
+			<StatCard label="Pending Exports" value={gauges?.pendingExports ?? 0} />
 		</div>
 
 		<!-- Latency per Route -->
@@ -98,28 +98,28 @@
 				Endpoint Latency
 			</h2>
 
-			{#if latency.length > 0}
+			{#if latency?.length}
 				<DataTable
 					{columns}
 					data={latency}
 					emptyMessage="No requests recorded yet"
 				>
-					{#snippet cell({ row, key })}
+					{#snippet cell({ row, key, value })}
 						{#if key === 'route'}
 							<span class="font-mono text-xs">{row.route}</span>
 						{:else if key === 'totalRequests'}
 							<span class="font-mono text-xs">{row.totalRequests}</span>
 						{:else if key === 'avgLatencyMs'}
-							<span class="font-mono text-xs {latencyColor(row.avgLatencyMs as number)}">
+							<span class="font-mono text-xs {latencyColor(row.avgLatencyMs)}">
 								{row.avgLatencyMs} ms
 							</span>
 						{:else if key === 'bar'}
-							{@const pct = ((row.totalRequests as number) / maxRequests) * 100}
+							{@const pct = (row.totalRequests / maxRequests) * 100}
 							<div class="h-2 w-full rounded-full bg-gray-200 dark:bg-neutral-700">
 								<div class="h-full rounded-full bg-gray-700 dark:bg-neutral-400" style="width: {pct}%"></div>
 							</div>
 						{:else}
-							{row[key] ?? '—'}
+							{value ?? '—'}
 						{/if}
 					{/snippet}
 				</DataTable>

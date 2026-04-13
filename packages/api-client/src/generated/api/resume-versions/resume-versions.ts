@@ -71,14 +71,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary List resume versions (nested route)
  */
-export type resumeVersionGetVersionsNestedResponse200 = {
-  data: ResumeVersionListDataDto
-  status: 200
-}
+export type resumeVersionGetVersionsNestedResponse200 = ResumeVersionListDataDto
 
-export type resumeVersionGetVersionsNestedResponseSuccess = (resumeVersionGetVersionsNestedResponse200) & {
-  headers: Headers;
-};
+export type resumeVersionGetVersionsNestedResponseSuccess = resumeVersionGetVersionsNestedResponse200
 ;
 
 export type resumeVersionGetVersionsNestedResponse = (resumeVersionGetVersionsNestedResponseSuccess)
@@ -232,14 +227,9 @@ export const prefetchResumeVersionGetVersionsNestedQuery = async <TData = Awaite
 /**
  * @summary Restore resume version (nested route)
  */
-export type resumeVersionRestoreVersionNestedResponse200 = {
-  data: ResumeVersionRestoreDataDto
-  status: 200
-}
+export type resumeVersionRestoreVersionNestedResponse200 = ResumeVersionRestoreDataDto
 
-export type resumeVersionRestoreVersionNestedResponseSuccess = (resumeVersionRestoreVersionNestedResponse200) & {
-  headers: Headers;
-};
+export type resumeVersionRestoreVersionNestedResponseSuccess = resumeVersionRestoreVersionNestedResponse200
 ;
 
 export type resumeVersionRestoreVersionNestedResponse = (resumeVersionRestoreVersionNestedResponseSuccess)
@@ -315,14 +305,9 @@ export const createResumeVersionRestoreVersionNested = <TError = unknown,
     /**
  * @summary List resume versions
  */
-export type resumeVersionGetVersionsResponse200 = {
-  data: ResumeVersionListDataDto
-  status: 200
-}
+export type resumeVersionGetVersionsResponse200 = ResumeVersionListDataDto
 
-export type resumeVersionGetVersionsResponseSuccess = (resumeVersionGetVersionsResponse200) & {
-  headers: Headers;
-};
+export type resumeVersionGetVersionsResponseSuccess = resumeVersionGetVersionsResponse200
 ;
 
 export type resumeVersionGetVersionsResponse = (resumeVersionGetVersionsResponseSuccess)
@@ -476,14 +461,9 @@ export const prefetchResumeVersionGetVersionsQuery = async <TData = Awaited<Retu
 /**
  * @summary Get a specific resume version
  */
-export type resumeVersionGetVersionResponse200 = {
-  data: ResumeVersionDataDto
-  status: 200
-}
+export type resumeVersionGetVersionResponse200 = ResumeVersionDataDto
 
-export type resumeVersionGetVersionResponseSuccess = (resumeVersionGetVersionResponse200) & {
-  headers: Headers;
-};
+export type resumeVersionGetVersionResponseSuccess = resumeVersionGetVersionResponse200
 ;
 
 export type resumeVersionGetVersionResponse = (resumeVersionGetVersionResponseSuccess)
@@ -649,14 +629,9 @@ export const prefetchResumeVersionGetVersionQuery = async <TData = Awaited<Retur
 /**
  * @summary Restore resume version
  */
-export type resumeVersionRestoreVersionResponse200 = {
-  data: ResumeVersionRestoreDataDto
-  status: 200
-}
+export type resumeVersionRestoreVersionResponse200 = ResumeVersionRestoreDataDto
 
-export type resumeVersionRestoreVersionResponseSuccess = (resumeVersionRestoreVersionResponse200) & {
-  headers: Headers;
-};
+export type resumeVersionRestoreVersionResponseSuccess = resumeVersionRestoreVersionResponse200
 ;
 
 export type resumeVersionRestoreVersionResponse = (resumeVersionRestoreVersionResponseSuccess)

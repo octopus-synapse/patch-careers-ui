@@ -71,29 +71,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Create share link for a resume
  */
-export type resumesCreateShareResponse201 = {
-  data: ShareCreateDataDto
-  status: 201
-}
+export type resumesCreateShareResponse201 = ShareCreateDataDto
 
-export type resumesCreateShareResponse401 = {
-  data: void
-  status: 401
-}
+export type resumesCreateShareResponseSuccess = resumesCreateShareResponse201
+;
 
-export type resumesCreateShareResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumesCreateShareResponseSuccess = (resumesCreateShareResponse201) & {
-  headers: Headers;
-};
-export type resumesCreateShareResponseError = (resumesCreateShareResponse401 | resumesCreateShareResponse403) & {
-  headers: Headers;
-};
-
-export type resumesCreateShareResponse = (resumesCreateShareResponseSuccess | resumesCreateShareResponseError)
+export type resumesCreateShareResponse = (resumesCreateShareResponseSuccess)
 
 export const getResumesCreateShareUrl = () => {
 
@@ -117,7 +100,7 @@ export const resumesCreateShare = async ( options?: RequestInit): Promise<resume
 
 
 
-export const getResumesCreateShareMutationOptions = <TError = void,
+export const getResumesCreateShareMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesCreateShare>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumesCreateShare>>, TError,void, TContext> => {
 
@@ -146,12 +129,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumesCreateShareMutationResult = NonNullable<Awaited<ReturnType<typeof resumesCreateShare>>>
 
-    export type ResumesCreateShareMutationError = void
+    export type ResumesCreateShareMutationError = unknown
 
     /**
  * @summary Create share link for a resume
  */
-export const createResumesCreateShare = <TError = void,
+export const createResumesCreateShare = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesCreateShare>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumesCreateShare>>,
@@ -164,29 +147,12 @@ export const createResumesCreateShare = <TError = void,
     /**
  * @summary List share links for a resume
  */
-export type resumesListResumeSharesResponse200 = {
-  data: ShareListDataDto
-  status: 200
-}
+export type resumesListResumeSharesResponse200 = ShareListDataDto
 
-export type resumesListResumeSharesResponse401 = {
-  data: void
-  status: 401
-}
+export type resumesListResumeSharesResponseSuccess = resumesListResumeSharesResponse200
+;
 
-export type resumesListResumeSharesResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumesListResumeSharesResponseSuccess = (resumesListResumeSharesResponse200) & {
-  headers: Headers;
-};
-export type resumesListResumeSharesResponseError = (resumesListResumeSharesResponse401 | resumesListResumeSharesResponse403) & {
-  headers: Headers;
-};
-
-export type resumesListResumeSharesResponse = (resumesListResumeSharesResponseSuccess | resumesListResumeSharesResponseError)
+export type resumesListResumeSharesResponse = (resumesListResumeSharesResponseSuccess)
 
 export const getResumesListResumeSharesUrl = (resumeId: string,) => {
 
@@ -224,7 +190,7 @@ export const getResumesListResumeSharesQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumesListResumeSharesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumesListResumeShares>>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumesListResumeSharesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumesListResumeShares>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -243,14 +209,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumesListResumeSharesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListResumeShares>>>
-export type ResumesListResumeSharesInfiniteQueryError = void
+export type ResumesListResumeSharesInfiniteQueryError = unknown
 
 
 /**
  * @summary List share links for a resume
  */
 
-export function createResumesListResumeSharesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumesListResumeShares>>>, TError = void>(
+export function createResumesListResumeSharesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumesListResumeShares>>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -265,7 +231,7 @@ export function createResumesListResumeSharesInfinite<TData = InfiniteData<Await
 /**
  * @summary List share links for a resume
  */
-export const prefetchResumesListResumeSharesInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = void>(
+export const prefetchResumesListResumeSharesInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -279,7 +245,7 @@ export const prefetchResumesListResumeSharesInfiniteQuery = async <TData = Await
 
 
 
-export const getResumesListResumeSharesQueryOptions = <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = void>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumesListResumeSharesQueryOptions = <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -298,14 +264,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumesListResumeSharesQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListResumeShares>>>
-export type ResumesListResumeSharesQueryError = void
+export type ResumesListResumeSharesQueryError = unknown
 
 
 /**
  * @summary List share links for a resume
  */
 
-export function createResumesListResumeShares<TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = void>(
+export function createResumesListResumeShares<TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = unknown>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -320,7 +286,7 @@ export function createResumesListResumeShares<TData = Awaited<ReturnType<typeof 
 /**
  * @summary List share links for a resume
  */
-export const prefetchResumesListResumeSharesQuery = async <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = void>(
+export const prefetchResumesListResumeSharesQuery = async <TData = Awaited<ReturnType<typeof resumesListResumeShares>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListResumeShares>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -337,29 +303,12 @@ export const prefetchResumesListResumeSharesQuery = async <TData = Awaited<Retur
 /**
  * @summary Delete a share link
  */
-export type resumesDeleteShareResponse200 = {
-  data: ShareDeleteDataDto
-  status: 200
-}
+export type resumesDeleteShareResponse200 = ShareDeleteDataDto
 
-export type resumesDeleteShareResponse401 = {
-  data: void
-  status: 401
-}
+export type resumesDeleteShareResponseSuccess = resumesDeleteShareResponse200
+;
 
-export type resumesDeleteShareResponse403 = {
-  data: void
-  status: 403
-}
-
-export type resumesDeleteShareResponseSuccess = (resumesDeleteShareResponse200) & {
-  headers: Headers;
-};
-export type resumesDeleteShareResponseError = (resumesDeleteShareResponse401 | resumesDeleteShareResponse403) & {
-  headers: Headers;
-};
-
-export type resumesDeleteShareResponse = (resumesDeleteShareResponseSuccess | resumesDeleteShareResponseError)
+export type resumesDeleteShareResponse = (resumesDeleteShareResponseSuccess)
 
 export const getResumesDeleteShareUrl = (shareId: string,) => {
 
@@ -383,7 +332,7 @@ export const resumesDeleteShare = async (shareId: string, options?: RequestInit)
 
 
 
-export const getResumesDeleteShareMutationOptions = <TError = void,
+export const getResumesDeleteShareMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesDeleteShare>>, TError,{shareId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumesDeleteShare>>, TError,{shareId: string}, TContext> => {
 
@@ -412,12 +361,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumesDeleteShareMutationResult = NonNullable<Awaited<ReturnType<typeof resumesDeleteShare>>>
 
-    export type ResumesDeleteShareMutationError = void
+    export type ResumesDeleteShareMutationError = unknown
 
     /**
  * @summary Delete a share link
  */
-export const createResumesDeleteShare = <TError = void,
+export const createResumesDeleteShare = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesDeleteShare>>, TError,{shareId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumesDeleteShare>>,

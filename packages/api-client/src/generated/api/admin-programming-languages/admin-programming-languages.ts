@@ -56,7 +56,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AdminProgrammingLanguagesFindAllParams
+  AdminProgrammingLanguagesFindAllParams,
+  ProgrammingLanguageDataDto,
+  ProgrammingLanguageListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -69,29 +71,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary List all programming languages
  */
-export type adminProgrammingLanguagesFindAllResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesFindAllResponse200 = ProgrammingLanguageListDataDto
 
-export type adminProgrammingLanguagesFindAllResponse401 = {
-  data: void
-  status: 401
-}
+export type adminProgrammingLanguagesFindAllResponseSuccess = adminProgrammingLanguagesFindAllResponse200
+;
 
-export type adminProgrammingLanguagesFindAllResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminProgrammingLanguagesFindAllResponseSuccess = (adminProgrammingLanguagesFindAllResponse200) & {
-  headers: Headers;
-};
-export type adminProgrammingLanguagesFindAllResponseError = (adminProgrammingLanguagesFindAllResponse401 | adminProgrammingLanguagesFindAllResponse403) & {
-  headers: Headers;
-};
-
-export type adminProgrammingLanguagesFindAllResponse = (adminProgrammingLanguagesFindAllResponseSuccess | adminProgrammingLanguagesFindAllResponseError)
+export type adminProgrammingLanguagesFindAllResponse = (adminProgrammingLanguagesFindAllResponseSuccess)
 
 export const getAdminProgrammingLanguagesFindAllUrl = (params?: AdminProgrammingLanguagesFindAllParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -136,7 +121,7 @@ export const getAdminProgrammingLanguagesFindAllQueryKey = (params?: AdminProgra
     }
 
 
-export const getAdminProgrammingLanguagesFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>, TError = void>(params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminProgrammingLanguagesFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>, TError = unknown>(params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -155,14 +140,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminProgrammingLanguagesFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>
-export type AdminProgrammingLanguagesFindAllInfiniteQueryError = void
+export type AdminProgrammingLanguagesFindAllInfiniteQueryError = unknown
 
 
 /**
  * @summary List all programming languages
  */
 
-export function createAdminProgrammingLanguagesFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>, TError = void>(
+export function createAdminProgrammingLanguagesFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>, TError = unknown>(
  params?: () =>  AdminProgrammingLanguagesFindAllParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -177,7 +162,7 @@ export function createAdminProgrammingLanguagesFindAllInfinite<TData = InfiniteD
 /**
  * @summary List all programming languages
  */
-export const prefetchAdminProgrammingLanguagesFindAllInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = void>(
+export const prefetchAdminProgrammingLanguagesFindAllInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -191,7 +176,7 @@ export const prefetchAdminProgrammingLanguagesFindAllInfiniteQuery = async <TDat
 
 
 
-export const getAdminProgrammingLanguagesFindAllQueryOptions = <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = void>(params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminProgrammingLanguagesFindAllQueryOptions = <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = unknown>(params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -210,14 +195,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminProgrammingLanguagesFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>>
-export type AdminProgrammingLanguagesFindAllQueryError = void
+export type AdminProgrammingLanguagesFindAllQueryError = unknown
 
 
 /**
  * @summary List all programming languages
  */
 
-export function createAdminProgrammingLanguagesFindAll<TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = void>(
+export function createAdminProgrammingLanguagesFindAll<TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = unknown>(
  params?: () =>  AdminProgrammingLanguagesFindAllParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -232,7 +217,7 @@ export function createAdminProgrammingLanguagesFindAll<TData = Awaited<ReturnTyp
 /**
  * @summary List all programming languages
  */
-export const prefetchAdminProgrammingLanguagesFindAllQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = void>(
+export const prefetchAdminProgrammingLanguagesFindAllQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError = unknown>(
  queryClient: QueryClient, params?: AdminProgrammingLanguagesFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -249,29 +234,12 @@ export const prefetchAdminProgrammingLanguagesFindAllQuery = async <TData = Awai
 /**
  * @summary Create programming language
  */
-export type adminProgrammingLanguagesCreateResponse201 = {
-  data: void
-  status: 201
-}
+export type adminProgrammingLanguagesCreateResponse201 = ProgrammingLanguageDataDto
 
-export type adminProgrammingLanguagesCreateResponse401 = {
-  data: void
-  status: 401
-}
+export type adminProgrammingLanguagesCreateResponseSuccess = adminProgrammingLanguagesCreateResponse201
+;
 
-export type adminProgrammingLanguagesCreateResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminProgrammingLanguagesCreateResponseSuccess = (adminProgrammingLanguagesCreateResponse201) & {
-  headers: Headers;
-};
-export type adminProgrammingLanguagesCreateResponseError = (adminProgrammingLanguagesCreateResponse401 | adminProgrammingLanguagesCreateResponse403) & {
-  headers: Headers;
-};
-
-export type adminProgrammingLanguagesCreateResponse = (adminProgrammingLanguagesCreateResponseSuccess | adminProgrammingLanguagesCreateResponseError)
+export type adminProgrammingLanguagesCreateResponse = (adminProgrammingLanguagesCreateResponseSuccess)
 
 export const getAdminProgrammingLanguagesCreateUrl = () => {
 
@@ -295,7 +263,7 @@ export const adminProgrammingLanguagesCreate = async ( options?: RequestInit): P
 
 
 
-export const getAdminProgrammingLanguagesCreateMutationOptions = <TError = void,
+export const getAdminProgrammingLanguagesCreateMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesCreate>>, TError,void, TContext> => {
 
@@ -324,12 +292,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminProgrammingLanguagesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesCreate>>>
 
-    export type AdminProgrammingLanguagesCreateMutationError = void
+    export type AdminProgrammingLanguagesCreateMutationError = unknown
 
     /**
  * @summary Create programming language
  */
-export const createAdminProgrammingLanguagesCreate = <TError = void,
+export const createAdminProgrammingLanguagesCreate = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminProgrammingLanguagesCreate>>,
@@ -342,29 +310,12 @@ export const createAdminProgrammingLanguagesCreate = <TError = void,
     /**
  * @summary Get programming language by slug
  */
-export type adminProgrammingLanguagesFindOneResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesFindOneResponse200 = ProgrammingLanguageDataDto
 
-export type adminProgrammingLanguagesFindOneResponse401 = {
-  data: void
-  status: 401
-}
+export type adminProgrammingLanguagesFindOneResponseSuccess = adminProgrammingLanguagesFindOneResponse200
+;
 
-export type adminProgrammingLanguagesFindOneResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminProgrammingLanguagesFindOneResponseSuccess = (adminProgrammingLanguagesFindOneResponse200) & {
-  headers: Headers;
-};
-export type adminProgrammingLanguagesFindOneResponseError = (adminProgrammingLanguagesFindOneResponse401 | adminProgrammingLanguagesFindOneResponse403) & {
-  headers: Headers;
-};
-
-export type adminProgrammingLanguagesFindOneResponse = (adminProgrammingLanguagesFindOneResponseSuccess | adminProgrammingLanguagesFindOneResponseError)
+export type adminProgrammingLanguagesFindOneResponse = (adminProgrammingLanguagesFindOneResponseSuccess)
 
 export const getAdminProgrammingLanguagesFindOneUrl = (slug: string,) => {
 
@@ -402,7 +353,7 @@ export const getAdminProgrammingLanguagesFindOneQueryKey = (slug: string,) => {
     }
 
 
-export const getAdminProgrammingLanguagesFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>, TError = void>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminProgrammingLanguagesFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -421,14 +372,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminProgrammingLanguagesFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>
-export type AdminProgrammingLanguagesFindOneInfiniteQueryError = void
+export type AdminProgrammingLanguagesFindOneInfiniteQueryError = unknown
 
 
 /**
  * @summary Get programming language by slug
  */
 
-export function createAdminProgrammingLanguagesFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>, TError = void>(
+export function createAdminProgrammingLanguagesFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>, TError = unknown>(
  slug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -443,7 +394,7 @@ export function createAdminProgrammingLanguagesFindOneInfinite<TData = InfiniteD
 /**
  * @summary Get programming language by slug
  */
-export const prefetchAdminProgrammingLanguagesFindOneInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = void>(
+export const prefetchAdminProgrammingLanguagesFindOneInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = unknown>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -457,7 +408,7 @@ export const prefetchAdminProgrammingLanguagesFindOneInfiniteQuery = async <TDat
 
 
 
-export const getAdminProgrammingLanguagesFindOneQueryOptions = <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = void>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminProgrammingLanguagesFindOneQueryOptions = <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -476,14 +427,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminProgrammingLanguagesFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>>
-export type AdminProgrammingLanguagesFindOneQueryError = void
+export type AdminProgrammingLanguagesFindOneQueryError = unknown
 
 
 /**
  * @summary Get programming language by slug
  */
 
-export function createAdminProgrammingLanguagesFindOne<TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = void>(
+export function createAdminProgrammingLanguagesFindOne<TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = unknown>(
  slug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -498,7 +449,7 @@ export function createAdminProgrammingLanguagesFindOne<TData = Awaited<ReturnTyp
 /**
  * @summary Get programming language by slug
  */
-export const prefetchAdminProgrammingLanguagesFindOneQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = void>(
+export const prefetchAdminProgrammingLanguagesFindOneQuery = async <TData = Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError = unknown>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesFindOne>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -515,29 +466,12 @@ export const prefetchAdminProgrammingLanguagesFindOneQuery = async <TData = Awai
 /**
  * @summary Update programming language
  */
-export type adminProgrammingLanguagesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesUpdateResponse200 = ProgrammingLanguageDataDto
 
-export type adminProgrammingLanguagesUpdateResponse401 = {
-  data: void
-  status: 401
-}
+export type adminProgrammingLanguagesUpdateResponseSuccess = adminProgrammingLanguagesUpdateResponse200
+;
 
-export type adminProgrammingLanguagesUpdateResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminProgrammingLanguagesUpdateResponseSuccess = (adminProgrammingLanguagesUpdateResponse200) & {
-  headers: Headers;
-};
-export type adminProgrammingLanguagesUpdateResponseError = (adminProgrammingLanguagesUpdateResponse401 | adminProgrammingLanguagesUpdateResponse403) & {
-  headers: Headers;
-};
-
-export type adminProgrammingLanguagesUpdateResponse = (adminProgrammingLanguagesUpdateResponseSuccess | adminProgrammingLanguagesUpdateResponseError)
+export type adminProgrammingLanguagesUpdateResponse = (adminProgrammingLanguagesUpdateResponseSuccess)
 
 export const getAdminProgrammingLanguagesUpdateUrl = (slug: string,) => {
 
@@ -561,7 +495,7 @@ export const adminProgrammingLanguagesUpdate = async (slug: string, options?: Re
 
 
 
-export const getAdminProgrammingLanguagesUpdateMutationOptions = <TError = void,
+export const getAdminProgrammingLanguagesUpdateMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesUpdate>>, TError,{slug: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesUpdate>>, TError,{slug: string}, TContext> => {
 
@@ -590,12 +524,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminProgrammingLanguagesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesUpdate>>>
 
-    export type AdminProgrammingLanguagesUpdateMutationError = void
+    export type AdminProgrammingLanguagesUpdateMutationError = unknown
 
     /**
  * @summary Update programming language
  */
-export const createAdminProgrammingLanguagesUpdate = <TError = void,
+export const createAdminProgrammingLanguagesUpdate = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesUpdate>>, TError,{slug: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminProgrammingLanguagesUpdate>>,
@@ -608,29 +542,12 @@ export const createAdminProgrammingLanguagesUpdate = <TError = void,
     /**
  * @summary Delete programming language
  */
-export type adminProgrammingLanguagesRemoveResponse204 = {
-  data: void
-  status: 204
-}
+export type adminProgrammingLanguagesRemoveResponse204 = void
 
-export type adminProgrammingLanguagesRemoveResponse401 = {
-  data: void
-  status: 401
-}
+export type adminProgrammingLanguagesRemoveResponseSuccess = adminProgrammingLanguagesRemoveResponse204
+;
 
-export type adminProgrammingLanguagesRemoveResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminProgrammingLanguagesRemoveResponseSuccess = (adminProgrammingLanguagesRemoveResponse204) & {
-  headers: Headers;
-};
-export type adminProgrammingLanguagesRemoveResponseError = (adminProgrammingLanguagesRemoveResponse401 | adminProgrammingLanguagesRemoveResponse403) & {
-  headers: Headers;
-};
-
-export type adminProgrammingLanguagesRemoveResponse = (adminProgrammingLanguagesRemoveResponseSuccess | adminProgrammingLanguagesRemoveResponseError)
+export type adminProgrammingLanguagesRemoveResponse = (adminProgrammingLanguagesRemoveResponseSuccess)
 
 export const getAdminProgrammingLanguagesRemoveUrl = (slug: string,) => {
 
@@ -654,7 +571,7 @@ export const adminProgrammingLanguagesRemove = async (slug: string, options?: Re
 
 
 
-export const getAdminProgrammingLanguagesRemoveMutationOptions = <TError = void,
+export const getAdminProgrammingLanguagesRemoveMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesRemove>>, TError,{slug: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesRemove>>, TError,{slug: string}, TContext> => {
 
@@ -683,12 +600,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminProgrammingLanguagesRemoveMutationResult = NonNullable<Awaited<ReturnType<typeof adminProgrammingLanguagesRemove>>>
 
-    export type AdminProgrammingLanguagesRemoveMutationError = void
+    export type AdminProgrammingLanguagesRemoveMutationError = unknown
 
     /**
  * @summary Delete programming language
  */
-export const createAdminProgrammingLanguagesRemove = <TError = void,
+export const createAdminProgrammingLanguagesRemove = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminProgrammingLanguagesRemove>>, TError,{slug: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminProgrammingLanguagesRemove>>,

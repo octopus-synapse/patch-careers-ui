@@ -26,7 +26,7 @@
 	const t = $derived(locale.t);
 
 	const auth = createAuthSession(() => ({ query: { retry: false } }));
-	const authenticated = $derived(auth.data?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.authenticated);
 
 	$effect(() => {
 		if (!auth.isLoading && !authenticated) {
@@ -46,14 +46,16 @@
 		queryClient.invalidateQueries({ queryKey });
 	}
 
+	type Step = { id: string; label: string; description: string; icon?: string; component: string; fields?: Array<{ key: string; type: string; label: string; required: boolean; options?: string[]; widget?: string }>; multipleItems?: boolean; sectionTypeKey?: string; data?: Array<{ id: string; name: string; category: string; tags: string[]; thumbnailUrl?: string | null }> };
+
 	const onboardingData = $derived(session.data);
-	const steps = $derived(onboardingData?.steps ?? []);
+	const steps = $derived((onboardingData?.steps ?? []) as Step[]);
 	const currentStepId = $derived(onboardingData?.currentStep ?? '');
-	const currentStep = $derived(steps.find((s: Record<string, unknown>) => s.id === currentStepId));
+	const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
 	const completedSteps = $derived(onboardingData?.completedSteps ?? []);
 	const progress = $derived(onboardingData?.progress ?? 0);
-	const strength = $derived((onboardingData as Record<string, unknown> | undefined)?.strength as { score: number; message: string; level: string } | undefined);
-	const missingRequired = $derived(((onboardingData as Record<string, unknown> | undefined)?.missingRequired as string[]) ?? []);
+	const strength = $derived(onboardingData?.strength);
+	const missingRequired = $derived(onboardingData?.missingRequired);
 	const isLastStep = $derived(!onboardingData?.nextStep || currentStep?.component === 'review');
 
 	let stepData = $state<Record<string, string>>({});
@@ -71,7 +73,7 @@
 				if (section?.items) {
 					multiItems = [...section.items];
 				}
-			} else {
+			} else if (currentStepId) {
 				const saved = getSavedDataForStep(currentStepId);
 				if (saved) stepData = saved;
 			}
@@ -79,16 +81,18 @@
 	});
 
 	function getSavedDataForStep(stepId: string): Record<string, string> | null {
-		if (!onboardingData) return null;
-		const step = steps.find((s: Record<string, unknown>) => s.id === stepId);
+		if (!onboardingData || !steps) return null;
+		const step = steps.find((s) => s.id === stepId);
 		if (!step?.fields) return null;
 
 		const result: Record<string, string> = {};
+		const pi = onboardingData.personalInfo as Record<string, unknown> | undefined;
+		const pp = onboardingData.professionalProfile as Record<string, unknown> | undefined;
+		const ts = onboardingData.templateSelection as Record<string, unknown> | undefined;
 		for (const field of step.fields) {
-			const val = (onboardingData as unknown as Record<string, unknown>)[field.key]
-				?? (onboardingData.personalInfo as Record<string, unknown> | undefined)?.[field.key]
-				?? (onboardingData.professionalProfile as Record<string, unknown> | undefined)?.[field.key]
-				?? (onboardingData.templateSelection as Record<string, unknown> | undefined)?.[field.key];
+			const val = pi?.[field.key]
+				?? pp?.[field.key]
+				?? ts?.[field.key];
 			if (val != null) result[field.key] = String(val);
 		}
 		return Object.keys(result).length > 0 ? result : null;
@@ -112,9 +116,7 @@
 		mutation: {
 			async onSuccess() {
 				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				const sessionData = auth.data as Record<string, unknown> | undefined;
-				const user = sessionData?.user as Record<string, string | null> | undefined;
-				const username = user?.username;
+				const username = auth.data?.user?.username;
 				goto(username ? `/@${username}` : '/');
 			},
 			onError(err: unknown) {
@@ -248,23 +250,23 @@
 							{completedSteps}
 							ongoto={handleGoto}
 						/>
-					{:else if currentStep.component === 'template' && (currentStep as unknown as Record<string, unknown>).data}
-						{@const stepThemes = (currentStep as unknown as Record<string, unknown>).data as Array<{ id: string; name: string; description?: string | null; category: string; tags: string[]; atsScore?: number | null; thumbnailUrl?: string | null }>}
+					{:else if currentStep.component === 'template' && currentStep.data}
+						{@const stepThemes = currentStep.data}
 						<StepTheme
 							themes={stepThemes}
 							selectedThemeId={stepData.templateId ?? ''}
 							onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
 						/>
-					{:else if currentStep.multipleItems}
+					{:else if currentStep.multipleItems && currentStep.fields}
 						<StepMultiItems
-							fields={currentStep.fields ?? []}
+							fields={currentStep.fields}
 							items={multiItems}
 							{t}
 							onupdate={(items) => (multiItems = items)}
 						/>
-					{:else}
+					{:else if currentStep.fields}
 						<StepForm
-							fields={currentStep.fields ?? []}
+							fields={currentStep.fields}
 							data={stepData}
 							onupdate={(d) => (stepData = d)}
 						/>
@@ -298,7 +300,7 @@
 							<div class="flex flex-col items-end gap-1">
 								<Button
 									onclick={handleComplete}
-									disabled={isPending || missingRequired.length > 0}
+									disabled={isPending || !!missingRequired?.length}
 									variant="solid"
 									class="max-w-[200px]"
 								>
@@ -333,7 +335,7 @@
 				</div>
 			<!-- Desktop preview -->
 			<div class="hidden xl:block flex-shrink-0">
-				<PreviewPanel token={(auth.data as unknown as Record<string, string> | undefined)?.accessToken} />
+				<PreviewPanel token={(auth.data as unknown as { accessToken?: string })?.accessToken} />
 			</div>
 		</div>
 		</main>

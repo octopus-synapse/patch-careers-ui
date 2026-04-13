@@ -19,10 +19,10 @@
 	let chatPage = $state(1);
 	let collabPage = $state(1);
 
-	const tabOptions = [
+	const tabOptions = $derived([
 		{ value: 'chat', label: t?.('admin.chat.chatTab') ?? 'Chat' },
 		{ value: 'collaborations', label: t?.('admin.chat.collaborationsTab') ?? 'Collaborations' },
-	];
+	]);
 
 	const chatStatsQuery = createAdminChatGetStats(() => ({
 		query: { enabled: browser }
@@ -39,28 +39,28 @@
 		() => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
 	);
 
-	const chatStats = $derived(chatStatsQuery.data as Record<string, unknown> | undefined);
-	const chatData = $derived(chatConversationsQuery.data as Record<string, unknown> | undefined);
-	const conversations = $derived((chatData?.items as Record<string, unknown>[]) ?? []);
-	const chatTotalPages = $derived((chatData?.totalPages as number) ?? 1);
+	const chatStats = $derived(chatStatsQuery.data);
+	const chatData = $derived(chatConversationsQuery.data);
+	const conversations = $derived(chatData?.items);
+	const chatTotalPages = $derived(chatData?.totalPages);
 
-	const collabStats = $derived(collabStatsQuery.data as Record<string, unknown> | undefined);
-	const collabData = $derived(collabListQuery.data as Record<string, unknown> | undefined);
-	const collaborations = $derived((collabData?.items as Record<string, unknown>[]) ?? []);
-	const collabTotalPages = $derived((collabData?.totalPages as number) ?? 1);
+	const collabStats = $derived(collabStatsQuery.data);
+	const collabData = $derived(collabListQuery.data);
+	const collaborations = $derived(collabData?.items);
+	const collabTotalPages = $derived(collabData?.totalPages);
 
-	const chatColumns = [
+	const chatColumns = $derived([
 		{ key: 'participants', label: t?.('admin.chat.participants') ?? 'Participants' },
 		{ key: 'lastMessage', label: t?.('admin.chat.lastMessage') ?? 'Last Message' },
 		{ key: 'lastMessageAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
-	];
+	]);
 
-	const collabColumns = [
+	const collabColumns = $derived([
 		{ key: 'user', label: t?.('admin.chat.user') ?? 'User' },
 		{ key: 'resume', label: t?.('admin.chat.resume') ?? 'Resume' },
 		{ key: 'role', label: t?.('admin.chat.collaboratorRole') ?? 'Role', width: '100px' },
 		{ key: 'invitedAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
-	];
+	]);
 </script>
 
 <svelte:head>
@@ -80,10 +80,10 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-		<StatCard label={t?.('admin.chat.totalConversations') ?? 'Conversations'} value={chatStats?.totalConversations as number ?? 0} />
-		<StatCard label={t?.('admin.chat.totalMessages') ?? 'Messages'} value={chatStats?.totalMessages as number ?? 0} />
-		<StatCard label={t?.('admin.chat.activeUsers') ?? 'Active Users'} value={chatStats?.activeChatUsers as number ?? 0} />
-		<StatCard label={t?.('admin.chat.totalCollaborations') ?? 'Collaborations'} value={collabStats?.totalCollaborations as number ?? 0} />
+		<StatCard label={t?.('admin.chat.totalConversations') ?? 'Conversations'} value={chatStats?.totalConversations ?? 0} />
+		<StatCard label={t?.('admin.chat.totalMessages') ?? 'Messages'} value={chatStats?.totalMessages ?? 0} />
+		<StatCard label={t?.('admin.chat.activeUsers') ?? 'Active Users'} value={chatStats?.activeChatUsers ?? 0} />
+		<StatCard label={t?.('admin.chat.totalCollaborations') ?? 'Collaborations'} value={collabStats?.totalCollaborations ?? 0} />
 	</div>
 
 	{#if activeTab === 'chat'}
@@ -93,10 +93,10 @@
 			loading={chatConversationsQuery.isLoading}
 			emptyMessage={t?.('admin.chat.noConversations') ?? 'No conversations'}
 		>
-			{#snippet cell({ row, key })}
+			{#snippet cell({ row, key, value })}
 				{#if key === 'participants'}
-					{@const p1 = row.participant1 as Record<string, unknown> | undefined}
-					{@const p2 = row.participant2 as Record<string, unknown> | undefined}
+					{@const p1 = row.participant1}
+					{@const p2 = row.participant2}
 					<span class="text-sm">
 						{p1?.name ?? p1?.email ?? '—'} & {p2?.name ?? p2?.email ?? '—'}
 					</span>
@@ -105,14 +105,14 @@
 						{row.lastMessageContent ?? '—'}
 					</span>
 				{:else if key === 'lastMessageAt'}
-					{row.lastMessageAt ? new Date(row.lastMessageAt as string).toLocaleDateString() : '—'}
+					{row.lastMessageAt ? new Date(row.lastMessageAt).toLocaleDateString() : '—'}
 				{:else}
-					{row[key] ?? '—'}
+					{value ?? '—'}
 				{/if}
 			{/snippet}
 		</DataTable>
 
-		{#if chatTotalPages > 1}
+		{#if chatTotalPages && chatTotalPages > 1}
 			<div class="flex justify-center">
 				<Pagination page={chatPage} totalPages={chatTotalPages} onpagechange={(p) => chatPage = p} />
 			</div>
@@ -124,22 +124,22 @@
 			loading={collabListQuery.isLoading}
 			emptyMessage={t?.('admin.chat.noCollaborations') ?? 'No collaborations'}
 		>
-			{#snippet cell({ row, key })}
+			{#snippet cell({ row, key, value })}
 				{#if key === 'user'}
-					{@const user = row.user as Record<string, unknown> | undefined}
+					{@const user = row.user}
 					<span class="text-sm">{user?.name ?? user?.email ?? '—'}</span>
 				{:else if key === 'resume'}
-					{@const resume = row.resume as Record<string, unknown> | undefined}
+					{@const resume = row.resume}
 					<span class="text-sm">{resume?.title ?? '—'}</span>
 				{:else if key === 'invitedAt'}
-					{row.invitedAt ? new Date(row.invitedAt as string).toLocaleDateString() : '—'}
+					{row.invitedAt ? new Date(row.invitedAt).toLocaleDateString() : '—'}
 				{:else}
-					{row[key] ?? '—'}
+					{value ?? '—'}
 				{/if}
 			{/snippet}
 		</DataTable>
 
-		{#if collabTotalPages > 1}
+		{#if collabTotalPages && collabTotalPages > 1}
 			<div class="flex justify-center">
 				<Pagination page={collabPage} totalPages={collabTotalPages} onpagechange={(p) => collabPage = p} />
 			</div>

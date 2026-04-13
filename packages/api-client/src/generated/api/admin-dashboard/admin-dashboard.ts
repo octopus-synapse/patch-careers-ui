@@ -51,6 +51,10 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  AdminDashboardMetricsDataDto
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -61,29 +65,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get platform metrics for admin dashboard
  */
-export type adminDashboardGetMetricsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminDashboardGetMetricsResponse200 = AdminDashboardMetricsDataDto
 
-export type adminDashboardGetMetricsResponse401 = {
-  data: void
-  status: 401
-}
+export type adminDashboardGetMetricsResponseSuccess = adminDashboardGetMetricsResponse200
+;
 
-export type adminDashboardGetMetricsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type adminDashboardGetMetricsResponseSuccess = (adminDashboardGetMetricsResponse200) & {
-  headers: Headers;
-};
-export type adminDashboardGetMetricsResponseError = (adminDashboardGetMetricsResponse401 | adminDashboardGetMetricsResponse403) & {
-  headers: Headers;
-};
-
-export type adminDashboardGetMetricsResponse = (adminDashboardGetMetricsResponseSuccess | adminDashboardGetMetricsResponseError)
+export type adminDashboardGetMetricsResponse = (adminDashboardGetMetricsResponseSuccess)
 
 export const getAdminDashboardGetMetricsUrl = () => {
 
@@ -121,7 +108,7 @@ export const getAdminDashboardGetMetricsQueryKey = () => {
     }
 
 
-export const getAdminDashboardGetMetricsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminDashboardGetMetrics>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminDashboardGetMetricsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminDashboardGetMetrics>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -140,14 +127,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminDashboardGetMetricsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminDashboardGetMetrics>>>
-export type AdminDashboardGetMetricsInfiniteQueryError = void
+export type AdminDashboardGetMetricsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get platform metrics for admin dashboard
  */
 
-export function createAdminDashboardGetMetricsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminDashboardGetMetrics>>>, TError = void>(
+export function createAdminDashboardGetMetricsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminDashboardGetMetrics>>>, TError = unknown>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -162,7 +149,7 @@ export function createAdminDashboardGetMetricsInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get platform metrics for admin dashboard
  */
-export const prefetchAdminDashboardGetMetricsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = void>(
+export const prefetchAdminDashboardGetMetricsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -176,7 +163,7 @@ export const prefetchAdminDashboardGetMetricsInfiniteQuery = async <TData = Awai
 
 
 
-export const getAdminDashboardGetMetricsQueryOptions = <TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminDashboardGetMetricsQueryOptions = <TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -195,14 +182,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminDashboardGetMetricsQueryResult = NonNullable<Awaited<ReturnType<typeof adminDashboardGetMetrics>>>
-export type AdminDashboardGetMetricsQueryError = void
+export type AdminDashboardGetMetricsQueryError = unknown
 
 
 /**
  * @summary Get platform metrics for admin dashboard
  */
 
-export function createAdminDashboardGetMetrics<TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = void>(
+export function createAdminDashboardGetMetrics<TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = unknown>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -217,7 +204,7 @@ export function createAdminDashboardGetMetrics<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get platform metrics for admin dashboard
  */
-export const prefetchAdminDashboardGetMetricsQuery = async <TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = void>(
+export const prefetchAdminDashboardGetMetricsQuery = async <TData = Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError = unknown>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminDashboardGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

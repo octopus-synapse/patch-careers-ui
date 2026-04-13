@@ -74,14 +74,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Check translation service health
  */
-export type translationHealthCheckResponse200 = {
-  data: HealthCheckResponseDto
-  status: 200
-}
+export type translationHealthCheckResponse200 = HealthCheckResponseDto
 
-export type translationHealthCheckResponseSuccess = (translationHealthCheckResponse200) & {
-  headers: Headers;
-};
+export type translationHealthCheckResponseSuccess = translationHealthCheckResponse200
 ;
 
 export type translationHealthCheckResponse = (translationHealthCheckResponseSuccess)
@@ -235,29 +230,12 @@ export const prefetchTranslationHealthCheckQuery = async <TData = Awaited<Return
 /**
  * @summary Translate a single text
  */
-export type translationTranslateTextResponse201 = {
-  data: TranslationResultDto
-  status: 201
-}
+export type translationTranslateTextResponse201 = TranslationResultDto
 
-export type translationTranslateTextResponse401 = {
-  data: void
-  status: 401
-}
+export type translationTranslateTextResponseSuccess = translationTranslateTextResponse201
+;
 
-export type translationTranslateTextResponse403 = {
-  data: void
-  status: 403
-}
-
-export type translationTranslateTextResponseSuccess = (translationTranslateTextResponse201) & {
-  headers: Headers;
-};
-export type translationTranslateTextResponseError = (translationTranslateTextResponse401 | translationTranslateTextResponse403) & {
-  headers: Headers;
-};
-
-export type translationTranslateTextResponse = (translationTranslateTextResponseSuccess | translationTranslateTextResponseError)
+export type translationTranslateTextResponse = (translationTranslateTextResponseSuccess)
 
 export const getTranslationTranslateTextUrl = () => {
 
@@ -282,7 +260,7 @@ export const translationTranslateText = async (translateTextDto: TranslateTextDt
 
 
 
-export const getTranslationTranslateTextMutationOptions = <TError = void,
+export const getTranslationTranslateTextMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateText>>, TError,{data: TranslateTextDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateText>>, TError,{data: TranslateTextDto}, TContext> => {
 
@@ -311,12 +289,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TranslationTranslateTextMutationResult = NonNullable<Awaited<ReturnType<typeof translationTranslateText>>>
     export type TranslationTranslateTextMutationBody = TranslateTextDto
-    export type TranslationTranslateTextMutationError = void
+    export type TranslationTranslateTextMutationError = unknown
 
     /**
  * @summary Translate a single text
  */
-export const createTranslationTranslateText = <TError = void,
+export const createTranslationTranslateText = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateText>>, TError,{data: TranslateTextDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof translationTranslateText>>,
@@ -329,29 +307,12 @@ export const createTranslationTranslateText = <TError = void,
     /**
  * @summary Translate multiple texts in batch
  */
-export type translationTranslateBatchResponse201 = {
-  data: BatchTranslationResultDto
-  status: 201
-}
+export type translationTranslateBatchResponse201 = BatchTranslationResultDto
 
-export type translationTranslateBatchResponse401 = {
-  data: void
-  status: 401
-}
+export type translationTranslateBatchResponseSuccess = translationTranslateBatchResponse201
+;
 
-export type translationTranslateBatchResponse403 = {
-  data: void
-  status: 403
-}
-
-export type translationTranslateBatchResponseSuccess = (translationTranslateBatchResponse201) & {
-  headers: Headers;
-};
-export type translationTranslateBatchResponseError = (translationTranslateBatchResponse401 | translationTranslateBatchResponse403) & {
-  headers: Headers;
-};
-
-export type translationTranslateBatchResponse = (translationTranslateBatchResponseSuccess | translationTranslateBatchResponseError)
+export type translationTranslateBatchResponse = (translationTranslateBatchResponseSuccess)
 
 export const getTranslationTranslateBatchUrl = () => {
 
@@ -376,7 +337,7 @@ export const translationTranslateBatch = async (translateBatchDto: TranslateBatc
 
 
 
-export const getTranslationTranslateBatchMutationOptions = <TError = void,
+export const getTranslationTranslateBatchMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateBatch>>, TError,{data: TranslateBatchDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateBatch>>, TError,{data: TranslateBatchDto}, TContext> => {
 
@@ -405,12 +366,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TranslationTranslateBatchMutationResult = NonNullable<Awaited<ReturnType<typeof translationTranslateBatch>>>
     export type TranslationTranslateBatchMutationBody = TranslateBatchDto
-    export type TranslationTranslateBatchMutationError = void
+    export type TranslationTranslateBatchMutationError = unknown
 
     /**
  * @summary Translate multiple texts in batch
  */
-export const createTranslationTranslateBatch = <TError = void,
+export const createTranslationTranslateBatch = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateBatch>>, TError,{data: TranslateBatchDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof translationTranslateBatch>>,
@@ -423,29 +384,12 @@ export const createTranslationTranslateBatch = <TError = void,
     /**
  * @summary Translate Portuguese to English
  */
-export type translationTranslatePtToEnResponse201 = {
-  data: TranslationResultDto
-  status: 201
-}
+export type translationTranslatePtToEnResponse201 = TranslationResultDto
 
-export type translationTranslatePtToEnResponse401 = {
-  data: void
-  status: 401
-}
+export type translationTranslatePtToEnResponseSuccess = translationTranslatePtToEnResponse201
+;
 
-export type translationTranslatePtToEnResponse403 = {
-  data: void
-  status: 403
-}
-
-export type translationTranslatePtToEnResponseSuccess = (translationTranslatePtToEnResponse201) & {
-  headers: Headers;
-};
-export type translationTranslatePtToEnResponseError = (translationTranslatePtToEnResponse401 | translationTranslatePtToEnResponse403) & {
-  headers: Headers;
-};
-
-export type translationTranslatePtToEnResponse = (translationTranslatePtToEnResponseSuccess | translationTranslatePtToEnResponseError)
+export type translationTranslatePtToEnResponse = (translationTranslatePtToEnResponseSuccess)
 
 export const getTranslationTranslatePtToEnUrl = () => {
 
@@ -470,7 +414,7 @@ export const translationTranslatePtToEn = async (translateSimpleDto: TranslateSi
 
 
 
-export const getTranslationTranslatePtToEnMutationOptions = <TError = void,
+export const getTranslationTranslatePtToEnMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslatePtToEn>>, TError,{data: TranslateSimpleDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof translationTranslatePtToEn>>, TError,{data: TranslateSimpleDto}, TContext> => {
 
@@ -499,12 +443,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TranslationTranslatePtToEnMutationResult = NonNullable<Awaited<ReturnType<typeof translationTranslatePtToEn>>>
     export type TranslationTranslatePtToEnMutationBody = TranslateSimpleDto
-    export type TranslationTranslatePtToEnMutationError = void
+    export type TranslationTranslatePtToEnMutationError = unknown
 
     /**
  * @summary Translate Portuguese to English
  */
-export const createTranslationTranslatePtToEn = <TError = void,
+export const createTranslationTranslatePtToEn = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslatePtToEn>>, TError,{data: TranslateSimpleDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof translationTranslatePtToEn>>,
@@ -517,29 +461,12 @@ export const createTranslationTranslatePtToEn = <TError = void,
     /**
  * @summary Translate English to Portuguese
  */
-export type translationTranslateEnToPtResponse201 = {
-  data: TranslationResultDto
-  status: 201
-}
+export type translationTranslateEnToPtResponse201 = TranslationResultDto
 
-export type translationTranslateEnToPtResponse401 = {
-  data: void
-  status: 401
-}
+export type translationTranslateEnToPtResponseSuccess = translationTranslateEnToPtResponse201
+;
 
-export type translationTranslateEnToPtResponse403 = {
-  data: void
-  status: 403
-}
-
-export type translationTranslateEnToPtResponseSuccess = (translationTranslateEnToPtResponse201) & {
-  headers: Headers;
-};
-export type translationTranslateEnToPtResponseError = (translationTranslateEnToPtResponse401 | translationTranslateEnToPtResponse403) & {
-  headers: Headers;
-};
-
-export type translationTranslateEnToPtResponse = (translationTranslateEnToPtResponseSuccess | translationTranslateEnToPtResponseError)
+export type translationTranslateEnToPtResponse = (translationTranslateEnToPtResponseSuccess)
 
 export const getTranslationTranslateEnToPtUrl = () => {
 
@@ -564,7 +491,7 @@ export const translationTranslateEnToPt = async (translateSimpleDto: TranslateSi
 
 
 
-export const getTranslationTranslateEnToPtMutationOptions = <TError = void,
+export const getTranslationTranslateEnToPtMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateEnToPt>>, TError,{data: TranslateSimpleDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateEnToPt>>, TError,{data: TranslateSimpleDto}, TContext> => {
 
@@ -593,12 +520,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TranslationTranslateEnToPtMutationResult = NonNullable<Awaited<ReturnType<typeof translationTranslateEnToPt>>>
     export type TranslationTranslateEnToPtMutationBody = TranslateSimpleDto
-    export type TranslationTranslateEnToPtMutationError = void
+    export type TranslationTranslateEnToPtMutationError = unknown
 
     /**
  * @summary Translate English to Portuguese
  */
-export const createTranslationTranslateEnToPt = <TError = void,
+export const createTranslationTranslateEnToPt = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationTranslateEnToPt>>, TError,{data: TranslateSimpleDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof translationTranslateEnToPt>>,

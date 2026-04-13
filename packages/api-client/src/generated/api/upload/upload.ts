@@ -62,29 +62,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Upload user profile image
  */
-export type uploadUploadProfileImageResponse200 = {
-  data: UploadResponseDto
-  status: 200
-}
+export type uploadUploadProfileImageResponse200 = UploadResponseDto
 
-export type uploadUploadProfileImageResponse401 = {
-  data: void
-  status: 401
-}
+export type uploadUploadProfileImageResponseSuccess = uploadUploadProfileImageResponse200
+;
 
-export type uploadUploadProfileImageResponse403 = {
-  data: void
-  status: 403
-}
-
-export type uploadUploadProfileImageResponseSuccess = (uploadUploadProfileImageResponse200) & {
-  headers: Headers;
-};
-export type uploadUploadProfileImageResponseError = (uploadUploadProfileImageResponse401 | uploadUploadProfileImageResponse403) & {
-  headers: Headers;
-};
-
-export type uploadUploadProfileImageResponse = (uploadUploadProfileImageResponseSuccess | uploadUploadProfileImageResponseError)
+export type uploadUploadProfileImageResponse = (uploadUploadProfileImageResponseSuccess)
 
 export const getUploadUploadProfileImageUrl = () => {
 
@@ -111,7 +94,7 @@ formData.append(`file`, uploadProfileImageRequestDto.file);
 
 
 
-export const getUploadUploadProfileImageMutationOptions = <TError = void,
+export const getUploadUploadProfileImageMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof uploadUploadProfileImage>>, TError,{data: UploadProfileImageRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof uploadUploadProfileImage>>, TError,{data: UploadProfileImageRequestDto}, TContext> => {
 
@@ -140,12 +123,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UploadUploadProfileImageMutationResult = NonNullable<Awaited<ReturnType<typeof uploadUploadProfileImage>>>
     export type UploadUploadProfileImageMutationBody = UploadProfileImageRequestDto
-    export type UploadUploadProfileImageMutationError = void
+    export type UploadUploadProfileImageMutationError = unknown
 
     /**
  * @summary Upload user profile image
  */
-export const createUploadUploadProfileImage = <TError = void,
+export const createUploadUploadProfileImage = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof uploadUploadProfileImage>>, TError,{data: UploadProfileImageRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof uploadUploadProfileImage>>,
@@ -158,29 +141,12 @@ export const createUploadUploadProfileImage = <TError = void,
     /**
  * @summary Upload company logo for resume
  */
-export type uploadUploadCompanyLogoResponse200 = {
-  data: UploadResponseDto
-  status: 200
-}
+export type uploadUploadCompanyLogoResponse200 = UploadResponseDto
 
-export type uploadUploadCompanyLogoResponse401 = {
-  data: void
-  status: 401
-}
+export type uploadUploadCompanyLogoResponseSuccess = uploadUploadCompanyLogoResponse200
+;
 
-export type uploadUploadCompanyLogoResponse403 = {
-  data: void
-  status: 403
-}
-
-export type uploadUploadCompanyLogoResponseSuccess = (uploadUploadCompanyLogoResponse200) & {
-  headers: Headers;
-};
-export type uploadUploadCompanyLogoResponseError = (uploadUploadCompanyLogoResponse401 | uploadUploadCompanyLogoResponse403) & {
-  headers: Headers;
-};
-
-export type uploadUploadCompanyLogoResponse = (uploadUploadCompanyLogoResponseSuccess | uploadUploadCompanyLogoResponseError)
+export type uploadUploadCompanyLogoResponse = (uploadUploadCompanyLogoResponseSuccess)
 
 export const getUploadUploadCompanyLogoUrl = (resumeId: string,) => {
 
@@ -208,7 +174,7 @@ formData.append(`file`, uploadCompanyLogoRequestDto.file);
 
 
 
-export const getUploadUploadCompanyLogoMutationOptions = <TError = void,
+export const getUploadUploadCompanyLogoMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof uploadUploadCompanyLogo>>, TError,{resumeId: string;data: UploadCompanyLogoRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof uploadUploadCompanyLogo>>, TError,{resumeId: string;data: UploadCompanyLogoRequestDto}, TContext> => {
 
@@ -237,12 +203,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UploadUploadCompanyLogoMutationResult = NonNullable<Awaited<ReturnType<typeof uploadUploadCompanyLogo>>>
     export type UploadUploadCompanyLogoMutationBody = UploadCompanyLogoRequestDto
-    export type UploadUploadCompanyLogoMutationError = void
+    export type UploadUploadCompanyLogoMutationError = unknown
 
     /**
  * @summary Upload company logo for resume
  */
-export const createUploadUploadCompanyLogo = <TError = void,
+export const createUploadUploadCompanyLogo = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof uploadUploadCompanyLogo>>, TError,{resumeId: string;data: UploadCompanyLogoRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof uploadUploadCompanyLogo>>,
@@ -255,29 +221,12 @@ export const createUploadUploadCompanyLogo = <TError = void,
     /**
  * @summary Delete uploaded file
  */
-export type uploadDeleteFileResponse200 = {
-  data: DeleteResponseDto
-  status: 200
-}
+export type uploadDeleteFileResponse200 = DeleteResponseDto
 
-export type uploadDeleteFileResponse401 = {
-  data: void
-  status: 401
-}
+export type uploadDeleteFileResponseSuccess = uploadDeleteFileResponse200
+;
 
-export type uploadDeleteFileResponse403 = {
-  data: void
-  status: 403
-}
-
-export type uploadDeleteFileResponseSuccess = (uploadDeleteFileResponse200) & {
-  headers: Headers;
-};
-export type uploadDeleteFileResponseError = (uploadDeleteFileResponse401 | uploadDeleteFileResponse403) & {
-  headers: Headers;
-};
-
-export type uploadDeleteFileResponse = (uploadDeleteFileResponseSuccess | uploadDeleteFileResponseError)
+export type uploadDeleteFileResponse = (uploadDeleteFileResponseSuccess)
 
 export const getUploadDeleteFileUrl = (key: string,) => {
 
@@ -301,7 +250,7 @@ export const uploadDeleteFile = async (key: string, options?: RequestInit): Prom
 
 
 
-export const getUploadDeleteFileMutationOptions = <TError = void,
+export const getUploadDeleteFileMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof uploadDeleteFile>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof uploadDeleteFile>>, TError,{key: string}, TContext> => {
 
@@ -330,12 +279,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UploadDeleteFileMutationResult = NonNullable<Awaited<ReturnType<typeof uploadDeleteFile>>>
 
-    export type UploadDeleteFileMutationError = void
+    export type UploadDeleteFileMutationError = unknown
 
     /**
  * @summary Delete uploaded file
  */
-export const createUploadDeleteFile = <TError = void,
+export const createUploadDeleteFile = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof uploadDeleteFile>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof uploadDeleteFile>>,

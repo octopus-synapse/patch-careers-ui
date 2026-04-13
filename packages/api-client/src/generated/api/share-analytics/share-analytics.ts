@@ -67,29 +67,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get analytics for a shared resume (nested route)
  */
-export type shareAnalyticsGetAnalyticsNestedResponse200 = {
-  data: ShareAnalyticsSummaryDataDto
-  status: 200
-}
+export type shareAnalyticsGetAnalyticsNestedResponse200 = ShareAnalyticsSummaryDataDto
 
-export type shareAnalyticsGetAnalyticsNestedResponse401 = {
-  data: void
-  status: 401
-}
+export type shareAnalyticsGetAnalyticsNestedResponseSuccess = shareAnalyticsGetAnalyticsNestedResponse200
+;
 
-export type shareAnalyticsGetAnalyticsNestedResponse403 = {
-  data: void
-  status: 403
-}
-
-export type shareAnalyticsGetAnalyticsNestedResponseSuccess = (shareAnalyticsGetAnalyticsNestedResponse200) & {
-  headers: Headers;
-};
-export type shareAnalyticsGetAnalyticsNestedResponseError = (shareAnalyticsGetAnalyticsNestedResponse401 | shareAnalyticsGetAnalyticsNestedResponse403) & {
-  headers: Headers;
-};
-
-export type shareAnalyticsGetAnalyticsNestedResponse = (shareAnalyticsGetAnalyticsNestedResponseSuccess | shareAnalyticsGetAnalyticsNestedResponseError)
+export type shareAnalyticsGetAnalyticsNestedResponse = (shareAnalyticsGetAnalyticsNestedResponseSuccess)
 
 export const getShareAnalyticsGetAnalyticsNestedUrl = (resumeId: string,
     shareId: string,) => {
@@ -131,7 +114,7 @@ export const getShareAnalyticsGetAnalyticsNestedQueryKey = (resumeId: string,
     }
 
 
-export const getShareAnalyticsGetAnalyticsNestedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>, TError = void>(resumeId: string,
+export const getShareAnalyticsGetAnalyticsNestedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>, TError = unknown>(resumeId: string,
     shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -151,14 +134,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShareAnalyticsGetAnalyticsNestedInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>
-export type ShareAnalyticsGetAnalyticsNestedInfiniteQueryError = void
+export type ShareAnalyticsGetAnalyticsNestedInfiniteQueryError = unknown
 
 
 /**
  * @summary Get analytics for a shared resume (nested route)
  */
 
-export function createShareAnalyticsGetAnalyticsNestedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>, TError = void>(
+export function createShareAnalyticsGetAnalyticsNestedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>, TError = unknown>(
  resumeId: () =>  string,
     shareId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -175,7 +158,7 @@ export function createShareAnalyticsGetAnalyticsNestedInfinite<TData = InfiniteD
 /**
  * @summary Get analytics for a shared resume (nested route)
  */
-export const prefetchShareAnalyticsGetAnalyticsNestedInfiniteQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = void>(
+export const prefetchShareAnalyticsGetAnalyticsNestedInfiniteQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -190,7 +173,7 @@ export const prefetchShareAnalyticsGetAnalyticsNestedInfiniteQuery = async <TDat
 
 
 
-export const getShareAnalyticsGetAnalyticsNestedQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = void>(resumeId: string,
+export const getShareAnalyticsGetAnalyticsNestedQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = unknown>(resumeId: string,
     shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -210,14 +193,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShareAnalyticsGetAnalyticsNestedQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>>
-export type ShareAnalyticsGetAnalyticsNestedQueryError = void
+export type ShareAnalyticsGetAnalyticsNestedQueryError = unknown
 
 
 /**
  * @summary Get analytics for a shared resume (nested route)
  */
 
-export function createShareAnalyticsGetAnalyticsNested<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = void>(
+export function createShareAnalyticsGetAnalyticsNested<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = unknown>(
  resumeId: () =>  string,
     shareId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -234,7 +217,7 @@ export function createShareAnalyticsGetAnalyticsNested<TData = Awaited<ReturnTyp
 /**
  * @summary Get analytics for a shared resume (nested route)
  */
-export const prefetchShareAnalyticsGetAnalyticsNestedQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = void>(
+export const prefetchShareAnalyticsGetAnalyticsNestedQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError = unknown>(
  queryClient: QueryClient, resumeId: string,
     shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsNested>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -252,29 +235,12 @@ export const prefetchShareAnalyticsGetAnalyticsNestedQuery = async <TData = Awai
 /**
  * @summary Get analytics for a share id
  */
-export type shareAnalyticsGetAnalyticsResponse200 = {
-  data: ShareAnalyticsSummaryDataDto
-  status: 200
-}
+export type shareAnalyticsGetAnalyticsResponse200 = ShareAnalyticsSummaryDataDto
 
-export type shareAnalyticsGetAnalyticsResponse401 = {
-  data: void
-  status: 401
-}
+export type shareAnalyticsGetAnalyticsResponseSuccess = shareAnalyticsGetAnalyticsResponse200
+;
 
-export type shareAnalyticsGetAnalyticsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type shareAnalyticsGetAnalyticsResponseSuccess = (shareAnalyticsGetAnalyticsResponse200) & {
-  headers: Headers;
-};
-export type shareAnalyticsGetAnalyticsResponseError = (shareAnalyticsGetAnalyticsResponse401 | shareAnalyticsGetAnalyticsResponse403) & {
-  headers: Headers;
-};
-
-export type shareAnalyticsGetAnalyticsResponse = (shareAnalyticsGetAnalyticsResponseSuccess | shareAnalyticsGetAnalyticsResponseError)
+export type shareAnalyticsGetAnalyticsResponse = (shareAnalyticsGetAnalyticsResponseSuccess)
 
 export const getShareAnalyticsGetAnalyticsUrl = (shareId: string,) => {
 
@@ -312,7 +278,7 @@ export const getShareAnalyticsGetAnalyticsQueryKey = (shareId: string,) => {
     }
 
 
-export const getShareAnalyticsGetAnalyticsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>, TError = void>(shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getShareAnalyticsGetAnalyticsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>, TError = unknown>(shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -331,14 +297,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShareAnalyticsGetAnalyticsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>
-export type ShareAnalyticsGetAnalyticsInfiniteQueryError = void
+export type ShareAnalyticsGetAnalyticsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get analytics for a share id
  */
 
-export function createShareAnalyticsGetAnalyticsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>, TError = void>(
+export function createShareAnalyticsGetAnalyticsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>, TError = unknown>(
  shareId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -353,7 +319,7 @@ export function createShareAnalyticsGetAnalyticsInfinite<TData = InfiniteData<Aw
 /**
  * @summary Get analytics for a share id
  */
-export const prefetchShareAnalyticsGetAnalyticsInfiniteQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = void>(
+export const prefetchShareAnalyticsGetAnalyticsInfiniteQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = unknown>(
  queryClient: QueryClient, shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -367,7 +333,7 @@ export const prefetchShareAnalyticsGetAnalyticsInfiniteQuery = async <TData = Aw
 
 
 
-export const getShareAnalyticsGetAnalyticsQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = void>(shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getShareAnalyticsGetAnalyticsQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = unknown>(shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -386,14 +352,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShareAnalyticsGetAnalyticsQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>>
-export type ShareAnalyticsGetAnalyticsQueryError = void
+export type ShareAnalyticsGetAnalyticsQueryError = unknown
 
 
 /**
  * @summary Get analytics for a share id
  */
 
-export function createShareAnalyticsGetAnalytics<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = void>(
+export function createShareAnalyticsGetAnalytics<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = unknown>(
  shareId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -408,7 +374,7 @@ export function createShareAnalyticsGetAnalytics<TData = Awaited<ReturnType<type
 /**
  * @summary Get analytics for a share id
  */
-export const prefetchShareAnalyticsGetAnalyticsQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = void>(
+export const prefetchShareAnalyticsGetAnalyticsQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError = unknown>(
  queryClient: QueryClient, shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalytics>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -425,29 +391,12 @@ export const prefetchShareAnalyticsGetAnalyticsQuery = async <TData = Awaited<Re
 /**
  * @summary Get analytics events for a share id
  */
-export type shareAnalyticsGetAnalyticsEventsResponse200 = {
-  data: ShareAnalyticsEventsDataDto
-  status: 200
-}
+export type shareAnalyticsGetAnalyticsEventsResponse200 = ShareAnalyticsEventsDataDto
 
-export type shareAnalyticsGetAnalyticsEventsResponse401 = {
-  data: void
-  status: 401
-}
+export type shareAnalyticsGetAnalyticsEventsResponseSuccess = shareAnalyticsGetAnalyticsEventsResponse200
+;
 
-export type shareAnalyticsGetAnalyticsEventsResponse403 = {
-  data: void
-  status: 403
-}
-
-export type shareAnalyticsGetAnalyticsEventsResponseSuccess = (shareAnalyticsGetAnalyticsEventsResponse200) & {
-  headers: Headers;
-};
-export type shareAnalyticsGetAnalyticsEventsResponseError = (shareAnalyticsGetAnalyticsEventsResponse401 | shareAnalyticsGetAnalyticsEventsResponse403) & {
-  headers: Headers;
-};
-
-export type shareAnalyticsGetAnalyticsEventsResponse = (shareAnalyticsGetAnalyticsEventsResponseSuccess | shareAnalyticsGetAnalyticsEventsResponseError)
+export type shareAnalyticsGetAnalyticsEventsResponse = (shareAnalyticsGetAnalyticsEventsResponseSuccess)
 
 export const getShareAnalyticsGetAnalyticsEventsUrl = (shareId: string,
     params: ShareAnalyticsGetAnalyticsEventsParams,) => {
@@ -496,7 +445,7 @@ export const getShareAnalyticsGetAnalyticsEventsQueryKey = (shareId: string,
     }
 
 
-export const getShareAnalyticsGetAnalyticsEventsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>, TError = void>(shareId: string,
+export const getShareAnalyticsGetAnalyticsEventsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>, TError = unknown>(shareId: string,
     params: ShareAnalyticsGetAnalyticsEventsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -516,14 +465,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShareAnalyticsGetAnalyticsEventsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>
-export type ShareAnalyticsGetAnalyticsEventsInfiniteQueryError = void
+export type ShareAnalyticsGetAnalyticsEventsInfiniteQueryError = unknown
 
 
 /**
  * @summary Get analytics events for a share id
  */
 
-export function createShareAnalyticsGetAnalyticsEventsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>, TError = void>(
+export function createShareAnalyticsGetAnalyticsEventsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>, TError = unknown>(
  shareId: () =>  string,
     params: () =>  ShareAnalyticsGetAnalyticsEventsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -540,7 +489,7 @@ export function createShareAnalyticsGetAnalyticsEventsInfinite<TData = InfiniteD
 /**
  * @summary Get analytics events for a share id
  */
-export const prefetchShareAnalyticsGetAnalyticsEventsInfiniteQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = void>(
+export const prefetchShareAnalyticsGetAnalyticsEventsInfiniteQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = unknown>(
  queryClient: QueryClient, shareId: string,
     params: ShareAnalyticsGetAnalyticsEventsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -555,7 +504,7 @@ export const prefetchShareAnalyticsGetAnalyticsEventsInfiniteQuery = async <TDat
 
 
 
-export const getShareAnalyticsGetAnalyticsEventsQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = void>(shareId: string,
+export const getShareAnalyticsGetAnalyticsEventsQueryOptions = <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = unknown>(shareId: string,
     params: ShareAnalyticsGetAnalyticsEventsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -575,14 +524,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShareAnalyticsGetAnalyticsEventsQueryResult = NonNullable<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>>
-export type ShareAnalyticsGetAnalyticsEventsQueryError = void
+export type ShareAnalyticsGetAnalyticsEventsQueryError = unknown
 
 
 /**
  * @summary Get analytics events for a share id
  */
 
-export function createShareAnalyticsGetAnalyticsEvents<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = void>(
+export function createShareAnalyticsGetAnalyticsEvents<TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = unknown>(
  shareId: () =>  string,
     params: () =>  ShareAnalyticsGetAnalyticsEventsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -599,7 +548,7 @@ export function createShareAnalyticsGetAnalyticsEvents<TData = Awaited<ReturnTyp
 /**
  * @summary Get analytics events for a share id
  */
-export const prefetchShareAnalyticsGetAnalyticsEventsQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = void>(
+export const prefetchShareAnalyticsGetAnalyticsEventsQuery = async <TData = Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError = unknown>(
  queryClient: QueryClient, shareId: string,
     params: ShareAnalyticsGetAnalyticsEventsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shareAnalyticsGetAnalyticsEvents>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

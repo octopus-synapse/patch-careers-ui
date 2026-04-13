@@ -61,29 +61,12 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Registers a new user account and returns auth tokens for auto-login.
  * @summary Create new account
  */
-export type accountsSignupResponse201 = {
-  data: CreateAccountResponseDto
-  status: 201
-}
+export type accountsSignupResponse201 = CreateAccountResponseDto
 
-export type accountsSignupResponse400 = {
-  data: void
-  status: 400
-}
+export type accountsSignupResponseSuccess = accountsSignupResponse201
+;
 
-export type accountsSignupResponse409 = {
-  data: void
-  status: 409
-}
-
-export type accountsSignupResponseSuccess = (accountsSignupResponse201) & {
-  headers: Headers;
-};
-export type accountsSignupResponseError = (accountsSignupResponse400 | accountsSignupResponse409) & {
-  headers: Headers;
-};
-
-export type accountsSignupResponse = (accountsSignupResponseSuccess | accountsSignupResponseError)
+export type accountsSignupResponse = (accountsSignupResponseSuccess)
 
 export const getAccountsSignupUrl = () => {
 
@@ -108,7 +91,7 @@ export const accountsSignup = async (createAccountDto: CreateAccountDto, options
 
 
 
-export const getAccountsSignupMutationOptions = <TError = void,
+export const getAccountsSignupMutationOptions = <TError = unknown,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountsSignup>>, TError,{data: CreateAccountDto}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof accountsSignup>>, TError,{data: CreateAccountDto}, TContext> => {
 
@@ -137,12 +120,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AccountsSignupMutationResult = NonNullable<Awaited<ReturnType<typeof accountsSignup>>>
     export type AccountsSignupMutationBody = CreateAccountDto
-    export type AccountsSignupMutationError = void
+    export type AccountsSignupMutationError = unknown
 
     /**
  * @summary Create new account
  */
-export const createAccountsSignup = <TError = void,
+export const createAccountsSignup = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountsSignup>>, TError,{data: CreateAccountDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof accountsSignup>>,

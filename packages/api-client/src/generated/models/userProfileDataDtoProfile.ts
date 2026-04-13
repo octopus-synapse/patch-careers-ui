@@ -36,4 +36,30 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export type UserProfileDataDtoProfile = {[key: string]: unknown};
+export type UserProfileDataDtoProfile = {
+  id: string;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  username?: string | null;
+  /** @nullable */
+  name?: string | null;
+  /** @nullable */
+  photoURL?: string | null;
+  /** @nullable */
+  bio?: string | null;
+  /** @nullable */
+  location?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  website?: string | null;
+  /** @nullable */
+  linkedin?: string | null;
+  /** @nullable */
+  github?: string | null;
+  /** @nullable */
+  twitter?: string | null;
+  createdAt: unknown;
+  updatedAt: unknown;
+};
