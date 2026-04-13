@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Check, Minus } from 'lucide-svelte';
+	import { customFetch } from 'api-client';
+	import { Check, Minus, Send } from 'lucide-svelte';
 
 	type StepDef = {
 		id: string;
@@ -16,6 +17,24 @@
 	};
 
 	let { session, steps, completedSteps, ongoto }: Props = $props();
+
+	let shareEmail = $state('');
+	let shareStatus = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
+
+	async function sendReviewInvite() {
+		if (!shareEmail.trim()) return;
+		shareStatus = 'sending';
+		try {
+			await customFetch('/api/v1/onboarding/review/invite', {
+				method: 'POST',
+				body: JSON.stringify({ email: shareEmail }),
+			});
+			shareStatus = 'sent';
+			shareEmail = '';
+		} catch {
+			shareStatus = 'error';
+		}
+	}
 
 	type ReviewEntry = { label: string; value: string; long?: boolean };
 	type ReviewSection = { label: string; stepId: string; entries: ReviewEntry[]; skipped?: boolean; themePreview?: string | null; themeName?: string };
@@ -93,6 +112,29 @@
 </script>
 
 <div class="space-y-3">
+	<!-- Share for review -->
+	<div class="flex items-center gap-2 rounded-lg border border-dashed p-3 border-gray-300 dark:border-neutral-600">
+		<Send size={14} class="flex-shrink-0 text-gray-400 dark:text-neutral-500" />
+		<input
+			type="email"
+			bind:value={shareEmail}
+			placeholder="Email to share for review"
+			class="min-w-0 flex-1 bg-transparent text-xs outline-none text-gray-800 placeholder:text-gray-400 dark:text-neutral-200 dark:placeholder:text-neutral-500"
+		/>
+		<button
+			onclick={sendReviewInvite}
+			disabled={shareStatus === 'sending' || !shareEmail.trim()}
+			class="flex-shrink-0 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-40 text-gray-500 dark:text-neutral-400"
+		>
+			{shareStatus === 'sending' ? 'Sending...' : 'Send'}
+		</button>
+	</div>
+	{#if shareStatus === 'sent'}
+		<p class="text-center text-xs text-emerald-500">Invite sent!</p>
+	{:else if shareStatus === 'error'}
+		<p class="text-center text-xs text-red-500">Failed to send. Try again.</p>
+	{/if}
+
 	{#each sections as section}
 		<button
 			onclick={() => ongoto(section.stepId)}

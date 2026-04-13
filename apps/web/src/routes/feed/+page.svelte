@@ -9,15 +9,18 @@
 		engagementUnbookmark,
 		engagementRepost,
 		engagementReport,
+		engagementVote,
 		postsDelete
 	} from 'api-client';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import { Loader2, PenSquare } from 'lucide-svelte';
+	import { Loader2, PenSquare, Bookmark } from 'lucide-svelte';
 	import { Avatar, Button, SegmentToggle } from 'ui';
 	import PostCard from '$lib/components/feed/post-card.svelte';
 	import CreatePostModal from '$lib/components/feed/create-post-modal.svelte';
+	import ReportModal from '$lib/components/feed/report-modal.svelte';
+	import RepostModal from '$lib/components/feed/repost-modal.svelte';
 
 	// Auth check
 	const session = createAuthSession(() => ({
@@ -42,7 +45,8 @@
 		{ value: 'OPPORTUNITY', label: 'Opportunity' },
 		{ value: 'LEARNING', label: 'Learning' },
 		{ value: 'BUILD', label: 'Build' },
-		{ value: 'QUESTION', label: 'Question' }
+		{ value: 'QUESTION', label: 'Question' },
+		{ value: 'CHALLENGE', label: 'Challenge' }
 	];
 	let selectedFilter = $state('ALL');
 
@@ -60,6 +64,17 @@
 
 	// Create post modal
 	let showCreateModal = $state(false);
+
+	// Report modal
+	let showReportModal = $state(false);
+	let reportPostId = $state<string | null>(null);
+
+	// Repost modal
+	let showRepostModal = $state(false);
+	let repostTargetPost = $state<Record<string, unknown> | null>(null);
+
+	// Repost error toast
+	let repostError = $state<string | null>(null);
 
 	const queryClient = useQueryClient();
 
@@ -155,17 +170,23 @@
 		return Boolean(post.isBookmarked ?? post.bookmarked ?? false);
 	}
 
-	async function handleLike(id: string) {
+	async function handleLike(id: string, reactionType?: string) {
 		likedPosts = new Set([...likedPosts, id]);
 		unlikedPosts = new Set([...unlikedPosts].filter(x => x !== id));
-		// Optimistic count update
 		allPosts = allPosts.map(p => {
 			if (String(p.id) === id) {
 				return { ...p, isLiked: true, likeCount: Number(p.likeCount ?? p.likesCount ?? 0) + 1 };
 			}
 			return p;
 		});
-		await engagementLike(id);
+		if (reactionType) {
+			await engagementLike(id, {
+				body: JSON.stringify({ reactionType }),
+				headers: { 'Content-Type': 'application/json' }
+			});
+		} else {
+			await engagementLike(id);
+		}
 		queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
 	}
 
@@ -205,18 +226,66 @@
 	}
 
 	async function handleDelete(id: string) {
+		const confirmed = window.confirm('Tem certeza que deseja deletar este post?');
+		if (!confirmed) return;
 		allPosts = allPosts.filter(p => String(p.id) !== id);
 		await postsDelete(id);
 		queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
 	}
 
-	async function handleRepost(id: string) {
-		await engagementRepost(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+	function handleRepost(id: string) {
+		const post = allPosts.find(p => String(p.id) === id);
+		if (post) {
+			repostTargetPost = post;
+			showRepostModal = true;
+		}
 	}
 
-	async function handleReport(id: string) {
-		await engagementReport(id);
+	async function handleRepostSubmit(content: string) {
+		if (!repostTargetPost) return;
+		const id = String(repostTargetPost.id);
+		showRepostModal = false;
+		repostTargetPost = null;
+		try {
+			if (content) {
+				await engagementRepost(id, {
+					body: JSON.stringify({ content }),
+					headers: { 'Content-Type': 'application/json' }
+				});
+			} else {
+				await engagementRepost(id);
+			}
+			queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+		} catch (err: unknown) {
+			const error = err as { status?: number };
+			if (error.status === 409) {
+				repostError = 'Voce ja repostou isso';
+				setTimeout(() => { repostError = null; }, 3000);
+			}
+		}
+	}
+
+	function handleReport(id: string) {
+		reportPostId = id;
+		showReportModal = true;
+	}
+
+	async function handleReportSubmit(reason: string) {
+		if (!reportPostId) return;
+		showReportModal = false;
+		await engagementReport(reportPostId, {
+			body: JSON.stringify({ reason }),
+			headers: { 'Content-Type': 'application/json' }
+		});
+		reportPostId = null;
+	}
+
+	async function handleVote(id: string, optionIndex: number) {
+		await engagementVote(id, {
+			body: JSON.stringify({ optionIndex }),
+			headers: { 'Content-Type': 'application/json' }
+		});
+		queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
 	}
 
 	function handlePostCreated() {
@@ -242,15 +311,27 @@
 {:else if authenticated}
 	<div class="min-h-screen pt-20 pb-12">
 		<main class="mx-auto max-w-2xl px-4">
+			<!-- Repost error toast -->
+			{#if repostError}
+				<div class="fixed top-24 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-red-500 px-4 py-2 text-sm text-white shadow-lg">
+					{repostError}
+				</div>
+			{/if}
+
 			<!-- Trigger bar -->
-			<button
-				class="flex w-full items-center gap-3 rounded-xl border p-4 transition-colors hover:opacity-80 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50"
-				onclick={() => showCreateModal = true}
-			>
-				<Avatar name={userName || 'U'} photoURL={userPhoto} size="md" />
-				<span class="flex-1 text-left text-sm text-gray-400 dark:text-neutral-500">What's on your mind?</span>
-				<PenSquare size={18} class="text-gray-400 dark:text-neutral-500" />
-			</button>
+			<div class="flex items-center gap-2">
+				<button
+					class="flex flex-1 items-center gap-3 rounded-xl border p-4 transition-colors hover:opacity-80 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50"
+					onclick={() => showCreateModal = true}
+				>
+					<Avatar name={userName || 'U'} photoURL={userPhoto} size="md" />
+					<span class="flex-1 text-left text-sm text-gray-400 dark:text-neutral-500">What's on your mind?</span>
+					<PenSquare size={18} class="text-gray-400 dark:text-neutral-500" />
+				</button>
+				<Button variant="ghost" size="sm" onclick={() => goto('/feed/bookmarks')}>
+					<Bookmark size={18} />
+				</Button>
+			</div>
 
 			<!-- Filters -->
 			<div class="mt-4 flex justify-center">
@@ -279,6 +360,7 @@
 						ondelete={handleDelete}
 						onrepost={handleRepost}
 						onreport={handleReport}
+						onvote={handleVote}
 					/>
 				{/each}
 			</div>
@@ -310,5 +392,20 @@
 		open={showCreateModal}
 		oncreate={handlePostCreated}
 		oncancel={() => showCreateModal = false}
+	/>
+
+	<!-- Report modal -->
+	<ReportModal
+		open={showReportModal}
+		onsubmit={handleReportSubmit}
+		oncancel={() => { showReportModal = false; reportPostId = null; }}
+	/>
+
+	<!-- Repost modal -->
+	<RepostModal
+		open={showRepostModal}
+		post={repostTargetPost}
+		onsubmit={handleRepostSubmit}
+		oncancel={() => { showRepostModal = false; repostTargetPost = null; }}
 	/>
 {/if}

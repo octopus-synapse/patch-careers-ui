@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Avatar } from 'ui';
-	import { Trash2, Flag, MoreHorizontal } from 'lucide-svelte';
+	import { Trash2, Flag, MoreHorizontal, MessageSquare, Zap, Clock, Lock } from 'lucide-svelte';
 	import { Button } from 'ui';
 	import EngagementBar from './engagement-bar.svelte';
 	import CommentSection from './comment-section.svelte';
@@ -8,13 +8,14 @@
 	type Props = {
 		post: Record<string, unknown>;
 		currentUserId: string;
-		onlike: (id: string) => void;
+		onlike: (id: string, reactionType?: string) => void;
 		onunlike: (id: string) => void;
 		onbookmark: (id: string) => void;
 		onunbookmark: (id: string) => void;
 		ondelete: (id: string) => void;
 		onrepost: (id: string) => void;
 		onreport: (id: string) => void;
+		onvote?: (id: string, optionIndex: number) => void;
 	};
 
 	let {
@@ -26,14 +27,32 @@
 		onunbookmark,
 		ondelete,
 		onrepost,
-		onreport
+		onreport,
+		onvote
 	}: Props = $props();
 
 	let showComments = $state(false);
 	let showMenu = $state(false);
 
 	interface PostAuthor { id?: string; name?: string; username?: string; photoURL?: string; avatarUrl?: string }
-	interface PostData { imageUrl?: string; options?: { text?: string; label?: string; votes?: number }[]; title?: string; question?: string; organization?: string; date?: string; commitment?: string; contact_method?: string; project_url?: string; application?: string }
+	interface PostData {
+		imageUrl?: string;
+		options?: { text?: string; label?: string; votes?: number }[];
+		title?: string;
+		question?: string;
+		organization?: string;
+		date?: string;
+		commitment?: string;
+		contact_method?: string;
+		project_url?: string;
+		application?: string;
+		difficulty?: string;
+		deadline?: string;
+		description?: string;
+		codeSnippet?: string;
+		codeLanguage?: string;
+		pollDeadline?: string;
+	}
 	interface PostLinkPreview { url?: string; image?: string; title?: string; description?: string }
 
 	const postId = $derived(String(post.id));
@@ -53,6 +72,45 @@
 	const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked));
 	const isOwner = $derived(String(author?.id ?? post.userId) === currentUserId);
 	const createdAt = $derived(post.createdAt as string | undefined);
+	const coAuthors = $derived(post.coAuthors as PostAuthor[] | undefined);
+	const threadParentId = $derived(post.threadParentId as string | undefined);
+	const hasThreadChildren = $derived(Boolean(post.threadChildren) || Boolean(post.isThread));
+	const scheduledAt = $derived(post.scheduledAt as string | undefined);
+	const reactionCounts = $derived((post.reactionCounts ?? {}) as Record<string, number>);
+	const currentReaction = $derived(post.reactionType as string | undefined);
+	const hasVoted = $derived(Boolean(post.hasVoted));
+
+	// Code snippet fields
+	const codeSnippet = $derived(data?.codeSnippet ?? post.codeSnippet as string | undefined);
+	const codeLanguage = $derived(data?.codeLanguage ?? post.codeLanguage as string | undefined);
+
+	// Challenge fields
+	const challengeDifficulty = $derived(data?.difficulty as string | undefined);
+	const challengeDeadline = $derived(data?.deadline as string | undefined);
+	const responseCount = $derived(Number(post.responseCount ?? 0));
+
+	// Poll deadline
+	const pollDeadline = $derived(data?.pollDeadline as string | undefined);
+	const isPollClosed = $derived.by(() => {
+		if (!pollDeadline) return false;
+		return new Date(pollDeadline).getTime() < Date.now();
+	});
+	const pollTimeRemaining = $derived.by(() => {
+		if (!pollDeadline) return null;
+		const remaining = new Date(pollDeadline).getTime() - Date.now();
+		if (remaining <= 0) return null;
+		const hours = Math.floor(remaining / (1000 * 60 * 60));
+		const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+		if (hours > 24) return `${Math.floor(hours / 24)}d remaining`;
+		if (hours > 0) return `${hours}h ${minutes}m remaining`;
+		return `${minutes}m remaining`;
+	});
+
+	// Scheduled post detection
+	const isScheduled = $derived.by(() => {
+		if (!scheduledAt || !isOwner) return false;
+		return new Date(scheduledAt).getTime() > Date.now();
+	});
 
 	const pollOptions = $derived(
 		postType === 'QUESTION' && data?.options ? data.options : null as PostData['options'] | null
@@ -86,7 +144,14 @@
 		OPPORTUNITY: 'Opportunity',
 		LEARNING: 'Learning',
 		BUILD: 'Build',
-		QUESTION: 'Question'
+		QUESTION: 'Question',
+		CHALLENGE: 'Challenge'
+	};
+
+	const difficultyColors: Record<string, string> = {
+		Easy: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+		Medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+		Hard: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
 	};
 
 	function handleClickOutside(e: MouseEvent) {
@@ -102,16 +167,45 @@
 			return () => document.removeEventListener('click', handleClickOutside);
 		}
 	});
+
+	function handleVoteClick(index: number) {
+		if (hasVoted || isPollClosed) return;
+		if (onvote) {
+			onvote(postId, index);
+		}
+	}
 </script>
 
 <article class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50 p-4 transition-colors">
+	<!-- Scheduled badge -->
+	{#if isScheduled}
+		<div class="mb-3 flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 w-fit">
+			<Clock size={12} />
+			Scheduled
+		</div>
+	{/if}
+
+	<!-- Thread indicator -->
+	{#if threadParentId}
+		<div class="mb-2 flex items-center gap-1 text-xs text-gray-400 dark:text-neutral-500">
+			<MessageSquare size={12} />
+			<span>Part of a thread</span>
+		</div>
+	{/if}
+
 	<!-- Header: avatar + author info + menu -->
 	<div class="flex items-start gap-3">
 		<Avatar name={authorName} photoURL={authorPhoto} size="md" />
 
 		<div class="min-w-0 flex-1">
-			<div class="flex items-center gap-1.5 text-sm">
+			<div class="flex items-center gap-1.5 text-sm flex-wrap">
 				<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
+				{#if coAuthors}
+					{#each coAuthors as coAuthor}
+						<span class="text-gray-400 dark:text-neutral-500">&</span>
+						<span class="font-semibold text-gray-800 dark:text-neutral-200">{coAuthor.name ?? coAuthor.username}</span>
+					{/each}
+				{/if}
 				{#if authorUsername}
 					<span class="text-gray-400 dark:text-neutral-500">@{authorUsername}</span>
 				{/if}
@@ -119,11 +213,18 @@
 				<span class="text-xs text-gray-400 dark:text-neutral-500">{formatRelativeTime(createdAt)}</span>
 			</div>
 
-			{#if postType && typeBadgeLabel[postType]}
-				<span class="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gray-800 text-gray-50 dark:bg-neutral-700 dark:text-neutral-300">
-					{typeBadgeLabel[postType]}
-				</span>
-			{/if}
+			<div class="flex items-center gap-1.5 mt-1">
+				{#if postType && typeBadgeLabel[postType]}
+					<span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gray-800 text-gray-50 dark:bg-neutral-700 dark:text-neutral-300">
+						{typeBadgeLabel[postType]}
+					</span>
+				{/if}
+				{#if postType === 'CHALLENGE' && challengeDifficulty}
+					<span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {difficultyColors[challengeDifficulty] ?? 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-300'}">
+						{challengeDifficulty}
+					</span>
+				{/if}
+			</div>
 		</div>
 
 		<div class="relative" data-post-menu>
@@ -162,6 +263,25 @@
 		</p>
 	{/if}
 
+	<!-- Challenge card extras -->
+	{#if postType === 'CHALLENGE'}
+		{#if data?.description}
+			<p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">{data.description}</p>
+		{/if}
+		<div class="mt-2 flex items-center gap-3 text-xs text-gray-400 dark:text-neutral-500">
+			{#if challengeDeadline}
+				<span class="flex items-center gap-1">
+					<Clock size={12} />
+					Deadline: {new Date(challengeDeadline).toLocaleDateString()}
+				</span>
+			{/if}
+			<span class="flex items-center gap-1">
+				<Zap size={12} />
+				{responseCount} {responseCount === 1 ? 'response' : 'responses'}
+			</span>
+		</div>
+	{/if}
+
 	<!-- Type-specific data fields -->
 	{#if data}
 		{#if postType === 'ACHIEVEMENT' && data.organization}
@@ -183,6 +303,18 @@
 		{#if postType === 'LEARNING' && data.application}
 			<p class="mt-2 text-xs italic text-gray-400 dark:text-neutral-500">Application: {data.application}</p>
 		{/if}
+	{/if}
+
+	<!-- Code snippet -->
+	{#if codeSnippet}
+		<div class="mt-3 overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700/50">
+			{#if codeLanguage}
+				<div class="flex items-center justify-between border-b px-3 py-1.5 border-gray-200 dark:border-neutral-700/50 bg-gray-50 dark:bg-neutral-700/30">
+					<span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-neutral-500">{codeLanguage}</span>
+				</div>
+			{/if}
+			<pre class="overflow-x-auto p-3 text-xs bg-gray-50 dark:bg-neutral-900/50"><code class="language-{(codeLanguage ?? '').toLowerCase()}">{codeSnippet}</code></pre>
+		</div>
 	{/if}
 
 	<!-- Image -->
@@ -222,19 +354,52 @@
 	<!-- Poll widget -->
 	{#if pollOptions}
 		<div class="mt-3 space-y-2">
+			<!-- Poll deadline status -->
+			{#if pollDeadline}
+				<div class="flex items-center gap-1.5 text-xs">
+					{#if isPollClosed}
+						<span class="flex items-center gap-1 rounded-full px-2 py-0.5 font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+							<Lock size={10} />
+							Closed
+						</span>
+					{:else if pollTimeRemaining}
+						<span class="flex items-center gap-1 text-gray-400 dark:text-neutral-500">
+							<Clock size={10} />
+							{pollTimeRemaining}
+						</span>
+					{/if}
+				</div>
+			{/if}
+
 			{#each pollOptions as option, i}
 				{@const label = String(option.text ?? option.label ?? option)}
 				{@const votes = Number(option.votes)}
 				{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
 				{@const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0}
-				<div class="relative overflow-hidden rounded-lg border px-3 py-2 border-gray-200 dark:border-neutral-700/50">
-					<div class="absolute inset-y-0 left-0 bg-blue-500/10" style="width: {pct}%"></div>
+				<button
+					class="relative w-full overflow-hidden rounded-lg border px-3 py-2 text-left transition-colors {hasVoted || isPollClosed ? 'cursor-default' : 'cursor-pointer hover:border-blue-400 dark:hover:border-blue-500'} border-gray-200 dark:border-neutral-700/50"
+					onclick={() => handleVoteClick(i)}
+					disabled={hasVoted || isPollClosed}
+				>
+					{#if hasVoted || isPollClosed}
+						<div class="absolute inset-y-0 left-0 bg-blue-500/10" style="width: {pct}%"></div>
+					{/if}
 					<div class="relative flex items-center justify-between text-sm">
 						<span class="text-gray-800 dark:text-neutral-200">{label}</span>
-						<span class="text-xs text-gray-400 dark:text-neutral-500">{pct}%</span>
+						{#if hasVoted || isPollClosed}
+							<span class="text-xs text-gray-400 dark:text-neutral-500">{pct}%</span>
+						{/if}
 					</div>
-				</div>
+				</button>
 			{/each}
+
+			<!-- Total votes count -->
+			{#if pollOptions}
+				{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
+				<p class="text-xs text-gray-400 dark:text-neutral-500">
+					{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}
+				</p>
+			{/if}
 		</div>
 	{/if}
 
@@ -260,7 +425,9 @@
 			{post}
 			{isLiked}
 			{isBookmarked}
-			onlike={() => onlike(postId)}
+			{reactionCounts}
+			currentReaction={currentReaction ?? null}
+			onlike={(reactionType?: string) => onlike(postId, reactionType)}
 			onunlike={() => onunlike(postId)}
 			onbookmark={() => onbookmark(postId)}
 			onunbookmark={() => onunbookmark(postId)}
@@ -268,6 +435,19 @@
 			onrepost={() => onrepost(postId)}
 		/>
 	</div>
+
+	<!-- Thread link -->
+	{#if hasThreadChildren}
+		<div class="mt-2 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
+			<a
+				href="/feed/thread/{postId}"
+				class="flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
+			>
+				<MessageSquare size={12} />
+				View thread
+			</a>
+		</div>
+	{/if}
 
 	<!-- Comment section -->
 	{#if showComments}

@@ -21,6 +21,7 @@
 	import StepMultiItems from '$lib/components/onboarding/step-multi-items.svelte';
 	import StepTheme from '$lib/components/onboarding/step-theme.svelte';
 	import StepReview from '$lib/components/onboarding/step-review.svelte';
+	import StepWelcome from '$lib/components/onboarding/step-welcome.svelte';
 	import PreviewPanel from '$lib/components/onboarding/preview-panel.svelte';
 
 	const t = $derived(locale.t);
@@ -182,6 +183,8 @@
 		complete.mutate();
 	}
 
+	const isWelcome = $derived(currentStep?.component === 'welcome');
+
 	const isPending = $derived(
 		nextStep.isPending || prevStep.isPending || complete.isPending
 	);
@@ -198,146 +201,150 @@
 {:else if t && onboardingData && currentStep}
 	<div class="font-sans antialiased transition-colors duration-300">
 		<main class="mx-auto max-w-6xl px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
-			<!-- Mobile stepper -->
-			<div class="md:hidden">
-				<StepperMobile
-					{steps}
-					currentStep={currentStepId}
-					{completedSteps}
-					{progress}
-					{strength}
-				/>
-			</div>
-
-			<div class="flex gap-10">
-				<!-- Desktop sidebar — always at same position -->
-				<div class="hidden md:block flex-shrink-0">
-					<Sidebar
+			{#if isWelcome}
+				<StepWelcome step={currentStep} onNext={handleNext} />
+			{:else}
+				<!-- Mobile stepper -->
+				<div class="md:hidden">
+					<StepperMobile
 						{steps}
 						currentStep={currentStepId}
 						{completedSteps}
 						{progress}
 						{strength}
-						{missingRequired}
-						{t}
-						ongoto={handleGoto}
 					/>
 				</div>
 
-				<!-- Content — fixed start position, scrolls independently -->
-				<div class="min-w-0 flex-1 max-w-lg pb-12">
-					<div class="mb-8 flex items-center justify-between">
-						<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
-							{t('onboarding.title')}
-						</span>
-						{#if saveStatus === 'saving'}
-							<Loader2 size={10} class="animate-spin text-gray-500 dark:text-neutral-500" />
-						{:else if saveStatus === 'saved'}
-							<Check size={10} class="text-green-500" />
-						{/if}
-					</div>
-					<div class="mb-8 text-center">
-						<h2 class="text-sm font-bold text-gray-800 dark:text-neutral-200">{currentStep.label}</h2>
-						{#if currentStep.description}
-							<p class="mt-1 text-[10px] text-gray-500 dark:text-neutral-500">{currentStep.description}</p>
-						{/if}
-					</div>
-
-					{#if currentStep.component === 'review'}
-						<StepReview
-							session={onboardingData as unknown as Record<string, unknown>}
+				<div class="flex gap-10">
+					<!-- Desktop sidebar — always at same position -->
+					<div class="hidden md:block flex-shrink-0">
+						<Sidebar
 							{steps}
+							currentStep={currentStepId}
 							{completedSteps}
+							{progress}
+							{strength}
+							{missingRequired}
+							{t}
 							ongoto={handleGoto}
 						/>
-					{:else if currentStep.component === 'template' && currentStep.data}
-						{@const stepThemes = currentStep.data}
-						<StepTheme
-							themes={stepThemes}
-							selectedThemeId={stepData.templateId ?? ''}
-							onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
-						/>
-					{:else if currentStep.multipleItems && currentStep.fields}
-						<StepMultiItems
-							fields={currentStep.fields}
-							items={multiItems}
-							{t}
-							onupdate={(items) => (multiItems = items)}
-						/>
-					{:else if currentStep.fields}
-						<StepForm
-							fields={currentStep.fields}
-							data={stepData}
-							onupdate={(d) => (stepData = d)}
-						/>
-					{/if}
+					</div>
 
-					{#if isSectionStep}
-						<button
-							onclick={handleSkip}
-							disabled={isPending}
-							class="mt-6 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
-						>
-							{t('onboarding.skip')}
-						</button>
-					{/if}
+					<!-- Content — fixed start position, scrolls independently -->
+					<div class="min-w-0 flex-1 max-w-lg pb-12">
+						<div class="mb-8 flex items-center justify-between">
+							<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+								{t('onboarding.title')}
+							</span>
+							{#if saveStatus === 'saving'}
+								<Loader2 size={10} class="animate-spin text-gray-500 dark:text-neutral-500" />
+							{:else if saveStatus === 'saved'}
+								<Check size={10} class="text-green-500" />
+							{/if}
+						</div>
+						<div class="mb-8 text-center">
+							<h2 class="text-sm font-bold text-gray-800 dark:text-neutral-200">{currentStep.label}</h2>
+							{#if currentStep.description}
+								<p class="mt-1 text-[10px] text-gray-500 dark:text-neutral-500">{currentStep.description}</p>
+							{/if}
+						</div>
 
-					<div class="mt-10 flex items-center justify-between">
-						{#if onboardingData.previousStep}
-							<button
-								onclick={handleBack}
-								disabled={isPending}
-								class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
-							>
-								<ArrowLeft size={14} />
-								{t('onboarding.back')}
-							</button>
-						{:else}
-							<div></div>
+						{#if currentStep.component === 'review'}
+							<StepReview
+								session={onboardingData as unknown as Record<string, unknown>}
+								{steps}
+								{completedSteps}
+								ongoto={handleGoto}
+							/>
+						{:else if currentStep.component === 'template' && currentStep.data}
+							{@const stepThemes = currentStep.data}
+							<StepTheme
+								themes={stepThemes}
+								selectedThemeId={stepData.templateId ?? ''}
+								onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
+							/>
+						{:else if currentStep.multipleItems && currentStep.fields}
+							<StepMultiItems
+								fields={currentStep.fields}
+								items={multiItems}
+								{t}
+								onupdate={(items) => (multiItems = items)}
+							/>
+						{:else if currentStep.fields}
+							<StepForm
+								fields={currentStep.fields}
+								data={stepData}
+								onupdate={(d) => (stepData = d)}
+							/>
 						{/if}
 
-						{#if isLastStep}
-							<div class="flex flex-col items-end gap-1">
+						{#if isSectionStep}
+							<button
+								onclick={handleSkip}
+								disabled={isPending}
+								class="mt-6 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
+							>
+								{t('onboarding.skip')}
+							</button>
+						{/if}
+
+						<div class="mt-10 flex items-center justify-between">
+							{#if onboardingData.previousStep}
+								<button
+									onclick={handleBack}
+									disabled={isPending}
+									class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
+								>
+									<ArrowLeft size={14} />
+									{t('onboarding.back')}
+								</button>
+							{:else}
+								<div></div>
+							{/if}
+
+							{#if isLastStep}
+								<div class="flex flex-col items-end gap-1">
+									<Button
+										onclick={handleComplete}
+										disabled={isPending || !!missingRequired?.length}
+										variant="solid"
+										class="max-w-[200px]"
+									>
+										{#if complete.isPending}
+											<Loader2 size={14} class="mx-auto animate-spin" />
+										{:else}
+											{t('onboarding.complete')}
+										{/if}
+									</Button>
+									{#if completeError}
+										<span class="text-[11px] text-red-500">{completeError}</span>
+									{/if}
+								</div>
+							{:else}
 								<Button
-									onclick={handleComplete}
-									disabled={isPending || !!missingRequired?.length}
+									onclick={handleNext}
+									disabled={isPending}
 									variant="solid"
 									class="max-w-[200px]"
 								>
-									{#if complete.isPending}
+									{#if nextStep.isPending}
 										<Loader2 size={14} class="mx-auto animate-spin" />
 									{:else}
-										{t('onboarding.complete')}
+										<span class="flex items-center justify-center gap-2">
+											{t('onboarding.next')}
+											<ArrowRight size={14} />
+										</span>
 									{/if}
 								</Button>
-								{#if completeError}
-									<span class="text-[11px] text-red-500">{completeError}</span>
-								{/if}
-							</div>
-						{:else}
-							<Button
-								onclick={handleNext}
-								disabled={isPending}
-								variant="solid"
-								class="max-w-[200px]"
-							>
-								{#if nextStep.isPending}
-									<Loader2 size={14} class="mx-auto animate-spin" />
-								{:else}
-									<span class="flex items-center justify-center gap-2">
-										{t('onboarding.next')}
-										<ArrowRight size={14} />
-									</span>
-								{/if}
-							</Button>
-						{/if}
+							{/if}
+						</div>
 					</div>
+				<!-- Desktop preview -->
+				<div class="hidden xl:block flex-shrink-0">
+					<PreviewPanel token={(auth.data as unknown as { accessToken?: string })?.accessToken} />
 				</div>
-			<!-- Desktop preview -->
-			<div class="hidden xl:block flex-shrink-0">
-				<PreviewPanel token={(auth.data as unknown as { accessToken?: string })?.accessToken} />
 			</div>
-		</div>
+			{/if}
 		</main>
 	</div>
 {/if}

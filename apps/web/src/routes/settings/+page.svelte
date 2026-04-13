@@ -39,7 +39,8 @@
 		createTwoFactorAuthRegenerate,
 		createDeleteAccountHandle,
 		getUsersGetProfileQueryKey,
-		getTwoFactorAuthGetStatusQueryKey
+		getTwoFactorAuthGetStatusQueryKey,
+		customFetch
 	} from 'api-client';
 
 	const t = $derived(locale.t);
@@ -450,6 +451,17 @@
 										<Loader2 size={13} class="animate-spin" />
 									{/if}
 									{t('common.save')}
+								</button>
+							</div>
+							<div class="flex justify-start pt-4 border-t border-gray-200 dark:border-neutral-700 mt-4">
+								<button
+									onclick={async () => {
+										await customFetch('/api/v1/onboarding/session/restart', { method: 'POST' });
+										window.location.href = '/onboarding';
+									}}
+									class="text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200 transition-colors"
+								>
+									Refresh my profile
 								</button>
 							</div>
 						</div>

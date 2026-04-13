@@ -47,6 +47,19 @@
 </script>
 
 <div class="mb-6" bind:clientWidth={containerWidth}>
+	<!-- Sticky progress bar -->
+	<div class="sticky top-0 z-10 h-1 w-full bg-gray-200 dark:bg-neutral-700">
+		<div
+			class="h-full transition-all duration-700 {
+				(strength?.score ?? 0) >= 75 ? 'bg-emerald-500' :
+				(strength?.score ?? 0) >= 50 ? 'bg-blue-500' :
+				(strength?.score ?? 0) >= 25 ? 'bg-sky-400' :
+				'bg-gray-400 dark:bg-neutral-500'
+			}"
+			style="width: {progress}%"
+		></div>
+	</div>
+
 	{#if containerWidth > 0}
 		<div class="flex justify-between gap-1">
 			{#each visibleSteps as step, i}

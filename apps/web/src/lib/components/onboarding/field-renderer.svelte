@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Input, Label } from 'ui';
+	import { customFetch } from 'api-client';
 
 	type Field = {
 		key: string;
@@ -15,9 +16,27 @@
 		field: Field;
 		value: string;
 		onchange: (value: string) => void;
+		error?: string;
 	};
 
-	let { field, value, onchange }: Props = $props();
+	let { field, value, onchange, error }: Props = $props();
+
+	let usernameAvailable = $state<boolean | null>(null);
+	let usernameCheckTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	function checkUsername(val: string) {
+		if (usernameCheckTimeout) clearTimeout(usernameCheckTimeout);
+		usernameAvailable = null;
+		if (!val || val.length < 3) return;
+		usernameCheckTimeout = setTimeout(async () => {
+			try {
+				const res = await customFetch<{ available: boolean }>(`/api/v1/users/username/check?username=${encodeURIComponent(val)}`);
+				usernameAvailable = res.available;
+			} catch {
+				usernameAvailable = null;
+			}
+		}, 500);
+	}
 
 	const examples = $derived(field.examples ?? []);
 	let exampleIndex = $state(0);
@@ -62,7 +81,7 @@
 			onblur={() => (focused = false)}
 			oninput={(e) => onchange(e.currentTarget.value)}
 			rows={3}
-			class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all border-gray-300 text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200"
+			class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all {error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-neutral-700'} text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200"
 		></textarea>
 		{#if summaryExamples.length && !value}
 			<button
@@ -86,7 +105,7 @@
 			{value}
 			required={field.required}
 			onchange={(e) => onchange(e.currentTarget.value)}
-			class="w-full rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all border-gray-300 text-gray-900 focus:border-gray-900 dark:border-neutral-700 dark:text-neutral-200 dark:focus:border-neutral-200"
+			class="w-full rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all {error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-neutral-700'} text-gray-900 focus:border-gray-900 dark:text-neutral-200 dark:focus:border-neutral-200"
 		>
 			<option value="">---</option>
 			{#each field.options ?? [] as opt}
@@ -100,9 +119,24 @@
 			{value}
 			{placeholder}
 			required={field.required}
+			class={error ? 'border-red-500 dark:border-red-400' : ''}
 			onfocus={() => (focused = true)}
 			onblur={() => (focused = false)}
-			oninput={(e) => onchange(e.currentTarget.value)}
+			oninput={(e) => {
+				onchange(e.currentTarget.value);
+				if (field.key === 'username') checkUsername(e.currentTarget.value);
+			}}
 		/>
+		{#if field.key === 'username' && usernameAvailable !== null}
+			{#if usernameAvailable}
+				<span class="text-xs text-emerald-500">✓ Available</span>
+			{:else}
+				<span class="text-xs text-red-500">✗ Already taken</span>
+			{/if}
+		{/if}
+	{/if}
+
+	{#if error}
+		<span class="text-xs text-red-500 dark:text-red-400">{error}</span>
 	{/if}
 </div>

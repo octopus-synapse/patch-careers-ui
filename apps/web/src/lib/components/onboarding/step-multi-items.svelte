@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button, Modal } from 'ui';
 	import type { Translator } from 'i18n';
-	import { Plus, Trash2 } from 'lucide-svelte';
+	import { Copy, Plus, Trash2 } from 'lucide-svelte';
 	import StepForm from './step-form.svelte';
 
 	type Field = {
@@ -57,12 +57,23 @@
 			{#each items as item, i}
 				<div class="flex items-center justify-between border-b py-3 border-gray-200 dark:border-neutral-700">
 					<span class="text-sm text-gray-800 dark:text-neutral-200">{itemSummary(item)}</span>
-					<button
-						onclick={() => removeItem(i)}
-						class="rounded p-1 text-red-500 transition-opacity hover:opacity-60"
-					>
-						<Trash2 size={14} />
-					</button>
+					<div class="flex items-center gap-1">
+						<button
+							class="rounded p-1 text-gray-400 transition-opacity hover:opacity-60 dark:text-neutral-500"
+							onclick={() => {
+								const copy = { content: { ...item.content } };
+								onupdate([...items, copy]);
+							}}
+						>
+							<Copy size={14} />
+						</button>
+						<button
+							onclick={() => removeItem(i)}
+							class="rounded p-1 text-red-500 transition-opacity hover:opacity-60"
+						>
+							<Trash2 size={14} />
+						</button>
+					</div>
 				</div>
 			{/each}
 		</div>

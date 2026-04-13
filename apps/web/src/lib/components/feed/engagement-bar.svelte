@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { Button } from 'ui';
-	import { Heart, MessageCircle, Repeat2, Bookmark } from 'lucide-svelte';
+	import { MessageCircle, Repeat2, Bookmark } from 'lucide-svelte';
+	import ReactionPicker from './reaction-picker.svelte';
 
 	type Props = {
 		post: Record<string, unknown>;
 		isLiked: boolean;
 		isBookmarked: boolean;
-		onlike: () => void;
+		reactionCounts?: Record<string, number>;
+		currentReaction?: string | null;
+		onlike: (reactionType?: string) => void;
 		onunlike: () => void;
 		onbookmark: () => void;
 		onunbookmark: () => void;
@@ -18,6 +21,8 @@
 		post,
 		isLiked,
 		isBookmarked,
+		reactionCounts,
+		currentReaction,
 		onlike,
 		onunlike,
 		onbookmark,
@@ -26,27 +31,25 @@
 		onrepost
 	}: Props = $props();
 
-	const likeCount = $derived(Number(post.likeCount ?? post.likesCount ?? 0));
 	const commentCount = $derived(Number(post.commentCount ?? post.commentsCount ?? 0));
 	const repostCount = $derived(Number(post.repostCount ?? post.repostsCount ?? 0));
+
+	function handleReact(reactionType: string) {
+		onlike(reactionType);
+	}
+
+	function handleRemoveReaction() {
+		onunlike();
+	}
 </script>
 
 <div class="flex items-center gap-1">
-	<Button
-		variant="ghost"
-		size="xs"
-		onclick={() => isLiked ? onunlike() : onlike()}
-		class={isLiked ? 'text-red-500 hover:text-red-600' : ''}
-	>
-		{#if isLiked}
-			<Heart size={16} fill="currentColor" />
-		{:else}
-			<Heart size={16} />
-		{/if}
-		{#if likeCount > 0}
-			<span class="text-xs">{likeCount}</span>
-		{/if}
-	</Button>
+	<ReactionPicker
+		currentReaction={currentReaction ?? (isLiked ? 'LIKE' : null)}
+		reactionCounts={reactionCounts ?? {}}
+		onreact={handleReact}
+		onremove={handleRemoveReaction}
+	/>
 
 	<Button variant="ghost" size="xs" onclick={oncommenttoggle}>
 		<MessageCircle size={16} />
