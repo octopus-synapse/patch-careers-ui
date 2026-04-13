@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Avatar, SegmentToggle } from 'ui';
 	import type { ColorSchema } from 'ui';
-	import { Sun, Moon, Globe, LogOut, ChevronDown } from 'lucide-svelte';
+	import { Sun, Moon, Globe, LogOut, ChevronDown, Settings } from 'lucide-svelte';
 
 	type User = {
 		name?: string | null;
@@ -16,6 +16,7 @@
 		styles: Record<string, Record<string, string>>;
 		themeLabel: string;
 		logoutLabel: string;
+		settingsLabel?: string;
 		locales: string[];
 		currentLocale: string;
 		ontoggle: () => void;
@@ -24,7 +25,7 @@
 		onlogout: () => void;
 	};
 
-	let { user, cs, isOpen, styles: s, themeLabel, logoutLabel, locales, currentLocale, ontoggle, onthemetoggle, onlocalechange, onlogout }: Props = $props();
+	let { user, cs, isOpen, styles: s, themeLabel, logoutLabel, settingsLabel, locales, currentLocale, ontoggle, onthemetoggle, onlocalechange, onlogout }: Props = $props();
 
 	const displayName = $derived(user.name ?? user.email.split('@')[0]);
 	const initial = $derived(user.name ?? user.email);
@@ -71,6 +72,13 @@
 			</div>
 
 			<div class="border-t {s.border[cs]}">
+				<a
+					href="/settings"
+					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 {s.muted[cs]}"
+				>
+					<Settings size={13} />
+					{settingsLabel ?? 'Settings'}
+				</a>
 				<button
 					onclick={onlogout}
 					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] text-red-500 transition-opacity hover:opacity-70"

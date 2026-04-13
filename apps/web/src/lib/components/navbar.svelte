@@ -181,6 +181,7 @@
 						styles={s}
 						themeLabel={t('nav.theme')}
 						logoutLabel={t('dashboard.logout')}
+						settingsLabel={t('settings.settingsLink')}
 						locales={locale.locales}
 						currentLocale={locale.current}
 						ontoggle={() => isDropdownOpen = !isDropdownOpen}

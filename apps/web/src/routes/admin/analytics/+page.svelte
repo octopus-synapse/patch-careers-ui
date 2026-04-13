@@ -9,6 +9,7 @@
 	import { Loader2 } from 'lucide-svelte';
 	import { SegmentToggle } from 'ui';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
+	import ExportButton from '$lib/components/admin/export-button.svelte';
 
 	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
@@ -62,12 +63,15 @@
 		<h1 class="text-xl font-semibold tracking-tight {text}">
 			{t?.('admin.analytics.title') ?? 'Global Analytics'}
 		</h1>
-		<SegmentToggle
+		<div class="flex items-center gap-2">
+			<ExportButton data={[...atsDist, ...byLang, ...sections, ...imports]} filename="analytics.csv" colorSchema={cs} />
+			<SegmentToggle
 			options={periodOptions}
 			selected={period}
 			colorSchema={cs}
 			onchange={(v) => period = v as 'day' | 'week' | 'month'}
 		/>
+		</div>
 	</div>
 
 	{#if metrics}

@@ -5,8 +5,10 @@
 		Users,
 		BarChart3,
 		Tags,
+		Layers,
 		ListChecks,
 		Activity,
+		Gauge,
 		MessageSquare,
 		PanelLeftClose,
 		PanelLeft,
@@ -34,8 +36,10 @@
 		{ href: '/admin/users', label: 'Users', icon: Users },
 		{ href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
 		{ href: '/admin/skills', label: 'Skills', icon: Tags },
+		{ href: '/admin/sections', label: 'Sections', icon: Layers },
 		{ href: '/admin/onboarding', label: 'Onboarding', icon: ListChecks },
 		{ href: '/admin/health', label: 'Health', icon: Activity },
+		{ href: '/admin/performance', label: 'Performance', icon: Gauge },
 		{ href: '/admin/chat', label: 'Chat', icon: MessageSquare },
 	];
 

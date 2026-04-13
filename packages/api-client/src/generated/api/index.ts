@@ -6,6 +6,7 @@ export * from "./admin-analytics/admin-analytics";
 export * from "./admin-chat/admin-chat";
 export * from "./admin-collaborations/admin-collaborations";
 export * from "./admin-dashboard/admin-dashboard";
+export * from "./admin-metrics/admin-metrics";
 export * from "./admin-onboarding/admin-onboarding";
 export * from "./admin-programming-languages/admin-programming-languages";
 export * from "./admin-section-types/admin-section-types";
