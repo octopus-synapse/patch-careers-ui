@@ -10,6 +10,7 @@
 		Activity,
 		Gauge,
 		MessageSquare,
+		FlaskConical,
 		PanelLeftClose,
 		PanelLeft,
 	} from 'lucide-svelte';
@@ -32,6 +33,7 @@
 		{ href: '/admin/health', label: 'Health', icon: Activity },
 		{ href: '/admin/performance', label: 'Performance', icon: Gauge },
 		{ href: '/admin/chat', label: 'Chat', icon: MessageSquare },
+		{ href: '/admin/test', label: 'Tests', icon: FlaskConical },
 	];
 
 	function isActive(href: string, exact?: boolean): boolean {
