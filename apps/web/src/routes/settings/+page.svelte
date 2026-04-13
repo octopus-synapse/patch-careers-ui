@@ -47,7 +47,7 @@
 
 	// Auth check
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authenticated = $derived(auth.data?.data?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.authenticated ?? false);
 
 	$effect(() => {
 		if (!auth.isLoading && !authenticated) goto('/login');
@@ -60,7 +60,7 @@
 	const profileQuery = createUsersGetProfile(() => ({
 		query: { enabled: browser && authenticated }
 	}));
-	const profileData = $derived(profileQuery.data?.data as Record<string, string> | undefined);
+	const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
 
 	let profileName = $state('');
 	let profileBio = $state('');
@@ -126,7 +126,7 @@
 		() => ({ username: debouncedUsername }),
 		() => ({ query: { enabled: browser && debouncedUsername.length >= 3 } })
 	);
-	const usernameAvailable = $derived((usernameCheck.data?.data as Record<string, boolean> | undefined)?.available);
+	const usernameAvailable = $derived((usernameCheck.data as Record<string, boolean> | undefined)?.available);
 
 	const updateUsername = createUsersUpdateUsername(() => ({
 		mutation: {
@@ -182,7 +182,7 @@
 	const tfaStatus = createTwoFactorAuthGetStatus(() => ({
 		query: { enabled: browser && authenticated }
 	}));
-	const tfaData = $derived(tfaStatus.data?.data as Record<string, unknown> | undefined);
+	const tfaData = $derived(tfaStatus.data as Record<string, unknown> | undefined);
 	const tfaEnabled = $derived(Boolean(tfaData?.enabled));
 	const backupCodesRemaining = $derived(Number(tfaData?.backupCodesRemaining ?? 0));
 

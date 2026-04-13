@@ -30,8 +30,8 @@
 
 	// Auth — after customFetch unwrap, data is the DTO directly
 	const auth = useAuth();
-	const currentUserId = $derived(String(auth.data?.data?.user?.id ?? ''));
-	const authenticated = $derived(auth.data?.data?.authenticated ?? false);
+	const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+	const authenticated = $derived(auth.data?.authenticated ?? false);
 
 	// Queries
 	const pendingQuery = createConnectionGetPendingRequests(() => ({

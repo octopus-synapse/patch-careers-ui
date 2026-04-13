@@ -26,7 +26,7 @@
 	const t = $derived(locale.t);
 
 	const auth = createAuthSession(() => ({ query: { retry: false } }));
-	const authenticated = $derived(auth.data?.data?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.authenticated ?? false);
 
 	$effect(() => {
 		if (!auth.isLoading && !authenticated) {
@@ -46,7 +46,7 @@
 		queryClient.invalidateQueries({ queryKey });
 	}
 
-	const onboardingData = $derived(session.data?.data);
+	const onboardingData = $derived(session.data);
 	const steps = $derived(onboardingData?.steps ?? []);
 	const currentStepId = $derived(onboardingData?.currentStep ?? '');
 	const currentStep = $derived(steps.find((s: Record<string, unknown>) => s.id === currentStepId));
@@ -112,7 +112,7 @@
 		mutation: {
 			async onSuccess() {
 				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				const sessionData = auth.data?.data as Record<string, unknown> | undefined;
+				const sessionData = auth.data as Record<string, unknown> | undefined;
 				const user = sessionData?.user as Record<string, string | null> | undefined;
 				const username = user?.username;
 				goto(username ? `/@${username}` : '/');
@@ -333,7 +333,7 @@
 				</div>
 			<!-- Desktop preview -->
 			<div class="hidden xl:block flex-shrink-0">
-				<PreviewPanel token={(auth.data?.data as unknown as Record<string, string> | undefined)?.accessToken} />
+				<PreviewPanel token={(auth.data as unknown as Record<string, string> | undefined)?.accessToken} />
 			</div>
 		</div>
 		</main>

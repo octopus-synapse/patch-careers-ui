@@ -20,10 +20,10 @@
 	}));
 
 	const metrics = $derived(
-		metricsQuery.data?.data as Record<string, unknown> | undefined
+		metricsQuery.data as Record<string, unknown> | undefined
 	);
 	const healthStatus = $derived<'healthy' | 'down'>(
-		healthAll.isError ? 'down' : (healthAll.data?.data?.status === 'ok' ? 'healthy' : 'down')
+		healthAll.isError ? 'down' : (healthAll.data?.status === 'ok' ? 'healthy' : 'down')
 	);
 </script>
 

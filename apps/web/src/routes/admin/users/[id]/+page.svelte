@@ -24,7 +24,7 @@
 		query: { enabled: browser && !!userId }
 	}));
 
-	const user = $derived(userQuery.data?.data?.user as Record<string, unknown> | undefined);
+	const user = $derived(userQuery.data?.user as Record<string, unknown> | undefined);
 	const resumes = $derived((user?.resumes as Record<string, unknown>[] | undefined) ?? []);
 	const counts = $derived(user?.counts as Record<string, number> | undefined);
 

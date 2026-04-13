@@ -23,8 +23,8 @@
 	const session = createAuthSession(() => ({
 		query: { retry: false, enabled: browser }
 	}));
-	const user = $derived(session.data?.data?.user);
-	const authenticated = $derived(session.data?.data?.authenticated ?? false);
+	const user = $derived(session.data?.user);
+	const authenticated = $derived(session.data?.authenticated ?? false);
 	const currentUserId = $derived(String((user as Record<string, unknown> | undefined)?.id ?? ''));
 	const userName = $derived(String((user as Record<string, unknown> | undefined)?.name ?? ''));
 	const userPhoto = $derived(((user as Record<string, unknown> | undefined)?.photoURL ?? null) as string | null);
@@ -77,7 +77,7 @@
 	);
 
 	const rawData = $derived(
-		feedQuery.data?.data as Record<string, unknown> | undefined
+		feedQuery.data as Record<string, unknown> | undefined
 	);
 
 	// When data arrives, append to allPosts

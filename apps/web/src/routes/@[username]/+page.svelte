@@ -24,11 +24,11 @@
 
 	const auth = createAuthSession(() => ({ query: { retry: false } }));
 	const currentUserId = $derived(
-		String((auth.data?.data as unknown as Record<string, unknown>)?.user
-			? ((auth.data?.data as unknown as Record<string, unknown>).user as Record<string, unknown>).id ?? ''
+		String((auth.data as unknown as Record<string, unknown>)?.user
+			? ((auth.data as unknown as Record<string, unknown>).user as Record<string, unknown>).id ?? ''
 			: '')
 	);
-	const authenticated = $derived((auth.data?.data as unknown as Record<string, unknown>)?.authenticated ?? false);
+	const authenticated = $derived((auth.data as unknown as Record<string, unknown>)?.authenticated ?? false);
 
 	const profile = createUsersGetPublicProfileByUsername(
 		() => username ?? '',
@@ -36,7 +36,7 @@
 	);
 
 	const profileData = $derived(
-		(profile.data?.data as unknown as Record<string, unknown>) ?? null
+		(profile.data as unknown as Record<string, unknown>) ?? null
 	);
 	const user = $derived(
 		(profileData?.user as Record<string, string | null>) ?? null
@@ -78,7 +78,7 @@
 		() => ({ query: { enabled: !!userId } })
 	);
 	const stats = $derived(
-		(socialStats.data?.data as unknown as Record<string, number>) ?? { followers: 0, following: 0 }
+		(socialStats.data as unknown as Record<string, number>) ?? { followers: 0, following: 0 }
 	);
 
 	const isFollowingQuery = createFollowIsFollowing(
@@ -86,7 +86,7 @@
 		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
 	);
 	const isFollowing = $derived(
-		(isFollowingQuery.data?.data as unknown as Record<string, boolean>)?.isFollowing ?? false
+		(isFollowingQuery.data as unknown as Record<string, boolean>)?.isFollowing ?? false
 	);
 
 	const queryClient = useQueryClient();
@@ -115,7 +115,7 @@
 		() => ({ query: { enabled: !!userId } })
 	);
 	const connectionCount = $derived(
-		(connectionStats.data?.data as unknown as Record<string, number>)?.connections ?? 0
+		(connectionStats.data as unknown as Record<string, number>)?.connections ?? 0
 	);
 
 	const isConnectedQuery = createConnectionIsConnected(
@@ -123,7 +123,7 @@
 		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
 	);
 	const isConnected = $derived(
-		(isConnectedQuery.data?.data as unknown as Record<string, boolean>)?.isConnected ?? false
+		(isConnectedQuery.data as unknown as Record<string, boolean>)?.isConnected ?? false
 	);
 
 	const connectMutation = createConnectionSendConnectionRequest(() => ({

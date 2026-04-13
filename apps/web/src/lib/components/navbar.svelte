@@ -28,8 +28,8 @@
 	const session = createAuthSession(() => ({
 		query: { retry: false, enabled: browser }
 	}));
-	const user = $derived(session.data?.data?.user);
-	const authenticated = $derived(session.data?.data?.authenticated ?? false);
+	const user = $derived(session.data?.user);
+	const authenticated = $derived(session.data?.authenticated ?? false);
 	const hasCompletedOnboarding = $derived((user as Record<string, unknown> | undefined)?.hasCompletedOnboarding ?? false);
 	const isAdmin = $derived(Boolean((user as Record<string, unknown> | undefined)?.isAdmin));
 

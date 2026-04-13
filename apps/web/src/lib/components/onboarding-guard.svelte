@@ -8,8 +8,8 @@
 		query: { retry: false, enabled: browser }
 	}));
 
-	const user = $derived(session.data?.data?.user as Record<string, unknown> | null);
-	const authenticated = $derived(session.data?.data?.authenticated ?? false);
+	const user = $derived(session.data?.user as Record<string, unknown> | null);
+	const authenticated = $derived(session.data?.authenticated ?? false);
 	const needsOnboarding = $derived(user?.needsOnboarding ?? false);
 
 	const currentPath = $derived($page.url.pathname);

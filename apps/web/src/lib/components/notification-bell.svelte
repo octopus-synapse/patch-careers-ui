@@ -27,7 +27,7 @@
 	);
 
 	const unreadCount = $derived(
-		(unreadQuery.data?.data as unknown as Record<string, unknown>)?.count as number ?? 0
+		(unreadQuery.data as unknown as Record<string, unknown>)?.count as number ?? 0
 	);
 
 	const notificationsQuery = createNotificationsGetByUser(
@@ -38,7 +38,7 @@
 	);
 
 	const notifications = $derived(
-		(notificationsQuery.data?.data as unknown as Record<string, unknown>[]) ?? []
+		(notificationsQuery.data as unknown as Record<string, unknown>[]) ?? []
 	);
 
 	function getNotificationMessage(notification: Record<string, unknown>): string {

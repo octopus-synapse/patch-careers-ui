@@ -33,13 +33,13 @@
 	);
 
 	const jobsList = $derived(
-		(jobsQuery.data?.data as unknown as Record<string, unknown> | undefined)?.jobs as Record<string, unknown>[] ?? []
+		(jobsQuery.data as unknown as Record<string, unknown> | undefined)?.jobs as Record<string, unknown>[] ?? []
 	);
 	const filteredJobs = $derived(
 		jobTypeFilter ? jobsList.filter(j => j.jobType === jobTypeFilter) : jobsList
 	);
 	const pagination = $derived(
-		(jobsQuery.data?.data as unknown as Record<string, unknown> | undefined)?.pagination as { page: number; totalPages: number; total: number } | undefined
+		(jobsQuery.data as unknown as Record<string, unknown> | undefined)?.pagination as { page: number; totalPages: number; total: number } | undefined
 	);
 
 	// Create modal

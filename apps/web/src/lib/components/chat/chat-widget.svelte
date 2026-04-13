@@ -22,7 +22,7 @@
 	import { browser } from '$app/environment';
 
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authData = $derived(auth.data?.data as Record<string, unknown> | undefined);
+	const authData = $derived(auth.data as Record<string, unknown> | undefined);
 	const authenticated = $derived(authData?.authenticated ?? false);
 	const currentUserId = $derived(String((authData?.user as Record<string, unknown>)?.id ?? ''));
 
@@ -32,7 +32,7 @@
 	);
 
 	const convListRaw = $derived(
-		(conversations.data?.data as unknown as Record<string, unknown>)?.conversations as Record<string, unknown> ?? {}
+		(conversations.data as unknown as Record<string, unknown>)?.conversations as Record<string, unknown> ?? {}
 	);
 	const convList = $derived((Array.isArray(convListRaw) ? convListRaw : (convListRaw as Record<string, unknown>)?.conversations as Array<Record<string, unknown>>) ?? []);
 
@@ -43,7 +43,7 @@
 	);
 
 	const msgListRaw = $derived(
-		(messages.data?.data as unknown as Record<string, unknown>)?.messages as Record<string, unknown> ?? {}
+		(messages.data as unknown as Record<string, unknown>)?.messages as Record<string, unknown> ?? {}
 	);
 	const msgList = $derived((Array.isArray(msgListRaw) ? msgListRaw : (msgListRaw as Record<string, unknown>)?.messages as Array<Record<string, unknown>>) ?? []);
 

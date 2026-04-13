@@ -38,10 +38,10 @@
 	}));
 
 	const users = $derived(
-		(usersQuery.data?.data?.users as Record<string, unknown>[] | undefined) ?? []
+		(usersQuery.data?.users as Record<string, unknown>[] | undefined) ?? []
 	);
 	const pagination = $derived(
-		usersQuery.data?.data?.pagination as { page: number; totalPages: number; total: number } | undefined
+		usersQuery.data?.pagination as { page: number; totalPages: number; total: number } | undefined
 	);
 
 	// --- Dropdown state ---

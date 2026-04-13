@@ -15,8 +15,8 @@
 	}));
 	const queryClient = useQueryClient();
 
-	const user = $derived(session.data?.data?.user);
-	const authenticated = $derived(session.data?.data?.authenticated);
+	const user = $derived(session.data?.user);
+	const authenticated = $derived(session.data?.authenticated);
 
 	$effect(() => {
 		if (!session.isLoading && !authenticated) {

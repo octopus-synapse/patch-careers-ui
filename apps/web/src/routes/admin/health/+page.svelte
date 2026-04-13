@@ -40,7 +40,7 @@
 
 	function getStatus(query: { data?: { data?: { status?: string } }; isError?: boolean }): HealthStatus {
 		if (query.isError) return 'down';
-		const status = query.data?.data?.status;
+		const status = query.data?.status;
 		if (status === 'ok') return 'healthy';
 		if (status === 'error') return 'down';
 		return 'degraded';
@@ -54,7 +54,7 @@
 		{ label: t?.('admin.health.translation') ?? 'Translation', icon: Globe, query: healthTranslate },
 	]);
 
-	const stats = $derived(platformStats.data?.data);
+	const stats = $derived(platformStats.data);
 </script>
 
 <svelte:head>

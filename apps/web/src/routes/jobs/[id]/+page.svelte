@@ -25,8 +25,8 @@
 
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
 	const currentUserId = $derived(
-		String((auth.data?.data as unknown as Record<string, unknown>)?.user
-			? ((auth.data?.data as unknown as Record<string, unknown>).user as Record<string, unknown>).id ?? ''
+		String((auth.data as unknown as Record<string, unknown>)?.user
+			? ((auth.data as unknown as Record<string, unknown>).user as Record<string, unknown>).id ?? ''
 			: '')
 	);
 
@@ -36,7 +36,7 @@
 	);
 
 	const job = $derived(
-		jobQuery.data?.data as Record<string, unknown> | undefined
+		jobQuery.data as Record<string, unknown> | undefined
 	);
 	const isOwner = $derived(
 		!!currentUserId && !!job && (job.userId === currentUserId || job.createdBy === currentUserId)
