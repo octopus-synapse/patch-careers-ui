@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar, SegmentToggle } from 'ui';
+	import { Avatar, Button, SegmentToggle } from 'ui';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import type { ComponentType } from 'svelte';
 	import { MessageCircle, Shield } from 'lucide-svelte';
@@ -93,12 +93,15 @@
 					<SegmentToggle options={localeOptions} selected={currentLocale} size="md" onchange={onlocalechange} />
 				</div>
 
-				<button
+				<Button
+					variant="danger"
+					size="lg"
+					fullWidth
 					onclick={onlogout}
-					class="mt-2 w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest text-red-500 transition-transform active:scale-[0.98]"
+					class="mt-2"
 				>
 					{t('dashboard.logout')}
-				</button>
+				</Button>
 			{:else}
 				<div class="flex items-center justify-between border-t pt-6 border-gray-200/60 dark:border-neutral-800/60">
 					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>

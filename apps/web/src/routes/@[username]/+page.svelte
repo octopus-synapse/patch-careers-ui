@@ -18,6 +18,7 @@
 	} from 'api-client';
 	import { chatState } from '$lib/chat-state.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
+	import { Button } from 'ui';
 	import { Loader2, MapPin, Globe, ExternalLink, FileDown, MessageCircle, UserPlus } from 'lucide-svelte';
 
 	const username = $derived($page.params.username);
@@ -200,35 +201,40 @@
 
 					{#if !isOwnProfile && authenticated}
 						<div class="flex items-center gap-2">
-							<button
+							<Button
+								variant={isFollowing ? 'outline' : 'solid'}
+								size="sm"
 								onclick={toggleFollow}
-								class="rounded-full px-5 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all
-									{isFollowing ? 'border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800' : 'bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300'}"
+								class="rounded-full px-5 py-1.5 text-[11px]"
 							>
 								{isFollowing ? 'Following' : 'Follow'}
-							</button>
+							</Button>
 							{#if !isConnected}
 								{#if connectionRequestSent}
 									<span class="rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-60 border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800">
 										Sent
 									</span>
 								{:else}
-									<button
+									<Button
+										variant="solid"
+										size="sm"
 										onclick={sendConnectionRequest}
-										class="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
+										class="rounded-full px-4 py-1.5 text-[11px]"
 									>
 										<UserPlus size={13} />
 										Connect
-									</button>
+									</Button>
 								{/if}
 							{/if}
-							<button
+							<Button
+								variant="outline"
+								size="sm"
 								onclick={openChat}
-								class="flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
+								class="rounded-full px-4 py-1.5 text-[11px]"
 							>
 								<MessageCircle size={13} />
 								Message
-							</button>
+							</Button>
 						</div>
 					{/if}
 				</div>
@@ -311,10 +317,12 @@
 								<p class="mt-1 text-[11px] text-red-500">{downloadError}</p>
 							{/if}
 						</div>
-						<button
+						<Button
+							variant="solid"
+							size="sm"
 							onclick={downloadResume}
 							disabled={downloading}
-							class="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300 disabled:opacity-50"
+							class="rounded-full px-4 py-1.5 text-[11px]"
 						>
 							{#if downloading}
 								<Loader2 size={13} class="animate-spin" />
@@ -323,7 +331,7 @@
 								<FileDown size={13} />
 								Download
 							{/if}
-						</button>
+						</Button>
 					</div>
 				</div>
 			{/if}

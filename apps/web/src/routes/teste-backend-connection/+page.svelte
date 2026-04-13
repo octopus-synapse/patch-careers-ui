@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from 'ui';
 	import { browser } from '$app/environment';
 	import { customFetch, getBaseUrl } from 'api-client';
 
@@ -64,13 +65,15 @@
 	<div class="mx-auto max-w-2xl px-6">
 		<h1 class="text-lg font-bold text-gray-800 dark:text-neutral-200 mb-4">Backend Connection Test</h1>
 
-		<button
+		<Button
+			variant="solid"
+			size="sm"
 			onclick={runTests}
 			disabled={testing}
-			class="mb-6 rounded-lg px-4 py-2 text-sm font-semibold bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300 disabled:opacity-50"
+			class="mb-6"
 		>
 			{testing ? 'Testing...' : 'Run Tests'}
-		</button>
+		</Button>
 
 		{#if results.length > 0}
 			<div class="space-y-3">

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { customFetch } from 'api-client';
 	import { Check, X, Loader2, Play, FlaskConical } from 'lucide-svelte';
+	import { Button } from 'ui';
 
 	interface TestResult {
 		name: string;
@@ -93,11 +94,7 @@
 				Test Runner
 			</h1>
 		</div>
-		<button
-			onclick={runAll}
-			disabled={runningAll}
-			class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300 disabled:opacity-50"
-		>
+		<Button variant="solid" size="sm" onclick={runAll} disabled={runningAll}>
 			{#if runningAll}
 				<Loader2 size={14} class="animate-spin" />
 				Running...
@@ -105,7 +102,7 @@
 				<Play size={14} />
 				Run All
 			{/if}
-		</button>
+		</Button>
 	</div>
 
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -125,11 +122,7 @@
 							{suite.description}
 						</p>
 					</div>
-					<button
-						onclick={() => runSuite(suite.id)}
-						disabled={isRunning}
-						class="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600 disabled:opacity-50"
-					>
+					<Button variant="outline" size="xs" onclick={() => runSuite(suite.id)} disabled={isRunning} class="shrink-0">
 						{#if isRunning}
 							<Loader2 size={12} class="animate-spin" />
 							Running
@@ -137,7 +130,7 @@
 							<Play size={12} />
 							Run
 						{/if}
-					</button>
+					</Button>
 				</div>
 
 				{#if isRunning && !suiteResults}

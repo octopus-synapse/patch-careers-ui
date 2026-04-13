@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar } from 'ui';
+	import { Avatar, Input, Button } from 'ui';
 	import { customFetch } from 'api-client/client';
 	import { Search, X } from 'lucide-svelte';
 
@@ -47,16 +47,15 @@
 <div class="relative">
 	<div class="flex items-center gap-2 rounded-lg px-3 py-2 bg-gray-100 dark:bg-neutral-800">
 		<Search size={13} class="text-gray-400 dark:text-neutral-500" />
-		<input
+		<Input
 			type="text"
 			bind:value={query}
 			placeholder="Search users..."
-			class="flex-1 bg-transparent text-xs outline-none text-gray-800 dark:text-neutral-200 placeholder:text-gray-400 dark:placeholder:text-neutral-500"
 		/>
 		{#if query}
-			<button onclick={() => { query = ''; results = []; showDropdown = false; }} class="opacity-50 hover:opacity-100">
+			<Button variant="icon" onclick={() => { query = ''; results = []; showDropdown = false; }} class="opacity-50 hover:opacity-100">
 				<X size={12} class="text-gray-400 dark:text-neutral-500" />
-			</button>
+			</Button>
 		{/if}
 	</div>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Modal, Button, Avatar } from 'ui';
+	import { Modal, Button, Avatar, Textarea } from 'ui';
 	import { Loader2 } from 'lucide-svelte';
 
 	type Props = {
@@ -45,12 +45,11 @@
 	{/snippet}
 
 	<div class="space-y-4">
-		<textarea
-			class="w-full rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
+		<Textarea
 			placeholder="Add your thoughts (optional)..."
-			rows="3"
+			rows={3}
 			bind:value={commentary}
-		></textarea>
+		/>
 
 		<!-- Original post preview -->
 		{#if post}

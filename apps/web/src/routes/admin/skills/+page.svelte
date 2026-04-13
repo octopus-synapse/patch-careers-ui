@@ -29,10 +29,8 @@
 	import { browser } from '$app/environment';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Button, SegmentToggle, Input } from 'ui';
+	import { Button, SegmentToggle, Input, Label, ConfirmModal, FormModal } from 'ui';
 	import { Loader2, Trash2, Pencil, Plus, ToggleLeft, ToggleRight } from 'lucide-svelte';
-	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
-	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
 	const t = $derived(locale.t);
@@ -329,31 +327,31 @@
 </div>
 
 <!-- Form Modal -->
-<FormModal open={formModal !== null} title={formTitle} loading={formLoading} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
+<FormModal open={formModal !== null} title={formTitle} loading={formLoading} onSubmit={handleFormSubmit} onClose={() => formModal = null}>
 	<div class="space-y-3">
 		{#if formModal?.type === 'spoken'}
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Code *</label><Input bind:value={formCode} placeholder="en" required disabled={formModal.mode === 'edit'} /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="English" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Inglês" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (ES)</label><Input bind:value={formNameEs} placeholder="Inglés" /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Native Name</label><Input bind:value={formNativeName} placeholder="English" /></div>
+			<div><Label>Code *</Label><Input bind:value={formCode} placeholder="en" required disabled={formModal.mode === 'edit'} /></div>
+			<div><Label>Name (EN) *</Label><Input bind:value={formNameEn} placeholder="English" required /></div>
+			<div><Label>Name (PT) *</Label><Input bind:value={formNamePtBr} placeholder="Inglês" required /></div>
+			<div><Label>Name (ES)</Label><Input bind:value={formNameEs} placeholder="Inglés" /></div>
+			<div><Label>Native Name</Label><Input bind:value={formNativeName} placeholder="English" /></div>
 		{:else if formModal?.type === 'programming'}
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="javascript" required disabled={formModal.mode === 'edit'} /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="JavaScript" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="JavaScript" required /></div>
+			<div><Label>Slug *</Label><Input bind:value={formSlug} placeholder="javascript" required disabled={formModal.mode === 'edit'} /></div>
+			<div><Label>Name (EN) *</Label><Input bind:value={formNameEn} placeholder="JavaScript" required /></div>
+			<div><Label>Name (PT) *</Label><Input bind:value={formNamePtBr} placeholder="JavaScript" required /></div>
 		{:else if formModal?.type === 'skill'}
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="react" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="React" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="React" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
+			<div><Label>Slug *</Label><Input bind:value={formSlug} placeholder="react" required /></div>
+			<div><Label>Name (EN) *</Label><Input bind:value={formNameEn} placeholder="React" required /></div>
+			<div><Label>Name (PT) *</Label><Input bind:value={formNamePtBr} placeholder="React" required /></div>
+			<div><Label>Order</Label><Input bind:value={formOrder} type="number" /></div>
 		{:else}
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="Development" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Desenvolvimento" required /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={formIcon} placeholder="code" /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Color</label><Input bind:value={formColor} placeholder="#3B82F6" /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
+			<div><Label>Name (EN) *</Label><Input bind:value={formNameEn} placeholder="Development" required /></div>
+			<div><Label>Name (PT) *</Label><Input bind:value={formNamePtBr} placeholder="Desenvolvimento" required /></div>
+			<div><Label>Icon</Label><Input bind:value={formIcon} placeholder="code" /></div>
+			<div><Label>Color</Label><Input bind:value={formColor} placeholder="#3B82F6" /></div>
+			<div><Label>Order</Label><Input bind:value={formOrder} type="number" /></div>
 		{/if}
 	</div>
 </FormModal>
 
-<ConfirmModal open={deleteTarget !== null} title="Delete Item" message={t('admin.skills.confirmDelete')} loading={deleteLoading} onconfirm={handleDelete} oncancel={() => deleteTarget = null} />
+<ConfirmModal open={deleteTarget !== null} title="Delete Item" message={t('admin.skills.confirmDelete')} loading={deleteLoading} onConfirm={handleDelete} onClose={() => deleteTarget = null} />

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { Avatar } from 'ui';
+	import { Avatar, Badge, Card, Dropdown, ConfirmModal, Button } from 'ui';
 	import { Trash2, Flag, MoreHorizontal, MessageSquare, Zap, Clock, Lock } from 'lucide-svelte';
-	import { Button } from 'ui';
 	import EngagementBar from './engagement-bar.svelte';
 	import CommentSection from './comment-section.svelte';
 
@@ -33,6 +32,7 @@
 
 	let showComments = $state(false);
 	let showMenu = $state(false);
+	let showDeleteConfirm = $state(false);
 
 	interface PostAuthor { id?: string; name?: string; username?: string; photoURL?: string; avatarUrl?: string }
 	interface PostData {
@@ -118,6 +118,30 @@
 
 	const title = $derived(data?.title ?? data?.question);
 
+	const typeBadgeVariant: Record<string, 'default' | 'success' | 'danger' | 'warning' | 'info'> = {
+		ACHIEVEMENT: 'warning',
+		OPPORTUNITY: 'info',
+		LEARNING: 'default',
+		BUILD: 'success',
+		QUESTION: 'info',
+		CHALLENGE: 'danger'
+	};
+
+	const typeBadgeLabel: Record<string, string> = {
+		ACHIEVEMENT: 'Achievement',
+		OPPORTUNITY: 'Opportunity',
+		LEARNING: 'Learning',
+		BUILD: 'Build',
+		QUESTION: 'Question',
+		CHALLENGE: 'Challenge'
+	};
+
+	const difficultyBadgeVariant: Record<string, 'success' | 'warning' | 'danger'> = {
+		Easy: 'success',
+		Medium: 'warning',
+		Hard: 'danger'
+	};
+
 	function formatRelativeTime(dateStr?: string): string {
 		if (!dateStr) return '';
 		const now = Date.now();
@@ -139,320 +163,323 @@
 		return text.replace(/(#\w+)/g, '<span class="text-blue-500">$1</span>');
 	}
 
-	const typeBadgeLabel: Record<string, string> = {
-		ACHIEVEMENT: 'Achievement',
-		OPPORTUNITY: 'Opportunity',
-		LEARNING: 'Learning',
-		BUILD: 'Build',
-		QUESTION: 'Question',
-		CHALLENGE: 'Challenge'
-	};
-
-	const difficultyColors: Record<string, string> = {
-		Easy: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-		Medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-		Hard: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-	};
-
-	function handleClickOutside(e: MouseEvent) {
-		const target = e.target as HTMLElement;
-		if (!target.closest('[data-post-menu]')) {
-			showMenu = false;
-		}
-	}
-
-	$effect(() => {
-		if (showMenu) {
-			document.addEventListener('click', handleClickOutside);
-			return () => document.removeEventListener('click', handleClickOutside);
-		}
-	});
-
 	function handleVoteClick(index: number) {
 		if (hasVoted || isPollClosed) return;
 		if (onvote) {
 			onvote(postId, index);
 		}
 	}
+
+	function handleDeleteRequest() {
+		showMenu = false;
+		showDeleteConfirm = true;
+	}
+
+	function handleDeleteConfirm() {
+		showDeleteConfirm = false;
+		ondelete(postId);
+	}
 </script>
 
-<article class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50 p-4 transition-colors">
-	<!-- Scheduled badge -->
-	{#if isScheduled}
-		<div class="mb-3 flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 w-fit">
-			<Clock size={12} />
-			Scheduled
-		</div>
-	{/if}
-
-	<!-- Thread indicator -->
-	{#if threadParentId}
-		<div class="mb-2 flex items-center gap-1 text-xs text-gray-400 dark:text-neutral-500">
-			<MessageSquare size={12} />
-			<span>Part of a thread</span>
-		</div>
-	{/if}
-
-	<!-- Header: avatar + author info + menu -->
-	<div class="flex items-start gap-3">
-		<Avatar name={authorName} photoURL={authorPhoto} size="md" />
-
-		<div class="min-w-0 flex-1">
-			<div class="flex items-center gap-1.5 text-sm flex-wrap">
-				<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
-				{#if coAuthors}
-					{#each coAuthors as coAuthor}
-						<span class="text-gray-400 dark:text-neutral-500">&</span>
-						<span class="font-semibold text-gray-800 dark:text-neutral-200">{coAuthor.name ?? coAuthor.username}</span>
-					{/each}
-				{/if}
-				{#if authorUsername}
-					<span class="text-gray-400 dark:text-neutral-500">@{authorUsername}</span>
-				{/if}
-				<span class="text-gray-400 dark:text-neutral-500">&middot;</span>
-				<span class="text-xs text-gray-400 dark:text-neutral-500">{formatRelativeTime(createdAt)}</span>
-			</div>
-
-			<div class="flex items-center gap-1.5 mt-1">
-				{#if postType && typeBadgeLabel[postType]}
-					<span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gray-800 text-gray-50 dark:bg-neutral-700 dark:text-neutral-300">
-						{typeBadgeLabel[postType]}
+<article>
+	<Card class="shadow-sm hover:shadow-md transition-shadow">
+		<!-- Scheduled badge -->
+		{#if isScheduled}
+			<div class="mb-3">
+				<Badge variant="warning" size="md">
+					<span class="flex items-center gap-1">
+						<Clock size={12} />
+						Scheduled
 					</span>
-				{/if}
-				{#if postType === 'CHALLENGE' && challengeDifficulty}
-					<span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider {difficultyColors[challengeDifficulty] ?? 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-300'}">
-						{challengeDifficulty}
-					</span>
-				{/if}
+				</Badge>
 			</div>
-		</div>
+		{/if}
 
-		<div class="relative" data-post-menu>
-			<Button variant="icon" size="xs" onclick={() => showMenu = !showMenu}>
-				<MoreHorizontal size={16} />
-			</Button>
+		<!-- Thread indicator -->
+		{#if threadParentId}
+			<div class="mb-2 flex items-center gap-1 text-xs text-gray-400 dark:text-neutral-500">
+				<MessageSquare size={12} />
+				<span>Part of a thread</span>
+			</div>
+		{/if}
 
-			{#if showMenu}
-				<div class="absolute right-0 z-10 mt-1 w-36 rounded-lg border py-1 shadow-lg bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
-					{#if isOwner}
-						<Button variant="menu" size="sm" onclick={() => { showMenu = false; ondelete(postId); }}>
-							<Trash2 size={14} />
-							Delete
-						</Button>
+		<!-- Header: avatar + author info + menu -->
+		<div class="flex items-start gap-3">
+			<Avatar name={authorName} photoURL={authorPhoto} size="lg" />
+
+			<div class="min-w-0 flex-1">
+				<div class="flex items-center gap-1.5 text-sm flex-wrap">
+					<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
+					{#if coAuthors}
+						{#each coAuthors as coAuthor}
+							<span class="text-gray-400 dark:text-neutral-500">&</span>
+							<span class="font-semibold text-gray-800 dark:text-neutral-200">{coAuthor.name ?? coAuthor.username}</span>
+						{/each}
 					{/if}
-					{#if !isOwner}
-						<Button variant="menu" size="sm" onclick={() => { showMenu = false; onreport(postId); }}>
-							<Flag size={14} />
-							Report
-						</Button>
+					{#if authorUsername}
+						<span class="text-gray-400 dark:text-neutral-500">@{authorUsername}</span>
+					{/if}
+					<span class="text-gray-400 dark:text-neutral-500">&middot;</span>
+					<span class="text-xs text-gray-400 dark:text-neutral-500">{formatRelativeTime(createdAt)}</span>
+				</div>
+
+				<div class="flex items-center gap-1.5 mt-1">
+					{#if postType && typeBadgeLabel[postType]}
+						<Badge variant={typeBadgeVariant[postType]} size="sm">
+							{typeBadgeLabel[postType]}
+						</Badge>
+					{/if}
+					{#if postType === 'CHALLENGE' && challengeDifficulty}
+						<Badge variant={difficultyBadgeVariant[challengeDifficulty] ?? 'default'} size="sm">
+							{challengeDifficulty}
+						</Badge>
 					{/if}
 				</div>
-			{/if}
+			</div>
+
+			<Dropdown open={showMenu} align="right" onclose={() => showMenu = false}>
+				{#snippet trigger()}
+					<Button variant="icon" size="xs" onclick={() => showMenu = !showMenu}>
+						<MoreHorizontal size={16} />
+					</Button>
+				{/snippet}
+				{#if isOwner}
+					<Button variant="menu" size="sm" onclick={handleDeleteRequest}>
+						<Trash2 size={14} />
+						Delete
+					</Button>
+				{/if}
+				{#if !isOwner}
+					<Button variant="menu" size="sm" onclick={() => { showMenu = false; onreport(postId); }}>
+						<Flag size={14} />
+						Report
+					</Button>
+				{/if}
+			</Dropdown>
 		</div>
-	</div>
 
-	<!-- Title -->
-	{#if title}
-		<h3 class="mt-3 text-base font-semibold text-gray-800 dark:text-neutral-200">{title}</h3>
-	{/if}
-
-	<!-- Content -->
-	{#if content}
-		<p class="mt-2 text-sm leading-relaxed text-gray-800 dark:text-neutral-200 whitespace-pre-wrap">
-			{@html highlightHashtags(content)}
-		</p>
-	{/if}
-
-	<!-- Challenge card extras -->
-	{#if postType === 'CHALLENGE'}
-		{#if data?.description}
-			<p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">{data.description}</p>
+		<!-- Title -->
+		{#if title}
+			<h3 class="mt-3 text-base font-semibold text-gray-800 dark:text-neutral-200">{title}</h3>
 		{/if}
-		<div class="mt-2 flex items-center gap-3 text-xs text-gray-400 dark:text-neutral-500">
-			{#if challengeDeadline}
+
+		<!-- Content -->
+		{#if content}
+			<p class="mt-2 text-sm leading-relaxed text-gray-800 dark:text-neutral-200 whitespace-pre-wrap">
+				{@html highlightHashtags(content)}
+			</p>
+		{/if}
+
+		<!-- Challenge card extras -->
+		{#if postType === 'CHALLENGE'}
+			{#if data?.description}
+				<p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">{data.description}</p>
+			{/if}
+			<div class="mt-2 flex items-center gap-3 text-xs text-gray-400 dark:text-neutral-500">
+				{#if challengeDeadline}
+					<span class="flex items-center gap-1">
+						<Clock size={12} />
+						Deadline: {new Date(challengeDeadline).toLocaleDateString()}
+					</span>
+				{/if}
 				<span class="flex items-center gap-1">
-					<Clock size={12} />
-					Deadline: {new Date(challengeDeadline).toLocaleDateString()}
+					<Zap size={12} />
+					{responseCount} {responseCount === 1 ? 'response' : 'responses'}
 				</span>
-			{/if}
-			<span class="flex items-center gap-1">
-				<Zap size={12} />
-				{responseCount} {responseCount === 1 ? 'response' : 'responses'}
-			</span>
-		</div>
-	{/if}
+			</div>
+		{/if}
 
-	<!-- Type-specific data fields -->
-	{#if data}
-		{#if postType === 'ACHIEVEMENT' && data.organization}
-			<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">{data.organization}{data.date ? ` - ${data.date}` : ''}</p>
-		{/if}
-		{#if postType === 'OPPORTUNITY'}
-			{#if data.commitment}
-				<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">Commitment: {data.commitment}</p>
+		<!-- Type-specific data fields -->
+		{#if data}
+			{#if postType === 'ACHIEVEMENT' && data.organization}
+				<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">{data.organization}{data.date ? ` - ${data.date}` : ''}</p>
 			{/if}
-			{#if data.contact_method}
-				<p class="text-xs text-gray-400 dark:text-neutral-500">Contact: {data.contact_method}</p>
+			{#if postType === 'OPPORTUNITY'}
+				{#if data.commitment}
+					<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">Commitment: {data.commitment}</p>
+				{/if}
+				{#if data.contact_method}
+					<p class="text-xs text-gray-400 dark:text-neutral-500">Contact: {data.contact_method}</p>
+				{/if}
+			{/if}
+			{#if postType === 'BUILD' && data.project_url}
+				<a href={String(data.project_url)} target="_blank" rel="noopener noreferrer" class="mt-2 inline-block text-xs text-blue-500 hover:underline">
+					{data.project_url}
+				</a>
+			{/if}
+			{#if postType === 'LEARNING' && data.application}
+				<p class="mt-2 text-xs italic text-gray-400 dark:text-neutral-500">Application: {data.application}</p>
 			{/if}
 		{/if}
-		{#if postType === 'BUILD' && data.project_url}
-			<a href={String(data.project_url)} target="_blank" rel="noopener noreferrer" class="mt-2 inline-block text-xs text-blue-500 hover:underline">
-				{data.project_url}
+
+		<!-- Code snippet -->
+		{#if codeSnippet}
+			<div class="mt-3 overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700/50">
+				{#if codeLanguage}
+					<div class="flex items-center justify-between border-b px-3 py-1.5 border-gray-200 dark:border-neutral-700/50 bg-gray-900">
+						<span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">{codeLanguage}</span>
+					</div>
+				{/if}
+				<pre class="overflow-x-auto p-3 text-xs bg-gray-900 text-gray-100"><code class="language-{(codeLanguage ?? '').toLowerCase()}">{codeSnippet}</code></pre>
+			</div>
+		{/if}
+
+		<!-- Image -->
+		{#if imageUrl}
+			<div class="mt-3 overflow-hidden rounded-lg">
+				<img src={imageUrl} alt="Post attachment" class="w-full object-cover" loading="lazy" />
+			</div>
+		{/if}
+
+		<!-- Link preview -->
+		{#if linkPreview}
+			<a
+				href={String(linkPreview.url ?? linkUrl ?? '#')}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="mt-3 block overflow-hidden rounded-lg border bg-gray-50 border-gray-200 dark:bg-neutral-700/30 dark:border-neutral-600/50 transition-opacity hover:opacity-80"
+			>
+				{#if linkPreview.image}
+					<img src={String(linkPreview.image)} alt="" class="h-32 w-full object-cover" loading="lazy" />
+				{/if}
+				<div class="p-3">
+					{#if linkPreview.title}
+						<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{linkPreview.title}</p>
+					{/if}
+					{#if linkPreview.description}
+						<p class="mt-1 line-clamp-2 text-xs text-gray-400 dark:text-neutral-500">{linkPreview.description}</p>
+					{/if}
+					<p class="mt-1 text-[10px] text-gray-400 dark:text-neutral-500">{linkPreview.url ?? linkUrl ?? ''}</p>
+				</div>
+			</a>
+		{:else if linkUrl}
+			<a href={linkUrl} target="_blank" rel="noopener noreferrer" class="mt-3 block text-xs text-blue-500 hover:underline break-all">
+				{linkUrl}
 			</a>
 		{/if}
-		{#if postType === 'LEARNING' && data.application}
-			<p class="mt-2 text-xs italic text-gray-400 dark:text-neutral-500">Application: {data.application}</p>
-		{/if}
-	{/if}
 
-	<!-- Code snippet -->
-	{#if codeSnippet}
-		<div class="mt-3 overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700/50">
-			{#if codeLanguage}
-				<div class="flex items-center justify-between border-b px-3 py-1.5 border-gray-200 dark:border-neutral-700/50 bg-gray-50 dark:bg-neutral-700/30">
-					<span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-neutral-500">{codeLanguage}</span>
-				</div>
-			{/if}
-			<pre class="overflow-x-auto p-3 text-xs bg-gray-50 dark:bg-neutral-900/50"><code class="language-{(codeLanguage ?? '').toLowerCase()}">{codeSnippet}</code></pre>
-		</div>
-	{/if}
-
-	<!-- Image -->
-	{#if imageUrl}
-		<div class="mt-3 overflow-hidden rounded-lg">
-			<img src={imageUrl} alt="Post attachment" class="w-full object-cover" loading="lazy" />
-		</div>
-	{/if}
-
-	<!-- Link preview -->
-	{#if linkPreview}
-		<a
-			href={String(linkPreview.url ?? linkUrl ?? '#')}
-			target="_blank"
-			rel="noopener noreferrer"
-			class="mt-3 block overflow-hidden rounded-lg border bg-gray-50 border-gray-200 dark:bg-neutral-700/30 dark:border-neutral-600/50 transition-opacity hover:opacity-80"
-		>
-			{#if linkPreview.image}
-				<img src={String(linkPreview.image)} alt="" class="h-32 w-full object-cover" loading="lazy" />
-			{/if}
-			<div class="p-3">
-				{#if linkPreview.title}
-					<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{linkPreview.title}</p>
-				{/if}
-				{#if linkPreview.description}
-					<p class="mt-1 line-clamp-2 text-xs text-gray-400 dark:text-neutral-500">{linkPreview.description}</p>
-				{/if}
-				<p class="mt-1 text-[10px] text-gray-400 dark:text-neutral-500">{linkPreview.url ?? linkUrl ?? ''}</p>
-			</div>
-		</a>
-	{:else if linkUrl}
-		<a href={linkUrl} target="_blank" rel="noopener noreferrer" class="mt-3 block text-xs text-blue-500 hover:underline break-all">
-			{linkUrl}
-		</a>
-	{/if}
-
-	<!-- Poll widget -->
-	{#if pollOptions}
-		<div class="mt-3 space-y-2">
-			<!-- Poll deadline status -->
-			{#if pollDeadline}
-				<div class="flex items-center gap-1.5 text-xs">
-					{#if isPollClosed}
-						<span class="flex items-center gap-1 rounded-full px-2 py-0.5 font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
-							<Lock size={10} />
-							Closed
-						</span>
-					{:else if pollTimeRemaining}
-						<span class="flex items-center gap-1 text-gray-400 dark:text-neutral-500">
-							<Clock size={10} />
-							{pollTimeRemaining}
-						</span>
-					{/if}
-				</div>
-			{/if}
-
-			{#each pollOptions as option, i}
-				{@const label = String(option.text ?? option.label ?? option)}
-				{@const votes = Number(option.votes)}
-				{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
-				{@const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0}
-				<button
-					class="relative w-full overflow-hidden rounded-lg border px-3 py-2 text-left transition-colors {hasVoted || isPollClosed ? 'cursor-default' : 'cursor-pointer hover:border-blue-400 dark:hover:border-blue-500'} border-gray-200 dark:border-neutral-700/50"
-					onclick={() => handleVoteClick(i)}
-					disabled={hasVoted || isPollClosed}
-				>
-					{#if hasVoted || isPollClosed}
-						<div class="absolute inset-y-0 left-0 bg-blue-500/10" style="width: {pct}%"></div>
-					{/if}
-					<div class="relative flex items-center justify-between text-sm">
-						<span class="text-gray-800 dark:text-neutral-200">{label}</span>
-						{#if hasVoted || isPollClosed}
-							<span class="text-xs text-gray-400 dark:text-neutral-500">{pct}%</span>
+		<!-- Poll widget -->
+		{#if pollOptions}
+			<div class="mt-3 space-y-2">
+				<!-- Poll deadline status -->
+				{#if pollDeadline}
+					<div class="flex items-center gap-1.5 text-xs">
+						{#if isPollClosed}
+							<Badge variant="danger" size="sm">
+								<span class="flex items-center gap-1">
+									<Lock size={10} />
+									Closed
+								</span>
+							</Badge>
+						{:else if pollTimeRemaining}
+							<span class="flex items-center gap-1 text-gray-400 dark:text-neutral-500">
+								<Clock size={10} />
+								{pollTimeRemaining}
+							</span>
 						{/if}
 					</div>
-				</button>
-			{/each}
+				{/if}
 
-			<!-- Total votes count -->
-			{#if pollOptions}
-				{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
-				<p class="text-xs text-gray-400 dark:text-neutral-500">
-					{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}
-				</p>
-			{/if}
+				{#each pollOptions as option, i}
+					{@const label = String(option.text ?? option.label ?? option)}
+					{@const votes = Number(option.votes)}
+					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
+					{@const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0}
+					<button
+						class="relative w-full overflow-hidden rounded-lg border px-3 py-2.5 text-left transition-all duration-300 {hasVoted || isPollClosed ? 'cursor-default' : 'cursor-pointer hover:border-blue-400 dark:hover:border-blue-500'} border-gray-200 dark:border-neutral-700/50"
+						onclick={() => handleVoteClick(i)}
+						disabled={hasVoted || isPollClosed}
+					>
+						{#if hasVoted || isPollClosed}
+							<div
+								class="absolute inset-y-0 left-0 rounded-r bg-blue-500/10 transition-all duration-500"
+								style="width: {pct}%"
+							></div>
+						{:else}
+							<!-- Radio circle indicator before voting -->
+							<div class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-gray-300 dark:border-neutral-600"></div>
+						{/if}
+						<div class="relative flex items-center justify-between text-sm {hasVoted || isPollClosed ? '' : 'pl-6'}">
+							<span class="text-gray-800 dark:text-neutral-200">{label}</span>
+							{#if hasVoted || isPollClosed}
+								<span class="text-xs font-medium text-gray-500 dark:text-neutral-400">{pct}%</span>
+							{/if}
+						</div>
+					</button>
+				{/each}
+
+				<!-- Total votes count -->
+				{#if pollOptions}
+					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
+					<p class="text-xs text-gray-400 dark:text-neutral-500">
+						{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}
+					</p>
+				{/if}
+			</div>
+		{/if}
+
+		<!-- Skills tags -->
+		{#if (hardSkills && hardSkills.length > 0) || (softSkills && softSkills.length > 0)}
+			<div class="mt-3 flex flex-wrap gap-1.5">
+				{#if hardSkills}
+				{#each hardSkills as skill}
+					<Badge variant="default" size="sm">{skill}</Badge>
+				{/each}
+				{/if}
+				{#if softSkills}
+				{#each softSkills as skill}
+					<Badge variant="info" size="sm">{skill}</Badge>
+				{/each}
+				{/if}
+			</div>
+		{/if}
+
+		<!-- Engagement bar -->
+		<div class="mt-3 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
+			<EngagementBar
+				{post}
+				{isLiked}
+				{isBookmarked}
+				{reactionCounts}
+				currentReaction={currentReaction ?? null}
+				onlike={(reactionType?: string) => onlike(postId, reactionType)}
+				onunlike={() => onunlike(postId)}
+				onbookmark={() => onbookmark(postId)}
+				onunbookmark={() => onunbookmark(postId)}
+				oncommenttoggle={() => showComments = !showComments}
+				onrepost={() => onrepost(postId)}
+			/>
 		</div>
-	{/if}
 
-	<!-- Skills tags -->
-	{#if (hardSkills && hardSkills.length > 0) || (softSkills && softSkills.length > 0)}
-		<div class="mt-3 flex flex-wrap gap-1.5">
-			{#if hardSkills}
-			{#each hardSkills as skill}
-				<span class="rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-neutral-700/50 dark:text-neutral-300">{skill}</span>
-			{/each}
-			{/if}
-			{#if softSkills}
-			{#each softSkills as skill}
-				<span class="rounded-full border px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-neutral-700/50 dark:text-neutral-300 border-current/10">{skill}</span>
-			{/each}
-			{/if}
-		</div>
-	{/if}
+		<!-- Thread link -->
+		{#if hasThreadChildren}
+			<div class="mt-2 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
+				<a
+					href="/feed/thread/{postId}"
+					class="flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
+				>
+					<MessageSquare size={12} />
+					View thread
+				</a>
+			</div>
+		{/if}
 
-	<!-- Engagement bar -->
-	<div class="mt-3 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
-		<EngagementBar
-			{post}
-			{isLiked}
-			{isBookmarked}
-			{reactionCounts}
-			currentReaction={currentReaction ?? null}
-			onlike={(reactionType?: string) => onlike(postId, reactionType)}
-			onunlike={() => onunlike(postId)}
-			onbookmark={() => onbookmark(postId)}
-			onunbookmark={() => onunbookmark(postId)}
-			oncommenttoggle={() => showComments = !showComments}
-			onrepost={() => onrepost(postId)}
-		/>
-	</div>
-
-	<!-- Thread link -->
-	{#if hasThreadChildren}
-		<div class="mt-2 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
-			<a
-				href="/feed/thread/{postId}"
-				class="flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
-			>
-				<MessageSquare size={12} />
-				View thread
-			</a>
-		</div>
-	{/if}
-
-	<!-- Comment section -->
-	{#if showComments}
-		<div class="mt-2 border-t pt-3 border-gray-100 dark:border-neutral-700/50">
-			<CommentSection postId={postId} currentUserId={currentUserId} />
-		</div>
-	{/if}
+		<!-- Comment section -->
+		{#if showComments}
+			<div class="mt-2 border-t pt-3 border-gray-100 dark:border-neutral-700/50">
+				<CommentSection postId={postId} currentUserId={currentUserId} />
+			</div>
+		{/if}
+	</Card>
 </article>
+
+<!-- Delete confirmation modal -->
+<ConfirmModal
+	open={showDeleteConfirm}
+	onClose={() => showDeleteConfirm = false}
+	onConfirm={handleDeleteConfirm}
+	title="Delete post"
+	message="Are you sure you want to delete this post? This action cannot be undone."
+	confirmLabel="Delete"
+	confirmVariant="danger"
+/>

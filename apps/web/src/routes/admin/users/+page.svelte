@@ -12,14 +12,12 @@
 	import { goto } from '$app/navigation';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Avatar, Button, Input, Dropdown } from 'ui';
+	import { Avatar, Button, Input, Label, Dropdown, ConfirmModal, FormModal } from 'ui';
 	import { Plus, Shield, ShieldOff, MoreVertical, KeyRound, Trash2 } from 'lucide-svelte';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 	import Pagination from '$lib/components/admin/pagination.svelte';
 	import StatusBadge from '$lib/components/admin/status-badge.svelte';
-	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
-	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
 	const t = $derived(locale.t);
@@ -283,23 +281,20 @@
 	open={createModal}
 	title="New User"
 	loading={createLoading}
-	onsubmit={handleCreateUser}
-	oncancel={() => { createModal = false; newEmail = ''; newName = ''; newPassword = ''; }}
+	onSubmit={handleCreateUser}
+	onClose={() => { createModal = false; newEmail = ''; newName = ''; newPassword = ''; }}
 >
 	<div class="space-y-3">
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Email *</label>
+			<Label>Email *</Label>
 			<Input bind:value={newEmail} type="email" placeholder="user@example.com" required />
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name</label>
+			<Label>Name</Label>
 			<Input bind:value={newName} placeholder="John Doe" />
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Password *</label>
+			<Label>Password *</Label>
 			<Input bind:value={newPassword} type="password" placeholder="Min 8 characters" required minlength={8} />
 		</div>
 	</div>
@@ -311,8 +306,8 @@
 	title="Delete User"
 	message={t('admin.users.confirmDelete')}
 	loading={actionLoading}
-	onconfirm={handleDelete}
-	oncancel={() => deleteUserId = null}
+	onConfirm={handleDelete}
+	onClose={() => deleteUserId = null}
 />
 
 <ConfirmModal
@@ -320,8 +315,8 @@
 	title="Reset Password"
 	message={t('admin.users.confirmResetPassword')}
 	loading={actionLoading}
-	onconfirm={handleResetPassword}
-	oncancel={() => resetPasswordUserId = null}
+	onConfirm={handleResetPassword}
+	onClose={() => resetPasswordUserId = null}
 />
 
 <ConfirmModal
@@ -329,8 +324,8 @@
 	title="Change Role"
 	message={toggleRoleUser ? (toggleRoleUser.role === 'ADMIN' ? 'Remove admin privileges from this user?' : 'Grant admin privileges to this user?') : ''}
 	loading={actionLoading}
-	onconfirm={handleToggleRole}
-	oncancel={() => toggleRoleUser = null}
+	onConfirm={handleToggleRole}
+	onClose={() => toggleRoleUser = null}
 />
 
 <ConfirmModal
@@ -338,6 +333,6 @@
 	title="Delete Selected Users"
 	message={`Are you sure you want to delete ${selectedIds.size} user(s)? This cannot be undone.`}
 	loading={bulkLoading}
-	onconfirm={handleBulkDelete}
-	oncancel={() => bulkDeleteConfirm = false}
+	onConfirm={handleBulkDelete}
+	onClose={() => bulkDeleteConfirm = false}
 />

@@ -13,11 +13,9 @@
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { ChevronUp, ChevronDown, Trash2, ToggleLeft, ToggleRight, Plus, Pencil, Settings } from 'lucide-svelte';
-	import { Button, Input, Tooltip } from 'ui';
+	import { Button, Input, Label, Tooltip, ConfirmModal, FormModal } from 'ui';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
-	import FormModal from '$lib/components/admin/form-modal.svelte';
 
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
@@ -233,17 +231,17 @@
 </div>
 
 <!-- Step Form Modal -->
-<FormModal open={stepModal !== null} title={stepModal?.mode === 'create' ? 'Add Step' : 'Edit Step'} loading={stepLoading} onsubmit={handleStepSubmit} oncancel={() => stepModal = null}>
+<FormModal open={stepModal !== null} title={stepModal?.mode === 'create' ? 'Add Step' : 'Edit Step'} loading={stepLoading} onSubmit={handleStepSubmit} onClose={() => stepModal = null}>
 	<div class="space-y-3">
-		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={stepKey} placeholder="welcome" required disabled={stepModal?.mode === 'edit'} /></div>
-		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Component *</label><Input bind:value={stepComponent} placeholder="step-form" required /></div>
+		<div><Label>Key *</Label><Input bind:value={stepKey} placeholder="welcome" required disabled={stepModal?.mode === 'edit'} /></div>
+		<div><Label>Component *</Label><Input bind:value={stepComponent} placeholder="step-form" required /></div>
 		<div class="grid grid-cols-2 gap-3">
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={stepIcon} placeholder="📄" /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={stepOrder} type="number" /></div>
+			<div><Label>Icon</Label><Input bind:value={stepIcon} placeholder="📄" /></div>
+			<div><Label>Order</Label><Input bind:value={stepOrder} type="number" /></div>
 		</div>
 		<div class="grid grid-cols-2 gap-3">
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Section Type Key</label><Input bind:value={stepSectionTypeKey} placeholder="work_experience_v1" /></div>
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Strength Weight</label><Input bind:value={stepStrengthWeight} type="number" /></div>
+			<div><Label>Section Type Key</Label><Input bind:value={stepSectionTypeKey} placeholder="work_experience_v1" /></div>
+			<div><Label>Strength Weight</Label><Input bind:value={stepStrengthWeight} type="number" /></div>
 		</div>
 		<div class="flex items-center gap-4">
 			<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200"><input type="checkbox" bind:checked={stepRequired} class="rounded" /> Required</label>
@@ -253,13 +251,13 @@
 </FormModal>
 
 <!-- Config Form Modal -->
-<FormModal open={configModal} title="Edit Strength Levels" loading={configLoading} onsubmit={handleConfigSubmit} oncancel={() => configModal = false}>
+<FormModal open={configModal} title="Edit Strength Levels" loading={configLoading} onSubmit={handleConfigSubmit} onClose={() => configModal = false}>
 	<div class="space-y-3">
 		{#each configLevels as level, i}
 			<div class="flex items-end gap-2 rounded-lg border p-3 border-gray-200 dark:border-neutral-700/50">
-				<!-- svelte-ignore a11y_label_has_associated_control --><div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Level</label><Input bind:value={level.level} placeholder="weak" required /></div>
-				<!-- svelte-ignore a11y_label_has_associated_control --><div class="w-20"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Min</label><Input bind:value={level.minScore} type="number" /></div>
-				<!-- svelte-ignore a11y_label_has_associated_control --><div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Message</label><Input bind:value={level.message} placeholder="Keep going" /></div>
+				<div class="flex-1"><Label>Level</Label><Input bind:value={level.level} placeholder="weak" required /></div>
+				<div class="w-20"><Label>Min</Label><Input bind:value={level.minScore} type="number" /></div>
+				<div class="flex-1"><Label>Message</Label><Input bind:value={level.message} placeholder="Keep going" /></div>
 				<Button type="button" variant="danger" size="xs" onclick={() => removeConfigLevel(i)}><Trash2 size={14} /></Button>
 			</div>
 		{/each}
@@ -267,4 +265,4 @@
 	</div>
 </FormModal>
 
-<ConfirmModal open={deleteKey !== null} title="Delete Step" message={t?.('admin.onboarding.confirmDeleteStep') ?? 'Are you sure?'} loading={deleteLoading} onconfirm={handleDelete} oncancel={() => deleteKey = null} />
+<ConfirmModal open={deleteKey !== null} title="Delete Step" message={t?.('admin.onboarding.confirmDeleteStep') ?? 'Are you sure?'} loading={deleteLoading} onConfirm={handleDelete} onClose={() => deleteKey = null} />

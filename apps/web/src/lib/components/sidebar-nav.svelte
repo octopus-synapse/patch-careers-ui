@@ -72,7 +72,7 @@
 	{#if progress}
 		<div class="{collapsible ? 'px-4' : 'pr-6'} mb-4">
 			<div class="h-1 rounded-full bg-gray-200 dark:bg-neutral-700">
-				<div class="h-1 rounded-full transition-all duration-700 {barColor}" style="width: {progress.value}%" />
+				<div class="h-1 rounded-full transition-all duration-700 {barColor}" style="width: {progress.value}%"></div>
 			</div>
 			{#if progress.message && (!collapsible || !collapsed)}
 				<p class="mt-2 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
@@ -123,7 +123,7 @@
 				{index + 1}
 			{/if}
 			{#if item.missing && !item.completed}
-				<span class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-red-500" />
+				<span class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>
 			{/if}
 		</div>
 	{:else if typeof item.icon === 'string'}

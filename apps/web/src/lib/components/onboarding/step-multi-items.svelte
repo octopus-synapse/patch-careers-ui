@@ -58,34 +58,39 @@
 				<div class="flex items-center justify-between border-b py-3 border-gray-200 dark:border-neutral-700">
 					<span class="text-sm text-gray-800 dark:text-neutral-200">{itemSummary(item)}</span>
 					<div class="flex items-center gap-1">
-						<button
-							class="rounded p-1 text-gray-400 transition-opacity hover:opacity-60 dark:text-neutral-500"
+						<Button
+							variant="icon"
+							size="xs"
 							onclick={() => {
 								const copy = { content: { ...item.content } };
 								onupdate([...items, copy]);
 							}}
+							class="text-gray-400 dark:text-neutral-500"
 						>
 							<Copy size={14} />
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="icon"
+							size="xs"
 							onclick={() => removeItem(i)}
-							class="rounded p-1 text-red-500 transition-opacity hover:opacity-60"
+							class="text-red-500"
 						>
 							<Trash2 size={14} />
-						</button>
+						</Button>
 					</div>
 				</div>
 			{/each}
 		</div>
 	{/if}
 
-	<button
+	<Button
+		variant="ghost"
+		size="xs"
 		onclick={openModal}
-		class="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 text-gray-500 dark:text-neutral-500"
 	>
 		<Plus size={14} />
 		{t('onboarding.addItem')}
-	</button>
+	</Button>
 </div>
 
 <Modal open={isModalOpen} onClose={() => (isModalOpen = false)}>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar, SegmentToggle } from 'ui';
+	import { Avatar, Button, SegmentToggle } from 'ui';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { Sun, Moon, Globe, LogOut, ChevronDown, Settings } from 'lucide-svelte';
 
@@ -33,10 +33,10 @@
 </script>
 
 <div class="relative hidden md:block" data-dropdown>
-	<button onclick={ontoggle} class="flex items-center gap-2 p-1">
+	<Button variant="icon" size="sm" onclick={ontoggle}>
 		<Avatar name={initial} size="sm" />
 		<ChevronDown size={14} class="transition-transform duration-200 text-gray-500 dark:text-neutral-500 {isOpen ? 'rotate-180' : ''}" />
-	</button>
+	</Button>
 
 	{#if isOpen}
 		<div class="absolute right-0 mt-3 w-56 rounded-lg bg-white dark:bg-neutral-800">
@@ -79,13 +79,15 @@
 					<Settings size={13} />
 					{settingsLabel ?? 'Settings'}
 				</a>
-				<button
+				<Button
+					variant="danger"
+					size="sm"
 					onclick={onlogout}
-					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] text-red-500 transition-opacity hover:opacity-70"
+					class="w-full px-4 py-3 text-[11px]"
 				>
 					<LogOut size={13} />
 					{logoutLabel}
-				</button>
+				</Button>
 			</div>
 		</div>
 	{/if}

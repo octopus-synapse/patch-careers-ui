@@ -8,12 +8,11 @@
 	import { goto } from '$app/navigation';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Button, Input } from 'ui';
+	import { Button, Input, Label, Textarea, FormModal } from 'ui';
 	import { Plus } from 'lucide-svelte';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 	import Pagination from '$lib/components/admin/pagination.svelte';
-	import FormModal from '$lib/components/admin/form-modal.svelte';
 
 	interface JobItem {
 		id: string;
@@ -214,28 +213,24 @@
 	open={createModal}
 	title={t('jobs.postJob')}
 	loading={createLoading}
-	onsubmit={handleCreate}
-	oncancel={() => { createModal = false; resetForm(); }}
+	onSubmit={handleCreate}
+	onClose={() => { createModal = false; resetForm(); }}
 >
 	<div class="space-y-3">
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.title')} *</label>
+			<Label>{t('jobs.title')} *</Label>
 			<Input bind:value={formTitle} placeholder="Software Engineer" required />
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.company')} *</label>
+			<Label>{t('jobs.company')} *</Label>
 			<Input bind:value={formCompany} placeholder="Acme Inc." required />
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.location')}</label>
+			<Label>{t('jobs.location')}</Label>
 			<Input bind:value={formLocation} placeholder="Remote / San Francisco, CA" />
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.type')} *</label>
+			<Label>{t('jobs.type')} *</Label>
 			<select
 				bind:value={formJobType}
 				class="w-full rounded-lg border px-3 py-1.5 text-sm outline-none bg-white border-gray-200 text-gray-800 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200"
@@ -246,36 +241,30 @@
 			</select>
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.description')} *</label>
-			<textarea
+			<Label>{t('jobs.description')} *</Label>
+			<Textarea
 				bind:value={formDescription}
 				placeholder="Job description..."
 				required
 				rows={4}
-				class="w-full rounded-lg border px-3 py-2 text-sm outline-none resize-none bg-white border-gray-200 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
-			></textarea>
+			/>
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.requirements')}</label>
+			<Label>{t('jobs.requirements')}</Label>
 			<Input bind:value={formRequirements} placeholder="React, TypeScript, 3+ years..." />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.skills')}</label>
+			<Label>{t('jobs.skills')}</Label>
 			<Input bind:value={formSkills} placeholder="React, Node.js, PostgreSQL..." />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.salary')}</label>
+			<Label>{t('jobs.salary')}</Label>
 			<Input bind:value={formSalaryRange} placeholder="$80k - $120k" />
 		</div>
 		<div>
-			<!-- svelte-ignore a11y_label_has_associated_control -->
-			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('jobs.applyUrl')}</label>
+			<Label>{t('jobs.applyUrl')}</Label>
 			<Input bind:value={formApplyUrl} placeholder="https://example.com/apply" type="url" />
 		</div>
 	</div>

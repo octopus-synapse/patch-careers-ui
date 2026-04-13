@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button, Textarea } from 'ui';
 	import { page } from '$app/stores';
 	import { customFetch } from 'api-client';
 	import { Loader2 } from 'lucide-svelte';
@@ -220,12 +221,12 @@
 							Thank you! Your feedback has been sent.
 						</p>
 					{:else}
-						<textarea
+						<Textarea
 							bind:value={feedback}
 							placeholder="Share your thoughts on this resume..."
-							rows="4"
-							class="mt-4 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
-						></textarea>
+							rows={4}
+							class="mt-4"
+						/>
 						<div class="mt-3 flex items-center justify-between">
 							{#if feedbackStatus === 'error'}
 								<span class="text-xs text-red-500"
@@ -234,10 +235,11 @@
 							{:else}
 								<span></span>
 							{/if}
-							<button
+							<Button
+								variant="solid"
+								size="sm"
 								onclick={sendFeedback}
 								disabled={feedbackStatus === 'sending' || !feedback.trim()}
-								class="rounded-full bg-gray-900 px-5 py-2 text-[11px] font-semibold text-white transition-all hover:bg-gray-800 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
 							>
 								{#if feedbackStatus === 'sending'}
 									<Loader2
@@ -247,7 +249,7 @@
 								{:else}
 									Send Feedback
 								{/if}
-							</button>
+							</Button>
 						</div>
 					{/if}
 				</section>

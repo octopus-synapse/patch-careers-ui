@@ -156,19 +156,22 @@
 					</div>
 					<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{comment.content}</p>
 					<div class="mt-1 flex items-center gap-2">
-						<button
-							class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500 hover:opacity-70"
+						<Button
+							variant="ghost"
+							size="xs"
 							onclick={() => { replyingTo = replyingTo === commentId ? null : commentId; replyText = ''; }}
 						>
 							Reply
-						</button>
+						</Button>
 						{#if isOwnComment}
-							<button
-								class="text-[10px] text-red-400 hover:text-red-500"
+							<Button
+								variant="icon"
+								size="xs"
 								onclick={() => handleDeleteComment(commentId)}
+								class="text-red-400 hover:text-red-500"
 							>
 								<Trash2 size={12} />
-							</button>
+							</Button>
 						{/if}
 					</div>
 				</div>
@@ -213,31 +216,35 @@
 								</div>
 								<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{reply.content}</p>
 								{#if isOwnReply}
-									<button
-										class="mt-1 text-[10px] text-red-400 hover:text-red-500"
+									<Button
+										variant="icon"
+										size="xs"
 										onclick={() => handleDeleteComment(replyId)}
+										class="mt-1 text-red-400 hover:text-red-500"
 									>
 										<Trash2 size={12} />
-									</button>
+									</Button>
 								{/if}
 							</div>
 						</div>
 					{/each}
 
 					{#if replies.length > 2 && !isExpanded}
-						<button
-							class="text-xs font-medium text-blue-500 hover:underline"
+						<Button
+							variant="ghost"
+							size="xs"
 							onclick={() => toggleExpandReplies(commentId)}
 						>
 							View {replies.length - 2} more {replies.length - 2 === 1 ? 'reply' : 'replies'}
-						</button>
+						</Button>
 					{:else if replies.length > 2 && isExpanded}
-						<button
-							class="text-xs font-medium text-blue-500 hover:underline"
+						<Button
+							variant="ghost"
+							size="xs"
 							onclick={() => toggleExpandReplies(commentId)}
 						>
 							Show less
-						</button>
+						</Button>
 					{/if}
 				</div>
 			{/if}

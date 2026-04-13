@@ -15,8 +15,9 @@
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import { Loader2, PenSquare, Bookmark } from 'lucide-svelte';
-	import { Avatar, Button, SegmentToggle } from 'ui';
+	import type { Component } from 'svelte';
+	import { PenSquare, Bookmark } from 'lucide-svelte';
+	import { Avatar, Button, Card, EmptyState, ToastContainer, toastState } from 'ui';
 	import PostCard from '$lib/components/feed/post-card.svelte';
 	import CreatePostModal from '$lib/components/feed/create-post-modal.svelte';
 	import ReportModal from '$lib/components/feed/report-modal.svelte';
@@ -72,9 +73,6 @@
 	// Repost modal
 	let showRepostModal = $state(false);
 	let repostTargetPost = $state<Record<string, unknown> | null>(null);
-
-	// Repost error toast
-	let repostError = $state<string | null>(null);
 
 	const queryClient = useQueryClient();
 
@@ -259,8 +257,7 @@
 		} catch (err: unknown) {
 			const error = err as { status?: number };
 			if (error.status === 409) {
-				repostError = 'Voce ja repostou isso';
-				setTimeout(() => { repostError = null; }, 3000);
+				toastState.show('Voce ja repostou isso', 'error');
 			}
 		}
 	}
@@ -305,74 +302,105 @@
 </svelte:head>
 
 {#if session.isLoading}
+	<!-- Skeleton loading for auth check -->
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin text-gray-400 dark:text-neutral-500" />
+		<div class="mx-auto w-full max-w-2xl space-y-4 px-4">
+			{#each [1, 2, 3] as _}
+				<div class="animate-pulse rounded-xl border border-gray-200 dark:border-neutral-700/50 p-4 space-y-3">
+					<div class="flex gap-3">
+						<div class="h-12 w-12 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+						<div class="flex-1 space-y-2">
+							<div class="h-3 w-1/3 rounded bg-gray-200 dark:bg-neutral-700"></div>
+							<div class="h-2 w-1/4 rounded bg-gray-200 dark:bg-neutral-700"></div>
+						</div>
+					</div>
+					<div class="space-y-2">
+						<div class="h-3 w-full rounded bg-gray-200 dark:bg-neutral-700"></div>
+						<div class="h-3 w-2/3 rounded bg-gray-200 dark:bg-neutral-700"></div>
+					</div>
+				</div>
+			{/each}
+		</div>
 	</div>
 {:else if authenticated}
 	<div class="min-h-screen pt-20 pb-12">
 		<main class="mx-auto max-w-2xl px-4">
-			<!-- Repost error toast -->
-			{#if repostError}
-				<div class="fixed top-24 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-red-500 px-4 py-2 text-sm text-white shadow-lg">
-					{repostError}
-				</div>
-			{/if}
-
 			<!-- Trigger bar -->
-			<div class="flex items-center gap-2">
-				<button
-					class="flex flex-1 items-center gap-3 rounded-xl border p-4 transition-colors hover:opacity-80 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50"
-					onclick={() => showCreateModal = true}
-				>
-					<Avatar name={userName || 'U'} photoURL={userPhoto} size="md" />
-					<span class="flex-1 text-left text-sm text-gray-400 dark:text-neutral-500">What's on your mind?</span>
-					<PenSquare size={18} class="text-gray-400 dark:text-neutral-500" />
-				</button>
-				<Button variant="ghost" size="sm" onclick={() => goto('/feed/bookmarks')}>
-					<Bookmark size={18} />
-				</Button>
-			</div>
+			<Card class="shadow-sm hover:shadow-md transition-shadow">
+				<div class="flex items-center gap-2">
+					<button
+						class="flex flex-1 items-center gap-3 rounded-xl p-2 transition-colors hover:opacity-80"
+						onclick={() => showCreateModal = true}
+					>
+						<Avatar name={userName || 'U'} photoURL={userPhoto} size="md" />
+						<span class="flex-1 text-left text-sm text-gray-400 dark:text-neutral-500">What's on your mind?</span>
+						<PenSquare size={18} class="text-gray-400 dark:text-neutral-500" />
+					</button>
+					<Button variant="ghost" size="sm" onclick={() => goto('/feed/bookmarks')}>
+						<Bookmark size={18} />
+						<span class="text-xs">Saved</span>
+					</Button>
+				</div>
+			</Card>
 
-			<!-- Filters -->
-			<div class="mt-4 flex justify-center">
-				<SegmentToggle
-					options={filterOptions}
-					selected={selectedFilter}
-					size="sm"
-					onchange={handleFilterChange}
-				/>
+			<!-- Filters — horizontal scrollable pills -->
+			<div class="mt-4 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+				{#each filterOptions as option}
+					<button
+						class="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors {selectedFilter === option.value ? 'bg-gray-800 text-white dark:bg-neutral-200 dark:text-neutral-900' : 'bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-neutral-400 hover:bg-gray-200 dark:hover:bg-neutral-700'}"
+						onclick={() => handleFilterChange(option.value)}
+					>
+						{option.label}
+					</button>
+				{/each}
 			</div>
 
 			<!-- Post list -->
 			<div class="mt-6 space-y-4">
 				{#each allPosts as post (String(post.id))}
-					<PostCard
-						post={{
-							...post,
-							isLiked: isPostLiked(post),
-							isBookmarked: isPostBookmarked(post)
-						}}
-						{currentUserId}
-						onlike={handleLike}
-						onunlike={handleUnlike}
-						onbookmark={handleBookmark}
-						onunbookmark={handleUnbookmark}
-						ondelete={handleDelete}
-						onrepost={handleRepost}
-						onreport={handleReport}
-						onvote={handleVote}
-					/>
+					<div class="post-enter">
+						<PostCard
+							post={{
+								...post,
+								isLiked: isPostLiked(post),
+								isBookmarked: isPostBookmarked(post)
+							}}
+							{currentUserId}
+							onlike={handleLike}
+							onunlike={handleUnlike}
+							onbookmark={handleBookmark}
+							onunbookmark={handleUnbookmark}
+							ondelete={handleDelete}
+							onrepost={handleRepost}
+							onreport={handleReport}
+							onvote={handleVote}
+						/>
+					</div>
 				{/each}
 			</div>
 
 			<!-- Loading / empty -->
 			{#if feedQuery.isLoading && allPosts.length === 0}
-				<div class="flex justify-center py-12">
-					<Loader2 size={24} class="animate-spin text-gray-400 dark:text-neutral-500" />
+				<div class="mt-6 space-y-4">
+					{#each [1, 2, 3] as _}
+						<div class="animate-pulse rounded-xl border border-gray-200 dark:border-neutral-700/50 p-4 space-y-3">
+							<div class="flex gap-3">
+								<div class="h-12 w-12 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+								<div class="flex-1 space-y-2">
+									<div class="h-3 w-1/3 rounded bg-gray-200 dark:bg-neutral-700"></div>
+									<div class="h-2 w-1/4 rounded bg-gray-200 dark:bg-neutral-700"></div>
+								</div>
+							</div>
+							<div class="space-y-2">
+								<div class="h-3 w-full rounded bg-gray-200 dark:bg-neutral-700"></div>
+								<div class="h-3 w-2/3 rounded bg-gray-200 dark:bg-neutral-700"></div>
+							</div>
+						</div>
+					{/each}
 				</div>
 			{:else if allPosts.length === 0 && !feedQuery.isLoading}
-				<div class="py-12 text-center">
-					<p class="text-sm text-gray-400 dark:text-neutral-500">No posts yet. Be the first to share something!</p>
+				<div class="py-12">
+					<EmptyState message="No posts yet. Be the first to share!" icon={PenSquare as unknown as Component<{ size: number; class?: string }>} />
 				</div>
 			{/if}
 
@@ -380,7 +408,11 @@
 			{#if hasMore && allPosts.length > 0}
 				<div bind:this={sentinelEl} class="flex justify-center py-8">
 					{#if loadingMore}
-						<Loader2 size={20} class="animate-spin text-gray-400 dark:text-neutral-500" />
+						<div class="flex gap-2">
+							{#each [1, 2, 3] as _}
+								<div class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600" style="animation-delay: {_ * 150}ms"></div>
+							{/each}
+						</div>
 					{/if}
 				</div>
 			{/if}
@@ -408,4 +440,23 @@
 		onsubmit={handleRepostSubmit}
 		oncancel={() => { showRepostModal = false; repostTargetPost = null; }}
 	/>
+
+	<ToastContainer />
 {/if}
+
+<style>
+	@keyframes fadeIn {
+		from { opacity: 0; transform: translateY(8px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+	.post-enter {
+		animation: fadeIn 0.3s ease-out;
+	}
+	.scrollbar-none::-webkit-scrollbar {
+		display: none;
+	}
+	.scrollbar-none {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+</style>

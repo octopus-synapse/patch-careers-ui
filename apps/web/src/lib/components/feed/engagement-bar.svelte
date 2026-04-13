@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from 'ui';
+	import { Tooltip, Button } from 'ui';
 	import { MessageCircle, Repeat2, Bookmark } from 'lucide-svelte';
 	import ReactionPicker from './reaction-picker.svelte';
 
@@ -17,66 +17,56 @@
 		onrepost: () => void;
 	};
 
-	let {
-		post,
-		isLiked,
-		isBookmarked,
-		reactionCounts,
-		currentReaction,
-		onlike,
-		onunlike,
-		onbookmark,
-		onunbookmark,
-		oncommenttoggle,
-		onrepost
-	}: Props = $props();
+	let { post, isLiked, isBookmarked, reactionCounts, currentReaction, onlike, onunlike, onbookmark, onunbookmark, oncommenttoggle, onrepost }: Props = $props();
 
 	const commentCount = $derived(Number(post.commentCount ?? post.commentsCount ?? 0));
 	const repostCount = $derived(Number(post.repostCount ?? post.repostsCount ?? 0));
-
-	function handleReact(reactionType: string) {
-		onlike(reactionType);
-	}
-
-	function handleRemoveReaction() {
-		onunlike();
-	}
 </script>
 
-<div class="flex items-center gap-1">
+<div class="flex items-center gap-2">
 	<ReactionPicker
 		currentReaction={currentReaction ?? (isLiked ? 'LIKE' : null)}
 		reactionCounts={reactionCounts ?? {}}
-		onreact={handleReact}
-		onremove={handleRemoveReaction}
+		onreact={(type) => onlike(type)}
+		onremove={onunlike}
 	/>
 
-	<Button variant="ghost" size="xs" onclick={oncommenttoggle}>
-		<MessageCircle size={16} />
-		{#if commentCount > 0}
-			<span class="text-xs">{commentCount}</span>
-		{/if}
-	</Button>
+	<Tooltip text="Comments" position="bottom">
+		<button
+			class="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-neutral-300 dark:hover:bg-neutral-700/50"
+			onclick={oncommenttoggle}
+		>
+			<MessageCircle size={16} />
+			{#if commentCount > 0}
+				<span class="text-xs font-medium">{commentCount}</span>
+			{/if}
+		</button>
+	</Tooltip>
 
-	<Button variant="ghost" size="xs" onclick={onrepost}>
-		<Repeat2 size={16} />
-		{#if repostCount > 0}
-			<span class="text-xs">{repostCount}</span>
-		{/if}
-	</Button>
+	<Tooltip text="Repost" position="bottom">
+		<button
+			class="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-neutral-300 dark:hover:bg-neutral-700/50"
+			onclick={onrepost}
+		>
+			<Repeat2 size={16} />
+			{#if repostCount > 0}
+				<span class="text-xs font-medium">{repostCount}</span>
+			{/if}
+		</button>
+	</Tooltip>
 
 	<div class="ml-auto">
-		<Button
-			variant="ghost"
-			size="xs"
-			onclick={() => isBookmarked ? onunbookmark() : onbookmark()}
-			class={isBookmarked ? 'text-blue-500 hover:text-blue-600' : ''}
-		>
-			{#if isBookmarked}
-				<Bookmark size={16} fill="currentColor" />
-			{:else}
-				<Bookmark size={16} />
-			{/if}
-		</Button>
+		<Tooltip text={isBookmarked ? 'Remove bookmark' : 'Bookmark'} position="bottom">
+			<button
+				class="flex items-center rounded-lg px-2.5 py-1.5 transition-colors {isBookmarked ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-neutral-300 dark:hover:bg-neutral-700/50'}"
+				onclick={() => isBookmarked ? onunbookmark() : onbookmark()}
+			>
+				{#if isBookmarked}
+					<Bookmark size={16} fill="currentColor" />
+				{:else}
+					<Bookmark size={16} />
+				{/if}
+			</button>
+		</Tooltip>
 	</div>
 </div>

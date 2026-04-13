@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Input, Button } from 'ui';
 	import { customFetch } from 'api-client';
 	import { Check, Minus, Send } from 'lucide-svelte';
 
@@ -115,19 +116,19 @@
 	<!-- Share for review -->
 	<div class="flex items-center gap-2 rounded-lg border border-dashed p-3 border-gray-300 dark:border-neutral-600">
 		<Send size={14} class="flex-shrink-0 text-gray-400 dark:text-neutral-500" />
-		<input
+		<Input
 			type="email"
 			bind:value={shareEmail}
 			placeholder="Email to share for review"
-			class="min-w-0 flex-1 bg-transparent text-xs outline-none text-gray-800 placeholder:text-gray-400 dark:text-neutral-200 dark:placeholder:text-neutral-500"
 		/>
-		<button
+		<Button
+			variant="ghost"
+			size="xs"
 			onclick={sendReviewInvite}
 			disabled={shareStatus === 'sending' || !shareEmail.trim()}
-			class="flex-shrink-0 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-40 text-gray-500 dark:text-neutral-400"
 		>
 			{shareStatus === 'sending' ? 'Sending...' : 'Send'}
-		</button>
+		</Button>
 	</div>
 	{#if shareStatus === 'sent'}
 		<p class="text-center text-xs text-emerald-500">Invite sent!</p>

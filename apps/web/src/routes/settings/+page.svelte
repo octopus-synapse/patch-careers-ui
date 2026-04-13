@@ -3,7 +3,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { SegmentToggle } from 'ui';
+	import { SegmentToggle, Label, Input, Textarea } from 'ui';
 	import type { Locale } from 'i18n';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import {
@@ -381,63 +381,63 @@
 						</div>
 						<div class="p-5 space-y-4">
 							<div>
-								<label for="profile-name" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.name')}</label>
-								<input
+								<Label for="profile-name">{t('settings.name')}</Label>
+								<Input
 									id="profile-name"
 									type="text"
 									bind:value={profileName}
-									class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+									class="mt-1"
 								/>
 							</div>
 							<div>
-								<label for="profile-bio" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.bio')}</label>
-								<textarea
+								<Label for="profile-bio">{t('settings.bio')}</Label>
+								<Textarea
 									id="profile-bio"
 									bind:value={profileBio}
-									rows="3"
-									maxlength="500"
-									class="mt-1 w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
-								></textarea>
+									rows={3}
+									maxlength={500}
+									class="mt-1"
+								/>
 								<p class="mt-1 text-right text-[10px] text-gray-500 dark:text-neutral-500">{profileBio.length}/500</p>
 							</div>
 							<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 								<div>
-									<label for="profile-location" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.location')}</label>
-									<input
+									<Label for="profile-location">{t('settings.location')}</Label>
+									<Input
 										id="profile-location"
 										type="text"
 										bind:value={profileLocation}
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="mt-1"
 									/>
 								</div>
 								<div>
-									<label for="profile-website" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.website')}</label>
-									<input
+									<Label for="profile-website">{t('settings.website')}</Label>
+									<Input
 										id="profile-website"
 										type="url"
 										bind:value={profileWebsite}
 										placeholder="https://"
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="mt-1"
 									/>
 								</div>
 								<div>
-									<label for="profile-linkedin" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">LinkedIn</label>
-									<input
+									<Label for="profile-linkedin">LinkedIn</Label>
+									<Input
 										id="profile-linkedin"
 										type="url"
 										bind:value={profileLinkedin}
 										placeholder="https://linkedin.com/in/..."
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="mt-1"
 									/>
 								</div>
 								<div>
-									<label for="profile-github" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">GitHub</label>
-									<input
+									<Label for="profile-github">GitHub</Label>
+									<Input
 										id="profile-github"
 										type="url"
 										bind:value={profileGithub}
 										placeholder="https://github.com/..."
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="mt-1"
 									/>
 								</div>
 							</div>
@@ -489,14 +489,14 @@
 								<p class="mt-1 text-sm text-gray-800 dark:text-neutral-200">@{currentUsername || '---'}</p>
 							</div>
 							<div>
-								<label for="new-username" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.newUsername')}</label>
+								<Label for="new-username">{t('settings.newUsername')}</Label>
 								<div class="relative mt-1">
-									<input
+									<Input
 										id="new-username"
 										type="text"
 										bind:value={newUsername}
 										placeholder={t('settings.usernamePlaceholder')}
-										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="pr-10"
 									/>
 									{#if debouncedUsername.length >= 3 && !usernameCheck.isLoading}
 										<div class="absolute right-3 top-1/2 -translate-y-1/2">
@@ -547,13 +547,13 @@
 						</div>
 						<div class="p-5 space-y-4">
 							<div>
-								<label for="current-password" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.currentPassword')}</label>
+								<Label for="current-password">{t('settings.currentPassword')}</Label>
 								<div class="relative mt-1">
-									<input
+									<Input
 										id="current-password"
 										type={showCurrentPassword ? 'text' : 'password'}
 										bind:value={currentPassword}
-										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="pr-10"
 									/>
 									<button
 										type="button"
@@ -565,13 +565,13 @@
 								</div>
 							</div>
 							<div>
-								<label for="new-password" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.newPassword')}</label>
+								<Label for="new-password">{t('settings.newPassword')}</Label>
 								<div class="relative mt-1">
-									<input
+									<Input
 										id="new-password"
 										type={showNewPassword ? 'text' : 'password'}
 										bind:value={newPassword}
-										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+										class="pr-10"
 									/>
 									<button
 										type="button"
@@ -586,12 +586,12 @@
 								{/if}
 							</div>
 							<div>
-								<label for="confirm-password" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.confirmPassword')}</label>
-								<input
+								<Label for="confirm-password">{t('settings.confirmPassword')}</Label>
+								<Input
 									id="confirm-password"
 									type="password"
 									bind:value={confirmPassword}
-									class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+									class="mt-1"
 								/>
 								{#if confirmPassword.length > 0 && !passwordsMatch}
 									<p class="mt-1 text-xs {errorText}">{t('settings.passwordMismatch')}</p>
@@ -676,14 +676,14 @@
 											</div>
 										{/if}
 										<div>
-											<label for="tfa-code" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.verificationCode')}</label>
-											<input
+											<Label for="tfa-code">{t('settings.verificationCode')}</Label>
+											<Input
 												id="tfa-code"
 												type="text"
 												bind:value={tfaCode}
-												maxlength="6"
+												maxlength={6}
 												placeholder="000000"
-												class="mt-1 w-full rounded-lg border px-3 py-2 text-sm font-mono tracking-widest outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+												class="mt-1 font-mono tracking-widest"
 											/>
 										</div>
 										<div class="flex gap-2">
@@ -843,15 +843,15 @@
 				<h3 class="text-lg font-semibold text-red-500">{t('settings.deleteAccount')}</h3>
 				<p class="text-sm text-gray-500 dark:text-neutral-500">{t('settings.deleteAccountWarning')}</p>
 				<div>
-					<label for="delete-confirm" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+					<Label for="delete-confirm">
 						{t('settings.typeToConfirm')}
-					</label>
-					<input
+					</Label>
+					<Input
 						id="delete-confirm"
 						type="text"
 						bind:value={deleteConfirmation}
 						placeholder="DELETE MY ACCOUNT"
-						class="mt-1 w-full rounded-lg border px-3 py-2 text-sm font-mono outline-none transition-colors focus:ring-1 focus:ring-red-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
+						class="mt-1 font-mono"
 					/>
 				</div>
 				<div class="flex justify-end gap-2 pt-2">

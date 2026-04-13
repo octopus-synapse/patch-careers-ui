@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from 'ui';
 	import { Check } from 'lucide-svelte';
 
 	const heroBenefits = [
@@ -211,13 +212,15 @@
 					<div class="space-y-0">
 						{#each faqs as [question, answer], i}
 							<div class="border-b border-zinc-200 py-6 last:border-none">
-								<button
+								<Button
+									variant="ghost"
+									size="md"
 									onclick={() => openFaq = openFaq === i ? null : i}
 									class="flex w-full items-center justify-between text-left"
 								>
 									<p class="font-bold text-zinc-900">{question}</p>
 									<span class="ml-4 shrink-0 text-zinc-400 transition-transform {openFaq === i ? 'rotate-45' : ''}">+</span>
-								</button>
+								</Button>
 								{#if openFaq === i}
 									<p class="mt-3 text-sm leading-relaxed text-zinc-600">{answer}</p>
 								{/if}

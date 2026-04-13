@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Search, FileText, Building2, Briefcase, ArrowRight } from 'lucide-svelte';
 	import { chatSearchUsers } from 'api-client';
-	import { Avatar } from 'ui';
+	import { Avatar, Button } from 'ui';
 	import { goto } from '$app/navigation';
 
 	type Props = {
@@ -81,12 +81,14 @@
 					placeholder={t('nav.searchPlaceholder')}
 					class="h-12 w-full bg-transparent text-sm outline-none text-gray-800 dark:text-neutral-200 placeholder:text-gray-400 dark:placeholder:text-neutral-500"
 				/>
-				<button
+				<Button
+					variant="ghost"
+					size="xs"
 					onclick={onclose}
 					class="shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-medium bg-gray-100 dark:bg-neutral-800 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700"
 				>
 					ESC
-				</button>
+				</Button>
 			</div>
 
 			<div class="max-h-80 overflow-y-auto px-2 py-3 scrollbar-thin">

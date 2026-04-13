@@ -10,10 +10,9 @@
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { ArrowLeft, Loader2, Pencil, Save, X, Shield, ShieldOff } from 'lucide-svelte';
-	import { Avatar, Button, Input } from 'ui';
+	import { Avatar, Button, Input, Label, ConfirmModal } from 'ui';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
 	import StatusBadge from '$lib/components/admin/status-badge.svelte';
-	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
 
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
@@ -107,13 +106,11 @@
 						{#if editing}
 							<div class="space-y-2">
 								<div>
-									<!-- svelte-ignore a11y_label_has_associated_control -->
-									<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name</label>
+									<Label>Name</Label>
 									<Input bind:value={editName} placeholder="Name" />
 								</div>
 								<div>
-									<!-- svelte-ignore a11y_label_has_associated_control -->
-									<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Email</label>
+									<Label>Email</Label>
 									<Input bind:value={editEmail} type="email" placeholder="Email" />
 								</div>
 								<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200">
@@ -212,6 +209,6 @@
 	title="Change Role"
 	message={isAdmin ? 'Remove admin privileges from this user?' : 'Grant admin privileges to this user?'}
 	loading={roleLoading}
-	onconfirm={handleToggleRole}
-	oncancel={() => roleConfirm = false}
+	onConfirm={handleToggleRole}
+	onClose={() => roleConfirm = false}
 />

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Input, Label } from 'ui';
+	import { Input, Label, Textarea, Button } from 'ui';
 	import { customFetch } from 'api-client';
 
 	type Field = {
@@ -72,7 +72,7 @@
 	</Label>
 
 	{#if isSummary}
-		<textarea
+		<Textarea
 			id={field.key}
 			{value}
 			{placeholder}
@@ -81,16 +81,17 @@
 			onblur={() => (focused = false)}
 			oninput={(e) => onchange(e.currentTarget.value)}
 			rows={3}
-			class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all {error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-neutral-700'} text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200"
-		></textarea>
+			class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm {error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-neutral-700'} text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200"
+		/>
 		{#if summaryExamples.length && !value}
-			<button
+			<Button
 				type="button"
+				variant="ghost"
+				size="xs"
 				onclick={() => (showSummaryExamples = !showSummaryExamples)}
-				class="mt-1 text-[10px] font-semibold uppercase tracking-widest underline transition-opacity hover:opacity-60 text-gray-400 dark:text-neutral-500"
 			>
 				{showSummaryExamples ? 'hide' : 'see example'}
-			</button>
+			</Button>
 			{#if showSummaryExamples}
 				<div class="mt-2 space-y-2">
 					{#each summaryExamples as example}

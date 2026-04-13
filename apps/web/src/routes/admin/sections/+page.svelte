@@ -11,12 +11,10 @@
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-svelte';
-	import { Button, Input, Tooltip } from 'ui';
+	import { Button, Input, Label, Tooltip, ConfirmModal, FormModal } from 'ui';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 	import Pagination from '$lib/components/admin/pagination.svelte';
-	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
-	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
 	const t = $derived(locale.t);
@@ -180,16 +178,16 @@
 	{/if}
 </div>
 
-<FormModal open={formModal !== null} title={formModal?.mode === 'create' ? 'Add Section Type' : 'Edit Section Type'} loading={formLoading} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
+<FormModal open={formModal !== null} title={formModal?.mode === 'create' ? 'Add Section Type' : 'Edit Section Type'} loading={formLoading} onSubmit={handleFormSubmit} onClose={() => formModal = null}>
 	<div class="space-y-3">
-		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
-		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
-		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Title *</label><Input bind:value={formTitle} placeholder="Work Experience" required /></div>
-		<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Description</label><Input bind:value={formDescription} placeholder="Professional experience section" /></div>
+		<div><Label>Key *</Label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
+		<div><Label>Slug *</Label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
+		<div><Label>Title *</Label><Input bind:value={formTitle} placeholder="Work Experience" required /></div>
+		<div><Label>Description</Label><Input bind:value={formDescription} placeholder="Professional experience section" /></div>
 		<div class="grid grid-cols-2 gap-3">
-			<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Semantic Kind *</label><Input bind:value={formSemanticKind} placeholder="experience" required /></div>
+			<div><Label>Semantic Kind *</Label><Input bind:value={formSemanticKind} placeholder="experience" required /></div>
 			{#if formModal?.mode === 'create'}
-				<!-- svelte-ignore a11y_label_has_associated_control --><div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Version</label><Input bind:value={formVersion} type="number" /></div>
+				<div><Label>Version</Label><Input bind:value={formVersion} type="number" /></div>
 			{/if}
 		</div>
 		<div class="flex items-center gap-4">
@@ -199,4 +197,4 @@
 	</div>
 </FormModal>
 
-<ConfirmModal open={deleteKey !== null} title="Delete Section Type" message="Are you sure? This cannot be undone." loading={deleteLoading} onconfirm={handleDelete} oncancel={() => deleteKey = null} />
+<ConfirmModal open={deleteKey !== null} title="Delete Section Type" message="Are you sure? This cannot be undone." loading={deleteLoading} onConfirm={handleDelete} onClose={() => deleteKey = null} />

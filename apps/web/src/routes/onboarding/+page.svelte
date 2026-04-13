@@ -279,25 +279,27 @@
 						{/if}
 
 						{#if isSectionStep}
-							<button
+							<Button
+								variant="ghost"
+								size="xs"
 								onclick={handleSkip}
 								disabled={isPending}
-								class="mt-6 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
 							>
 								{t('onboarding.skip')}
-							</button>
+							</Button>
 						{/if}
 
 						<div class="mt-10 flex items-center justify-between">
 							{#if onboardingData.previousStep}
-								<button
+								<Button
+									variant="ghost"
+									size="sm"
 									onclick={handleBack}
 									disabled={isPending}
-									class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
 								>
 									<ArrowLeft size={14} />
 									{t('onboarding.back')}
-								</button>
+								</Button>
 							{:else}
 								<div></div>
 							{/if}

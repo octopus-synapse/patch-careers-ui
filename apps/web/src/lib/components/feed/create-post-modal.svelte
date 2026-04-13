@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Modal, Button, Input } from 'ui';
-	import { Loader2, Plus, X, Image, Link, Upload, Code, Calendar, Users, MessageSquare } from 'lucide-svelte';
+	import { Modal, Button, Input, Textarea } from 'ui';
+	import { Loader2, Plus, X, Image, Link, Upload, Code, Calendar, Users, MessageSquare, Trophy, Briefcase, BookOpen, Hammer, HelpCircle, Zap, ChevronRight } from 'lucide-svelte';
 	import { postsCreate, postsUploadImage } from 'api-client';
 
 	type Props = {
@@ -75,6 +75,15 @@
 	// Thread mode
 	let isThread = $state(false);
 	let threadPosts = $state<string[]>(['']);
+
+	const typeConfig: Record<PostType, { icon: typeof Trophy; description: string }> = {
+		ACHIEVEMENT: { icon: Trophy, description: 'Share a win or milestone' },
+		OPPORTUNITY: { icon: Briefcase, description: 'Post a job or collab opportunity' },
+		LEARNING: { icon: BookOpen, description: 'Share an insight or lesson' },
+		BUILD: { icon: Hammer, description: 'Showcase a project' },
+		QUESTION: { icon: HelpCircle, description: 'Ask the community' },
+		CHALLENGE: { icon: Zap, description: 'Propose a technical challenge' }
+	};
 
 	function resetForm() {
 		step = 1;
@@ -291,20 +300,28 @@
 
 <Modal {open} onClose={handleCancel}>
 	{#snippet title()}
-		{step === 1 ? 'Create Post' : `New ${typeLabels[selectedType]}`}
+		<div class="flex items-center gap-2">
+			<span>{step === 1 ? 'Create Post' : `New ${typeLabels[selectedType]}`}</span>
+			<span class="ml-auto text-xs font-normal text-gray-400 dark:text-neutral-500">Step {step} of 2</span>
+		</div>
 	{/snippet}
 
 	<div class="max-h-[60vh] space-y-4 overflow-y-auto">
 		{#if step === 1}
-			<!-- Step 1: Select type -->
+			<!-- Step 1: Select type — 2-column grid -->
 			<p class="text-xs text-gray-400 dark:text-neutral-500">What would you like to share?</p>
-			<div class="grid grid-cols-1 gap-2">
+			<div class="grid grid-cols-2 gap-2">
 				{#each postTypes as pType}
+					{@const config = typeConfig[pType]}
 					<button
-						class="rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors text-gray-800 dark:text-neutral-200 {selectedType === pType ? 'border-gray-800 bg-gray-100 dark:border-neutral-400 dark:bg-neutral-700' : 'border-gray-200 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700/50'}"
+						class="flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-colors {selectedType === pType ? 'border-gray-800 bg-gray-50 dark:border-neutral-400 dark:bg-neutral-700/50' : 'border-gray-200 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700/50'}"
 						onclick={() => selectedType = pType}
 					>
-						{typeLabels[pType]}
+						<div class="flex items-center gap-2">
+							<config.icon size={16} class="text-gray-600 dark:text-neutral-300" />
+							<span class="text-sm font-medium text-gray-800 dark:text-neutral-200">{typeLabels[pType]}</span>
+						</div>
+						<span class="text-[11px] leading-tight text-gray-400 dark:text-neutral-500">{config.description}</span>
 					</button>
 				{/each}
 			</div>
@@ -314,137 +331,152 @@
 		{:else}
 			<!-- Step 2: Dynamic fields -->
 
+			<!-- Type-specific fields section -->
+			<p class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-500">{typeLabels[selectedType]} Details</p>
+
 			{#if selectedType === 'ACHIEVEMENT'}
-				<Input placeholder="Title" bind:value={achTitle} />
-				<Input placeholder="Organization" bind:value={achOrganization} />
-				<Input placeholder="Date (e.g. 2026-01)" bind:value={achDate} />
-				<textarea
-					class="w-full rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
-					placeholder="Description"
-					rows="2"
-					bind:value={achDescription}
-				></textarea>
-			{:else if selectedType === 'OPPORTUNITY'}
-				<textarea
-					class="w-full rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
-					placeholder="Description"
-					rows="2"
-					bind:value={oppDescription}
-				></textarea>
-				<Input placeholder="Skills required (comma separated)" bind:value={oppSkillsRequired} />
-				<Input placeholder="Commitment (e.g. Full-time, Part-time)" bind:value={oppCommitment} />
-				<Input placeholder="Contact method" bind:value={oppContactMethod} />
-			{:else if selectedType === 'LEARNING'}
-				<Input placeholder="Key insight" bind:value={learnInsight} />
-				<Input placeholder="How to apply" bind:value={learnApplication} />
-				<Input placeholder="Related skills (comma separated)" bind:value={learnSkills} />
-			{:else if selectedType === 'BUILD'}
-				<Input placeholder="Project title" bind:value={buildTitle} />
-				<textarea
-					class="w-full rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
-					placeholder="Description"
-					rows="2"
-					bind:value={buildDescription}
-				></textarea>
-				<Input placeholder="Project URL" bind:value={buildProjectUrl} />
-				<Input placeholder="Key decision or solution" bind:value={buildDecision} />
-			{:else if selectedType === 'QUESTION'}
-				<Input placeholder="Your question" bind:value={questionText} />
-				<div class="space-y-2">
-					<p class="text-xs font-semibold text-gray-400 dark:text-neutral-500">Poll options</p>
-					{#each questionOptions as option, i}
-						<div class="flex items-center gap-2">
-							<Input
-								placeholder="Option {i + 1}"
-								value={option}
-								oninput={(e: Event) => updateOption(i, (e.target as HTMLInputElement).value)}
-							/>
-							{#if questionOptions.length > 2}
-								<button class="text-red-400 hover:text-red-500" onclick={() => removeOption(i)}>
-									<X size={14} />
-								</button>
-							{/if}
-						</div>
-					{/each}
-					<Button variant="ghost" size="xs" onclick={addOption}>
-						<Plus size={14} />
-						Add option
-					</Button>
-				</div>
-				<Input placeholder="Context (optional)" bind:value={questionContext} />
-				<div class="flex items-center gap-2">
-					<Calendar size={14} class="text-gray-400 dark:text-neutral-500" />
-					<input
-						type="datetime-local"
-						class="flex-1 rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
-						bind:value={pollDeadline}
+				<div class="space-y-3">
+					<Input placeholder="Title" bind:value={achTitle} />
+					<Input placeholder="Organization" bind:value={achOrganization} />
+					<Input placeholder="Date (e.g. 2026-01)" bind:value={achDate} />
+					<Textarea
+						placeholder="Description"
+						rows={2}
+						bind:value={achDescription}
 					/>
-					<span class="text-[10px] text-gray-400 dark:text-neutral-500">Poll deadline</span>
 				</div>
-			{:else if selectedType === 'CHALLENGE'}
-				<Input placeholder="Challenge title" bind:value={challengeTitle} />
-				<textarea
-					class="w-full rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
-					placeholder="Description"
-					rows="3"
-					bind:value={challengeDescription}
-				></textarea>
-				<div class="space-y-2">
-					<p class="text-xs font-semibold text-gray-400 dark:text-neutral-500">Difficulty</p>
-					<div class="flex gap-2">
-						{#each ['Easy', 'Medium', 'Hard'] as diff}
-							<button
-								class="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors {challengeDifficulty === diff ? 'border-gray-800 bg-gray-100 dark:border-neutral-400 dark:bg-neutral-700' : 'border-gray-200 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700/50'} text-gray-800 dark:text-neutral-200"
-								onclick={() => challengeDifficulty = diff as 'Easy' | 'Medium' | 'Hard'}
-							>
-								{diff}
-							</button>
+			{:else if selectedType === 'OPPORTUNITY'}
+				<div class="space-y-3">
+					<Textarea
+						placeholder="Description"
+						rows={2}
+						bind:value={oppDescription}
+					/>
+					<Input placeholder="Skills required (comma separated)" bind:value={oppSkillsRequired} />
+					<Input placeholder="Commitment (e.g. Full-time, Part-time)" bind:value={oppCommitment} />
+					<Input placeholder="Contact method" bind:value={oppContactMethod} />
+				</div>
+			{:else if selectedType === 'LEARNING'}
+				<div class="space-y-3">
+					<Input placeholder="Key insight" bind:value={learnInsight} />
+					<Input placeholder="How to apply" bind:value={learnApplication} />
+					<Input placeholder="Related skills (comma separated)" bind:value={learnSkills} />
+				</div>
+			{:else if selectedType === 'BUILD'}
+				<div class="space-y-3">
+					<Input placeholder="Project title" bind:value={buildTitle} />
+					<Textarea
+						placeholder="Description"
+						rows={2}
+						bind:value={buildDescription}
+					/>
+					<Input placeholder="Project URL" bind:value={buildProjectUrl} />
+					<Input placeholder="Key decision or solution" bind:value={buildDecision} />
+				</div>
+			{:else if selectedType === 'QUESTION'}
+				<div class="space-y-3">
+					<Input placeholder="Your question" bind:value={questionText} />
+					<div class="space-y-2">
+						<p class="text-xs font-semibold text-gray-400 dark:text-neutral-500">Poll options</p>
+						{#each questionOptions as option, i}
+							<div class="flex items-center gap-2">
+								<Input
+									placeholder="Option {i + 1}"
+									value={option}
+									oninput={(e: Event) => updateOption(i, (e.target as HTMLInputElement).value)}
+								/>
+								{#if questionOptions.length > 2}
+									<Button variant="icon" onclick={() => removeOption(i)} class="text-red-400 hover:text-red-500">
+										<X size={14} />
+									</Button>
+								{/if}
+							</div>
 						{/each}
+						<Button variant="ghost" size="xs" onclick={addOption}>
+							<Plus size={14} />
+							Add option
+						</Button>
+					</div>
+					<Input placeholder="Context (optional)" bind:value={questionContext} />
+					<div class="flex items-center gap-2">
+						<Calendar size={14} class="text-gray-400 dark:text-neutral-500" />
+						<input
+							type="datetime-local"
+							class="flex-1 rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
+							bind:value={pollDeadline}
+						/>
+						<span class="text-[10px] text-gray-400 dark:text-neutral-500">Poll deadline</span>
 					</div>
 				</div>
-				<div class="flex items-center gap-2">
-					<Calendar size={14} class="text-gray-400 dark:text-neutral-500" />
-					<input
-						type="datetime-local"
-						class="flex-1 rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
-						bind:value={challengeDeadline}
+			{:else if selectedType === 'CHALLENGE'}
+				<div class="space-y-3">
+					<Input placeholder="Challenge title" bind:value={challengeTitle} />
+					<Textarea
+						placeholder="Description"
+						rows={3}
+						bind:value={challengeDescription}
 					/>
-					<span class="text-[10px] text-gray-400 dark:text-neutral-500">Deadline</span>
+					<div class="space-y-2">
+						<p class="text-xs font-semibold text-gray-400 dark:text-neutral-500">Difficulty</p>
+						<div class="flex gap-2">
+							{#each ['Easy', 'Medium', 'Hard'] as diff}
+								<button
+									class="rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors {challengeDifficulty === diff ? 'border-gray-800 bg-gray-100 dark:border-neutral-400 dark:bg-neutral-700' : 'border-gray-200 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700/50'} text-gray-800 dark:text-neutral-200"
+									onclick={() => challengeDifficulty = diff as 'Easy' | 'Medium' | 'Hard'}
+								>
+									{diff}
+								</button>
+							{/each}
+						</div>
+					</div>
+					<div class="flex items-center gap-2">
+						<Calendar size={14} class="text-gray-400 dark:text-neutral-500" />
+						<input
+							type="datetime-local"
+							class="flex-1 rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
+							bind:value={challengeDeadline}
+						/>
+						<span class="text-[10px] text-gray-400 dark:text-neutral-500">Deadline</span>
+					</div>
 				</div>
 			{/if}
 
-			<!-- Global fields -->
+			<!-- Content section -->
 			<div class="border-t pt-4 border-gray-200 dark:border-neutral-700">
-				<textarea
-					class="w-full rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
+				<p class="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Content</p>
+				<Textarea
 					placeholder="What's on your mind? Use #hashtags..."
-					rows="3"
+					rows={3}
 					bind:value={content}
-				></textarea>
+				/>
 
 				<div class="mt-3 space-y-2">
 					<Input placeholder="Hard skills (comma separated)" bind:value={hardSkillsInput} />
 					<Input placeholder="Soft skills (comma separated)" bind:value={softSkillsInput} />
 				</div>
+			</div>
 
-				<!-- Image upload -->
-				<div class="mt-3">
+			<!-- Media & Links collapsible -->
+			<details class="border-t pt-3 border-gray-200 dark:border-neutral-700">
+				<summary class="cursor-pointer text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-500 select-none">Media & Links</summary>
+				<div class="mt-3 space-y-3">
+					<!-- Image upload — dashed drop zone -->
 					{#if imageUrl}
 						<div class="flex items-center gap-2 rounded-lg border p-2 border-gray-200 dark:border-neutral-700/50">
 							<img src={imageUrl} alt="Upload preview" class="h-12 w-12 rounded object-cover" />
 							<span class="flex-1 truncate text-xs text-gray-600 dark:text-neutral-400">{imageFile?.name ?? 'Uploaded'}</span>
-							<button class="text-red-400 hover:text-red-500" onclick={clearImage}>
+							<Button variant="icon" onclick={clearImage} class="text-red-400 hover:text-red-500">
 								<X size={14} />
-							</button>
+							</Button>
 						</div>
 					{:else}
-						<label class="flex cursor-pointer items-center gap-1.5 text-gray-400 dark:text-neutral-500 hover:opacity-70">
+						<label class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 dark:border-neutral-600 p-6 text-center transition-colors hover:border-gray-400 dark:hover:border-neutral-500">
 							{#if uploadingImage}
-								<Loader2 size={14} class="animate-spin" />
-								<span class="text-xs">Uploading...</span>
+								<Loader2 size={20} class="animate-spin text-gray-400 dark:text-neutral-500" />
+								<span class="text-xs text-gray-400 dark:text-neutral-500">Uploading...</span>
 							{:else}
-								<Upload size={14} />
-								<span class="text-xs">Upload image</span>
+								<Upload size={20} class="text-gray-400 dark:text-neutral-500" />
+								<span class="text-xs text-gray-400 dark:text-neutral-500">Click to upload an image</span>
 							{/if}
 							<input
 								type="file"
@@ -455,130 +487,135 @@
 							/>
 						</label>
 					{/if}
-				</div>
 
-				<!-- Link URL -->
-				<div class="mt-3 flex items-center gap-1.5 text-gray-400 dark:text-neutral-500">
-					<Link size={14} />
-					<input
-						type="text"
-						placeholder="Link URL"
-						class="bg-transparent text-xs outline-none placeholder:text-gray-400 dark:placeholder:text-neutral-500 text-gray-800 dark:text-neutral-200"
-						bind:value={linkUrl}
-					/>
-				</div>
-
-				<!-- Code snippet -->
-				<div class="mt-3 space-y-2">
-					<button
-						class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-neutral-500 hover:opacity-70"
-						onclick={() => { if (codeSnippet) { codeSnippet = ''; codeLanguage = ''; } else { codeLanguage = 'JavaScript'; } }}
-					>
-						<Code size={14} />
-						{codeSnippet || codeLanguage ? 'Remove code snippet' : 'Add code snippet'}
-					</button>
-					{#if codeLanguage || codeSnippet}
-						<select
-							class="w-full rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
-							bind:value={codeLanguage}
-						>
-							{#each codeLanguages as lang}
-								<option value={lang}>{lang}</option>
-							{/each}
-						</select>
-						<textarea
-							class="w-full rounded-lg border bg-transparent p-3 font-mono text-xs outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
-							placeholder="Paste your code here..."
-							rows="5"
-							bind:value={codeSnippet}
-						></textarea>
-					{/if}
-				</div>
-
-				<!-- Co-authors -->
-				<div class="mt-3 space-y-2">
+					<!-- Link URL -->
 					<div class="flex items-center gap-1.5 text-gray-400 dark:text-neutral-500">
-						<Users size={14} />
-						<input
+						<Link size={14} />
+						<Input
 							type="text"
-							placeholder="Add co-author (username)"
-							class="flex-1 bg-transparent text-xs outline-none placeholder:text-gray-400 dark:placeholder:text-neutral-500 text-gray-800 dark:text-neutral-200"
-							bind:value={coAuthorSearch}
-							onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') { e.preventDefault(); addCoAuthor(); } }}
+							placeholder="Link URL"
+							bind:value={linkUrl}
 						/>
-						{#if coAuthorSearch.trim()}
-							<button class="text-xs text-blue-500 hover:underline" onclick={addCoAuthor}>Add</button>
+					</div>
+				</div>
+			</details>
+
+			<!-- Advanced collapsible -->
+			<details class="border-t pt-3 border-gray-200 dark:border-neutral-700">
+				<summary class="cursor-pointer text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-500 select-none">Advanced</summary>
+				<div class="mt-3 space-y-3">
+					<!-- Code snippet -->
+					<div class="space-y-2">
+						<Button
+							variant="ghost"
+							size="xs"
+							onclick={() => { if (codeSnippet) { codeSnippet = ''; codeLanguage = ''; } else { codeLanguage = 'JavaScript'; } }}
+						>
+							<Code size={14} />
+							{codeSnippet || codeLanguage ? 'Remove code snippet' : 'Add code snippet'}
+						</Button>
+						{#if codeLanguage || codeSnippet}
+							<select
+								class="w-full rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
+								bind:value={codeLanguage}
+							>
+								{#each codeLanguages as lang}
+									<option value={lang}>{lang}</option>
+								{/each}
+							</select>
+							<Textarea
+								class="font-mono text-xs"
+								placeholder="Paste your code here..."
+								rows={5}
+								bind:value={codeSnippet}
+							/>
 						{/if}
 					</div>
-					{#if coAuthors.length > 0}
-						<div class="flex flex-wrap gap-1.5">
-							{#each coAuthors as coAuthor, i}
-								<span class="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-neutral-700/50 dark:text-neutral-300">
-									@{coAuthor}
-									<button class="text-red-400 hover:text-red-500" onclick={() => removeCoAuthor(i)}>
-										<X size={10} />
-									</button>
-								</span>
-							{/each}
+
+					<!-- Co-authors -->
+					<div class="space-y-2">
+						<div class="flex items-center gap-1.5 text-gray-400 dark:text-neutral-500">
+							<Users size={14} />
+							<Input
+								type="text"
+								placeholder="Add co-author (username)"
+								bind:value={coAuthorSearch}
+								onkeydown={(e: KeyboardEvent) => { if (e.key === 'Enter') { e.preventDefault(); addCoAuthor(); } }}
+							/>
+							{#if coAuthorSearch.trim()}
+								<Button variant="ghost" size="xs" onclick={addCoAuthor}>Add</Button>
+							{/if}
 						</div>
-					{/if}
-				</div>
+						{#if coAuthors.length > 0}
+							<div class="flex flex-wrap gap-1.5">
+								{#each coAuthors as coAuthor, i}
+									<span class="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-neutral-700/50 dark:text-neutral-300">
+										@{coAuthor}
+										<Button variant="icon" onclick={() => removeCoAuthor(i)} class="text-red-400 hover:text-red-500">
+											<X size={10} />
+										</Button>
+									</span>
+								{/each}
+							</div>
+						{/if}
+					</div>
 
-				<!-- Schedule post -->
-				<div class="mt-3 flex items-center gap-2">
-					<Calendar size={14} class="text-gray-400 dark:text-neutral-500" />
-					<input
-						type="datetime-local"
-						class="flex-1 rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
-						bind:value={scheduledAt}
-					/>
-					<span class="text-[10px] text-gray-400 dark:text-neutral-500">Schedule</span>
-					{#if scheduledAt}
-						<button class="text-red-400 hover:text-red-500" onclick={() => scheduledAt = ''}>
-							<X size={12} />
-						</button>
-					{/if}
-				</div>
-
-				<!-- Thread mode -->
-				<div class="mt-3">
-					<button
-						class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-neutral-500 hover:opacity-70"
-						onclick={() => { isThread = !isThread; if (!isThread) { threadPosts = ['']; } }}
-					>
-						<MessageSquare size={14} />
-						{isThread ? 'Cancel thread' : 'Continue as thread'}
-					</button>
-					{#if isThread}
-						<div class="mt-2 space-y-2">
-							{#each threadPosts as threadPost, i}
-								<div class="flex items-start gap-2">
-									<div class="mt-2 h-0.5 w-4 bg-gray-200 dark:bg-neutral-700"></div>
-									<textarea
-										class="flex-1 rounded-lg border bg-transparent p-3 text-sm outline-none transition-colors resize-none bg-white text-gray-800 border-gray-300 dark:bg-neutral-700 dark:text-neutral-200 dark:border-neutral-600"
-										placeholder="Thread post {i + 2}..."
-										rows="2"
-										value={threadPost}
-										oninput={(e: Event) => updateThreadPost(i, (e.target as HTMLTextAreaElement).value)}
-									></textarea>
-									{#if threadPosts.length > 1}
-										<button class="mt-2 text-red-400 hover:text-red-500" onclick={() => removeThreadPost(i)}>
-											<X size={14} />
-										</button>
-									{/if}
-								</div>
-							{/each}
-							<Button variant="ghost" size="xs" onclick={addThreadPost}>
-								<Plus size={14} />
-								Add to thread
+					<!-- Schedule post -->
+					<div class="flex items-center gap-2">
+						<Calendar size={14} class="text-gray-400 dark:text-neutral-500" />
+						<input
+							type="datetime-local"
+							class="flex-1 rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
+							bind:value={scheduledAt}
+						/>
+						<span class="text-[10px] text-gray-400 dark:text-neutral-500">Schedule</span>
+						{#if scheduledAt}
+							<Button variant="icon" onclick={() => scheduledAt = ''} class="text-red-400 hover:text-red-500">
+								<X size={12} />
 							</Button>
-						</div>
-					{/if}
+						{/if}
+					</div>
+
+					<!-- Thread mode -->
+					<div>
+						<Button
+							variant="ghost"
+							size="xs"
+							onclick={() => { isThread = !isThread; if (!isThread) { threadPosts = ['']; } }}
+						>
+							<MessageSquare size={14} />
+							{isThread ? 'Cancel thread' : 'Continue as thread'}
+						</Button>
+						{#if isThread}
+							<div class="mt-2 space-y-2 border-l-2 border-gray-200 dark:border-neutral-700 pl-4 ml-2">
+								{#each threadPosts as threadPost, i}
+									<div class="flex items-start gap-2">
+										<Textarea
+											class="flex-1"
+											placeholder="Thread post {i + 2}..."
+											rows={2}
+											value={threadPost}
+											oninput={(e: Event) => updateThreadPost(i, (e.target as HTMLTextAreaElement).value)}
+										/>
+										{#if threadPosts.length > 1}
+											<Button variant="icon" onclick={() => removeThreadPost(i)} class="mt-2 text-red-400 hover:text-red-500">
+												<X size={14} />
+											</Button>
+										{/if}
+									</div>
+								{/each}
+								<Button variant="ghost" size="xs" onclick={addThreadPost}>
+									<Plus size={14} />
+									Add to thread
+								</Button>
+							</div>
+						{/if}
+					</div>
 				</div>
-			</div>
+			</details>
 
 			<!-- Actions -->
-			<div class="flex items-center gap-2 pt-2">
+			<div class="flex items-center gap-2 border-t pt-3 border-gray-200 dark:border-neutral-700">
 				<Button variant="ghost" size="sm" onclick={() => step = 1}>
 					Back
 				</Button>

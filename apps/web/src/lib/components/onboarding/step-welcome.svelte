@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Button } from 'ui';
+
 	type StepData = {
 		features?: Array<{ icon: string; title: string; description: string }>;
 		estimatedMinutes?: number;
@@ -47,12 +49,14 @@
 		</div>
 	{/if}
 
-	<button
+	<Button
+		variant="solid"
+		size="lg"
 		onclick={onNext}
-		class="mt-10 rounded-full bg-gray-900 px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
+		class="mt-10 rounded-full"
 	>
 		Começar agora →
-	</button>
+	</Button>
 
 	<p class="mt-6 text-[11px] text-gray-400 dark:text-neutral-500">
 		Seu progresso é salvo automaticamente

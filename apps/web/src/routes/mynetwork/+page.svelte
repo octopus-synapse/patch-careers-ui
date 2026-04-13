@@ -2,7 +2,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 	import { browser } from '$app/environment';
-	import { Button } from 'ui';
+	import { Button, ConfirmModal } from 'ui';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { UserPlus, MessageCircle, Users, UserCheck, Eye } from 'lucide-svelte';
 	import {
@@ -23,7 +23,6 @@
 	import { useAuth } from '$lib/auth.svelte';
 	import UserRow from '$lib/components/user-row.svelte';
 	import UserCard from '$lib/components/user-card.svelte';
-	import ConfirmModal from '$lib/components/confirm-modal.svelte';
 	import InfiniteScrollTrigger from './InfiniteScrollTrigger.svelte';
 
 	const t = $derived(locale.t);

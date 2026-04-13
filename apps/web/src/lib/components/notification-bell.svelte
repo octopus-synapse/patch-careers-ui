@@ -9,7 +9,7 @@
 	} from 'api-client';
 	import { browser } from '$app/environment';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Avatar, Dropdown } from 'ui';
+	import { Avatar, Button, Dropdown } from 'ui';
 	import { Bell } from 'lucide-svelte';
 	import { locale } from '$lib/locale.svelte';
 
@@ -78,9 +78,11 @@
 	onclose={() => isOpen = false}
 >
 	{#snippet trigger()}
-		<button
+		<Button
+			variant="icon"
+			size="sm"
 			onclick={() => isOpen = !isOpen}
-			class="relative flex items-center justify-center rounded-lg p-1.5 transition-colors text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+			class="relative"
 			aria-label={t('notifications.title')}
 		>
 			<Bell size={16} />
@@ -89,7 +91,7 @@
 					{unreadCount > 99 ? '99+' : unreadCount}
 				</span>
 			{/if}
-		</button>
+		</Button>
 	{/snippet}
 
 	<div class="w-80 max-h-96 overflow-hidden flex flex-col">
@@ -97,12 +99,14 @@
 		<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700">
 			<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{t('notifications.title')}</span>
 			{#if unreadCount && unreadCount > 0}
-				<button
+				<Button
+					variant="ghost"
+					size="xs"
 					onclick={handleMarkAllRead}
-					class="text-[10px] font-medium text-blue-500 hover:text-blue-600 transition-colors"
+					class="text-[10px] font-medium text-blue-500 hover:text-blue-600"
 				>
 					{t('notifications.markAllRead')}
-				</button>
+				</Button>
 			{/if}
 		</div>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button, Textarea } from 'ui';
 	import { Send } from 'lucide-svelte';
 
 	type Props = {
@@ -29,22 +30,22 @@
 <div class="flex-shrink-0 border-t px-4 py-3 border-gray-100 dark:border-neutral-800">
 	<form onsubmit={handleSubmit} class="flex items-end gap-2">
 		<div class="flex-1 rounded-xl px-4 py-2.5 bg-gray-100 dark:bg-neutral-800">
-			<textarea
+			<Textarea
 				bind:value={content}
 				onkeydown={handleKeydown}
 				{disabled}
 				rows={1}
 				placeholder="Type a message..."
-				class="w-full resize-none bg-transparent text-[13px] leading-relaxed outline-none text-gray-800 dark:text-neutral-200 placeholder:text-gray-400 dark:placeholder:text-neutral-500"
-			></textarea>
+				class="w-full resize-none bg-transparent text-[13px] leading-relaxed"
+			/>
 		</div>
-		<button
+		<Button
 			type="submit"
+			variant="solid"
 			disabled={disabled || !content.trim()}
-			class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all bg-emerald-600 dark:bg-emerald-700 text-white
-				{content.trim() ? 'scale-100' : 'opacity-30 scale-95'}"
+			class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600 dark:bg-emerald-700 text-white {content.trim() ? 'scale-100' : 'opacity-30 scale-95'}"
 		>
 			<Send size={16} />
-		</button>
+		</Button>
 	</form>
 </div>
