@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { setBaseUrl } from 'api-client/client';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import Navbar from '$lib/components/navbar.svelte';
@@ -9,6 +10,9 @@
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
+
+	const apiUrl = import.meta.env.VITE_API_URL;
+	if (apiUrl) setBaseUrl(apiUrl);
 
 	colorSchema.init();
 	locale.init();
