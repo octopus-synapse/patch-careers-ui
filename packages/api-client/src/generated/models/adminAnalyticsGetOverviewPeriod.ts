@@ -36,8 +36,11 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export interface SocialStatsDto {
-  followers: number;
-  following: number;
-  connections: number;
-}
+export type AdminAnalyticsGetOverviewPeriod = typeof AdminAnalyticsGetOverviewPeriod[keyof typeof AdminAnalyticsGetOverviewPeriod];
+
+
+export const AdminAnalyticsGetOverviewPeriod = {
+  day: 'day',
+  week: 'week',
+  month: 'month',
+} as const;

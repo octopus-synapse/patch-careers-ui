@@ -370,6 +370,220 @@ export const createAdminOnboardingCreateStep = <TError = void,
       return createMutation(() => ({ ...getAdminOnboardingCreateStepMutationOptions(options?.()) }), queryClient);
     }
     /**
+ * @summary Get onboarding funnel statistics
+ */
+export type adminOnboardingGetStatsResponse200 = {
+  data: void
+  status: 200
+}
+
+export type adminOnboardingGetStatsResponse401 = {
+  data: void
+  status: 401
+}
+
+export type adminOnboardingGetStatsResponse403 = {
+  data: void
+  status: 403
+}
+
+export type adminOnboardingGetStatsResponseSuccess = (adminOnboardingGetStatsResponse200) & {
+  headers: Headers;
+};
+export type adminOnboardingGetStatsResponseError = (adminOnboardingGetStatsResponse401 | adminOnboardingGetStatsResponse403) & {
+  headers: Headers;
+};
+
+export type adminOnboardingGetStatsResponse = (adminOnboardingGetStatsResponseSuccess | adminOnboardingGetStatsResponseError)
+
+export const getAdminOnboardingGetStatsUrl = () => {
+
+
+
+
+  return `/api/v1/admin/onboarding/stats`
+}
+
+export const adminOnboardingGetStats = async ( options?: RequestInit): Promise<adminOnboardingGetStatsResponse> => {
+
+  return customFetch<adminOnboardingGetStatsResponse>(getAdminOnboardingGetStatsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAdminOnboardingGetStatsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/admin/onboarding/stats`
+    ] as const;
+    }
+
+export const getAdminOnboardingGetStatsQueryKey = () => {
+    return [
+    `/api/v1/admin/onboarding/stats`
+    ] as const;
+    }
+
+
+export const getAdminOnboardingGetStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingGetStats>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingGetStatsInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingGetStats>>> = ({ signal }) => adminOnboardingGetStats({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AdminOnboardingGetStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingGetStats>>>
+export type AdminOnboardingGetStatsInfiniteQueryError = void
+
+
+/**
+ * @summary Get onboarding funnel statistics
+ */
+
+export function createAdminOnboardingGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingGetStats>>>, TError = void>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getAdminOnboardingGetStatsInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get onboarding funnel statistics
+ */
+export const prefetchAdminOnboardingGetStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getAdminOnboardingGetStatsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getAdminOnboardingGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingGetStatsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingGetStats>>> = ({ signal }) => adminOnboardingGetStats({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AdminOnboardingGetStatsQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingGetStats>>>
+export type AdminOnboardingGetStatsQueryError = void
+
+
+/**
+ * @summary Get onboarding funnel statistics
+ */
+
+export function createAdminOnboardingGetStats<TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getAdminOnboardingGetStatsQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get onboarding funnel statistics
+ */
+export const prefetchAdminOnboardingGetStatsQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getAdminOnboardingGetStatsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getAdminOnboardingGetStatsSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>( options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAdminOnboardingGetStatsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminOnboardingGetStats>>> = ({ signal }) => adminOnboardingGetStats({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AdminOnboardingGetStatsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingGetStats>>>
+export type AdminOnboardingGetStatsSuspenseQueryError = void
+
+
+/**
+ * @summary Get onboarding funnel statistics
+ */
+
+export function createAdminOnboardingGetStatsSuspense<TData = Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError = void>(
+  options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof adminOnboardingGetStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getAdminOnboardingGetStatsSuspenseQueryOptions(options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+
+
+
+/**
  * @summary Get onboarding step by key
  */
 export type adminOnboardingGetStepResponse200 = {

@@ -2,8 +2,17 @@
 
 export * from "./account-lifecycle/account-lifecycle";
 export * from "./accounts/accounts";
+export * from "./admin-analytics/admin-analytics";
+export * from "./admin-chat/admin-chat";
+export * from "./admin-collaborations/admin-collaborations";
+export * from "./admin-dashboard/admin-dashboard";
 export * from "./admin-onboarding/admin-onboarding";
+export * from "./admin-programming-languages/admin-programming-languages";
 export * from "./admin-section-types/admin-section-types";
+export * from "./admin-spoken-languages/admin-spoken-languages";
+export * from "./admin-tech-areas/admin-tech-areas";
+export * from "./admin-tech-niches/admin-tech-niches";
+export * from "./admin-tech-skills/admin-tech-skills";
 export * from "./app/app";
 export * from "./ats-validation/ats-validation";
 export * from "./auth/auth";

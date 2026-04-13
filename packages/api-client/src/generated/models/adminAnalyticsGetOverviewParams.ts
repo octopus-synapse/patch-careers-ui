@@ -35,9 +35,8 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { AdminAnalyticsGetOverviewPeriod } from './adminAnalyticsGetOverviewPeriod';
 
-export interface SocialStatsDto {
-  followers: number;
-  following: number;
-  connections: number;
-}
+export type AdminAnalyticsGetOverviewParams = {
+period?: AdminAnalyticsGetOverviewPeriod;
+};

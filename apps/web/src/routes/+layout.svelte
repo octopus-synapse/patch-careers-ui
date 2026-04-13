@@ -4,6 +4,7 @@
 	import { setBaseUrl } from 'api-client/client';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
+	import { page } from '$app/stores';
 	import Navbar from '$lib/components/navbar.svelte';
 	import ChatWidget from '$lib/components/chat/chat-widget.svelte';
 	import OnboardingGuard from '$lib/components/onboarding-guard.svelte';
@@ -30,13 +31,21 @@
 		light: 'bg-gray-50 text-gray-800',
 		dark: 'bg-neutral-900 text-neutral-200'
 	};
+
+	const isLanding = $derived($page.url.pathname === '/');
 </script>
 
-<div class="min-h-screen transition-colors duration-200 {bg[colorSchema.mode]}">
+{#if isLanding}
 	<QueryClientProvider client={queryClient}>
-		<OnboardingGuard />
-		<Navbar />
 		{@render children()}
-		<ChatWidget />
 	</QueryClientProvider>
-</div>
+{:else}
+	<div class="min-h-screen transition-colors duration-200 {bg[colorSchema.mode]}">
+		<QueryClientProvider client={queryClient}>
+			<OnboardingGuard />
+			<Navbar />
+			{@render children()}
+			<ChatWidget />
+		</QueryClientProvider>
+	</div>
+{/if}

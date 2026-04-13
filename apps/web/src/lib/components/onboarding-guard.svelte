@@ -15,6 +15,7 @@
 	const currentPath = $derived($page.url.pathname);
 	const isOnboarding = $derived(currentPath.startsWith('/onboarding'));
 	const isAuthPage = $derived(currentPath.startsWith('/login') || currentPath.startsWith('/signup'));
+	const isAdminPage = $derived(currentPath.startsWith('/admin'));
 
 	$effect(() => {
 		if (!browser || session.isLoading) return;
@@ -28,7 +29,7 @@
 		if (!authenticated) return;
 
 		// Logged in but needs onboarding → force /onboarding
-		if (needsOnboarding && !isOnboarding && !isAuthPage) {
+		if (needsOnboarding && !isOnboarding && !isAuthPage && !isAdminPage) {
 			goto('/onboarding');
 			return;
 		}

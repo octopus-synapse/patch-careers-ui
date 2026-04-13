@@ -36,8 +36,10 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export interface SocialStatsDto {
-  followers: number;
-  following: number;
-  connections: number;
-}
+export type AdminTechNichesFindAllParams = {
+page?: number;
+pageSize?: number;
+search?: string;
+areaId?: string;
+isActive?: boolean;
+};

@@ -2339,3 +2339,89 @@ export const createUsersResetPassword = <TError = void,
       > => {
       return createMutation(() => ({ ...getUsersResetPasswordMutationOptions(options?.()) }), queryClient);
     }
+    /**
+ * @summary Assign roles to a user
+ */
+export type usersAssignRolesResponse401 = {
+  data: void
+  status: 401
+}
+
+export type usersAssignRolesResponse403 = {
+  data: void
+  status: 403
+}
+
+;
+export type usersAssignRolesResponseError = (usersAssignRolesResponse401 | usersAssignRolesResponse403) & {
+  headers: Headers;
+};
+
+export type usersAssignRolesResponse = (usersAssignRolesResponseError)
+
+export const getUsersAssignRolesUrl = (id: string,) => {
+
+
+
+
+  return `/api/v1/users/manage/${id}/roles`
+}
+
+export const usersAssignRoles = async (id: string, options?: RequestInit): Promise<usersAssignRolesResponse> => {
+
+  return customFetch<usersAssignRolesResponse>(getUsersAssignRolesUrl(id),
+  {
+    ...options,
+    method: 'PATCH'
+
+
+  }
+);}
+
+
+
+
+export const getUsersAssignRolesMutationOptions = <TError = void,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersAssignRoles>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof usersAssignRoles>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['usersAssignRoles'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersAssignRoles>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  usersAssignRoles(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UsersAssignRolesMutationResult = NonNullable<Awaited<ReturnType<typeof usersAssignRoles>>>
+
+    export type UsersAssignRolesMutationError = void
+
+    /**
+ * @summary Assign roles to a user
+ */
+export const createUsersAssignRoles = <TError = void,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersAssignRoles>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof usersAssignRoles>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getUsersAssignRolesMutationOptions(options?.()) }), queryClient);
+    }

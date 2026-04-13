@@ -3,7 +3,7 @@
 	import type { ColorSchema } from 'ui';
 	import type { Locale } from 'i18n';
 	import type { ComponentType } from 'svelte';
-	import { MessageCircle } from 'lucide-svelte';
+	import { MessageCircle, Shield } from 'lucide-svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 
 	type User = {
@@ -22,6 +22,7 @@
 		authenticated: boolean;
 		user: User | undefined;
 		navLinks: NavLink[];
+		isAdmin: boolean;
 		styles: Record<string, Record<string, string>>;
 		t: (key: string) => string;
 		locales: string[];
@@ -32,7 +33,7 @@
 		onlogout: () => void;
 	};
 
-	let { cs, authenticated, user, navLinks, styles: s, t, locales, currentLocale, onclose, onthemetoggle, onlocalechange, onlogout }: Props = $props();
+	let { cs, authenticated, user, navLinks, isAdmin, styles: s, t, locales, currentLocale, onclose, onthemetoggle, onlocalechange, onlogout }: Props = $props();
 
 	const themeOptions = [{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }];
 	const localeOptions = $derived(locales.map(l => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })));
@@ -60,6 +61,17 @@
 					<MessageCircle size={24} class={s.muted[cs]} />
 					{t('nav.messages')}
 				</button>
+			{/if}
+
+			{#if isAdmin}
+				<a
+					href="/admin"
+					onclick={onclose}
+					class="flex items-center gap-4 text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 {s.text[cs]}"
+				>
+					<Shield size={24} class={s.muted[cs]} />
+					Admin
+				</a>
 			{/if}
 		</div>
 

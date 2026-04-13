@@ -3,7 +3,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import type { Locale } from 'i18n';
-	import { Menu, X, Sun, Moon, Search, Briefcase, Users, MessageCircle } from 'lucide-svelte';
+	import { Menu, X, Sun, Moon, Search, Briefcase, Users, MessageCircle, Shield } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import NavLogo from './nav-logo.svelte';
@@ -26,6 +26,7 @@
 	const user = $derived(session.data?.data?.data?.user);
 	const authenticated = $derived(session.data?.data?.data?.authenticated ?? false);
 	const hasCompletedOnboarding = $derived((user as Record<string, unknown> | undefined)?.hasCompletedOnboarding ?? false);
+	const isAdmin = $derived(Boolean((user as Record<string, unknown> | undefined)?.isAdmin));
 
 	const queryClient = useQueryClient();
 	const logout = createAuthLogout(() => ({
@@ -153,6 +154,16 @@
 							</button>
 						{/if}
 
+						{#if isAdmin}
+							<a
+								href="/admin"
+								class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+							>
+								<Shield size={14} />
+								Admin
+							</a>
+						{/if}
+
 						<div class="mx-2 h-4 w-px {s.border[cs]} bg-current opacity-20"></div>
 					</div>
 				{/if}
@@ -205,6 +216,7 @@
 				{authenticated}
 				{user}
 				{navLinks}
+				{isAdmin}
 				styles={s}
 				{t}
 				locales={locale.locales}
