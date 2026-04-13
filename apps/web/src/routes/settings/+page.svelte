@@ -42,34 +42,17 @@
 		getTwoFactorAuthGetStatusQueryKey
 	} from 'api-client';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
 
 	// Auth check
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authenticated = $derived(auth.data?.data?.data?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.data?.authenticated ?? false);
 
 	$effect(() => {
 		if (!auth.isLoading && !authenticated) goto('/login');
 	});
 
-	// Styles
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const border = $derived(cs === 'dark' ? 'border-neutral-800' : 'border-gray-200');
-	const inputBg = $derived(cs === 'dark' ? 'bg-neutral-800 border-neutral-700 text-neutral-200 placeholder-neutral-500' : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400');
-	const btnPrimary = $derived(cs === 'dark'
-		? 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300'
-		: 'bg-gray-800 text-white hover:bg-gray-700');
-	const btnSecondary = $derived(cs === 'dark'
-		? 'border-neutral-600 text-neutral-300 hover:bg-neutral-800'
-		: 'border-gray-300 text-gray-700 hover:bg-gray-50');
-	const sidebarLink = $derived(cs === 'dark'
-		? 'text-neutral-300 hover:bg-neutral-700/50'
-		: 'text-gray-700 hover:bg-gray-50');
-	const labelClass = $derived(`text-[10px] font-bold uppercase tracking-widest ${muted}`);
 	const successText = 'text-emerald-500';
 	const errorText = 'text-red-500';
 
@@ -77,7 +60,7 @@
 	const profileQuery = createUsersGetProfile(() => ({
 		query: { enabled: browser && authenticated }
 	}));
-	const profileData = $derived(profileQuery.data?.data?.data as Record<string, string> | undefined);
+	const profileData = $derived(profileQuery.data?.data as Record<string, string> | undefined);
 
 	let profileName = $state('');
 	let profileBio = $state('');
@@ -143,7 +126,7 @@
 		() => ({ username: debouncedUsername }),
 		() => ({ query: { enabled: browser && debouncedUsername.length >= 3 } })
 	);
-	const usernameAvailable = $derived((usernameCheck.data?.data?.data as Record<string, boolean> | undefined)?.available);
+	const usernameAvailable = $derived((usernameCheck.data?.data as Record<string, boolean> | undefined)?.available);
 
 	const updateUsername = createUsersUpdateUsername(() => ({
 		mutation: {
@@ -180,11 +163,11 @@
 				currentPassword = '';
 				newPassword = '';
 				confirmPassword = '';
-				passwordMessage = { type: 'success', text: t?.('settings.passwordChanged') ?? 'Password changed successfully' };
+				passwordMessage = { type: 'success', text: t('settings.passwordChanged') };
 				setTimeout(() => passwordMessage = null, 5000);
 			},
 			onError() {
-				passwordMessage = { type: 'error', text: t?.('settings.passwordError') ?? 'Failed to change password. Check your current password.' };
+				passwordMessage = { type: 'error', text: t('settings.passwordError') };
 				setTimeout(() => passwordMessage = null, 5000);
 			}
 		}
@@ -199,7 +182,7 @@
 	const tfaStatus = createTwoFactorAuthGetStatus(() => ({
 		query: { enabled: browser && authenticated }
 	}));
-	const tfaData = $derived(tfaStatus.data?.data?.data as Record<string, unknown> | undefined);
+	const tfaData = $derived(tfaStatus.data?.data as Record<string, unknown> | undefined);
 	const tfaEnabled = $derived(Boolean(tfaData?.enabled));
 	const backupCodesRemaining = $derived(Number(tfaData?.backupCodesRemaining ?? 0));
 
@@ -212,7 +195,7 @@
 	const setupTfa = createTwoFactorAuthSetup(() => ({
 		mutation: {
 			onSuccess(data) {
-				const result = data.data?.data as Record<string, string> | undefined;
+				const result = (data as Record<string, unknown>)?.data as Record<string, string> | undefined;
 				tfaSetupData = { qrCode: result?.qrCode, secret: result?.secret };
 				tfaStep = 'verify';
 			}
@@ -222,7 +205,7 @@
 	const verifyTfa = createTwoFactorAuthVerify(() => ({
 		mutation: {
 			onSuccess(data) {
-				const result = data.data?.data as Record<string, unknown> | undefined;
+				const result = (data as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
 				tfaBackupCodes = (result?.backupCodes as string[]) ?? null;
 				tfaStep = 'idle';
 				tfaCode = '';
@@ -243,7 +226,7 @@
 	const regenerateCodes = createTwoFactorAuthRegenerate(() => ({
 		mutation: {
 			onSuccess(data) {
-				const result = data.data?.data as Record<string, unknown> | undefined;
+				const result = (data as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
 				tfaBackupCodes = (result?.backupCodes as string[]) ?? null;
 				queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
 			}
@@ -280,7 +263,7 @@
 	const localeOptions = $derived(locale.locales.map((l: string) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })));
 
 	function handleThemeToggle(value: string) {
-		if (value !== cs) colorSchema.toggle();
+		if (value !== colorSchema.mode) colorSchema.toggle();
 	}
 
 	function handleLocaleChange(value: string) {
@@ -305,7 +288,7 @@
 		try {
 			const { userConsentExportData } = await import('api-client');
 			const response = await userConsentExportData();
-			const blob = new Blob([JSON.stringify(response.data?.data, null, 2)], { type: 'application/json' });
+			const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
@@ -334,16 +317,16 @@
 		{ id: 'danger', icon: AlertTriangle, labelKey: 'settings.dangerZone' }
 	];
 	let activeSection = $state<SectionId>('profile');
-	const activeLabel = $derived(t?.(sections.find(s => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile');
+	const activeLabel = $derived(t(sections.find(s => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile');
 </script>
 
 <svelte:head>
-	<title>{t?.('settings.pageTitle') ?? 'Settings'}</title>
+	<title>{t('settings.pageTitle')}</title>
 </svelte:head>
 
 {#if auth.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin {muted}" />
+		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 	</div>
 {:else if t && authenticated}
 	<div class="font-sans antialiased transition-colors duration-300">
@@ -351,9 +334,9 @@
 			<div class="flex gap-10">
 				<!-- Sidebar -->
 				<aside class="hidden w-56 flex-shrink-0 md:block">
-					<div class="sticky top-20 border-r pr-6 {border}">
+					<div class="sticky top-20 border-r pr-6 border-gray-200 dark:border-neutral-800">
 						<div class="mb-6">
-							<h2 class="text-[11px] font-bold uppercase tracking-widest {muted}">
+							<h2 class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('settings.pageTitle')}
 							</h2>
 						</div>
@@ -363,10 +346,10 @@
 								<button
 									onclick={() => activeSection = section.id}
 									class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors
-										{active ? (cs === 'dark' ? 'bg-neutral-700/50' : 'bg-white') : sidebarLink}"
+										{active ? 'bg-white dark:bg-neutral-700/50' : 'text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50'}"
 								>
-									<section.icon size={15} class={active ? text : muted} />
-									<span class={active ? 'font-bold ' + text : muted}>
+									<section.icon size={15} class={active ? 'text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500'} />
+									<span class={active ? 'font-bold text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500'}>
 										{t(section.labelKey)}
 									</span>
 								</button>
@@ -378,17 +361,17 @@
 				<!-- Main content -->
 				<div class="flex-1 max-w-lg pb-12">
 					<div class="mb-4">
-						<span class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+						<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 							{t('settings.pageTitle')}
 						</span>
-						<h3 class="text-sm font-bold {text}">{activeLabel}</h3>
+						<h3 class="text-sm font-bold text-gray-800 dark:text-neutral-200">{activeLabel}</h3>
 					</div>
 
 					{#if activeSection === 'profile'}
 					<!-- Profile Section -->
-					<section id="profile" class="rounded-xl border {border} {cardBg} overflow-hidden">
-						<div class="flex items-center justify-between px-5 py-4 border-b {border}">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+					<section id="profile" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
+						<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('settings.profile')}
 							</h2>
 							{#if profileSaved}
@@ -400,63 +383,63 @@
 						</div>
 						<div class="p-5 space-y-4">
 							<div>
-								<label for="profile-name" class={labelClass}>{t('settings.name')}</label>
+								<label for="profile-name" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.name')}</label>
 								<input
 									id="profile-name"
 									type="text"
 									bind:value={profileName}
-									class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+									class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 								/>
 							</div>
 							<div>
-								<label for="profile-bio" class={labelClass}>{t('settings.bio')}</label>
+								<label for="profile-bio" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.bio')}</label>
 								<textarea
 									id="profile-bio"
 									bind:value={profileBio}
 									rows="3"
 									maxlength="500"
-									class="mt-1 w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+									class="mt-1 w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 								></textarea>
-								<p class="mt-1 text-right text-[10px] {muted}">{profileBio.length}/500</p>
+								<p class="mt-1 text-right text-[10px] text-gray-500 dark:text-neutral-500">{profileBio.length}/500</p>
 							</div>
 							<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 								<div>
-									<label for="profile-location" class={labelClass}>{t('settings.location')}</label>
+									<label for="profile-location" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.location')}</label>
 									<input
 										id="profile-location"
 										type="text"
 										bind:value={profileLocation}
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 								</div>
 								<div>
-									<label for="profile-website" class={labelClass}>{t('settings.website')}</label>
+									<label for="profile-website" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.website')}</label>
 									<input
 										id="profile-website"
 										type="url"
 										bind:value={profileWebsite}
 										placeholder="https://"
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 								</div>
 								<div>
-									<label for="profile-linkedin" class={labelClass}>LinkedIn</label>
+									<label for="profile-linkedin" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">LinkedIn</label>
 									<input
 										id="profile-linkedin"
 										type="url"
 										bind:value={profileLinkedin}
 										placeholder="https://linkedin.com/in/..."
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 								</div>
 								<div>
-									<label for="profile-github" class={labelClass}>GitHub</label>
+									<label for="profile-github" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">GitHub</label>
 									<input
 										id="profile-github"
 										type="url"
 										bind:value={profileGithub}
 										placeholder="https://github.com/..."
-										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 								</div>
 							</div>
@@ -464,7 +447,7 @@
 								<button
 									onclick={handleSaveProfile}
 									disabled={updateProfile.isPending}
-									class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnPrimary}"
+									class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
 								>
 									{#if updateProfile.isPending}
 										<Loader2 size={13} class="animate-spin" />
@@ -479,9 +462,9 @@
 
 					{#if activeSection === 'username'}
 					<!-- Username Section -->
-					<section id="username" class="rounded-xl border {border} {cardBg} overflow-hidden">
-						<div class="flex items-center justify-between px-5 py-4 border-b {border}">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+					<section id="username" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
+						<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('settings.username')}
 							</h2>
 							{#if usernameSaved}
@@ -493,18 +476,18 @@
 						</div>
 						<div class="p-5 space-y-4">
 							<div>
-								<span class={labelClass}>{t('settings.currentUsername')}</span>
-								<p class="mt-1 text-sm {text}">@{currentUsername || '---'}</p>
+								<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.currentUsername')}</span>
+								<p class="mt-1 text-sm text-gray-800 dark:text-neutral-200">@{currentUsername || '---'}</p>
 							</div>
 							<div>
-								<label for="new-username" class={labelClass}>{t('settings.newUsername')}</label>
+								<label for="new-username" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.newUsername')}</label>
 								<div class="relative mt-1">
 									<input
 										id="new-username"
 										type="text"
 										bind:value={newUsername}
-										placeholder={t('settings.usernamePlaceholder') ?? 'new-username'}
-										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										placeholder={t('settings.usernamePlaceholder')}
+										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 									{#if debouncedUsername.length >= 3 && !usernameCheck.isLoading}
 										<div class="absolute right-3 top-1/2 -translate-y-1/2">
@@ -517,7 +500,7 @@
 									{/if}
 									{#if usernameCheck.isLoading}
 										<div class="absolute right-3 top-1/2 -translate-y-1/2">
-											<Loader2 size={14} class="animate-spin {muted}" />
+											<Loader2 size={14} class="animate-spin text-gray-500 dark:text-neutral-500" />
 										</div>
 									{/if}
 								</div>
@@ -527,12 +510,12 @@
 									</p>
 								{/if}
 							</div>
-							<p class="text-[10px] {muted}">{t('settings.usernameNote')}</p>
+							<p class="text-[10px] text-gray-500 dark:text-neutral-500">{t('settings.usernameNote')}</p>
 							<div class="flex justify-end pt-2">
 								<button
 									onclick={handleSaveUsername}
 									disabled={updateUsername.isPending || !usernameAvailable || !newUsername}
-									class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnPrimary}"
+									class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
 								>
 									{#if updateUsername.isPending}
 										<Loader2 size={13} class="animate-spin" />
@@ -547,44 +530,44 @@
 
 					{#if activeSection === 'password'}
 					<!-- Password Section -->
-					<section id="password" class="rounded-xl border {border} {cardBg} overflow-hidden">
-						<div class="px-5 py-4 border-b {border}">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+					<section id="password" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
+						<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('settings.password')}
 							</h2>
 						</div>
 						<div class="p-5 space-y-4">
 							<div>
-								<label for="current-password" class={labelClass}>{t('settings.currentPassword')}</label>
+								<label for="current-password" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.currentPassword')}</label>
 								<div class="relative mt-1">
 									<input
 										id="current-password"
 										type={showCurrentPassword ? 'text' : 'password'}
 										bind:value={currentPassword}
-										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 									<button
 										type="button"
 										onclick={() => showCurrentPassword = !showCurrentPassword}
-										class="absolute right-3 top-1/2 -translate-y-1/2 {muted}"
+										class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-neutral-500"
 									>
 										{#if showCurrentPassword}<EyeOff size={14} />{:else}<Eye size={14} />{/if}
 									</button>
 								</div>
 							</div>
 							<div>
-								<label for="new-password" class={labelClass}>{t('settings.newPassword')}</label>
+								<label for="new-password" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.newPassword')}</label>
 								<div class="relative mt-1">
 									<input
 										id="new-password"
 										type={showNewPassword ? 'text' : 'password'}
 										bind:value={newPassword}
-										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+										class="w-full rounded-lg border px-3 py-2 pr-10 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 									/>
 									<button
 										type="button"
 										onclick={() => showNewPassword = !showNewPassword}
-										class="absolute right-3 top-1/2 -translate-y-1/2 {muted}"
+										class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-neutral-500"
 									>
 										{#if showNewPassword}<EyeOff size={14} />{:else}<Eye size={14} />{/if}
 									</button>
@@ -594,12 +577,12 @@
 								{/if}
 							</div>
 							<div>
-								<label for="confirm-password" class={labelClass}>{t('settings.confirmPassword')}</label>
+								<label for="confirm-password" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.confirmPassword')}</label>
 								<input
 									id="confirm-password"
 									type="password"
 									bind:value={confirmPassword}
-									class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+									class="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 								/>
 								{#if confirmPassword.length > 0 && !passwordsMatch}
 									<p class="mt-1 text-xs {errorText}">{t('settings.passwordMismatch')}</p>
@@ -614,7 +597,7 @@
 								<button
 									onclick={handleChangePassword}
 									disabled={changePassword.isPending || !passwordValid}
-									class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnPrimary}"
+									class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
 								>
 									{#if changePassword.isPending}
 										<Loader2 size={13} class="animate-spin" />
@@ -629,12 +612,12 @@
 
 					{#if activeSection === 'twoFactor'}
 					<!-- Two-Factor Authentication Section -->
-					<section id="twoFactor" class="rounded-xl border {border} {cardBg} overflow-hidden">
-						<div class="flex items-center justify-between px-5 py-4 border-b {border}">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+					<section id="twoFactor" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
+						<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('settings.twoFactor')}
 							</h2>
-							<span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider {tfaEnabled ? 'bg-emerald-500/10 text-emerald-500' : 'bg-neutral-500/10 ' + muted}">
+							<span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider {tfaEnabled ? 'bg-emerald-500/10 text-emerald-500' : 'bg-neutral-500/10 text-gray-500 dark:text-neutral-500'}">
 								{tfaEnabled ? t('settings.tfaEnabled') : t('settings.tfaDisabled')}
 							</span>
 						</div>
@@ -644,12 +627,12 @@
 									<p class="text-xs font-semibold text-amber-500 mb-2">{t('settings.backupCodesWarning')}</p>
 									<div class="grid grid-cols-2 gap-1">
 										{#each tfaBackupCodes as code}
-											<code class="text-xs font-mono {text}">{code}</code>
+											<code class="text-xs font-mono text-gray-800 dark:text-neutral-200">{code}</code>
 										{/each}
 									</div>
 									<button
 										onclick={copyBackupCodes}
-										class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold {muted} hover:opacity-70"
+										class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-gray-500 dark:text-neutral-500 hover:opacity-70"
 									>
 										<Copy size={12} />
 										{t('settings.copyBackupCodes')}
@@ -659,11 +642,11 @@
 
 							{#if !tfaEnabled}
 								{#if tfaStep === 'idle'}
-									<p class="text-sm {muted}">{t('settings.tfaDescription')}</p>
+									<p class="text-sm text-gray-500 dark:text-neutral-500">{t('settings.tfaDescription')}</p>
 									<button
 										onclick={handleSetup2fa}
 										disabled={setupTfa.isPending}
-										class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnPrimary}"
+										class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
 									>
 										{#if setupTfa.isPending}
 											<Loader2 size={13} class="animate-spin" />
@@ -679,32 +662,32 @@
 										{/if}
 										{#if tfaSetupData.secret}
 											<div>
-												<p class="text-[10px] font-bold uppercase tracking-widest {muted} mb-1">{t('settings.manualEntry')}</p>
-												<code class="block rounded-lg border p-2 text-xs font-mono {inputBg}">{tfaSetupData.secret}</code>
+												<p class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">{t('settings.manualEntry')}</p>
+												<code class="block rounded-lg border p-2 text-xs font-mono bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500">{tfaSetupData.secret}</code>
 											</div>
 										{/if}
 										<div>
-											<label for="tfa-code" class={labelClass}>{t('settings.verificationCode')}</label>
+											<label for="tfa-code" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.verificationCode')}</label>
 											<input
 												id="tfa-code"
 												type="text"
 												bind:value={tfaCode}
 												maxlength="6"
 												placeholder="000000"
-												class="mt-1 w-full rounded-lg border px-3 py-2 text-sm font-mono tracking-widest outline-none transition-colors focus:ring-1 focus:ring-neutral-400 {inputBg}"
+												class="mt-1 w-full rounded-lg border px-3 py-2 text-sm font-mono tracking-widest outline-none transition-colors focus:ring-1 focus:ring-neutral-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 											/>
 										</div>
 										<div class="flex gap-2">
 											<button
 												onclick={() => { tfaStep = 'idle'; tfaSetupData = null; tfaCode = ''; }}
-												class="rounded-full border px-5 py-2 text-[11px] font-semibold transition-all {btnSecondary}"
+												class="rounded-full border px-5 py-2 text-[11px] font-semibold transition-all border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
 											>
 												{t('common.cancel')}
 											</button>
 											<button
 												onclick={handleVerify2fa}
 												disabled={verifyTfa.isPending || tfaCode.length < 6}
-												class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnPrimary}"
+												class="flex items-center gap-2 rounded-full px-5 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 bg-gray-800 text-white hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
 											>
 												{#if verifyTfa.isPending}
 													<Loader2 size={13} class="animate-spin" />
@@ -716,14 +699,14 @@
 								{/if}
 							{:else}
 								<div class="space-y-3">
-									<p class="text-sm {muted}">
+									<p class="text-sm text-gray-500 dark:text-neutral-500">
 										{t('settings.backupCodesRemaining', { count: String(backupCodesRemaining) })}
 									</p>
 									<div class="flex flex-wrap gap-2">
 										<button
 											onclick={handleRegenerateCodes}
 											disabled={regenerateCodes.isPending}
-											class="flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnSecondary}"
+											class="flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
 										>
 											{#if regenerateCodes.isPending}
 												<Loader2 size={13} class="animate-spin" />
@@ -753,7 +736,7 @@
 												</button>
 												<button
 													onclick={() => showDisableConfirm = false}
-													class="text-xs {muted} hover:opacity-70"
+													class="text-xs text-gray-500 dark:text-neutral-500 hover:opacity-70"
 												>
 													{t('common.cancel')}
 												</button>
@@ -769,26 +752,26 @@
 
 					{#if activeSection === 'preferences'}
 					<!-- Preferences Section -->
-					<section id="preferences" class="rounded-xl border {border} {cardBg} overflow-hidden">
-						<div class="px-5 py-4 border-b {border}">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+					<section id="preferences" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
+						<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('settings.preferences')}
 							</h2>
 						</div>
 						<div class="p-5 space-y-4">
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
-									{#if cs === 'dark'}<Sun size={16} class={muted} />{:else}<Moon size={16} class={muted} />{/if}
-									<span class="text-sm {text}">{t('settings.theme')}</span>
+									<Sun size={16} class="hidden dark:block text-neutral-500" /><Moon size={16} class="block dark:hidden text-gray-500" />
+									<span class="text-sm text-gray-800 dark:text-neutral-200">{t('settings.theme')}</span>
 								</div>
-								<SegmentToggle options={themeOptions} selected={cs} colorSchema={cs} onchange={handleThemeToggle} />
+								<SegmentToggle options={themeOptions} selected={colorSchema.mode} onchange={handleThemeToggle} />
 							</div>
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
-									<Globe size={16} class={muted} />
-									<span class="text-sm {text}">{t('settings.language')}</span>
+									<Globe size={16} class="text-gray-500 dark:text-neutral-500" />
+									<span class="text-sm text-gray-800 dark:text-neutral-200">{t('settings.language')}</span>
 								</div>
-								<SegmentToggle options={localeOptions} selected={locale.current} colorSchema={cs} onchange={handleLocaleChange} />
+								<SegmentToggle options={localeOptions} selected={locale.current} onchange={handleLocaleChange} />
 							</div>
 						</div>
 					</section>
@@ -797,7 +780,7 @@
 
 					{#if activeSection === 'danger'}
 					<!-- Danger Zone Section -->
-					<section id="danger" class="rounded-xl border border-red-500/30 {cardBg} overflow-hidden">
+					<section id="danger" class="rounded-xl border border-red-500/30 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="px-5 py-4 border-b border-red-500/30">
 							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-red-500">
 								{t('settings.dangerZone')}
@@ -806,13 +789,13 @@
 						<div class="p-5 space-y-4">
 							<div class="flex items-center justify-between">
 								<div>
-									<p class="text-sm font-medium {text}">{t('settings.exportData')}</p>
-									<p class="text-[11px] {muted}">{t('settings.exportDataDescription')}</p>
+									<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{t('settings.exportData')}</p>
+									<p class="text-[11px] text-gray-500 dark:text-neutral-500">{t('settings.exportDataDescription')}</p>
 								</div>
 								<button
 									onclick={handleExportData}
 									disabled={isExporting}
-									class="flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 {btnSecondary}"
+									class="flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold transition-all disabled:opacity-50 border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
 								>
 									{#if isExporting}
 										<Loader2 size={13} class="animate-spin" />
@@ -826,7 +809,7 @@
 							<div class="flex items-center justify-between">
 								<div>
 									<p class="text-sm font-medium text-red-500">{t('settings.deleteAccount')}</p>
-									<p class="text-[11px] {muted}">{t('settings.deleteAccountDescription')}</p>
+									<p class="text-[11px] text-gray-500 dark:text-neutral-500">{t('settings.deleteAccountDescription')}</p>
 								</div>
 								<button
 									onclick={() => showDeleteModal = true}
@@ -847,11 +830,11 @@
 	<!-- Delete Account Modal -->
 	{#if showDeleteModal}
 		<div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-			<div class="w-full max-w-md rounded-xl border {border} {cardBg} p-6 space-y-4">
+			<div class="w-full max-w-md rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 p-6 space-y-4">
 				<h3 class="text-lg font-semibold text-red-500">{t('settings.deleteAccount')}</h3>
-				<p class="text-sm {muted}">{t('settings.deleteAccountWarning')}</p>
+				<p class="text-sm text-gray-500 dark:text-neutral-500">{t('settings.deleteAccountWarning')}</p>
 				<div>
-					<label for="delete-confirm" class={labelClass}>
+					<label for="delete-confirm" class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 						{t('settings.typeToConfirm')}
 					</label>
 					<input
@@ -859,13 +842,13 @@
 						type="text"
 						bind:value={deleteConfirmation}
 						placeholder="DELETE MY ACCOUNT"
-						class="mt-1 w-full rounded-lg border px-3 py-2 text-sm font-mono outline-none transition-colors focus:ring-1 focus:ring-red-400 {inputBg}"
+						class="mt-1 w-full rounded-lg border px-3 py-2 text-sm font-mono outline-none transition-colors focus:ring-1 focus:ring-red-400 bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500"
 					/>
 				</div>
 				<div class="flex justify-end gap-2 pt-2">
 					<button
 						onclick={() => { showDeleteModal = false; deleteConfirmation = ''; }}
-						class="rounded-full border px-5 py-2 text-[11px] font-semibold transition-all {btnSecondary}"
+						class="rounded-full border px-5 py-2 text-[11px] font-semibold transition-all border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
 					>
 						{t('common.cancel')}
 					</button>

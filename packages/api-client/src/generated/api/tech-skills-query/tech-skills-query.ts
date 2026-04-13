@@ -52,17 +52,12 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  TechSkillsQueryGetAreas200,
-  TechSkillsQueryGetLanguages200,
-  TechSkillsQueryGetNiches200,
-  TechSkillsQueryGetNichesByArea200,
-  TechSkillsQueryGetSkills200,
-  TechSkillsQueryGetSkillsByNiche200,
-  TechSkillsQueryGetSkillsByType200,
+  ProgrammingLanguageListDataDto,
+  TechAreaListDataDto,
+  TechNicheListDataDto,
+  TechSkillListDataDto,
   TechSkillsQueryGetSkillsByTypeParams,
-  TechSkillsQuerySearchLanguages200,
   TechSkillsQuerySearchLanguagesParams,
-  TechSkillsQuerySearchSkills200,
   TechSkillsQuerySearchSkillsParams
 } from '../../models';
 
@@ -77,7 +72,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get all tech areas
  */
 export type techSkillsQueryGetAreasResponse200 = {
-  data: TechSkillsQueryGetAreas200
+  data: TechAreaListDataDto
   status: 200
 }
 
@@ -250,7 +245,7 @@ export const prefetchTechSkillsQueryGetAreasQuery = async <TData = Awaited<Retur
  * @summary Get all tech niches
  */
 export type techSkillsQueryGetNichesResponse200 = {
-  data: TechSkillsQueryGetNiches200
+  data: TechNicheListDataDto
   status: 200
 }
 
@@ -423,7 +418,7 @@ export const prefetchTechSkillsQueryGetNichesQuery = async <TData = Awaited<Retu
  * @summary Get niches by tech area type
  */
 export type techSkillsQueryGetNichesByAreaResponse200 = {
-  data: TechSkillsQueryGetNichesByArea200
+  data: TechNicheListDataDto
   status: 200
 }
 
@@ -596,7 +591,7 @@ export const prefetchTechSkillsQueryGetNichesByAreaQuery = async <TData = Awaite
  * @summary Get all programming languages
  */
 export type techSkillsQueryGetLanguagesResponse200 = {
-  data: TechSkillsQueryGetLanguages200
+  data: ProgrammingLanguageListDataDto
   status: 200
 }
 
@@ -769,7 +764,7 @@ export const prefetchTechSkillsQueryGetLanguagesQuery = async <TData = Awaited<R
  * @summary Search programming languages
  */
 export type techSkillsQuerySearchLanguagesResponse200 = {
-  data: TechSkillsQuerySearchLanguages200
+  data: ProgrammingLanguageListDataDto
   status: 200
 }
 
@@ -949,7 +944,7 @@ export const prefetchTechSkillsQuerySearchLanguagesQuery = async <TData = Awaite
  * @summary Get all tech skills
  */
 export type techSkillsQueryGetSkillsResponse200 = {
-  data: TechSkillsQueryGetSkills200
+  data: TechSkillListDataDto
   status: 200
 }
 
@@ -1122,7 +1117,7 @@ export const prefetchTechSkillsQueryGetSkillsQuery = async <TData = Awaited<Retu
  * @summary Search tech skills
  */
 export type techSkillsQuerySearchSkillsResponse200 = {
-  data: TechSkillsQuerySearchSkills200
+  data: TechSkillListDataDto
   status: 200
 }
 
@@ -1302,7 +1297,7 @@ export const prefetchTechSkillsQuerySearchSkillsQuery = async <TData = Awaited<R
  * @summary Get skills by niche
  */
 export type techSkillsQueryGetSkillsByNicheResponse200 = {
-  data: TechSkillsQueryGetSkillsByNiche200
+  data: TechSkillListDataDto
   status: 200
 }
 
@@ -1475,7 +1470,7 @@ export const prefetchTechSkillsQueryGetSkillsByNicheQuery = async <TData = Await
  * @summary Get skills by type
  */
 export type techSkillsQueryGetSkillsByTypeResponse200 = {
-  data: TechSkillsQueryGetSkillsByType200
+  data: TechSkillListDataDto
   status: 200
 }
 

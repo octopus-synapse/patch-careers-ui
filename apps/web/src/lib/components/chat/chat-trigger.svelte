@@ -1,21 +1,17 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import { MessageCircle } from 'lucide-svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 
 	type Props = {
 		unreadCount?: number;
-		colorSchema?: ColorSchema;
 	};
 
-	let { unreadCount = 0, colorSchema = 'light' }: Props = $props();
-
-	const text = $derived(colorSchema === 'dark' ? 'text-neutral-400 hover:text-neutral-200' : 'text-gray-500 hover:text-gray-800');
+	let { unreadCount = 0 }: Props = $props();
 </script>
 
 <button
 	onclick={() => chatState.toggle()}
-	class="relative p-1.5 transition-colors {text}"
+	class="relative p-1.5 transition-colors text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200"
 	aria-label="Messages"
 >
 	<MessageCircle size={20} />

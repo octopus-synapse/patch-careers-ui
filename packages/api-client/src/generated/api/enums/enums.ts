@@ -52,9 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  EnumsGetExportFormats200,
-  EnumsGetSectionTypes200,
-  EnumsGetUserRoles200
+  ExportFormatsDataDto,
+  SectionTypesDataDto,
+  UserRolesDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -69,7 +69,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get available export formats
  */
 export type enumsGetExportFormatsResponse200 = {
-  data: EnumsGetExportFormats200
+  data: ExportFormatsDataDto
   status: 200
 }
 
@@ -231,7 +231,7 @@ export const prefetchEnumsGetExportFormatsQuery = async <TData = Awaited<ReturnT
  * @summary Get available user roles
  */
 export type enumsGetUserRolesResponse200 = {
-  data: EnumsGetUserRoles200
+  data: UserRolesDataDto
   status: 200
 }
 
@@ -393,7 +393,7 @@ export const prefetchEnumsGetUserRolesQuery = async <TData = Awaited<ReturnType<
  * @summary Get available section types
  */
 export type enumsGetSectionTypesResponse200 = {
-  data: EnumsGetSectionTypes200
+  data: SectionTypesDataDto
   status: 200
 }
 

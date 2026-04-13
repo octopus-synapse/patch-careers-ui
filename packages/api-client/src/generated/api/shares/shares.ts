@@ -56,9 +56,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ResumesCreateShare201,
-  ResumesDeleteShare200,
-  ResumesListResumeShares200
+  ShareCreateDataDto,
+  ShareDeleteDataDto,
+  ShareListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -72,7 +72,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Create share link for a resume
  */
 export type resumesCreateShareResponse201 = {
-  data: ResumesCreateShare201
+  data: ShareCreateDataDto
   status: 201
 }
 
@@ -165,7 +165,7 @@ export const createResumesCreateShare = <TError = void,
  * @summary List share links for a resume
  */
 export type resumesListResumeSharesResponse200 = {
-  data: ResumesListResumeShares200
+  data: ShareListDataDto
   status: 200
 }
 
@@ -338,7 +338,7 @@ export const prefetchResumesListResumeSharesQuery = async <TData = Awaited<Retur
  * @summary Delete a share link
  */
 export type resumesDeleteShareResponse200 = {
-  data: ResumesDeleteShare200
+  data: ShareDeleteDataDto
   status: 200
 }
 

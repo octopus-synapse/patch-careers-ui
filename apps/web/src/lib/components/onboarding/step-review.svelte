@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import { Check, Minus } from 'lucide-svelte';
 
 	type StepDef = {
@@ -13,21 +12,13 @@
 		session: Record<string, unknown>;
 		steps: StepDef[];
 		completedSteps: string[];
-		colorSchema?: ColorSchema;
 		ongoto: (stepId: string) => void;
 	};
 
-	let { session, steps, completedSteps, colorSchema = 'light', ongoto }: Props = $props();
-
-	const text = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(colorSchema === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-	const skippedBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/30' : 'bg-gray-50');
+	let { session, steps, completedSteps, ongoto }: Props = $props();
 
 	type ReviewEntry = { label: string; value: string; long?: boolean };
 	type ReviewSection = { label: string; stepId: string; entries: ReviewEntry[]; skipped?: boolean; themePreview?: string | null; themeName?: string };
-	const hoverStyle = $derived(colorSchema === 'dark' ? 'hover:border-neutral-500' : 'hover:border-gray-400');
 
 	const sections = $derived.by(() => {
 		const result: ReviewSection[] = [];
@@ -78,7 +69,7 @@
 
 				const entries = sec.items.map((item) => {
 					const vals = Object.values(item.content ?? {}).filter(Boolean);
-					return { label: '', value: vals.slice(0, 3).join(' · ') || '—' };
+					return { label: '', value: vals.slice(0, 3).join(' · ') || '---' };
 				});
 				result.push({ label, stepId, entries });
 			}
@@ -105,32 +96,32 @@
 	{#each sections as section}
 		<button
 			onclick={() => ongoto(section.stepId)}
-			class="w-full cursor-pointer rounded-lg border p-5 text-left transition-colors {section.skipped ? skippedBg : cardBg} {cardBorder} {hoverStyle}"
+			class="w-full cursor-pointer rounded-lg border p-5 text-left transition-colors {section.skipped ? 'bg-gray-50 dark:bg-neutral-800/30' : 'bg-white dark:bg-neutral-800/50'} border-gray-200 dark:border-neutral-700/50 hover:border-gray-400 dark:hover:border-neutral-500"
 		>
 			<div class="mb-3 flex items-center gap-2">
 				{#if section.skipped}
-					<Minus size={12} class={muted} />
+					<Minus size={12} class="text-gray-500 dark:text-neutral-500" />
 				{:else}
 					<Check size={12} class="text-emerald-500" />
 				{/if}
-				<h3 class="text-[10px] font-bold uppercase tracking-widest {muted}">
+				<h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 					{section.label}
 				</h3>
 			</div>
 
 			{#if section.skipped}
-				<p class="text-xs italic {muted}">Skipped</p>
+				<p class="text-xs italic text-gray-500 dark:text-neutral-500">Skipped</p>
 			{:else if section.themePreview || section.themeName}
 				<div class="flex items-start gap-4">
 					{#if section.themePreview}
 						<img
 							src={section.themePreview}
 							alt={section.themeName}
-							class="w-20 rounded border {cardBorder}"
+							class="w-20 rounded border border-gray-200 dark:border-neutral-700/50"
 							loading="lazy"
 						/>
 					{/if}
-					<span class="text-xs font-medium {text}">{section.themeName}</span>
+					<span class="text-xs font-medium text-gray-800 dark:text-neutral-200">{section.themeName}</span>
 				</div>
 			{:else}
 				<dl class="space-y-2">
@@ -138,16 +129,16 @@
 						{#if entry.long}
 							<div>
 								{#if entry.label}
-									<dt class="mb-0.5 text-[10px] font-semibold uppercase tracking-widest {muted}">{entry.label}</dt>
+									<dt class="mb-0.5 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{entry.label}</dt>
 								{/if}
-								<dd class="text-xs leading-relaxed break-words {text}">{entry.value}</dd>
+								<dd class="text-xs leading-relaxed break-words text-gray-800 dark:text-neutral-200">{entry.value}</dd>
 							</div>
 						{:else}
 							<div class="flex items-baseline justify-between gap-4">
 								{#if entry.label}
-									<dt class="flex-shrink-0 text-[10px] font-semibold uppercase tracking-widest {muted}">{entry.label}</dt>
+									<dt class="flex-shrink-0 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{entry.label}</dt>
 								{/if}
-								<dd class="text-right text-xs {text}">{entry.value}</dd>
+								<dd class="text-right text-xs text-gray-800 dark:text-neutral-200">{entry.value}</dd>
 							</div>
 						{/if}
 					{/each}

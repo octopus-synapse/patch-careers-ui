@@ -52,7 +52,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  PlatformGetStatistics200
+  PlatformStatsResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -66,7 +66,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get platform statistics
  */
 export type platformGetStatisticsResponse200 = {
-  data: PlatformGetStatistics200
+  data: PlatformStatsResponseDto
   status: 200
 }
 

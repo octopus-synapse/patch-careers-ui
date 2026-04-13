@@ -27,11 +27,6 @@
 		}
 	});
 
-	const bg = {
-		light: 'bg-gray-50 text-gray-800',
-		dark: 'bg-neutral-900 text-neutral-200'
-	};
-
 	const isLanding = $derived($page.url.pathname === '/');
 </script>
 
@@ -41,7 +36,7 @@
 		{@render children()}
 	</QueryClientProvider>
 {:else}
-	<div class="min-h-screen transition-colors duration-200 {bg[colorSchema.mode]}">
+	<div class="min-h-screen transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
 		<QueryClientProvider client={queryClient}>
 			<OnboardingGuard />
 			<Navbar />

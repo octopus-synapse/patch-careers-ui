@@ -57,23 +57,20 @@ import type {
 
 import type {
   CreateResumeRequestDto,
-  ResumesCreateItem201,
-  ResumesCreateResumeForUser201,
-  ResumesDeleteItem200,
-  ResumesDeleteResume200,
-  ResumesDeleteResumeForUser200,
-  ResumesGetAllUserResumes200,
+  DeleteResponseDto,
+  PaginatedResumesDataDto,
+  ResumeDetailsDataDto,
+  ResumeFullResponseDto,
+  ResumeListDataDto,
+  ResumeOperationMessageDataDto,
+  ResumeResponseDto,
+  ResumeSectionDeleteDataDto,
+  ResumeSectionItemDataDto,
+  ResumeSectionTypesDataDto,
+  ResumeSectionsDataDto,
+  ResumeSlotsResponseDto,
   ResumesGetAllUserResumesParams,
-  ResumesGetRemainingSlots200,
-  ResumesGetResumeByIdForUser200,
-  ResumesGetResumeByIdWithAllSections200,
-  ResumesGetResumeDetails200,
-  ResumesListResumeSections200,
-  ResumesListResumesForUser200,
-  ResumesListTypes200,
   ResumesListTypesParams,
-  ResumesUpdateItem200,
-  ResumesUpdateResumeForUser200,
   SectionItemPayloadDto,
   UpdateResumeRequestDto
 } from '../../models';
@@ -89,7 +86,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get all resumes for current user
  */
 export type resumesGetAllUserResumesResponse200 = {
-  data: ResumesGetAllUserResumes200
+  data: PaginatedResumesDataDto
   status: 200
 }
 
@@ -269,7 +266,7 @@ export const prefetchResumesGetAllUserResumesQuery = async <TData = Awaited<Retu
  * @summary Create a new resume
  */
 export type resumesCreateResumeForUserResponse201 = {
-  data: ResumesCreateResumeForUser201
+  data: ResumeResponseDto
   status: 201
 }
 
@@ -363,7 +360,7 @@ export const createResumesCreateResumeForUser = <TError = void,
  * @summary Get remaining resume slots for current user
  */
 export type resumesGetRemainingSlotsResponse200 = {
-  data: ResumesGetRemainingSlots200
+  data: ResumeSlotsResponseDto
   status: 200
 }
 
@@ -536,7 +533,7 @@ export const prefetchResumesGetRemainingSlotsQuery = async <TData = Awaited<Retu
  * @summary Get a resume with all sections
  */
 export type resumesGetResumeByIdWithAllSectionsResponse200 = {
-  data: ResumesGetResumeByIdWithAllSections200
+  data: ResumeFullResponseDto
   status: 200
 }
 
@@ -709,7 +706,7 @@ export const prefetchResumesGetResumeByIdWithAllSectionsQuery = async <TData = A
  * @summary Get a specific resume
  */
 export type resumesGetResumeByIdForUserResponse200 = {
-  data: ResumesGetResumeByIdForUser200
+  data: ResumeFullResponseDto
   status: 200
 }
 
@@ -882,7 +879,7 @@ export const prefetchResumesGetResumeByIdForUserQuery = async <TData = Awaited<R
  * @summary Update a resume
  */
 export type resumesUpdateResumeForUserResponse200 = {
-  data: ResumesUpdateResumeForUser200
+  data: ResumeResponseDto
   status: 200
 }
 
@@ -977,7 +974,7 @@ export const createResumesUpdateResumeForUser = <TError = void,
  * @summary Delete a resume
  */
 export type resumesDeleteResumeForUserResponse200 = {
-  data: ResumesDeleteResumeForUser200
+  data: DeleteResponseDto
   status: 200
 }
 
@@ -1070,7 +1067,7 @@ export const createResumesDeleteResumeForUser = <TError = void,
  * @summary List all resumes for a specific user
  */
 export type resumesListResumesForUserResponse200 = {
-  data: ResumesListResumesForUser200
+  data: ResumeListDataDto
   status: 200
 }
 
@@ -1243,7 +1240,7 @@ export const prefetchResumesListResumesForUserQuery = async <TData = Awaited<Ret
  * @summary Get full resume details
  */
 export type resumesGetResumeDetailsResponse200 = {
-  data: ResumesGetResumeDetails200
+  data: ResumeDetailsDataDto
   status: 200
 }
 
@@ -1416,7 +1413,7 @@ export const prefetchResumesGetResumeDetailsQuery = async <TData = Awaited<Retur
  * @summary Delete a resume
  */
 export type resumesDeleteResumeResponse200 = {
-  data: ResumesDeleteResume200
+  data: ResumeOperationMessageDataDto
   status: 200
 }
 
@@ -1509,7 +1506,7 @@ export const createResumesDeleteResume = <TError = void,
  * @summary List active dynamic section types with resolved translations
  */
 export type resumesListTypesResponse200 = {
-  data: ResumesListTypes200
+  data: ResumeSectionTypesDataDto
   status: 200
 }
 
@@ -1701,7 +1698,7 @@ export const prefetchResumesListTypesQuery = async <TData = Awaited<ReturnType<t
  * @summary List sections and items for a resume
  */
 export type resumesListResumeSectionsResponse200 = {
-  data: ResumesListResumeSections200
+  data: ResumeSectionsDataDto
   status: 200
 }
 
@@ -1862,7 +1859,7 @@ export const prefetchResumesListResumeSectionsQuery = async <TData = Awaited<Ret
  * @summary Create section item in a dynamic section type
  */
 export type resumesCreateItemResponse201 = {
-  data: ResumesCreateItem201
+  data: ResumeSectionItemDataDto
   status: 201
 }
 
@@ -1947,7 +1944,7 @@ export const createResumesCreateItem = <TError = unknown,
  * @summary Update section item in a dynamic section type
  */
 export type resumesUpdateItemResponse200 = {
-  data: ResumesUpdateItem200
+  data: ResumeSectionItemDataDto
   status: 200
 }
 
@@ -2034,7 +2031,7 @@ export const createResumesUpdateItem = <TError = unknown,
  * @summary Delete section item from a dynamic section type
  */
 export type resumesDeleteItemResponse200 = {
-  data: ResumesDeleteItem200
+  data: ResumeSectionDeleteDataDto
   status: 200
 }
 

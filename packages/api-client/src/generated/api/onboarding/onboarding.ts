@@ -57,25 +57,19 @@ import type {
 
 import type {
   CompleteOnboardingRequestDto,
+  CompleteOnboardingResponseDto,
   GotoStepRequestDto,
-  OnboardingCompleteFromSession200,
-  OnboardingCompleteOnboarding200,
-  OnboardingGetProgress200,
-  OnboardingGetSession200,
   OnboardingGetSessionParams,
-  OnboardingGetStatus200,
-  OnboardingGotoStep200,
   OnboardingGotoStepParams,
-  OnboardingNextStep200,
   OnboardingNextStepBody,
   OnboardingNextStepParams,
-  OnboardingPreviousStep200,
   OnboardingPreviousStepParams,
-  OnboardingSaveProgress200,
-  OnboardingSaveStepData200,
   OnboardingSaveStepDataBody,
   OnboardingSaveStepDataParams,
-  SaveProgressRequestDto
+  OnboardingSessionDto,
+  OnboardingStatusResponseDto,
+  SaveProgressRequestDto,
+  SaveProgressResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -89,7 +83,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get onboarding session with field definitions and navigation
  */
 export type onboardingGetSessionResponse200 = {
-  data: OnboardingGetSession200
+  data: OnboardingSessionDto
   status: 200
 }
 
@@ -257,7 +251,7 @@ export const prefetchOnboardingGetSessionQuery = async <TData = Awaited<ReturnTy
  * @summary Save current step data and advance to next step
  */
 export type onboardingNextStepResponse200 = {
-  data: OnboardingNextStep200
+  data: OnboardingSessionDto
   status: 200
 }
 
@@ -347,7 +341,7 @@ export const createOnboardingNextStep = <TError = unknown,
  * @summary Go back to previous step
  */
 export type onboardingPreviousStepResponse200 = {
-  data: OnboardingPreviousStep200
+  data: OnboardingSessionDto
   status: 200
 }
 
@@ -435,7 +429,7 @@ export const createOnboardingPreviousStep = <TError = unknown,
  * @summary Jump to an accessible step
  */
 export type onboardingGotoStepResponse200 = {
-  data: OnboardingGotoStep200
+  data: OnboardingSessionDto
   status: 200
 }
 
@@ -525,7 +519,7 @@ export const createOnboardingGotoStep = <TError = unknown,
  * @summary Save current step data without advancing
  */
 export type onboardingSaveStepDataResponse200 = {
-  data: OnboardingSaveStepData200
+  data: OnboardingSessionDto
   status: 200
 }
 
@@ -615,7 +609,7 @@ export const createOnboardingSaveStepData = <TError = unknown,
  * @summary Complete onboarding — backend builds payload from saved progress
  */
 export type onboardingCompleteFromSessionResponse200 = {
-  data: OnboardingCompleteFromSession200
+  data: CompleteOnboardingResponseDto
   status: 200
 }
 
@@ -696,7 +690,7 @@ export const createOnboardingCompleteFromSession = <TError = unknown,
  * @summary [Legacy] Get onboarding progress
  */
 export type onboardingGetProgressResponse200 = {
-  data: OnboardingGetProgress200
+  data: OnboardingSessionDto
   status: 200
 }
 
@@ -857,7 +851,7 @@ export const prefetchOnboardingGetProgressQuery = async <TData = Awaited<ReturnT
  * @summary [Legacy] Save onboarding progress
  */
 export type onboardingSaveProgressResponse200 = {
-  data: OnboardingSaveProgress200
+  data: SaveProgressResponseDto
   status: 200
 }
 
@@ -939,7 +933,7 @@ export const createOnboardingSaveProgress = <TError = unknown,
  * @summary [Legacy] Get onboarding completion status
  */
 export type onboardingGetStatusResponse200 = {
-  data: OnboardingGetStatus200
+  data: OnboardingStatusResponseDto
   status: 200
 }
 
@@ -1100,7 +1094,7 @@ export const prefetchOnboardingGetStatusQuery = async <TData = Awaited<ReturnTyp
  * @summary [Legacy] Complete onboarding with explicit payload
  */
 export type onboardingCompleteOnboardingResponse200 = {
-  data: OnboardingCompleteOnboarding200
+  data: CompleteOnboardingResponseDto
   status: 200
 }
 

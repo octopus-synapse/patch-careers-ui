@@ -52,9 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AppGetHello200,
-  AppGetOpenApiSpec200,
-  AppGetVersion200
+  HelloDataDto,
+  OpenApiSpecDataDto,
+  VersionDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -68,7 +68,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Default application hello endpoint
  */
 export type appGetHelloResponse200 = {
-  data: AppGetHello200
+  data: HelloDataDto
   status: 200
 }
 
@@ -229,7 +229,7 @@ export const prefetchAppGetHelloQuery = async <TData = Awaited<ReturnType<typeof
  * @summary Get service version and deployment metadata
  */
 export type appGetVersionResponse200 = {
-  data: AppGetVersion200
+  data: VersionDataDto
   status: 200
 }
 
@@ -391,7 +391,7 @@ export const prefetchAppGetVersionQuery = async <TData = Awaited<ReturnType<type
  * @summary Get OpenAPI specification
  */
 export type appGetOpenApiSpecResponse200 = {
-  data: AppGetOpenApiSpec200
+  data: OpenApiSpecDataDto
   status: 200
 }
 

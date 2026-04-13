@@ -52,10 +52,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  TechSkillsGetSkills200,
-  TechSkillsGetSkillsByType200,
+  TechSkillListDataDto,
   TechSkillsGetSkillsByTypeParams,
-  TechSkillsSearchSkills200,
   TechSkillsSearchSkillsParams
 } from '../../models';
 
@@ -67,7 +65,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 export type techSkillsSearchSkillsResponse200 = {
-  data: TechSkillsSearchSkills200
+  data: TechSkillListDataDto
   status: 200
 }
 
@@ -235,7 +233,7 @@ export const prefetchTechSkillsSearchSkillsQuery = async <TData = Awaited<Return
  * @summary Get all tech skills
  */
 export type techSkillsGetSkillsResponse200 = {
-  data: TechSkillsGetSkills200
+  data: TechSkillListDataDto
   status: 200
 }
 
@@ -408,7 +406,7 @@ export const prefetchTechSkillsGetSkillsQuery = async <TData = Awaited<ReturnTyp
  * @summary Get skills by type
  */
 export type techSkillsGetSkillsByTypeResponse200 = {
-  data: TechSkillsGetSkillsByType200
+  data: TechSkillListDataDto
   status: 200
 }
 

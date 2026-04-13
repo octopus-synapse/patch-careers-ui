@@ -1,17 +1,11 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import { Loader2 } from 'lucide-svelte';
 
 	type Props = {
 		token?: string;
-		colorSchema?: ColorSchema;
 	};
 
-	let { token, colorSchema = 'light' }: Props = $props();
-
-	const bg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/80' : 'bg-gray-100');
-	const border = $derived(colorSchema === 'dark' ? 'border-neutral-700' : 'border-gray-200');
-	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-400');
+	let { token }: Props = $props();
 
 	let imageUrl = $state<string | null>(null);
 	let status = $state<'connecting' | 'waiting' | 'ready'>('connecting');
@@ -52,7 +46,7 @@
 </script>
 
 <div
-	class="w-48 rounded-lg border shadow-sm overflow-hidden {bg} {border}"
+	class="w-48 rounded-lg border shadow-sm overflow-hidden bg-gray-100 dark:bg-neutral-800/80 border-gray-200 dark:border-neutral-700"
 >
 	{#if status === 'ready' && imageUrl}
 		<img
@@ -64,9 +58,9 @@
 	{:else}
 		<div class="flex h-72 items-center justify-center">
 			{#if status === 'connecting'}
-				<Loader2 size={16} class="animate-spin {muted}" />
+				<Loader2 size={16} class="animate-spin text-gray-400 dark:text-neutral-500" />
 			{:else}
-				<span class="text-[10px] uppercase tracking-widest {muted}">preview</span>
+				<span class="text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-500">preview</span>
 			{/if}
 		</div>
 	{/if}

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Modal, Button } from 'ui';
-	import type { ColorSchema } from 'ui';
 
 	type Props = {
 		open: boolean;
@@ -9,7 +8,6 @@
 		confirmLabel?: string;
 		cancelLabel?: string;
 		loading?: boolean;
-		colorSchema?: ColorSchema;
 		onconfirm: () => void;
 		oncancel: () => void;
 	};
@@ -21,26 +19,22 @@
 		confirmLabel = 'Confirm',
 		cancelLabel = 'Cancel',
 		loading = false,
-		colorSchema = 'light',
 		onconfirm,
 		oncancel,
 	}: Props = $props();
-
-	const cs = $derived(colorSchema);
-	const muted = $derived(cs === 'dark' ? 'text-neutral-400' : 'text-gray-500');
 </script>
 
-<Modal {open} onClose={oncancel} colorSchema={cs}>
+<Modal {open} onClose={oncancel}>
 	{#snippet title()}{title}{/snippet}
-	<p class="mb-6 text-sm {muted}">{message}</p>
+	<p class="mb-6 text-sm text-gray-500 dark:text-neutral-400">{message}</p>
 	<div class="flex gap-3">
 		<div class="flex-1">
-			<Button variant="outline" size="md" fullWidth onclick={oncancel} colorSchema={cs}>
+			<Button variant="outline" size="md" fullWidth onclick={oncancel}>
 				{cancelLabel}
 			</Button>
 		</div>
 		<div class="flex-1">
-			<Button variant="solid" size="md" fullWidth onclick={onconfirm} disabled={loading} colorSchema={cs}>
+			<Button variant="solid" size="md" fullWidth onclick={onconfirm} disabled={loading}>
 				{loading ? '...' : confirmLabel}
 			</Button>
 		</div>

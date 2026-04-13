@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import { Shield, Check } from 'lucide-svelte';
 
 	type ThemeOption = {
@@ -15,19 +14,10 @@
 	type Props = {
 		themes: ThemeOption[];
 		selectedThemeId: string;
-		colorSchema?: ColorSchema;
 		onselect: (themeId: string) => void;
 	};
 
-	let { themes, selectedThemeId, colorSchema = 'light', onselect }: Props = $props();
-
-	const text = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(colorSchema === 'dark' ? 'border-neutral-700' : 'border-gray-200');
-	const cardSelected = $derived(colorSchema === 'dark' ? 'border-neutral-200 ring-1 ring-neutral-200' : 'border-gray-800 ring-1 ring-gray-800');
-	const badgeBg = $derived(colorSchema === 'dark' ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-50 text-emerald-700');
-	const tagBg = $derived(colorSchema === 'dark' ? 'bg-neutral-700/50' : 'bg-gray-100');
+	let { themes, selectedThemeId, onselect }: Props = $props();
 </script>
 
 <div class="flex flex-wrap justify-center gap-4">
@@ -36,10 +26,10 @@
 
 		<button
 			onclick={() => onselect(theme.id)}
-			class="w-full max-w-xs overflow-hidden rounded-lg border text-left transition-all sm:w-64 {cardBg} {selected ? cardSelected : cardBorder}"
+			class="w-full max-w-xs overflow-hidden rounded-lg border text-left transition-all sm:w-64 bg-white dark:bg-neutral-800/50 {selected ? 'border-gray-800 ring-1 ring-gray-800 dark:border-neutral-200 dark:ring-1 dark:ring-neutral-200' : 'border-gray-200 dark:border-neutral-700'}"
 		>
 			{#if theme.thumbnailUrl}
-				<div class="overflow-hidden border-b {cardBorder}">
+				<div class="overflow-hidden border-b border-gray-200 dark:border-neutral-700">
 					<img
 						src={theme.thumbnailUrl}
 						alt="Preview of {theme.name}"
@@ -51,18 +41,18 @@
 
 			<div class="p-4">
 				<div class="flex items-center gap-2">
-					<span class="text-sm font-semibold {text}">{theme.name}</span>
+					<span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{theme.name}</span>
 					{#if selected}
-						<Check size={14} class={text} />
+						<Check size={14} class="text-gray-800 dark:text-neutral-200" />
 					{/if}
 				</div>
 
 				{#if theme.description}
-					<p class="mt-1 line-clamp-2 text-[10px] {muted}">{theme.description}</p>
+					<p class="mt-1 line-clamp-2 text-[10px] text-gray-500 dark:text-neutral-500">{theme.description}</p>
 				{/if}
 
 				{#if theme.atsScore}
-					<div class="mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold {badgeBg}">
+					<div class="mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
 						<Shield size={11} />
 						ATS {theme.atsScore}/100
 					</div>
@@ -71,7 +61,7 @@
 				{#if theme.tags?.length}
 					<div class="mt-2 flex flex-wrap gap-1">
 						{#each theme.tags.slice(0, 3) as tag}
-							<span class="rounded px-1.5 py-0.5 text-[9px] {muted} {tagBg}">{tag}</span>
+							<span class="rounded px-1.5 py-0.5 text-[9px] text-gray-500 dark:text-neutral-500 bg-gray-100 dark:bg-neutral-700/50">{tag}</span>
 						{/each}
 					</div>
 				{/if}

@@ -1,5 +1,4 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
-	import type { ColorSchema } from 'ui';
 	import type { Snippet } from 'svelte';
 	import { Loader2 } from 'lucide-svelte';
 
@@ -14,7 +13,6 @@
 		data: T[];
 		loading?: boolean;
 		emptyMessage?: string;
-		colorSchema?: ColorSchema;
 		onrowclick?: (row: T) => void;
 		cell?: Snippet<[{ row: T; key: string }]>;
 	};
@@ -24,30 +22,19 @@
 		data,
 		loading = false,
 		emptyMessage = 'No data found',
-		colorSchema = 'light',
 		onrowclick,
 		cell,
 	}: Props = $props();
-
-	const cs = $derived(colorSchema);
-	const headerBg = $derived(cs === 'dark' ? 'bg-neutral-800/80' : 'bg-gray-50');
-	const headerText = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const rowBorder = $derived(cs === 'dark' ? 'border-neutral-800' : 'border-gray-100');
-	const rowHover = $derived(cs === 'dark' ? 'hover:bg-neutral-800/50' : 'hover:bg-gray-50');
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-400');
-	const tableBg = $derived(cs === 'dark' ? 'bg-neutral-800/30' : 'bg-white');
-	const tableBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
 </script>
 
-<div class="overflow-hidden rounded-xl border {tableBg} {tableBorder}">
+<div class="overflow-hidden rounded-xl border bg-white dark:bg-neutral-800/30 border-gray-200 dark:border-neutral-700/50">
 	<div class="overflow-x-auto">
 		<table class="w-full text-left text-sm">
 			<thead>
-				<tr class={headerBg}>
+				<tr class="bg-gray-50 dark:bg-neutral-800/80">
 					{#each columns as col}
 						<th
-							class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest {headerText}"
+							class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
 							style={col.width ? `width: ${col.width}` : ''}
 						>
 							{col.label}
@@ -59,23 +46,23 @@
 				{#if loading}
 					<tr>
 						<td colspan={columns.length} class="px-4 py-12 text-center">
-							<Loader2 size={20} class="mx-auto animate-spin {muted}" />
+							<Loader2 size={20} class="mx-auto animate-spin text-gray-400 dark:text-neutral-500" />
 						</td>
 					</tr>
 				{:else if data.length === 0}
 					<tr>
-						<td colspan={columns.length} class="px-4 py-12 text-center text-xs {muted}">
+						<td colspan={columns.length} class="px-4 py-12 text-center text-xs text-gray-400 dark:text-neutral-500">
 							{emptyMessage}
 						</td>
 					</tr>
 				{:else}
 					{#each data as row}
 						<tr
-							class="border-t transition-colors {rowBorder} {onrowclick ? rowHover + ' cursor-pointer' : ''}"
+							class="border-t transition-colors border-gray-100 dark:border-neutral-800 {onrowclick ? 'hover:bg-gray-50 dark:hover:bg-neutral-800/50 cursor-pointer' : ''}"
 							onclick={() => onrowclick?.(row)}
 						>
 							{#each columns as col}
-								<td class="px-4 py-3 text-sm {text}">
+								<td class="px-4 py-3 text-sm text-gray-800 dark:text-neutral-200">
 									{#if cell}
 										{@render cell({ row, key: col.key })}
 									{:else}

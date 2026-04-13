@@ -46,7 +46,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  TechSkillsSyncTriggerSync200
+  TechSkillsSyncDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -60,7 +60,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Trigger tech skills synchronization
  */
 export type techSkillsSyncTriggerSyncResponse200 = {
-  data: TechSkillsSyncTriggerSync200
+  data: TechSkillsSyncDataDto
   status: 200
 }
 

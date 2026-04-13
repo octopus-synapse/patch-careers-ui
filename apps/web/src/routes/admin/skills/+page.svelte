@@ -27,7 +27,6 @@
 		getAdminProgrammingLanguagesFindAllQueryKey,
 	} from 'api-client';
 	import { browser } from '$app/environment';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Button, SegmentToggle, Input } from 'ui';
@@ -36,15 +35,7 @@
 	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-	const itemHover = $derived(cs === 'dark' ? 'hover:bg-neutral-700/50' : 'hover:bg-gray-50');
-	const activeBg = $derived(cs === 'dark' ? 'bg-neutral-700' : 'bg-gray-100');
-	const labelClass = $derived(`text-[10px] font-bold uppercase tracking-widest ${muted}`);
 	const queryClient = useQueryClient();
 
 	let activeTab = $state<'hierarchy' | 'languages'>('hierarchy');
@@ -52,8 +43,8 @@
 	let selectedNicheId = $state<string | null>(null);
 
 	const tabOptions = [
-		{ value: 'hierarchy', label: t?.('admin.skills.hierarchy') ?? 'Hierarchy' },
-		{ value: 'languages', label: t?.('admin.skills.languages') ?? 'Languages' },
+		{ value: 'hierarchy', label: t('admin.skills.hierarchy') },
+		{ value: 'languages', label: t('admin.skills.languages') },
 	];
 
 	// --- Queries ---
@@ -174,29 +165,29 @@
 </script>
 
 <svelte:head>
-	<title>{t?.('admin.skills.title') ?? 'Skills'}</title>
+	<title>{t('admin.skills.title')}</title>
 </svelte:head>
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight {text}">{t?.('admin.skills.title') ?? 'Skills Catalog'}</h1>
+		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t('admin.skills.title')}</h1>
 		<div class="flex items-center gap-2">
-			<ExportButton data={activeTab === 'hierarchy' ? [...areas, ...niches, ...skills] : [...spokenLangs, ...progLangs]} filename="skills.csv" colorSchema={cs} />
-			<SegmentToggle options={tabOptions} selected={activeTab} colorSchema={cs} onchange={(v) => { activeTab = v as 'hierarchy' | 'languages'; selectedAreaId = null; selectedNicheId = null; }} />
+			<ExportButton data={activeTab === 'hierarchy' ? [...areas, ...niches, ...skills] : [...spokenLangs, ...progLangs]} filename="skills.csv" />
+			<SegmentToggle options={tabOptions} selected={activeTab} onchange={(v) => { activeTab = v as 'hierarchy' | 'languages'; selectedAreaId = null; selectedNicheId = null; }} />
 		</div>
 	</div>
 
 	{#if activeTab === 'hierarchy'}
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 			<!-- Areas -->
-			<div class="rounded-xl border {cardBg} {cardBorder}">
-				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
-					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.areas') ?? 'Tech Areas'}</span>
-					<Button variant="icon" size="xs" onclick={() => openCreate('area')} colorSchema={cs}><Plus size={14} /></Button>
+			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
+					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.areas')}</span>
+					<Button variant="icon" size="xs" onclick={() => openCreate('area')}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
 					{#if areasQuery.isLoading}
-						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin {muted}" /></div>
+						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
 						{#each areas as area}
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -204,37 +195,37 @@
 								onclick={() => { selectedAreaId = area.id as string; selectedNicheId = null; }}
 								onkeydown={(e) => { if (e.key === 'Enter') { selectedAreaId = area.id as string; selectedNicheId = null; } }}
 								role="button" tabindex="0"
-								class="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left text-sm transition-colors {selectedAreaId === area.id ? activeBg : itemHover} {text}"
+								class="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left text-sm transition-colors text-gray-800 dark:text-neutral-200 {selectedAreaId === area.id ? 'bg-gray-100 dark:bg-neutral-700' : 'hover:bg-gray-50 dark:hover:bg-neutral-700/50'}"
 							>
 								<div>
 									<span>{area.nameEn}</span>
-									<span class="ml-2 text-xs {muted}">{area.namePtBr}</span>
+									<span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{area.namePtBr}</span>
 								</div>
 								<div class="flex items-center gap-1">
-									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleToggleActive('area', area); }} colorSchema={cs}>
-										{#if area.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class={muted} />{/if}
+									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleToggleActive('area', area); }}>
+										{#if area.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class="text-gray-500 dark:text-neutral-500" />{/if}
 									</Button>
-									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('area', area); }} colorSchema={cs}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id as string }; }} colorSchema={cs}><Trash2 size={12} /></Button>
+									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('area', area); }}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id as string }; }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
-						{#if areas.length === 0}<p class="px-4 py-8 text-center text-xs {muted}">{t?.('admin.skills.noItems') ?? 'No items'}</p>{/if}
+						{#if areas.length === 0}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
 					{/if}
 				</div>
 			</div>
 
 			<!-- Niches -->
-			<div class="rounded-xl border {cardBg} {cardBorder}">
-				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
-					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.niches') ?? 'Tech Niches'}</span>
-					{#if selectedAreaId}<Button variant="icon" size="xs" onclick={() => openCreate('niche')} colorSchema={cs}><Plus size={14} /></Button>{/if}
+			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
+					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.niches')}</span>
+					{#if selectedAreaId}<Button variant="icon" size="xs" onclick={() => openCreate('niche')}><Plus size={14} /></Button>{/if}
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
 					{#if !selectedAreaId}
-						<p class="px-4 py-8 text-center text-xs {muted}">Select an area</p>
+						<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">Select an area</p>
 					{:else if nichesQuery.isLoading}
-						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin {muted}" /></div>
+						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
 						{#each niches as niche}
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -242,45 +233,45 @@
 								onclick={() => selectedNicheId = niche.id as string}
 								onkeydown={(e) => { if (e.key === 'Enter') selectedNicheId = niche.id as string; }}
 								role="button" tabindex="0"
-								class="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left text-sm transition-colors {selectedNicheId === niche.id ? activeBg : itemHover} {text}"
+								class="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left text-sm transition-colors text-gray-800 dark:text-neutral-200 {selectedNicheId === niche.id ? 'bg-gray-100 dark:bg-neutral-700' : 'hover:bg-gray-50 dark:hover:bg-neutral-700/50'}"
 							>
-								<div><span>{niche.nameEn}</span><span class="ml-2 text-xs {muted}">{niche.namePtBr}</span></div>
+								<div><span>{niche.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{niche.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('niche', niche); }} colorSchema={cs}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id as string }; }} colorSchema={cs}><Trash2 size={12} /></Button>
+									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('niche', niche); }}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id as string }; }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
-						{#if niches.length === 0}<p class="px-4 py-8 text-center text-xs {muted}">{t?.('admin.skills.noItems') ?? 'No items'}</p>{/if}
+						{#if niches.length === 0}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
 					{/if}
 				</div>
 			</div>
 
 			<!-- Skills -->
-			<div class="rounded-xl border {cardBg} {cardBorder}">
-				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
-					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.skillsList') ?? 'Skills'}</span>
-					{#if selectedNicheId}<Button variant="icon" size="xs" onclick={() => openCreate('skill')} colorSchema={cs}><Plus size={14} /></Button>{/if}
+			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
+					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.skillsList')}</span>
+					{#if selectedNicheId}<Button variant="icon" size="xs" onclick={() => openCreate('skill')}><Plus size={14} /></Button>{/if}
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
 					{#if !selectedNicheId}
-						<p class="px-4 py-8 text-center text-xs {muted}">Select a niche</p>
+						<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">Select a niche</p>
 					{:else if skillsQuery.isLoading}
-						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin {muted}" /></div>
+						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
 						{#each skills as skill}
-							<div class="flex items-center justify-between px-4 py-2.5 text-sm {text}">
-								<div><span>{skill.nameEn}</span><span class="ml-2 text-xs {muted}">{skill.namePtBr}</span></div>
+							<div class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-800 dark:text-neutral-200">
+								<div><span>{skill.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{skill.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<Button variant="icon" size="xs" onclick={() => handleToggleActive('skill', skill)} colorSchema={cs}>
-										{#if skill.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class={muted} />{/if}
+									<Button variant="icon" size="xs" onclick={() => handleToggleActive('skill', skill)}>
+										{#if skill.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class="text-gray-500 dark:text-neutral-500" />{/if}
 									</Button>
-									<Button variant="icon" size="xs" onclick={() => openEdit('skill', skill)} colorSchema={cs}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id as string }} colorSchema={cs}><Trash2 size={12} /></Button>
+									<Button variant="icon" size="xs" onclick={() => openEdit('skill', skill)}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id as string }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
-						{#if skills.length === 0}<p class="px-4 py-8 text-center text-xs {muted}">{t?.('admin.skills.noItems') ?? 'No items'}</p>{/if}
+						{#if skills.length === 0}<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.skills.noItems')}</p>{/if}
 					{/if}
 				</div>
 			</div>
@@ -288,21 +279,21 @@
 	{:else}
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<!-- Spoken Languages -->
-			<div class="rounded-xl border {cardBg} {cardBorder}">
-				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
-					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.spokenLanguages') ?? 'Spoken Languages'}</span>
-					<Button variant="icon" size="xs" onclick={() => openCreate('spoken')} colorSchema={cs}><Plus size={14} /></Button>
+			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
+					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.spokenLanguages')}</span>
+					<Button variant="icon" size="xs" onclick={() => openCreate('spoken')}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[400px] overflow-y-auto">
 					{#if spokenQuery.isLoading}
-						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin {muted}" /></div>
+						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
 						{#each spokenLangs as lang}
-							<div class="flex items-center justify-between px-4 py-2.5 text-sm {text}">
-								<div><span class="font-mono text-xs {muted}">{lang.code}</span><span class="ml-2">{lang.nameEn}</span><span class="ml-1 text-xs {muted}">{lang.namePtBr}</span></div>
+							<div class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-800 dark:text-neutral-200">
+								<div><span class="font-mono text-xs text-gray-500 dark:text-neutral-500">{lang.code}</span><span class="ml-2">{lang.nameEn}</span><span class="ml-1 text-xs text-gray-500 dark:text-neutral-500">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<Button variant="icon" size="xs" onclick={() => openEdit('spoken', lang)} colorSchema={cs}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code as string }} colorSchema={cs}><Trash2 size={12} /></Button>
+									<Button variant="icon" size="xs" onclick={() => openEdit('spoken', lang)}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code as string }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -311,21 +302,21 @@
 			</div>
 
 			<!-- Programming Languages -->
-			<div class="rounded-xl border {cardBg} {cardBorder}">
-				<div class="flex items-center justify-between border-b px-4 py-3 {cardBorder}">
-					<span class="text-[10px] font-bold uppercase tracking-widest {muted}">{t?.('admin.skills.programmingLanguages') ?? 'Programming Languages'}</span>
-					<Button variant="icon" size="xs" onclick={() => openCreate('programming')} colorSchema={cs}><Plus size={14} /></Button>
+			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
+					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.programmingLanguages')}</span>
+					<Button variant="icon" size="xs" onclick={() => openCreate('programming')}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[400px] overflow-y-auto">
 					{#if progQuery.isLoading}
-						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin {muted}" /></div>
+						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
 						{#each progLangs as lang}
-							<div class="flex items-center justify-between px-4 py-2.5 text-sm {text}">
-								<div><span>{lang.nameEn}</span><span class="ml-2 text-xs {muted}">{lang.namePtBr}</span></div>
+							<div class="flex items-center justify-between px-4 py-2.5 text-sm text-gray-800 dark:text-neutral-200">
+								<div><span>{lang.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
-									<Button variant="icon" size="xs" onclick={() => openEdit('programming', lang)} colorSchema={cs}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug as string }} colorSchema={cs}><Trash2 size={12} /></Button>
+									<Button variant="icon" size="xs" onclick={() => openEdit('programming', lang)}><Pencil size={12} /></Button>
+									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug as string }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -337,31 +328,31 @@
 </div>
 
 <!-- Form Modal -->
-<FormModal open={formModal !== null} title={formTitle} loading={formLoading} colorSchema={cs} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
+<FormModal open={formModal !== null} title={formTitle} loading={formLoading} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
 	<div class="space-y-3">
 		{#if formModal?.type === 'spoken'}
-			<div><label class={labelClass}>Code *</label><Input bind:value={formCode} placeholder="en" required colorSchema={cs} disabled={formModal.mode === 'edit'} /></div>
-			<div><label class={labelClass}>Name (EN) *</label><Input bind:value={formNameEn} placeholder="English" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Inglês" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Name (ES)</label><Input bind:value={formNameEs} placeholder="Inglés" colorSchema={cs} /></div>
-			<div><label class={labelClass}>Native Name</label><Input bind:value={formNativeName} placeholder="English" colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Code *</label><Input bind:value={formCode} placeholder="en" required disabled={formModal.mode === 'edit'} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="English" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Inglês" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (ES)</label><Input bind:value={formNameEs} placeholder="Inglés" /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Native Name</label><Input bind:value={formNativeName} placeholder="English" /></div>
 		{:else if formModal?.type === 'programming'}
-			<div><label class={labelClass}>Slug *</label><Input bind:value={formSlug} placeholder="javascript" required colorSchema={cs} disabled={formModal.mode === 'edit'} /></div>
-			<div><label class={labelClass}>Name (EN) *</label><Input bind:value={formNameEn} placeholder="JavaScript" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="JavaScript" required colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="javascript" required disabled={formModal.mode === 'edit'} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="JavaScript" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="JavaScript" required /></div>
 		{:else if formModal?.type === 'skill'}
-			<div><label class={labelClass}>Slug *</label><Input bind:value={formSlug} placeholder="react" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Name (EN) *</label><Input bind:value={formNameEn} placeholder="React" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="React" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Order</label><Input bind:value={formOrder} type="number" colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="react" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="React" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="React" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
 		{:else}
-			<div><label class={labelClass}>Name (EN) *</label><Input bind:value={formNameEn} placeholder="Development" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Desenvolvimento" required colorSchema={cs} /></div>
-			<div><label class={labelClass}>Icon</label><Input bind:value={formIcon} placeholder="code" colorSchema={cs} /></div>
-			<div><label class={labelClass}>Color</label><Input bind:value={formColor} placeholder="#3B82F6" colorSchema={cs} /></div>
-			<div><label class={labelClass}>Order</label><Input bind:value={formOrder} type="number" colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (EN) *</label><Input bind:value={formNameEn} placeholder="Development" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name (PT) *</label><Input bind:value={formNamePtBr} placeholder="Desenvolvimento" required /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={formIcon} placeholder="code" /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Color</label><Input bind:value={formColor} placeholder="#3B82F6" /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={formOrder} type="number" /></div>
 		{/if}
 	</div>
 </FormModal>
 
-<ConfirmModal open={deleteTarget !== null} title="Delete Item" message={t?.('admin.skills.confirmDelete') ?? 'Are you sure?'} loading={deleteLoading} colorSchema={cs} onconfirm={handleDelete} oncancel={() => deleteTarget = null} />
+<ConfirmModal open={deleteTarget !== null} title="Delete Item" message={t('admin.skills.confirmDelete')} loading={deleteLoading} onconfirm={handleDelete} oncancel={() => deleteTarget = null} />

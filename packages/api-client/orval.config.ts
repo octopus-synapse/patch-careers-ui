@@ -9,6 +9,9 @@ export default defineConfig({
   api: {
     input: {
       target: inputSource,
+      override: {
+        transformer: './src/transformer/unwrap-api-response.ts',
+      },
     },
     output: {
       mode: 'tags-split',

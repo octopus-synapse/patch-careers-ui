@@ -52,8 +52,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  MecCoursesGetCourseByCode200,
-  MecCoursesSearchCoursesByName200,
+  MecCourseDataDto,
+  MecCourseListDataDto,
   MecCoursesSearchCoursesByNameParams
 } from '../../models';
 
@@ -68,7 +68,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Search courses
  */
 export type mecCoursesSearchCoursesByNameResponse200 = {
-  data: MecCoursesSearchCoursesByName200
+  data: MecCourseListDataDto
   status: 200
 }
 
@@ -236,7 +236,7 @@ export const prefetchMecCoursesSearchCoursesByNameQuery = async <TData = Awaited
  * @summary Get course by MEC code
  */
 export type mecCoursesGetCourseByCodeResponse200 = {
-  data: MecCoursesGetCourseByCode200
+  data: MecCourseDataDto
   status: 200
 }
 

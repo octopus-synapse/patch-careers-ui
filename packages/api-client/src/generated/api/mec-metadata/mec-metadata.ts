@@ -52,9 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  MecMetadataGetMecStatistics200,
-  MecMetadataListAllKnowledgeAreas200,
-  MecMetadataListAllStateCodes200
+  MecKnowledgeAreasDataDto,
+  MecStateCodesDataDto,
+  MecStatisticsDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -68,7 +68,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary List all states (UFs)
  */
 export type mecMetadataListAllStateCodesResponse200 = {
-  data: MecMetadataListAllStateCodes200
+  data: MecStateCodesDataDto
   status: 200
 }
 
@@ -229,7 +229,7 @@ export const prefetchMecMetadataListAllStateCodesQuery = async <TData = Awaited<
  * @summary List knowledge areas
  */
 export type mecMetadataListAllKnowledgeAreasResponse200 = {
-  data: MecMetadataListAllKnowledgeAreas200
+  data: MecKnowledgeAreasDataDto
   status: 200
 }
 
@@ -390,7 +390,7 @@ export const prefetchMecMetadataListAllKnowledgeAreasQuery = async <TData = Awai
  * @summary Get MEC statistics
  */
 export type mecMetadataGetMecStatisticsResponse200 = {
-  data: MecMetadataGetMecStatistics200
+  data: MecStatisticsDataDto
   status: 200
 }
 

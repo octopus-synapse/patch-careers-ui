@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import { Avatar } from 'ui';
 
 	type Conversation = {
@@ -13,16 +12,10 @@
 		conversations: Conversation[];
 		currentUserId?: string;
 		activeConversationId?: string;
-		colorSchema?: ColorSchema;
 		onselect: (id: string) => void;
 	};
 
-	let { conversations, currentUserId, activeConversationId, colorSchema = 'light', onselect }: Props = $props();
-
-	const text = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const activeBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800' : 'bg-gray-100');
-	const hoverBg = $derived(colorSchema === 'dark' ? 'hover:bg-neutral-800/50' : 'hover:bg-gray-50');
+	let { conversations, currentUserId, activeConversationId, onselect }: Props = $props();
 
 	function other(conv: Conversation) {
 		return conv.participant;
@@ -49,21 +42,21 @@
 	<button
 		onclick={() => onselect(conv.id)}
 		class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors
-			{active ? activeBg : hoverBg}"
+			{active ? 'bg-gray-100 dark:bg-neutral-800' : 'hover:bg-gray-50 dark:hover:bg-neutral-800/50'}"
 	>
-		<Avatar name={o.name ?? o.username ?? '?'} photoURL={o.photoURL} {colorSchema} size="md" />
+		<Avatar name={o.name ?? o.username ?? '?'} photoURL={o.photoURL} size="md" />
 
 		<div class="min-w-0 flex-1">
 			<div class="flex items-baseline justify-between gap-2">
-				<span class="truncate text-xs font-semibold {text}">
+				<span class="truncate text-xs font-semibold text-gray-800 dark:text-neutral-200">
 					{o.name ?? o.username ?? 'User'}
 				</span>
 				{#if conv.lastMessage?.createdAt}
-					<span class="flex-shrink-0 text-[10px] {muted}">{timeAgo(conv.lastMessage.createdAt)}</span>
+					<span class="flex-shrink-0 text-[10px] text-gray-500 dark:text-neutral-500">{timeAgo(conv.lastMessage.createdAt)}</span>
 				{/if}
 			</div>
 			{#if conv.lastMessage?.content}
-				<p class="truncate text-[11px] {muted}">{conv.lastMessage.content}</p>
+				<p class="truncate text-[11px] text-gray-500 dark:text-neutral-500">{conv.lastMessage.content}</p>
 			{/if}
 		</div>
 
@@ -75,6 +68,6 @@
 	</button>
 {:else}
 	<div class="flex items-center justify-center py-16">
-		<span class="text-[10px] uppercase tracking-widest {muted}">no conversations</span>
+		<span class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-neutral-500">no conversations</span>
 	</div>
 {/each}

@@ -46,11 +46,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ResumeConfigBatchUpdate200,
-  ResumeConfigReorderItem200,
-  ResumeConfigReorderSection200,
-  ResumeConfigToggleItem200,
-  ResumeConfigToggleSection200,
+  ResumeConfigOperationDataDto,
   SectionBatch,
   SectionItem,
   SectionReorder,
@@ -68,7 +64,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Toggle section visibility
  */
 export type resumeConfigToggleSectionResponse200 = {
-  data: ResumeConfigToggleSection200
+  data: ResumeConfigOperationDataDto
   status: 200
 }
 
@@ -153,7 +149,7 @@ export const createResumeConfigToggleSection = <TError = unknown,
  * @summary Reorder section
  */
 export type resumeConfigReorderSectionResponse200 = {
-  data: ResumeConfigReorderSection200
+  data: ResumeConfigOperationDataDto
   status: 200
 }
 
@@ -238,7 +234,7 @@ export const createResumeConfigReorderSection = <TError = unknown,
  * @summary Toggle item visibility
  */
 export type resumeConfigToggleItemResponse200 = {
-  data: ResumeConfigToggleItem200
+  data: ResumeConfigOperationDataDto
   status: 200
 }
 
@@ -323,7 +319,7 @@ export const createResumeConfigToggleItem = <TError = unknown,
  * @summary Reorder item
  */
 export type resumeConfigReorderItemResponse200 = {
-  data: ResumeConfigReorderItem200
+  data: ResumeConfigOperationDataDto
   status: 200
 }
 
@@ -408,7 +404,7 @@ export const createResumeConfigReorderItem = <TError = unknown,
  * @summary Batch update sections
  */
 export type resumeConfigBatchUpdateResponse200 = {
-  data: ResumeConfigBatchUpdate200
+  data: ResumeConfigOperationDataDto
   status: 200
 }
 

@@ -56,13 +56,12 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AuthLogin200,
-  AuthLoginVerify2fa200,
-  AuthLogout200,
-  AuthSession200,
   LoginDto,
+  LoginResponseDto,
   LoginVerify2faDto,
-  LogoutDto
+  LogoutDto,
+  LogoutResponseDto,
+  SessionResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -77,7 +76,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Login
  */
 export type authLoginResponse200 = {
-  data: AuthLogin200
+  data: LoginResponseDto
   status: 200
 }
 
@@ -167,7 +166,7 @@ export const createAuthLogin = <TError = void,
  * @summary Verify 2FA code during login
  */
 export type authLoginVerify2faResponse200 = {
-  data: AuthLoginVerify2fa200
+  data: LoginResponseDto
   status: 200
 }
 
@@ -257,7 +256,7 @@ export const createAuthLoginVerify2fa = <TError = void,
  * @summary Logout
  */
 export type authLogoutResponse200 = {
-  data: AuthLogout200
+  data: LogoutResponseDto
   status: 200
 }
 
@@ -340,7 +339,7 @@ export const createAuthLogout = <TError = unknown,
  * @summary Get Session
  */
 export type authSessionResponse200 = {
-  data: AuthSession200
+  data: SessionResponseDto
   status: 200
 }
 

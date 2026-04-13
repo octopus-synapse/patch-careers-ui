@@ -1,8 +1,8 @@
-import { LOCALES, DEFAULT_LOCALE, loadDictionary, createTranslator } from 'i18n';
+import { LOCALES, DEFAULT_LOCALE, loadDictionary, createTranslator, NOOP_TRANSLATOR } from 'i18n';
 import type { Locale, Translator } from 'i18n';
 
 let current = $state<Locale>(DEFAULT_LOCALE);
-let translator = $state<Translator | null>(null);
+let translator = $state<Translator>(NOOP_TRANSLATOR);
 
 const LOCALE_LABELS: Record<Locale, string> = {
 	'pt-BR': 'Português',

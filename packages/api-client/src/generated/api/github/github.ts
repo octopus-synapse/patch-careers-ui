@@ -57,10 +57,9 @@ import type {
 
 import type {
   AutoSyncGitHubRequestDto,
-  GithubAutoSyncGitHub200,
-  GithubGetGitHubSummary200,
-  GithubGetSyncStatus200,
-  GithubSyncGitHub200,
+  GitHubSummaryDto,
+  GitHubSyncResponseDto,
+  GitHubSyncStatusResponseDto,
   GithubSyncGitHubBody
 } from '../../models';
 
@@ -75,7 +74,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get GitHub profile summary for a username
  */
 export type githubGetGitHubSummaryResponse200 = {
-  data: GithubGetGitHubSummary200
+  data: GitHubSummaryDto
   status: 200
 }
 
@@ -236,7 +235,7 @@ export const prefetchGithubGetGitHubSummaryQuery = async <TData = Awaited<Return
  * @summary Sync GitHub data to user resume
  */
 export type githubSyncGitHubResponse200 = {
-  data: GithubSyncGitHub200
+  data: GitHubSyncResponseDto
   status: 200
 }
 
@@ -318,7 +317,7 @@ export const createGithubSyncGitHub = <TError = unknown,
  * @summary Auto-sync GitHub from resume GitHub link
  */
 export type githubAutoSyncGitHubResponse200 = {
-  data: GithubAutoSyncGitHub200
+  data: GitHubSyncResponseDto
   status: 200
 }
 
@@ -401,7 +400,7 @@ export const createGithubAutoSyncGitHub = <TError = unknown,
  * @summary Get GitHub sync status for a resume
  */
 export type githubGetSyncStatusResponse200 = {
-  data: GithubGetSyncStatus200
+  data: GitHubSyncStatusResponseDto
   status: 200
 }
 

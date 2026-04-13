@@ -7,7 +7,6 @@
 		getAdminSectionTypesFindAllQueryKey,
 	} from 'api-client';
 	import { browser } from '$app/environment';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-svelte';
@@ -19,11 +18,7 @@
 	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const labelClass = $derived(`text-[10px] font-bold uppercase tracking-widest ${muted}`);
 	const queryClient = useQueryClient();
 
 	let page = $state(1);
@@ -138,10 +133,10 @@
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight {text}">Section Types</h1>
+		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">Section Types</h1>
 		<div class="flex items-center gap-2">
-			<ExportButton data={sections} filename="section-types.csv" colorSchema={cs} />
-			<Button variant="solid" size="sm" onclick={openCreate} colorSchema={cs}>
+			<ExportButton data={sections} filename="section-types.csv" />
+			<Button variant="solid" size="sm" onclick={openCreate}>
 				<Plus size={14} /> Add
 			</Button>
 		</div>
@@ -150,26 +145,25 @@
 	<SearchFilterBar
 		{search}
 		placeholder="Search by key, title, or slug..."
-		colorSchema={cs}
 		onsearch={(v) => { search = v; page = 1; }}
 	/>
 
-	<DataTable {columns} data={sections} loading={sectionsQuery.isLoading} emptyMessage="No section types" colorSchema={cs}>
+	<DataTable {columns} data={sections} loading={sectionsQuery.isLoading} emptyMessage="No section types">
 		{#snippet cell({ row, key })}
 			{#if key === 'isActive'}
-				<Button variant="icon" size="xs" onclick={() => handleToggleActive(row)} colorSchema={cs}>
-					{#if row.isActive}<ToggleRight size={18} class="text-emerald-500" />{:else}<ToggleLeft size={18} class={muted} />{/if}
+				<Button variant="icon" size="xs" onclick={() => handleToggleActive(row)}>
+					{#if row.isActive}<ToggleRight size={18} class="text-emerald-500" />{:else}<ToggleLeft size={18} class="text-gray-500 dark:text-neutral-500" />{/if}
 				</Button>
 			{:else if key === 'isSystem'}
-				<span class="text-xs {row.isSystem ? 'text-amber-500' : muted}">{row.isSystem ? 'Yes' : 'No'}</span>
+				<span class="text-xs {row.isSystem ? 'text-amber-500' : 'text-gray-500 dark:text-neutral-500'}">{row.isSystem ? 'Yes' : 'No'}</span>
 			{:else if key === 'actions'}
 				<div class="flex items-center gap-1">
-					<Tooltip text="Edit" colorSchema={cs}>
-						<Button variant="icon" size="xs" onclick={() => openEdit(row)} colorSchema={cs}><Pencil size={14} /></Button>
+					<Tooltip text="Edit">
+						<Button variant="icon" size="xs" onclick={() => openEdit(row)}><Pencil size={14} /></Button>
 					</Tooltip>
 					{#if !row.isSystem}
-						<Tooltip text="Delete" colorSchema={cs}>
-							<Button variant="danger" size="xs" onclick={() => deleteKey = row.key as string} colorSchema={cs}><Trash2 size={14} /></Button>
+						<Tooltip text="Delete">
+							<Button variant="danger" size="xs" onclick={() => deleteKey = row.key as string}><Trash2 size={14} /></Button>
 						</Tooltip>
 					{/if}
 				</div>
@@ -181,28 +175,28 @@
 
 	{#if totalPages > 1}
 		<div class="flex justify-center">
-			<Pagination {page} {totalPages} colorSchema={cs} onpagechange={(p) => page = p} />
+			<Pagination {page} {totalPages} onpagechange={(p) => page = p} />
 		</div>
 	{/if}
 </div>
 
-<FormModal open={formModal !== null} title={formModal?.mode === 'create' ? 'Add Section Type' : 'Edit Section Type'} loading={formLoading} colorSchema={cs} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
+<FormModal open={formModal !== null} title={formModal?.mode === 'create' ? 'Add Section Type' : 'Edit Section Type'} loading={formLoading} onsubmit={handleFormSubmit} oncancel={() => formModal = null}>
 	<div class="space-y-3">
-		<div><label class={labelClass}>Key *</label><Input bind:value={formKey} placeholder="work_experience_v1" required colorSchema={cs} disabled={formModal?.mode === 'edit'} /></div>
-		<div><label class={labelClass}>Slug *</label><Input bind:value={formSlug} placeholder="work-experience" required colorSchema={cs} /></div>
-		<div><label class={labelClass}>Title *</label><Input bind:value={formTitle} placeholder="Work Experience" required colorSchema={cs} /></div>
-		<div><label class={labelClass}>Description</label><Input bind:value={formDescription} placeholder="Professional experience section" colorSchema={cs} /></div>
+		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
+		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Slug *</label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
+		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Title *</label><Input bind:value={formTitle} placeholder="Work Experience" required /></div>
+		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Description</label><Input bind:value={formDescription} placeholder="Professional experience section" /></div>
 		<div class="grid grid-cols-2 gap-3">
-			<div><label class={labelClass}>Semantic Kind *</label><Input bind:value={formSemanticKind} placeholder="experience" required colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Semantic Kind *</label><Input bind:value={formSemanticKind} placeholder="experience" required /></div>
 			{#if formModal?.mode === 'create'}
-				<div><label class={labelClass}>Version</label><Input bind:value={formVersion} type="number" colorSchema={cs} /></div>
+				<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Version</label><Input bind:value={formVersion} type="number" /></div>
 			{/if}
 		</div>
 		<div class="flex items-center gap-4">
-			<label class="flex items-center gap-2 text-sm {text}"><input type="checkbox" bind:checked={formIsActive} class="rounded" /> Active</label>
-			<label class="flex items-center gap-2 text-sm {text}"><input type="checkbox" bind:checked={formIsRepeatable} class="rounded" /> Repeatable</label>
+			<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200"><input type="checkbox" bind:checked={formIsActive} class="rounded" /> Active</label>
+			<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200"><input type="checkbox" bind:checked={formIsRepeatable} class="rounded" /> Repeatable</label>
 		</div>
 	</div>
 </FormModal>
 
-<ConfirmModal open={deleteKey !== null} title="Delete Section Type" message="Are you sure? This cannot be undone." loading={deleteLoading} colorSchema={cs} onconfirm={handleDelete} oncancel={() => deleteKey = null} />
+<ConfirmModal open={deleteKey !== null} title="Delete Section Type" message="Are you sure? This cannot be undone." loading={deleteLoading} onconfirm={handleDelete} oncancel={() => deleteKey = null} />

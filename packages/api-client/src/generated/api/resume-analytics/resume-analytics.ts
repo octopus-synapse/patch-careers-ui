@@ -58,6 +58,7 @@ import type {
 import type {
   CreateSnapshotRequestDto,
   JobMatchRequestDto,
+  MessageResponseDto,
   ResumeAnalyticsCreateSnapshot201,
   ResumeAnalyticsGetATSScore200,
   ResumeAnalyticsGetBenchmark200,
@@ -71,7 +72,6 @@ import type {
   ResumeAnalyticsGetViewStats200,
   ResumeAnalyticsGetViewStatsParams,
   ResumeAnalyticsMatchJob200,
-  ResumeAnalyticsTrackView201,
   TrackViewRequestDto
 } from '../../models';
 
@@ -86,7 +86,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Track resume view (public endpoint)
  */
 export type resumeAnalyticsTrackViewResponse201 = {
-  data: ResumeAnalyticsTrackView201
+  data: MessageResponseDto
   status: 201
 }
 

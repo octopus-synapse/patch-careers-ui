@@ -56,17 +56,191 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ConnectionGetConnectionStats200,
-  ConnectionGetConnectionSuggestions200,
-  ConnectionGetConnections200,
-  ConnectionGetPendingRequests200,
-  ConnectionIsConnected200
+  ConnectionCheckDto,
+  ConnectionListDataDto,
+  ConnectionStatsDto,
+  NetworkSummaryDataDto,
+  PendingRequestsDataDto,
+  SuggestionsDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
+/**
+ * @summary Get network summary for authenticated user
+ */
+export type connectionGetNetworkSummaryResponse200 = {
+  data: NetworkSummaryDataDto
+  status: 200
+}
+
+export type connectionGetNetworkSummaryResponse401 = {
+  data: void
+  status: 401
+}
+
+export type connectionGetNetworkSummaryResponse403 = {
+  data: void
+  status: 403
+}
+
+export type connectionGetNetworkSummaryResponseSuccess = (connectionGetNetworkSummaryResponse200) & {
+  headers: Headers;
+};
+export type connectionGetNetworkSummaryResponseError = (connectionGetNetworkSummaryResponse401 | connectionGetNetworkSummaryResponse403) & {
+  headers: Headers;
+};
+
+export type connectionGetNetworkSummaryResponse = (connectionGetNetworkSummaryResponseSuccess | connectionGetNetworkSummaryResponseError)
+
+export const getConnectionGetNetworkSummaryUrl = () => {
+
+
+
+
+  return `/api/v1/users/me/network-summary`
+}
+
+export const connectionGetNetworkSummary = async ( options?: RequestInit): Promise<connectionGetNetworkSummaryResponse> => {
+
+  return customFetch<connectionGetNetworkSummaryResponse>(getConnectionGetNetworkSummaryUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getConnectionGetNetworkSummaryInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/users/me/network-summary`
+    ] as const;
+    }
+
+export const getConnectionGetNetworkSummaryQueryKey = () => {
+    return [
+    `/api/v1/users/me/network-summary`
+    ] as const;
+    }
+
+
+export const getConnectionGetNetworkSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getConnectionGetNetworkSummaryInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionGetNetworkSummary>>> = ({ signal }) => connectionGetNetworkSummary({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ConnectionGetNetworkSummaryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>
+export type ConnectionGetNetworkSummaryInfiniteQueryError = void
+
+
+/**
+ * @summary Get network summary for authenticated user
+ */
+
+export function createConnectionGetNetworkSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>, TError = void>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getConnectionGetNetworkSummaryInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get network summary for authenticated user
+ */
+export const prefetchConnectionGetNetworkSummaryInfiniteQuery = async <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getConnectionGetNetworkSummaryInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getConnectionGetNetworkSummaryQueryOptions = <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getConnectionGetNetworkSummaryQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof connectionGetNetworkSummary>>> = ({ signal }) => connectionGetNetworkSummary({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ConnectionGetNetworkSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof connectionGetNetworkSummary>>>
+export type ConnectionGetNetworkSummaryQueryError = void
+
+
+/**
+ * @summary Get network summary for authenticated user
+ */
+
+export function createConnectionGetNetworkSummary<TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getConnectionGetNetworkSummaryQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get network summary for authenticated user
+ */
+export const prefetchConnectionGetNetworkSummaryQuery = async <TData = Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof connectionGetNetworkSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getConnectionGetNetworkSummaryQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
 
 
 
@@ -418,7 +592,7 @@ export const createConnectionRemoveConnection = <TError = void,
  * @summary Get accepted connections
  */
 export type connectionGetConnectionsResponse200 = {
-  data: ConnectionGetConnections200
+  data: ConnectionListDataDto
   status: 200
 }
 
@@ -591,7 +765,7 @@ export const prefetchConnectionGetConnectionsQuery = async <TData = Awaited<Retu
  * @summary Get pending connection requests
  */
 export type connectionGetPendingRequestsResponse200 = {
-  data: ConnectionGetPendingRequests200
+  data: PendingRequestsDataDto
   status: 200
 }
 
@@ -764,7 +938,7 @@ export const prefetchConnectionGetPendingRequestsQuery = async <TData = Awaited<
  * @summary Get connection suggestions
  */
 export type connectionGetConnectionSuggestionsResponse200 = {
-  data: ConnectionGetConnectionSuggestions200
+  data: SuggestionsDataDto
   status: 200
 }
 
@@ -937,7 +1111,7 @@ export const prefetchConnectionGetConnectionSuggestionsQuery = async <TData = Aw
  * @summary Get connection stats for a user
  */
 export type connectionGetConnectionStatsResponse200 = {
-  data: ConnectionGetConnectionStats200
+  data: ConnectionStatsDto
   status: 200
 }
 
@@ -1098,7 +1272,7 @@ export const prefetchConnectionGetConnectionStatsQuery = async <TData = Awaited<
  * @summary Check connection status
  */
 export type connectionIsConnectedResponse200 = {
-  data: ConnectionIsConnected200
+  data: ConnectionCheckDto
   status: 200
 }
 

@@ -56,10 +56,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ResumeSkillsAddSkillToResume200,
-  ResumeSkillsDeleteSkill200,
-  ResumeSkillsListSkillsForResume200,
-  ResumeSkillsUpdateSkill200
+  DeleteSkillDataDto,
+  SkillDataDto,
+  SkillsDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -73,7 +72,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Add a skill to a resume
  */
 export type resumeSkillsAddSkillToResumeResponse200 = {
-  data: ResumeSkillsAddSkillToResume200
+  data: SkillDataDto
   status: 200
 }
 
@@ -166,7 +165,7 @@ export const createResumeSkillsAddSkillToResume = <TError = void,
  * @summary List skills for a resume
  */
 export type resumeSkillsListSkillsForResumeResponse200 = {
-  data: ResumeSkillsListSkillsForResume200
+  data: SkillsDataDto
   status: 200
 }
 
@@ -339,7 +338,7 @@ export const prefetchResumeSkillsListSkillsForResumeQuery = async <TData = Await
  * @summary Update a resume skill
  */
 export type resumeSkillsUpdateSkillResponse200 = {
-  data: ResumeSkillsUpdateSkill200
+  data: SkillDataDto
   status: 200
 }
 
@@ -434,7 +433,7 @@ export const createResumeSkillsUpdateSkill = <TError = void,
  * @summary Delete a resume skill
  */
 export type resumeSkillsDeleteSkillResponse200 = {
-  data: ResumeSkillsDeleteSkill200
+  data: DeleteSkillDataDto
   status: 200
 }
 

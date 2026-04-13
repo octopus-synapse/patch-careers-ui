@@ -46,9 +46,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  SendVerificationHandle200,
+  SendVerificationEmailResponseDto,
   VerifyEmailDto,
-  VerifyEmailHandle200
+  VerifyEmailResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -63,7 +63,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Send verification email
  */
 export type sendVerificationHandleResponse200 = {
-  data: SendVerificationHandle200
+  data: SendVerificationEmailResponseDto
   status: 200
 }
 
@@ -158,7 +158,7 @@ export const createSendVerificationHandle = <TError = void,
  * @summary Verify email with token
  */
 export type verifyEmailHandleResponse200 = {
-  data: VerifyEmailHandle200
+  data: VerifyEmailResponseDto
   status: 200
 }
 

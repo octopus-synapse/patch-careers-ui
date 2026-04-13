@@ -1,20 +1,13 @@
 <script lang="ts">
 	import { createAdminMetricsGetOverview } from 'api-client';
 	import { browser } from '$app/environment';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { Loader2, RefreshCw, Clock, Cpu, HardDrive, Zap } from 'lucide-svelte';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-	const barColor = $derived(cs === 'dark' ? '#a3a3a3' : '#374151');
 
 	const metricsQuery = createAdminMetricsGetOverview(() => ({
 		query: { enabled: browser, refetchInterval: 10000 }
@@ -61,10 +54,10 @@
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight {text}">Performance</h1>
+		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">Performance</h1>
 		<div class="flex items-center gap-3">
-			<ExportButton data={latency} filename="performance.csv" colorSchema={cs} />
-			<div class="flex items-center gap-2 {muted}">
+			<ExportButton data={latency} filename="performance.csv" />
+			<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
 				<RefreshCw size={12} class="animate-spin" />
 				<span class="text-[10px] font-medium uppercase tracking-widest">Auto-refresh: 10s</span>
 			</div>
@@ -73,37 +66,37 @@
 
 	{#if metricsQuery.isLoading}
 		<div class="flex items-center justify-center py-20">
-			<Loader2 size={24} class="animate-spin {muted}" />
+			<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 		</div>
 	{:else if rawData}
 		<!-- Process Stats -->
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-			<StatCard label="Uptime" value={formatUptime(process.uptimeSeconds ?? 0)} colorSchema={cs}>
-				{#snippet icon()}<Clock size={18} class={muted} />{/snippet}
+			<StatCard label="Uptime" value={formatUptime(process.uptimeSeconds ?? 0)}>
+				{#snippet icon()}<Clock size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
-			<StatCard label="Heap Used" value={`${process.heapUsedMb ?? 0} MB`} colorSchema={cs}>
-				{#snippet icon()}<HardDrive size={18} class={muted} />{/snippet}
+			<StatCard label="Heap Used" value={`${process.heapUsedMb ?? 0} MB`}>
+				{#snippet icon()}<HardDrive size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
-			<StatCard label="Heap Total" value={`${process.heapTotalMb ?? 0} MB`} colorSchema={cs}>
-				{#snippet icon()}<Cpu size={18} class={muted} />{/snippet}
+			<StatCard label="Heap Total" value={`${process.heapTotalMb ?? 0} MB`}>
+				{#snippet icon()}<Cpu size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
-			<StatCard label="Event Loop Lag" value={`${process.eventLoopLagMs ?? 0} ms`} colorSchema={cs}>
-				{#snippet icon()}<Zap size={18} class={muted} />{/snippet}
+			<StatCard label="Event Loop Lag" value={`${process.eventLoopLagMs ?? 0} ms`}>
+				{#snippet icon()}<Zap size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
 		</div>
 
 		<!-- Business Counters -->
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
-			<StatCard label="Resumes Created" value={counters.resumeCreated ?? 0} colorSchema={cs} />
-			<StatCard label="User Signups" value={counters.userSignups ?? 0} colorSchema={cs} />
-			<StatCard label="Exports Done" value={counters.exportCompleted ?? 0} colorSchema={cs} />
-			<StatCard label="Active Users" value={gauges.activeUsers ?? 0} colorSchema={cs} />
-			<StatCard label="Pending Exports" value={gauges.pendingExports ?? 0} colorSchema={cs} />
+			<StatCard label="Resumes Created" value={counters.resumeCreated ?? 0} />
+			<StatCard label="User Signups" value={counters.userSignups ?? 0} />
+			<StatCard label="Exports Done" value={counters.exportCompleted ?? 0} />
+			<StatCard label="Active Users" value={gauges.activeUsers ?? 0} />
+			<StatCard label="Pending Exports" value={gauges.pendingExports ?? 0} />
 		</div>
 
 		<!-- Latency per Route -->
 		<div>
-			<h2 class="mb-4 text-sm font-semibold uppercase tracking-widest {muted}">
+			<h2 class="mb-4 text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 				Endpoint Latency
 			</h2>
 
@@ -112,7 +105,6 @@
 					{columns}
 					data={latency}
 					emptyMessage="No requests recorded yet"
-					colorSchema={cs}
 				>
 					{#snippet cell({ row, key })}
 						{#if key === 'route'}
@@ -125,8 +117,8 @@
 							</span>
 						{:else if key === 'bar'}
 							{@const pct = ((row.totalRequests as number) / maxRequests) * 100}
-							<div class="h-2 w-full rounded-full {cs === 'dark' ? 'bg-neutral-700' : 'bg-gray-200'}">
-								<div class="h-full rounded-full" style="width: {pct}%; background: {barColor}"></div>
+							<div class="h-2 w-full rounded-full bg-gray-200 dark:bg-neutral-700">
+								<div class="h-full rounded-full bg-gray-700 dark:bg-neutral-400" style="width: {pct}%"></div>
 							</div>
 						{:else}
 							{row[key] ?? '—'}
@@ -134,9 +126,9 @@
 					{/snippet}
 				</DataTable>
 			{:else}
-				<div class="rounded-xl border p-8 text-center {cardBg} {cardBorder}">
-					<p class="text-sm {muted}">No API requests recorded yet.</p>
-					<p class="mt-1 text-xs {muted}">The MetricsInterceptor is now active. Data will appear after requests are made.</p>
+				<div class="rounded-xl border p-8 text-center bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+					<p class="text-sm text-gray-500 dark:text-neutral-500">No API requests recorded yet.</p>
+					<p class="mt-1 text-xs text-gray-500 dark:text-neutral-500">The MetricsInterceptor is now active. Data will appear after requests are made.</p>
 				</div>
 			{/if}
 		</div>

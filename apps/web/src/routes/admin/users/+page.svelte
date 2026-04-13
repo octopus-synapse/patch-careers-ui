@@ -9,7 +9,6 @@
 	} from 'api-client';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Avatar, Button, Input, Dropdown } from 'ui';
@@ -22,11 +21,7 @@
 	import FormModal from '$lib/components/admin/form-modal.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const labelClass = $derived(`text-[10px] font-bold uppercase tracking-widest ${cs === 'dark' ? 'text-neutral-500' : 'text-gray-500'}`);
 	const queryClient = useQueryClient();
 
 	let page = $state(1);
@@ -43,10 +38,10 @@
 	}));
 
 	const users = $derived(
-		(usersQuery.data?.data?.data?.users as Record<string, unknown>[] | undefined) ?? []
+		(usersQuery.data?.data?.users as Record<string, unknown>[] | undefined) ?? []
 	);
 	const pagination = $derived(
-		usersQuery.data?.data?.data?.pagination as { page: number; totalPages: number; total: number } | undefined
+		usersQuery.data?.data?.pagination as { page: number; totalPages: number; total: number } | undefined
 	);
 
 	// --- Dropdown state ---
@@ -162,18 +157,18 @@
 
 	const columns = [
 		{ key: 'checkbox', label: '', width: '40px' },
-		{ key: 'name', label: t?.('admin.users.name') ?? 'Name' },
-		{ key: 'email', label: t?.('admin.users.email') ?? 'Email' },
-		{ key: 'role', label: t?.('admin.users.role') ?? 'Role', width: '100px' },
-		{ key: 'status', label: t?.('admin.users.status') ?? 'Status', width: '100px' },
-		{ key: 'createdAt', label: t?.('admin.users.created') ?? 'Created', width: '120px' },
+		{ key: 'name', label: t('admin.users.name') },
+		{ key: 'email', label: t('admin.users.email') },
+		{ key: 'role', label: t('admin.users.role'), width: '100px' },
+		{ key: 'status', label: t('admin.users.status'), width: '100px' },
+		{ key: 'createdAt', label: t('admin.users.created'), width: '120px' },
 		{ key: 'actions', label: '', width: '60px' },
 	];
 
 	const filters = $derived([
 		{
 			key: 'role',
-			label: t?.('admin.users.filterRole') ?? 'All Roles',
+			label: t('admin.users.filterRole'),
 			options: [
 				{ value: 'role_admin', label: 'Admin' },
 				{ value: 'role_user', label: 'User' },
@@ -184,17 +179,17 @@
 </script>
 
 <svelte:head>
-	<title>{t?.('admin.users.title') ?? 'Users'}</title>
+	<title>{t('admin.users.title')}</title>
 </svelte:head>
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight {text}">
-			{t?.('admin.users.title') ?? 'User Management'}
+		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
+			{t('admin.users.title')}
 		</h1>
 		<div class="flex items-center gap-2">
-			<ExportButton data={users} filename="users.csv" colorSchema={cs} />
-			<Button variant="solid" size="sm" onclick={() => createModal = true} colorSchema={cs}>
+			<ExportButton data={users} filename="users.csv" />
+			<Button variant="solid" size="sm" onclick={() => createModal = true}>
 				<Plus size={14} />
 				New User
 			</Button>
@@ -204,19 +199,18 @@
 	<SearchFilterBar
 		{search}
 		{filters}
-		placeholder={t?.('admin.users.search') ?? 'Search by name or email...'}
-		colorSchema={cs}
+		placeholder={t('admin.users.search')}
 		onsearch={(v) => { search = v; page = 1; }}
 		onfilterchange={(key, value) => { if (key === 'role') roleFilter = value; page = 1; }}
 	/>
 
 	{#if selectedIds.size > 0}
-		<div class="flex items-center gap-3 rounded-lg border px-4 py-2 {cs === 'dark' ? 'border-neutral-700 bg-neutral-800/50' : 'border-gray-200 bg-gray-50'}">
-			<span class="text-xs font-medium {text}">{selectedIds.size} selected</span>
-			<Button variant="danger" size="xs" onclick={() => bulkDeleteConfirm = true} colorSchema={cs}>
+		<div class="flex items-center gap-3 rounded-lg border px-4 py-2 border-gray-200 bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800/50">
+			<span class="text-xs font-medium text-gray-800 dark:text-neutral-200">{selectedIds.size} selected</span>
+			<Button variant="danger" size="xs" onclick={() => bulkDeleteConfirm = true}>
 				Delete Selected
 			</Button>
-			<Button variant="ghost" size="xs" onclick={() => selectedIds = new Set()} colorSchema={cs}>
+			<Button variant="ghost" size="xs" onclick={() => selectedIds = new Set()}>
 				Clear
 			</Button>
 		</div>
@@ -226,8 +220,7 @@
 		{columns}
 		data={users}
 		loading={usersQuery.isLoading}
-		emptyMessage={t?.('admin.users.noUsers') ?? 'No users found'}
-		colorSchema={cs}
+		emptyMessage={t('admin.users.noUsers')}
 		onrowclick={(row) => goto(`/admin/users/${row.id}`)}
 	>
 		{#snippet cell({ row, key })}
@@ -240,14 +233,14 @@
 				/>
 			{:else if key === 'name'}
 				<div class="flex items-center gap-2">
-					<Avatar name={(row.name as string) ?? (row.email as string)} size="sm" colorSchema={cs} />
+					<Avatar name={(row.name as string) ?? (row.email as string)} size="sm" />
 					<span>{row.name ?? '—'}</span>
 				</div>
 			{:else if key === 'role'}
 				{@const roles = (row.roles as string[]) ?? []}
-				<StatusBadge status={roles.includes('role_admin') ? 'admin' : 'user'} colorSchema={cs} />
+				<StatusBadge status={roles.includes('role_admin') ? 'admin' : 'user'} />
 			{:else if key === 'status'}
-				<StatusBadge status={row.isActive ? 'active' : 'inactive'} colorSchema={cs} />
+				<StatusBadge status={row.isActive ? 'active' : 'inactive'} />
 			{:else if key === 'createdAt'}
 				{new Date(row.createdAt as string).toLocaleDateString()}
 			{:else if key === 'actions'}
@@ -256,22 +249,21 @@
 				{@const rowId = row.id as string}
 				<Dropdown
 					open={openDropdownId === rowId}
-					colorSchema={cs}
 					onclose={() => openDropdownId = null}
 				>
 					{#snippet trigger()}
-						<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openDropdownId = openDropdownId === rowId ? null : rowId; }} colorSchema={cs}>
+						<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openDropdownId = openDropdownId === rowId ? null : rowId; }}>
 							<MoreVertical size={16} />
 						</Button>
 					{/snippet}
-					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; toggleRoleUser = row; }} colorSchema={cs}>
+					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; toggleRoleUser = row; }}>
 						{#if isRowAdmin}<ShieldOff size={14} class="text-purple-400" />{:else}<Shield size={14} />{/if}
 						{isRowAdmin ? 'Revoke Admin' : 'Make Admin'}
 					</Button>
-					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; resetPasswordUserId = rowId; }} colorSchema={cs}>
+					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; resetPasswordUserId = rowId; }}>
 						<KeyRound size={14} /> Reset Password
 					</Button>
-					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; deleteUserId = rowId; }} colorSchema={cs} class="!text-red-400">
+					<Button variant="menu" size="sm" onclick={(e) => { e.stopPropagation(); openDropdownId = null; deleteUserId = rowId; }} class="!text-red-400">
 						<Trash2 size={14} /> Delete
 					</Button>
 				</Dropdown>
@@ -286,7 +278,6 @@
 			<Pagination
 				page={pagination.page}
 				totalPages={pagination.totalPages}
-				colorSchema={cs}
 				onpagechange={(p) => page = p}
 			/>
 		</div>
@@ -298,22 +289,21 @@
 	open={createModal}
 	title="New User"
 	loading={createLoading}
-	colorSchema={cs}
 	onsubmit={handleCreateUser}
 	oncancel={() => { createModal = false; newEmail = ''; newName = ''; newPassword = ''; }}
 >
 	<div class="space-y-3">
 		<div>
-			<label class={labelClass}>Email *</label>
-			<Input bind:value={newEmail} type="email" placeholder="user@example.com" required colorSchema={cs} />
+			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Email *</label>
+			<Input bind:value={newEmail} type="email" placeholder="user@example.com" required />
 		</div>
 		<div>
-			<label class={labelClass}>Name</label>
-			<Input bind:value={newName} placeholder="John Doe" colorSchema={cs} />
+			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name</label>
+			<Input bind:value={newName} placeholder="John Doe" />
 		</div>
 		<div>
-			<label class={labelClass}>Password *</label>
-			<Input bind:value={newPassword} type="password" placeholder="Min 8 characters" required minlength={8} colorSchema={cs} />
+			<label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Password *</label>
+			<Input bind:value={newPassword} type="password" placeholder="Min 8 characters" required minlength={8} />
 		</div>
 	</div>
 </FormModal>
@@ -322,9 +312,8 @@
 <ConfirmModal
 	open={deleteUserId !== null}
 	title="Delete User"
-	message={t?.('admin.users.confirmDelete') ?? 'Are you sure? This action cannot be undone.'}
+	message={t('admin.users.confirmDelete')}
 	loading={actionLoading}
-	colorSchema={cs}
 	onconfirm={handleDelete}
 	oncancel={() => deleteUserId = null}
 />
@@ -332,9 +321,8 @@
 <ConfirmModal
 	open={resetPasswordUserId !== null}
 	title="Reset Password"
-	message={t?.('admin.users.confirmResetPassword') ?? 'A new random password will be generated.'}
+	message={t('admin.users.confirmResetPassword')}
 	loading={actionLoading}
-	colorSchema={cs}
 	onconfirm={handleResetPassword}
 	oncancel={() => resetPasswordUserId = null}
 />
@@ -344,7 +332,6 @@
 	title="Change Role"
 	message={toggleRoleUser ? ((toggleRoleUser.roles as string[])?.includes('role_admin') ? 'Remove admin privileges from this user?' : 'Grant admin privileges to this user?') : ''}
 	loading={actionLoading}
-	colorSchema={cs}
 	onconfirm={handleToggleRole}
 	oncancel={() => toggleRoleUser = null}
 />
@@ -354,7 +341,6 @@
 	title="Delete Selected Users"
 	message={`Are you sure you want to delete ${selectedIds.size} user(s)? This cannot be undone.`}
 	loading={bulkLoading}
-	colorSchema={cs}
 	onconfirm={handleBulkDelete}
 	oncancel={() => bulkDeleteConfirm = false}
 />

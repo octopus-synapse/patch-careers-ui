@@ -56,11 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  CollaborationGetCollaborators200,
-  CollaborationGetSharedWithMe200,
-  CollaborationInvite201,
-  CollaborationUpdateRole200,
+  CollaboratorDataDto,
+  CollaboratorsListDataDto,
   InviteCollaboratorDto,
+  SharedResumesListDataDto,
   UpdateRoleDto
 } from '../../models';
 
@@ -75,7 +74,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Invite user to collaborate on resume
  */
 export type collaborationInviteResponse201 = {
-  data: CollaborationInvite201
+  data: CollaboratorDataDto
   status: 201
 }
 
@@ -170,7 +169,7 @@ export const createCollaborationInvite = <TError = void,
  * @summary Get collaborators for a resume
  */
 export type collaborationGetCollaboratorsResponse200 = {
-  data: CollaborationGetCollaborators200
+  data: CollaboratorsListDataDto
   status: 200
 }
 
@@ -343,7 +342,7 @@ export const prefetchCollaborationGetCollaboratorsQuery = async <TData = Awaited
  * @summary Update collaborator role
  */
 export type collaborationUpdateRoleResponse200 = {
-  data: CollaborationUpdateRole200
+  data: CollaboratorDataDto
   status: 200
 }
 
@@ -535,7 +534,7 @@ export const createCollaborationRemove = <TError = void,
  * @summary Get resumes shared with current user
  */
 export type collaborationGetSharedWithMeResponse200 = {
-  data: CollaborationGetSharedWithMe200
+  data: SharedResumesListDataDto
   status: 200
 }
 

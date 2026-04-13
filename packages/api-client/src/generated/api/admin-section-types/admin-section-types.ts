@@ -56,12 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AdminSectionTypesCreate201,
-  AdminSectionTypesFindAll200,
   AdminSectionTypesFindAllParams,
-  AdminSectionTypesFindOne200,
-  AdminSectionTypesGetSemanticKinds200,
-  AdminSectionTypesUpdate200
+  SectionTypeDataDto,
+  SectionTypeListDataDto,
+  SemanticKindsDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -75,7 +73,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary List all section types with pagination
  */
 export type adminSectionTypesFindAllResponse200 = {
-  data: AdminSectionTypesFindAll200
+  data: SectionTypeListDataDto
   status: 200
 }
 
@@ -255,7 +253,7 @@ export const prefetchAdminSectionTypesFindAllQuery = async <TData = Awaited<Retu
  * @summary Create a new section type
  */
 export type adminSectionTypesCreateResponse201 = {
-  data: AdminSectionTypesCreate201
+  data: SectionTypeDataDto
   status: 201
 }
 
@@ -348,7 +346,7 @@ export const createAdminSectionTypesCreate = <TError = void,
  * @summary Get all unique semantic kinds
  */
 export type adminSectionTypesGetSemanticKindsResponse200 = {
-  data: AdminSectionTypesGetSemanticKinds200
+  data: SemanticKindsDataDto
   status: 200
 }
 
@@ -521,7 +519,7 @@ export const prefetchAdminSectionTypesGetSemanticKindsQuery = async <TData = Awa
  * @summary Get a section type by key
  */
 export type adminSectionTypesFindOneResponse200 = {
-  data: AdminSectionTypesFindOne200
+  data: SectionTypeDataDto
   status: 200
 }
 
@@ -694,7 +692,7 @@ export const prefetchAdminSectionTypesFindOneQuery = async <TData = Awaited<Retu
  * @summary Update a section type
  */
 export type adminSectionTypesUpdateResponse200 = {
-  data: AdminSectionTypesUpdate200
+  data: SectionTypeDataDto
   status: 200
 }
 

@@ -52,10 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ShareAnalyticsGetAnalytics200,
-  ShareAnalyticsGetAnalyticsEvents200,
+  ShareAnalyticsEventsDataDto,
   ShareAnalyticsGetAnalyticsEventsParams,
-  ShareAnalyticsGetAnalyticsNested200
+  ShareAnalyticsSummaryDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -69,7 +68,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get analytics for a shared resume (nested route)
  */
 export type shareAnalyticsGetAnalyticsNestedResponse200 = {
-  data: ShareAnalyticsGetAnalyticsNested200
+  data: ShareAnalyticsSummaryDataDto
   status: 200
 }
 
@@ -254,7 +253,7 @@ export const prefetchShareAnalyticsGetAnalyticsNestedQuery = async <TData = Awai
  * @summary Get analytics for a share id
  */
 export type shareAnalyticsGetAnalyticsResponse200 = {
-  data: ShareAnalyticsGetAnalytics200
+  data: ShareAnalyticsSummaryDataDto
   status: 200
 }
 
@@ -427,7 +426,7 @@ export const prefetchShareAnalyticsGetAnalyticsQuery = async <TData = Awaited<Re
  * @summary Get analytics events for a share id
  */
 export type shareAnalyticsGetAnalyticsEventsResponse200 = {
-  data: ShareAnalyticsGetAnalyticsEvents200
+  data: ShareAnalyticsEventsDataDto
   status: 200
 }
 

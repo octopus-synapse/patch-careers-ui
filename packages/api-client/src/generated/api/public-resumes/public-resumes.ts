@@ -52,8 +52,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ResumesDownloadPublicResume200,
-  ResumesGetPublicResume200
+  PublicResumeDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -67,7 +66,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get public resume by share slug
  */
 export type resumesGetPublicResumeResponse200 = {
-  data: ResumesGetPublicResume200
+  data: PublicResumeDataDto
   status: 200
 }
 
@@ -228,7 +227,7 @@ export const prefetchResumesGetPublicResumeQuery = async <TData = Awaited<Return
  * @summary Download public resume by share slug
  */
 export type resumesDownloadPublicResumeResponse200 = {
-  data: ResumesDownloadPublicResume200
+  data: PublicResumeDataDto
   status: 200
 }
 

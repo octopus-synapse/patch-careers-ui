@@ -1,21 +1,17 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { ColorSchema } from './types';
 
 	type Position = 'top' | 'bottom' | 'left' | 'right';
 
 	type Props = {
 		text: string;
 		position?: Position;
-		colorSchema?: ColorSchema;
 		children: Snippet;
 	};
 
-	let { text, position = 'top', colorSchema = 'light', children }: Props = $props();
+	let { text, position = 'top', children }: Props = $props();
 
 	let visible = $state(false);
-
-	const bg = { light: 'bg-gray-800 text-gray-50', dark: 'bg-neutral-200 text-neutral-900' };
 
 	const positionClass: Record<Position, string> = {
 		top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
@@ -44,7 +40,7 @@
 
 	{#if visible}
 		<div
-			class="pointer-events-none absolute z-50 whitespace-nowrap rounded px-2 py-1 text-[10px] font-medium {bg[colorSchema]} {positionClass[position]}"
+			class="pointer-events-none absolute z-50 whitespace-nowrap rounded px-2 py-1 text-[10px] font-medium bg-gray-800 text-gray-50 dark:bg-neutral-200 dark:text-neutral-900 {positionClass[position]}"
 			role="tooltip"
 		>
 			{text}

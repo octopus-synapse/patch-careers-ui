@@ -5,7 +5,6 @@
 	import { Button, Input, Label } from 'ui';
 	import { goto } from '$app/navigation';
 	import { Loader2 } from 'lucide-svelte';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 
 	let email = $state('');
@@ -13,9 +12,6 @@
 	let error = $state('');
 
 	const t = $derived(locale.t);
-	const cs = $derived(colorSchema.mode);
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
 
 	const login = createAuthLogin(() => ({
 		mutation: {
@@ -43,7 +39,7 @@
 </script>
 
 <svelte:head>
-	<title>{t?.('auth.sign-in.pageTitle') ?? ''}</title>
+	<title>{t('auth.sign-in.pageTitle')}</title>
 </svelte:head>
 
 {#if t}
@@ -51,10 +47,10 @@
 		<main class="flex min-h-screen items-center justify-center p-6 pt-20">
 			<div class="w-full max-w-[340px]">
 				<div class="mb-10">
-					<h1 class="text-xl font-medium tracking-tight {text}">
+					<h1 class="text-xl font-medium tracking-tight text-gray-800 dark:text-neutral-200">
 						{t('auth.sign-in.title')}
 					</h1>
-					<p class="text-sm {muted}">
+					<p class="text-sm text-gray-500 dark:text-neutral-500">
 						{t('auth.sign-in.subtitle')}
 					</p>
 				</div>
@@ -62,7 +58,7 @@
 				<form onsubmit={handleSubmit} class="space-y-6">
 					<div class="space-y-4">
 						<div class="group relative">
-							<Label for="email" colorSchema={cs}>
+							<Label for="email">
 								{t('auth.shared.email')}
 							</Label>
 							<Input
@@ -71,12 +67,11 @@
 								bind:value={email}
 								required
 								placeholder={t('auth.shared.emailPlaceholder')}
-								colorSchema={cs}
 							/>
 						</div>
 
 						<div class="group relative">
-							<Label for="password" colorSchema={cs}>
+							<Label for="password">
 								{t('auth.shared.password')}
 							</Label>
 							<Input
@@ -85,7 +80,6 @@
 								bind:value={password}
 								required
 								placeholder={t('auth.shared.passwordPlaceholder')}
-								colorSchema={cs}
 							/>
 						</div>
 					</div>
@@ -98,7 +92,6 @@
 						type="submit"
 						disabled={login.isPending}
 						variant="solid"
-						colorSchema={cs}
 					>
 						{#if login.isPending}
 							<Loader2 size={14} class="mx-auto animate-spin" />
@@ -109,9 +102,9 @@
 				</form>
 
 				<footer class="mt-12 text-center">
-					<p class="text-xs {muted}">
+					<p class="text-xs text-gray-500 dark:text-neutral-500">
 						{t('auth.sign-in.footer')}
-						<a href="/signup" class="ml-1 font-bold {text} hover:underline">
+						<a href="/signup" class="ml-1 font-bold text-gray-800 dark:text-neutral-200 hover:underline">
 							{t('auth.sign-in.footerLink')}
 						</a>
 					</p>

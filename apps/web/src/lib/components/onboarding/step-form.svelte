@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import FieldRenderer from './field-renderer.svelte';
 
 	type Field = {
@@ -14,11 +13,10 @@
 	type Props = {
 		fields: Field[];
 		data: Record<string, string>;
-		colorSchema?: ColorSchema;
 		onupdate: (data: Record<string, string>) => void;
 	};
 
-	let { fields, data, colorSchema = 'light', onupdate }: Props = $props();
+	let { fields, data, onupdate }: Props = $props();
 
 	function handleFieldChange(key: string, value: string) {
 		onupdate({ ...data, [key]: value });
@@ -30,7 +28,6 @@
 		<FieldRenderer
 			{field}
 			value={data[field.key] ?? ''}
-			{colorSchema}
 			onchange={(v) => handleFieldChange(field.key, v)}
 		/>
 	{/each}

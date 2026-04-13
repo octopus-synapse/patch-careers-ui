@@ -13,7 +13,6 @@
 	import { Button } from 'ui';
 	import { goto } from '$app/navigation';
 	import { Loader2, ArrowRight, ArrowLeft, Check } from 'lucide-svelte';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import Sidebar from '$lib/components/onboarding/sidebar.svelte';
@@ -24,13 +23,10 @@
 	import StepReview from '$lib/components/onboarding/step-review.svelte';
 	import PreviewPanel from '$lib/components/onboarding/preview-panel.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
 
 	const auth = createAuthSession(() => ({ query: { retry: false } }));
-	const authenticated = $derived(auth.data?.data?.data?.authenticated ?? false);
+	const authenticated = $derived(auth.data?.data?.authenticated ?? false);
 
 	$effect(() => {
 		if (!auth.isLoading && !authenticated) {
@@ -50,10 +46,10 @@
 		queryClient.invalidateQueries({ queryKey });
 	}
 
-	const onboardingData = $derived(session.data?.data?.data);
+	const onboardingData = $derived(session.data?.data);
 	const steps = $derived(onboardingData?.steps ?? []);
 	const currentStepId = $derived(onboardingData?.currentStep ?? '');
-	const currentStep = $derived(steps.find((s) => s.id === currentStepId));
+	const currentStep = $derived(steps.find((s: Record<string, unknown>) => s.id === currentStepId));
 	const completedSteps = $derived(onboardingData?.completedSteps ?? []);
 	const progress = $derived(onboardingData?.progress ?? 0);
 	const strength = $derived((onboardingData as Record<string, unknown> | undefined)?.strength as { score: number; message: string; level: string } | undefined);
@@ -70,7 +66,7 @@
 
 			if (currentStep.multipleItems && onboardingData?.sections) {
 				const section = onboardingData.sections.find(
-					(s) => s.sectionTypeKey === currentStep.sectionTypeKey
+					(s: Record<string, unknown>) => s.sectionTypeKey === currentStep.sectionTypeKey
 				);
 				if (section?.items) {
 					multiItems = [...section.items];
@@ -84,12 +80,12 @@
 
 	function getSavedDataForStep(stepId: string): Record<string, string> | null {
 		if (!onboardingData) return null;
-		const step = steps.find((s) => s.id === stepId);
+		const step = steps.find((s: Record<string, unknown>) => s.id === stepId);
 		if (!step?.fields) return null;
 
 		const result: Record<string, string> = {};
 		for (const field of step.fields) {
-			const val = (onboardingData as Record<string, unknown>)[field.key]
+			const val = (onboardingData as unknown as Record<string, unknown>)[field.key]
 				?? (onboardingData.personalInfo as Record<string, unknown> | undefined)?.[field.key]
 				?? (onboardingData.professionalProfile as Record<string, unknown> | undefined)?.[field.key]
 				?? (onboardingData.templateSelection as Record<string, unknown> | undefined)?.[field.key];
@@ -116,7 +112,7 @@
 		mutation: {
 			async onSuccess() {
 				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				const sessionData = auth.data?.data?.data as Record<string, unknown> | undefined;
+				const sessionData = auth.data?.data as Record<string, unknown> | undefined;
 				const user = sessionData?.user as Record<string, string | null> | undefined;
 				const username = user?.username;
 				goto(username ? `/@${username}` : '/');
@@ -190,12 +186,12 @@
 </script>
 
 <svelte:head>
-	<title>{t?.('onboarding.pageTitle') ?? ''}</title>
+	<title>{t('onboarding.pageTitle')}</title>
 </svelte:head>
 
 {#if auth.isLoading || session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin {muted}" />
+		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 	</div>
 {:else if t && onboardingData && currentStep}
 	<div class="font-sans antialiased transition-colors duration-300">
@@ -208,7 +204,6 @@
 					{completedSteps}
 					{progress}
 					{strength}
-					colorSchema={cs}
 				/>
 			</div>
 
@@ -222,7 +217,6 @@
 						{progress}
 						{strength}
 						{missingRequired}
-						colorSchema={cs}
 						{t}
 						ongoto={handleGoto}
 					/>
@@ -231,42 +225,40 @@
 				<!-- Content — fixed start position, scrolls independently -->
 				<div class="min-w-0 flex-1 max-w-lg pb-12">
 					<div class="mb-8 flex items-center justify-between">
-						<span class="text-[10px] font-semibold uppercase tracking-widest {muted}">
+						<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 							{t('onboarding.title')}
 						</span>
 						{#if saveStatus === 'saving'}
-							<Loader2 size={10} class="animate-spin {muted}" />
+							<Loader2 size={10} class="animate-spin text-gray-500 dark:text-neutral-500" />
 						{:else if saveStatus === 'saved'}
 							<Check size={10} class="text-green-500" />
 						{/if}
 					</div>
 					<div class="mb-8 text-center">
-						<h2 class="text-sm font-bold {text}">{currentStep.label}</h2>
+						<h2 class="text-sm font-bold text-gray-800 dark:text-neutral-200">{currentStep.label}</h2>
 						{#if currentStep.description}
-							<p class="mt-1 text-[10px] {muted}">{currentStep.description}</p>
+							<p class="mt-1 text-[10px] text-gray-500 dark:text-neutral-500">{currentStep.description}</p>
 						{/if}
 					</div>
 
 					{#if currentStep.component === 'review'}
 						<StepReview
-							session={onboardingData}
+							session={onboardingData as unknown as Record<string, unknown>}
 							{steps}
 							{completedSteps}
-							colorSchema={cs}
 							ongoto={handleGoto}
 						/>
-					{:else if currentStep.component === 'template' && currentStep.data?.length}
+					{:else if currentStep.component === 'template' && (currentStep as unknown as Record<string, unknown>).data}
+						{@const stepThemes = (currentStep as unknown as Record<string, unknown>).data as Array<{ id: string; name: string; description?: string | null; category: string; tags: string[]; atsScore?: number | null; thumbnailUrl?: string | null }>}
 						<StepTheme
-							themes={currentStep.data}
+							themes={stepThemes}
 							selectedThemeId={stepData.templateId ?? ''}
-							colorSchema={cs}
 							onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
 						/>
 					{:else if currentStep.multipleItems}
 						<StepMultiItems
 							fields={currentStep.fields ?? []}
 							items={multiItems}
-							colorSchema={cs}
 							{t}
 							onupdate={(items) => (multiItems = items)}
 						/>
@@ -274,7 +266,6 @@
 						<StepForm
 							fields={currentStep.fields ?? []}
 							data={stepData}
-							colorSchema={cs}
 							onupdate={(d) => (stepData = d)}
 						/>
 					{/if}
@@ -283,7 +274,7 @@
 						<button
 							onclick={handleSkip}
 							disabled={isPending}
-							class="mt-6 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 {muted}"
+							class="mt-6 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
 						>
 							{t('onboarding.skip')}
 						</button>
@@ -294,7 +285,7 @@
 							<button
 								onclick={handleBack}
 								disabled={isPending}
-								class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 {muted}"
+								class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-opacity hover:opacity-60 disabled:opacity-30 text-gray-500 dark:text-neutral-500"
 							>
 								<ArrowLeft size={14} />
 								{t('onboarding.back')}
@@ -309,7 +300,6 @@
 									onclick={handleComplete}
 									disabled={isPending || missingRequired.length > 0}
 									variant="solid"
-									colorSchema={cs}
 									class="max-w-[200px]"
 								>
 									{#if complete.isPending}
@@ -327,7 +317,6 @@
 								onclick={handleNext}
 								disabled={isPending}
 								variant="solid"
-								colorSchema={cs}
 								class="max-w-[200px]"
 							>
 								{#if nextStep.isPending}
@@ -344,7 +333,7 @@
 				</div>
 			<!-- Desktop preview -->
 			<div class="hidden xl:block flex-shrink-0">
-				<PreviewPanel token={auth.data?.data?.data?.accessToken} colorSchema={cs} />
+				<PreviewPanel token={(auth.data?.data as unknown as Record<string, string> | undefined)?.accessToken} />
 			</div>
 		</div>
 		</main>

@@ -9,11 +9,9 @@
 		getChatGetConversationsQueryKey,
 		getChatGetMessagesQueryKey
 	} from 'api-client';
-	import { customFetch } from 'api-client/client';
 	import { Button } from 'ui';
 	import { Loader2, Maximize2, Minimize2, X, ArrowLeft } from 'lucide-svelte';
 	import { fly, fade } from 'svelte/transition';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import ConversationList from './conversation-list.svelte';
@@ -23,15 +21,8 @@
 	import { Avatar } from 'ui';
 	import { browser } from '$app/environment';
 
-	const cs = $derived(colorSchema.mode);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const bg = $derived(cs === 'dark' ? 'bg-neutral-900' : 'bg-white');
-	const border = $derived(cs === 'dark' ? 'border-neutral-800' : 'border-gray-200');
-	const headerBg = $derived(cs === 'dark' ? 'bg-neutral-900' : 'bg-white');
-
 	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authData = $derived(auth.data?.data?.data as Record<string, unknown> | undefined);
+	const authData = $derived(auth.data?.data as Record<string, unknown> | undefined);
 	const authenticated = $derived(authData?.authenticated ?? false);
 	const currentUserId = $derived(String((authData?.user as Record<string, unknown>)?.id ?? ''));
 
@@ -41,9 +32,9 @@
 	);
 
 	const convListRaw = $derived(
-		(conversations.data?.data?.data as Record<string, unknown>)?.conversations as Record<string, unknown> ?? {}
+		(conversations.data?.data as unknown as Record<string, unknown>)?.conversations as Record<string, unknown> ?? {}
 	);
-	const convList = $derived((convListRaw?.conversations as Array<Record<string, unknown>>) ?? []);
+	const convList = $derived((Array.isArray(convListRaw) ? convListRaw : (convListRaw as Record<string, unknown>)?.conversations as Array<Record<string, unknown>>) ?? []);
 
 	const messages = createChatGetMessages(
 		() => chatState.activeConversationId ?? '',
@@ -52,9 +43,9 @@
 	);
 
 	const msgListRaw = $derived(
-		(messages.data?.data?.data as Record<string, unknown>)?.messages as Record<string, unknown> ?? {}
+		(messages.data?.data as unknown as Record<string, unknown>)?.messages as Record<string, unknown> ?? {}
 	);
-	const msgList = $derived((msgListRaw?.messages as Array<Record<string, unknown>>) ?? []);
+	const msgList = $derived((Array.isArray(msgListRaw) ? msgListRaw : (msgListRaw as Record<string, unknown>)?.messages as Array<Record<string, unknown>>) ?? []);
 
 	const queryClient = useQueryClient();
 
@@ -127,45 +118,45 @@
 
 	<div
 		transition:fly={{ y: 40, duration: 250 }}
-		class="fixed z-50 flex flex-col overflow-hidden shadow-2xl {bg} {border} border
+		class="fixed z-50 flex flex-col overflow-hidden shadow-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800
 			transition-all duration-300 ease-out
 			{chatState.isFullscreen
 				? 'inset-4 rounded-xl'
 				: 'bottom-0 right-4 h-[32rem] w-[22rem] rounded-t-xl'}"
 	>
 		<!-- Header -->
-		<div class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 {border} {headerBg}">
+		<div class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
 			<div class="flex items-center gap-2">
 				{#if chatState.activeConversationId && !chatState.isFullscreen}
-					<Button variant="icon" size="xs" onclick={() => chatState.setActiveConversation(null)} colorSchema={cs}>
+					<Button variant="icon" size="xs" onclick={() => chatState.setActiveConversation(null)}>
 						<ArrowLeft size={16} />
 					</Button>
 				{/if}
 				{#if activeOther && !chatState.isFullscreen}
 					<a href="/@{activeOther.username}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-						<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} colorSchema={cs} size="sm" />
+						<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} size="sm" />
 						<div class="min-w-0">
-							<span class="block truncate text-xs font-semibold {text}">
+							<span class="block truncate text-xs font-semibold text-gray-800 dark:text-neutral-200">
 								{activeOther.name ?? activeOther.username ?? 'User'}
 							</span>
 							{#if activeOther.username}
-								<span class="block text-[10px] {muted}">@{activeOther.username}</span>
+								<span class="block text-[10px] text-gray-500 dark:text-neutral-500">@{activeOther.username}</span>
 							{/if}
 						</div>
 					</a>
 				{:else}
-					<span class="text-[11px] font-bold uppercase tracking-widest {muted}">Messages</span>
+					<span class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Messages</span>
 				{/if}
 			</div>
 			<div class="flex items-center gap-1">
-				<Button variant="icon" size="xs" onclick={() => chatState.toggleFullscreen()} colorSchema={cs}>
+				<Button variant="icon" size="xs" onclick={() => chatState.toggleFullscreen()}>
 					{#if chatState.isFullscreen}
 						<Minimize2 size={14} />
 					{:else}
 						<Maximize2 size={14} />
 					{/if}
 				</Button>
-				<Button variant="icon" size="xs" onclick={() => chatState.close()} colorSchema={cs}>
+				<Button variant="icon" size="xs" onclick={() => chatState.close()}>
 					<X size={14} />
 				</Button>
 			</div>
@@ -174,41 +165,40 @@
 		{#if chatState.isFullscreen}
 			<!-- Fullscreen: two-column layout -->
 			<div class="flex flex-1" style="min-height:0">
-				<div class="flex w-72 flex-shrink-0 flex-col border-r {border}">
+				<div class="flex w-72 flex-shrink-0 flex-col border-r border-gray-200 dark:border-neutral-800">
 					<div class="px-3 py-2">
-						<UserSearch colorSchema={cs} onselect={startNewConversation} />
+						<UserSearch onselect={startNewConversation} />
 					</div>
 					<div class="flex-1 overflow-y-auto scrollbar-thin">
 						<ConversationList
 							conversations={convList as any}
 							{currentUserId}
 							activeConversationId={chatState.activeConversationId ?? undefined}
-							colorSchema={cs}
 							onselect={selectConversation}
 						/>
 					</div>
 				</div>
-				<div class="flex flex-1 flex-col {cs === 'dark' ? 'bg-neutral-950/30' : 'bg-gray-50/50'}">
+				<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30">
 					{#if chatState.activeConversationId && activeOther}
-						<a href="/@{activeOther.username}" onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }} class="flex items-center gap-3 border-b px-5 py-3 transition-colors hover:opacity-80 {border}">
-							<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} colorSchema={cs} size="lg" />
+						<a href="/@{activeOther.username}" onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }} class="flex items-center gap-3 border-b px-5 py-3 transition-colors hover:opacity-80 border-gray-200 dark:border-neutral-800">
+							<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} size="lg" />
 							<div class="min-w-0">
-								<span class="block truncate text-sm font-semibold {text}">
+								<span class="block truncate text-sm font-semibold text-gray-800 dark:text-neutral-200">
 									{activeOther.name ?? activeOther.username ?? 'User'}
 								</span>
 								{#if activeOther.username}
-									<span class="block text-[11px] {muted}">@{activeOther.username}</span>
+									<span class="block text-[11px] text-gray-500 dark:text-neutral-500">@{activeOther.username}</span>
 								{/if}
 							</div>
 						</a>
-						<MessageThread messages={msgList as any} {currentUserId} colorSchema={cs} />
-						<MessageInput colorSchema={cs} disabled={sendMessage.isPending} onsend={handleSend} />
+						<MessageThread messages={msgList as any} {currentUserId} />
+						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}
-						<MessageThread messages={msgList as any} {currentUserId} colorSchema={cs} />
-						<MessageInput colorSchema={cs} disabled={sendMessage.isPending} onsend={handleSend} />
+						<MessageThread messages={msgList as any} {currentUserId} />
+						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else}
 						<div class="flex flex-1 items-center justify-center">
-							<span class="text-[10px] uppercase tracking-widest {muted}">select a conversation</span>
+							<span class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-neutral-500">select a conversation</span>
 						</div>
 					{/if}
 				</div>
@@ -218,27 +208,26 @@
 			<div class="flex flex-1 flex-col" style="min-height:0">
 				{#if showConvList}
 					<div class="px-3 py-2">
-						<UserSearch colorSchema={cs} onselect={startNewConversation} />
+						<UserSearch onselect={startNewConversation} />
 					</div>
 					<div class="flex-1 overflow-y-auto scrollbar-thin">
 						{#if conversations.isLoading}
 							<div class="flex items-center justify-center py-10">
-								<Loader2 size={14} class="animate-spin {muted}" />
+								<Loader2 size={14} class="animate-spin text-gray-500 dark:text-neutral-500" />
 							</div>
 						{:else}
 							<ConversationList
 								conversations={convList as any}
 								{currentUserId}
 								activeConversationId={undefined}
-								colorSchema={cs}
 								onselect={selectConversation}
 							/>
 						{/if}
 					</div>
 				{:else}
-					<div class="flex flex-1 flex-col {cs === 'dark' ? 'bg-neutral-950/30' : 'bg-gray-50/50'}" style="min-height:0">
-						<MessageThread messages={msgList as any} {currentUserId} colorSchema={cs} />
-						<MessageInput colorSchema={cs} disabled={sendMessage.isPending} onsend={handleSend} />
+					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
+						<MessageThread messages={msgList as any} {currentUserId} />
+						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					</div>
 				{/if}
 			</div>

@@ -56,14 +56,12 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  BatchTranslationResultDto,
+  HealthCheckResponseDto,
   TranslateBatchDto,
   TranslateSimpleDto,
   TranslateTextDto,
-  TranslationHealthCheck200,
-  TranslationTranslateBatch201,
-  TranslationTranslateEnToPt201,
-  TranslationTranslatePtToEn201,
-  TranslationTranslateText201
+  TranslationResultDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -77,7 +75,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Check translation service health
  */
 export type translationHealthCheckResponse200 = {
-  data: TranslationHealthCheck200
+  data: HealthCheckResponseDto
   status: 200
 }
 
@@ -238,7 +236,7 @@ export const prefetchTranslationHealthCheckQuery = async <TData = Awaited<Return
  * @summary Translate a single text
  */
 export type translationTranslateTextResponse201 = {
-  data: TranslationTranslateText201
+  data: TranslationResultDto
   status: 201
 }
 
@@ -332,7 +330,7 @@ export const createTranslationTranslateText = <TError = void,
  * @summary Translate multiple texts in batch
  */
 export type translationTranslateBatchResponse201 = {
-  data: TranslationTranslateBatch201
+  data: BatchTranslationResultDto
   status: 201
 }
 
@@ -426,7 +424,7 @@ export const createTranslationTranslateBatch = <TError = void,
  * @summary Translate Portuguese to English
  */
 export type translationTranslatePtToEnResponse201 = {
-  data: TranslationTranslatePtToEn201
+  data: TranslationResultDto
   status: 201
 }
 
@@ -520,7 +518,7 @@ export const createTranslationTranslatePtToEn = <TError = void,
  * @summary Translate English to Portuguese
  */
 export type translationTranslateEnToPtResponse201 = {
-  data: TranslationTranslateEnToPt201
+  data: TranslationResultDto
   status: 201
 }
 

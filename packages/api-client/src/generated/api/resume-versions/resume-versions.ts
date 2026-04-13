@@ -56,11 +56,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ResumeVersionGetVersion200,
-  ResumeVersionGetVersions200,
-  ResumeVersionGetVersionsNested200,
-  ResumeVersionRestoreVersion200,
-  ResumeVersionRestoreVersionNested200
+  ResumeVersionDataDto,
+  ResumeVersionListDataDto,
+  ResumeVersionRestoreDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -74,7 +72,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary List resume versions (nested route)
  */
 export type resumeVersionGetVersionsNestedResponse200 = {
-  data: ResumeVersionGetVersionsNested200
+  data: ResumeVersionListDataDto
   status: 200
 }
 
@@ -235,7 +233,7 @@ export const prefetchResumeVersionGetVersionsNestedQuery = async <TData = Awaite
  * @summary Restore resume version (nested route)
  */
 export type resumeVersionRestoreVersionNestedResponse200 = {
-  data: ResumeVersionRestoreVersionNested200
+  data: ResumeVersionRestoreDataDto
   status: 200
 }
 
@@ -318,7 +316,7 @@ export const createResumeVersionRestoreVersionNested = <TError = unknown,
  * @summary List resume versions
  */
 export type resumeVersionGetVersionsResponse200 = {
-  data: ResumeVersionGetVersions200
+  data: ResumeVersionListDataDto
   status: 200
 }
 
@@ -479,7 +477,7 @@ export const prefetchResumeVersionGetVersionsQuery = async <TData = Awaited<Retu
  * @summary Get a specific resume version
  */
 export type resumeVersionGetVersionResponse200 = {
-  data: ResumeVersionGetVersion200
+  data: ResumeVersionDataDto
   status: 200
 }
 
@@ -652,7 +650,7 @@ export const prefetchResumeVersionGetVersionQuery = async <TData = Awaited<Retur
  * @summary Restore resume version
  */
 export type resumeVersionRestoreVersionResponse200 = {
-  data: ResumeVersionRestoreVersion200
+  data: ResumeVersionRestoreDataDto
   status: 200
 }
 

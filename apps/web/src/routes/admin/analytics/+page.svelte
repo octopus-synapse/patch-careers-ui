@@ -4,20 +4,13 @@
 		createAdminDashboardGetMetrics,
 	} from 'api-client';
 	import { browser } from '$app/environment';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { Loader2 } from 'lucide-svelte';
 	import { SegmentToggle } from 'ui';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
 	import ExportButton from '$lib/components/admin/export-button.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-	const barColor = $derived(cs === 'dark' ? '#a3a3a3' : '#374151');
 
 	let period = $state<'day' | 'week' | 'month'>('week');
 
@@ -60,15 +53,14 @@
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight {text}">
+		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
 			{t?.('admin.analytics.title') ?? 'Global Analytics'}
 		</h1>
 		<div class="flex items-center gap-2">
-			<ExportButton data={[...atsDist, ...byLang, ...sections, ...imports]} filename="analytics.csv" colorSchema={cs} />
+			<ExportButton data={[...atsDist, ...byLang, ...sections, ...imports]} filename="analytics.csv" />
 			<SegmentToggle
 			options={periodOptions}
 			selected={period}
-			colorSchema={cs}
 			onchange={(v) => period = v as 'day' | 'week' | 'month'}
 		/>
 		</div>
@@ -76,51 +68,51 @@
 
 	{#if metrics}
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-			<StatCard label={t?.('admin.dashboard.signupsWeek') ?? 'Signups This Week'} value={metrics.signupsThisWeek as number} colorSchema={cs} />
-			<StatCard label={t?.('admin.dashboard.signupsMonth') ?? 'Signups This Month'} value={metrics.signupsThisMonth as number} colorSchema={cs} />
-			<StatCard label={t?.('admin.dashboard.avgAtsScore') ?? 'Avg ATS Score'} value={metrics.averageAtsScore as number} colorSchema={cs} />
-			<StatCard label={t?.('admin.dashboard.onboardingRate') ?? 'Onboarding Rate'} value={`${metrics.onboardingCompletionRate}%`} colorSchema={cs} />
+			<StatCard label={t?.('admin.dashboard.signupsWeek') ?? 'Signups This Week'} value={metrics.signupsThisWeek as number} />
+			<StatCard label={t?.('admin.dashboard.signupsMonth') ?? 'Signups This Month'} value={metrics.signupsThisMonth as number} />
+			<StatCard label={t?.('admin.dashboard.avgAtsScore') ?? 'Avg ATS Score'} value={metrics.averageAtsScore as number} />
+			<StatCard label={t?.('admin.dashboard.onboardingRate') ?? 'Onboarding Rate'} value={`${metrics.onboardingCompletionRate}%`} />
 		</div>
 	{/if}
 
 	{#if analyticsQuery.isLoading}
 		<div class="flex items-center justify-center py-20">
-			<Loader2 size={24} class="animate-spin {muted}" />
+			<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 		</div>
 	{:else if data}
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<!-- ATS Score Distribution -->
-			<div class="rounded-xl border p-5 {cardBg} {cardBorder}">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest {muted}">
+			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.atsDistribution') ?? 'ATS Score Distribution'}
 				</h3>
 				<div class="flex items-end gap-2" style="height: 120px">
 					{#each atsDist as bucket}
 						{@const pct = (bucket.count / maxValue(atsDist)) * 100}
 						<div class="flex flex-1 flex-col items-center gap-1">
-							<span class="text-[9px] {muted}">{bucket.count}</span>
-							<div class="w-full rounded-t" style="height: {pct}%; background: {barColor}; min-height: 2px"></div>
-							<span class="text-[9px] {muted}">{bucket.bucket}</span>
+							<span class="text-[9px] text-gray-500 dark:text-neutral-500">{bucket.count}</span>
+							<div class="w-full rounded-t bg-gray-700 dark:bg-neutral-400" style="height: {pct}%; min-height: 2px"></div>
+							<span class="text-[9px] text-gray-500 dark:text-neutral-500">{bucket.bucket}</span>
 						</div>
 					{/each}
 				</div>
 			</div>
 
 			<!-- Resumes by Language -->
-			<div class="rounded-xl border p-5 {cardBg} {cardBorder}">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest {muted}">
+			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.resumesByLanguage') ?? 'Resumes by Language'}
 				</h3>
 				<div class="space-y-3">
 					{#each byLang as lang}
 						{@const pct = (lang.count / maxValue(byLang)) * 100}
 						<div>
-							<div class="flex items-center justify-between text-xs {text}">
+							<div class="flex items-center justify-between text-xs text-gray-800 dark:text-neutral-200">
 								<span>{lang.language}</span>
 								<span>{lang.count}</span>
 							</div>
-							<div class="mt-1 h-2 w-full rounded-full {cs === 'dark' ? 'bg-neutral-700' : 'bg-gray-200'}">
-								<div class="h-full rounded-full" style="width: {pct}%; background: {barColor}"></div>
+							<div class="mt-1 h-2 w-full rounded-full bg-gray-200 dark:bg-neutral-700">
+								<div class="h-full rounded-full bg-gray-700 dark:bg-neutral-400" style="width: {pct}%"></div>
 							</div>
 						</div>
 					{/each}
@@ -128,34 +120,34 @@
 			</div>
 
 			<!-- Most Used Sections -->
-			<div class="rounded-xl border p-5 {cardBg} {cardBorder}">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest {muted}">
+			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.topSections') ?? 'Most Used Sections'}
 				</h3>
 				<div class="space-y-2">
 					{#each sections as section}
 						<div class="flex items-center justify-between text-sm">
-							<span class={text}>{section.title}</span>
-							<span class={muted}>{section.count}</span>
+							<span class="text-gray-800 dark:text-neutral-200">{section.title}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{section.count}</span>
 						</div>
 					{/each}
 				</div>
 			</div>
 
 			<!-- Import Sources -->
-			<div class="rounded-xl border p-5 {cardBg} {cardBorder}">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest {muted}">
+			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.importSources') ?? 'Import Sources'}
 				</h3>
 				<div class="space-y-2">
 					{#each imports as src}
 						<div class="flex items-center justify-between text-sm">
-							<span class={text}>{src.source}</span>
-							<span class={muted}>{src.count}</span>
+							<span class="text-gray-800 dark:text-neutral-200">{src.source}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{src.count}</span>
 						</div>
 					{/each}
 					{#if imports.length === 0}
-						<p class="text-xs {muted}">No imports yet</p>
+						<p class="text-xs text-gray-500 dark:text-neutral-500">No imports yet</p>
 					{/if}
 				</div>
 			</div>

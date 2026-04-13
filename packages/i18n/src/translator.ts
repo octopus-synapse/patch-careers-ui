@@ -18,6 +18,13 @@ function interpolate(template: string, params: TranslateParams): string {
   );
 }
 
+/**
+ * No-op translator that returns the key as-is.
+ * Used as default before async dictionary loading completes,
+ * so that locale.t is never null.
+ */
+export const NOOP_TRANSLATOR: Translator = (key) => key;
+
 export function createTranslator(dictionary: Dictionary): Translator {
   return (key, params) => {
     const value = resolve(dictionary, key);

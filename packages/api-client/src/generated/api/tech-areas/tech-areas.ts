@@ -52,8 +52,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  TechAreasGetAreas200,
-  TechAreasGetNichesByArea200
+  TechAreaListDataDto,
+  TechNicheListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -67,7 +67,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get all tech areas
  */
 export type techAreasGetAreasResponse200 = {
-  data: TechAreasGetAreas200
+  data: TechAreaListDataDto
   status: 200
 }
 
@@ -240,7 +240,7 @@ export const prefetchTechAreasGetAreasQuery = async <TData = Awaited<ReturnType<
  * @summary Get niches by area type
  */
 export type techAreasGetNichesByAreaResponse200 = {
-  data: TechAreasGetNichesByArea200
+  data: TechNicheListDataDto
   status: 200
 }
 

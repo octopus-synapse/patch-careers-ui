@@ -56,19 +56,18 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ChatGetConversation200,
-  ChatGetConversationWith200,
-  ChatGetConversations200,
   ChatGetConversationsParams,
-  ChatGetMessages200,
   ChatGetMessagesParams,
-  ChatGetUnreadCount200,
-  ChatMarkConversationAsRead201,
+  ChatMessageDataDto,
   ChatSearchUsersParams,
-  ChatSendMessage201,
-  ChatSendMessageToConversation201,
+  ConversationDataDto,
+  ConversationNullableDataDto,
+  ConversationsListDataDto,
+  MarkAsReadDataDto,
+  MessagesListDataDto,
   SendMessageDto,
-  SendMessageToConversationDto
+  SendMessageToConversationDto,
+  UnreadCountDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -82,7 +81,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Send a message to a user
  */
 export type chatSendMessageResponse201 = {
-  data: ChatSendMessage201
+  data: ChatMessageDataDto
   status: 201
 }
 
@@ -176,7 +175,7 @@ export const createChatSendMessage = <TError = void,
  * @summary Send a message to an existing conversation
  */
 export type chatSendMessageToConversationResponse201 = {
-  data: ChatSendMessageToConversation201
+  data: ChatMessageDataDto
   status: 201
 }
 
@@ -271,7 +270,7 @@ export const createChatSendMessageToConversation = <TError = void,
  * @summary Get messages for a conversation
  */
 export type chatGetMessagesResponse200 = {
-  data: ChatGetMessages200
+  data: MessagesListDataDto
   status: 200
 }
 
@@ -463,7 +462,7 @@ export const prefetchChatGetMessagesQuery = async <TData = Awaited<ReturnType<ty
  * @summary Get all conversations for the current user
  */
 export type chatGetConversationsResponse200 = {
-  data: ChatGetConversations200
+  data: ConversationsListDataDto
   status: 200
 }
 
@@ -643,7 +642,7 @@ export const prefetchChatGetConversationsQuery = async <TData = Awaited<ReturnTy
  * @summary Get a single conversation
  */
 export type chatGetConversationResponse200 = {
-  data: ChatGetConversation200
+  data: ConversationDataDto
   status: 200
 }
 
@@ -816,7 +815,7 @@ export const prefetchChatGetConversationQuery = async <TData = Awaited<ReturnTyp
  * @summary Mark all messages in a conversation as read
  */
 export type chatMarkConversationAsReadResponse201 = {
-  data: ChatMarkConversationAsRead201
+  data: MarkAsReadDataDto
   status: 201
 }
 
@@ -909,7 +908,7 @@ export const createChatMarkConversationAsRead = <TError = void,
  * @summary Get unread message count
  */
 export type chatGetUnreadCountResponse200 = {
-  data: ChatGetUnreadCount200
+  data: UnreadCountDataDto
   status: 200
 }
 
@@ -1082,7 +1081,7 @@ export const prefetchChatGetUnreadCountQuery = async <TData = Awaited<ReturnType
  * @summary Get or create conversation with a user
  */
 export type chatGetConversationWithResponse200 = {
-  data: ChatGetConversationWith200
+  data: ConversationNullableDataDto
   status: 200
 }
 

@@ -56,12 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ImportJobDto,
   ImportJsonDto,
-  ResumeImportGetHistory200,
-  ResumeImportGetStatus200,
-  ResumeImportImportJson201,
-  ResumeImportParseJson200,
-  ResumeImportRetry200,
+  ImportResultDto,
+  ParsedResumeDataDto,
   RetryImportRequestDto
 } from '../../models';
 
@@ -77,7 +75,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Import resume from JSON Resume format
  */
 export type resumeImportImportJsonResponse201 = {
-  data: ResumeImportImportJson201
+  data: ImportResultDto
   status: 201
 }
 
@@ -172,7 +170,7 @@ export const createResumeImportImportJson = <TError = void,
  * @summary Parse JSON Resume without importing
  */
 export type resumeImportParseJsonResponse200 = {
-  data: ResumeImportParseJson200
+  data: ParsedResumeDataDto
   status: 200
 }
 
@@ -267,7 +265,7 @@ export const createResumeImportParseJson = <TError = void,
  * @summary Get import job status
  */
 export type resumeImportGetStatusResponse200 = {
-  data: ResumeImportGetStatus200
+  data: ImportJobDto
   status: 200
 }
 
@@ -535,7 +533,7 @@ export const createResumeImportCancel = <TError = void,
  * @summary Get import history
  */
 export type resumeImportGetHistoryResponse200 = {
-  data: ResumeImportGetHistory200
+  data: ImportJobDto
   status: 200
 }
 
@@ -709,7 +707,7 @@ export const prefetchResumeImportGetHistoryQuery = async <TData = Awaited<Return
  * @summary Retry failed import
  */
 export type resumeImportRetryResponse200 = {
-  data: ResumeImportRetry200
+  data: ImportResultDto
   status: 200
 }
 

@@ -35,9 +35,5 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { ApiResponseDto } from './apiResponseDto';
-import type { ResumeAnalyticsGetKeywordSuggestions200Data } from './resumeAnalyticsGetKeywordSuggestions200Data';
 
-export type ResumeAnalyticsGetKeywordSuggestions200 = ApiResponseDto & {
-  data: ResumeAnalyticsGetKeywordSuggestions200Data;
-};
+export type ResumeAnalyticsGetKeywordSuggestions200 = { [key: string]: unknown };

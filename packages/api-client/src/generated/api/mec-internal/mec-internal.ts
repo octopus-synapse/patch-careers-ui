@@ -56,10 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  MecInternalGetSyncHistory200,
   MecInternalGetSyncHistoryParams,
-  MecInternalGetSyncStatus200,
-  MecInternalTriggerSync201,
+  MecSyncExecutionDataDto,
+  MecSyncHistoryDataDto,
+  MecSyncStatusDataDto,
   TriggerMecSyncRequestDto
 } from '../../models';
 
@@ -74,7 +74,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Trigger MEC data synchronization
  */
 export type mecInternalTriggerSyncResponse201 = {
-  data: MecInternalTriggerSync201
+  data: MecSyncExecutionDataDto
   status: 201
 }
 
@@ -156,7 +156,7 @@ export const createMecInternalTriggerSync = <TError = unknown,
  * @summary Get sync status
  */
 export type mecInternalGetSyncStatusResponse200 = {
-  data: MecInternalGetSyncStatus200
+  data: MecSyncStatusDataDto
   status: 200
 }
 
@@ -317,7 +317,7 @@ export const prefetchMecInternalGetSyncStatusQuery = async <TData = Awaited<Retu
  * @summary Get sync history
  */
 export type mecInternalGetSyncHistoryResponse200 = {
-  data: MecInternalGetSyncHistory200
+  data: MecSyncHistoryDataDto
   status: 200
 }
 

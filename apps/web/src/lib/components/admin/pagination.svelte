@@ -1,19 +1,14 @@
 <script lang="ts">
 	import { Button } from 'ui';
-	import type { ColorSchema } from 'ui';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
 	type Props = {
 		page: number;
 		totalPages: number;
-		colorSchema?: ColorSchema;
 		onpagechange: (page: number) => void;
 	};
 
-	let { page, totalPages, colorSchema = 'light', onpagechange }: Props = $props();
-
-	const cs = $derived(colorSchema);
-	const activeBg = $derived(cs === 'dark' ? 'bg-neutral-700 text-neutral-200' : 'bg-gray-200 text-gray-800');
+	let { page, totalPages, onpagechange }: Props = $props();
 
 	const pages = $derived(() => {
 		const result: (number | '...')[] = [];
@@ -30,8 +25,6 @@
 		result.push(totalPages);
 		return result;
 	});
-
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-400');
 </script>
 
 {#if totalPages > 1}
@@ -41,7 +34,6 @@
 			size="sm"
 			onclick={() => onpagechange(page - 1)}
 			disabled={page <= 1}
-			colorSchema={cs}
 			aria-label="Previous page"
 		>
 			<ChevronLeft size={16} />
@@ -49,14 +41,13 @@
 
 		{#each pages() as p}
 			{#if p === '...'}
-				<span class="px-2 text-xs {muted}">...</span>
+				<span class="px-2 text-xs text-gray-400 dark:text-neutral-500">...</span>
 			{:else}
 				<Button
 					variant="ghost"
 					size="xs"
 					onclick={() => onpagechange(p)}
-					colorSchema={cs}
-					class={p === page ? activeBg : ''}
+					class={p === page ? 'bg-gray-200 text-gray-800 dark:bg-neutral-700 dark:text-neutral-200' : ''}
 				>
 					{p}
 				</Button>
@@ -68,7 +59,6 @@
 			size="sm"
 			onclick={() => onpagechange(page + 1)}
 			disabled={page >= totalPages}
-			colorSchema={cs}
 			aria-label="Next page"
 		>
 			<ChevronRight size={16} />

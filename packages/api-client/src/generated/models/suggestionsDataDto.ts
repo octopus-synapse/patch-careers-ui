@@ -35,8 +35,8 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
-import type { SuggestionsDataDtoSuggestionsItem } from './suggestionsDataDtoSuggestionsItem';
+import type { SuggestionsDataDtoSuggestions } from './suggestionsDataDtoSuggestions';
 
 export interface SuggestionsDataDto {
-  suggestions: SuggestionsDataDtoSuggestionsItem[];
+  suggestions: SuggestionsDataDtoSuggestions;
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Avatar, SegmentToggle } from 'ui';
-	import type { ColorSchema } from 'ui';
+	import { colorSchema } from '$lib/color-schema.svelte';
 	import { Sun, Moon, Globe, LogOut, ChevronDown, Settings } from 'lucide-svelte';
 
 	type User = {
@@ -11,9 +11,7 @@
 
 	type Props = {
 		user: User;
-		cs: ColorSchema;
 		isOpen: boolean;
-		styles: Record<string, Record<string, string>>;
 		themeLabel: string;
 		logoutLabel: string;
 		settingsLabel?: string;
@@ -25,8 +23,9 @@
 		onlogout: () => void;
 	};
 
-	let { user, cs, isOpen, styles: s, themeLabel, logoutLabel, settingsLabel, locales, currentLocale, ontoggle, onthemetoggle, onlocalechange, onlogout }: Props = $props();
+	let { user, isOpen, themeLabel, logoutLabel, settingsLabel, locales, currentLocale, ontoggle, onthemetoggle, onlocalechange, onlogout }: Props = $props();
 
+	const cs = $derived(colorSchema.mode);
 	const displayName = $derived(user.name ?? user.email.split('@')[0]);
 	const initial = $derived(user.name ?? user.email);
 	const themeOptions = [{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }];
@@ -35,46 +34,47 @@
 
 <div class="relative hidden md:block" data-dropdown>
 	<button onclick={ontoggle} class="flex items-center gap-2 p-1">
-		<Avatar name={initial} colorSchema={cs} size="sm" />
-		<ChevronDown size={14} class="transition-transform duration-200 {s.muted[cs]} {isOpen ? 'rotate-180' : ''}" />
+		<Avatar name={initial} size="sm" />
+		<ChevronDown size={14} class="transition-transform duration-200 text-gray-500 dark:text-neutral-500 {isOpen ? 'rotate-180' : ''}" />
 	</button>
 
 	{#if isOpen}
-		<div class="absolute right-0 mt-3 w-56 rounded-lg {s.dropdownBg[cs]}">
+		<div class="absolute right-0 mt-3 w-56 rounded-lg bg-white dark:bg-neutral-800">
 			<div class="px-4 pt-4 pb-3">
-				<p class="text-sm font-semibold {s.text[cs]}">{displayName}</p>
+				<p class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{displayName}</p>
 				{#if user.username}
-					<p class="text-[11px] {s.muted[cs]}">@{user.username}</p>
+					<p class="text-[11px] text-gray-500 dark:text-neutral-500">@{user.username}</p>
 				{/if}
-				<p class="text-[10px] {s.muted[cs]}">{user.email}</p>
+				<p class="text-[10px] text-gray-500 dark:text-neutral-500">{user.email}</p>
 			</div>
 
-			<div class="border-t {s.border[cs]}">
+			<div class="border-t border-gray-200/60 dark:border-neutral-800/60">
 				<div class="px-4 py-3">
 					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2 {s.muted[cs]}">
-							{#if cs === 'dark'}<Sun size={13} />{:else}<Moon size={13} />{/if}
+						<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
+							<Sun size={13} class="hidden dark:block" />
+							<Moon size={13} class="block dark:hidden" />
 							<span class="text-[10px] font-semibold uppercase tracking-widest">{themeLabel}</span>
 						</div>
-						<SegmentToggle options={themeOptions} selected={cs} colorSchema={cs} onchange={onthemetoggle} />
+						<SegmentToggle options={themeOptions} selected={cs} onchange={onthemetoggle} />
 					</div>
 				</div>
 
 				<div class="px-4 py-3">
 					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2 {s.muted[cs]}">
+						<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
 							<Globe size={13} />
 							<span class="text-[10px] font-semibold uppercase tracking-widest">Language</span>
 						</div>
-						<SegmentToggle options={localeOptions} selected={currentLocale} colorSchema={cs} onchange={onlocalechange} />
+						<SegmentToggle options={localeOptions} selected={currentLocale} onchange={onlocalechange} />
 					</div>
 				</div>
 			</div>
 
-			<div class="border-t {s.border[cs]}">
+			<div class="border-t border-gray-200/60 dark:border-neutral-800/60">
 				<a
 					href="/settings"
-					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 {s.muted[cs]}"
+					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 text-gray-500 dark:text-neutral-500"
 				>
 					<Settings size={13} />
 					{settingsLabel ?? 'Settings'}

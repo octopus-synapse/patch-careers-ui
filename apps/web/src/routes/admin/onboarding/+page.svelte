@@ -10,7 +10,6 @@
 		getAdminOnboardingGetConfigQueryKey,
 	} from 'api-client';
 	import { browser } from '$app/environment';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { ChevronUp, ChevronDown, Trash2, ToggleLeft, ToggleRight, Plus, Pencil, Settings } from 'lucide-svelte';
@@ -20,13 +19,7 @@
 	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
 	import FormModal from '$lib/components/admin/form-modal.svelte';
 
-	const cs = $derived(colorSchema.mode);
 	const t = $derived(locale.t);
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
-	const labelClass = $derived(`text-[10px] font-bold uppercase tracking-widest ${muted}`);
 	const queryClient = useQueryClient();
 
 	const stepsQuery = createAdminOnboardingListSteps(() => ({ query: { enabled: browser } }));
@@ -172,41 +165,41 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<h1 class="text-xl font-semibold tracking-tight {text}">{t?.('admin.onboarding.title') ?? 'Onboarding Monitoring'}</h1>
+	<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t?.('admin.onboarding.title') ?? 'Onboarding Monitoring'}</h1>
 
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-		<StatCard label={t?.('admin.onboarding.steps') ?? 'Total Steps'} value={steps.length} colorSchema={cs} />
-		<StatCard label={t?.('admin.onboarding.isActive') ?? 'Active Steps'} value={steps.filter(s => s.isActive).length} colorSchema={cs} />
-		<StatCard label="Inactive Steps" value={steps.filter(s => !s.isActive).length} colorSchema={cs} />
+		<StatCard label={t?.('admin.onboarding.steps') ?? 'Total Steps'} value={steps.length} />
+		<StatCard label={t?.('admin.onboarding.isActive') ?? 'Active Steps'} value={steps.filter(s => s.isActive).length} />
+		<StatCard label="Inactive Steps" value={steps.filter(s => !s.isActive).length} />
 	</div>
 
 	<div>
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-sm font-semibold uppercase tracking-widest {muted}">{t?.('admin.onboarding.steps') ?? 'Steps Configuration'}</h2>
-			<Button variant="solid" size="sm" onclick={openCreateStep} colorSchema={cs}>
+			<h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t?.('admin.onboarding.steps') ?? 'Steps Configuration'}</h2>
+			<Button variant="solid" size="sm" onclick={openCreateStep}>
 				<Plus size={14} /> Add Step
 			</Button>
 		</div>
 
-		<DataTable {columns} data={sortedSteps} loading={stepsQuery.isLoading} emptyMessage={t?.('admin.onboarding.noSteps') ?? 'No steps configured'} colorSchema={cs}>
+		<DataTable {columns} data={sortedSteps} loading={stepsQuery.isLoading} emptyMessage={t?.('admin.onboarding.noSteps') ?? 'No steps configured'}>
 			{#snippet cell({ row, key })}
 				{#if key === 'isActive'}
-					<Button variant="icon" size="xs" onclick={() => handleToggleActive(row)} colorSchema={cs}>
-						{#if row.isActive}<ToggleRight size={20} class="text-emerald-500" />{:else}<ToggleLeft size={20} class={muted} />{/if}
+					<Button variant="icon" size="xs" onclick={() => handleToggleActive(row)}>
+						{#if row.isActive}<ToggleRight size={20} class="text-emerald-500" />{:else}<ToggleLeft size={20} class="text-gray-500 dark:text-neutral-500" />{/if}
 					</Button>
 				{:else if key === 'actions'}
 					<div class="flex items-center gap-1">
-						<Tooltip text="Edit" colorSchema={cs}>
-							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEditStep(row); }} colorSchema={cs}><Pencil size={14} /></Button>
+						<Tooltip text="Edit">
+							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEditStep(row); }}><Pencil size={14} /></Button>
 						</Tooltip>
-						<Tooltip text="Move up" colorSchema={cs}>
-							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleReorder(row, 'up'); }} colorSchema={cs}><ChevronUp size={14} /></Button>
+						<Tooltip text="Move up">
+							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleReorder(row, 'up'); }}><ChevronUp size={14} /></Button>
 						</Tooltip>
-						<Tooltip text="Move down" colorSchema={cs}>
-							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleReorder(row, 'down'); }} colorSchema={cs}><ChevronDown size={14} /></Button>
+						<Tooltip text="Move down">
+							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleReorder(row, 'down'); }}><ChevronDown size={14} /></Button>
 						</Tooltip>
-						<Tooltip text="Delete" colorSchema={cs}>
-							<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteKey = row.key as string; }} colorSchema={cs}><Trash2 size={14} /></Button>
+						<Tooltip text="Delete">
+							<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteKey = row.key as string; }}><Trash2 size={14} /></Button>
 						</Tooltip>
 					</div>
 				{:else}
@@ -219,60 +212,60 @@
 	<!-- Strength Config -->
 	<div>
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="text-sm font-semibold uppercase tracking-widest {muted}">Strength Configuration</h2>
-			<Button variant="ghost" size="sm" onclick={openConfigEdit} colorSchema={cs}>
+			<h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Strength Configuration</h2>
+			<Button variant="ghost" size="sm" onclick={openConfigEdit}>
 				<Settings size={14} /> Edit
 			</Button>
 		</div>
 		{#if strengthLevels.length > 0}
 			<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
 				{#each strengthLevels as level}
-					<div class="rounded-lg border px-4 py-3 {cardBg} {cardBorder}">
-						<p class="text-xs font-semibold uppercase {text}">{level.level}</p>
-						<p class="text-[10px] {muted}">Min score: {level.minScore}</p>
-						<p class="mt-1 text-xs {muted}">{level.message}</p>
+					<div class="rounded-lg border px-4 py-3 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+						<p class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">{level.level}</p>
+						<p class="text-[10px] text-gray-500 dark:text-neutral-500">Min score: {level.minScore}</p>
+						<p class="mt-1 text-xs text-gray-500 dark:text-neutral-500">{level.message}</p>
 					</div>
 				{/each}
 			</div>
 		{:else}
-			<p class="text-xs {muted}">No strength levels configured</p>
+			<p class="text-xs text-gray-500 dark:text-neutral-500">No strength levels configured</p>
 		{/if}
 	</div>
 </div>
 
 <!-- Step Form Modal -->
-<FormModal open={stepModal !== null} title={stepModal?.mode === 'create' ? 'Add Step' : 'Edit Step'} loading={stepLoading} colorSchema={cs} onsubmit={handleStepSubmit} oncancel={() => stepModal = null}>
+<FormModal open={stepModal !== null} title={stepModal?.mode === 'create' ? 'Add Step' : 'Edit Step'} loading={stepLoading} onsubmit={handleStepSubmit} oncancel={() => stepModal = null}>
 	<div class="space-y-3">
-		<div><label class={labelClass}>Key *</label><Input bind:value={stepKey} placeholder="welcome" required colorSchema={cs} disabled={stepModal?.mode === 'edit'} /></div>
-		<div><label class={labelClass}>Component *</label><Input bind:value={stepComponent} placeholder="step-form" required colorSchema={cs} /></div>
+		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Key *</label><Input bind:value={stepKey} placeholder="welcome" required disabled={stepModal?.mode === 'edit'} /></div>
+		<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Component *</label><Input bind:value={stepComponent} placeholder="step-form" required /></div>
 		<div class="grid grid-cols-2 gap-3">
-			<div><label class={labelClass}>Icon</label><Input bind:value={stepIcon} placeholder="📄" colorSchema={cs} /></div>
-			<div><label class={labelClass}>Order</label><Input bind:value={stepOrder} type="number" colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Icon</label><Input bind:value={stepIcon} placeholder="📄" /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Order</label><Input bind:value={stepOrder} type="number" /></div>
 		</div>
 		<div class="grid grid-cols-2 gap-3">
-			<div><label class={labelClass}>Section Type Key</label><Input bind:value={stepSectionTypeKey} placeholder="work_experience_v1" colorSchema={cs} /></div>
-			<div><label class={labelClass}>Strength Weight</label><Input bind:value={stepStrengthWeight} type="number" colorSchema={cs} /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Section Type Key</label><Input bind:value={stepSectionTypeKey} placeholder="work_experience_v1" /></div>
+			<div><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Strength Weight</label><Input bind:value={stepStrengthWeight} type="number" /></div>
 		</div>
 		<div class="flex items-center gap-4">
-			<label class="flex items-center gap-2 text-sm {text}"><input type="checkbox" bind:checked={stepRequired} class="rounded" /> Required</label>
-			<label class="flex items-center gap-2 text-sm {text}"><input type="checkbox" bind:checked={stepIsActive} class="rounded" /> Active</label>
+			<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200"><input type="checkbox" bind:checked={stepRequired} class="rounded" /> Required</label>
+			<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200"><input type="checkbox" bind:checked={stepIsActive} class="rounded" /> Active</label>
 		</div>
 	</div>
 </FormModal>
 
 <!-- Config Form Modal -->
-<FormModal open={configModal} title="Edit Strength Levels" loading={configLoading} colorSchema={cs} onsubmit={handleConfigSubmit} oncancel={() => configModal = false}>
+<FormModal open={configModal} title="Edit Strength Levels" loading={configLoading} onsubmit={handleConfigSubmit} oncancel={() => configModal = false}>
 	<div class="space-y-3">
 		{#each configLevels as level, i}
-			<div class="flex items-end gap-2 rounded-lg border p-3 {cardBorder}">
-				<div class="flex-1"><label class={labelClass}>Level</label><Input bind:value={level.level} placeholder="weak" required colorSchema={cs} /></div>
-				<div class="w-20"><label class={labelClass}>Min</label><Input bind:value={level.minScore} type="number" colorSchema={cs} /></div>
-				<div class="flex-1"><label class={labelClass}>Message</label><Input bind:value={level.message} placeholder="Keep going" colorSchema={cs} /></div>
-				<Button type="button" variant="danger" size="xs" onclick={() => removeConfigLevel(i)} colorSchema={cs}><Trash2 size={14} /></Button>
+			<div class="flex items-end gap-2 rounded-lg border p-3 border-gray-200 dark:border-neutral-700/50">
+				<div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Level</label><Input bind:value={level.level} placeholder="weak" required /></div>
+				<div class="w-20"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Min</label><Input bind:value={level.minScore} type="number" /></div>
+				<div class="flex-1"><label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Message</label><Input bind:value={level.message} placeholder="Keep going" /></div>
+				<Button type="button" variant="danger" size="xs" onclick={() => removeConfigLevel(i)}><Trash2 size={14} /></Button>
 			</div>
 		{/each}
-		<Button type="button" variant="ghost" size="xs" onclick={addConfigLevel} colorSchema={cs}><Plus size={12} /> Add level</Button>
+		<Button type="button" variant="ghost" size="xs" onclick={addConfigLevel}><Plus size={12} /> Add level</Button>
 	</div>
 </FormModal>
 
-<ConfirmModal open={deleteKey !== null} title="Delete Step" message={t?.('admin.onboarding.confirmDeleteStep') ?? 'Are you sure?'} loading={deleteLoading} colorSchema={cs} onconfirm={handleDelete} oncancel={() => deleteKey = null} />
+<ConfirmModal open={deleteKey !== null} title="Delete Step" message={t?.('admin.onboarding.confirmDeleteStep') ?? 'Are you sure?'} loading={deleteLoading} onconfirm={handleDelete} oncancel={() => deleteKey = null} />

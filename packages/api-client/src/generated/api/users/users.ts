@@ -59,25 +59,20 @@ import type {
   AdminCreateUserDto,
   AdminResetPasswordDto,
   AdminUpdateUserDto,
+  PublicProfileDataDto,
   UpdateUserProfileRequestDto,
   UpdateUsernameRequestDto,
-  UsersCheckUsernameAvailability200,
+  UserDetailsDataDto,
+  UserFullPreferencesDataDto,
+  UserManagementListDataDto,
+  UserMutationDataDto,
+  UserOperationMessageDataDto,
+  UserPreferencesDataDto,
+  UserProfileDataDto,
+  UsernameAvailabilityDataDto,
+  UsernameUpdateDataDto,
   UsersCheckUsernameAvailabilityParams,
-  UsersCreateUser201,
-  UsersDeleteUser200,
-  UsersGetFullPreferences200,
-  UsersGetPreferences200,
-  UsersGetProfile200,
-  UsersGetPublicProfileByUsername200,
-  UsersGetUserDetails200,
-  UsersListUsers200,
-  UsersListUsersParams,
-  UsersResetPassword200,
-  UsersUpdateFullPreferences200,
-  UsersUpdatePreferences200,
-  UsersUpdateProfile200,
-  UsersUpdateUser200,
-  UsersUpdateUsername200
+  UsersListUsersParams
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -91,7 +86,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get a user's public profile by username
  */
 export type usersGetPublicProfileByUsernameResponse200 = {
-  data: UsersGetPublicProfileByUsername200
+  data: PublicProfileDataDto
   status: 200
 }
 
@@ -252,7 +247,7 @@ export const prefetchUsersGetPublicProfileByUsernameQuery = async <TData = Await
  * @summary Get current user profile
  */
 export type usersGetProfileResponse200 = {
-  data: UsersGetProfile200
+  data: UserProfileDataDto
   status: 200
 }
 
@@ -425,7 +420,7 @@ export const prefetchUsersGetProfileQuery = async <TData = Awaited<ReturnType<ty
  * @summary Update current user profile
  */
 export type usersUpdateProfileResponse200 = {
-  data: UsersUpdateProfile200
+  data: UserProfileDataDto
   status: 200
 }
 
@@ -519,7 +514,7 @@ export const createUsersUpdateProfile = <TError = void,
  * @summary Update username (once every 30 days)
  */
 export type usersUpdateUsernameResponse200 = {
-  data: UsersUpdateUsername200
+  data: UsernameUpdateDataDto
   status: 200
 }
 
@@ -613,7 +608,7 @@ export const createUsersUpdateUsername = <TError = void,
  * @summary Check if a username is available
  */
 export type usersCheckUsernameAvailabilityResponse200 = {
-  data: UsersCheckUsernameAvailability200
+  data: UsernameAvailabilityDataDto
   status: 200
 }
 
@@ -793,7 +788,7 @@ export const prefetchUsersCheckUsernameAvailabilityQuery = async <TData = Awaite
  * @summary Get user preferences (basic)
  */
 export type usersGetPreferencesResponse200 = {
-  data: UsersGetPreferences200
+  data: UserPreferencesDataDto
   status: 200
 }
 
@@ -966,7 +961,7 @@ export const prefetchUsersGetPreferencesQuery = async <TData = Awaited<ReturnTyp
  * @summary Update user preferences (basic)
  */
 export type usersUpdatePreferencesResponse200 = {
-  data: UsersUpdatePreferences200
+  data: UserOperationMessageDataDto
   status: 200
 }
 
@@ -1059,7 +1054,7 @@ export const createUsersUpdatePreferences = <TError = void,
  * @summary Get all user preferences
  */
 export type usersGetFullPreferencesResponse200 = {
-  data: UsersGetFullPreferences200
+  data: UserFullPreferencesDataDto
   status: 200
 }
 
@@ -1232,7 +1227,7 @@ export const prefetchUsersGetFullPreferencesQuery = async <TData = Awaited<Retur
  * @summary Update all user preferences
  */
 export type usersUpdateFullPreferencesResponse200 = {
-  data: UsersUpdateFullPreferences200
+  data: UserFullPreferencesDataDto
   status: 200
 }
 
@@ -1325,7 +1320,7 @@ export const createUsersUpdateFullPreferences = <TError = void,
  * @summary List all users with pagination
  */
 export type usersListUsersResponse200 = {
-  data: UsersListUsers200
+  data: UserManagementListDataDto
   status: 200
 }
 
@@ -1505,7 +1500,7 @@ export const prefetchUsersListUsersQuery = async <TData = Awaited<ReturnType<typ
  * @summary Create a new user
  */
 export type usersCreateUserResponse201 = {
-  data: UsersCreateUser201
+  data: UserMutationDataDto
   status: 201
 }
 
@@ -1599,7 +1594,7 @@ export const createUsersCreateUser = <TError = void,
  * @summary Get user details by ID
  */
 export type usersGetUserDetailsResponse200 = {
-  data: UsersGetUserDetails200
+  data: UserDetailsDataDto
   status: 200
 }
 
@@ -1772,7 +1767,7 @@ export const prefetchUsersGetUserDetailsQuery = async <TData = Awaited<ReturnTyp
  * @summary Update user information
  */
 export type usersUpdateUserResponse200 = {
-  data: UsersUpdateUser200
+  data: UserMutationDataDto
   status: 200
 }
 
@@ -1868,7 +1863,7 @@ export const createUsersUpdateUser = <TError = void,
  * @summary Delete a user
  */
 export type usersDeleteUserResponse200 = {
-  data: UsersDeleteUser200
+  data: UserOperationMessageDataDto
   status: 200
 }
 
@@ -1961,7 +1956,7 @@ export const createUsersDeleteUser = <TError = void,
  * @summary Reset user password
  */
 export type usersResetPasswordResponse200 = {
-  data: UsersResetPassword200
+  data: UserOperationMessageDataDto
   status: 200
 }
 

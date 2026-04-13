@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { ColorSchema } from 'ui';
 	import { Avatar } from 'ui';
 
 	type Message = {
@@ -14,16 +13,9 @@
 	type Props = {
 		messages: Message[];
 		currentUserId: string;
-		colorSchema?: ColorSchema;
 	};
 
-	let { messages, currentUserId, colorSchema = 'light' }: Props = $props();
-
-	const muted = $derived(colorSchema === 'dark' ? 'text-neutral-600' : 'text-gray-400');
-	const ownBg = $derived(colorSchema === 'dark' ? 'bg-cyan-900/50' : 'bg-cyan-100');
-	const ownText = $derived(colorSchema === 'dark' ? 'text-cyan-50' : 'text-gray-900');
-	const otherBg = $derived(colorSchema === 'dark' ? 'bg-neutral-800' : 'bg-white');
-	const otherText = $derived(colorSchema === 'dark' ? 'text-neutral-200' : 'text-gray-800');
+	let { messages, currentUserId }: Props = $props();
 
 	function formatTime(dateStr: string): string {
 		return new Date(dateStr).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
@@ -61,7 +53,7 @@
 			<div class="flex {own ? 'justify-end' : 'justify-start'} {consecutive ? '' : 'mt-3'}">
 				{#if !own && showAvatar}
 					<div class="mr-2 flex-shrink-0 self-end mb-5">
-						<Avatar name={msg.sender.name ?? '?'} photoURL={msg.sender.photoURL} {colorSchema} size="sm" />
+						<Avatar name={msg.sender.name ?? '?'} photoURL={msg.sender.photoURL} size="sm" />
 					</div>
 				{:else if !own}
 					<div class="mr-2 w-8 flex-shrink-0"></div>
@@ -69,10 +61,10 @@
 
 				<div class="max-w-[65%]">
 					<div class="rounded-2xl px-3.5 py-2 text-[13px] leading-relaxed shadow-sm
-						{own ? ownBg + ' ' + ownText + ' rounded-br-sm' : otherBg + ' ' + otherText + ' rounded-bl-sm'}">
+						{own ? 'bg-cyan-100 dark:bg-cyan-900/50 text-gray-900 dark:text-cyan-50 rounded-br-sm' : 'bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 rounded-bl-sm'}">
 						{msg.content}
 					</div>
-					<span class="mt-0.5 block text-[9px] {own ? 'text-right' : 'text-left'} {muted}">
+					<span class="mt-0.5 block text-[9px] {own ? 'text-right' : 'text-left'} text-gray-400 dark:text-neutral-600">
 						{formatTime(msg.createdAt)}
 					</span>
 				</div>
@@ -82,7 +74,7 @@
 
 	{#if messages.length === 0}
 		<div class="flex items-center justify-center pb-8">
-			<span class="text-[10px] uppercase tracking-widest {muted}">send a message to start</span>
+			<span class="text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-600">send a message to start</span>
 		</div>
 	{/if}
 </div>

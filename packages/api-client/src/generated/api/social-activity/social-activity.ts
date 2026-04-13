@@ -52,9 +52,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ActivityGetActivitiesByType200,
-  ActivityGetFeed200,
-  ActivityGetUserActivities200
+  ActivityFeedDataDto,
+  ActivityListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -68,7 +67,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get authenticated user activity feed
  */
 export type activityGetFeedResponse200 = {
-  data: ActivityGetFeed200
+  data: ActivityFeedDataDto
   status: 200
 }
 
@@ -241,7 +240,7 @@ export const prefetchActivityGetFeedQuery = async <TData = Awaited<ReturnType<ty
  * @summary Get public activities for a user
  */
 export type activityGetUserActivitiesResponse200 = {
-  data: ActivityGetUserActivities200
+  data: ActivityListDataDto
   status: 200
 }
 
@@ -402,7 +401,7 @@ export const prefetchActivityGetUserActivitiesQuery = async <TData = Awaited<Ret
  * @summary Get user activities filtered by type
  */
 export type activityGetActivitiesByTypeResponse200 = {
-  data: ActivityGetActivitiesByType200
+  data: ActivityListDataDto
   status: 200
 }
 

@@ -56,8 +56,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AtsValidationCalculateThemeScore200,
-  AtsValidationValidateCV200,
+  ATSValidationResponseDto,
+  ThemeATSScoreResponseDto,
   ValidateCVOptionsDto
 } from '../../models';
 
@@ -73,7 +73,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Validate CV for ATS compatibility
  */
 export type atsValidationValidateCVResponse200 = {
-  data: AtsValidationValidateCV200
+  data: ATSValidationResponseDto
   status: 200
 }
 
@@ -190,7 +190,7 @@ export const createAtsValidationValidateCV = <TError = void,
  * @summary Calculate ATS score for a theme
  */
 export type atsValidationCalculateThemeScoreResponse200 = {
-  data: AtsValidationCalculateThemeScore200
+  data: ThemeATSScoreResponseDto
   status: 200
 }
 

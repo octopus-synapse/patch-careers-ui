@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Button } from 'ui';
-	import type { ColorSchema } from 'ui';
 	import {
 		LayoutDashboard,
 		Users,
@@ -17,20 +16,11 @@
 
 	type Props = {
 		currentPath: string;
-		colorSchema?: ColorSchema;
 	};
 
-	let { currentPath, colorSchema = 'light' }: Props = $props();
+	let { currentPath }: Props = $props();
 
 	let collapsed = $state(false);
-
-	const cs = $derived(colorSchema);
-	const sidebarBg = $derived(cs === 'dark' ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-gray-200');
-	const text = $derived(cs === 'dark' ? 'text-neutral-400' : 'text-gray-500');
-	const activeText = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const activeBg = $derived(cs === 'dark' ? 'bg-neutral-800' : 'bg-gray-100');
-	const hoverBg = $derived(cs === 'dark' ? 'hover:bg-neutral-800/50' : 'hover:bg-gray-50');
-	const labelColor = $derived(cs === 'dark' ? 'text-neutral-600' : 'text-gray-300');
 
 	const links = [
 		{ href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -50,16 +40,15 @@
 	}
 </script>
 
-<aside class="flex h-full flex-col border-r transition-all {sidebarBg} {collapsed ? 'w-16' : 'w-60'}">
+<aside class="flex h-full flex-col border-r transition-all bg-white border-gray-200 dark:bg-neutral-900 dark:border-neutral-800 {collapsed ? 'w-16' : 'w-60'}">
 	<div class="flex items-center justify-between px-4 py-4">
 		{#if !collapsed}
-			<span class="text-[10px] font-bold uppercase tracking-widest {labelColor}">Admin</span>
+			<span class="text-[10px] font-bold uppercase tracking-widest text-gray-300 dark:text-neutral-600">Admin</span>
 		{/if}
 		<Button
 			variant="icon"
 			size="sm"
 			onclick={() => collapsed = !collapsed}
-			colorSchema={cs}
 			aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 		>
 			{#if collapsed}
@@ -75,7 +64,7 @@
 			{@const active = isActive(link.href, link.exact)}
 			<a
 				href={link.href}
-				class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors {active ? activeBg + ' ' + activeText : text + ' ' + hoverBg}"
+				class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors {active ? 'bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-800/50'}"
 				title={collapsed ? link.label : undefined}
 			>
 				<svelte:component this={link.icon} size={18} />

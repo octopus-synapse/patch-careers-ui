@@ -52,11 +52,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  MecInstitutionsGetInstitutionByCodeWithCourses200,
-  MecInstitutionsListCoursesByInstitutionCode200,
-  MecInstitutionsListInstitutions200,
+  MecInstitutionCoursesDataDto,
+  MecInstitutionDataDto,
+  MecInstitutionListDataDto,
   MecInstitutionsListInstitutionsParams,
-  MecInstitutionsSearchInstitutionsByName200,
   MecInstitutionsSearchInstitutionsByNameParams
 } from '../../models';
 
@@ -71,7 +70,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary List institutions
  */
 export type mecInstitutionsListInstitutionsResponse200 = {
-  data: MecInstitutionsListInstitutions200
+  data: MecInstitutionListDataDto
   status: 200
 }
 
@@ -239,7 +238,7 @@ export const prefetchMecInstitutionsListInstitutionsQuery = async <TData = Await
  * @summary Search institutions
  */
 export type mecInstitutionsSearchInstitutionsByNameResponse200 = {
-  data: MecInstitutionsSearchInstitutionsByName200
+  data: MecInstitutionListDataDto
   status: 200
 }
 
@@ -407,7 +406,7 @@ export const prefetchMecInstitutionsSearchInstitutionsByNameQuery = async <TData
  * @summary Get institution by MEC code
  */
 export type mecInstitutionsGetInstitutionByCodeWithCoursesResponse200 = {
-  data: MecInstitutionsGetInstitutionByCodeWithCourses200
+  data: MecInstitutionDataDto
   status: 200
 }
 
@@ -568,7 +567,7 @@ export const prefetchMecInstitutionsGetInstitutionByCodeWithCoursesQuery = async
  * @summary Get courses by institution
  */
 export type mecInstitutionsListCoursesByInstitutionCodeResponse200 = {
-  data: MecInstitutionsListCoursesByInstitutionCode200
+  data: MecInstitutionCoursesDataDto
   status: 200
 }
 

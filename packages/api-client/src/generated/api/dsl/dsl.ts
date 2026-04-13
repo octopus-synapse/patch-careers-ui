@@ -56,13 +56,12 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  DslPreview200,
+  DslAstResponseDto,
   DslPreviewParams,
-  DslRender200,
+  DslPreviewResultDto,
   DslRenderParams,
-  DslRenderPublic200,
   DslRenderPublicParams,
-  DslValidate200
+  DslValidationResultDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -76,7 +75,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Validate DSL schema
  */
 export type dslValidateResponse200 = {
-  data: DslValidate200
+  data: DslValidationResultDto
   status: 200
 }
 
@@ -158,7 +157,7 @@ export const createDslValidate = <TError = unknown,
  * @summary Compile DSL to AST (preview, no persistence)
  */
 export type dslPreviewResponse200 = {
-  data: DslPreview200
+  data: DslPreviewResultDto
   status: 200
 }
 
@@ -248,7 +247,7 @@ export const createDslPreview = <TError = unknown,
  * @summary Get compiled AST for a resume
  */
 export type dslRenderResponse200 = {
-  data: DslRender200
+  data: DslAstResponseDto
   status: 200
 }
 
@@ -440,7 +439,7 @@ export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof d
  * @summary Get compiled AST for a public resume
  */
 export type dslRenderPublicResponse200 = {
-  data: DslRenderPublic200
+  data: DslAstResponseDto
   status: 200
 }
 

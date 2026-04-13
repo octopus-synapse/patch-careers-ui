@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { Button } from 'ui';
-	import type { ColorSchema } from 'ui';
 	import { Download } from 'lucide-svelte';
 
 	type Props = {
 		data: Record<string, unknown>[];
 		filename?: string;
-		colorSchema?: ColorSchema;
 	};
 
-	let { data, filename = 'export.csv', colorSchema = 'light' }: Props = $props();
+	let { data, filename = 'export.csv' }: Props = $props();
 
 	function exportCsv() {
 		if (data.length === 0) return;
@@ -41,7 +39,6 @@
 	size="sm"
 	onclick={exportCsv}
 	disabled={data.length === 0}
-	colorSchema={colorSchema}
 >
 	<Download size={14} />
 	CSV

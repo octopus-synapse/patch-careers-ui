@@ -56,11 +56,11 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  TwoFactorAuthGetStatus200,
-  TwoFactorAuthRegenerate200,
-  TwoFactorAuthSetup200,
-  TwoFactorAuthVerify200,
-  VerifyAndEnable2faRequestDto
+  Get2faStatusResponseDto,
+  RegenerateBackupCodesResponseDto,
+  Setup2faResponseDto,
+  VerifyAndEnable2faRequestDto,
+  VerifyAndEnable2faResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -75,7 +75,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Setup 2FA
  */
 export type twoFactorAuthSetupResponse200 = {
-  data: TwoFactorAuthSetup200
+  data: Setup2faResponseDto
   status: 200
 }
 
@@ -157,7 +157,7 @@ export const createTwoFactorAuthSetup = <TError = unknown,
  * @summary Verify token and enable 2FA
  */
 export type twoFactorAuthVerifyResponse200 = {
-  data: TwoFactorAuthVerify200
+  data: VerifyAndEnable2faResponseDto
   status: 200
 }
 
@@ -322,7 +322,7 @@ export const createAuthDisable = <TError = unknown,
  * @summary Get 2FA status
  */
 export type twoFactorAuthGetStatusResponse200 = {
-  data: TwoFactorAuthGetStatus200
+  data: Get2faStatusResponseDto
   status: 200
 }
 
@@ -484,7 +484,7 @@ export const prefetchTwoFactorAuthGetStatusQuery = async <TData = Awaited<Return
  * @summary Regenerate backup codes
  */
 export type twoFactorAuthRegenerateResponse200 = {
-  data: TwoFactorAuthRegenerate200
+  data: RegenerateBackupCodesResponseDto
   status: 200
 }
 

@@ -56,10 +56,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  BlockUserDataDto,
   BlockUserRequestDto,
-  ChatBlockUsersBlockUser201,
-  ChatBlockUsersGetBlockedUsers200,
-  ChatBlockUsersIsBlocked200
+  BlockedUsersListDataDto,
+  IsBlockedDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -73,7 +73,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Block a user
  */
 export type chatBlockUsersBlockUserResponse201 = {
-  data: ChatBlockUsersBlockUser201
+  data: BlockUserDataDto
   status: 201
 }
 
@@ -167,7 +167,7 @@ export const createChatBlockUsersBlockUser = <TError = void,
  * @summary Get all blocked users
  */
 export type chatBlockUsersGetBlockedUsersResponse200 = {
-  data: ChatBlockUsersGetBlockedUsers200
+  data: BlockedUsersListDataDto
   status: 200
 }
 
@@ -433,7 +433,7 @@ export const createChatBlockUsersUnblockUser = <TError = void,
  * @summary Check if a user is blocked
  */
 export type chatBlockUsersIsBlockedResponse200 = {
-  data: ChatBlockUsersIsBlocked200
+  data: IsBlockedDataDto
   status: 200
 }
 

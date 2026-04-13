@@ -57,9 +57,9 @@ import type {
 
 import type {
   AcceptConsentRequestDto,
-  GetConsentHistoryGetConsentHistory200,
-  GetConsentStatusCheckConsentStatus200,
-  UserConsentAcceptConsent201
+  AcceptConsentResponseDto,
+  ConsentHistoryResponseDto,
+  ConsentStatusResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -74,7 +74,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Accept Terms of Service or Privacy Policy
  */
 export type userConsentAcceptConsentResponse201 = {
-  data: UserConsentAcceptConsent201
+  data: AcceptConsentResponseDto
   status: 201
 }
 
@@ -157,7 +157,7 @@ export const createUserConsentAcceptConsent = <TError = unknown,
  * @summary Check consent acceptance status
  */
 export type getConsentStatusCheckConsentStatusResponse200 = {
-  data: GetConsentStatusCheckConsentStatus200
+  data: ConsentStatusResponseDto
   status: 200
 }
 
@@ -319,7 +319,7 @@ export const prefetchGetConsentStatusCheckConsentStatusQuery = async <TData = Aw
  * @summary Get consent acceptance history
  */
 export type getConsentHistoryGetConsentHistoryResponse200 = {
-  data: GetConsentHistoryGetConsentHistory200
+  data: ConsentHistoryResponseDto
   status: 200
 }
 

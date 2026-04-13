@@ -47,11 +47,11 @@ import type {
 
 import type {
   ChangePasswordDto,
-  ChangePasswordHandle200,
+  ChangePasswordResponseDto,
   ForgotPasswordDto,
-  ForgotPasswordHandle200,
+  ForgotPasswordResponseDto,
   ResetPasswordDto,
-  ResetPasswordHandle200
+  ResetPasswordResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -66,7 +66,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Request password reset
  */
 export type forgotPasswordHandleResponse200 = {
-  data: ForgotPasswordHandle200
+  data: ForgotPasswordResponseDto
   status: 200
 }
 
@@ -149,7 +149,7 @@ export const createForgotPasswordHandle = <TError = unknown,
  * @summary Reset password with token
  */
 export type resetPasswordHandleResponse200 = {
-  data: ResetPasswordHandle200
+  data: ResetPasswordResponseDto
   status: 200
 }
 
@@ -239,7 +239,7 @@ export const createResetPasswordHandle = <TError = void,
  * @summary Change password
  */
 export type changePasswordHandleResponse200 = {
-  data: ChangePasswordHandle200
+  data: ChangePasswordResponseDto
   status: 200
 }
 

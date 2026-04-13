@@ -52,7 +52,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  UserConsentExportData200
+  ExportDataResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -67,7 +67,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Export user data (GDPR Article 20)
  */
 export type userConsentExportDataResponse200 = {
-  data: UserConsentExportData200
+  data: ExportDataResponseDto
   status: 200
 }
 

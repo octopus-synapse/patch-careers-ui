@@ -52,12 +52,12 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  SearchSearch200,
+  SearchResultsResponseDto,
   SearchSearchParams,
-  SearchSimilar200,
   SearchSimilarParams,
-  SearchSuggestions200,
-  SearchSuggestionsParams
+  SearchSuggestionsParams,
+  SearchSuggestionsResponseDto,
+  SimilarResumesResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -71,7 +71,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Search public resumes
  */
 export type searchSearchResponse200 = {
-  data: SearchSearch200
+  data: SearchResultsResponseDto
   status: 200
 }
 
@@ -239,7 +239,7 @@ export const prefetchSearchSearchQuery = async <TData = Awaited<ReturnType<typeo
  * @summary Get search autocomplete suggestions
  */
 export type searchSuggestionsResponse200 = {
-  data: SearchSuggestions200
+  data: SearchSuggestionsResponseDto
   status: 200
 }
 
@@ -407,7 +407,7 @@ export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<
  * @summary Find similar resumes by resume id
  */
 export type searchSimilarResponse200 = {
-  data: SearchSimilar200
+  data: SimilarResumesResponseDto
   status: 200
 }
 

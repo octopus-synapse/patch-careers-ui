@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import type { ColorSchema, ButtonVariant, ButtonSize } from './types';
+	import type { ButtonVariant, ButtonSize } from './types';
 
 	type Props = HTMLButtonAttributes & {
-		colorSchema?: ColorSchema;
 		variant?: ButtonVariant;
 		size?: ButtonSize;
 		fullWidth?: boolean;
@@ -12,7 +11,6 @@
 	};
 
 	let {
-		colorSchema = 'light',
 		variant = 'solid',
 		size = 'lg',
 		fullWidth,
@@ -21,33 +19,13 @@
 		...rest
 	}: Props = $props();
 
-	const cs = $derived(colorSchema);
-
-	const variantStyles: Record<ButtonVariant, Record<ColorSchema, string>> = {
-		solid: {
-			light: 'bg-gray-800 text-gray-50 hover:bg-gray-700',
-			dark: 'bg-neutral-200 text-neutral-900 hover:bg-neutral-300',
-		},
-		outline: {
-			light: 'border border-gray-300 text-gray-600 hover:bg-gray-50',
-			dark: 'border border-neutral-600 text-neutral-300 hover:bg-neutral-700',
-		},
-		ghost: {
-			light: 'text-gray-500 hover:bg-gray-100 hover:text-gray-800',
-			dark: 'text-neutral-400 hover:bg-neutral-700 hover:text-neutral-200',
-		},
-		danger: {
-			light: 'text-red-500 hover:bg-red-50',
-			dark: 'text-red-400 hover:bg-red-900/20',
-		},
-		icon: {
-			light: 'text-gray-400 hover:bg-gray-100 hover:text-gray-600',
-			dark: 'text-neutral-400 hover:bg-neutral-700 hover:text-neutral-200',
-		},
-		menu: {
-			light: 'text-gray-700 hover:bg-gray-50',
-			dark: 'text-neutral-300 hover:bg-neutral-700',
-		},
+	const variantStyles: Record<ButtonVariant, string> = {
+		solid: 'bg-gray-800 text-gray-50 hover:bg-gray-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300',
+		outline: 'border border-gray-300 text-gray-600 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700',
+		ghost: 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200',
+		danger: 'text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20',
+		icon: 'text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200',
+		menu: 'text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700',
 	};
 
 	const sizeStyles: Record<ButtonVariant, Record<ButtonSize, string>> = {
@@ -99,7 +77,7 @@
 	const menuBaseOverride = 'flex items-center gap-2 transition-colors disabled:opacity-50';
 
 	const computedClass = $derived(
-		`${variant === 'menu' ? menuBaseOverride : baseClass} ${variantStyles[variant][cs]} ${sizeStyles[variant][size]} ${widthClass} ${className}`.trim()
+		`${variant === 'menu' ? menuBaseOverride : baseClass} ${variantStyles[variant]} ${sizeStyles[variant][size]} ${widthClass} ${className}`.trim()
 	);
 </script>
 

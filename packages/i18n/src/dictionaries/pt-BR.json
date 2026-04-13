@@ -68,7 +68,14 @@
     "noConnections": "Nenhuma conexão ainda",
     "noFollowers": "Nenhum seguidor ainda",
     "noFollowing": "Não está seguindo ninguém ainda",
-    "noSuggestions": "Nenhuma sugestão disponível"
+    "noSuggestions": "Nenhuma sugestão disponível",
+    "removeConfirmTitle": "Remover conexão",
+    "removeConfirmMessage": "Tem certeza que deseja remover sua conexão com {name}?",
+    "removeConfirmButton": "Remover",
+    "cancel": "Cancelar",
+    "loadMore": "Carregar mais",
+    "mutualConnections": "conexões em comum",
+    "suggestedForYou": "Sugerido para você"
   },
   "admin": {
     "pageTitle": "Painel Admin",
@@ -254,6 +261,56 @@
     "deleteButton": "Excluir conta",
     "typeToConfirm": "Digite DELETE MY ACCOUNT para confirmar",
     "settingsLink": "Configuracoes"
+  },
+  "feed": {
+    "pageTitle": "Feed",
+    "whatsOnYourMind": "No que voc\u00ea est\u00e1 pensando?",
+    "createPost": "Criar Post",
+    "allPosts": "Todos",
+    "noPost": "Nenhum post ainda. Seja o primeiro a compartilhar!",
+    "like": "Curtir",
+    "comment": "Comentar",
+    "repost": "Repostar",
+    "bookmark": "Salvar",
+    "delete": "Excluir",
+    "report": "Denunciar",
+    "writeComment": "Escreva um coment\u00e1rio...",
+    "reply": "Responder",
+    "viewReplies": "Ver respostas",
+    "justNow": "agora",
+    "selectType": "Selecione o tipo de post",
+    "publish": "Publicar"
+  },
+  "jobs": {
+    "pageTitle": "Vagas",
+    "postJob": "Publicar Vaga",
+    "search": "Buscar vagas...",
+    "title": "T\u00edtulo",
+    "company": "Empresa",
+    "location": "Local",
+    "type": "Tipo",
+    "description": "Descri\u00e7\u00e3o",
+    "requirements": "Requisitos",
+    "skills": "Skills",
+    "salary": "Faixa Salarial",
+    "applyUrl": "Link para Candidatura",
+    "apply": "Candidatar-se",
+    "noJobs": "Nenhuma vaga publicada ainda",
+    "myJobs": "Minhas Vagas",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "confirmDelete": "Tem certeza que deseja excluir esta vaga?"
+  },
+  "notifications": {
+    "title": "Notifica\u00e7\u00f5es",
+    "markAllRead": "Marcar todas como lidas",
+    "noNotifications": "Nenhuma notifica\u00e7\u00e3o",
+    "likedPost": "curtiu seu post",
+    "commentedPost": "comentou no seu post",
+    "repostedPost": "repostou seu post",
+    "repliedComment": "respondeu seu coment\u00e1rio",
+    "startedFollowing": "come\u00e7ou a seguir voc\u00ea",
+    "connectionAccepted": "aceitou sua conex\u00e3o"
   },
   "auth": {
     "shared": {

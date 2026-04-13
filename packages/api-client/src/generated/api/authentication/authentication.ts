@@ -46,8 +46,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AuthRefresh200,
-  RefreshTokenDto
+  RefreshTokenDto,
+  RefreshTokenResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -62,7 +62,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Refresh access token
  */
 export type authRefreshResponse200 = {
-  data: AuthRefresh200
+  data: RefreshTokenResponseDto
   status: 200
 }
 

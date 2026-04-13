@@ -46,11 +46,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  DeleteResponseDto,
   UploadCompanyLogoRequestDto,
-  UploadDeleteFile200,
   UploadProfileImageRequestDto,
-  UploadUploadCompanyLogo200,
-  UploadUploadProfileImage200
+  UploadResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -64,7 +63,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Upload user profile image
  */
 export type uploadUploadProfileImageResponse200 = {
-  data: UploadUploadProfileImage200
+  data: UploadResponseDto
   status: 200
 }
 
@@ -160,7 +159,7 @@ export const createUploadUploadProfileImage = <TError = void,
  * @summary Upload company logo for resume
  */
 export type uploadUploadCompanyLogoResponse200 = {
-  data: UploadUploadCompanyLogo200
+  data: UploadResponseDto
   status: 200
 }
 
@@ -257,7 +256,7 @@ export const createUploadUploadCompanyLogo = <TError = void,
  * @summary Delete uploaded file
  */
 export type uploadDeleteFileResponse200 = {
-  data: UploadDeleteFile200
+  data: DeleteResponseDto
   status: 200
 }
 

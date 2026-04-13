@@ -52,10 +52,9 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  SkillsFindAllActiveLanguages200,
-  SkillsFindLanguageByCode200,
-  SkillsSearchLanguagesByName200,
-  SkillsSearchLanguagesByNameParams
+  SkillsSearchLanguagesByNameParams,
+  SpokenLanguageDataDto,
+  SpokenLanguagesListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -69,7 +68,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get all active spoken languages
  */
 export type skillsFindAllActiveLanguagesResponse200 = {
-  data: SkillsFindAllActiveLanguages200
+  data: SpokenLanguagesListDataDto
   status: 200
 }
 
@@ -242,7 +241,7 @@ export const prefetchSkillsFindAllActiveLanguagesQuery = async <TData = Awaited<
  * @summary Search spoken languages by name
  */
 export type skillsSearchLanguagesByNameResponse200 = {
-  data: SkillsSearchLanguagesByName200
+  data: SpokenLanguagesListDataDto
   status: 200
 }
 
@@ -422,7 +421,7 @@ export const prefetchSkillsSearchLanguagesByNameQuery = async <TData = Awaited<R
  * @summary Get spoken language by code
  */
 export type skillsFindLanguageByCodeResponse200 = {
-  data: SkillsFindLanguageByCode200
+  data: SpokenLanguageDataDto
   status: 200
 }
 

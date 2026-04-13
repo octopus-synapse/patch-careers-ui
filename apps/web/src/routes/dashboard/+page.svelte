@@ -3,16 +3,10 @@
 	import { Button } from 'ui';
 	import { goto } from '$app/navigation';
 	import { LogOut, Loader2 } from 'lucide-svelte';
-	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 
 	const t = $derived(locale.t);
-	const cs = $derived(colorSchema.mode);
-	const muted = $derived(cs === 'dark' ? 'text-neutral-500' : 'text-gray-500');
-	const text = $derived(cs === 'dark' ? 'text-neutral-200' : 'text-gray-800');
-	const cardBg = $derived(cs === 'dark' ? 'bg-neutral-800/50' : 'bg-white');
-	const cardBorder = $derived(cs === 'dark' ? 'border-neutral-700/50' : 'border-gray-200');
 
 	const session = createAuthSession(() => ({
 		query: {
@@ -21,8 +15,8 @@
 	}));
 	const queryClient = useQueryClient();
 
-	const user = $derived(session.data?.data?.data?.user);
-	const authenticated = $derived(session.data?.data?.data?.authenticated);
+	const user = $derived(session.data?.data?.user);
+	const authenticated = $derived(session.data?.data?.authenticated);
 
 	$effect(() => {
 		if (!session.isLoading && !authenticated) {
@@ -48,35 +42,35 @@
 </script>
 
 <svelte:head>
-	<title>{t?.('dashboard.pageTitle') ?? ''}</title>
+	<title>{t('dashboard.pageTitle')}</title>
 </svelte:head>
 
 {#if session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin {muted}" />
+		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 	</div>
 {:else if t && authenticated && user}
 	<div class="min-h-screen font-sans antialiased transition-colors duration-300">
 		<main class="mx-auto max-w-2xl px-6 pt-24 pb-12">
-			<h1 class="text-xl font-medium tracking-tight {text}">
+			<h1 class="text-xl font-medium tracking-tight text-gray-800 dark:text-neutral-200">
 				{t('dashboard.welcome', { name: user.name ?? user.email })}
 			</h1>
 
-			<div class="mt-8 rounded-xl border p-6 {cardBg} {cardBorder}">
+			<div class="mt-8 rounded-xl border p-6 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<dl class="space-y-4">
 					<div>
-						<dt class="text-[10px] font-bold uppercase tracking-widest {muted}">Email</dt>
-						<dd class="mt-1 text-sm {text}">{user.email}</dd>
+						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Email</dt>
+						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.email}</dd>
 					</div>
 					{#if user.name}
 						<div>
-							<dt class="text-[10px] font-bold uppercase tracking-widest {muted}">Name</dt>
-							<dd class="mt-1 text-sm {text}">{user.name}</dd>
+							<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Name</dt>
+							<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.name}</dd>
 						</div>
 					{/if}
 					<div>
-						<dt class="text-[10px] font-bold uppercase tracking-widest {muted}">Role</dt>
-						<dd class="mt-1 text-sm {text}">{user.role}</dd>
+						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Role</dt>
+						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.role}</dd>
 					</div>
 				</dl>
 			</div>
@@ -86,7 +80,6 @@
 					onclick={handleLogout}
 					disabled={logout.isPending}
 					variant="solid"
-					colorSchema={cs}
 				>
 					{#if logout.isPending}
 						<Loader2 size={14} class="mx-auto animate-spin" />

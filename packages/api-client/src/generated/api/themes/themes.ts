@@ -59,18 +59,14 @@ import type {
   ApplyThemeToResumeRequestDto,
   CreateThemeRequestDto,
   ForkThemeRequestDto,
-  ThemesApply200,
-  ThemesCreateThemeForUser201,
-  ThemesFindAllSystemThemes200,
-  ThemesFindAllThemesWithPagination200,
+  ThemeApplyDataDto,
+  ThemeEntityDataDto,
+  ThemeListDataDto,
+  ThemeNullableEntityDataDto,
+  ThemePaginatedListDataDto,
+  ThemeResolvedConfigDataDto,
   ThemesFindAllThemesWithPaginationParams,
-  ThemesFindPopularThemes200,
   ThemesFindPopularThemesParams,
-  ThemesFindThemeById200,
-  ThemesFork200,
-  ThemesGetAllThemesByUser200,
-  ThemesGetResolvedConfig200,
-  ThemesUpdateThemeForUser200,
   UpdateThemeRequestDto
 } from '../../models';
 
@@ -85,7 +81,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get my themes
  */
 export type themesGetAllThemesByUserResponse200 = {
-  data: ThemesGetAllThemesByUser200
+  data: ThemeListDataDto
   status: 200
 }
 
@@ -246,7 +242,7 @@ export const prefetchThemesGetAllThemesByUserQuery = async <TData = Awaited<Retu
  * @summary Create theme
  */
 export type themesCreateThemeForUserResponse201 = {
-  data: ThemesCreateThemeForUser201
+  data: ThemeEntityDataDto
   status: 201
 }
 
@@ -328,7 +324,7 @@ export const createThemesCreateThemeForUser = <TError = unknown,
  * @summary List published themes
  */
 export type themesFindAllThemesWithPaginationResponse200 = {
-  data: ThemesFindAllThemesWithPagination200
+  data: ThemePaginatedListDataDto
   status: 200
 }
 
@@ -496,7 +492,7 @@ export const prefetchThemesFindAllThemesWithPaginationQuery = async <TData = Awa
  * @summary Update theme
  */
 export type themesUpdateThemeForUserResponse200 = {
-  data: ThemesUpdateThemeForUser200
+  data: ThemeEntityDataDto
   status: 200
 }
 
@@ -660,7 +656,7 @@ export const createThemesDeleteThemeForUser = <TError = unknown,
  * @summary Get theme by ID
  */
 export type themesFindThemeByIdResponse200 = {
-  data: ThemesFindThemeById200
+  data: ThemeNullableEntityDataDto
   status: 200
 }
 
@@ -821,7 +817,7 @@ export const prefetchThemesFindThemeByIdQuery = async <TData = Awaited<ReturnTyp
  * @summary Fork a theme
  */
 export type themesForkResponse200 = {
-  data: ThemesFork200
+  data: ThemeEntityDataDto
   status: 200
 }
 
@@ -903,7 +899,7 @@ export const createThemesFork = <TError = unknown,
  * @summary Apply theme to resume
  */
 export type themesApplyResponse200 = {
-  data: ThemesApply200
+  data: ThemeApplyDataDto
   status: 200
 }
 
@@ -985,7 +981,7 @@ export const createThemesApply = <TError = unknown,
  * @summary Get resolved config for resume
  */
 export type themesGetResolvedConfigResponse200 = {
-  data: ThemesGetResolvedConfig200
+  data: ThemeResolvedConfigDataDto
   status: 200
 }
 
@@ -1146,7 +1142,7 @@ export const prefetchThemesGetResolvedConfigQuery = async <TData = Awaited<Retur
  * @summary Get popular themes
  */
 export type themesFindPopularThemesResponse200 = {
-  data: ThemesFindPopularThemes200
+  data: ThemeListDataDto
   status: 200
 }
 
@@ -1314,7 +1310,7 @@ export const prefetchThemesFindPopularThemesQuery = async <TData = Awaited<Retur
  * @summary Get system themes
  */
 export type themesFindAllSystemThemesResponse200 = {
-  data: ThemesFindAllSystemThemes200
+  data: ThemeListDataDto
   status: 200
 }
 

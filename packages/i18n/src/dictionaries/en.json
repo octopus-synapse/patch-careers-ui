@@ -68,7 +68,14 @@
     "noConnections": "No connections yet",
     "noFollowers": "No followers yet",
     "noFollowing": "Not following anyone yet",
-    "noSuggestions": "No suggestions available"
+    "noSuggestions": "No suggestions available",
+    "removeConfirmTitle": "Remove connection",
+    "removeConfirmMessage": "Are you sure you want to remove your connection with {name}?",
+    "removeConfirmButton": "Remove",
+    "cancel": "Cancel",
+    "loadMore": "Load more",
+    "mutualConnections": "mutual connections",
+    "suggestedForYou": "Suggested for you"
   },
   "admin": {
     "pageTitle": "Admin Dashboard",
@@ -254,6 +261,56 @@
     "deleteButton": "Delete account",
     "typeToConfirm": "Type DELETE MY ACCOUNT to confirm",
     "settingsLink": "Settings"
+  },
+  "feed": {
+    "pageTitle": "Feed",
+    "whatsOnYourMind": "What's on your mind?",
+    "createPost": "Create Post",
+    "allPosts": "All",
+    "noPost": "No posts yet. Be the first to share!",
+    "like": "Like",
+    "comment": "Comment",
+    "repost": "Repost",
+    "bookmark": "Bookmark",
+    "delete": "Delete",
+    "report": "Report",
+    "writeComment": "Write a comment...",
+    "reply": "Reply",
+    "viewReplies": "View replies",
+    "justNow": "just now",
+    "selectType": "Select post type",
+    "publish": "Publish"
+  },
+  "jobs": {
+    "pageTitle": "Jobs",
+    "postJob": "Post a Job",
+    "search": "Search jobs...",
+    "title": "Title",
+    "company": "Company",
+    "location": "Location",
+    "type": "Type",
+    "description": "Description",
+    "requirements": "Requirements",
+    "skills": "Skills",
+    "salary": "Salary Range",
+    "applyUrl": "Apply URL",
+    "apply": "Apply Now",
+    "noJobs": "No jobs posted yet",
+    "myJobs": "My Jobs",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this job?"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications",
+    "likedPost": "liked your post",
+    "commentedPost": "commented on your post",
+    "repostedPost": "reposted your post",
+    "repliedComment": "replied to your comment",
+    "startedFollowing": "started following you",
+    "connectionAccepted": "accepted your connection"
   },
   "auth": {
     "shared": {

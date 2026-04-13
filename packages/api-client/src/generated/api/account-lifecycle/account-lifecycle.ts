@@ -47,9 +47,9 @@ import type {
 
 import type {
   DeactivateAccountDto,
-  DeactivateAccountHandle200,
+  DeactivateAccountResponseDto,
   DeleteAccountDto,
-  DeleteAccountHandle200
+  DeleteAccountResponseDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -64,7 +64,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Delete account permanently
  */
 export type deleteAccountHandleResponse200 = {
-  data: DeleteAccountHandle200
+  data: DeleteAccountResponseDto
   status: 200
 }
 
@@ -154,7 +154,7 @@ export const createDeleteAccountHandle = <TError = void,
  * @summary Deactivate account
  */
 export type deactivateAccountHandleResponse200 = {
-  data: DeactivateAccountHandle200
+  data: DeactivateAccountResponseDto
   status: 200
 }
 
