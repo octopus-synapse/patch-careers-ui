@@ -114,9 +114,12 @@
 
 	const complete = createOnboardingCompleteFromSession(() => ({
 		mutation: {
-			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				goto('/');
+			async onSuccess() {
+				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+				const sessionData = auth.data?.data?.data as Record<string, unknown> | undefined;
+				const user = sessionData?.user as Record<string, string | null> | undefined;
+				const username = user?.username;
+				goto(username ? `/@${username}` : '/');
 			},
 			onError(err: unknown) {
 				const msg = (err as Record<string, unknown>)?.message;
