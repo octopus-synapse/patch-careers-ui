@@ -3,7 +3,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { createAuthSession, createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 	import type { Locale } from 'i18n';
-	import { Menu, X, Sun, Moon, Search, Briefcase, Building2, MessageCircle } from 'lucide-svelte';
+	import { Menu, X, Sun, Moon, Search, Briefcase, Users, MessageCircle } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import NavLogo from './nav-logo.svelte';
@@ -100,7 +100,7 @@
 
 	const navLinks = [
 		{ key: 'nav.jobs', href: '/jobs', icon: Briefcase },
-		{ key: 'nav.companies', href: '/companies', icon: Building2 }
+		{ key: 'nav.myNetwork', href: '/mynetwork', icon: Users }
 	];
 </script>
 

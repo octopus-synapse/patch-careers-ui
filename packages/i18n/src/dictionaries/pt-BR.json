@@ -10,6 +10,7 @@
   "nav": {
     "jobs": "Vagas",
     "companies": "Empresas",
+    "myNetwork": "Minha Rede",
     "about": "Sobre",
     "messages": "Mensagens",
     "join": "Criar conta",
@@ -47,6 +48,26 @@
     "modalSave": "Salvar",
     "progress": "{{value}}% completo",
     "skip": "Pular esta etapa"
+  },
+  "network": {
+    "pageTitle": "Minha Rede",
+    "invitations": "Convites",
+    "connections": "Conexões",
+    "followersFollowing": "Seguidores & Seguindo",
+    "suggestions": "Pessoas que você talvez conheça",
+    "accept": "Aceitar",
+    "ignore": "Ignorar",
+    "message": "Mensagem",
+    "remove": "Remover",
+    "connect": "Conectar",
+    "requestSent": "Enviado",
+    "followers": "Seguidores",
+    "following": "Seguindo",
+    "noInvitations": "Nenhum convite pendente",
+    "noConnections": "Nenhuma conexão ainda",
+    "noFollowers": "Nenhum seguidor ainda",
+    "noFollowing": "Não está seguindo ninguém ainda",
+    "noSuggestions": "Nenhuma sugestão disponível"
   },
   "auth": {
     "shared": {

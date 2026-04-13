@@ -7,14 +7,19 @@
 		createFollowFollow,
 		createFollowUnfollow,
 		createAuthSession,
+		createConnectionGetConnectionStats,
+		createConnectionIsConnected,
+		createConnectionSendConnectionRequest,
 		getFollowGetSocialStatsQueryKey,
 		getFollowIsFollowingQueryKey,
+		getConnectionGetConnectionStatsQueryKey,
+		getConnectionIsConnectedQueryKey,
 		exportDownloadUserResumePDF
 	} from 'api-client';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Loader2, MapPin, Globe, ExternalLink, FileDown, MessageCircle } from 'lucide-svelte';
+	import { Loader2, MapPin, Globe, ExternalLink, FileDown, MessageCircle, UserPlus } from 'lucide-svelte';
 
 	const cs = $derived(colorSchema.mode);
 	const username = $derived($page.params.username);
@@ -105,6 +110,39 @@
 			}
 		}
 	}));
+
+	// Connection queries
+	const connectionStats = createConnectionGetConnectionStats(
+		() => userId,
+		() => ({ query: { enabled: !!userId } })
+	);
+	const connectionCount = $derived(
+		(connectionStats.data?.data?.data as Record<string, number>)?.connections ?? 0
+	);
+
+	const isConnectedQuery = createConnectionIsConnected(
+		() => userId,
+		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
+	);
+	const isConnected = $derived(
+		(isConnectedQuery.data?.data?.data as Record<string, boolean>)?.isConnected ?? false
+	);
+
+	const connectMutation = createConnectionSendConnectionRequest(() => ({
+		mutation: {
+			onSuccess() {
+				queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionStatsQueryKey(userId) });
+				queryClient.invalidateQueries({ queryKey: getConnectionIsConnectedQueryKey(userId) });
+			}
+		}
+	}));
+
+	let connectionRequestSent = $state(false);
+
+	function sendConnectionRequest() {
+		connectMutation.mutate({ userId });
+		connectionRequestSent = true;
+	}
 
 	function toggleFollow() {
 		if (isFollowing) {
@@ -197,6 +235,21 @@
 							>
 								{isFollowing ? 'Following' : 'Follow'}
 							</button>
+							{#if !isConnected}
+								{#if connectionRequestSent}
+									<span class="rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-60 {btnSecondary}">
+										Sent
+									</span>
+								{:else}
+									<button
+										onclick={sendConnectionRequest}
+										class="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnPrimary}"
+									>
+										<UserPlus size={13} />
+										Connect
+									</button>
+								{/if}
+							{/if}
 							<button
 								onclick={openChat}
 								class="flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnSecondary}"
@@ -241,6 +294,10 @@
 					<span>
 						<strong class="{text}">{stats.following ?? 0}</strong>
 						<span class="{muted}"> following</span>
+					</span>
+					<span>
+						<strong class="{text}">{connectionCount}</strong>
+						<span class="{muted}"> connections</span>
 					</span>
 				</div>
 

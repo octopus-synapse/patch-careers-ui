@@ -39,6 +39,7 @@ export * from "./search/search";
 export * from "./share-analytics/share-analytics";
 export * from "./shares/shares";
 export * from "./social-activity/social-activity";
+export * from "./social-connections/social-connections";
 export * from "./social-feed/social-feed";
 export * from "./social-follow/social-follow";
 export * from "./spoken-languages/spoken-languages";

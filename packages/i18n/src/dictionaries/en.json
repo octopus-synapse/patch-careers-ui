@@ -10,6 +10,7 @@
   "nav": {
     "jobs": "Jobs",
     "companies": "Companies",
+    "myNetwork": "My Network",
     "about": "About",
     "messages": "Messages",
     "join": "Join",
@@ -47,6 +48,26 @@
     "modalSave": "Save",
     "progress": "{{value}}% complete",
     "skip": "Skip this step"
+  },
+  "network": {
+    "pageTitle": "My Network",
+    "invitations": "Invitations",
+    "connections": "Connections",
+    "followersFollowing": "Followers & Following",
+    "suggestions": "People you may know",
+    "accept": "Accept",
+    "ignore": "Ignore",
+    "message": "Message",
+    "remove": "Remove",
+    "connect": "Connect",
+    "requestSent": "Sent",
+    "followers": "Followers",
+    "following": "Following",
+    "noInvitations": "No pending invitations",
+    "noConnections": "No connections yet",
+    "noFollowers": "No followers yet",
+    "noFollowing": "Not following anyone yet",
+    "noSuggestions": "No suggestions available"
   },
   "auth": {
     "shared": {
