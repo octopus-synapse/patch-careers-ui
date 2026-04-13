@@ -142,10 +142,10 @@
 				{/if}
 				{#if activeOther && !chatState.isFullscreen}
 					<a href="/@{activeOther.username}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-						<Avatar name={activeOther.displayName ?? activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} colorSchema={cs} size="sm" />
+						<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} colorSchema={cs} size="sm" />
 						<div class="min-w-0">
 							<span class="block truncate text-xs font-semibold {text}">
-								{activeOther.displayName ?? activeOther.name ?? activeOther.username ?? 'User'}
+								{activeOther.name ?? activeOther.username ?? 'User'}
 							</span>
 							{#if activeOther.username}
 								<span class="block text-[10px] {muted}">@{activeOther.username}</span>
@@ -190,10 +190,10 @@
 				<div class="flex flex-1 flex-col {cs === 'dark' ? 'bg-neutral-950/30' : 'bg-gray-50/50'}">
 					{#if chatState.activeConversationId && activeOther}
 						<a href="/@{activeOther.username}" onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }} class="flex items-center gap-3 border-b px-5 py-3 transition-colors hover:opacity-80 {border}">
-							<Avatar name={activeOther.displayName ?? activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} colorSchema={cs} size="lg" />
+							<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} colorSchema={cs} size="lg" />
 							<div class="min-w-0">
 								<span class="block truncate text-sm font-semibold {text}">
-									{activeOther.displayName ?? activeOther.name ?? activeOther.username ?? 'User'}
+									{activeOther.name ?? activeOther.username ?? 'User'}
 								</span>
 								{#if activeOther.username}
 									<span class="block text-[11px] {muted}">@{activeOther.username}</span>

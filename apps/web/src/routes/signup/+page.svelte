@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { createAccountsSignup } from 'api-client';
+	import { createAccountsSignup, getAuthSessionQueryKey } from 'api-client';
 	import type { CreateAccountDto } from 'api-client';
 	import { isApiError } from 'api-client/client';
 	import { Button, Input, Label } from 'ui';
 	import { goto } from '$app/navigation';
+	import { useQueryClient } from '@tanstack/svelte-query';
 	import { Loader2 } from 'lucide-svelte';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
+
+	const queryClient = useQueryClient();
 
 	let name = $state('');
 	let email = $state('');
@@ -20,7 +23,8 @@
 
 	const signup = createAccountsSignup(() => ({
 		mutation: {
-			onSuccess() {
+			async onSuccess() {
+				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
 				goto('/onboarding');
 			},
 			onError(err: unknown) {

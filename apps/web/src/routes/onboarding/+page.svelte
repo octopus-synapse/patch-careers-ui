@@ -110,11 +110,17 @@
 		mutation: { onSuccess: invalidateSession }
 	}));
 
+	let completeError = $state('');
+
 	const complete = createOnboardingCompleteFromSession(() => ({
 		mutation: {
 			onSuccess() {
 				queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				goto('/dashboard');
+				goto('/');
+			},
+			onError(err: unknown) {
+				const msg = (err as Record<string, unknown>)?.message;
+				completeError = typeof msg === 'string' ? msg : 'Failed to complete onboarding';
 			}
 		}
 	}));
@@ -172,7 +178,7 @@
 	}
 
 	function handleComplete() {
-		complete.mutate({});
+		complete.mutate();
 	}
 
 	const isPending = $derived(
@@ -295,19 +301,24 @@
 						{/if}
 
 						{#if isLastStep}
-							<Button
-								onclick={handleComplete}
-								disabled={isPending || missingRequired.length > 0}
-								variant="solid"
-								colorSchema={cs}
-								class="max-w-[200px]"
-							>
-								{#if complete.isPending}
-									<Loader2 size={14} class="mx-auto animate-spin" />
-								{:else}
-									{t('onboarding.complete')}
+							<div class="flex flex-col items-end gap-1">
+								<Button
+									onclick={handleComplete}
+									disabled={isPending || missingRequired.length > 0}
+									variant="solid"
+									colorSchema={cs}
+									class="max-w-[200px]"
+								>
+									{#if complete.isPending}
+										<Loader2 size={14} class="mx-auto animate-spin" />
+									{:else}
+										{t('onboarding.complete')}
+									{/if}
+								</Button>
+								{#if completeError}
+									<span class="text-[11px] text-red-500">{completeError}</span>
 								{/if}
-							</Button>
+							</div>
 						{:else}
 							<Button
 								onclick={handleNext}

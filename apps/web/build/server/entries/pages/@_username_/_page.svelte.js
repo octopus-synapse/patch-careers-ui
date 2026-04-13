@@ -1,7 +1,6 @@
 import { b as sanitize_props, c as spread_props, d as slot, j as head, f as stringify, e as attr_class, l as attr_style, g as attr, h as derived, k as store_get, u as unsubscribe_stores } from "../../../chunks/renderer.js";
 import { p as page } from "../../../chunks/stores.js";
-import { c as createQuery, a as createAuthSession } from "../../../chunks/auth.js";
-import { l as createMutation, q as customFetch, I as Icon, u as useQueryClient } from "../../../chunks/Icon.js";
+import { l as createQuery, q as createMutation, t as customFetch, I as Icon, u as createAuthSession, v as useQueryClient } from "../../../chunks/Icon.js";
 import { c as colorSchema } from "../../../chunks/color-schema.svelte.js";
 import { L as Loader_circle } from "../../../chunks/loader-circle.js";
 import { M as Message_circle, G as Globe } from "../../../chunks/message-circle.js";
@@ -261,6 +260,7 @@ function _page($$renderer, $$props) {
     const profileData = derived(() => profile.data?.data?.data ?? null);
     const user = derived(() => profileData()?.user ?? null);
     const resume = derived(() => profileData()?.resume ?? null);
+    let downloading = false;
     const userId = derived(() => user()?.id ?? "");
     const isOwnProfile = derived(() => !!currentUserId() && currentUserId() === userId());
     const socialStats = createFollowGetSocialStats(() => userId(), () => ({ query: { enabled: !!userId() } }));
@@ -301,7 +301,7 @@ function _page($$renderer, $$props) {
     const btnSecondary = derived(() => cs() === "dark" ? "border-neutral-600 text-neutral-300 hover:bg-neutral-800" : "border-gray-300 text-gray-700 hover:bg-gray-50");
     head("xyycvn", $$renderer2, ($$renderer3) => {
       $$renderer3.title(($$renderer4) => {
-        $$renderer4.push(`<title>${escape_html(user()?.displayName ?? user()?.username ?? username())} — Profile</title>`);
+        $$renderer4.push(`<title>${escape_html(user()?.name ?? user()?.username ?? username())} — Profile</title>`);
       });
     });
     if (profile.isLoading) {
@@ -317,12 +317,12 @@ function _page($$renderer, $$props) {
       $$renderer2.push(`<div class="min-h-screen pt-14"><div class="h-48 w-full sm:h-56"${attr_style(`background: ${stringify(bannerGradient(username() ?? ""))}`)}></div> <div class="mx-auto max-w-3xl px-6"><div class="relative -mt-16 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:gap-6">`);
       if (user().photoURL) {
         $$renderer2.push("<!--[0-->");
-        $$renderer2.push(`<img${attr("src", user().photoURL)}${attr("alt", user().displayName ?? username())}${attr_class(`h-32 w-32 rounded-full border-4 object-cover ${stringify(cs() === "dark" ? "border-neutral-900" : "border-white")}`)}/>`);
+        $$renderer2.push(`<img${attr("src", user().photoURL)}${attr("alt", user().name ?? username())}${attr_class(`h-32 w-32 rounded-full border-4 object-cover ${stringify(cs() === "dark" ? "border-neutral-900" : "border-white")}`)}/>`);
       } else {
         $$renderer2.push("<!--[-1-->");
-        $$renderer2.push(`<div${attr_class(`flex h-32 w-32 items-center justify-center rounded-full border-4 text-4xl font-bold ${stringify(cs() === "dark" ? "border-neutral-900 bg-neutral-700 text-neutral-200" : "border-white bg-gray-200 text-gray-600")}`)}>${escape_html((user().displayName ?? username() ?? "?").charAt(0).toUpperCase())}</div>`);
+        $$renderer2.push(`<div${attr_class(`flex h-32 w-32 items-center justify-center rounded-full border-4 text-4xl font-bold ${stringify(cs() === "dark" ? "border-neutral-900 bg-neutral-700 text-neutral-200" : "border-white bg-gray-200 text-gray-600")}`)}>${escape_html((user().name ?? username() ?? "?").charAt(0).toUpperCase())}</div>`);
       }
-      $$renderer2.push(`<!--]--> <div class="flex flex-1 flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between"><div><h1${attr_class(`text-2xl font-bold ${stringify(text())}`)}>${escape_html(user().displayName ?? username())}</h1> <span${attr_class(`text-sm ${stringify(muted())}`)}>@${escape_html(user().username ?? username())}</span></div> `);
+      $$renderer2.push(`<!--]--> <div class="flex flex-1 flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between"><div><h1${attr_class(`text-2xl font-bold ${stringify(text())}`)}>${escape_html(user().name ?? username())}</h1> <span${attr_class(`text-sm ${stringify(muted())}`)}>@${escape_html(user().username ?? username())}</span></div> `);
       if (!isOwnProfile() && authenticated()) {
         $$renderer2.push("<!--[0-->");
         $$renderer2.push(`<div class="flex items-center gap-2"><button${attr_class(`rounded-full px-5 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all ${stringify(isFollowing() ? "border " + btnSecondary() : btnPrimary())}`)}>${escape_html(isFollowing() ? "Following" : "Follow")}</button> <button${attr_class(`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all ${stringify(btnSecondary())}`)}>`);
@@ -371,11 +371,19 @@ function _page($$renderer, $$props) {
         $$renderer2.push("<!--[-1-->");
       }
       $$renderer2.push(`<!--]--></div></div> `);
-      if (resume()) {
+      if (resume() && authenticated()) {
         $$renderer2.push("<!--[0-->");
-        $$renderer2.push(`<div${attr_class(`mt-6 rounded-xl border p-5 ${stringify(border())} ${stringify(cardBg())}`)}><div class="flex items-center justify-between"><div><h3${attr_class(`text-sm font-semibold ${stringify(text())}`)}>Resume</h3> <p${attr_class(`mt-0.5 text-[11px] ${stringify(muted())}`)}>Download ${escape_html(user().displayName ?? username())}'s resume</p></div> <a${attr("href", `/api/v1/resumes/${stringify(resume().id)}/download`)} target="_blank"${attr_class(`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all ${stringify(btnPrimary())}`)}>`);
-        File_down($$renderer2, { size: 13 });
-        $$renderer2.push(`<!----> Download</a></div></div>`);
+        $$renderer2.push(`<div${attr_class(`mt-6 rounded-xl border p-5 ${stringify(border())} ${stringify(cardBg())}`)}><div class="flex items-center justify-between"><div><h3${attr_class(`text-sm font-semibold ${stringify(text())}`)}>Resume</h3> <p${attr_class(`mt-0.5 text-[11px] ${stringify(muted())}`)}>Download ${escape_html(user().name ?? username())}'s resume</p> `);
+        {
+          $$renderer2.push("<!--[-1-->");
+        }
+        $$renderer2.push(`<!--]--></div> <button${attr("disabled", downloading, true)}${attr_class(`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all ${stringify(btnPrimary())} disabled:opacity-50`)}>`);
+        {
+          $$renderer2.push("<!--[-1-->");
+          File_down($$renderer2, { size: 13 });
+          $$renderer2.push(`<!----> Download`);
+        }
+        $$renderer2.push(`<!--]--></button></div></div>`);
       } else {
         $$renderer2.push("<!--[-1-->");
       }

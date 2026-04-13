@@ -64,6 +64,7 @@ import type {
   ChatGetMessagesParams,
   ChatGetUnreadCount200,
   ChatMarkConversationAsRead201,
+  ChatSearchUsersParams,
   ChatSendMessage201,
   ChatSendMessageToConversation201,
   SendMessageDto,
@@ -1451,6 +1452,227 @@ export function createChatGetConversationWithSuspense<TData = Awaited<ReturnType
 
 
   const query = createQuery(() => getChatGetConversationWithSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+
+
+
+/**
+ * @summary Search users to start a conversation
+ */
+export type chatSearchUsersResponse200 = {
+  data: void
+  status: 200
+}
+
+export type chatSearchUsersResponse401 = {
+  data: void
+  status: 401
+}
+
+export type chatSearchUsersResponse403 = {
+  data: void
+  status: 403
+}
+
+export type chatSearchUsersResponseSuccess = (chatSearchUsersResponse200) & {
+  headers: Headers;
+};
+export type chatSearchUsersResponseError = (chatSearchUsersResponse401 | chatSearchUsersResponse403) & {
+  headers: Headers;
+};
+
+export type chatSearchUsersResponse = (chatSearchUsersResponseSuccess | chatSearchUsersResponseError)
+
+export const getChatSearchUsersUrl = (params: ChatSearchUsersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/chat/users/search?${stringifiedParams}` : `/api/chat/users/search`
+}
+
+export const chatSearchUsers = async (params: ChatSearchUsersParams, options?: RequestInit): Promise<chatSearchUsersResponse> => {
+
+  return customFetch<chatSearchUsersResponse>(getChatSearchUsersUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getChatSearchUsersInfiniteQueryKey = (params?: ChatSearchUsersParams,) => {
+    return [
+    'infinite', `/api/chat/users/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+export const getChatSearchUsersQueryKey = (params?: ChatSearchUsersParams,) => {
+    return [
+    `/api/chat/users/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getChatSearchUsersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof chatSearchUsers>>>, TError = void>(params: ChatSearchUsersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getChatSearchUsersInfiniteQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatSearchUsers>>> = ({ signal }) => chatSearchUsers(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ChatSearchUsersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof chatSearchUsers>>>
+export type ChatSearchUsersInfiniteQueryError = void
+
+
+/**
+ * @summary Search users to start a conversation
+ */
+
+export function createChatSearchUsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof chatSearchUsers>>>, TError = void>(
+ params: () =>  ChatSearchUsersParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getChatSearchUsersInfiniteQueryOptions(params(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Search users to start a conversation
+ */
+export const prefetchChatSearchUsersInfiniteQuery = async <TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(
+ queryClient: QueryClient, params: ChatSearchUsersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getChatSearchUsersInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getChatSearchUsersQueryOptions = <TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(params: ChatSearchUsersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getChatSearchUsersQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatSearchUsers>>> = ({ signal }) => chatSearchUsers(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ChatSearchUsersQueryResult = NonNullable<Awaited<ReturnType<typeof chatSearchUsers>>>
+export type ChatSearchUsersQueryError = void
+
+
+/**
+ * @summary Search users to start a conversation
+ */
+
+export function createChatSearchUsers<TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(
+ params: () =>  ChatSearchUsersParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getChatSearchUsersQueryOptions(params(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Search users to start a conversation
+ */
+export const prefetchChatSearchUsersQuery = async <TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(
+ queryClient: QueryClient, params: ChatSearchUsersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getChatSearchUsersQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getChatSearchUsersSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(params: ChatSearchUsersParams, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getChatSearchUsersQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof chatSearchUsers>>> = ({ signal }) => chatSearchUsers(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ChatSearchUsersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof chatSearchUsers>>>
+export type ChatSearchUsersSuspenseQueryError = void
+
+
+/**
+ * @summary Search users to start a conversation
+ */
+
+export function createChatSearchUsersSuspense<TData = Awaited<ReturnType<typeof chatSearchUsers>>, TError = void>(
+ params: () =>  ChatSearchUsersParams, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof chatSearchUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getChatSearchUsersSuspenseQueryOptions(params(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }

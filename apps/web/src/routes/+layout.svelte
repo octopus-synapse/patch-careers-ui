@@ -5,6 +5,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import Navbar from '$lib/components/navbar.svelte';
 	import ChatWidget from '$lib/components/chat/chat-widget.svelte';
+	import OnboardingGuard from '$lib/components/onboarding-guard.svelte';
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -29,6 +30,7 @@
 
 <div class="min-h-screen transition-colors duration-200 {bg[colorSchema.mode]}">
 	<QueryClientProvider client={queryClient}>
+		<OnboardingGuard />
 		<Navbar />
 		{@render children()}
 		<ChatWidget />

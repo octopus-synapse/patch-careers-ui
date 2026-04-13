@@ -39,6 +39,7 @@ import type { OnboardingSessionDtoPersonalInfo } from './onboardingSessionDtoPer
 import type { OnboardingSessionDtoProfessionalProfile } from './onboardingSessionDtoProfessionalProfile';
 import type { OnboardingSessionDtoSectionsItem } from './onboardingSessionDtoSectionsItem';
 import type { OnboardingSessionDtoStepsItem } from './onboardingSessionDtoStepsItem';
+import type { OnboardingSessionDtoStrength } from './onboardingSessionDtoStrength';
 import type { OnboardingSessionDtoTemplateSelection } from './onboardingSessionDtoTemplateSelection';
 
 export interface OnboardingSessionDto {
@@ -49,7 +50,9 @@ export interface OnboardingSessionDto {
      * @maximum 100
      */
   progress: number;
+  strength?: OnboardingSessionDtoStrength;
   canProceed: boolean;
+  missingRequired?: string[];
   /** @nullable */
   nextStep?: string | null;
   /** @nullable */

@@ -44,7 +44,7 @@ export type ConversationNullableDataDtoConversation = {
   participant: {
   id: string;
   /** @nullable */
-  displayName: string | null;
+  name: string | null;
   /** @nullable */
   photoURL: string | null;
   /** @nullable */

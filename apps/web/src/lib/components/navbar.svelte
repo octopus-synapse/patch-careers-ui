@@ -25,6 +25,7 @@
 	}));
 	const user = $derived(session.data?.data?.data?.user);
 	const authenticated = $derived(session.data?.data?.data?.authenticated ?? false);
+	const hasCompletedOnboarding = $derived((user as Record<string, unknown> | undefined)?.hasCompletedOnboarding ?? false);
 
 	const queryClient = useQueryClient();
 	const logout = createAuthLogout(() => ({
@@ -114,41 +115,45 @@
 				<NavLogo textClass={s.text[cs]} />
 			</div>
 
-			<div class="mx-auto hidden max-w-md flex-1 px-8 md:block">
-				<button
-					onclick={() => isSearchOpen = true}
-					class="flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors {s.search[cs]}"
-				>
-					<Search size={14} class={s.muted[cs]} />
-					<span class="flex-1 text-left text-xs">{t('nav.search')}</span>
-					<kbd class="rounded border px-1.5 py-0.5 text-[10px] font-medium {s.search[cs]}">⌘K</kbd>
-				</button>
-			</div>
+			{#if hasCompletedOnboarding}
+				<div class="mx-auto hidden max-w-md flex-1 px-8 md:block">
+					<button
+						onclick={() => isSearchOpen = true}
+						class="flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors {s.search[cs]}"
+					>
+						<Search size={14} class={s.muted[cs]} />
+						<span class="flex-1 text-left text-xs">{t('nav.search')}</span>
+						<kbd class="rounded border px-1.5 py-0.5 text-[10px] font-medium {s.search[cs]}">⌘K</kbd>
+					</button>
+				</div>
+			{/if}
 
 			<div class="flex shrink-0 items-center gap-1">
-				<div class="hidden items-center gap-1 md:flex">
-					{#each navLinks as link}
-						<a
-							href={link.href}
-							class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
-						>
-							<link.icon size={14} />
-							{t(link.key)}
-						</a>
-					{/each}
+				{#if hasCompletedOnboarding}
+					<div class="hidden items-center gap-1 md:flex">
+						{#each navLinks as link}
+							<a
+								href={link.href}
+								class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+							>
+								<link.icon size={14} />
+								{t(link.key)}
+							</a>
+						{/each}
 
-					{#if authenticated}
-						<button
-							onclick={() => chatState.toggle()}
-							class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
-						>
-							<MessageCircle size={14} />
-							{t('nav.messages')}
-						</button>
-					{/if}
+						{#if authenticated}
+							<button
+								onclick={() => chatState.toggle()}
+								class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors {s.link[cs]}"
+							>
+								<MessageCircle size={14} />
+								{t('nav.messages')}
+							</button>
+						{/if}
 
-					<div class="mx-2 h-4 w-px {s.border[cs]} bg-current opacity-20"></div>
-				</div>
+						<div class="mx-2 h-4 w-px {s.border[cs]} bg-current opacity-20"></div>
+					</div>
+				{/if}
 
 				{#if authenticated && user}
 					<NavUserDropdown

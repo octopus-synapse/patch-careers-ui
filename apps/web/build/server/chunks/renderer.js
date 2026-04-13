@@ -1,4 +1,4 @@
-import { l as lifecycle_outside_component, B as BROWSER, f as dynamic_element_invalid_tag, j as invalid_csp, k as await_invalid, d as get_render_context, m as invalid_id_prefix, u as uneval } from "./render-context.js";
+import { l as lifecycle_outside_component, b as browser, j as dynamic_element_invalid_tag, k as invalid_csp, m as await_invalid, f as get_render_context, n as invalid_id_prefix, u as uneval } from "./render-context.js";
 import { e as escape_html } from "./escaping.js";
 var ssr_context = null;
 function set_ssr_context(v) {
@@ -2066,7 +2066,7 @@ function update_effect(effect) {
     effect.teardown = typeof teardown === "function" ? teardown : null;
     effect.wv = write_version;
     var dep;
-    if (BROWSER && tracing_mode_flag && (effect.f & DIRTY) !== 0 && effect.deps !== null) ;
+    if (browser && tracing_mode_flag && (effect.f & DIRTY) !== 0 && effect.deps !== null) ;
   } finally {
     is_updating_effect = was_updating_effect;
     active_effect = previous_effect;

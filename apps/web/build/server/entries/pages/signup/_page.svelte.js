@@ -1,5 +1,5 @@
 import { j as head, e as attr_class, f as stringify, h as derived } from "../../../chunks/renderer.js";
-import { l as createMutation, q as customFetch, t as isApiError } from "../../../chunks/Icon.js";
+import { q as createMutation, t as customFetch, v as useQueryClient, z as isApiError, x as getAuthSessionQueryKey } from "../../../chunks/Icon.js";
 import { B as Button } from "../../../chunks/button.js";
 import { L as Label, I as Input } from "../../../chunks/label.js";
 import { g as goto } from "../../../chunks/client.js";
@@ -37,6 +37,7 @@ const createAccountsSignup = (options, queryClient) => {
 };
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
+    const queryClient = useQueryClient();
     let name = "";
     let email = "";
     let password = "";
@@ -47,7 +48,8 @@ function _page($$renderer, $$props) {
     const text = derived(() => cs() === "dark" ? "text-neutral-200" : "text-gray-800");
     const signup = createAccountsSignup(() => ({
       mutation: {
-        onSuccess() {
+        async onSuccess() {
+          await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
           goto();
         },
         onError(err) {

@@ -1,6 +1,5 @@
 import { b as sanitize_props, c as spread_props, d as slot, e as attr_class, f as stringify, l as attr_style, i as ensure_array_like, h as derived, g as attr, j as head } from "../../../chunks/renderer.js";
-import { c as createQuery, a as createAuthSession, g as getAuthSessionQueryKey } from "../../../chunks/auth.js";
-import { l as createMutation, q as customFetch, I as Icon, u as useQueryClient } from "../../../chunks/Icon.js";
+import { l as createQuery, q as createMutation, t as customFetch, I as Icon, u as createAuthSession, v as useQueryClient, x as getAuthSessionQueryKey } from "../../../chunks/Icon.js";
 import { B as Button } from "../../../chunks/button.js";
 import { g as goto } from "../../../chunks/client.js";
 import { c as colorSchema } from "../../../chunks/color-schema.svelte.js";
@@ -1054,11 +1053,16 @@ function _page($$renderer, $$props) {
     const nextStep = createOnboardingNextStep(() => ({ mutation: { onSuccess: invalidateSession } }));
     const prevStep = createOnboardingPreviousStep(() => ({ mutation: { onSuccess: invalidateSession } }));
     createOnboardingGotoStep(() => ({ mutation: { onSuccess: invalidateSession } }));
+    let completeError = "";
     const complete = createOnboardingCompleteFromSession(() => ({
       mutation: {
         onSuccess() {
           queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
           goto();
+        },
+        onError(err) {
+          const msg = err?.message;
+          completeError = typeof msg === "string" ? msg : "Failed to complete onboarding";
         }
       }
     }));
@@ -1069,7 +1073,7 @@ function _page($$renderer, $$props) {
       nextStep.mutate({ data: body, params: { locale: locale.current } });
     }
     function handleComplete() {
-      complete.mutate({});
+      complete.mutate();
     }
     const isPending = derived(() => nextStep.isPending || prevStep.isPending || complete.isPending);
     head("fpvdp2", $$renderer2, ($$renderer3) => {
@@ -1168,6 +1172,7 @@ function _page($$renderer, $$props) {
       $$renderer2.push(`<!--]--> `);
       if (isLastStep()) {
         $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="flex flex-col items-end gap-1">`);
         Button($$renderer2, {
           onclick: handleComplete,
           disabled: isPending() || missingRequired().length > 0,
@@ -1186,6 +1191,14 @@ function _page($$renderer, $$props) {
           },
           $$slots: { default: true }
         });
+        $$renderer2.push(`<!----> `);
+        if (completeError) {
+          $$renderer2.push("<!--[0-->");
+          $$renderer2.push(`<span class="text-[11px] text-red-500">${escape_html(completeError)}</span>`);
+        } else {
+          $$renderer2.push("<!--[-1-->");
+        }
+        $$renderer2.push(`<!--]--></div>`);
       } else {
         $$renderer2.push("<!--[-1-->");
         Button($$renderer2, {

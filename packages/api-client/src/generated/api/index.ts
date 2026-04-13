@@ -2,6 +2,7 @@
 
 export * from "./account-lifecycle/account-lifecycle";
 export * from "./accounts/accounts";
+export * from "./admin-onboarding/admin-onboarding";
 export * from "./admin-section-types/admin-section-types";
 export * from "./app/app";
 export * from "./ats-validation/ats-validation";
@@ -23,6 +24,7 @@ export * from "./mec-internal/mec-internal";
 export * from "./mec-metadata/mec-metadata";
 export * from "./metrics/metrics";
 export * from "./onboarding/onboarding";
+export * from "./onboarding-preview/onboarding-preview";
 export * from "./password-management/password-management";
 export * from "./platform/platform";
 export * from "./public-resumes/public-resumes";

@@ -55,14 +55,6 @@
       "_renderer.js"
     ]
   },
-  "_auth.js": {
-    "file": "chunks/auth.js",
-    "name": "auth",
-    "imports": [
-      "_Icon.js",
-      "_renderer.js"
-    ]
-  },
   "_button.js": {
     "file": "chunks/button.js",
     "name": "button",
@@ -225,12 +217,15 @@
       "_renderer.js",
       "_color-schema.svelte.js",
       "_locale.svelte.js",
-      "_auth.js",
+      "_Icon.js",
       "_client.js",
       "_escaping.js",
-      "_Icon.js",
       "_message-circle.js",
       "_log-out.js",
+      "_exports.js",
+      "_utils.js",
+      "_root.js",
+      "_state.svelte.js",
       "_render-context.js"
     ],
     "css": [
@@ -262,7 +257,6 @@
     "imports": [
       "_renderer.js",
       "_stores.js",
-      "_auth.js",
       "_Icon.js",
       "_color-schema.svelte.js",
       "_loader-circle.js",
@@ -287,12 +281,11 @@
     "isEntry": true,
     "imports": [
       "_renderer.js",
-      "_auth.js",
+      "_Icon.js",
       "_button.js",
       "_client.js",
       "_color-schema.svelte.js",
       "_locale.svelte.js",
-      "_Icon.js",
       "_loader-circle.js",
       "_log-out.js",
       "_escaping.js"
@@ -306,7 +299,6 @@
     "imports": [
       "_renderer.js",
       "_Icon.js",
-      "_auth.js",
       "_button.js",
       "_label.js",
       "_client.js",
@@ -323,7 +315,6 @@
     "isEntry": true,
     "imports": [
       "_renderer.js",
-      "_auth.js",
       "_Icon.js",
       "_button.js",
       "_client.js",

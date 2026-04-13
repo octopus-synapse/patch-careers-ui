@@ -52,6 +52,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ExportDownloadUserResumePDF200,
   ExportExportBannerParams,
   ExportExportJsonParams,
   ExportExportLatexParams,
@@ -500,6 +501,208 @@ export function createExportExportResumePDFSuspense<TData = Awaited<ReturnType<t
 
 
   const query = createQuery(() => getExportExportResumePDFSuspenseQueryOptions(params?.(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+
+
+
+/**
+ * @summary Generate another user's resume as PDF (base64)
+ */
+export type exportDownloadUserResumePDFResponse200 = {
+  data: ExportDownloadUserResumePDF200
+  status: 200
+}
+
+export type exportDownloadUserResumePDFResponseSuccess = (exportDownloadUserResumePDFResponse200) & {
+  headers: Headers;
+};
+;
+
+export type exportDownloadUserResumePDFResponse = (exportDownloadUserResumePDFResponseSuccess)
+
+export const getExportDownloadUserResumePDFUrl = (userId: string,) => {
+
+
+
+
+  return `/api/v1/export/user/${userId}/resume/pdf`
+}
+
+export const exportDownloadUserResumePDF = async (userId: string, options?: RequestInit): Promise<exportDownloadUserResumePDFResponse> => {
+
+  return customFetch<exportDownloadUserResumePDFResponse>(getExportDownloadUserResumePDFUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getExportDownloadUserResumePDFInfiniteQueryKey = (userId: string,) => {
+    return [
+    'infinite', `/api/v1/export/user/${userId}/resume/pdf`
+    ] as const;
+    }
+
+export const getExportDownloadUserResumePDFQueryKey = (userId: string,) => {
+    return [
+    `/api/v1/export/user/${userId}/resume/pdf`
+    ] as const;
+    }
+
+
+export const getExportDownloadUserResumePDFInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportDownloadUserResumePDFInfiniteQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>> = ({ signal }) => exportDownloadUserResumePDF(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ExportDownloadUserResumePDFInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>>
+export type ExportDownloadUserResumePDFInfiniteQueryError = unknown
+
+
+/**
+ * @summary Generate another user's resume as PDF (base64)
+ */
+
+export function createExportDownloadUserResumePDFInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>>, TError = unknown>(
+ userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getExportDownloadUserResumePDFInfiniteQueryOptions(userId(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Generate another user's resume as PDF (base64)
+ */
+export const prefetchExportDownloadUserResumePDFInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(
+ queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getExportDownloadUserResumePDFInfiniteQueryOptions(userId,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getExportDownloadUserResumePDFQueryOptions = <TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportDownloadUserResumePDFQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>> = ({ signal }) => exportDownloadUserResumePDF(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ExportDownloadUserResumePDFQueryResult = NonNullable<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>>
+export type ExportDownloadUserResumePDFQueryError = unknown
+
+
+/**
+ * @summary Generate another user's resume as PDF (base64)
+ */
+
+export function createExportDownloadUserResumePDF<TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(
+ userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getExportDownloadUserResumePDFQueryOptions(userId(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Generate another user's resume as PDF (base64)
+ */
+export const prefetchExportDownloadUserResumePDFQuery = async <TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(
+ queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getExportDownloadUserResumePDFQueryOptions(userId,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getExportDownloadUserResumePDFSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportDownloadUserResumePDFQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>> = ({ signal }) => exportDownloadUserResumePDF(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ExportDownloadUserResumePDFSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>>
+export type ExportDownloadUserResumePDFSuspenseQueryError = unknown
+
+
+/**
+ * @summary Generate another user's resume as PDF (base64)
+ */
+
+export function createExportDownloadUserResumePDFSuspense<TData = Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError = unknown>(
+ userId: () =>  string, options?: () => { query?:Partial<CreateSuspenseQueryOptions<Awaited<ReturnType<typeof exportDownloadUserResumePDF>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getExportDownloadUserResumePDFSuspenseQueryOptions(userId(),options?.()), queryClient) as CreateSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }

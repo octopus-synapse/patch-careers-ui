@@ -8,7 +8,7 @@
 		senderId: string;
 		createdAt: string;
 		isRead: boolean;
-		sender: { id: string; displayName: string | null; photoURL: string | null };
+		sender: { id: string; name: string | null; photoURL: string | null };
 	};
 
 	type Props = {
@@ -61,7 +61,7 @@
 			<div class="flex {own ? 'justify-end' : 'justify-start'} {consecutive ? '' : 'mt-3'}">
 				{#if !own && showAvatar}
 					<div class="mr-2 flex-shrink-0 self-end mb-5">
-						<Avatar name={msg.sender.displayName ?? '?'} photoURL={msg.sender.photoURL} {colorSchema} size="sm" />
+						<Avatar name={msg.sender.name ?? '?'} photoURL={msg.sender.photoURL} {colorSchema} size="sm" />
 					</div>
 				{:else if !own}
 					<div class="mr-2 w-8 flex-shrink-0"></div>

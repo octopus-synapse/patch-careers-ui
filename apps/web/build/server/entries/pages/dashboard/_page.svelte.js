@@ -1,10 +1,9 @@
 import { j as head, f as stringify, e as attr_class, h as derived } from "../../../chunks/renderer.js";
-import { a as createAuthSession, b as createAuthLogout, g as getAuthSessionQueryKey } from "../../../chunks/auth.js";
+import { u as createAuthSession, v as useQueryClient, w as createAuthLogout, x as getAuthSessionQueryKey } from "../../../chunks/Icon.js";
 import { B as Button } from "../../../chunks/button.js";
 import { g as goto } from "../../../chunks/client.js";
 import { c as colorSchema } from "../../../chunks/color-schema.svelte.js";
 import { l as locale } from "../../../chunks/locale.svelte.js";
-import { u as useQueryClient } from "../../../chunks/Icon.js";
 import { L as Loader_circle } from "../../../chunks/loader-circle.js";
 import { L as Log_out } from "../../../chunks/log-out.js";
 import { e as escape_html } from "../../../chunks/escaping.js";

@@ -4,7 +4,7 @@
 
 	type Conversation = {
 		id: string;
-		participant: { id: string; displayName: string | null; photoURL: string | null; username: string | null; name?: string | null };
+		participant: { id: string; name: string | null; photoURL: string | null; username: string | null };
 		lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null;
 		unreadCount?: number;
 	};
@@ -51,12 +51,12 @@
 		class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors
 			{active ? activeBg : hoverBg}"
 	>
-		<Avatar name={o.displayName ?? o.name ?? o.username ?? '?'} photoURL={o.photoURL} {colorSchema} size="md" />
+		<Avatar name={o.name ?? o.username ?? '?'} photoURL={o.photoURL} {colorSchema} size="md" />
 
 		<div class="min-w-0 flex-1">
 			<div class="flex items-baseline justify-between gap-2">
 				<span class="truncate text-xs font-semibold {text}">
-					{o.displayName ?? o.name ?? o.username ?? 'User'}
+					{o.name ?? o.username ?? 'User'}
 				</span>
 				{#if conv.lastMessage?.createdAt}
 					<span class="flex-shrink-0 text-[10px] {muted}">{timeAgo(conv.lastMessage.createdAt)}</span>

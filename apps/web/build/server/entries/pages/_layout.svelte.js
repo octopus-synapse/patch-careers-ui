@@ -1,13 +1,18 @@
 import { a as ssr_context, b as sanitize_props, c as spread_props, d as slot, e as attr_class, f as stringify, g as attr, h as derived, i as ensure_array_like } from "../../chunks/renderer.js";
 import { c as colorSchema } from "../../chunks/color-schema.svelte.js";
 import { l as locale } from "../../chunks/locale.svelte.js";
-import { Q as Query, c as createQuery, a as createAuthSession, b as createAuthLogout, g as getAuthSessionQueryKey } from "../../chunks/auth.js";
+import { e as ensureQueryFn, a as addToStart, b as addToEnd, c as addConsumeAwareSignal, S as Subscribable, M as Mutation, n as notifyManager, m as matchMutation, d as noop, h as hashQueryKeyByOptions, Q as Query, f as matchQuery, g as focusManager, o as onlineManager, r as resolveStaleTime, i as functionalUpdate, j as hashKey, p as partialMatchKey, s as skipToken, k as setQueryClientContext, l as createQuery, q as createMutation, t as customFetch, I as Icon, u as createAuthSession, v as useQueryClient, w as createAuthLogout, x as getAuthSessionQueryKey } from "../../chunks/Icon.js";
 import { g as goto } from "../../chunks/client.js";
 import { e as escape_html } from "../../chunks/escaping.js";
-import { e as ensureQueryFn, a as addToStart, b as addToEnd, c as addConsumeAwareSignal, S as Subscribable, M as Mutation, n as notifyManager, m as matchMutation, d as noop, h as hashQueryKeyByOptions, f as matchQuery, g as focusManager, o as onlineManager, r as resolveStaleTime, i as functionalUpdate, j as hashKey, p as partialMatchKey, s as skipToken, k as setQueryClientContext, l as createMutation, q as customFetch, I as Icon, u as useQueryClient } from "../../chunks/Icon.js";
 import { G as Globe, M as Message_circle } from "../../chunks/message-circle.js";
 import { L as Log_out } from "../../chunks/log-out.js";
-import { B as BROWSER } from "../../chunks/render-context.js";
+import "@sveltejs/kit/internal";
+import "../../chunks/exports.js";
+import "../../chunks/utils.js";
+import "@sveltejs/kit/internal/server";
+import "../../chunks/root.js";
+import "../../chunks/state.svelte.js";
+import { b as browser } from "../../chunks/render-context.js";
 function onDestroy(fn) {
   /** @type {SSRContext} */
   ssr_context.r.on_destroy(fn);
@@ -1216,7 +1221,14 @@ function Nav_user_dropdown($$renderer, $$props) {
     $$renderer2.push(`<!----></button> `);
     if (isOpen2) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<div${attr_class(`absolute right-0 mt-3 w-56 rounded-lg ${stringify(s.dropdownBg[cs])}`)}><div class="px-4 pt-4 pb-3"><p${attr_class(`text-sm font-semibold ${stringify(s.text[cs])}`)}>${escape_html(displayName())}</p> <p${attr_class(`text-[11px] ${stringify(s.muted[cs])}`)}>${escape_html(user.email)}</p></div> <div${attr_class(`border-t ${stringify(s.border[cs])}`)}><div class="px-4 py-3"><div class="flex items-center justify-between"><div${attr_class(`flex items-center gap-2 ${stringify(s.muted[cs])}`)}>`);
+      $$renderer2.push(`<div${attr_class(`absolute right-0 mt-3 w-56 rounded-lg ${stringify(s.dropdownBg[cs])}`)}><div class="px-4 pt-4 pb-3"><p${attr_class(`text-sm font-semibold ${stringify(s.text[cs])}`)}>${escape_html(displayName())}</p> `);
+      if (user.username) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<p${attr_class(`text-[11px] ${stringify(s.muted[cs])}`)}>@${escape_html(user.username)}</p>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> <p${attr_class(`text-[10px] ${stringify(s.muted[cs])}`)}>${escape_html(user.email)}</p></div> <div${attr_class(`border-t ${stringify(s.border[cs])}`)}><div class="px-4 py-3"><div class="flex items-center justify-between"><div${attr_class(`flex items-center gap-2 ${stringify(s.muted[cs])}`)}>`);
       if (cs === "dark") {
         $$renderer2.push("<!--[0-->");
         Sun($$renderer2, { size: 13 });
@@ -1268,9 +1280,10 @@ function Navbar($$renderer, $$props) {
     const cs = derived(() => colorSchema.mode);
     const t = derived(() => locale.t);
     let isDropdownOpen = false;
-    const session = createAuthSession(() => ({ query: { retry: false, enabled: BROWSER } }));
+    const session = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
     const user = derived(() => session.data?.data?.data?.user);
     const authenticated = derived(() => session.data?.data?.data?.authenticated ?? false);
+    const hasCompletedOnboarding = derived(() => user()?.hasCompletedOnboarding ?? false);
     const queryClient = useQueryClient();
     createAuthLogout(() => ({
       mutation: {
@@ -1325,33 +1338,47 @@ function Navbar($$renderer, $$props) {
       });
       $$renderer2.push(`<!----> <nav${attr_class(`fixed top-0 right-0 left-0 z-50 border-b transition-colors duration-300 ${stringify(s.border[cs()])} ${stringify("backdrop-blur-md " + s.bg[cs()])}`)}><div class="mx-auto flex h-14 max-w-7xl items-center px-6"><div class="flex shrink-0 items-center">`);
       Nav_logo($$renderer2, { textClass: s.text[cs()] });
-      $$renderer2.push(`<!----></div> <div class="mx-auto hidden max-w-md flex-1 px-8 md:block"><button${attr_class(`flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors ${stringify(s.search[cs()])}`)}>`);
-      Search($$renderer2, { size: 14, class: s.muted[cs()] });
-      $$renderer2.push(`<!----> <span class="flex-1 text-left text-xs">${escape_html(t()("nav.search"))}</span> <kbd${attr_class(`rounded border px-1.5 py-0.5 text-[10px] font-medium ${stringify(s.search[cs()])}`)}>⌘K</kbd></button></div> <div class="flex shrink-0 items-center gap-1"><div class="hidden items-center gap-1 md:flex"><!--[-->`);
-      const each_array = ensure_array_like(navLinks);
-      for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
-        let link = each_array[$$index];
-        $$renderer2.push(`<a${attr("href", link.href)}${attr_class(`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>`);
-        if (link.icon) {
-          $$renderer2.push("<!--[-->");
-          link.icon($$renderer2, { size: 14 });
-          $$renderer2.push("<!--]-->");
-        } else {
-          $$renderer2.push("<!--[!-->");
-          $$renderer2.push("<!--]-->");
-        }
-        $$renderer2.push(` ${escape_html(t()(link.key))}</a>`);
-      }
-      $$renderer2.push(`<!--]--> `);
-      if (authenticated()) {
+      $$renderer2.push(`<!----></div> `);
+      if (hasCompletedOnboarding()) {
         $$renderer2.push("<!--[0-->");
-        $$renderer2.push(`<button${attr_class(`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>`);
-        Message_circle($$renderer2, { size: 14 });
-        $$renderer2.push(`<!----> ${escape_html(t()("nav.messages"))}</button>`);
+        $$renderer2.push(`<div class="mx-auto hidden max-w-md flex-1 px-8 md:block"><button${attr_class(`flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors ${stringify(s.search[cs()])}`)}>`);
+        Search($$renderer2, { size: 14, class: s.muted[cs()] });
+        $$renderer2.push(`<!----> <span class="flex-1 text-left text-xs">${escape_html(t()("nav.search"))}</span> <kbd${attr_class(`rounded border px-1.5 py-0.5 text-[10px] font-medium ${stringify(s.search[cs()])}`)}>⌘K</kbd></button></div>`);
       } else {
         $$renderer2.push("<!--[-1-->");
       }
-      $$renderer2.push(`<!--]--> <div${attr_class(`mx-2 h-4 w-px ${stringify(s.border[cs()])} bg-current opacity-20`)}></div></div> `);
+      $$renderer2.push(`<!--]--> <div class="flex shrink-0 items-center gap-1">`);
+      if (hasCompletedOnboarding()) {
+        $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="hidden items-center gap-1 md:flex"><!--[-->`);
+        const each_array = ensure_array_like(navLinks);
+        for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+          let link = each_array[$$index];
+          $$renderer2.push(`<a${attr("href", link.href)}${attr_class(`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>`);
+          if (link.icon) {
+            $$renderer2.push("<!--[-->");
+            link.icon($$renderer2, { size: 14 });
+            $$renderer2.push("<!--]-->");
+          } else {
+            $$renderer2.push("<!--[!-->");
+            $$renderer2.push("<!--]-->");
+          }
+          $$renderer2.push(` ${escape_html(t()(link.key))}</a>`);
+        }
+        $$renderer2.push(`<!--]--> `);
+        if (authenticated()) {
+          $$renderer2.push("<!--[0-->");
+          $$renderer2.push(`<button${attr_class(`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors ${stringify(s.link[cs()])}`)}>`);
+          Message_circle($$renderer2, { size: 14 });
+          $$renderer2.push(`<!----> ${escape_html(t()("nav.messages"))}</button>`);
+        } else {
+          $$renderer2.push("<!--[-1-->");
+        }
+        $$renderer2.push(`<!--]--> <div${attr_class(`mx-2 h-4 w-px ${stringify(s.border[cs()])} bg-current opacity-20`)}></div></div>`);
+      } else {
+        $$renderer2.push("<!--[-1-->");
+      }
+      $$renderer2.push(`<!--]--> `);
       if (authenticated() && user()) {
         $$renderer2.push("<!--[0-->");
         Nav_user_dropdown($$renderer2, {
@@ -1390,7 +1417,7 @@ function Navbar($$renderer, $$props) {
 }
 function Chat_widget($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
-    const auth = createAuthSession(() => ({ query: { retry: false, enabled: BROWSER } }));
+    const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
     const authData = derived(() => auth.data?.data?.data);
     const authenticated = derived(() => authData()?.authenticated ?? false);
     createChatGetConversations(() => ({ limit: 50 }), () => ({ query: { enabled: authenticated() && chatState.isOpen } }));
@@ -1410,6 +1437,11 @@ function Chat_widget($$renderer, $$props) {
     $$renderer2.push(`<!--]-->`);
   });
 }
+function Onboarding_guard($$renderer, $$props) {
+  $$renderer.component(($$renderer2) => {
+    createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
+  });
+}
 function _layout($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let { children } = $$props;
@@ -1426,6 +1458,8 @@ function _layout($$renderer, $$props) {
     QueryClientProvider($$renderer2, {
       client: queryClient,
       children: ($$renderer3) => {
+        Onboarding_guard($$renderer3);
+        $$renderer3.push(`<!----> `);
         Navbar($$renderer3);
         $$renderer3.push(`<!----> `);
         children($$renderer3);

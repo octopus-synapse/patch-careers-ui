@@ -39,7 +39,7 @@ All errors follow a consistent format:
 export type ConversationDataDtoConversationParticipant = {
   id: string;
   /** @nullable */
-  displayName: string | null;
+  name: string | null;
   /** @nullable */
   photoURL: string | null;
   /** @nullable */

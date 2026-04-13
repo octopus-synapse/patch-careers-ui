@@ -1,4 +1,4 @@
-const BROWSER = false;
+const browser = false;
 const escaped = {
   "<": "\\u003C",
   "\\": "\\\\",
@@ -545,21 +545,21 @@ function get_render_context() {
 }
 let als = null;
 export {
-  BROWSER as B,
   DevalueError as D,
   is_plain_object as a,
-  stringify_string as b,
-  experimental_async_required as c,
-  get_render_context as d,
+  browser as b,
+  stringify_string as c,
+  experimental_async_required as d,
   enumerable_symbols as e,
-  dynamic_element_invalid_tag as f,
+  get_render_context as f,
   get_type as g,
   hydratable_serialization_failed as h,
   is_primitive as i,
-  invalid_csp as j,
-  await_invalid as k,
+  dynamic_element_invalid_tag as j,
+  invalid_csp as k,
   lifecycle_outside_component as l,
-  invalid_id_prefix as m,
+  await_invalid as m,
+  invalid_id_prefix as n,
   stringify_key as s,
   uneval as u,
   valid_array_indices as v

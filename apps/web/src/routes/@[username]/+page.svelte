@@ -8,7 +8,8 @@
 		createFollowUnfollow,
 		createAuthSession,
 		getFollowGetSocialStatsQueryKey,
-		getFollowIsFollowingQueryKey
+		getFollowIsFollowingQueryKey,
+		exportDownloadUserResumePDF
 	} from 'api-client';
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { chatState } from '$lib/chat-state.svelte';
@@ -40,6 +41,31 @@
 	const resume = $derived(
 		(profileData?.resume as Record<string, unknown>) ?? null
 	);
+	let downloading = $state(false);
+	let downloadError = $state<string | null>(null);
+
+	async function downloadResume() {
+		if (!userId || downloading) return;
+		downloading = true;
+		downloadError = null;
+		try {
+			const res = await exportDownloadUserResumePDF(userId);
+			const data = res.data?.data as Record<string, string> | undefined;
+			if (!data?.pdf) throw new Error('No PDF data returned');
+			const bytes = Uint8Array.from(atob(data.pdf), (c) => c.charCodeAt(0));
+			const blob = new Blob([bytes], { type: 'application/pdf' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = data.filename ?? `${user?.name ?? username ?? 'resume'}.pdf`;
+			a.click();
+			URL.revokeObjectURL(url);
+		} catch (err) {
+			downloadError = err instanceof Error ? err.message : 'Failed to download resume';
+		} finally {
+			downloading = false;
+		}
+	}
 
 	const userId = $derived(user?.id ?? '');
 	const isOwnProfile = $derived(!!currentUserId && currentUserId === userId);
@@ -115,7 +141,7 @@
 </script>
 
 <svelte:head>
-	<title>{user?.displayName ?? user?.username ?? username} — Profile</title>
+	<title>{user?.name ?? user?.username ?? username} — Profile</title>
 </svelte:head>
 
 {#if profile.isLoading}
@@ -143,13 +169,13 @@
 				{#if user.photoURL}
 					<img
 						src={user.photoURL}
-						alt={user.displayName ?? username}
+						alt={user.name ?? username}
 						class="h-32 w-32 rounded-full border-4 object-cover {cs === 'dark' ? 'border-neutral-900' : 'border-white'}"
 					/>
 				{:else}
 					<div class="flex h-32 w-32 items-center justify-center rounded-full border-4 text-4xl font-bold
 						{cs === 'dark' ? 'border-neutral-900 bg-neutral-700 text-neutral-200' : 'border-white bg-gray-200 text-gray-600'}">
-						{(user.displayName ?? username ?? '?').charAt(0).toUpperCase()}
+						{(user.name ?? username ?? '?').charAt(0).toUpperCase()}
 					</div>
 				{/if}
 
@@ -157,7 +183,7 @@
 				<div class="flex flex-1 flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between">
 					<div>
 						<h1 class="text-2xl font-bold {text}">
-							{user.displayName ?? username}
+							{user.name ?? username}
 						</h1>
 						<span class="text-sm {muted}">@{user.username ?? username}</span>
 					</div>
@@ -246,21 +272,29 @@
 			</div>
 
 			<!-- Resume download -->
-			{#if resume}
+			{#if resume && authenticated}
 				<div class="mt-6 rounded-xl border p-5 {border} {cardBg}">
 					<div class="flex items-center justify-between">
 						<div>
 							<h3 class="text-sm font-semibold {text}">Resume</h3>
-							<p class="mt-0.5 text-[11px] {muted}">Download {user.displayName ?? username}'s resume</p>
+							<p class="mt-0.5 text-[11px] {muted}">Download {user.name ?? username}'s resume</p>
+							{#if downloadError}
+								<p class="mt-1 text-[11px] text-red-500">{downloadError}</p>
+							{/if}
 						</div>
-						<a
-							href="/api/v1/resumes/{resume.id}/download"
-							target="_blank"
-							class="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnPrimary}"
+						<button
+							onclick={downloadResume}
+							disabled={downloading}
+							class="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all {btnPrimary} disabled:opacity-50"
 						>
-							<FileDown size={13} />
-							Download
-						</a>
+							{#if downloading}
+								<Loader2 size={13} class="animate-spin" />
+								Generating...
+							{:else}
+								<FileDown size={13} />
+								Download
+							{/if}
+						</button>
 					</div>
 				</div>
 			{/if}

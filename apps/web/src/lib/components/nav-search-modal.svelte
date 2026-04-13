@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Search, FileText, Building2, Briefcase, ArrowRight, Hash } from 'lucide-svelte';
+	import { Search, FileText, Building2, Briefcase, ArrowRight, Hash, User } from 'lucide-svelte';
+	import { chatSearchUsers } from 'api-client';
+	import { Avatar } from 'ui';
+	import { goto } from '$app/navigation';
 
 	type Props = {
 		open: boolean;
@@ -11,12 +14,37 @@
 	let { open, cs, t, onclose }: Props = $props();
 
 	let inputRef: HTMLInputElement | undefined = $state();
+	let query = $state('');
+	let users = $state<Array<Record<string, string | null>>>([]);
+	let searching = $state(false);
+	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 	$effect(() => {
 		if (open) {
+			query = '';
+			users = [];
 			setTimeout(() => inputRef?.focus(), 0);
 		}
 	});
+
+	$effect(() => {
+		if (debounceTimer) clearTimeout(debounceTimer);
+		if (query.trim().length < 2) { users = []; return; }
+		searching = true;
+		debounceTimer = setTimeout(async () => {
+			try {
+				const res = await chatSearchUsers({ q: query.trim() });
+				users = ((res.data?.data as Record<string, unknown>)?.users as Array<Record<string, string | null>>) ?? [];
+			} catch { users = []; }
+			searching = false;
+		}, 300);
+	});
+
+	function selectUser(username: string | null) {
+		if (!username) return;
+		onclose();
+		goto(`/@${username}`);
+	}
 
 	function handleBackdrop(e: MouseEvent) {
 		if (e.target === e.currentTarget) onclose();
@@ -60,6 +88,7 @@
 				<Search size={16} class="{muted[cs]} shrink-0" />
 				<input
 					bind:this={inputRef}
+					bind:value={query}
 					type="text"
 					placeholder={t('nav.searchPlaceholder')}
 					class="h-12 w-full bg-transparent text-sm outline-none {text[cs]} placeholder:{muted[cs]}"
@@ -72,34 +101,50 @@
 				</button>
 			</div>
 
-			<div class="max-h-80 overflow-y-auto px-2 py-3">
-				<div class="px-2 pb-2">
-					<span class="text-[10px] font-semibold uppercase tracking-wider {sectionText[cs]}">
-						{t('nav.searchQuickLinks')}
-					</span>
-				</div>
+			<div class="max-h-80 overflow-y-auto px-2 py-3 scrollbar-thin">
+				{#if users.length > 0}
+					<div class="px-2 pb-2">
+						<span class="text-[10px] font-semibold uppercase tracking-wider {sectionText[cs]}">Users</span>
+					</div>
+					{#each users as user}
+						<button
+							onclick={() => selectUser(user.username)}
+							class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors {itemHover[cs]}"
+						>
+							<Avatar name={user.name ?? user.username ?? '?'} photoURL={user.photoURL} colorSchema={cs} size="sm" />
+							<div class="flex-1 min-w-0">
+								<span class="block truncate text-sm font-medium {text[cs]}">{user.name ?? user.username}</span>
+								{#if user.username}
+									<span class="block truncate text-[11px] {muted[cs]}">@{user.username}</span>
+								{/if}
+							</div>
+							<ArrowRight size={14} class={muted[cs]} />
+						</button>
+					{/each}
+				{:else if query.trim().length >= 2 && !searching}
+					<div class="flex items-center justify-center py-6">
+						<span class="text-xs {muted[cs]}">No users found</span>
+					</div>
+				{:else}
+					<div class="px-2 pb-2">
+						<span class="text-[10px] font-semibold uppercase tracking-wider {sectionText[cs]}">
+							{t('nav.searchQuickLinks')}
+						</span>
+					</div>
 
-				{#each quickLinks as link}
-					<button
-						class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors {itemHover[cs]}"
-					>
-						<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md {itemIcon[cs]} border {border[cs]}">
-							<link.icon size={14} />
-						</div>
-						<span class="flex-1 text-sm {text[cs]}">{t(link.labelKey)}</span>
-						<ArrowRight size={14} class={muted[cs]} />
-					</button>
-				{/each}
-
-				<div class="mt-3 px-2 pb-2">
-					<span class="text-[10px] font-semibold uppercase tracking-wider {sectionText[cs]}">
-						{t('nav.searchRecent')}
-					</span>
-				</div>
-
-				<div class="flex items-center justify-center py-6">
-					<span class="text-xs {muted[cs]}">{t('nav.searchNoRecent')}</span>
-				</div>
+					{#each quickLinks as link}
+						<button
+							onclick={() => { onclose(); goto(link.href); }}
+							class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors {itemHover[cs]}"
+						>
+							<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md {itemIcon[cs]} border {border[cs]}">
+								<link.icon size={14} />
+							</div>
+							<span class="flex-1 text-sm {text[cs]}">{t(link.labelKey)}</span>
+							<ArrowRight size={14} class={muted[cs]} />
+						</button>
+					{/each}
+				{/if}
 			</div>
 
 			<div class="flex items-center gap-4 border-t px-4 py-2.5 {border[cs]} {footerBg[cs]}">

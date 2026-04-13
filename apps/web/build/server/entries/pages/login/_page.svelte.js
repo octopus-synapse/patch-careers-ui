@@ -1,6 +1,5 @@
 import { j as head, e as attr_class, f as stringify, h as derived } from "../../../chunks/renderer.js";
-import { t as isApiError } from "../../../chunks/Icon.js";
-import { d as createAuthLogin } from "../../../chunks/auth.js";
+import { y as createAuthLogin, z as isApiError } from "../../../chunks/Icon.js";
 import { B as Button } from "../../../chunks/button.js";
 import { L as Label, I as Input } from "../../../chunks/label.js";
 import { g as goto } from "../../../chunks/client.js";

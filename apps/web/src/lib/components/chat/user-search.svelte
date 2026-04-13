@@ -8,7 +8,6 @@
 		id: string;
 		name: string | null;
 		username: string | null;
-		displayName: string | null;
 		photoURL: string | null;
 	};
 
@@ -76,10 +75,10 @@
 					onclick={() => select(user.id)}
 					class="flex w-full items-center gap-2.5 px-3 py-2 text-left transition-colors {hoverBg}"
 				>
-					<Avatar name={user.displayName ?? user.name ?? user.username ?? '?'} {colorSchema} size="sm" />
+					<Avatar name={user.name ?? user.username ?? '?'} {colorSchema} size="sm" />
 					<div class="min-w-0 flex-1">
 						<span class="block truncate text-xs font-semibold {text}">
-							{user.displayName ?? user.name ?? user.username}
+							{user.name ?? user.username}
 						</span>
 						{#if user.username}
 							<span class="block truncate text-[10px] {muted}">@{user.username}</span>

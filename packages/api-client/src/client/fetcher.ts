@@ -4,6 +4,10 @@ export function setBaseUrl(url: string) {
   baseUrl = url;
 }
 
+export function getBaseUrl(): string {
+  return baseUrl;
+}
+
 export interface ApiError {
   code: string;
   message: string;

@@ -5,6 +5,7 @@
 
 	type User = {
 		name?: string | null;
+		username?: string | null;
 		email: string;
 	};
 
@@ -41,7 +42,10 @@
 		<div class="absolute right-0 mt-3 w-56 rounded-lg {s.dropdownBg[cs]}">
 			<div class="px-4 pt-4 pb-3">
 				<p class="text-sm font-semibold {s.text[cs]}">{displayName}</p>
-				<p class="text-[11px] {s.muted[cs]}">{user.email}</p>
+				{#if user.username}
+					<p class="text-[11px] {s.muted[cs]}">@{user.username}</p>
+				{/if}
+				<p class="text-[10px] {s.muted[cs]}">{user.email}</p>
 			</div>
 
 			<div class="border-t {s.border[cs]}">
