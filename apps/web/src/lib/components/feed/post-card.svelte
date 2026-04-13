@@ -62,7 +62,7 @@
 	const authorPhoto = $derived(author?.photoURL ?? author?.avatarUrl);
 	const postType = $derived(String(post.type));
 	const data = $derived(post.data as PostData | undefined);
-	const content = $derived(String(post.content));
+	const content = $derived(post.content ? String(post.content) : '');
 	const imageUrl = $derived((post.imageUrl ?? data?.imageUrl) as string | undefined);
 	const linkPreview = $derived(post.linkPreview as PostLinkPreview | undefined);
 	const linkUrl = $derived(post.linkUrl as string | undefined);
@@ -382,8 +382,8 @@
 
 				{#each pollOptions as option, i}
 					{@const label = String(option.text ?? option.label ?? option)}
-					{@const votes = Number(option.votes)}
-					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
+					{@const votes = Number(option.votes ?? 0)}
+					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes ?? 0), 0)}
 					{@const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0}
 					<button
 						class="relative w-full overflow-hidden rounded-lg border px-3 py-2.5 text-left transition-all duration-300 {hasVoted || isPollClosed ? 'cursor-default' : 'cursor-pointer hover:border-blue-400 dark:hover:border-blue-500'} border-gray-200 dark:border-neutral-700/50"
@@ -410,7 +410,7 @@
 
 				<!-- Total votes count -->
 				{#if pollOptions}
-					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes), 0)}
+					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes ?? 0), 0)}
 					<p class="text-xs text-gray-400 dark:text-neutral-500">
 						{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}
 					</p>
