@@ -12,8 +12,8 @@
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Avatar, Input } from 'ui';
-	import { Plus, Shield, ShieldOff } from 'lucide-svelte';
+	import { Avatar, Input, Dropdown } from 'ui';
+	import { Plus, Shield, ShieldOff, MoreVertical, KeyRound, Trash2 } from 'lucide-svelte';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 	import Pagination from '$lib/components/admin/pagination.svelte';
@@ -47,6 +47,12 @@
 	);
 	const pagination = $derived(
 		usersQuery.data?.data?.data?.pagination as { page: number; totalPages: number; total: number } | undefined
+	);
+
+	// --- Dropdown state ---
+	let openDropdownId = $state<string | null>(null);
+	const dropdownItemClass = $derived(
+		`flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors ${cs === 'dark' ? 'text-neutral-300 hover:bg-neutral-700' : 'text-gray-700 hover:bg-gray-50'}`
 	);
 
 	// --- Actions state ---
@@ -164,7 +170,7 @@
 		{ key: 'role', label: t?.('admin.users.role') ?? 'Role', width: '100px' },
 		{ key: 'status', label: t?.('admin.users.status') ?? 'Status', width: '100px' },
 		{ key: 'createdAt', label: t?.('admin.users.created') ?? 'Created', width: '120px' },
-		{ key: 'actions', label: '', width: '200px' },
+		{ key: 'actions', label: '', width: '60px' },
 	];
 
 	const filters = $derived([
@@ -259,28 +265,31 @@
 			{:else if key === 'actions'}
 				{@const roles = (row.roles as string[]) ?? []}
 				{@const isRowAdmin = roles.includes('role_admin')}
-				<div class="flex items-center gap-2">
-					<button
-						onclick={(e) => { e.stopPropagation(); toggleRoleUser = row; }}
-						class="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider transition-colors {isRowAdmin ? 'text-purple-400 hover:text-purple-300' : cs === 'dark' ? 'text-neutral-400 hover:text-neutral-200' : 'text-gray-500 hover:text-gray-800'}"
-						title={isRowAdmin ? 'Remove admin' : 'Make admin'}
-					>
-						{#if isRowAdmin}<ShieldOff size={12} />{:else}<Shield size={12} />{/if}
-						{isRowAdmin ? 'Revoke' : 'Admin'}
+				{@const rowId = row.id as string}
+				<Dropdown
+					open={openDropdownId === rowId}
+					colorSchema={cs}
+					onclose={() => openDropdownId = null}
+				>
+					{#snippet trigger()}
+						<button
+							onclick={(e) => { e.stopPropagation(); openDropdownId = openDropdownId === rowId ? null : rowId; }}
+							class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700 text-neutral-400' : 'hover:bg-gray-100 text-gray-400'}"
+						>
+							<MoreVertical size={16} />
+						</button>
+					{/snippet}
+					<button onclick={(e) => { e.stopPropagation(); openDropdownId = null; toggleRoleUser = row; }} class={dropdownItemClass}>
+						{#if isRowAdmin}<ShieldOff size={14} class="text-purple-400" />{:else}<Shield size={14} />{/if}
+						{isRowAdmin ? 'Revoke Admin' : 'Make Admin'}
 					</button>
-					<button
-						onclick={(e) => { e.stopPropagation(); resetPasswordUserId = row.id as string; }}
-						class="text-[10px] font-semibold uppercase tracking-wider transition-colors {cs === 'dark' ? 'text-neutral-400 hover:text-neutral-200' : 'text-gray-500 hover:text-gray-800'}"
-					>
-						Reset
+					<button onclick={(e) => { e.stopPropagation(); openDropdownId = null; resetPasswordUserId = rowId; }} class={dropdownItemClass}>
+						<KeyRound size={14} /> Reset Password
 					</button>
-					<button
-						onclick={(e) => { e.stopPropagation(); deleteUserId = row.id as string; }}
-						class="text-[10px] font-semibold uppercase tracking-wider text-red-400 transition-colors hover:text-red-300"
-					>
-						Delete
+					<button onclick={(e) => { e.stopPropagation(); openDropdownId = null; deleteUserId = rowId; }} class="{dropdownItemClass} !text-red-400">
+						<Trash2 size={14} /> Delete
 					</button>
-				</div>
+				</Dropdown>
 			{:else}
 				{row[key] ?? '—'}
 			{/if}

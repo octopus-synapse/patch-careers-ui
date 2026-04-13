@@ -14,7 +14,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { ChevronUp, ChevronDown, Trash2, ToggleLeft, ToggleRight, Plus, Pencil, Settings } from 'lucide-svelte';
-	import { Input } from 'ui';
+	import { Input, Tooltip } from 'ui';
 	import DataTable from '$lib/components/admin/data-table.svelte';
 	import StatCard from '$lib/components/admin/stat-card.svelte';
 	import ConfirmModal from '$lib/components/admin/confirm-modal.svelte';
@@ -196,10 +196,18 @@
 					</button>
 				{:else if key === 'actions'}
 					<div class="flex items-center gap-1">
-						<button onclick={(e) => { e.stopPropagation(); openEditStep(row); }} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}" title="Edit"><Pencil size={14} /></button>
-						<button onclick={(e) => { e.stopPropagation(); handleReorder(row, 'up'); }} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}" title="Move up"><ChevronUp size={14} /></button>
-						<button onclick={(e) => { e.stopPropagation(); handleReorder(row, 'down'); }} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}" title="Move down"><ChevronDown size={14} /></button>
-						<button onclick={(e) => { e.stopPropagation(); deleteKey = row.key as string; }} class="rounded p-1 text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20" title="Delete"><Trash2 size={14} /></button>
+						<Tooltip text="Edit" colorSchema={cs}>
+							<button onclick={(e) => { e.stopPropagation(); openEditStep(row); }} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}"><Pencil size={14} /></button>
+						</Tooltip>
+						<Tooltip text="Move up" colorSchema={cs}>
+							<button onclick={(e) => { e.stopPropagation(); handleReorder(row, 'up'); }} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}"><ChevronUp size={14} /></button>
+						</Tooltip>
+						<Tooltip text="Move down" colorSchema={cs}>
+							<button onclick={(e) => { e.stopPropagation(); handleReorder(row, 'down'); }} class="rounded p-1 transition-colors {cs === 'dark' ? 'hover:bg-neutral-700' : 'hover:bg-gray-100'} {muted}"><ChevronDown size={14} /></button>
+						</Tooltip>
+						<Tooltip text="Delete" colorSchema={cs}>
+							<button onclick={(e) => { e.stopPropagation(); deleteKey = row.key as string; }} class="rounded p-1 text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 size={14} /></button>
+						</Tooltip>
 					</div>
 				{:else}
 					{row[key] ?? '—'}
