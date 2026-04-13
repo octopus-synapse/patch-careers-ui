@@ -26,11 +26,11 @@
 	const configQuery = createAdminOnboardingGetConfig(() => ({ query: { enabled: browser } }));
 
 	const steps = $derived(
-		(((stepsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.steps as Record<string, unknown>[] ?? []
+		(stepsQuery.data as Record<string, unknown> | undefined)?.steps as Record<string, unknown>[] ?? []
 	);
 	const sortedSteps = $derived([...steps].sort((a, b) => ((a.order as number) ?? 0) - ((b.order as number) ?? 0)));
 	const config = $derived(
-		(((configQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.config as Record<string, unknown> | undefined
+		(configQuery.data as Record<string, unknown> | undefined)?.config as Record<string, unknown> | undefined
 	);
 	const strengthLevels = $derived((config?.strengthLevels as Record<string, unknown>[]) ?? []);
 

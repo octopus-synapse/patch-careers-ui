@@ -13,9 +13,7 @@
 		query: { enabled: browser, refetchInterval: 10000 }
 	}));
 
-	const rawData = $derived(
-		((metricsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined
-	);
+	const rawData = $derived(metricsQuery.data as Record<string, unknown> | undefined);
 	const counters = $derived((rawData?.counters as Record<string, number> | undefined) ?? {});
 	const gauges = $derived((rawData?.gauges as Record<string, number> | undefined) ?? {});
 	const process = $derived((rawData?.process as Record<string, number> | undefined) ?? {});

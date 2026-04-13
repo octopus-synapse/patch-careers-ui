@@ -39,13 +39,13 @@
 		() => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
 	);
 
-	const chatStats = $derived((chatStatsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined);
-	const chatData = $derived(((chatConversationsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined);
+	const chatStats = $derived(chatStatsQuery.data as Record<string, unknown> | undefined);
+	const chatData = $derived(chatConversationsQuery.data as Record<string, unknown> | undefined);
 	const conversations = $derived((chatData?.items as Record<string, unknown>[]) ?? []);
 	const chatTotalPages = $derived((chatData?.totalPages as number) ?? 1);
 
-	const collabStats = $derived((collabStatsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined);
-	const collabData = $derived(((collabListQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined);
+	const collabStats = $derived(collabStatsQuery.data as Record<string, unknown> | undefined);
+	const collabData = $derived(collabListQuery.data as Record<string, unknown> | undefined);
 	const collaborations = $derived((collabData?.items as Record<string, unknown>[]) ?? []);
 	const collabTotalPages = $derived((collabData?.totalPages as number) ?? 1);
 

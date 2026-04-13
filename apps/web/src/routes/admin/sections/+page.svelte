@@ -32,7 +32,7 @@
 		query: { enabled: browser }
 	}));
 
-	const rawData = $derived(((sectionsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined);
+	const rawData = $derived(sectionsQuery.data as Record<string, unknown> | undefined);
 	const sections = $derived((rawData?.items as Record<string, unknown>[]) ?? []);
 	const totalPages = $derived((rawData?.totalPages as number) ?? 1);
 

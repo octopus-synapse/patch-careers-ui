@@ -54,11 +54,11 @@
 	const spokenQuery = createAdminSpokenLanguagesFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'languages' } }));
 	const progQuery = createAdminProgrammingLanguagesFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'languages' } }));
 
-	const areas = $derived(((areasQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const niches = $derived(((nichesQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const skills = $derived(((skillsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const spokenLangs = $derived(((spokenQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
-	const progLangs = $derived(((progQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
+	const areas = $derived((areasQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
+	const niches = $derived((nichesQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
+	const skills = $derived((skillsQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
+	const spokenLangs = $derived((spokenQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
+	const progLangs = $derived((progQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[] ?? []);
 
 	// --- Delete ---
 	let deleteTarget = $state<{ type: string; id: string } | null>(null);

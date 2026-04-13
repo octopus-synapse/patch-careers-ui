@@ -24,12 +24,8 @@
 		query: { enabled: browser }
 	}));
 
-	const data = $derived(
-		((analyticsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined
-	);
-	const metrics = $derived(
-		((metricsQuery.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined)?.data as Record<string, unknown> | undefined
-	);
+	const data = $derived(analyticsQuery.data as Record<string, unknown> | undefined);
+	const metrics = $derived(metricsQuery.data as Record<string, unknown> | undefined);
 
 	const periodOptions = [
 		{ value: 'day', label: t?.('admin.analytics.last30Days') ?? '30 Days' },
