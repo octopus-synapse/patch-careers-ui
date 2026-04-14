@@ -48,11 +48,11 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
 			{t?.('admin.analytics.title') ?? 'Global Analytics'}
 		</h1>
-		<div class="flex items-center gap-2">
+		<div class="flex flex-wrap items-center gap-2">
 			<ExportButton data={[...(atsDist ?? []), ...(byLang ?? []), ...(sections ?? []), ...(imports ?? [])]} filename="analytics.csv" />
 			<SegmentToggle
 			options={periodOptions}
@@ -63,7 +63,7 @@
 	</div>
 
 	{#if metrics}
-		<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
 			<StatCard label={t?.('admin.dashboard.signupsWeek') ?? 'Signups This Week'} value={metrics.signupsThisWeek} />
 			<StatCard label={t?.('admin.dashboard.signupsMonth') ?? 'Signups This Month'} value={metrics.signupsThisMonth} />
 			<StatCard label={t?.('admin.dashboard.avgAtsScore') ?? 'Avg ATS Score'} value={metrics.averageAtsScore} />
@@ -78,11 +78,11 @@
 	{:else if data}
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<!-- ATS Score Distribution -->
-			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+			<div class="rounded-xl border p-3 sm:p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.atsDistribution') ?? 'ATS Score Distribution'}
 				</h3>
-				<div class="flex items-end gap-2" style="height: 120px">
+				<div class="flex items-end gap-1 sm:gap-2" style="height: 100px; min-height: 80px">
 					{#each atsDist ?? [] as bucket}
 						{@const pct = (bucket.count / maxValue(atsDist ?? [])) * 100}
 						<div class="flex flex-1 flex-col items-center gap-1">

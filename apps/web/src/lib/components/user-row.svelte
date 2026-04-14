@@ -20,7 +20,7 @@
 	const displayName = $derived(user.name ?? user.username ?? '?');
 </script>
 
-<div class="flex items-center gap-3 px-5 py-3.5">
+<div class="flex items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-5 sm:py-3.5">
 	<a href="/@{user.username ?? ''}">
 		<Avatar name={displayName} photoURL={user.photoURL} size="md" />
 	</a>

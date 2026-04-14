@@ -126,7 +126,7 @@
 </svelte:head>
 
 <div class="min-h-screen pt-20 pb-12">
-	<div class="mx-auto max-w-3xl px-6">
+	<div class="mx-auto max-w-3xl px-3 sm:px-6">
 		<a href="/jobs" class="mb-6 inline-flex items-center gap-1.5 text-xs font-medium transition-colors text-gray-500 dark:text-neutral-500 hover:text-gray-800 dark:hover:text-neutral-200">
 			<ArrowLeft size={14} />
 			{t('common.back')}
@@ -191,7 +191,7 @@
 
 				<!-- Description -->
 				{#if job.description}
-					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-6">
+					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-4 sm:p-6">
 						<h2 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 							{t('jobs.description')}
 						</h2>

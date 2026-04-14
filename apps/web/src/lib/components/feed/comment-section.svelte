@@ -179,7 +179,7 @@
 
 			<!-- Reply input -->
 			{#if replyingTo === commentId}
-				<div class="ml-10 flex items-center gap-2">
+				<div class="ml-4 sm:ml-10 flex items-center gap-2">
 					<Input
 						placeholder="Reply..."
 						bind:value={replyText}
@@ -197,7 +197,7 @@
 
 			<!-- Replies -->
 			{#if replies && replies.length > 0}
-				<div class="ml-10 space-y-2 border-l-2 pl-3 border-gray-100 dark:border-neutral-700/50">
+				<div class="ml-4 sm:ml-10 space-y-2 border-l-2 pl-2 sm:pl-3 border-gray-100 dark:border-neutral-700/50">
 					{#each visibleReplies as reply}
 						{@const replyAuthor = reply.author}
 						{@const replyId = String(reply.id ?? '')}

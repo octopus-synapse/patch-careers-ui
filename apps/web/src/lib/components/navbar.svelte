@@ -92,13 +92,13 @@
 	<nav class="fixed top-0 right-0 left-0 z-50 transition-colors duration-300
 		{isLanding ? 'border-transparent' : 'border-b border-gray-200/60 dark:border-neutral-800/60'}
 		{isLanding ? 'bg-transparent' : isMenuOpen ? 'bg-gray-50 dark:bg-neutral-900' : 'backdrop-blur-md bg-gray-50/80 dark:bg-neutral-900/80'}">
-		<div class="mx-auto flex h-14 max-w-7xl items-center px-6">
+		<div class="mx-auto flex h-14 max-w-7xl items-center px-3 sm:px-6">
 			<div class="flex shrink-0 items-center">
 				<NavLogo textClass={isLanding ? 'text-white' : 'text-gray-800 dark:text-neutral-200'} />
 			</div>
 
 			{#if hasCompletedOnboarding}
-				<div class="mx-auto hidden max-w-md flex-1 px-8 md:block">
+				<div class="mx-auto hidden max-w-md flex-1 px-4 lg:px-8 md:block">
 					<button
 						onclick={() => isSearchOpen = true}
 						class="flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors bg-gray-100/80 dark:bg-neutral-800/80 text-gray-400 dark:text-neutral-500 placeholder-gray-400 dark:placeholder-neutral-500 border-gray-200/60 dark:border-neutral-700/60"

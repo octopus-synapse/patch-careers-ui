@@ -38,7 +38,7 @@
 
 <div
 	bind:this={container}
-	class="flex flex-1 flex-col overflow-y-auto px-6 py-4 scrollbar-thin"
+	class="flex flex-1 flex-col overflow-y-auto px-3 py-3 sm:px-6 sm:py-4 scrollbar-thin"
 	style="min-height: 0;"
 >
 	<!-- Spacer pushes messages to bottom when few -->
@@ -59,7 +59,7 @@
 					<div class="mr-2 w-8 flex-shrink-0"></div>
 				{/if}
 
-				<div class="max-w-[65%]">
+				<div class="max-w-[80%] sm:max-w-[65%]">
 					<div class="rounded-2xl px-3.5 py-2 text-[13px] leading-relaxed shadow-sm
 						{own ? 'bg-cyan-100 dark:bg-cyan-900/50 text-gray-900 dark:text-cyan-50 rounded-br-sm' : 'bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 rounded-bl-sm'}">
 						{msg.content}

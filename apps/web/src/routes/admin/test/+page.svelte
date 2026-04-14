@@ -87,10 +87,10 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-3">
 			<FlaskConical size={20} class="text-gray-500 dark:text-neutral-500" />
-			<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
+			<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
 				Test Runner
 			</h1>
 		</div>

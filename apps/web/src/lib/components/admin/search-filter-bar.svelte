@@ -40,7 +40,7 @@
 </script>
 
 <div class="flex flex-wrap items-end gap-3">
-	<div class="relative min-w-[200px] flex-1">
+	<div class="relative min-w-0 sm:min-w-[200px] flex-1">
 		<Search size={14} class="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 dark:text-neutral-500" />
 		<Input
 			value={search}

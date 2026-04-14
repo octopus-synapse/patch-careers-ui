@@ -306,11 +306,11 @@
 		</div>
 	{/snippet}
 
-	<div class="max-h-[60vh] space-y-4 overflow-y-auto">
+	<div class="max-h-[70vh] sm:max-h-[60vh] space-y-4 overflow-y-auto">
 		{#if step === 1}
 			<!-- Step 1: Select type — 2-column grid -->
 			<p class="text-xs text-gray-400 dark:text-neutral-500">What would you like to share?</p>
-			<div class="grid grid-cols-2 gap-2">
+			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 				{#each postTypes as pType}
 					{@const config = typeConfig[pType]}
 					<button
@@ -615,7 +615,7 @@
 			</details>
 
 			<!-- Actions -->
-			<div class="flex items-center gap-2 border-t pt-3 border-gray-200 dark:border-neutral-700">
+			<div class="flex flex-wrap items-center gap-2 border-t pt-3 border-gray-200 dark:border-neutral-700">
 				<Button variant="ghost" size="sm" onclick={() => step = 1}>
 					Back
 				</Button>

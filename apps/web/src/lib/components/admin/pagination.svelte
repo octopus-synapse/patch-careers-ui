@@ -28,7 +28,7 @@
 </script>
 
 {#if totalPages > 1}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center gap-0.5 sm:gap-1">
 		<Button
 			variant="icon"
 			size="sm"

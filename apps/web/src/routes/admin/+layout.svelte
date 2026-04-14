@@ -41,8 +41,10 @@
 	</div>
 {:else if authenticated && isAdmin}
 	<div class="flex min-h-screen pt-14">
-		<AdminSidebar {currentPath} />
-		<main class="flex-1 overflow-auto p-6">
+		<div class="hidden md:block">
+			<AdminSidebar {currentPath} />
+		</div>
+		<main class="flex-1 overflow-auto p-3 sm:p-4 md:p-6">
 			{@render children()}
 		</main>
 	</div>

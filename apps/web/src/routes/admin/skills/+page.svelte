@@ -168,9 +168,9 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t('admin.skills.title')}</h1>
-		<div class="flex items-center gap-2">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t('admin.skills.title')}</h1>
+		<div class="flex flex-wrap items-center gap-2">
 			<ExportButton data={activeTab === 'hierarchy' ? [...(areas ?? []), ...(niches ?? []), ...(skills ?? [])] : [...(spokenLangs ?? []), ...(progLangs ?? [])]} filename="skills.csv" />
 			<SegmentToggle options={tabOptions} selected={activeTab} onchange={(v) => { activeTab = v as 'hierarchy' | 'languages'; selectedAreaId = null; selectedNicheId = null; }} />
 		</div>
@@ -184,7 +184,7 @@
 					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.areas')}</span>
 					<Button variant="icon" size="xs" onclick={() => openCreate('area')}><Plus size={14} /></Button>
 				</div>
-				<div class="max-h-[500px] overflow-y-auto">
+				<div class="max-h-[60vh] sm:max-h-[500px] overflow-y-auto">
 					{#if areasQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}

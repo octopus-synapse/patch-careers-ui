@@ -94,7 +94,7 @@
 		</Button>
 	{/snippet}
 
-	<div class="w-80 max-h-96 overflow-hidden flex flex-col">
+	<div class="w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] sm:max-h-96 overflow-hidden flex flex-col">
 		<!-- Header -->
 		<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700">
 			<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{t('notifications.title')}</span>

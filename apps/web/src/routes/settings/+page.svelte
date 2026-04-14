@@ -328,10 +328,10 @@
 	</div>
 {:else if t && authenticated}
 	<div class="font-sans antialiased transition-colors duration-300">
-		<main class="mx-auto max-w-5xl px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
-			<div class="flex gap-10">
+		<main class="mx-auto max-w-5xl px-3 sm:px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
+			<div class="flex gap-4 sm:gap-6 md:gap-10">
 				<!-- Sidebar -->
-				<aside class="hidden w-56 flex-shrink-0 md:block">
+				<aside class="hidden w-48 flex-shrink-0 md:block lg:w-56">
 					<div class="sticky top-20 border-r pr-6 border-gray-200 dark:border-neutral-800">
 						<div class="mb-6">
 							<h2 class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
@@ -357,7 +357,7 @@
 				</aside>
 
 				<!-- Main content -->
-				<div class="flex-1 max-w-lg pb-12">
+				<div class="flex-1 min-w-0 max-w-lg pb-12">
 					<div class="mb-4">
 						<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 							{t('settings.pageTitle')}

@@ -18,7 +18,7 @@
 	const estimatedMinutes = $derived(stepData?.estimatedMinutes ?? 5);
 </script>
 
-<div class="flex min-h-[60vh] flex-col items-center justify-center px-4 py-12">
+<div class="flex min-h-[60vh] flex-col items-center justify-center px-3 py-8 sm:px-4 sm:py-12">
 	<div class="w-full max-w-xl text-center">
 		<h1
 			class="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500 sm:text-4xl"

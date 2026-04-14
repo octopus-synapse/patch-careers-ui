@@ -85,8 +85,11 @@
       "analytics": "Analytics",
       "skills": "Skills Catalog",
       "onboarding": "Onboarding",
+      "sections": "Sections",
       "health": "Health",
-      "chat": "Chat & Collaboration"
+      "performance": "Performance",
+      "chat": "Chat & Collaboration",
+      "test": "Tests"
     },
     "dashboard": {
       "title": "Dashboard",

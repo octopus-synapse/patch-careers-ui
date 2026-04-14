@@ -27,7 +27,7 @@
 	}
 </script>
 
-<div class="flex-shrink-0 border-t px-4 py-3 border-gray-100 dark:border-neutral-800">
+<div class="flex-shrink-0 border-t px-3 py-2 sm:px-4 sm:py-3 border-gray-100 dark:border-neutral-800">
 	<form onsubmit={handleSubmit} class="flex items-end gap-2">
 		<div class="flex-1 rounded-xl px-4 py-2.5 bg-gray-100 dark:bg-neutral-800">
 			<Textarea

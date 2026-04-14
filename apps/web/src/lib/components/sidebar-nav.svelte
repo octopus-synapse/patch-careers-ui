@@ -46,7 +46,7 @@
 	}
 </script>
 
-<aside class="flex flex-col border-r transition-all border-gray-200 dark:border-neutral-800 {collapsible ? (collapsed ? 'w-16' : 'w-60') : 'w-56'} {collapsible ? 'h-full bg-white dark:bg-neutral-900' : ''}">
+<aside class="flex flex-col border-r transition-all border-gray-200 dark:border-neutral-800 {collapsible ? (collapsed ? 'w-16' : 'w-52 sm:w-60') : 'w-48 sm:w-56'} {collapsible ? 'h-full bg-white dark:bg-neutral-900' : ''}">
 	<!-- Header -->
 	<div class="flex items-center justify-between {collapsible ? 'px-4 py-4' : 'mb-6 pr-6'}">
 		{#if title && (!collapsible || !collapsed)}

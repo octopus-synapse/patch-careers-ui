@@ -139,9 +139,9 @@
 </svelte:head>
 
 <div class="min-h-screen pt-20 pb-12">
-	<div class="mx-auto max-w-5xl px-6">
+	<div class="mx-auto max-w-5xl px-3 sm:px-6">
 		<div class="space-y-6">
-			<div class="flex items-center justify-between">
+			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
 					{t('jobs.pageTitle')}
 				</h1>

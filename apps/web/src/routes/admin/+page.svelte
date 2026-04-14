@@ -30,8 +30,8 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
 			{t('admin.dashboard.title')}
 		</h1>
 		<div class="flex items-center gap-2">

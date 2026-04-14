@@ -55,7 +55,7 @@
 
 {#if t}
 	<div class="selection:bg-black selection:text-white min-h-screen font-sans antialiased transition-colors duration-300">
-		<main class="flex min-h-screen items-center justify-center p-6 pt-20">
+		<main class="flex min-h-screen items-center justify-center p-4 pt-20 sm:p-6">
 			<div class="w-full max-w-[340px]">
 				<div class="mb-10">
 					<h1 class="text-xl font-medium tracking-tight text-gray-800 dark:text-neutral-200">

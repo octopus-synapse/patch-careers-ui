@@ -24,15 +24,15 @@
 {#if open}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-6"
+		class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-3 sm:p-6"
 		onclick={handleBackdrop}
 		role="dialog"
 		aria-modal="true"
 		tabindex="-1"
 	>
-		<div class="w-full max-w-md rounded-lg bg-white dark:bg-neutral-800">
+		<div class="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md rounded-lg bg-white dark:bg-neutral-800 max-h-[90vh] overflow-y-auto">
 			{#if title}
-				<div class="flex items-center justify-between border-b px-5 py-4 border-gray-200 dark:border-neutral-700">
+				<div class="flex items-center justify-between border-b px-4 py-3 sm:px-5 sm:py-4 border-gray-200 dark:border-neutral-700">
 					<div class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
 						{@render title()}
 					</div>
@@ -41,7 +41,7 @@
 					</button>
 				</div>
 			{/if}
-			<div class="px-5 py-4">
+			<div class="px-4 py-3 sm:px-5 sm:py-4">
 				{@render children()}
 			</div>
 		</div>

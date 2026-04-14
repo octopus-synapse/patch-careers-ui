@@ -30,7 +30,7 @@
 <Modal {open} {onClose}>
 	{#snippet title()}{title}{/snippet}
 	<p class="text-sm text-gray-500 dark:text-neutral-500 mb-4">{message}</p>
-	<div class="flex justify-end gap-2">
+	<div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
 		<Button variant="outline" size="sm" onclick={onClose} disabled={loading}>{cancelLabel}</Button>
 		<Button variant={confirmVariant} size="sm" onclick={onConfirm} disabled={loading}>{confirmLabel}</Button>
 	</div>

@@ -37,14 +37,14 @@
 	const localeOptions = $derived(locales.map(l => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })));
 </script>
 
-<div class="fixed inset-0 top-[57px] z-40 p-8 md:hidden bg-gray-50 dark:bg-neutral-900">
+<div class="fixed inset-0 top-[57px] z-40 overflow-y-auto p-5 sm:p-8 md:hidden bg-gray-50 dark:bg-neutral-900">
 	<div class="flex h-full flex-col justify-between">
-		<div class="flex flex-col gap-8 pt-4">
+		<div class="flex flex-col gap-6 sm:gap-8 pt-4">
 			{#each navLinks as link}
 				<a
 					href={link.href}
 					onclick={onclose}
-					class="flex items-center gap-4 text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
+					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
 				>
 					<link.icon size={24} class="text-gray-500 dark:text-neutral-500" />
 					{t(link.key)}
@@ -54,7 +54,7 @@
 			{#if authenticated}
 				<button
 					onclick={() => { chatState.toggle(); onclose(); }}
-					class="flex items-center gap-4 text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
+					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
 				>
 					<MessageCircle size={24} class="text-gray-500 dark:text-neutral-500" />
 					{t('nav.messages')}
@@ -65,7 +65,7 @@
 				<a
 					href="/admin"
 					onclick={onclose}
-					class="flex items-center gap-4 text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
+					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
 				>
 					<Shield size={24} class="text-gray-500 dark:text-neutral-500" />
 					Admin

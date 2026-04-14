@@ -36,7 +36,7 @@
 		class="space-y-4"
 	>
 		{@render children()}
-		<div class="flex justify-end gap-2 pt-2">
+		<div class="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
 			<Button variant="outline" size="sm" onclick={onClose} disabled={loading} type="button">{cancelLabel}</Button>
 			<Button variant="solid" size="sm" disabled={loading} type="submit">{submitLabel}</Button>
 		</div>

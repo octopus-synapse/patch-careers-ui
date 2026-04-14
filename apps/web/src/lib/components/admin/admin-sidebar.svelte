@@ -14,6 +14,7 @@
 		PanelLeftClose,
 		PanelLeft,
 	} from 'lucide-svelte';
+	import { locale } from '$lib/locale.svelte';
 
 	type Props = {
 		currentPath: string;
@@ -23,18 +24,20 @@
 
 	let collapsed = $state(false);
 
-	const links = [
-		{ href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-		{ href: '/admin/users', label: 'Users', icon: Users },
-		{ href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
-		{ href: '/admin/skills', label: 'Skills', icon: Tags },
-		{ href: '/admin/sections', label: 'Sections', icon: Layers },
-		{ href: '/admin/onboarding', label: 'Onboarding', icon: ListChecks },
-		{ href: '/admin/health', label: 'Health', icon: Activity },
-		{ href: '/admin/performance', label: 'Performance', icon: Gauge },
-		{ href: '/admin/chat', label: 'Chat', icon: MessageSquare },
-		{ href: '/admin/test', label: 'Tests', icon: FlaskConical },
-	];
+	const t = $derived(locale.t);
+
+	const links = $derived([
+		{ href: '/admin', label: t('admin.nav.dashboard'), icon: LayoutDashboard, exact: true },
+		{ href: '/admin/users', label: t('admin.nav.users'), icon: Users },
+		{ href: '/admin/analytics', label: t('admin.nav.analytics'), icon: BarChart3 },
+		{ href: '/admin/skills', label: t('admin.nav.skills'), icon: Tags },
+		{ href: '/admin/sections', label: t('admin.nav.sections'), icon: Layers },
+		{ href: '/admin/onboarding', label: t('admin.nav.onboarding'), icon: ListChecks },
+		{ href: '/admin/health', label: t('admin.nav.health'), icon: Activity },
+		{ href: '/admin/performance', label: t('admin.nav.performance'), icon: Gauge },
+		{ href: '/admin/chat', label: t('admin.nav.chat'), icon: MessageSquare },
+		{ href: '/admin/test', label: t('admin.nav.test'), icon: FlaskConical },
+	]);
 
 	function isActive(href: string, exact?: boolean): boolean {
 		if (exact) return currentPath === href;

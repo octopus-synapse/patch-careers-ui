@@ -4,7 +4,7 @@
 </script>
 
 {#if toastState.items.length > 0}
-	<div class="fixed bottom-4 right-4 z-[200] flex flex-col gap-2">
+	<div class="fixed bottom-3 left-3 right-3 z-[200] flex flex-col gap-2 sm:left-auto sm:right-4 sm:bottom-4 sm:w-80">
 		{#each toastState.items as toast (toast.id)}
 			<Toast message={toast.message} type={toast.type} onClose={() => toastState.remove(toast.id)} />
 		{/each}

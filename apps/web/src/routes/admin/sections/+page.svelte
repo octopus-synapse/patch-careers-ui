@@ -130,8 +130,8 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">Section Types</h1>
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">Section Types</h1>
 		<div class="flex items-center gap-2">
 			<ExportButton data={sections} filename="section-types.csv" />
 			<Button variant="solid" size="sm" onclick={openCreate}>

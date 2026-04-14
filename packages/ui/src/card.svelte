@@ -12,11 +12,11 @@
 
 <div class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 {className}">
 	{#if title}
-		<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+		<div class="px-4 py-3 sm:px-5 sm:py-4 border-b border-gray-200 dark:border-neutral-800">
 			{@render title()}
 		</div>
 	{/if}
-	<div class="p-5">
+	<div class="p-4 sm:p-5">
 		{@render children()}
 	</div>
 </div>

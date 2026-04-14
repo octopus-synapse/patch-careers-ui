@@ -46,7 +46,7 @@
 </script>
 
 <div
-	class="w-48 rounded-lg border shadow-sm overflow-hidden bg-gray-100 dark:bg-neutral-800/80 border-gray-200 dark:border-neutral-700"
+	class="w-36 sm:w-48 rounded-lg border shadow-sm overflow-hidden bg-gray-100 dark:bg-neutral-800/80 border-gray-200 dark:border-neutral-700"
 >
 	{#if status === 'ready' && imageUrl}
 		<img

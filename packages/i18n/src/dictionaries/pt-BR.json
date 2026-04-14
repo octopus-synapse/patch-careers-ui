@@ -85,8 +85,11 @@
       "analytics": "Analytics",
       "skills": "Catálogo de Skills",
       "onboarding": "Onboarding",
+      "sections": "Seções",
       "health": "Saúde",
-      "chat": "Chat & Colaboração"
+      "performance": "Desempenho",
+      "chat": "Chat & Colaboração",
+      "test": "Testes"
     },
     "dashboard": {
       "title": "Dashboard",

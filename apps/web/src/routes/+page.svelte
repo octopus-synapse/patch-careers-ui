@@ -33,7 +33,7 @@
 
 <div class="bg-[#050505] text-slate-200 antialiased selection:bg-cyan-300/20">
 	<!-- Hero -->
-	<section class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-20 text-center">
+	<section class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 sm:px-6 pt-20 text-center">
 		<div class="absolute inset-0 -z-10 bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent"></div>
 		<div class="absolute inset-x-0 top-0 -z-10 h-[200vh] origin-top bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px] md:bg-[size:60px_60px] [mask-image:radial-gradient(circle_at_center,black,transparent_80%)] [transform:perspective(1000px)_rotateX(60deg)]"></div>
 
@@ -45,14 +45,14 @@
 			</div>
 
 			<h1>
-				<span class="block text-3xl font-semibold leading-[0.8] tracking-tighter text-white md:text-[9rem]">
+				<span class="block text-3xl font-semibold leading-[0.8] tracking-tighter text-white sm:text-5xl md:text-[9rem]">
 					Sua Carreira,
 				</span>
 				<span class="relative mt-4 inline-block md:mt-0">
-					<span class="text-7xl font-black uppercase text-white drop-shadow-2xl md:text-[11rem]">
+					<span class="text-5xl font-black uppercase text-white drop-shadow-2xl sm:text-7xl md:text-[11rem]">
 						Patched
 					</span>
-					<span class="absolute -right-6 -top-6 text-7xl font-black text-cyan-500 animate-pulse md:text-[11rem]">
+					<span class="absolute -right-3 -top-3 text-5xl font-black text-cyan-500 animate-pulse sm:text-7xl sm:-right-6 sm:-top-6 md:text-[11rem]">
 						.
 					</span>
 				</span>
@@ -105,7 +105,7 @@
 	</section>
 
 	<!-- CTA Emocional -->
-	<section class="relative overflow-hidden bg-black px-6 py-48 text-center">
+	<section class="relative overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-32 md:py-48 text-center">
 		<div class="absolute inset-0">
 			<div class="absolute left-1/2 top-0 h-px w-[800px] -translate-x-1/2 bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
 			<div class="absolute bottom-0 left-1/2 h-px w-[800px] -translate-x-1/2 bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
@@ -114,7 +114,7 @@
 			<p class="font-mono text-xs uppercase tracking-[0.5em] text-zinc-600">
 				A hora é agora
 			</p>
-			<h2 class="text-6xl font-black uppercase leading-none tracking-tighter md:text-[9rem]">
+			<h2 class="text-4xl font-black uppercase leading-none tracking-tighter sm:text-6xl md:text-[9rem]">
 				Pare de ser
 				<br />
 				<span class="text-white [text-shadow:0_0_30px_rgba(0,242,255,0.3)]">ignorado.</span>
@@ -125,7 +125,7 @@
 			<div class="flex flex-col items-center gap-4 pt-4">
 				<a
 					href="/signup"
-					class="bg-white px-16 py-8 text-2xl font-black uppercase tracking-widest text-black transition-all hover:bg-cyan-400 active:scale-95"
+					class="bg-white px-8 py-5 text-base font-black uppercase tracking-widest text-black transition-all hover:bg-cyan-400 active:scale-95 sm:px-16 sm:py-8 sm:text-2xl"
 				>
 					Quero entrevistas
 				</a>
@@ -135,22 +135,22 @@
 	</section>
 
 	<!-- Pricing -->
-	<section class="relative overflow-hidden bg-white px-6 py-40 text-zinc-900">
+	<section class="relative overflow-hidden bg-white px-4 py-16 sm:px-6 sm:py-24 md:py-40 text-zinc-900">
 		<div class="relative z-10 mx-auto max-w-5xl">
 			<div class="mb-16 text-center">
 				<h3 class="mb-4 font-mono text-xs uppercase tracking-[0.8em] text-cyan-600">
 					Simples assim
 				</h3>
-				<h2 class="text-5xl font-black uppercase tracking-tighter text-zinc-900 md:text-7xl">
+				<h2 class="text-3xl font-black uppercase tracking-tighter text-zinc-900 sm:text-5xl md:text-7xl">
 					Um plano.
 					<br />
 					<span class="text-cyan-600">Sem pegadinha.</span>
 				</h2>
 			</div>
 
-			<div class="grid items-start gap-12 lg:grid-cols-2">
+			<div class="grid items-start gap-8 sm:gap-12 lg:grid-cols-2">
 				<div>
-					<div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-10 text-white">
+					<div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 sm:p-10 text-white">
 						<div class="mb-8 flex items-center justify-between">
 							<div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1.5">
 								<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-500"></span>
@@ -164,7 +164,7 @@
 						<div class="mb-8">
 							<div class="flex items-end gap-2">
 								<span class="text-lg text-zinc-500">R$</span>
-								<span class="text-7xl font-black leading-none">79</span>
+								<span class="text-5xl font-black leading-none sm:text-7xl">79</span>
 								<span class="mb-2 text-sm text-zinc-500">/mês</span>
 							</div>
 							<p class="mt-2 text-sm text-zinc-500">Cancele quando quiser. Sem multa.</p>
@@ -233,7 +233,7 @@
 	</section>
 
 	<!-- Footer -->
-	<footer class="border-t border-zinc-900 bg-black px-6 py-12">
+	<footer class="border-t border-zinc-900 bg-black px-4 py-8 sm:px-6 sm:py-12">
 		<div class="mx-auto max-w-6xl">
 			<div class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
 				<div class="space-y-2">

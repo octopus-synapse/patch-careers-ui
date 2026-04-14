@@ -157,9 +157,9 @@
 />
 
 <div class="min-h-screen pt-20 pb-12">
-	<div class="mx-auto flex max-w-5xl gap-6 px-6">
+	<div class="mx-auto flex max-w-5xl gap-4 px-3 sm:gap-6 sm:px-6">
 		<!-- Sidebar -->
-		<aside class="hidden w-56 flex-shrink-0 md:block">
+		<aside class="hidden w-48 flex-shrink-0 md:block lg:w-56">
 			<div class="sticky top-20 rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/30">
 				<div class="px-4 pt-4 pb-2">
 					<h2 class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
@@ -201,7 +201,7 @@
 			<!-- Invitations -->
 			{#if (pending.total ?? 0) > 0}
 				<section id="invitations" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-					<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
+					<div class="px-3 py-3 sm:px-5 sm:py-4 border-b border-gray-200 dark:border-neutral-800">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.invitations')} ({pending.total})</h2>
 					</div>
 					{#if pending.data}
@@ -227,7 +227,7 @@
 					<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.suggestions')}</h2>
 					</div>
-					<div class="grid grid-cols-2 gap-4 px-5 py-4 sm:grid-cols-3 lg:grid-cols-4">
+					<div class="grid grid-cols-1 gap-3 px-3 py-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:px-5 sm:py-4 sm:gap-4">
 						{#each Array(4) as _}
 							<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800 animate-pulse">
 								<div class="h-14 w-14 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
@@ -243,7 +243,7 @@
 					<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.suggestions')}</h2>
 					</div>
-					<div class="grid grid-cols-2 gap-4 px-5 py-4 sm:grid-cols-3 lg:grid-cols-4">
+					<div class="grid grid-cols-1 gap-3 px-3 py-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:px-5 sm:py-4 sm:gap-4">
 						{#each suggestionsList as suggestion}
 							{@const user = suggestion as Record<string, string | null>}
 							{@const userId = String(user.id ?? '')}

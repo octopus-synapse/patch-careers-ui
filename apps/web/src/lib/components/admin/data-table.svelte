@@ -34,7 +34,7 @@
 				<tr class="bg-gray-50 dark:bg-neutral-800/80">
 					{#each columns as col}
 						<th
-							class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+							class="px-3 py-2.5 sm:px-4 sm:py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 whitespace-nowrap"
 							style={col.width ? `width: ${col.width}` : ''}
 						>
 							{col.label}
@@ -62,7 +62,7 @@
 							onclick={() => onrowclick?.(row)}
 						>
 							{#each columns as col}
-								<td class="px-4 py-3 text-sm text-gray-800 dark:text-neutral-200">
+								<td class="px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-800 dark:text-neutral-200 whitespace-nowrap">
 									{#if cell}
 										{@render cell({ row, key: col.key, value: row[col.key] })}
 									{:else}

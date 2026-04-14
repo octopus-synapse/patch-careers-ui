@@ -117,8 +117,8 @@
 		class="fixed z-50 flex flex-col overflow-hidden shadow-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800
 			transition-all duration-300 ease-out
 			{chatState.isFullscreen
-				? 'inset-4 rounded-xl'
-				: 'bottom-0 right-4 h-[32rem] w-[22rem] rounded-t-xl'}"
+				? 'inset-0 sm:inset-4 rounded-none sm:rounded-xl'
+				: 'bottom-0 right-0 sm:right-4 h-[100dvh] sm:h-[32rem] w-full sm:w-[22rem] rounded-none sm:rounded-t-xl'}"
 	>
 		<!-- Header -->
 		<div class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
@@ -161,7 +161,7 @@
 		{#if chatState.isFullscreen}
 			<!-- Fullscreen: two-column layout -->
 			<div class="flex flex-1" style="min-height:0">
-				<div class="flex w-72 flex-shrink-0 flex-col border-r border-gray-200 dark:border-neutral-800">
+				<div class="hidden sm:flex w-72 flex-shrink-0 flex-col border-r border-gray-200 dark:border-neutral-800">
 					<div class="px-3 py-2">
 						<UserSearch onselect={startNewConversation} />
 					</div>

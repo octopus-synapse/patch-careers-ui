@@ -200,7 +200,7 @@
 	</div>
 {:else if t && onboardingData && currentStep}
 	<div class="font-sans antialiased transition-colors duration-300">
-		<main class="mx-auto max-w-6xl px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
+		<main class="mx-auto max-w-6xl px-3 sm:px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
 			{#if isWelcome}
 				<StepWelcome step={currentStep} onNext={handleNext} />
 			{:else}
@@ -215,7 +215,7 @@
 					/>
 				</div>
 
-				<div class="flex gap-10">
+				<div class="flex gap-4 sm:gap-6 md:gap-10">
 					<!-- Desktop sidebar — always at same position -->
 					<div class="hidden md:block flex-shrink-0">
 						<Sidebar
@@ -231,7 +231,7 @@
 					</div>
 
 					<!-- Content — fixed start position, scrolls independently -->
-					<div class="min-w-0 flex-1 max-w-lg pb-12">
+					<div class="min-w-0 flex-1 max-w-lg pb-8 sm:pb-12">
 						<div class="mb-8 flex items-center justify-between">
 							<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 								{t('onboarding.title')}

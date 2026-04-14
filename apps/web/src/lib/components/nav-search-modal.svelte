@@ -71,7 +71,7 @@
 		aria-modal="true"
 		tabindex="-1"
 	>
-		<div class="w-full max-w-lg overflow-hidden rounded-xl shadow-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700/60">
+		<div class="w-full max-w-[calc(100vw-2rem)] sm:max-w-lg overflow-hidden rounded-xl shadow-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700/60">
 			<div class="flex items-center gap-3 border-b px-4 border-gray-200 dark:border-neutral-700/60">
 				<Search size={16} class="text-gray-400 dark:text-neutral-500 shrink-0" />
 				<input
@@ -137,7 +137,7 @@
 				{/if}
 			</div>
 
-			<div class="flex items-center gap-4 border-t px-4 py-2.5 border-gray-200 dark:border-neutral-700/60 bg-gray-50 dark:bg-neutral-800/50">
+			<div class="hidden sm:flex items-center gap-4 border-t px-4 py-2.5 border-gray-200 dark:border-neutral-700/60 bg-gray-50 dark:bg-neutral-800/50">
 				<div class="flex items-center gap-1.5">
 					<kbd class="inline-flex h-5 w-5 items-center justify-center rounded border text-[10px] bg-gray-100 dark:bg-neutral-800 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700">
 						<span class="text-xs">&uarr;</span>

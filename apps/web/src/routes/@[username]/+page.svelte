@@ -173,18 +173,18 @@
 		></div>
 
 		<!-- Profile Content -->
-		<div class="mx-auto max-w-3xl px-6">
+		<div class="mx-auto max-w-3xl px-3 sm:px-6">
 			<!-- Avatar + Name section -->
-			<div class="relative -mt-16 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:gap-6">
+			<div class="relative -mt-14 sm:-mt-16 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:gap-6">
 				<!-- Avatar -->
 				{#if user.photoURL}
 					<img
 						src={user.photoURL}
 						alt={user.name ?? username}
-						class="h-32 w-32 rounded-full border-4 object-cover border-white dark:border-neutral-900"
+						class="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 object-cover border-white dark:border-neutral-900"
 					/>
 				{:else}
-					<div class="flex h-32 w-32 items-center justify-center rounded-full border-4 text-4xl font-bold
+					<div class="flex h-24 w-24 sm:h-32 sm:w-32 items-center justify-center rounded-full border-4 text-3xl sm:text-4xl font-bold
 						border-white bg-gray-200 text-gray-600 dark:border-neutral-900 dark:bg-neutral-700 dark:text-neutral-200">
 						{(user.name ?? username ?? '?').charAt(0).toUpperCase()}
 					</div>
@@ -193,14 +193,14 @@
 				<!-- Name + Actions -->
 				<div class="flex flex-1 flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<h1 class="text-2xl font-bold text-gray-800 dark:text-neutral-200">
+						<h1 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">
 							{user.name ?? username}
 						</h1>
 						<span class="text-sm text-gray-500 dark:text-neutral-500">@{user.username ?? username}</span>
 					</div>
 
 					{#if !isOwnProfile && authenticated}
-						<div class="flex items-center gap-2">
+						<div class="flex flex-wrap items-center gap-2">
 							<Button
 								variant={isFollowing ? 'outline' : 'solid'}
 								size="sm"
@@ -308,8 +308,8 @@
 
 			<!-- Resume download -->
 			{#if resume && authenticated}
-				<div class="mt-6 rounded-xl border p-5 border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-800/50">
-					<div class="flex items-center justify-between">
+				<div class="mt-6 rounded-xl border p-4 sm:p-5 border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-800/50">
+					<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 						<div>
 							<h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">Resume</h3>
 							<p class="mt-0.5 text-[11px] text-gray-500 dark:text-neutral-500">Download {user.name ?? username}'s resume</p>

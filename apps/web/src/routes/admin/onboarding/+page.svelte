@@ -162,7 +162,7 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t?.('admin.onboarding.title') ?? 'Onboarding Monitoring'}</h1>
+	<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t?.('admin.onboarding.title') ?? 'Onboarding Monitoring'}</h1>
 
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 		<StatCard label={t?.('admin.onboarding.steps') ?? 'Total Steps'} value={steps?.length ?? 0} />
