@@ -43,4 +43,10 @@ export type OnboardingSessionDtoStepsItemFieldsItem = {
   required: boolean;
   options?: string[];
   widget?: string;
+  /** @minimum 0 */
+  minLength?: number;
+  /** @exclusiveMinimum 0 */
+  maxLength?: number;
+  pattern?: string;
+  examples?: string[];
 };

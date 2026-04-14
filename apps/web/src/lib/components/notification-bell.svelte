@@ -12,6 +12,7 @@
 	import { Avatar, Button, Dropdown } from 'ui';
 	import { Bell } from 'lucide-svelte';
 	import { locale } from '$lib/locale.svelte';
+	import { formatDate } from 'i18n';
 
 	const t = $derived(locale.t);
 	const queryClient = useQueryClient();
@@ -54,7 +55,7 @@
 		if (hours < 24) return `${hours}h`;
 		const days = Math.floor(hours / 24);
 		if (days < 30) return `${days}d`;
-		return new Date(dateStr).toLocaleDateString();
+		return formatDate(dateStr, locale.current);
 	}
 
 	async function handleMarkAllRead() {

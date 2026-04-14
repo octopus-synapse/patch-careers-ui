@@ -37,6 +37,7 @@ All errors follow a consistent format:
  */
 import type { AuthorDto } from './authorDto';
 import type { OriginalPostDto } from './originalPostDto';
+import type { PostCreatedDataDtoCodeSnippet } from './postCreatedDataDtoCodeSnippet';
 
 export interface PostCreatedDataDto {
   id: string;
@@ -49,6 +50,13 @@ export interface PostCreatedDataDto {
   hashtags: string[];
   imageUrl?: string;
   linkUrl?: string;
+  coAuthors: string[];
+  scheduledAt?: string;
+  isPublished: boolean;
+  threadId?: string;
+  pollDeadline?: string;
+  votesCount: number;
+  codeSnippet?: PostCreatedDataDtoCodeSnippet;
   likesCount: number;
   commentsCount: number;
   repostsCount: number;

@@ -5,6 +5,7 @@
 	import { colorSchema } from '$lib/color-schema.svelte';
 	import { locale } from '$lib/locale.svelte';
 	import { page } from '$app/stores';
+	import { isLocale } from 'i18n';
 	import Navbar from '$lib/components/navbar.svelte';
 	import ChatWidget from '$lib/components/chat/chat-widget.svelte';
 	import OnboardingGuard from '$lib/components/onboarding-guard.svelte';
@@ -16,7 +17,15 @@
 	if (apiUrl) setBaseUrl(apiUrl);
 
 	colorSchema.init();
-	locale.init();
+
+	const initialLang = $page.params.lang;
+	locale.init(initialLang && isLocale(initialLang) ? initialLang : undefined);
+	$effect(() => {
+		const lang = $page.params.lang;
+		if (lang && isLocale(lang) && lang !== locale.current) {
+			locale.set(lang);
+		}
+	});
 
 	const queryClient = new QueryClient({
 		defaultOptions: {

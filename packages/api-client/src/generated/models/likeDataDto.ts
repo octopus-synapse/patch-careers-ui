@@ -35,10 +35,13 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { LikeDataDtoReactionType } from './likeDataDtoReactionType';
 
 export interface LikeDataDto {
   postId: string;
   userId: string;
+  reactionType: LikeDataDtoReactionType;
   postAuthorId?: string;
   alreadyLiked: boolean;
+  updated?: boolean;
 }

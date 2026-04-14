@@ -26,21 +26,26 @@ export const locale = {
 	async set(value: Locale) {
 		current = value;
 		const dict = await loadDictionary(value);
-		translator = createTranslator(dict);
+		translator = createTranslator(dict, value);
 		if (typeof window !== 'undefined') {
 			localStorage.setItem('locale', value);
 			document.documentElement.lang = value;
 		}
 	},
 
-	async init() {
-		if (typeof window !== 'undefined') {
+	async init(preferred?: Locale) {
+		if (preferred && LOCALES.includes(preferred)) {
+			current = preferred;
+		} else if (typeof window !== 'undefined') {
 			const saved = localStorage.getItem('locale') as Locale | null;
 			if (saved && LOCALES.includes(saved)) {
 				current = saved;
 			}
 		}
 		const dict = await loadDictionary(current);
-		translator = createTranslator(dict);
+		translator = createTranslator(dict, current);
+		if (typeof window !== 'undefined') {
+			document.documentElement.lang = current;
+		}
 	}
 };

@@ -1,12 +1,8 @@
 <script lang="ts">
-	import { customFetch } from 'api-client';
 	import FieldRenderer from './field-renderer.svelte';
+	import { buildZodFromFields, type FieldDescriptor } from '$lib/forms/build-zod-from-fields';
 
-	type Field = {
-		key: string;
-		type: string;
-		label: string;
-		required: boolean;
+	type Field = FieldDescriptor & {
 		options?: string[];
 		widget?: string;
 	};
@@ -19,25 +15,23 @@
 
 	let { fields, data, onupdate }: Props = $props();
 
+	const schema = $derived(buildZodFromFields(fields));
 	let errors = $state<Record<string, string>>({});
-	let validateTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	function validate(values: Record<string, string>): Record<string, string> {
+		const result = schema.safeParse(values);
+		if (result.success) return {};
+		const flat: Record<string, string> = {};
+		for (const [key, messages] of Object.entries(result.error.flatten().fieldErrors)) {
+			if (messages && messages.length > 0) flat[key] = messages[0];
+		}
+		return flat;
+	}
 
 	function handleFieldChange(key: string, value: string) {
 		const newData = { ...data, [key]: value };
 		onupdate(newData);
-
-		if (validateTimeout) clearTimeout(validateTimeout);
-		validateTimeout = setTimeout(async () => {
-			try {
-				const res = await customFetch<{ valid: boolean; errors: Record<string, string> }>(
-					'/api/v1/onboarding/session/validate',
-					{ method: 'POST', body: JSON.stringify({ data: newData }) }
-				);
-				errors = res.errors ?? {};
-			} catch {
-				errors = {};
-			}
-		}, 800);
+		errors = validate(newData);
 	}
 </script>
 

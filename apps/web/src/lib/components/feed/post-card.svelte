@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Avatar, Badge, Card, Dropdown, ConfirmModal, Button } from 'ui';
 	import { Trash2, Flag, MoreHorizontal, MessageSquare, Zap, Clock, Lock } from 'lucide-svelte';
+	import { formatDate } from 'i18n';
+	import { locale } from '$lib/locale.svelte';
 	import EngagementBar from './engagement-bar.svelte';
 	import CommentSection from './comment-section.svelte';
 
@@ -279,7 +281,7 @@
 				{#if challengeDeadline}
 					<span class="flex items-center gap-1">
 						<Clock size={12} />
-						Deadline: {new Date(challengeDeadline).toLocaleDateString()}
+						Deadline: {formatDate(challengeDeadline, locale.current)}
 					</span>
 				{/if}
 				<span class="flex items-center gap-1">

@@ -36,7 +36,10 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 import type { AuthorDto } from './authorDto';
+import type { FeedPostDtoCodeSnippet } from './feedPostDtoCodeSnippet';
+import type { FeedPostDtoReactionType } from './feedPostDtoReactionType';
 import type { OriginalPostDto } from './originalPostDto';
+import type { PostDto } from './postDto';
 
 export interface FeedPostDto {
   id: string;
@@ -49,6 +52,13 @@ export interface FeedPostDto {
   hashtags: string[];
   imageUrl?: string;
   linkUrl?: string;
+  coAuthors: string[];
+  scheduledAt?: string;
+  isPublished: boolean;
+  threadId?: string;
+  pollDeadline?: string;
+  votesCount: number;
+  codeSnippet?: FeedPostDtoCodeSnippet;
   likesCount: number;
   commentsCount: number;
   repostsCount: number;
@@ -58,5 +68,8 @@ export interface FeedPostDto {
   author: AuthorDto;
   originalPost?: OriginalPostDto;
   isLiked?: boolean;
+  /** @nullable */
+  reactionType?: FeedPostDtoReactionType;
   isBookmarked?: boolean;
+  threadPosts?: PostDto[];
 }
