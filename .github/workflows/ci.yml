@@ -19,18 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: DEBUG secret presence
-        env:
-          SECRET: ${{ secrets.OCTOPUS_PACKAGES_TOKEN }}
-        run: |
-          if [ -z "$SECRET" ]; then
-            echo "::error::OCTOPUS_PACKAGES_TOKEN secret is EMPTY or UNAVAILABLE"
-            exit 1
-          fi
-          echo "secret length: ${#SECRET}"
       - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@v1
-        with:
-          packages-token: ${{ secrets.OCTOPUS_PACKAGES_TOKEN }}
 
   build:
     needs: verify-attestation
