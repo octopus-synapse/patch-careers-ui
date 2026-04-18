@@ -27,6 +27,8 @@ jobs:
           push: false
           load: true
           tags: ${{ env.IMAGE }}:pr-${{ github.sha }}
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           cache-from: |
             type=gha,scope=patch-careers-ui
             type=registry,ref=${{ env.IMAGE }}:buildcache
