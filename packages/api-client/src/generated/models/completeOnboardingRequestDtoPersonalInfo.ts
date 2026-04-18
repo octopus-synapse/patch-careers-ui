@@ -38,7 +38,7 @@ All errors follow a consistent format:
 
 export type CompleteOnboardingRequestDtoPersonalInfo = {
   fullName: string;
-  email: string;
+  email?: string;
   phone?: string;
   location?: string;
 };

@@ -1,37 +1,61 @@
 <script lang="ts">
-	import { Button } from 'ui';
-	import { Check } from 'lucide-svelte';
+import { Check } from 'lucide-svelte';
+import { Button } from 'ui';
+import LandingDemo from '$lib/components/landing/demo.svelte';
+import LandingSuccessStories from '$lib/components/landing/success-stories.svelte';
+import SeoHead from '$lib/components/seo/seo-head.svelte';
 
-	const heroBenefits = [
-		'Sem cartão de crédito',
-		'Cancele quando quiser',
-		'IA especializada em tech',
-	];
+const heroBenefits = ['Sem cartão de crédito', 'Cancele quando quiser', 'IA especializada em tech'];
 
-	const planFeatures = [
-		'Currículo Base ilimitado — guarde toda sua história profissional',
-		'Reescrita automática para cada vaga com IA especializada',
-		'ATS Score otimizado para passar de 90% em qualquer triagem',
-		'Auto-Apply nas vagas com fit real detectado',
-		'Dashboard de candidaturas com métricas em tempo real',
-		'Exportação em PDF otimizado para ATS',
-	];
+const planFeatures = [
+  'Currículo Base ilimitado — guarde toda sua história profissional',
+  'Reescrita automática para cada vaga com IA especializada',
+  'ATS Score otimizado para passar de 90% em qualquer triagem',
+  'Auto-Apply nas vagas com fit real detectado',
+  'Dashboard de candidaturas com métricas em tempo real',
+  'Exportação em PDF otimizado para ATS',
+];
 
-	const faqs = [
-		['Funciona para qualquer área de tech?', 'Sim. Dev, dados, design de produto, infra, segurança — se é vaga tech, o Patch otimiza. A IA entende o vocabulário de cada especialidade.'],
-		['O Auto-Apply vai me mandar para vagas erradas?', 'Não. Você define os critérios — stack, senioridade, regime, localização. O Patch só aplica onde o match é real. Você tem controle total.'],
-		['Meu currículo fica protegido?', 'Sim. Seus dados ficam criptografados e nunca são compartilhados com terceiros sem sua autorização explícita.'],
-		['Preciso recriar o currículo do zero?', 'Não. Você importa o que já tem (PDF, LinkedIn, texto) e o Patch organiza. Em menos de 10 minutos seu Currículo Base está pronto.'],
-	];
+const faqs = [
+  [
+    'Funciona para qualquer área de tech?',
+    'Sim. Dev, dados, design de produto, infra, segurança — se é vaga tech, o Patch otimiza. A IA entende o vocabulário de cada especialidade.',
+  ],
+  [
+    'O Auto-Apply vai me mandar para vagas erradas?',
+    'Não. Você define os critérios — stack, senioridade, regime, localização. O Patch só aplica onde o match é real. Você tem controle total.',
+  ],
+  [
+    'Meu currículo fica protegido?',
+    'Sim. Seus dados ficam criptografados e nunca são compartilhados com terceiros sem sua autorização explícita.',
+  ],
+  [
+    'Preciso recriar o currículo do zero?',
+    'Não. Você importa o que já tem (PDF, LinkedIn, texto) e o Patch organiza. Em menos de 10 minutos seu Currículo Base está pronto.',
+  ],
+];
 
-	let openFaq = $state<number | null>(null);
+let openFaq = $state<number | null>(null);
 </script>
 
-<svelte:head>
-	<title>Patch Careers — Sua carreira, patched.</title>
-</svelte:head>
+<SeoHead
+	title="Patch Careers"
+	description="IA especializada em tech que reescreve seu currículo por vaga, abre ATS com 90%+ e faz Auto-Apply no match real. Sua carreira, patched."
+	type="website"
+	jsonLd={{
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: 'Patch Careers',
+		description: 'Patched resumes for tech careers — AI-tailored applications, ATS-optimized.',
+		url: 'https://patch.careers'
+	}}
+/>
 
-<div class="bg-[#050505] text-slate-200 antialiased selection:bg-cyan-300/20">
+<!--
+  Landing is deliberately always-dark (brand), but we reference a CSS custom
+  property so it's themeable if we ever ship a light variant of marketing.
+-->
+<div class="landing-shell text-slate-200 antialiased selection:bg-cyan-300/20">
 	<!-- Hero -->
 	<section class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 sm:px-6 pt-20 text-center">
 		<div class="absolute inset-0 -z-10 bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent"></div>
@@ -103,6 +127,12 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- Interactive demo: 3 scripted scenarios showing the rewrite in action. -->
+	<LandingDemo />
+
+	<!-- Success stories carousel (renders only when the backend has PUBLISHED rows). -->
+	<LandingSuccessStories />
 
 	<!-- CTA Emocional -->
 	<section class="relative overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-32 md:py-48 text-center">

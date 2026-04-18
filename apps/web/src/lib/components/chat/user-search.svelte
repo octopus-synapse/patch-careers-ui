@@ -1,47 +1,57 @@
 <script lang="ts">
-	import { Avatar, Input, Button } from 'ui';
-	import { customFetch } from 'api-client/client';
-	import { Search, X } from 'lucide-svelte';
+import { customFetch } from 'api-client/client';
+import { Search, X } from 'lucide-svelte';
+import { Avatar, Button, Input } from 'ui';
 
-	type SearchResult = {
-		id: string;
-		name: string | null;
-		username: string | null;
-		photoURL: string | null;
-	};
+type SearchResult = {
+  id: string;
+  name: string | null;
+  username: string | null;
+  photoURL: string | null;
+};
 
-	type Props = {
-		onselect: (userId: string) => void;
-	};
+type Props = {
+  onselect: (userId: string) => void;
+};
 
-	let { onselect }: Props = $props();
+let { onselect }: Props = $props();
 
-	let query = $state('');
-	let results = $state<SearchResult[]>([]);
-	let showDropdown = $state(false);
-	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+let query = $state('');
+let results = $state<SearchResult[]>([]);
+let showDropdown = $state(false);
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-	$effect(() => {
-		if (query.length < 2) { results = []; showDropdown = false; return; }
+$effect(() => {
+  if (query.length < 2) {
+    results = [];
+    showDropdown = false;
+    return;
+  }
 
-		if (debounceTimer) clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(async () => {
-			try {
-				const res = await customFetch<{ users: SearchResult[] }>(
-					`/api/chat/users/search?q=${encodeURIComponent(query)}`
-				);
-				results = res?.users ?? [];
-				showDropdown = results.length > 0;
-			} catch { results = []; }
-		}, 300);
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    try {
+      const res = await customFetch<{ users: SearchResult[] }>(
+        `/api/chat/users/search?q=${encodeURIComponent(query)}`,
+      );
+      results = res?.users ?? [];
+      showDropdown = results.length > 0;
+    } catch {
+      results = [];
+    }
+  }, 300);
 
-		return () => { if (debounceTimer) clearTimeout(debounceTimer); };
-	});
+  return () => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+  };
+});
 
-	function select(userId: string) {
-		query = ''; results = []; showDropdown = false;
-		onselect(userId);
-	}
+function select(userId: string) {
+  query = '';
+  results = [];
+  showDropdown = false;
+  onselect(userId);
+}
 </script>
 
 <div class="relative">

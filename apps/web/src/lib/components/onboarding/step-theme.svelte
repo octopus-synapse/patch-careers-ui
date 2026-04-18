@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { Shield, Check } from 'lucide-svelte';
+import { Check, Shield } from 'lucide-svelte';
 
-	type ThemeOption = {
-		id: string;
-		name: string;
-		description?: string | null;
-		category: string;
-		tags: string[];
-		atsScore?: number | null;
-		thumbnailUrl?: string | null;
-	};
+type ThemeOption = {
+  id: string;
+  name: string;
+  description?: string | null;
+  category: string;
+  tags: string[];
+  atsScore?: number | null;
+  thumbnailUrl?: string | null;
+};
 
-	type Props = {
-		themes: ThemeOption[];
-		selectedThemeId: string;
-		onselect: (themeId: string) => void;
-	};
+type Props = {
+  themes: ThemeOption[];
+  selectedThemeId: string;
+  onselect: (themeId: string) => void;
+};
 
-	let { themes, selectedThemeId, onselect }: Props = $props();
+let { themes, selectedThemeId, onselect }: Props = $props();
 </script>
 
 <div class="flex flex-wrap justify-center gap-4">

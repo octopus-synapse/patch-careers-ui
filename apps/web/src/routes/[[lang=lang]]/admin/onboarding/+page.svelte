@@ -1,160 +1,209 @@
 <script lang="ts">
-	import {
-		createAdminOnboardingListSteps,
-		createAdminOnboardingGetConfig,
-		adminOnboardingCreateStep,
-		adminOnboardingUpdateStep,
-		adminOnboardingDeleteStep,
-		adminOnboardingUpdateConfig,
-		getAdminOnboardingListStepsQueryKey,
-		getAdminOnboardingGetConfigQueryKey,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { ChevronUp, ChevronDown, Trash2, ToggleLeft, ToggleRight, Plus, Pencil, Settings } from 'lucide-svelte';
-	import { Button, Input, Label, Tooltip, ConfirmModal, FormModal } from 'ui';
-	import DataTable from '$lib/components/admin/data-table.svelte';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  adminOnboardingCreateStep,
+  adminOnboardingDeleteStep,
+  adminOnboardingUpdateConfig,
+  adminOnboardingUpdateStep,
+  createAdminOnboardingGetConfig,
+  createAdminOnboardingListSteps,
+  getAdminOnboardingGetConfigQueryKey,
+  getAdminOnboardingListStepsQueryKey,
+} from 'api-client';
+import {
+  ChevronDown,
+  ChevronUp,
+  Pencil,
+  Plus,
+  Settings,
+  ToggleLeft,
+  ToggleRight,
+  Trash2,
+} from 'lucide-svelte';
+import { Button, ConfirmModal, FormModal, Input, Label, Tooltip } from 'ui';
+import { browser } from '$app/environment';
+import DataTable from '$lib/components/admin/data-table.svelte';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	const stepsQuery = createAdminOnboardingListSteps(() => ({ query: { enabled: browser } }));
-	const configQuery = createAdminOnboardingGetConfig(() => ({ query: { enabled: browser } }));
+const stepsQuery = createAdminOnboardingListSteps(() => ({ query: { enabled: browser } }));
+const configQuery = createAdminOnboardingGetConfig(() => ({ query: { enabled: browser } }));
 
-	interface StepItem { id: string; key: string; order: number; component: string; icon: string; required: boolean; sectionTypeKey: string | null; strengthWeight: number; isActive: boolean; createdAt: string; updatedAt: string; fields: unknown; translations: unknown; validation: unknown; [key: string]: unknown }
-	interface StrengthLevel { minScore: number; level: string; message: string }
+interface StepItem {
+  id: string;
+  key: string;
+  order: number;
+  component: string;
+  icon: string;
+  required: boolean;
+  sectionTypeKey: string | null;
+  strengthWeight: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  fields: unknown;
+  translations: unknown;
+  validation: unknown;
+  [key: string]: unknown;
+}
+interface StrengthLevel {
+  minScore: number;
+  level: string;
+  message: string;
+}
 
-	const steps = $derived(stepsQuery.data?.steps as StepItem[] | undefined);
-	const sortedSteps = $derived([...(steps ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
-	const config = $derived(configQuery.data?.config);
-	const strengthLevels = $derived(config?.strengthLevels as StrengthLevel[] | undefined);
+const steps = $derived(stepsQuery.data?.steps as StepItem[] | undefined);
+const sortedSteps = $derived([...(steps ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+const config = $derived(configQuery.data?.config);
+const strengthLevels = $derived(config?.strengthLevels as StrengthLevel[] | undefined);
 
-	function jsonBody(data: Record<string, unknown>): RequestInit {
-		return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
-	}
+function jsonBody(data: Record<string, unknown>): RequestInit {
+  return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
+}
 
-	// --- Delete ---
-	let deleteKey = $state<string | null>(null);
-	let deleteLoading = $state(false);
+// --- Delete ---
+let deleteKey = $state<string | null>(null);
+let deleteLoading = $state(false);
 
-	// --- Step form ---
-	let stepModal = $state<{ mode: 'create' | 'edit'; key?: string } | null>(null);
-	let stepLoading = $state(false);
-	let stepKey = $state('');
-	let stepComponent = $state('');
-	let stepIcon = $state('📄');
-	let stepOrder = $state('0');
-	let stepRequired = $state(false);
-	let stepSectionTypeKey = $state('');
-	let stepStrengthWeight = $state('0');
-	let stepIsActive = $state(true);
+// --- Step form ---
+let stepModal = $state<{ mode: 'create' | 'edit'; key?: string } | null>(null);
+let stepLoading = $state(false);
+let stepKey = $state('');
+let stepComponent = $state('');
+let stepIcon = $state('📄');
+let stepOrder = $state('0');
+let stepRequired = $state(false);
+let stepSectionTypeKey = $state('');
+let stepStrengthWeight = $state('0');
+let stepIsActive = $state(true);
 
-	// --- Config form ---
-	let configModal = $state(false);
-	let configLoading = $state(false);
-	let configLevels = $state<{ minScore: string; level: string; message: string }[]>([]);
+// --- Config form ---
+let configModal = $state(false);
+let configLoading = $state(false);
+let configLevels = $state<{ minScore: string; level: string; message: string }[]>([]);
 
-	function openCreateStep() {
-		stepModal = { mode: 'create' };
-		stepKey = ''; stepComponent = ''; stepIcon = '📄'; stepOrder = String(sortedSteps.length);
-		stepRequired = false; stepSectionTypeKey = ''; stepStrengthWeight = '0'; stepIsActive = true;
-	}
+function openCreateStep() {
+  stepModal = { mode: 'create' };
+  stepKey = '';
+  stepComponent = '';
+  stepIcon = '📄';
+  stepOrder = String(sortedSteps.length);
+  stepRequired = false;
+  stepSectionTypeKey = '';
+  stepStrengthWeight = '0';
+  stepIsActive = true;
+}
 
-	function openEditStep(step: StepItem) {
-		stepModal = { mode: 'edit', key: step.key };
-		stepKey = step.key ?? '';
-		stepComponent = step.component ?? '';
-		stepIcon = step.icon ?? '📄';
-		stepOrder = String(step.order ?? 0);
-		stepRequired = step.required ?? false;
-		stepSectionTypeKey = step.sectionTypeKey ?? '';
-		stepStrengthWeight = String(step.strengthWeight ?? 0);
-		stepIsActive = step.isActive ?? true;
-	}
+function openEditStep(step: StepItem) {
+  stepModal = { mode: 'edit', key: step.key };
+  stepKey = step.key ?? '';
+  stepComponent = step.component ?? '';
+  stepIcon = step.icon ?? '📄';
+  stepOrder = String(step.order ?? 0);
+  stepRequired = step.required ?? false;
+  stepSectionTypeKey = step.sectionTypeKey ?? '';
+  stepStrengthWeight = String(step.strengthWeight ?? 0);
+  stepIsActive = step.isActive ?? true;
+}
 
-	async function handleStepSubmit() {
-		stepLoading = true;
-		try {
-			const data = {
-				key: stepKey, component: stepComponent, icon: stepIcon, order: Number(stepOrder),
-				required: stepRequired, sectionTypeKey: stepSectionTypeKey || null,
-				strengthWeight: Number(stepStrengthWeight), isActive: stepIsActive,
-			};
-			if (stepModal?.mode === 'create') {
-				await adminOnboardingCreateStep(jsonBody(data));
-			} else {
-				await adminOnboardingUpdateStep(stepModal!.key!, jsonBody(data));
-			}
-			queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
-			stepModal = null;
-		} finally {
-			stepLoading = false;
-		}
-	}
+async function handleStepSubmit() {
+  stepLoading = true;
+  try {
+    const data = {
+      key: stepKey,
+      component: stepComponent,
+      icon: stepIcon,
+      order: Number(stepOrder),
+      required: stepRequired,
+      sectionTypeKey: stepSectionTypeKey || null,
+      strengthWeight: Number(stepStrengthWeight),
+      isActive: stepIsActive,
+    };
+    if (stepModal?.mode === 'create') {
+      await adminOnboardingCreateStep(jsonBody(data));
+    } else {
+      await adminOnboardingUpdateStep(stepModal!.key!, jsonBody(data));
+    }
+    queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
+    stepModal = null;
+  } finally {
+    stepLoading = false;
+  }
+}
 
-	async function handleToggleActive(step: StepItem) {
-		await adminOnboardingUpdateStep(step.key, jsonBody({ isActive: !step.isActive }));
-		queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
-	}
+async function handleToggleActive(step: StepItem) {
+  await adminOnboardingUpdateStep(step.key, jsonBody({ isActive: !step.isActive }));
+  queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
+}
 
-	async function handleReorder(step: StepItem, direction: 'up' | 'down') {
-		const currentOrder = step.order ?? 0;
-		const newOrder = direction === 'up' ? currentOrder - 1 : currentOrder + 1;
-		await adminOnboardingUpdateStep(step.key, jsonBody({ order: newOrder }));
-		queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
-	}
+async function handleReorder(step: StepItem, direction: 'up' | 'down') {
+  const currentOrder = step.order ?? 0;
+  const newOrder = direction === 'up' ? currentOrder - 1 : currentOrder + 1;
+  await adminOnboardingUpdateStep(step.key, jsonBody({ order: newOrder }));
+  queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
+}
 
-	async function handleDelete() {
-		if (!deleteKey) return;
-		deleteLoading = true;
-		try {
-			await adminOnboardingDeleteStep(deleteKey);
-			queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
-		} finally { deleteLoading = false; deleteKey = null; }
-	}
+async function handleDelete() {
+  if (!deleteKey) return;
+  deleteLoading = true;
+  try {
+    await adminOnboardingDeleteStep(deleteKey);
+    queryClient.invalidateQueries({ queryKey: getAdminOnboardingListStepsQueryKey() });
+  } finally {
+    deleteLoading = false;
+    deleteKey = null;
+  }
+}
 
-	function openConfigEdit() {
-		configLevels = (strengthLevels ?? []).map(l => ({
-			minScore: String(l.minScore ?? 0),
-			level: l.level ?? '',
-			message: l.message ?? '',
-		}));
-		if (configLevels.length === 0) {
-			configLevels = [
-				{ minScore: '0', level: 'weak', message: 'Your profile needs work' },
-				{ minScore: '40', level: 'medium', message: 'Getting better' },
-				{ minScore: '70', level: 'strong', message: 'Looking great!' },
-			];
-		}
-		configModal = true;
-	}
+function openConfigEdit() {
+  configLevels = (strengthLevels ?? []).map((l) => ({
+    minScore: String(l.minScore ?? 0),
+    level: l.level ?? '',
+    message: l.message ?? '',
+  }));
+  if (configLevels.length === 0) {
+    configLevels = [
+      { minScore: '0', level: 'weak', message: 'Your profile needs work' },
+      { minScore: '40', level: 'medium', message: 'Getting better' },
+      { minScore: '70', level: 'strong', message: 'Looking great!' },
+    ];
+  }
+  configModal = true;
+}
 
-	function addConfigLevel() {
-		configLevels = [...configLevels, { minScore: '0', level: '', message: '' }];
-	}
+function addConfigLevel() {
+  configLevels = [...configLevels, { minScore: '0', level: '', message: '' }];
+}
 
-	function removeConfigLevel(index: number) {
-		configLevels = configLevels.filter((_, i) => i !== index);
-	}
+function removeConfigLevel(index: number) {
+  configLevels = configLevels.filter((_, i) => i !== index);
+}
 
-	async function handleConfigSubmit() {
-		configLoading = true;
-		try {
-			await adminOnboardingUpdateConfig(jsonBody({ strengthLevels: configLevels.map(l => ({ ...l, minScore: Number(l.minScore) })) }));
-			queryClient.invalidateQueries({ queryKey: getAdminOnboardingGetConfigQueryKey() });
-			configModal = false;
-		} finally { configLoading = false; }
-	}
+async function handleConfigSubmit() {
+  configLoading = true;
+  try {
+    await adminOnboardingUpdateConfig(
+      jsonBody({
+        strengthLevels: configLevels.map((l) => ({ ...l, minScore: Number(l.minScore) })),
+      }),
+    );
+    queryClient.invalidateQueries({ queryKey: getAdminOnboardingGetConfigQueryKey() });
+    configModal = false;
+  } finally {
+    configLoading = false;
+  }
+}
 
-	const columns = $derived([
-		{ key: 'key', label: t?.('admin.onboarding.stepKey') ?? 'Key' },
-		{ key: 'component', label: 'Component' },
-		{ key: 'order', label: t?.('admin.onboarding.order') ?? 'Order', width: '80px' },
-		{ key: 'isActive', label: t?.('admin.onboarding.isActive') ?? 'Active', width: '80px' },
-		{ key: 'actions', label: '', width: '140px' },
-	]);
+const columns = $derived([
+  { key: 'key', label: t?.('admin.onboarding.stepKey') ?? 'Key' },
+  { key: 'component', label: 'Component' },
+  { key: 'order', label: t?.('admin.onboarding.order') ?? 'Order', width: '80px' },
+  { key: 'isActive', label: t?.('admin.onboarding.isActive') ?? 'Active', width: '80px' },
+  { key: 'actions', label: '', width: '140px' },
+]);
 </script>
 
 <svelte:head>
@@ -196,7 +245,7 @@
 							<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); handleReorder(row, 'down'); }}><ChevronDown size={14} /></Button>
 						</Tooltip>
 						<Tooltip text="Delete">
-							<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteKey = row.key; }}><Trash2 size={14} /></Button>
+							<Button variant="ghost" intent="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteKey = row.key; }}><Trash2 size={14} /></Button>
 						</Tooltip>
 					</div>
 				{:else}
@@ -258,7 +307,7 @@
 				<div class="flex-1"><Label>Level</Label><Input bind:value={level.level} placeholder="weak" required /></div>
 				<div class="w-20"><Label>Min</Label><Input bind:value={level.minScore} type="number" /></div>
 				<div class="flex-1"><Label>Message</Label><Input bind:value={level.message} placeholder="Keep going" /></div>
-				<Button type="button" variant="danger" size="xs" onclick={() => removeConfigLevel(i)}><Trash2 size={14} /></Button>
+				<Button type="button" variant="ghost" intent="danger" size="xs" onclick={() => removeConfigLevel(i)}><Trash2 size={14} /></Button>
 			</div>
 		{/each}
 		<Button type="button" variant="ghost" size="xs" onclick={addConfigLevel}><Plus size={12} /> Add level</Button>

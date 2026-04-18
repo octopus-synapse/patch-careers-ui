@@ -1,193 +1,298 @@
 <script lang="ts">
-	import {
-		createAuthSession,
-		createOnboardingGetSession,
-		createOnboardingNextStep,
-		createOnboardingPreviousStep,
-		createOnboardingGotoStep,
-		createOnboardingCompleteFromSession,
-		createOnboardingSaveStepData,
-		getOnboardingGetSessionQueryKey,
-		getAuthSessionQueryKey
-	} from 'api-client';
-	import { Button } from 'ui';
-	import { goto } from '$app/navigation';
-	import { Loader2, ArrowRight, ArrowLeft, Check } from 'lucide-svelte';
-	import { locale } from '$lib/locale.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import Sidebar from '$lib/components/onboarding/sidebar.svelte';
-	import StepperMobile from '$lib/components/onboarding/stepper-mobile.svelte';
-	import StepForm from '$lib/components/onboarding/step-form.svelte';
-	import StepMultiItems from '$lib/components/onboarding/step-multi-items.svelte';
-	import StepTheme from '$lib/components/onboarding/step-theme.svelte';
-	import StepReview from '$lib/components/onboarding/step-review.svelte';
-	import StepWelcome from '$lib/components/onboarding/step-welcome.svelte';
-	import PreviewPanel from '$lib/components/onboarding/preview-panel.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createAuthSession,
+  createOnboardingCompleteFromSession,
+  createOnboardingGetSession,
+  createOnboardingGotoStep,
+  createOnboardingNextStep,
+  createOnboardingPreviousStep,
+  createOnboardingSaveStepData,
+  getAuthSessionQueryKey,
+  getOnboardingGetSessionQueryKey,
+} from 'api-client';
+import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-svelte';
+import { Button } from 'ui';
+import { beforeNavigate, goto } from '$app/navigation';
+import PreviewPanel from '$lib/components/onboarding/preview-panel.svelte';
+import Sidebar from '$lib/components/onboarding/sidebar.svelte';
+import StepForm from '$lib/components/onboarding/step-form.svelte';
+import StepMultiItems from '$lib/components/onboarding/step-multi-items.svelte';
+import StepReview from '$lib/components/onboarding/step-review.svelte';
+import StepTheme from '$lib/components/onboarding/step-theme.svelte';
+import StepWelcome from '$lib/components/onboarding/step-welcome.svelte';
+import StepperMobile from '$lib/components/onboarding/stepper-mobile.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const auth = createAuthSession(() => ({ query: { retry: false } }));
-	const authenticated = $derived(auth.data?.authenticated);
+const auth = createAuthSession(() => ({ query: { retry: false } }));
+const authenticated = $derived(auth.data?.authenticated);
 
-	$effect(() => {
-		if (!auth.isLoading && !authenticated) {
-			goto('/login');
-		}
-	});
+$effect(() => {
+  if (!auth.isLoading && !authenticated) {
+    goto('/login');
+  }
+});
 
-	const session = createOnboardingGetSession(
-		() => ({ locale: locale.current }),
-		() => ({ query: { enabled: authenticated } })
-	);
+const session = createOnboardingGetSession(
+  () => ({ locale: locale.current }),
+  () => ({ query: { enabled: authenticated } }),
+);
 
-	const queryClient = useQueryClient();
-	const queryKey = $derived(getOnboardingGetSessionQueryKey({ locale: locale.current }));
+const queryClient = useQueryClient();
+const queryKey = $derived(getOnboardingGetSessionQueryKey({ locale: locale.current }));
 
-	function invalidateSession() {
-		queryClient.invalidateQueries({ queryKey });
-	}
+function invalidateSession() {
+  queryClient.invalidateQueries({ queryKey });
+}
 
-	type Step = { id: string; label: string; description: string; icon?: string; component: string; fields?: Array<{ key: string; type: string; label: string; required: boolean; options?: string[]; widget?: string }>; multipleItems?: boolean; sectionTypeKey?: string; data?: Array<{ id: string; name: string; category: string; tags: string[]; thumbnailUrl?: string | null }> };
+type Step = {
+  id: string;
+  label: string;
+  description: string;
+  icon?: string;
+  component: string;
+  fields?: Array<{
+    key: string;
+    type: string;
+    label: string;
+    required: boolean;
+    options?: string[];
+    widget?: string;
+  }>;
+  multipleItems?: boolean;
+  sectionTypeKey?: string;
+  data?: Array<{
+    id: string;
+    name: string;
+    category: string;
+    tags: string[];
+    thumbnailUrl?: string | null;
+  }>;
+};
 
-	const onboardingData = $derived(session.data);
-	const steps = $derived((onboardingData?.steps ?? []) as Step[]);
-	const currentStepId = $derived(onboardingData?.currentStep ?? '');
-	const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
-	const completedSteps = $derived(onboardingData?.completedSteps ?? []);
-	const progress = $derived(onboardingData?.progress ?? 0);
-	const strength = $derived(onboardingData?.strength);
-	const missingRequired = $derived(onboardingData?.missingRequired);
-	const isLastStep = $derived(!onboardingData?.nextStep || currentStep?.component === 'review');
+const onboardingData = $derived(session.data);
+const steps = $derived((onboardingData?.steps ?? []) as Step[]);
+const currentStepId = $derived(onboardingData?.currentStep ?? '');
+const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
+const completedSteps = $derived(onboardingData?.completedSteps ?? []);
+const progress = $derived(onboardingData?.progress ?? 0);
+const strength = $derived(onboardingData?.strength);
+const missingRequired = $derived(onboardingData?.missingRequired);
+const isLastStep = $derived(!onboardingData?.nextStep || currentStep?.component === 'review');
 
-	let stepData = $state<Record<string, string>>({});
-	let multiItems = $state<Array<{ id?: string; content?: Record<string, unknown> }>>([]);
+let stepData = $state<Record<string, string>>({});
+let multiItems = $state<Array<{ id?: string; content?: Record<string, unknown> }>>([]);
 
-	$effect(() => {
-		if (currentStep) {
-			stepData = {};
-			multiItems = [];
+$effect(() => {
+  if (currentStep) {
+    stepData = {};
+    multiItems = [];
 
-			if (currentStep.multipleItems && onboardingData?.sections) {
-				const section = onboardingData.sections.find(
-					(s: Record<string, unknown>) => s.sectionTypeKey === currentStep.sectionTypeKey
-				);
-				if (section?.items) {
-					multiItems = [...section.items];
-				}
-			} else if (currentStepId) {
-				const saved = getSavedDataForStep(currentStepId);
-				if (saved) stepData = saved;
-			}
-		}
-	});
+    if (currentStep.multipleItems && onboardingData?.sections) {
+      const section = onboardingData.sections.find(
+        (s: Record<string, unknown>) => s.sectionTypeKey === currentStep.sectionTypeKey,
+      );
+      if (section?.items) {
+        multiItems = [...section.items];
+      }
+    } else if (currentStepId) {
+      const saved = getSavedDataForStep(currentStepId);
+      if (saved) stepData = saved;
+    }
+  }
+});
 
-	function getSavedDataForStep(stepId: string): Record<string, string> | null {
-		if (!onboardingData || !steps) return null;
-		const step = steps.find((s) => s.id === stepId);
-		if (!step?.fields) return null;
+function getSavedDataForStep(stepId: string): Record<string, string> | null {
+  if (!onboardingData || !steps) return null;
+  const step = steps.find((s) => s.id === stepId);
+  if (!step?.fields) return null;
 
-		const result: Record<string, string> = {};
-		const pi = onboardingData.personalInfo as Record<string, unknown> | undefined;
-		const pp = onboardingData.professionalProfile as Record<string, unknown> | undefined;
-		const ts = onboardingData.templateSelection as Record<string, unknown> | undefined;
-		for (const field of step.fields) {
-			const val = pi?.[field.key]
-				?? pp?.[field.key]
-				?? ts?.[field.key];
-			if (val != null) result[field.key] = String(val);
-		}
-		return Object.keys(result).length > 0 ? result : null;
-	}
+  const result: Record<string, string> = {};
+  const pi = onboardingData.personalInfo as Record<string, unknown> | undefined;
+  const pp = onboardingData.professionalProfile as Record<string, unknown> | undefined;
+  const ts = onboardingData.templateSelection as Record<string, unknown> | undefined;
+  const topLevel = onboardingData as unknown as Record<string, unknown>;
+  for (const field of step.fields) {
+    const val = pi?.[field.key] ?? pp?.[field.key] ?? ts?.[field.key] ?? topLevel[field.key];
+    if (val != null) result[field.key] = String(val);
+  }
+  return Object.keys(result).length > 0 ? result : null;
+}
 
-	const nextStep = createOnboardingNextStep(() => ({
-		mutation: { onSuccess: invalidateSession }
-	}));
+const nextStep = createOnboardingNextStep(() => ({
+  mutation: { onSuccess: invalidateSession },
+}));
 
-	const prevStep = createOnboardingPreviousStep(() => ({
-		mutation: { onSuccess: invalidateSession }
-	}));
+const prevStep = createOnboardingPreviousStep(() => ({
+  mutation: { onSuccess: invalidateSession },
+}));
 
-	const gotoStep = createOnboardingGotoStep(() => ({
-		mutation: { onSuccess: invalidateSession }
-	}));
+const gotoStep = createOnboardingGotoStep(() => ({
+  mutation: { onSuccess: invalidateSession },
+}));
 
-	let completeError = $state('');
+let completeError = $state('');
 
-	const complete = createOnboardingCompleteFromSession(() => ({
-		mutation: {
-			async onSuccess() {
-				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				const username = auth.data?.user?.username;
-				goto(username ? `/@${username}` : '/');
-			},
-			onError(err: unknown) {
-				const msg = (err as Record<string, unknown>)?.message;
-				completeError = typeof msg === 'string' ? msg : 'Failed to complete onboarding';
-			}
-		}
-	}));
+const complete = createOnboardingCompleteFromSession(() => ({
+  mutation: {
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+      const username = auth.data?.user?.username;
+      goto(username ? `/@${username}` : '/');
+    },
+    onError(err: unknown) {
+      const msg = (err as Record<string, unknown>)?.message;
+      completeError = typeof msg === 'string' ? msg : 'Failed to complete onboarding';
+    },
+  },
+}));
 
-	const saveStep = createOnboardingSaveStepData();
-	let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
-	let saveTimer: ReturnType<typeof setTimeout> | null = null;
-	let lastSavedJson = '';
+const saveStep = createOnboardingSaveStepData();
+let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+let lastSavedJson = '';
+let pendingSaveJson = '';
 
-	$effect(() => {
-		const dataJson = JSON.stringify(stepData);
-		if (dataJson === lastSavedJson || dataJson === '{}') return;
-		if (!currentStepId || currentStep?.component === 'review' || currentStep?.component === 'welcome') return;
+function flushSave() {
+  if (!saveTimer) return;
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  const dataJson = pendingSaveJson;
+  if (!dataJson || dataJson === lastSavedJson || dataJson === '{}') return;
+  if (!currentStepId || currentStep?.component === 'review' || currentStep?.component === 'welcome')
+    return;
+  if (currentStep?.multipleItems) return;
+  saveStatus = 'saving';
+  saveStep.mutate(
+    { data: JSON.parse(dataJson), params: { locale: locale.current } },
+    {
+      onSuccess() {
+        lastSavedJson = dataJson;
+        saveStatus = 'saved';
+        setTimeout(() => {
+          if (saveStatus === 'saved') saveStatus = 'idle';
+        }, 2000);
+      },
+      onError() {
+        saveStatus = 'idle';
+      },
+    },
+  );
+}
 
-		saveStatus = 'idle';
-		if (saveTimer) clearTimeout(saveTimer);
-		saveTimer = setTimeout(() => {
-			if (currentStep?.multipleItems) return;
-			saveStatus = 'saving';
-			saveStep.mutate(
-				{ data: stepData, params: { locale: locale.current } },
-				{
-					onSuccess() {
-						lastSavedJson = dataJson;
-						saveStatus = 'saved';
-						setTimeout(() => { if (saveStatus === 'saved') saveStatus = 'idle'; }, 2000);
-					},
-					onError() { saveStatus = 'idle'; }
-				}
-			);
-		}, 2000);
+$effect(() => {
+  const dataJson = JSON.stringify(stepData);
+  if (dataJson === lastSavedJson || dataJson === '{}') return;
+  if (!currentStepId || currentStep?.component === 'review' || currentStep?.component === 'welcome')
+    return;
 
-		return () => { if (saveTimer) clearTimeout(saveTimer); };
-	});
+  saveStatus = 'idle';
+  pendingSaveJson = dataJson;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    if (currentStep?.multipleItems) return;
+    saveStatus = 'saving';
+    saveStep.mutate(
+      { data: stepData, params: { locale: locale.current } },
+      {
+        onSuccess() {
+          lastSavedJson = dataJson;
+          saveStatus = 'saved';
+          setTimeout(() => {
+            if (saveStatus === 'saved') saveStatus = 'idle';
+          }, 2000);
+        },
+        onError() {
+          saveStatus = 'idle';
+        },
+      },
+    );
+  }, 2000);
 
-	const isSectionStep = $derived(currentStepId.startsWith('section:'));
+  return () => {
+    if (saveTimer) clearTimeout(saveTimer);
+  };
+});
 
-	function handleNext() {
-		const body = currentStep?.multipleItems
-			? { items: multiItems }
-			: stepData;
-		nextStep.mutate({ data: body, params: { locale: locale.current } });
-	}
+beforeNavigate(() => {
+  // Flush any pending debounced save synchronously before navigating away.
+  flushSave();
+});
 
-	function handleSkip() {
-		nextStep.mutate({ data: { noData: true }, params: { locale: locale.current } });
-	}
+const isSectionStep = $derived(currentStepId.startsWith('section:'));
+// A step is optional (skippable) when none of its fields are marked required.
+// Section steps are always skippable (the whole section can be empty).
+const isOptionalStep = $derived(
+  isSectionStep || !(currentStep?.fields?.some((f) => f.required) ?? false),
+);
 
-	function handleBack() {
-		prevStep.mutate({ params: { locale: locale.current } });
-	}
+let navigating = $state(false);
 
-	function handleGoto(stepId: string) {
-		gotoStep.mutate({ data: { stepId }, params: { locale: locale.current } });
-	}
+function handleNext() {
+  if (navigating || nextStep.isPending || prevStep.isPending || gotoStep.isPending) return;
+  navigating = true;
+  const body = currentStep?.multipleItems ? { items: multiItems } : stepData;
+  nextStep.mutate(
+    { data: body, params: { locale: locale.current } },
+    {
+      onSettled: () => {
+        navigating = false;
+      },
+    },
+  );
+}
 
-	function handleComplete() {
-		complete.mutate();
-	}
+function handleSkip() {
+  if (navigating || nextStep.isPending) return;
+  navigating = true;
+  nextStep.mutate(
+    { data: { noData: true }, params: { locale: locale.current } },
+    {
+      onSettled: () => {
+        navigating = false;
+      },
+    },
+  );
+}
 
-	const isWelcome = $derived(currentStep?.component === 'welcome');
+function handleBack() {
+  if (navigating || prevStep.isPending) return;
+  navigating = true;
+  prevStep.mutate(
+    { params: { locale: locale.current } },
+    {
+      onSettled: () => {
+        navigating = false;
+      },
+    },
+  );
+}
 
-	const isPending = $derived(
-		nextStep.isPending || prevStep.isPending || complete.isPending
-	);
+function handleGoto(stepId: string) {
+  if (navigating || gotoStep.isPending) return;
+  navigating = true;
+  gotoStep.mutate(
+    { data: { stepId }, params: { locale: locale.current } },
+    {
+      onSettled: () => {
+        navigating = false;
+      },
+    },
+  );
+}
+
+function handleComplete() {
+  complete.mutate();
+}
+
+const isWelcome = $derived(currentStep?.component === 'welcome');
+
+const isPending = $derived(
+  navigating || nextStep.isPending || prevStep.isPending || complete.isPending,
+);
 </script>
 
 <svelte:head>
@@ -278,7 +383,7 @@
 							/>
 						{/if}
 
-						{#if isSectionStep}
+						{#if isOptionalStep && !isLastStep && currentStep?.component !== 'welcome'}
 							<Button
 								variant="ghost"
 								size="xs"

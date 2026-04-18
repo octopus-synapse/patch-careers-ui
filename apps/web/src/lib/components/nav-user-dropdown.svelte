@@ -1,35 +1,54 @@
 <script lang="ts">
-	import { Avatar, Button, SegmentToggle } from 'ui';
-	import { colorSchema } from '$lib/color-schema.svelte';
-	import { Sun, Moon, Globe, LogOut, ChevronDown, Settings } from 'lucide-svelte';
+import { ChevronDown, FileText, Globe, LogOut, Moon, Settings, Sun } from 'lucide-svelte';
+import { Avatar, Button, SegmentToggle } from 'ui';
+import { colorSchema } from '$lib/color-schema.svelte';
 
-	type User = {
-		name?: string | null;
-		username?: string | null;
-		email: string;
-	};
+type User = {
+  name?: string | null;
+  username?: string | null;
+  email: string;
+};
 
-	type Props = {
-		user: User;
-		isOpen: boolean;
-		themeLabel: string;
-		logoutLabel: string;
-		settingsLabel?: string;
-		locales: string[];
-		currentLocale: string;
-		ontoggle: () => void;
-		onthemetoggle: (value: string) => void;
-		onlocalechange: (value: string) => void;
-		onlogout: () => void;
-	};
+type Props = {
+  user: User;
+  isOpen: boolean;
+  themeLabel: string;
+  logoutLabel: string;
+  settingsLabel?: string;
+  cvLabel?: string;
+  locales: string[];
+  currentLocale: string;
+  ontoggle: () => void;
+  onthemetoggle: (value: string) => void;
+  onlocalechange: (value: string) => void;
+  onlogout: () => void;
+};
 
-	let { user, isOpen, themeLabel, logoutLabel, settingsLabel, locales, currentLocale, ontoggle, onthemetoggle, onlocalechange, onlogout }: Props = $props();
+let {
+  user,
+  isOpen,
+  themeLabel,
+  logoutLabel,
+  settingsLabel,
+  cvLabel,
+  locales,
+  currentLocale,
+  ontoggle,
+  onthemetoggle,
+  onlocalechange,
+  onlogout,
+}: Props = $props();
 
-	const cs = $derived(colorSchema.mode);
-	const displayName = $derived(user.name ?? user.email.split('@')[0]);
-	const initial = $derived(user.name ?? user.email);
-	const themeOptions = [{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }];
-	const localeOptions = $derived(locales.map(l => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })));
+const cs = $derived(colorSchema.mode);
+const displayName = $derived(user.name ?? user.email.split('@')[0]);
+const initial = $derived(user.name ?? user.email);
+const themeOptions = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+];
+const localeOptions = $derived(
+  locales.map((l) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })),
+);
 </script>
 
 <div class="relative hidden md:block" data-dropdown>
@@ -73,6 +92,14 @@
 
 			<div class="border-t border-gray-200/60 dark:border-neutral-800/60">
 				<a
+					href="/cv"
+					data-sveltekit-preload-data="hover"
+					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 text-gray-500 dark:text-neutral-500"
+				>
+					<FileText size={13} />
+					{cvLabel ?? 'My CV'}
+				</a>
+				<a
 					href="/settings"
 					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 text-gray-500 dark:text-neutral-500"
 				>
@@ -80,7 +107,7 @@
 					{settingsLabel ?? 'Settings'}
 				</a>
 				<Button
-					variant="danger"
+					variant="ghost" intent="danger"
 					size="sm"
 					onclick={onlogout}
 					class="w-full px-4 py-3 text-[11px]"

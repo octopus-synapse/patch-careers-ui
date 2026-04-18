@@ -2,6 +2,7 @@
 
 export * from "./account-lifecycle/account-lifecycle.zod";
 export * from "./accounts/accounts.zod";
+export * from "./application-tracker/application-tracker.zod";
 export * from "./ats-validation/ats-validation.zod";
 export * from "./auth/auth.zod";
 export * from "./authentication/authentication.zod";
@@ -14,11 +15,14 @@ export * from "./github/github.zod";
 export * from "./mec-internal/mec-internal.zod";
 export * from "./onboarding/onboarding.zod";
 export * from "./password-management/password-management.zod";
+export * from "./platform-events/platform-events.zod";
 export * from "./posts/posts.zod";
 export * from "./resume-analytics/resume-analytics.zod";
 export * from "./resume-config/resume-config.zod";
 export * from "./resume-import/resume-import.zod";
+export * from "./resume-tailor/resume-tailor.zod";
 export * from "./resumes/resumes.zod";
+export * from "./success-stories/success-stories.zod";
 export * from "./themes/themes.zod";
 export * from "./translation/translation.zod";
 export * from "./two-factor-auth/two-factor-auth.zod";

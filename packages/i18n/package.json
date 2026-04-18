@@ -5,6 +5,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
   "peerDependencies": {
     "typescript": "^5"
   },

@@ -1,49 +1,54 @@
 <script lang="ts">
-	import { Check } from 'lucide-svelte';
+import { Check } from 'lucide-svelte';
 
-	type Step = {
-		id: string;
-		label: string;
-	};
+type Step = {
+  id: string;
+  label: string;
+};
 
-	type Strength = {
-		score: number;
-		message: string;
-		level: string;
-	};
+type Strength = {
+  score: number;
+  message: string;
+  level: string;
+};
 
-	type Props = {
-		steps: Step[];
-		currentStep: string;
-		completedSteps: string[];
-		progress: number;
-		strength?: Strength;
-	};
+type Props = {
+  steps: Step[];
+  currentStep: string;
+  completedSteps: string[];
+  progress: number;
+  strength?: Strength;
+};
 
-	let { steps, currentStep, completedSteps, progress, strength }: Props = $props();
+let { steps, currentStep, completedSteps, progress, strength }: Props = $props();
 
-	const strengthScore = $derived(strength?.score ?? progress);
-	const strengthMessage = $derived(strength?.message ?? '');
+const strengthScore = $derived(strength?.score ?? progress);
+const strengthMessage = $derived(strength?.message ?? '');
 
-	const barColor = $derived(
-		strengthScore >= 75 ? 'bg-emerald-500'
-		: strengthScore >= 50 ? 'bg-blue-500'
-		: strengthScore >= 25 ? 'bg-blue-400'
-		: 'bg-gray-400 dark:bg-neutral-500'
-	);
+const barColor = $derived(
+  strengthScore >= 75
+    ? 'bg-emerald-500'
+    : strengthScore >= 50
+      ? 'bg-blue-500'
+      : strengthScore >= 25
+        ? 'bg-blue-400'
+        : 'bg-gray-400 dark:bg-neutral-500',
+);
 
-	let containerWidth = $state(0);
-	const ITEM_MIN_WIDTH = 72;
-	const visibleCount = $derived(Math.max(2, Math.min(steps.length, Math.floor(containerWidth / ITEM_MIN_WIDTH))));
+let containerWidth = $state(0);
+const ITEM_MIN_WIDTH = 72;
+const visibleCount = $derived(
+  Math.max(2, Math.min(steps.length, Math.floor(containerWidth / ITEM_MIN_WIDTH))),
+);
 
-	const currentIndex = $derived(steps.findIndex((s) => s.id === currentStep));
-	const maxStart = $derived(Math.max(0, steps.length - visibleCount));
-	const windowStart = $derived(Math.max(0, Math.min(currentIndex, maxStart)));
-	const visibleSteps = $derived(steps.slice(windowStart, windowStart + visibleCount));
+const currentIndex = $derived(steps.findIndex((s) => s.id === currentStep));
+const maxStart = $derived(Math.max(0, steps.length - visibleCount));
+const windowStart = $derived(Math.max(0, Math.min(currentIndex, maxStart)));
+const visibleSteps = $derived(steps.slice(windowStart, windowStart + visibleCount));
 
-	function isCompleted(stepId: string): boolean {
-		return completedSteps.includes(stepId);
-	}
+function isCompleted(stepId: string): boolean {
+  return completedSteps.includes(stepId);
+}
 </script>
 
 <div class="mb-6" bind:clientWidth={containerWidth}>

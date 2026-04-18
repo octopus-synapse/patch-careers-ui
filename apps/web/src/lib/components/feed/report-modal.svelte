@@ -1,33 +1,33 @@
 <script lang="ts">
-	import { Modal, Button, Textarea } from 'ui';
-	import { Loader2 } from 'lucide-svelte';
+import { Loader2 } from 'lucide-svelte';
+import { Button, Modal, Textarea } from 'ui';
 
-	type Props = {
-		open: boolean;
-		onsubmit: (reason: string) => void;
-		oncancel: () => void;
-	};
+type Props = {
+  open: boolean;
+  onsubmit: (reason: string) => void;
+  oncancel: () => void;
+};
 
-	let { open, onsubmit, oncancel }: Props = $props();
+let { open, onsubmit, oncancel }: Props = $props();
 
-	let reason = $state('');
-	let submitting = $state(false);
+let reason = $state('');
+let submitting = $state(false);
 
-	async function handleSubmit() {
-		if (!reason.trim() || submitting) return;
-		submitting = true;
-		try {
-			onsubmit(reason.trim());
-			reason = '';
-		} finally {
-			submitting = false;
-		}
-	}
+async function handleSubmit() {
+  if (!reason.trim() || submitting) return;
+  submitting = true;
+  try {
+    onsubmit(reason.trim());
+    reason = '';
+  } finally {
+    submitting = false;
+  }
+}
 
-	function handleCancel() {
-		reason = '';
-		oncancel();
-	}
+function handleCancel() {
+  reason = '';
+  oncancel();
+}
 </script>
 
 <Modal {open} onClose={handleCancel}>

@@ -1,9 +1,9 @@
 <script lang="ts">
-	type Props = {
-		textClass: string;
-	};
+type Props = {
+  textClass: string;
+};
 
-	let { textClass }: Props = $props();
+let { textClass }: Props = $props();
 </script>
 
 <a href="/" class="text-sm font-bold tracking-tight {textClass}">

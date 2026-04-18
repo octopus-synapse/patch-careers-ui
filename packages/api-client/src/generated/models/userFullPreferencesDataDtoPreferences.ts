@@ -35,6 +35,8 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { UserFullPreferencesDataDtoPreferencesApplyCriteria } from './userFullPreferencesDataDtoPreferencesApplyCriteria';
+import type { UserFullPreferencesDataDtoPreferencesApplyMode } from './userFullPreferencesDataDtoPreferencesApplyMode';
 
 export type UserFullPreferencesDataDtoPreferences = {
   id: string;
@@ -59,6 +61,9 @@ export type UserFullPreferencesDataDtoPreferences = {
   allowSearchEngineIndex: boolean;
   defaultExportFormat: string;
   includePhotoInExport: boolean;
+  applyMode: UserFullPreferencesDataDtoPreferencesApplyMode;
+  /** @nullable */
+  applyCriteria: UserFullPreferencesDataDtoPreferencesApplyCriteria;
   createdAt: unknown;
   updatedAt: unknown;
 };

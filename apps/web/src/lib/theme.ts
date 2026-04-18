@@ -11,9 +11,11 @@ export const theme = {
   cardBg: 'bg-white dark:bg-neutral-800/50',
   border: 'border-gray-200 dark:border-neutral-800',
   sidebarBg: 'bg-white dark:bg-neutral-800/30',
-  inputBg: 'bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500',
+  inputBg:
+    'bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500',
   sidebarLink: 'text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50',
   sectionTitle: 'text-gray-800 dark:text-neutral-200',
   skeletonBg: 'bg-gray-200 dark:bg-neutral-700',
-  btnSecondary: 'border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800',
+  btnSecondary:
+    'border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800',
 } as const;

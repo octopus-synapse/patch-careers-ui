@@ -1,5 +1,5 @@
 <script lang="ts">
-	const now = Date.now();
+const now = Date.now();
 </script>
 
 <div style="padding: 100px; text-align: center;">

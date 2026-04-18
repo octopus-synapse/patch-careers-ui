@@ -39,6 +39,14 @@ import * as zod from 'zod';
 
 
 /**
+ * Accepts a PDF upload (multipart/form-data, field name `file`), extracts the text with pdf-parse and structures it with the LLM. Creates a Resume row and marks it as primary when the user has none.
+ * @summary Import resume from a PDF file
+ */
+export const ResumeImportImportPdfBody = zod.object({
+  "file": zod.instanceof(File)
+})
+
+/**
  * Creates import job and processes JSON Resume data (jsonresume.org standard)
  * @summary Import resume from JSON Resume format
  */

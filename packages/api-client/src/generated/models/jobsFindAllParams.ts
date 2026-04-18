@@ -41,4 +41,16 @@ page: number;
 limit: number;
 search: string;
 skills: string;
+/**
+ * CSV of BRL|USD|EUR|GBP
+ */
+paymentCurrency?: string;
+/**
+ * CSV of REMOTE|HYBRID|ONSITE
+ */
+remotePolicy?: string;
+/**
+ * Max level the viewer accepts. Returns jobs whose required level is ≤ this (or null).
+ */
+minEnglishLevel?: unknown;
 };

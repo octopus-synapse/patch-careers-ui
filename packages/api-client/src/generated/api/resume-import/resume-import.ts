@@ -60,6 +60,7 @@ import type {
   ImportJsonDto,
   ImportResultDto,
   ParsedResumeDataDto,
+  ResumeImportImportPdfBody,
   RetryImportRequestDto
 } from '../../models';
 
@@ -71,6 +72,240 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
+ * Accepts a PDF upload (multipart/form-data, field name `file`), extracts the text with pdf-parse and structures it with the LLM. Creates a Resume row and marks it as primary when the user has none.
+ * @summary Import resume from a PDF file
+ */
+export type resumeImportImportPdfResponse201 = ImportResultDto
+
+export type resumeImportImportPdfResponseSuccess = resumeImportImportPdfResponse201
+;
+
+export type resumeImportImportPdfResponse = (resumeImportImportPdfResponseSuccess)
+
+export const getResumeImportImportPdfUrl = () => {
+
+
+
+
+  return `/api/resume-import/pdf`
+}
+
+export const resumeImportImportPdf = async (resumeImportImportPdfBody: ResumeImportImportPdfBody, options?: RequestInit): Promise<resumeImportImportPdfResponse> => {
+    const formData = new FormData();
+formData.append(`file`, resumeImportImportPdfBody.file);
+
+  return customFetch<resumeImportImportPdfResponse>(getResumeImportImportPdfUrl(),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body:
+      formData,
+  }
+);}
+
+
+
+
+export const getResumeImportImportPdfMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportPdf>>, TError,{data: ResumeImportImportPdfBody}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportPdf>>, TError,{data: ResumeImportImportPdfBody}, TContext> => {
+
+const mutationKey = ['resumeImportImportPdf'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resumeImportImportPdf>>, {data: ResumeImportImportPdfBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  resumeImportImportPdf(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResumeImportImportPdfMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportImportPdf>>>
+    export type ResumeImportImportPdfMutationBody = ResumeImportImportPdfBody
+    export type ResumeImportImportPdfMutationError = unknown
+
+    /**
+ * @summary Import resume from a PDF file
+ */
+export const createResumeImportImportPdf = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportPdf>>, TError,{data: ResumeImportImportPdfBody}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof resumeImportImportPdf>>,
+        TError,
+        {data: ResumeImportImportPdfBody},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getResumeImportImportPdfMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * Uses the user's previously-connected GitHub OAuth token to fetch top repos and derive skills + BUILD posts. Fails with 409 GITHUB_NOT_CONNECTED if the user hasn't linked GitHub yet.
+ * @summary Import profile data from GitHub
+ */
+export type resumeImportImportGithubResponse200 = ImportResultDto
+
+export type resumeImportImportGithubResponseSuccess = resumeImportImportGithubResponse200
+;
+
+export type resumeImportImportGithubResponse = (resumeImportImportGithubResponseSuccess)
+
+export const getResumeImportImportGithubUrl = () => {
+
+
+
+
+  return `/api/resume-import/github`
+}
+
+export const resumeImportImportGithub = async ( options?: RequestInit): Promise<resumeImportImportGithubResponse> => {
+
+  return customFetch<resumeImportImportGithubResponse>(getResumeImportImportGithubUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getResumeImportImportGithubMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportGithub>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportGithub>>, TError,void, TContext> => {
+
+const mutationKey = ['resumeImportImportGithub'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resumeImportImportGithub>>, void> = () => {
+
+
+          return  resumeImportImportGithub(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResumeImportImportGithubMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportImportGithub>>>
+
+    export type ResumeImportImportGithubMutationError = unknown
+
+    /**
+ * @summary Import profile data from GitHub
+ */
+export const createResumeImportImportGithub = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportGithub>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof resumeImportImportGithub>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return createMutation(() => ({ ...getResumeImportImportGithubMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * Placeholder endpoint. Returns 503 until the LinkedIn v2 API client lands. Frontend should treat this as 'em breve' for now.
+ * @summary Import profile data from LinkedIn (scaffold)
+ */
+export type resumeImportImportLinkedinResponse201 = void
+
+export type resumeImportImportLinkedinResponseSuccess = resumeImportImportLinkedinResponse201
+;
+
+export type resumeImportImportLinkedinResponse = (resumeImportImportLinkedinResponseSuccess)
+
+export const getResumeImportImportLinkedinUrl = () => {
+
+
+
+
+  return `/api/resume-import/linkedin`
+}
+
+export const resumeImportImportLinkedin = async ( options?: RequestInit): Promise<resumeImportImportLinkedinResponse> => {
+
+  return customFetch<resumeImportImportLinkedinResponse>(getResumeImportImportLinkedinUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getResumeImportImportLinkedinMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportLinkedin>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportLinkedin>>, TError,void, TContext> => {
+
+const mutationKey = ['resumeImportImportLinkedin'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resumeImportImportLinkedin>>, void> = () => {
+
+
+          return  resumeImportImportLinkedin(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResumeImportImportLinkedinMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportImportLinkedin>>>
+
+    export type ResumeImportImportLinkedinMutationError = unknown
+
+    /**
+ * @summary Import profile data from LinkedIn (scaffold)
+ */
+export const createResumeImportImportLinkedin = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportImportLinkedin>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof resumeImportImportLinkedin>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return createMutation(() => ({ ...getResumeImportImportLinkedinMutationOptions(options?.()) }), queryClient);
+    }
+    /**
  * Creates import job and processes JSON Resume data (jsonresume.org standard)
  * @summary Import resume from JSON Resume format
  */

@@ -1,39 +1,50 @@
 <script lang="ts">
-	import type { Translator } from 'i18n';
-	import SidebarNav from '$lib/components/sidebar-nav.svelte';
+import type { Translator } from 'i18n';
+import SidebarNav from '$lib/components/sidebar-nav.svelte';
 
-	type Step = {
-		id: string;
-		label: string;
-		icon?: string;
-	};
+type Step = {
+  id: string;
+  label: string;
+  icon?: string;
+};
 
-	type Strength = {
-		score: number;
-		message: string;
-		level: string;
-	};
+type Strength = {
+  score: number;
+  message: string;
+  level: string;
+};
 
-	type Props = {
-		steps: Step[];
-		currentStep: string;
-		completedSteps: string[];
-		progress: number;
-		strength?: Strength;
-		missingRequired?: string[];
-		t: Translator;
-		ongoto: (stepId: string) => void;
-	};
+type Props = {
+  steps: Step[];
+  currentStep: string;
+  completedSteps: string[];
+  progress: number;
+  strength?: Strength;
+  missingRequired?: string[];
+  t: Translator;
+  ongoto: (stepId: string) => void;
+};
 
-	let { steps, currentStep, completedSteps, progress, strength, missingRequired = [], t, ongoto }: Props = $props();
+let {
+  steps,
+  currentStep,
+  completedSteps,
+  progress,
+  strength,
+  missingRequired = [],
+  t,
+  ongoto,
+}: Props = $props();
 
-	const navItems = $derived(steps.map(step => ({
-		id: step.id,
-		label: step.label,
-		icon: step.icon,
-		completed: completedSteps.includes(step.id),
-		missing: missingRequired.includes(step.id),
-	})));
+const navItems = $derived(
+  steps.map((step) => ({
+    id: step.id,
+    label: step.label,
+    icon: step.icon,
+    completed: completedSteps.includes(step.id),
+    missing: missingRequired.includes(step.id),
+  })),
+);
 </script>
 
 <SidebarNav

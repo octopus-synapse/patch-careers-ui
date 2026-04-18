@@ -1,40 +1,57 @@
 <script lang="ts">
-	import { Avatar, Button, SegmentToggle } from 'ui';
-	import { colorSchema } from '$lib/color-schema.svelte';
-	import type { ComponentType } from 'svelte';
-	import { MessageCircle, Shield } from 'lucide-svelte';
-	import { chatState } from '$lib/chat-state.svelte';
+import { MessageCircle, Shield } from 'lucide-svelte';
+import type { ComponentType } from 'svelte';
+import { Avatar, Button, SegmentToggle } from 'ui';
+import { chatState } from '$lib/chat-state.svelte';
+import { colorSchema } from '$lib/color-schema.svelte';
 
-	type User = {
-		name?: string | null;
-		email: string;
-	};
+type User = {
+  name?: string | null;
+  email: string;
+};
 
-	type NavLink = {
-		key: string;
-		href: string;
-		icon: ComponentType;
-	};
+type NavLink = {
+  key: string;
+  href: string;
+  icon: ComponentType;
+};
 
-	type Props = {
-		authenticated: boolean;
-		user: User | undefined;
-		navLinks: NavLink[];
-		isAdmin: boolean;
-		t: (key: string) => string;
-		locales: string[];
-		currentLocale: string;
-		onclose: () => void;
-		onthemetoggle: (value: string) => void;
-		onlocalechange: (value: string) => void;
-		onlogout: () => void;
-	};
+type Props = {
+  authenticated: boolean;
+  user: User | undefined;
+  navLinks: NavLink[];
+  isAdmin: boolean;
+  t: (key: string) => string;
+  locales: string[];
+  currentLocale: string;
+  onclose: () => void;
+  onthemetoggle: (value: string) => void;
+  onlocalechange: (value: string) => void;
+  onlogout: () => void;
+};
 
-	let { authenticated, user, navLinks, isAdmin, t, locales, currentLocale, onclose, onthemetoggle, onlocalechange, onlogout }: Props = $props();
+let {
+  authenticated,
+  user,
+  navLinks,
+  isAdmin,
+  t,
+  locales,
+  currentLocale,
+  onclose,
+  onthemetoggle,
+  onlocalechange,
+  onlogout,
+}: Props = $props();
 
-	const cs = $derived(colorSchema.mode);
-	const themeOptions = [{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }];
-	const localeOptions = $derived(locales.map(l => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })));
+const cs = $derived(colorSchema.mode);
+const themeOptions = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+];
+const localeOptions = $derived(
+  locales.map((l) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })),
+);
 </script>
 
 <div class="fixed inset-0 top-[57px] z-40 overflow-y-auto p-5 sm:p-8 md:hidden bg-gray-50 dark:bg-neutral-900">
@@ -55,6 +72,7 @@
 				<button
 					onclick={() => { chatState.toggle(); onclose(); }}
 					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
+					data-testid="chat-toggle"
 				>
 					<MessageCircle size={24} class="text-gray-500 dark:text-neutral-500" />
 					{t('nav.messages')}
@@ -85,16 +103,16 @@
 
 				<div class="flex items-center justify-between">
 					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>
-					<SegmentToggle options={themeOptions} selected={cs} size="md" onchange={onthemetoggle} />
+					<SegmentToggle options={themeOptions} selected={cs} size="sm" onchange={onthemetoggle} />
 				</div>
 
 				<div class="flex items-center justify-between">
 					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Language</span>
-					<SegmentToggle options={localeOptions} selected={currentLocale} size="md" onchange={onlocalechange} />
+					<SegmentToggle options={localeOptions} selected={currentLocale} size="sm" onchange={onlocalechange} />
 				</div>
 
 				<Button
-					variant="danger"
+					variant="ghost" intent="danger"
 					size="lg"
 					fullWidth
 					onclick={onlogout}
@@ -105,7 +123,7 @@
 			{:else}
 				<div class="flex items-center justify-between border-t pt-6 border-gray-200/60 dark:border-neutral-800/60">
 					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>
-					<SegmentToggle options={themeOptions} selected={cs} size="md" onchange={onthemetoggle} />
+					<SegmentToggle options={themeOptions} selected={cs} size="sm" onchange={onthemetoggle} />
 				</div>
 
 				<a

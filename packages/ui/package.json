@@ -9,6 +9,9 @@
       "default": "./src/index.ts"
     }
   },
+  "scripts": {
+    "check": "echo 'ui components are type-checked transitively by the web app'"
+  },
   "peerDependencies": {
     "svelte": ">=5.0.0",
     "typescript": "^5"

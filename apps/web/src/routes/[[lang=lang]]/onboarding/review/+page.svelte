@@ -1,66 +1,64 @@
 <script lang="ts">
-	import { Button, Textarea } from 'ui';
-	import { page } from '$app/stores';
-	import { customFetch } from 'api-client';
-	import { Loader2 } from 'lucide-svelte';
+import { customFetch } from 'api-client';
+import { Loader2 } from 'lucide-svelte';
+import { Button, Textarea } from 'ui';
+import { page } from '$app/stores';
 
-	const token = $derived($page.url.searchParams.get('token'));
+const token = $derived($page.url.searchParams.get('token'));
 
-	let reviewData = $state<Record<string, unknown> | null>(null);
-	let loading = $state(true);
-	let error = $state('');
+let reviewData = $state<Record<string, unknown> | null>(null);
+let loading = $state(true);
+let error = $state('');
 
-	let feedback = $state('');
-	let feedbackStatus = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
+let feedback = $state('');
+let feedbackStatus = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-	$effect(() => {
-		if (!token) {
-			error = 'No review token provided';
-			loading = false;
-			return;
-		}
-		loadReview();
-	});
+$effect(() => {
+  if (!token) {
+    error = 'No review token provided';
+    loading = false;
+    return;
+  }
+  loadReview();
+});
 
-	async function loadReview() {
-		try {
-			reviewData = await customFetch<Record<string, unknown>>(
-				`/api/v1/onboarding/review/${token}`
-			);
-			loading = false;
-		} catch {
-			error = 'This review link is invalid or has expired';
-			loading = false;
-		}
-	}
+async function loadReview() {
+  try {
+    reviewData = await customFetch<Record<string, unknown>>(`/api/v1/onboarding/review/${token}`);
+    loading = false;
+  } catch {
+    error = 'This review link is invalid or has expired';
+    loading = false;
+  }
+}
 
-	async function sendFeedback() {
-		if (!feedback.trim() || !token) return;
-		feedbackStatus = 'sending';
-		try {
-			await customFetch(`/api/v1/onboarding/review/${token}/feedback`, {
-				method: 'POST',
-				body: JSON.stringify({ message: feedback })
-			});
-			feedbackStatus = 'sent';
-			feedback = '';
-		} catch {
-			feedbackStatus = 'error';
-		}
-	}
+async function sendFeedback() {
+  if (!feedback.trim() || !token) return;
+  feedbackStatus = 'sending';
+  try {
+    await customFetch(`/api/v1/onboarding/review/${token}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify({ message: feedback }),
+    });
+    feedbackStatus = 'sent';
+    feedback = '';
+  } catch {
+    feedbackStatus = 'error';
+  }
+}
 
-	const personalInfo = $derived(
-		(reviewData?.personalInfo as Record<string, string> | undefined) ?? {}
-	);
-	const professionalProfile = $derived(
-		(reviewData?.professionalProfile as Record<string, string> | undefined) ?? {}
-	);
-	const sections = $derived(
-		(reviewData?.sections as Array<Record<string, unknown>> | undefined) ?? []
-	);
-	const templateSelection = $derived(
-		(reviewData?.templateSelection as Record<string, string> | undefined) ?? {}
-	);
+const personalInfo = $derived(
+  (reviewData?.personalInfo as Record<string, string> | undefined) ?? {},
+);
+const professionalProfile = $derived(
+  (reviewData?.professionalProfile as Record<string, string> | undefined) ?? {},
+);
+const sections = $derived(
+  (reviewData?.sections as Array<Record<string, unknown>> | undefined) ?? [],
+);
+const templateSelection = $derived(
+  (reviewData?.templateSelection as Record<string, string> | undefined) ?? {},
+);
 </script>
 
 <svelte:head>

@@ -1,49 +1,49 @@
 <script lang="ts">
-	import { createAuthLogin, getAuthSessionQueryKey } from 'api-client';
-	import { AuthLoginBody } from 'api-client/zod';
-	import { isApiError } from 'api-client/client';
-	import { Button, Input, Label } from 'ui';
-	import { goto } from '$app/navigation';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Loader2 } from 'lucide-svelte';
-	import { locale } from '$lib/locale.svelte';
-	import { createForm } from '$lib/forms/create-form.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import { createAuthLogin, getAuthSessionQueryKey } from 'api-client';
+import { isApiError } from 'api-client/client';
+import { AuthLoginBody } from 'api-client/zod';
+import { Loader2 } from 'lucide-svelte';
+import { Button, Input, Label } from 'ui';
+import { goto } from '$app/navigation';
+import { createForm } from '$lib/forms/create-form.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
-	let serverError = $state('');
+let serverError = $state('');
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const login = createAuthLogin(() => ({
-		mutation: {
-			async onSuccess() {
-				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				goto('/dashboard');
-			},
-			onError(err: unknown) {
-				if (!t) return;
-				if (isApiError(err) && err.statusCode === 401) {
-					serverError = t('auth.shared.errorInvalidCredentials');
-				} else {
-					serverError = t('auth.shared.errorGeneric');
-				}
-			}
-		}
-	}));
+const login = createAuthLogin(() => ({
+  mutation: {
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+      goto('/dashboard');
+    },
+    onError(err: unknown) {
+      if (!t) return;
+      if (isApiError(err) && err.statusCode === 401) {
+        serverError = t('auth.shared.errorInvalidCredentials');
+      } else {
+        serverError = t('auth.shared.errorGeneric');
+      }
+    },
+  },
+}));
 
-	const form = createForm({
-		schema: AuthLoginBody,
-		initial: { email: '', password: '' },
-		mutation: login
-	});
+const form = createForm({
+  schema: AuthLoginBody,
+  initial: { email: '', password: '' },
+  mutation: login,
+});
 
-	function handleSubmit(e: Event) {
-		e.preventDefault();
-		if (!t) return;
-		serverError = '';
-		form.submit();
-	}
+function handleSubmit(e: Event) {
+  e.preventDefault();
+  if (!t) return;
+  serverError = '';
+  form.submit();
+}
 </script>
 
 <svelte:head>
@@ -99,7 +99,7 @@
 					</div>
 
 					{#if serverError}
-						<p class="text-xs font-medium text-red-500/80">{serverError}</p>
+						<p class="text-xs font-medium text-red-500/80" role="alert">{serverError}</p>
 					{/if}
 
 					<Button
@@ -113,7 +113,43 @@
 							{t('auth.sign-in.submit')}
 						{/if}
 					</Button>
+
+					<div class="text-center">
+						<a
+							href="/forgot-password"
+							class="text-xs text-gray-500 hover:underline dark:text-neutral-500"
+						>
+							{t('auth.sign-in.forgotPassword') ?? 'Esqueci minha senha'}
+						</a>
+					</div>
 				</form>
+
+				<div class="mt-6">
+					<div class="relative">
+						<div class="absolute inset-0 flex items-center" aria-hidden="true">
+							<div class="w-full border-t border-gray-200 dark:border-neutral-800"></div>
+						</div>
+						<div class="relative flex justify-center text-xs">
+							<span class="bg-white px-2 text-gray-400 dark:bg-neutral-900 dark:text-neutral-500">
+								ou
+							</span>
+						</div>
+					</div>
+					<div class="mt-4 grid grid-cols-2 gap-2">
+						<a
+							href="/api/v1/auth/oauth/github/start"
+							class="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+						>
+							GitHub
+						</a>
+						<a
+							href="/api/v1/auth/oauth/linkedin/start"
+							class="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+						>
+							LinkedIn
+						</a>
+					</div>
+				</div>
 
 				<footer class="mt-12 text-center">
 					<p class="text-xs text-gray-500 dark:text-neutral-500">

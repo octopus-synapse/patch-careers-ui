@@ -2,13 +2,8 @@ import * as path from 'node:path';
 import { defineConfig } from 'orval';
 
 const BACKEND_URL = process.env.BACKEND_URL;
-const localSwaggerPath = path.resolve(
-  __dirname,
-  '../../../profile-services/client-swagger.json',
-);
-const inputSource = BACKEND_URL
-  ? `${BACKEND_URL}/api/client-swagger-json`
-  : localSwaggerPath;
+const localSwaggerPath = path.resolve(__dirname, '../../../profile-services/client-swagger.json');
+const inputSource = BACKEND_URL ? `${BACKEND_URL}/api/client-swagger-json` : localSwaggerPath;
 
 export default defineConfig({
   api: {

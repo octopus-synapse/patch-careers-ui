@@ -1,38 +1,38 @@
 <script lang="ts">
-	import { createAuthSession } from 'api-client';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { browser } from '$app/environment';
-	import { Loader2 } from 'lucide-svelte';
-	import { locale } from '$lib/locale.svelte';
-	import AdminSidebar from '$lib/components/admin/admin-sidebar.svelte';
-	import type { Snippet } from 'svelte';
+import { createAuthSession } from 'api-client';
+import { Loader2 } from 'lucide-svelte';
+import type { Snippet } from 'svelte';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
+import AdminSidebar from '$lib/components/admin/admin-sidebar.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	let { children }: { children: Snippet } = $props();
+let { children }: { children: Snippet } = $props();
 
-	const session = createAuthSession(() => ({
-		query: { retry: false, enabled: browser }
-	}));
+const session = createAuthSession(() => ({
+  query: { retry: false, enabled: browser },
+}));
 
-	const user = $derived(session.data?.user);
-	const authenticated = $derived(session.data?.authenticated);
-	const isAdmin = $derived(user?.isAdmin);
+const user = $derived(session.data?.user);
+const authenticated = $derived(session.data?.authenticated);
+const isAdmin = $derived(user?.isAdmin);
 
-	const t = $derived(locale.t);
-	const currentPath = $derived($page.url.pathname);
+const t = $derived(locale.t);
+const currentPath = $derived($page.url.pathname);
 
-	$effect(() => {
-		if (!browser || session.isLoading) return;
+$effect(() => {
+  if (!browser || session.isLoading) return;
 
-		if (!authenticated) {
-			goto('/login');
-			return;
-		}
+  if (!authenticated) {
+    goto('/login');
+    return;
+  }
 
-		if (authenticated && !isAdmin) {
-			goto('/dashboard');
-		}
-	});
+  if (authenticated && !isAdmin) {
+    goto('/dashboard');
+  }
+});
 </script>
 
 {#if session.isLoading}

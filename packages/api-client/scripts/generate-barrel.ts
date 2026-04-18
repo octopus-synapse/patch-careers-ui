@@ -1,5 +1,5 @@
-import * as path from 'node:path';
 import { readdir } from 'node:fs/promises';
+import * as path from 'node:path';
 
 const API_DIR = path.resolve(import.meta.dir, '../src/generated/api');
 const ZOD_DIR = path.resolve(import.meta.dir, '../src/generated/zod');

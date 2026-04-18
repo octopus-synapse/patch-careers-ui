@@ -38,7 +38,7 @@ async function walk(dir: string): Promise<string[]> {
   const files: string[] = [];
   for (const entry of entries) {
     const full = join(dir, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(full));
+    if (entry.isDirectory()) files.push(...(await walk(full)));
     else if (entry.name.endsWith('.ts')) files.push(full);
   }
   return files;

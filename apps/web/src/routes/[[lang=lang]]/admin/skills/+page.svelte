@@ -1,166 +1,229 @@
 <script lang="ts">
-	import {
-		createAdminTechAreasFindAll,
-		createAdminTechNichesFindAll,
-		createAdminTechSkillsFindAll,
-		createAdminSpokenLanguagesFindAll,
-		createAdminProgrammingLanguagesFindAll,
-		adminTechAreasCreate,
-		adminTechAreasUpdate,
-		adminTechAreasRemove,
-		adminTechNichesCreate,
-		adminTechNichesUpdate,
-		adminTechNichesRemove,
-		adminTechSkillsCreate,
-		adminTechSkillsUpdate,
-		adminTechSkillsRemove,
-		adminSpokenLanguagesCreate,
-		adminSpokenLanguagesUpdate,
-		adminSpokenLanguagesRemove,
-		adminProgrammingLanguagesCreate,
-		adminProgrammingLanguagesUpdate,
-		adminProgrammingLanguagesRemove,
-		getAdminTechAreasFindAllQueryKey,
-		getAdminTechNichesFindAllQueryKey,
-		getAdminTechSkillsFindAllQueryKey,
-		getAdminSpokenLanguagesFindAllQueryKey,
-		getAdminProgrammingLanguagesFindAllQueryKey,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Button, SegmentToggle, Input, Label, ConfirmModal, FormModal } from 'ui';
-	import { Loader2, Trash2, Pencil, Plus, ToggleLeft, ToggleRight } from 'lucide-svelte';
-	import ExportButton from '$lib/components/admin/export-button.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  adminProgrammingLanguagesCreate,
+  adminProgrammingLanguagesRemove,
+  adminProgrammingLanguagesUpdate,
+  adminSpokenLanguagesCreate,
+  adminSpokenLanguagesRemove,
+  adminSpokenLanguagesUpdate,
+  adminTechAreasCreate,
+  adminTechAreasRemove,
+  adminTechAreasUpdate,
+  adminTechNichesCreate,
+  adminTechNichesRemove,
+  adminTechNichesUpdate,
+  adminTechSkillsCreate,
+  adminTechSkillsRemove,
+  adminTechSkillsUpdate,
+  createAdminProgrammingLanguagesFindAll,
+  createAdminSpokenLanguagesFindAll,
+  createAdminTechAreasFindAll,
+  createAdminTechNichesFindAll,
+  createAdminTechSkillsFindAll,
+  getAdminProgrammingLanguagesFindAllQueryKey,
+  getAdminSpokenLanguagesFindAllQueryKey,
+  getAdminTechAreasFindAllQueryKey,
+  getAdminTechNichesFindAllQueryKey,
+  getAdminTechSkillsFindAllQueryKey,
+} from 'api-client';
+import { Loader2, Pencil, Plus, ToggleLeft, ToggleRight, Trash2 } from 'lucide-svelte';
+import { Button, ConfirmModal, FormModal, Input, Label, SegmentToggle } from 'ui';
+import { browser } from '$app/environment';
+import ExportButton from '$lib/components/admin/export-button.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	let activeTab = $state<'hierarchy' | 'languages'>('hierarchy');
-	let selectedAreaId = $state<string | null>(null);
-	let selectedNicheId = $state<string | null>(null);
+let activeTab = $state<'hierarchy' | 'languages'>('hierarchy');
+let selectedAreaId = $state<string | null>(null);
+let selectedNicheId = $state<string | null>(null);
 
-	const tabOptions = $derived([
-		{ value: 'hierarchy', label: t('admin.skills.hierarchy') },
-		{ value: 'languages', label: t('admin.skills.languages') },
-	]);
+const tabOptions = $derived([
+  { value: 'hierarchy', label: t('admin.skills.hierarchy') },
+  { value: 'languages', label: t('admin.skills.languages') },
+]);
 
-	// --- Queries ---
-	const areasQuery = createAdminTechAreasFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'hierarchy' } }));
-	const nichesQuery = createAdminTechNichesFindAll(() => ({ pageSize: 100, areaId: selectedAreaId ?? undefined }), () => ({ query: { enabled: browser && activeTab === 'hierarchy' && !!selectedAreaId } }));
-	const skillsQuery = createAdminTechSkillsFindAll(() => ({ pageSize: 100, nicheId: selectedNicheId ?? undefined }), () => ({ query: { enabled: browser && activeTab === 'hierarchy' && !!selectedNicheId } }));
-	const spokenQuery = createAdminSpokenLanguagesFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'languages' } }));
-	const progQuery = createAdminProgrammingLanguagesFindAll(() => ({ pageSize: 100 }), () => ({ query: { enabled: browser && activeTab === 'languages' } }));
+// --- Queries ---
+const areasQuery = createAdminTechAreasFindAll(
+  () => ({ pageSize: 100 }),
+  () => ({ query: { enabled: browser && activeTab === 'hierarchy' } }),
+);
+const nichesQuery = createAdminTechNichesFindAll(
+  () => ({ pageSize: 100, areaId: selectedAreaId ?? undefined }),
+  () => ({ query: { enabled: browser && activeTab === 'hierarchy' && !!selectedAreaId } }),
+);
+const skillsQuery = createAdminTechSkillsFindAll(
+  () => ({ pageSize: 100, nicheId: selectedNicheId ?? undefined }),
+  () => ({ query: { enabled: browser && activeTab === 'hierarchy' && !!selectedNicheId } }),
+);
+const spokenQuery = createAdminSpokenLanguagesFindAll(
+  () => ({ pageSize: 100 }),
+  () => ({ query: { enabled: browser && activeTab === 'languages' } }),
+);
+const progQuery = createAdminProgrammingLanguagesFindAll(
+  () => ({ pageSize: 100 }),
+  () => ({ query: { enabled: browser && activeTab === 'languages' } }),
+);
 
-	const areas = $derived(areasQuery.data?.items);
-	const niches = $derived(nichesQuery.data?.items);
-	const skills = $derived(skillsQuery.data?.items);
-	const spokenLangs = $derived(spokenQuery.data?.items);
-	const progLangs = $derived(progQuery.data?.items);
+const areas = $derived(areasQuery.data?.items);
+const niches = $derived(nichesQuery.data?.items);
+const skills = $derived(skillsQuery.data?.items);
+const spokenLangs = $derived(spokenQuery.data?.items);
+const progLangs = $derived(progQuery.data?.items);
 
-	// --- Delete ---
-	let deleteTarget = $state<{ type: string; id: string } | null>(null);
-	let deleteLoading = $state(false);
+// --- Delete ---
+let deleteTarget = $state<{ type: string; id: string } | null>(null);
+let deleteLoading = $state(false);
 
-	// --- Form modal ---
-	type FormType = 'area' | 'niche' | 'skill' | 'spoken' | 'programming';
-	let formModal = $state<{ type: FormType; mode: 'create' | 'edit'; id?: string } | null>(null);
-	let formLoading = $state(false);
-	let formNameEn = $state('');
-	let formNamePtBr = $state('');
-	let formSlug = $state('');
-	let formCode = $state('');
-	let formIcon = $state('');
-	let formColor = $state('');
-	let formOrder = $state('0');
-	let formNameEs = $state('');
-	let formNativeName = $state('');
+// --- Form modal ---
+type FormType = 'area' | 'niche' | 'skill' | 'spoken' | 'programming';
+let formModal = $state<{ type: FormType; mode: 'create' | 'edit'; id?: string } | null>(null);
+let formLoading = $state(false);
+let formNameEn = $state('');
+let formNamePtBr = $state('');
+let formSlug = $state('');
+let formCode = $state('');
+let formIcon = $state('');
+let formColor = $state('');
+let formOrder = $state('0');
+let formNameEs = $state('');
+let formNativeName = $state('');
 
-	function jsonBody(data: Record<string, unknown>): RequestInit {
-		return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
-	}
+function jsonBody(data: Record<string, unknown>): RequestInit {
+  return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
+}
 
-	function openCreate(type: FormType) {
-		formModal = { type, mode: 'create' };
-		formNameEn = ''; formNamePtBr = ''; formSlug = ''; formCode = '';
-		formIcon = ''; formColor = ''; formOrder = '0'; formNameEs = ''; formNativeName = '';
-	}
+function openCreate(type: FormType) {
+  formModal = { type, mode: 'create' };
+  formNameEn = '';
+  formNamePtBr = '';
+  formSlug = '';
+  formCode = '';
+  formIcon = '';
+  formColor = '';
+  formOrder = '0';
+  formNameEs = '';
+  formNativeName = '';
+}
 
-	function openEdit(type: FormType, item: Record<string, unknown>) {
-		const id = String(type === 'spoken' ? item.code : type === 'programming' ? item.slug : item.id);
-		formModal = { type, mode: 'edit', id };
-		formNameEn = String(item.nameEn ?? '');
-		formNamePtBr = String(item.namePtBr ?? '');
-		formSlug = String(item.slug ?? '');
-		formCode = String(item.code ?? '');
-		formIcon = String(item.icon ?? '');
-		formColor = String(item.color ?? '');
-		formOrder = String(item.order ?? 0);
-		formNameEs = String(item.nameEs ?? '');
-		formNativeName = String(item.nativeName ?? '');
-	}
+function openEdit(type: FormType, item: Record<string, unknown>) {
+  const id = String(type === 'spoken' ? item.code : type === 'programming' ? item.slug : item.id);
+  formModal = { type, mode: 'edit', id };
+  formNameEn = String(item.nameEn ?? '');
+  formNamePtBr = String(item.namePtBr ?? '');
+  formSlug = String(item.slug ?? '');
+  formCode = String(item.code ?? '');
+  formIcon = String(item.icon ?? '');
+  formColor = String(item.color ?? '');
+  formOrder = String(item.order ?? 0);
+  formNameEs = String(item.nameEs ?? '');
+  formNativeName = String(item.nativeName ?? '');
+}
 
-	async function handleFormSubmit() {
-		if (!formModal) return;
-		formLoading = true;
-		try {
-			if (formModal.type === 'area') {
-				const data = { nameEn: formNameEn, namePtBr: formNamePtBr, icon: formIcon || undefined, color: formColor || undefined, order: Number(formOrder) };
-				if (formModal.mode === 'create') await adminTechAreasCreate(jsonBody(data));
-				else await adminTechAreasUpdate(formModal.id!, jsonBody(data));
-				queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() });
-			} else if (formModal.type === 'niche') {
-				const data = { nameEn: formNameEn, namePtBr: formNamePtBr, areaId: selectedAreaId, order: Number(formOrder) };
-				if (formModal.mode === 'create') await adminTechNichesCreate(jsonBody(data));
-				else await adminTechNichesUpdate(formModal.id!, jsonBody(data));
-				queryClient.invalidateQueries({ queryKey: getAdminTechNichesFindAllQueryKey() });
-			} else if (formModal.type === 'skill') {
-				const data = { nameEn: formNameEn, namePtBr: formNamePtBr, slug: formSlug, nicheId: selectedNicheId, order: Number(formOrder) };
-				if (formModal.mode === 'create') await adminTechSkillsCreate(jsonBody(data));
-				else await adminTechSkillsUpdate(formModal.id!, jsonBody(data));
-				queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() });
-			} else if (formModal.type === 'spoken') {
-				const data = { code: formCode, nameEn: formNameEn, namePtBr: formNamePtBr, nameEs: formNameEs, nativeName: formNativeName };
-				if (formModal.mode === 'create') await adminSpokenLanguagesCreate(jsonBody(data));
-				else await adminSpokenLanguagesUpdate(formModal.id!, jsonBody(data));
-				queryClient.invalidateQueries({ queryKey: getAdminSpokenLanguagesFindAllQueryKey() });
-			} else if (formModal.type === 'programming') {
-				const data = { slug: formSlug, nameEn: formNameEn, namePtBr: formNamePtBr };
-				if (formModal.mode === 'create') await adminProgrammingLanguagesCreate(jsonBody(data));
-				else await adminProgrammingLanguagesUpdate(formModal.id!, jsonBody(data));
-				queryClient.invalidateQueries({ queryKey: getAdminProgrammingLanguagesFindAllQueryKey() });
-			}
-			formModal = null;
-		} finally {
-			formLoading = false;
-		}
-	}
+async function handleFormSubmit() {
+  if (!formModal) return;
+  formLoading = true;
+  try {
+    if (formModal.type === 'area') {
+      const data = {
+        nameEn: formNameEn,
+        namePtBr: formNamePtBr,
+        icon: formIcon || undefined,
+        color: formColor || undefined,
+        order: Number(formOrder),
+      };
+      if (formModal.mode === 'create') await adminTechAreasCreate(jsonBody(data));
+      else await adminTechAreasUpdate(formModal.id!, jsonBody(data));
+      queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() });
+    } else if (formModal.type === 'niche') {
+      const data = {
+        nameEn: formNameEn,
+        namePtBr: formNamePtBr,
+        areaId: selectedAreaId,
+        order: Number(formOrder),
+      };
+      if (formModal.mode === 'create') await adminTechNichesCreate(jsonBody(data));
+      else await adminTechNichesUpdate(formModal.id!, jsonBody(data));
+      queryClient.invalidateQueries({ queryKey: getAdminTechNichesFindAllQueryKey() });
+    } else if (formModal.type === 'skill') {
+      const data = {
+        nameEn: formNameEn,
+        namePtBr: formNamePtBr,
+        slug: formSlug,
+        nicheId: selectedNicheId,
+        order: Number(formOrder),
+      };
+      if (formModal.mode === 'create') await adminTechSkillsCreate(jsonBody(data));
+      else await adminTechSkillsUpdate(formModal.id!, jsonBody(data));
+      queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() });
+    } else if (formModal.type === 'spoken') {
+      const data = {
+        code: formCode,
+        nameEn: formNameEn,
+        namePtBr: formNamePtBr,
+        nameEs: formNameEs,
+        nativeName: formNativeName,
+      };
+      if (formModal.mode === 'create') await adminSpokenLanguagesCreate(jsonBody(data));
+      else await adminSpokenLanguagesUpdate(formModal.id!, jsonBody(data));
+      queryClient.invalidateQueries({ queryKey: getAdminSpokenLanguagesFindAllQueryKey() });
+    } else if (formModal.type === 'programming') {
+      const data = { slug: formSlug, nameEn: formNameEn, namePtBr: formNamePtBr };
+      if (formModal.mode === 'create') await adminProgrammingLanguagesCreate(jsonBody(data));
+      else await adminProgrammingLanguagesUpdate(formModal.id!, jsonBody(data));
+      queryClient.invalidateQueries({ queryKey: getAdminProgrammingLanguagesFindAllQueryKey() });
+    }
+    formModal = null;
+  } finally {
+    formLoading = false;
+  }
+}
 
-	async function handleToggleActive(type: FormType, item: Record<string, unknown>) {
-		const newActive = !item.isActive;
-		const id = String(item.id);
-		if (type === 'area') {
-			await adminTechAreasUpdate(id, jsonBody({ isActive: newActive }));
-			queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() });
-		} else if (type === 'skill') {
-			await adminTechSkillsUpdate(id, jsonBody({ isActive: newActive }));
-			queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() });
-		}
-	}
+async function handleToggleActive(type: FormType, item: Record<string, unknown>) {
+  const newActive = !item.isActive;
+  const id = String(item.id);
+  if (type === 'area') {
+    await adminTechAreasUpdate(id, jsonBody({ isActive: newActive }));
+    queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() });
+  } else if (type === 'skill') {
+    await adminTechSkillsUpdate(id, jsonBody({ isActive: newActive }));
+    queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() });
+  }
+}
 
-	async function handleDelete() {
-		if (!deleteTarget) return;
-		deleteLoading = true;
-		try {
-			if (deleteTarget.type === 'area') { await adminTechAreasRemove(deleteTarget.id); queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() }); selectedAreaId = null; }
-			else if (deleteTarget.type === 'niche') { await adminTechNichesRemove(deleteTarget.id); queryClient.invalidateQueries({ queryKey: getAdminTechNichesFindAllQueryKey() }); selectedNicheId = null; }
-			else if (deleteTarget.type === 'skill') { await adminTechSkillsRemove(deleteTarget.id); queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() }); }
-			else if (deleteTarget.type === 'spoken') { await adminSpokenLanguagesRemove(deleteTarget.id); queryClient.invalidateQueries({ queryKey: getAdminSpokenLanguagesFindAllQueryKey() }); }
-			else if (deleteTarget.type === 'programming') { await adminProgrammingLanguagesRemove(deleteTarget.id); queryClient.invalidateQueries({ queryKey: getAdminProgrammingLanguagesFindAllQueryKey() }); }
-		} finally { deleteLoading = false; deleteTarget = null; }
-	}
+async function handleDelete() {
+  if (!deleteTarget) return;
+  deleteLoading = true;
+  try {
+    if (deleteTarget.type === 'area') {
+      await adminTechAreasRemove(deleteTarget.id);
+      queryClient.invalidateQueries({ queryKey: getAdminTechAreasFindAllQueryKey() });
+      selectedAreaId = null;
+    } else if (deleteTarget.type === 'niche') {
+      await adminTechNichesRemove(deleteTarget.id);
+      queryClient.invalidateQueries({ queryKey: getAdminTechNichesFindAllQueryKey() });
+      selectedNicheId = null;
+    } else if (deleteTarget.type === 'skill') {
+      await adminTechSkillsRemove(deleteTarget.id);
+      queryClient.invalidateQueries({ queryKey: getAdminTechSkillsFindAllQueryKey() });
+    } else if (deleteTarget.type === 'spoken') {
+      await adminSpokenLanguagesRemove(deleteTarget.id);
+      queryClient.invalidateQueries({ queryKey: getAdminSpokenLanguagesFindAllQueryKey() });
+    } else if (deleteTarget.type === 'programming') {
+      await adminProgrammingLanguagesRemove(deleteTarget.id);
+      queryClient.invalidateQueries({ queryKey: getAdminProgrammingLanguagesFindAllQueryKey() });
+    }
+  } finally {
+    deleteLoading = false;
+    deleteTarget = null;
+  }
+}
 
-	const formTitle = $derived(formModal ? `${formModal.mode === 'create' ? 'Add' : 'Edit'} ${formModal.type}` : '');
+const formTitle = $derived(
+  formModal ? `${formModal.mode === 'create' ? 'Add' : 'Edit'} ${formModal.type}` : '',
+);
 </script>
 
 <svelte:head>
@@ -205,7 +268,7 @@
 										{#if area.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class="text-gray-500 dark:text-neutral-500" />{/if}
 									</Button>
 									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('area', area); }}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id }; }}><Trash2 size={12} /></Button>
+									<Button variant="ghost" intent="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'area', id: area.id }; }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -237,7 +300,7 @@
 								<div><span>{niche.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{niche.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
 									<Button variant="icon" size="xs" onclick={(e) => { e.stopPropagation(); openEdit('niche', niche); }}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id }; }}><Trash2 size={12} /></Button>
+									<Button variant="ghost" intent="danger" size="xs" onclick={(e) => { e.stopPropagation(); deleteTarget = { type: 'niche', id: niche.id }; }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -266,7 +329,7 @@
 										{#if skill.isActive}<ToggleRight size={14} class="text-emerald-500" />{:else}<ToggleLeft size={14} class="text-gray-500 dark:text-neutral-500" />{/if}
 									</Button>
 									<Button variant="icon" size="xs" onclick={() => openEdit('skill', skill)}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id }}><Trash2 size={12} /></Button>
+									<Button variant="ghost" intent="danger" size="xs" onclick={() => deleteTarget = { type: 'skill', id: skill.id }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -292,7 +355,7 @@
 								<div><span class="font-mono text-xs text-gray-500 dark:text-neutral-500">{lang.code}</span><span class="ml-2">{lang.nameEn}</span><span class="ml-1 text-xs text-gray-500 dark:text-neutral-500">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
 									<Button variant="icon" size="xs" onclick={() => openEdit('spoken', lang)}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code }}><Trash2 size={12} /></Button>
+									<Button variant="ghost" intent="danger" size="xs" onclick={() => deleteTarget = { type: 'spoken', id: lang.code }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
@@ -315,7 +378,7 @@
 								<div><span>{lang.nameEn}</span><span class="ml-2 text-xs text-gray-500 dark:text-neutral-500">{lang.namePtBr}</span></div>
 								<div class="flex items-center gap-1">
 									<Button variant="icon" size="xs" onclick={() => openEdit('programming', lang)}><Pencil size={12} /></Button>
-									<Button variant="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug }}><Trash2 size={12} /></Button>
+									<Button variant="ghost" intent="danger" size="xs" onclick={() => deleteTarget = { type: 'programming', id: lang.slug }}><Trash2 size={12} /></Button>
 								</div>
 							</div>
 						{/each}
