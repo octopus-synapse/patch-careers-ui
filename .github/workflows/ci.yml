@@ -19,6 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Required: GH Actions does NOT auto-authenticate docker pulls of the
+      # Docker-backed verify-attestation action from GHCR when the image is
+      # scoped 'internal' (only 'public' is no-auth). Explicit login uses
+      # the workflow's GITHUB_TOKEN which has packages:read across the org.
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
       - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@v1
 
   build:
