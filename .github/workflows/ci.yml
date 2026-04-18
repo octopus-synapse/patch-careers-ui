@@ -20,6 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@v1
+        with:
+          packages-token: ${{ secrets.OCTOPUS_PACKAGES_TOKEN }}
 
   build:
     needs: verify-attestation
