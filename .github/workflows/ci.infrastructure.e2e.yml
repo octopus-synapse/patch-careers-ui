@@ -9,7 +9,7 @@ jobs:
     uses: octopus-synapse/octopus-workflows/.github/workflows/_e2e-with-backend.yml@v1
     with:
       backend-repo: octopus-synapse/profile-services
-      backend-ref: homolog
+      backend-ref: ci/enzoferracini-seed-on-main
       api-env-var: VITE_API_URL
     secrets:
       cross-repo-token: ${{ secrets.GH_CROSS_REPO_TOKEN }}
