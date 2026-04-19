@@ -468,7 +468,10 @@
       "COMMENT_REPLIED": "Quando algu\u00e9m responde seu coment\u00e1rio",
       "CONNECTION_REQUEST": "Quando algu\u00e9m te envia pedido de conex\u00e3o",
       "CONNECTION_ACCEPTED": "Quando algu\u00e9m aceita sua conex\u00e3o",
-      "FOLLOW_NEW": "Quando algu\u00e9m te segue"
+      "FOLLOW_NEW": "Quando algu\u00e9m te segue",
+      "SKILL_DECAY": "Quando uma skill sua fica parada por muito tempo",
+      "APPLICATION_STALE": "Quando uma aplica\u00e7\u00e3o de vaga fica sem resposta",
+      "CONNECTION_RECOMMENDATION": "Quando temos sugest\u00f5es de conex\u00e3o para voc\u00ea"
     },
     "preferenceUpdated": "Prefer\u00eancia atualizada",
     "preferenceError": "N\u00e3o foi poss\u00edvel atualizar prefer\u00eancia",
@@ -485,7 +488,10 @@
     "repostedPost": "repostou seu post",
     "repliedComment": "respondeu seu coment\u00e1rio",
     "startedFollowing": "come\u00e7ou a seguir voc\u00ea",
-    "connectionAccepted": "aceitou sua conex\u00e3o"
+    "connectionAccepted": "aceitou sua conex\u00e3o",
+    "SKILL_DECAY": "Uma das suas skills est\u00e1 fria — atualize para n\u00e3o perder relev\u00e2ncia.",
+    "APPLICATION_STALE": "Aplica\u00e7\u00e3o sem resposta — vale enviar um follow-up.",
+    "CONNECTION_RECOMMENDATION": "Encontramos pessoas com skills parecidas com as suas."
   },
   "feed": {
     "pageTitle": "Feed",

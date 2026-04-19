@@ -7,8 +7,8 @@ import {
   jobsCreate,
 } from 'api-client';
 import { formatDate } from 'i18n';
-import { ArrowRight, Bookmark, Globe2, Plus, Sparkles } from 'lucide-svelte';
-import { Button, FormModal, Input, Label, MatchBadge, Tabs, Textarea } from 'ui';
+import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'lucide-svelte';
+import { Button, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import DataTable from '$lib/components/admin/data-table.svelte';
@@ -97,7 +97,37 @@ const jobsData = $derived(jobsQuery.data as unknown as JobsResponse | undefined)
 const recommendedData = $derived(
   recommendedQuery.data as unknown as RecommendedResponse | undefined,
 );
-const allList = $derived(jobsData?.items);
+
+// Side-channel: pull structured fit scores for the current page of jobs from
+// the new /jobs/with-fit-score endpoint. Merge into the existing list under
+// the matchScore key so the badge keeps working without a column change.
+let fitScoreById = $state<Record<string, number>>({});
+$effect(() => {
+  if (!browser || activeTab !== 'all') return;
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: '20',
+    ...(search ? { search } : {}),
+    ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
+  });
+  fetch(`/api/v1/jobs/with-fit-score?${params}`, { credentials: 'include' })
+    .then((r) => r.json())
+    .then((body: { items?: Array<{ id: string; fitScore?: { score: number } }> }) => {
+      const map: Record<string, number> = {};
+      for (const item of body.items ?? []) {
+        if (item.fitScore) map[item.id] = item.fitScore.score;
+      }
+      fitScoreById = map;
+    })
+    .catch(() => {});
+});
+
+const allList = $derived(
+  (jobsData?.items ?? []).map((j) => ({
+    ...j,
+    matchScore: fitScoreById[j.id] ?? j.matchScore,
+  })),
+);
 const recommendedList = $derived(recommendedData?.data);
 const jobsList = $derived(activeTab === 'recommended' ? recommendedList : allList);
 const filteredJobs = $derived.by(() => {
@@ -213,6 +243,43 @@ const filters = $derived([
     value: jobTypeFilter,
   },
 ]);
+
+// Rage apply — bulk-submit AI-tailored applications to every match >= minFit.
+// Numbers stored as strings to keep <Input type="number"> happy; coerced when
+// we send the request.
+let rageOpen = $state(false);
+let rageRunning = $state(false);
+let rageMinFit = $state('80');
+let rageMax = $state('20');
+
+async function runRageApply() {
+  rageRunning = true;
+  try {
+    const res = await fetch('/api/v1/automation/rage-apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        minFit: Number.parseInt(rageMinFit, 10) || 80,
+        maxApplications: Number.parseInt(rageMax, 10) || 20,
+      }),
+    });
+    if (!res.ok) throw new Error();
+    const body = (await res.json()) as {
+      data?: { submitted?: number; attempted?: number; skippedExisting?: number };
+    };
+    const d = body.data ?? {};
+    toastState.show(
+      `Rage apply: ${d.submitted ?? 0} aplicações enviadas (${d.attempted ?? 0} tentadas, ${d.skippedExisting ?? 0} já enviadas).`,
+      'success',
+    );
+    rageOpen = false;
+  } catch {
+    toastState.show('Falha ao rodar rage apply.', 'danger');
+  } finally {
+    rageRunning = false;
+  }
+}
 </script>
 
 <svelte:head>
@@ -230,6 +297,15 @@ const filters = $derived([
 					<Button variant="ghost" size="sm" onclick={() => goto('/jobs/saved')}>
 						<Bookmark size={14} />
 						{t('jobs.savedNav')}
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={() => (rageOpen = true)}
+						aria-label="Rage apply"
+					>
+						<Zap size={14} />
+						Rage apply
 					</Button>
 					<Button variant="solid" size="sm" onclick={() => createModal = true}>
 						<Plus size={14} />
@@ -406,3 +482,36 @@ const filters = $derived([
 		</div>
 	</div>
 </FormModal>
+
+{#if rageOpen}
+	<Modal open={rageOpen} onClose={() => (rageOpen = false)}>
+		{#snippet title()}Rage apply{/snippet}
+		<p class="mb-4 text-sm text-gray-500 dark:text-neutral-500">
+			Vamos aplicar (com CV adaptado por IA) a TODAS as vagas com fit &ge; {rageMinFit}, até {rageMax}
+			aplicações. Sem volta.
+		</p>
+		<div class="space-y-3">
+			<div>
+				<Label for="min-fit">Fit mínimo</Label>
+				<Input id="min-fit" type="number" bind:value={rageMinFit} />
+			</div>
+			<div>
+				<Label for="max-apps">Máximo de aplicações</Label>
+				<Input id="max-apps" type="number" bind:value={rageMax} />
+			</div>
+			{#if rageRunning}
+				<p class="flex items-center gap-2 text-xs text-gray-500">
+					<Loader2 size={12} class="animate-spin" /> Adaptando CV e enviando...
+				</p>
+			{/if}
+		</div>
+		<div class="mt-5 flex justify-end gap-2">
+			<Button variant="outline" size="sm" onclick={() => (rageOpen = false)} disabled={rageRunning}>
+				Cancelar
+			</Button>
+			<Button variant="solid" size="sm" onclick={runRageApply} disabled={rageRunning}>
+				{rageRunning ? 'Aplicando...' : 'Rodar agora'}
+			</Button>
+		</div>
+	</Modal>
+{/if}

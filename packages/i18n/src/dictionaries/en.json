@@ -468,7 +468,10 @@
       "COMMENT_REPLIED": "When someone replies to your comment",
       "CONNECTION_REQUEST": "When someone sends you a connection request",
       "CONNECTION_ACCEPTED": "When someone accepts your connection",
-      "FOLLOW_NEW": "When someone follows you"
+      "FOLLOW_NEW": "When someone follows you",
+      "SKILL_DECAY": "When one of your skills has gone stale",
+      "APPLICATION_STALE": "When a job application has had no response",
+      "CONNECTION_RECOMMENDATION": "When we have new connection suggestions for you"
     },
     "preferenceUpdated": "Preference updated",
     "preferenceError": "Could not update preference",
@@ -485,7 +488,10 @@
     "repostedPost": "reposted your post",
     "repliedComment": "replied to your comment",
     "startedFollowing": "started following you",
-    "connectionAccepted": "accepted your connection"
+    "connectionAccepted": "accepted your connection",
+    "SKILL_DECAY": "One of your skills has gone stale — refresh it to stay relevant.",
+    "APPLICATION_STALE": "An application got no reply — consider sending a follow-up.",
+    "CONNECTION_RECOMMENDATION": "We found people with overlapping skills."
   },
   "feed": {
     "pageTitle": "Feed",

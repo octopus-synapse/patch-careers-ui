@@ -24,6 +24,29 @@ onMount(async () => {
       error = 'Falha ao finalizar login. Tente novamente.';
       return;
     }
+
+    // Probe for a shadow profile we may have pre-built for this person.
+    // Doesn't block login on failure — it's an enhancement, not a guard.
+    const githubLogin = $page.url.searchParams.get('githubLogin');
+    const email = $page.url.searchParams.get('email');
+    try {
+      const params = new URLSearchParams();
+      if (githubLogin) params.set('githubLogin', githubLogin);
+      if (email) params.set('email', email);
+      if (params.toString()) {
+        const candRes = await fetch(`/api/v1/shadow-profiles/candidates?${params}`, {
+          credentials: 'include',
+        });
+        const candBody = (await candRes.json()) as { data?: { candidates?: Array<{ id: string }> } };
+        if ((candBody.data?.candidates ?? []).length > 0) {
+          goto(`/onboarding/claim-shadow?${params}`);
+          return;
+        }
+      }
+    } catch {
+      // ignore — fall through to dashboard
+    }
+
     goto('/dashboard');
   } catch {
     error = 'Erro de rede ao finalizar login.';

@@ -23,5 +23,24 @@ https://svelte.dev/e/state_referenced_locally (svelte)
 const draft = useFormDraft<ResumeForm>(`cv-${resumeId}`, {
   title: '',
 
+/home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web/src/routes/[[lang=lang]]/jobs/+page.svelte:486:3
+Error: Object literal may only specify known properties, and '"confirmText"' does not exist in type 'Props'. (ts)
+		message="Vamos aplicar (com CV adaptado por IA) a TODAS as vagas com fit ≥ {rageMinFit}, até {rageMax} aplicações. Sem volta."
+		confirmText={rageRunning ? 'Aplicando...' : 'Rodar agora'}
+		cancelText="Cancelar"
+
+/home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web/src/routes/[[lang=lang]]/jobs/+page.svelte:501:12
+Error: Type 'number' is not assignable to type 'string'. (ts)
+						max="100"
+						bind:value={rageMinFit}
+					/>
+
+/home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web/src/routes/[[lang=lang]]/jobs/+page.svelte:506:64
+Error: Type 'number' is not assignable to type 'string'. (ts)
+					<Label for="max-apps">Máximo de aplicações</Label>
+					<Input id="max-apps" type="number" min="1" max="100" bind:value={rageMax} />
+				</div>
+
 ====================================
-svelte-check found 0 errors and 3 warnings in 3 files
+svelte-check found 3 errors and 3 warnings in 4 files
+error: script "check" exited with code 1

@@ -1,9 +1,22 @@
 <!--
   Share management page for a resume — list existing share links, create a new
-  one with optional password + expiry, revoke.
+  one with optional password + expiry, manage slug aliases, download QR codes,
+  and grab the all-formats bundle zip.
 -->
 <script lang="ts">
-import { Copy, Link as LinkIcon, Loader2, Lock, Trash2 } from 'lucide-svelte';
+import {
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Download,
+  Link as LinkIcon,
+  Loader2,
+  Lock,
+  Package,
+  Plus,
+  QrCode,
+  Trash2,
+} from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -21,9 +34,23 @@ interface Share {
   createdAt: string;
 }
 
+interface Alias {
+  id: string;
+  slug: string;
+  shareId: string;
+}
+
 let shares = $state<Share[]>([]);
 let loading = $state(true);
 let creating = $state(false);
+
+// Aliases per share id, lazy-loaded on expand.
+const aliasesByShare = $state<Record<string, Alias[]>>({});
+const aliasLoading = $state<Record<string, boolean>>({});
+const newAliasInput = $state<Record<string, string>>({});
+const expandedShare = $state<Record<string, boolean>>({});
+
+let bundleDownloading = $state(false);
 
 // Form state for new share
 let customSlug = $state('');
@@ -34,11 +61,11 @@ async function load() {
   if (!browser) return;
   loading = true;
   try {
-    const res = await fetch(`/api/v1/resume-shares?resumeId=${resumeId}`, {
+    const res = await fetch(`/api/v1/shares/resume/${resumeId}`, {
       credentials: 'include',
     });
-    const body = (await res.json()) as { data?: { shares?: Share[] } };
-    shares = body.data?.shares ?? [];
+    const body = (await res.json()) as { data?: { shares?: Share[] }; shares?: Share[] };
+    shares = body.data?.shares ?? body.shares ?? [];
   } catch {
     toastState.show('Falha ao carregar links.', 'danger');
   } finally {
@@ -57,7 +84,7 @@ async function createShare() {
       exp.setDate(exp.getDate() + expiresInDays);
       body.expiresAt = exp.toISOString();
     }
-    const res = await fetch('/api/v1/resume-shares', {
+    const res = await fetch('/api/v1/shares', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -77,14 +104,16 @@ async function createShare() {
 }
 
 async function revoke(id: string) {
-  if (!confirm('Remover este link compartilhado?')) return;
+  if (!confirm('Remover este link compartilhado? Os aliases vão junto.')) return;
   try {
-    const res = await fetch(`/api/v1/resume-shares/${id}`, {
+    const res = await fetch(`/api/v1/shares/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
     if (!res.ok) throw new Error();
     shares = shares.filter((s) => s.id !== id);
+    delete aliasesByShare[id];
+    delete expandedShare[id];
   } catch {
     toastState.show('Falha ao remover.', 'danger');
   }
@@ -96,6 +125,99 @@ async function copyUrl(slug: string) {
   toastState.show('Link copiado.', 'success');
 }
 
+async function loadAliases(shareId: string) {
+  if (aliasLoading[shareId]) return;
+  aliasLoading[shareId] = true;
+  try {
+    const res = await fetch(`/api/v1/shares/${shareId}/aliases`, { credentials: 'include' });
+    const body = (await res.json()) as { data?: { aliases?: Alias[] } };
+    aliasesByShare[shareId] = body.data?.aliases ?? [];
+  } catch {
+    toastState.show('Falha ao carregar aliases.', 'danger');
+  } finally {
+    aliasLoading[shareId] = false;
+  }
+}
+
+async function toggleAliases(shareId: string) {
+  expandedShare[shareId] = !expandedShare[shareId];
+  if (expandedShare[shareId] && !aliasesByShare[shareId]) {
+    await loadAliases(shareId);
+  }
+}
+
+async function addAlias(shareId: string) {
+  const slug = (newAliasInput[shareId] ?? '').trim();
+  if (!slug) return;
+  try {
+    const res = await fetch(`/api/v1/shares/${shareId}/aliases`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ slug }),
+    });
+    if (res.status === 409) {
+      toastState.show('Esse slug já está em uso.', 'danger');
+      return;
+    }
+    if (!res.ok) throw new Error();
+    newAliasInput[shareId] = '';
+    await loadAliases(shareId);
+    toastState.show('Alias adicionado.', 'success');
+  } catch {
+    toastState.show('Falha ao adicionar alias.', 'danger');
+  }
+}
+
+async function removeAlias(shareId: string, aliasId: string) {
+  if (!confirm('Remover este alias?')) return;
+  try {
+    const res = await fetch(`/api/v1/shares/aliases/${aliasId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error();
+    aliasesByShare[shareId] = (aliasesByShare[shareId] ?? []).filter((a) => a.id !== aliasId);
+  } catch {
+    toastState.show('Falha ao remover alias.', 'danger');
+  }
+}
+
+function downloadQr(shareId: string, slug: string) {
+  // Server returns a PNG via streamable file — open in new tab so the browser
+  // can prompt save with the right filename. Adding a hidden anchor would also
+  // work; this is one less DOM dance.
+  const url = `/api/v1/shares/${shareId}/qr.png?size=512`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `qr-${slug}.png`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+async function downloadBundle() {
+  bundleDownloading = true;
+  try {
+    const res = await fetch('/api/v1/export/resume/bundle', { credentials: 'include' });
+    if (!res.ok) throw new Error();
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'resume-bundle.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toastState.show('Bundle baixado.', 'success');
+  } catch {
+    toastState.show('Falha ao baixar bundle.', 'danger');
+  } finally {
+    bundleDownloading = false;
+  }
+}
+
 onMount(load);
 </script>
 
@@ -104,13 +226,23 @@ onMount(load);
 </svelte:head>
 
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
-  <header class="mb-6">
-    <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Compartilhar currículo
-    </h1>
-    <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
-      Crie links públicos com senha opcional e data de expiração.
-    </p>
+  <header class="mb-6 flex items-start justify-between gap-4">
+    <div>
+      <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
+        Compartilhar currículo
+      </h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
+        Crie links públicos com senha opcional, expiração e aliases.
+      </p>
+    </div>
+    <Button variant="outline" size="sm" onclick={downloadBundle} disabled={bundleDownloading}>
+      {#if bundleDownloading}
+        <Loader2 size={14} class="mr-2 animate-spin" />
+      {:else}
+        <Package size={14} class="mr-2" />
+      {/if}
+      Baixar tudo (.zip)
+    </Button>
   </header>
 
   <section
@@ -188,31 +320,90 @@ onMount(load);
     {:else}
       <ul class="space-y-3">
         {#each shares as s (s.id)}
-          <li class="flex items-start justify-between rounded-lg border border-gray-200 p-4 dark:border-neutral-800">
-            <div class="min-w-0 flex-1">
-              <p class="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-neutral-100">
-                <span class="truncate">/s/{s.slug}</span>
-                {#if s.hasPassword}
-                  <Lock size={12} class="text-amber-500" aria-label="Protegido por senha" />
-                {/if}
-              </p>
-              <p class="mt-1 text-[11px] text-gray-500 dark:text-neutral-500">
-                Criado: {new Date(s.createdAt).toLocaleDateString()}
-                {#if s.expiresAt}
-                  · Expira: {new Date(s.expiresAt).toLocaleDateString()}
+          <li class="rounded-lg border border-gray-200 p-4 dark:border-neutral-800">
+            <div class="flex items-start justify-between">
+              <div class="min-w-0 flex-1">
+                <p class="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-neutral-100">
+                  <span class="truncate">/s/{s.slug}</span>
+                  {#if s.hasPassword}
+                    <Lock size={12} class="text-amber-500" aria-label="Protegido por senha" />
+                  {/if}
+                </p>
+                <p class="mt-1 text-[11px] text-gray-500 dark:text-neutral-500">
+                  Criado: {new Date(s.createdAt).toLocaleDateString()}
+                  {#if s.expiresAt}
+                    · Expira: {new Date(s.expiresAt).toLocaleDateString()}
+                  {:else}
+                    · Sem expiração
+                  {/if}
+                </p>
+              </div>
+              <div class="ml-3 flex items-center gap-1">
+                <Button variant="icon" size="xs" onclick={() => copyUrl(s.slug)} aria-label="Copiar link">
+                  <Copy size={14} />
+                </Button>
+                <Button variant="icon" size="xs" onclick={() => downloadQr(s.id, s.slug)} aria-label="Baixar QR">
+                  <QrCode size={14} />
+                </Button>
+                <Button variant="icon" size="xs" onclick={() => revoke(s.id)} aria-label="Remover">
+                  <Trash2 size={14} class="text-red-500" />
+                </Button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="mt-3 flex items-center gap-1 text-[11px] text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200"
+              onclick={() => toggleAliases(s.id)}
+            >
+              {#if expandedShare[s.id]}
+                <ChevronDown size={12} />
+              {:else}
+                <ChevronRight size={12} />
+              {/if}
+              Aliases ({aliasesByShare[s.id]?.length ?? '...'})
+            </button>
+
+            {#if expandedShare[s.id]}
+              <div class="mt-3 space-y-2 border-t border-gray-100 pt-3 dark:border-neutral-800">
+                {#if aliasLoading[s.id]}
+                  <Loader2 size={12} class="animate-spin text-gray-500" />
+                {:else if (aliasesByShare[s.id]?.length ?? 0) === 0}
+                  <p class="text-[11px] text-gray-400">
+                    Sem aliases. Crie um pra renomear esse link sem invalidar QR codes/cards já distribuídos.
+                  </p>
                 {:else}
-                  · Sem expiração
+                  <ul class="space-y-1">
+                    {#each aliasesByShare[s.id] as a (a.id)}
+                      <li class="flex items-center justify-between rounded bg-gray-50 px-2 py-1 text-[11px] dark:bg-neutral-900">
+                        <span class="font-mono">/s/{a.slug}</span>
+                        <Button variant="icon" size="xs" onclick={() => removeAlias(s.id, a.id)} aria-label="Remover alias">
+                          <Trash2 size={12} class="text-red-500" />
+                        </Button>
+                      </li>
+                    {/each}
+                  </ul>
                 {/if}
-              </p>
-            </div>
-            <div class="ml-3 flex items-center gap-1">
-              <Button variant="icon" size="xs" onclick={() => copyUrl(s.slug)} aria-label="Copiar link">
-                <Copy size={14} />
-              </Button>
-              <Button variant="icon" size="xs" onclick={() => revoke(s.id)} aria-label="Remover">
-                <Trash2 size={14} class="text-red-500" />
-              </Button>
-            </div>
+                <form
+                  class="mt-2 flex gap-2"
+                  onsubmit={(e) => {
+                    e.preventDefault();
+                    addAlias(s.id);
+                  }}
+                >
+                  <input
+                    type="text"
+                    bind:value={newAliasInput[s.id]}
+                    placeholder="novo-alias"
+                    pattern="[a-zA-Z0-9-]+"
+                    class="flex-1 rounded border border-gray-200 px-2 py-1 text-[11px] dark:border-neutral-700 dark:bg-neutral-800"
+                  />
+                  <Button type="submit" variant="outline" size="xs">
+                    <Plus size={12} />
+                  </Button>
+                </form>
+              </div>
+            {/if}
           </li>
         {/each}
       </ul>
