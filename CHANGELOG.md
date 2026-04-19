@@ -1,6 +1,8 @@
 # Changelog
 
-## [0.0.2] - 2026-04-19
+## [0.0.1] - 2026-04-19
+
+First tagged release of `apps/web`.
 
 ### Changed
 
@@ -21,5 +23,6 @@
 - Multiple CI retriggers across `octopus-workflows` v1.3.x point
   releases (typst, prisma generate, npmrc, package visibility,
   health-check).
-
-## [0.0.1] - initial baseline
+- Release workflow guard relaxed (`startsWith` → `contains` + allow
+  `workflow_dispatch`) so the finalize step doesn't get skipped when
+  the release PR is merged with "Create a merge commit".
