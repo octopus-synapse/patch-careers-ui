@@ -37,10 +37,5 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # SvelteKit
 .svelte-kit
 
-# Playwright
-test-results
-playwright-report
-playwright/.cache
-
 # pre-commit attestation metrics (temporary, per-run)
 .attestation-metrics.json

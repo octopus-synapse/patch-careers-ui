@@ -368,9 +368,9 @@ const isPending = $derived(
 								selectedThemeId={stepData.templateId ?? ''}
 								onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
 							/>
-						{:else if currentStep.multipleItems || currentStep.component === 'generic-section'}
+						{:else if currentStep.multipleItems && currentStep.fields}
 							<StepMultiItems
-								fields={currentStep.fields ?? []}
+								fields={currentStep.fields}
 								items={multiItems}
 								{t}
 								onupdate={(items) => (multiItems = items)}

@@ -1,13 +1,12 @@
 FROM oven/bun:1.3.11-alpine AS deps
 WORKDIR /app
-COPY package.json bun.lock* bunfig.toml ./
+COPY package.json bun.lock* ./
 COPY apps/web/package.json ./apps/web/package.json
 COPY packages/api-client/package.json ./packages/api-client/package.json
 COPY packages/i18n/package.json ./packages/i18n/package.json
 COPY packages/ui/package.json ./packages/ui/package.json
-RUN --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN \
-    --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
 FROM deps AS builder
 WORKDIR /app
@@ -24,7 +23,7 @@ COPY packages/api-client/package.json ./packages/api-client/package.json
 COPY packages/i18n/package.json ./packages/i18n/package.json
 COPY packages/ui/package.json ./packages/ui/package.json
 RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile --production --ignore-scripts
+    bun install --frozen-lockfile --production
 
 FROM oven/bun:1.3.11-alpine AS runner
 WORKDIR /app/apps/web

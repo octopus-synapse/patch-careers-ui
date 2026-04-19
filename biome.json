@@ -5,8 +5,6 @@
     "includes": [
       "!**/.svelte-kit",
       "!**/.turbo",
-      "!**/test-results",
-      "!**/playwright-report",
       "!packages/api-client/src/generated",
       "!**/*.svelte",
       "!**/*.html",
