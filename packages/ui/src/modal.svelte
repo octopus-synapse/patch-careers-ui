@@ -1,22 +1,23 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+import type { Snippet } from 'svelte';
+import Button from './button.svelte';
 
-	type Props = {
-		open: boolean;
-		onClose: () => void;
-		children: Snippet;
-		title?: Snippet;
-	};
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  children: Snippet;
+  title?: Snippet;
+};
 
-	let { open, onClose, children, title }: Props = $props();
+let { open, onClose, children, title }: Props = $props();
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') onClose();
-	}
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') onClose();
+}
 
-	function handleBackdrop(e: MouseEvent) {
-		if (e.target === e.currentTarget) onClose();
-	}
+function handleBackdrop(e: MouseEvent) {
+  if (e.target === e.currentTarget) onClose();
+}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -36,9 +37,9 @@
 					<div class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
 						{@render title()}
 					</div>
-					<button onclick={onClose} aria-label="Close" class="rounded-lg p-1 transition-opacity hover:opacity-60 text-gray-500 dark:text-neutral-500">
+					<Button variant="icon" size="sm" onclick={onClose} aria-label="Close">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-					</button>
+					</Button>
 				</div>
 			{/if}
 			<div class="px-4 py-3 sm:px-5 sm:py-4">

@@ -1,28 +1,34 @@
 <script lang="ts">
-	import {
-		createAdminDashboardGetMetrics,
-		createPlatformCheck,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { Users, FileText, Eye, UserCheck, TrendingUp, CalendarPlus, Target, Loader2 } from 'lucide-svelte';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import { createAdminDashboardGetMetrics, createPlatformCheck } from 'api-client';
+import {
+  CalendarPlus,
+  Eye,
+  FileText,
+  Loader2,
+  Target,
+  TrendingUp,
+  UserCheck,
+  Users,
+} from 'lucide-svelte';
+import { browser } from '$app/environment';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const metricsQuery = createAdminDashboardGetMetrics(() => ({
-		query: { enabled: browser, refetchInterval: 30000 }
-	}));
+const metricsQuery = createAdminDashboardGetMetrics(() => ({
+  query: { enabled: browser, refetchInterval: 30000 },
+}));
 
-	const healthAll = createPlatformCheck(() => ({
-		query: { enabled: browser, refetchInterval: 30000 }
-	}));
+const healthAll = createPlatformCheck(() => ({
+  query: { enabled: browser, refetchInterval: 30000 },
+}));
 
-	const metrics = $derived(metricsQuery.data);
-	const healthStatus = $derived<'healthy' | 'down'>(
-		healthAll.isError ? 'down' : (healthAll.data?.status === 'ok' ? 'healthy' : 'down')
-	);
+const metrics = $derived(metricsQuery.data);
+const healthStatus = $derived<'healthy' | 'down'>(
+  healthAll.isError ? 'down' : healthAll.data?.status === 'ok' ? 'healthy' : 'down',
+);
 </script>
 
 <svelte:head>

@@ -1,128 +1,142 @@
 <script lang="ts">
-	import {
-		createAdminSectionTypesFindAll,
-		adminSectionTypesCreate,
-		adminSectionTypesUpdate,
-		adminSectionTypesRemove,
-		getAdminSectionTypesFindAllQueryKey,
-	} from 'api-client';
-	import type { SectionTypeListDataDtoItemsItem } from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-svelte';
-	import { Button, Input, Label, Tooltip, ConfirmModal, FormModal } from 'ui';
-	import DataTable from '$lib/components/admin/data-table.svelte';
-	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
-	import Pagination from '$lib/components/admin/pagination.svelte';
-	import ExportButton from '$lib/components/admin/export-button.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import type { SectionTypeListDataDtoItemsItem } from 'api-client';
+import {
+  adminSectionTypesCreate,
+  adminSectionTypesRemove,
+  adminSectionTypesUpdate,
+  createAdminSectionTypesFindAll,
+  getAdminSectionTypesFindAllQueryKey,
+} from 'api-client';
+import { Pencil, Plus, ToggleLeft, ToggleRight, Trash2 } from 'lucide-svelte';
+import { Button, ConfirmModal, FormModal, Input, Label, Tooltip } from 'ui';
+import { browser } from '$app/environment';
+import DataTable from '$lib/components/admin/data-table.svelte';
+import ExportButton from '$lib/components/admin/export-button.svelte';
+import Pagination from '$lib/components/admin/pagination.svelte';
+import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	let page = $state(1);
-	let search = $state('');
+let page = $state(1);
+let search = $state('');
 
-	const sectionsQuery = createAdminSectionTypesFindAll(() => ({
-		page,
-		pageSize: 20,
-		search: search || undefined,
-	}), () => ({
-		query: { enabled: browser }
-	}));
+const sectionsQuery = createAdminSectionTypesFindAll(
+  () => ({
+    page,
+    pageSize: 20,
+    search: search || undefined,
+  }),
+  () => ({
+    query: { enabled: browser },
+  }),
+);
 
-	const sections = $derived(sectionsQuery.data?.items);
-	const totalPages = $derived(sectionsQuery.data?.totalPages);
+const sections = $derived(sectionsQuery.data?.items);
+const totalPages = $derived(sectionsQuery.data?.totalPages);
 
-	function jsonBody(data: Record<string, unknown>): RequestInit {
-		return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
-	}
+function jsonBody(data: Record<string, unknown>): RequestInit {
+  return { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } };
+}
 
-	function invalidate() {
-		queryClient.invalidateQueries({ queryKey: getAdminSectionTypesFindAllQueryKey() });
-	}
+function invalidate() {
+  queryClient.invalidateQueries({ queryKey: getAdminSectionTypesFindAllQueryKey() });
+}
 
-	// --- Delete ---
-	let deleteKey = $state<string | null>(null);
-	let deleteLoading = $state(false);
+// --- Delete ---
+let deleteKey = $state<string | null>(null);
+let deleteLoading = $state(false);
 
-	// --- Form ---
-	let formModal = $state<{ mode: 'create' | 'edit'; key?: string } | null>(null);
-	let formLoading = $state(false);
-	let formKey = $state('');
-	let formSlug = $state('');
-	let formTitle = $state('');
-	let formDescription = $state('');
-	let formSemanticKind = $state('');
-	let formIsActive = $state(true);
-	let formIsRepeatable = $state(true);
-	let formVersion = $state('1');
+// --- Form ---
+let formModal = $state<{ mode: 'create' | 'edit'; key?: string } | null>(null);
+let formLoading = $state(false);
+let formKey = $state('');
+let formSlug = $state('');
+let formTitle = $state('');
+let formDescription = $state('');
+let formSemanticKind = $state('');
+let formIsActive = $state(true);
+let formIsRepeatable = $state(true);
+let formVersion = $state('1');
 
-	function openCreate() {
-		formModal = { mode: 'create' };
-		formKey = ''; formSlug = ''; formTitle = ''; formDescription = '';
-		formSemanticKind = ''; formIsActive = true; formIsRepeatable = true; formVersion = '1';
-	}
+function openCreate() {
+  formModal = { mode: 'create' };
+  formKey = '';
+  formSlug = '';
+  formTitle = '';
+  formDescription = '';
+  formSemanticKind = '';
+  formIsActive = true;
+  formIsRepeatable = true;
+  formVersion = '1';
+}
 
-	function openEdit(section: SectionTypeListDataDtoItemsItem) {
-		formModal = { mode: 'edit', key: section.key };
-		formKey = section.key;
-		formSlug = section.slug;
-		formTitle = section.title;
-		formDescription = section.description ?? '';
-		formSemanticKind = section.semanticKind;
-		formIsActive = section.isActive;
-		formIsRepeatable = section.isRepeatable;
-		formVersion = String(section.version);
-	}
+function openEdit(section: SectionTypeListDataDtoItemsItem) {
+  formModal = { mode: 'edit', key: section.key };
+  formKey = section.key;
+  formSlug = section.slug;
+  formTitle = section.title;
+  formDescription = section.description ?? '';
+  formSemanticKind = section.semanticKind;
+  formIsActive = section.isActive;
+  formIsRepeatable = section.isRepeatable;
+  formVersion = String(section.version);
+}
 
-	async function handleFormSubmit() {
-		formLoading = true;
-		try {
-			const data: Record<string, unknown> = {
-				slug: formSlug,
-				title: formTitle,
-				description: formDescription,
-				semanticKind: formSemanticKind,
-				isActive: formIsActive,
-				isRepeatable: formIsRepeatable,
-				definition: {},
-				translations: {},
-			};
-			if (formModal?.mode === 'create') {
-				await adminSectionTypesCreate(jsonBody({ ...data, key: formKey, version: Number(formVersion) }));
-			} else {
-				await adminSectionTypesUpdate(formModal!.key!, jsonBody(data));
-			}
-			invalidate();
-			formModal = null;
-		} finally {
-			formLoading = false;
-		}
-	}
+async function handleFormSubmit() {
+  formLoading = true;
+  try {
+    const data: Record<string, unknown> = {
+      slug: formSlug,
+      title: formTitle,
+      description: formDescription,
+      semanticKind: formSemanticKind,
+      isActive: formIsActive,
+      isRepeatable: formIsRepeatable,
+      definition: {},
+      translations: {},
+    };
+    if (formModal?.mode === 'create') {
+      await adminSectionTypesCreate(
+        jsonBody({ ...data, key: formKey, version: Number(formVersion) }),
+      );
+    } else {
+      await adminSectionTypesUpdate(formModal!.key!, jsonBody(data));
+    }
+    invalidate();
+    formModal = null;
+  } finally {
+    formLoading = false;
+  }
+}
 
-	async function handleToggleActive(section: SectionTypeListDataDtoItemsItem) {
-		await adminSectionTypesUpdate(section.key, jsonBody({ isActive: !section.isActive }));
-		invalidate();
-	}
+async function handleToggleActive(section: SectionTypeListDataDtoItemsItem) {
+  await adminSectionTypesUpdate(section.key, jsonBody({ isActive: !section.isActive }));
+  invalidate();
+}
 
-	async function handleDelete() {
-		if (!deleteKey) return;
-		deleteLoading = true;
-		try {
-			await adminSectionTypesRemove(deleteKey);
-			invalidate();
-		} finally { deleteLoading = false; deleteKey = null; }
-	}
+async function handleDelete() {
+  if (!deleteKey) return;
+  deleteLoading = true;
+  try {
+    await adminSectionTypesRemove(deleteKey);
+    invalidate();
+  } finally {
+    deleteLoading = false;
+    deleteKey = null;
+  }
+}
 
-	const columns = [
-		{ key: 'key', label: 'Key' },
-		{ key: 'title', label: 'Title' },
-		{ key: 'semanticKind', label: 'Kind' },
-		{ key: 'isActive', label: 'Active', width: '80px' },
-		{ key: 'isSystem', label: 'System', width: '80px' },
-		{ key: 'actions', label: '', width: '120px' },
-	];
+const columns = [
+  { key: 'key', label: 'Key' },
+  { key: 'title', label: 'Title' },
+  { key: 'semanticKind', label: 'Kind' },
+  { key: 'isActive', label: 'Active', width: '80px' },
+  { key: 'isSystem', label: 'System', width: '80px' },
+  { key: 'actions', label: '', width: '120px' },
+];
 </script>
 
 <svelte:head>
@@ -161,7 +175,7 @@
 					</Tooltip>
 					{#if !row.isSystem}
 						<Tooltip text="Delete">
-							<Button variant="danger" size="xs" onclick={() => deleteKey = row.key}><Trash2 size={14} /></Button>
+							<Button variant="ghost" intent="danger" size="xs" onclick={() => deleteKey = row.key}><Trash2 size={14} /></Button>
 						</Tooltip>
 					{/if}
 				</div>

@@ -39,6 +39,58 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Create a new post
+ */
+export const postsCreateBodySubtypeMax = 60;
+
+export const postsCreateBodyContentMax = 5000;
+
+export const postsCreateBodyHardSkillsItemMax = 60;
+
+export const postsCreateBodyHardSkillsMax = 40;
+
+export const postsCreateBodySoftSkillsItemMax = 60;
+
+export const postsCreateBodySoftSkillsMax = 20;
+
+
+
+export const postsCreateBodyCoAuthorsMax = 8;
+
+
+export const postsCreateBodyCodeSnippetLanguageMax = 40;
+
+export const postsCreateBodyCodeSnippetCodeMax = 20000;
+
+export const postsCreateBodyCodeSnippetFilenameMax = 120;
+
+
+
+export const PostsCreateBody = zod.object({
+  "type": zod.enum(['ACHIEVEMENT', 'OPPORTUNITY', 'LEARNING', 'BUILD', 'QUESTION', 'REPOST', 'CHALLENGE']),
+  "subtype": zod.string().max(postsCreateBodySubtypeMax).optional(),
+  "content": zod.string().max(postsCreateBodyContentMax).optional(),
+  "hardSkills": zod.array(zod.string().max(postsCreateBodyHardSkillsItemMax)).max(postsCreateBodyHardSkillsMax).optional(),
+  "softSkills": zod.array(zod.string().max(postsCreateBodySoftSkillsItemMax)).max(postsCreateBodySoftSkillsMax).optional(),
+  "data": zod.object({
+
+}).passthrough().optional(),
+  "imageUrl": zod.string().url().optional(),
+  "linkUrl": zod.string().url().optional(),
+  "originalPostId": zod.string().min(1).optional(),
+  "coAuthors": zod.array(zod.string().min(1)).max(postsCreateBodyCoAuthorsMax).optional(),
+  "scheduledAt": zod.string().datetime({}).optional(),
+  "threadId": zod.string().min(1).optional(),
+  "codeSnippet": zod.object({
+  "language": zod.string().max(postsCreateBodyCodeSnippetLanguageMax),
+  "code": zod.string().max(postsCreateBodyCodeSnippetCodeMax),
+  "filename": zod.string().max(postsCreateBodyCodeSnippetFilenameMax).optional()
+}).optional(),
+  "isAnonymous": zod.boolean().optional(),
+  "anonymousCategory": zod.enum(['SALARY', 'INTERVIEW', 'LAYOFF', 'TOXIC_CULTURE', 'HARASSMENT']).optional()
+})
+
+/**
  * @summary Upload post image
  */
 export const PostsUploadImageBody = zod.object({

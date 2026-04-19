@@ -1,48 +1,48 @@
 <script lang="ts">
-	import { Button } from 'ui';
-	import {
-		LayoutDashboard,
-		Users,
-		BarChart3,
-		Tags,
-		Layers,
-		ListChecks,
-		Activity,
-		Gauge,
-		MessageSquare,
-		FlaskConical,
-		PanelLeftClose,
-		PanelLeft,
-	} from 'lucide-svelte';
-	import { locale } from '$lib/locale.svelte';
+import {
+  Activity,
+  BarChart3,
+  FlaskConical,
+  Gauge,
+  Layers,
+  LayoutDashboard,
+  ListChecks,
+  MessageSquare,
+  PanelLeft,
+  PanelLeftClose,
+  Tags,
+  Users,
+} from 'lucide-svelte';
+import { Button } from 'ui';
+import { locale } from '$lib/locale.svelte';
 
-	type Props = {
-		currentPath: string;
-	};
+type Props = {
+  currentPath: string;
+};
 
-	let { currentPath }: Props = $props();
+let { currentPath }: Props = $props();
 
-	let collapsed = $state(false);
+let collapsed = $state(false);
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const links = $derived([
-		{ href: '/admin', label: t('admin.nav.dashboard'), icon: LayoutDashboard, exact: true },
-		{ href: '/admin/users', label: t('admin.nav.users'), icon: Users },
-		{ href: '/admin/analytics', label: t('admin.nav.analytics'), icon: BarChart3 },
-		{ href: '/admin/skills', label: t('admin.nav.skills'), icon: Tags },
-		{ href: '/admin/sections', label: t('admin.nav.sections'), icon: Layers },
-		{ href: '/admin/onboarding', label: t('admin.nav.onboarding'), icon: ListChecks },
-		{ href: '/admin/health', label: t('admin.nav.health'), icon: Activity },
-		{ href: '/admin/performance', label: t('admin.nav.performance'), icon: Gauge },
-		{ href: '/admin/chat', label: t('admin.nav.chat'), icon: MessageSquare },
-		{ href: '/admin/test', label: t('admin.nav.test'), icon: FlaskConical },
-	]);
+const links = $derived([
+  { href: '/admin', label: t('admin.nav.dashboard'), icon: LayoutDashboard, exact: true },
+  { href: '/admin/users', label: t('admin.nav.users'), icon: Users },
+  { href: '/admin/analytics', label: t('admin.nav.analytics'), icon: BarChart3 },
+  { href: '/admin/skills', label: t('admin.nav.skills'), icon: Tags },
+  { href: '/admin/sections', label: t('admin.nav.sections'), icon: Layers },
+  { href: '/admin/onboarding', label: t('admin.nav.onboarding'), icon: ListChecks },
+  { href: '/admin/health', label: t('admin.nav.health'), icon: Activity },
+  { href: '/admin/performance', label: t('admin.nav.performance'), icon: Gauge },
+  { href: '/admin/chat', label: t('admin.nav.chat'), icon: MessageSquare },
+  { href: '/admin/test', label: t('admin.nav.test'), icon: FlaskConical },
+]);
 
-	function isActive(href: string, exact?: boolean): boolean {
-		if (exact) return currentPath === href;
-		return currentPath.startsWith(href);
-	}
+function isActive(href: string, exact?: boolean): boolean {
+  if (exact) return currentPath === href;
+  return currentPath.startsWith(href);
+}
 </script>
 
 <aside class="flex h-full flex-col border-r transition-all bg-white border-gray-200 dark:bg-neutral-900 dark:border-neutral-800 {collapsed ? 'w-16' : 'w-60'}">

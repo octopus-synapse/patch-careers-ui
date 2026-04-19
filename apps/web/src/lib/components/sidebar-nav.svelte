@@ -1,49 +1,61 @@
 <script lang="ts">
-	import type { Snippet, Component } from 'svelte';
-	import { Button } from 'ui';
-	import { Check, PanelLeftClose, PanelLeft } from 'lucide-svelte';
+import { Check, PanelLeft, PanelLeftClose } from 'lucide-svelte';
+import type { Component, Snippet } from 'svelte';
+import { Button } from 'ui';
 
-	type NavItem = {
-		id: string;
-		label: string;
-		icon?: Component<{ size: number; class?: string }> | string;
-		href?: string;
-		exact?: boolean;
-		completed?: boolean;
-		missing?: boolean;
-		badge?: Snippet;
-	};
+type NavItem = {
+  id: string;
+  label: string;
+  icon?: Component<{ size: number; class?: string }> | string;
+  href?: string;
+  exact?: boolean;
+  completed?: boolean;
+  missing?: boolean;
+  badge?: Snippet;
+};
 
-	type Props = {
-		items: NavItem[];
-		active: string;
-		title?: string;
-		collapsible?: boolean;
-		progress?: { value: number; message?: string };
-		numbered?: boolean;
-		onselect?: (id: string) => void;
-	};
+type Props = {
+  items: NavItem[];
+  active: string;
+  title?: string;
+  collapsible?: boolean;
+  progress?: { value: number; message?: string };
+  numbered?: boolean;
+  onselect?: (id: string) => void;
+};
 
-	let { items, active, title, collapsible = false, progress, numbered = false, onselect }: Props = $props();
+let {
+  items,
+  active,
+  title,
+  collapsible = false,
+  progress,
+  numbered = false,
+  onselect,
+}: Props = $props();
 
-	let collapsed = $state(false);
+let collapsed = $state(false);
 
-	const barColor = $derived(
-		!progress ? '' :
-		progress.value >= 75 ? 'bg-emerald-500' :
-		progress.value >= 50 ? 'bg-blue-500' :
-		progress.value >= 25 ? 'bg-blue-400' :
-		'bg-gray-400 dark:bg-neutral-500'
-	);
+const barColor = $derived(
+  !progress
+    ? ''
+    : progress.value >= 75
+      ? 'bg-emerald-500'
+      : progress.value >= 50
+        ? 'bg-blue-500'
+        : progress.value >= 25
+          ? 'bg-blue-400'
+          : 'bg-gray-400 dark:bg-neutral-500',
+);
 
-	function handleClick(item: NavItem) {
-		if (onselect) onselect(item.id);
-	}
+function handleClick(item: NavItem) {
+  if (onselect) onselect(item.id);
+}
 
-	function isActive(item: NavItem): boolean {
-		if (item.href && !item.exact) return active.startsWith(item.href);
-		return active === (item.href ?? item.id);
-	}
+function isActive(item: NavItem): boolean {
+  if (item.href && !item.exact) return active.startsWith(item.href);
+  return active === (item.href ?? item.id);
+}
 </script>
 
 <aside class="flex flex-col border-r transition-all border-gray-200 dark:border-neutral-800 {collapsible ? (collapsed ? 'w-16' : 'w-52 sm:w-60') : 'w-48 sm:w-56'} {collapsible ? 'h-full bg-white dark:bg-neutral-900' : ''}">

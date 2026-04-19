@@ -1,34 +1,103 @@
 <script lang="ts">
-	type Props = {
-		message: string;
-		type?: 'success' | 'error' | 'info';
-		onClose: () => void;
-	};
+import Button from './button.svelte';
+import type { IntentKey } from './design';
+import { getToastClasses } from './toast-intents';
+import type { ToastAction } from './toast-state.svelte';
 
-	let { message, type = 'info', onClose }: Props = $props();
+type Props = {
+  message: string;
+  intent?: IntentKey;
+  action?: ToastAction;
+  /** ms before auto-dismiss. 0 disables. */
+  duration?: number;
+  onClose: () => void;
+};
 
-	const variants = {
-		success: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-		error: 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-		info: 'bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-	};
+let { message, intent = 'info', action, duration = 3000, onClose }: Props = $props();
 
-	$effect(() => {
-		const timer = setTimeout(onClose, 3000);
-		return () => clearTimeout(timer);
-	});
+const classes = $derived(getToastClasses(intent));
+
+$effect(() => {
+  if (duration <= 0) return;
+  const timer = setTimeout(onClose, duration);
+  return () => clearTimeout(timer);
+});
+
+function handleAction() {
+  action?.onClick();
+  onClose();
+}
 </script>
 
-<div class="flex items-center gap-2 rounded-lg px-4 py-3 text-sm shadow-lg {variants[type]}" role="alert">
-	{#if type === 'success'}
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-	{:else if type === 'error'}
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+<div
+	class="flex items-center gap-2 rounded-lg px-4 py-3 text-sm shadow-lg {classes.container}"
+	role="alert"
+>
+	{#if intent === 'success'}
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class={classes.icon}
+		>
+			<path d="M20 6 9 17l-5-5" />
+		</svg>
+	{:else if intent === 'danger'}
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class={classes.icon}
+		>
+			<path d="M18 6 6 18" /><path d="m6 6 12 12" />
+		</svg>
 	{:else}
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class={classes.icon}
+		>
+			<circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+		</svg>
 	{/if}
 	<span class="flex-1">{message}</span>
-	<button onclick={onClose} class="rounded p-0.5 transition-opacity hover:opacity-60" aria-label="Close">
-		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-	</button>
+	{#if action}
+		<Button variant="ghost" size="xs" onclick={handleAction} class="font-semibold">
+			{action.label}
+		</Button>
+	{/if}
+	<Button variant="icon" size="xs" onclick={onClose} aria-label="Close">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="14"
+			height="14"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
+			<path d="M18 6 6 18" /><path d="m6 6 12 12" />
+		</svg>
+	</Button>
 </div>

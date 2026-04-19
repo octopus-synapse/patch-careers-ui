@@ -1,46 +1,50 @@
 <script lang="ts">
-	import {
-		createAdminAnalyticsGetOverview,
-		createAdminDashboardGetMetrics,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { Loader2 } from 'lucide-svelte';
-	import { SegmentToggle } from 'ui';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import ExportButton from '$lib/components/admin/export-button.svelte';
+import { createAdminAnalyticsGetOverview, createAdminDashboardGetMetrics } from 'api-client';
+import { Loader2 } from 'lucide-svelte';
+import { SegmentToggle } from 'ui';
+import { browser } from '$app/environment';
+import ExportButton from '$lib/components/admin/export-button.svelte';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	let period = $state<'day' | 'week' | 'month'>('week');
+let period = $state<'day' | 'week' | 'month'>('week');
 
-	const analyticsQuery = createAdminAnalyticsGetOverview(() => ({
-		period,
-	}), () => ({
-		query: { enabled: browser }
-	}));
+const analyticsQuery = createAdminAnalyticsGetOverview(
+  () => ({
+    period,
+  }),
+  () => ({
+    query: { enabled: browser },
+  }),
+);
 
-	const metricsQuery = createAdminDashboardGetMetrics(() => ({
-		query: { enabled: browser }
-	}));
+const metricsQuery = createAdminDashboardGetMetrics(() => ({
+  query: { enabled: browser },
+}));
 
-	const data = $derived(analyticsQuery.data);
-	const metrics = $derived(metricsQuery.data);
+const data = $derived(analyticsQuery.data);
+const metrics = $derived(metricsQuery.data);
 
-	const periodOptions = $derived([
-		{ value: 'day', label: t?.('admin.analytics.last30Days') ?? '30 Days' },
-		{ value: 'week', label: '12 Weeks' },
-		{ value: 'month', label: t?.('admin.analytics.lastYear') ?? '12 Months' },
-	]);
+const periodOptions = $derived([
+  { value: 'day', label: t?.('admin.analytics.last30Days') ?? '30 Days' },
+  { value: 'week', label: '12 Weeks' },
+  { value: 'month', label: t?.('admin.analytics.lastYear') ?? '12 Months' },
+]);
 
-	const atsDist = $derived(data?.atsScoreDistribution);
-	const byLang = $derived(data?.resumesByLanguage);
-	const sections = $derived(data?.mostUsedSections);
-	const imports = $derived(data?.importSources);
+const atsDist = $derived(data?.atsScoreDistribution);
+const byLang = $derived(data?.resumesByLanguage);
+const sections = $derived(data?.mostUsedSections);
+const imports = $derived(data?.importSources);
+const activeUsers = $derived(data?.activeUsers);
+const contentStats = $derived(data?.contentStats);
+const socialStats = $derived(data?.socialStats);
+const jobStats = $derived(data?.jobStats);
 
-	function maxValue(arr: { count: number }[]): number {
-		return Math.max(...arr.map(i => i.count), 1);
-	}
+function maxValue(arr: { count: number }[]): number {
+  return Math.max(...arr.map((i) => i.count), 1);
+}
 </script>
 
 <svelte:head>
@@ -76,6 +80,53 @@
 			<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 		</div>
 	{:else if data}
+		<!-- Active users (DAU/MAU) -->
+		{#if activeUsers}
+			<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+				<StatCard label="DAU" value={activeUsers.dau} />
+				<StatCard label="MAU" value={activeUsers.mau} />
+				<StatCard
+					label="DAU/MAU"
+					value={activeUsers.mau > 0 ? `${Math.round((activeUsers.dau / activeUsers.mau) * 100)}%` : '—'}
+				/>
+				<StatCard
+					label="Stickiness"
+					value={activeUsers.mau > 0 && activeUsers.dau > 0 ? 'active' : 'low'}
+				/>
+			</div>
+		{/if}
+
+		<!-- Content stats (posts/comments/reactions) -->
+		{#if contentStats}
+			<div class="grid grid-cols-3 gap-3 sm:gap-4">
+				<StatCard label={t?.('feed.tabsPosts') ?? 'Posts'} value={contentStats.posts} />
+				<StatCard label={t?.('feed.comments') ?? 'Comments'} value={contentStats.comments} />
+				<StatCard label={t?.('feed.tabsReactions') ?? 'Reactions'} value={contentStats.reactions} />
+			</div>
+		{/if}
+
+		<!-- Social stats (connections + blocks) -->
+		{#if socialStats}
+			<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+				<StatCard label="Pending invites" value={socialStats.pendingInvitations} />
+				<StatCard label="Accepted" value={socialStats.acceptedConnections} />
+				<StatCard label="Rejected" value={socialStats.rejectedConnections} />
+				<StatCard label="Acceptance rate" value={`${socialStats.acceptanceRate}%`} />
+				<StatCard label="Blocked" value={socialStats.blockedUsers} />
+			</div>
+		{/if}
+
+		<!-- Job stats -->
+		{#if jobStats}
+			<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+				<StatCard label="Jobs posted" value={jobStats.postedJobs} />
+				<StatCard label="Active jobs" value={jobStats.activeJobs} />
+				<StatCard label="Applications" value={jobStats.applications} />
+				<StatCard label="Withdrawn" value={jobStats.withdrawn} />
+				<StatCard label="Apps / job" value={jobStats.applicationsPerJob} />
+			</div>
+		{/if}
+
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<!-- ATS Score Distribution -->
 			<div class="rounded-xl border p-3 sm:p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">

@@ -1,77 +1,75 @@
 <script lang="ts">
-	import {
-		createNotificationsGetUnreadCount,
-		createNotificationsGetByUser,
-		notificationsMarkRead,
-		getNotificationsGetUnreadCountQueryKey,
-		getNotificationsGetByUserQueryKey,
-		type NotificationDto,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Avatar, Button, Dropdown } from 'ui';
-	import { Bell } from 'lucide-svelte';
-	import { locale } from '$lib/locale.svelte';
-	import { formatDate } from 'i18n';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createNotificationsGetByUser,
+  createNotificationsGetUnreadCount,
+  getNotificationsGetByUserQueryKey,
+  getNotificationsGetUnreadCountQueryKey,
+  type NotificationDto,
+  notificationsMarkRead,
+} from 'api-client';
+import { formatDate } from 'i18n';
+import { Bell } from 'lucide-svelte';
+import { Avatar, Button, Dropdown } from 'ui';
+import { browser } from '$app/environment';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	let isOpen = $state(false);
+let isOpen = $state(false);
 
-	const unreadQuery = createNotificationsGetUnreadCount(
-		() => ({
-			query: {
-				enabled: browser,
-				refetchInterval: 30000,
-			},
-		})
-	);
+const unreadQuery = createNotificationsGetUnreadCount(() => ({
+  query: {
+    enabled: browser,
+    refetchInterval: 30000,
+  },
+}));
 
-	const unreadCount = $derived(unreadQuery.data?.count);
+const unreadCount = $derived(unreadQuery.data?.count);
 
-	const notificationsQuery = createNotificationsGetByUser(
-		() => ({ cursor: '', limit: 10 }),
-		() => ({
-			query: { enabled: browser && isOpen },
-		})
-	);
+const notificationsQuery = createNotificationsGetByUser(
+  () => ({ cursor: '', limit: 10 }),
+  () => ({
+    query: { enabled: browser && isOpen },
+  }),
+);
 
-	const notifications = $derived(notificationsQuery.data?.data);
+const notifications = $derived(notificationsQuery.data?.data);
 
-	function getNotificationMessage(notification: NotificationDto): string {
-		const type = notification.type;
-		const tKey = `notifications.${type}`;
-		return t(tKey) ?? type ?? '';
-	}
+function getNotificationMessage(notification: NotificationDto): string {
+  const type = notification.type;
+  const tKey = `notifications.${type}`;
+  return t(tKey) ?? type ?? '';
+}
 
-	function timeAgo(dateStr: string): string {
-		const now = Date.now();
-		const diff = now - new Date(dateStr).getTime();
-		const minutes = Math.floor(diff / 60000);
-		if (minutes < 1) return t('feed.justNow');
-		if (minutes < 60) return `${minutes}m`;
-		const hours = Math.floor(minutes / 60);
-		if (hours < 24) return `${hours}h`;
-		const days = Math.floor(hours / 24);
-		if (days < 30) return `${days}d`;
-		return formatDate(dateStr, locale.current);
-	}
+function timeAgo(dateStr: string): string {
+  const now = Date.now();
+  const diff = now - new Date(dateStr).getTime();
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return t('feed.justNow');
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d`;
+  return formatDate(dateStr, locale.current);
+}
 
-	async function handleMarkAllRead() {
-		await notificationsMarkRead();
-		queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
-		queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
-	}
+async function handleMarkAllRead() {
+  await notificationsMarkRead();
+  queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
+}
 
-	async function handleNotificationClick(notification: NotificationDto) {
-		if (!notification.read) {
-			await notificationsMarkRead();
-			queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
-			queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
-		}
-		isOpen = false;
-	}
+async function handleNotificationClick(notification: NotificationDto) {
+  if (!notification.read) {
+    await notificationsMarkRead();
+    queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
+  }
+  isOpen = false;
+}
 </script>
 
 <Dropdown
@@ -110,6 +108,15 @@
 				</Button>
 			{/if}
 		</div>
+
+		<!-- See all link -->
+		<a
+			href="/notifications"
+			onclick={() => (isOpen = false)}
+			class="border-b px-4 py-2 text-center text-[11px] font-medium text-emerald-600 hover:underline border-gray-200 dark:border-neutral-700 dark:text-emerald-400"
+		>
+			{t('notifications.pageTitle')}
+		</a>
 
 		<!-- Notifications list -->
 		<div class="overflow-y-auto flex-1">

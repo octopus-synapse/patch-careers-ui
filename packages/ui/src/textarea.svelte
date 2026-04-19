@@ -1,15 +1,18 @@
 <script lang="ts">
-	import type { HTMLTextareaAttributes } from 'svelte/elements';
+import type { HTMLTextareaAttributes } from 'svelte/elements';
+import type { IntentKey } from './design';
+import { getInputClasses } from './input-intents';
 
-	type Props = Omit<HTMLTextareaAttributes, 'value'> & {
-		value?: string;
-	};
+type Props = Omit<HTMLTextareaAttributes, 'value'> & {
+  value?: string;
+  intent?: IntentKey;
+};
 
-	let { value = $bindable(''), class: className = '', ...rest }: Props = $props();
+let { value = $bindable(''), intent = 'neutral', class: className = '', ...rest }: Props = $props();
+
+const computedClass = $derived(
+  `resize-none ${getInputClasses(intent, typeof className === 'string' ? className : '')}`,
+);
 </script>
 
-<textarea
-	bind:value
-	class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all border-gray-300 text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200 {className}"
-	{...rest}
-></textarea>
+<textarea bind:value class={computedClass} {...rest}></textarea>

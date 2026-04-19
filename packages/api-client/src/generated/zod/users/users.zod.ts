@@ -76,6 +76,84 @@ export const UsersUpdateUsernameBody = zod.object({
 })
 
 /**
+ * @summary Update user preferences (basic)
+ */
+export const usersUpdatePreferencesBodyNameMax = 100;
+
+export const usersUpdatePreferencesBodyPhotoURLMax = 500;
+
+
+
+export const UsersUpdatePreferencesBody = zod.object({
+  "palette": zod.string().optional(),
+  "bannerColor": zod.string().optional(),
+  "name": zod.string().max(usersUpdatePreferencesBodyNameMax).optional(),
+  "photoURL": zod.string().url().max(usersUpdatePreferencesBodyPhotoURLMax).optional()
+})
+
+/**
+ * @summary Update all user preferences
+ */
+export const usersUpdateFullPreferencesBodyNameMax = 100;
+
+export const usersUpdateFullPreferencesBodyPhotoURLMax = 500;
+
+export const usersUpdateFullPreferencesBodyLanguageMax = 10;
+
+export const usersUpdateFullPreferencesBodyTimezoneMax = 50;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaMinFitMin = 0;
+export const usersUpdateFullPreferencesBodyApplyCriteriaMinFitMax = 100;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaStacksItemMax = 60;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaStacksMax = 40;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaSenioritiesItemMax = 30;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaSenioritiesMax = 10;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaMinSalaryUsdMin = 0;
+
+export const usersUpdateFullPreferencesBodyApplyCriteriaDefaultCoverMax = 4000;
+
+
+
+export const UsersUpdateFullPreferencesBody = zod.object({
+  "theme": zod.string().optional(),
+  "palette": zod.string().optional(),
+  "bannerColor": zod.string().optional(),
+  "name": zod.string().max(usersUpdateFullPreferencesBodyNameMax).optional(),
+  "photoURL": zod.string().url().max(usersUpdateFullPreferencesBodyPhotoURLMax).optional(),
+  "language": zod.string().max(usersUpdateFullPreferencesBodyLanguageMax).optional(),
+  "dateFormat": zod.string().optional(),
+  "timezone": zod.string().max(usersUpdateFullPreferencesBodyTimezoneMax).optional(),
+  "emailNotifications": zod.boolean().optional(),
+  "resumeExpiryAlerts": zod.boolean().optional(),
+  "weeklyDigest": zod.boolean().optional(),
+  "marketingEmails": zod.boolean().optional(),
+  "emailMilestones": zod.boolean().optional(),
+  "emailShareExpiring": zod.boolean().optional(),
+  "digestFrequency": zod.enum(['DAILY', 'WEEKLY', 'MONTHLY']).optional(),
+  "profileVisibility": zod.string().optional(),
+  "showEmail": zod.boolean().optional(),
+  "showPhone": zod.boolean().optional(),
+  "allowSearchEngineIndex": zod.boolean().optional(),
+  "defaultExportFormat": zod.string().optional(),
+  "includePhotoInExport": zod.boolean().optional(),
+  "applyMode": zod.enum(['ONE_CLICK', 'WEEKLY_CURATED', 'AUTO_APPLY']).optional(),
+  "applyCriteria": zod.object({
+  "minFit": zod.number().min(usersUpdateFullPreferencesBodyApplyCriteriaMinFitMin).max(usersUpdateFullPreferencesBodyApplyCriteriaMinFitMax).optional(),
+  "stacks": zod.array(zod.string().max(usersUpdateFullPreferencesBodyApplyCriteriaStacksItemMax)).max(usersUpdateFullPreferencesBodyApplyCriteriaStacksMax).optional(),
+  "seniorities": zod.array(zod.string().max(usersUpdateFullPreferencesBodyApplyCriteriaSenioritiesItemMax)).max(usersUpdateFullPreferencesBodyApplyCriteriaSenioritiesMax).optional(),
+  "remotePolicies": zod.array(zod.enum(['REMOTE', 'HYBRID', 'ONSITE'])).optional(),
+  "paymentCurrencies": zod.array(zod.enum(['BRL', 'USD', 'EUR', 'GBP'])).optional(),
+  "minSalaryUsd": zod.number().min(usersUpdateFullPreferencesBodyApplyCriteriaMinSalaryUsdMin).optional(),
+  "defaultCover": zod.string().max(usersUpdateFullPreferencesBodyApplyCriteriaDefaultCoverMax).optional()
+}).optional()
+})
+
+/**
  * @summary Create a new user
  */
 export const usersCreateUserBodyPasswordMin = 8;

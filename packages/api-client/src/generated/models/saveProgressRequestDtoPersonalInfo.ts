@@ -38,7 +38,7 @@ All errors follow a consistent format:
 
 export type SaveProgressRequestDtoPersonalInfo = {
   fullName: string;
-  email: string;
+  email?: string;
   phone?: string;
   location?: string;
 };

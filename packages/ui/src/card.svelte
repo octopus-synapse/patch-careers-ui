@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+import type { Snippet } from 'svelte';
 
-	type Props = {
-		children: Snippet;
-		title?: Snippet;
-		class?: string;
-	};
+type Props = {
+  children: Snippet;
+  title?: Snippet;
+  class?: string;
+};
 
-	let { children, title, class: className = '' }: Props = $props();
+let { children, title, class: className = '' }: Props = $props();
 </script>
 
 <div class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 {className}">

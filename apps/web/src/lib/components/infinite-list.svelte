@@ -1,40 +1,40 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+import type { Snippet } from 'svelte';
 
-	type Props = {
-		items: unknown[];
-		hasMore: boolean;
-		loading: boolean;
-		loadingMore?: boolean;
-		onLoadMore: () => void;
-		renderItem: Snippet<[unknown, number]>;
-		skeleton?: Snippet;
-		emptyMessage?: string;
-		dividerClass?: string;
-	};
+type Props = {
+  items: unknown[];
+  hasMore: boolean;
+  loading: boolean;
+  loadingMore?: boolean;
+  onLoadMore: () => void;
+  renderItem: Snippet<[unknown, number]>;
+  skeleton?: Snippet;
+  emptyMessage?: string;
+  dividerClass?: string;
+};
 
-	let {
-		items,
-		hasMore,
-		loading,
-		loadingMore = false,
-		onLoadMore,
-		renderItem,
-		skeleton,
-		emptyMessage = '',
-		dividerClass = 'divide-y divide-gray-200 dark:divide-neutral-800',
-	}: Props = $props();
+let {
+  items,
+  hasMore,
+  loading,
+  loadingMore = false,
+  onLoadMore,
+  renderItem,
+  skeleton,
+  emptyMessage = '',
+  dividerClass = 'divide-y divide-gray-200 dark:divide-neutral-800',
+}: Props = $props();
 
-	let sentinel: HTMLDivElement | undefined = $state();
+let sentinel: HTMLDivElement | undefined = $state();
 
-	$effect(() => {
-		if (!sentinel) return;
-		const observer = new IntersectionObserver(([entry]) => {
-			if (entry.isIntersecting && hasMore && !loadingMore) onLoadMore();
-		});
-		observer.observe(sentinel);
-		return () => observer.disconnect();
-	});
+$effect(() => {
+  if (!sentinel) return;
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting && hasMore && !loadingMore) onLoadMore();
+  });
+  observer.observe(sentinel);
+  return () => observer.disconnect();
+});
 </script>
 
 {#if loading}

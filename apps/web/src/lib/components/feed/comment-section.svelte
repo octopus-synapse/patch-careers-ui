@@ -1,111 +1,117 @@
 <script lang="ts">
-	import { Avatar, Button, Input } from 'ui';
-	import { Trash2, Send, Loader2 } from 'lucide-svelte';
-	import { createCommentsGetByPost, commentsCreate, commentsDelete, getCommentsGetByPostQueryKey } from 'api-client';
-	import { useQueryClient } from '@tanstack/svelte-query';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  commentsCreate,
+  commentsDelete,
+  createCommentsGetByPost,
+  getCommentsGetByPostQueryKey,
+} from 'api-client';
+import { Loader2, Send, Trash2 } from 'lucide-svelte';
+import { Avatar, Button, Input } from 'ui';
+import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 
-	type Props = {
-		postId: string;
-		currentUserId: string;
-	};
+type Props = {
+  postId: string;
+  currentUserId: string;
+};
 
-	let { postId, currentUserId }: Props = $props();
+let { postId, currentUserId }: Props = $props();
 
-	let commentText = $state('');
-	let submitting = $state(false);
-	let replyingTo = $state<string | null>(null);
-	let replyText = $state('');
-	let submittingReply = $state(false);
-	let expandedReplies = $state<Set<string>>(new Set());
+let commentText = $state('');
+let submitting = $state(false);
+let replyingTo = $state<string | null>(null);
+let replyText = $state('');
+let submittingReply = $state(false);
+let expandedReplies = $state<Set<string>>(new Set());
 
-	const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
-	const commentsQuery = createCommentsGetByPost(
-		() => postId,
-		() => ({ limit: 50 }),
-		() => ({
-			query: {
-				enabled: !!postId
-			}
-		})
-	);
+const commentsQuery = createCommentsGetByPost(
+  () => postId,
+  () => ({ limit: 50 }),
+  () => ({
+    query: {
+      enabled: !!postId,
+    },
+  }),
+);
 
-	const comments = $derived(commentsQuery.data?.comments);
+const comments = $derived(commentsQuery.data?.comments);
 
-	function formatRelativeTime(dateStr?: string): string {
-		if (!dateStr) return '';
-		const now = Date.now();
-		const then = new Date(dateStr).getTime();
-		const diff = now - then;
-		const seconds = Math.floor(diff / 1000);
-		if (seconds < 60) return 'just now';
-		const minutes = Math.floor(seconds / 60);
-		if (minutes < 60) return `${minutes}m`;
-		const hours = Math.floor(minutes / 60);
-		if (hours < 24) return `${hours}h`;
-		const days = Math.floor(hours / 24);
-		return `${days}d`;
-	}
+function formatRelativeTime(dateStr?: string): string {
+  if (!dateStr) return '';
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = now - then;
+  const seconds = Math.floor(diff / 1000);
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  return `${days}d`;
+}
 
-	async function handleSubmitComment() {
-		if (!commentText.trim() || submitting) return;
-		submitting = true;
-		try {
-			await commentsCreate(postId, {
-				body: JSON.stringify({ content: commentText.trim() }),
-				headers: { 'Content-Type': 'application/json' }
-			});
-			commentText = '';
-			queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
-		} finally {
-			submitting = false;
-		}
-	}
+async function handleSubmitComment() {
+  if (!commentText.trim() || submitting) return;
+  submitting = true;
+  try {
+    await commentsCreate(postId, {
+      body: JSON.stringify({ content: commentText.trim() }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    commentText = '';
+    queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+  } finally {
+    submitting = false;
+  }
+}
 
-	async function handleSubmitReply(parentId: string) {
-		if (!replyText.trim() || submittingReply) return;
-		submittingReply = true;
-		try {
-			await commentsCreate(postId, {
-				body: JSON.stringify({ content: replyText.trim(), parentId }),
-				headers: { 'Content-Type': 'application/json' }
-			});
-			replyText = '';
-			replyingTo = null;
-			queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
-		} finally {
-			submittingReply = false;
-		}
-	}
+async function handleSubmitReply(parentId: string) {
+  if (!replyText.trim() || submittingReply) return;
+  submittingReply = true;
+  try {
+    await commentsCreate(postId, {
+      body: JSON.stringify({ content: replyText.trim(), parentId }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    replyText = '';
+    replyingTo = null;
+    queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+  } finally {
+    submittingReply = false;
+  }
+}
 
-	async function handleDeleteComment(commentId: string) {
-		await commentsDelete(commentId);
-		queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
-	}
+async function handleDeleteComment(commentId: string) {
+  await commentsDelete(commentId);
+  queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+}
 
-	function toggleExpandReplies(commentId: string) {
-		const next = new Set(expandedReplies);
-		if (next.has(commentId)) {
-			next.delete(commentId);
-		} else {
-			next.add(commentId);
-		}
-		expandedReplies = next;
-	}
+function toggleExpandReplies(commentId: string) {
+  const next = new Set(expandedReplies);
+  if (next.has(commentId)) {
+    next.delete(commentId);
+  } else {
+    next.add(commentId);
+  }
+  expandedReplies = next;
+}
 
-	function handleCommentKeydown(e: KeyboardEvent) {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault();
-			handleSubmitComment();
-		}
-	}
+function handleCommentKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSubmitComment();
+  }
+}
 
-	function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault();
-			handleSubmitReply(parentId);
-		}
-	}
+function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSubmitReply(parentId);
+  }
+}
 </script>
 
 <div class="space-y-3">
@@ -172,6 +178,14 @@
 							>
 								<Trash2 size={12} />
 							</Button>
+						{:else if commentAuthor?.id}
+							<BlockMenuItem
+								variant="ghost"
+								size="xs"
+								targetUserId={String(commentAuthor.id)}
+								targetName={String(commentAuthor.name ?? commentAuthor.username ?? '')}
+								source="comment"
+							/>
 						{/if}
 					</div>
 				</div>
@@ -224,6 +238,16 @@
 									>
 										<Trash2 size={12} />
 									</Button>
+								{:else if replyAuthor?.id}
+									<div class="mt-1">
+										<BlockMenuItem
+											variant="ghost"
+											size="xs"
+											targetUserId={String(replyAuthor.id)}
+											targetName={String(replyAuthor.name ?? replyAuthor.username ?? '')}
+											source="comment_reply"
+										/>
+									</div>
 								{/if}
 							</div>
 						</div>

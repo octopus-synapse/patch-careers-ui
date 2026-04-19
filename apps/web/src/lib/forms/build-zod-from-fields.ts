@@ -1,4 +1,4 @@
-import { z, type ZodTypeAny } from 'zod';
+import { type ZodTypeAny, z } from 'zod';
 
 export interface FieldDescriptor {
   key: string;
@@ -10,7 +10,9 @@ export interface FieldDescriptor {
   pattern?: string;
 }
 
-export function buildZodFromFields(fields: FieldDescriptor[]): z.ZodObject<Record<string, ZodTypeAny>> {
+export function buildZodFromFields(
+  fields: FieldDescriptor[],
+): z.ZodObject<Record<string, ZodTypeAny>> {
   const shape: Record<string, ZodTypeAny> = {};
 
   for (const field of fields) {
@@ -25,10 +27,16 @@ export function buildZodFromFields(fields: FieldDescriptor[]): z.ZodObject<Recor
     }
 
     if (field.minLength !== undefined) {
-      schema = schema.min(field.minLength, `${field.label} must be at least ${field.minLength} characters`);
+      schema = schema.min(
+        field.minLength,
+        `${field.label} must be at least ${field.minLength} characters`,
+      );
     }
     if (field.maxLength !== undefined) {
-      schema = schema.max(field.maxLength, `${field.label} must be at most ${field.maxLength} characters`);
+      schema = schema.max(
+        field.maxLength,
+        `${field.label} must be at most ${field.maxLength} characters`,
+      );
     }
     if (field.pattern !== undefined) {
       schema = schema.regex(new RegExp(field.pattern), `${field.label} format is invalid`);

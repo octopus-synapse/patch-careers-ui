@@ -1,159 +1,255 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import {
-		createUsersGetPublicProfileByUsername,
-		createFollowGetSocialStats,
-		createFollowIsFollowing,
-		createFollowFollow,
-		createFollowUnfollow,
-		createAuthSession,
-		createConnectionGetConnectionStats,
-		createConnectionIsConnected,
-		createConnectionSendConnectionRequest,
-		getFollowGetSocialStatsQueryKey,
-		getFollowIsFollowingQueryKey,
-		getConnectionGetConnectionStatsQueryKey,
-		getConnectionIsConnectedQueryKey,
-		exportDownloadUserResumePDF
-	} from 'api-client';
-	import { chatState } from '$lib/chat-state.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Button } from 'ui';
-	import { Loader2, MapPin, Globe, ExternalLink, FileDown, MessageCircle, UserPlus } from 'lucide-svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createConnectionGetConnectionStats,
+  createConnectionIsConnected,
+  createConnectionSendConnectionRequest,
+  createConnectionWithdrawSentRequest,
+  createFollowFollow,
+  createFollowGetSocialStats,
+  createFollowIsFollowing,
+  createFollowUnfollow,
+  createUsersGetPublicProfileByUsername,
+  exportDownloadUserResumePDF,
+  getConnectionGetConnectionStatsQueryKey,
+  getConnectionIsConnectedQueryKey,
+  getFollowGetSocialStatsQueryKey,
+  getFollowIsFollowingQueryKey,
+} from 'api-client';
+import {
+  ExternalLink,
+  FileDown,
+  Globe,
+  Loader2,
+  MapPin,
+  MessageCircle,
+  MoreHorizontal,
+  UserPlus,
+  X,
+} from 'lucide-svelte';
+import { Button, Dropdown, toastState } from 'ui';
+import { page } from '$app/stores';
+import { track } from '$lib/analytics/track';
+import { useAuth } from '$lib/auth.svelte';
+import { chatState } from '$lib/chat-state.svelte';
+import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import ProfileActivityTabs from '$lib/components/profile/profile-activity-tabs.svelte';
+import ProfileBadges from '$lib/components/profile/profile-badges.svelte';
+import SkillsSection from '$lib/components/profile/skills-section.svelte';
+import SeoHead from '$lib/components/seo/seo-head.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const username = $derived($page.params.username);
+const username = $derived($page.params.username);
 
-	const auth = createAuthSession(() => ({ query: { retry: false } }));
-	const currentUserId = $derived(
-		String(auth.data?.user?.id ?? '')
-	);
-	const authenticated = $derived(auth.data?.authenticated);
+const auth = useAuth();
+const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+const authenticated = $derived(auth.data?.authenticated);
 
-	const profile = createUsersGetPublicProfileByUsername(
-		() => username ?? '',
-		() => ({ query: { enabled: !!username } })
-	);
+const profile = createUsersGetPublicProfileByUsername(
+  () => username ?? '',
+  () => ({ query: { enabled: !!username } }),
+);
 
-	const profileData = $derived(profile.data);
-	const user = $derived(profileData?.user);
-	const resume = $derived(profileData?.resume);
-	let downloading = $state(false);
-	let downloadError = $state<string | null>(null);
+const profileData = $derived(profile.data);
+const user = $derived(profileData?.user);
+const resume = $derived(profileData?.resume);
+let downloading = $state(false);
+let downloadError = $state<string | null>(null);
+let profileMenuOpen = $state(false);
 
-	async function downloadResume() {
-		if (!userId || downloading) return;
-		downloading = true;
-		downloadError = null;
-		try {
-			const res = await exportDownloadUserResumePDF(userId);
-			const resData = res?.data as { pdf?: string; filename?: string } | undefined;
-			if (!resData?.pdf) throw new Error('No PDF data returned');
-			const bytes = Uint8Array.from(atob(resData.pdf), (c) => c.charCodeAt(0));
-			const blob = new Blob([bytes], { type: 'application/pdf' });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = resData.filename ?? `${user?.name ?? username ?? 'resume'}.pdf`;
-			a.click();
-			URL.revokeObjectURL(url);
-		} catch (err) {
-			downloadError = err instanceof Error ? err.message : 'Failed to download resume';
-		} finally {
-			downloading = false;
-		}
-	}
+async function downloadResume() {
+  if (!userId || downloading) return;
+  downloading = true;
+  downloadError = null;
+  try {
+    const res = await exportDownloadUserResumePDF(userId);
+    const resData = res?.data as { pdf?: string; filename?: string } | undefined;
+    if (!resData?.pdf) throw new Error('No PDF data returned');
+    const bytes = Uint8Array.from(atob(resData.pdf), (c) => c.charCodeAt(0));
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = resData.filename ?? `${user?.name ?? username ?? 'resume'}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    downloadError = err instanceof Error ? err.message : 'Failed to download resume';
+  } finally {
+    downloading = false;
+  }
+}
 
-	const userId = $derived(user?.id ?? '');
-	const isOwnProfile = $derived(!!currentUserId && currentUserId === userId);
+let copiedLink = $state(false);
+async function copyPublicLink() {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    copiedLink = true;
+    setTimeout(() => (copiedLink = false), 2000);
+  } catch {
+    toastState.show('Falha ao copiar link.', 'danger');
+  }
+}
 
-	const socialStats = createFollowGetSocialStats(
-		() => userId,
-		() => ({ query: { enabled: !!userId } })
-	);
-	const stats = $derived(socialStats.data);
+const userId = $derived(user?.id ?? '');
+const isOwnProfile = $derived(!!currentUserId && currentUserId === userId);
 
-	const isFollowingQuery = createFollowIsFollowing(
-		() => userId,
-		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
-	);
-	const isFollowing = $derived(isFollowingQuery.data?.isFollowing);
+const socialStats = createFollowGetSocialStats(
+  () => userId,
+  () => ({ query: { enabled: !!userId } }),
+);
+// stats are read directly from socialStats.data via the per-stat $derived blocks below.
 
-	const queryClient = useQueryClient();
+const isFollowingQuery = createFollowIsFollowing(
+  () => userId,
+  () => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } }),
+);
+const isFollowing = $derived(isFollowingQuery.data?.isFollowing);
 
-	const followMutation = createFollowFollow(() => ({
-		mutation: {
-			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: getFollowGetSocialStatsQueryKey(userId) });
-				queryClient.invalidateQueries({ queryKey: getFollowIsFollowingQueryKey(userId) });
-			}
-		}
-	}));
+const queryClient = useQueryClient();
 
-	const unfollowMutation = createFollowUnfollow(() => ({
-		mutation: {
-			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: getFollowGetSocialStatsQueryKey(userId) });
-				queryClient.invalidateQueries({ queryKey: getFollowIsFollowingQueryKey(userId) });
-			}
-		}
-	}));
+const followMutation = createFollowFollow(() => ({
+  mutation: {
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: getFollowGetSocialStatsQueryKey(userId) });
+      queryClient.invalidateQueries({ queryKey: getFollowIsFollowingQueryKey(userId) });
+      track('user_followed', { targetUserId: userId });
+    },
+    onError() {
+      toastState.show(locale.t('network.followError'), 'danger');
+    },
+  },
+}));
 
-	// Connection queries
-	const connectionStats = createConnectionGetConnectionStats(
-		() => userId,
-		() => ({ query: { enabled: !!userId } })
-	);
-	const connectionCount = $derived(connectionStats.data?.connections);
+const unfollowMutation = createFollowUnfollow(() => ({
+  mutation: {
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: getFollowGetSocialStatsQueryKey(userId) });
+      queryClient.invalidateQueries({ queryKey: getFollowIsFollowingQueryKey(userId) });
+      track('user_unfollowed', { targetUserId: userId });
+    },
+    onError() {
+      toastState.show(locale.t('network.unfollowError'), 'danger');
+    },
+  },
+}));
 
-	const isConnectedQuery = createConnectionIsConnected(
-		() => userId,
-		() => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } })
-	);
-	const isConnected = $derived(isConnectedQuery.data?.isConnected);
+// Connection queries
+const connectionStats = createConnectionGetConnectionStats(
+  () => userId,
+  () => ({ query: { enabled: !!userId } }),
+);
+const connectionCount = $derived(connectionStats.data?.connections);
 
-	const connectMutation = createConnectionSendConnectionRequest(() => ({
-		mutation: {
-			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionStatsQueryKey(userId) });
-				queryClient.invalidateQueries({ queryKey: getConnectionIsConnectedQueryKey(userId) });
-			}
-		}
-	}));
+const followersCount = $derived(Number(socialStats.data?.followers ?? 0));
+const followingCount = $derived(Number(socialStats.data?.following ?? 0));
+const connectionsCount = $derived(Number(connectionCount ?? 0));
+const statBadgeBase =
+  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors border-gray-200 bg-gray-50 text-gray-700 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-300';
+const statBadgeClickable = 'hover:bg-gray-100 dark:hover:bg-neutral-700/60 cursor-pointer';
+const statBadgeReadOnly =
+  'inline-flex items-center gap-1.5 px-3 py-1 text-xs font-normal text-gray-600 dark:text-neutral-400';
 
-	let connectionRequestSent = $state(false);
+const isConnectedQuery = createConnectionIsConnected(
+  () => userId,
+  () => ({ query: { enabled: !!userId && !!currentUserId && !isOwnProfile } }),
+);
+const isConnected = $derived(isConnectedQuery.data?.isConnected);
+const serverPendingSentId = $derived(isConnectedQuery.data?.pendingSentConnectionId ?? null);
+/** Treat the request as pending the moment the user clicks, so Connect
+ *  swaps to Withdraw immediately — before the query invalidation lands. */
+let optimisticPending = $state(false);
+const pendingSentConnectionId = $derived(
+  serverPendingSentId ?? (optimisticPending ? 'pending' : null),
+);
 
-	function sendConnectionRequest() {
-		connectMutation.mutate({ userId });
-		connectionRequestSent = true;
-	}
+const t = $derived(locale.t);
 
-	function toggleFollow() {
-		if (isFollowing) {
-			unfollowMutation.mutate({ userId });
-		} else {
-			followMutation.mutate({ userId });
-		}
-	}
+const connectMutation = createConnectionSendConnectionRequest(() => ({
+  mutation: {
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionStatsQueryKey(userId) });
+      queryClient.invalidateQueries({ queryKey: getConnectionIsConnectedQueryKey(userId) });
+      track('connection_requested', { targetUserId: userId });
+    },
+    onError() {
+      optimisticPending = false;
+      toastState.show(t('network.connectError'), 'danger');
+    },
+  },
+}));
 
-	function openChat() {
-		chatState.startConversationWith(userId);
-	}
+const withdrawMutation = createConnectionWithdrawSentRequest(() => ({
+  mutation: {
+    onSuccess() {
+      optimisticPending = false;
+      queryClient.invalidateQueries({ queryKey: getConnectionIsConnectedQueryKey(userId) });
+      track('connection_invite_withdrawn', { targetUserId: userId });
+    },
+    onError() {
+      toastState.show(t('network.withdrawError'), 'danger');
+    },
+  },
+}));
 
-	// Generate a deterministic gradient from username
-	function bannerGradient(name: string): string {
-		let hash = 0;
-		for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-		const h1 = Math.abs(hash % 360);
-		const h2 = (h1 + 40) % 360;
-		return `linear-gradient(135deg, hsl(${h1}, 50%, 40%), hsl(${h2}, 60%, 30%))`;
-	}
+function sendConnectionRequest() {
+  if (connectMutation.isPending || withdrawMutation.isPending) return;
+  optimisticPending = true;
+  connectMutation.mutate({ userId });
+}
 
+function withdrawSentRequest() {
+  if (withdrawMutation.isPending || connectMutation.isPending) return;
+  if (!serverPendingSentId) {
+    // Optimistic-only (server hasn't confirmed yet). Flip back; invalidation
+    // will reconcile when the pending connect resolves.
+    optimisticPending = false;
+    return;
+  }
+  withdrawMutation.mutate({ id: serverPendingSentId });
+}
 
+function toggleFollow() {
+  if (isFollowing) {
+    unfollowMutation.mutate({ userId });
+  } else {
+    followMutation.mutate({ userId });
+  }
+}
+
+function openChat() {
+  chatState.startConversationWith(userId);
+}
+
+// Generate a deterministic gradient from username
+function bannerGradient(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  const h1 = Math.abs(hash % 360);
+  const h2 = (h1 + 40) % 360;
+  return `linear-gradient(135deg, hsl(${h1}, 50%, 40%), hsl(${h2}, 60%, 30%))`;
+}
 </script>
 
-<svelte:head>
-	<title>{user?.name ?? user?.username ?? username} — Profile</title>
-</svelte:head>
+<SeoHead
+	title={user?.name ?? user?.username ?? username ?? 'Profile'}
+	description={user?.bio
+		? user.bio.slice(0, 180)
+		: `${user?.name ?? username ?? ''} — professional profile and resume on Patch Careers.`}
+	image={user?.photoURL ?? undefined}
+	type="profile"
+	jsonLd={user
+		? {
+				'@context': 'https://schema.org',
+				'@type': 'Person',
+				name: user.name ?? user.username,
+				alternateName: user.username,
+				image: user.photoURL,
+				url: $page.url.toString(),
+				jobTitle: resume?.jobTitle ?? undefined
+			}
+		: undefined}
+/>
 
 {#if profile.isLoading}
 	<div class="flex h-screen items-center justify-center">
@@ -207,22 +303,30 @@
 								onclick={toggleFollow}
 								class="rounded-full px-5 py-1.5 text-[11px]"
 							>
-								{isFollowing ? 'Following' : 'Follow'}
+								{isFollowing ? t('network.following') : t('network.follow')}
 							</Button>
 							{#if !isConnected}
-								{#if connectionRequestSent}
-									<span class="rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-60 border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800">
-										Sent
-									</span>
+								{#if pendingSentConnectionId}
+									<Button
+										variant="outline"
+										size="sm"
+										onclick={withdrawSentRequest}
+										disabled={withdrawMutation.isPending}
+										class="rounded-full px-4 py-1.5 text-[11px]"
+									>
+										<X size={13} />
+										{t('network.withdrawInvite')}
+									</Button>
 								{:else}
 									<Button
 										variant="solid"
 										size="sm"
 										onclick={sendConnectionRequest}
+										disabled={connectMutation.isPending}
 										class="rounded-full px-4 py-1.5 text-[11px]"
 									>
 										<UserPlus size={13} />
-										Connect
+										{t('network.connect')}
 									</Button>
 								{/if}
 							{/if}
@@ -235,6 +339,25 @@
 								<MessageCircle size={13} />
 								Message
 							</Button>
+							<Dropdown open={profileMenuOpen} align="right" onclose={() => (profileMenuOpen = false)}>
+								{#snippet trigger()}
+									<Button
+										variant="outline"
+										size="sm"
+										onclick={() => (profileMenuOpen = !profileMenuOpen)}
+										class="rounded-full px-2 py-1.5"
+										aria-label={t('network.more')}
+									>
+										<MoreHorizontal size={14} />
+									</Button>
+								{/snippet}
+								<BlockMenuItem
+									targetUserId={userId}
+									targetName={String(user.name ?? user.username ?? username ?? '')}
+									source="profile_header"
+									onbeforeConfirm={() => (profileMenuOpen = false)}
+								/>
+							</Dropdown>
 						</div>
 					{/if}
 				</div>
@@ -243,6 +366,13 @@
 			<!-- Bio -->
 			{#if user.bio}
 				<p class="mt-4 max-w-xl text-sm leading-relaxed text-gray-800 dark:text-neutral-200">{user.bio}</p>
+			{/if}
+
+			<!-- Badges -->
+			{#if userId}
+				<div class="mt-3">
+					<ProfileBadges {userId} />
+				</div>
 			{/if}
 
 			<!-- Meta row -->
@@ -263,20 +393,35 @@
 
 			<!-- Social links + Stats -->
 			<div class="mt-4 flex flex-wrap items-center gap-5 border-b pb-5 border-gray-200 dark:border-neutral-800">
-				<!-- Stats -->
-				<div class="flex items-center gap-4 text-sm">
-					<span>
-						<strong class="text-gray-800 dark:text-neutral-200">{stats?.followers}</strong>
-						<span class="text-gray-500 dark:text-neutral-500"> followers</span>
-					</span>
-					<span>
-						<strong class="text-gray-800 dark:text-neutral-200">{stats?.following}</strong>
-						<span class="text-gray-500 dark:text-neutral-500"> following</span>
-					</span>
-					<span>
-						<strong class="text-gray-800 dark:text-neutral-200">{connectionCount}</strong>
-						<span class="text-gray-500 dark:text-neutral-500"> connections</span>
-					</span>
+				<!-- Stats badges (links only on own profile) -->
+				<div class="flex flex-wrap items-center gap-2">
+					{#if isOwnProfile}
+						<a href="/mynetwork/followers" class="{statBadgeBase} {statBadgeClickable}">
+							<span class="tabular-nums font-semibold text-gray-900 dark:text-neutral-100">{followersCount}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{t('network.statFollowersLabel', { count: followersCount })}</span>
+						</a>
+						<a href="/mynetwork/following" class="{statBadgeBase} {statBadgeClickable}">
+							<span class="tabular-nums font-semibold text-gray-900 dark:text-neutral-100">{followingCount}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{t('network.statFollowingLabel')}</span>
+						</a>
+						<a href="/mynetwork/connections" class="{statBadgeBase} {statBadgeClickable}">
+							<span class="tabular-nums font-semibold text-gray-900 dark:text-neutral-100">{connectionsCount}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{t('network.statConnectionsLabel', { count: connectionsCount })}</span>
+						</a>
+					{:else}
+						<span class={statBadgeReadOnly}>
+							<span class="tabular-nums font-semibold text-gray-700 dark:text-neutral-300">{followersCount}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{t('network.statFollowersLabel', { count: followersCount })}</span>
+						</span>
+						<span class={statBadgeReadOnly}>
+							<span class="tabular-nums font-semibold text-gray-700 dark:text-neutral-300">{followingCount}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{t('network.statFollowingLabel')}</span>
+						</span>
+						<span class={statBadgeReadOnly}>
+							<span class="tabular-nums font-semibold text-gray-700 dark:text-neutral-300">{connectionsCount}</span>
+							<span class="text-gray-500 dark:text-neutral-500">{t('network.statConnectionsLabel', { count: connectionsCount })}</span>
+						</span>
+					{/if}
 				</div>
 
 				<!-- Social icons -->
@@ -305,6 +450,22 @@
 					{/if}
 				</div>
 			</div>
+
+			<!-- Skills + endorsements -->
+			{#if userId}
+				<div class="mt-6">
+					<SkillsSection
+						{userId}
+						{isOwnProfile}
+						viewerAuthenticated={Boolean(authenticated)}
+					/>
+				</div>
+			{/if}
+
+			<!-- Activity tabs -->
+			{#if userId}
+				<ProfileActivityTabs {userId} />
+			{/if}
 
 			<!-- Resume download -->
 			{#if resume && authenticated}

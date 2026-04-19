@@ -69,8 +69,6 @@ import type {
   OnboardingSaveStepDataParams,
   OnboardingSessionDto,
   OnboardingStatusResponseDto,
-  OnboardingValidateStepBody,
-  OnboardingValidateStepParams,
   SaveProgressRequestDto,
   SaveProgressResponseDto
 } from '../../models';
@@ -497,91 +495,6 @@ export const createOnboardingGotoStep = <TError = unknown,
         TContext
       > => {
       return createMutation(() => ({ ...getOnboardingGotoStepMutationOptions(options?.()) }), queryClient);
-    }
-    /**
- * @summary Validate step fields without saving
- */
-export type onboardingValidateStepResponse200 = void
-
-export type onboardingValidateStepResponseSuccess = onboardingValidateStepResponse200
-;
-
-export type onboardingValidateStepResponse = (onboardingValidateStepResponseSuccess)
-
-export const getOnboardingValidateStepUrl = (params?: OnboardingValidateStepParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/v1/onboarding/session/validate?${stringifiedParams}` : `/api/v1/onboarding/session/validate`
-}
-
-export const onboardingValidateStep = async (onboardingValidateStepBody: OnboardingValidateStepBody,
-    params?: OnboardingValidateStepParams, options?: RequestInit): Promise<onboardingValidateStepResponse> => {
-
-  return customFetch<onboardingValidateStepResponse>(getOnboardingValidateStepUrl(params),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      onboardingValidateStepBody,)
-  }
-);}
-
-
-
-
-export const getOnboardingValidateStepMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingValidateStep>>, TError,{data: OnboardingValidateStepBody;params?: OnboardingValidateStepParams}, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof onboardingValidateStep>>, TError,{data: OnboardingValidateStepBody;params?: OnboardingValidateStepParams}, TContext> => {
-
-const mutationKey = ['onboardingValidateStep'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof onboardingValidateStep>>, {data: OnboardingValidateStepBody;params?: OnboardingValidateStepParams}> = (props) => {
-          const {data,params} = props ?? {};
-
-          return  onboardingValidateStep(data,params,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type OnboardingValidateStepMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingValidateStep>>>
-    export type OnboardingValidateStepMutationBody = OnboardingValidateStepBody
-    export type OnboardingValidateStepMutationError = unknown
-
-    /**
- * @summary Validate step fields without saving
- */
-export const createOnboardingValidateStep = <TError = unknown,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingValidateStep>>, TError,{data: OnboardingValidateStepBody;params?: OnboardingValidateStepParams}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient): CreateMutationResult<
-        Awaited<ReturnType<typeof onboardingValidateStep>>,
-        TError,
-        {data: OnboardingValidateStepBody;params?: OnboardingValidateStepParams},
-        TContext
-      > => {
-      return createMutation(() => ({ ...getOnboardingValidateStepMutationOptions(options?.()) }), queryClient);
     }
     /**
  * @summary Save current step data without advancing

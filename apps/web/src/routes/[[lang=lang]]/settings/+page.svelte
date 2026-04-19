@@ -1,329 +1,338 @@
 <script lang="ts">
-	import { colorSchema } from '$lib/color-schema.svelte';
-	import { locale } from '$lib/locale.svelte';
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
-	import { SegmentToggle, Label, Input, Textarea } from 'ui';
-	import type { Locale } from 'i18n';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import {
-		Loader2,
-		User,
-		AtSign,
-		Lock,
-		ShieldCheck,
-		Palette,
-		AlertTriangle,
-		Check,
-		X,
-		Sun,
-		Moon,
-		Globe,
-		Download,
-		Trash2,
-		Eye,
-		EyeOff,
-		Copy
-	} from 'lucide-svelte';
-	import {
-		createAuthSession,
-		createUsersGetProfile,
-		createUsersUpdateProfile,
-		createUsersUpdateUsername,
-		createUsersCheckUsernameAvailability,
-		createChangePasswordHandle,
-		createTwoFactorAuthSetup,
-		createTwoFactorAuthVerify,
-		createTwoFactorAuthGetStatus,
-		createAuthDisable,
-		createTwoFactorAuthRegenerate,
-		createDeleteAccountHandle,
-		getUsersGetProfileQueryKey,
-		getTwoFactorAuthGetStatusQueryKey,
-		customFetch
-	} from 'api-client';
-	import { UsersUpdateProfileBody, ChangePasswordHandleBody } from 'api-client/zod';
-	import { createForm } from '$lib/forms/create-form.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createAuthDisable,
+  createAuthSession,
+  createChangePasswordHandle,
+  createDeleteAccountHandle,
+  createTwoFactorAuthGetStatus,
+  createTwoFactorAuthRegenerate,
+  createTwoFactorAuthSetup,
+  createTwoFactorAuthVerify,
+  createUsersCheckUsernameAvailability,
+  createUsersGetProfile,
+  createUsersUpdateProfile,
+  createUsersUpdateUsername,
+  customFetch,
+  getTwoFactorAuthGetStatusQueryKey,
+  getUsersGetProfileQueryKey,
+} from 'api-client';
+import { ChangePasswordHandleBody, UsersUpdateProfileBody } from 'api-client/zod';
+import type { Locale } from 'i18n';
+import {
+  AlertTriangle,
+  AtSign,
+  Check,
+  Copy,
+  Download,
+  Eye,
+  EyeOff,
+  Globe,
+  Loader2,
+  Lock,
+  Moon,
+  Palette,
+  ShieldCheck,
+  Sun,
+  Trash2,
+  User,
+  X,
+} from 'lucide-svelte';
+import { Input, Label, SegmentToggle, Textarea } from 'ui';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import { colorSchema } from '$lib/color-schema.svelte';
+import { createForm } from '$lib/forms/create-form.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	// Auth check
-	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authenticated = $derived(auth.data?.authenticated ?? false);
+// Auth check
+const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
+const authenticated = $derived(auth.data?.authenticated ?? false);
 
-	$effect(() => {
-		if (!auth.isLoading && !authenticated) goto('/login');
-	});
+$effect(() => {
+  if (!auth.isLoading && !authenticated) goto('/login');
+});
 
-	const successText = 'text-emerald-500';
-	const errorText = 'text-red-500';
+const successText = 'text-emerald-500';
+const errorText = 'text-red-500';
 
-	// ===== PROFILE SECTION =====
-	const profileQuery = createUsersGetProfile(() => ({
-		query: { enabled: browser && authenticated }
-	}));
-	const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
+// ===== PROFILE SECTION =====
+const profileQuery = createUsersGetProfile(() => ({
+  query: { enabled: browser && authenticated },
+}));
+const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
 
-	let profileSaved = $state(false);
+let profileSaved = $state(false);
 
-	const updateProfile = createUsersUpdateProfile(() => ({
-		mutation: {
-			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: getUsersGetProfileQueryKey() });
-				profileSaved = true;
-				setTimeout(() => profileSaved = false, 3000);
-			}
-		}
-	}));
+const updateProfile = createUsersUpdateProfile(() => ({
+  mutation: {
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: getUsersGetProfileQueryKey() });
+      profileSaved = true;
+      setTimeout(() => (profileSaved = false), 3000);
+    },
+  },
+}));
 
-	const profileForm = createForm({
-		schema: UsersUpdateProfileBody,
-		initial: { name: '', bio: '', location: '', website: '', linkedin: '', github: '' },
-		mutation: updateProfile,
-		transform: (v) => ({
-			name: v.name?.trim() || undefined,
-			bio: v.bio?.trim() || undefined,
-			location: v.location?.trim() || undefined,
-			website: v.website?.trim() || undefined,
-			linkedin: v.linkedin?.trim() || undefined,
-			github: v.github?.trim() || undefined
-		})
-	});
+const profileForm = createForm({
+  schema: UsersUpdateProfileBody,
+  initial: { name: '', bio: '', location: '', website: '', linkedin: '', github: '' },
+  mutation: updateProfile,
+  transform: (v) => ({
+    name: v.name?.trim() || undefined,
+    bio: v.bio?.trim() || undefined,
+    location: v.location?.trim() || undefined,
+    website: v.website?.trim() || undefined,
+    linkedin: v.linkedin?.trim() || undefined,
+    github: v.github?.trim() || undefined,
+  }),
+});
 
-	$effect(() => {
-		if (profileData) {
-			profileForm.values.name = profileData.name ?? '';
-			profileForm.values.bio = profileData.bio ?? '';
-			profileForm.values.location = profileData.location ?? '';
-			profileForm.values.website = profileData.website ?? '';
-			profileForm.values.linkedin = profileData.linkedin ?? '';
-			profileForm.values.github = profileData.github ?? '';
-		}
-	});
+$effect(() => {
+  if (profileData) {
+    profileForm.values.name = profileData.name ?? '';
+    profileForm.values.bio = profileData.bio ?? '';
+    profileForm.values.location = profileData.location ?? '';
+    profileForm.values.website = profileData.website ?? '';
+    profileForm.values.linkedin = profileData.linkedin ?? '';
+    profileForm.values.github = profileData.github ?? '';
+  }
+});
 
-	function handleSaveProfile() {
-		profileForm.submit();
-	}
+function handleSaveProfile() {
+  profileForm.submit();
+}
 
-	// ===== USERNAME SECTION =====
-	const currentUsername = $derived(profileData?.username ?? '');
-	let newUsername = $state('');
-	let usernameDebounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
-	let debouncedUsername = $state('');
-	let usernameSaved = $state(false);
+// ===== USERNAME SECTION =====
+const currentUsername = $derived(profileData?.username ?? '');
+let newUsername = $state('');
+let usernameDebounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
+let debouncedUsername = $state('');
+let usernameSaved = $state(false);
 
-	$effect(() => {
-		if (usernameDebounceTimer) clearTimeout(usernameDebounceTimer);
-		if (newUsername.length >= 3) {
-			usernameDebounceTimer = setTimeout(() => {
-				debouncedUsername = newUsername;
-			}, 500);
-		} else {
-			debouncedUsername = '';
-		}
-	});
+$effect(() => {
+  if (usernameDebounceTimer) clearTimeout(usernameDebounceTimer);
+  if (newUsername.length >= 3) {
+    usernameDebounceTimer = setTimeout(() => {
+      debouncedUsername = newUsername;
+    }, 500);
+  } else {
+    debouncedUsername = '';
+  }
+});
 
-	const usernameCheck = createUsersCheckUsernameAvailability(
-		() => ({ username: debouncedUsername }),
-		() => ({ query: { enabled: browser && debouncedUsername.length >= 3 } })
-	);
-	const usernameAvailable = $derived((usernameCheck.data as Record<string, boolean> | undefined)?.available);
+const usernameCheck = createUsersCheckUsernameAvailability(
+  () => ({ username: debouncedUsername }),
+  () => ({ query: { enabled: browser && debouncedUsername.length >= 3 } }),
+);
+const usernameAvailable = $derived(
+  (usernameCheck.data as Record<string, boolean> | undefined)?.available,
+);
 
-	const updateUsername = createUsersUpdateUsername(() => ({
-		mutation: {
-			onSuccess() {
-				queryClient.invalidateQueries({ queryKey: getUsersGetProfileQueryKey() });
-				newUsername = '';
-				debouncedUsername = '';
-				usernameSaved = true;
-				setTimeout(() => usernameSaved = false, 3000);
-			}
-		}
-	}));
+const updateUsername = createUsersUpdateUsername(() => ({
+  mutation: {
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: getUsersGetProfileQueryKey() });
+      newUsername = '';
+      debouncedUsername = '';
+      usernameSaved = true;
+      setTimeout(() => (usernameSaved = false), 3000);
+    },
+  },
+}));
 
-	function handleSaveUsername() {
-		if (newUsername && usernameAvailable) {
-			updateUsername.mutate({ data: { username: newUsername } });
-		}
-	}
+function handleSaveUsername() {
+  if (newUsername && usernameAvailable) {
+    updateUsername.mutate({ data: { username: newUsername } });
+  }
+}
 
-	// ===== PASSWORD SECTION =====
-	let confirmPassword = $state('');
-	let showCurrentPassword = $state(false);
-	let showNewPassword = $state(false);
-	let passwordMessage = $state<{ type: 'success' | 'error'; text: string } | null>(null);
+// ===== PASSWORD SECTION =====
+let confirmPassword = $state('');
+let showCurrentPassword = $state(false);
+let showNewPassword = $state(false);
+let passwordMessage = $state<{ type: 'success' | 'error'; text: string } | null>(null);
 
-	const changePassword = createChangePasswordHandle(() => ({
-		mutation: {
-			onSuccess() {
-				passwordForm.reset();
-				confirmPassword = '';
-				passwordMessage = { type: 'success', text: t('settings.passwordChanged') };
-				setTimeout(() => passwordMessage = null, 5000);
-			},
-			onError() {
-				passwordMessage = { type: 'error', text: t('settings.passwordError') };
-				setTimeout(() => passwordMessage = null, 5000);
-			}
-		}
-	}));
+const changePassword = createChangePasswordHandle(() => ({
+  mutation: {
+    onSuccess() {
+      passwordForm.reset();
+      confirmPassword = '';
+      passwordMessage = { type: 'success', text: t('settings.passwordChanged') };
+      setTimeout(() => (passwordMessage = null), 5000);
+    },
+    onError() {
+      passwordMessage = { type: 'error', text: t('settings.passwordError') };
+      setTimeout(() => (passwordMessage = null), 5000);
+    },
+  },
+}));
 
-	const passwordForm = createForm({
-		schema: ChangePasswordHandleBody,
-		initial: { currentPassword: '', newPassword: '' },
-		mutation: changePassword
-	});
+const passwordForm = createForm({
+  schema: ChangePasswordHandleBody,
+  initial: { currentPassword: '', newPassword: '' },
+  mutation: changePassword,
+});
 
-	const passwordsMatch = $derived(passwordForm.values.newPassword === confirmPassword);
-	const passwordValid = $derived(
-		passwordForm.values.newPassword.length >= 8 &&
-			passwordsMatch &&
-			passwordForm.values.currentPassword.length > 0
-	);
+const passwordsMatch = $derived(passwordForm.values.newPassword === confirmPassword);
+const passwordValid = $derived(
+  passwordForm.values.newPassword.length >= 8 &&
+    passwordsMatch &&
+    passwordForm.values.currentPassword.length > 0,
+);
 
-	function handleChangePassword() {
-		if (!passwordValid) return;
-		passwordForm.submit();
-	}
+function handleChangePassword() {
+  if (!passwordValid) return;
+  passwordForm.submit();
+}
 
-	// ===== 2FA SECTION =====
-	const tfaStatus = createTwoFactorAuthGetStatus(() => ({
-		query: { enabled: browser && authenticated }
-	}));
-	const tfaData = $derived(tfaStatus.data as Record<string, unknown> | undefined);
-	const tfaEnabled = $derived(Boolean(tfaData?.enabled));
-	const backupCodesRemaining = $derived(Number(tfaData?.backupCodesRemaining ?? 0));
+// ===== 2FA SECTION =====
+const tfaStatus = createTwoFactorAuthGetStatus(() => ({
+  query: { enabled: browser && authenticated },
+}));
+const tfaData = $derived(tfaStatus.data as Record<string, unknown> | undefined);
+const tfaEnabled = $derived(Boolean(tfaData?.enabled));
+const backupCodesRemaining = $derived(Number(tfaData?.backupCodesRemaining ?? 0));
 
-	let tfaStep = $state<'idle' | 'setup' | 'verify'>('idle');
-	let tfaCode = $state('');
-	let tfaSetupData = $state<{ qrCode?: string; secret?: string } | null>(null);
-	let tfaBackupCodes = $state<string[] | null>(null);
-	let showDisableConfirm = $state(false);
+let tfaStep = $state<'idle' | 'setup' | 'verify'>('idle');
+let tfaCode = $state('');
+let tfaSetupData = $state<{ qrCode?: string; secret?: string } | null>(null);
+let tfaBackupCodes = $state<string[] | null>(null);
+let showDisableConfirm = $state(false);
 
-	const setupTfa = createTwoFactorAuthSetup(() => ({
-		mutation: {
-			onSuccess(data) {
-				tfaSetupData = { qrCode: data.qrCode, secret: data.secret };
-				tfaStep = 'verify';
-			}
-		}
-	}));
+const setupTfa = createTwoFactorAuthSetup(() => ({
+  mutation: {
+    onSuccess(data) {
+      tfaSetupData = { qrCode: data.qrCode, secret: data.secret };
+      tfaStep = 'verify';
+    },
+  },
+}));
 
-	const verifyTfa = createTwoFactorAuthVerify(() => ({
-		mutation: {
-			onSuccess(data) {
-				tfaBackupCodes = data.backupCodes;
-				tfaStep = 'idle';
-				tfaCode = '';
-				queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
-			}
-		}
-	}));
+const verifyTfa = createTwoFactorAuthVerify(() => ({
+  mutation: {
+    onSuccess(data) {
+      tfaBackupCodes = data.backupCodes;
+      tfaStep = 'idle';
+      tfaCode = '';
+      queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
+    },
+  },
+}));
 
-	const disableTfa = createAuthDisable(() => ({
-		mutation: {
-			onSuccess() {
-				showDisableConfirm = false;
-				queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
-			}
-		}
-	}));
+const disableTfa = createAuthDisable(() => ({
+  mutation: {
+    onSuccess() {
+      showDisableConfirm = false;
+      queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
+    },
+  },
+}));
 
-	const regenerateCodes = createTwoFactorAuthRegenerate(() => ({
-		mutation: {
-			onSuccess(data) {
-				tfaBackupCodes = data.backupCodes;
-				queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
-			}
-		}
-	}));
+const regenerateCodes = createTwoFactorAuthRegenerate(() => ({
+  mutation: {
+    onSuccess(data) {
+      tfaBackupCodes = data.backupCodes;
+      queryClient.invalidateQueries({ queryKey: getTwoFactorAuthGetStatusQueryKey() });
+    },
+  },
+}));
 
-	function handleSetup2fa() {
-		tfaStep = 'setup';
-		setupTfa.mutate();
-	}
+function handleSetup2fa() {
+  tfaStep = 'setup';
+  setupTfa.mutate();
+}
 
-	function handleVerify2fa() {
-		if (tfaCode.length > 0) {
-			verifyTfa.mutate({ data: { code: tfaCode } });
-		}
-	}
+function handleVerify2fa() {
+  if (tfaCode.length > 0) {
+    verifyTfa.mutate({ data: { code: tfaCode } });
+  }
+}
 
-	function handleDisable2fa() {
-		disableTfa.mutate();
-	}
+function handleDisable2fa() {
+  disableTfa.mutate();
+}
 
-	function handleRegenerateCodes() {
-		regenerateCodes.mutate();
-	}
+function handleRegenerateCodes() {
+  regenerateCodes.mutate();
+}
 
-	function copyBackupCodes() {
-		if (tfaBackupCodes) {
-			navigator.clipboard.writeText(tfaBackupCodes.join('\n'));
-		}
-	}
+function copyBackupCodes() {
+  if (tfaBackupCodes) {
+    navigator.clipboard.writeText(tfaBackupCodes.join('\n'));
+  }
+}
 
-	// ===== PREFERENCES SECTION =====
-	const themeOptions = [{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }];
-	const localeOptions = $derived(locale.locales.map((l: string) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })));
+// ===== PREFERENCES SECTION =====
+const themeOptions = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+];
+const localeOptions = $derived(
+  locale.locales.map((l: string) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })),
+);
 
-	function handleThemeToggle(value: string) {
-		if (value !== colorSchema.mode) colorSchema.toggle();
-	}
+function handleThemeToggle(value: string) {
+  if (value !== colorSchema.mode) colorSchema.toggle();
+}
 
-	function handleLocaleChange(value: string) {
-		locale.set(value as Locale);
-	}
+function handleLocaleChange(value: string) {
+  locale.set(value as Locale);
+}
 
-	// ===== DANGER ZONE =====
-	let deleteConfirmation = $state('');
-	let showDeleteModal = $state(false);
-	let isExporting = $state(false);
+// ===== DANGER ZONE =====
+let deleteConfirmation = $state('');
+let showDeleteModal = $state(false);
+let isExporting = $state(false);
 
-	const deleteAccount = createDeleteAccountHandle(() => ({
-		mutation: {
-			onSuccess() {
-				goto('/login');
-			}
-		}
-	}));
+const deleteAccount = createDeleteAccountHandle(() => ({
+  mutation: {
+    onSuccess() {
+      goto('/login');
+    },
+  },
+}));
 
-	async function handleExportData() {
-		isExporting = true;
-		try {
-			const { userConsentExportData } = await import('api-client');
-			const response = await userConsentExportData();
-			const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = 'my-data-export.json';
-			a.click();
-			URL.revokeObjectURL(url);
-		} finally {
-			isExporting = false;
-		}
-	}
+async function handleExportData() {
+  isExporting = true;
+  try {
+    const { userConsentExportData } = await import('api-client');
+    const response = await userConsentExportData();
+    const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'my-data-export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  } finally {
+    isExporting = false;
+  }
+}
 
-	function handleDeleteAccount() {
-		if (deleteConfirmation === 'DELETE MY ACCOUNT') {
-			deleteAccount.mutate({ data: { confirmationPhrase: deleteConfirmation } });
-		}
-	}
+function handleDeleteAccount() {
+  if (deleteConfirmation === 'DELETE MY ACCOUNT') {
+    deleteAccount.mutate({ data: { confirmationPhrase: deleteConfirmation } });
+  }
+}
 
-	// Sidebar sections
-	type SectionId = 'profile' | 'username' | 'password' | 'twoFactor' | 'preferences' | 'danger';
-	const sections: { id: SectionId; icon: typeof User; labelKey: string }[] = [
-		{ id: 'profile', icon: User, labelKey: 'settings.profile' },
-		{ id: 'username', icon: AtSign, labelKey: 'settings.username' },
-		{ id: 'password', icon: Lock, labelKey: 'settings.password' },
-		{ id: 'twoFactor', icon: ShieldCheck, labelKey: 'settings.twoFactor' },
-		{ id: 'preferences', icon: Palette, labelKey: 'settings.preferences' },
-		{ id: 'danger', icon: AlertTriangle, labelKey: 'settings.dangerZone' }
-	];
-	let activeSection = $state<SectionId>('profile');
-	const activeLabel = $derived(t(sections.find(s => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile');
+// Sidebar sections
+type SectionId = 'profile' | 'username' | 'password' | 'twoFactor' | 'preferences' | 'danger';
+const sections: { id: SectionId; icon: typeof User; labelKey: string }[] = [
+  { id: 'profile', icon: User, labelKey: 'settings.profile' },
+  { id: 'username', icon: AtSign, labelKey: 'settings.username' },
+  { id: 'password', icon: Lock, labelKey: 'settings.password' },
+  { id: 'twoFactor', icon: ShieldCheck, labelKey: 'settings.twoFactor' },
+  { id: 'preferences', icon: Palette, labelKey: 'settings.preferences' },
+  { id: 'danger', icon: AlertTriangle, labelKey: 'settings.dangerZone' },
+];
+let activeSection = $state<SectionId>('profile');
+const activeLabel = $derived(
+  t(sections.find((s) => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile',
+);
 </script>
 
 <svelte:head>

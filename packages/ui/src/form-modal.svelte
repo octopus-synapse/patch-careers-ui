@@ -1,29 +1,29 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import Modal from './modal.svelte';
-	import Button from './button.svelte';
+import type { Snippet } from 'svelte';
+import Button from './button.svelte';
+import Modal from './modal.svelte';
 
-	type Props = {
-		open: boolean;
-		onClose: () => void;
-		onSubmit: () => void;
-		title?: string;
-		submitLabel?: string;
-		cancelLabel?: string;
-		loading?: boolean;
-		children: Snippet;
-	};
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  title?: string;
+  submitLabel?: string;
+  cancelLabel?: string;
+  loading?: boolean;
+  children: Snippet;
+};
 
-	let {
-		open,
-		onClose,
-		onSubmit,
-		title = '',
-		submitLabel = 'Save',
-		cancelLabel = 'Cancel',
-		loading = false,
-		children,
-	}: Props = $props();
+let {
+  open,
+  onClose,
+  onSubmit,
+  title = '',
+  submitLabel = 'Save',
+  cancelLabel = 'Cancel',
+  loading = false,
+  children,
+}: Props = $props();
 </script>
 
 <Modal {open} {onClose}>

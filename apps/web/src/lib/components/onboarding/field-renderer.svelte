@@ -1,69 +1,83 @@
 <script lang="ts">
-	import { Input, Label, Textarea, Button } from 'ui';
-	import { customFetch } from 'api-client';
+import { customFetch } from 'api-client';
+import { Button, Input, Label, Textarea } from 'ui';
 
-	type Field = {
-		key: string;
-		type: string;
-		label: string;
-		required: boolean;
-		options?: string[];
-		widget?: string;
-		examples?: string[];
-	};
+type Field = {
+  key: string;
+  type: string;
+  label: string;
+  required: boolean;
+  options?: string[];
+  widget?: string;
+  examples?: string[];
+};
 
-	type Props = {
-		field: Field;
-		value: string;
-		onchange: (value: string) => void;
-		error?: string;
-	};
+type Props = {
+  field: Field;
+  value: string;
+  onchange: (value: string) => void;
+  error?: string;
+};
 
-	let { field, value, onchange, error }: Props = $props();
+let { field, value, onchange, error }: Props = $props();
 
-	let usernameAvailable = $state<boolean | null>(null);
-	let usernameCheckTimeout: ReturnType<typeof setTimeout> | null = null;
+type UsernameUnavailableReason = 'taken' | 'reserved' | 'invalid_format';
 
-	function checkUsername(val: string) {
-		if (usernameCheckTimeout) clearTimeout(usernameCheckTimeout);
-		usernameAvailable = null;
-		if (!val || val.length < 3) return;
-		usernameCheckTimeout = setTimeout(async () => {
-			try {
-				const res = await customFetch<{ available: boolean }>(`/api/v1/users/username/check?username=${encodeURIComponent(val)}`);
-				usernameAvailable = res.available;
-			} catch {
-				usernameAvailable = null;
-			}
-		}, 500);
-	}
+let usernameAvailable = $state<boolean | null>(null);
+let usernameReason = $state<UsernameUnavailableReason | null>(null);
+let usernameCheckTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	const examples = $derived(field.examples ?? []);
-	let exampleIndex = $state(0);
-	let focused = $state(false);
-	const placeholder = $derived(
-		focused || !examples.length ? '' : examples[exampleIndex % examples.length]
-	);
+function checkUsername(val: string) {
+  if (usernameCheckTimeout) clearTimeout(usernameCheckTimeout);
+  usernameAvailable = null;
+  usernameReason = null;
+  if (!val || val.length < 3) return;
+  usernameCheckTimeout = setTimeout(async () => {
+    try {
+      const res = await customFetch<{ available: boolean; reason?: UsernameUnavailableReason }>(
+        `/api/v1/users/username/check?username=${encodeURIComponent(val)}`,
+      );
+      usernameAvailable = res.available;
+      usernameReason = res.reason ?? null;
+    } catch {
+      usernameAvailable = null;
+      usernameReason = null;
+    }
+  }, 500);
+}
 
-	$effect(() => {
-		if (!examples.length) return;
-		const interval = setInterval(() => {
-			exampleIndex = (exampleIndex + 1) % examples.length;
-		}, 5000);
-		return () => clearInterval(interval);
-	});
+const unavailableLabel: Record<UsernameUnavailableReason, string> = {
+  taken: '✗ Already taken',
+  reserved: '✗ Reserved',
+  invalid_format: '✗ Invalid format',
+};
 
-	const isSummary = $derived(field.type === 'textarea' || field.widget === 'textarea');
-	const summaryExamples = $derived(isSummary && examples.length ? examples : []);
-	let showSummaryExamples = $state(false);
+const examples = $derived(field.examples ?? []);
+let exampleIndex = $state(0);
+let focused = $state(false);
+const placeholder = $derived(
+  focused || !examples.length ? '' : examples[exampleIndex % examples.length],
+);
 
-	function inputType(fieldType: string): string {
-		if (fieldType === 'email') return 'email';
-		if (fieldType === 'url') return 'url';
-		if (fieldType === 'number') return 'number';
-		if (fieldType === 'date') return 'date';
-		return 'text';
-	}
+$effect(() => {
+  if (!examples.length) return;
+  const interval = setInterval(() => {
+    exampleIndex = (exampleIndex + 1) % examples.length;
+  }, 5000);
+  return () => clearInterval(interval);
+});
+
+const isSummary = $derived(field.type === 'textarea' || field.widget === 'textarea');
+const summaryExamples = $derived(isSummary && examples.length ? examples : []);
+let showSummaryExamples = $state(false);
+
+function inputType(fieldType: string): string {
+  if (fieldType === 'email') return 'email';
+  if (fieldType === 'url') return 'url';
+  if (fieldType === 'number') return 'number';
+  if (fieldType === 'date') return 'date';
+  return 'text';
+}
 </script>
 
 <div>
@@ -132,7 +146,7 @@
 			{#if usernameAvailable}
 				<span class="text-xs text-emerald-500">✓ Available</span>
 			{:else}
-				<span class="text-xs text-red-500">✗ Already taken</span>
+				<span class="text-xs text-red-500">{usernameReason ? unavailableLabel[usernameReason] : '✗ Unavailable'}</span>
 			{/if}
 		{/if}
 	{/if}

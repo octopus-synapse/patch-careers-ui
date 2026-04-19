@@ -1,115 +1,130 @@
 <script lang="ts">
-	import { Input, Button } from 'ui';
-	import { customFetch } from 'api-client';
-	import { Check, Minus, Send } from 'lucide-svelte';
+import { customFetch } from 'api-client';
+import { Check, Minus, Send } from 'lucide-svelte';
+import { Button, Input } from 'ui';
 
-	type StepDef = {
-		id: string;
-		label: string;
-		fields?: Array<{ key: string; label: string }>;
-		data?: Array<{ id: string; name: string; thumbnailUrl?: string | null }>;
-	};
+type StepDef = {
+  id: string;
+  label: string;
+  fields?: Array<{ key: string; label: string }>;
+  data?: Array<{ id: string; name: string; thumbnailUrl?: string | null }>;
+};
 
-	type Props = {
-		session: Record<string, unknown>;
-		steps: StepDef[];
-		completedSteps: string[];
-		ongoto: (stepId: string) => void;
-	};
+type Props = {
+  session: Record<string, unknown>;
+  steps: StepDef[];
+  completedSteps: string[];
+  ongoto: (stepId: string) => void;
+};
 
-	let { session, steps, completedSteps, ongoto }: Props = $props();
+let { session, steps, completedSteps, ongoto }: Props = $props();
 
-	let shareEmail = $state('');
-	let shareStatus = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
+let shareEmail = $state('');
+let shareStatus = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-	async function sendReviewInvite() {
-		if (!shareEmail.trim()) return;
-		shareStatus = 'sending';
-		try {
-			await customFetch('/api/v1/onboarding/review/invite', {
-				method: 'POST',
-				body: JSON.stringify({ email: shareEmail }),
-			});
-			shareStatus = 'sent';
-			shareEmail = '';
-		} catch {
-			shareStatus = 'error';
-		}
-	}
+async function sendReviewInvite() {
+  if (!shareEmail.trim()) return;
+  shareStatus = 'sending';
+  try {
+    await customFetch('/api/v1/onboarding/review/invite', {
+      method: 'POST',
+      body: JSON.stringify({ email: shareEmail }),
+    });
+    shareStatus = 'sent';
+    shareEmail = '';
+  } catch {
+    shareStatus = 'error';
+  }
+}
 
-	type ReviewEntry = { label: string; value: string; long?: boolean };
-	type ReviewSection = { label: string; stepId: string; entries: ReviewEntry[]; skipped?: boolean; themePreview?: string | null; themeName?: string };
+type ReviewEntry = { label: string; value: string; long?: boolean };
+type ReviewSection = {
+  label: string;
+  stepId: string;
+  entries: ReviewEntry[];
+  skipped?: boolean;
+  themePreview?: string | null;
+  themeName?: string;
+};
 
-	const sections = $derived.by(() => {
-		const result: ReviewSection[] = [];
+const sections = $derived.by(() => {
+  const result: ReviewSection[] = [];
 
-		const pi = session.personalInfo as Record<string, string> | undefined;
-		if (pi) {
-			const step = steps.find((s) => s.id === 'personal-info');
-			const entries = (step?.fields ?? [])
-				.filter((f) => pi[f.key])
-				.map((f) => ({ label: f.label, value: String(pi[f.key]) }));
-			if (entries.length) result.push({ label: step?.label ?? 'Personal Info', stepId: 'personal-info', entries });
-		}
+  const pi = session.personalInfo as Record<string, string> | undefined;
+  if (pi) {
+    const step = steps.find((s) => s.id === 'personal-info');
+    const entries = (step?.fields ?? [])
+      .filter((f) => pi[f.key])
+      .map((f) => ({ label: f.label, value: String(pi[f.key]) }));
+    if (entries.length)
+      result.push({ label: step?.label ?? 'Personal Info', stepId: 'personal-info', entries });
+  }
 
-		const username = session.username as string | undefined;
-		if (username) {
-			const step = steps.find((s) => s.id === 'username');
-			result.push({ label: step?.label ?? 'Username', stepId: 'username', entries: [{ label: '', value: `@${username}` }] });
-		}
+  const username = session.username as string | undefined;
+  if (username) {
+    const step = steps.find((s) => s.id === 'username');
+    result.push({
+      label: step?.label ?? 'Username',
+      stepId: 'username',
+      entries: [{ label: '', value: `@${username}` }],
+    });
+  }
 
-		const pp = session.professionalProfile as Record<string, string> | undefined;
-		if (pp) {
-			const step = steps.find((s) => s.id === 'professional-profile');
-			const entries = (step?.fields ?? [])
-				.filter((f) => pp[f.key])
-				.map((f) => ({
-					label: f.label,
-					value: String(pp[f.key]),
-					long: f.key === 'summary',
-				}));
-			if (entries.length) result.push({ label: step?.label ?? 'Profile', stepId: 'professional-profile', entries });
-		}
+  const pp = session.professionalProfile as Record<string, string> | undefined;
+  if (pp) {
+    const step = steps.find((s) => s.id === 'professional-profile');
+    const entries = (step?.fields ?? [])
+      .filter((f) => pp[f.key])
+      .map((f) => ({
+        label: f.label,
+        value: String(pp[f.key]),
+        long: f.key === 'summary',
+      }));
+    if (entries.length)
+      result.push({ label: step?.label ?? 'Profile', stepId: 'professional-profile', entries });
+  }
 
-		const secs = session.sections as Array<{
-			sectionTypeKey: string;
-			items?: Array<{ content?: Record<string, unknown> }>;
-			noData?: boolean;
-		}> | undefined;
-		if (secs) {
-			for (const sec of secs) {
-				const step = steps.find((s) => s.id === `section:${sec.sectionTypeKey}`);
-				const label = step?.label ?? sec.sectionTypeKey;
+  const secs = session.sections as
+    | Array<{
+        sectionTypeKey: string;
+        items?: Array<{ content?: Record<string, unknown> }>;
+        noData?: boolean;
+      }>
+    | undefined;
+  if (secs) {
+    for (const sec of secs) {
+      const step = steps.find((s) => s.id === `section:${sec.sectionTypeKey}`);
+      const label = step?.label ?? sec.sectionTypeKey;
 
-				const stepId = `section:${sec.sectionTypeKey}`;
-				if (sec.noData || !sec.items?.length) {
-					result.push({ label, stepId, entries: [], skipped: true });
-					continue;
-				}
+      const stepId = `section:${sec.sectionTypeKey}`;
+      if (sec.noData || !sec.items?.length) {
+        result.push({ label, stepId, entries: [], skipped: true });
+        continue;
+      }
 
-				const entries = sec.items.map((item) => {
-					const vals = Object.values(item.content ?? {}).filter(Boolean);
-					return { label: '', value: vals.slice(0, 3).join(' · ') || '---' };
-				});
-				result.push({ label, stepId, entries });
-			}
-		}
+      const entries = sec.items.map((item) => {
+        const vals = Object.values(item.content ?? {}).filter(Boolean);
+        return { label: '', value: vals.slice(0, 3).join(' · ') || '---' };
+      });
+      result.push({ label, stepId, entries });
+    }
+  }
 
-		const ts = session.templateSelection as Record<string, string> | undefined;
-		if (ts?.templateId) {
-			const step = steps.find((s) => s.id === 'template');
-			const themeData = step?.data?.find((t) => t.id === ts.templateId);
-			result.push({
-				label: step?.label ?? 'Theme',
-				stepId: 'template',
-				entries: [],
-				themeName: themeData?.name ?? ts.templateId,
-				themePreview: themeData?.thumbnailUrl,
-			});
-		}
+  const ts = session.templateSelection as Record<string, string> | undefined;
+  if (ts?.templateId) {
+    const step = steps.find((s) => s.id === 'template');
+    const themeData = step?.data?.find((t) => t.id === ts.templateId);
+    result.push({
+      label: step?.label ?? 'Theme',
+      stepId: 'template',
+      entries: [],
+      themeName: themeData?.name ?? ts.templateId,
+      themePreview: themeData?.thumbnailUrl,
+    });
+  }
 
-		return result;
-	});
+  return result;
+});
 </script>
 
 <div class="space-y-3">

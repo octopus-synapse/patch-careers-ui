@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+import type { Snippet } from 'svelte';
 
-	type Props = {
-		label: string;
-		value: string | number;
-		icon?: Snippet;
-	};
+type Props = {
+  label: string;
+  value: string | number;
+  icon?: Snippet;
+};
 
-	let { label, value, icon }: Props = $props();
+let { label, value, icon }: Props = $props();
 </script>
 
 <div class="rounded-xl border p-3 sm:p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">

@@ -464,3 +464,235 @@ export const createNotificationsMarkRead = <TError = unknown,
       > => {
       return createMutation(() => ({ ...getNotificationsMarkReadMutationOptions(options?.()) }), queryClient);
     }
+    /**
+ * @summary Get notification preferences for the current user
+ */
+export type notificationsGetPreferencesResponse200 = void
+
+export type notificationsGetPreferencesResponseSuccess = notificationsGetPreferencesResponse200
+;
+
+export type notificationsGetPreferencesResponse = (notificationsGetPreferencesResponseSuccess)
+
+export const getNotificationsGetPreferencesUrl = () => {
+
+
+
+
+  return `/api/v1/notifications/preferences`
+}
+
+export const notificationsGetPreferences = async ( options?: RequestInit): Promise<notificationsGetPreferencesResponse> => {
+
+  return customFetch<notificationsGetPreferencesResponse>(getNotificationsGetPreferencesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getNotificationsGetPreferencesInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/notifications/preferences`
+    ] as const;
+    }
+
+export const getNotificationsGetPreferencesQueryKey = () => {
+    return [
+    `/api/v1/notifications/preferences`
+    ] as const;
+    }
+
+
+export const getNotificationsGetPreferencesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsGetPreferences>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getNotificationsGetPreferencesInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof notificationsGetPreferences>>> = ({ signal }) => notificationsGetPreferences({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type NotificationsGetPreferencesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsGetPreferences>>>
+export type NotificationsGetPreferencesInfiniteQueryError = unknown
+
+
+/**
+ * @summary Get notification preferences for the current user
+ */
+
+export function createNotificationsGetPreferencesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsGetPreferences>>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getNotificationsGetPreferencesInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get notification preferences for the current user
+ */
+export const prefetchNotificationsGetPreferencesInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsGetPreferences>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getNotificationsGetPreferencesInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getNotificationsGetPreferencesQueryOptions = <TData = Awaited<ReturnType<typeof notificationsGetPreferences>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getNotificationsGetPreferencesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof notificationsGetPreferences>>> = ({ signal }) => notificationsGetPreferences({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type NotificationsGetPreferencesQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsGetPreferences>>>
+export type NotificationsGetPreferencesQueryError = unknown
+
+
+/**
+ * @summary Get notification preferences for the current user
+ */
+
+export function createNotificationsGetPreferences<TData = Awaited<ReturnType<typeof notificationsGetPreferences>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getNotificationsGetPreferencesQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get notification preferences for the current user
+ */
+export const prefetchNotificationsGetPreferencesQuery = async <TData = Awaited<ReturnType<typeof notificationsGetPreferences>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsGetPreferences>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getNotificationsGetPreferencesQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Toggle a notification type on or off
+ */
+export type notificationsSetPreferenceResponse200 = void
+
+export type notificationsSetPreferenceResponseSuccess = notificationsSetPreferenceResponse200
+;
+
+export type notificationsSetPreferenceResponse = (notificationsSetPreferenceResponseSuccess)
+
+export const getNotificationsSetPreferenceUrl = (type: string,) => {
+
+
+
+
+  return `/api/v1/notifications/preferences/${type}`
+}
+
+export const notificationsSetPreference = async (type: string, options?: RequestInit): Promise<notificationsSetPreferenceResponse> => {
+
+  return customFetch<notificationsSetPreferenceResponse>(getNotificationsSetPreferenceUrl(type),
+  {
+    ...options,
+    method: 'PUT'
+
+
+  }
+);}
+
+
+
+
+export const getNotificationsSetPreferenceMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsSetPreference>>, TError,{type: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof notificationsSetPreference>>, TError,{type: string}, TContext> => {
+
+const mutationKey = ['notificationsSetPreference'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof notificationsSetPreference>>, {type: string}> = (props) => {
+          const {type} = props ?? {};
+
+          return  notificationsSetPreference(type,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type NotificationsSetPreferenceMutationResult = NonNullable<Awaited<ReturnType<typeof notificationsSetPreference>>>
+
+    export type NotificationsSetPreferenceMutationError = unknown
+
+    /**
+ * @summary Toggle a notification type on or off
+ */
+export const createNotificationsSetPreference = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsSetPreference>>, TError,{type: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof notificationsSetPreference>>,
+        TError,
+        {type: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getNotificationsSetPreferenceMutationOptions(options?.()) }), queryClient);
+    }

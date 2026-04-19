@@ -1,301 +1,352 @@
 <script lang="ts">
-	import { Modal, Button, Input, Textarea } from 'ui';
-	import { Loader2, Plus, X, Image, Link, Upload, Code, Calendar, Users, MessageSquare, Trophy, Briefcase, BookOpen, Hammer, HelpCircle, Zap, ChevronRight } from 'lucide-svelte';
-	import { postsCreate, postsUploadImage } from 'api-client';
+import { type CreatePostDto, postsCreate, postsUploadImage } from 'api-client';
+import {
+  BookOpen,
+  Briefcase,
+  Calendar,
+  ChevronRight,
+  Code,
+  Hammer,
+  HelpCircle,
+  Image,
+  Link,
+  Loader2,
+  MessageSquare,
+  Plus,
+  Trophy,
+  Upload,
+  Users,
+  X,
+  Zap,
+} from 'lucide-svelte';
+import { Button, Input, Modal, Textarea } from 'ui';
 
-	type Props = {
-		open: boolean;
-		oncreate: () => void;
-		oncancel: () => void;
-	};
+type Props = {
+  open: boolean;
+  oncreate: () => void;
+  oncancel: () => void;
+};
 
-	let { open, oncreate, oncancel }: Props = $props();
+let { open, oncreate, oncancel }: Props = $props();
 
-	const postTypes = ['ACHIEVEMENT', 'OPPORTUNITY', 'LEARNING', 'BUILD', 'QUESTION', 'CHALLENGE'] as const;
-	type PostType = typeof postTypes[number];
+const postTypes = [
+  'ACHIEVEMENT',
+  'OPPORTUNITY',
+  'LEARNING',
+  'BUILD',
+  'QUESTION',
+  'CHALLENGE',
+] as const;
+type PostType = (typeof postTypes)[number];
 
-	let step = $state<1 | 2>(1);
-	let selectedType = $state<PostType>('ACHIEVEMENT');
-	let content = $state('');
-	let hardSkillsInput = $state('');
-	let softSkillsInput = $state('');
-	let linkUrl = $state('');
-	let imageUrl = $state('');
-	let imageFile = $state<File | null>(null);
-	let uploadingImage = $state(false);
-	let submitting = $state(false);
+let step = $state<1 | 2>(1);
+let selectedType = $state<PostType>('ACHIEVEMENT');
+let content = $state('');
+let hardSkillsInput = $state('');
+let softSkillsInput = $state('');
+let linkUrl = $state('');
+let imageUrl = $state('');
+let imageFile = $state<File | null>(null);
+let uploadingImage = $state(false);
+let submitting = $state(false);
 
-	// ACHIEVEMENT fields
-	let achTitle = $state('');
-	let achOrganization = $state('');
-	let achDate = $state('');
-	let achDescription = $state('');
+// ACHIEVEMENT fields
+let achTitle = $state('');
+let achOrganization = $state('');
+let achDate = $state('');
+let achDescription = $state('');
 
-	// OPPORTUNITY fields
-	let oppDescription = $state('');
-	let oppSkillsRequired = $state('');
-	let oppCommitment = $state('');
-	let oppContactMethod = $state('');
+// OPPORTUNITY fields
+let oppDescription = $state('');
+let oppSkillsRequired = $state('');
+let oppCommitment = $state('');
+let oppContactMethod = $state('');
 
-	// LEARNING fields
-	let learnInsight = $state('');
-	let learnApplication = $state('');
-	let learnSkills = $state('');
+// LEARNING fields
+let learnInsight = $state('');
+let learnApplication = $state('');
+let learnSkills = $state('');
 
-	// BUILD fields
-	let buildTitle = $state('');
-	let buildDescription = $state('');
-	let buildProjectUrl = $state('');
-	let buildDecision = $state('');
+// BUILD fields
+let buildTitle = $state('');
+let buildDescription = $state('');
+let buildProjectUrl = $state('');
+let buildDecision = $state('');
 
-	// QUESTION fields
-	let questionText = $state('');
-	let questionOptions = $state<string[]>(['', '']);
-	let questionContext = $state('');
-	let pollDeadline = $state('');
+// QUESTION fields
+let questionText = $state('');
+let questionOptions = $state<string[]>(['', '']);
+let questionContext = $state('');
+let pollDeadline = $state('');
 
-	// CHALLENGE fields
-	let challengeTitle = $state('');
-	let challengeDescription = $state('');
-	let challengeDifficulty = $state<'Easy' | 'Medium' | 'Hard'>('Medium');
-	let challengeDeadline = $state('');
+// CHALLENGE fields
+let challengeTitle = $state('');
+let challengeDescription = $state('');
+let challengeDifficulty = $state<'Easy' | 'Medium' | 'Hard'>('Medium');
+let challengeDeadline = $state('');
 
-	// Co-authors
-	let coAuthorSearch = $state('');
-	let coAuthors = $state<string[]>([]);
+// Co-authors
+let coAuthorSearch = $state('');
+let coAuthors = $state<string[]>([]);
 
-	// Scheduled post
-	let scheduledAt = $state('');
+// Scheduled post
+let scheduledAt = $state('');
 
-	// Code snippet
-	let codeSnippet = $state('');
-	let codeLanguage = $state('');
-	const codeLanguages = ['JavaScript', 'TypeScript', 'Python', 'Go', 'Rust', 'Java', 'C++', 'HTML', 'CSS', 'SQL'];
+// Code snippet
+let codeSnippet = $state('');
+let codeLanguage = $state('');
+const codeLanguages = [
+  'JavaScript',
+  'TypeScript',
+  'Python',
+  'Go',
+  'Rust',
+  'Java',
+  'C++',
+  'HTML',
+  'CSS',
+  'SQL',
+];
 
-	// Thread mode
-	let isThread = $state(false);
-	let threadPosts = $state<string[]>(['']);
+// Thread mode
+let isThread = $state(false);
+let threadPosts = $state<string[]>(['']);
 
-	const typeConfig: Record<PostType, { icon: typeof Trophy; description: string }> = {
-		ACHIEVEMENT: { icon: Trophy, description: 'Share a win or milestone' },
-		OPPORTUNITY: { icon: Briefcase, description: 'Post a job or collab opportunity' },
-		LEARNING: { icon: BookOpen, description: 'Share an insight or lesson' },
-		BUILD: { icon: Hammer, description: 'Showcase a project' },
-		QUESTION: { icon: HelpCircle, description: 'Ask the community' },
-		CHALLENGE: { icon: Zap, description: 'Propose a technical challenge' }
-	};
+// Blind Mode — only available in sensitive categories.
+let isAnonymous = $state(false);
+let anonymousCategory = $state<
+  'SALARY' | 'INTERVIEW' | 'LAYOFF' | 'TOXIC_CULTURE' | 'HARASSMENT' | ''
+>('');
 
-	function resetForm() {
-		step = 1;
-		selectedType = 'ACHIEVEMENT';
-		content = '';
-		hardSkillsInput = '';
-		softSkillsInput = '';
-		linkUrl = '';
-		imageUrl = '';
-		imageFile = null;
-		uploadingImage = false;
-		achTitle = '';
-		achOrganization = '';
-		achDate = '';
-		achDescription = '';
-		oppDescription = '';
-		oppSkillsRequired = '';
-		oppCommitment = '';
-		oppContactMethod = '';
-		learnInsight = '';
-		learnApplication = '';
-		learnSkills = '';
-		buildTitle = '';
-		buildDescription = '';
-		buildProjectUrl = '';
-		buildDecision = '';
-		questionText = '';
-		questionOptions = ['', ''];
-		questionContext = '';
-		pollDeadline = '';
-		challengeTitle = '';
-		challengeDescription = '';
-		challengeDifficulty = 'Medium';
-		challengeDeadline = '';
-		coAuthorSearch = '';
-		coAuthors = [];
-		scheduledAt = '';
-		codeSnippet = '';
-		codeLanguage = '';
-		isThread = false;
-		threadPosts = [''];
-	}
+const typeConfig: Record<PostType, { icon: typeof Trophy; description: string }> = {
+  ACHIEVEMENT: { icon: Trophy, description: 'Share a win or milestone' },
+  OPPORTUNITY: { icon: Briefcase, description: 'Post a job or collab opportunity' },
+  LEARNING: { icon: BookOpen, description: 'Share an insight or lesson' },
+  BUILD: { icon: Hammer, description: 'Showcase a project' },
+  QUESTION: { icon: HelpCircle, description: 'Ask the community' },
+  CHALLENGE: { icon: Zap, description: 'Propose a technical challenge' },
+};
 
-	function addOption() {
-		questionOptions = [...questionOptions, ''];
-	}
+function resetForm() {
+  step = 1;
+  selectedType = 'ACHIEVEMENT';
+  content = '';
+  hardSkillsInput = '';
+  softSkillsInput = '';
+  linkUrl = '';
+  imageUrl = '';
+  imageFile = null;
+  uploadingImage = false;
+  achTitle = '';
+  achOrganization = '';
+  achDate = '';
+  achDescription = '';
+  oppDescription = '';
+  oppSkillsRequired = '';
+  oppCommitment = '';
+  oppContactMethod = '';
+  learnInsight = '';
+  learnApplication = '';
+  learnSkills = '';
+  buildTitle = '';
+  buildDescription = '';
+  buildProjectUrl = '';
+  buildDecision = '';
+  questionText = '';
+  questionOptions = ['', ''];
+  questionContext = '';
+  pollDeadline = '';
+  challengeTitle = '';
+  challengeDescription = '';
+  challengeDifficulty = 'Medium';
+  challengeDeadline = '';
+  coAuthorSearch = '';
+  coAuthors = [];
+  scheduledAt = '';
+  codeSnippet = '';
+  codeLanguage = '';
+  isThread = false;
+  threadPosts = [''];
+  isAnonymous = false;
+  anonymousCategory = '';
+}
 
-	function removeOption(index: number) {
-		if (questionOptions.length <= 2) return;
-		questionOptions = questionOptions.filter((_, i) => i !== index);
-	}
+function addOption() {
+  questionOptions = [...questionOptions, ''];
+}
 
-	function updateOption(index: number, value: string) {
-		const next = [...questionOptions];
-		next[index] = value;
-		questionOptions = next;
-	}
+function removeOption(index: number) {
+  if (questionOptions.length <= 2) return;
+  questionOptions = questionOptions.filter((_, i) => i !== index);
+}
 
-	function addCoAuthor() {
-		if (!coAuthorSearch.trim()) return;
-		if (!coAuthors.includes(coAuthorSearch.trim())) {
-			coAuthors = [...coAuthors, coAuthorSearch.trim()];
-		}
-		coAuthorSearch = '';
-	}
+function updateOption(index: number, value: string) {
+  const next = [...questionOptions];
+  next[index] = value;
+  questionOptions = next;
+}
 
-	function removeCoAuthor(index: number) {
-		coAuthors = coAuthors.filter((_, i) => i !== index);
-	}
+function addCoAuthor() {
+  if (!coAuthorSearch.trim()) return;
+  if (!coAuthors.includes(coAuthorSearch.trim())) {
+    coAuthors = [...coAuthors, coAuthorSearch.trim()];
+  }
+  coAuthorSearch = '';
+}
 
-	function addThreadPost() {
-		threadPosts = [...threadPosts, ''];
-	}
+function removeCoAuthor(index: number) {
+  coAuthors = coAuthors.filter((_, i) => i !== index);
+}
 
-	function updateThreadPost(index: number, value: string) {
-		const next = [...threadPosts];
-		next[index] = value;
-		threadPosts = next;
-	}
+function addThreadPost() {
+  threadPosts = [...threadPosts, ''];
+}
 
-	function removeThreadPost(index: number) {
-		if (threadPosts.length <= 1) return;
-		threadPosts = threadPosts.filter((_, i) => i !== index);
-	}
+function updateThreadPost(index: number, value: string) {
+  const next = [...threadPosts];
+  next[index] = value;
+  threadPosts = next;
+}
 
-	async function handleImageSelect(e: Event) {
-		const input = e.target as HTMLInputElement;
-		if (!input.files || input.files.length === 0) return;
-		const file = input.files[0];
-		imageFile = file;
-		uploadingImage = true;
-		try {
-			const result = await postsUploadImage({ file });
-			imageUrl = result.url;
-		} catch {
-			imageFile = null;
-			imageUrl = '';
-		} finally {
-			uploadingImage = false;
-		}
-	}
+function removeThreadPost(index: number) {
+  if (threadPosts.length <= 1) return;
+  threadPosts = threadPosts.filter((_, i) => i !== index);
+}
 
-	function clearImage() {
-		imageFile = null;
-		imageUrl = '';
-	}
+async function handleImageSelect(e: Event) {
+  const input = e.target as HTMLInputElement;
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  imageFile = file;
+  uploadingImage = true;
+  try {
+    const result = await postsUploadImage({ file });
+    imageUrl = result.url;
+  } catch {
+    imageFile = null;
+    imageUrl = '';
+  } finally {
+    uploadingImage = false;
+  }
+}
 
-	function buildData(): Record<string, unknown> {
-		switch (selectedType) {
-			case 'ACHIEVEMENT':
-				return {
-					title: achTitle || undefined,
-					organization: achOrganization || undefined,
-					date: achDate || undefined,
-					description: achDescription || undefined
-				};
-			case 'OPPORTUNITY':
-				return {
-					description: oppDescription || undefined,
-					skills_required: oppSkillsRequired ? oppSkillsRequired.split(',').map(s => s.trim()).filter(Boolean) : undefined,
-					commitment: oppCommitment || undefined,
-					contact_method: oppContactMethod || undefined
-				};
-			case 'LEARNING':
-				return {
-					insight: learnInsight || undefined,
-					application: learnApplication || undefined,
-					skills: learnSkills ? learnSkills.split(',').map(s => s.trim()).filter(Boolean) : undefined
-				};
-			case 'BUILD':
-				return {
-					title: buildTitle || undefined,
-					description: buildDescription || undefined,
-					project_url: buildProjectUrl || undefined,
-					decision_or_solution: buildDecision || undefined
-				};
-			case 'QUESTION':
-				return {
-					question: questionText || undefined,
-					options: questionOptions.filter(o => o.trim()).map(o => ({ text: o.trim() })),
-					context: questionContext || undefined,
-					pollDeadline: pollDeadline || undefined
-				};
-			case 'CHALLENGE':
-				return {
-					title: challengeTitle || undefined,
-					description: challengeDescription || undefined,
-					difficulty: challengeDifficulty,
-					deadline: challengeDeadline || undefined
-				};
-		}
-	}
+function clearImage() {
+  imageFile = null;
+  imageUrl = '';
+}
 
-	async function handleSubmit() {
-		if (submitting) return;
-		submitting = true;
-		try {
-			const hardSkills = hardSkillsInput ? hardSkillsInput.split(',').map(s => s.trim()).filter(Boolean) : [];
-			const softSkills = softSkillsInput ? softSkillsInput.split(',').map(s => s.trim()).filter(Boolean) : [];
-			const data = buildData();
+function buildData(): Record<string, unknown> {
+  switch (selectedType) {
+    case 'ACHIEVEMENT':
+      return {
+        title: achTitle || undefined,
+        organization: achOrganization || undefined,
+        date: achDate || undefined,
+        description: achDescription || undefined,
+      };
+    case 'OPPORTUNITY':
+      return {
+        description: oppDescription || undefined,
+        skills_required: oppSkillsRequired
+          ? oppSkillsRequired
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : undefined,
+        commitment: oppCommitment || undefined,
+        contact_method: oppContactMethod || undefined,
+      };
+    case 'LEARNING':
+      return {
+        insight: learnInsight || undefined,
+        application: learnApplication || undefined,
+        skills: learnSkills
+          ? learnSkills
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : undefined,
+      };
+    case 'BUILD':
+      return {
+        title: buildTitle || undefined,
+        description: buildDescription || undefined,
+        project_url: buildProjectUrl || undefined,
+        decision_or_solution: buildDecision || undefined,
+      };
+    case 'QUESTION':
+      return {
+        question: questionText || undefined,
+        options: questionOptions.filter((o) => o.trim()).map((o) => ({ text: o.trim() })),
+        context: questionContext || undefined,
+        pollDeadline: pollDeadline || undefined,
+      };
+    case 'CHALLENGE':
+      return {
+        title: challengeTitle || undefined,
+        description: challengeDescription || undefined,
+        difficulty: challengeDifficulty,
+        deadline: challengeDeadline || undefined,
+      };
+  }
+}
 
-			const payload: Record<string, unknown> = {
-				type: selectedType,
-				data,
-				content: content || undefined,
-				hardSkills: hardSkills.length > 0 ? hardSkills : undefined,
-				softSkills: softSkills.length > 0 ? softSkills : undefined,
-				imageUrl: imageUrl || undefined,
-				linkUrl: linkUrl || undefined
-			};
+async function handleSubmit() {
+  if (submitting) return;
+  submitting = true;
+  try {
+    const hardSkills = hardSkillsInput
+      ? hardSkillsInput
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    const softSkills = softSkillsInput
+      ? softSkillsInput
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    const data = buildData();
 
-			if (coAuthors.length > 0) {
-				payload.coAuthors = coAuthors;
-			}
-			if (scheduledAt) {
-				payload.scheduledAt = scheduledAt;
-			}
-			if (codeSnippet) {
-				payload.codeSnippet = codeSnippet;
-				if (codeLanguage) {
-					payload.codeLanguage = codeLanguage;
-				}
-			}
-			if (isThread && threadPosts.length > 0) {
-				payload.isThread = true;
-				payload.threadPosts = threadPosts.filter(t => t.trim());
-			}
+    const payload: CreatePostDto = {
+      type: selectedType,
+      data,
+      content: content || undefined,
+      hardSkills: hardSkills.length > 0 ? hardSkills : undefined,
+      softSkills: softSkills.length > 0 ? softSkills : undefined,
+      imageUrl: imageUrl || undefined,
+      linkUrl: linkUrl || undefined,
+      coAuthors: coAuthors.length > 0 ? coAuthors : undefined,
+      scheduledAt: scheduledAt || undefined,
+      codeSnippet: codeSnippet
+        ? { language: codeLanguage || 'plaintext', code: codeSnippet }
+        : undefined,
+      isAnonymous: isAnonymous || undefined,
+      anonymousCategory: isAnonymous && anonymousCategory ? anonymousCategory : undefined,
+    };
 
-			await postsCreate({
-				body: JSON.stringify(payload),
-				headers: { 'Content-Type': 'application/json' }
-			});
-			resetForm();
-			oncreate();
-		} finally {
-			submitting = false;
-		}
-	}
+    await postsCreate(payload);
+    resetForm();
+    oncreate();
+  } finally {
+    submitting = false;
+  }
+}
 
-	function handleCancel() {
-		resetForm();
-		oncancel();
-	}
+function handleCancel() {
+  resetForm();
+  oncancel();
+}
 
-	const typeLabels: Record<PostType, string> = {
-		ACHIEVEMENT: 'Achievement',
-		OPPORTUNITY: 'Opportunity',
-		LEARNING: 'Learning',
-		BUILD: 'Build',
-		QUESTION: 'Question',
-		CHALLENGE: 'Challenge'
-	};
+const typeLabels: Record<PostType, string> = {
+  ACHIEVEMENT: 'Achievement',
+  OPPORTUNITY: 'Opportunity',
+  LEARNING: 'Learning',
+  BUILD: 'Build',
+  QUESTION: 'Question',
+  CHALLENGE: 'Challenge',
+};
 </script>
 
 <Modal {open} onClose={handleCancel}>
@@ -573,6 +624,34 @@
 							<Button variant="icon" onclick={() => scheduledAt = ''} class="text-red-400 hover:text-red-500">
 								<X size={12} />
 							</Button>
+						{/if}
+					</div>
+
+					<!-- Blind Mode toggle + category picker -->
+					<div class="rounded-lg border border-gray-200 p-3 dark:border-neutral-700/60">
+						<label class="flex items-center gap-2 text-xs font-medium text-gray-800 dark:text-neutral-200">
+							<input
+								type="checkbox"
+								bind:checked={isAnonymous}
+								class="h-4 w-4 rounded border-gray-300 dark:border-neutral-600"
+							/>
+							Post anonymously
+						</label>
+						<p class="mt-1 text-[11px] text-gray-500 dark:text-neutral-500">
+							Your name and avatar are hidden. The platform still tracks authorship for moderation.
+						</p>
+						{#if isAnonymous}
+							<select
+								bind:value={anonymousCategory}
+								class="mt-2 w-full rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
+							>
+								<option value="">Select a category…</option>
+								<option value="SALARY">Salary</option>
+								<option value="INTERVIEW">Interview</option>
+								<option value="LAYOFF">Layoff</option>
+								<option value="TOXIC_CULTURE">Toxic culture</option>
+								<option value="HARASSMENT">Harassment</option>
+							</select>
 						{/if}
 					</div>
 

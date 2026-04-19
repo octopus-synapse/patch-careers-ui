@@ -1,60 +1,60 @@
 <script lang="ts">
-	import {
-		createPlatformCheck,
-		createPlatformCheckDatabase,
-		createPlatformCheckRedis,
-		createPlatformCheckStorage,
-		createPlatformCheckTranslate,
-		createPlatformGetStatistics,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { Database, HardDrive, Globe, Server, RefreshCw } from 'lucide-svelte';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import {
+  createPlatformCheck,
+  createPlatformCheckDatabase,
+  createPlatformCheckRedis,
+  createPlatformCheckStorage,
+  createPlatformCheckTranslate,
+  createPlatformGetStatistics,
+} from 'api-client';
+import { Database, Globe, HardDrive, RefreshCw, Server } from 'lucide-svelte';
+import { browser } from '$app/environment';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const refetchInterval = 15000;
+const refetchInterval = 15000;
 
-	const healthAll = createPlatformCheck(() => ({
-		query: { enabled: browser, refetchInterval }
-	}));
-	const healthDb = createPlatformCheckDatabase(() => ({
-		query: { enabled: browser, refetchInterval }
-	}));
-	const healthRedis = createPlatformCheckRedis(() => ({
-		query: { enabled: browser, refetchInterval }
-	}));
-	const healthStorage = createPlatformCheckStorage(() => ({
-		query: { enabled: browser, refetchInterval }
-	}));
-	const healthTranslate = createPlatformCheckTranslate(() => ({
-		query: { enabled: browser, refetchInterval }
-	}));
-	const platformStats = createPlatformGetStatistics(() => ({
-		query: { enabled: browser, refetchInterval: 30000 }
-	}));
+const healthAll = createPlatformCheck(() => ({
+  query: { enabled: browser, refetchInterval },
+}));
+const healthDb = createPlatformCheckDatabase(() => ({
+  query: { enabled: browser, refetchInterval },
+}));
+const healthRedis = createPlatformCheckRedis(() => ({
+  query: { enabled: browser, refetchInterval },
+}));
+const healthStorage = createPlatformCheckStorage(() => ({
+  query: { enabled: browser, refetchInterval },
+}));
+const healthTranslate = createPlatformCheckTranslate(() => ({
+  query: { enabled: browser, refetchInterval },
+}));
+const platformStats = createPlatformGetStatistics(() => ({
+  query: { enabled: browser, refetchInterval: 30000 },
+}));
 
-	type HealthStatus = 'healthy' | 'degraded' | 'down';
+type HealthStatus = 'healthy' | 'degraded' | 'down';
 
-	function getStatus(query: { data?: { status?: string }; isError?: boolean }): HealthStatus {
-		if (query.isError) return 'down';
-		const status = query.data?.status;
-		if (status === 'ok') return 'healthy';
-		if (status === 'error') return 'down';
-		return 'degraded';
-	}
+function getStatus(query: { data?: { status?: string }; isError?: boolean }): HealthStatus {
+  if (query.isError) return 'down';
+  const status = query.data?.status;
+  if (status === 'ok') return 'healthy';
+  if (status === 'error') return 'down';
+  return 'degraded';
+}
 
-	const services = $derived([
-		{ label: t?.('admin.health.api') ?? 'API', icon: Server, query: healthAll },
-		{ label: t?.('admin.health.database') ?? 'Database', icon: Database, query: healthDb },
-		{ label: t?.('admin.health.redis') ?? 'Redis', icon: HardDrive, query: healthRedis },
-		{ label: t?.('admin.health.storage') ?? 'Storage', icon: HardDrive, query: healthStorage },
-		{ label: t?.('admin.health.translation') ?? 'Translation', icon: Globe, query: healthTranslate },
-	]);
+const services = $derived([
+  { label: t?.('admin.health.api') ?? 'API', icon: Server, query: healthAll },
+  { label: t?.('admin.health.database') ?? 'Database', icon: Database, query: healthDb },
+  { label: t?.('admin.health.redis') ?? 'Redis', icon: HardDrive, query: healthRedis },
+  { label: t?.('admin.health.storage') ?? 'Storage', icon: HardDrive, query: healthStorage },
+  { label: t?.('admin.health.translation') ?? 'Translation', icon: Globe, query: healthTranslate },
+]);
 
-	const stats = $derived(platformStats.data);
+const stats = $derived(platformStats.data);
 </script>
 
 <svelte:head>

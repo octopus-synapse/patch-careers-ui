@@ -1,0 +1,27 @@
+$ svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+Loading svelte-check in workspace: /home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web
+Getting Svelte diagnostics...
+
+/home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web/src/lib/components/cv/template-switcher.svelte:26:32
+Warn: This reference only captures the initial value of `value`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+
+let current = $state<Template>(value);
+let saving = $state(false);
+
+/home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web/src/lib/components/cv/version-actions.svelte:20:25
+Warn: This reference only captures the initial value of `title`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+let editing = $state(false);
+let titleDraft = $state(title ?? '');
+let saving = $state(false);
+
+/home/enzoferracini/Documents/Projects/patch-careers/patch-careers-ui/apps/web/src/routes/[[lang=lang]]/cv/[id]/edit/+page.svelte:25:46
+Warn: This reference only captures the initial value of `resumeId`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+
+const draft = useFormDraft<ResumeForm>(`cv-${resumeId}`, {
+  title: '',
+
+====================================
+svelte-check found 0 errors and 3 warnings in 3 files

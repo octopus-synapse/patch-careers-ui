@@ -56,6 +56,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  FollowGetFollowersParams,
+  FollowGetFollowingParams,
   FollowIdDto,
   FollowListDataDto,
   FollowRelationshipDto,
@@ -234,17 +236,26 @@ export type followGetFollowersResponseSuccess = followGetFollowersResponse200
 
 export type followGetFollowersResponse = (followGetFollowersResponseSuccess)
 
-export const getFollowGetFollowersUrl = (userId: string,) => {
+export const getFollowGetFollowersUrl = (userId: string,
+    params?: FollowGetFollowersParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/users/${userId}/followers`
+  return stringifiedParams.length > 0 ? `/api/v1/users/${userId}/followers?${stringifiedParams}` : `/api/v1/users/${userId}/followers`
 }
 
-export const followGetFollowers = async (userId: string, options?: RequestInit): Promise<followGetFollowersResponse> => {
+export const followGetFollowers = async (userId: string,
+    params?: FollowGetFollowersParams, options?: RequestInit): Promise<followGetFollowersResponse> => {
 
-  return customFetch<followGetFollowersResponse>(getFollowGetFollowersUrl(userId),
+  return customFetch<followGetFollowersResponse>(getFollowGetFollowersUrl(userId,params),
   {
     ...options,
     method: 'GET'
@@ -257,29 +268,32 @@ export const followGetFollowers = async (userId: string, options?: RequestInit):
 
 
 
-export const getFollowGetFollowersInfiniteQueryKey = (userId: string,) => {
+export const getFollowGetFollowersInfiniteQueryKey = (userId: string,
+    params?: FollowGetFollowersParams,) => {
     return [
-    'infinite', `/api/v1/users/${userId}/followers`
+    'infinite', `/api/v1/users/${userId}/followers`, ...(params ? [params] : [])
     ] as const;
     }
 
-export const getFollowGetFollowersQueryKey = (userId: string,) => {
+export const getFollowGetFollowersQueryKey = (userId: string,
+    params?: FollowGetFollowersParams,) => {
     return [
-    `/api/v1/users/${userId}/followers`
+    `/api/v1/users/${userId}/followers`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getFollowGetFollowersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof followGetFollowers>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFollowGetFollowersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof followGetFollowers>>>, TError = unknown>(userId: string,
+    params?: FollowGetFollowersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowersInfiniteQueryKey(userId);
+  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowersInfiniteQueryKey(userId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowers>>> = ({ signal }) => followGetFollowers(userId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowers>>> = ({ signal }) => followGetFollowers(userId,params, { signal, ...requestOptions });
 
 
 
@@ -297,13 +311,15 @@ export type FollowGetFollowersInfiniteQueryError = unknown
  */
 
 export function createFollowGetFollowersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof followGetFollowers>>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ userId: () =>  string,
+    params?: () =>  FollowGetFollowersParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createInfiniteQuery(() => getFollowGetFollowersInfiniteQueryOptions(userId(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createInfiniteQuery(() => getFollowGetFollowersInfiniteQueryOptions(userId(),
+    params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
@@ -312,11 +328,12 @@ export function createFollowGetFollowersInfinite<TData = InfiniteData<Awaited<Re
  * @summary Get followers for a user
  */
 export const prefetchFollowGetFollowersInfiniteQuery = async <TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(
- queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ queryClient: QueryClient, userId: string,
+    params?: FollowGetFollowersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getFollowGetFollowersInfiniteQueryOptions(userId,options)
+  const queryOptions = getFollowGetFollowersInfiniteQueryOptions(userId,params,options)
 
   await queryClient.prefetchInfiniteQuery(queryOptions);
 
@@ -325,16 +342,17 @@ export const prefetchFollowGetFollowersInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getFollowGetFollowersQueryOptions = <TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFollowGetFollowersQueryOptions = <TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(userId: string,
+    params?: FollowGetFollowersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowersQueryKey(userId);
+  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowersQueryKey(userId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowers>>> = ({ signal }) => followGetFollowers(userId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowers>>> = ({ signal }) => followGetFollowers(userId,params, { signal, ...requestOptions });
 
 
 
@@ -352,13 +370,15 @@ export type FollowGetFollowersQueryError = unknown
  */
 
 export function createFollowGetFollowers<TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ userId: () =>  string,
+    params?: () =>  FollowGetFollowersParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createQuery(() => getFollowGetFollowersQueryOptions(userId(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createQuery(() => getFollowGetFollowersQueryOptions(userId(),
+    params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
@@ -367,11 +387,12 @@ export function createFollowGetFollowers<TData = Awaited<ReturnType<typeof follo
  * @summary Get followers for a user
  */
 export const prefetchFollowGetFollowersQuery = async <TData = Awaited<ReturnType<typeof followGetFollowers>>, TError = unknown>(
- queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ queryClient: QueryClient, userId: string,
+    params?: FollowGetFollowersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getFollowGetFollowersQueryOptions(userId,options)
+  const queryOptions = getFollowGetFollowersQueryOptions(userId,params,options)
 
   await queryClient.prefetchQuery(queryOptions);
 
@@ -390,17 +411,26 @@ export type followGetFollowingResponseSuccess = followGetFollowingResponse200
 
 export type followGetFollowingResponse = (followGetFollowingResponseSuccess)
 
-export const getFollowGetFollowingUrl = (userId: string,) => {
+export const getFollowGetFollowingUrl = (userId: string,
+    params?: FollowGetFollowingParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/users/${userId}/following`
+  return stringifiedParams.length > 0 ? `/api/v1/users/${userId}/following?${stringifiedParams}` : `/api/v1/users/${userId}/following`
 }
 
-export const followGetFollowing = async (userId: string, options?: RequestInit): Promise<followGetFollowingResponse> => {
+export const followGetFollowing = async (userId: string,
+    params?: FollowGetFollowingParams, options?: RequestInit): Promise<followGetFollowingResponse> => {
 
-  return customFetch<followGetFollowingResponse>(getFollowGetFollowingUrl(userId),
+  return customFetch<followGetFollowingResponse>(getFollowGetFollowingUrl(userId,params),
   {
     ...options,
     method: 'GET'
@@ -413,29 +443,32 @@ export const followGetFollowing = async (userId: string, options?: RequestInit):
 
 
 
-export const getFollowGetFollowingInfiniteQueryKey = (userId: string,) => {
+export const getFollowGetFollowingInfiniteQueryKey = (userId: string,
+    params?: FollowGetFollowingParams,) => {
     return [
-    'infinite', `/api/v1/users/${userId}/following`
+    'infinite', `/api/v1/users/${userId}/following`, ...(params ? [params] : [])
     ] as const;
     }
 
-export const getFollowGetFollowingQueryKey = (userId: string,) => {
+export const getFollowGetFollowingQueryKey = (userId: string,
+    params?: FollowGetFollowingParams,) => {
     return [
-    `/api/v1/users/${userId}/following`
+    `/api/v1/users/${userId}/following`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getFollowGetFollowingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof followGetFollowing>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFollowGetFollowingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof followGetFollowing>>>, TError = unknown>(userId: string,
+    params?: FollowGetFollowingParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowingInfiniteQueryKey(userId);
+  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowingInfiniteQueryKey(userId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowing>>> = ({ signal }) => followGetFollowing(userId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowing>>> = ({ signal }) => followGetFollowing(userId,params, { signal, ...requestOptions });
 
 
 
@@ -453,13 +486,15 @@ export type FollowGetFollowingInfiniteQueryError = unknown
  */
 
 export function createFollowGetFollowingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof followGetFollowing>>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ userId: () =>  string,
+    params?: () =>  FollowGetFollowingParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createInfiniteQuery(() => getFollowGetFollowingInfiniteQueryOptions(userId(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createInfiniteQuery(() => getFollowGetFollowingInfiniteQueryOptions(userId(),
+    params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
@@ -468,11 +503,12 @@ export function createFollowGetFollowingInfinite<TData = InfiniteData<Awaited<Re
  * @summary Get users followed by a user
  */
 export const prefetchFollowGetFollowingInfiniteQuery = async <TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(
- queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ queryClient: QueryClient, userId: string,
+    params?: FollowGetFollowingParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getFollowGetFollowingInfiniteQueryOptions(userId,options)
+  const queryOptions = getFollowGetFollowingInfiniteQueryOptions(userId,params,options)
 
   await queryClient.prefetchInfiniteQuery(queryOptions);
 
@@ -481,16 +517,17 @@ export const prefetchFollowGetFollowingInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getFollowGetFollowingQueryOptions = <TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFollowGetFollowingQueryOptions = <TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(userId: string,
+    params?: FollowGetFollowingParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowingQueryKey(userId);
+  const queryKey =  queryOptions?.queryKey ?? getFollowGetFollowingQueryKey(userId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowing>>> = ({ signal }) => followGetFollowing(userId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof followGetFollowing>>> = ({ signal }) => followGetFollowing(userId,params, { signal, ...requestOptions });
 
 
 
@@ -508,13 +545,15 @@ export type FollowGetFollowingQueryError = unknown
  */
 
 export function createFollowGetFollowing<TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(
- userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ userId: () =>  string,
+    params?: () =>  FollowGetFollowingParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createQuery(() => getFollowGetFollowingQueryOptions(userId(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createQuery(() => getFollowGetFollowingQueryOptions(userId(),
+    params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
@@ -523,11 +562,12 @@ export function createFollowGetFollowing<TData = Awaited<ReturnType<typeof follo
  * @summary Get users followed by a user
  */
 export const prefetchFollowGetFollowingQuery = async <TData = Awaited<ReturnType<typeof followGetFollowing>>, TError = unknown>(
- queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ queryClient: QueryClient, userId: string,
+    params?: FollowGetFollowingParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof followGetFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getFollowGetFollowingQueryOptions(userId,options)
+  const queryOptions = getFollowGetFollowingQueryOptions(userId,params,options)
 
   await queryClient.prefetchQuery(queryOptions);
 

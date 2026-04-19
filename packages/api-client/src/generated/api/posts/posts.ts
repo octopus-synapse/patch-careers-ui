@@ -56,6 +56,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  CreatePostDto,
   PostByIdDataDto,
   PostCreatedDataDto,
   PostDeletedDataDto,
@@ -88,14 +89,15 @@ export const getPostsCreateUrl = () => {
   return `/api/v1/posts`
 }
 
-export const postsCreate = async ( options?: RequestInit): Promise<postsCreateResponse> => {
+export const postsCreate = async (createPostDto: CreatePostDto, options?: RequestInit): Promise<postsCreateResponse> => {
 
   return customFetch<postsCreateResponse>(getPostsCreateUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createPostDto,)
   }
 );}
 
@@ -103,8 +105,8 @@ export const postsCreate = async ( options?: RequestInit): Promise<postsCreateRe
 
 
 export const getPostsCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,{data: CreatePostDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,{data: CreatePostDto}, TContext> => {
 
 const mutationKey = ['postsCreate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -116,10 +118,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postsCreate>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postsCreate>>, {data: CreatePostDto}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postsCreate(requestOptions)
+          return  postsCreate(data,requestOptions)
         }
 
 
@@ -130,18 +132,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof postsCreate>>>
-
+    export type PostsCreateMutationBody = CreatePostDto
     export type PostsCreateMutationError = unknown
 
     /**
  * @summary Create a new post
  */
 export const createPostsCreate = <TError = unknown,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,{data: CreatePostDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsCreate>>,
         TError,
-        void,
+        {data: CreatePostDto},
         TContext
       > => {
       return createMutation(() => ({ ...getPostsCreateMutationOptions(options?.()) }), queryClient);

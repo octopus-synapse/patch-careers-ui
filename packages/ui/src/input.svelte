@@ -1,15 +1,18 @@
 <script lang="ts">
-	import type { HTMLInputAttributes } from 'svelte/elements';
+import type { HTMLInputAttributes } from 'svelte/elements';
+import type { IntentKey } from './design';
+import { getInputClasses } from './input-intents';
 
-	type Props = Omit<HTMLInputAttributes, 'value'> & {
-		value?: string;
-	};
+type Props = Omit<HTMLInputAttributes, 'value'> & {
+  value?: string;
+  intent?: IntentKey;
+};
 
-	let { value = $bindable(''), class: className = '', ...rest }: Props = $props();
+let { value = $bindable(''), intent = 'neutral', class: className = '', ...rest }: Props = $props();
+
+const computedClass = $derived(
+  getInputClasses(intent, typeof className === 'string' ? className : ''),
+);
 </script>
 
-<input
-	bind:value
-	class="w-full rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all border-gray-300 text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200 {className}"
-	{...rest}
-/>
+<input bind:value class={computedClass} {...rest} />

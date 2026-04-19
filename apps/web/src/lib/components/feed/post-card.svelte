@@ -1,197 +1,302 @@
 <script lang="ts">
-	import { Avatar, Badge, Card, Dropdown, ConfirmModal, Button } from 'ui';
-	import { Trash2, Flag, MoreHorizontal, MessageSquare, Zap, Clock, Lock } from 'lucide-svelte';
-	import { formatDate } from 'i18n';
-	import { locale } from '$lib/locale.svelte';
-	import EngagementBar from './engagement-bar.svelte';
-	import CommentSection from './comment-section.svelte';
+import { formatDate } from 'i18n';
+import {
+  Clock,
+  Flag,
+  Heart,
+  MessageSquare,
+  MoreHorizontal,
+  Repeat2,
+  Trash2,
+  Zap,
+} from 'lucide-svelte';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  ConfirmModal,
+  Dropdown,
+  Poll,
+  type PollOption,
+  QuoteCard,
+  type ReactionType,
+} from 'ui';
+import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import { locale } from '$lib/locale.svelte';
+import { timeTicker } from '$lib/time-ticker.svelte';
+import CommentSection from './comment-section.svelte';
+import EngagementBar from './engagement-bar.svelte';
 
-	type Props = {
-		post: Record<string, unknown>;
-		currentUserId: string;
-		onlike: (id: string, reactionType?: string) => void;
-		onunlike: (id: string) => void;
-		onbookmark: (id: string) => void;
-		onunbookmark: (id: string) => void;
-		ondelete: (id: string) => void;
-		onrepost: (id: string) => void;
-		onreport: (id: string) => void;
-		onvote?: (id: string, optionIndex: number) => void;
-	};
+type Props = {
+  post: Record<string, unknown>;
+  currentUserId: string;
+  onlike: (id: string, reactionType?: ReactionType) => void;
+  onunlike: (id: string) => void;
+  onbookmark: (id: string) => void;
+  onunbookmark: (id: string) => void;
+  ondelete: (id: string) => void;
+  onrepost: (id: string) => void;
+  onreport: (id: string) => void;
+  onvote?: (id: string, optionIndex: number) => void;
+};
 
-	let {
-		post,
-		currentUserId,
-		onlike,
-		onunlike,
-		onbookmark,
-		onunbookmark,
-		ondelete,
-		onrepost,
-		onreport,
-		onvote
-	}: Props = $props();
+let {
+  post,
+  currentUserId,
+  onlike,
+  onunlike,
+  onbookmark,
+  onunbookmark,
+  ondelete,
+  onrepost,
+  onreport,
+  onvote,
+}: Props = $props();
 
-	let showComments = $state(false);
-	let showMenu = $state(false);
-	let showDeleteConfirm = $state(false);
+let showComments = $state(false);
+let showMenu = $state(false);
+let showDeleteConfirm = $state(false);
 
-	interface PostAuthor { id?: string; name?: string; username?: string; photoURL?: string; avatarUrl?: string }
-	interface PostData {
-		imageUrl?: string;
-		options?: { text?: string; label?: string; votes?: number }[];
-		title?: string;
-		question?: string;
-		organization?: string;
-		date?: string;
-		commitment?: string;
-		contact_method?: string;
-		project_url?: string;
-		application?: string;
-		difficulty?: string;
-		deadline?: string;
-		description?: string;
-		codeSnippet?: string;
-		codeLanguage?: string;
-		pollDeadline?: string;
-	}
-	interface PostLinkPreview { url?: string; image?: string; title?: string; description?: string }
+interface PostAuthor {
+  id?: string;
+  name?: string;
+  username?: string;
+  photoURL?: string;
+  avatarUrl?: string;
+}
+interface PostData {
+  imageUrl?: string;
+  options?: { text?: string; label?: string; votes?: number }[];
+  title?: string;
+  question?: string;
+  organization?: string;
+  date?: string;
+  commitment?: string;
+  contact_method?: string;
+  project_url?: string;
+  application?: string;
+  difficulty?: string;
+  deadline?: string;
+  description?: string;
+  codeSnippet?: string;
+  codeLanguage?: string;
+  pollDeadline?: string;
+}
+interface PostLinkPreview {
+  url?: string;
+  image?: string;
+  title?: string;
+  description?: string;
+}
 
-	const postId = $derived(String(post.id));
-	const author = $derived(post.author as PostAuthor | undefined);
-	const authorName = $derived(String(author?.name ?? author?.username ?? 'Unknown'));
-	const authorUsername = $derived(String(author?.username));
-	const authorPhoto = $derived(author?.photoURL ?? author?.avatarUrl);
-	const postType = $derived(String(post.type));
-	const data = $derived(post.data as PostData | undefined);
-	const content = $derived(post.content ? String(post.content) : '');
-	const imageUrl = $derived((post.imageUrl ?? data?.imageUrl) as string | undefined);
-	const linkPreview = $derived(post.linkPreview as PostLinkPreview | undefined);
-	const linkUrl = $derived(post.linkUrl as string | undefined);
-	const hardSkills = $derived((post.hardSkills ?? post.hard_skills) as string[] | undefined);
-	const softSkills = $derived((post.softSkills ?? post.soft_skills) as string[] | undefined);
-	const isLiked = $derived(Boolean(post.isLiked ?? post.liked));
-	const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked));
-	const isOwner = $derived(String(author?.id ?? post.userId) === currentUserId);
-	const createdAt = $derived(post.createdAt as string | undefined);
-	const coAuthors = $derived(post.coAuthors as PostAuthor[] | undefined);
-	const threadParentId = $derived(post.threadParentId as string | undefined);
-	const hasThreadChildren = $derived(Boolean(post.threadChildren) || Boolean(post.isThread));
-	const scheduledAt = $derived(post.scheduledAt as string | undefined);
-	const reactionCounts = $derived((post.reactionCounts ?? {}) as Record<string, number>);
-	const currentReaction = $derived(post.reactionType as string | undefined);
-	const hasVoted = $derived(Boolean(post.hasVoted));
+const postId = $derived(String(post.id));
+const author = $derived(post.author as PostAuthor | undefined);
+const authorName = $derived(String(author?.name ?? author?.username ?? 'Unknown'));
+const authorUsername = $derived(String(author?.username));
+const authorPhoto = $derived(author?.photoURL ?? author?.avatarUrl);
+const postType = $derived(String(post.type));
+const data = $derived(post.data as PostData | undefined);
+const content = $derived(post.content ? String(post.content) : '');
+const imageUrl = $derived((post.imageUrl ?? data?.imageUrl) as string | undefined);
+const linkPreview = $derived(post.linkPreview as PostLinkPreview | undefined);
+const linkUrl = $derived(post.linkUrl as string | undefined);
+const hardSkills = $derived((post.hardSkills ?? post.hard_skills) as string[] | undefined);
+const softSkills = $derived((post.softSkills ?? post.soft_skills) as string[] | undefined);
+const isLiked = $derived(Boolean(post.isLiked ?? post.liked));
+const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked));
+const isAnonymous = $derived(Boolean(post.isAnonymous));
+const anonymousCategory = $derived(post.anonymousCategory as string | undefined);
+// When anonymous, the server already masks the author to `__anonymous__`;
+// we also skip the owner branch so the author can't accidentally reveal
+// themselves through owner-only UI (delete menu).
+const isOwner = $derived(!isAnonymous && String(author?.id ?? post.userId) === currentUserId);
+const createdAt = $derived(post.createdAt as string | undefined);
+const coAuthors = $derived(post.coAuthors as PostAuthor[] | undefined);
+const threadParentId = $derived(post.threadParentId as string | undefined);
+const hasThreadChildren = $derived(Boolean(post.threadChildren) || Boolean(post.isThread));
+const scheduledAt = $derived(post.scheduledAt as string | undefined);
+const currentReaction = $derived(post.reactionType as string | undefined);
+const hasVoted = $derived(Boolean(post.hasVoted));
 
-	// Code snippet fields
-	const codeSnippet = $derived(data?.codeSnippet ?? post.codeSnippet as string | undefined);
-	const codeLanguage = $derived(data?.codeLanguage ?? post.codeLanguage as string | undefined);
+// Quote repost (original post embedded)
+const originalPost = $derived(post.originalPost as Record<string, unknown> | undefined);
+const originalAuthor = $derived(originalPost?.author as PostAuthor | undefined);
+const isRepost = $derived(postType === 'REPOST' && Boolean(originalPost));
 
-	// Challenge fields
-	const challengeDifficulty = $derived(data?.difficulty as string | undefined);
-	const challengeDeadline = $derived(data?.deadline as string | undefined);
-	const responseCount = $derived(Number(post.responseCount ?? 0));
+// Code snippet fields
+const codeSnippet = $derived(data?.codeSnippet ?? (post.codeSnippet as string | undefined));
+const codeLanguage = $derived(data?.codeLanguage ?? (post.codeLanguage as string | undefined));
 
-	// Poll deadline
-	const pollDeadline = $derived(data?.pollDeadline as string | undefined);
-	const isPollClosed = $derived.by(() => {
-		if (!pollDeadline) return false;
-		return new Date(pollDeadline).getTime() < Date.now();
-	});
-	const pollTimeRemaining = $derived.by(() => {
-		if (!pollDeadline) return null;
-		const remaining = new Date(pollDeadline).getTime() - Date.now();
-		if (remaining <= 0) return null;
-		const hours = Math.floor(remaining / (1000 * 60 * 60));
-		const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-		if (hours > 24) return `${Math.floor(hours / 24)}d remaining`;
-		if (hours > 0) return `${hours}h ${minutes}m remaining`;
-		return `${minutes}m remaining`;
-	});
+// Challenge fields
+const challengeDifficulty = $derived(data?.difficulty as string | undefined);
+const challengeDeadline = $derived(data?.deadline as string | undefined);
+const responseCount = $derived(Number(post.responseCount ?? 0));
 
-	// Scheduled post detection
-	const isScheduled = $derived.by(() => {
-		if (!scheduledAt || !isOwner) return false;
-		return new Date(scheduledAt).getTime() > Date.now();
-	});
+// Poll deadline
+const pollDeadline = $derived((data?.pollDeadline ?? post.pollDeadline) as string | undefined);
 
-	const pollOptions = $derived(
-		postType === 'QUESTION' && data?.options ? data.options : null as PostData['options'] | null
-	);
+// Scheduled post detection
+const isScheduled = $derived.by(() => {
+  if (!scheduledAt || !isOwner) return false;
+  return new Date(scheduledAt).getTime() > Date.now();
+});
 
-	const title = $derived(data?.title ?? data?.question);
+const pollOptions = $derived(
+  postType === 'QUESTION' && data?.options ? data.options : (null as PostData['options'] | null),
+);
 
-	const typeBadgeVariant: Record<string, 'default' | 'success' | 'danger' | 'warning' | 'info'> = {
-		ACHIEVEMENT: 'warning',
-		OPPORTUNITY: 'info',
-		LEARNING: 'default',
-		BUILD: 'success',
-		QUESTION: 'info',
-		CHALLENGE: 'danger'
-	};
+const pollMyVoteIndex = $derived(
+  typeof post.myVoteIndex === 'number' ? (post.myVoteIndex as number) : null,
+);
 
-	const typeBadgeLabel: Record<string, string> = {
-		ACHIEVEMENT: 'Achievement',
-		OPPORTUNITY: 'Opportunity',
-		LEARNING: 'Learning',
-		BUILD: 'Build',
-		QUESTION: 'Question',
-		CHALLENGE: 'Challenge'
-	};
+const normalizedPollOptions = $derived<PollOption[] | null>(
+  pollOptions
+    ? pollOptions.map((option, index) => ({
+        id: String(index),
+        label: String(option.text ?? option.label ?? option),
+        votes: Number(option.votes ?? 0),
+      }))
+    : null,
+);
 
-	const difficultyBadgeVariant: Record<string, 'success' | 'warning' | 'danger'> = {
-		Easy: 'success',
-		Medium: 'warning',
-		Hard: 'danger'
-	};
+const pollTotalVotes = $derived(
+  typeof post.votesCount === 'number'
+    ? (post.votesCount as number)
+    : (normalizedPollOptions?.reduce((sum, o) => sum + o.votes, 0) ?? 0),
+);
 
-	function formatRelativeTime(dateStr?: string): string {
-		if (!dateStr) return '';
-		const now = Date.now();
-		const then = new Date(dateStr).getTime();
-		const diff = now - then;
-		const seconds = Math.floor(diff / 1000);
-		if (seconds < 60) return 'just now';
-		const minutes = Math.floor(seconds / 60);
-		if (minutes < 60) return `${minutes}m`;
-		const hours = Math.floor(minutes / 60);
-		if (hours < 24) return `${hours}h`;
-		const days = Math.floor(hours / 24);
-		if (days < 30) return `${days}d`;
-		const months = Math.floor(days / 30);
-		return `${months}mo`;
-	}
+const t = $derived(locale.t);
 
-	function highlightHashtags(text: string): string {
-		return text.replace(/(#\w+)/g, '<span class="text-blue-500">$1</span>');
-	}
+const pollLabels = $derived({
+  votes: (count: number) =>
+    count === 0 ? t('feed.poll.votesZero') : t('feed.poll.votes', { count }),
+  closed: t('feed.poll.closed'),
+  closesIn: (value: string) => t('feed.poll.closesIn', { value }),
+  humanDays: (n: number) => t('feed.poll.days', { count: n }),
+  humanHours: (n: number) => t('feed.poll.hours', { count: n }),
+  humanMinutes: (n: number) => t('feed.poll.minutes', { count: n }),
+});
 
-	function handleVoteClick(index: number) {
-		if (hasVoted || isPollClosed) return;
-		if (onvote) {
-			onvote(postId, index);
-		}
-	}
+const title = $derived(data?.title ?? data?.question);
 
-	function handleDeleteRequest() {
-		showMenu = false;
-		showDeleteConfirm = true;
-	}
+const typeBadgeVariant: Record<string, 'neutral' | 'success' | 'danger' | 'warning' | 'info'> = {
+  ACHIEVEMENT: 'warning',
+  OPPORTUNITY: 'info',
+  LEARNING: 'neutral',
+  BUILD: 'success',
+  QUESTION: 'info',
+  CHALLENGE: 'danger',
+};
 
-	function handleDeleteConfirm() {
-		showDeleteConfirm = false;
-		ondelete(postId);
-	}
+const typeBadgeLabel = $derived<Record<string, string>>({
+  ACHIEVEMENT: t('feed.postTypes.ACHIEVEMENT'),
+  OPPORTUNITY: t('feed.postTypes.OPPORTUNITY'),
+  LEARNING: t('feed.postTypes.LEARNING'),
+  BUILD: t('feed.postTypes.BUILD'),
+  QUESTION: t('feed.postTypes.QUESTION'),
+  CHALLENGE: t('feed.postTypes.CHALLENGE'),
+});
+
+const difficultyBadgeVariant: Record<string, 'success' | 'warning' | 'danger'> = {
+  Easy: 'success',
+  Medium: 'warning',
+  Hard: 'danger',
+};
+
+function formatRelativeTime(dateStr: string | undefined, nowMs: number): string {
+  if (!dateStr) return '';
+  const then = new Date(dateStr).getTime();
+  const diff = nowMs - then;
+  const seconds = Math.floor(diff / 1000);
+  if (seconds < 60) return t('feed.justNow');
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d`;
+  const months = Math.floor(days / 30);
+  return `${months}mo`;
+}
+
+const relativeTime = $derived(formatRelativeTime(createdAt, timeTicker.now));
+
+let showHeartBurst = $state(false);
+let heartBurstTimer: ReturnType<typeof setTimeout> | null = null;
+let lastClickAt = 0;
+
+function triggerLike() {
+  if (isLiked) return;
+  onlike(postId, 'LIKE');
+}
+
+function handleCardDoubleClick(e: MouseEvent) {
+  const target = e.target as HTMLElement;
+  if (target.closest('button, a, input, textarea, [role="menu"], [role="menuitem"]')) return;
+  if (heartBurstTimer) clearTimeout(heartBurstTimer);
+  showHeartBurst = true;
+  heartBurstTimer = setTimeout(() => (showHeartBurst = false), 700);
+  triggerLike();
+}
+
+function handleCardTouchEnd(e: TouchEvent) {
+  const target = e.target as HTMLElement;
+  if (target.closest('button, a, input, textarea, [role="menu"], [role="menuitem"]')) return;
+  const now = Date.now();
+  if (now - lastClickAt < 300) {
+    if (heartBurstTimer) clearTimeout(heartBurstTimer);
+    showHeartBurst = true;
+    heartBurstTimer = setTimeout(() => (showHeartBurst = false), 700);
+    triggerLike();
+    lastClickAt = 0;
+  } else {
+    lastClickAt = now;
+  }
+}
+
+function highlightHashtags(text: string): string {
+  return text.replace(/(#\w+)/g, '<span class="text-blue-500">$1</span>');
+}
+
+function handleVoteClick(index: number) {
+  if (hasVoted) return;
+  if (pollDeadline && new Date(pollDeadline).getTime() < Date.now()) return;
+  if (onvote) {
+    onvote(postId, index);
+  }
+}
+
+function handleDeleteRequest() {
+  showMenu = false;
+  showDeleteConfirm = true;
+}
+
+function handleDeleteConfirm() {
+  showDeleteConfirm = false;
+  ondelete(postId);
+}
 </script>
 
-<article>
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<article
+	class="relative"
+	ondblclick={handleCardDoubleClick}
+	ontouchend={handleCardTouchEnd}
+>
+	{#if showHeartBurst}
+		<div class="heart-burst pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+			<Heart size={96} class="text-rose-500" fill="currentColor" />
+		</div>
+	{/if}
 	<Card class="shadow-sm hover:shadow-md transition-shadow">
 		<!-- Scheduled badge -->
 		{#if isScheduled}
 			<div class="mb-3">
-				<Badge variant="warning" size="md">
+				<Badge intent="warning" size="md">
 					<span class="flex items-center gap-1">
 						<Clock size={12} />
-						Scheduled
+						{t('feed.scheduled')}
 					</span>
 				</Badge>
 			</div>
@@ -201,7 +306,15 @@
 		{#if threadParentId}
 			<div class="mb-2 flex items-center gap-1 text-xs text-gray-400 dark:text-neutral-500">
 				<MessageSquare size={12} />
-				<span>Part of a thread</span>
+				<span>{t('feed.partOfThread')}</span>
+			</div>
+		{/if}
+
+		<!-- Repost indicator: shown for both pure reposts and quote reposts -->
+		{#if isRepost}
+			<div class="mb-2 flex items-center gap-1 text-xs text-gray-500 dark:text-neutral-400">
+				<Repeat2 size={12} />
+				<span>{t('feed.repostedBy', { name: authorName })}</span>
 			</div>
 		{/if}
 
@@ -212,27 +325,32 @@
 			<div class="min-w-0 flex-1">
 				<div class="flex items-center gap-1.5 text-sm flex-wrap">
 					<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
-					{#if coAuthors}
+					{#if isAnonymous}
+						<span class="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
+							Anonymous{anonymousCategory ? ` · ${anonymousCategory.toLowerCase().replace('_', ' ')}` : ''}
+						</span>
+					{/if}
+					{#if coAuthors && !isAnonymous}
 						{#each coAuthors as coAuthor}
 							<span class="text-gray-400 dark:text-neutral-500">&</span>
 							<span class="font-semibold text-gray-800 dark:text-neutral-200">{coAuthor.name ?? coAuthor.username}</span>
 						{/each}
 					{/if}
-					{#if authorUsername}
+					{#if authorUsername && !isAnonymous}
 						<span class="text-gray-400 dark:text-neutral-500">@{authorUsername}</span>
 					{/if}
 					<span class="text-gray-400 dark:text-neutral-500">&middot;</span>
-					<span class="text-xs text-gray-400 dark:text-neutral-500">{formatRelativeTime(createdAt)}</span>
+					<span class="text-xs text-gray-400 dark:text-neutral-500">{relativeTime}</span>
 				</div>
 
 				<div class="flex items-center gap-1.5 mt-1">
 					{#if postType && typeBadgeLabel[postType]}
-						<Badge variant={typeBadgeVariant[postType]} size="sm">
+						<Badge intent={typeBadgeVariant[postType]} size="sm">
 							{typeBadgeLabel[postType]}
 						</Badge>
 					{/if}
 					{#if postType === 'CHALLENGE' && challengeDifficulty}
-						<Badge variant={difficultyBadgeVariant[challengeDifficulty] ?? 'default'} size="sm">
+						<Badge intent={difficultyBadgeVariant[challengeDifficulty] ?? 'neutral'} size="sm">
 							{challengeDifficulty}
 						</Badge>
 					{/if}
@@ -248,14 +366,22 @@
 				{#if isOwner}
 					<Button variant="menu" size="sm" onclick={handleDeleteRequest}>
 						<Trash2 size={14} />
-						Delete
+						{t('feed.deletePost')}
 					</Button>
 				{/if}
 				{#if !isOwner}
 					<Button variant="menu" size="sm" onclick={() => { showMenu = false; onreport(postId); }}>
 						<Flag size={14} />
-						Report
+						{t('feed.reportPost')}
 					</Button>
+					{#if author?.id}
+						<BlockMenuItem
+							targetUserId={String(author.id)}
+							targetName={authorName}
+							source="post_card"
+							onbeforeConfirm={() => (showMenu = false)}
+						/>
+					{/if}
 				{/if}
 			</Dropdown>
 		</div>
@@ -272,6 +398,19 @@
 			</p>
 		{/if}
 
+		<!-- Quote repost: embed original post -->
+		{#if isRepost && originalPost}
+			<div class="mt-3">
+				<QuoteCard
+					authorName={String(originalAuthor?.name ?? originalAuthor?.username ?? 'Unknown')}
+					authorUsername={originalAuthor?.username ?? null}
+					authorAvatarUrl={originalAuthor?.photoURL ?? originalAuthor?.avatarUrl ?? null}
+					createdAt={(originalPost.createdAt as string | undefined) ?? null}
+					content={String(originalPost.content ?? '')}
+				/>
+			</div>
+		{/if}
+
 		<!-- Challenge card extras -->
 		{#if postType === 'CHALLENGE'}
 			{#if data?.description}
@@ -281,12 +420,12 @@
 				{#if challengeDeadline}
 					<span class="flex items-center gap-1">
 						<Clock size={12} />
-						Deadline: {formatDate(challengeDeadline, locale.current)}
+						{t('feed.deadlineLabel', { date: formatDate(challengeDeadline, locale.current) })}
 					</span>
 				{/if}
 				<span class="flex items-center gap-1">
 					<Zap size={12} />
-					{responseCount} {responseCount === 1 ? 'response' : 'responses'}
+					{t('feed.responseCount', { count: responseCount })}
 				</span>
 			</div>
 		{/if}
@@ -294,14 +433,18 @@
 		<!-- Type-specific data fields -->
 		{#if data}
 			{#if postType === 'ACHIEVEMENT' && data.organization}
-				<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">{data.organization}{data.date ? ` - ${data.date}` : ''}</p>
+				<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">
+					{data.date
+						? t('feed.achievementAt', { org: data.organization, date: data.date })
+						: t('feed.achievementAtOrg', { org: data.organization })}
+				</p>
 			{/if}
 			{#if postType === 'OPPORTUNITY'}
 				{#if data.commitment}
-					<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">Commitment: {data.commitment}</p>
+					<p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">{t('feed.opportunityCommitment', { value: data.commitment })}</p>
 				{/if}
 				{#if data.contact_method}
-					<p class="text-xs text-gray-400 dark:text-neutral-500">Contact: {data.contact_method}</p>
+					<p class="text-xs text-gray-400 dark:text-neutral-500">{t('feed.opportunityContact', { value: data.contact_method })}</p>
 				{/if}
 			{/if}
 			{#if postType === 'BUILD' && data.project_url}
@@ -310,7 +453,7 @@
 				</a>
 			{/if}
 			{#if postType === 'LEARNING' && data.application}
-				<p class="mt-2 text-xs italic text-gray-400 dark:text-neutral-500">Application: {data.application}</p>
+				<p class="mt-2 text-xs italic text-gray-400 dark:text-neutral-500">{t('feed.learningApplication', { value: data.application })}</p>
 			{/if}
 		{/if}
 
@@ -361,62 +504,16 @@
 		{/if}
 
 		<!-- Poll widget -->
-		{#if pollOptions}
-			<div class="mt-3 space-y-2">
-				<!-- Poll deadline status -->
-				{#if pollDeadline}
-					<div class="flex items-center gap-1.5 text-xs">
-						{#if isPollClosed}
-							<Badge variant="danger" size="sm">
-								<span class="flex items-center gap-1">
-									<Lock size={10} />
-									Closed
-								</span>
-							</Badge>
-						{:else if pollTimeRemaining}
-							<span class="flex items-center gap-1 text-gray-400 dark:text-neutral-500">
-								<Clock size={10} />
-								{pollTimeRemaining}
-							</span>
-						{/if}
-					</div>
-				{/if}
-
-				{#each pollOptions as option, i}
-					{@const label = String(option.text ?? option.label ?? option)}
-					{@const votes = Number(option.votes ?? 0)}
-					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes ?? 0), 0)}
-					{@const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0}
-					<button
-						class="relative w-full overflow-hidden rounded-lg border px-3 py-2.5 text-left transition-all duration-300 {hasVoted || isPollClosed ? 'cursor-default' : 'cursor-pointer hover:border-blue-400 dark:hover:border-blue-500'} border-gray-200 dark:border-neutral-700/50"
-						onclick={() => handleVoteClick(i)}
-						disabled={hasVoted || isPollClosed}
-					>
-						{#if hasVoted || isPollClosed}
-							<div
-								class="absolute inset-y-0 left-0 rounded-r bg-blue-500/10 transition-all duration-500"
-								style="width: {pct}%"
-							></div>
-						{:else}
-							<!-- Radio circle indicator before voting -->
-							<div class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-gray-300 dark:border-neutral-600"></div>
-						{/if}
-						<div class="relative flex items-center justify-between text-sm {hasVoted || isPollClosed ? '' : 'pl-6'}">
-							<span class="text-gray-800 dark:text-neutral-200">{label}</span>
-							{#if hasVoted || isPollClosed}
-								<span class="text-xs font-medium text-gray-500 dark:text-neutral-400">{pct}%</span>
-							{/if}
-						</div>
-					</button>
-				{/each}
-
-				<!-- Total votes count -->
-				{#if pollOptions}
-					{@const totalVotes = pollOptions.reduce((sum: number, o: { votes?: number }) => sum + Number(o.votes ?? 0), 0)}
-					<p class="text-xs text-gray-400 dark:text-neutral-500">
-						{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}
-					</p>
-				{/if}
+		{#if normalizedPollOptions}
+			<div class="mt-3">
+				<Poll
+					options={normalizedPollOptions}
+					totalVotes={pollTotalVotes}
+					myVote={pollMyVoteIndex !== null ? String(pollMyVoteIndex) : null}
+					closesAt={pollDeadline ?? null}
+					labels={pollLabels}
+					onvote={(optionId) => handleVoteClick(Number(optionId))}
+				/>
 			</div>
 		{/if}
 
@@ -425,12 +522,12 @@
 			<div class="mt-3 flex flex-wrap gap-1.5">
 				{#if hardSkills}
 				{#each hardSkills as skill}
-					<Badge variant="default" size="sm">{skill}</Badge>
+					<Badge intent="neutral" size="sm">{skill}</Badge>
 				{/each}
 				{/if}
 				{#if softSkills}
 				{#each softSkills as skill}
-					<Badge variant="info" size="sm">{skill}</Badge>
+					<Badge intent="info" size="sm">{skill}</Badge>
 				{/each}
 				{/if}
 			</div>
@@ -442,9 +539,8 @@
 				{post}
 				{isLiked}
 				{isBookmarked}
-				{reactionCounts}
 				currentReaction={currentReaction ?? null}
-				onlike={(reactionType?: string) => onlike(postId, reactionType)}
+				onlike={(reactionType?: ReactionType) => onlike(postId, reactionType)}
 				onunlike={() => onunlike(postId)}
 				onbookmark={() => onbookmark(postId)}
 				onunbookmark={() => onunbookmark(postId)}
@@ -461,7 +557,7 @@
 					class="flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
 				>
 					<MessageSquare size={12} />
-					View thread
+					{t('feed.viewThread')}
 				</a>
 			</div>
 		{/if}
@@ -480,8 +576,38 @@
 	open={showDeleteConfirm}
 	onClose={() => showDeleteConfirm = false}
 	onConfirm={handleDeleteConfirm}
-	title="Delete post"
-	message="Are you sure you want to delete this post? This action cannot be undone."
-	confirmLabel="Delete"
-	confirmVariant="danger"
+	title={t('feed.deleteConfirmTitle')}
+	message={t('feed.deleteConfirmMessage')}
+	confirmLabel={t('feed.deleteConfirmButton')}
+	confirmIntent="danger"
 />
+
+<style>
+	.heart-burst {
+		animation: heart-burst 0.7s ease-out forwards;
+	}
+	@keyframes heart-burst {
+		0% {
+			opacity: 0;
+			transform: scale(0.3);
+		}
+		30% {
+			opacity: 1;
+			transform: scale(1.1);
+		}
+		60% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		100% {
+			opacity: 0;
+			transform: scale(1.05);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.heart-burst {
+			animation: none;
+			opacity: 1;
+		}
+	}
+</style>
