@@ -9,14 +9,13 @@
         "@commitlint/cli": "^19",
         "@commitlint/config-conventional": "^19",
         "@commitlint/types": "^19",
-        "@octokit/graphql": "^9.0.3",
         "@octopus-synapse/biome-config": "^1",
         "@octopus-synapse/commitlint-config": "^1",
         "@octopus-synapse/precommit": "^1",
+        "@octopus-synapse/release-cli": "^1.6.0",
         "@types/bun": "latest",
         "husky": "^9",
         "turbo": "^2",
-        "zod": "^3.23.0",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -266,6 +265,8 @@
     "@octopus-synapse/commitlint-config": ["@octopus-synapse/commitlint-config@1.1.1", "https://npm.pkg.github.com/download/@octopus-synapse/commitlint-config/1.1.1/ba1c865ef14286b347c8533efa5063c6ef06e912", { "dependencies": { "@commitlint/config-conventional": "^19", "@commitlint/types": "^19" } }, "sha512-CdwSb26zRgl7B2ivyOTl/NOvsk0M7OxqfE5aKb2rE00e/RACIhY0jWtGdT34KsxjVOZ1x+GVMDvJ0Lc6QF5Gvw=="],
 
     "@octopus-synapse/precommit": ["@octopus-synapse/precommit@1.1.1", "https://npm.pkg.github.com/download/@octopus-synapse/precommit/1.1.1/878e75dd006c866160ea4e49b85ce9b17738873f", { "bin": { "octopus-attest": "dist/bin/attest.js", "octopus-run-parallel": "dist/bin/run-parallel.js" } }, "sha512-ri6XiW1GB/BHlUKX6D4iecMq0kHzCUFomMaJ750qjo76dXd3C34TO9hnUBU0bCm1L5ZUqHcMRTB74T8QLJwS8Q=="],
+
+    "@octopus-synapse/release-cli": ["@octopus-synapse/release-cli@1.6.0", "https://npm.pkg.github.com/download/@octopus-synapse/release-cli/1.6.0/2927e619612782e2ce41cf919c11a2f287b456c7", { "dependencies": { "@octokit/graphql": "^9.0.3", "zod": "^3.25.76" }, "bin": { "octopus-release-calc-version": "dist/cli/calc-version.js", "octopus-release-detect": "dist/cli/detect-release.js", "octopus-release-gather-data": "dist/cli/gather-changelog-data.js", "octopus-release-gen-changelog": "dist/cli/gen-changelog.js", "octopus-release-get-pr-labels": "dist/cli/get-pr-labels.js" } }, "sha512-Cm6RE+M1FFI6a5i5Sp3QYpkDoz1Mw4DKDVTW2sTR0MiJGADhWwHg78WECThCUr+0N6QgElTa6ZKx5gLFxwIRvQ=="],
 
     "@orval/angular": ["@orval/angular@8.6.2", "", { "dependencies": { "@orval/core": "8.6.2" } }, "sha512-XNTYgfbsjnyGWG12jKkC5URFILTRUASOizypqDLKJWxA3ZEJ6/Dwnuz4wgdiTxb8Ltv1IyuJABkkxk2OM8eCMg=="],
 
