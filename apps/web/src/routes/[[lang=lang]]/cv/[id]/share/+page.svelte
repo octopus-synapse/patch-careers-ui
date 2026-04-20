@@ -21,6 +21,9 @@ import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 const resumeId = $derived($page.params.id);
 
@@ -92,7 +95,7 @@ async function load() {
     const body = (await res.json()) as { data?: { shares?: Share[] }; shares?: Share[] };
     shares = body.data?.shares ?? body.shares ?? [];
   } catch {
-    toastState.show('Falha ao carregar links.', 'danger');
+    toastState.show(t('errors.loadSharesFailed'), 'danger');
   } finally {
     loading = false;
   }
@@ -131,7 +134,7 @@ async function createShare() {
     password = '';
     expiresInDays = 30;
     await load();
-    toastState.show('Link criado.', 'success');
+    toastState.show(t('success.shareCreated'), 'success');
   } catch (err) {
     toastState.show(err instanceof Error ? err.message : 'Falha ao criar link.', 'danger');
   } finally {
@@ -151,7 +154,7 @@ async function revoke(id: string) {
     delete aliasesByShare[id];
     delete expandedShare[id];
   } catch {
-    toastState.show('Falha ao remover.', 'danger');
+    toastState.show(t('errors.removeFailed'), 'danger');
   }
 }
 
@@ -159,7 +162,7 @@ async function copyUrl(slug: string) {
   const url = `${window.location.origin}/s/${slug}`;
   await navigator.clipboard.writeText(url);
   copiedSlug = slug;
-  toastState.show('Link copiado.', 'success');
+  toastState.show(t('success.linkCopied'), 'success');
   // Clear the inline "Copied!" badge after a short window so the next copy
   // re-triggers the visual change.
   setTimeout(() => {
@@ -175,7 +178,7 @@ async function loadAliases(shareId: string) {
     const body = (await res.json()) as { data?: { aliases?: Alias[] } };
     aliasesByShare[shareId] = body.data?.aliases ?? [];
   } catch {
-    toastState.show('Falha ao carregar aliases.', 'danger');
+    toastState.show(t('errors.loadAliasesFailed'), 'danger');
   } finally {
     aliasLoading[shareId] = false;
   }
@@ -205,7 +208,7 @@ async function addAlias(shareId: string) {
     if (!res.ok) throw new Error();
     newAliasInput[shareId] = '';
     await loadAliases(shareId);
-    toastState.show('Alias adicionado.', 'success');
+    toastState.show(t('success.aliasAdded'), 'success');
   } catch {
     toastState.show('Falha ao adicionar alias.', 'danger');
   }
@@ -400,15 +403,15 @@ onMount(load);
                   variant="icon"
                   size="xs"
                   onclick={() => copyUrl(s.slug)}
-                  aria-label={copiedSlug === s.slug ? 'Link copiado' : 'Copiar link'}
-                  title={copiedSlug === s.slug ? 'Copiado!' : 'Copiar link'}
+                  aria-label={copiedSlug === s.slug ? t('actions.linkCopied') : t('actions.copyLink')}
+                  title={copiedSlug === s.slug ? t('actions.linkCopied') : t('actions.copyLink')}
                 >
                   <Copy size={14} class={copiedSlug === s.slug ? 'text-green-500' : ''} />
                 </Button>
                 <Button variant="icon" size="xs" onclick={() => downloadQr(s.id, s.slug)} aria-label="Baixar QR">
                   <QrCode size={14} />
                 </Button>
-                <Button variant="icon" size="xs" onclick={() => revoke(s.id)} aria-label="Remover">
+                <Button variant="icon" size="xs" onclick={() => revoke(s.id)} aria-label={t('actions.remove')}>
                   <Trash2 size={14} class="text-red-500" />
                 </Button>
               </div>
@@ -440,7 +443,7 @@ onMount(load);
                     {#each aliasesByShare[s.id] as a (a.id)}
                       <li class="flex items-center justify-between rounded bg-gray-50 px-2 py-1 text-[11px] dark:bg-neutral-900">
                         <span class="font-mono">/s/{a.slug}</span>
-                        <Button variant="icon" size="xs" onclick={() => removeAlias(s.id, a.id)} aria-label="Remover alias">
+                        <Button variant="icon" size="xs" onclick={() => removeAlias(s.id, a.id)} aria-label={t('actions.removeAlias')}>
                           <Trash2 size={12} class="text-red-500" />
                         </Button>
                       </li>

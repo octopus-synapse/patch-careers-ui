@@ -108,7 +108,12 @@ function handleSubmit(e: Event) {
 						variant="solid"
 					>
 						{#if form.isSubmitting}
-							<Loader2 size={14} class="mx-auto animate-spin" />
+							<Loader2
+								size={14}
+								class="mx-auto animate-spin"
+								role="status"
+								aria-label={t('common.loading')}
+							/>
 						{:else}
 							{t('auth.sign-in.submit')}
 						{/if}

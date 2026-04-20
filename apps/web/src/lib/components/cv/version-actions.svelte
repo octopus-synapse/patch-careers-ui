@@ -4,6 +4,9 @@
 <script lang="ts">
 import { Check, Loader2, Pencil, Trash2, X } from 'lucide-svelte';
 import { Button, Input, toastState } from 'ui';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface Props {
   resumeId: string;
@@ -48,9 +51,9 @@ async function saveRename() {
     if (!res.ok) throw new Error();
     onRenamed?.(trimmed);
     editing = false;
-    toastState.show('Versão renomeada.', 'success');
+    toastState.show(t('success.versionRenamed'), 'success');
   } catch {
-    toastState.show('Falha ao renomear.', 'danger');
+    toastState.show(t('errors.renameFailed'), 'danger');
   } finally {
     saving = false;
   }
@@ -66,9 +69,9 @@ async function remove() {
     });
     if (!res.ok) throw new Error();
     onDeleted?.();
-    toastState.show('Versão removida.', 'success');
+    toastState.show(t('success.versionRemoved'), 'success');
   } catch {
-    toastState.show('Falha ao remover.', 'danger');
+    toastState.show(t('errors.removeFailed'), 'danger');
   } finally {
     deleting = false;
   }
@@ -82,14 +85,14 @@ async function remove() {
       placeholder="Nome da versão"
       class="h-7 text-xs"
     />
-    <Button variant="icon" size="xs" onclick={saveRename} disabled={saving} aria-label="Salvar">
+    <Button variant="icon" size="xs" onclick={saveRename} disabled={saving} aria-label={t('actions.save')}>
       {#if saving}
         <Loader2 size={14} class="animate-spin" />
       {:else}
         <Check size={14} class="text-emerald-500" />
       {/if}
     </Button>
-    <Button variant="icon" size="xs" onclick={cancelEdit} aria-label="Cancelar">
+    <Button variant="icon" size="xs" onclick={cancelEdit} aria-label={t('actions.cancel')}>
       <X size={14} />
     </Button>
   {:else}
@@ -97,7 +100,7 @@ async function remove() {
       <Pencil size={14} class="text-gray-400" />
     </Button>
     {#if canDelete}
-      <Button variant="icon" size="xs" onclick={remove} disabled={deleting} aria-label="Remover">
+      <Button variant="icon" size="xs" onclick={remove} disabled={deleting} aria-label={t('actions.remove')}>
         {#if deleting}
           <Loader2 size={14} class="animate-spin" />
         {:else}

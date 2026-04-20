@@ -11,6 +11,7 @@ import { FileText, Loader2, Zap } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
+import { parseApiError } from '$lib/format/api-error';
 import { useFormDraft } from '$lib/forms/use-form-draft.svelte';
 
 interface Preferences extends Record<string, unknown> {
@@ -68,10 +69,16 @@ async function save() {
       credentials: 'include',
       body: JSON.stringify(draft.state),
     });
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+      const parsed = await parseApiError(res, 'Falha ao salvar. Rascunho local preservado.');
+      throw new Error(parsed.message);
+    }
     toastState.show('Preferências salvas.', 'success');
-  } catch {
-    toastState.show('Falha ao salvar. Rascunho local preservado.', 'danger');
+  } catch (err) {
+    toastState.show(
+      err instanceof Error ? err.message : 'Falha ao salvar. Rascunho local preservado.',
+      'danger',
+    );
   } finally {
     saving = false;
   }

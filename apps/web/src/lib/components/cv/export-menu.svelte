@@ -11,6 +11,9 @@ import {
 } from 'api-client';
 import { Download, FileCode, FileJson, FileText, FileType, Loader2 } from 'lucide-svelte';
 import { Button, Dropdown, toastState } from 'ui';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface Props {
   /** Required for DOCX (current user only). For per-resume formats, pass resumeId. */
@@ -46,7 +49,7 @@ async function downloadPdf() {
       data.filename ?? `${filenameHint}.pdf`,
     );
   } catch {
-    toastState.show('Falha ao gerar PDF.', 'danger');
+    toastState.show(t('errors.exportPdfFailed'), 'danger');
   } finally {
     loading = null;
     open = false;
@@ -67,7 +70,7 @@ async function downloadDocx() {
       data.filename ?? `${filenameHint}.docx`,
     );
   } catch {
-    toastState.show('Falha ao gerar DOCX.', 'danger');
+    toastState.show(t('errors.exportDocxFailed'), 'danger');
   } finally {
     loading = null;
     open = false;
@@ -84,7 +87,7 @@ async function downloadJson() {
     });
     downloadBlob(blob, `${filenameHint}.json`);
   } catch {
-    toastState.show('Falha ao exportar JSON.', 'danger');
+    toastState.show(t('errors.exportJsonFailed'), 'danger');
   } finally {
     loading = null;
     open = false;
@@ -100,7 +103,7 @@ async function downloadLatex() {
     const blob = new Blob([data?.latex ?? ''], { type: 'application/x-tex' });
     downloadBlob(blob, data?.filename ?? `${filenameHint}.tex`);
   } catch {
-    toastState.show('Falha ao exportar LaTeX.', 'danger');
+    toastState.show(t('errors.exportLatexFailed'), 'danger');
   } finally {
     loading = null;
     open = false;

@@ -9,6 +9,9 @@
 import { Copy, Download, Loader2, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 type Status = { enabled: boolean; enabledAt: string | null; lastUsedAt: string | null };
 
@@ -56,7 +59,7 @@ async function startSetup() {
     setupSecret = body.data?.secret ?? null;
     setupQrUrl = body.data?.qrCodeUrl ?? null;
   } catch {
-    toastState.show('Falha ao iniciar setup 2FA.', 'danger');
+    toastState.show(t('errors.twoFactorSetupFailed'), 'danger');
   } finally {
     setupLoading = false;
   }
@@ -80,7 +83,7 @@ async function verifyAndEnable() {
     verifyToken = '';
     await loadStatus();
   } catch {
-    toastState.show('Código inválido.', 'danger');
+    toastState.show(t('errors.twoFactorInvalidCode'), 'danger');
   } finally {
     verifyLoading = false;
   }
@@ -123,7 +126,7 @@ async function regenBackupCodes() {
     backupCodes = body.data?.backupCodes ?? [];
     regenPassword = '';
   } catch {
-    toastState.show('Falha ao regenerar. Verifique a senha.', 'danger');
+    toastState.show(t('errors.twoFactorRegenFailed'), 'danger');
   } finally {
     regenLoading = false;
   }

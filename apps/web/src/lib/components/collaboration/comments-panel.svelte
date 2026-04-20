@@ -7,6 +7,9 @@
 import { CheckCircle2, Loader2, MessageSquare, Trash2 } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, toastState } from 'ui';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface CommentAuthor {
   id: string;
@@ -47,7 +50,7 @@ async function load() {
     const body = (await res.json()) as { data?: { comments?: Comment[] } };
     comments = body.data?.comments ?? [];
   } catch {
-    toastState.show('Falha ao carregar comentários.', 'danger');
+    toastState.show(t('errors.loadCommentsFailed'), 'danger');
   } finally {
     loading = false;
   }
@@ -68,7 +71,7 @@ async function create(parentId?: string, contentOverride?: string) {
     if (!parentId) newContent = '';
     await load();
   } catch {
-    toastState.show('Falha ao enviar comentário.', 'danger');
+    toastState.show(t('errors.submitCommentFailed'), 'danger');
   } finally {
     submitting = false;
   }
@@ -83,7 +86,7 @@ async function resolve(id: string) {
     if (!res.ok) throw new Error();
     comments = comments.map((c) => (c.id === id ? { ...c, resolved: true } : c));
   } catch {
-    toastState.show('Falha ao resolver.', 'danger');
+    toastState.show(t('errors.resolveCommentFailed'), 'danger');
   }
 }
 
@@ -97,7 +100,7 @@ async function remove(id: string) {
     if (!res.ok) throw new Error();
     comments = comments.filter((c) => c.id !== id);
   } catch {
-    toastState.show('Falha ao remover.', 'danger');
+    toastState.show(t('errors.removeFailed'), 'danger');
   }
 }
 

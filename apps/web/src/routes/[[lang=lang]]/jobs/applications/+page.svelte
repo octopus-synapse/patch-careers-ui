@@ -16,6 +16,9 @@ import {
 import { onMount } from 'svelte';
 import { Button, toastState } from 'ui';
 import { browser } from '$app/environment';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 type EventType =
   | 'SUBMITTED'
@@ -65,7 +68,7 @@ async function quickFollowUp(applicationId: string) {
     await load();
     toastState.show('Follow-up registrado.', 'success');
   } catch {
-    toastState.show('Falha ao registrar.', 'danger');
+    toastState.show(t('errors.registerFailed'), 'danger');
   }
 }
 
@@ -107,7 +110,7 @@ async function load() {
     const body = (await res.json()) as { data?: { applications?: TrackedApplication[] } };
     applications = body.data?.applications ?? [];
   } catch {
-    toastState.show('Falha ao carregar aplicações.', 'danger');
+    toastState.show(t('errors.loadApplicationsFailed'), 'danger');
   } finally {
     loading = false;
   }
@@ -131,7 +134,7 @@ async function addEvent(appId: string) {
     await load();
     toastState.show('Evento registrado.', 'success');
   } catch {
-    toastState.show('Falha ao registrar evento.', 'danger');
+    toastState.show(t('errors.registerEventFailed'), 'danger');
   } finally {
     adding = null;
   }

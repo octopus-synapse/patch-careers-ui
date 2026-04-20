@@ -10,6 +10,7 @@ import { onMount } from 'svelte';
 import { Button, Card, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
+import { parseApiError } from '$lib/format/api-error';
 
 const resumeId = $derived($page.params.id);
 
@@ -42,9 +43,14 @@ async function simulate() {
   running = true;
   try {
     // Single-shot endpoint: backend loads the resume, maps it to the
-    // simulator input, and runs the simulation in one call.
+    // simulator input, and runs the simulation in one call. SDK is stale
+    // for ats/simulate so we keep direct fetch but route errors through
+    // the shared envelope parser.
     const res = await fetch(`/api/v1/ats/simulate/${resumeId}`, { credentials: 'include' });
-    if (!res.ok) throw new Error('Simulation failed');
+    if (!res.ok) {
+      const parsed = await parseApiError(res, 'Falha na simulação.');
+      throw new Error(parsed.message);
+    }
     const body = (await res.json()) as { data?: SimulationResult };
     result = body.data ?? null;
   } catch (err) {
