@@ -35,9 +35,10 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { FollowingListDataDtoFollowingDataItem } from './followingListDataDtoFollowingDataItem';
 
 export type FollowingListDataDtoFollowing = {
-  data: unknown[];
+  data: FollowingListDataDtoFollowingDataItem[];
   total: number;
   page: number;
   limit: number;

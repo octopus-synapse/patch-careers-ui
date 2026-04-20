@@ -1,39 +1,40 @@
 <script lang="ts">
-	import { Avatar } from 'ui';
+import { Check, CheckCheck } from 'lucide-svelte';
+import { Avatar } from 'ui';
 
-	type Message = {
-		id: string;
-		content: string;
-		senderId: string;
-		createdAt: string;
-		isRead: boolean;
-		sender: { id: string; name: string | null; photoURL: string | null };
-	};
+type Message = {
+  id: string;
+  content: string;
+  senderId: string;
+  createdAt: string;
+  isRead: boolean;
+  sender: { id: string; name: string | null; photoURL: string | null };
+};
 
-	type Props = {
-		messages: Message[];
-		currentUserId: string;
-	};
+type Props = {
+  messages: Message[];
+  currentUserId: string;
+};
 
-	let { messages, currentUserId }: Props = $props();
+let { messages, currentUserId }: Props = $props();
 
-	function formatTime(dateStr: string): string {
-		return new Date(dateStr).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-	}
+function formatTime(dateStr: string): string {
+  return new Date(dateStr).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
 
-	function isOwn(msg: Message): boolean {
-		return msg.senderId === currentUserId;
-	}
+function isOwn(msg: Message): boolean {
+  return msg.senderId === currentUserId;
+}
 
-	let container: HTMLDivElement;
+let container: HTMLDivElement;
 
-	$effect(() => {
-		if (messages.length && container) {
-			requestAnimationFrame(() => {
-				container.scrollTop = container.scrollHeight;
-			});
-		}
-	});
+$effect(() => {
+  if (messages.length && container) {
+    requestAnimationFrame(() => {
+      container.scrollTop = container.scrollHeight;
+    });
+  }
+});
 </script>
 
 <div
@@ -64,8 +65,27 @@
 						{own ? 'bg-cyan-100 dark:bg-cyan-900/50 text-gray-900 dark:text-cyan-50 rounded-br-sm' : 'bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 rounded-bl-sm'}">
 						{msg.content}
 					</div>
-					<span class="mt-0.5 block text-[9px] {own ? 'text-right' : 'text-left'} text-gray-400 dark:text-neutral-600">
+					<span
+						class="mt-0.5 flex items-center gap-1 text-[9px] text-gray-400 dark:text-neutral-600 {own
+							? 'justify-end'
+							: 'justify-start'}"
+					>
 						{formatTime(msg.createdAt)}
+						{#if own}
+							{#if msg.isRead}
+								<CheckCheck
+									size={11}
+									class="text-cyan-500"
+									aria-label="Lida"
+								/>
+							{:else}
+								<Check
+									size={11}
+									class="text-gray-400 dark:text-neutral-600"
+									aria-label="Enviada"
+								/>
+							{/if}
+						{/if}
 					</span>
 				</div>
 			</div>

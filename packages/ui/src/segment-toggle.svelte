@@ -1,28 +1,30 @@
 <script lang="ts">
-	type Option = {
-		value: string;
-		label: string;
-	};
+import Button from './button.svelte';
 
-	type Props = {
-		options: Option[];
-		selected: string;
-		size?: 'sm' | 'md';
-		onchange: (value: string) => void;
-	};
+type Option = {
+  value: string;
+  label: string;
+};
 
-	let { options, selected, size = 'sm', onchange }: Props = $props();
+type Props = {
+  options: Option[];
+  selected: string;
+  size?: 'xs' | 'sm';
+  onchange: (value: string) => void;
+};
 
-	const sizeClass = { sm: 'px-2 py-0.5 text-[10px]', md: 'px-3 py-1 text-xs' };
+let { options, selected, size = 'xs', onchange }: Props = $props();
 </script>
 
 <div class="flex rounded-md p-0.5 bg-gray-100 dark:bg-neutral-700/50">
 	{#each options as option}
-		<button
+		<Button
+			variant="tab"
+			{size}
+			selected={selected === option.value}
 			onclick={() => onchange(option.value)}
-			class="rounded font-semibold transition-all {sizeClass[size]} {selected === option.value
-				? 'bg-white shadow-sm text-gray-800 dark:bg-neutral-600 dark:text-neutral-200'
-				: 'text-gray-500 dark:text-neutral-500'}"
-		>{option.label}</button>
+		>
+			{option.label}
+		</Button>
 	{/each}
 </div>

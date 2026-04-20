@@ -35,10 +35,14 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { AdminAnalyticsOverviewDataDtoActiveUsers } from './adminAnalyticsOverviewDataDtoActiveUsers';
 import type { AdminAnalyticsOverviewDataDtoAtsScoreDistributionItem } from './adminAnalyticsOverviewDataDtoAtsScoreDistributionItem';
+import type { AdminAnalyticsOverviewDataDtoContentStats } from './adminAnalyticsOverviewDataDtoContentStats';
 import type { AdminAnalyticsOverviewDataDtoImportSourcesItem } from './adminAnalyticsOverviewDataDtoImportSourcesItem';
+import type { AdminAnalyticsOverviewDataDtoJobStats } from './adminAnalyticsOverviewDataDtoJobStats';
 import type { AdminAnalyticsOverviewDataDtoMostUsedSectionsItem } from './adminAnalyticsOverviewDataDtoMostUsedSectionsItem';
 import type { AdminAnalyticsOverviewDataDtoResumesByLanguageItem } from './adminAnalyticsOverviewDataDtoResumesByLanguageItem';
+import type { AdminAnalyticsOverviewDataDtoSocialStats } from './adminAnalyticsOverviewDataDtoSocialStats';
 import type { AdminAnalyticsOverviewDataDtoUserGrowthItem } from './adminAnalyticsOverviewDataDtoUserGrowthItem';
 import type { AdminAnalyticsOverviewDataDtoViewSourcesItem } from './adminAnalyticsOverviewDataDtoViewSourcesItem';
 
@@ -49,4 +53,8 @@ export interface AdminAnalyticsOverviewDataDto {
   mostUsedSections: AdminAnalyticsOverviewDataDtoMostUsedSectionsItem[];
   importSources: AdminAnalyticsOverviewDataDtoImportSourcesItem[];
   viewSources: AdminAnalyticsOverviewDataDtoViewSourcesItem[];
+  activeUsers: AdminAnalyticsOverviewDataDtoActiveUsers;
+  contentStats: AdminAnalyticsOverviewDataDtoContentStats;
+  socialStats: AdminAnalyticsOverviewDataDtoSocialStats;
+  jobStats: AdminAnalyticsOverviewDataDtoJobStats;
 }

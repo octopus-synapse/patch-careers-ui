@@ -1,159 +1,161 @@
 <script lang="ts">
-	import { createAuthSession } from 'api-client';
-	import {
-		createFeedGetBookmarks,
-		getFeedGetBookmarksQueryKey,
-		engagementLike,
-		engagementUnlike,
-		engagementBookmark,
-		engagementUnbookmark,
-		engagementRepost,
-		engagementReport,
-		postsDelete
-	} from 'api-client';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
-	import { Loader2, ArrowLeft } from 'lucide-svelte';
-	import { Button } from 'ui';
-	import PostCard from '$lib/components/feed/post-card.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createAuthSession,
+  createFeedGetBookmarks,
+  engagementBookmark,
+  engagementLike,
+  engagementReport,
+  engagementRepost,
+  engagementUnbookmark,
+  engagementUnlike,
+  getFeedGetBookmarksQueryKey,
+  postsDelete,
+} from 'api-client';
+import { ArrowLeft, Loader2 } from 'lucide-svelte';
+import { Button } from 'ui';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import PostCard from '$lib/components/feed/post-card.svelte';
 
-	const session = createAuthSession(() => ({
-		query: { retry: false, enabled: browser }
-	}));
-	const user = $derived(session.data?.user);
-	const authenticated = $derived(session.data?.authenticated);
-	const currentUserId = $derived(String(user?.id ?? ''));
+const session = createAuthSession(() => ({
+  query: { retry: false, enabled: browser },
+}));
+const user = $derived(session.data?.user);
+const authenticated = $derived(session.data?.authenticated);
+const currentUserId = $derived(String(user?.id ?? ''));
 
-	$effect(() => {
-		if (!session.isLoading && !authenticated) {
-			goto('/login');
-		}
-	});
+$effect(() => {
+  if (!session.isLoading && !authenticated) {
+    goto('/login');
+  }
+});
 
-	let cursor = $state<string | undefined>(undefined);
-	let allPosts = $state<Record<string, unknown>[]>([]);
-	let hasMore = $state(true);
-	let loadingMore = $state(false);
+let cursor = $state<string | undefined>(undefined);
+let allPosts = $state<Record<string, unknown>[]>([]);
+let hasMore = $state(true);
+let loadingMore = $state(false);
 
-	let likedPosts = $state<Set<string>>(new Set());
-	let unlikedPosts = $state<Set<string>>(new Set());
-	let bookmarkedPosts = $state<Set<string>>(new Set());
-	let unbookmarkedPosts = $state<Set<string>>(new Set());
+let likedPosts = $state<Set<string>>(new Set());
+let unlikedPosts = $state<Set<string>>(new Set());
+let bookmarkedPosts = $state<Set<string>>(new Set());
+let unbookmarkedPosts = $state<Set<string>>(new Set());
 
-	const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
-	const bookmarksQuery = createFeedGetBookmarks(
-		() => ({ cursor, limit: 20 }),
-		() => ({
-			query: { enabled: authenticated }
-		})
-	);
+const bookmarksQuery = createFeedGetBookmarks(
+  () => ({ cursor, limit: 20 }),
+  () => ({
+    query: { enabled: authenticated },
+  }),
+);
 
-	const rawData = $derived(bookmarksQuery.data);
+const rawData = $derived(bookmarksQuery.data);
 
-	$effect(() => {
-		if (!rawData) return;
-		const postsArr = (Array.isArray(rawData) ? rawData : rawData?.posts) as Record<string, unknown>[] | undefined;
-		if (!postsArr) return;
+$effect(() => {
+  if (!rawData) return;
+  const postsArr = (Array.isArray(rawData) ? rawData : rawData?.posts) as
+    | Record<string, unknown>[]
+    | undefined;
+  if (!postsArr) return;
 
-		const nextCursor = rawData?.nextCursor;
+  const nextCursor = rawData?.nextCursor;
 
-		if (cursor === undefined) {
-			allPosts = postsArr;
-		} else {
-			const existingIds = new Set(allPosts.map(p => String(p.id)));
-			const newPosts = postsArr.filter(p => !existingIds.has(String(p.id)));
-			if (newPosts.length > 0) {
-				allPosts = [...allPosts, ...newPosts];
-			}
-		}
+  if (cursor === undefined) {
+    allPosts = postsArr;
+  } else {
+    const existingIds = new Set(allPosts.map((p) => String(p.id)));
+    const newPosts = postsArr.filter((p) => !existingIds.has(String(p.id)));
+    if (newPosts.length > 0) {
+      allPosts = [...allPosts, ...newPosts];
+    }
+  }
 
-		hasMore = !!nextCursor && postsArr.length > 0;
-		loadingMore = false;
-	});
+  hasMore = !!nextCursor && postsArr.length > 0;
+  loadingMore = false;
+});
 
-	let sentinelEl: HTMLDivElement | undefined = $state();
+let sentinelEl: HTMLDivElement | undefined = $state();
 
-	$effect(() => {
-		if (!sentinelEl || !browser) return;
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0].isIntersecting && hasMore && !bookmarksQuery.isLoading && !loadingMore) {
-					loadNextPage();
-				}
-			},
-			{ rootMargin: '200px' }
-		);
-		observer.observe(sentinelEl);
-		return () => observer.disconnect();
-	});
+$effect(() => {
+  if (!sentinelEl || !browser) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting && hasMore && !bookmarksQuery.isLoading && !loadingMore) {
+        loadNextPage();
+      }
+    },
+    { rootMargin: '200px' },
+  );
+  observer.observe(sentinelEl);
+  return () => observer.disconnect();
+});
 
-	function loadNextPage() {
-		if (!rawData || loadingMore) return;
-		const nextCursor = rawData?.nextCursor;
-		if (nextCursor) {
-			loadingMore = true;
-			cursor = nextCursor;
-		}
-	}
+function loadNextPage() {
+  if (!rawData || loadingMore) return;
+  const nextCursor = rawData?.nextCursor;
+  if (nextCursor) {
+    loadingMore = true;
+    cursor = nextCursor;
+  }
+}
 
-	function isPostLiked(post: Record<string, unknown>): boolean {
-		const id = String(post.id);
-		if (likedPosts.has(id)) return true;
-		if (unlikedPosts.has(id)) return false;
-		return Boolean(post.isLiked ?? post.liked ?? false);
-	}
+function isPostLiked(post: Record<string, unknown>): boolean {
+  const id = String(post.id);
+  if (likedPosts.has(id)) return true;
+  if (unlikedPosts.has(id)) return false;
+  return Boolean(post.isLiked ?? post.liked ?? false);
+}
 
-	function isPostBookmarked(post: Record<string, unknown>): boolean {
-		const id = String(post.id);
-		if (bookmarkedPosts.has(id)) return true;
-		if (unbookmarkedPosts.has(id)) return false;
-		return Boolean(post.isBookmarked ?? post.bookmarked ?? true);
-	}
+function isPostBookmarked(post: Record<string, unknown>): boolean {
+  const id = String(post.id);
+  if (bookmarkedPosts.has(id)) return true;
+  if (unbookmarkedPosts.has(id)) return false;
+  return Boolean(post.isBookmarked ?? post.bookmarked ?? true);
+}
 
-	async function handleLike(id: string) {
-		likedPosts = new Set([...likedPosts, id]);
-		unlikedPosts = new Set([...unlikedPosts].filter(x => x !== id));
-		await engagementLike(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-	}
+async function handleLike(id: string) {
+  likedPosts = new Set([...likedPosts, id]);
+  unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
+  await engagementLike(id);
+  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+}
 
-	async function handleUnlike(id: string) {
-		unlikedPosts = new Set([...unlikedPosts, id]);
-		likedPosts = new Set([...likedPosts].filter(x => x !== id));
-		await engagementUnlike(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-	}
+async function handleUnlike(id: string) {
+  unlikedPosts = new Set([...unlikedPosts, id]);
+  likedPosts = new Set([...likedPosts].filter((x) => x !== id));
+  await engagementUnlike(id);
+  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+}
 
-	async function handleBookmark(id: string) {
-		bookmarkedPosts = new Set([...bookmarkedPosts, id]);
-		unbookmarkedPosts = new Set([...unbookmarkedPosts].filter(x => x !== id));
-		await engagementBookmark(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-	}
+async function handleBookmark(id: string) {
+  bookmarkedPosts = new Set([...bookmarkedPosts, id]);
+  unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
+  await engagementBookmark(id);
+  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+}
 
-	async function handleUnbookmark(id: string) {
-		unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
-		bookmarkedPosts = new Set([...bookmarkedPosts].filter(x => x !== id));
-		await engagementUnbookmark(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-	}
+async function handleUnbookmark(id: string) {
+  unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
+  bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
+  await engagementUnbookmark(id);
+  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+}
 
-	async function handleDelete(id: string) {
-		allPosts = allPosts.filter(p => String(p.id) !== id);
-		await postsDelete(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-	}
+async function handleDelete(id: string) {
+  allPosts = allPosts.filter((p) => String(p.id) !== id);
+  await postsDelete(id);
+  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+}
 
-	async function handleRepost(id: string) {
-		await engagementRepost(id);
-		queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-	}
+async function handleRepost(id: string) {
+  await engagementRepost(id);
+  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+}
 
-	async function handleReport(id: string) {
-		await engagementReport(id);
-	}
+async function handleReport(id: string) {
+  await engagementReport(id);
+}
 </script>
 
 <svelte:head>

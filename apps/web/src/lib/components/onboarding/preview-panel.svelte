@@ -1,48 +1,48 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
+import { Loader2 } from 'lucide-svelte';
 
-	type Props = {
-		token?: string;
-	};
+type Props = {
+  token?: string;
+};
 
-	let { token }: Props = $props();
+let { token }: Props = $props();
 
-	let imageUrl = $state<string | null>(null);
-	let status = $state<'connecting' | 'waiting' | 'ready'>('connecting');
-	let lastVersion = 0;
+let imageUrl = $state<string | null>(null);
+let status = $state<'connecting' | 'waiting' | 'ready'>('connecting');
+let lastVersion = 0;
 
-	$effect(() => {
-		if (!token) return;
+$effect(() => {
+  if (!token) return;
 
-		const baseUrl = import.meta.env.VITE_API_URL ?? '';
-		const url = `${baseUrl}/api/v1/onboarding/preview/stream`;
+  const baseUrl = import.meta.env.VITE_API_URL ?? '';
+  const url = `${baseUrl}/api/v1/onboarding/preview/stream`;
 
-		const eventSource = new EventSource(url, { withCredentials: true });
+  const eventSource = new EventSource(url, { withCredentials: true });
 
-		eventSource.onopen = () => {
-			status = 'waiting';
-		};
+  eventSource.onopen = () => {
+    status = 'waiting';
+  };
 
-		eventSource.addEventListener('preview', (event) => {
-			try {
-				const data = JSON.parse(event.data);
-				if (data.version <= lastVersion) return;
-				lastVersion = data.version;
-				imageUrl = `data:image/png;base64,${data.image}`;
-				status = 'ready';
-			} catch {
-				// ignore parse errors
-			}
-		});
+  eventSource.addEventListener('preview', (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.version <= lastVersion) return;
+      lastVersion = data.version;
+      imageUrl = `data:image/png;base64,${data.image}`;
+      status = 'ready';
+    } catch {
+      // ignore parse errors
+    }
+  });
 
-		eventSource.onerror = () => {
-			status = 'waiting';
-		};
+  eventSource.onerror = () => {
+    status = 'waiting';
+  };
 
-		return () => {
-			eventSource.close();
-		};
-	});
+  return () => {
+    eventSource.close();
+  };
+});
 </script>
 
 <div

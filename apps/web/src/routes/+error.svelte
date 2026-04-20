@@ -1,17 +1,36 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { locale } from '$lib/locale.svelte';
+
+	const t = $derived(locale.t);
+	const message = $derived(
+		$page.status === 404
+			? t('errorPage.notFound')
+			: ($page.error?.message ?? t('errorPage.somethingWentWrong'))
+	);
 </script>
 
 <svelte:head>
-	<title>{$page.status} — Page not found</title>
+	<title>{$page.status} — {message}</title>
 </svelte:head>
 
-<div class="flex flex-col items-center justify-center gap-3" style="min-height: calc(100vh - 3.5rem); padding-top: 3.5rem;">
+<div
+	class="flex flex-col items-center justify-center gap-3"
+	style="min-height: calc(100vh - 3.5rem); padding-top: 3.5rem;"
+>
 	<span class="text-6xl font-bold text-gray-800 dark:text-neutral-200">{$page.status}</span>
-	<span class="text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500">
-		{$page.status === 404 ? 'page not found' : $page.error?.message ?? 'something went wrong'}
+	<span
+		class="text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+		role="alert"
+	>
+		{message}
 	</span>
-	<a href="/" class="mt-4 text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500 underline hover:opacity-70">
-		go home
+	<a
+		href="/"
+		aria-label={t('errorPage.goHomeAria')}
+		title={t('errorPage.goHomeAria')}
+		class="mt-4 text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500 underline hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded"
+	>
+		{t('errorPage.goHome')}
 	</a>
 </div>

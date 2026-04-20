@@ -1,124 +1,310 @@
 <script lang="ts">
-	import {
-		createJobsFindById,
-		createAuthSession,
-		jobsUpdate,
-		jobsDelete,
-		getJobsFindAllQueryKey,
-		getJobsFindByIdQueryKey,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { locale } from '$lib/locale.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Button, Input, Label, Textarea, FormModal, ConfirmModal } from 'ui';
-	import { ArrowLeft, ExternalLink, Pencil, Trash2, MapPin, Building2, Briefcase, DollarSign } from 'lucide-svelte';
-	import { Loader2 } from 'lucide-svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createJobsBookmark,
+  createJobsFindById,
+  createJobsGetFit,
+  createJobsUnbookmark,
+  getJobsFindAllQueryKey,
+  getJobsFindByIdQueryKey,
+  getJobsGetBookmarkedJobsQueryKey,
+  getJobsGetMyApplicationsQueryKey,
+  isApiError,
+  jobsApply,
+  jobsDelete,
+  jobsUpdate,
+  jobsWithdrawApplication,
+} from 'api-client';
+import {
+  ArrowLeft,
+  Bookmark,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  DollarSign,
+  ExternalLink,
+  Loader2,
+  MapPin,
+  Pencil,
+  Send,
+  Trash2,
+} from 'lucide-svelte';
+import {
+  Button,
+  ConfirmModal,
+  type FitDimension,
+  FitScoreBreakdown,
+  FormModal,
+  Input,
+  Label,
+  Textarea,
+  toastState,
+} from 'ui';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
+import { track } from '$lib/analytics/track';
+import { useAuth } from '$lib/auth.svelte';
+import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	interface Job {
-		id: string;
-		title?: string;
-		company?: string;
-		location?: string;
-		jobType?: string;
-		description?: string;
-		requirements?: string[];
-		skills?: string[];
-		salaryRange?: string;
-		applyUrl?: string;
-		userId?: string;
-		createdBy?: string;
-		createdAt?: string;
-	}
+interface Job {
+  id: string;
+  title?: string;
+  company?: string;
+  location?: string;
+  jobType?: string;
+  description?: string;
+  requirements?: string[];
+  skills?: string[];
+  salaryRange?: string;
+  applyUrl?: string;
+  userId?: string;
+  createdBy?: string;
+  createdAt?: string;
+  isBookmarked?: boolean;
+  hasApplied?: boolean;
+}
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	const jobId = $derived(($page.params as Record<string, string>).id);
+const jobId = $derived(($page.params as Record<string, string>).id);
 
-	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const currentUserId = $derived(
-		String(auth.data?.user?.id ?? '')
-	);
+const auth = useAuth();
+const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
-	const jobQuery = createJobsFindById(
-		() => jobId,
-		() => ({ query: { enabled: browser && !!jobId } })
-	);
+const jobQuery = createJobsFindById(
+  () => jobId,
+  () => ({ query: { enabled: browser && !!jobId } }),
+);
 
-	const job = $derived(jobQuery.data as unknown as Job | undefined);
-	const isOwner = $derived(
-		!!currentUserId && !!job && (job.userId === currentUserId || job.createdBy === currentUserId)
-	);
+const job = $derived(jobQuery.data as unknown as Job | undefined);
+const isOwner = $derived(
+  !!currentUserId && !!job && (job.userId === currentUserId || job.createdBy === currentUserId),
+);
 
-	// Edit modal
-	let editModal = $state(false);
-	let editLoading = $state(false);
-	let formTitle = $state('');
-	let formCompany = $state('');
-	let formLocation = $state('');
-	let formJobType = $state('Full-time');
-	let formDescription = $state('');
-	let formRequirements = $state('');
-	let formSkills = $state('');
-	let formSalaryRange = $state('');
-	let formApplyUrl = $state('');
+// Fit score — enabled for non-owners with a primary resume. Backend returns
+// 409 NO_PRIMARY_RESUME when the user has no master CV yet; the component
+// renders the teaser state automatically whenever `score` is undefined.
+const fitQuery = createJobsGetFit(
+  () => jobId,
+  () => ({ query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } }),
+);
 
-	// Delete modal
-	let deleteConfirm = $state(false);
-	let deleteLoading = $state(false);
+type FitResponse = {
+  matchScore?: number;
+  matchedKeywords?: string[];
+  missingKeywords?: string[];
+  dimensions?: { hardSkills?: number; softSkills?: number };
+};
+const fit = $derived(fitQuery.data as unknown as FitResponse | undefined);
 
-	const jobTypes = ['Internship', 'Contract', 'Full-time', 'Part-time', 'Volunteer', 'Freelance'];
+// Bookmark state — server-driven via job.isBookmarked, with an optimistic
+// override that wins until the next refetch lands.
+let optimisticBookmarked = $state<boolean | null>(null);
+const isBookmarked = $derived(optimisticBookmarked ?? Boolean(job?.isBookmarked));
 
-	function openEdit() {
-		if (!job) return;
-		formTitle = job.title ?? '';
-		formCompany = job.company ?? '';
-		formLocation = job.location ?? '';
-		formJobType = job.jobType ?? 'Full-time';
-		formDescription = job.description ?? '';
-		formRequirements = job.requirements?.join(', ') ?? '';
-		formSkills = job.skills?.join(', ') ?? '';
-		formSalaryRange = job.salaryRange ?? '';
-		formApplyUrl = job.applyUrl ?? '';
-		editModal = true;
-	}
+const bookmarkMutation = createJobsBookmark(() => ({
+  mutation: {
+    onSuccess() {
+      optimisticBookmarked = null;
+      queryClient.invalidateQueries({ queryKey: getJobsGetBookmarkedJobsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+      track('job_bookmarked', { jobId });
+    },
+    onError() {
+      optimisticBookmarked = Boolean(job?.isBookmarked);
+      toastState.show(locale.t('jobs.saveError'), 'danger');
+    },
+  },
+}));
 
-	async function handleEdit() {
-		editLoading = true;
-		try {
-			const data = {
-				title: formTitle,
-				company: formCompany,
-				location: formLocation,
-				jobType: formJobType,
-				description: formDescription,
-				requirements: formRequirements.split(',').map(r => r.trim()).filter(Boolean),
-				skills: formSkills.split(',').map(s => s.trim()).filter(Boolean),
-				salaryRange: formSalaryRange || undefined,
-				applyUrl: formApplyUrl || undefined,
-			};
-			await jobsUpdate(jobId, { body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } });
-			queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
-			queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
-			editModal = false;
-		} finally {
-			editLoading = false;
-		}
-	}
+const unbookmarkMutation = createJobsUnbookmark(() => ({
+  mutation: {
+    onSuccess() {
+      optimisticBookmarked = null;
+      queryClient.invalidateQueries({ queryKey: getJobsGetBookmarkedJobsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+      track('job_unbookmarked', { jobId });
+    },
+    onError() {
+      optimisticBookmarked = Boolean(job?.isBookmarked);
+      toastState.show(locale.t('jobs.unsaveError'), 'danger');
+    },
+  },
+}));
 
-	async function handleDelete() {
-		deleteLoading = true;
-		try {
-			await jobsDelete(jobId);
-			queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
-			goto('/jobs');
-		} finally {
-			deleteLoading = false;
-			deleteConfirm = false;
-		}
-	}
+function toggleBookmark() {
+  const wasBookmarked = isBookmarked;
+  optimisticBookmarked = !wasBookmarked;
+  if (wasBookmarked) unbookmarkMutation.mutate({ id: jobId });
+  else bookmarkMutation.mutate({ id: jobId });
+}
+
+// Apply state — server-driven, override otimista.
+let optimisticApplied = $state<boolean | null>(null);
+const hasApplied = $derived(optimisticApplied ?? Boolean(job?.hasApplied));
+let showApplyModal = $state(false);
+let withdrawConfirm = $state(false);
+let applying = $state(false);
+let withdrawing = $state(false);
+
+function invalidateJobQueries() {
+  queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
+  queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getJobsGetMyApplicationsQueryKey() });
+}
+
+async function submitApplication(coverLetter: string) {
+  if (applying) return;
+  applying = true;
+  try {
+    await jobsApply(jobId, {
+      body: JSON.stringify(coverLetter ? { coverLetter } : {}),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    optimisticApplied = true;
+    showApplyModal = false;
+    invalidateJobQueries();
+    track('job_apply_submitted', { jobId });
+    toastState.show(locale.t('jobs.applySuccess'), 'success');
+  } catch (err) {
+    const message =
+      isApiError(err) && err.statusCode === 403
+        ? locale.t('jobs.applyOwnerError')
+        : isApiError(err) && err.statusCode === 409
+          ? locale.t('jobs.applyAlreadyError')
+          : locale.t('jobs.applyError');
+    toastState.show(message, 'danger');
+  } finally {
+    applying = false;
+  }
+}
+
+async function confirmWithdraw() {
+  if (withdrawing) return;
+  withdrawing = true;
+  try {
+    await jobsWithdrawApplication(jobId);
+    optimisticApplied = false;
+    withdrawConfirm = false;
+    invalidateJobQueries();
+    track('job_application_withdrawn', { jobId });
+  } catch {
+    toastState.show(locale.t('jobs.applyWithdrawError'), 'danger');
+  } finally {
+    withdrawing = false;
+  }
+}
+
+// Edit modal
+let editModal = $state(false);
+let editLoading = $state(false);
+let formTitle = $state('');
+let formCompany = $state('');
+let formLocation = $state('');
+let formJobType = $state('Full-time');
+let formDescription = $state('');
+let formRequirements = $state('');
+let formSkills = $state('');
+let formSalaryRange = $state('');
+let formApplyUrl = $state('');
+
+// Delete modal
+let deleteConfirm = $state(false);
+let deleteLoading = $state(false);
+
+const jobTypes = ['Internship', 'Contract', 'Full-time', 'Part-time', 'Volunteer', 'Freelance'];
+
+function openEdit() {
+  if (!job) return;
+  formTitle = job.title ?? '';
+  formCompany = job.company ?? '';
+  formLocation = job.location ?? '';
+  formJobType = job.jobType ?? 'Full-time';
+  formDescription = job.description ?? '';
+  formRequirements = job.requirements?.join(', ') ?? '';
+  formSkills = job.skills?.join(', ') ?? '';
+  formSalaryRange = job.salaryRange ?? '';
+  formApplyUrl = job.applyUrl ?? '';
+  editModal = true;
+}
+
+async function handleEdit() {
+  editLoading = true;
+  try {
+    const data = {
+      title: formTitle,
+      company: formCompany,
+      location: formLocation,
+      jobType: formJobType,
+      description: formDescription,
+      requirements: formRequirements
+        .split(',')
+        .map((r) => r.trim())
+        .filter(Boolean),
+      skills: formSkills
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+      salaryRange: formSalaryRange || undefined,
+      applyUrl: formApplyUrl || undefined,
+    };
+    await jobsUpdate(jobId, {
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
+    queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+    editModal = false;
+  } finally {
+    editLoading = false;
+  }
+}
+
+async function handleDelete() {
+  deleteLoading = true;
+  try {
+    await jobsDelete(jobId);
+    queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+    goto('/jobs');
+  } finally {
+    deleteLoading = false;
+    deleteConfirm = false;
+  }
+}
+
+const fitLabels = $derived({
+  title: t('jobs.fit.title'),
+  scoreAria: (v: number) => t('jobs.fit.scoreAria', { value: v }),
+  breakdownTitle: t('jobs.fit.breakdownTitle'),
+  matchedTitle: t('jobs.fit.matchedTitle'),
+  missingTitle: t('jobs.fit.missingTitle'),
+  teaserTitle: t('jobs.fit.teaserTitle'),
+  teaserBody: t('jobs.fit.teaserBody'),
+  teaserCta: t('jobs.fit.teaserCta'),
+});
+
+const dimensionLabels: Record<string, string> = $derived({
+  hardSkills: t('jobs.fit.dimHardSkills'),
+  softSkills: t('jobs.fit.dimSoftSkills'),
+  experience: t('jobs.fit.dimExperience'),
+  languages: t('jobs.fit.dimLanguages'),
+  location: t('jobs.fit.dimLocation'),
+});
+
+const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
+  if (!fit?.dimensions) return undefined;
+  const out: FitDimension[] = [];
+  for (const [key, value] of Object.entries(fit.dimensions)) {
+    if (typeof value !== 'number') continue;
+    out.push({ key, label: dimensionLabels[key] ?? key, value });
+  }
+  return out.length > 0 ? out : undefined;
+});
 </script>
 
 <svelte:head>
@@ -174,20 +360,68 @@
 								{/if}
 							</div>
 						</div>
-						{#if isOwner}
-							<div class="flex items-center gap-2">
+						<div class="flex items-center gap-2">
+							{#if currentUserId && !isOwner}
+								{#if hasApplied}
+									<Button
+										variant="solid"
+										intent="success"
+										size="sm"
+										onclick={() => (withdrawConfirm = true)}
+										disabled={withdrawing}
+									>
+										<CheckCircle2 size={14} />
+										{t('jobs.applyApplied')}
+									</Button>
+								{:else}
+									<Button
+										variant="solid"
+										intent="accent"
+										size="sm"
+										onclick={() => (showApplyModal = true)}
+										disabled={applying}
+									>
+										<Send size={14} />
+										{t('jobs.applyQuick')}
+									</Button>
+								{/if}
+							{/if}
+							{#if currentUserId}
+								<Button
+									variant={isBookmarked ? 'solid' : 'outline'}
+									intent={isBookmarked ? 'accent' : 'neutral'}
+									size="sm"
+									onclick={toggleBookmark}
+									disabled={bookmarkMutation.isPending || unbookmarkMutation.isPending}
+								>
+									<Bookmark size={14} fill={isBookmarked ? 'currentColor' : 'none'} />
+									{isBookmarked ? t('jobs.unsaveJob') : t('jobs.saveJob')}
+								</Button>
+							{/if}
+							{#if isOwner}
 								<Button variant="outline" size="sm" onclick={openEdit}>
 									<Pencil size={14} />
 									{t('jobs.edit')}
 								</Button>
-								<Button variant="danger" size="sm" onclick={() => deleteConfirm = true}>
+								<Button variant="ghost" intent="danger" size="sm" onclick={() => deleteConfirm = true}>
 									<Trash2 size={14} />
 									{t('jobs.delete')}
 								</Button>
-							</div>
-						{/if}
+							{/if}
+						</div>
 					</div>
 				</div>
+
+				{#if currentUserId && !isOwner}
+					<FitScoreBreakdown
+						score={fit?.matchScore}
+						dimensions={fitDimensions}
+						matched={fit?.matchedKeywords ?? []}
+						missing={fit?.missingKeywords ?? []}
+						labels={fitLabels}
+						onTeaserCta={() => goto('/cv')}
+					/>
+				{/if}
 
 				<!-- Description -->
 				{#if job.description}
@@ -319,4 +553,23 @@
 	loading={deleteLoading}
 	onConfirm={handleDelete}
 	onClose={() => deleteConfirm = false}
+/>
+
+<!-- Apply Modal -->
+<ApplyModal
+	open={showApplyModal}
+	jobTitle={job?.title ?? ''}
+	submitting={applying}
+	onsubmit={submitApplication}
+	oncancel={() => (showApplyModal = false)}
+/>
+
+<!-- Withdraw Application Confirm -->
+<ConfirmModal
+	open={withdrawConfirm}
+	title={t('jobs.applyWithdraw')}
+	message=""
+	loading={withdrawing}
+	onConfirm={confirmWithdraw}
+	onClose={() => (withdrawConfirm = false)}
 />

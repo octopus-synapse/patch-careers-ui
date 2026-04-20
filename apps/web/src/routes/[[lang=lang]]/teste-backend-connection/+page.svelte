@@ -1,60 +1,69 @@
 <script lang="ts">
-	import { Button } from 'ui';
-	import { browser } from '$app/environment';
-	import { customFetch, getBaseUrl } from 'api-client';
+import { customFetch, getBaseUrl } from 'api-client';
+import { Button } from 'ui';
+import { browser } from '$app/environment';
 
-	let results = $state<Array<{ endpoint: string; status: string; data: string; time: number }>>([]);
-	let testing = $state(false);
+let results = $state<Array<{ endpoint: string; status: string; data: string; time: number }>>([]);
+let testing = $state(false);
 
-	const endpoints = [
-		{ name: 'Health (raw fetch)', url: '/health', raw: true },
-		{ name: 'Auth Session', url: '/api/auth/session', raw: false },
-		{ name: 'Social Stats (public)', url: '/api/v1/users/me/social-stats', raw: false },
-		{ name: 'Network Summary', url: '/api/v1/users/me/network-summary', raw: false },
-		{ name: 'Connection Suggestions', url: '/api/v1/users/me/connections/suggestions', raw: false },
-	];
+const endpoints = [
+  { name: 'Health (raw fetch)', url: '/health', raw: true },
+  { name: 'Auth Session', url: '/api/auth/session', raw: false },
+  { name: 'Social Stats (public)', url: '/api/v1/users/me/social-stats', raw: false },
+  { name: 'Network Summary', url: '/api/v1/users/me/network-summary', raw: false },
+  { name: 'Connection Suggestions', url: '/api/v1/users/me/connections/suggestions', raw: false },
+];
 
-	async function runTests() {
-		if (!browser) return;
-		testing = true;
-		results = [];
+async function runTests() {
+  if (!browser) return;
+  testing = true;
+  results = [];
 
-		const baseUrl = getBaseUrl();
-		results = [...results, { endpoint: 'Base URL', status: 'info', data: baseUrl, time: 0 }];
+  const baseUrl = getBaseUrl();
+  results = [...results, { endpoint: 'Base URL', status: 'info', data: baseUrl, time: 0 }];
 
-		for (const ep of endpoints) {
-			const start = performance.now();
-			try {
-				if (ep.raw) {
-					const res = await fetch(`${baseUrl}${ep.url}`, { credentials: 'include' });
-					const body = await res.text();
-					results = [...results, {
-						endpoint: ep.name,
-						status: res.ok ? 'ok' : `${res.status}`,
-						data: body.slice(0, 200),
-						time: Math.round(performance.now() - start),
-					}];
-				} else {
-					const data = await customFetch<unknown>(ep.url);
-					results = [...results, {
-						endpoint: ep.name,
-						status: 'ok',
-						data: JSON.stringify(data).slice(0, 200),
-						time: Math.round(performance.now() - start),
-					}];
-				}
-			} catch (err) {
-				const e = err as Record<string, unknown>;
-				results = [...results, {
-					endpoint: ep.name,
-					status: `error ${e.statusCode ?? ''}`.trim(),
-					data: e.message ? String(e.message) : JSON.stringify(e).slice(0, 200),
-					time: Math.round(performance.now() - start),
-				}];
-			}
-		}
-		testing = false;
-	}
+  for (const ep of endpoints) {
+    const start = performance.now();
+    try {
+      if (ep.raw) {
+        const res = await fetch(`${baseUrl}${ep.url}`, { credentials: 'include' });
+        const body = await res.text();
+        results = [
+          ...results,
+          {
+            endpoint: ep.name,
+            status: res.ok ? 'ok' : `${res.status}`,
+            data: body.slice(0, 200),
+            time: Math.round(performance.now() - start),
+          },
+        ];
+      } else {
+        const data = await customFetch<unknown>(ep.url);
+        results = [
+          ...results,
+          {
+            endpoint: ep.name,
+            status: 'ok',
+            data: JSON.stringify(data).slice(0, 200),
+            time: Math.round(performance.now() - start),
+          },
+        ];
+      }
+    } catch (err) {
+      const e = err as Record<string, unknown>;
+      results = [
+        ...results,
+        {
+          endpoint: ep.name,
+          status: `error ${e.statusCode ?? ''}`.trim(),
+          data: e.message ? String(e.message) : JSON.stringify(e).slice(0, 200),
+          time: Math.round(performance.now() - start),
+        },
+      ];
+    }
+  }
+  testing = false;
+}
 </script>
 
 <svelte:head>

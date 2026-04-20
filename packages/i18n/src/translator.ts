@@ -7,7 +7,9 @@ function resolve(dictionary: Dictionary, key: string): string | undefined {
 
   for (const segment of segments) {
     if (typeof current !== 'object' || current === null) return undefined;
-    current = current[segment];
+    const next: string | Dictionary | undefined = current[segment];
+    if (next === undefined) return undefined;
+    current = next;
   }
 
   return typeof current === 'string' ? current : undefined;
@@ -15,7 +17,7 @@ function resolve(dictionary: Dictionary, key: string): string | undefined {
 
 function interpolate(template: string, params: TranslateParams): string {
   return template.replace(/\{\{(\w+)\}\}/g, (_, name) =>
-    params[name] !== undefined ? String(params[name]) : `{{${name}}}`
+    params[name] !== undefined ? String(params[name]) : `{{${name}}}`,
   );
 }
 
@@ -23,7 +25,7 @@ function pluralize(
   dictionary: Dictionary,
   key: string,
   count: number,
-  locale: Locale
+  locale: Locale,
 ): string | undefined {
   const category = new Intl.PluralRules(locale).select(count);
   return resolve(dictionary, `${key}_${category}`) ?? resolve(dictionary, `${key}_other`);

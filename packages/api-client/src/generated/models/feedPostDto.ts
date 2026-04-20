@@ -71,5 +71,9 @@ export interface FeedPostDto {
   /** @nullable */
   reactionType?: FeedPostDtoReactionType;
   isBookmarked?: boolean;
+  isReposted?: boolean;
+  hasVoted?: boolean;
+  /** @nullable */
+  myVoteIndex?: number | null;
   threadPosts?: PostDto[];
 }

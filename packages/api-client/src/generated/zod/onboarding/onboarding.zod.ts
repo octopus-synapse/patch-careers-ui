@@ -51,11 +51,6 @@ export const OnboardingGotoStepBody = zod.object({
 })
 
 /**
- * @summary Validate step fields without saving
- */
-export const OnboardingValidateStepBody = zod.record(zod.string(), zod.unknown()).describe('Data to save for the current step')
-
-/**
  * @summary Save current step data without advancing
  */
 export const OnboardingSaveStepDataBody = zod.record(zod.string(), zod.unknown()).describe('Data to save for the current step')
@@ -69,7 +64,7 @@ export const OnboardingSaveProgressBody = zod.object({
   "username": zod.string().optional(),
   "personalInfo": zod.object({
   "fullName": zod.string(),
-  "email": zod.string().email(),
+  "email": zod.string().email().optional(),
   "phone": zod.string().optional(),
   "location": zod.string().optional()
 }).optional(),
@@ -101,7 +96,7 @@ export const OnboardingCompleteOnboardingBody = zod.object({
   "username": zod.string(),
   "personalInfo": zod.object({
   "fullName": zod.string(),
-  "email": zod.string().email(),
+  "email": zod.string().email().optional(),
   "phone": zod.string().optional(),
   "location": zod.string().optional()
 }),

@@ -1,40 +1,45 @@
 <script lang="ts">
-	import { Avatar } from 'ui';
-	import { formatDate } from 'i18n';
-	import { locale } from '$lib/locale.svelte';
+import { formatDate } from 'i18n';
+import { Avatar } from 'ui';
+import { locale } from '$lib/locale.svelte';
 
-	type Conversation = {
-		id: string;
-		participant: { id: string; name: string | null; photoURL: string | null; username: string | null };
-		lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null;
-		unreadCount?: number;
-	};
+type Conversation = {
+  id: string;
+  participant: {
+    id: string;
+    name: string | null;
+    photoURL: string | null;
+    username: string | null;
+  };
+  lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null;
+  unreadCount?: number;
+};
 
-	type Props = {
-		conversations: Conversation[];
-		currentUserId?: string;
-		activeConversationId?: string;
-		onselect: (id: string) => void;
-	};
+type Props = {
+  conversations: Conversation[];
+  currentUserId?: string;
+  activeConversationId?: string;
+  onselect: (id: string) => void;
+};
 
-	let { conversations, currentUserId, activeConversationId, onselect }: Props = $props();
+let { conversations, currentUserId, activeConversationId, onselect }: Props = $props();
 
-	function other(conv: Conversation) {
-		return conv.participant;
-	}
+function other(conv: Conversation) {
+  return conv.participant;
+}
 
-	function timeAgo(dateStr: string | null): string {
-		if (!dateStr) return '';
-		const ms = Date.now() - new Date(dateStr).getTime();
-		const mins = Math.floor(ms / 60000);
-		if (mins < 1) return 'now';
-		if (mins < 60) return `${mins}m`;
-		const hrs = Math.floor(mins / 60);
-		if (hrs < 24) return `${hrs}h`;
-		const days = Math.floor(hrs / 24);
-		if (days < 7) return `${days}d`;
-		return formatDate(dateStr, locale.current, { month: 'short', day: 'numeric' });
-	}
+function timeAgo(dateStr: string | null): string {
+  if (!dateStr) return '';
+  const ms = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return 'now';
+  if (mins < 60) return `${mins}m`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d`;
+  return formatDate(dateStr, locale.current, { month: 'short', day: 'numeric' });
+}
 </script>
 
 {#each conversations as conv}

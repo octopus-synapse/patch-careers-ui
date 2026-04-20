@@ -38,4 +38,6 @@ All errors follow a consistent format:
 
 export interface ConnectionCheckDto {
   isConnected: boolean;
+  /** @nullable */
+  pendingSentConnectionId: string | null;
 }

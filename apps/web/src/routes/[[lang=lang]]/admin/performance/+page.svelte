@@ -1,49 +1,49 @@
 <script lang="ts">
-	import { createAdminMetricsGetOverview } from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { Loader2, RefreshCw, Clock, Cpu, HardDrive, Zap } from 'lucide-svelte';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import DataTable from '$lib/components/admin/data-table.svelte';
-	import ExportButton from '$lib/components/admin/export-button.svelte';
+import { createAdminMetricsGetOverview } from 'api-client';
+import { Clock, Cpu, HardDrive, Loader2, RefreshCw, Zap } from 'lucide-svelte';
+import { browser } from '$app/environment';
+import DataTable from '$lib/components/admin/data-table.svelte';
+import ExportButton from '$lib/components/admin/export-button.svelte';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const metricsQuery = createAdminMetricsGetOverview(() => ({
-		query: { enabled: browser, refetchInterval: 10000 }
-	}));
+const metricsQuery = createAdminMetricsGetOverview(() => ({
+  query: { enabled: browser, refetchInterval: 10000 },
+}));
 
-	const data = $derived(metricsQuery.data);
-	const counters = $derived(data?.counters);
-	const gauges = $derived(data?.gauges);
-	const process = $derived(data?.process);
-	const latency = $derived(data?.latency);
+const data = $derived(metricsQuery.data);
+const counters = $derived(data?.counters);
+const gauges = $derived(data?.gauges);
+const process = $derived(data?.process);
+const latency = $derived(data?.latency);
 
-	function formatUptime(seconds: number): string {
-		const days = Math.floor(seconds / 86400);
-		const hours = Math.floor((seconds % 86400) / 3600);
-		const mins = Math.floor((seconds % 3600) / 60);
-		if (days > 0) return `${days}d ${hours}h ${mins}m`;
-		if (hours > 0) return `${hours}h ${mins}m`;
-		return `${mins}m`;
-	}
+function formatUptime(seconds: number): string {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  if (days > 0) return `${days}d ${hours}h ${mins}m`;
+  if (hours > 0) return `${hours}h ${mins}m`;
+  return `${mins}m`;
+}
 
-	function latencyColor(avgMs: number): string {
-		if (avgMs < 50) return 'text-emerald-500';
-		if (avgMs < 200) return 'text-amber-500';
-		return 'text-red-500';
-	}
+function latencyColor(avgMs: number): string {
+  if (avgMs < 50) return 'text-emerald-500';
+  if (avgMs < 200) return 'text-amber-500';
+  return 'text-red-500';
+}
 
-	const maxRequests = $derived(
-		latency?.length ? Math.max(...latency.map(r => r.totalRequests), 1) : 1
-	);
+const maxRequests = $derived(
+  latency?.length ? Math.max(...latency.map((r) => r.totalRequests), 1) : 1,
+);
 
-	const columns = [
-		{ key: 'route', label: 'Endpoint' },
-		{ key: 'totalRequests', label: 'Requests', width: '100px' },
-		{ key: 'avgLatencyMs', label: 'Avg Latency', width: '120px' },
-		{ key: 'bar', label: '', width: '200px' },
-	];
+const columns = [
+  { key: 'route', label: 'Endpoint' },
+  { key: 'totalRequests', label: 'Requests', width: '100px' },
+  { key: 'avgLatencyMs', label: 'Avg Latency', width: '120px' },
+  { key: 'bar', label: '', width: '200px' },
+];
 </script>
 
 <svelte:head>

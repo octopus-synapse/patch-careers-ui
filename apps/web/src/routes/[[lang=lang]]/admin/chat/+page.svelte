@@ -1,67 +1,67 @@
 <script lang="ts">
-	import {
-		createAdminChatGetStats,
-		createAdminChatGetConversations,
-		createAdminCollaborationsGetStats,
-		createAdminCollaborationsGetCollaborations,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { locale } from '$lib/locale.svelte';
-	import { formatDate } from 'i18n';
-	import { SegmentToggle } from 'ui';
-	import { Loader2 } from 'lucide-svelte';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import DataTable from '$lib/components/admin/data-table.svelte';
-	import Pagination from '$lib/components/admin/pagination.svelte';
+import {
+  createAdminChatGetConversations,
+  createAdminChatGetStats,
+  createAdminCollaborationsGetCollaborations,
+  createAdminCollaborationsGetStats,
+} from 'api-client';
+import { formatDate } from 'i18n';
+import { Loader2 } from 'lucide-svelte';
+import { SegmentToggle } from 'ui';
+import { browser } from '$app/environment';
+import DataTable from '$lib/components/admin/data-table.svelte';
+import Pagination from '$lib/components/admin/pagination.svelte';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	let activeTab = $state<'chat' | 'collaborations'>('chat');
-	let chatPage = $state(1);
-	let collabPage = $state(1);
+let activeTab = $state<'chat' | 'collaborations'>('chat');
+let chatPage = $state(1);
+let collabPage = $state(1);
 
-	const tabOptions = $derived([
-		{ value: 'chat', label: t?.('admin.chat.chatTab') ?? 'Chat' },
-		{ value: 'collaborations', label: t?.('admin.chat.collaborationsTab') ?? 'Collaborations' },
-	]);
+const tabOptions = $derived([
+  { value: 'chat', label: t?.('admin.chat.chatTab') ?? 'Chat' },
+  { value: 'collaborations', label: t?.('admin.chat.collaborationsTab') ?? 'Collaborations' },
+]);
 
-	const chatStatsQuery = createAdminChatGetStats(() => ({
-		query: { enabled: browser }
-	}));
-	const chatConversationsQuery = createAdminChatGetConversations(
-		() => ({ page: chatPage, pageSize: 20 }),
-		() => ({ query: { enabled: browser && activeTab === 'chat' } }),
-	);
-	const collabStatsQuery = createAdminCollaborationsGetStats(() => ({
-		query: { enabled: browser }
-	}));
-	const collabListQuery = createAdminCollaborationsGetCollaborations(
-		() => ({ page: collabPage, pageSize: 20 }),
-		() => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
-	);
+const chatStatsQuery = createAdminChatGetStats(() => ({
+  query: { enabled: browser },
+}));
+const chatConversationsQuery = createAdminChatGetConversations(
+  () => ({ page: chatPage, pageSize: 20 }),
+  () => ({ query: { enabled: browser && activeTab === 'chat' } }),
+);
+const collabStatsQuery = createAdminCollaborationsGetStats(() => ({
+  query: { enabled: browser },
+}));
+const collabListQuery = createAdminCollaborationsGetCollaborations(
+  () => ({ page: collabPage, pageSize: 20 }),
+  () => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
+);
 
-	const chatStats = $derived(chatStatsQuery.data);
-	const chatData = $derived(chatConversationsQuery.data);
-	const conversations = $derived(chatData?.items);
-	const chatTotalPages = $derived(chatData?.totalPages);
+const chatStats = $derived(chatStatsQuery.data);
+const chatData = $derived(chatConversationsQuery.data);
+const conversations = $derived(chatData?.items);
+const chatTotalPages = $derived(chatData?.totalPages);
 
-	const collabStats = $derived(collabStatsQuery.data);
-	const collabData = $derived(collabListQuery.data);
-	const collaborations = $derived(collabData?.items);
-	const collabTotalPages = $derived(collabData?.totalPages);
+const collabStats = $derived(collabStatsQuery.data);
+const collabData = $derived(collabListQuery.data);
+const collaborations = $derived(collabData?.items);
+const collabTotalPages = $derived(collabData?.totalPages);
 
-	const chatColumns = $derived([
-		{ key: 'participants', label: t?.('admin.chat.participants') ?? 'Participants' },
-		{ key: 'lastMessage', label: t?.('admin.chat.lastMessage') ?? 'Last Message' },
-		{ key: 'lastMessageAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
-	]);
+const chatColumns = $derived([
+  { key: 'participants', label: t?.('admin.chat.participants') ?? 'Participants' },
+  { key: 'lastMessage', label: t?.('admin.chat.lastMessage') ?? 'Last Message' },
+  { key: 'lastMessageAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
+]);
 
-	const collabColumns = $derived([
-		{ key: 'user', label: t?.('admin.chat.user') ?? 'User' },
-		{ key: 'resume', label: t?.('admin.chat.resume') ?? 'Resume' },
-		{ key: 'role', label: t?.('admin.chat.collaboratorRole') ?? 'Role', width: '100px' },
-		{ key: 'invitedAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
-	]);
+const collabColumns = $derived([
+  { key: 'user', label: t?.('admin.chat.user') ?? 'User' },
+  { key: 'resume', label: t?.('admin.chat.resume') ?? 'Resume' },
+  { key: 'role', label: t?.('admin.chat.collaboratorRole') ?? 'Role', width: '100px' },
+  { key: 'invitedAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
+]);
 </script>
 
 <svelte:head>

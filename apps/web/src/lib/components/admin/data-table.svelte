@@ -1,14 +1,15 @@
 <script lang="ts" generics="T extends Record<string, unknown>">
-	import type { Snippet } from 'svelte';
-	import { Loader2 } from 'lucide-svelte';
+import type { Snippet } from 'svelte';
 
-	type Column = {
+import { Loader2 } from 'lucide-svelte';
+
+type Column = {
 		key: string;
 		label: string;
 		width?: string;
 	};
 
-	type Props = {
+type Props = {
 		columns: Column[];
 		data?: T[];
 		loading?: boolean;
@@ -17,7 +18,7 @@
 		cell?: Snippet<[{ row: T; key: string; value: unknown }]>;
 	};
 
-	let {
+let {
 		columns,
 		data,
 		loading = false,

@@ -1,176 +1,181 @@
 <script lang="ts">
-	import {
-		createUsersListUsers,
-		getUsersListUsersQueryKey,
-		usersCreateUser,
-		usersDeleteUser,
-		usersResetPassword,
-		usersAssignRoles,
-	} from 'api-client';
-	import type { UserManagementListDataDtoUsersItem } from 'api-client';
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
-	import { locale } from '$lib/locale.svelte';
-	import { formatDate } from 'i18n';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Avatar, Button, Input, Label, Dropdown, ConfirmModal, FormModal } from 'ui';
-	import { Plus, Shield, ShieldOff, MoreVertical, KeyRound, Trash2 } from 'lucide-svelte';
-	import DataTable from '$lib/components/admin/data-table.svelte';
-	import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
-	import Pagination from '$lib/components/admin/pagination.svelte';
-	import StatusBadge from '$lib/components/admin/status-badge.svelte';
-	import ExportButton from '$lib/components/admin/export-button.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import type { UserManagementListDataDtoUsersItem } from 'api-client';
+import {
+  createUsersListUsers,
+  getUsersListUsersQueryKey,
+  usersAssignRoles,
+  usersCreateUser,
+  usersDeleteUser,
+  usersResetPassword,
+} from 'api-client';
+import { formatDate } from 'i18n';
+import { KeyRound, MoreVertical, Plus, Shield, ShieldOff, Trash2 } from 'lucide-svelte';
+import { Avatar, Button, ConfirmModal, Dropdown, FormModal, Input, Label } from 'ui';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import DataTable from '$lib/components/admin/data-table.svelte';
+import ExportButton from '$lib/components/admin/export-button.svelte';
+import Pagination from '$lib/components/admin/pagination.svelte';
+import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
+import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	let page = $state(1);
-	let search = $state('');
-	let roleFilter = $state('');
+let page = $state(1);
+let search = $state('');
+let roleFilter = $state('');
 
-	const usersQuery = createUsersListUsers(() => ({
-		page,
-		limit: 20,
-		search: search || undefined,
-		roleName: roleFilter || undefined,
-	}), () => ({
-		query: { enabled: browser }
-	}));
+const usersQuery = createUsersListUsers(
+  () => ({
+    page,
+    limit: 20,
+    search: search || undefined,
+    roleName: roleFilter || undefined,
+  }),
+  () => ({
+    query: { enabled: browser },
+  }),
+);
 
-	const users = $derived(usersQuery.data?.users);
-	const pagination = $derived(usersQuery.data?.pagination);
+const users = $derived(usersQuery.data?.users);
+const pagination = $derived(usersQuery.data?.pagination);
 
-	// --- Dropdown state ---
-	let openDropdownId = $state<string | null>(null);
+// --- Dropdown state ---
+let openDropdownId = $state<string | null>(null);
 
-	// --- Actions state ---
-	let deleteUserId = $state<string | null>(null);
-	let resetPasswordUserId = $state<string | null>(null);
-	let toggleRoleUser = $state<UserManagementListDataDtoUsersItem | null>(null);
-	let actionLoading = $state(false);
+// --- Actions state ---
+let deleteUserId = $state<string | null>(null);
+let resetPasswordUserId = $state<string | null>(null);
+let toggleRoleUser = $state<UserManagementListDataDtoUsersItem | null>(null);
+let actionLoading = $state(false);
 
-	// --- Create user ---
-	let createModal = $state(false);
-	let createLoading = $state(false);
-	let newEmail = $state('');
-	let newName = $state('');
-	let newPassword = $state('');
+// --- Create user ---
+let createModal = $state(false);
+let createLoading = $state(false);
+let newEmail = $state('');
+let newName = $state('');
+let newPassword = $state('');
 
-	// --- Bulk selection ---
-	let selectedIds = $state<Set<string>>(new Set());
-	let bulkDeleteConfirm = $state(false);
-	let bulkLoading = $state(false);
+// --- Bulk selection ---
+let selectedIds = $state<Set<string>>(new Set());
+let bulkDeleteConfirm = $state(false);
+let bulkLoading = $state(false);
 
-	const allSelected = $derived(!!users?.length && users.every(u => selectedIds.has(u.id)));
+const allSelected = $derived(!!users?.length && users.every((u) => selectedIds.has(u.id)));
 
-	function toggleSelectAll() {
-		if (allSelected) {
-			selectedIds = new Set();
-		} else {
-			selectedIds = new Set((users ?? []).map(u => u.id));
-		}
-	}
+function toggleSelectAll() {
+  if (allSelected) {
+    selectedIds = new Set();
+  } else {
+    selectedIds = new Set((users ?? []).map((u) => u.id));
+  }
+}
 
-	function toggleSelect(id: string) {
-		const next = new Set(selectedIds);
-		if (next.has(id)) next.delete(id);
-		else next.add(id);
-		selectedIds = next;
-	}
+function toggleSelect(id: string) {
+  const next = new Set(selectedIds);
+  if (next.has(id)) next.delete(id);
+  else next.add(id);
+  selectedIds = next;
+}
 
-	function invalidate() {
-		queryClient.invalidateQueries({ queryKey: getUsersListUsersQueryKey() });
-	}
+function invalidate() {
+  queryClient.invalidateQueries({ queryKey: getUsersListUsersQueryKey() });
+}
 
-	async function handleDelete() {
-		if (!deleteUserId) return;
-		actionLoading = true;
-		try {
-			await usersDeleteUser(deleteUserId);
-			invalidate();
-		} finally {
-			actionLoading = false;
-			deleteUserId = null;
-		}
-	}
+async function handleDelete() {
+  if (!deleteUserId) return;
+  actionLoading = true;
+  try {
+    await usersDeleteUser(deleteUserId);
+    invalidate();
+  } finally {
+    actionLoading = false;
+    deleteUserId = null;
+  }
+}
 
-	async function handleResetPassword() {
-		if (!resetPasswordUserId) return;
-		actionLoading = true;
-		try {
-			await usersResetPassword(resetPasswordUserId, { newPassword: crypto.randomUUID().slice(0, 16) });
-		} finally {
-			actionLoading = false;
-			resetPasswordUserId = null;
-		}
-	}
+async function handleResetPassword() {
+  if (!resetPasswordUserId) return;
+  actionLoading = true;
+  try {
+    await usersResetPassword(resetPasswordUserId, {
+      newPassword: crypto.randomUUID().slice(0, 16),
+    });
+  } finally {
+    actionLoading = false;
+    resetPasswordUserId = null;
+  }
+}
 
-	async function handleCreateUser() {
-		createLoading = true;
-		try {
-			await usersCreateUser({ email: newEmail, password: newPassword, name: newName || undefined });
-			invalidate();
-			createModal = false;
-			newEmail = '';
-			newName = '';
-			newPassword = '';
-		} finally {
-			createLoading = false;
-		}
-	}
+async function handleCreateUser() {
+  createLoading = true;
+  try {
+    await usersCreateUser({ email: newEmail, password: newPassword, name: newName || undefined });
+    invalidate();
+    createModal = false;
+    newEmail = '';
+    newName = '';
+    newPassword = '';
+  } finally {
+    createLoading = false;
+  }
+}
 
-	async function handleToggleRole() {
-		if (!toggleRoleUser) return;
-		actionLoading = true;
-		const isAdmin = toggleRoleUser.role === 'ADMIN';
-		const newRoles = isAdmin ? ['role_user'] : ['role_user', 'role_admin'];
-		try {
-			await usersAssignRoles(toggleRoleUser.id, {
-				body: JSON.stringify({ roles: newRoles }),
-				headers: { 'Content-Type': 'application/json' },
-			});
-			invalidate();
-		} finally {
-			actionLoading = false;
-			toggleRoleUser = null;
-		}
-	}
+async function handleToggleRole() {
+  if (!toggleRoleUser) return;
+  actionLoading = true;
+  const isAdmin = toggleRoleUser.role === 'ADMIN';
+  const newRoles = isAdmin ? ['role_user'] : ['role_user', 'role_admin'];
+  try {
+    await usersAssignRoles(toggleRoleUser.id, {
+      body: JSON.stringify({ roles: newRoles }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    invalidate();
+  } finally {
+    actionLoading = false;
+    toggleRoleUser = null;
+  }
+}
 
-	async function handleBulkDelete() {
-		bulkLoading = true;
-		try {
-			for (const id of selectedIds) {
-				await usersDeleteUser(id);
-			}
-			selectedIds = new Set();
-			invalidate();
-		} finally {
-			bulkLoading = false;
-			bulkDeleteConfirm = false;
-		}
-	}
+async function handleBulkDelete() {
+  bulkLoading = true;
+  try {
+    for (const id of selectedIds) {
+      await usersDeleteUser(id);
+    }
+    selectedIds = new Set();
+    invalidate();
+  } finally {
+    bulkLoading = false;
+    bulkDeleteConfirm = false;
+  }
+}
 
-	const columns = $derived([
-		{ key: 'checkbox', label: '', width: '40px' },
-		{ key: 'name', label: t('admin.users.name') },
-		{ key: 'email', label: t('admin.users.email') },
-		{ key: 'role', label: t('admin.users.role'), width: '100px' },
-		{ key: 'status', label: t('admin.users.status'), width: '100px' },
-		{ key: 'createdAt', label: t('admin.users.created'), width: '120px' },
-		{ key: 'actions', label: '', width: '60px' },
-	]);
+const columns = $derived([
+  { key: 'checkbox', label: '', width: '40px' },
+  { key: 'name', label: t('admin.users.name') },
+  { key: 'email', label: t('admin.users.email') },
+  { key: 'role', label: t('admin.users.role'), width: '100px' },
+  { key: 'status', label: t('admin.users.status'), width: '100px' },
+  { key: 'createdAt', label: t('admin.users.created'), width: '120px' },
+  { key: 'actions', label: '', width: '60px' },
+]);
 
-	const filters = $derived([
-		{
-			key: 'role',
-			label: t('admin.users.filterRole'),
-			options: [
-				{ value: 'role_admin', label: 'Admin' },
-				{ value: 'role_user', label: 'User' },
-			],
-			value: roleFilter,
-		},
-	]);
+const filters = $derived([
+  {
+    key: 'role',
+    label: t('admin.users.filterRole'),
+    options: [
+      { value: 'role_admin', label: 'Admin' },
+      { value: 'role_user', label: 'User' },
+    ],
+    value: roleFilter,
+  },
+]);
 </script>
 
 <svelte:head>
@@ -202,7 +207,7 @@
 	{#if selectedIds.size > 0}
 		<div class="flex items-center gap-3 rounded-lg border px-4 py-2 border-gray-200 bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800/50">
 			<span class="text-xs font-medium text-gray-800 dark:text-neutral-200">{selectedIds.size} selected</span>
-			<Button variant="danger" size="xs" onclick={() => bulkDeleteConfirm = true}>
+			<Button variant="ghost" intent="danger" size="xs" onclick={() => bulkDeleteConfirm = true}>
 				Delete Selected
 			</Button>
 			<Button variant="ghost" size="xs" onclick={() => selectedIds = new Set()}>

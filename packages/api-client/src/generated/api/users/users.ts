@@ -60,6 +60,8 @@ import type {
   AdminResetPasswordDto,
   AdminUpdateUserDto,
   PublicProfileDataDto,
+  UpdateFullPreferencesDto,
+  UpdatePreferencesDto,
   UpdateUserProfileRequestDto,
   UpdateUsernameRequestDto,
   UserDetailsDataDto,
@@ -885,14 +887,15 @@ export const getUsersUpdatePreferencesUrl = () => {
   return `/api/v1/users/preferences`
 }
 
-export const usersUpdatePreferences = async ( options?: RequestInit): Promise<usersUpdatePreferencesResponse> => {
+export const usersUpdatePreferences = async (updatePreferencesDto: UpdatePreferencesDto, options?: RequestInit): Promise<usersUpdatePreferencesResponse> => {
 
   return customFetch<usersUpdatePreferencesResponse>(getUsersUpdatePreferencesUrl(),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updatePreferencesDto,)
   }
 );}
 
@@ -900,8 +903,8 @@ export const usersUpdatePreferences = async ( options?: RequestInit): Promise<us
 
 
 export const getUsersUpdatePreferencesMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdatePreferences>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof usersUpdatePreferences>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdatePreferences>>, TError,{data: UpdatePreferencesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof usersUpdatePreferences>>, TError,{data: UpdatePreferencesDto}, TContext> => {
 
 const mutationKey = ['usersUpdatePreferences'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -913,10 +916,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersUpdatePreferences>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersUpdatePreferences>>, {data: UpdatePreferencesDto}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  usersUpdatePreferences(requestOptions)
+          return  usersUpdatePreferences(data,requestOptions)
         }
 
 
@@ -927,18 +930,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type UsersUpdatePreferencesMutationResult = NonNullable<Awaited<ReturnType<typeof usersUpdatePreferences>>>
-
+    export type UsersUpdatePreferencesMutationBody = UpdatePreferencesDto
     export type UsersUpdatePreferencesMutationError = unknown
 
     /**
  * @summary Update user preferences (basic)
  */
 export const createUsersUpdatePreferences = <TError = unknown,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdatePreferences>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdatePreferences>>, TError,{data: UpdatePreferencesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersUpdatePreferences>>,
         TError,
-        void,
+        {data: UpdatePreferencesDto},
         TContext
       > => {
       return createMutation(() => ({ ...getUsersUpdatePreferencesMutationOptions(options?.()) }), queryClient);
@@ -1117,14 +1120,15 @@ export const getUsersUpdateFullPreferencesUrl = () => {
   return `/api/v1/users/preferences/full`
 }
 
-export const usersUpdateFullPreferences = async ( options?: RequestInit): Promise<usersUpdateFullPreferencesResponse> => {
+export const usersUpdateFullPreferences = async (updateFullPreferencesDto: UpdateFullPreferencesDto, options?: RequestInit): Promise<usersUpdateFullPreferencesResponse> => {
 
   return customFetch<usersUpdateFullPreferencesResponse>(getUsersUpdateFullPreferencesUrl(),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateFullPreferencesDto,)
   }
 );}
 
@@ -1132,8 +1136,8 @@ export const usersUpdateFullPreferences = async ( options?: RequestInit): Promis
 
 
 export const getUsersUpdateFullPreferencesMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, TError,{data: UpdateFullPreferencesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, TError,{data: UpdateFullPreferencesDto}, TContext> => {
 
 const mutationKey = ['usersUpdateFullPreferences'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1145,10 +1149,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, {data: UpdateFullPreferencesDto}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  usersUpdateFullPreferences(requestOptions)
+          return  usersUpdateFullPreferences(data,requestOptions)
         }
 
 
@@ -1159,18 +1163,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type UsersUpdateFullPreferencesMutationResult = NonNullable<Awaited<ReturnType<typeof usersUpdateFullPreferences>>>
-
+    export type UsersUpdateFullPreferencesMutationBody = UpdateFullPreferencesDto
     export type UsersUpdateFullPreferencesMutationError = unknown
 
     /**
  * @summary Update all user preferences
  */
 export const createUsersUpdateFullPreferences = <TError = unknown,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUpdateFullPreferences>>, TError,{data: UpdateFullPreferencesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersUpdateFullPreferences>>,
         TError,
-        void,
+        {data: UpdateFullPreferencesDto},
         TContext
       > => {
       return createMutation(() => ({ ...getUsersUpdateFullPreferencesMutationOptions(options?.()) }), queryClient);

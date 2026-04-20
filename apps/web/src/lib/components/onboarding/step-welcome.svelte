@@ -1,21 +1,25 @@
 <script lang="ts">
-	import { Button } from 'ui';
+import { Button } from 'ui';
 
-	type StepData = {
-		features?: Array<{ icon: string; title: string; description: string }>;
-		estimatedMinutes?: number;
-	};
+type StepData = {
+  features?: Array<{ icon: string; title: string; description: string }>;
+  estimatedMinutes?: number;
+};
 
-	type Props = {
-		step: { data?: StepData | unknown };
-		onNext: () => void;
-	};
+type Props = {
+  step: { data?: StepData | unknown };
+  onNext: () => void;
+};
 
-	let { step, onNext }: Props = $props();
+let { step, onNext }: Props = $props();
 
-	const stepData = $derived(step.data && typeof step.data === 'object' && !Array.isArray(step.data) ? step.data as StepData : undefined);
-	const features = $derived(stepData?.features);
-	const estimatedMinutes = $derived(stepData?.estimatedMinutes ?? 5);
+const stepData = $derived(
+  step.data && typeof step.data === 'object' && !Array.isArray(step.data)
+    ? (step.data as StepData)
+    : undefined,
+);
+const features = $derived(stepData?.features);
+const estimatedMinutes = $derived(stepData?.estimatedMinutes ?? 5);
 </script>
 
 <div class="flex min-h-[60vh] flex-col items-center justify-center px-3 py-8 sm:px-4 sm:py-12">

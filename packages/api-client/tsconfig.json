@@ -25,7 +25,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "types": ["bun-types"]
+    "types": ["bun"]
   },
   "exclude": ["scripts", "orval.config.ts"]
 }

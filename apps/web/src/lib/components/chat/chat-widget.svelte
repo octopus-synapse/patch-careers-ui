@@ -1,104 +1,128 @@
 <script lang="ts">
-	import {
-		createAuthSession,
-		createChatGetConversations,
-		createChatGetMessages,
-		createChatSendMessage,
-		createChatSendMessageToConversation,
-		createChatMarkConversationAsRead,
-		getChatGetConversationsQueryKey,
-		getChatGetMessagesQueryKey
-	} from 'api-client';
-	import { Button } from 'ui';
-	import { Loader2, Maximize2, Minimize2, X, ArrowLeft } from 'lucide-svelte';
-	import { fly, fade } from 'svelte/transition';
-	import { chatState } from '$lib/chat-state.svelte';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import ConversationList from './conversation-list.svelte';
-	import MessageThread from './message-thread.svelte';
-	import MessageInput from './message-input.svelte';
-	import UserSearch from './user-search.svelte';
-	import { Avatar } from 'ui';
-	import { browser } from '$app/environment';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createAuthSession,
+  createChatGetConversations,
+  createChatGetMessages,
+  createChatMarkConversationAsRead,
+  createChatSendMessage,
+  createChatSendMessageToConversation,
+  getChatGetConversationsQueryKey,
+  getChatGetMessagesQueryKey,
+} from 'api-client';
+import { ArrowLeft, Loader2, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
+import { fade, fly } from 'svelte/transition';
+import { Avatar, Button, Dropdown } from 'ui';
+import { browser } from '$app/environment';
+import { chatState } from '$lib/chat-state.svelte';
+import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import ConversationList from './conversation-list.svelte';
+import MessageInput from './message-input.svelte';
+import MessageThread from './message-thread.svelte';
+import UserSearch from './user-search.svelte';
 
-	const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-	const authenticated = $derived(auth.data?.authenticated);
-	const currentUserId = $derived(String(auth.data?.user?.id));
+const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
+const authenticated = $derived(auth.data?.authenticated);
+const currentUserId = $derived(String(auth.data?.user?.id));
 
-	const conversations = createChatGetConversations(
-		() => ({ limit: 50 }),
-		() => ({ query: { enabled: authenticated && chatState.isOpen } })
-	);
+const conversations = createChatGetConversations(
+  () => ({ limit: 50 }),
+  () => ({ query: { enabled: authenticated && chatState.isOpen } }),
+);
 
-	type Conversation = { id: string; participant: { id: string; name: string | null; photoURL: string | null; username: string | null }; lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null; unreadCount?: number };
-	type Message = { id: string; content: string; senderId: string; createdAt: string; isRead: boolean; sender: { id: string; name: string | null; photoURL: string | null } };
+type Conversation = {
+  id: string;
+  participant: {
+    id: string;
+    name: string | null;
+    photoURL: string | null;
+    username: string | null;
+  };
+  lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null;
+  unreadCount?: number;
+};
+type Message = {
+  id: string;
+  content: string;
+  senderId: string;
+  createdAt: string;
+  isRead: boolean;
+  sender: { id: string; name: string | null; photoURL: string | null };
+};
 
-	const convList = $derived((conversations.data?.conversations?.conversations ?? []) as Conversation[]);
+const convList = $derived(
+  (conversations.data?.conversations?.conversations ?? []) as Conversation[],
+);
 
-	const messages = createChatGetMessages(
-		() => chatState.activeConversationId ?? '',
-		() => ({ limit: 100 }),
-		() => ({ query: { enabled: !!chatState.activeConversationId } })
-	);
+const messages = createChatGetMessages(
+  () => chatState.activeConversationId ?? '',
+  () => ({ limit: 100 }),
+  () => ({ query: { enabled: !!chatState.activeConversationId } }),
+);
 
-	const msgList = $derived((messages.data?.messages?.messages ?? []) as Message[]);
+const msgList = $derived((messages.data?.messages?.messages ?? []) as Message[]);
 
-	const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
-	const sendMessage = createChatSendMessageToConversation(() => ({
-		mutation: {
-			onSuccess() {
-				if (chatState.activeConversationId) {
-					queryClient.invalidateQueries({ queryKey: getChatGetMessagesQueryKey(chatState.activeConversationId, { limit: 100 }) });
-					queryClient.invalidateQueries({ queryKey: getChatGetConversationsQueryKey({ limit: 50 }) });
-				}
-			}
-		}
-	}));
+const sendMessage = createChatSendMessageToConversation(() => ({
+  mutation: {
+    onSuccess() {
+      if (chatState.activeConversationId) {
+        queryClient.invalidateQueries({
+          queryKey: getChatGetMessagesQueryKey(chatState.activeConversationId, { limit: 100 }),
+        });
+        queryClient.invalidateQueries({ queryKey: getChatGetConversationsQueryKey({ limit: 50 }) });
+      }
+    },
+  },
+}));
 
-	const markRead = createChatMarkConversationAsRead();
-	const startConversation = createChatSendMessage();
+const markRead = createChatMarkConversationAsRead();
+const startConversation = createChatSendMessage();
 
-	function selectConversation(id: string) {
-		chatState.setActiveConversation(id);
-		markRead.mutate({ conversationId: id });
-	}
+function selectConversation(id: string) {
+  chatState.setActiveConversation(id);
+  markRead.mutate({ conversationId: id });
+}
 
-	async function startNewConversation(recipientId: string) {
-		let convId: string | null = null;
-		try {
-			const res = await startConversation.mutateAsync({ data: { recipientId, content: '👋' } });
-			const json = JSON.stringify(res);
-			const match = json.match(/"conversationId"\s*:\s*"([^"]+)"/);
-			convId = match?.[1] ?? null;
-		} catch { /* may already exist */ }
+async function startNewConversation(recipientId: string) {
+  let convId: string | null = null;
+  try {
+    const res = await startConversation.mutateAsync({ data: { recipientId, content: '👋' } });
+    const json = JSON.stringify(res);
+    const match = json.match(/"conversationId"\s*:\s*"([^"]+)"/);
+    convId = match?.[1] ?? null;
+  } catch {
+    /* may already exist */
+  }
 
-		if (convId) chatState.setActiveConversation(convId);
-		queryClient.invalidateQueries({ queryKey: getChatGetConversationsQueryKey({ limit: 50 }) });
-	}
+  if (convId) chatState.setActiveConversation(convId);
+  queryClient.invalidateQueries({ queryKey: getChatGetConversationsQueryKey({ limit: 50 }) });
+}
 
-	function handleSend(content: string) {
-		if (!chatState.activeConversationId) return;
-		sendMessage.mutate({ conversationId: chatState.activeConversationId, data: { content } });
-	}
+function handleSend(content: string) {
+  if (!chatState.activeConversationId) return;
+  sendMessage.mutate({ conversationId: chatState.activeConversationId, data: { content } });
+}
 
-	const activeOther = $derived.by(() => {
-		if (!chatState.activeConversationId) return null;
-		const conv = convList?.find((c) => c.id === chatState.activeConversationId);
-		if (!conv) return null;
-		return conv.participant;
-	});
+const activeOther = $derived.by(() => {
+  if (!chatState.activeConversationId) return null;
+  const conv = convList?.find((c) => c.id === chatState.activeConversationId);
+  if (!conv) return null;
+  return conv.participant;
+});
 
-	// Handle pending recipient (from profile "Message" button)
-	$effect(() => {
-		if (chatState.pendingRecipientId && chatState.isOpen) {
-			const rid = chatState.pendingRecipientId;
-			chatState.clearPendingRecipient();
-			startNewConversation(rid);
-		}
-	});
+// Handle pending recipient (from profile "Message" button)
+$effect(() => {
+  if (chatState.pendingRecipientId && chatState.isOpen) {
+    const rid = chatState.pendingRecipientId;
+    chatState.clearPendingRecipient();
+    startNewConversation(rid);
+  }
+});
 
-	const showConvList = $derived(!chatState.activeConversationId);
+const showConvList = $derived(!chatState.activeConversationId);
+let chatMenuOpen = $state(false);
 </script>
 
 {#if chatState.isOpen && authenticated}
@@ -117,7 +141,7 @@
 		class="fixed z-50 flex flex-col overflow-hidden shadow-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800
 			transition-all duration-300 ease-out
 			{chatState.isFullscreen
-				? 'inset-0 sm:inset-4 rounded-none sm:rounded-xl'
+				? 'inset-0 sm:inset-y-8 sm:left-1/2 sm:-translate-x-1/2 sm:w-[70vw] sm:max-w-6xl rounded-none sm:rounded-xl'
 				: 'bottom-0 right-0 sm:right-4 h-[100dvh] sm:h-[32rem] w-full sm:w-[22rem] rounded-none sm:rounded-t-xl'}"
 	>
 		<!-- Header -->
@@ -145,6 +169,21 @@
 				{/if}
 			</div>
 			<div class="flex items-center gap-1">
+				{#if activeOther}
+					<Dropdown open={chatMenuOpen} align="right" onclose={() => (chatMenuOpen = false)}>
+						{#snippet trigger()}
+							<Button variant="icon" size="xs" onclick={() => (chatMenuOpen = !chatMenuOpen)}>
+								<MoreHorizontal size={14} />
+							</Button>
+						{/snippet}
+						<BlockMenuItem
+							targetUserId={String(activeOther.id)}
+							targetName={String(activeOther.name ?? activeOther.username ?? '')}
+							source="chat_widget"
+							onbeforeConfirm={() => (chatMenuOpen = false)}
+						/>
+					</Dropdown>
+				{/if}
 				<Button variant="icon" size="xs" onclick={() => chatState.toggleFullscreen()}>
 					{#if chatState.isFullscreen}
 						<Minimize2 size={14} />

@@ -1,0 +1,10 @@
+# Default owner for the whole repo. Any PR requires review from this user.
+* @efpatti
+
+# CI/CD + governance files: extra paranoid, explicit pointer even though it
+# matches the wildcard above — makes intent obvious in GitHub's UI.
+/.github/ @efpatti
+/.husky/ @efpatti
+/scripts/ @efpatti
+/biome.json @efpatti
+/commitlint.config.ts @efpatti

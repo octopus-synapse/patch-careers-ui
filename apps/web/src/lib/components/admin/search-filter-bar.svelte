@@ -1,42 +1,36 @@
 <script lang="ts">
-	import { Input } from 'ui';
-	import { Search } from 'lucide-svelte';
+import { Search } from 'lucide-svelte';
+import { Input } from 'ui';
 
-	type FilterOption = {
-		value: string;
-		label: string;
-	};
+type FilterOption = {
+  value: string;
+  label: string;
+};
 
-	type FilterDef = {
-		key: string;
-		label: string;
-		options: FilterOption[];
-		value: string;
-	};
+type FilterDef = {
+  key: string;
+  label: string;
+  options: FilterOption[];
+  value: string;
+};
 
-	type Props = {
-		search: string;
-		filters?: FilterDef[];
-		placeholder?: string;
-		onsearch: (value: string) => void;
-		onfilterchange?: (key: string, value: string) => void;
-	};
+type Props = {
+  search: string;
+  filters?: FilterDef[];
+  placeholder?: string;
+  onsearch: (value: string) => void;
+  onfilterchange?: (key: string, value: string) => void;
+};
 
-	let {
-		search,
-		filters = [],
-		placeholder = 'Search...',
-		onsearch,
-		onfilterchange,
-	}: Props = $props();
+let { search, filters = [], placeholder = 'Search...', onsearch, onfilterchange }: Props = $props();
 
-	let debounceTimer: ReturnType<typeof setTimeout>;
+let debounceTimer: ReturnType<typeof setTimeout>;
 
-	function handleInput(e: Event) {
-		const target = e.target as HTMLInputElement;
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => onsearch(target.value), 300);
-	}
+function handleInput(e: Event) {
+  const target = e.target as HTMLInputElement;
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => onsearch(target.value), 300);
+}
 </script>
 
 <div class="flex flex-wrap items-end gap-3">

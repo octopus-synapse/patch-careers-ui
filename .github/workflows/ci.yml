@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, homolog, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+  pull-requests: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-attestation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@v1
+
+  build:
+    needs: verify-attestation
+    uses: ./.github/workflows/ci.build.yml
+    secrets: inherit
+
+  e2e:
+    needs: verify-attestation
+    uses: ./.github/workflows/ci.infrastructure.e2e.yml
+    secrets: inherit

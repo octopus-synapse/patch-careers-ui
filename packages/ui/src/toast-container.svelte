@@ -1,12 +1,20 @@
 <script lang="ts">
-	import Toast from './toast.svelte';
-	import { toastState } from './toast-state.svelte';
+import Toast from './toast.svelte';
+import { toastState } from './toast-state.svelte';
 </script>
 
 {#if toastState.items.length > 0}
-	<div class="fixed bottom-3 left-3 right-3 z-[200] flex flex-col gap-2 sm:left-auto sm:right-4 sm:bottom-4 sm:w-80">
+	<div
+		class="fixed bottom-3 left-3 right-3 z-[200] flex flex-col gap-2 sm:left-auto sm:right-4 sm:bottom-4 sm:w-80"
+	>
 		{#each toastState.items as toast (toast.id)}
-			<Toast message={toast.message} type={toast.type} onClose={() => toastState.remove(toast.id)} />
+			<Toast
+				message={toast.message}
+				intent={toast.intent}
+				action={toast.action}
+				duration={toast.duration}
+				onClose={() => toastState.remove(toast.id)}
+			/>
 		{/each}
 	</div>
 {/if}

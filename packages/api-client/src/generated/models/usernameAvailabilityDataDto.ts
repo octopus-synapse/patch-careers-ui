@@ -35,8 +35,10 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { UsernameAvailabilityDataDtoReason } from './usernameAvailabilityDataDtoReason';
 
 export interface UsernameAvailabilityDataDto {
   username: string;
   available: boolean;
+  reason?: UsernameAvailabilityDataDtoReason;
 }

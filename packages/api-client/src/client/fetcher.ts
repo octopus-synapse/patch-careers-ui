@@ -35,7 +35,7 @@ export async function customFetch<T>(url: string, options?: RequestInit): Promis
   if (!response.ok) {
     let error: ApiError;
     try {
-      error = await response.json();
+      error = (await response.json()) as ApiError;
     } catch {
       error = { code: 'NETWORK_ERROR', message: response.statusText, statusCode: response.status };
     }

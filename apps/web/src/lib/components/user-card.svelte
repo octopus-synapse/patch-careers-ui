@@ -1,23 +1,23 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { Avatar } from 'ui';
+import type { Snippet } from 'svelte';
+import { Avatar } from 'ui';
 
-	type UserInfo = {
-		id: string;
-		name?: string | null;
-		username?: string | null;
-		photoURL?: string | null;
-	};
+type UserInfo = {
+  id: string;
+  name?: string | null;
+  username?: string | null;
+  photoURL?: string | null;
+};
 
-	type Props = {
-		user: UserInfo;
-		subtitle?: string;
-		actions?: Snippet;
-	};
+type Props = {
+  user: UserInfo;
+  subtitle?: string;
+  actions?: Snippet;
+};
 
-	let { user, subtitle, actions }: Props = $props();
+let { user, subtitle, actions }: Props = $props();
 
-	const displayName = $derived(user.name ?? user.username ?? '?');
+const displayName = $derived(user.name ?? user.username ?? '?');
 </script>
 
 <div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800">
@@ -28,7 +28,12 @@
 		{displayName}
 	</a>
 	{#if user.username}
-		<span class="text-[10px] text-gray-500 dark:text-neutral-500">@{user.username}</span>
+		<a
+			href="/@{user.username}"
+			class="text-[10px] text-gray-500 dark:text-neutral-500 hover:underline"
+		>
+			@{user.username}
+		</a>
 	{/if}
 	{#if subtitle}
 		<span class="text-[10px] text-gray-500 dark:text-neutral-500 text-center">{subtitle}</span>

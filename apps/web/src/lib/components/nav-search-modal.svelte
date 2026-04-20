@@ -1,63 +1,109 @@
 <script lang="ts">
-	import { Search, FileText, Building2, Briefcase, ArrowRight } from 'lucide-svelte';
-	import { chatSearchUsers } from 'api-client';
-	import { Avatar, Button } from 'ui';
-	import { goto } from '$app/navigation';
+import { searchSearch } from 'api-client';
+import { ArrowRight, Briefcase, Building2, FileText, Search } from 'lucide-svelte';
+import { Avatar, Button } from 'ui';
+import { goto } from '$app/navigation';
 
-	type Props = {
-		open: boolean;
-		t: (key: string) => string;
-		onclose: () => void;
-	};
+type Props = {
+  open: boolean;
+  t: (key: string, params?: Record<string, string | number>) => string;
+  onclose: () => void;
+};
 
-	let { open, t, onclose }: Props = $props();
+let { open, t, onclose }: Props = $props();
 
-	let inputRef: HTMLInputElement | undefined = $state();
-	let query = $state('');
-	let users = $state<Array<Record<string, string | null>> | undefined>();
-	let searching = $state(false);
-	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+type PersonResult = {
+  userId: string;
+  fullName: string | null;
+  jobTitle: string | null;
+  slug: string | null;
+  location: string | null;
+};
 
-	$effect(() => {
-		if (open) {
-			query = '';
-			users = undefined;
-			setTimeout(() => inputRef?.focus(), 0);
-		}
-	});
+let inputRef: HTMLInputElement | undefined = $state();
+let query = $state('');
+let people = $state<PersonResult[] | undefined>();
+let total = $state(0);
+let searching = $state(false);
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-	$effect(() => {
-		if (debounceTimer) clearTimeout(debounceTimer);
-		if (query.trim().length < 2) { users = undefined; return; }
-		searching = true;
-		debounceTimer = setTimeout(async () => {
-			try {
-				const res = await chatSearchUsers({ q: query.trim() });
-				users = res?.users;
-			} catch { users = undefined; }
-			searching = false;
-		}, 300);
-	});
+$effect(() => {
+  if (open) {
+    query = '';
+    people = undefined;
+    total = 0;
+    setTimeout(() => inputRef?.focus(), 0);
+  }
+});
 
-	function selectUser(username: string | null) {
-		if (!username) return;
-		onclose();
-		goto(`/@${username}`);
-	}
+$effect(() => {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  const trimmed = query.trim();
+  if (trimmed.length < 2) {
+    people = undefined;
+    total = 0;
+    return;
+  }
+  searching = true;
+  debounceTimer = setTimeout(async () => {
+    try {
+      const res = (await searchSearch({
+        q: trimmed,
+        skills: '',
+        location: '',
+        minExp: '',
+        maxExp: '',
+        page: '1',
+        limit: '5',
+        sortBy: 'relevance',
+      })) as unknown as Record<string, unknown> | undefined;
+      const items = (res?.data as Record<string, unknown>[] | undefined) ?? [];
+      people = items.map((r) => ({
+        userId: String(r.userId ?? ''),
+        fullName: (r.fullName as string | null) ?? null,
+        jobTitle: (r.jobTitle as string | null) ?? null,
+        slug: (r.slug as string | null) ?? null,
+        location: (r.location as string | null) ?? null,
+      }));
+      total = Number(res?.total ?? items.length);
+    } catch {
+      people = undefined;
+      total = 0;
+    }
+    searching = false;
+  }, 300);
+});
 
-	function handleBackdrop(e: MouseEvent) {
-		if (e.target === e.currentTarget) onclose();
-	}
+function selectPerson(person: PersonResult) {
+  if (!person.slug) return;
+  onclose();
+  goto(`/@${person.slug}`);
+}
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') onclose();
-	}
+function gotoSearchPage() {
+  const trimmed = query.trim();
+  if (!trimmed) return;
+  onclose();
+  goto(`/search?q=${encodeURIComponent(trimmed)}`);
+}
 
-	const quickLinks = [
-		{ icon: Briefcase, labelKey: 'nav.jobs', href: '/jobs' },
-		{ icon: Building2, labelKey: 'nav.companies', href: '/companies' },
-		{ icon: FileText, labelKey: 'nav.about', href: '/about' }
-	];
+function handleBackdrop(e: MouseEvent) {
+  if (e.target === e.currentTarget) onclose();
+}
+
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') onclose();
+  if (e.key === 'Enter' && query.trim().length >= 2) {
+    e.preventDefault();
+    gotoSearchPage();
+  }
+}
+
+const quickLinks = [
+  { icon: Briefcase, labelKey: 'nav.jobs', href: '/jobs' },
+  { icon: Building2, labelKey: 'nav.companies', href: '/companies' },
+  { icon: FileText, labelKey: 'nav.about', href: '/about' },
+];
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -91,21 +137,34 @@
 				</Button>
 			</div>
 
-			<div class="max-h-80 overflow-y-auto px-2 py-3 scrollbar-thin">
-				{#if users && users.length > 0}
-					<div class="px-2 pb-2">
-						<span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Users</span>
-					</div>
-					{#each users as user}
+			<div class="max-h-96 overflow-y-auto px-2 py-3 scrollbar-thin">
+				{#if people && people.length > 0}
+					<div class="flex items-center justify-between px-2 pb-2">
+						<span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">
+							{t('nav.searchSectionPeople')}
+						</span>
 						<button
-							onclick={() => selectUser(user.username)}
+							type="button"
+							onclick={gotoSearchPage}
+							class="text-[11px] font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+						>
+							{t('nav.searchSeeAll')}
+						</button>
+					</div>
+					{#each people as person}
+						<button
+							onclick={() => selectPerson(person)}
 							class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800"
 						>
-							<Avatar name={user.name ?? user.username ?? '?'} photoURL={user.photoURL} size="sm" />
+							<Avatar name={person.fullName ?? person.slug ?? '?'} photoURL={null} size="sm" />
 							<div class="flex-1 min-w-0">
-								<span class="block truncate text-sm font-medium text-gray-800 dark:text-neutral-200">{user.name ?? user.username}</span>
-								{#if user.username}
-									<span class="block truncate text-[11px] text-gray-400 dark:text-neutral-500">@{user.username}</span>
+								<span class="block truncate text-sm font-medium text-gray-800 dark:text-neutral-200">
+									{person.fullName ?? person.slug ?? 'Unknown'}
+								</span>
+								{#if person.jobTitle || person.location}
+									<span class="block truncate text-[11px] text-gray-400 dark:text-neutral-500">
+										{[person.jobTitle, person.location].filter(Boolean).join(' · ')}
+									</span>
 								{/if}
 							</div>
 							<ArrowRight size={14} class="text-gray-400 dark:text-neutral-500" />
@@ -113,7 +172,7 @@
 					{/each}
 				{:else if query.trim().length >= 2 && !searching}
 					<div class="flex items-center justify-center py-6">
-						<span class="text-xs text-gray-400 dark:text-neutral-500">No users found</span>
+						<span class="text-xs text-gray-400 dark:text-neutral-500">{t('nav.searchNoUsers')}</span>
 					</div>
 				{:else}
 					<div class="px-2 pb-2">
@@ -138,15 +197,6 @@
 			</div>
 
 			<div class="hidden sm:flex items-center gap-4 border-t px-4 py-2.5 border-gray-200 dark:border-neutral-700/60 bg-gray-50 dark:bg-neutral-800/50">
-				<div class="flex items-center gap-1.5">
-					<kbd class="inline-flex h-5 w-5 items-center justify-center rounded border text-[10px] bg-gray-100 dark:bg-neutral-800 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700">
-						<span class="text-xs">&uarr;</span>
-					</kbd>
-					<kbd class="inline-flex h-5 w-5 items-center justify-center rounded border text-[10px] bg-gray-100 dark:bg-neutral-800 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700">
-						<span class="text-xs">&darr;</span>
-					</kbd>
-					<span class="text-[10px] text-gray-400 dark:text-neutral-500">{t('nav.searchTip')}</span>
-				</div>
 				<div class="flex items-center gap-1.5">
 					<kbd class="inline-flex h-5 items-center justify-center rounded border px-1 text-[10px] bg-gray-100 dark:bg-neutral-800 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700">
 						&crarr;

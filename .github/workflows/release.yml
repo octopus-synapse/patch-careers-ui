@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    branches: [homolog, main]
+  workflow_dispatch:
+    inputs:
+      force_release_type:
+        description: 'Force release type'
+        type: choice
+        options: ['', patch, minor, major]
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  create-release-pr:
+    if: github.ref == 'refs/heads/homolog'
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-create-pr.yml@v1
+    with:
+      sha: ${{ github.sha }}
+      forced_type: ${{ github.event.inputs.force_release_type || '' }}
+      repository: ${{ github.repository }}
+      repository_owner: ${{ github.repository_owner }}
+      repository_name: ${{ github.event.repository.name }}
+    secrets: inherit
+
+  finalize-release:
+    if: github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'chore(release):')
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-finalize.yml@v1
+    with:
+      commit_sha: ${{ github.sha }}
+
+  build-docker:
+    needs: finalize-release
+    if: needs.finalize-release.outputs.released == 'true'
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-docker.yml@v1
+    with:
+      tag: ${{ needs.finalize-release.outputs.tag }}

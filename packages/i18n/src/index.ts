@@ -1,6 +1,18 @@
-export { LOCALES, DEFAULT_LOCALE, isLocale } from './config';
 export type { Locale } from './config';
-export { createTranslator, NOOP_TRANSLATOR } from './translator';
+export {
+  DEFAULT_LOCALE,
+  getTextDirection,
+  isLocale,
+  LOCALES,
+  RTL_LOCALES,
+} from './config';
+export {
+  formatCurrency,
+  formatDate,
+  formatFileSize,
+  formatNumber,
+  formatRelativeTime,
+} from './format';
 export { loadDictionary } from './loader';
-export { formatDate, formatNumber, formatRelativeTime } from './format';
+export { createTranslator, NOOP_TRANSLATOR } from './translator';
 export type { Dictionary, TranslateParams, Translator } from './types';

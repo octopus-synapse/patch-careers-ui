@@ -1,111 +1,109 @@
 <script lang="ts">
-	import { Avatar, Button, Input } from 'ui';
-	import { Trash2, Send, Loader2 } from 'lucide-svelte';
-	import { createCommentsGetByPost, commentsCreate, commentsDelete, getCommentsGetByPostQueryKey } from 'api-client';
-	import { useQueryClient } from '@tanstack/svelte-query';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  commentsCreate,
+  commentsDelete,
+  createCommentsGetByPost,
+  getCommentsGetByPostQueryKey,
+} from 'api-client';
+import { Loader2, Send, Trash2 } from 'lucide-svelte';
+import { Avatar, Button, Input } from 'ui';
+import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import { relativeFrom } from '$lib/format/relative';
 
-	type Props = {
-		postId: string;
-		currentUserId: string;
-	};
+type Props = {
+  postId: string;
+  currentUserId: string;
+};
 
-	let { postId, currentUserId }: Props = $props();
+let { postId, currentUserId }: Props = $props();
 
-	let commentText = $state('');
-	let submitting = $state(false);
-	let replyingTo = $state<string | null>(null);
-	let replyText = $state('');
-	let submittingReply = $state(false);
-	let expandedReplies = $state<Set<string>>(new Set());
+let commentText = $state('');
+let submitting = $state(false);
+let replyingTo = $state<string | null>(null);
+let replyText = $state('');
+let submittingReply = $state(false);
+let expandedReplies = $state<Set<string>>(new Set());
 
-	const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
-	const commentsQuery = createCommentsGetByPost(
-		() => postId,
-		() => ({ limit: 50 }),
-		() => ({
-			query: {
-				enabled: !!postId
-			}
-		})
-	);
+const commentsQuery = createCommentsGetByPost(
+  () => postId,
+  () => ({ limit: 50 }),
+  () => ({
+    query: {
+      enabled: !!postId,
+    },
+  }),
+);
 
-	const comments = $derived(commentsQuery.data?.comments);
+const comments = $derived(commentsQuery.data?.comments);
 
-	function formatRelativeTime(dateStr?: string): string {
-		if (!dateStr) return '';
-		const now = Date.now();
-		const then = new Date(dateStr).getTime();
-		const diff = now - then;
-		const seconds = Math.floor(diff / 1000);
-		if (seconds < 60) return 'just now';
-		const minutes = Math.floor(seconds / 60);
-		if (minutes < 60) return `${minutes}m`;
-		const hours = Math.floor(minutes / 60);
-		if (hours < 24) return `${hours}h`;
-		const days = Math.floor(hours / 24);
-		return `${days}d`;
-	}
+async function handleSubmitComment() {
+  const trimmed = commentText.trim();
+  if (!trimmed || submitting) return;
+  submitting = true;
+  // Clear optimistically — restore on failure so the user can retry without retyping.
+  const previous = commentText;
+  commentText = '';
+  try {
+    await commentsCreate(postId, {
+      body: JSON.stringify({ content: trimmed }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+  } catch (err) {
+    commentText = previous;
+    throw err;
+  } finally {
+    submitting = false;
+  }
+}
 
-	async function handleSubmitComment() {
-		if (!commentText.trim() || submitting) return;
-		submitting = true;
-		try {
-			await commentsCreate(postId, {
-				body: JSON.stringify({ content: commentText.trim() }),
-				headers: { 'Content-Type': 'application/json' }
-			});
-			commentText = '';
-			queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
-		} finally {
-			submitting = false;
-		}
-	}
+async function handleSubmitReply(parentId: string) {
+  if (!replyText.trim() || submittingReply) return;
+  submittingReply = true;
+  try {
+    await commentsCreate(postId, {
+      body: JSON.stringify({ content: replyText.trim(), parentId }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    replyText = '';
+    replyingTo = null;
+    queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+  } finally {
+    submittingReply = false;
+  }
+}
 
-	async function handleSubmitReply(parentId: string) {
-		if (!replyText.trim() || submittingReply) return;
-		submittingReply = true;
-		try {
-			await commentsCreate(postId, {
-				body: JSON.stringify({ content: replyText.trim(), parentId }),
-				headers: { 'Content-Type': 'application/json' }
-			});
-			replyText = '';
-			replyingTo = null;
-			queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
-		} finally {
-			submittingReply = false;
-		}
-	}
+async function handleDeleteComment(commentId: string) {
+  await commentsDelete(commentId);
+  queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+}
 
-	async function handleDeleteComment(commentId: string) {
-		await commentsDelete(commentId);
-		queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
-	}
+function toggleExpandReplies(commentId: string) {
+  const next = new Set(expandedReplies);
+  if (next.has(commentId)) {
+    next.delete(commentId);
+  } else {
+    next.add(commentId);
+  }
+  expandedReplies = next;
+}
 
-	function toggleExpandReplies(commentId: string) {
-		const next = new Set(expandedReplies);
-		if (next.has(commentId)) {
-			next.delete(commentId);
-		} else {
-			next.add(commentId);
-		}
-		expandedReplies = next;
-	}
+function handleCommentKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSubmitComment();
+  }
+}
 
-	function handleCommentKeydown(e: KeyboardEvent) {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault();
-			handleSubmitComment();
-		}
-	}
-
-	function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault();
-			handleSubmitReply(parentId);
-		}
-	}
+function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSubmitReply(parentId);
+  }
+}
 </script>
 
 <div class="space-y-3">
@@ -152,7 +150,7 @@
 				<div class="min-w-0 flex-1">
 					<div class="flex items-center gap-1.5">
 						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{commentAuthor?.name ?? commentAuthor?.username ?? 'Unknown'}</span>
-						<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(comment.createdAt)}</span>
+						<span class="text-[10px] text-gray-400 dark:text-neutral-500">{relativeFrom(comment.createdAt)}</span>
 					</div>
 					<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{comment.content}</p>
 					<div class="mt-1 flex items-center gap-2">
@@ -172,6 +170,14 @@
 							>
 								<Trash2 size={12} />
 							</Button>
+						{:else if commentAuthor?.id}
+							<BlockMenuItem
+								variant="ghost"
+								size="xs"
+								targetUserId={String(commentAuthor.id)}
+								targetName={String(commentAuthor.name ?? commentAuthor.username ?? '')}
+								source="comment"
+							/>
 						{/if}
 					</div>
 				</div>
@@ -212,7 +218,7 @@
 							<div class="min-w-0 flex-1">
 								<div class="flex items-center gap-1.5">
 									<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{replyAuthor?.name ?? replyAuthor?.username ?? 'Unknown'}</span>
-									<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(reply.createdAt)}</span>
+									<span class="text-[10px] text-gray-400 dark:text-neutral-500">{relativeFrom(reply.createdAt)}</span>
 								</div>
 								<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{reply.content}</p>
 								{#if isOwnReply}
@@ -224,6 +230,16 @@
 									>
 										<Trash2 size={12} />
 									</Button>
+								{:else if replyAuthor?.id}
+									<div class="mt-1">
+										<BlockMenuItem
+											variant="ghost"
+											size="xs"
+											targetUserId={String(replyAuthor.id)}
+											targetName={String(replyAuthor.name ?? replyAuthor.username ?? '')}
+											source="comment_reply"
+										/>
+									</div>
 								{/if}
 							</div>
 						</div>

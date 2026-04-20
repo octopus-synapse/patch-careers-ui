@@ -1,85 +1,85 @@
 <script lang="ts">
-	import { customFetch } from 'api-client';
-	import { Check, X, Loader2, Play, FlaskConical } from 'lucide-svelte';
-	import { Button } from 'ui';
+import { customFetch } from 'api-client';
+import { Check, FlaskConical, Loader2, Play, X } from 'lucide-svelte';
+import { Button } from 'ui';
 
-	interface TestResult {
-		name: string;
-		pass: boolean;
-		detail: string;
-		durationMs: number;
-	}
+interface TestResult {
+  name: string;
+  pass: boolean;
+  detail: string;
+  durationMs: number;
+}
 
-	interface TestResults {
-		suite: string;
-		results: TestResult[];
-		totalMs: number;
-		passed: number;
-		failed: number;
-	}
+interface TestResults {
+  suite: string;
+  results: TestResult[];
+  totalMs: number;
+  passed: number;
+  failed: number;
+}
 
-	const suites = [
-		{
-			id: 'seed-check',
-			name: 'Seed Check',
-			description: 'Verifica seeds no banco (skills, sections, onboarding steps, languages)',
-		},
-		{
-			id: 'auth-flow',
-			name: 'Auth Flow',
-			description: 'Cria user temporário → login → session → cleanup',
-		},
-		{
-			id: 'social-crud',
-			name: 'Social CRUD',
-			description: 'Follow/unfollow + connection request/accept/remove com dados temporários',
-		},
-		{
-			id: 'onboarding-resume',
-			name: 'Onboarding & Resume',
-			description: 'Cria user → resume → verifica → cleanup',
-		},
-	];
+const suites = [
+  {
+    id: 'seed-check',
+    name: 'Seed Check',
+    description: 'Verifica seeds no banco (skills, sections, onboarding steps, languages)',
+  },
+  {
+    id: 'auth-flow',
+    name: 'Auth Flow',
+    description: 'Cria user temporário → login → session → cleanup',
+  },
+  {
+    id: 'social-crud',
+    name: 'Social CRUD',
+    description: 'Follow/unfollow + connection request/accept/remove com dados temporários',
+  },
+  {
+    id: 'onboarding-resume',
+    name: 'Onboarding & Resume',
+    description: 'Cria user → resume → verifica → cleanup',
+  },
+];
 
-	let results = $state<Record<string, TestResults | null>>({});
-	let running = $state<Record<string, boolean>>({});
+let results = $state<Record<string, TestResults | null>>({});
+let running = $state<Record<string, boolean>>({});
 
-	const runningAll = $derived(Object.values(running).some(Boolean));
+const runningAll = $derived(Object.values(running).some(Boolean));
 
-	async function runSuite(suiteId: string) {
-		running[suiteId] = true;
-		results[suiteId] = null;
+async function runSuite(suiteId: string) {
+  running[suiteId] = true;
+  results[suiteId] = null;
 
-		try {
-			const data = await customFetch<TestResults>('/api/v1/admin/test/run', {
-				method: 'POST',
-				body: JSON.stringify({ suite: suiteId }),
-			});
-			results[suiteId] = data;
-		} catch (err) {
-			const e = err as Record<string, unknown>;
-			results[suiteId] = {
-				suite: suiteId,
-				results: [
-					{
-						name: 'Request failed',
-						pass: false,
-						detail: e.message ? String(e.message) : 'Unknown error',
-						durationMs: 0,
-					},
-				],
-				totalMs: 0,
-				passed: 0,
-				failed: 1,
-			};
-		} finally {
-			running[suiteId] = false;
-		}
-	}
+  try {
+    const data = await customFetch<TestResults>('/api/v1/admin/test/run', {
+      method: 'POST',
+      body: JSON.stringify({ suite: suiteId }),
+    });
+    results[suiteId] = data;
+  } catch (err) {
+    const e = err as Record<string, unknown>;
+    results[suiteId] = {
+      suite: suiteId,
+      results: [
+        {
+          name: 'Request failed',
+          pass: false,
+          detail: e.message ? String(e.message) : 'Unknown error',
+          durationMs: 0,
+        },
+      ],
+      totalMs: 0,
+      passed: 0,
+      failed: 1,
+    };
+  } finally {
+    running[suiteId] = false;
+  }
+}
 
-	async function runAll() {
-		await Promise.all(suites.map((s) => runSuite(s.id)));
-	}
+async function runAll() {
+  await Promise.all(suites.map((s) => runSuite(s.id)));
+}
 </script>
 
 <svelte:head>

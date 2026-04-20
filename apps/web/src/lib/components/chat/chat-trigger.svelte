@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Button } from 'ui';
-	import { MessageCircle } from 'lucide-svelte';
-	import { chatState } from '$lib/chat-state.svelte';
+import { MessageCircle } from 'lucide-svelte';
+import { Button } from 'ui';
+import { chatState } from '$lib/chat-state.svelte';
 
-	type Props = {
-		unreadCount?: number;
-	};
+type Props = {
+  unreadCount?: number;
+};
 
-	let { unreadCount = 0 }: Props = $props();
+let { unreadCount = 0 }: Props = $props();
 </script>
 
 <Button

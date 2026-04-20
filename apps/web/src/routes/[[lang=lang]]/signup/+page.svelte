@@ -1,55 +1,53 @@
 <script lang="ts">
-	import { createAccountsSignup, getAuthSessionQueryKey } from 'api-client';
-	import { AccountsSignupBody } from 'api-client/zod';
-	import { isApiError } from 'api-client/client';
-	import { Button, Input, Label } from 'ui';
-	import { goto } from '$app/navigation';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { Loader2 } from 'lucide-svelte';
-	import { locale } from '$lib/locale.svelte';
-	import { createForm } from '$lib/forms/create-form.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import { createAccountsSignup, getAuthSessionQueryKey } from 'api-client';
+import { isApiError } from 'api-client/client';
+import { AccountsSignupBody } from 'api-client/zod';
+import { Loader2 } from 'lucide-svelte';
+import { Button, Input, Label } from 'ui';
+import { goto } from '$app/navigation';
+import { createForm } from '$lib/forms/create-form.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
-	let serverError = $state('');
+let serverError = $state('');
 
-	const t = $derived(locale.t);
+const t = $derived(locale.t);
 
-	const signup = createAccountsSignup(() => ({
-		mutation: {
-			async onSuccess() {
-				await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-				goto('/onboarding');
-			},
-			onError(err: unknown) {
-				if (!t) return;
-				if (isApiError(err)) {
-					serverError = err.statusCode === 409
-						? t('auth.shared.errorEmailInUse')
-						: err.message;
-				} else {
-					serverError = t('auth.shared.errorGeneric');
-				}
-			}
-		}
-	}));
+const signup = createAccountsSignup(() => ({
+  mutation: {
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+      goto('/onboarding/start');
+    },
+    onError(err: unknown) {
+      if (!t) return;
+      if (isApiError(err)) {
+        serverError = err.statusCode === 409 ? t('auth.shared.errorEmailInUse') : err.message;
+      } else {
+        serverError = t('auth.shared.errorGeneric');
+      }
+    },
+  },
+}));
 
-	const form = createForm({
-		schema: AccountsSignupBody,
-		initial: { name: '', email: '', password: '' },
-		mutation: signup,
-		transform: (v) => ({
-			...v,
-			name: v.name?.trim() ? v.name.trim() : undefined
-		})
-	});
+const form = createForm({
+  schema: AccountsSignupBody,
+  initial: { name: '', email: '', password: '' },
+  mutation: signup,
+  transform: (v) => ({
+    ...v,
+    name: v.name?.trim() ? v.name.trim() : undefined,
+  }),
+});
 
-	function handleSubmit(e: Event) {
-		e.preventDefault();
-		if (!t) return;
-		serverError = '';
-		form.submit();
-	}
+function handleSubmit(e: Event) {
+  e.preventDefault();
+  if (!t) return;
+  serverError = '';
+  form.submit();
+}
 </script>
 
 <svelte:head>

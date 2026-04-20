@@ -1,87 +1,89 @@
 <script lang="ts">
-	import {
-		createUsersGetUserDetails,
-		getUsersGetUserDetailsQueryKey,
-		usersUpdateUser,
-		usersAssignRoles,
-	} from 'api-client';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
-	import { locale } from '$lib/locale.svelte';
-	import { formatDate } from 'i18n';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import { ArrowLeft, Loader2, Pencil, Save, X, Shield, ShieldOff } from 'lucide-svelte';
-	import { Avatar, Button, Input, Label, ConfirmModal } from 'ui';
-	import StatCard from '$lib/components/admin/stat-card.svelte';
-	import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createUsersGetUserDetails,
+  getUsersGetUserDetailsQueryKey,
+  usersAssignRoles,
+  usersUpdateUser,
+} from 'api-client';
+import { formatDate } from 'i18n';
+import { ArrowLeft, Loader2, Pencil, Save, Shield, ShieldOff, X } from 'lucide-svelte';
+import { Avatar, Button, ConfirmModal, Input, Label } from 'ui';
+import { browser } from '$app/environment';
+import { page } from '$app/stores';
+import StatCard from '$lib/components/admin/stat-card.svelte';
+import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import { locale } from '$lib/locale.svelte';
 
-	const t = $derived(locale.t);
-	const queryClient = useQueryClient();
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
 
-	const userId = $derived($page.params.id ?? '');
+const userId = $derived($page.params.id ?? '');
 
-	const userQuery = createUsersGetUserDetails(() => userId, () => ({
-		query: { enabled: browser && !!userId }
-	}));
+const userQuery = createUsersGetUserDetails(
+  () => userId,
+  () => ({
+    query: { enabled: browser && !!userId },
+  }),
+);
 
-	const user = $derived(userQuery.data?.user);
-	const resumes = $derived(user?.resumes);
-	const counts = $derived(user?.counts);
+const user = $derived(userQuery.data?.user);
+const resumes = $derived(user?.resumes);
+const counts = $derived(user?.counts);
 
-	// --- Editing ---
-	let editing = $state(false);
-	let editLoading = $state(false);
-	let editName = $state('');
-	let editEmail = $state('');
-	let editIsActive = $state(true);
+// --- Editing ---
+let editing = $state(false);
+let editLoading = $state(false);
+let editName = $state('');
+let editEmail = $state('');
+let editIsActive = $state(true);
 
-	function startEditing() {
-		editName = user?.name ?? '';
-		editEmail = user?.email ?? '';
-		editIsActive = user?.isActive ?? true;
-		editing = true;
-	}
+function startEditing() {
+  editName = user?.name ?? '';
+  editEmail = user?.email ?? '';
+  editIsActive = user?.isActive ?? true;
+  editing = true;
+}
 
-	function cancelEditing() {
-		editing = false;
-	}
+function cancelEditing() {
+  editing = false;
+}
 
-	async function saveEditing() {
-		editLoading = true;
-		try {
-			await usersUpdateUser(userId, {
-				name: editName || undefined,
-				email: editEmail,
-				isActive: editIsActive,
-			});
-			queryClient.invalidateQueries({ queryKey: getUsersGetUserDetailsQueryKey(userId) });
-			editing = false;
-		} finally {
-			editLoading = false;
-		}
-	}
+async function saveEditing() {
+  editLoading = true;
+  try {
+    await usersUpdateUser(userId, {
+      name: editName || undefined,
+      email: editEmail,
+      isActive: editIsActive,
+    });
+    queryClient.invalidateQueries({ queryKey: getUsersGetUserDetailsQueryKey(userId) });
+    editing = false;
+  } finally {
+    editLoading = false;
+  }
+}
 
-	// --- Role toggle ---
-	let roleConfirm = $state(false);
-	let roleLoading = $state(false);
-	// TODO: backend needs to add `roles` to UserDetailsDataDtoUser
-	const userRoles = $derived<string[]>([]);
-	const isAdmin = $derived(userRoles.includes('role_admin'));
+// --- Role toggle ---
+let roleConfirm = $state(false);
+let roleLoading = $state(false);
+const userRoles = $derived<string[]>((user as { roles?: string[] } | undefined)?.roles ?? []);
+const isAdmin = $derived(userRoles.includes('role_admin'));
 
-	async function handleToggleRole() {
-		roleLoading = true;
-		const newRoles = isAdmin ? ['role_user'] : ['role_user', 'role_admin'];
-		try {
-			await usersAssignRoles(userId, {
-				body: JSON.stringify({ roles: newRoles }),
-				headers: { 'Content-Type': 'application/json' },
-			});
-			queryClient.invalidateQueries({ queryKey: getUsersGetUserDetailsQueryKey(userId) });
-		} finally {
-			roleLoading = false;
-			roleConfirm = false;
-		}
-	}
+async function handleToggleRole() {
+  roleLoading = true;
+  const newRoles = isAdmin ? ['role_user'] : ['role_user', 'role_admin'];
+  try {
+    await usersAssignRoles(userId, {
+      body: JSON.stringify({ roles: newRoles }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    queryClient.invalidateQueries({ queryKey: getUsersGetUserDetailsQueryKey(userId) });
+  } finally {
+    roleLoading = false;
+    roleConfirm = false;
+  }
+}
 </script>
 
 <svelte:head>
@@ -107,15 +109,15 @@
 						{#if editing}
 							<div class="space-y-2">
 								<div>
-									<Label>Name</Label>
-									<Input bind:value={editName} placeholder="Name" />
+									<Label for="admin-edit-name">Name</Label>
+									<Input id="admin-edit-name" bind:value={editName} placeholder="Name" />
 								</div>
 								<div>
-									<Label>Email</Label>
-									<Input bind:value={editEmail} type="email" placeholder="Email" />
+									<Label for="admin-edit-email">Email</Label>
+									<Input id="admin-edit-email" bind:value={editEmail} type="email" placeholder="Email" />
 								</div>
-								<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200">
-									<input type="checkbox" bind:checked={editIsActive} class="rounded" />
+								<label for="admin-edit-active" class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200">
+									<input id="admin-edit-active" type="checkbox" bind:checked={editIsActive} class="rounded" />
 									Active
 								</label>
 							</div>
@@ -166,8 +168,13 @@
 					</div>
 					<div>
 						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Last Login</dt>
-						<!-- TODO: backend needs to add `lastLoginAt` to UserDetailsDataDtoUser -->
-						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">—</dd>
+						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">
+							{#if (user as unknown as { lastLoginAt?: string | null }).lastLoginAt}
+								{formatDate((user as unknown as { lastLoginAt: string }).lastLoginAt, locale.current)}
+							{:else}
+								—
+							{/if}
+						</dd>
 					</div>
 					<div>
 						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Onboarding</dt>

@@ -1,0 +1,3 @@
+#!/bin/sh
+bunx octopus-run-parallel --config .precommit.yaml
+bunx octopus-attest generate --checks "typecheck,lint"
