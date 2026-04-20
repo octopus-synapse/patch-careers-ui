@@ -27,6 +27,14 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile --production --ignore-scripts
 
 FROM oven/bun:1.3.11-alpine AS runner
+# OCI labels — the `org.opencontainers.image.source` label is what GHCR
+# uses to auto-link a container package to its source repo. Without this
+# the package ends up unlinked and GITHUB_TOKEN from the repo's release
+# workflow cannot push new layers (blob HEAD → 403 Forbidden), which is
+# exactly what blocked the v0.0.2 docker push.
+LABEL org.opencontainers.image.source="https://github.com/octopus-synapse/patch-careers-ui"
+LABEL org.opencontainers.image.description="Patch Careers web UI (SvelteKit)"
+LABEL org.opencontainers.image.licenses="UNLICENSED"
 WORKDIR /app/apps/web
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 sveltekit
