@@ -19,9 +19,12 @@ type PreferenceType =
   | 'COMMENT_REPLIED'
   | 'CONNECTION_REQUEST'
   | 'CONNECTION_ACCEPTED'
-  | 'FOLLOW_NEW';
+  | 'FOLLOW_NEW'
+  | 'SKILL_DECAY'
+  | 'APPLICATION_STALE'
+  | 'CONNECTION_RECOMMENDATION';
 
-type EmailDelivery = 'INSTANT' | 'DAILY' | 'OFF';
+type EmailDelivery = 'INSTANT' | 'DAILY' | 'WEEKLY' | 'OFF';
 
 type Preference = {
   type: PreferenceType;
@@ -159,6 +162,7 @@ async function updateEmailMode(p: Preference, mode: EmailDelivery) {
 									>
 										<option value="INSTANT">Instantâneo</option>
 										<option value="DAILY">Resumo diário</option>
+										<option value="WEEKLY">Resumo semanal</option>
 										<option value="OFF">Desativado</option>
 									</select>
 								</div>

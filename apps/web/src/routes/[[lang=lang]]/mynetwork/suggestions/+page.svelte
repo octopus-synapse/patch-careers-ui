@@ -95,6 +95,32 @@ function handleConnect(userId: string) {
   sentConnections.add(userId);
   connectMutation.mutate({ userId });
 }
+
+// Skill-overlap recommendations — distinct from the generic "suggestions"
+// endpoint. Pulled in parallel so the page has both a friend-of-friend list
+// AND a "people who share your skills" list, ranked separately.
+interface SkillRec {
+  userId: string;
+  name: string | null;
+  username: string | null;
+  sharedSkills: string[];
+  overlapScore: number;
+}
+
+let skillRecs = $state<SkillRec[]>([]);
+let skillRecsLoading = $state(true);
+
+$effect(() => {
+  if (!browser || !authenticated) return;
+  fetch('/api/v1/users/me/connection-recommendations?limit=10', { credentials: 'include' })
+    .then((r) => r.json())
+    .then(
+      (body: { data?: { recommendations?: SkillRec[] } }) =>
+        (skillRecs = body.data?.recommendations ?? []),
+    )
+    .catch(() => {})
+    .finally(() => (skillRecsLoading = false));
+});
 </script>
 
 <svelte:head>
@@ -163,6 +189,49 @@ function handleConnect(userId: string) {
 				hasMore={pageNum < firstPage.totalPages}
 				isLoading={loadingMore}
 			/>
+		{/if}
+
+		<!-- Skill-overlap recommendations: ranked by # of shared skills with the
+				viewer. Distinct from the generic suggestions above. -->
+		{#if skillRecsLoading}
+			<div class="mt-10">
+				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
+					Pessoas com skills parecidas
+				</h2>
+				<Skeleton shape="rect" width="100%" height="6rem" />
+			</div>
+		{:else if skillRecs.length > 0}
+			<div class="mt-10">
+				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
+					Pessoas com skills parecidas
+				</h2>
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
+					{#each skillRecs as r (r.userId)}
+						<UserCard
+							user={{
+								id: r.userId,
+								name: r.name,
+								username: r.username,
+								photoURL: null,
+							}}
+							subtitle={`${r.sharedSkills.length} skills em comum`}
+						>
+							{#snippet actions()}
+								{#if sentConnections.has(r.userId)}
+									<span class="w-full rounded-full border py-1.5 text-center text-[10px] font-semibold opacity-60 border-gray-300 text-gray-700 dark:border-neutral-600 dark:text-neutral-300">
+										{t('network.requestSent')}
+									</span>
+								{:else}
+									<Button variant="solid" size="sm" fullWidth onclick={() => handleConnect(r.userId)}>
+										<UserPlus size={11} />
+										{t('network.connect')}
+									</Button>
+								{/if}
+							{/snippet}
+						</UserCard>
+					{/each}
+				</div>
+			</div>
 		{/if}
 	</div>
 </div>

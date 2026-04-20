@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Loader2, Rss } from 'lucide-svelte';
 import { Button } from 'ui';
+import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/auth.svelte';
 import GreetingHero from '$lib/components/dashboard/greeting-hero.svelte';
@@ -10,6 +11,7 @@ import ProfileCompletionCard from '$lib/components/dashboard/profile-completion-
 import RemoteUsdWidget from '$lib/components/dashboard/remote-usd-widget.svelte';
 import UpcomingEventsCard from '$lib/components/dashboard/upcoming-events-card.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
+import { meDashboard } from '$lib/dashboard/me-dashboard.svelte';
 import { locale } from '$lib/locale.svelte';
 
 const t = $derived(locale.t);
@@ -24,6 +26,16 @@ $effect(() => {
   }
   if (!session.isLoading && authenticated && user?.needsOnboarding) {
     goto('/onboarding/start');
+  }
+});
+
+// Prefetch the composite payload as soon as the user is authenticated.
+// Widgets that consume the store (currently opt-in) get hydrated data
+// without their own fetch. The store falls back to no-op on 404 so older
+// backends keep working through the per-widget fetch path.
+$effect(() => {
+  if (browser && authenticated && !session.isLoading) {
+    void meDashboard.load();
   }
 });
 

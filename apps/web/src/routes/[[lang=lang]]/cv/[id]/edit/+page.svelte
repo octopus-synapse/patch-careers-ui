@@ -6,7 +6,9 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { useFormDraft } from '$lib/forms/use-form-draft.svelte';
+import { locale } from '$lib/locale.svelte';
 
+const t = $derived(locale.t);
 const resumeId = $derived($page.params.id);
 
 interface ResumeForm extends Record<string, unknown> {
@@ -36,12 +38,18 @@ const draft = useFormDraft<ResumeForm>(`cv-${resumeId}`, {
 });
 
 let loading = $state(true);
+let loadError = $state<string | null>(null);
 let saving = $state(false);
 
-onMount(async () => {
+async function loadResume() {
   if (!browser) return;
+  loading = true;
+  loadError = null;
   try {
     const res = await fetch(`/api/v1/resumes/${resumeId}`, { credentials: 'include' });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
     const body = (await res.json()) as { data?: { resume?: Partial<ResumeForm> } };
     const r = body.data?.resume;
     if (r) {
@@ -58,12 +66,15 @@ onMount(async () => {
         website: r.website ?? '',
       };
     }
-  } catch {
-    toastState.show('Falha ao carregar currículo.', 'danger');
+  } catch (err) {
+    loadError = err instanceof Error ? err.message : 'unknown';
+    toastState.show(t('errors.loadFailed'), 'danger');
   } finally {
     loading = false;
   }
-});
+}
+
+onMount(loadResume);
 
 async function save() {
   saving = true;
@@ -74,12 +85,12 @@ async function save() {
       credentials: 'include',
       body: JSON.stringify(draft.state),
     });
-    if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     draft.clear();
-    toastState.show('Currículo salvo.', 'success');
+    toastState.show(t('common.saved'), 'success');
     goto('/cv');
   } catch {
-    toastState.show('Falha ao salvar. Seus dados ficam no rascunho local.', 'danger');
+    toastState.show(t('errors.saveFailed'), 'danger');
   } finally {
     saving = false;
   }
@@ -102,8 +113,20 @@ async function save() {
   </header>
 
   {#if loading}
-    <div class="flex justify-center py-12">
+    <div class="flex justify-center py-12" role="status" aria-label={t('common.loading')}>
       <Loader2 size={20} class="animate-spin text-gray-500" />
+    </div>
+  {:else if loadError}
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-900 dark:bg-red-950"
+      role="alert"
+    >
+      <p class="text-sm text-red-800 dark:text-red-200">
+        {t('errors.loadFailed')}
+      </p>
+      <Button type="button" variant="solid" class="mt-4" onclick={loadResume}>
+        {t('common.retry')}
+      </Button>
     </div>
   {:else}
     <h1 class="mb-6 text-xl font-semibold text-gray-900 dark:text-neutral-100">

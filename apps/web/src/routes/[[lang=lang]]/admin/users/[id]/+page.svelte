@@ -109,15 +109,15 @@ async function handleToggleRole() {
 						{#if editing}
 							<div class="space-y-2">
 								<div>
-									<Label>Name</Label>
-									<Input bind:value={editName} placeholder="Name" />
+									<Label for="admin-edit-name">Name</Label>
+									<Input id="admin-edit-name" bind:value={editName} placeholder="Name" />
 								</div>
 								<div>
-									<Label>Email</Label>
-									<Input bind:value={editEmail} type="email" placeholder="Email" />
+									<Label for="admin-edit-email">Email</Label>
+									<Input id="admin-edit-email" bind:value={editEmail} type="email" placeholder="Email" />
 								</div>
-								<label class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200">
-									<input type="checkbox" bind:checked={editIsActive} class="rounded" />
+								<label for="admin-edit-active" class="flex items-center gap-2 text-sm text-gray-800 dark:text-neutral-200">
+									<input id="admin-edit-active" type="checkbox" bind:checked={editIsActive} class="rounded" />
 									Active
 								</label>
 							</div>

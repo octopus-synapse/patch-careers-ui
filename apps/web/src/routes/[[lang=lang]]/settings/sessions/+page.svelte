@@ -2,6 +2,9 @@
 import { Loader2, Monitor, Smartphone, X } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, toastState } from 'ui';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface SessionRow {
   id: string;
@@ -25,7 +28,7 @@ async function load() {
     const body = (await res.json()) as { data?: { sessions?: SessionRow[] } };
     sessions = body.data?.sessions ?? [];
   } catch {
-    toastState.show('Falha ao carregar sessões.', 'danger');
+    toastState.show(t('errors.loadSessionsFailed'), 'danger');
   } finally {
     loading = false;
   }
@@ -40,9 +43,9 @@ async function revoke(id: string) {
     });
     if (!res.ok) throw new Error();
     sessions = sessions.map((s) => (s.id === id ? { ...s, revoked: true } : s));
-    toastState.show('Sessão revogada.', 'success');
+    toastState.show(t('success.sessionRevoked'), 'success');
   } catch {
-    toastState.show('Falha ao revogar sessão.', 'danger');
+    toastState.show(t('errors.revokeSessionFailed'), 'danger');
   } finally {
     revoking = null;
   }

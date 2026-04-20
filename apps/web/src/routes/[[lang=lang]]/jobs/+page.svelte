@@ -7,13 +7,14 @@ import {
   jobsCreate,
 } from 'api-client';
 import { formatDate } from 'i18n';
-import { ArrowRight, Bookmark, Globe2, Plus, Sparkles } from 'lucide-svelte';
-import { Button, FormModal, Input, Label, MatchBadge, Tabs, Textarea } from 'ui';
+import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'lucide-svelte';
+import { Button, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import DataTable from '$lib/components/admin/data-table.svelte';
 import Pagination from '$lib/components/admin/pagination.svelte';
 import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
+import { parseApiError } from '$lib/format/api-error';
 import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
 import { locale } from '$lib/locale.svelte';
 
@@ -97,7 +98,37 @@ const jobsData = $derived(jobsQuery.data as unknown as JobsResponse | undefined)
 const recommendedData = $derived(
   recommendedQuery.data as unknown as RecommendedResponse | undefined,
 );
-const allList = $derived(jobsData?.items);
+
+// Side-channel: pull structured fit scores for the current page of jobs from
+// the new /jobs/with-fit-score endpoint. Merge into the existing list under
+// the matchScore key so the badge keeps working without a column change.
+let fitScoreById = $state<Record<string, number>>({});
+$effect(() => {
+  if (!browser || activeTab !== 'all') return;
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: '20',
+    ...(search ? { search } : {}),
+    ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
+  });
+  fetch(`/api/v1/jobs/with-fit-score?${params}`, { credentials: 'include' })
+    .then((r) => r.json())
+    .then((body: { items?: Array<{ id: string; fitScore?: { score: number } }> }) => {
+      const map: Record<string, number> = {};
+      for (const item of body.items ?? []) {
+        if (item.fitScore) map[item.id] = item.fitScore.score;
+      }
+      fitScoreById = map;
+    })
+    .catch(() => {});
+});
+
+const allList = $derived(
+  (jobsData?.items ?? []).map((j) => ({
+    ...j,
+    matchScore: fitScoreById[j.id] ?? j.matchScore,
+  })),
+);
 const recommendedList = $derived(recommendedData?.data);
 const jobsList = $derived(activeTab === 'recommended' ? recommendedList : allList);
 const filteredJobs = $derived.by(() => {
@@ -213,6 +244,60 @@ const filters = $derived([
     value: jobTypeFilter,
   },
 ]);
+
+// Rage apply — bulk-submit AI-tailored applications to every match >= minFit.
+// Numbers stored as strings to keep <Input type="number"> happy; coerced when
+// we send the request.
+let rageOpen = $state(false);
+let rageRunning = $state(false);
+let rageMinFit = $state('80');
+let rageMax = $state('20');
+let rageFailures = $state<Array<{ jobId: string; reason: string }>>([]);
+let rageShowFailures = $state(false);
+
+async function runRageApply() {
+  if (rageRunning) return; // dedupe rapid double-clicks
+  rageRunning = true;
+  rageFailures = [];
+  try {
+    const res = await fetch('/api/v1/automation/rage-apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        minFit: Number.parseInt(rageMinFit, 10) || 80,
+        maxApplications: Number.parseInt(rageMax, 10) || 20,
+      }),
+    });
+    if (!res.ok) {
+      const parsed = await parseApiError(res, 'Falha ao rodar rage apply.');
+      throw new Error(parsed.message);
+    }
+    const body = (await res.json()) as {
+      data?: {
+        submitted?: number;
+        attempted?: number;
+        skippedExisting?: number;
+        failed?: Array<{ jobId: string; reason: string }>;
+      };
+    };
+    const d = body.data ?? {};
+    rageFailures = d.failed ?? [];
+    const submitted = d.submitted ?? 0;
+    const attempted = d.attempted ?? 0;
+    const skipped = d.skippedExisting ?? 0;
+    const failedCount = rageFailures.length;
+    const summary = `Rage apply: ${submitted}/${attempted} enviadas, ${skipped} já existiam${failedCount ? `, ${failedCount} falharam` : ''}.`;
+    toastState.show(summary, failedCount > 0 ? 'info' : 'success');
+    if (failedCount === 0) {
+      rageOpen = false;
+    }
+  } catch (err) {
+    toastState.show(err instanceof Error ? err.message : 'Falha ao rodar rage apply.', 'danger');
+  } finally {
+    rageRunning = false;
+  }
+}
 </script>
 
 <svelte:head>
@@ -230,6 +315,15 @@ const filters = $derived([
 					<Button variant="ghost" size="sm" onclick={() => goto('/jobs/saved')}>
 						<Bookmark size={14} />
 						{t('jobs.savedNav')}
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={() => (rageOpen = true)}
+						aria-label="Rage apply"
+					>
+						<Zap size={14} />
+						Rage apply
 					</Button>
 					<Button variant="solid" size="sm" onclick={() => createModal = true}>
 						<Plus size={14} />
@@ -406,3 +500,57 @@ const filters = $derived([
 		</div>
 	</div>
 </FormModal>
+
+{#if rageOpen}
+	<Modal open={rageOpen} onClose={() => (rageOpen = false)}>
+		{#snippet title()}Rage apply{/snippet}
+		<p class="mb-4 text-sm text-gray-500 dark:text-neutral-500">
+			Vamos aplicar (com CV adaptado por IA) a TODAS as vagas com fit &ge; {rageMinFit}, até {rageMax}
+			aplicações. Sem volta.
+		</p>
+		<div class="space-y-3">
+			<div>
+				<Label for="min-fit">Fit mínimo</Label>
+				<Input id="min-fit" type="number" bind:value={rageMinFit} />
+			</div>
+			<div>
+				<Label for="max-apps">Máximo de aplicações</Label>
+				<Input id="max-apps" type="number" bind:value={rageMax} />
+			</div>
+			{#if rageRunning}
+				<p class="flex items-center gap-2 text-xs text-gray-500" role="status">
+					<Loader2 size={12} class="animate-spin" /> Adaptando CV e enviando...
+				</p>
+			{/if}
+			{#if rageFailures.length > 0}
+				<div class="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs dark:border-amber-900 dark:bg-amber-950">
+					<button
+						type="button"
+						class="flex w-full items-center justify-between font-medium text-amber-800 dark:text-amber-200"
+						onclick={() => (rageShowFailures = !rageShowFailures)}
+					>
+						<span>{rageFailures.length} falharam</span>
+						<span aria-hidden="true">{rageShowFailures ? '▾' : '▸'}</span>
+					</button>
+					{#if rageShowFailures}
+						<ul class="mt-2 space-y-1 text-amber-700 dark:text-amber-300">
+							{#each rageFailures as f (f.jobId)}
+								<li class="font-mono">
+									<span class="opacity-70">{f.jobId}:</span> {f.reason}
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+			{/if}
+		</div>
+		<div class="mt-5 flex justify-end gap-2">
+			<Button variant="outline" size="sm" onclick={() => (rageOpen = false)} disabled={rageRunning}>
+				Cancelar
+			</Button>
+			<Button variant="solid" size="sm" onclick={runRageApply} disabled={rageRunning}>
+				{rageRunning ? 'Aplicando...' : 'Rodar agora'}
+			</Button>
+		</div>
+	</Modal>
+{/if}

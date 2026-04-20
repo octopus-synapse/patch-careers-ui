@@ -9,6 +9,7 @@ import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { EmptyState, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
+import { relativeFrom } from '$lib/format/relative';
 import { locale } from '$lib/locale.svelte';
 
 type Props = {
@@ -103,18 +104,6 @@ const activities = $derived.by<ActivityItem[]>(() => {
   return (section?.data as ActivityItem[] | undefined) ?? [];
 });
 
-function formatRelative(dateStr?: string | null): string {
-  if (!dateStr) return '';
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return t('feed.justNow');
-  if (minutes < 60) return `${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d`;
-  return `${Math.floor(days / 30)}mo`;
-}
 
 function activityLabel(type?: string): string {
   if (!type) return '';
@@ -178,7 +167,7 @@ function reactionEmoji(type?: string): string {
 								<span class="rounded-full bg-gray-100 px-2 py-0.5 font-medium dark:bg-neutral-700">{post.type}</span>
 							{/if}
 							{#if post.createdAt}
-								<span>{formatRelative(post.createdAt)}</span>
+								<span>{relativeFrom(post.createdAt)}</span>
 							{/if}
 						</div>
 					</li>
@@ -209,7 +198,7 @@ function reactionEmoji(type?: string): string {
 							<span>{t('feed.commentedOn')}</span>
 							{#if item.createdAt}
 								<span aria-hidden="true">·</span>
-								<span>{formatRelative(item.createdAt)}</span>
+								<span>{relativeFrom(item.createdAt)}</span>
 							{/if}
 						</div>
 						{#if item.content}
@@ -249,7 +238,7 @@ function reactionEmoji(type?: string): string {
 								<span>{t('feed.reactedTo')}</span>
 								{#if item.createdAt}
 									<span aria-hidden="true">·</span>
-									<span>{formatRelative(item.createdAt)}</span>
+									<span>{relativeFrom(item.createdAt)}</span>
 								{/if}
 							</div>
 							{#if item.post?.content}
@@ -281,7 +270,7 @@ function reactionEmoji(type?: string): string {
 					<Activity size={14} class="text-gray-400 dark:text-neutral-500" />
 					<span class="flex-1 text-xs text-gray-700 dark:text-neutral-300">{activityLabel(item.type)}</span>
 					{#if item.createdAt}
-						<span class="text-[11px] text-gray-400 dark:text-neutral-500">{formatRelative(item.createdAt)}</span>
+						<span class="text-[11px] text-gray-400 dark:text-neutral-500">{relativeFrom(item.createdAt)}</span>
 					{/if}
 				</li>
 			{/each}

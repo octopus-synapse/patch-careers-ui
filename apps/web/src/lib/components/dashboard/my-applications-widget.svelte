@@ -5,6 +5,10 @@ import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/auth.svelte';
+import {
+  statusIntent as resolveStatusIntent,
+  statusLabel as resolveStatusLabel,
+} from '$lib/format/application-status';
 import { locale } from '$lib/locale.svelte';
 
 type ApplicationItem = {
@@ -36,42 +40,8 @@ const items = $derived.by<ApplicationItem[]>(() => {
   return candidate;
 });
 
-function statusIntent(status?: string): 'neutral' | 'info' | 'success' | 'warning' | 'danger' {
-  switch ((status ?? '').toUpperCase()) {
-    case 'OFFER':
-      return 'success';
-    case 'INTERVIEW':
-    case 'IN_REVIEW':
-      return 'info';
-    case 'APPLIED':
-      return 'neutral';
-    case 'REJECTED':
-      return 'danger';
-    case 'WITHDRAWN':
-      return 'warning';
-    default:
-      return 'neutral';
-  }
-}
-
-function statusLabel(status?: string): string {
-  switch ((status ?? '').toUpperCase()) {
-    case 'APPLIED':
-      return t('dashboard.statusApplied');
-    case 'IN_REVIEW':
-      return t('dashboard.statusInReview');
-    case 'INTERVIEW':
-      return t('dashboard.statusInterview');
-    case 'OFFER':
-      return t('dashboard.statusOffer');
-    case 'REJECTED':
-      return t('dashboard.statusRejected');
-    case 'WITHDRAWN':
-      return t('dashboard.statusWithdrawn');
-    default:
-      return status ?? '';
-  }
-}
+const statusIntent = (status?: string) => resolveStatusIntent(status);
+const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 </script>
 
 <Card>

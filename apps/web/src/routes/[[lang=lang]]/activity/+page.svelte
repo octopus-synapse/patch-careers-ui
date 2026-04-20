@@ -4,7 +4,17 @@
 -->
 <script lang="ts">
 import { createActivityGetFeed } from 'api-client';
-import { Award, Briefcase, FileText, Loader2, Sparkles, UserPlus } from 'lucide-svelte';
+import {
+  AlarmClock,
+  Award,
+  Briefcase,
+  FileText,
+  Loader2,
+  Sparkles,
+  TrendingDown,
+  UserPlus,
+  Users,
+} from 'lucide-svelte';
 import { Avatar } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/auth.svelte';
@@ -37,6 +47,9 @@ const activities = $derived.by<ActivityItem[]>(() => {
 });
 
 function iconFor(type: string) {
+  if (type === 'SKILL_DECAY') return TrendingDown;
+  if (type === 'APPLICATION_STALE') return AlarmClock;
+  if (type === 'CONNECTION_RECOMMENDATION') return Users;
   if (type.startsWith('RESUME')) return FileText;
   if (type === 'FOLLOW_NEW' || type === 'CONNECTION_ACCEPTED') return UserPlus;
   if (type.startsWith('JOB') || type.startsWith('APPLICATION')) return Briefcase;
@@ -61,6 +74,12 @@ function summarize(a: ActivityItem): string {
       return `${name} aplicou para uma vaga.`;
     case 'BADGE_EARNED':
       return `${name} conquistou uma badge.`;
+    case 'SKILL_DECAY':
+      return `Sua skill "${(a.metadata?.skillName as string) ?? '...'}" não recebeu atualizações há ${(a.metadata?.daysSinceTouched as number) ?? 'vários'} dias — vale reativar.`;
+    case 'APPLICATION_STALE':
+      return `Aplicação para ${(a.metadata?.company as string) ?? 'uma vaga'} parada há ${(a.metadata?.daysSilent as number) ?? 'vários'} dias. Que tal um follow-up?`;
+    case 'CONNECTION_RECOMMENDATION':
+      return `Sugestão: você tem ${(a.metadata?.sharedSkills as number) ?? 'várias'} skills em comum com ${(a.metadata?.suggestedName as string) ?? 'alguém'}.`;
     default:
       return `${name} — ${a.type.toLowerCase().replace(/_/g, ' ')}`;
   }

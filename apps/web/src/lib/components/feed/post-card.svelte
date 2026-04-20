@@ -23,6 +23,7 @@ import {
   type ReactionType,
 } from 'ui';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import { relativeFrom } from '$lib/format/relative';
 import { locale } from '$lib/locale.svelte';
 import { timeTicker } from '$lib/time-ticker.svelte';
 import CommentSection from './comment-section.svelte';
@@ -204,23 +205,7 @@ const difficultyBadgeVariant: Record<string, 'success' | 'warning' | 'danger'> =
   Hard: 'danger',
 };
 
-function formatRelativeTime(dateStr: string | undefined, nowMs: number): string {
-  if (!dateStr) return '';
-  const then = new Date(dateStr).getTime();
-  const diff = nowMs - then;
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return t('feed.justNow');
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d`;
-  const months = Math.floor(days / 30);
-  return `${months}mo`;
-}
-
-const relativeTime = $derived(formatRelativeTime(createdAt, timeTicker.now));
+const relativeTime = $derived(relativeFrom(createdAt, timeTicker.now));
 
 let showHeartBurst = $state(false);
 let heartBurstTimer: ReturnType<typeof setTimeout> | null = null;

@@ -5,6 +5,7 @@ import type { Component } from 'svelte';
 import { Card, EmptyState, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/auth.svelte';
+import { relativeFrom } from '$lib/format/relative';
 import { locale } from '$lib/locale.svelte';
 
 const t = $derived(locale.t);
@@ -35,18 +36,6 @@ const items = $derived.by<ActivityItem[]>(() => {
   return (section?.data as ActivityItem[] | undefined) ?? [];
 });
 
-function formatRelative(dateStr?: string | null): string {
-  if (!dateStr) return '';
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  if (minutes < 1) return t('feed.justNow');
-  if (minutes < 60) return `${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}d`;
-  return `${Math.floor(days / 30)}mo`;
-}
 
 function activityLabel(type?: string): string {
   if (!type) return '';
@@ -101,7 +90,7 @@ function activityLabel(type?: string): string {
 							{/if}
 						</div>
 						{#if item.createdAt}
-							<span class="text-[11px] text-gray-400 dark:text-neutral-500">{formatRelative(item.createdAt)}</span>
+							<span class="text-[11px] text-gray-400 dark:text-neutral-500">{relativeFrom(item.createdAt)}</span>
 						{/if}
 					</div>
 				</Card>

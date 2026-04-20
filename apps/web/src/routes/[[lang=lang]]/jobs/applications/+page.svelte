@@ -8,7 +8,6 @@ import {
   Briefcase,
   Calendar,
   CheckCircle2,
-  Clock,
   Eye,
   Loader2,
   MessageSquarePlus,
@@ -17,6 +16,9 @@ import {
 import { onMount } from 'svelte';
 import { Button, toastState } from 'ui';
 import { browser } from '$app/environment';
+import { locale } from '$lib/locale.svelte';
+
+const t = $derived(locale.t);
 
 type EventType =
   | 'SUBMITTED'
@@ -44,8 +46,30 @@ interface TrackedApplication {
   };
   status: string;
   appliedAt: string;
-  silent: boolean;
+  /** Backend-computed: anti-ghosting threshold has been crossed. */
+  needsFollowUp: boolean;
+  /** Days since last recruiter response (or since SUBMITTED if none). */
+  daysSinceLastResponse: number | null;
+  /** @deprecated kept while backend still emits it. */
+  silent?: boolean;
   events: TimelineEvent[];
+}
+
+async function quickFollowUp(applicationId: string) {
+  if (!confirm('Marcar como follow-up enviado? Vai resetar o contador de silêncio.')) return;
+  try {
+    const res = await fetch(`/api/v1/jobs/applications/${applicationId}/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ type: 'FOLLOW_UP_SENT' }),
+    });
+    if (!res.ok) throw new Error();
+    await load();
+    toastState.show('Follow-up registrado.', 'success');
+  } catch {
+    toastState.show(t('errors.registerFailed'), 'danger');
+  }
 }
 
 let applications = $state<TrackedApplication[]>([]);
@@ -86,7 +110,7 @@ async function load() {
     const body = (await res.json()) as { data?: { applications?: TrackedApplication[] } };
     applications = body.data?.applications ?? [];
   } catch {
-    toastState.show('Falha ao carregar aplicações.', 'danger');
+    toastState.show(t('errors.loadApplicationsFailed'), 'danger');
   } finally {
     loading = false;
   }
@@ -110,7 +134,7 @@ async function addEvent(appId: string) {
     await load();
     toastState.show('Evento registrado.', 'success');
   } catch {
-    toastState.show('Falha ao registrar evento.', 'danger');
+    toastState.show(t('errors.registerEventFailed'), 'danger');
   } finally {
     adding = null;
   }
@@ -155,15 +179,19 @@ onMount(load);
                 {app.job.company} · aplicada em {new Date(app.appliedAt).toLocaleDateString()}
               </p>
             </div>
-            {#if app.silent}
-              <span
-                class="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs text-amber-600 dark:text-amber-400"
-                title="Mais de 10 dias sem resposta"
-              >
-                <Clock size={12} />
-                silêncio
-              </span>
-            {/if}
+            <div class="flex items-center gap-2">
+              {#if app.needsFollowUp}
+                <button
+                  type="button"
+                  class="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs text-amber-600 transition-colors hover:bg-amber-500/20 dark:text-amber-400"
+                  title="Sem resposta há {app.daysSinceLastResponse ?? '?'} dias — clique pra registrar follow-up"
+                  onclick={() => quickFollowUp(app.id)}
+                >
+                  <MessageSquarePlus size={12} />
+                  Follow-up sugerido ({app.daysSinceLastResponse ?? '?'}d)
+                </button>
+              {/if}
+            </div>
           </div>
 
           <ol class="relative ml-3 space-y-4 border-l border-gray-200 pl-6 dark:border-neutral-700">
