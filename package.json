@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
-    "@commitlint/cli": "^19",
-    "@commitlint/types": "^19",
+    "@commitlint/cli": "^20",
+    "@commitlint/types": "^20",
     "@octopus-synapse/biome-config": "^1",
     "@octopus-synapse/commitlint-config": "^1",
     "@octopus-synapse/precommit": "^1",
