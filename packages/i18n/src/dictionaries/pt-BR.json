@@ -5,7 +5,38 @@
     "confirm": "Confirmar",
     "back": "Voltar",
     "next": "Próximo",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "retry": "Tentar novamente",
+    "saving": "Salvando...",
+    "saved": "Salvo",
+    "draftSaved": "Rascunho salvo"
+  },
+  "errorPage": {
+    "notFound": "Página não encontrada",
+    "somethingWentWrong": "Algo deu errado",
+    "goHome": "Ir para o início",
+    "goHomeAria": "Voltar para a página inicial"
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar",
+    "saveFailed": "Falha ao salvar",
+    "networkError": "Erro de conexão. Verifique sua internet.",
+    "alreadyApplied": "Você já se candidatou a esta vaga",
+    "expiredSession": "Sua sessão expirou. Entre novamente.",
+    "genericErrorTitle": "Algo deu errado",
+    "tryAgain": "Tentar de novo",
+    "endOfList": "Você chegou ao fim"
+  },
+  "applyFlow": {
+    "applying": "Enviando candidatura...",
+    "applied": "Candidatura enviada",
+    "alreadyApplied": "Você já se candidatou",
+    "confirmApply": "Confirmar candidatura",
+    "confirmRage": "Enviar candidaturas em lote?",
+    "rageConfirmBody": "Vamos aplicar pra até {{count}} vagas que batem com seu perfil. Você pode revisar e cancelar cada uma depois.",
+    "rageSummary": "{{submitted}} enviadas de {{total}}",
+    "rageFailures": "{{count}} falharam",
+    "seeFailures": "Ver falhas"
   },
   "nav": {
     "dashboard": "Painel",

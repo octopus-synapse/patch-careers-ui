@@ -14,6 +14,7 @@ import { goto } from '$app/navigation';
 import DataTable from '$lib/components/admin/data-table.svelte';
 import Pagination from '$lib/components/admin/pagination.svelte';
 import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
+import { parseApiError } from '$lib/format/api-error';
 import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
 import { locale } from '$lib/locale.svelte';
 
@@ -251,9 +252,13 @@ let rageOpen = $state(false);
 let rageRunning = $state(false);
 let rageMinFit = $state('80');
 let rageMax = $state('20');
+let rageFailures = $state<Array<{ jobId: string; reason: string }>>([]);
+let rageShowFailures = $state(false);
 
 async function runRageApply() {
+  if (rageRunning) return; // dedupe rapid double-clicks
   rageRunning = true;
+  rageFailures = [];
   try {
     const res = await fetch('/api/v1/automation/rage-apply', {
       method: 'POST',
@@ -264,18 +269,31 @@ async function runRageApply() {
         maxApplications: Number.parseInt(rageMax, 10) || 20,
       }),
     });
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+      const parsed = await parseApiError(res, 'Falha ao rodar rage apply.');
+      throw new Error(parsed.message);
+    }
     const body = (await res.json()) as {
-      data?: { submitted?: number; attempted?: number; skippedExisting?: number };
+      data?: {
+        submitted?: number;
+        attempted?: number;
+        skippedExisting?: number;
+        failed?: Array<{ jobId: string; reason: string }>;
+      };
     };
     const d = body.data ?? {};
-    toastState.show(
-      `Rage apply: ${d.submitted ?? 0} aplicações enviadas (${d.attempted ?? 0} tentadas, ${d.skippedExisting ?? 0} já enviadas).`,
-      'success',
-    );
-    rageOpen = false;
-  } catch {
-    toastState.show('Falha ao rodar rage apply.', 'danger');
+    rageFailures = d.failed ?? [];
+    const submitted = d.submitted ?? 0;
+    const attempted = d.attempted ?? 0;
+    const skipped = d.skippedExisting ?? 0;
+    const failedCount = rageFailures.length;
+    const summary = `Rage apply: ${submitted}/${attempted} enviadas, ${skipped} já existiam${failedCount ? `, ${failedCount} falharam` : ''}.`;
+    toastState.show(summary, failedCount > 0 ? 'info' : 'success');
+    if (failedCount === 0) {
+      rageOpen = false;
+    }
+  } catch (err) {
+    toastState.show(err instanceof Error ? err.message : 'Falha ao rodar rage apply.', 'danger');
   } finally {
     rageRunning = false;
   }
@@ -500,9 +518,30 @@ async function runRageApply() {
 				<Input id="max-apps" type="number" bind:value={rageMax} />
 			</div>
 			{#if rageRunning}
-				<p class="flex items-center gap-2 text-xs text-gray-500">
+				<p class="flex items-center gap-2 text-xs text-gray-500" role="status">
 					<Loader2 size={12} class="animate-spin" /> Adaptando CV e enviando...
 				</p>
+			{/if}
+			{#if rageFailures.length > 0}
+				<div class="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs dark:border-amber-900 dark:bg-amber-950">
+					<button
+						type="button"
+						class="flex w-full items-center justify-between font-medium text-amber-800 dark:text-amber-200"
+						onclick={() => (rageShowFailures = !rageShowFailures)}
+					>
+						<span>{rageFailures.length} falharam</span>
+						<span aria-hidden="true">{rageShowFailures ? '▾' : '▸'}</span>
+					</button>
+					{#if rageShowFailures}
+						<ul class="mt-2 space-y-1 text-amber-700 dark:text-amber-300">
+							{#each rageFailures as f (f.jobId)}
+								<li class="font-mono">
+									<span class="opacity-70">{f.jobId}:</span> {f.reason}
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
 			{/if}
 		</div>
 		<div class="mt-5 flex justify-end gap-2">

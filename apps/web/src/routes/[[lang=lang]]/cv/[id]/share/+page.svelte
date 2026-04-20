@@ -56,6 +56,29 @@ let bundleDownloading = $state(false);
 let customSlug = $state('');
 let password = $state('');
 let expiresInDays = $state<number | null>(30);
+let createError = $state<{ field?: 'slug' | 'password'; message: string } | null>(null);
+let copiedSlug = $state<string | null>(null);
+
+const SLUG_PATTERN = /^[a-zA-Z0-9-]+$/;
+
+function validateCreate(): boolean {
+  createError = null;
+  const slug = customSlug.trim();
+  if (slug && !SLUG_PATTERN.test(slug)) {
+    createError = { field: 'slug', message: 'Slug deve conter apenas letras, números e hifens.' };
+    return false;
+  }
+  if (slug && (slug.length < 3 || slug.length > 80)) {
+    createError = { field: 'slug', message: 'Slug deve ter entre 3 e 80 caracteres.' };
+    return false;
+  }
+  const pw = password.trim();
+  if (pw && (pw.length < 4 || pw.length > 200)) {
+    createError = { field: 'password', message: 'Senha deve ter entre 4 e 200 caracteres.' };
+    return false;
+  }
+  return true;
+}
 
 async function load() {
   if (!browser) return;
@@ -64,6 +87,8 @@ async function load() {
     const res = await fetch(`/api/v1/shares/resume/${resumeId}`, {
       credentials: 'include',
     });
+    // `?? body.shares` is a defensive fallback for the legacy duplicated shape
+    // produced by the backend before profile-services PR #213 normalized it.
     const body = (await res.json()) as { data?: { shares?: Share[] }; shares?: Share[] };
     shares = body.data?.shares ?? body.shares ?? [];
   } catch {
@@ -74,6 +99,7 @@ async function load() {
 }
 
 async function createShare() {
+  if (!validateCreate()) return;
   creating = true;
   try {
     const body: Record<string, unknown> = { resumeId };
@@ -90,14 +116,24 @@ async function createShare() {
       credentials: 'include',
       body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Error();
+    if (res.status === 409) {
+      createError = { field: 'slug', message: 'Esse slug já está em uso. Escolha outro.' };
+      return;
+    }
+    if (!res.ok) {
+      const errBody = (await res.json().catch(() => null)) as
+        | { error?: { message?: string; userMessage?: string } }
+        | null;
+      const msg = errBody?.error?.userMessage ?? errBody?.error?.message ?? 'Falha ao criar link.';
+      throw new Error(msg);
+    }
     customSlug = '';
     password = '';
     expiresInDays = 30;
     await load();
     toastState.show('Link criado.', 'success');
-  } catch {
-    toastState.show('Falha ao criar link.', 'danger');
+  } catch (err) {
+    toastState.show(err instanceof Error ? err.message : 'Falha ao criar link.', 'danger');
   } finally {
     creating = false;
   }
@@ -122,7 +158,13 @@ async function revoke(id: string) {
 async function copyUrl(slug: string) {
   const url = `${window.location.origin}/s/${slug}`;
   await navigator.clipboard.writeText(url);
+  copiedSlug = slug;
   toastState.show('Link copiado.', 'success');
+  // Clear the inline "Copied!" badge after a short window so the next copy
+  // re-triggers the visual change.
+  setTimeout(() => {
+    if (copiedSlug === slug) copiedSlug = null;
+  }, 2000);
 }
 
 async function loadAliases(shareId: string) {
@@ -265,9 +307,18 @@ onMount(load);
           id="slug"
           bind:value={customSlug}
           placeholder="enzo-backend-2026"
-          pattern="[a-z0-9-]+"
+          pattern="[a-zA-Z0-9-]+"
+          aria-invalid={createError?.field === 'slug'}
+          aria-describedby="slug-help"
         />
-        <p class="mt-1 text-[11px] text-gray-400">Só minúsculas, números e hífen.</p>
+        <p id="slug-help" class="mt-1 text-[11px] text-gray-400">
+          Letras, números e hífen. 3 a 80 caracteres.
+        </p>
+        {#if createError?.field === 'slug'}
+          <p class="mt-1 text-[11px] text-red-600 dark:text-red-400" role="alert">
+            {createError.message}
+          </p>
+        {/if}
       </div>
 
       <div>
@@ -277,7 +328,13 @@ onMount(load);
           type="password"
           bind:value={password}
           placeholder="Deixe vazio para link público"
+          aria-invalid={createError?.field === 'password'}
         />
+        {#if createError?.field === 'password'}
+          <p class="mt-1 text-[11px] text-red-600 dark:text-red-400" role="alert">
+            {createError.message}
+          </p>
+        {/if}
       </div>
 
       <div>
@@ -339,8 +396,14 @@ onMount(load);
                 </p>
               </div>
               <div class="ml-3 flex items-center gap-1">
-                <Button variant="icon" size="xs" onclick={() => copyUrl(s.slug)} aria-label="Copiar link">
-                  <Copy size={14} />
+                <Button
+                  variant="icon"
+                  size="xs"
+                  onclick={() => copyUrl(s.slug)}
+                  aria-label={copiedSlug === s.slug ? 'Link copiado' : 'Copiar link'}
+                  title={copiedSlug === s.slug ? 'Copiado!' : 'Copiar link'}
+                >
+                  <Copy size={14} class={copiedSlug === s.slug ? 'text-green-500' : ''} />
                 </Button>
                 <Button variant="icon" size="xs" onclick={() => downloadQr(s.id, s.slug)} aria-label="Baixar QR">
                   <QrCode size={14} />

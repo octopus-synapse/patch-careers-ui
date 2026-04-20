@@ -9,6 +9,7 @@ import {
 import { Loader2, Send, Trash2 } from 'lucide-svelte';
 import { Avatar, Button, Input } from 'ui';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import { relativeFrom } from '$lib/format/relative';
 
 type Props = {
   postId: string;
@@ -38,31 +39,22 @@ const commentsQuery = createCommentsGetByPost(
 
 const comments = $derived(commentsQuery.data?.comments);
 
-function formatRelativeTime(dateStr?: string): string {
-  if (!dateStr) return '';
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diff = now - then;
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return 'just now';
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  return `${days}d`;
-}
-
 async function handleSubmitComment() {
-  if (!commentText.trim() || submitting) return;
+  const trimmed = commentText.trim();
+  if (!trimmed || submitting) return;
   submitting = true;
+  // Clear optimistically — restore on failure so the user can retry without retyping.
+  const previous = commentText;
+  commentText = '';
   try {
     await commentsCreate(postId, {
-      body: JSON.stringify({ content: commentText.trim() }),
+      body: JSON.stringify({ content: trimmed }),
       headers: { 'Content-Type': 'application/json' },
     });
-    commentText = '';
     queryClient.invalidateQueries({ queryKey: getCommentsGetByPostQueryKey(postId) });
+  } catch (err) {
+    commentText = previous;
+    throw err;
   } finally {
     submitting = false;
   }
@@ -158,7 +150,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 				<div class="min-w-0 flex-1">
 					<div class="flex items-center gap-1.5">
 						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{commentAuthor?.name ?? commentAuthor?.username ?? 'Unknown'}</span>
-						<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(comment.createdAt)}</span>
+						<span class="text-[10px] text-gray-400 dark:text-neutral-500">{relativeFrom(comment.createdAt)}</span>
 					</div>
 					<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{comment.content}</p>
 					<div class="mt-1 flex items-center gap-2">
@@ -226,7 +218,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 							<div class="min-w-0 flex-1">
 								<div class="flex items-center gap-1.5">
 									<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{replyAuthor?.name ?? replyAuthor?.username ?? 'Unknown'}</span>
-									<span class="text-[10px] text-gray-400 dark:text-neutral-500">{formatRelativeTime(reply.createdAt)}</span>
+									<span class="text-[10px] text-gray-400 dark:text-neutral-500">{relativeFrom(reply.createdAt)}</span>
 								</div>
 								<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{reply.content}</p>
 								{#if isOwnReply}

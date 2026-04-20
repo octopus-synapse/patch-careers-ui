@@ -5,7 +5,38 @@
     "confirm": "Confirm",
     "back": "Back",
     "next": "Next",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "retry": "Try again",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "draftSaved": "Draft saved"
+  },
+  "errorPage": {
+    "notFound": "Page not found",
+    "somethingWentWrong": "Something went wrong",
+    "goHome": "Go home",
+    "goHomeAria": "Back to home"
+  },
+  "errors": {
+    "loadFailed": "Failed to load",
+    "saveFailed": "Failed to save",
+    "networkError": "Network error. Check your connection.",
+    "alreadyApplied": "You already applied to this job",
+    "expiredSession": "Your session expired. Please sign in again.",
+    "genericErrorTitle": "Something went wrong",
+    "tryAgain": "Try again",
+    "endOfList": "You're all caught up"
+  },
+  "applyFlow": {
+    "applying": "Submitting application...",
+    "applied": "Application submitted",
+    "alreadyApplied": "Already applied",
+    "confirmApply": "Confirm application",
+    "confirmRage": "Submit applications in bulk?",
+    "rageConfirmBody": "We'll apply to up to {{count}} jobs matching your profile. You can review and cancel each one afterwards.",
+    "rageSummary": "{{submitted}} submitted of {{total}}",
+    "rageFailures": "{{count}} failed",
+    "seeFailures": "See failures"
   },
   "nav": {
     "dashboard": "Dashboard",
