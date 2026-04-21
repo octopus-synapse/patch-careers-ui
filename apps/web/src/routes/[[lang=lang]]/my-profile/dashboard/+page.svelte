@@ -6,6 +6,7 @@ import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 import GreetingHero from './_components/greeting-hero.svelte';
 import MyApplicationsWidget from './_components/my-applications-widget.svelte';
+import NextStepsChecklist from './_components/next-steps-checklist.svelte';
 import PendingInvitationsWidget from './_components/pending-invitations-widget.svelte';
 import ProfileCompletionCard from './_components/profile-completion-card.svelte';
 import RemoteUsdWidget from './_components/remote-usd-widget.svelte';
@@ -13,6 +14,7 @@ import RemoteUsdWidget from './_components/remote-usd-widget.svelte';
 // don't exist yet (per UX feedback #12).
 // import UpcomingEventsCard from './_components/upcoming-events-card.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
+import WidgetErrorBoundary from '$lib/components/errors/widget-error-boundary.svelte';
 import { meDashboard } from '$lib/dashboard/me-dashboard.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -57,19 +59,34 @@ const displayName = $derived(String(user?.name ?? user?.email ?? ''));
 		<main class="mx-auto max-w-6xl px-4 sm:px-6">
 			<GreetingHero name={displayName} />
 
+			<!-- Checklist goes above the widgets when anything's incomplete —
+				gives new users a single place to see "what do I do next?" -->
+			<div class="mt-6">
+				<WidgetErrorBoundary>
+					<NextStepsChecklist
+						{user}
+						signals={{
+							pendingInvitationsTotal: (user as Record<string, unknown>)?.pendingInvitationsTotal as number | undefined,
+							applicationsCount: (user as Record<string, unknown>)?.applicationsCount as number | undefined,
+							resumeSectionsCount: (user as Record<string, unknown>)?.resumeSectionsCount as number | undefined,
+						}}
+					/>
+				</WidgetErrorBoundary>
+			</div>
+
 			<!-- 60/40 grid on md+, single column on mobile. The side column gets
 				more room than the previous 2/3+1/3 split so widgets like Pending
 				Invitations and Remote-USD don't squeeze name/CTA real estate. -->
-			<div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
+			<div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
 				<div class="flex flex-col gap-4 md:col-span-3">
-					<RecommendedJobsWidget />
-					<MyApplicationsWidget />
+					<WidgetErrorBoundary><RecommendedJobsWidget /></WidgetErrorBoundary>
+					<WidgetErrorBoundary><MyApplicationsWidget /></WidgetErrorBoundary>
 				</div>
 
 				<div class="flex flex-col gap-4 md:col-span-2">
-					<ProfileCompletionCard {user} />
-					<RemoteUsdWidget />
-					<PendingInvitationsWidget />
+					<WidgetErrorBoundary><ProfileCompletionCard {user} /></WidgetErrorBoundary>
+					<WidgetErrorBoundary><RemoteUsdWidget /></WidgetErrorBoundary>
+					<WidgetErrorBoundary><PendingInvitationsWidget /></WidgetErrorBoundary>
 				</div>
 			</div>
 

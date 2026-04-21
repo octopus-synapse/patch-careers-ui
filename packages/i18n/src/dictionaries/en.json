@@ -48,6 +48,10 @@
       "anonymous": "Candidate"
     }
   },
+  "widget": {
+    "unavailable": "This widget is unavailable.",
+    "retry": "Reload"
+  },
   "password": {
     "strength": {
       "weak": "Weak password",
@@ -246,7 +250,7 @@
   "applyModes": {
     "pageTitle": "How you apply",
     "heroTitle": "Pick how you want to apply",
-    "heroSubtitle": "Three modes, one plan. Start with One-Click \u2014 unlock the other modes as they roll out.",
+    "heroSubtitle": "Three modes, one plan. Start with One-Click — unlock the other modes as they roll out.",
     "badgeIncluded": "Included",
     "badgeSoon": "Coming soon",
     "badgeActive": "Active",
@@ -258,7 +262,7 @@
     "oneClick": {
       "title": "One-Click Apply",
       "tagline": "You click, the AI crafts the CV.",
-      "description": "On any job, click Apply and the AI tailors your resume and cover letter to that role \u2014 no manual editing, no formatting headaches.",
+      "description": "On any job, click Apply and the AI tailors your resume and cover letter to that role — no manual editing, no formatting headaches.",
       "feature1": "Resume rewritten per job in seconds",
       "feature2": "Cover letter drafted from your profile",
       "feature3": "ATS-optimized output",
@@ -267,7 +271,7 @@
     "curated": {
       "title": "Weekly Curated",
       "tagline": "5 hand-picked jobs every Monday.",
-      "description": "Every Monday 9am we deliver 5 jobs with fit \u226580% to your inbox. One click to approve each application; we apply on Tuesday.",
+      "description": "Every Monday 9am we deliver 5 jobs with fit ≥80% to your inbox. One click to approve each application; we apply on Tuesday.",
       "feature1": "Curated by our matching AI",
       "feature2": "One-click approval flow",
       "feature3": "Weekly digest by email",
@@ -302,10 +306,10 @@
       "beforeLabel": "Your summary",
       "afterLabel": "Rewritten for {{role}}",
       "replay": "Replay",
-      "playing": "Rewriting\u2026",
+      "playing": "Rewriting…",
       "saveCta": "Save as version",
       "saveComingSoon": "Saving tailored versions is coming soon.",
-      "demoDisclaimer": "Demo \u2014 the real AI will use your full resume after signup."
+      "demoDisclaimer": "Demo — the real AI will use your full resume after signup."
     }
   },
   "dashboard": {
@@ -322,7 +326,7 @@
     "applicationsTitle": "Your applications",
     "applicationsEmpty": "You haven't applied to any job yet.",
     "applicationsBrowse": "Browse jobs",
-    "applicationsCtaFirst": "Apply to my first job \u2192",
+    "applicationsCtaFirst": "Apply to my first job →",
     "applicationsSeeAll": "See all",
     "invitationsTitle": "Pending invitations",
     "invitationsEmpty": "No pending invitations.",
@@ -332,14 +336,22 @@
     "invitationsShowing": "Showing {{shown}} of {{total}}",
     "eventsTitle": "This week",
     "eventsEmpty": "No events scheduled this week.",
-    "eventsComingSoon": "Events launching soon \u2014 AMAs, workshops and meetups.",
+    "eventsComingSoon": "Events launching soon — AMAs, workshops and meetups.",
     "openFeed": "Open the feed",
     "statusApplied": "Applied",
     "statusInReview": "In review",
     "statusInterview": "Interview",
     "statusOffer": "Offer",
     "statusRejected": "Rejected",
-    "statusWithdrawn": "Withdrawn"
+    "statusWithdrawn": "Withdrawn",
+    "nextSteps": {
+      "title": "Next steps",
+      "photo": "Add a profile photo",
+      "experience": "Publish your first experience",
+      "invites": "Accept pending invitations",
+      "apply": "Apply to your first job",
+      "complete": "Complete profile ({{percent}}%)"
+    }
   },
   "onboarding": {
     "pageTitle": "Onboarding",
@@ -371,7 +383,7 @@
       "manualWizard": "Fill in manually",
       "manualWizardDesc": "Guided wizard in a few steps. Full control, no imports.",
       "comingSoonTitle": "Not available yet",
-      "comingSoonBody": "We're polishing this import. For now, use another option \u2014 you can always come back and enrich your profile later.",
+      "comingSoonBody": "We're polishing this import. For now, use another option — you can always come back and enrich your profile later.",
       "useManualInstead": "Continue with the wizard",
       "close": "Close"
     }
@@ -841,15 +853,15 @@
     "delete": "Delete",
     "confirmDelete": "Are you sure you want to delete this job?",
     "remoteUsd": {
-      "pageTitle": "Remote in USD \u00b7 EUR",
+      "pageTitle": "Remote in USD · EUR",
       "heroTagline": "Based in Brazil, paid like abroad",
       "heroTitle": "Remote jobs paying in USD or EUR",
       "heroSubtitle": "Curated openings hiring talent from Brazil and paying in hard currency. Fit score factors in English level.",
       "filterToggle": "Paying in USD / EUR",
-      "filterToggleShort": "USD \u00b7 EUR",
+      "filterToggleShort": "USD · EUR",
       "noneTitle": "No USD/EUR jobs right now",
       "noneBody": "We'll notify you as soon as one drops.",
-      "dashboardTitle": "Remote \u00b7 USD / EUR",
+      "dashboardTitle": "Remote · USD / EUR",
       "dashboardCount_one": "remote job paying in hard currency",
       "dashboardCount_other": "remote jobs paying in hard currency",
       "dashboardCountEmpty": "No hard-currency jobs in your feed right now.",
