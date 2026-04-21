@@ -15,6 +15,7 @@ import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-svelte';
 import { Button } from 'ui';
 import { beforeNavigate, goto } from '$app/navigation';
 import PreviewPanel from './_components/preview-panel.svelte';
+import OnboardingProgress from './_components/onboarding-progress.svelte';
 import Sidebar from './_components/sidebar.svelte';
 import StepForm from './_components/step-form.svelte';
 import StepMultiItems from './_components/step-multi-items.svelte';
@@ -139,10 +140,9 @@ const complete = createOnboardingCompleteFromSession(() => ({
   mutation: {
     async onSuccess() {
       await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-      // Per UX feedback #33: post-onboarding lands on the dashboard, where
-      // the user's first action (apply, browse jobs, accept invites) lives.
-      // The public profile is one click away from the avatar dropdown.
-      goto('/my-profile/dashboard');
+      // Celebrate before dropping the user into the dashboard — the done
+      // screen auto-redirects after ~2s or on CTA click.
+      goto('/onboarding/done');
     },
     onError(err: unknown) {
       const msg = (err as Record<string, unknown>)?.message;
@@ -339,6 +339,10 @@ const isPending = $derived(
 
 					<!-- Content — fixed start position, scrolls independently -->
 					<div class="min-w-0 flex-1 max-w-lg pb-8 sm:pb-12">
+						{#if steps.length > 0}
+							{@const idx = Math.max(1, steps.findIndex((s) => s.id === currentStepId) + 1)}
+							<OnboardingProgress current={idx} total={steps.length} />
+						{/if}
 						<div class="mb-8 flex items-center justify-between">
 							<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('onboarding.title')}

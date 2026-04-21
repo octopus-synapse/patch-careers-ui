@@ -82,6 +82,10 @@ onMount(load);
 </svelte:head>
 
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
+  <div class="mb-5 rounded-lg border border-cyan-500/30 bg-cyan-500/5 px-4 py-3 text-xs text-cyan-800 dark:text-cyan-300">
+    Criamos um rascunho quando você conectou LinkedIn ou GitHub. Revise e confirme — dá pra
+    editar tudo depois.
+  </div>
   <header class="mb-6">
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
       Encontramos um perfil pra você
