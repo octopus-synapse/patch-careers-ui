@@ -41,6 +41,56 @@ let loading = $state(true);
 let loadError = $state<string | null>(null);
 let saving = $state(false);
 
+// Auto-save banner state — relative 'há Ns' is updated by timeTicker elsewhere.
+let lastSavedAt = $state<number | null>(null);
+let lastSaveError = $state(false);
+let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+let dirtyForAutoSave = $state(false);
+
+function scheduleAutoSave() {
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+  dirtyForAutoSave = true;
+  autoSaveTimer = setTimeout(() => autoSave(), 1200);
+}
+
+async function autoSave() {
+  if (saving) return;
+  saving = true;
+  lastSaveError = false;
+  try {
+    const res = await fetch(`/api/v1/resumes/${resumeId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(draft.state),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    lastSavedAt = Date.now();
+    dirtyForAutoSave = false;
+  } catch {
+    lastSaveError = true;
+  } finally {
+    saving = false;
+  }
+}
+
+function relativeSavedAt(): string {
+  if (lastSaveError) return 'Falha ao salvar';
+  if (saving && dirtyForAutoSave) return 'Salvando…';
+  if (!lastSavedAt) return 'Salvamento automático ativo';
+  const diffSec = Math.floor((Date.now() - lastSavedAt) / 1000);
+  if (diffSec < 5) return 'Salvo agora';
+  if (diffSec < 60) return `Salvo há ${diffSec}s`;
+  const diffMin = Math.floor(diffSec / 60);
+  return `Salvo há ${diffMin}min`;
+}
+
+$effect(() => {
+  // Trigger auto-save on any draft change (the state dependency makes this reactive).
+  void draft.state;
+  if (!loading && browser) scheduleAutoSave();
+});
+
 async function loadResume() {
   if (!browser) return;
   loading = true;
@@ -102,7 +152,7 @@ async function save() {
 </svelte:head>
 
 <div class="mx-auto max-w-3xl px-4 pt-20 pb-12">
-  <header class="mb-6 flex items-center gap-3">
+  <header class="mb-6 flex items-center justify-between gap-3">
     <a
       href="/careers/manage-resumes"
       class="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200"
@@ -110,6 +160,21 @@ async function save() {
       <ArrowLeft size={16} />
       Voltar
     </a>
+    {#if !loading}
+      <span
+        class="flex items-center gap-1.5 text-[11px] font-medium {lastSaveError ? 'text-red-500' : saving ? 'text-gray-400 dark:text-neutral-500' : 'text-emerald-600 dark:text-emerald-400'}"
+        aria-live="polite"
+      >
+        {#if saving && dirtyForAutoSave}
+          <Loader2 size={10} class="animate-spin" />
+        {:else if lastSaveError}
+          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+        {:else}
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+        {/if}
+        {relativeSavedAt()}
+      </span>
+    {/if}
   </header>
 
   {#if loading}

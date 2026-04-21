@@ -17,6 +17,44 @@ const query = createJobsGetApplicationsForJob(
 const items = $derived(query.data?.items ?? []);
 const total = $derived(query.data?.pagination.total ?? 0);
 const errorMessage = $derived(query.error instanceof Error ? query.error.message : null);
+
+const STATUS_ORDER = ['SUBMITTED', 'VIEWED', 'INTERVIEW', 'OFFER', 'HIRED'] as const;
+type StatusKey = (typeof STATUS_ORDER)[number] | 'REJECTED';
+
+const STATUS_LABEL: Record<StatusKey, string> = {
+  SUBMITTED: 'Enviadas',
+  VIEWED: 'Visualizadas',
+  INTERVIEW: 'Entrevista',
+  OFFER: 'Oferta',
+  HIRED: 'Contratadas',
+  REJECTED: 'Rejeitadas',
+};
+
+const STATUS_COLOR: Record<StatusKey, string> = {
+  SUBMITTED: 'bg-gray-300 dark:bg-neutral-600',
+  VIEWED: 'bg-blue-400',
+  INTERVIEW: 'bg-amber-400',
+  OFFER: 'bg-violet-400',
+  HIRED: 'bg-emerald-500',
+  REJECTED: 'bg-red-400',
+};
+
+let statusFilter = $state<string>('ALL');
+
+const counts = $derived.by(() => {
+  const map: Record<string, number> = {};
+  for (const item of items) {
+    const key = String(item.status);
+    map[key] = (map[key] ?? 0) + 1;
+  }
+  return map;
+});
+
+const filteredItems = $derived(
+  statusFilter === 'ALL' ? items : items.filter((i) => String(i.status) === statusFilter),
+);
+
+const funnelMax = $derived(Math.max(1, ...STATUS_ORDER.map((s) => counts[s] ?? 0)));
 </script>
 
 <svelte:head>
@@ -39,6 +77,49 @@ const errorMessage = $derived(query.error instanceof Error ? query.error.message
 		</div>
 	</header>
 
+	{#if items.length > 0}
+		<!-- Funnel bar -->
+		<div class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4">
+			<h2 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">Funil</h2>
+			<div class="space-y-2">
+				{#each STATUS_ORDER as status}
+					{@const n = counts[status] ?? 0}
+					{@const pct = Math.round((n / funnelMax) * 100)}
+					<div class="flex items-center gap-3 text-xs">
+						<span class="w-28 shrink-0 text-gray-600 dark:text-neutral-400">{STATUS_LABEL[status]}</span>
+						<div class="relative h-5 flex-1 overflow-hidden rounded bg-gray-100 dark:bg-neutral-800">
+							<div class="h-full {STATUS_COLOR[status]} transition-all duration-500" style:width="{pct}%"></div>
+						</div>
+						<span class="w-10 text-right font-mono text-gray-700 dark:text-neutral-300">{n}</span>
+					</div>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Status filter chips -->
+		<div class="flex flex-wrap gap-1.5">
+			<button
+				type="button"
+				onclick={() => (statusFilter = 'ALL')}
+				class="rounded-full px-3 py-1 text-xs font-medium transition-colors {statusFilter === 'ALL' ? 'bg-gray-800 text-white dark:bg-neutral-200 dark:text-neutral-900' : 'border border-gray-200 text-gray-600 hover:border-gray-300 dark:border-neutral-700 dark:text-neutral-400'}"
+			>
+				Todas · {items.length}
+			</button>
+			{#each [...STATUS_ORDER, 'REJECTED'] as status}
+				{@const n = counts[status] ?? 0}
+				{#if n > 0}
+					<button
+						type="button"
+						onclick={() => (statusFilter = status)}
+						class="rounded-full px-3 py-1 text-xs font-medium transition-colors {statusFilter === status ? 'bg-gray-800 text-white dark:bg-neutral-200 dark:text-neutral-900' : 'border border-gray-200 text-gray-600 hover:border-gray-300 dark:border-neutral-700 dark:text-neutral-400'}"
+					>
+						{STATUS_LABEL[status as StatusKey]} · {n}
+					</button>
+				{/if}
+			{/each}
+		</div>
+	{/if}
+
 	{#if query.isLoading}
 		<div class="flex items-center justify-center py-12">
 			<Loader2 size={24} class="animate-spin text-gray-500" />
@@ -53,7 +134,7 @@ const errorMessage = $derived(query.error instanceof Error ? query.error.message
 		</div>
 	{:else}
 		<ul class="space-y-3">
-			{#each items as item}
+			{#each filteredItems as item}
 				<li class="rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4">
 					<div class="flex items-start justify-between gap-4">
 						<div class="flex items-center gap-3">

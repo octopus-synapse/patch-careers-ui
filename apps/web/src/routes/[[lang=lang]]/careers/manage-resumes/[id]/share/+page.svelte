@@ -17,6 +17,7 @@ import {
   QrCode,
   Trash2,
 } from 'lucide-svelte';
+import QRCode from 'qrcode';
 import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -228,6 +229,21 @@ async function removeAlias(shareId: string, aliasId: string) {
   }
 }
 
+// Inline QR preview per slug — rendered to a data URL so sharing the link
+// across a call or demo doesn't require a download. Generated lazily the
+// first time the share row mounts.
+const qrDataUrls = $state<Record<string, string>>({});
+
+async function renderInlineQr(slug: string) {
+  if (qrDataUrls[slug] || typeof window === 'undefined') return;
+  try {
+    const url = `${window.location.origin}/s/${slug}`;
+    qrDataUrls[slug] = await QRCode.toDataURL(url, { margin: 1, width: 160 });
+  } catch {
+    /* fail silently — download button remains as fallback */
+  }
+}
+
 function downloadQr(shareId: string, slug: string) {
   // Server returns a PNG via streamable file — open in new tab so the browser
   // can prompt save with the right filename. Adding a hidden anchor would also
@@ -380,8 +396,16 @@ onMount(load);
     {:else}
       <ul class="space-y-3">
         {#each shares as s (s.id)}
+          {void renderInlineQr(s.slug)}
           <li class="rounded-lg border border-gray-200 p-4 dark:border-neutral-800">
-            <div class="flex items-start justify-between">
+            <div class="flex items-start justify-between gap-3">
+              {#if qrDataUrls[s.slug]}
+                <img
+                  src={qrDataUrls[s.slug]}
+                  alt="QR para /s/{s.slug}"
+                  class="h-20 w-20 shrink-0 rounded border border-gray-200 bg-white p-1 dark:border-neutral-700"
+                />
+              {/if}
               <div class="min-w-0 flex-1">
                 <p class="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-neutral-100">
                   <span class="truncate">/s/{s.slug}</span>
