@@ -6,6 +6,7 @@ import { AuthLoginBody } from 'api-client/zod';
 import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
+import { translateApiError } from '$lib/errors/translate-api-error';
 import { createForm } from '$lib/forms/create-form.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -23,26 +24,11 @@ const login = createAuthLogin(() => ({
     },
     onError(err: unknown) {
       if (!t) return;
-      // Friendlier mapping for known statuses, but always show the backend's
-      // own message when one comes back — generic fallbacks turn debugging
-      // into archeology (see UX feedback #27).
-      if (isApiError(err)) {
-        if (err.statusCode === 401) {
-          serverError = t('auth.shared.errorInvalidCredentials');
-        } else if (err.statusCode === 429) {
-          serverError = t('auth.shared.errorRateLimited');
-        } else if (err.statusCode >= 500) {
-          serverError = t('auth.shared.errorGeneric');
-        } else if (err.message) {
-          serverError = err.message;
-        } else {
-          serverError = t('auth.shared.errorGeneric');
-        }
-      } else if (err instanceof Error && err.message) {
-        serverError = err.message;
-      } else {
-        serverError = t('auth.shared.errorGeneric');
+      if (isApiError(err) && err.statusCode === 401) {
+        serverError = t('auth.shared.errorInvalidCredentials');
+        return;
       }
+      serverError = translateApiError(err, t);
     },
   },
 }));

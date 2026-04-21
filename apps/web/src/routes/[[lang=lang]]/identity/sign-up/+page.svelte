@@ -7,6 +7,8 @@ import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
 import { PRIVACY_VERSION, TOS_VERSION } from '$lib/domain/consent/versions';
+import PasswordStrength from '$lib/components/forms/password-strength.svelte';
+import { translateApiError } from '$lib/errors/translate-api-error';
 
 const queryClient = useQueryClient();
 
@@ -30,11 +32,11 @@ const signup = createAccountsSignup(() => ({
     },
     onError(err: unknown) {
       if (!t) return;
-      if (isApiError(err)) {
-        serverError = err.statusCode === 409 ? t('auth.shared.errorEmailInUse') : err.message;
-      } else {
-        serverError = t('auth.shared.errorGeneric');
+      if (isApiError(err) && err.statusCode === 409) {
+        serverError = t('auth.shared.errorEmailInUse');
+        return;
       }
+      serverError = translateApiError(err, t);
     },
   },
 }));
@@ -130,6 +132,7 @@ function handleSubmit(e: Event) {
 								required
 								placeholder={t('auth.shared.passwordPlaceholder')}
 							/>
+							<PasswordStrength {password} />
 							{#if fieldErrors.password}
 								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.password}</p>
 							{/if}

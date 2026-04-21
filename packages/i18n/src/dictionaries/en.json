@@ -48,6 +48,21 @@
       "anonymous": "Candidate"
     }
   },
+  "password": {
+    "strength": {
+      "weak": "Weak password",
+      "fair": "Fair password",
+      "good": "Good password",
+      "strong": "Strong password"
+    },
+    "hintsPrefix": "Add:",
+    "hints": {
+      "length": "8+ characters",
+      "case": "upper and lower case",
+      "digit": "a number",
+      "symbol": "a symbol"
+    }
+  },
   "footer": {
     "tagline": "Résumés that become applications.",
     "terms": "Terms",
@@ -103,6 +118,19 @@
     "goHomeAria": "Back to home"
   },
   "errors": {
+    "generic": "Something went wrong.",
+    "network": "No connection to the server. Check your internet.",
+    "unauthorized": "You need to sign in to continue.",
+    "forbidden": "You don't have permission for this action.",
+    "notFound": "Content not found.",
+    "conflict": "This resource already exists.",
+    "validation": "Invalid form data.",
+    "rateLimited": "Too many attempts. Try again in a few minutes.",
+    "consentRequired": "Accept our Terms and Privacy Policy to continue.",
+    "noPrimaryResume": "You need a primary résumé first.",
+    "emailInUse": "This email is already in use.",
+    "weakPassword": "Password too weak. Try one with upper case, digits, and symbols.",
+    "consentVersionMismatch": "Our terms have changed. Please re-read and accept.",
     "loadFailed": "Failed to load",
     "loadCommentsFailed": "Failed to load comments.",
     "loadSharesFailed": "Failed to load links.",

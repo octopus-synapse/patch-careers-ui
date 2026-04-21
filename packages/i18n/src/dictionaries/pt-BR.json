@@ -48,6 +48,21 @@
       "anonymous": "Candidato"
     }
   },
+  "password": {
+    "strength": {
+      "weak": "Senha fraca",
+      "fair": "Senha razoável",
+      "good": "Senha boa",
+      "strong": "Senha forte"
+    },
+    "hintsPrefix": "Adicione:",
+    "hints": {
+      "length": "8+ caracteres",
+      "case": "maiúsculas e minúsculas",
+      "digit": "um número",
+      "symbol": "um símbolo"
+    }
+  },
   "footer": {
     "tagline": "Currículos que viram candidaturas.",
     "terms": "Termos",
@@ -103,6 +118,19 @@
     "goHomeAria": "Voltar para a página inicial"
   },
   "errors": {
+    "generic": "Algo deu errado.",
+    "network": "Sem conexão com o servidor. Verifique sua internet.",
+    "unauthorized": "Você precisa entrar pra continuar.",
+    "forbidden": "Você não tem permissão pra essa ação.",
+    "notFound": "Conteúdo não encontrado.",
+    "conflict": "Esse recurso já existe.",
+    "validation": "Dados inválidos no formulário.",
+    "rateLimited": "Você tentou demais. Aguarde alguns minutos.",
+    "consentRequired": "Aceite os Termos e a Política de Privacidade pra continuar.",
+    "noPrimaryResume": "Você precisa ter um currículo principal antes.",
+    "emailInUse": "Esse e-mail já está em uso.",
+    "weakPassword": "Senha fraca demais. Tente outra com maiúsculas, números e símbolos.",
+    "consentVersionMismatch": "Nossos termos mudaram. Releia e aceite de novo.",
     "loadFailed": "Falha ao carregar",
     "loadCommentsFailed": "Falha ao carregar comentários.",
     "loadSharesFailed": "Falha ao carregar links.",
