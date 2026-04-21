@@ -897,7 +897,8 @@
       "errorRateLimited": "Você tentou demais. Aguarde alguns minutos.",
       "errorEmailInUse": "Este e-mail já está em uso.",
       "errorEmailInvalid": "E-mail inválido.",
-      "errorPasswordTooShort": "A senha deve ter pelo menos 8 caracteres."
+      "errorPasswordTooShort": "A senha deve ter pelo menos 8 caracteres.",
+      "secureConnection": "Conexão criptografada"
     },
     "sign-up": {
       "title": "Criar conta",

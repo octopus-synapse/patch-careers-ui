@@ -897,7 +897,8 @@
       "errorRateLimited": "Too many attempts. Try again in a few minutes.",
       "errorEmailInUse": "This email is already registered.",
       "errorEmailInvalid": "Invalid email.",
-      "errorPasswordTooShort": "Password must be at least 8 characters."
+      "errorPasswordTooShort": "Password must be at least 8 characters.",
+      "secureConnection": "Encrypted connection"
     },
     "sign-up": {
       "title": "Create account",

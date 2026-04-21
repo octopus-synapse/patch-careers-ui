@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import { createAuthLogin, getAuthSessionQueryKey } from 'api-client';
 import { isApiError } from 'api-client/client';
 import { AuthLoginBody } from 'api-client/zod';
-import { Loader2 } from 'lucide-svelte';
+import { Loader2, Lock } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
 import { translateApiError } from '$lib/errors/translate-api-error';
@@ -120,13 +120,17 @@ function handleSubmit(e: Event) {
 						{/if}
 					</Button>
 
-					<div class="text-center">
+					<div class="flex items-center justify-between">
 						<a
 							href="/identity/forgot-password"
 							class="text-xs text-gray-500 hover:underline dark:text-neutral-500"
 						>
 							{t('auth.sign-in.forgotPassword') ?? 'Esqueci minha senha'}
 						</a>
+						<span class="inline-flex items-center gap-1 text-xs text-gray-400 dark:text-neutral-500">
+							<Lock size={10} />
+							{t('auth.shared.secureConnection')}
+						</span>
 					</div>
 				</form>
 
