@@ -36,12 +36,9 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export type FeedGetTimelineParams = {
-cursor?: string;
-limit?: number;
+export type JobsFindSimilarParams = {
 /**
- * When true, restricts to posts from users the viewer follows ("Minha bolha").
+ * Max 10, default 5
  */
-followingOnly?: boolean;
-type?: string;
+limit?: number;
 };

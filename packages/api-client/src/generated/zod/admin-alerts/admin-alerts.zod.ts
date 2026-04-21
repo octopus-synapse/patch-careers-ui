@@ -35,13 +35,16 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import * as zod from 'zod';
 
-export type FeedGetTimelineParams = {
-cursor?: string;
-limit?: number;
+
 /**
- * When true, restricts to posts from users the viewer follows ("Minha bolha").
+ * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
-followingOnly?: boolean;
-type?: string;
-};
+export const AdminAlertsGetAlertsResponse = zod.object({
+  "reportsPending": zod.number(),
+  "usersPendingVerification": zod.number(),
+  "shadowProfilesStale": zod.number(),
+  "total": zod.number()
+})
+

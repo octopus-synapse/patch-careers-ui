@@ -2,6 +2,7 @@
 
 export * from "./account-lifecycle/account-lifecycle.zod";
 export * from "./accounts/accounts.zod";
+export * from "./admin-alerts/admin-alerts.zod";
 export * from "./admin-analytics/admin-analytics.zod";
 export * from "./admin-chat/admin-chat.zod";
 export * from "./admin-collaborations/admin-collaborations.zod";

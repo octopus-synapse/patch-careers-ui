@@ -211,3 +211,14 @@ export const JobsApplyBody = zod.object({
   "resumeId": zod.string().optional()
 })
 
+/**
+ * @summary Fetch a careers page and return an LLM-extracted job preview (not persisted)
+ */
+export const jobsImportFromUrlBodyUrlMax = 2000;
+
+
+
+export const JobsImportFromUrlBody = zod.object({
+  "url": zod.string().url().max(jobsImportFromUrlBodyUrlMax)
+})
+

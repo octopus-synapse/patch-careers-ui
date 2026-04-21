@@ -58,9 +58,11 @@ import type {
 import type {
   ApplyToJobDto,
   CreateJobDto,
+  ImportJobFromUrlDto,
   JobApplicationsByJobDto,
   JobResponseDto,
   JobsFindAllParams,
+  JobsFindSimilarParams,
   JobsGetApplicationsForJobParams,
   JobsGetBookmarkedJobsParams,
   JobsGetMyApplicationsParams,
@@ -1306,6 +1308,185 @@ export const prefetchJobsGetApplicationsForJobQuery = async <TData = Awaited<Ret
 
 
 /**
+ * @summary Jobs similar to the given one (by skill overlap)
+ */
+export type jobsFindSimilarResponse401 = void
+
+export type jobsFindSimilarResponse403 = void
+
+;
+export type jobsFindSimilarResponseError = (jobsFindSimilarResponse401 | jobsFindSimilarResponse403) & {
+  headers: Headers;
+};
+
+export type jobsFindSimilarResponse = (jobsFindSimilarResponseError)
+
+export const getJobsFindSimilarUrl = (id: string,
+    params?: JobsFindSimilarParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/jobs/${id}/similar?${stringifiedParams}` : `/api/v1/jobs/${id}/similar`
+}
+
+export const jobsFindSimilar = async (id: string,
+    params?: JobsFindSimilarParams, options?: RequestInit): Promise<jobsFindSimilarResponse> => {
+
+  return customFetch<jobsFindSimilarResponse>(getJobsFindSimilarUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getJobsFindSimilarInfiniteQueryKey = (id: string,
+    params?: JobsFindSimilarParams,) => {
+    return [
+    'infinite', `/api/v1/jobs/${id}/similar`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+export const getJobsFindSimilarQueryKey = (id: string,
+    params?: JobsFindSimilarParams,) => {
+    return [
+    `/api/v1/jobs/${id}/similar`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getJobsFindSimilarInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsFindSimilar>>>, TError = void>(id: string,
+    params?: JobsFindSimilarParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getJobsFindSimilarInfiniteQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof jobsFindSimilar>>> = ({ signal }) => jobsFindSimilar(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type JobsFindSimilarInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof jobsFindSimilar>>>
+export type JobsFindSimilarInfiniteQueryError = void
+
+
+/**
+ * @summary Jobs similar to the given one (by skill overlap)
+ */
+
+export function createJobsFindSimilarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsFindSimilar>>>, TError = void>(
+ id: () =>  string,
+    params?: () =>  JobsFindSimilarParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getJobsFindSimilarInfiniteQueryOptions(id(),
+    params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Jobs similar to the given one (by skill overlap)
+ */
+export const prefetchJobsFindSimilarInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsFindSimilar>>, TError = void>(
+ queryClient: QueryClient, id: string,
+    params?: JobsFindSimilarParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getJobsFindSimilarInfiniteQueryOptions(id,params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getJobsFindSimilarQueryOptions = <TData = Awaited<ReturnType<typeof jobsFindSimilar>>, TError = void>(id: string,
+    params?: JobsFindSimilarParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getJobsFindSimilarQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof jobsFindSimilar>>> = ({ signal }) => jobsFindSimilar(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type JobsFindSimilarQueryResult = NonNullable<Awaited<ReturnType<typeof jobsFindSimilar>>>
+export type JobsFindSimilarQueryError = void
+
+
+/**
+ * @summary Jobs similar to the given one (by skill overlap)
+ */
+
+export function createJobsFindSimilar<TData = Awaited<ReturnType<typeof jobsFindSimilar>>, TError = void>(
+ id: () =>  string,
+    params?: () =>  JobsFindSimilarParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getJobsFindSimilarQueryOptions(id(),
+    params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Jobs similar to the given one (by skill overlap)
+ */
+export const prefetchJobsFindSimilarQuery = async <TData = Awaited<ReturnType<typeof jobsFindSimilar>>, TError = void>(
+ queryClient: QueryClient, id: string,
+    params?: JobsFindSimilarParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getJobsFindSimilarQueryOptions(id,params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Fetch a single job by id
  */
 export type jobsFindByIdResponse200 = JobResponseDto
@@ -2100,4 +2281,85 @@ export const createJobsWithdrawApplication = <TError = void,
         TContext
       > => {
       return createMutation(() => ({ ...getJobsWithdrawApplicationMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary Fetch a careers page and return an LLM-extracted job preview (not persisted)
+ */
+export type jobsImportFromUrlResponse401 = void
+
+export type jobsImportFromUrlResponse403 = void
+
+;
+export type jobsImportFromUrlResponseError = (jobsImportFromUrlResponse401 | jobsImportFromUrlResponse403) & {
+  headers: Headers;
+};
+
+export type jobsImportFromUrlResponse = (jobsImportFromUrlResponseError)
+
+export const getJobsImportFromUrlUrl = () => {
+
+
+
+
+  return `/api/v1/jobs/import-from-url`
+}
+
+export const jobsImportFromUrl = async (importJobFromUrlDto: ImportJobFromUrlDto, options?: RequestInit): Promise<jobsImportFromUrlResponse> => {
+
+  return customFetch<jobsImportFromUrlResponse>(getJobsImportFromUrlUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      importJobFromUrlDto,)
+  }
+);}
+
+
+
+
+export const getJobsImportFromUrlMutationOptions = <TError = void,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsImportFromUrl>>, TError,{data: ImportJobFromUrlDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof jobsImportFromUrl>>, TError,{data: ImportJobFromUrlDto}, TContext> => {
+
+const mutationKey = ['jobsImportFromUrl'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsImportFromUrl>>, {data: ImportJobFromUrlDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  jobsImportFromUrl(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type JobsImportFromUrlMutationResult = NonNullable<Awaited<ReturnType<typeof jobsImportFromUrl>>>
+    export type JobsImportFromUrlMutationBody = ImportJobFromUrlDto
+    export type JobsImportFromUrlMutationError = void
+
+    /**
+ * @summary Fetch a careers page and return an LLM-extracted job preview (not persisted)
+ */
+export const createJobsImportFromUrl = <TError = void,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsImportFromUrl>>, TError,{data: ImportJobFromUrlDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof jobsImportFromUrl>>,
+        TError,
+        {data: ImportJobFromUrlDto},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getJobsImportFromUrlMutationOptions(options?.()) }), queryClient);
     }

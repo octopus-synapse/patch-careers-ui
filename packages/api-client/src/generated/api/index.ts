@@ -2,6 +2,7 @@
 
 export * from "./account-lifecycle/account-lifecycle";
 export * from "./accounts/accounts";
+export * from "./admin-alerts/admin-alerts";
 export * from "./admin-analytics/admin-analytics";
 export * from "./admin-chat/admin-chat";
 export * from "./admin-collaborations/admin-collaborations";
