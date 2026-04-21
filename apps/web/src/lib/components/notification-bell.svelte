@@ -9,9 +9,10 @@ import {
   notificationsMarkRead,
 } from 'api-client';
 import { formatDate } from 'i18n';
-import { Bell } from 'lucide-svelte';
+import { ArrowRight, Bell } from 'lucide-svelte';
 import { Avatar, Button, Dropdown } from 'ui';
 import { browser } from '$app/environment';
+import { notificationVisual } from '$lib/format/notification-icon';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -109,15 +110,6 @@ async function handleNotificationClick(notification: NotificationDto) {
 			{/if}
 		</div>
 
-		<!-- See all link -->
-		<a
-			href="/social/notifications"
-			onclick={() => (isOpen = false)}
-			class="border-b px-4 py-2 text-center text-[11px] font-medium text-emerald-600 hover:underline border-gray-200 dark:border-neutral-700 dark:text-emerald-400"
-		>
-			{t('notifications.pageTitle')}
-		</a>
-
 		<!-- Notifications list -->
 		<div class="overflow-y-auto flex-1">
 			{#if !notifications || notifications.length === 0}
@@ -128,6 +120,7 @@ async function handleNotificationClick(notification: NotificationDto) {
 			{:else}
 				{#each notifications as notification}
 					{@const actor = notification.actor}
+					{@const visual = notificationVisual(notification.type)}
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
 						onclick={() => handleNotificationClick(notification)}
@@ -136,11 +129,16 @@ async function handleNotificationClick(notification: NotificationDto) {
 						tabindex="0"
 						class="flex items-start gap-2.5 px-4 py-3 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/50 {!notification.read ? 'bg-blue-50/50 dark:bg-neutral-800/30' : ''}"
 					>
-						<Avatar
-							name={actor?.name ?? actor?.username ?? '?'}
-							photoURL={actor?.photoURL}
-							size="sm"
-						/>
+						<div class="relative">
+							<Avatar
+								name={actor?.name ?? actor?.username ?? '?'}
+								photoURL={actor?.photoURL}
+								size="sm"
+							/>
+							<span class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow dark:bg-neutral-800 {visual.colorClass}">
+								<visual.icon size={9} />
+							</span>
+						</div>
 						<div class="min-w-0 flex-1">
 							<p class="text-xs leading-relaxed text-gray-800 dark:text-neutral-200">
 								<span class="font-semibold">{actor?.name ?? actor?.username}</span>
@@ -157,5 +155,15 @@ async function handleNotificationClick(notification: NotificationDto) {
 				{/each}
 			{/if}
 		</div>
+
+		<!-- Ver todas footer -->
+		<a
+			href="/social/notifications"
+			onclick={() => (isOpen = false)}
+			class="flex items-center justify-center gap-1 border-t border-gray-200 px-4 py-2 text-[11px] font-medium text-cyan-600 hover:underline dark:border-neutral-700 dark:text-cyan-400"
+		>
+			{t('notifications.viewAll') ?? 'Ver todas'}
+			<ArrowRight size={10} />
+		</a>
 	</div>
 </Dropdown>

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { formatDate } from 'i18n';
+import { Search } from 'lucide-svelte';
 import { Avatar } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -24,6 +25,18 @@ type Props = {
 
 let { conversations, currentUserId, activeConversationId, onselect }: Props = $props();
 
+let search = $state('');
+
+const filteredConversations = $derived.by(() => {
+  const q = search.trim().toLowerCase();
+  if (!q) return conversations;
+  return conversations.filter((c) => {
+    const name = (c.participant.name ?? c.participant.username ?? '').toLowerCase();
+    const last = c.lastMessage?.content.toLowerCase() ?? '';
+    return name.includes(q) || last.includes(q);
+  });
+});
+
 function other(conv: Conversation) {
   return conv.participant;
 }
@@ -42,7 +55,19 @@ function timeAgo(dateStr: string | null): string {
 }
 </script>
 
-{#each conversations as conv}
+<div class="sticky top-0 z-10 border-b border-gray-200 bg-white px-3 py-2 dark:border-neutral-800 dark:bg-neutral-900">
+	<div class="relative">
+		<Search size={12} class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
+		<input
+			type="text"
+			bind:value={search}
+			placeholder="Buscar conversas"
+			class="w-full rounded-md border border-gray-200 bg-transparent py-1 pl-7 pr-2 text-xs outline-none placeholder:text-gray-400 focus:border-cyan-500 dark:border-neutral-700 dark:text-neutral-200"
+		/>
+	</div>
+</div>
+
+{#each filteredConversations as conv}
 	{@const o = other(conv)}
 	{@const active = conv.id === activeConversationId}
 
