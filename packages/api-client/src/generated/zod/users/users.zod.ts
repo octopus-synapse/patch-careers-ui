@@ -39,6 +39,65 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Get a user's public profile by username
+ */
+export const UsersGetPublicProfileByUsernameResponse = zod.object({
+  "user": zod.object({
+  "id": zod.string(),
+  "username": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "linkedin": zod.string().nullable(),
+  "github": zod.string().nullable()
+}),
+  "resume": zod.object({
+  "id": zod.string(),
+  "title": zod.string().nullable(),
+  "template": zod.string(),
+  "language": zod.string(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().nullable(),
+  "fullName": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "phone": zod.string().nullable(),
+  "emailContact": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "linkedin": zod.string().nullable(),
+  "github": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "summary": zod.string().nullable(),
+  "accentColor": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}).nullable()
+})
+
+/**
+ * @summary Get current user profile
+ */
+export const UsersGetProfileResponse = zod.object({
+  "profile": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "username": zod.string().nullish(),
+  "name": zod.string().nullish(),
+  "photoURL": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "linkedin": zod.string().nullish(),
+  "github": zod.string().nullish(),
+  "twitter": zod.string().nullish(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+})
+})
+
+/**
  * @summary Update current user profile
  */
 export const usersUpdateProfileBodyBioMax = 500;
@@ -68,11 +127,55 @@ export const UsersUpdateProfileBody = zod.object({
   "image": zod.string().url().optional()
 })
 
+export const UsersUpdateProfileResponse = zod.object({
+  "profile": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "username": zod.string().nullish(),
+  "name": zod.string().nullish(),
+  "photoURL": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "linkedin": zod.string().nullish(),
+  "github": zod.string().nullish(),
+  "twitter": zod.string().nullish(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+})
+})
+
 /**
  * @summary Update username (once every 30 days)
  */
 export const UsersUpdateUsernameBody = zod.object({
   "username": zod.string().optional()
+})
+
+export const UsersUpdateUsernameResponse = zod.object({
+  "username": zod.string().nullable(),
+  "message": zod.string()
+})
+
+/**
+ * @summary Check if a username is available
+ */
+export const UsersCheckUsernameAvailabilityResponse = zod.object({
+  "username": zod.string(),
+  "available": zod.boolean(),
+  "reason": zod.enum(['taken', 'reserved', 'invalid_format']).optional()
+})
+
+/**
+ * @summary Get user preferences (basic)
+ */
+export const UsersGetPreferencesResponse = zod.object({
+  "preferences": zod.object({
+  "theme": zod.string().optional(),
+  "language": zod.string().optional(),
+  "emailNotifications": zod.boolean().optional()
+})
 })
 
 /**
@@ -89,6 +192,56 @@ export const UsersUpdatePreferencesBody = zod.object({
   "bannerColor": zod.string().optional(),
   "name": zod.string().max(usersUpdatePreferencesBodyNameMax).optional(),
   "photoURL": zod.string().url().max(usersUpdatePreferencesBodyPhotoURLMax).optional()
+})
+
+export const UsersUpdatePreferencesResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * @summary Get all user preferences
+ */
+export const usersGetFullPreferencesResponsePreferencesApplyCriteriaMinFitMin = 0;
+export const usersGetFullPreferencesResponsePreferencesApplyCriteriaMinFitMax = 100;
+
+
+
+export const UsersGetFullPreferencesResponse = zod.object({
+  "preferences": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "theme": zod.string(),
+  "palette": zod.string(),
+  "bannerColor": zod.string().nullable(),
+  "language": zod.string(),
+  "dateFormat": zod.string(),
+  "timezone": zod.string(),
+  "emailNotifications": zod.boolean(),
+  "resumeExpiryAlerts": zod.boolean(),
+  "weeklyDigest": zod.boolean(),
+  "marketingEmails": zod.boolean(),
+  "emailMilestones": zod.boolean(),
+  "emailShareExpiring": zod.boolean(),
+  "digestFrequency": zod.string(),
+  "profileVisibility": zod.string(),
+  "showEmail": zod.boolean(),
+  "showPhone": zod.boolean(),
+  "allowSearchEngineIndex": zod.boolean(),
+  "defaultExportFormat": zod.string(),
+  "includePhotoInExport": zod.boolean(),
+  "applyMode": zod.enum(['ONE_CLICK', 'WEEKLY_CURATED', 'AUTO_APPLY']),
+  "applyCriteria": zod.object({
+  "minFit": zod.number().min(usersGetFullPreferencesResponsePreferencesApplyCriteriaMinFitMin).max(usersGetFullPreferencesResponsePreferencesApplyCriteriaMinFitMax).nullable(),
+  "stacks": zod.array(zod.string()),
+  "seniorities": zod.array(zod.string()),
+  "remotePolicies": zod.array(zod.enum(['REMOTE', 'HYBRID', 'ONSITE'])),
+  "paymentCurrencies": zod.array(zod.enum(['BRL', 'USD', 'EUR', 'GBP'])),
+  "minSalaryUsd": zod.number().nullable(),
+  "defaultCover": zod.string().nullable()
+}).nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+})
 })
 
 /**
@@ -153,6 +306,76 @@ export const UsersUpdateFullPreferencesBody = zod.object({
 }).optional()
 })
 
+export const usersUpdateFullPreferencesResponsePreferencesApplyCriteriaMinFitMin = 0;
+export const usersUpdateFullPreferencesResponsePreferencesApplyCriteriaMinFitMax = 100;
+
+
+
+export const UsersUpdateFullPreferencesResponse = zod.object({
+  "preferences": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "theme": zod.string(),
+  "palette": zod.string(),
+  "bannerColor": zod.string().nullable(),
+  "language": zod.string(),
+  "dateFormat": zod.string(),
+  "timezone": zod.string(),
+  "emailNotifications": zod.boolean(),
+  "resumeExpiryAlerts": zod.boolean(),
+  "weeklyDigest": zod.boolean(),
+  "marketingEmails": zod.boolean(),
+  "emailMilestones": zod.boolean(),
+  "emailShareExpiring": zod.boolean(),
+  "digestFrequency": zod.string(),
+  "profileVisibility": zod.string(),
+  "showEmail": zod.boolean(),
+  "showPhone": zod.boolean(),
+  "allowSearchEngineIndex": zod.boolean(),
+  "defaultExportFormat": zod.string(),
+  "includePhotoInExport": zod.boolean(),
+  "applyMode": zod.enum(['ONE_CLICK', 'WEEKLY_CURATED', 'AUTO_APPLY']),
+  "applyCriteria": zod.object({
+  "minFit": zod.number().min(usersUpdateFullPreferencesResponsePreferencesApplyCriteriaMinFitMin).max(usersUpdateFullPreferencesResponsePreferencesApplyCriteriaMinFitMax).nullable(),
+  "stacks": zod.array(zod.string()),
+  "seniorities": zod.array(zod.string()),
+  "remotePolicies": zod.array(zod.enum(['REMOTE', 'HYBRID', 'ONSITE'])),
+  "paymentCurrencies": zod.array(zod.enum(['BRL', 'USD', 'EUR', 'GBP'])),
+  "minSalaryUsd": zod.number().nullable(),
+  "defaultCover": zod.string().nullable()
+}).nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+})
+})
+
+/**
+ * @summary List all users with pagination
+ */
+export const UsersListUsersResponse = zod.object({
+  "users": zod.array(zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({}),
+  "image": zod.string().nullable(),
+  "emailVerified": zod.string().datetime({}).nullable(),
+  "resumeCount": zod.number(),
+  "role": zod.enum(['USER', 'ADMIN']),
+  "isActive": zod.boolean(),
+  "lastLoginAt": zod.string().datetime({}).nullable()
+})),
+  "pagination": zod.object({
+  "page": zod.number(),
+  "limit": zod.number(),
+  "total": zod.number(),
+  "totalPages": zod.number()
+})
+})
+
 /**
  * @summary Create a new user
  */
@@ -168,6 +391,40 @@ export const UsersCreateUserBody = zod.object({
 })
 
 /**
+ * @summary Get user details by ID
+ */
+export const UsersGetUserDetailsResponse = zod.object({
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({}),
+  "image": zod.string().nullable(),
+  "emailVerified": zod.string().datetime({}).nullable(),
+  "isActive": zod.boolean(),
+  "lastLoginAt": zod.string().datetime({}).nullable(),
+  "roles": zod.array(zod.string()),
+  "resumes": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string().nullable(),
+  "template": zod.string().nullable(),
+  "isPublic": zod.boolean(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({})
+})),
+  "preferences": zod.unknown().nullable(),
+  "counts": zod.object({
+  "accounts": zod.number(),
+  "sessions": zod.number(),
+  "resumes": zod.number()
+})
+})
+})
+
+/**
  * @summary Update user information
  */
 export const UsersUpdateUserBody = zod.object({
@@ -176,6 +433,31 @@ export const UsersUpdateUserBody = zod.object({
   "role": zod.enum(['USER', 'ADMIN']).optional(),
   "isActive": zod.boolean().optional(),
   "isEmailVerified": zod.boolean().optional()
+})
+
+export const UsersUpdateUserResponse = zod.object({
+  "user": zod.union([zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "createdAt": zod.string().datetime({})
+}),zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "updatedAt": zod.string().datetime({})
+})]),
+  "message": zod.string()
+})
+
+/**
+ * GDPR-compliant deletion that removes all user data.
+ * @summary Delete a user
+ */
+export const UsersDeleteUserResponse = zod.object({
+  "message": zod.string()
 })
 
 /**
@@ -187,5 +469,9 @@ export const usersResetPasswordBodyNewPasswordMin = 8;
 
 export const UsersResetPasswordBody = zod.object({
   "newPassword": zod.string().min(usersResetPasswordBodyNewPasswordMin)
+})
+
+export const UsersResetPasswordResponse = zod.object({
+  "message": zod.string()
 })
 

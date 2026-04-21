@@ -59,3 +59,105 @@ export const AtsValidationValidateCVBody = zod.object({
   "checkSemantic": zod.boolean().default(atsValidationValidateCVBodyCheckSemanticDefault)
 })
 
+export const AtsValidationValidateCVResponse = zod.object({
+  "score": zod.number(),
+  "issues": zod.array(zod.object({
+  "field": zod.string(),
+  "message": zod.string(),
+  "severity": zod.string()
+})),
+  "suggestions": zod.array(zod.string()),
+  "isATSCompatible": zod.boolean()
+})
+
+/**
+ * Calculates the ATS compatibility score for a specific theme based on its layout, typography, colors, and other visual properties. Returns a detailed breakdown and recommendations.
+ * @summary Calculate ATS score for a theme
+ */
+export const atsValidationCalculateThemeScoreResponseOverallScoreMin = 0;
+export const atsValidationCalculateThemeScoreResponseOverallScoreMax = 100;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownLayoutScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownLayoutMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownTypographyScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownTypographyMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownColorContrastScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownColorContrastMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownVisualElementsScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownVisualElementsMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownSectionOrderScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownSectionOrderMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownPaperSizeScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownPaperSizeMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownMarginsScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownMarginsMaxScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownDensityScoreMin = 0;
+
+export const atsValidationCalculateThemeScoreResponseBreakdownDensityMaxScoreMin = 0;
+
+
+
+export const AtsValidationCalculateThemeScoreResponse = zod.object({
+  "themeId": zod.string().describe('Unique identifier of the theme'),
+  "themeName": zod.string().describe('Display name of the theme'),
+  "overallScore": zod.number().min(atsValidationCalculateThemeScoreResponseOverallScoreMin).max(atsValidationCalculateThemeScoreResponseOverallScoreMax).describe('Overall ATS compatibility score (0-100)'),
+  "isATSFriendly": zod.boolean().describe('Whether the theme is considered ATS-friendly (score >= 80)'),
+  "breakdown": zod.object({
+  "layout": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownLayoutScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownLayoutMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Layout type scoring (single vs two-column)'),
+  "typography": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownTypographyScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownTypographyMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Font safety for ATS parsers'),
+  "colorContrast": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownColorContrastScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownColorContrastMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Text\/background contrast'),
+  "visualElements": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownVisualElementsScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownVisualElementsMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Shadows, borders, gradients'),
+  "sectionOrder": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownSectionOrderScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownSectionOrderMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Section ordering alignment'),
+  "paperSize": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownPaperSizeScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownPaperSizeMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Paper format compatibility'),
+  "margins": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownMarginsScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownMarginsMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Margin settings'),
+  "density": zod.object({
+  "score": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownDensityScoreMin).describe('Score achieved for this criterion'),
+  "maxScore": zod.number().min(atsValidationCalculateThemeScoreResponseBreakdownDensityMaxScoreMin).describe('Maximum possible score for this criterion'),
+  "details": zod.string().describe('Explanation of the score')
+}).describe('Content spacing\/density')
+}).describe('Detailed score breakdown by criteria'),
+  "recommendations": zod.array(zod.string()).describe('Suggestions to improve ATS compatibility')
+})
+

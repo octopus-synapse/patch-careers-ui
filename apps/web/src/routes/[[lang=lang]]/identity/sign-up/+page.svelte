@@ -61,15 +61,15 @@ function handleSubmit(e: Event) {
   if (!t) return;
   serverError = '';
   if (!validate()) return;
-  const body = {
-    name: name.trim() ? name.trim() : undefined,
-    email: email.trim(),
-    password,
-    acceptedTosVersion: TOS_VERSION,
-    acceptedPrivacyVersion: PRIVACY_VERSION,
-  };
-  // biome-ignore lint/suspicious/noExplicitAny: orval-generated schema lags backend until openapi regen
-  signup.mutate({ data: body as any });
+  signup.mutate({
+    data: {
+      name: name.trim() ? name.trim() : undefined,
+      email: email.trim(),
+      password,
+      acceptedTosVersion: TOS_VERSION,
+      acceptedPrivacyVersion: PRIVACY_VERSION,
+    },
+  });
 }
 </script>
 

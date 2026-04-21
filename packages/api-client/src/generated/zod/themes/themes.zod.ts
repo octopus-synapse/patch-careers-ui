@@ -39,6 +39,35 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Get my themes
+ */
+export const ThemesGetAllThemesByUserResponse = zod.object({
+  "themes": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable()
+}))
+})
+
+/**
  * @summary Create theme
  */
 export const themesCreateThemeForUserBodyNameMin = 3;
@@ -55,6 +84,50 @@ export const ThemesCreateThemeForUserBody = zod.object({
   "tags": zod.array(zod.string()).optional(),
   "styleConfig": zod.record(zod.string(), zod.unknown()),
   "parentThemeId": zod.string().optional()
+})
+
+/**
+ * @summary List published themes
+ */
+export const ThemesFindAllThemesWithPaginationResponse = zod.object({
+  "themes": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable()
+}).optional(),
+  "_count": zod.object({
+  "resumes": zod.number(),
+  "forks": zod.number()
+}).optional()
+})),
+  "pagination": zod.object({
+  "total": zod.number(),
+  "page": zod.number(),
+  "limit": zod.number(),
+  "totalPages": zod.number()
+})
 })
 
 /**
@@ -76,6 +149,70 @@ export const ThemesUpdateThemeForUserBody = zod.object({
   "parentThemeId": zod.string().optional()
 })
 
+export const ThemesUpdateThemeForUserResponse = zod.object({
+  "theme": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable()
+})
+})
+
+/**
+ * @summary Get theme by ID
+ */
+export const ThemesFindThemeByIdResponse = zod.object({
+  "theme": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable()
+}).optional(),
+  "_count": zod.object({
+  "resumes": zod.number(),
+  "forks": zod.number()
+}).optional()
+}).nullable()
+})
+
 /**
  * @summary Fork a theme
  */
@@ -92,6 +229,32 @@ export const ThemesForkBody = zod.object({
   "description": zod.string().max(themesForkBodyDescriptionMax).optional()
 })
 
+export const ThemesForkResponse = zod.object({
+  "theme": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable()
+})
+})
+
 /**
  * @summary Apply theme to resume
  */
@@ -99,5 +262,74 @@ export const ThemesApplyBody = zod.object({
   "resumeId": zod.string(),
   "themeId": zod.string(),
   "customizations": zod.record(zod.string(), zod.unknown()).optional()
+})
+
+export const ThemesApplyResponse = zod.object({
+  "success": zod.boolean()
+})
+
+/**
+ * @summary Get resolved config for resume
+ */
+export const ThemesGetResolvedConfigResponse = zod.object({
+  "config": zod.record(zod.string(), zod.string()).nullable()
+})
+
+/**
+ * @summary Get popular themes
+ */
+export const ThemesFindPopularThemesResponse = zod.object({
+  "themes": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable()
+}))
+})
+
+/**
+ * @summary Get system themes
+ */
+export const ThemesFindAllSystemThemesResponse = zod.object({
+  "themes": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "authorId": zod.string(),
+  "category": zod.string(),
+  "tags": zod.array(zod.string()),
+  "styleConfig": zod.unknown(),
+  "sectionStyles": zod.unknown(),
+  "thumbnailUrl": zod.string().nullable(),
+  "previewImages": zod.array(zod.string()),
+  "status": zod.string(),
+  "isSystemTheme": zod.boolean(),
+  "atsScore": zod.number().nullable(),
+  "usageCount": zod.number(),
+  "rating": zod.number().nullable(),
+  "ratingCount": zod.number(),
+  "version": zod.string(),
+  "parentThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "publishedAt": zod.unknown().nullable()
+}))
 })
 

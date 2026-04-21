@@ -56,3 +56,11 @@ export const PlatformEventsTrackBody = zod.object({
 })).min(1).max(platformEventsTrackBodyEventsMax)
 })
 
+export const platformEventsTrackResponseAcceptedMin = 0;
+
+
+
+export const PlatformEventsTrackResponse = zod.object({
+  "accepted": zod.number().min(platformEventsTrackResponseAcceptedMin)
+})
+

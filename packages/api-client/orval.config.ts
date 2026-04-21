@@ -50,7 +50,9 @@ export default defineConfig({
             param: false,
             query: false,
             header: false,
-            response: false,
+            // Generate response schemas so callers parse server replies into
+            // narrowly typed values instead of relying on `as any` casts.
+            response: true,
           },
         },
       },

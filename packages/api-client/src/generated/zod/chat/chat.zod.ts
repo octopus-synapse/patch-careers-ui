@@ -62,3 +62,138 @@ export const ChatSendMessageToConversationBody = zod.object({
   "content": zod.string().min(1).max(chatSendMessageToConversationBodyContentMax)
 })
 
+/**
+ * @summary Get messages for a conversation
+ */
+export const ChatGetMessagesResponse = zod.object({
+  "messages": zod.object({
+  "messages": zod.array(zod.object({
+  "id": zod.string(),
+  "conversationId": zod.string(),
+  "senderId": zod.string(),
+  "content": zod.string(),
+  "isRead": zod.boolean(),
+  "readAt": zod.string().nullable(),
+  "createdAt": zod.string(),
+  "sender": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+})
+})),
+  "nextCursor": zod.string().nullable(),
+  "hasMore": zod.boolean()
+})
+})
+
+/**
+ * @summary Get all conversations for the current user
+ */
+export const ChatGetConversationsResponse = zod.object({
+  "conversations": zod.object({
+  "conversations": zod.array(zod.object({
+  "id": zod.string(),
+  "participant": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "username": zod.string().nullable()
+}),
+  "lastMessage": zod.object({
+  "content": zod.string(),
+  "senderId": zod.string(),
+  "createdAt": zod.string(),
+  "isRead": zod.boolean()
+}).nullable(),
+  "unreadCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})),
+  "nextCursor": zod.string().nullable(),
+  "hasMore": zod.boolean()
+})
+})
+
+/**
+ * @summary Get a single conversation
+ */
+export const ChatGetConversationResponse = zod.object({
+  "conversation": zod.object({
+  "id": zod.string(),
+  "participant": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "username": zod.string().nullable()
+}),
+  "lastMessage": zod.object({
+  "content": zod.string(),
+  "senderId": zod.string(),
+  "createdAt": zod.string(),
+  "isRead": zod.boolean()
+}).nullable(),
+  "unreadCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+})
+
+/**
+ * @summary Get unread message count
+ */
+export const ChatGetUnreadCountResponse = zod.object({
+  "count": zod.number()
+})
+
+/**
+ * @summary Get or create conversation with a user
+ */
+export const ChatGetConversationWithResponse = zod.object({
+  "conversationId": zod.string().nullable(),
+  "conversation": zod.object({
+  "id": zod.string(),
+  "participant": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "username": zod.string().nullable()
+}),
+  "lastMessage": zod.object({
+  "content": zod.string(),
+  "senderId": zod.string(),
+  "createdAt": zod.string(),
+  "isRead": zod.boolean()
+}).nullable(),
+  "unreadCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).nullish()
+})
+
+/**
+ * @summary Search users to start a conversation
+ */
+export const ChatSearchUsersResponse = zod.object({
+  "users": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}))
+})
+
+/**
+ * @summary Pin / unpin a conversation for the current user.
+ */
+export const ChatSetPinBody = zod.object({
+  "pinned": zod.boolean()
+})
+
+/**
+ * @summary Mute / unmute notifications for a conversation.
+ */
+export const ChatSetMuteBody = zod.object({
+  "muted": zod.boolean(),
+  "mutedUntil": zod.string().datetime({}).optional()
+})
+

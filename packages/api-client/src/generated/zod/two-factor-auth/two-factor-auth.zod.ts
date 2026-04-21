@@ -39,10 +39,43 @@ import * as zod from 'zod';
 
 
 /**
+ * Generates TOTP secret and QR code. 2FA is not enabled until verified.
+ * @summary Setup 2FA
+ */
+export const TwoFactorAuthSetupResponse = zod.object({
+  "secret": zod.string(),
+  "qrCode": zod.string(),
+  "manualEntryKey": zod.string()
+})
+
+/**
  * Verifies TOTP token and enables 2FA. Returns backup codes (shown only once).
  * @summary Verify token and enable 2FA
  */
 export const TwoFactorAuthVerifyBody = zod.object({
   "code": zod.string()
+})
+
+export const TwoFactorAuthVerifyResponse = zod.object({
+  "enabled": zod.boolean(),
+  "backupCodes": zod.array(zod.string())
+})
+
+/**
+ * Returns 2FA status including enabled state and backup codes remaining.
+ * @summary Get 2FA status
+ */
+export const TwoFactorAuthGetStatusResponse = zod.object({
+  "enabled": zod.boolean(),
+  "lastUsedAt": zod.string().datetime({}).nullable(),
+  "backupCodesRemaining": zod.number()
+})
+
+/**
+ * Generates new backup codes, replacing existing ones. Shown only once.
+ * @summary Regenerate backup codes
+ */
+export const TwoFactorAuthRegenerateResponse = zod.object({
+  "backupCodes": zod.array(zod.string())
 })
 

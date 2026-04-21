@@ -50,9 +50,45 @@ export const CollaborationInviteBody = zod.object({
 })
 
 /**
+ * @summary Get collaborators for a resume
+ */
+export const CollaborationGetCollaboratorsResponse = zod.object({
+  "collaborators": zod.array(zod.object({
+
+}).passthrough())
+})
+
+/**
  * @summary Update collaborator role
  */
 export const CollaborationUpdateRoleBody = zod.object({
   "role": zod.enum(['VIEWER', 'EDITOR', 'ADMIN'])
+})
+
+export const CollaborationUpdateRoleResponse = zod.object({
+  "collaborator": zod.record(zod.string(), zod.unknown())
+})
+
+/**
+ * @summary Get resumes shared with current user
+ */
+export const CollaborationGetSharedWithMeResponse = zod.object({
+  "sharedResumes": zod.array(zod.object({
+
+}).passthrough())
+})
+
+/**
+ * @summary Add a comment / reply to a resume
+ */
+export const collaborationCreateCommentBodyContentMax = 4000;
+
+
+
+export const CollaborationCreateCommentBody = zod.object({
+  "content": zod.string().min(1).max(collaborationCreateCommentBodyContentMax),
+  "parentId": zod.string().optional(),
+  "sectionId": zod.string().optional(),
+  "itemId": zod.string().optional()
 })
 

@@ -63,6 +63,162 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
+ * @summary OpenGraph preview image for a public share slug
+ */
+export type resumesGetOgImageResponse200 = void
+
+export type resumesGetOgImageResponseSuccess = resumesGetOgImageResponse200
+;
+
+export type resumesGetOgImageResponse = (resumesGetOgImageResponseSuccess)
+
+export const getResumesGetOgImageUrl = (slug: string,) => {
+
+
+
+
+  return `/api/v1/public/resumes/${slug}/og.png`
+}
+
+export const resumesGetOgImage = async (slug: string, options?: RequestInit): Promise<resumesGetOgImageResponse> => {
+
+  return customFetch<resumesGetOgImageResponse>(getResumesGetOgImageUrl(slug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getResumesGetOgImageInfiniteQueryKey = (slug: string,) => {
+    return [
+    'infinite', `/api/v1/public/resumes/${slug}/og.png`
+    ] as const;
+    }
+
+export const getResumesGetOgImageQueryKey = (slug: string,) => {
+    return [
+    `/api/v1/public/resumes/${slug}/og.png`
+    ] as const;
+    }
+
+
+export const getResumesGetOgImageInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumesGetOgImage>>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesGetOgImageInfiniteQueryKey(slug);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetOgImage>>> = ({ signal }) => resumesGetOgImage(slug, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(slug), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesGetOgImageInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetOgImage>>>
+export type ResumesGetOgImageInfiniteQueryError = unknown
+
+
+/**
+ * @summary OpenGraph preview image for a public share slug
+ */
+
+export function createResumesGetOgImageInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumesGetOgImage>>>, TError = unknown>(
+ slug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getResumesGetOgImageInfiniteQueryOptions(slug(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary OpenGraph preview image for a public share slug
+ */
+export const prefetchResumesGetOgImageInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumesGetOgImage>>, TError = unknown>(
+ queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesGetOgImageInfiniteQueryOptions(slug,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getResumesGetOgImageQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetOgImage>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesGetOgImageQueryKey(slug);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetOgImage>>> = ({ signal }) => resumesGetOgImage(slug, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(slug), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesGetOgImageQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetOgImage>>>
+export type ResumesGetOgImageQueryError = unknown
+
+
+/**
+ * @summary OpenGraph preview image for a public share slug
+ */
+
+export function createResumesGetOgImage<TData = Awaited<ReturnType<typeof resumesGetOgImage>>, TError = unknown>(
+ slug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getResumesGetOgImageQueryOptions(slug(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary OpenGraph preview image for a public share slug
+ */
+export const prefetchResumesGetOgImageQuery = async <TData = Awaited<ReturnType<typeof resumesGetOgImage>>, TError = unknown>(
+ queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetOgImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesGetOgImageQueryOptions(slug,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get public resume by share slug
  */
 export type resumesGetPublicResumeResponse200 = PublicResumeDataDto

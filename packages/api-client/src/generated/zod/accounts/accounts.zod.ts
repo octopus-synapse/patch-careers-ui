@@ -46,9 +46,13 @@ export const accountsSignupBodyPasswordMin = 8;
 
 
 
+
+
 export const AccountsSignupBody = zod.object({
   "name": zod.string().optional(),
   "email": zod.string().email(),
-  "password": zod.string().min(accountsSignupBodyPasswordMin)
+  "password": zod.string().min(accountsSignupBodyPasswordMin),
+  "acceptedTosVersion": zod.string().min(1),
+  "acceptedPrivacyVersion": zod.string().min(1)
 })
 

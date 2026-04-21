@@ -37,6 +37,12 @@ All errors follow a consistent format:
  */
 
 export type SearchSuggestionsParams = {
-prefix: string;
-limit: string;
+/**
+ * Default 10, max 50
+ */
+limit?: number;
+/**
+ * Max 50 chars
+ */
+prefix?: string;
 };

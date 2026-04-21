@@ -8,3 +8,5 @@ checks:
     cmd: bunx turbo run check
   - name: lint
     cmd: bunx biome check .
+  - name: no-any
+    cmd: bash scripts/check-no-any.sh

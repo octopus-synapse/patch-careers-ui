@@ -56,6 +56,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ResumesGetQrCodePngParams,
   ShareCreateDataDto,
   ShareDeleteDataDto,
   ShareListDataDto
@@ -375,4 +376,503 @@ export const createResumesDeleteShare = <TError = unknown,
         TContext
       > => {
       return createMutation(() => ({ ...getResumesDeleteShareMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary Add a slug alias to a share
+ */
+export type resumesAddAliasResponse401 = void
+
+export type resumesAddAliasResponse403 = void
+
+;
+export type resumesAddAliasResponseError = (resumesAddAliasResponse401 | resumesAddAliasResponse403) & {
+  headers: Headers;
+};
+
+export type resumesAddAliasResponse = (resumesAddAliasResponseError)
+
+export const getResumesAddAliasUrl = (shareId: string,) => {
+
+
+
+
+  return `/api/v1/shares/${shareId}/aliases`
+}
+
+export const resumesAddAlias = async (shareId: string, options?: RequestInit): Promise<resumesAddAliasResponse> => {
+
+  return customFetch<resumesAddAliasResponse>(getResumesAddAliasUrl(shareId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getResumesAddAliasMutationOptions = <TError = void,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesAddAlias>>, TError,{shareId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof resumesAddAlias>>, TError,{shareId: string}, TContext> => {
+
+const mutationKey = ['resumesAddAlias'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resumesAddAlias>>, {shareId: string}> = (props) => {
+          const {shareId} = props ?? {};
+
+          return  resumesAddAlias(shareId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResumesAddAliasMutationResult = NonNullable<Awaited<ReturnType<typeof resumesAddAlias>>>
+
+    export type ResumesAddAliasMutationError = void
+
+    /**
+ * @summary Add a slug alias to a share
+ */
+export const createResumesAddAlias = <TError = void,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesAddAlias>>, TError,{shareId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof resumesAddAlias>>,
+        TError,
+        {shareId: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getResumesAddAliasMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary List slug aliases for a share
+ */
+export type resumesListAliasesResponse401 = void
+
+export type resumesListAliasesResponse403 = void
+
+;
+export type resumesListAliasesResponseError = (resumesListAliasesResponse401 | resumesListAliasesResponse403) & {
+  headers: Headers;
+};
+
+export type resumesListAliasesResponse = (resumesListAliasesResponseError)
+
+export const getResumesListAliasesUrl = (shareId: string,) => {
+
+
+
+
+  return `/api/v1/shares/${shareId}/aliases`
+}
+
+export const resumesListAliases = async (shareId: string, options?: RequestInit): Promise<resumesListAliasesResponse> => {
+
+  return customFetch<resumesListAliasesResponse>(getResumesListAliasesUrl(shareId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getResumesListAliasesInfiniteQueryKey = (shareId: string,) => {
+    return [
+    'infinite', `/api/v1/shares/${shareId}/aliases`
+    ] as const;
+    }
+
+export const getResumesListAliasesQueryKey = (shareId: string,) => {
+    return [
+    `/api/v1/shares/${shareId}/aliases`
+    ] as const;
+    }
+
+
+export const getResumesListAliasesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumesListAliases>>>, TError = void>(shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesListAliasesInfiniteQueryKey(shareId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesListAliases>>> = ({ signal }) => resumesListAliases(shareId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(shareId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesListAliasesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListAliases>>>
+export type ResumesListAliasesInfiniteQueryError = void
+
+
+/**
+ * @summary List slug aliases for a share
+ */
+
+export function createResumesListAliasesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumesListAliases>>>, TError = void>(
+ shareId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getResumesListAliasesInfiniteQueryOptions(shareId(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List slug aliases for a share
+ */
+export const prefetchResumesListAliasesInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumesListAliases>>, TError = void>(
+ queryClient: QueryClient, shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesListAliasesInfiniteQueryOptions(shareId,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getResumesListAliasesQueryOptions = <TData = Awaited<ReturnType<typeof resumesListAliases>>, TError = void>(shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesListAliasesQueryKey(shareId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesListAliases>>> = ({ signal }) => resumesListAliases(shareId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(shareId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesListAliasesQueryResult = NonNullable<Awaited<ReturnType<typeof resumesListAliases>>>
+export type ResumesListAliasesQueryError = void
+
+
+/**
+ * @summary List slug aliases for a share
+ */
+
+export function createResumesListAliases<TData = Awaited<ReturnType<typeof resumesListAliases>>, TError = void>(
+ shareId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getResumesListAliasesQueryOptions(shareId(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List slug aliases for a share
+ */
+export const prefetchResumesListAliasesQuery = async <TData = Awaited<ReturnType<typeof resumesListAliases>>, TError = void>(
+ queryClient: QueryClient, shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesListAliases>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesListAliasesQueryOptions(shareId,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Render a QR code PNG pointing to the share public URL
+ */
+export type resumesGetQrCodePngResponse401 = void
+
+export type resumesGetQrCodePngResponse403 = void
+
+;
+export type resumesGetQrCodePngResponseError = (resumesGetQrCodePngResponse401 | resumesGetQrCodePngResponse403) & {
+  headers: Headers;
+};
+
+export type resumesGetQrCodePngResponse = (resumesGetQrCodePngResponseError)
+
+export const getResumesGetQrCodePngUrl = (shareId: string,
+    params?: ResumesGetQrCodePngParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/shares/${shareId}/qr.png?${stringifiedParams}` : `/api/v1/shares/${shareId}/qr.png`
+}
+
+export const resumesGetQrCodePng = async (shareId: string,
+    params?: ResumesGetQrCodePngParams, options?: RequestInit): Promise<resumesGetQrCodePngResponse> => {
+
+  return customFetch<resumesGetQrCodePngResponse>(getResumesGetQrCodePngUrl(shareId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getResumesGetQrCodePngInfiniteQueryKey = (shareId: string,
+    params?: ResumesGetQrCodePngParams,) => {
+    return [
+    'infinite', `/api/v1/shares/${shareId}/qr.png`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+export const getResumesGetQrCodePngQueryKey = (shareId: string,
+    params?: ResumesGetQrCodePngParams,) => {
+    return [
+    `/api/v1/shares/${shareId}/qr.png`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getResumesGetQrCodePngInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumesGetQrCodePng>>>, TError = void>(shareId: string,
+    params?: ResumesGetQrCodePngParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesGetQrCodePngInfiniteQueryKey(shareId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetQrCodePng>>> = ({ signal }) => resumesGetQrCodePng(shareId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(shareId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesGetQrCodePngInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetQrCodePng>>>
+export type ResumesGetQrCodePngInfiniteQueryError = void
+
+
+/**
+ * @summary Render a QR code PNG pointing to the share public URL
+ */
+
+export function createResumesGetQrCodePngInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumesGetQrCodePng>>>, TError = void>(
+ shareId: () =>  string,
+    params?: () =>  ResumesGetQrCodePngParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getResumesGetQrCodePngInfiniteQueryOptions(shareId(),
+    params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Render a QR code PNG pointing to the share public URL
+ */
+export const prefetchResumesGetQrCodePngInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError = void>(
+ queryClient: QueryClient, shareId: string,
+    params?: ResumesGetQrCodePngParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesGetQrCodePngInfiniteQueryOptions(shareId,params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getResumesGetQrCodePngQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError = void>(shareId: string,
+    params?: ResumesGetQrCodePngParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesGetQrCodePngQueryKey(shareId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetQrCodePng>>> = ({ signal }) => resumesGetQrCodePng(shareId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(shareId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesGetQrCodePngQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetQrCodePng>>>
+export type ResumesGetQrCodePngQueryError = void
+
+
+/**
+ * @summary Render a QR code PNG pointing to the share public URL
+ */
+
+export function createResumesGetQrCodePng<TData = Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError = void>(
+ shareId: () =>  string,
+    params?: () =>  ResumesGetQrCodePngParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getResumesGetQrCodePngQueryOptions(shareId(),
+    params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Render a QR code PNG pointing to the share public URL
+ */
+export const prefetchResumesGetQrCodePngQuery = async <TData = Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError = void>(
+ queryClient: QueryClient, shareId: string,
+    params?: ResumesGetQrCodePngParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetQrCodePng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesGetQrCodePngQueryOptions(shareId,params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Remove a slug alias
+ */
+export type resumesRemoveAliasResponse401 = void
+
+export type resumesRemoveAliasResponse403 = void
+
+;
+export type resumesRemoveAliasResponseError = (resumesRemoveAliasResponse401 | resumesRemoveAliasResponse403) & {
+  headers: Headers;
+};
+
+export type resumesRemoveAliasResponse = (resumesRemoveAliasResponseError)
+
+export const getResumesRemoveAliasUrl = (aliasId: string,) => {
+
+
+
+
+  return `/api/v1/shares/aliases/${aliasId}`
+}
+
+export const resumesRemoveAlias = async (aliasId: string, options?: RequestInit): Promise<resumesRemoveAliasResponse> => {
+
+  return customFetch<resumesRemoveAliasResponse>(getResumesRemoveAliasUrl(aliasId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getResumesRemoveAliasMutationOptions = <TError = void,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesRemoveAlias>>, TError,{aliasId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof resumesRemoveAlias>>, TError,{aliasId: string}, TContext> => {
+
+const mutationKey = ['resumesRemoveAlias'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resumesRemoveAlias>>, {aliasId: string}> = (props) => {
+          const {aliasId} = props ?? {};
+
+          return  resumesRemoveAlias(aliasId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResumesRemoveAliasMutationResult = NonNullable<Awaited<ReturnType<typeof resumesRemoveAlias>>>
+
+    export type ResumesRemoveAliasMutationError = void
+
+    /**
+ * @summary Remove a slug alias
+ */
+export const createResumesRemoveAlias = <TError = void,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumesRemoveAlias>>, TError,{aliasId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof resumesRemoveAlias>>,
+        TError,
+        {aliasId: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getResumesRemoveAliasMutationOptions(options?.()) }), queryClient);
     }

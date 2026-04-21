@@ -49,3 +49,9 @@ export const AuthRefreshBody = zod.object({
   "refreshToken": zod.string().min(1)
 })
 
+export const AuthRefreshResponse = zod.object({
+  "accessToken": zod.string(),
+  "refreshToken": zod.string(),
+  "expiresIn": zod.number()
+})
+

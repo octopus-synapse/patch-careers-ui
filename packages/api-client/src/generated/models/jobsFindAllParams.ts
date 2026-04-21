@@ -37,20 +37,24 @@ All errors follow a consistent format:
  */
 
 export type JobsFindAllParams = {
-page: number;
-limit: number;
-search: string;
-skills: string;
-/**
- * CSV of BRL|USD|EUR|GBP
- */
-paymentCurrency?: string;
-/**
- * CSV of REMOTE|HYBRID|ONSITE
- */
-remotePolicy?: string;
 /**
  * Max level the viewer accepts. Returns jobs whose required level is ≤ this (or null).
  */
 minEnglishLevel?: unknown;
+/**
+ * CSV of REMOTE|HYBRID|ONSITE
+ */
+remotePolicy?: unknown;
+/**
+ * CSV of BRL|USD|EUR|GBP
+ */
+paymentCurrency?: unknown;
+/**
+ * CSV of skill names
+ */
+skills?: unknown;
+jobType?: string;
+search?: string;
+limit?: number;
+page?: number;
 };

@@ -621,7 +621,7 @@ export const prefetchNotificationsGetPreferencesQuery = async <TData = Awaited<R
 
 
 /**
- * @summary Toggle a notification type on or off
+ * @summary Update a notification type preference (in-app enable + email channel + delivery mode).
  */
 export type notificationsSetPreferenceResponse200 = void
 
@@ -684,7 +684,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type NotificationsSetPreferenceMutationError = unknown
 
     /**
- * @summary Toggle a notification type on or off
+ * @summary Update a notification type preference (in-app enable + email channel + delivery mode).
  */
 export const createNotificationsSetPreference = <TError = unknown,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsSetPreference>>, TError,{type: string}, TContext>, request?: SecondParameter<typeof customFetch>}

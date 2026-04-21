@@ -6,6 +6,7 @@ import {
   getJobsFindAllQueryKey,
   jobsCreate,
 } from 'api-client';
+import type { CreateJobDto, CreateJobDtoJobType } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'lucide-svelte';
 import { Button, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
@@ -186,11 +187,11 @@ function resetForm() {
 async function handleCreate() {
   createLoading = true;
   try {
-    const data = {
+    const data: CreateJobDto = {
       title: formTitle,
       company: formCompany,
-      location: formLocation,
-      jobType: formJobType,
+      location: formLocation || undefined,
+      jobType: formJobType as CreateJobDtoJobType,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -203,10 +204,7 @@ async function handleCreate() {
       salaryRange: formSalaryRange || undefined,
       applyUrl: formApplyUrl || undefined,
     };
-    await jobsCreate({
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await jobsCreate(data);
     queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
     createModal = false;
     resetForm();

@@ -45,12 +45,20 @@ export const ResumeConfigToggleSectionBody = zod.object({
 
 }).passthrough()
 
+export const ResumeConfigToggleSectionResponse = zod.object({
+  "success": zod.boolean()
+})
+
 /**
  * @summary Reorder section
  */
 export const ResumeConfigReorderSectionBody = zod.object({
 
 }).passthrough()
+
+export const ResumeConfigReorderSectionResponse = zod.object({
+  "success": zod.boolean()
+})
 
 /**
  * @summary Toggle item visibility
@@ -59,6 +67,10 @@ export const ResumeConfigToggleItemBody = zod.object({
 
 }).passthrough()
 
+export const ResumeConfigToggleItemResponse = zod.object({
+  "success": zod.boolean()
+})
+
 /**
  * @summary Reorder item
  */
@@ -66,10 +78,18 @@ export const ResumeConfigReorderItemBody = zod.object({
 
 }).passthrough()
 
+export const ResumeConfigReorderItemResponse = zod.object({
+  "success": zod.boolean()
+})
+
 /**
  * @summary Batch update sections
  */
 export const ResumeConfigBatchUpdateBody = zod.object({
 
 }).passthrough()
+
+export const ResumeConfigBatchUpdateResponse = zod.object({
+  "success": zod.boolean()
+})
 

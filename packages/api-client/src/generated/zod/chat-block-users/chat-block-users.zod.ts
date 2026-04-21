@@ -51,3 +51,17 @@ export const ChatBlockUsersBlockUserBody = zod.object({
   "reason": zod.string().max(chatBlockUsersBlockUserBodyReasonMax).optional()
 })
 
+/**
+ * @summary Get all blocked users
+ */
+export const ChatBlockUsersGetBlockedUsersResponse = zod.object({
+  "blockedUsers": zod.array(zod.string()).describe('List of blocked users')
+})
+
+/**
+ * @summary Check if a user is blocked
+ */
+export const ChatBlockUsersIsBlockedResponse = zod.object({
+  "isBlocked": zod.boolean().describe('Block status')
+})
+

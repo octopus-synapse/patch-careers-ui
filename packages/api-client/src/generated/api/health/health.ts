@@ -54,7 +54,9 @@ import type {
 import type {
   PlatformCheck200,
   PlatformCheckDatabase200,
+  PlatformCheckOpenAI200,
   PlatformCheckRedis200,
+  PlatformCheckSmtp200,
   PlatformCheckStorage200,
   PlatformCheckTranslate200
 } from '../../models';
@@ -214,6 +216,318 @@ export const prefetchPlatformCheckQuery = async <TData = Awaited<ReturnType<type
   ): Promise<QueryClient> => {
 
   const queryOptions = getPlatformCheckQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Run SMTP/email provider health check
+ */
+export type platformCheckSmtpResponse200 = PlatformCheckSmtp200
+
+export type platformCheckSmtpResponseSuccess = platformCheckSmtpResponse200
+;
+
+export type platformCheckSmtpResponse = (platformCheckSmtpResponseSuccess)
+
+export const getPlatformCheckSmtpUrl = () => {
+
+
+
+
+  return `/api/health/smtp`
+}
+
+export const platformCheckSmtp = async ( options?: RequestInit): Promise<platformCheckSmtpResponse> => {
+
+  return customFetch<platformCheckSmtpResponse>(getPlatformCheckSmtpUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getPlatformCheckSmtpInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/health/smtp`
+    ] as const;
+    }
+
+export const getPlatformCheckSmtpQueryKey = () => {
+    return [
+    `/api/health/smtp`
+    ] as const;
+    }
+
+
+export const getPlatformCheckSmtpInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckSmtp>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckSmtpInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckSmtp>>> = ({ signal }) => platformCheckSmtp({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PlatformCheckSmtpInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckSmtp>>>
+export type PlatformCheckSmtpInfiniteQueryError = unknown
+
+
+/**
+ * @summary Run SMTP/email provider health check
+ */
+
+export function createPlatformCheckSmtpInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckSmtp>>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getPlatformCheckSmtpInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Run SMTP/email provider health check
+ */
+export const prefetchPlatformCheckSmtpInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckSmtp>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getPlatformCheckSmtpInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getPlatformCheckSmtpQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckSmtp>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckSmtpQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckSmtp>>> = ({ signal }) => platformCheckSmtp({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PlatformCheckSmtpQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckSmtp>>>
+export type PlatformCheckSmtpQueryError = unknown
+
+
+/**
+ * @summary Run SMTP/email provider health check
+ */
+
+export function createPlatformCheckSmtp<TData = Awaited<ReturnType<typeof platformCheckSmtp>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getPlatformCheckSmtpQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Run SMTP/email provider health check
+ */
+export const prefetchPlatformCheckSmtpQuery = async <TData = Awaited<ReturnType<typeof platformCheckSmtp>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckSmtp>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getPlatformCheckSmtpQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Run OpenAI configuration health check
+ */
+export type platformCheckOpenAIResponse200 = PlatformCheckOpenAI200
+
+export type platformCheckOpenAIResponseSuccess = platformCheckOpenAIResponse200
+;
+
+export type platformCheckOpenAIResponse = (platformCheckOpenAIResponseSuccess)
+
+export const getPlatformCheckOpenAIUrl = () => {
+
+
+
+
+  return `/api/health/openai`
+}
+
+export const platformCheckOpenAI = async ( options?: RequestInit): Promise<platformCheckOpenAIResponse> => {
+
+  return customFetch<platformCheckOpenAIResponse>(getPlatformCheckOpenAIUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getPlatformCheckOpenAIInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/health/openai`
+    ] as const;
+    }
+
+export const getPlatformCheckOpenAIQueryKey = () => {
+    return [
+    `/api/health/openai`
+    ] as const;
+    }
+
+
+export const getPlatformCheckOpenAIInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformCheckOpenAI>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckOpenAIInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckOpenAI>>> = ({ signal }) => platformCheckOpenAI({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PlatformCheckOpenAIInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckOpenAI>>>
+export type PlatformCheckOpenAIInfiniteQueryError = unknown
+
+
+/**
+ * @summary Run OpenAI configuration health check
+ */
+
+export function createPlatformCheckOpenAIInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformCheckOpenAI>>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getPlatformCheckOpenAIInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Run OpenAI configuration health check
+ */
+export const prefetchPlatformCheckOpenAIInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformCheckOpenAI>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getPlatformCheckOpenAIInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getPlatformCheckOpenAIQueryOptions = <TData = Awaited<ReturnType<typeof platformCheckOpenAI>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPlatformCheckOpenAIQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof platformCheckOpenAI>>> = ({ signal }) => platformCheckOpenAI({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PlatformCheckOpenAIQueryResult = NonNullable<Awaited<ReturnType<typeof platformCheckOpenAI>>>
+export type PlatformCheckOpenAIQueryError = unknown
+
+
+/**
+ * @summary Run OpenAI configuration health check
+ */
+
+export function createPlatformCheckOpenAI<TData = Awaited<ReturnType<typeof platformCheckOpenAI>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getPlatformCheckOpenAIQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Run OpenAI configuration health check
+ */
+export const prefetchPlatformCheckOpenAIQuery = async <TData = Awaited<ReturnType<typeof platformCheckOpenAI>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformCheckOpenAI>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getPlatformCheckOpenAIQueryOptions(options)
 
   await queryClient.prefetchQuery(queryOptions);
 

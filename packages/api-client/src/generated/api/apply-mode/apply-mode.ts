@@ -55,6 +55,12 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  ApproveResultDto,
+  CurrentBatchDataDto,
+  RejectResultDto
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -65,7 +71,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary This week's curated batch for the viewer.
  */
-export type applyModeCurrentResponse200 = void
+export type applyModeCurrentResponse200 = CurrentBatchDataDto
 
 export type applyModeCurrentResponseSuccess = applyModeCurrentResponse200
 ;
@@ -221,7 +227,7 @@ export const prefetchApplyModeCurrentQuery = async <TData = Awaited<ReturnType<t
 /**
  * @summary Approve a curated item — submits a JobApplication using the user's primary resume.
  */
-export type applyModeApproveResponse200 = void
+export type applyModeApproveResponse200 = ApproveResultDto
 
 export type applyModeApproveResponseSuccess = applyModeApproveResponse200
 ;
@@ -297,7 +303,7 @@ export const createApplyModeApprove = <TError = unknown,
     /**
  * @summary Reject a curated item.
  */
-export type applyModeRejectResponse200 = void
+export type applyModeRejectResponse200 = RejectResultDto
 
 export type applyModeRejectResponseSuccess = applyModeRejectResponse200
 ;

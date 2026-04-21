@@ -85,6 +85,314 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
+ * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
+ */
+export type usersGetAllResponse200 = void
+
+export type usersGetAllResponseSuccess = usersGetAllResponse200
+;
+
+export type usersGetAllResponse = (usersGetAllResponseSuccess)
+
+export const getUsersGetAllUrl = () => {
+
+
+
+
+  return `/api/v1/me/ui-state`
+}
+
+export const usersGetAll = async ( options?: RequestInit): Promise<usersGetAllResponse> => {
+
+  return customFetch<usersGetAllResponse>(getUsersGetAllUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getUsersGetAllInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/me/ui-state`
+    ] as const;
+    }
+
+export const getUsersGetAllQueryKey = () => {
+    return [
+    `/api/v1/me/ui-state`
+    ] as const;
+    }
+
+
+export const getUsersGetAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersGetAll>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUsersGetAllInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetAll>>> = ({ signal }) => usersGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersGetAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetAll>>>
+export type UsersGetAllInfiniteQueryError = unknown
+
+
+/**
+ * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
+ */
+
+export function createUsersGetAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersGetAll>>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getUsersGetAllInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
+ */
+export const prefetchUsersGetAllInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersGetAll>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getUsersGetAllInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getUsersGetAllQueryOptions = <TData = Awaited<ReturnType<typeof usersGetAll>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUsersGetAllQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersGetAll>>> = ({ signal }) => usersGetAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersGetAllQueryResult = NonNullable<Awaited<ReturnType<typeof usersGetAll>>>
+export type UsersGetAllQueryError = unknown
+
+
+/**
+ * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
+ */
+
+export function createUsersGetAll<TData = Awaited<ReturnType<typeof usersGetAll>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getUsersGetAllQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
+ */
+export const prefetchUsersGetAllQuery = async <TData = Awaited<ReturnType<typeof usersGetAll>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersGetAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getUsersGetAllQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Upsert a single UI-state key/value (idempotent).
+ */
+export type usersSetKeyResponse200 = void
+
+export type usersSetKeyResponseSuccess = usersSetKeyResponse200
+;
+
+export type usersSetKeyResponse = (usersSetKeyResponseSuccess)
+
+export const getUsersSetKeyUrl = (key: string,) => {
+
+
+
+
+  return `/api/v1/me/ui-state/${key}`
+}
+
+export const usersSetKey = async (key: string, options?: RequestInit): Promise<usersSetKeyResponse> => {
+
+  return customFetch<usersSetKeyResponse>(getUsersSetKeyUrl(key),
+  {
+    ...options,
+    method: 'PATCH'
+
+
+  }
+);}
+
+
+
+
+export const getUsersSetKeyMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersSetKey>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof usersSetKey>>, TError,{key: string}, TContext> => {
+
+const mutationKey = ['usersSetKey'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersSetKey>>, {key: string}> = (props) => {
+          const {key} = props ?? {};
+
+          return  usersSetKey(key,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UsersSetKeyMutationResult = NonNullable<Awaited<ReturnType<typeof usersSetKey>>>
+
+    export type UsersSetKeyMutationError = unknown
+
+    /**
+ * @summary Upsert a single UI-state key/value (idempotent).
+ */
+export const createUsersSetKey = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersSetKey>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof usersSetKey>>,
+        TError,
+        {key: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getUsersSetKeyMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary Remove a UI-state key.
+ */
+export type usersDeleteKeyResponse200 = void
+
+export type usersDeleteKeyResponseSuccess = usersDeleteKeyResponse200
+;
+
+export type usersDeleteKeyResponse = (usersDeleteKeyResponseSuccess)
+
+export const getUsersDeleteKeyUrl = (key: string,) => {
+
+
+
+
+  return `/api/v1/me/ui-state/${key}`
+}
+
+export const usersDeleteKey = async (key: string, options?: RequestInit): Promise<usersDeleteKeyResponse> => {
+
+  return customFetch<usersDeleteKeyResponse>(getUsersDeleteKeyUrl(key),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getUsersDeleteKeyMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersDeleteKey>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof usersDeleteKey>>, TError,{key: string}, TContext> => {
+
+const mutationKey = ['usersDeleteKey'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof usersDeleteKey>>, {key: string}> = (props) => {
+          const {key} = props ?? {};
+
+          return  usersDeleteKey(key,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UsersDeleteKeyMutationResult = NonNullable<Awaited<ReturnType<typeof usersDeleteKey>>>
+
+    export type UsersDeleteKeyMutationError = unknown
+
+    /**
+ * @summary Remove a UI-state key.
+ */
+export const createUsersDeleteKey = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersDeleteKey>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof usersDeleteKey>>,
+        TError,
+        {key: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getUsersDeleteKeyMutationOptions(options?.()) }), queryClient);
+    }
+    /**
  * @summary Get a user's public profile by username
  */
 export type usersGetPublicProfileByUsernameResponse200 = PublicProfileDataDto

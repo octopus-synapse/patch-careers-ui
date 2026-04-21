@@ -305,6 +305,87 @@ export const createTranslationTranslateText = <TError = unknown,
       return createMutation(() => ({ ...getTranslationTranslateTextMutationOptions(options?.()) }), queryClient);
     }
     /**
+ * @summary Detect the language of a text
+ */
+export type translationDetectResponse401 = void
+
+export type translationDetectResponse403 = void
+
+;
+export type translationDetectResponseError = (translationDetectResponse401 | translationDetectResponse403) & {
+  headers: Headers;
+};
+
+export type translationDetectResponse = (translationDetectResponseError)
+
+export const getTranslationDetectUrl = () => {
+
+
+
+
+  return `/api/v1/translation/detect`
+}
+
+export const translationDetect = async (translateSimpleDto: TranslateSimpleDto, options?: RequestInit): Promise<translationDetectResponse> => {
+
+  return customFetch<translationDetectResponse>(getTranslationDetectUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      translateSimpleDto,)
+  }
+);}
+
+
+
+
+export const getTranslationDetectMutationOptions = <TError = void,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationDetect>>, TError,{data: TranslateSimpleDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof translationDetect>>, TError,{data: TranslateSimpleDto}, TContext> => {
+
+const mutationKey = ['translationDetect'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof translationDetect>>, {data: TranslateSimpleDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  translationDetect(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TranslationDetectMutationResult = NonNullable<Awaited<ReturnType<typeof translationDetect>>>
+    export type TranslationDetectMutationBody = TranslateSimpleDto
+    export type TranslationDetectMutationError = void
+
+    /**
+ * @summary Detect the language of a text
+ */
+export const createTranslationDetect = <TError = void,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof translationDetect>>, TError,{data: TranslateSimpleDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof translationDetect>>,
+        TError,
+        {data: TranslateSimpleDto},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getTranslationDetectMutationOptions(options?.()) }), queryClient);
+    }
+    /**
  * @summary Translate multiple texts in batch
  */
 export type translationTranslateBatchResponse201 = BatchTranslationResultDto

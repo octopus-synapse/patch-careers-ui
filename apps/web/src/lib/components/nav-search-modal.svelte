@@ -1,5 +1,5 @@
 <script lang="ts">
-import { searchSearch } from 'api-client';
+import { SearchSearchSortBy, searchSearch } from 'api-client';
 import { ArrowRight, Briefcase, Building2, FileText, Search } from 'lucide-svelte';
 import { Avatar, Button } from 'ui';
 import { goto } from '$app/navigation';
@@ -51,11 +51,11 @@ $effect(() => {
         q: trimmed,
         skills: '',
         location: '',
-        minExp: '',
-        maxExp: '',
-        page: '1',
-        limit: '5',
-        sortBy: 'relevance',
+        minExp: 0,
+        maxExp: 0,
+        page: 1,
+        limit: 5,
+        sortBy: SearchSearchSortBy.relevance,
       })) as unknown as Record<string, unknown> | undefined;
       const items = (res?.data as Record<string, unknown>[] | undefined) ?? [];
       people = items.map((r) => ({

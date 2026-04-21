@@ -39,6 +39,14 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Check translation service health
+ */
+export const TranslationHealthCheckResponse = zod.object({
+  "status": zod.string(),
+  "timestamp": zod.string().datetime({})
+})
+
+/**
  * @summary Translate a single text
  */
 
@@ -54,6 +62,16 @@ export const TranslationTranslateTextBody = zod.object({
   "text": zod.string().min(1),
   "sourceLanguage": zod.string().min(translationTranslateTextBodySourceLanguageMin).max(translationTranslateTextBodySourceLanguageMax),
   "targetLanguage": zod.string().min(translationTranslateTextBodyTargetLanguageMin).max(translationTranslateTextBodyTargetLanguageMax)
+})
+
+/**
+ * @summary Detect the language of a text
+ */
+
+
+
+export const TranslationDetectBody = zod.object({
+  "text": zod.string().min(1)
 })
 
 /**

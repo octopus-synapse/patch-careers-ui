@@ -39,6 +39,30 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Get all resumes for current user
+ */
+export const ResumesGetAllUserResumesResponse = zod.object({
+  "data": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({}),
+  "viewCount": zod.number().optional(),
+  "lastViewedAt": zod.string().datetime({}).optional()
+})),
+  "meta": zod.object({
+  "total": zod.number(),
+  "page": zod.number(),
+  "limit": zod.number(),
+  "totalPages": zod.number()
+})
+})
+
+/**
  * @summary Create a new resume
  */
 export const resumesCreateResumeForUserBodyTitleMax = 100;
@@ -69,6 +93,99 @@ export const ResumesCreateResumeForUserBody = zod.object({
   "github": zod.string().url().optional(),
   "website": zod.string().url().optional(),
   "sections": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+})
+
+/**
+ * @summary Get remaining resume slots for current user
+ */
+export const ResumesGetRemainingSlotsResponse = zod.object({
+  "used": zod.number(),
+  "limit": zod.number(),
+  "remaining": zod.number()
+})
+
+/**
+ * @summary Get a resume with all sections
+ */
+export const ResumesGetResumeByIdWithAllSectionsResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "visible": zod.boolean(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "semanticKind": zod.string().optional(),
+  "title": zod.string().optional(),
+  "version": zod.number().optional()
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "content": zod.record(zod.string(), zod.unknown()).optional()
+}))
+})),
+  "activeThemeId": zod.string().optional(),
+  "activeTheme": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().optional()
+}).optional(),
+  "fullName": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "summary": zod.string().optional()
+})
+
+/**
+ * @summary Get a specific resume
+ */
+export const ResumesGetResumeByIdForUserResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "visible": zod.boolean(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "semanticKind": zod.string().optional(),
+  "title": zod.string().optional(),
+  "version": zod.number().optional()
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "content": zod.record(zod.string(), zod.unknown()).optional()
+}))
+})),
+  "activeThemeId": zod.string().optional(),
+  "activeTheme": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().optional()
+}).optional(),
+  "fullName": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "summary": zod.string().optional()
 })
 
 /**
@@ -104,6 +221,254 @@ export const ResumesUpdateResumeForUserBody = zod.object({
   "sections": zod.array(zod.record(zod.string(), zod.unknown())).optional()
 })
 
+export const ResumesUpdateResumeForUserResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({}),
+  "updatedAt": zod.string().datetime({})
+})
+
+/**
+ * @summary Delete a resume
+ */
+export const ResumesDeleteResumeForUserResponse = zod.object({
+  "deleted": zod.boolean().describe('Whether the file was successfully deleted')
+})
+
+/**
+ * @summary List all resumes for a specific user
+ */
+export const ResumesListResumesForUserResponse = zod.object({
+  "resumes": zod.array(zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "title": zod.string().nullable(),
+  "template": zod.string(),
+  "language": zod.string(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().nullable(),
+  "fullName": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "summary": zod.string().nullable(),
+  "accentColor": zod.string().nullable(),
+  "activeThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "sectionTypeId": zod.string(),
+  "titleOverride": zod.string().nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.unknown(),
+  "uiSchema": zod.unknown().nullable(),
+  "renderHints": zod.unknown(),
+  "fieldStyles": zod.unknown(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.unknown(),
+  "examples": zod.unknown(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.unknown(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}))
+})),
+  "_count": zod.object({
+  "resumeSections": zod.number()
+})
+}))
+})
+
+/**
+ * @summary Get full resume details
+ */
+export const ResumesGetResumeDetailsResponse = zod.object({
+  "resume": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "title": zod.string().nullable(),
+  "template": zod.string(),
+  "language": zod.string(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().nullable(),
+  "fullName": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "phone": zod.string().nullable(),
+  "emailContact": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "linkedin": zod.string().nullable(),
+  "github": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "summary": zod.string().nullable(),
+  "accentColor": zod.string().nullable(),
+  "activeThemeId": zod.string().nullable(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable()
+}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "sectionTypeId": zod.string(),
+  "titleOverride": zod.string().nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.unknown(),
+  "uiSchema": zod.unknown().nullable(),
+  "renderHints": zod.unknown(),
+  "fieldStyles": zod.unknown(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.unknown(),
+  "examples": zod.unknown(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.unknown(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}))
+}))
+})
+})
+
+/**
+ * @summary Delete a resume
+ */
+export const ResumesDeleteResumeResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * @summary List active dynamic section types with resolved translations
+ */
+export const ResumesListTypesResponse = zod.object({
+  "sectionTypes": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "label": zod.string(),
+  "noDataLabel": zod.string(),
+  "placeholder": zod.string(),
+  "addLabel": zod.string(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number().nullable(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.unknown(),
+  "uiSchema": zod.unknown().nullable(),
+  "renderHints": zod.unknown(),
+  "fieldStyles": zod.unknown()
+}))
+})
+
+/**
+ * @summary List sections and items for a resume
+ */
+export const ResumesListResumeSectionsResponse = zod.object({
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "sectionTypeId": zod.string(),
+  "titleOverride": zod.string().nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.unknown(),
+  "uiSchema": zod.unknown().nullable(),
+  "renderHints": zod.unknown(),
+  "fieldStyles": zod.unknown(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.unknown(),
+  "examples": zod.unknown(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}).nullable(),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.unknown(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+}))
+}))
+})
+
 /**
  * @summary Create section item in a dynamic section type
  */
@@ -116,5 +481,24 @@ export const ResumesCreateItemBody = zod.object({
  */
 export const ResumesUpdateItemBody = zod.object({
   "content": zod.record(zod.string(), zod.unknown()).describe('Content fields for the section item')
+})
+
+export const ResumesUpdateItemResponse = zod.object({
+  "item": zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.unknown(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.unknown(),
+  "updatedAt": zod.unknown()
+})
+})
+
+/**
+ * @summary Delete section item from a dynamic section type
+ */
+export const ResumesDeleteItemResponse = zod.object({
+  "deleted": zod.boolean()
 })
 

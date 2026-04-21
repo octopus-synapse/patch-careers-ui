@@ -37,6 +37,6 @@ All errors follow a consistent format:
  */
 
 export type JobsGetMyApplicationsParams = {
-page?: number;
 limit?: number;
+page?: number;
 };

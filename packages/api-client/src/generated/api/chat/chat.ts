@@ -68,6 +68,8 @@ import type {
   MessagesListDataDto,
   SendMessageDto,
   SendMessageToConversationDto,
+  SetMuteDto,
+  SetPinDto,
   UnreadCountDataDto
 } from '../../models';
 
@@ -1278,3 +1280,159 @@ export const prefetchChatSearchUsersQuery = async <TData = Awaited<ReturnType<ty
 
 
 
+/**
+ * @summary Pin / unpin a conversation for the current user.
+ */
+export type chatSetPinResponse200 = void
+
+export type chatSetPinResponseSuccess = chatSetPinResponse200
+;
+
+export type chatSetPinResponse = (chatSetPinResponseSuccess)
+
+export const getChatSetPinUrl = (conversationId: string,) => {
+
+
+
+
+  return `/api/chat/conversations/${conversationId}/preferences/pin`
+}
+
+export const chatSetPin = async (conversationId: string,
+    setPinDto: SetPinDto, options?: RequestInit): Promise<chatSetPinResponse> => {
+
+  return customFetch<chatSetPinResponse>(getChatSetPinUrl(conversationId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      setPinDto,)
+  }
+);}
+
+
+
+
+export const getChatSetPinMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatSetPin>>, TError,{conversationId: string;data: SetPinDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof chatSetPin>>, TError,{conversationId: string;data: SetPinDto}, TContext> => {
+
+const mutationKey = ['chatSetPin'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chatSetPin>>, {conversationId: string;data: SetPinDto}> = (props) => {
+          const {conversationId,data} = props ?? {};
+
+          return  chatSetPin(conversationId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChatSetPinMutationResult = NonNullable<Awaited<ReturnType<typeof chatSetPin>>>
+    export type ChatSetPinMutationBody = SetPinDto
+    export type ChatSetPinMutationError = unknown
+
+    /**
+ * @summary Pin / unpin a conversation for the current user.
+ */
+export const createChatSetPin = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatSetPin>>, TError,{conversationId: string;data: SetPinDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof chatSetPin>>,
+        TError,
+        {conversationId: string;data: SetPinDto},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getChatSetPinMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary Mute / unmute notifications for a conversation.
+ */
+export type chatSetMuteResponse200 = void
+
+export type chatSetMuteResponseSuccess = chatSetMuteResponse200
+;
+
+export type chatSetMuteResponse = (chatSetMuteResponseSuccess)
+
+export const getChatSetMuteUrl = (conversationId: string,) => {
+
+
+
+
+  return `/api/chat/conversations/${conversationId}/preferences/mute`
+}
+
+export const chatSetMute = async (conversationId: string,
+    setMuteDto: SetMuteDto, options?: RequestInit): Promise<chatSetMuteResponse> => {
+
+  return customFetch<chatSetMuteResponse>(getChatSetMuteUrl(conversationId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      setMuteDto,)
+  }
+);}
+
+
+
+
+export const getChatSetMuteMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatSetMute>>, TError,{conversationId: string;data: SetMuteDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof chatSetMute>>, TError,{conversationId: string;data: SetMuteDto}, TContext> => {
+
+const mutationKey = ['chatSetMute'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chatSetMute>>, {conversationId: string;data: SetMuteDto}> = (props) => {
+          const {conversationId,data} = props ?? {};
+
+          return  chatSetMute(conversationId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChatSetMuteMutationResult = NonNullable<Awaited<ReturnType<typeof chatSetMute>>>
+    export type ChatSetMuteMutationBody = SetMuteDto
+    export type ChatSetMuteMutationError = unknown
+
+    /**
+ * @summary Mute / unmute notifications for a conversation.
+ */
+export const createChatSetMute = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatSetMute>>, TError,{conversationId: string;data: SetMuteDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof chatSetMute>>,
+        TError,
+        {conversationId: string;data: SetMuteDto},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getChatSetMuteMutationOptions(options?.()) }), queryClient);
+    }

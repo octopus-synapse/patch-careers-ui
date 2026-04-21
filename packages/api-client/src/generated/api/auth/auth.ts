@@ -462,3 +462,243 @@ export const prefetchAuthSessionQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
+/**
+ * @summary List active sessions (devices) for the current user.
+ */
+export type authListSessionsResponse401 = void
+
+export type authListSessionsResponse403 = void
+
+;
+export type authListSessionsResponseError = (authListSessionsResponse401 | authListSessionsResponse403) & {
+  headers: Headers;
+};
+
+export type authListSessionsResponse = (authListSessionsResponseError)
+
+export const getAuthListSessionsUrl = () => {
+
+
+
+
+  return `/api/auth/sessions`
+}
+
+export const authListSessions = async ( options?: RequestInit): Promise<authListSessionsResponse> => {
+
+  return customFetch<authListSessionsResponse>(getAuthListSessionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAuthListSessionsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/auth/sessions`
+    ] as const;
+    }
+
+export const getAuthListSessionsQueryKey = () => {
+    return [
+    `/api/auth/sessions`
+    ] as const;
+    }
+
+
+export const getAuthListSessionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authListSessions>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAuthListSessionsInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof authListSessions>>> = ({ signal }) => authListSessions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AuthListSessionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authListSessions>>>
+export type AuthListSessionsInfiniteQueryError = void
+
+
+/**
+ * @summary List active sessions (devices) for the current user.
+ */
+
+export function createAuthListSessionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authListSessions>>>, TError = void>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getAuthListSessionsInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List active sessions (devices) for the current user.
+ */
+export const prefetchAuthListSessionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof authListSessions>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getAuthListSessionsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getAuthListSessionsQueryOptions = <TData = Awaited<ReturnType<typeof authListSessions>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAuthListSessionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof authListSessions>>> = ({ signal }) => authListSessions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AuthListSessionsQueryResult = NonNullable<Awaited<ReturnType<typeof authListSessions>>>
+export type AuthListSessionsQueryError = void
+
+
+/**
+ * @summary List active sessions (devices) for the current user.
+ */
+
+export function createAuthListSessions<TData = Awaited<ReturnType<typeof authListSessions>>, TError = void>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getAuthListSessionsQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List active sessions (devices) for the current user.
+ */
+export const prefetchAuthListSessionsQuery = async <TData = Awaited<ReturnType<typeof authListSessions>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getAuthListSessionsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Revoke a specific session (device) by refresh-token id.
+ */
+export type authRevokeSessionResponse401 = void
+
+export type authRevokeSessionResponse403 = void
+
+;
+export type authRevokeSessionResponseError = (authRevokeSessionResponse401 | authRevokeSessionResponse403) & {
+  headers: Headers;
+};
+
+export type authRevokeSessionResponse = (authRevokeSessionResponseError)
+
+export const getAuthRevokeSessionUrl = (id: string,) => {
+
+
+
+
+  return `/api/auth/sessions/${id}`
+}
+
+export const authRevokeSession = async (id: string, options?: RequestInit): Promise<authRevokeSessionResponse> => {
+
+  return customFetch<authRevokeSessionResponse>(getAuthRevokeSessionUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getAuthRevokeSessionMutationOptions = <TError = void,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRevokeSession>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof authRevokeSession>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['authRevokeSession'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof authRevokeSession>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  authRevokeSession(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AuthRevokeSessionMutationResult = NonNullable<Awaited<ReturnType<typeof authRevokeSession>>>
+
+    export type AuthRevokeSessionMutationError = void
+
+    /**
+ * @summary Revoke a specific session (device) by refresh-token id.
+ */
+export const createAuthRevokeSession = <TError = void,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRevokeSession>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof authRevokeSession>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getAuthRevokeSessionMutationOptions(options?.()) }), queryClient);
+    }

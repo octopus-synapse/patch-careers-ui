@@ -41,4 +41,8 @@ export interface CreateAccountDto {
   email: string;
   /** @minLength 8 */
   password: string;
+  /** @minLength 1 */
+  acceptedTosVersion: string;
+  /** @minLength 1 */
+  acceptedPrivacyVersion: string;
 }

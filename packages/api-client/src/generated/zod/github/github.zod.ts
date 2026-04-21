@@ -39,11 +39,30 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Get GitHub profile summary for a username
+ */
+export const GithubGetGitHubSummaryResponse = zod.object({
+  "username": zod.string(),
+  "name": zod.string().optional(),
+  "bio": zod.string().optional(),
+  "publicRepos": zod.number(),
+  "followers": zod.number(),
+  "following": zod.number(),
+  "topLanguages": zod.array(zod.string()),
+  "pinnedRepos": zod.array(zod.string())
+})
+
+/**
  * @summary Sync GitHub data to user resume
  */
 export const GithubSyncGitHubBody = zod.object({
   "githubUsername": zod.string().describe('GitHub username to sync'),
   "resumeId": zod.string().describe('Target resume ID')
+})
+
+export const GithubSyncGitHubResponse = zod.object({
+  "synced": zod.boolean(),
+  "message": zod.string().optional()
 })
 
 /**
@@ -52,4 +71,19 @@ export const GithubSyncGitHubBody = zod.object({
 export const GithubAutoSyncGitHubBody = zod.object({
 
 }).passthrough()
+
+export const GithubAutoSyncGitHubResponse = zod.object({
+  "synced": zod.boolean(),
+  "message": zod.string().optional()
+})
+
+/**
+ * @summary Get GitHub sync status for a resume
+ */
+export const GithubGetSyncStatusResponse = zod.object({
+  "status": zod.enum(['IDLE', 'RUNNING', 'COMPLETED', 'FAILED']),
+  "progress": zod.number(),
+  "startedAt": zod.string().optional(),
+  "currentTask": zod.string().optional()
+})
 

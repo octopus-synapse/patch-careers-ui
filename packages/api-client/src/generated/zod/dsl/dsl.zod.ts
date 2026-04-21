@@ -43,8 +43,178 @@ import * as zod from 'zod';
  */
 export const DslValidateBody = zod.string()
 
+export const DslValidateResponse = zod.object({
+  "valid": zod.boolean(),
+  "errors": zod.array(zod.object({
+  "path": zod.string().describe('Path to invalid field'),
+  "message": zod.string().describe('Error message')
+})).nullish()
+})
+
 /**
  * @summary Compile DSL to AST (preview, no persistence)
  */
 export const DslPreviewBody = zod.string()
+
+export const DslPreviewResponse = zod.object({
+  "ast": zod.object({
+
+}).passthrough().describe('Compiled AST')
+})
+
+/**
+ * @summary Get compiled AST for a resume
+ */
+export const DslRenderResponse = zod.object({
+  "ast": zod.object({
+  "meta": zod.object({
+  "version": zod.string(),
+  "generatedAt": zod.string()
+}),
+  "page": zod.object({
+  "widthMm": zod.number().describe('Page width in mm (A4 = 210)'),
+  "heightMm": zod.number().describe('Page height in mm (A4 = 297)'),
+  "marginTopMm": zod.number(),
+  "marginBottomMm": zod.number(),
+  "marginLeftMm": zod.number(),
+  "marginRightMm": zod.number(),
+  "columns": zod.array(zod.object({
+  "id": zod.string(),
+  "widthPercentage": zod.number(),
+  "order": zod.number()
+})),
+  "columnGapMm": zod.number()
+}),
+  "sections": zod.array(zod.object({
+  "sectionId": zod.string(),
+  "columnId": zod.string(),
+  "order": zod.number(),
+  "data": zod.object({
+  "sectionTypeKey": zod.string(),
+  "semanticKind": zod.string().optional(),
+  "title": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number().optional(),
+  "content": zod.record(zod.string(), zod.unknown())
+})).optional(),
+  "content": zod.string().optional(),
+  "metadata": zod.record(zod.string(), zod.unknown()).optional()
+}).describe('Generic section data. Structure is defined by sectionTypeKey and SectionType metadata.'),
+  "styles": zod.object({
+  "container": zod.object({
+  "backgroundColor": zod.string(),
+  "borderColor": zod.string(),
+  "borderWidthPx": zod.number(),
+  "borderRadiusPx": zod.number(),
+  "paddingPx": zod.number(),
+  "marginBottomPx": zod.number(),
+  "shadow": zod.string().optional()
+}),
+  "title": zod.object({
+  "fontFamily": zod.string(),
+  "fontSizePx": zod.number(),
+  "lineHeight": zod.number(),
+  "fontWeight": zod.number(),
+  "textTransform": zod.enum(['none', 'uppercase', 'lowercase', 'capitalize']),
+  "textDecoration": zod.enum(['none', 'underline', 'line-through'])
+}),
+  "content": zod.object({
+  "fontFamily": zod.string(),
+  "fontSizePx": zod.number(),
+  "lineHeight": zod.number(),
+  "fontWeight": zod.number(),
+  "textTransform": zod.enum(['none', 'uppercase', 'lowercase', 'capitalize']),
+  "textDecoration": zod.enum(['none', 'underline', 'line-through'])
+})
+})
+})),
+  "globalStyles": zod.object({
+  "background": zod.string(),
+  "textPrimary": zod.string(),
+  "textSecondary": zod.string(),
+  "accent": zod.string()
+})
+}),
+  "resumeId": zod.string().optional(),
+  "slug": zod.string().optional()
+})
+
+/**
+ * @summary Get compiled AST for a public resume
+ */
+export const DslRenderPublicResponse = zod.object({
+  "ast": zod.object({
+  "meta": zod.object({
+  "version": zod.string(),
+  "generatedAt": zod.string()
+}),
+  "page": zod.object({
+  "widthMm": zod.number().describe('Page width in mm (A4 = 210)'),
+  "heightMm": zod.number().describe('Page height in mm (A4 = 297)'),
+  "marginTopMm": zod.number(),
+  "marginBottomMm": zod.number(),
+  "marginLeftMm": zod.number(),
+  "marginRightMm": zod.number(),
+  "columns": zod.array(zod.object({
+  "id": zod.string(),
+  "widthPercentage": zod.number(),
+  "order": zod.number()
+})),
+  "columnGapMm": zod.number()
+}),
+  "sections": zod.array(zod.object({
+  "sectionId": zod.string(),
+  "columnId": zod.string(),
+  "order": zod.number(),
+  "data": zod.object({
+  "sectionTypeKey": zod.string(),
+  "semanticKind": zod.string().optional(),
+  "title": zod.string().optional(),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number().optional(),
+  "content": zod.record(zod.string(), zod.unknown())
+})).optional(),
+  "content": zod.string().optional(),
+  "metadata": zod.record(zod.string(), zod.unknown()).optional()
+}).describe('Generic section data. Structure is defined by sectionTypeKey and SectionType metadata.'),
+  "styles": zod.object({
+  "container": zod.object({
+  "backgroundColor": zod.string(),
+  "borderColor": zod.string(),
+  "borderWidthPx": zod.number(),
+  "borderRadiusPx": zod.number(),
+  "paddingPx": zod.number(),
+  "marginBottomPx": zod.number(),
+  "shadow": zod.string().optional()
+}),
+  "title": zod.object({
+  "fontFamily": zod.string(),
+  "fontSizePx": zod.number(),
+  "lineHeight": zod.number(),
+  "fontWeight": zod.number(),
+  "textTransform": zod.enum(['none', 'uppercase', 'lowercase', 'capitalize']),
+  "textDecoration": zod.enum(['none', 'underline', 'line-through'])
+}),
+  "content": zod.object({
+  "fontFamily": zod.string(),
+  "fontSizePx": zod.number(),
+  "lineHeight": zod.number(),
+  "fontWeight": zod.number(),
+  "textTransform": zod.enum(['none', 'uppercase', 'lowercase', 'capitalize']),
+  "textDecoration": zod.enum(['none', 'underline', 'line-through'])
+})
+})
+})),
+  "globalStyles": zod.object({
+  "background": zod.string(),
+  "textPrimary": zod.string(),
+  "textSecondary": zod.string(),
+  "accent": zod.string()
+})
+}),
+  "resumeId": zod.string().optional(),
+  "slug": zod.string().optional()
+})
 

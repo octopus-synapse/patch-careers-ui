@@ -37,5 +37,8 @@ All errors follow a consistent format:
  */
 
 export type SearchSimilarParams = {
-limit: string;
+/**
+ * Default 5, max 50
+ */
+limit?: number;
 };

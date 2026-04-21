@@ -37,6 +37,6 @@ All errors follow a consistent format:
  */
 
 export type JobsGetMyJobsParams = {
-page: number;
-limit: number;
+limit?: number;
+page?: number;
 };

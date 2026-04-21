@@ -91,9 +91,67 @@ export const PostsCreateBody = zod.object({
 })
 
 /**
+ * @summary Get a post by ID
+ */
+export const PostsFindByIdResponse = zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "type": zod.string(),
+  "subtype": zod.string().optional(),
+  "content": zod.string().optional(),
+  "hardSkills": zod.array(zod.string()),
+  "softSkills": zod.array(zod.string()),
+  "hashtags": zod.array(zod.string()),
+  "imageUrl": zod.string().optional(),
+  "linkUrl": zod.string().optional(),
+  "coAuthors": zod.array(zod.string()),
+  "scheduledAt": zod.string().optional(),
+  "isPublished": zod.boolean(),
+  "threadId": zod.string().optional(),
+  "pollDeadline": zod.string().optional(),
+  "votesCount": zod.number(),
+  "codeSnippet": zod.object({
+
+}).passthrough().optional(),
+  "likesCount": zod.number(),
+  "commentsCount": zod.number(),
+  "repostsCount": zod.number(),
+  "bookmarksCount": zod.number(),
+  "isDeleted": zod.boolean(),
+  "createdAt": zod.string(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}),
+  "originalPost": zod.object({
+  "id": zod.string(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+})
+}).optional()
+})
+
+/**
+ * @summary Delete a post
+ */
+export const PostsDeleteResponse = zod.object({
+  "deleted": zod.boolean()
+})
+
+/**
  * @summary Upload post image
  */
 export const PostsUploadImageBody = zod.object({
   "file": zod.instanceof(File).optional()
+})
+
+export const PostsUploadImageResponse = zod.object({
+  "url": zod.string(),
+  "key": zod.string()
 })
 

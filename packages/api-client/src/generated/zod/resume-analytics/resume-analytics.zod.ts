@@ -47,6 +47,21 @@ export const ResumeAnalyticsTrackViewBody = zod.object({
 })
 
 /**
+ * @summary Get view statistics
+ */
+export const ResumeAnalyticsGetViewStatsResponse = zod.record(zod.string(), zod.unknown())
+
+/**
+ * @summary Calculate ATS compatibility score
+ */
+export const ResumeAnalyticsGetATSScoreResponse = zod.record(zod.string(), zod.unknown())
+
+/**
+ * @summary Get keyword optimization suggestions
+ */
+export const ResumeAnalyticsGetKeywordSuggestionsResponse = zod.record(zod.string(), zod.unknown())
+
+/**
  * @summary Match resume against job description
  */
 export const resumeAnalyticsMatchJobBodyJobDescriptionMin = 10;
@@ -57,6 +72,18 @@ export const ResumeAnalyticsMatchJobBody = zod.object({
   "jobDescription": zod.string().min(resumeAnalyticsMatchJobBodyJobDescriptionMin)
 })
 
+export const ResumeAnalyticsMatchJobResponse = zod.record(zod.string(), zod.unknown())
+
+/**
+ * @summary Get industry benchmark comparison
+ */
+export const ResumeAnalyticsGetBenchmarkResponse = zod.record(zod.string(), zod.unknown())
+
+/**
+ * @summary Get complete analytics dashboard
+ */
+export const ResumeAnalyticsGetDashboardResponse = zod.record(zod.string(), zod.unknown())
+
 /**
  * @summary Save analytics snapshot for tracking progress
  */
@@ -64,4 +91,14 @@ export const ResumeAnalyticsCreateSnapshotBody = zod.object({
   "label": zod.string().optional(),
   "notes": zod.string().optional()
 })
+
+/**
+ * @summary Get analytics history
+ */
+export const ResumeAnalyticsGetHistoryResponse = zod.record(zod.string(), zod.unknown())
+
+/**
+ * @summary Get score progression over time
+ */
+export const ResumeAnalyticsGetProgressionResponse = zod.record(zod.string(), zod.unknown())
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createJobsFindAll, createSearchSearch, searchSearch } from 'api-client';
+import { SearchSearchSortBy, createJobsFindAll, createSearchSearch, searchSearch } from 'api-client';
 import { Search, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
@@ -24,8 +24,8 @@ type Person = {
 const initialQuery = $derived($page.url.searchParams.get('q') ?? '');
 const initialSkills = $derived($page.url.searchParams.get('skills') ?? '');
 const initialLocation = $derived($page.url.searchParams.get('location') ?? '');
-const initialMinExp = $derived($page.url.searchParams.get('minExp') ?? '');
-const initialMaxExp = $derived($page.url.searchParams.get('maxExp') ?? '');
+const initialMinExp = $derived(Number($page.url.searchParams.get('minExp') ?? '') || 0);
+const initialMaxExp = $derived(Number($page.url.searchParams.get('maxExp') ?? '') || 0);
 const initialType = $derived($page.url.searchParams.get('type') ?? 'people');
 
 let queryInput = $state('');
@@ -39,8 +39,8 @@ $effect(() => {
   queryInput = initialQuery;
   skillsInput = initialSkills;
   locationInput = initialLocation;
-  minExpInput = initialMinExp;
-  maxExpInput = initialMaxExp;
+  minExpInput = initialMinExp ? String(initialMinExp) : '';
+  maxExpInput = initialMaxExp ? String(initialMaxExp) : '';
   const validTabs = ['people', 'posts', 'jobs', 'companies'] as const;
   activeTab = (validTabs as readonly string[]).includes(initialType)
     ? (initialType as typeof activeTab)
@@ -53,9 +53,9 @@ const queryParams = $derived({
   location: initialLocation,
   minExp: initialMinExp,
   maxExp: initialMaxExp,
-  page: '1',
-  limit: '20',
-  sortBy: 'relevance',
+  page: 1,
+  limit: 20,
+  sortBy: SearchSearchSortBy.relevance,
 });
 
 const query = createSearchSearch(
@@ -114,7 +114,7 @@ async function loadMore() {
     const next = pageNum + 1;
     const res = (await searchSearch({
       ...queryParams,
-      page: String(next),
+      page: next,
     })) as unknown as Record<string, unknown> | undefined;
     const items = (res?.data as Record<string, unknown>[] | undefined) ?? [];
     extra = [...extra, ...rowsFrom(items)];

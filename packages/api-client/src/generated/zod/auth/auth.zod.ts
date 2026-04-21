@@ -50,6 +50,14 @@ export const AuthLoginBody = zod.object({
   "password": zod.string().min(1)
 })
 
+export const AuthLoginResponse = zod.object({
+  "accessToken": zod.string().optional(),
+  "refreshToken": zod.string().optional(),
+  "expiresIn": zod.number().optional(),
+  "userId": zod.string(),
+  "twoFactorRequired": zod.boolean().optional()
+})
+
 /**
  * Completes login by validating a TOTP or backup code.
  * @summary Verify 2FA code during login
@@ -64,6 +72,14 @@ export const AuthLoginVerify2faBody = zod.object({
   "code": zod.string().min(authLoginVerify2faBodyCodeMin)
 })
 
+export const AuthLoginVerify2faResponse = zod.object({
+  "accessToken": zod.string().optional(),
+  "refreshToken": zod.string().optional(),
+  "expiresIn": zod.number().optional(),
+  "userId": zod.string(),
+  "twoFactorRequired": zod.boolean().optional()
+})
+
 /**
  * Logs out the user by invalidating refresh token(s) and clearing session cookie.
  * @summary Logout
@@ -73,5 +89,30 @@ export const authLogoutBodyLogoutAllSessionsDefault = false;
 export const AuthLogoutBody = zod.object({
   "refreshToken": zod.string().optional(),
   "logoutAllSessions": zod.boolean().default(authLogoutBodyLogoutAllSessionsDefault)
+})
+
+export const AuthLogoutResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Validates session cookie and returns current user data if authenticated.
+ * @summary Get Session
+ */
+export const AuthSessionResponse = zod.object({
+  "authenticated": zod.boolean(),
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "emailVerified": zod.boolean(),
+  "role": zod.enum(['USER', 'ADMIN']),
+  "roles": zod.array(zod.string()),
+  "isAdmin": zod.boolean(),
+  "needsOnboarding": zod.boolean(),
+  "needsEmailVerification": zod.boolean()
+}).nullable()
 })
 

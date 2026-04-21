@@ -49,3 +49,30 @@ export const MecInternalTriggerSyncBody = zod.object({
   "source": zod.string().default(mecInternalTriggerSyncBodySourceDefault)
 })
 
+/**
+ * @summary Get sync status
+ */
+export const MecInternalGetSyncStatusResponse = zod.object({
+  "isRunning": zod.boolean(),
+  "metadata": zod.object({
+  "lastSyncAt": zod.string(),
+  "lastSyncStatus": zod.enum(['success', 'failed', 'partial']),
+  "lastSyncDuration": zod.number(),
+  "totalInstitutions": zod.number(),
+  "totalCourses": zod.number(),
+  "triggeredBy": zod.string()
+}).nullable(),
+  "lastSync": zod.object({
+
+}).passthrough().nullable()
+})
+
+/**
+ * @summary Get sync history
+ */
+export const MecInternalGetSyncHistoryResponse = zod.object({
+  "history": zod.array(zod.object({
+
+}).passthrough())
+})
+

@@ -58,6 +58,7 @@ import type {
 import type {
   CollaboratorDataDto,
   CollaboratorsListDataDto,
+  CreateCollabCommentDto,
   InviteCollaboratorDto,
   SharedResumesListDataDto,
   UpdateRoleDto
@@ -618,3 +619,389 @@ export const prefetchCollaborationGetSharedWithMeQuery = async <TData = Awaited<
 
 
 
+/**
+ * @summary List collaboration comments on a resume
+ */
+export type collaborationListCommentsResponse200 = void
+
+export type collaborationListCommentsResponseSuccess = collaborationListCommentsResponse200
+;
+
+export type collaborationListCommentsResponse = (collaborationListCommentsResponseSuccess)
+
+export const getCollaborationListCommentsUrl = (resumeId: string,) => {
+
+
+
+
+  return `/api/resumes/${resumeId}/comments`
+}
+
+export const collaborationListComments = async (resumeId: string, options?: RequestInit): Promise<collaborationListCommentsResponse> => {
+
+  return customFetch<collaborationListCommentsResponse>(getCollaborationListCommentsUrl(resumeId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getCollaborationListCommentsInfiniteQueryKey = (resumeId: string,) => {
+    return [
+    'infinite', `/api/resumes/${resumeId}/comments`
+    ] as const;
+    }
+
+export const getCollaborationListCommentsQueryKey = (resumeId: string,) => {
+    return [
+    `/api/resumes/${resumeId}/comments`
+    ] as const;
+    }
+
+
+export const getCollaborationListCommentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationListComments>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCollaborationListCommentsInfiniteQueryKey(resumeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof collaborationListComments>>> = ({ signal }) => collaborationListComments(resumeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CollaborationListCommentsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationListComments>>>
+export type CollaborationListCommentsInfiniteQueryError = unknown
+
+
+/**
+ * @summary List collaboration comments on a resume
+ */
+
+export function createCollaborationListCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationListComments>>>, TError = unknown>(
+ resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getCollaborationListCommentsInfiniteQueryOptions(resumeId(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List collaboration comments on a resume
+ */
+export const prefetchCollaborationListCommentsInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationListComments>>, TError = unknown>(
+ queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getCollaborationListCommentsInfiniteQueryOptions(resumeId,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getCollaborationListCommentsQueryOptions = <TData = Awaited<ReturnType<typeof collaborationListComments>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCollaborationListCommentsQueryKey(resumeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof collaborationListComments>>> = ({ signal }) => collaborationListComments(resumeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CollaborationListCommentsQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationListComments>>>
+export type CollaborationListCommentsQueryError = unknown
+
+
+/**
+ * @summary List collaboration comments on a resume
+ */
+
+export function createCollaborationListComments<TData = Awaited<ReturnType<typeof collaborationListComments>>, TError = unknown>(
+ resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getCollaborationListCommentsQueryOptions(resumeId(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List collaboration comments on a resume
+ */
+export const prefetchCollaborationListCommentsQuery = async <TData = Awaited<ReturnType<typeof collaborationListComments>>, TError = unknown>(
+ queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationListComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getCollaborationListCommentsQueryOptions(resumeId,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Add a comment / reply to a resume
+ */
+export type collaborationCreateCommentResponse201 = void
+
+export type collaborationCreateCommentResponseSuccess = collaborationCreateCommentResponse201
+;
+
+export type collaborationCreateCommentResponse = (collaborationCreateCommentResponseSuccess)
+
+export const getCollaborationCreateCommentUrl = (resumeId: string,) => {
+
+
+
+
+  return `/api/resumes/${resumeId}/comments`
+}
+
+export const collaborationCreateComment = async (resumeId: string,
+    createCollabCommentDto: CreateCollabCommentDto, options?: RequestInit): Promise<collaborationCreateCommentResponse> => {
+
+  return customFetch<collaborationCreateCommentResponse>(getCollaborationCreateCommentUrl(resumeId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createCollabCommentDto,)
+  }
+);}
+
+
+
+
+export const getCollaborationCreateCommentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationCreateComment>>, TError,{resumeId: string;data: CreateCollabCommentDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof collaborationCreateComment>>, TError,{resumeId: string;data: CreateCollabCommentDto}, TContext> => {
+
+const mutationKey = ['collaborationCreateComment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof collaborationCreateComment>>, {resumeId: string;data: CreateCollabCommentDto}> = (props) => {
+          const {resumeId,data} = props ?? {};
+
+          return  collaborationCreateComment(resumeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CollaborationCreateCommentMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationCreateComment>>>
+    export type CollaborationCreateCommentMutationBody = CreateCollabCommentDto
+    export type CollaborationCreateCommentMutationError = unknown
+
+    /**
+ * @summary Add a comment / reply to a resume
+ */
+export const createCollaborationCreateComment = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationCreateComment>>, TError,{resumeId: string;data: CreateCollabCommentDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof collaborationCreateComment>>,
+        TError,
+        {resumeId: string;data: CreateCollabCommentDto},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getCollaborationCreateCommentMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary Mark a comment thread as resolved
+ */
+export type collaborationResolveCommentResponse200 = void
+
+export type collaborationResolveCommentResponseSuccess = collaborationResolveCommentResponse200
+;
+
+export type collaborationResolveCommentResponse = (collaborationResolveCommentResponseSuccess)
+
+export const getCollaborationResolveCommentUrl = (commentId: string,) => {
+
+
+
+
+  return `/api/resumes/comments/${commentId}/resolve`
+}
+
+export const collaborationResolveComment = async (commentId: string, options?: RequestInit): Promise<collaborationResolveCommentResponse> => {
+
+  return customFetch<collaborationResolveCommentResponse>(getCollaborationResolveCommentUrl(commentId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getCollaborationResolveCommentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResolveComment>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResolveComment>>, TError,{commentId: string}, TContext> => {
+
+const mutationKey = ['collaborationResolveComment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof collaborationResolveComment>>, {commentId: string}> = (props) => {
+          const {commentId} = props ?? {};
+
+          return  collaborationResolveComment(commentId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CollaborationResolveCommentMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResolveComment>>>
+
+    export type CollaborationResolveCommentMutationError = unknown
+
+    /**
+ * @summary Mark a comment thread as resolved
+ */
+export const createCollaborationResolveComment = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResolveComment>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof collaborationResolveComment>>,
+        TError,
+        {commentId: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getCollaborationResolveCommentMutationOptions(options?.()) }), queryClient);
+    }
+    /**
+ * @summary Delete a comment (author or resume owner)
+ */
+export type collaborationDeleteCommentResponse204 = void
+
+export type collaborationDeleteCommentResponseSuccess = collaborationDeleteCommentResponse204
+;
+
+export type collaborationDeleteCommentResponse = (collaborationDeleteCommentResponseSuccess)
+
+export const getCollaborationDeleteCommentUrl = (commentId: string,) => {
+
+
+
+
+  return `/api/resumes/comments/${commentId}`
+}
+
+export const collaborationDeleteComment = async (commentId: string, options?: RequestInit): Promise<collaborationDeleteCommentResponse> => {
+
+  return customFetch<collaborationDeleteCommentResponse>(getCollaborationDeleteCommentUrl(commentId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getCollaborationDeleteCommentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationDeleteComment>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof collaborationDeleteComment>>, TError,{commentId: string}, TContext> => {
+
+const mutationKey = ['collaborationDeleteComment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof collaborationDeleteComment>>, {commentId: string}> = (props) => {
+          const {commentId} = props ?? {};
+
+          return  collaborationDeleteComment(commentId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CollaborationDeleteCommentMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationDeleteComment>>>
+
+    export type CollaborationDeleteCommentMutationError = unknown
+
+    /**
+ * @summary Delete a comment (author or resume owner)
+ */
+export const createCollaborationDeleteComment = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationDeleteComment>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient): CreateMutationResult<
+        Awaited<ReturnType<typeof collaborationDeleteComment>>,
+        TError,
+        {commentId: string},
+        TContext
+      > => {
+      return createMutation(() => ({ ...getCollaborationDeleteCommentMutationOptions(options?.()) }), queryClient);
+    }

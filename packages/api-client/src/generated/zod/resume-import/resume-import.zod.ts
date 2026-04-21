@@ -47,6 +47,17 @@ export const ResumeImportImportPdfBody = zod.object({
 })
 
 /**
+ * Uses the user's previously-connected GitHub OAuth token to fetch top repos and derive skills + BUILD posts. Fails with 409 GITHUB_NOT_CONNECTED if the user hasn't linked GitHub yet.
+ * @summary Import profile data from GitHub
+ */
+export const ResumeImportImportGithubResponse = zod.object({
+  "importId": zod.string(),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional()
+})
+
+/**
  * Creates import job and processes JSON Resume data (jsonresume.org standard)
  * @summary Import resume from JSON Resume format
  */
@@ -182,6 +193,87 @@ export const ResumeImportParseJsonBody = zod.object({
 })
 })
 
+export const ResumeImportParseJsonResponse = zod.object({
+  "personalInfo": zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "website": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional()
+}),
+  "summary": zod.string().optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown()))
+}))
+})
+
+/**
+ * Returns current status, errors, and result of import job
+ * @summary Get import job status
+ */
+export const ResumeImportGetStatusResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "source": zod.enum(['LINKEDIN', 'PDF', 'DOCX', 'JSON', 'GITHUB']),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "data": zod.record(zod.string(), zod.unknown()).optional(),
+  "parsedData": zod.object({
+  "personalInfo": zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "website": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional()
+}),
+  "summary": zod.string().optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown()))
+}))
+}).optional(),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().optional()
+})
+
+/**
+ * Returns all import jobs for authenticated user, ordered by creation date
+ * @summary Get import history
+ */
+export const ResumeImportGetHistoryResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "source": zod.enum(['LINKEDIN', 'PDF', 'DOCX', 'JSON', 'GITHUB']),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "data": zod.record(zod.string(), zod.unknown()).optional(),
+  "parsedData": zod.object({
+  "personalInfo": zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "website": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional()
+}),
+  "summary": zod.string().optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown()))
+}))
+}).optional(),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().optional()
+})
+
 /**
  * Retries processing of failed import job with same data
  * @summary Retry failed import
@@ -190,5 +282,12 @@ export const resumeImportRetryBodyForceDefault = false;
 
 export const ResumeImportRetryBody = zod.object({
   "force": zod.boolean().default(resumeImportRetryBodyForceDefault)
+})
+
+export const ResumeImportRetryResponse = zod.object({
+  "importId": zod.string(),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional()
 })
 

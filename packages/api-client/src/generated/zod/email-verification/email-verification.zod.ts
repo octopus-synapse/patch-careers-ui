@@ -44,6 +44,10 @@ import * as zod from 'zod';
  */
 export const SendVerificationHandleBody = zod.string()
 
+export const SendVerificationHandleResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Verifies the user email using the token received via email.
  * @summary Verify email with token
@@ -53,5 +57,10 @@ export const SendVerificationHandleBody = zod.string()
 
 export const VerifyEmailHandleBody = zod.object({
   "token": zod.string().min(1)
+})
+
+export const VerifyEmailHandleResponse = zod.object({
+  "email": zod.string(),
+  "message": zod.string()
 })
 

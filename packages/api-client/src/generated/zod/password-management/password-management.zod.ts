@@ -46,6 +46,10 @@ export const ForgotPasswordHandleBody = zod.object({
   "email": zod.string().email()
 })
 
+export const ForgotPasswordHandleResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Resets the user password using a valid reset token received via email.
  * @summary Reset password with token
@@ -60,6 +64,10 @@ export const ResetPasswordHandleBody = zod.object({
   "newPassword": zod.string().min(resetPasswordHandleBodyNewPasswordMin)
 })
 
+export const ResetPasswordHandleResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Changes the password for the authenticated user after verifying the current password.
  * @summary Change password
@@ -72,5 +80,9 @@ export const changePasswordHandleBodyNewPasswordMin = 8;
 export const ChangePasswordHandleBody = zod.object({
   "currentPassword": zod.string().min(1),
   "newPassword": zod.string().min(changePasswordHandleBodyNewPasswordMin)
+})
+
+export const ChangePasswordHandleResponse = zod.object({
+  "message": zod.string()
 })
 

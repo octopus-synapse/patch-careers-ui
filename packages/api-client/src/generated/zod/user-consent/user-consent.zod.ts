@@ -48,3 +48,28 @@ export const UserConsentAcceptConsentBody = zod.object({
   "userAgent": zod.string().optional()
 })
 
+/**
+ * Returns which documents the user has accepted for the current versions
+ * @summary Check consent acceptance status
+ */
+export const GetConsentStatusCheckConsentStatusResponse = zod.object({
+  "tosAccepted": zod.boolean(),
+  "privacyPolicyAccepted": zod.boolean(),
+  "marketingConsentAccepted": zod.boolean(),
+  "latestTosVersion": zod.string(),
+  "latestPrivacyPolicyVersion": zod.string()
+})
+
+/**
+ * Retrieves all consent records for the authenticated user
+ * @summary Get consent acceptance history
+ */
+export const GetConsentHistoryGetConsentHistoryResponse = zod.object({
+  "id": zod.string(),
+  "documentType": zod.string(),
+  "version": zod.string(),
+  "acceptedAt": zod.string(),
+  "ipAddress": zod.string(),
+  "userAgent": zod.string()
+})
+

@@ -56,11 +56,18 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ApplyToJobDto,
+  CreateJobDto,
+  JobApplicationsByJobDto,
+  JobResponseDto,
   JobsFindAllParams,
+  JobsGetApplicationsForJobParams,
   JobsGetBookmarkedJobsParams,
   JobsGetMyApplicationsParams,
   JobsGetMyJobsParams,
-  JobsGetRecommendedJobsParams
+  JobsGetRecommendedJobsParams,
+  PaginatedJobsDto,
+  UpdateJobDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -81,7 +88,7 @@ export type jobsFindAllResponseError = (jobsFindAllResponse401 | jobsFindAllResp
 
 export type jobsFindAllResponse = (jobsFindAllResponseError)
 
-export const getJobsFindAllUrl = (params: JobsFindAllParams,) => {
+export const getJobsFindAllUrl = (params?: JobsFindAllParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -96,7 +103,7 @@ export const getJobsFindAllUrl = (params: JobsFindAllParams,) => {
   return stringifiedParams.length > 0 ? `/api/v1/jobs?${stringifiedParams}` : `/api/v1/jobs`
 }
 
-export const jobsFindAll = async (params: JobsFindAllParams, options?: RequestInit): Promise<jobsFindAllResponse> => {
+export const jobsFindAll = async (params?: JobsFindAllParams, options?: RequestInit): Promise<jobsFindAllResponse> => {
 
   return customFetch<jobsFindAllResponse>(getJobsFindAllUrl(params),
   {
@@ -124,7 +131,7 @@ export const getJobsFindAllQueryKey = (params?: JobsFindAllParams,) => {
     }
 
 
-export const getJobsFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsFindAll>>>, TError = void>(params: JobsFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getJobsFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsFindAll>>>, TError = void>(params?: JobsFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -148,19 +155,19 @@ export type JobsFindAllInfiniteQueryError = void
 
 
 export function createJobsFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsFindAll>>>, TError = void>(
- params: () =>  JobsFindAllParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: () =>  JobsFindAllParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createInfiniteQuery(() => getJobsFindAllInfiniteQueryOptions(params(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createInfiniteQuery(() => getJobsFindAllInfiniteQueryOptions(params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
 export const prefetchJobsFindAllInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsFindAll>>, TError = void>(
- queryClient: QueryClient, params: JobsFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ queryClient: QueryClient, params?: JobsFindAllParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
@@ -173,7 +180,7 @@ export const prefetchJobsFindAllInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getJobsFindAllQueryOptions = <TData = Awaited<ReturnType<typeof jobsFindAll>>, TError = void>(params: JobsFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getJobsFindAllQueryOptions = <TData = Awaited<ReturnType<typeof jobsFindAll>>, TError = void>(params?: JobsFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -197,19 +204,19 @@ export type JobsFindAllQueryError = void
 
 
 export function createJobsFindAll<TData = Awaited<ReturnType<typeof jobsFindAll>>, TError = void>(
- params: () =>  JobsFindAllParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: () =>  JobsFindAllParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createQuery(() => getJobsFindAllQueryOptions(params(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createQuery(() => getJobsFindAllQueryOptions(params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
 export const prefetchJobsFindAllQuery = async <TData = Awaited<ReturnType<typeof jobsFindAll>>, TError = void>(
- queryClient: QueryClient, params: JobsFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ queryClient: QueryClient, params?: JobsFindAllParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAll>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
@@ -222,16 +229,15 @@ export const prefetchJobsFindAllQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
-export type jobsCreateResponse401 = void
+/**
+ * @summary Create a new job posting
+ */
+export type jobsCreateResponse201 = JobResponseDto
 
-export type jobsCreateResponse403 = void
-
+export type jobsCreateResponseSuccess = jobsCreateResponse201
 ;
-export type jobsCreateResponseError = (jobsCreateResponse401 | jobsCreateResponse403) & {
-  headers: Headers;
-};
 
-export type jobsCreateResponse = (jobsCreateResponseError)
+export type jobsCreateResponse = (jobsCreateResponseSuccess)
 
 export const getJobsCreateUrl = () => {
 
@@ -241,23 +247,24 @@ export const getJobsCreateUrl = () => {
   return `/api/v1/jobs`
 }
 
-export const jobsCreate = async ( options?: RequestInit): Promise<jobsCreateResponse> => {
+export const jobsCreate = async (createJobDto: CreateJobDto, options?: RequestInit): Promise<jobsCreateResponse> => {
 
   return customFetch<jobsCreateResponse>(getJobsCreateUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createJobDto,)
   }
 );}
 
 
 
 
-export const getJobsCreateMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof jobsCreate>>, TError,void, TContext> => {
+export const getJobsCreateMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsCreate>>, TError,{data: CreateJobDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof jobsCreate>>, TError,{data: CreateJobDto}, TContext> => {
 
 const mutationKey = ['jobsCreate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -269,10 +276,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsCreate>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsCreate>>, {data: CreateJobDto}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  jobsCreate(requestOptions)
+          return  jobsCreate(data,requestOptions)
         }
 
 
@@ -283,31 +290,193 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type JobsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof jobsCreate>>>
+    export type JobsCreateMutationBody = CreateJobDto
+    export type JobsCreateMutationError = unknown
 
-    export type JobsCreateMutationError = void
-
-    export const createJobsCreate = <TError = void,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+    /**
+ * @summary Create a new job posting
+ */
+export const createJobsCreate = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsCreate>>, TError,{data: CreateJobDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof jobsCreate>>,
         TError,
-        void,
+        {data: CreateJobDto},
         TContext
       > => {
       return createMutation(() => ({ ...getJobsCreateMutationOptions(options?.()) }), queryClient);
     }
-    export type jobsGetMyJobsResponse401 = void
+    /**
+ * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
+ */
+export type jobsFindAllWithFitScoreResponse401 = void
 
-export type jobsGetMyJobsResponse403 = void
+export type jobsFindAllWithFitScoreResponse403 = void
 
 ;
-export type jobsGetMyJobsResponseError = (jobsGetMyJobsResponse401 | jobsGetMyJobsResponse403) & {
+export type jobsFindAllWithFitScoreResponseError = (jobsFindAllWithFitScoreResponse401 | jobsFindAllWithFitScoreResponse403) & {
   headers: Headers;
 };
 
-export type jobsGetMyJobsResponse = (jobsGetMyJobsResponseError)
+export type jobsFindAllWithFitScoreResponse = (jobsFindAllWithFitScoreResponseError)
 
-export const getJobsGetMyJobsUrl = (params: JobsGetMyJobsParams,) => {
+export const getJobsFindAllWithFitScoreUrl = () => {
+
+
+
+
+  return `/api/v1/jobs/with-fit-score`
+}
+
+export const jobsFindAllWithFitScore = async ( options?: RequestInit): Promise<jobsFindAllWithFitScoreResponse> => {
+
+  return customFetch<jobsFindAllWithFitScoreResponse>(getJobsFindAllWithFitScoreUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getJobsFindAllWithFitScoreInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/jobs/with-fit-score`
+    ] as const;
+    }
+
+export const getJobsFindAllWithFitScoreQueryKey = () => {
+    return [
+    `/api/v1/jobs/with-fit-score`
+    ] as const;
+    }
+
+
+export const getJobsFindAllWithFitScoreInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>>, TError = void>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getJobsFindAllWithFitScoreInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>> = ({ signal }) => jobsFindAllWithFitScore({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type JobsFindAllWithFitScoreInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>>
+export type JobsFindAllWithFitScoreInfiniteQueryError = void
+
+
+/**
+ * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
+ */
+
+export function createJobsFindAllWithFitScoreInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>>, TError = void>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getJobsFindAllWithFitScoreInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
+ */
+export const prefetchJobsFindAllWithFitScoreInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getJobsFindAllWithFitScoreInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getJobsFindAllWithFitScoreQueryOptions = <TData = Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError = void>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getJobsFindAllWithFitScoreQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>> = ({ signal }) => jobsFindAllWithFitScore({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type JobsFindAllWithFitScoreQueryResult = NonNullable<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>>
+export type JobsFindAllWithFitScoreQueryError = void
+
+
+/**
+ * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
+ */
+
+export function createJobsFindAllWithFitScore<TData = Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError = void>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getJobsFindAllWithFitScoreQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
+ */
+export const prefetchJobsFindAllWithFitScoreQuery = async <TData = Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError = void>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindAllWithFitScore>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getJobsFindAllWithFitScoreQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary List jobs the current user (recruiter) authored
+ */
+export type jobsGetMyJobsResponse200 = PaginatedJobsDto
+
+export type jobsGetMyJobsResponseSuccess = jobsGetMyJobsResponse200
+;
+
+export type jobsGetMyJobsResponse = (jobsGetMyJobsResponseSuccess)
+
+export const getJobsGetMyJobsUrl = (params?: JobsGetMyJobsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -322,7 +491,7 @@ export const getJobsGetMyJobsUrl = (params: JobsGetMyJobsParams,) => {
   return stringifiedParams.length > 0 ? `/api/v1/jobs/mine?${stringifiedParams}` : `/api/v1/jobs/mine`
 }
 
-export const jobsGetMyJobs = async (params: JobsGetMyJobsParams, options?: RequestInit): Promise<jobsGetMyJobsResponse> => {
+export const jobsGetMyJobs = async (params?: JobsGetMyJobsParams, options?: RequestInit): Promise<jobsGetMyJobsResponse> => {
 
   return customFetch<jobsGetMyJobsResponse>(getJobsGetMyJobsUrl(params),
   {
@@ -350,7 +519,7 @@ export const getJobsGetMyJobsQueryKey = (params?: JobsGetMyJobsParams,) => {
     }
 
 
-export const getJobsGetMyJobsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsGetMyJobs>>>, TError = void>(params: JobsGetMyJobsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getJobsGetMyJobsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsGetMyJobs>>>, TError = unknown>(params?: JobsGetMyJobsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -369,24 +538,30 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type JobsGetMyJobsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof jobsGetMyJobs>>>
-export type JobsGetMyJobsInfiniteQueryError = void
+export type JobsGetMyJobsInfiniteQueryError = unknown
 
 
+/**
+ * @summary List jobs the current user (recruiter) authored
+ */
 
-export function createJobsGetMyJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsGetMyJobs>>>, TError = void>(
- params: () =>  JobsGetMyJobsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function createJobsGetMyJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsGetMyJobs>>>, TError = unknown>(
+ params?: () =>  JobsGetMyJobsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createInfiniteQuery(() => getJobsGetMyJobsInfiniteQueryOptions(params(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createInfiniteQuery(() => getJobsGetMyJobsInfiniteQueryOptions(params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
-export const prefetchJobsGetMyJobsInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = void>(
- queryClient: QueryClient, params: JobsGetMyJobsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+/**
+ * @summary List jobs the current user (recruiter) authored
+ */
+export const prefetchJobsGetMyJobsInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = unknown>(
+ queryClient: QueryClient, params?: JobsGetMyJobsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
@@ -399,7 +574,7 @@ export const prefetchJobsGetMyJobsInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getJobsGetMyJobsQueryOptions = <TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = void>(params: JobsGetMyJobsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getJobsGetMyJobsQueryOptions = <TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = unknown>(params?: JobsGetMyJobsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -418,24 +593,30 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type JobsGetMyJobsQueryResult = NonNullable<Awaited<ReturnType<typeof jobsGetMyJobs>>>
-export type JobsGetMyJobsQueryError = void
+export type JobsGetMyJobsQueryError = unknown
 
 
+/**
+ * @summary List jobs the current user (recruiter) authored
+ */
 
-export function createJobsGetMyJobs<TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = void>(
- params: () =>  JobsGetMyJobsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function createJobsGetMyJobs<TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = unknown>(
+ params?: () =>  JobsGetMyJobsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createQuery(() => getJobsGetMyJobsQueryOptions(params(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = createQuery(() => getJobsGetMyJobsQueryOptions(params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
-export const prefetchJobsGetMyJobsQuery = async <TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = void>(
- queryClient: QueryClient, params: JobsGetMyJobsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+/**
+ * @summary List jobs the current user (recruiter) authored
+ */
+export const prefetchJobsGetMyJobsQuery = async <TData = Awaited<ReturnType<typeof jobsGetMyJobs>>, TError = unknown>(
+ queryClient: QueryClient, params?: JobsGetMyJobsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetMyJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
@@ -949,16 +1130,190 @@ export const prefetchJobsGetMyApplicationsQuery = async <TData = Awaited<ReturnT
 
 
 
-export type jobsFindByIdResponse401 = void
+/**
+ * @summary List applications received for a job (job owner only)
+ */
+export type jobsGetApplicationsForJobResponse200 = JobApplicationsByJobDto
 
-export type jobsFindByIdResponse403 = void
-
+export type jobsGetApplicationsForJobResponseSuccess = jobsGetApplicationsForJobResponse200
 ;
-export type jobsFindByIdResponseError = (jobsFindByIdResponse401 | jobsFindByIdResponse403) & {
-  headers: Headers;
-};
 
-export type jobsFindByIdResponse = (jobsFindByIdResponseError)
+export type jobsGetApplicationsForJobResponse = (jobsGetApplicationsForJobResponseSuccess)
+
+export const getJobsGetApplicationsForJobUrl = (id: string,
+    params?: JobsGetApplicationsForJobParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/jobs/${id}/applications?${stringifiedParams}` : `/api/v1/jobs/${id}/applications`
+}
+
+export const jobsGetApplicationsForJob = async (id: string,
+    params?: JobsGetApplicationsForJobParams, options?: RequestInit): Promise<jobsGetApplicationsForJobResponse> => {
+
+  return customFetch<jobsGetApplicationsForJobResponse>(getJobsGetApplicationsForJobUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getJobsGetApplicationsForJobInfiniteQueryKey = (id: string,
+    params?: JobsGetApplicationsForJobParams,) => {
+    return [
+    'infinite', `/api/v1/jobs/${id}/applications`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+export const getJobsGetApplicationsForJobQueryKey = (id: string,
+    params?: JobsGetApplicationsForJobParams,) => {
+    return [
+    `/api/v1/jobs/${id}/applications`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getJobsGetApplicationsForJobInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>>, TError = unknown>(id: string,
+    params?: JobsGetApplicationsForJobParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getJobsGetApplicationsForJobInfiniteQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>> = ({ signal }) => jobsGetApplicationsForJob(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type JobsGetApplicationsForJobInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>>
+export type JobsGetApplicationsForJobInfiniteQueryError = unknown
+
+
+/**
+ * @summary List applications received for a job (job owner only)
+ */
+
+export function createJobsGetApplicationsForJobInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>>, TError = unknown>(
+ id: () =>  string,
+    params?: () =>  JobsGetApplicationsForJobParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getJobsGetApplicationsForJobInfiniteQueryOptions(id(),
+    params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List applications received for a job (job owner only)
+ */
+export const prefetchJobsGetApplicationsForJobInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError = unknown>(
+ queryClient: QueryClient, id: string,
+    params?: JobsGetApplicationsForJobParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getJobsGetApplicationsForJobInfiniteQueryOptions(id,params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getJobsGetApplicationsForJobQueryOptions = <TData = Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError = unknown>(id: string,
+    params?: JobsGetApplicationsForJobParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getJobsGetApplicationsForJobQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>> = ({ signal }) => jobsGetApplicationsForJob(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type JobsGetApplicationsForJobQueryResult = NonNullable<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>>
+export type JobsGetApplicationsForJobQueryError = unknown
+
+
+/**
+ * @summary List applications received for a job (job owner only)
+ */
+
+export function createJobsGetApplicationsForJob<TData = Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError = unknown>(
+ id: () =>  string,
+    params?: () =>  JobsGetApplicationsForJobParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getJobsGetApplicationsForJobQueryOptions(id(),
+    params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List applications received for a job (job owner only)
+ */
+export const prefetchJobsGetApplicationsForJobQuery = async <TData = Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError = unknown>(
+ queryClient: QueryClient, id: string,
+    params?: JobsGetApplicationsForJobParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsGetApplicationsForJob>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getJobsGetApplicationsForJobQueryOptions(id,params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Fetch a single job by id
+ */
+export type jobsFindByIdResponse200 = JobResponseDto
+
+export type jobsFindByIdResponseSuccess = jobsFindByIdResponse200
+;
+
+export type jobsFindByIdResponse = (jobsFindByIdResponseSuccess)
 
 export const getJobsFindByIdUrl = (id: string,) => {
 
@@ -996,7 +1351,7 @@ export const getJobsFindByIdQueryKey = (id: string,) => {
     }
 
 
-export const getJobsFindByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsFindById>>>, TError = void>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getJobsFindByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobsFindById>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1015,11 +1370,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type JobsFindByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof jobsFindById>>>
-export type JobsFindByIdInfiniteQueryError = void
+export type JobsFindByIdInfiniteQueryError = unknown
 
 
+/**
+ * @summary Fetch a single job by id
+ */
 
-export function createJobsFindByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsFindById>>>, TError = void>(
+export function createJobsFindByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobsFindById>>>, TError = unknown>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1031,7 +1389,10 @@ export function createJobsFindByIdInfinite<TData = InfiniteData<Awaited<ReturnTy
   return query
 }
 
-export const prefetchJobsFindByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsFindById>>, TError = void>(
+/**
+ * @summary Fetch a single job by id
+ */
+export const prefetchJobsFindByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobsFindById>>, TError = unknown>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1045,7 +1406,7 @@ export const prefetchJobsFindByIdInfiniteQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getJobsFindByIdQueryOptions = <TData = Awaited<ReturnType<typeof jobsFindById>>, TError = void>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getJobsFindByIdQueryOptions = <TData = Awaited<ReturnType<typeof jobsFindById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1064,11 +1425,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type JobsFindByIdQueryResult = NonNullable<Awaited<ReturnType<typeof jobsFindById>>>
-export type JobsFindByIdQueryError = void
+export type JobsFindByIdQueryError = unknown
 
 
+/**
+ * @summary Fetch a single job by id
+ */
 
-export function createJobsFindById<TData = Awaited<ReturnType<typeof jobsFindById>>, TError = void>(
+export function createJobsFindById<TData = Awaited<ReturnType<typeof jobsFindById>>, TError = unknown>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1080,7 +1444,10 @@ export function createJobsFindById<TData = Awaited<ReturnType<typeof jobsFindByI
   return query
 }
 
-export const prefetchJobsFindByIdQuery = async <TData = Awaited<ReturnType<typeof jobsFindById>>, TError = void>(
+/**
+ * @summary Fetch a single job by id
+ */
+export const prefetchJobsFindByIdQuery = async <TData = Awaited<ReturnType<typeof jobsFindById>>, TError = unknown>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobsFindById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1094,16 +1461,15 @@ export const prefetchJobsFindByIdQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export type jobsUpdateResponse401 = void
+/**
+ * @summary Update a job posting
+ */
+export type jobsUpdateResponse200 = JobResponseDto
 
-export type jobsUpdateResponse403 = void
-
+export type jobsUpdateResponseSuccess = jobsUpdateResponse200
 ;
-export type jobsUpdateResponseError = (jobsUpdateResponse401 | jobsUpdateResponse403) & {
-  headers: Headers;
-};
 
-export type jobsUpdateResponse = (jobsUpdateResponseError)
+export type jobsUpdateResponse = (jobsUpdateResponseSuccess)
 
 export const getJobsUpdateUrl = (id: string,) => {
 
@@ -1113,23 +1479,25 @@ export const getJobsUpdateUrl = (id: string,) => {
   return `/api/v1/jobs/${id}`
 }
 
-export const jobsUpdate = async (id: string, options?: RequestInit): Promise<jobsUpdateResponse> => {
+export const jobsUpdate = async (id: string,
+    updateJobDto: UpdateJobDto, options?: RequestInit): Promise<jobsUpdateResponse> => {
 
   return customFetch<jobsUpdateResponse>(getJobsUpdateUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateJobDto,)
   }
 );}
 
 
 
 
-export const getJobsUpdateMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof jobsUpdate>>, TError,{id: string}, TContext> => {
+export const getJobsUpdateMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsUpdate>>, TError,{id: string;data: UpdateJobDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof jobsUpdate>>, TError,{id: string;data: UpdateJobDto}, TContext> => {
 
 const mutationKey = ['jobsUpdate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1141,10 +1509,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsUpdate>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsUpdate>>, {id: string;data: UpdateJobDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  jobsUpdate(id,requestOptions)
+          return  jobsUpdate(id,data,requestOptions)
         }
 
 
@@ -1155,20 +1523,26 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type JobsUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof jobsUpdate>>>
+    export type JobsUpdateMutationBody = UpdateJobDto
+    export type JobsUpdateMutationError = unknown
 
-    export type JobsUpdateMutationError = void
-
-    export const createJobsUpdate = <TError = void,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+    /**
+ * @summary Update a job posting
+ */
+export const createJobsUpdate = <TError = unknown,
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsUpdate>>, TError,{id: string;data: UpdateJobDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof jobsUpdate>>,
         TError,
-        {id: string},
+        {id: string;data: UpdateJobDto},
         TContext
       > => {
       return createMutation(() => ({ ...getJobsUpdateMutationOptions(options?.()) }), queryClient);
     }
-    export type jobsDeleteResponse401 = void
+    /**
+ * @summary Delete a job posting
+ */
+export type jobsDeleteResponse401 = void
 
 export type jobsDeleteResponse403 = void
 
@@ -1232,7 +1606,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type JobsDeleteMutationError = void
 
-    export const createJobsDelete = <TError = void,
+    /**
+ * @summary Delete a job posting
+ */
+export const createJobsDelete = <TError = void,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof jobsDelete>>,
@@ -1584,14 +1961,16 @@ export const getJobsApplyUrl = (id: string,) => {
   return `/api/v1/jobs/${id}/apply`
 }
 
-export const jobsApply = async (id: string, options?: RequestInit): Promise<jobsApplyResponse> => {
+export const jobsApply = async (id: string,
+    applyToJobDto: ApplyToJobDto, options?: RequestInit): Promise<jobsApplyResponse> => {
 
   return customFetch<jobsApplyResponse>(getJobsApplyUrl(id),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      applyToJobDto,)
   }
 );}
 
@@ -1599,8 +1978,8 @@ export const jobsApply = async (id: string, options?: RequestInit): Promise<jobs
 
 
 export const getJobsApplyMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsApply>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof jobsApply>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsApply>>, TError,{id: string;data: ApplyToJobDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof jobsApply>>, TError,{id: string;data: ApplyToJobDto}, TContext> => {
 
 const mutationKey = ['jobsApply'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1612,10 +1991,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsApply>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof jobsApply>>, {id: string;data: ApplyToJobDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  jobsApply(id,requestOptions)
+          return  jobsApply(id,data,requestOptions)
         }
 
 
@@ -1626,18 +2005,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type JobsApplyMutationResult = NonNullable<Awaited<ReturnType<typeof jobsApply>>>
-
+    export type JobsApplyMutationBody = ApplyToJobDto
     export type JobsApplyMutationError = void
 
     /**
  * @summary Submit a quick application to a job
  */
 export const createJobsApply = <TError = void,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsApply>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobsApply>>, TError,{id: string;data: ApplyToJobDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof jobsApply>>,
         TError,
-        {id: string},
+        {id: string;data: ApplyToJobDto},
         TContext
       > => {
       return createMutation(() => ({ ...getJobsApplyMutationOptions(options?.()) }), queryClient);

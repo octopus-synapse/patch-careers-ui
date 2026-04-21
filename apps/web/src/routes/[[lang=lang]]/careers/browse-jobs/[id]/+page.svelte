@@ -15,6 +15,7 @@ import {
   jobsUpdate,
   jobsWithdrawApplication,
 } from 'api-client';
+import type { ApplyToJobDto, UpdateJobDto, UpdateJobDtoJobType } from 'api-client';
 import {
   ArrowLeft,
   Bookmark,
@@ -162,10 +163,8 @@ async function submitApplication(coverLetter: string) {
   if (applying) return;
   applying = true;
   try {
-    await jobsApply(jobId, {
-      body: JSON.stringify(coverLetter ? { coverLetter } : {}),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const payload: ApplyToJobDto = coverLetter ? { coverLetter } : {};
+    await jobsApply(jobId, payload);
     optimisticApplied = true;
     showApplyModal = false;
     invalidateJobQueries();
@@ -236,11 +235,11 @@ function openEdit() {
 async function handleEdit() {
   editLoading = true;
   try {
-    const data = {
+    const data: UpdateJobDto = {
       title: formTitle,
       company: formCompany,
-      location: formLocation,
-      jobType: formJobType,
+      location: formLocation || undefined,
+      jobType: formJobType as UpdateJobDtoJobType,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -253,10 +252,7 @@ async function handleEdit() {
       salaryRange: formSalaryRange || undefined,
       applyUrl: formApplyUrl || undefined,
     };
-    await jobsUpdate(jobId, {
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await jobsUpdate(jobId, data);
     queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
     queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
     editModal = false;

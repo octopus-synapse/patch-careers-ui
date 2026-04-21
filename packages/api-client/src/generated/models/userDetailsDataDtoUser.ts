@@ -54,6 +54,9 @@ export type UserDetailsDataDtoUser = {
   /** @nullable */
   emailVerified: string | null;
   isActive: boolean;
+  /** @nullable */
+  lastLoginAt: string | null;
+  roles: string[];
   resumes: UserDetailsDataDtoUserResumesItem[];
   preferences: unknown | null;
   counts: UserDetailsDataDtoUserCounts;

@@ -45,10 +45,27 @@ export const UploadUploadProfileImageBody = zod.object({
   "file": zod.instanceof(File)
 })
 
+export const UploadUploadProfileImageResponse = zod.object({
+  "url": zod.string().url().describe('Full URL to the uploaded file'),
+  "key": zod.string().describe('S3 key\/path of the uploaded file')
+})
+
 /**
  * @summary Upload company logo for resume
  */
 export const UploadUploadCompanyLogoBody = zod.object({
   "file": zod.instanceof(File)
+})
+
+export const UploadUploadCompanyLogoResponse = zod.object({
+  "url": zod.string().url().describe('Full URL to the uploaded file'),
+  "key": zod.string().describe('S3 key\/path of the uploaded file')
+})
+
+/**
+ * @summary Delete uploaded file
+ */
+export const UploadDeleteFileResponse = zod.object({
+  "deleted": zod.boolean().describe('Whether the file was successfully deleted')
 })
 

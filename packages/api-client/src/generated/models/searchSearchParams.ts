@@ -35,14 +35,27 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { SearchSearchSortBy } from './searchSearchSortBy';
 
 export type SearchSearchParams = {
-q: string;
-skills: string;
-location: string;
-minExp: string;
-maxExp: string;
-page: string;
-limit: string;
-sortBy: string;
+sortBy?: SearchSearchSortBy;
+/**
+ * Default 20, max 100
+ */
+limit?: number;
+/**
+ * Default 1, max 1000
+ */
+page?: number;
+maxExp?: number;
+minExp?: number;
+location?: string;
+/**
+ * Comma-separated
+ */
+skills?: string;
+/**
+ * Free-text query (max 500)
+ */
+q?: string;
 };
