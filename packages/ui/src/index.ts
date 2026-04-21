@@ -9,6 +9,7 @@ export { default as Dropdown } from './dropdown.svelte';
 export { default as EmptyState } from './empty-state.svelte';
 export { default as FitScoreBreakdown } from './fit-score-breakdown.svelte';
 export type { FitDimension, FitScoreLabels } from './fit-score-types';
+export { type FocusTrapOptions, focusTrap, prefersReducedMotion } from './focus-trap';
 export { default as FormField } from './form-field.svelte';
 export { default as FormModal } from './form-modal.svelte';
 export { default as InfiniteList } from './infinite-list.svelte';

@@ -1,7 +1,6 @@
 /**
  * Svelte action: traps focus inside a dialog/modal and returns focus to the
- * originally-focused element on teardown. Respects `prefers-reduced-motion`
- * and screen reader expectations (WCAG 2.1 AA).
+ * originally-focused element on teardown.
  *
  * Usage:
  *   <div use:focusTrap={{ active: open }}> ... </div>

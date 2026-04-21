@@ -2,6 +2,7 @@
 import type { Snippet } from 'svelte';
 import { tick, untrack } from 'svelte';
 import Button from './button.svelte';
+import { focusTrap } from './focus-trap';
 
 type Props = {
   open: boolean;
@@ -60,6 +61,7 @@ function handleBackdrop(e: MouseEvent) {
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		bind:this={dialogEl}
+		use:focusTrap={{ active: open }}
 		class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-3 sm:p-6"
 		onclick={handleBackdrop}
 		role="dialog"
