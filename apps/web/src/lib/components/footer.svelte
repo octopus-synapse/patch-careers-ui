@@ -17,7 +17,7 @@ const year = new Date().getFullYear();
         <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300">{t('footer.companyHeading')}</p>
         <ul class="mt-3 space-y-2 text-sm">
           <li>
-            <a href="/contato" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
+            <a href="/contact" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
               {t('footer.contact')}
             </a>
           </li>
@@ -28,12 +28,12 @@ const year = new Date().getFullYear();
         <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300">{t('footer.legalHeading')}</p>
         <ul class="mt-3 space-y-2 text-sm">
           <li>
-            <a href="/legal/termos" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
+            <a href="/legal/terms" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
               {t('footer.terms')}
             </a>
           </li>
           <li>
-            <a href="/legal/privacidade" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
+            <a href="/legal/privacy" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
               {t('footer.privacy')}
             </a>
           </li>

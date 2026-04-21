@@ -148,11 +148,11 @@ function handleSubmit(e: Event) {
 								/>
 								<span>
 									{t('auth.sign-up.consent.combinedPrefix')}
-									<a href="/legal/termos" target="_blank" rel="noopener" class="underline">
+									<a href="/legal/terms" target="_blank" rel="noopener" class="underline">
 										{t('auth.sign-up.consent.tosLink')}
 									</a>
 									{t('auth.sign-up.consent.combinedAnd')}
-									<a href="/legal/privacidade" target="_blank" rel="noopener" class="underline">
+									<a href="/legal/privacy" target="_blank" rel="noopener" class="underline">
 										{t('auth.sign-up.consent.privacyLink')}
 									</a>
 								</span>
