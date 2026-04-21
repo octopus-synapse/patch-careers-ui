@@ -120,17 +120,25 @@ function openRerender(resume: Resume) {
 
 						<p class="text-[11px] text-gray-500 dark:text-neutral-500">{t('cv.masterHelp')}</p>
 
-						<div class="mt-3 space-y-1.5">
-							{#if master.jobTitle}
-								<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{master.jobTitle}</p>
-							{/if}
-							{#if master.summary}
-								<p class="text-xs leading-relaxed text-gray-600 dark:text-neutral-400">
-									{master.summary}
-								</p>
-							{:else}
-								<p class="text-xs italic text-gray-400 dark:text-neutral-600">{t('cv.noSummary')}</p>
-							{/if}
+						<div class="mt-3 flex gap-4">
+							<img
+								src="/api/v1/resumes/{master.id}/thumbnail.svg"
+								alt="Thumbnail do currículo"
+								class="hidden h-32 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
+								loading="lazy"
+							/>
+							<div class="min-w-0 flex-1 space-y-1.5">
+								{#if master.jobTitle}
+									<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{master.jobTitle}</p>
+								{/if}
+								{#if master.summary}
+									<p class="text-xs leading-relaxed text-gray-600 dark:text-neutral-400">
+										{master.summary}
+									</p>
+								{:else}
+									<p class="text-xs italic text-gray-400 dark:text-neutral-600">{t('cv.noSummary')}</p>
+								{/if}
+							</div>
 						</div>
 
 						<div class="mt-4 flex items-center gap-3 text-[11px] text-gray-500 dark:text-neutral-500">
@@ -158,6 +166,12 @@ function openRerender(resume: Resume) {
 								<li>
 									<Card>
 										<div class="flex items-start justify-between gap-3">
+											<img
+												src="/api/v1/resumes/{r.id}/thumbnail.svg"
+												alt=""
+												class="hidden h-20 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
+												loading="lazy"
+											/>
 											<div class="min-w-0 flex-1">
 												<div class="flex items-center gap-2">
 													<PenSquare size={14} class="text-gray-500 dark:text-neutral-400" />

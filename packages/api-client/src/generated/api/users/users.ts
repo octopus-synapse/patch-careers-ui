@@ -69,6 +69,7 @@ import type {
   UserManagementListDataDto,
   UserMutationDataDto,
   UserOperationMessageDataDto,
+  UserPermissionsDataDto,
   UserPreferencesDataDto,
   UserProfileDataDto,
   UsernameAvailabilityDataDto,
@@ -2196,3 +2197,159 @@ export const createUsersAssignRoles = <TError = void,
       > => {
       return createMutation(() => ({ ...getUsersAssignRolesMutationOptions(options?.()) }), queryClient);
     }
+    /**
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+export type usersListMyPermissionsResponse200 = UserPermissionsDataDto
+
+export type usersListMyPermissionsResponseSuccess = usersListMyPermissionsResponse200
+;
+
+export type usersListMyPermissionsResponse = (usersListMyPermissionsResponseSuccess)
+
+export const getUsersListMyPermissionsUrl = () => {
+
+
+
+
+  return `/api/v1/users/me/permissions`
+}
+
+export const usersListMyPermissions = async ( options?: RequestInit): Promise<usersListMyPermissionsResponse> => {
+
+  return customFetch<usersListMyPermissionsResponse>(getUsersListMyPermissionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getUsersListMyPermissionsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/users/me/permissions`
+    ] as const;
+    }
+
+export const getUsersListMyPermissionsQueryKey = () => {
+    return [
+    `/api/v1/users/me/permissions`
+    ] as const;
+    }
+
+
+export const getUsersListMyPermissionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersListMyPermissions>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUsersListMyPermissionsInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersListMyPermissions>>> = ({ signal }) => usersListMyPermissions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersListMyPermissionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersListMyPermissions>>>
+export type UsersListMyPermissionsInfiniteQueryError = unknown
+
+
+/**
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+
+export function createUsersListMyPermissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersListMyPermissions>>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getUsersListMyPermissionsInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+export const prefetchUsersListMyPermissionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersListMyPermissions>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getUsersListMyPermissionsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getUsersListMyPermissionsQueryOptions = <TData = Awaited<ReturnType<typeof usersListMyPermissions>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUsersListMyPermissionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersListMyPermissions>>> = ({ signal }) => usersListMyPermissions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersListMyPermissionsQueryResult = NonNullable<Awaited<ReturnType<typeof usersListMyPermissions>>>
+export type UsersListMyPermissionsQueryError = unknown
+
+
+/**
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+
+export function createUsersListMyPermissions<TData = Awaited<ReturnType<typeof usersListMyPermissions>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getUsersListMyPermissionsQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+export const prefetchUsersListMyPermissionsQuery = async <TData = Awaited<ReturnType<typeof usersListMyPermissions>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersListMyPermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getUsersListMyPermissionsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+

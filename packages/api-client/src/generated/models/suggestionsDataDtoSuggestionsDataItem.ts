@@ -46,4 +46,6 @@ export type SuggestionsDataDtoSuggestionsDataItem = {
   photoURL: string | null;
   reason: string;
   score: number;
+  mutualCount: number;
+  commonSkills: string[];
 };

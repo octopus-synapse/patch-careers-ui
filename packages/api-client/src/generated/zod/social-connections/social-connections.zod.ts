@@ -69,7 +69,9 @@ export const ConnectionGetNetworkSummaryResponse = zod.object({
   "username": zod.string().nullable(),
   "photoURL": zod.string().nullable(),
   "reason": zod.string(),
-  "score": zod.number()
+  "score": zod.number(),
+  "mutualCount": zod.number(),
+  "commonSkills": zod.array(zod.string())
 })),
   "total": zod.number(),
   "page": zod.number(),
@@ -128,7 +130,9 @@ export const ConnectionGetConnectionSuggestionsResponse = zod.object({
   "username": zod.string().nullable(),
   "photoURL": zod.string().nullable(),
   "reason": zod.string(),
-  "score": zod.number()
+  "score": zod.number(),
+  "mutualCount": zod.number(),
+  "commonSkills": zod.array(zod.string())
 })),
   "total": zod.number(),
   "page": zod.number(),

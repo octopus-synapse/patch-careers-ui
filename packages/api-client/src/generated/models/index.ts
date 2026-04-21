@@ -728,6 +728,7 @@ export * from './usernameAvailabilityDataDto';
 export * from './usernameAvailabilityDataDtoReason';
 export * from './usernameUpdateDataDto';
 export * from './userOperationMessageDataDto';
+export * from './userPermissionsDataDto';
 export * from './userPostsDataDto';
 export * from './userPreferencesDataDto';
 export * from './userPreferencesDataDtoPreferences';

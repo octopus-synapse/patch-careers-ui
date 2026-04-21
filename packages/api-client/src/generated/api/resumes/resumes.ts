@@ -945,6 +945,166 @@ export const createResumesDeleteResumeForUser = <TError = unknown,
       return createMutation(() => ({ ...getResumesDeleteResumeForUserMutationOptions(options?.()) }), queryClient);
     }
     /**
+ * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
+ */
+export type resumesGetResumeThumbnailResponse401 = void
+
+export type resumesGetResumeThumbnailResponse403 = void
+
+;
+export type resumesGetResumeThumbnailResponseError = (resumesGetResumeThumbnailResponse401 | resumesGetResumeThumbnailResponse403) & {
+  headers: Headers;
+};
+
+export type resumesGetResumeThumbnailResponse = (resumesGetResumeThumbnailResponseError)
+
+export const getResumesGetResumeThumbnailUrl = (id: string,) => {
+
+
+
+
+  return `/api/v1/resumes/${id}/thumbnail.svg`
+}
+
+export const resumesGetResumeThumbnail = async (id: string, options?: RequestInit): Promise<resumesGetResumeThumbnailResponse> => {
+
+  return customFetch<resumesGetResumeThumbnailResponse>(getResumesGetResumeThumbnailUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getResumesGetResumeThumbnailInfiniteQueryKey = (id: string,) => {
+    return [
+    'infinite', `/api/v1/resumes/${id}/thumbnail.svg`
+    ] as const;
+    }
+
+export const getResumesGetResumeThumbnailQueryKey = (id: string,) => {
+    return [
+    `/api/v1/resumes/${id}/thumbnail.svg`
+    ] as const;
+    }
+
+
+export const getResumesGetResumeThumbnailInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>>, TError = void>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesGetResumeThumbnailInfiniteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>> = ({ signal }) => resumesGetResumeThumbnail(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesGetResumeThumbnailInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>>
+export type ResumesGetResumeThumbnailInfiniteQueryError = void
+
+
+/**
+ * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
+ */
+
+export function createResumesGetResumeThumbnailInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>>, TError = void>(
+ id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getResumesGetResumeThumbnailInfiniteQueryOptions(id(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
+ */
+export const prefetchResumesGetResumeThumbnailInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError = void>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesGetResumeThumbnailInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getResumesGetResumeThumbnailQueryOptions = <TData = Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError = void>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getResumesGetResumeThumbnailQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>> = ({ signal }) => resumesGetResumeThumbnail(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ResumesGetResumeThumbnailQueryResult = NonNullable<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>>
+export type ResumesGetResumeThumbnailQueryError = void
+
+
+/**
+ * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
+ */
+
+export function createResumesGetResumeThumbnail<TData = Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError = void>(
+ id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getResumesGetResumeThumbnailQueryOptions(id(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
+ */
+export const prefetchResumesGetResumeThumbnailQuery = async <TData = Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError = void>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumesGetResumeThumbnail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getResumesGetResumeThumbnailQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary List all resumes for a specific user
  */
 export type resumesListResumesForUserResponse200 = ResumeListDataDto

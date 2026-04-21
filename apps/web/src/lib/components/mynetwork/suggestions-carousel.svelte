@@ -17,6 +17,8 @@ type Suggestion = {
   username?: string | null;
   photoURL?: string | null;
   reason?: string | null;
+  mutualCount?: number;
+  commonSkills?: string[];
 };
 
 type Props = {
@@ -71,7 +73,17 @@ function handleConnect(userId: string) {
 		</div>
 		<div class="flex gap-3 overflow-x-auto px-3 py-3 sm:px-5 sm:py-4 sm:gap-4 snap-x scroll-smooth">
 			{#each suggestions as suggestion (suggestion.id)}
-				<div class="w-40 flex-shrink-0 snap-start">
+				{@const mutual = suggestion.mutualCount ?? 0}
+				{@const commonSkills = suggestion.commonSkills ?? []}
+				{@const highlight =
+					mutual > 0
+						? mutual === 1
+							? '1 conexão em comum'
+							: `${mutual} conexões em comum`
+						: commonSkills.length > 0
+							? `Skills em comum: ${commonSkills.slice(0, 3).join(', ')}`
+							: (suggestion.reason ?? undefined)}
+				<div class="w-48 flex-shrink-0 snap-start">
 					<UserCard
 						user={{
 							id: suggestion.id,
@@ -79,9 +91,18 @@ function handleConnect(userId: string) {
 							username: suggestion.username ?? null,
 							photoURL: suggestion.photoURL ?? null,
 						}}
-						subtitle={suggestion.reason ?? undefined}
+						subtitle={highlight}
 					>
 						{#snippet actions()}
+							{#if commonSkills.length > 0 && mutual > 0}
+								<div class="mb-1 flex flex-wrap justify-center gap-1">
+									{#each commonSkills.slice(0, 3) as skill}
+										<span class="rounded-full bg-cyan-100 px-1.5 py-0.5 text-[9px] font-medium text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-200">
+											{skill}
+										</span>
+									{/each}
+								</div>
+							{/if}
 							{#if sentConnections.has(suggestion.id)}
 								<span
 									class="w-full rounded-full border py-1.5 text-center text-[10px] font-semibold opacity-60 border-gray-300 text-gray-700 dark:border-neutral-600 dark:text-neutral-300"

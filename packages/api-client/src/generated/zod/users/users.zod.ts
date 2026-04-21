@@ -475,3 +475,10 @@ export const UsersResetPasswordResponse = zod.object({
   "message": zod.string()
 })
 
+/**
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+export const UsersListMyPermissionsResponse = zod.object({
+  "permissions": zod.array(zod.string())
+})
+

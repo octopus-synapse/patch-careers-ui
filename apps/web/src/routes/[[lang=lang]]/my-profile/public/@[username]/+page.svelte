@@ -17,6 +17,7 @@ import {
   getFollowIsFollowingQueryKey,
 } from 'api-client';
 import {
+  Briefcase,
   ExternalLink,
   FileDown,
   Globe,
@@ -27,11 +28,12 @@ import {
   UserPlus,
   X,
 } from 'lucide-svelte';
-import { Button, Dropdown, toastState } from 'ui';
+import { Button, Dropdown, Modal, toastState } from 'ui';
 import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
+import { usePermissions } from '$lib/state/permissions.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import ProfileActivityTabs from './_components/profile-activity-tabs.svelte';
 import ProfileBadges from './_components/profile-badges.svelte';
@@ -221,6 +223,53 @@ function openChat() {
   chatState.startConversationWith(userId);
 }
 
+// --- Convidar pra entrevistar --------------------------------------------
+// Visible only when the viewer has job:create on the platform (recruiter /
+// admin). Clicking opens a modal listing the recruiter's own jobs so they
+// can attach this candidate to an existing opening in one step.
+
+const perms = usePermissions(() => ({ authenticated: Boolean(authenticated) }));
+const canInviteCandidate = $derived(!isOwnProfile && authenticated && perms.has('job:create'));
+
+let inviteOpen = $state(false);
+let myJobs = $state<Array<{ id: string; title?: string; company?: string }>>([]);
+let loadingJobs = $state(false);
+let inviting = $state<string | null>(null);
+
+async function openInvite() {
+  inviteOpen = true;
+  if (myJobs.length > 0) return;
+  loadingJobs = true;
+  try {
+    const res = await fetch('/api/v1/jobs/mine?limit=50', { credentials: 'include' });
+    const body = (await res.json()) as { items?: Array<Record<string, unknown>> };
+    myJobs = (body.items ?? []).map((j) => ({
+      id: String(j.id),
+      title: j.title as string | undefined,
+      company: j.company as string | undefined,
+    }));
+  } catch {
+    toastState.show('Falha ao carregar suas vagas.', 'danger');
+  } finally {
+    loadingJobs = false;
+  }
+}
+
+async function inviteToJob(jobId: string) {
+  inviting = jobId;
+  try {
+    chatState.startConversationWith(userId);
+    const jobUrl = `${window.location.origin}/careers/browse-jobs/${jobId}`;
+    await navigator.clipboard.writeText(jobUrl).catch(() => {});
+    toastState.show('Chat aberto e link da vaga copiado — cole pra enviar.', 'success');
+    inviteOpen = false;
+  } catch {
+    toastState.show('Falha ao iniciar convite.', 'danger');
+  } finally {
+    inviting = null;
+  }
+}
+
 // Generate a deterministic gradient from username
 function bannerGradient(name: string): string {
   let hash = 0;
@@ -339,6 +388,18 @@ function bannerGradient(name: string): string {
 								<MessageCircle size={13} />
 								Message
 							</Button>
+							{#if canInviteCandidate}
+								<Button
+									variant="solid"
+									intent="accent"
+									size="sm"
+									onclick={openInvite}
+									class="rounded-full px-4 py-1.5 text-[11px]"
+								>
+									<Briefcase size={13} />
+									Convidar pra entrevistar
+								</Button>
+							{/if}
 							<Dropdown open={profileMenuOpen} align="right" onclose={() => (profileMenuOpen = false)}>
 								{#snippet trigger()}
 									<Button
@@ -499,3 +560,44 @@ function bannerGradient(name: string): string {
 		</div>
 	</div>
 {/if}
+
+<Modal open={inviteOpen} onClose={() => (inviteOpen = false)} closeLabel="Fechar">
+	{#snippet title()}Convidar pra entrevistar{/snippet}
+	<div class="space-y-3">
+		<p class="text-xs text-gray-500 dark:text-neutral-500">
+			Escolha uma vaga que você criou e a gente abre um chat já com o link pronto.
+		</p>
+		{#if loadingJobs}
+			<div class="flex justify-center py-6">
+				<Loader2 size={16} class="animate-spin text-gray-500" />
+			</div>
+		{:else if myJobs.length === 0}
+			<p class="rounded-lg border border-dashed border-gray-200 dark:border-neutral-700 p-4 text-center text-xs text-gray-500 dark:text-neutral-500">
+				Você ainda não criou nenhuma vaga. <a href="/recruiting/jobs/new" class="text-cyan-600 underline">Criar uma agora</a>.
+			</p>
+		{:else}
+			<ul class="max-h-72 space-y-2 overflow-y-auto">
+				{#each myJobs as job (job.id)}
+					<li>
+						<button
+							type="button"
+							onclick={() => inviteToJob(job.id)}
+							disabled={inviting !== null}
+							class="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:border-cyan-500 hover:bg-cyan-50/50 disabled:opacity-60 dark:border-neutral-700 dark:hover:bg-cyan-900/10"
+						>
+							<div class="min-w-0">
+								<p class="truncate text-sm font-medium text-gray-800 dark:text-neutral-200">{job.title ?? 'Sem título'}</p>
+								{#if job.company}
+									<p class="text-[11px] text-gray-500 dark:text-neutral-500">{job.company}</p>
+								{/if}
+							</div>
+							{#if inviting === job.id}
+								<Loader2 size={14} class="animate-spin" />
+							{/if}
+						</button>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</div>
+</Modal>

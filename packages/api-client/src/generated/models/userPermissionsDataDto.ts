@@ -36,16 +36,6 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 
-export type NetworkSummaryDataDtoSuggestionsDataItem = {
-  id: string;
-  /** @nullable */
-  name: string | null;
-  /** @nullable */
-  username: string | null;
-  /** @nullable */
-  photoURL: string | null;
-  reason: string;
-  score: number;
-  mutualCount: number;
-  commonSkills: string[];
-};
+export interface UserPermissionsDataDto {
+  permissions: string[];
+}
