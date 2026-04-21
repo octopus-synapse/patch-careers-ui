@@ -1,8 +1,8 @@
 <script lang="ts">
 import { Check } from 'lucide-svelte';
 import { Button } from 'ui';
-import LandingDemo from '$lib/components/landing/demo.svelte';
-import LandingSuccessStories from '$lib/components/landing/success-stories.svelte';
+import LandingDemo from './_components/landing/demo.svelte';
+import LandingSuccessStories from './_components/landing/success-stories.svelte';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
 
 const heroBenefits = ['Sem cartão de crédito', 'Cancele quando quiser', 'IA especializada em tech'];

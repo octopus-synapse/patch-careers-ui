@@ -11,9 +11,9 @@ import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'luci
 import { Button, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import DataTable from '$lib/components/admin/data-table.svelte';
-import Pagination from '$lib/components/admin/pagination.svelte';
-import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
+import DataTable from '$lib/components/data/data-table.svelte';
+import Pagination from '$lib/components/data/pagination.svelte';
+import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
 import { parseApiError } from '$lib/format/api-error';
 import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
 import { locale } from '$lib/state/locale.svelte';

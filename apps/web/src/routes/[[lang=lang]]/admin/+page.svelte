@@ -11,8 +11,8 @@ import {
   Users,
 } from 'lucide-svelte';
 import { browser } from '$app/environment';
-import StatCard from '$lib/components/admin/stat-card.svelte';
-import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import StatCard from './_components/stat-card.svelte';
+import StatusBadge from './_components/status-badge.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

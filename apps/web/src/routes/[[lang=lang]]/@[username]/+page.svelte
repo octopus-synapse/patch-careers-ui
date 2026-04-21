@@ -33,9 +33,9 @@ import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
-import ProfileActivityTabs from '$lib/components/profile/profile-activity-tabs.svelte';
-import ProfileBadges from '$lib/components/profile/profile-badges.svelte';
-import SkillsSection from '$lib/components/profile/skills-section.svelte';
+import ProfileActivityTabs from './_components/profile-activity-tabs.svelte';
+import ProfileBadges from './_components/profile-badges.svelte';
+import SkillsSection from './_components/skills-section.svelte';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
 import { locale } from '$lib/state/locale.svelte';
 

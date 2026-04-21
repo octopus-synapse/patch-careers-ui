@@ -9,9 +9,9 @@ import { formatDate } from 'i18n';
 import { Loader2 } from 'lucide-svelte';
 import { SegmentToggle } from 'ui';
 import { browser } from '$app/environment';
-import DataTable from '$lib/components/admin/data-table.svelte';
-import Pagination from '$lib/components/admin/pagination.svelte';
-import StatCard from '$lib/components/admin/stat-card.svelte';
+import DataTable from '$lib/components/data/data-table.svelte';
+import Pagination from '$lib/components/data/pagination.svelte';
+import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

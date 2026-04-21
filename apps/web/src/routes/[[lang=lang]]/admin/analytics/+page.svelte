@@ -3,8 +3,8 @@ import { createAdminAnalyticsGetOverview, createAdminDashboardGetMetrics } from 
 import { Loader2 } from 'lucide-svelte';
 import { SegmentToggle } from 'ui';
 import { browser } from '$app/environment';
-import ExportButton from '$lib/components/admin/export-button.svelte';
-import StatCard from '$lib/components/admin/stat-card.svelte';
+import ExportButton from '$lib/components/data/export-button.svelte';
+import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

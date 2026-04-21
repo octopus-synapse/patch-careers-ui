@@ -14,14 +14,14 @@ import {
 import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-svelte';
 import { Button } from 'ui';
 import { beforeNavigate, goto } from '$app/navigation';
-import PreviewPanel from '$lib/components/onboarding/preview-panel.svelte';
-import Sidebar from '$lib/components/onboarding/sidebar.svelte';
-import StepForm from '$lib/components/onboarding/step-form.svelte';
-import StepMultiItems from '$lib/components/onboarding/step-multi-items.svelte';
-import StepReview from '$lib/components/onboarding/step-review.svelte';
-import StepTheme from '$lib/components/onboarding/step-theme.svelte';
-import StepWelcome from '$lib/components/onboarding/step-welcome.svelte';
-import StepperMobile from '$lib/components/onboarding/stepper-mobile.svelte';
+import PreviewPanel from './_components/preview-panel.svelte';
+import Sidebar from './_components/sidebar.svelte';
+import StepForm from './_components/step-form.svelte';
+import StepMultiItems from './_components/step-multi-items.svelte';
+import StepReview from './_components/step-review.svelte';
+import StepTheme from './_components/step-theme.svelte';
+import StepWelcome from './_components/step-welcome.svelte';
+import StepperMobile from './_components/stepper-mobile.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

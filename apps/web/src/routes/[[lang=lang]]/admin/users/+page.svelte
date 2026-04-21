@@ -14,11 +14,11 @@ import { KeyRound, MoreVertical, Plus, Shield, ShieldOff, Trash2 } from 'lucide-
 import { Avatar, Button, ConfirmModal, Dropdown, FormModal, Input, Label } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import DataTable from '$lib/components/admin/data-table.svelte';
-import ExportButton from '$lib/components/admin/export-button.svelte';
-import Pagination from '$lib/components/admin/pagination.svelte';
-import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
-import StatusBadge from '$lib/components/admin/status-badge.svelte';
+import DataTable from '$lib/components/data/data-table.svelte';
+import ExportButton from '$lib/components/data/export-button.svelte';
+import Pagination from '$lib/components/data/pagination.svelte';
+import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
+import StatusBadge from '../_components/status-badge.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
