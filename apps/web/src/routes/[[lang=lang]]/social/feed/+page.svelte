@@ -69,9 +69,14 @@ const filterOptions = $derived([
 ]);
 let selectedFilter = $state('ALL');
 let feedSource = $state<'posts' | 'activity'>('posts');
+let feedScope = $state<'bubble' | 'explore'>('bubble');
 const feedSourceTabs = $derived([
   { value: 'posts', label: locale.t('feed.tabsPosts') },
   { value: 'activity', label: locale.t('feed.tabsActivity') },
+]);
+const feedScopeTabs = $derived([
+  { value: 'bubble', label: locale.t('feed.scopeBubble') ?? 'Minha bolha' },
+  { value: 'explore', label: locale.t('feed.scopeExplore') ?? 'Explorar' },
 ]);
 
 // Cursor-based pagination
@@ -127,6 +132,7 @@ const feedQuery = createFeedGetTimeline(
     cursor,
     limit: 20,
     type: selectedFilter === 'ALL' ? undefined : selectedFilter,
+    followingOnly: feedScope === 'bubble',
   }),
   () => ({
     query: {
@@ -137,6 +143,16 @@ const feedQuery = createFeedGetTimeline(
     },
   }),
 );
+
+function handleFeedScopeChange(value: string) {
+  if (value !== 'bubble' && value !== 'explore') return;
+  if (feedScope === value) return;
+  feedScope = value;
+  cursor = undefined;
+  allPosts = [];
+  newPostsBuffer = [];
+  hasMore = true;
+}
 
 const rawData = $derived(feedQuery.data);
 
@@ -540,6 +556,15 @@ function handleFilterChange(value: string, el?: HTMLElement) {
 			</div>
 
 			{#if feedSource === 'posts'}
+				<!-- Minha bolha vs Explorar -->
+				<div class="mt-3">
+					<Tabs
+						tabs={feedScopeTabs}
+						selected={feedScope}
+						onchange={handleFeedScopeChange}
+					/>
+				</div>
+
 				<!-- Filters — horizontal scrollable pills with right-edge fade -->
 				<div class="mt-4 filter-strip">
 					<div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
