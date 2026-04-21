@@ -15,15 +15,15 @@ const isAdmin = $derived(Boolean(user?.isAdmin));
 
 const currentPath = $derived($page.url.pathname);
 const isOnboarding = $derived(currentPath.startsWith('/onboarding'));
-const isAuthPage = $derived(currentPath.startsWith('/login') || currentPath.startsWith('/signup'));
-const isAdminPage = $derived(currentPath.startsWith('/admin'));
+const isAuthPage = $derived(currentPath.startsWith('/identity/sign-in') || currentPath.startsWith('/identity/sign-up'));
+const isAdminPage = $derived(currentPath.startsWith('/platform/admin'));
 
 $effect(() => {
   if (!browser || session.isLoading) return;
 
   // Not logged in trying to access /onboarding → go to login
   if (!authenticated && isOnboarding) {
-    goto('/login');
+    goto('/identity/sign-in');
     return;
   }
 

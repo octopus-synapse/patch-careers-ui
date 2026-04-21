@@ -77,7 +77,7 @@ $effect(() => {
 function selectPerson(person: PersonResult) {
   if (!person.slug) return;
   onclose();
-  goto(`/@${person.slug}`);
+  goto(`/my-profile/public/@${person.slug}`);
 }
 
 function gotoSearchPage() {
@@ -100,7 +100,7 @@ function handleKeydown(e: KeyboardEvent) {
 }
 
 const quickLinks = [
-  { icon: Briefcase, labelKey: 'nav.jobs', href: '/jobs' },
+  { icon: Briefcase, labelKey: 'nav.jobs', href: '/careers/browse-jobs' },
   { icon: Building2, labelKey: 'nav.companies', href: '/companies' },
   { icon: FileText, labelKey: 'nav.about', href: '/about' },
 ];

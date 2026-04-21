@@ -43,11 +43,11 @@ async function load() {
     candidates = body.data?.candidates ?? [];
     if (candidates.length === 0) {
       // Nothing to claim — bounce straight to dashboard.
-      goto('/dashboard');
+      goto('/my-profile/dashboard');
     }
   } catch {
     toastState.show('Falha ao buscar perfis pré-montados.', 'danger');
-    goto('/dashboard');
+    goto('/my-profile/dashboard');
   } finally {
     loading = false;
   }
@@ -62,7 +62,7 @@ async function claim(id: string) {
     });
     if (!res.ok) throw new Error();
     toastState.show('Perfil reivindicado. Adicionamos os dados ao seu currículo.', 'success');
-    goto('/dashboard');
+    goto('/my-profile/dashboard');
   } catch {
     toastState.show('Falha ao reivindicar perfil.', 'danger');
   } finally {
@@ -71,7 +71,7 @@ async function claim(id: string) {
 }
 
 function skip() {
-  goto('/dashboard');
+  goto('/my-profile/dashboard');
 }
 
 onMount(load);

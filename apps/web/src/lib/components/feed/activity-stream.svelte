@@ -79,7 +79,7 @@ function activityLabel(type?: string): string {
 						<div class="min-w-0 flex-1">
 							{#if item.user}
 								<a
-									href="/@{item.user.username ?? ''}"
+									href="/my-profile/public/@{item.user.username ?? ''}"
 									class="font-semibold text-gray-800 hover:underline dark:text-neutral-200"
 								>
 									{item.user.name ?? item.user.username ?? '?'}

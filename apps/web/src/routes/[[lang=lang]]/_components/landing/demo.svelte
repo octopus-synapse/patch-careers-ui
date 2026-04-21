@@ -261,7 +261,7 @@ $effect(() => {
 			</button>
 
 			<a
-				href="/signup"
+				href="/identity/sign-up"
 				class="group flex items-center gap-2 rounded-full bg-cyan-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-black transition-all hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30"
 			>
 				Ver pro meu CV real

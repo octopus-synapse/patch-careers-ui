@@ -21,11 +21,11 @@ const displayName = $derived(user.name ?? user.username ?? '?');
 </script>
 
 <div class="flex items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-5 sm:py-3.5">
-	<a href="/@{user.username ?? ''}">
+	<a href="/my-profile/public/@{user.username ?? ''}">
 		<Avatar name={displayName} photoURL={user.photoURL} size="md" />
 	</a>
 	<div class="min-w-0 flex-1">
-		<a href="/@{user.username ?? ''}" class="text-sm font-semibold text-gray-800 dark:text-neutral-200 hover:underline">
+		<a href="/my-profile/public/@{user.username ?? ''}" class="text-sm font-semibold text-gray-800 dark:text-neutral-200 hover:underline">
 			{displayName}
 		</a>
 		{#if user.username}

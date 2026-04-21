@@ -111,7 +111,7 @@ async function handleNotificationClick(notification: NotificationDto) {
 
 		<!-- See all link -->
 		<a
-			href="/notifications"
+			href="/social/notifications"
 			onclick={() => (isOpen = false)}
 			class="border-b px-4 py-2 text-center text-[11px] font-medium text-emerald-600 hover:underline border-gray-200 dark:border-neutral-700 dark:text-emerald-400"
 		>

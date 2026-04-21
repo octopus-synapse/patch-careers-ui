@@ -81,7 +81,7 @@ const localeOptions = $derived(
 
 			{#if isAdmin}
 				<a
-					href="/admin"
+					href="/platform/admin"
 					onclick={onclose}
 					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
 				>
@@ -127,7 +127,7 @@ const localeOptions = $derived(
 				</div>
 
 				<a
-					href="/signup"
+					href="/identity/sign-up"
 					onclick={onclose}
 					class="w-full rounded-full py-4 text-center text-xs font-bold uppercase tracking-widest transition-transform active:scale-[0.98] bg-gray-800 text-gray-50 dark:bg-neutral-200 dark:text-neutral-900"
 				>

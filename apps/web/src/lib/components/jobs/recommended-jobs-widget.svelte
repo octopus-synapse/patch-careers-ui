@@ -38,7 +38,7 @@ const items = $derived.by<RecommendedJob[]>(() => {
 				{t('jobs.dashboardRecommendedTitle')}
 			</h2>
 			<a
-				href="/jobs"
+				href="/careers/browse-jobs"
 				class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400"
 			>
 				{t('jobs.dashboardRecommendedSeeAll')}
@@ -69,7 +69,7 @@ const items = $derived.by<RecommendedJob[]>(() => {
 					<button
 						type="button"
 						class="flex w-full items-center gap-3 py-2 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/40"
-						onclick={() => goto(`/jobs/${job.id}`)}
+						onclick={() => goto(`/careers/browse-jobs/${job.id}`)}
 					>
 						<div class="min-w-0 flex-1">
 							<p class="truncate text-sm font-medium text-gray-800 dark:text-neutral-200">

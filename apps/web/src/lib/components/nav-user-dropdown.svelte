@@ -92,7 +92,7 @@ const localeOptions = $derived(
 
 			<div class="border-t border-gray-200/60 dark:border-neutral-800/60">
 				<a
-					href="/cv"
+					href="/careers/manage-resumes"
 					data-sveltekit-preload-data="hover"
 					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 text-gray-500 dark:text-neutral-500"
 				>
@@ -100,7 +100,7 @@ const localeOptions = $derived(
 					{cvLabel ?? 'My CV'}
 				</a>
 				<a
-					href="/settings"
+					href="/my-profile/settings"
 					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 text-gray-500 dark:text-neutral-500"
 				>
 					<Settings size={13} />

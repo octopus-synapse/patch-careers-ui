@@ -7,7 +7,13 @@ export const prerender = true;
  * deploy should extend this to include every public `@[username]` profile
  * and job detail page by paginating the backend.
  */
-const STATIC_ROUTES = ['/', '/login', '/signup', '/jobs', '/feed'];
+const STATIC_ROUTES = [
+  '/',
+  '/identity/sign-in',
+  '/identity/sign-up',
+  '/careers/browse-jobs',
+  '/social/feed',
+];
 
 export async function GET() {
   const baseUrl = (env.PUBLIC_APP_URL ?? 'https://patch.careers').replace(/\/$/, '');

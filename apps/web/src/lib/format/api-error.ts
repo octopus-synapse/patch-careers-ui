@@ -80,7 +80,7 @@ function parseAction(raw: string | undefined, status?: number): ApiErrorAction {
 }
 
 function actionFromStatus(status?: number): ApiErrorAction {
-  if (status === 401) return { kind: 'redirect', to: '/login' };
+  if (status === 401) return { kind: 'redirect', to: '/identity/sign-in' };
   if (status && status >= 500) return { kind: 'retry' };
   return { kind: 'toast' };
 }

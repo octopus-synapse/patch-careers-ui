@@ -31,7 +31,7 @@ const authenticated = $derived(auth.data?.authenticated);
 
 $effect(() => {
   if (!auth.isLoading && !authenticated) {
-    goto('/login');
+    goto('/identity/sign-in');
   }
 });
 
@@ -140,7 +140,7 @@ const complete = createOnboardingCompleteFromSession(() => ({
     async onSuccess() {
       await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
       const username = auth.data?.user?.username;
-      goto(username ? `/@${username}` : '/');
+      goto(username ? `/my-profile/public/@${username}` : '/');
     },
     onError(err: unknown) {
       const msg = (err as Record<string, unknown>)?.message;

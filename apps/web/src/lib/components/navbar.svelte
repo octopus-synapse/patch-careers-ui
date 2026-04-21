@@ -72,7 +72,7 @@ const logout = createAuthLogout(() => ({
       await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
       await queryClient.refetchQueries({ queryKey: getAuthSessionQueryKey() });
       isDropdownOpen = false;
-      goto('/login', { replaceState: true, invalidateAll: true });
+      goto('/identity/sign-in', { replaceState: true, invalidateAll: true });
     },
     onError() {
       // Even if the server logout fails (e.g., network), scrub local
@@ -80,7 +80,7 @@ const logout = createAuthLogout(() => ({
       // have already been invalidated on a different device.
       queryClient.clear();
       isDropdownOpen = false;
-      goto('/login', { replaceState: true });
+      goto('/identity/sign-in', { replaceState: true });
     },
   },
 }));
@@ -143,10 +143,10 @@ function handleGlobalKeydown(e: KeyboardEvent) {
 }
 
 const navLinks = [
-  { key: 'nav.dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { key: 'nav.feed', href: '/feed', icon: Rss },
-  { key: 'nav.jobs', href: '/jobs', icon: Briefcase },
-  { key: 'nav.myNetwork', href: '/mynetwork', icon: Users },
+  { key: 'nav.dashboard', href: '/my-profile/dashboard', icon: LayoutDashboard },
+  { key: 'nav.feed', href: '/social/feed', icon: Rss },
+  { key: 'nav.jobs', href: '/careers/browse-jobs', icon: Briefcase },
+  { key: 'nav.myNetwork', href: '/social/network', icon: Users },
 ];
 </script>
 
@@ -221,9 +221,9 @@ const navLinks = [
 						{/if}
 
 						{#if authenticated}
-							{@const companyActive = isActiveRoute('/company')}
+							{@const companyActive = isActiveRoute('/recruiting')}
 							<a
-								href="/company/jobs"
+								href="/recruiting/jobs"
 								data-sveltekit-preload-data="hover"
 								aria-current={companyActive ? 'page' : undefined}
 								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors
@@ -240,9 +240,9 @@ const navLinks = [
 						{/if}
 
 						{#if isAdmin}
-							{@const adminActive = isActiveRoute('/admin')}
+							{@const adminActive = isActiveRoute('/platform/admin')}
 							<a
-								href="/admin"
+								href="/platform/admin"
 								data-sveltekit-preload-data="hover"
 								aria-current={adminActive ? 'page' : undefined}
 								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors
@@ -282,14 +282,14 @@ const navLinks = [
 				{:else}
 					<div class="hidden items-center gap-4 md:flex">
 						<a
-							href="/login"
+							href="/identity/sign-in"
 							data-sveltekit-preload-data="hover"
 							class="text-[10px] font-semibold uppercase tracking-widest transition-colors {isLanding ? 'text-zinc-400 hover:text-white' : 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
 						>
 							{t('nav.login')}
 						</a>
 						<a
-							href="/signup"
+							href="/identity/sign-up"
 							data-sveltekit-preload-data="hover"
 							class="rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all {isLanding ? 'border-zinc-600 text-white hover:bg-white hover:text-black' : 'border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-gray-50 dark:border-neutral-200 dark:text-neutral-200 dark:hover:bg-neutral-200 dark:hover:text-neutral-900'}"
 						>

@@ -103,7 +103,7 @@ let openFaq = $state<number | null>(null);
 
 				<div class="flex flex-col items-center justify-center gap-6 md:flex-row">
 					<a
-						href="/signup"
+						href="/identity/sign-up"
 						class="group relative overflow-hidden bg-white px-10 py-5 text-sm font-black uppercase tracking-widest text-black transition-all duration-300 hover:scale-105 hover:bg-cyan-500 hover:shadow-2xl hover:shadow-cyan-500/25"
 					>
 						Quero entrevistas
@@ -154,7 +154,7 @@ let openFaq = $state<number | null>(null);
 			</p>
 			<div class="flex flex-col items-center gap-4 pt-4">
 				<a
-					href="/signup"
+					href="/identity/sign-up"
 					class="bg-white px-8 py-5 text-base font-black uppercase tracking-widest text-black transition-all hover:bg-cyan-400 active:scale-95 sm:px-16 sm:py-8 sm:text-2xl"
 				>
 					Quero entrevistas
@@ -224,7 +224,7 @@ let openFaq = $state<number | null>(null);
 						</ul>
 
 						<a
-							href="/signup"
+							href="/identity/sign-up"
 							class="block w-full rounded-lg bg-cyan-500 py-5 text-center text-sm font-black uppercase tracking-widest text-black transition-all duration-150 hover:bg-cyan-400 active:scale-95"
 						>
 							Ativar por R$79/mês

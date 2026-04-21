@@ -538,7 +538,7 @@ function handleDeleteConfirm() {
 		{#if hasThreadChildren}
 			<div class="mt-2 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
 				<a
-					href="/feed/thread/{postId}"
+					href="/social/feed/thread/{postId}"
 					class="flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
 				>
 					<MessageSquare size={12} />

@@ -14,7 +14,7 @@ const authenticated = $derived(session.data?.authenticated);
 
 $effect(() => {
   if (!session.isLoading && !authenticated) {
-    goto('/login');
+    goto('/identity/sign-in');
   }
 });
 
@@ -45,7 +45,7 @@ const pdfMutation = createResumeImportImportPdf(() => ({
   mutation: {
     onSuccess() {
       toastState.show('CV imported', 'success');
-      goto('/cv');
+      goto('/careers/manage-resumes');
     },
     onError() {
       toastState.show('Could not import the PDF', 'danger');
