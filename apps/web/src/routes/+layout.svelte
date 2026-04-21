@@ -13,6 +13,7 @@ import OfflineBanner from '$lib/components/errors/offline-banner.svelte';
 import Footer from '$lib/components/footer.svelte';
 import Navbar from '$lib/components/navbar.svelte';
 import OnboardingGuard from '$lib/components/onboarding-guard.svelte';
+import { trackPageView } from '$lib/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
 let { children }: { children: Snippet } = $props();
@@ -52,6 +53,12 @@ $effect(() => {
     document.documentElement.setAttribute('dir', textDir);
     document.documentElement.setAttribute('lang', locale.current ?? 'pt-BR');
   }
+});
+
+// Page-view telemetry — respects LGPD consent inside trackPageView.
+$effect(() => {
+  const path = $page.url.pathname;
+  if (path) trackPageView(path);
 });
 </script>
 

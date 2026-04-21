@@ -27,7 +27,7 @@ import { colorSchema } from '$lib/state/color-schema.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import NavLogo from './nav-logo.svelte';
 import NavMobileMenu from './nav-mobile-menu.svelte';
-import NavSearchModal from './nav-search-modal.svelte';
+import CommandPalette from './command-palette/command-palette.svelte';
 import NavUserDropdown from './nav-user-dropdown.svelte';
 import NotificationBell from './notification-bell.svelte';
 
@@ -177,7 +177,7 @@ $effect(() => {
 <svelte:window onkeydown={handleGlobalKeydown} />
 
 {#if t}
-	<NavSearchModal open={isSearchOpen} {t} onclose={() => isSearchOpen = false} />
+	<CommandPalette open={isSearchOpen} {t} onclose={() => isSearchOpen = false} />
 
 	<nav class="fixed top-0 right-0 left-0 z-50 transition-colors duration-300
 		{isLanding ? 'border-transparent' : 'border-b border-gray-200/60 dark:border-neutral-800/60'}

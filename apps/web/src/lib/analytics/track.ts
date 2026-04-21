@@ -91,3 +91,23 @@ export function track(event: string, props?: EventProps): void {
 export function flushTrack(): Promise<void> {
   return flush();
 }
+
+/** Shorthand for route-change instrumentation in the root layout. */
+export function trackPageView(path: string): void {
+  track('page_view', { path });
+}
+
+/** CTA clicks (buttons, links that drive a key action). */
+export function trackCtaClick(label: string, context?: EventProps): void {
+  track('cta_clicked', { label, ...context });
+}
+
+/** Form submissions — called on success so failed submits don't inflate numbers. */
+export function trackFormSubmit(formName: string, context?: EventProps): void {
+  track('form_submitted', { formName, ...context });
+}
+
+/** Error surface events — e.g. a mutation failed and the user saw a toast. */
+export function trackError(code: string, context?: EventProps): void {
+  track('error_seen', { code, ...context });
+}
