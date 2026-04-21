@@ -43,6 +43,10 @@ const queryClient = new QueryClient({
 const isLanding = $derived($page.url.pathname === '/');
 const textDir = $derived(getTextDirection(locale.current ?? 'pt-BR'));
 
+// Hide the cookie banner on error pages — user is already distracted by the
+// error and the banner just adds noise (UX feedback #90).
+const showCookieBanner = $derived(!$page.error && ($page.status === undefined || $page.status < 400));
+
 $effect(() => {
   if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('dir', textDir);
@@ -64,7 +68,7 @@ $effect(() => {
 			</ErrorBoundary>
 			<Footer />
 		</div>
-		<CookieBanner />
+		{#if showCookieBanner}<CookieBanner />{/if}
 	</QueryClientProvider>
 {:else}
 	<div class="min-h-screen flex flex-col transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
@@ -80,6 +84,6 @@ $effect(() => {
 			<ChatWidget />
 			<Footer />
 		</QueryClientProvider>
-		<CookieBanner />
+		{#if showCookieBanner}<CookieBanner />{/if}
 	</div>
 {/if}

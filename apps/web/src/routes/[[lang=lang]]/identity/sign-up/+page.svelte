@@ -115,7 +115,7 @@ function handleSubmit(e: Event) {
 								placeholder={t('auth.shared.emailPlaceholder')}
 							/>
 							{#if fieldErrors.email}
-								<p class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.email}</p>
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.email}</p>
 							{/if}
 						</div>
 
@@ -131,7 +131,7 @@ function handleSubmit(e: Event) {
 								placeholder={t('auth.shared.passwordPlaceholder')}
 							/>
 							{#if fieldErrors.password}
-								<p class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.password}</p>
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.password}</p>
 							{/if}
 						</div>
 
@@ -155,14 +155,14 @@ function handleSubmit(e: Event) {
 								</span>
 							</label>
 							{#if fieldErrors.acceptedConsent}
-								<p class="text-xs font-medium text-red-500/80">{fieldErrors.acceptedConsent}</p>
+								<p role="alert" class="text-xs font-medium text-red-500/80">{fieldErrors.acceptedConsent}</p>
 							{/if}
 
 						</div>
 					</div>
 
 					{#if serverError}
-						<p class="text-xs font-medium text-red-500/80">{serverError}</p>
+						<p role="alert" class="text-xs font-medium text-red-500/80">{serverError}</p>
 					{/if}
 
 					<Button

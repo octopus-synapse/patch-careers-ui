@@ -146,7 +146,7 @@ const quickLinks = [
 						<button
 							type="button"
 							onclick={gotoSearchPage}
-							class="text-[11px] font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+							class="text-[11px] font-medium text-emerald-600 hover:underline dark:text-emerald-300"
 						>
 							{t('nav.searchSeeAll')}
 						</button>

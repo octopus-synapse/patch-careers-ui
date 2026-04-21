@@ -39,7 +39,7 @@ const items = $derived.by<RecommendedJob[]>(() => {
 			</h2>
 			<a
 				href="/careers/browse-jobs"
-				class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+				class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
 			>
 				{t('jobs.dashboardRecommendedSeeAll')}
 			</a>

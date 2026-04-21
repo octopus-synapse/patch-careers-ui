@@ -151,7 +151,7 @@ async function runAll() {
 									{#if test.pass}
 										<Check
 											size={14}
-											class="text-emerald-600 dark:text-emerald-400"
+											class="text-emerald-600 dark:text-emerald-300"
 										/>
 									{:else}
 										<X size={14} class="text-red-600 dark:text-red-400" />
@@ -190,7 +190,7 @@ async function runAll() {
 						class="mt-3 flex items-center justify-between rounded-lg px-3 py-2 bg-gray-50 dark:bg-neutral-700/30"
 					>
 						<span class="text-xs font-medium text-gray-600 dark:text-neutral-400">
-							<span class="text-emerald-600 dark:text-emerald-400"
+							<span class="text-emerald-600 dark:text-emerald-300"
 								>{suiteResults.passed} passed</span
 							>,
 							<span

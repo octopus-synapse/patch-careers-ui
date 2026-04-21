@@ -78,7 +78,7 @@ function handleReact(type: ReactionType | null) {
 	<Tooltip text={t('feed.repostAction')} position="bottom">
 		<button
 			class="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors {isReposted
-				? 'text-emerald-600 dark:text-emerald-400 cursor-default'
+				? 'text-emerald-600 dark:text-emerald-300 cursor-default'
 				: 'text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-neutral-500 dark:hover:text-neutral-300 dark:hover:bg-neutral-700/50'}"
 			onclick={onrepost}
 			disabled={isReposted}

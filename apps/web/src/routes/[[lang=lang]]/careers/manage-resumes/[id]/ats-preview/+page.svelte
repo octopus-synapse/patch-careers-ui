@@ -89,6 +89,17 @@ onMount(simulate);
     </Button>
   </header>
 
+  <div class="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+    <p class="font-medium">O que é ATS?</p>
+    <p class="mt-1 text-amber-800 dark:text-amber-300/90">
+      ATS (<i>Applicant Tracking System</i>) é o software que recrutadores usam pra filtrar currículos
+      antes de olhar um por um. Ele ignora design e lê seu CV como texto cru. Palavras-chave
+      faltando reduzem seu score e tiram você da pilha. O que você vê abaixo é como esse
+      sistema enxerga o seu currículo.
+    </p>
+  </div>
+
+
   {#if loading || running}
     <div class="flex justify-center py-16">
       <Loader2 size={20} class="animate-spin text-gray-500" />

@@ -135,7 +135,7 @@ async function onSubmit(e: Event) {
 		</div>
 
 		{#if serverError}
-			<p class="text-xs font-medium text-red-500/80">{serverError}</p>
+			<p role="alert" class="text-xs font-medium text-red-500/80">{serverError}</p>
 		{/if}
 
 		<div class="flex gap-2 pt-2">

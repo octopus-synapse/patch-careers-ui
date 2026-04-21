@@ -33,13 +33,13 @@ const isSent = $derived(currentPath.endsWith('/sent'));
 			<nav class="flex items-center gap-6 border-b px-4 sm:px-6 border-gray-200 dark:border-neutral-800">
 				<a
 					href="/social/network/invitation-manager/received"
-					class="-mb-px border-b-2 px-1 py-3 text-xs font-semibold transition-colors {isReceived ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
+					class="-mb-px border-b-2 px-1 py-3 text-xs font-semibold transition-colors {isReceived ? 'border-emerald-500 text-emerald-600 dark:text-emerald-300' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
 				>
 					{t?.('network.received')}
 				</a>
 				<a
 					href="/social/network/invitation-manager/sent"
-					class="-mb-px border-b-2 px-1 py-3 text-xs font-semibold transition-colors {isSent ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
+					class="-mb-px border-b-2 px-1 py-3 text-xs font-semibold transition-colors {isSent ? 'border-emerald-500 text-emerald-600 dark:text-emerald-300' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
 				>
 					{t?.('network.sent')}
 				</a>

@@ -38,6 +38,8 @@ const gradient = $derived(palette[hashName(name) % palette.length]);
 		src={photoURL}
 		alt=""
 		aria-label="{name}"
+		loading="lazy"
+		decoding="async"
 		class="rounded-full object-cover {imgSize[size]}"
 	/>
 {:else}

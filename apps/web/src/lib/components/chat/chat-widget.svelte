@@ -153,7 +153,14 @@ let chatMenuOpen = $state(false);
 					</Button>
 				{/if}
 				{#if activeOther && !chatState.isFullscreen}
-					<a href="/my-profile/public/@{activeOther.username}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+					{@const profileHref = activeOther.username
+						? `/my-profile/public/@${activeOther.username}`
+						: undefined}
+					<svelte:element
+						this={profileHref ? 'a' : 'div'}
+						href={profileHref}
+						class="flex items-center gap-2 {profileHref ? 'hover:opacity-80 transition-opacity' : ''}"
+					>
 						<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} size="sm" />
 						<div class="min-w-0">
 							<span class="block truncate text-xs font-semibold text-gray-800 dark:text-neutral-200">
@@ -163,7 +170,7 @@ let chatMenuOpen = $state(false);
 								<span class="block text-[10px] text-gray-500 dark:text-neutral-500">@{activeOther.username}</span>
 							{/if}
 						</div>
-					</a>
+					</svelte:element>
 				{:else}
 					<span class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Messages</span>
 				{/if}
@@ -215,7 +222,15 @@ let chatMenuOpen = $state(false);
 				</div>
 				<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30">
 					{#if chatState.activeConversationId && activeOther}
-						<a href="/my-profile/public/@{activeOther.username}" onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }} class="flex items-center gap-3 border-b px-5 py-3 transition-colors hover:opacity-80 border-gray-200 dark:border-neutral-800">
+						{@const fullscreenProfileHref = activeOther.username
+							? `/my-profile/public/@${activeOther.username}`
+							: undefined}
+						<svelte:element
+							this={fullscreenProfileHref ? 'a' : 'div'}
+							href={fullscreenProfileHref}
+							onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }}
+							class="flex items-center gap-3 border-b px-5 py-3 border-gray-200 dark:border-neutral-800 {fullscreenProfileHref ? 'transition-colors hover:opacity-80' : ''}"
+						>
 							<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} size="lg" />
 							<div class="min-w-0">
 								<span class="block truncate text-sm font-semibold text-gray-800 dark:text-neutral-200">
@@ -225,7 +240,7 @@ let chatMenuOpen = $state(false);
 									<span class="block text-[11px] text-gray-500 dark:text-neutral-500">@{activeOther.username}</span>
 								{/if}
 							</div>
-						</a>
+						</svelte:element>
 						<MessageThread messages={msgList} {currentUserId} />
 						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}

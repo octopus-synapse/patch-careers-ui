@@ -92,7 +92,7 @@ function handleSubmit(e: Event) {
 								placeholder={t('auth.shared.emailPlaceholder')}
 							/>
 							{#if form.errors.email}
-								<p class="mt-1 text-xs font-medium text-red-500/80">{form.errors.email}</p>
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{form.errors.email}</p>
 							{/if}
 						</div>
 
@@ -108,7 +108,7 @@ function handleSubmit(e: Event) {
 								placeholder={t('auth.shared.passwordPlaceholder')}
 							/>
 							{#if form.errors.password}
-								<p class="mt-1 text-xs font-medium text-red-500/80">{form.errors.password}</p>
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{form.errors.password}</p>
 							{/if}
 						</div>
 					</div>

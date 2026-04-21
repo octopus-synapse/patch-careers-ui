@@ -36,7 +36,7 @@ const loading = $derived(query.isLoading);
 <div class="min-h-screen pt-20 pb-12">
 	<main class="mx-auto max-w-4xl px-4 sm:px-6">
 		<header class="mb-8">
-			<p class="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-400">
+			<p class="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-300">
 				<Globe2 size={12} />
 				{t('jobs.remoteUsd.heroTagline')}
 			</p>
@@ -76,7 +76,7 @@ const loading = $derived(query.isLoading);
 							class="group flex w-full flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-neutral-700/60 dark:bg-neutral-800/50 dark:hover:border-emerald-500/40 sm:flex-row sm:items-center"
 						>
 							<div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400/20 to-teal-500/10">
-								<Briefcase size={18} class="text-emerald-600 dark:text-emerald-400" />
+								<Briefcase size={18} class="text-emerald-600 dark:text-emerald-300" />
 							</div>
 							<div class="min-w-0 flex-1">
 								<p class="truncate text-sm font-semibold text-gray-900 dark:text-neutral-100">

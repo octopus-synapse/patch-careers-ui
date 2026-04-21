@@ -4,9 +4,16 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Speculative TCP+TLS to the API so the first authenticated request
+			doesn't eat the handshake (~100ms). Prod replaces the URL via the
+			SvelteKit env injection. -->
+		<link rel="preconnect" href="http://localhost:3001" crossorigin="use-credentials" />
+		<link rel="dns-prefetch" href="http://localhost:3001" />
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
+		<!-- SvelteKit's preload-on-hover already ignores external + mailto/tel
+			targets; keep it enabled for internal nav hovers. -->
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

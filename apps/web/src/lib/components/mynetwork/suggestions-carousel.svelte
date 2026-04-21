@@ -64,7 +64,7 @@ function handleConnect(userId: string) {
 				{title ?? t('network.suggestions')}
 			</h2>
 			{#if seeAllHref}
-				<a href={seeAllHref} class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400">
+				<a href={seeAllHref} class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300">
 					{t('network.showAll')}
 				</a>
 			{/if}

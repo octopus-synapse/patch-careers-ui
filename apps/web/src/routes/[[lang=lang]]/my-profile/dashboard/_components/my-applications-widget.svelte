@@ -54,7 +54,7 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 			{#if items.length > 0}
 				<a
 					href="/careers/browse-jobs?tab=applications"
-					class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+					class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
 				>
 					{t('dashboard.applicationsSeeAll')}
 				</a>

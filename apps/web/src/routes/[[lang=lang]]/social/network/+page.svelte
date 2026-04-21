@@ -194,7 +194,7 @@ let removeTarget = $state<{ id: string; name: string } | null>(null);
 						{t('network.invitations')} ({pending.total ?? 0})
 					</h2>
 					{#if (pending.total ?? 0) > 0}
-						<a href="/social/network/invitation-manager/received" class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400">
+						<a href="/social/network/invitation-manager/received" class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300">
 							{t('network.showAll')}
 						</a>
 					{/if}

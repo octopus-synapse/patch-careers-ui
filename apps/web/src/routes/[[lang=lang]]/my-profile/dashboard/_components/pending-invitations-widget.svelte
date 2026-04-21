@@ -92,7 +92,7 @@ async function onReject(id: string) {
 			{#if (pending.total ?? 0) > pending.data.length}
 				<a
 					href="/social/network/invitation-manager/received"
-					class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+					class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
 				>
 					{t('dashboard.invitationsSeeAll')}
 				</a>

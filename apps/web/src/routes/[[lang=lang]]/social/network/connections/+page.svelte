@@ -194,7 +194,7 @@ const removeMutation = createConnectionRemoveConnection(() => ({
 							{#each [{ k: 'recent', l: t?.('network.sortRecentlyAdded') }, { k: 'first', l: t?.('network.sortFirstName') }, { k: 'last', l: t?.('network.sortLastName') }] as opt}
 								<button
 									type="button"
-									class="block w-full px-3 py-2 text-left text-xs transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700 {sortKey === opt.k ? 'font-semibold text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-neutral-300'}"
+									class="block w-full px-3 py-2 text-left text-xs transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700 {sortKey === opt.k ? 'font-semibold text-emerald-600 dark:text-emerald-300' : 'text-gray-700 dark:text-neutral-300'}"
 									onclick={() => {
 										sortKey = opt.k as SortKey;
 										sortOpen = false;
@@ -221,7 +221,7 @@ const removeMutation = createConnectionRemoveConnection(() => ({
 					</div>
 					<button
 						type="button"
-						class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400 whitespace-nowrap"
+						class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300 whitespace-nowrap"
 						onclick={() => {
 							/* placeholder: open filters modal */
 						}}

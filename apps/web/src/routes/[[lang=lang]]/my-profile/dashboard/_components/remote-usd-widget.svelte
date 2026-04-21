@@ -48,7 +48,7 @@ const total = $derived((query.data as { total?: number } | undefined)?.total ?? 
 			</h2>
 			<a
 				href="/careers/remote-usd-jobs"
-				class="flex items-center gap-1 text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+				class="flex items-center gap-1 text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
 			>
 				{t('jobs.remoteUsd.dashboardSeeAll')}
 				<ArrowRight size={11} />
