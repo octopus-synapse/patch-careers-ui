@@ -9,7 +9,7 @@
 import { Copy, Download, Loader2, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

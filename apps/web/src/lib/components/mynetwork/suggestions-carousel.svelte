@@ -7,7 +7,7 @@ import {
 import { UserPlus } from 'lucide-svelte';
 import { Button, toastState } from 'ui';
 import { track } from '$lib/analytics/track';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import { sentConnections } from '$lib/network/sent-connections.svelte';
 import UserCard from '../user-card.svelte';
 

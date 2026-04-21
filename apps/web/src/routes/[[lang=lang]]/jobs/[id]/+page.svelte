@@ -44,9 +44,9 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 interface Job {
   id: string;

@@ -9,7 +9,7 @@ import {
 import { Shield } from 'lucide-svelte';
 import { Button, ConfirmModal, toastState } from 'ui';
 import { track } from '$lib/analytics/track';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   /** ID of the user being blocked. */

@@ -5,12 +5,10 @@ import { isApiError } from 'api-client/client';
 import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
+import { PRIVACY_VERSION, TOS_VERSION } from '$lib/domain/consent/versions';
 
 const queryClient = useQueryClient();
-
-const TOS_VERSION = '1.0.0';
-const PRIVACY_VERSION = '1.0.0';
 
 let name = $state('');
 let email = $state('');

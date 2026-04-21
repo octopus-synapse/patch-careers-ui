@@ -1,7 +1,7 @@
 <script lang="ts">
 import { ChevronDown, FileText, Globe, LogOut, Moon, Settings, Sun } from 'lucide-svelte';
 import { Avatar, Button, SegmentToggle } from 'ui';
-import { colorSchema } from '$lib/color-schema.svelte';
+import { colorSchema } from '$lib/state/color-schema.svelte';
 
 type User = {
   name?: string | null;

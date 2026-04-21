@@ -1,12 +1,12 @@
 <script lang="ts">
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
+import { LEGAL_EFFECTIVE_DATE, TOS_VERSION } from '$lib/domain/consent/versions';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
 
 const lang = $derived(locale.current ?? 'pt-BR');
 const isEn = $derived(lang === 'en');
 
-const TOS_VERSION = '1.0.0';
-const EFFECTIVE_DATE = '2026-04-20';
+const EFFECTIVE_DATE = LEGAL_EFFECTIVE_DATE;
 </script>
 
 <SeoHead

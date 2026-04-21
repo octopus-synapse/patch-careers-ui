@@ -4,12 +4,12 @@ import { Briefcase } from 'lucide-svelte';
 import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import {
   statusIntent as resolveStatusIntent,
   statusLabel as resolveStatusLabel,
 } from '$lib/format/application-status';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type ApplicationItem = {
   id?: string;

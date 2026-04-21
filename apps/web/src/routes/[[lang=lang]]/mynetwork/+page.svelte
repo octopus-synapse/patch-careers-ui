@@ -16,11 +16,11 @@ import {
 import { Eye, MessageCircle, UserCheck, Users } from 'lucide-svelte';
 import { Button, ConfirmModal } from 'ui';
 import { browser } from '$app/environment';
-import { useAuth } from '$lib/auth.svelte';
-import { chatState } from '$lib/chat-state.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
+import { chatState } from '$lib/state/chat-state.svelte';
 import SuggestionsCarousel from '$lib/components/mynetwork/suggestions-carousel.svelte';
 import UserRow from '$lib/components/user-row.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import InfiniteScrollTrigger from './InfiniteScrollTrigger.svelte';
 
 const t = $derived(locale.t);

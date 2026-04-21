@@ -16,7 +16,7 @@ import Pagination from '$lib/components/admin/pagination.svelte';
 import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 import { parseApiError } from '$lib/format/api-error';
 import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 interface JobItem {
   id: string;

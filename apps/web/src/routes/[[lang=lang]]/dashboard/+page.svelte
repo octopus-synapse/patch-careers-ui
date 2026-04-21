@@ -3,7 +3,7 @@ import { Loader2, Rss } from 'lucide-svelte';
 import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import GreetingHero from '$lib/components/dashboard/greeting-hero.svelte';
 import MyApplicationsWidget from '$lib/components/dashboard/my-applications-widget.svelte';
 import PendingInvitationsWidget from '$lib/components/dashboard/pending-invitations-widget.svelte';
@@ -12,7 +12,7 @@ import RemoteUsdWidget from '$lib/components/dashboard/remote-usd-widget.svelte'
 import UpcomingEventsCard from '$lib/components/dashboard/upcoming-events-card.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import { meDashboard } from '$lib/dashboard/me-dashboard.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

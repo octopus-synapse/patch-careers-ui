@@ -11,7 +11,7 @@ import { Check, Plus } from 'lucide-svelte';
 import { Avatar, Button, Card, Skeleton, Tooltip, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/analytics/track';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   userId: string;

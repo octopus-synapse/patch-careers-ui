@@ -2,8 +2,8 @@
 import { MessageCircle, Shield } from 'lucide-svelte';
 import type { ComponentType } from 'svelte';
 import { Avatar, Button, SegmentToggle } from 'ui';
-import { chatState } from '$lib/chat-state.svelte';
-import { colorSchema } from '$lib/color-schema.svelte';
+import { chatState } from '$lib/state/chat-state.svelte';
+import { colorSchema } from '$lib/state/color-schema.svelte';
 
 type User = {
   name?: string | null;

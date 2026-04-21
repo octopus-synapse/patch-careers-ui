@@ -2,7 +2,7 @@
 import { Settings } from 'lucide-svelte';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 let { children }: { children: Snippet } = $props();
 

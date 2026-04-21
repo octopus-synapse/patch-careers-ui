@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
@@ -49,8 +49,8 @@ async function onSubmit(e: Event) {
       .map((s) => s.trim())
       .filter(Boolean),
   };
-  // biome-ignore lint/suspicious/noExplicitAny: generated zod lags backend
-  await create.mutateAsync({ data: body as any });
+  // biome-ignore lint/suspicious/noExplicitAny: orval emitted void mutation input; passing body until openapi regen
+  await (create.mutateAsync as any)({ data: body });
 }
 </script>
 
@@ -143,7 +143,7 @@ async function onSubmit(e: Event) {
 				{/if}
 			</Button>
 			<a href="/company/jobs">
-				<Button type="button" variant="secondary">
+				<Button type="button" variant="ghost">
 					{t('common.cancel')}
 				</Button>
 			</a>

@@ -9,8 +9,8 @@ import {
 import { ChevronDown, MessageCircle, MoreHorizontal, Search, Users } from 'lucide-svelte';
 import { Avatar, Button, ConfirmModal, Input } from 'ui';
 import { browser } from '$app/environment';
-import { chatState } from '$lib/chat-state.svelte';
-import { locale } from '$lib/locale.svelte';
+import { chatState } from '$lib/state/chat-state.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import InfiniteScrollTrigger from '../InfiniteScrollTrigger.svelte';
 
 const t = $derived(locale.t);

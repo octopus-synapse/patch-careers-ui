@@ -10,9 +10,9 @@ import {
 import { UserCheck } from 'lucide-svelte';
 import { Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import UserRow from '$lib/components/user-row.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const auth = useAuth();

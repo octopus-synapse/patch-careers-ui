@@ -1,6 +1,6 @@
 <script lang="ts">
-import { locale } from '$lib/locale.svelte';
-import { timeTicker } from '$lib/time-ticker.svelte';
+import { locale } from '$lib/state/locale.svelte';
+import { timeTicker } from '$lib/state/time-ticker.svelte';
 
 type Props = {
   name: string;

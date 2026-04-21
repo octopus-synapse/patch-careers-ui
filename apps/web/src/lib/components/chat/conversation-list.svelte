@@ -1,7 +1,7 @@
 <script lang="ts">
 import { formatDate } from 'i18n';
 import { Avatar } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Conversation = {
   id: string;

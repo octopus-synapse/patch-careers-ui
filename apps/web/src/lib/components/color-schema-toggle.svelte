@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Moon, Sun } from 'lucide-svelte';
 import { Button } from 'ui';
-import { colorSchema } from '$lib/color-schema.svelte';
+import { colorSchema } from '$lib/state/color-schema.svelte';
 </script>
 
 <Button

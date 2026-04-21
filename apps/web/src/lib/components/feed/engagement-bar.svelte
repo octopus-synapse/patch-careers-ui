@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Bookmark, MessageCircle, Repeat2 } from 'lucide-svelte';
 import { ReactionPicker, type ReactionType, Tooltip } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   post: Record<string, unknown>;

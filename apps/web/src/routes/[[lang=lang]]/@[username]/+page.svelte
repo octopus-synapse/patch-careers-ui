@@ -30,14 +30,14 @@ import {
 import { Button, Dropdown, toastState } from 'ui';
 import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
-import { useAuth } from '$lib/auth.svelte';
-import { chatState } from '$lib/chat-state.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
+import { chatState } from '$lib/state/chat-state.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import ProfileActivityTabs from '$lib/components/profile/profile-activity-tabs.svelte';
 import ProfileBadges from '$lib/components/profile/profile-badges.svelte';
 import SkillsSection from '$lib/components/profile/skills-section.svelte';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const username = $derived($page.params.username);
 

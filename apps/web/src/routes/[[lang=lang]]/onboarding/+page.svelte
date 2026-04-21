@@ -22,7 +22,7 @@ import StepReview from '$lib/components/onboarding/step-review.svelte';
 import StepTheme from '$lib/components/onboarding/step-theme.svelte';
 import StepWelcome from '$lib/components/onboarding/step-welcome.svelte';
 import StepperMobile from '$lib/components/onboarding/stepper-mobile.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

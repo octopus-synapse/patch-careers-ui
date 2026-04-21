@@ -13,7 +13,7 @@ import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import StatCard from '$lib/components/admin/stat-card.svelte';
 import StatusBadge from '$lib/components/admin/status-badge.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();

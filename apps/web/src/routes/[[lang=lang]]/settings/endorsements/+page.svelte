@@ -8,7 +8,7 @@ import { ChevronDown, ChevronUp, Loader2 } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Avatar, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 
 const auth = useAuth();
 const viewerId = $derived(String(auth.data?.user?.id ?? ''));

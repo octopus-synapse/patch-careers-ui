@@ -1,7 +1,7 @@
 <script lang="ts">
 import { MessageCircle } from 'lucide-svelte';
 import { Button } from 'ui';
-import { chatState } from '$lib/chat-state.svelte';
+import { chatState } from '$lib/state/chat-state.svelte';
 
 type Props = {
   unreadCount?: number;

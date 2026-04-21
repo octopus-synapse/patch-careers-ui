@@ -1,6 +1,6 @@
 <script lang="ts">
 import { FlaskConical, Radio, Bug } from 'lucide-svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

@@ -7,7 +7,7 @@
 import { CheckCircle2, Loader2, MessageSquare, Trash2 } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, toastState } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

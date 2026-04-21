@@ -21,7 +21,7 @@ import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

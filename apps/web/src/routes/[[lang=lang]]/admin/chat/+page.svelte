@@ -12,7 +12,7 @@ import { browser } from '$app/environment';
 import DataTable from '$lib/components/admin/data-table.svelte';
 import Pagination from '$lib/components/admin/pagination.svelte';
 import StatCard from '$lib/components/admin/stat-card.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

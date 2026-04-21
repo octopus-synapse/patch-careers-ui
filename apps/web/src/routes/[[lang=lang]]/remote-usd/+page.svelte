@@ -4,7 +4,7 @@ import { ArrowRight, Briefcase, Globe2, Sparkles } from 'lucide-svelte';
 import { Button, Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type JobItem = {
   id: string;

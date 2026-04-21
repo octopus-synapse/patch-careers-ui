@@ -6,7 +6,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import AdminSidebar from '$lib/components/admin/admin-sidebar.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 let { children }: { children: Snippet } = $props();
 

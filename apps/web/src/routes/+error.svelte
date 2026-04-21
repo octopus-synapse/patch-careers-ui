@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { locale } from '$lib/locale.svelte';
+	import { locale } from '$lib/state/locale.svelte';
 
 	const t = $derived(locale.t);
 	const message = $derived(

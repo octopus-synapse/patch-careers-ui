@@ -2,7 +2,7 @@
 import { AlertTriangle, Loader2 } from 'lucide-svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { goto } from '$app/navigation';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 
 const auth = useAuth();
 const userEmail = $derived(auth.data?.user?.email ?? '');

@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import { createResumesTailorForJob, getResumesListTailoredQueryKey } from 'api-client';
 import { RotateCw, Sparkles } from 'lucide-svelte';
 import { Button, Modal, toastState } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Segment = { text: string; highlight?: boolean };
 type Scenario = {

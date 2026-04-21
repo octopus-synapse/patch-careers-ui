@@ -1,5 +1,5 @@
 <script lang="ts">
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
 
 const lang = $derived(locale.current ?? 'pt-BR');

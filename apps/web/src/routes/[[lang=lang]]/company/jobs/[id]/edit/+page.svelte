@@ -10,13 +10,13 @@ import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
-const jobId = $derived($page.params.id);
+const jobId = $derived($page.params.id ?? '');
 
-const jobQuery = createJobsFindById(jobId);
+const jobQuery = createJobsFindById(() => jobId);
 
 // biome-ignore lint/suspicious/noExplicitAny: generated response shape
 const job = $derived(((jobQuery.data as any)?.data ?? jobQuery.data) as any | undefined);
@@ -74,8 +74,8 @@ async function onSubmit(e: Event) {
       .map((s) => s.trim())
       .filter(Boolean),
   };
-  // biome-ignore lint/suspicious/noExplicitAny: generated zod lags backend
-  await update.mutateAsync({ id: jobId, data: body as any });
+  // biome-ignore lint/suspicious/noExplicitAny: orval emitted void mutation input; passing body until openapi regen
+  await (update.mutateAsync as any)({ id: jobId, data: body });
 }
 </script>
 
@@ -156,7 +156,7 @@ async function onSubmit(e: Event) {
 					{/if}
 				</Button>
 				<a href="/company/jobs">
-					<Button type="button" variant="secondary">
+					<Button type="button" variant="ghost">
 						{t('common.cancel')}
 					</Button>
 				</a>

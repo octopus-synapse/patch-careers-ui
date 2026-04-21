@@ -1,5 +1,5 @@
 import { getBaseUrl } from 'api-client';
-import { consentStore } from '$lib/consent/consent-store.svelte';
+import { consentStore } from '$lib/state/consent-store.svelte';
 
 type EventProps = Record<string, unknown>;
 type QueuedEvent = { event: string; props?: EventProps; occurredAt: string };

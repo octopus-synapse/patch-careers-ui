@@ -4,9 +4,9 @@ import { Activity } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Card, EmptyState, Skeleton } from 'ui';
 import { browser } from '$app/environment';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import { relativeFrom } from '$lib/format/relative';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const auth = useAuth();

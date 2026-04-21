@@ -12,7 +12,7 @@ import { formatDate } from 'i18n';
 import { Bell } from 'lucide-svelte';
 import { Avatar, Button, Dropdown } from 'ui';
 import { browser } from '$app/environment';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();

@@ -41,9 +41,9 @@ import {
 import { Input, Label, SegmentToggle, Textarea } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { colorSchema } from '$lib/color-schema.svelte';
+import { colorSchema } from '$lib/state/color-schema.svelte';
 import { createForm } from '$lib/forms/create-form.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();

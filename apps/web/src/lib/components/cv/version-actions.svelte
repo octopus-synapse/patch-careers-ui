@@ -4,7 +4,7 @@
 <script lang="ts">
 import { Check, Loader2, Pencil, Trash2, X } from 'lucide-svelte';
 import { Button, Input, toastState } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

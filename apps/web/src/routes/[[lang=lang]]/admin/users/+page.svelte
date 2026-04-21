@@ -19,7 +19,7 @@ import ExportButton from '$lib/components/admin/export-button.svelte';
 import Pagination from '$lib/components/admin/pagination.svelte';
 import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
 import StatusBadge from '$lib/components/admin/status-badge.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();

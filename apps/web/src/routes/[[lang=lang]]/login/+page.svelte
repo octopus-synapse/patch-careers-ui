@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
 import { createForm } from '$lib/forms/create-form.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const queryClient = useQueryClient();
 

@@ -2,8 +2,8 @@
 import { onMount } from 'svelte';
 import { Cookie, X } from 'lucide-svelte';
 import { Button } from 'ui';
-import { consentStore } from '$lib/consent/consent-store.svelte';
-import { locale } from '$lib/locale.svelte';
+import { consentStore } from '$lib/state/consent-store.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
@@ -106,10 +106,10 @@ onMount(() => {
             <Button size="sm" onclick={acceptAll}>
               {t('cookies.banner.acceptAll')}
             </Button>
-            <Button size="sm" variant="secondary" onclick={acceptEssential}>
+            <Button size="sm" variant="ghost" onclick={acceptEssential}>
               {t('cookies.banner.acceptEssential')}
             </Button>
-            <Button size="sm" variant="secondary" onclick={() => (mode = 'details')}>
+            <Button size="sm" variant="ghost" onclick={() => (mode = 'details')}>
               {t('cookies.banner.customize')}
             </Button>
           {/if}

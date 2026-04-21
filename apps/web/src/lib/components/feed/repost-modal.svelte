@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Loader2 } from 'lucide-svelte';
 import { Button, Modal, QuoteCard, Textarea } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   open: boolean;

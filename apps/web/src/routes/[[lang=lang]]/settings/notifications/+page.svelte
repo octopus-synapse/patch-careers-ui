@@ -8,8 +8,8 @@ import {
 import { Card, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/analytics/track';
-import { useAuth } from '$lib/auth.svelte';
-import { locale } from '$lib/locale.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type PreferenceType =
   | 'POST_LIKED'

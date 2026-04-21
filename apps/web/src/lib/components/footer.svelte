@@ -1,5 +1,5 @@
 <script lang="ts">
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const year = new Date().getFullYear();

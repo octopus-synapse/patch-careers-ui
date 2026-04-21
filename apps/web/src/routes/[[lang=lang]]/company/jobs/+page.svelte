@@ -3,13 +3,13 @@ import { createJobsGetMyJobs, createJobsDelete, getJobsGetMyJobsQueryKey } from 
 import { useQueryClient } from '@tanstack/svelte-query';
 import { Plus, Pencil, Trash2, Users, Loader2 } from 'lucide-svelte';
 import { Button } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
 const jobsQuery = createJobsGetMyJobs(
-  { page: 1, limit: 50 },
+  () => ({ page: 1, limit: 50 }),
   () => ({ query: { enabled: true } }),
 );
 
@@ -22,7 +22,7 @@ const deleteMut = createJobsDelete(() => ({
 }));
 
 // biome-ignore lint/suspicious/noExplicitAny: generated response shape changes when orval regenerates
-const rows = $derived(((jobsQuery.data?.data as any)?.items ?? (jobsQuery.data as any)?.items ?? []) as any[]);
+const rows = $derived(((jobsQuery.data as any)?.data?.items ?? (jobsQuery.data as any)?.items ?? []) as any[]);
 
 async function onDelete(id: string) {
   if (!confirm(t('company.jobs.confirmDelete'))) return;
@@ -83,19 +83,19 @@ async function onDelete(id: string) {
 							<td class="px-4 py-3 text-right">
 								<div class="flex justify-end gap-2">
 									<a href={`/company/jobs/${job.id}/applications`}>
-										<Button size="sm" variant="secondary">
+										<Button size="sm" variant="ghost">
 											<Users size={14} />
 											{t('company.jobs.col.applications')}
 										</Button>
 									</a>
 									<a href={`/company/jobs/${job.id}/edit`}>
-										<Button size="sm" variant="secondary">
+										<Button size="sm" variant="ghost">
 											<Pencil size={14} />
 										</Button>
 									</a>
 									<Button
 										size="sm"
-										variant="secondary"
+										variant="ghost"
 										onclick={() => onDelete(job.id)}
 										disabled={deleteMut.isPending}
 									>

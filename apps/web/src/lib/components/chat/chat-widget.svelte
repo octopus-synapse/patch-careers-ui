@@ -14,7 +14,7 @@ import { ArrowLeft, Loader2, Maximize2, Minimize2, MoreHorizontal, X } from 'luc
 import { fade, fly } from 'svelte/transition';
 import { Avatar, Button, Dropdown } from 'ui';
 import { browser } from '$app/environment';
-import { chatState } from '$lib/chat-state.svelte';
+import { chatState } from '$lib/state/chat-state.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import ConversationList from './conversation-list.svelte';
 import MessageInput from './message-input.svelte';

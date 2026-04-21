@@ -6,7 +6,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { useFormDraft } from '$lib/forms/use-form-draft.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const resumeId = $derived($page.params.id);

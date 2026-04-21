@@ -4,8 +4,8 @@ import { ArrowRight, Clock, FileUp, Github, Linkedin, Loader2, PencilLine } from
 import { Button, Modal, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { useAuth } from '$lib/auth.svelte';
-import { locale } from '$lib/locale.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

@@ -31,7 +31,7 @@ import {
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { track } from '$lib/analytics/track';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import ActivityStream from '$lib/components/feed/activity-stream.svelte';
 import CreatePostModal from '$lib/components/feed/create-post-modal.svelte';
 import PostCard from '$lib/components/feed/post-card.svelte';
@@ -39,7 +39,7 @@ import PostSkeleton from '$lib/components/feed/post-skeleton.svelte';
 import ReportModal from '$lib/components/feed/report-modal.svelte';
 import RepostModal from '$lib/components/feed/repost-modal.svelte';
 import SuggestionsCarousel from '$lib/components/mynetwork/suggestions-carousel.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

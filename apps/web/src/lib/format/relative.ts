@@ -1,5 +1,5 @@
 import { formatRelativeTime } from 'i18n';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 /**
  * Single source of truth for "X minutes ago" rendering across the app.

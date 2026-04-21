@@ -10,7 +10,7 @@ import type { Component } from 'svelte';
 import { EmptyState, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
 import { relativeFrom } from '$lib/format/relative';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   userId: string;

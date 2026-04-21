@@ -2,7 +2,7 @@
 import { CheckCircle2, UserCheck } from 'lucide-svelte';
 import { Button, Card } from 'ui';
 import { goto } from '$app/navigation';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   user: Record<string, unknown> | undefined;

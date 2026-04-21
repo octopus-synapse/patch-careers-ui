@@ -11,9 +11,9 @@ import type { Component } from 'svelte';
 import { Button, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/analytics/track';
-import { useAuth } from '$lib/auth.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import UserCard from '$lib/components/user-card.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import { sentConnections } from '$lib/network/sent-connections.svelte';
 import InfiniteScrollTrigger from '../InfiniteScrollTrigger.svelte';
 

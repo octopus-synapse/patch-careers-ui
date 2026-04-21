@@ -3,8 +3,8 @@ import { createJobsFindAll } from 'api-client';
 import { ArrowRight, Globe2 } from 'lucide-svelte';
 import { Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
-import { useAuth } from '$lib/auth.svelte';
-import { locale } from '$lib/locale.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 

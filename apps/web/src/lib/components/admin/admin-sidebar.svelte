@@ -14,7 +14,7 @@ import {
   Wrench,
 } from 'lucide-svelte';
 import { Button } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
   currentPath: string;

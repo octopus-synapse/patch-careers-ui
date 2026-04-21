@@ -24,8 +24,8 @@ import {
 } from 'ui';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import { relativeFrom } from '$lib/format/relative';
-import { locale } from '$lib/locale.svelte';
-import { timeTicker } from '$lib/time-ticker.svelte';
+import { locale } from '$lib/state/locale.svelte';
+import { timeTicker } from '$lib/state/time-ticker.svelte';
 import CommentSection from './comment-section.svelte';
 import EngagementBar from './engagement-bar.svelte';
 

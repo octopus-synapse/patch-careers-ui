@@ -1,7 +1,7 @@
 <script lang="ts">
 import { CalendarDays } from 'lucide-svelte';
 import { Card } from 'ui';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 </script>

@@ -4,10 +4,10 @@ import { createQuery } from '@tanstack/svelte-query';
 import { Loader2, ArrowLeft } from 'lucide-svelte';
 import { Button } from 'ui';
 import { page } from '$app/stores';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
-const jobId = $derived($page.params.id);
+const jobId = $derived($page.params.id ?? '');
 
 type ApplicationUser = {
   id: string;
@@ -119,7 +119,7 @@ const total = $derived(query.data?.data?.pagination?.total ?? 0);
 					<div class="mt-3 flex flex-wrap gap-2">
 						{#if item.user?.username}
 							<a href={`/@${item.user.username}`} target="_blank" rel="noopener">
-								<Button size="sm" variant="secondary">
+								<Button size="sm" variant="ghost">
 									{t('company.applications.viewProfile')}
 								</Button>
 							</a>

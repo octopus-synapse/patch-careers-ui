@@ -8,7 +8,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
 import UserCard from '$lib/components/user-card.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import InfiniteScrollTrigger from '../mynetwork/InfiniteScrollTrigger.svelte';
 
 const t = $derived(locale.t);

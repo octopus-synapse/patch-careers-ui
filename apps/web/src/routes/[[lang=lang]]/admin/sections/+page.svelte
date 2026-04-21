@@ -15,7 +15,7 @@ import DataTable from '$lib/components/admin/data-table.svelte';
 import ExportButton from '$lib/components/admin/export-button.svelte';
 import Pagination from '$lib/components/admin/pagination.svelte';
 import SearchFilterBar from '$lib/components/admin/search-filter-bar.svelte';
-import { locale } from '$lib/locale.svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
