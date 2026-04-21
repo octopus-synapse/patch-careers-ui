@@ -13,6 +13,7 @@ import type { Component } from 'svelte';
 import { Avatar, Button, EmptyState, Skeleton, Tabs, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/analytics/track';
+import { notificationVisual } from '$lib/format/notification-icon';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { useSseSubscribe } from '$lib/query/use-sse-subscribe';
@@ -160,6 +161,46 @@ $effect(() => {
 });
 
 const hasMore = $derived(extra.length === 0 ? Boolean(firstPage.nextCursor) : Boolean(cursor));
+
+type Bucket = 'today' | 'yesterday' | 'thisWeek' | 'older';
+
+function bucketFor(dateStr: string): Bucket {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const start = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const dayMs = 86_400_000;
+  const today = start(now);
+  const yesterday = today - dayMs;
+  const weekAgo = today - 6 * dayMs;
+  const t = start(date);
+  if (t >= today) return 'today';
+  if (t >= yesterday) return 'yesterday';
+  if (t >= weekAgo) return 'thisWeek';
+  return 'older';
+}
+
+const bucketOrder: Bucket[] = ['today', 'yesterday', 'thisWeek', 'older'];
+const bucketLabel: Record<Bucket, string> = {
+  today: 'Hoje',
+  yesterday: 'Ontem',
+  thisWeek: 'Essa semana',
+  older: 'Mais antigas',
+};
+
+const grouped = $derived.by(() => {
+  const buckets: Record<Bucket, NotificationItem[]> = {
+    today: [],
+    yesterday: [],
+    thisWeek: [],
+    older: [],
+  };
+  for (const item of filtered) {
+    buckets[bucketFor(item.createdAt)].push(item);
+  }
+  return bucketOrder
+    .filter((key) => buckets[key].length > 0)
+    .map((key) => ({ key, label: bucketLabel[key], items: buckets[key] }));
+});
 </script>
 
 <svelte:head>
@@ -207,40 +248,53 @@ const hasMore = $derived(extra.length === 0 ? Boolean(firstPage.nextCursor) : Bo
 					icon={Bell as unknown as Component<{ size: number; class?: string }>}
 				/>
 			{:else}
-				<ul class="divide-y divide-gray-200 dark:divide-neutral-800">
-					{#each filtered as item (item.id)}
-						<li class="flex items-start gap-3 px-4 py-3 sm:px-6 {item.read ? 'opacity-70' : 'bg-emerald-50/30 dark:bg-emerald-900/10'}">
-							<Avatar
-								name={item.actor?.name ?? item.actor?.username ?? '?'}
-								photoURL={item.actor?.photoURL}
-								size="md"
-							/>
-							<div class="min-w-0 flex-1">
-								<p class="text-sm text-gray-800 dark:text-neutral-200">
-									{#if item.actor?.username}
-										<a href="/my-profile/public/@{item.actor.username}" class="font-semibold hover:underline">
-											{item.actor.name ?? item.actor.username}
-										</a>
-										<span class="text-gray-600 dark:text-neutral-400">{item.message}</span>
-									{:else}
-										{item.message}
+				{#each grouped as group (group.key)}
+					<div class="border-b border-gray-200 last:border-b-0 dark:border-neutral-800">
+						<p class="px-4 pt-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500 sm:px-6">
+							{group.label}
+						</p>
+						<ul class="divide-y divide-gray-200 dark:divide-neutral-800">
+							{#each group.items as item (item.id)}
+								{@const visual = notificationVisual(item.type)}
+								<li class="flex items-start gap-3 px-4 py-3 sm:px-6 {item.read ? 'opacity-70' : 'bg-emerald-50/30 dark:bg-emerald-900/10'}">
+									<div class="relative">
+										<Avatar
+											name={item.actor?.name ?? item.actor?.username ?? '?'}
+											photoURL={item.actor?.photoURL}
+											size="md"
+										/>
+										<span class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow dark:bg-neutral-800 {visual.colorClass}">
+											<visual.icon size={10} />
+										</span>
+									</div>
+									<div class="min-w-0 flex-1">
+										<p class="text-sm text-gray-800 dark:text-neutral-200">
+											{#if item.actor?.username}
+												<a href="/my-profile/public/@{item.actor.username}" class="font-semibold hover:underline">
+													{item.actor.name ?? item.actor.username}
+												</a>
+												<span class="text-gray-600 dark:text-neutral-400">{item.message}</span>
+											{:else}
+												{item.message}
+											{/if}
+										</p>
+										<p class="mt-0.5 text-[11px] text-gray-400 dark:text-neutral-500">
+											{timeAgo(item.createdAt)}
+										</p>
+									</div>
+									{#if !item.read}
+										<button
+											type="button"
+											class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500"
+											aria-label="mark read"
+											onclick={() => markOne(item.id)}
+										></button>
 									{/if}
-								</p>
-								<p class="mt-0.5 text-[11px] text-gray-400 dark:text-neutral-500">
-									{timeAgo(item.createdAt)}
-								</p>
-							</div>
-							{#if !item.read}
-								<button
-									type="button"
-									class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500"
-									aria-label="mark read"
-									onclick={() => markOne(item.id)}
-								></button>
-							{/if}
-						</li>
-					{/each}
-				</ul>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/each}
 			{/if}
 		</section>
 

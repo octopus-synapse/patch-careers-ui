@@ -123,6 +123,56 @@ $effect(() => {
 
 const showConvList = $derived(!chatState.activeConversationId);
 let chatMenuOpen = $state(false);
+
+// Draggable position — desktop only, persisted in localStorage. Fullscreen
+// and mobile ignore the offset.
+const POS_STORAGE_KEY = 'patch:chatWidgetPos';
+let dragOffsetX = $state(0);
+let dragOffsetY = $state(0);
+let isDragging = $state(false);
+let dragStart = { x: 0, y: 0, offsetX: 0, offsetY: 0 };
+
+$effect(() => {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = window.localStorage.getItem(POS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { x?: number; y?: number };
+      dragOffsetX = Number(parsed.x) || 0;
+      dragOffsetY = Number(parsed.y) || 0;
+    }
+  } catch {
+    /* corrupted storage — ignore */
+  }
+});
+
+function onDragStart(e: PointerEvent) {
+  if (chatState.isFullscreen) return;
+  if (typeof window !== 'undefined' && window.innerWidth < 640) return;
+  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  isDragging = true;
+  dragStart = { x: e.clientX, y: e.clientY, offsetX: dragOffsetX, offsetY: dragOffsetY };
+}
+
+function onDragMove(e: PointerEvent) {
+  if (!isDragging) return;
+  dragOffsetX = dragStart.offsetX + (dragStart.x - e.clientX);
+  dragOffsetY = dragStart.offsetY + (dragStart.y - e.clientY);
+}
+
+function onDragEnd(e: PointerEvent) {
+  if (!isDragging) return;
+  (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+  isDragging = false;
+  try {
+    window.localStorage.setItem(
+      POS_STORAGE_KEY,
+      JSON.stringify({ x: dragOffsetX, y: dragOffsetY }),
+    );
+  } catch {
+    /* storage full — ignore */
+  }
+}
 </script>
 
 {#if chatState.isOpen && authenticated}
@@ -138,14 +188,23 @@ let chatMenuOpen = $state(false);
 
 	<div
 		transition:fly={{ y: 40, duration: 250 }}
+		style:--chat-drag-x="{chatState.isFullscreen ? 0 : dragOffsetX}px"
+		style:--chat-drag-y="{chatState.isFullscreen ? 0 : dragOffsetY}px"
+		style:transform="translate(calc(-1 * var(--chat-drag-x)), calc(-1 * var(--chat-drag-y)))"
 		class="fixed z-50 flex flex-col overflow-hidden shadow-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800
-			transition-all duration-300 ease-out
+			{isDragging ? '' : 'transition-all duration-300 ease-out'}
 			{chatState.isFullscreen
 				? 'inset-0 sm:inset-y-8 sm:left-1/2 sm:-translate-x-1/2 sm:w-[70vw] sm:max-w-6xl rounded-none sm:rounded-xl'
 				: 'bottom-0 right-0 sm:right-4 h-[100dvh] sm:h-[32rem] w-full sm:w-[22rem] rounded-none sm:rounded-t-xl'}"
 	>
-		<!-- Header -->
-		<div class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+		<!-- Header (drag handle on desktop) -->
+		<div
+			class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 {chatState.isFullscreen ? '' : 'sm:cursor-move'}"
+			onpointerdown={onDragStart}
+			onpointermove={onDragMove}
+			onpointerup={onDragEnd}
+			onpointercancel={onDragEnd}
+		>
 			<div class="flex items-center gap-2">
 				{#if chatState.activeConversationId && !chatState.isFullscreen}
 					<Button variant="icon" size="xs" onclick={() => chatState.setActiveConversation(null)}>
