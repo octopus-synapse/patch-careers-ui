@@ -95,6 +95,7 @@ const rejectMutation = createConnectionRejectConnection(() => ({
 				{@const user = (request.user ?? request.requester ?? request) as Record<string, string | null>}
 				{@const reqId = String(request.id ?? '')}
 				<UserRow
+					layout="stacked"
 					user={{
 						id: String(user.id ?? ''),
 						name: user.name,
