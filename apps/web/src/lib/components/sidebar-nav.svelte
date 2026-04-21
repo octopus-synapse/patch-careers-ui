@@ -62,7 +62,7 @@ function isActive(item: NavItem): boolean {
 	<!-- Header -->
 	<div class="flex items-center justify-between {collapsible ? 'px-4 py-4' : 'mb-6 pr-6'}">
 		{#if title && (!collapsible || !collapsed)}
-			<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{title}</span>
+			<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{title}</span>
 		{/if}
 		{#if collapsible}
 			<Button
@@ -87,7 +87,7 @@ function isActive(item: NavItem): boolean {
 				<div class="h-1 rounded-full transition-all duration-700 {barColor}" style="width: {progress.value}%"></div>
 			</div>
 			{#if progress.message && (!collapsible || !collapsed)}
-				<p class="mt-2 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+				<p class="mt-2 text-xs font-medium text-gray-500 dark:text-neutral-500">
 					{progress.message}
 				</p>
 			{/if}

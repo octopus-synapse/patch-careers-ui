@@ -41,7 +41,7 @@ const healthStatus = $derived<'healthy' | 'down'>(
 			{t('admin.dashboard.title')}
 		</h1>
 		<div class="flex items-center gap-2">
-			<span class="text-[10px] font-medium uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+			<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 				{t('admin.dashboard.systemHealth')}
 			</span>
 			{#if healthAll.isLoading}

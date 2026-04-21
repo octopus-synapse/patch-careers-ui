@@ -99,7 +99,7 @@ function isCompleted(stepId: string): boolean {
 		></div>
 	</div>
 	{#if strengthMessage}
-		<p class="mt-1.5 text-center text-[10px] font-semibold uppercase tracking-widest transition-all duration-500 text-gray-500 dark:text-neutral-500">
+		<p class="mt-1.5 text-center text-xs font-medium transition-all duration-500 text-gray-500 dark:text-neutral-500">
 			{strengthMessage}
 		</p>
 	{/if}

@@ -162,7 +162,7 @@ const sections = $derived.by(() => {
 				{:else}
 					<Check size={12} class="text-emerald-500" />
 				{/if}
-				<h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+				<h3 class="text-xs font-semibold text-gray-500 dark:text-neutral-500">
 					{section.label}
 				</h3>
 			</div>
@@ -187,14 +187,14 @@ const sections = $derived.by(() => {
 						{#if entry.long}
 							<div>
 								{#if entry.label}
-									<dt class="mb-0.5 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{entry.label}</dt>
+									<dt class="mb-0.5 text-xs font-medium text-gray-500 dark:text-neutral-500">{entry.label}</dt>
 								{/if}
 								<dd class="text-xs leading-relaxed break-words text-gray-800 dark:text-neutral-200">{entry.value}</dd>
 							</div>
 						{:else}
 							<div class="flex items-baseline justify-between gap-4">
 								{#if entry.label}
-									<dt class="flex-shrink-0 text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{entry.label}</dt>
+									<dt class="flex-shrink-0 text-xs font-medium text-gray-500 dark:text-neutral-500">{entry.label}</dt>
 								{/if}
 								<dd class="text-right text-xs text-gray-800 dark:text-neutral-200">{entry.value}</dd>
 							</div>

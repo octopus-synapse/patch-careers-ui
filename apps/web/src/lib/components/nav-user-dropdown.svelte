@@ -73,7 +73,7 @@ const localeOptions = $derived(
 						<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
 							<Sun size={13} class="hidden dark:block" />
 							<Moon size={13} class="block dark:hidden" />
-							<span class="text-[10px] font-semibold uppercase tracking-widest">{themeLabel}</span>
+							<span class="text-xs font-medium">{themeLabel}</span>
 						</div>
 						<SegmentToggle options={themeOptions} selected={cs} onchange={onthemetoggle} />
 					</div>
@@ -83,7 +83,7 @@ const localeOptions = $derived(
 					<div class="flex items-center justify-between">
 						<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
 							<Globe size={13} />
-							<span class="text-[10px] font-semibold uppercase tracking-widest">Language</span>
+							<span class="text-xs font-medium">Language</span>
 						</div>
 						<SegmentToggle options={localeOptions} selected={currentLocale} onchange={onlocalechange} />
 					</div>

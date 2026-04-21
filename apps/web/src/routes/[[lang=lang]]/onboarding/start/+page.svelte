@@ -186,12 +186,12 @@ function isAvailable(key: TrackKey): boolean {
 								</div>
 								<div class="flex items-center gap-2">
 									{#if track.badgeKey}
-										<span class="rounded-full bg-gray-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white dark:bg-neutral-200 dark:text-neutral-900">
+										<span class="rounded-full bg-gray-800 px-2 py-0.5 text-xs font-medium text-white dark:bg-neutral-200 dark:text-neutral-900">
 											{t(track.badgeKey)}
 										</span>
 									{/if}
 									{#if !available}
-										<span class="flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+										<span class="flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
 											<Clock size={10} />
 											{t('onboarding.start.badgeSoon')}
 										</span>

@@ -159,15 +159,15 @@ async function handleToggleRole() {
 			{#if !editing}
 				<dl class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
 					<div>
-						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Username</dt>
+						<dt class="text-xs font-semibold text-gray-500 dark:text-neutral-500">Username</dt>
 						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.username ?? '—'}</dd>
 					</div>
 					<div>
-						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Created</dt>
+						<dt class="text-xs font-semibold text-gray-500 dark:text-neutral-500">Created</dt>
 						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{formatDate(user.createdAt, locale.current)}</dd>
 					</div>
 					<div>
-						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Last Login</dt>
+						<dt class="text-xs font-semibold text-gray-500 dark:text-neutral-500">Last Login</dt>
 						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">
 							{#if (user as unknown as { lastLoginAt?: string | null }).lastLoginAt}
 								{formatDate((user as unknown as { lastLoginAt: string }).lastLoginAt, locale.current)}
@@ -177,7 +177,7 @@ async function handleToggleRole() {
 						</dd>
 					</div>
 					<div>
-						<dt class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Onboarding</dt>
+						<dt class="text-xs font-semibold text-gray-500 dark:text-neutral-500">Onboarding</dt>
 						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.hasCompletedOnboarding ? 'Completed' : 'Pending'}</dd>
 					</div>
 				</dl>

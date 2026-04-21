@@ -53,7 +53,10 @@
     "terms": "Termos",
     "privacy": "Privacidade",
     "cookies": "Cookies",
-    "contact": "Contato"
+    "contact": "Contato",
+    "companyHeading": "Empresa",
+    "legalHeading": "Legal",
+    "dpo": "DPO"
   },
   "cookies": {
     "banner": {
@@ -182,6 +185,9 @@
     "close": "Fechar",
     "login": "Entrar",
     "search": "Pesquisar...",
+    "searchHintPeople": "Buscar pessoas...",
+    "searchHintJobs": "Buscar vagas...",
+    "searchHintRemote": "Vagas remotas em USD/EUR...",
     "searchPlaceholder": "Buscar vagas, empresas e mais...",
     "searchRecent": "Recentes",
     "searchQuickLinks": "Links rápidos",
@@ -288,12 +294,14 @@
     "applicationsTitle": "Suas candidaturas",
     "applicationsEmpty": "Voc\u00ea ainda n\u00e3o se candidatou a nenhuma vaga.",
     "applicationsBrowse": "Ver vagas",
+    "applicationsCtaFirst": "Aplicar na minha primeira vaga \u2192",
     "applicationsSeeAll": "Ver todas",
     "invitationsTitle": "Convites pendentes",
     "invitationsEmpty": "Nenhum convite pendente.",
     "invitationsAccept": "Aceitar",
     "invitationsIgnore": "Ignorar",
     "invitationsSeeAll": "Ver todos os convites",
+    "invitationsShowing": "Mostrando {{shown}} de {{total}}",
     "eventsTitle": "Esta semana",
     "eventsEmpty": "Nenhum evento programado pra essa semana.",
     "eventsComingSoon": "Eventos chegando em breve \u2014 AMAs, workshops e meetups.",
@@ -817,7 +825,8 @@
       "dashboardCount_one": "vaga remota pagando em moeda forte",
       "dashboardCount_other": "vagas remotas pagando em moeda forte",
       "dashboardCountEmpty": "Nenhuma vaga em moeda forte no seu feed agora.",
-      "dashboardSeeAll": "Ver a lista"
+      "dashboardSeeAll": "Ver a lista",
+      "dashboardShowing": "Mostrando {{shown}} de {{total}}"
     },
     "fit": {
       "title": "Seu fit",
@@ -845,6 +854,7 @@
       "fullName": "Nome Completo",
       "fullNamePlaceholder": "Jane Doe",
       "errorGeneric": "Algo deu errado.",
+      "errorRateLimited": "Você tentou demais. Aguarde alguns minutos.",
       "errorEmailInUse": "Este e-mail já está em uso.",
       "errorEmailInvalid": "E-mail inválido.",
       "errorPasswordTooShort": "A senha deve ter pelo menos 8 caracteres."
@@ -862,8 +872,11 @@
         "tosLink": "Termos de Uso",
         "privacyPrefix": "Li e aceito a",
         "privacyLink": "Política de Privacidade",
+        "combinedPrefix": "Li e aceito os",
+        "combinedAnd": "e a",
         "errorTosRequired": "Você precisa aceitar os Termos de Uso para continuar.",
-        "errorPrivacyRequired": "Você precisa aceitar a Política de Privacidade para continuar."
+        "errorPrivacyRequired": "Você precisa aceitar a Política de Privacidade para continuar.",
+        "errorRequired": "Você precisa aceitar os Termos e a Política de Privacidade para continuar."
       }
     },
     "sign-in": {

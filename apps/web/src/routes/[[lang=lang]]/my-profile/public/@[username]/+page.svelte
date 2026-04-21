@@ -258,7 +258,7 @@ function bannerGradient(name: string): string {
 {:else if profile.isError || !user}
 	<div class="flex h-screen flex-col items-center justify-center gap-3">
 		<span class="text-4xl font-bold text-gray-800 dark:text-neutral-200">404</span>
-		<span class="text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500">profile not found</span>
+		<span class="text-xs text-gray-500 dark:text-neutral-500">profile not found</span>
 	</div>
 {:else}
 	<div class="min-h-screen pt-14">

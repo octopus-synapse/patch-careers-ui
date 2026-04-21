@@ -75,6 +75,6 @@ function timeAgo(dateStr: string | null): string {
 	</button>
 {:else}
 	<div class="flex items-center justify-center py-16">
-		<span class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-neutral-500">no conversations</span>
+		<span class="text-xs text-gray-500 dark:text-neutral-500">no conversations</span>
 	</div>
 {/each}

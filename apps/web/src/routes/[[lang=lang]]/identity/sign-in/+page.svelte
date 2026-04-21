@@ -23,8 +23,23 @@ const login = createAuthLogin(() => ({
     },
     onError(err: unknown) {
       if (!t) return;
-      if (isApiError(err) && err.statusCode === 401) {
-        serverError = t('auth.shared.errorInvalidCredentials');
+      // Friendlier mapping for known statuses, but always show the backend's
+      // own message when one comes back — generic fallbacks turn debugging
+      // into archeology (see UX feedback #27).
+      if (isApiError(err)) {
+        if (err.statusCode === 401) {
+          serverError = t('auth.shared.errorInvalidCredentials');
+        } else if (err.statusCode === 429) {
+          serverError = t('auth.shared.errorRateLimited');
+        } else if (err.statusCode >= 500) {
+          serverError = t('auth.shared.errorGeneric');
+        } else if (err.message) {
+          serverError = err.message;
+        } else {
+          serverError = t('auth.shared.errorGeneric');
+        }
+      } else if (err instanceof Error && err.message) {
+        serverError = err.message;
       } else {
         serverError = t('auth.shared.errorGeneric');
       }

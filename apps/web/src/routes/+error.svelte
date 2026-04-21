@@ -20,7 +20,7 @@
 >
 	<span class="text-6xl font-bold text-gray-800 dark:text-neutral-200">{$page.status}</span>
 	<span
-		class="text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+		class="text-xs text-gray-500 dark:text-neutral-500"
 		role="alert"
 	>
 		{message}
@@ -29,7 +29,7 @@
 		href="/"
 		aria-label={t('errorPage.goHomeAria')}
 		title={t('errorPage.goHomeAria')}
-		class="mt-4 text-[11px] uppercase tracking-widest text-gray-500 dark:text-neutral-500 underline hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded"
+		class="mt-4 text-xs text-gray-500 dark:text-neutral-500 underline hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded"
 	>
 		{t('errorPage.goHome')}
 	</a>

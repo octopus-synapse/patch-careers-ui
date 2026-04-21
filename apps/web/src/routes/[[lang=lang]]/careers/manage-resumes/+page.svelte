@@ -145,7 +145,7 @@ function openRerender(resume: Resume) {
 
 				<!-- Versions -->
 				<section class="mt-8">
-					<h3 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+					<h3 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 						{t('cv.versionsTitle')}
 					</h3>
 					{#if versions.length === 0}

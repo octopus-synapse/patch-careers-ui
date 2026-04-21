@@ -130,7 +130,7 @@ function maxValue(arr: { count: number }[]): number {
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<!-- ATS Score Distribution -->
 			<div class="rounded-xl border p-3 sm:p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+				<h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.atsDistribution') ?? 'ATS Score Distribution'}
 				</h3>
 				<div class="flex items-end gap-1 sm:gap-2" style="height: 100px; min-height: 80px">
@@ -147,7 +147,7 @@ function maxValue(arr: { count: number }[]): number {
 
 			<!-- Resumes by Language -->
 			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+				<h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.resumesByLanguage') ?? 'Resumes by Language'}
 				</h3>
 				<div class="space-y-3">
@@ -168,7 +168,7 @@ function maxValue(arr: { count: number }[]): number {
 
 			<!-- Most Used Sections -->
 			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+				<h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.topSections') ?? 'Most Used Sections'}
 				</h3>
 				<div class="space-y-2">
@@ -183,7 +183,7 @@ function maxValue(arr: { count: number }[]): number {
 
 			<!-- Import Sources -->
 			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
-				<h3 class="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+				<h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 					{t?.('admin.analytics.importSources') ?? 'Import Sources'}
 				</h3>
 				<div class="space-y-2">

@@ -57,7 +57,7 @@ const columns = [
 			<ExportButton data={latency} filename="performance.csv" />
 			<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
 				<RefreshCw size={12} class="animate-spin" />
-				<span class="text-[10px] font-medium uppercase tracking-widest">Auto-refresh: 10s</span>
+				<span class="text-xs font-medium">Auto-refresh: 10s</span>
 			</div>
 		</div>
 	</div>

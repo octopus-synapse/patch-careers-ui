@@ -244,7 +244,7 @@ const formTitle = $derived(
 			<!-- Areas -->
 			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
-					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.areas')}</span>
+					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.areas')}</span>
 					<Button variant="icon" size="xs" onclick={() => openCreate('area')}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[60vh] sm:max-h-[500px] overflow-y-auto">
@@ -280,7 +280,7 @@ const formTitle = $derived(
 			<!-- Niches -->
 			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
-					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.niches')}</span>
+					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.niches')}</span>
 					{#if selectedAreaId}<Button variant="icon" size="xs" onclick={() => openCreate('niche')}><Plus size={14} /></Button>{/if}
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
@@ -312,7 +312,7 @@ const formTitle = $derived(
 			<!-- Skills -->
 			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
-					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.skillsList')}</span>
+					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.skillsList')}</span>
 					{#if selectedNicheId}<Button variant="icon" size="xs" onclick={() => openCreate('skill')}><Plus size={14} /></Button>{/if}
 				</div>
 				<div class="max-h-[500px] overflow-y-auto">
@@ -343,7 +343,7 @@ const formTitle = $derived(
 			<!-- Spoken Languages -->
 			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
-					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.spokenLanguages')}</span>
+					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.spokenLanguages')}</span>
 					<Button variant="icon" size="xs" onclick={() => openCreate('spoken')}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[400px] overflow-y-auto">
@@ -366,7 +366,7 @@ const formTitle = $derived(
 			<!-- Programming Languages -->
 			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">
-					<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('admin.skills.programmingLanguages')}</span>
+					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.programmingLanguages')}</span>
 					<Button variant="icon" size="xs" onclick={() => openCreate('programming')}><Plus size={14} /></Button>
 				</div>
 				<div class="max-h-[400px] overflow-y-auto">

@@ -94,7 +94,7 @@ $effect(() => {
 
 	{#if messages.length === 0}
 		<div class="flex items-center justify-center pb-8">
-			<span class="text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-600">send a message to start</span>
+			<span class="text-xs text-gray-400 dark:text-neutral-600">send a message to start</span>
 		</div>
 	{/if}
 </div>

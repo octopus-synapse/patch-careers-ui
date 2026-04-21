@@ -7,7 +7,7 @@ import {
   getConnectionGetConnectionsQueryKey,
   getConnectionGetPendingRequestsQueryKey,
 } from 'api-client';
-import { UserCheck } from 'lucide-svelte';
+import { Loader2, UserCheck } from 'lucide-svelte';
 import { Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -48,6 +48,33 @@ const rejectMutation = createConnectionRejectConnection(() => ({
     },
   },
 }));
+
+// Track which row is mid-flight so the spinner attaches to the right button
+// instead of disabling the whole list (#29).
+let pendingActionId = $state<string | null>(null);
+let pendingActionKind = $state<'accept' | 'reject' | null>(null);
+
+async function onAccept(id: string) {
+  pendingActionId = id;
+  pendingActionKind = 'accept';
+  try {
+    await acceptMutation.mutateAsync({ id });
+  } finally {
+    pendingActionId = null;
+    pendingActionKind = null;
+  }
+}
+
+async function onReject(id: string) {
+  pendingActionId = id;
+  pendingActionKind = 'reject';
+  try {
+    await rejectMutation.mutateAsync({ id });
+  } finally {
+    pendingActionId = null;
+    pendingActionKind = null;
+  }
+}
 </script>
 
 <Card>
@@ -57,7 +84,7 @@ const rejectMutation = createConnectionRejectConnection(() => ({
 				<UserCheck size={16} />
 				{t('dashboard.invitationsTitle')}
 				{#if (pending.total ?? 0) > 0}
-					<span class="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+					<span class="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 text-xs font-medium text-gray-600 dark:bg-neutral-800 dark:text-neutral-300">
 						{pending.total}
 					</span>
 				{/if}
@@ -105,23 +132,40 @@ const rejectMutation = createConnectionRejectConnection(() => ({
 				>
 					{#snippet actions()}
 						<Button
-							variant="outline"
+							variant="ghost"
 							size="sm"
-							onclick={() => rejectMutation.mutate({ id: reqId })}
+							onclick={() => onReject(reqId)}
+							disabled={pendingActionId === reqId}
+							aria-label={t('dashboard.invitationsIgnore')}
 						>
-							{t('dashboard.invitationsIgnore')}
+							{#if pendingActionId === reqId && pendingActionKind === 'reject'}
+								<Loader2 size={14} class="animate-spin" />
+							{:else}
+								{t('dashboard.invitationsIgnore')}
+							{/if}
 						</Button>
 						<Button
-							variant="outline"
+							variant="solid"
 							intent="accent"
 							size="sm"
-							onclick={() => acceptMutation.mutate({ id: reqId })}
+							onclick={() => onAccept(reqId)}
+							disabled={pendingActionId === reqId}
+							aria-label={t('dashboard.invitationsAccept')}
 						>
-							{t('dashboard.invitationsAccept')}
+							{#if pendingActionId === reqId && pendingActionKind === 'accept'}
+								<Loader2 size={14} class="animate-spin" />
+							{:else}
+								{t('dashboard.invitationsAccept')}
+							{/if}
 						</Button>
 					{/snippet}
 				</UserRow>
 			{/each}
+			{#if (pending.total ?? 0) > pending.data.length}
+				<p class="px-3 pt-2 text-xs text-gray-500 dark:text-neutral-500 sm:px-5">
+					{t('dashboard.invitationsShowing', { shown: pending.data.length, total: pending.total ?? 0 })}
+				</p>
+			{/if}
 		</div>
 	{/if}
 </Card>

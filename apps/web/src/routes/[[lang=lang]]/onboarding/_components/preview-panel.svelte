@@ -60,7 +60,7 @@ $effect(() => {
 			{#if status === 'connecting'}
 				<Loader2 size={16} class="animate-spin text-gray-400 dark:text-neutral-500" />
 			{:else}
-				<span class="text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-500">preview</span>
+				<span class="text-xs text-gray-400 dark:text-neutral-500">preview</span>
 			{/if}
 		</div>
 	{/if}

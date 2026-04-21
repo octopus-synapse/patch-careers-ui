@@ -13,8 +13,10 @@ const queryClient = useQueryClient();
 let name = $state('');
 let email = $state('');
 let password = $state('');
-let acceptedTos = $state(false);
-let acceptedPrivacy = $state(false);
+// LGPD permits a single combined consent as long as both linked documents are
+// reachable. Backend still records two separate UserConsent rows on signup
+// (TOS + PRIVACY) — this checkbox just collapses the UI affordance.
+let acceptedConsent = $state(false);
 let fieldErrors = $state<Record<string, string>>({});
 let serverError = $state('');
 
@@ -45,12 +47,9 @@ function validate(): boolean {
   if (password.length < 8) {
     errors.password = t?.('auth.shared.errorPasswordTooShort') ?? 'Password must have at least 8 characters';
   }
-  if (!acceptedTos) {
-    errors.acceptedTos = t?.('auth.sign-up.consent.errorTosRequired') ?? 'You must accept the Terms of Service';
-  }
-  if (!acceptedPrivacy) {
-    errors.acceptedPrivacy =
-      t?.('auth.sign-up.consent.errorPrivacyRequired') ?? 'You must accept the Privacy Policy';
+  if (!acceptedConsent) {
+    errors.acceptedConsent =
+      t?.('auth.sign-up.consent.errorRequired') ?? 'You must accept the Terms and Privacy Policy';
   }
   fieldErrors = errors;
   return Object.keys(errors).length === 0;
@@ -140,38 +139,25 @@ function handleSubmit(e: Event) {
 							<label class="flex items-start gap-2 cursor-pointer text-xs text-gray-600 dark:text-neutral-400">
 								<input
 									type="checkbox"
-									bind:checked={acceptedTos}
+									bind:checked={acceptedConsent}
 									class="mt-0.5"
 									required
 								/>
 								<span>
-									{t('auth.sign-up.consent.tosPrefix')}
+									{t('auth.sign-up.consent.combinedPrefix')}
 									<a href="/legal/termos" target="_blank" rel="noopener" class="underline">
 										{t('auth.sign-up.consent.tosLink')}
 									</a>
-								</span>
-							</label>
-							{#if fieldErrors.acceptedTos}
-								<p class="text-xs font-medium text-red-500/80">{fieldErrors.acceptedTos}</p>
-							{/if}
-
-							<label class="flex items-start gap-2 cursor-pointer text-xs text-gray-600 dark:text-neutral-400">
-								<input
-									type="checkbox"
-									bind:checked={acceptedPrivacy}
-									class="mt-0.5"
-									required
-								/>
-								<span>
-									{t('auth.sign-up.consent.privacyPrefix')}
+									{t('auth.sign-up.consent.combinedAnd')}
 									<a href="/legal/privacidade" target="_blank" rel="noopener" class="underline">
 										{t('auth.sign-up.consent.privacyLink')}
 									</a>
 								</span>
 							</label>
-							{#if fieldErrors.acceptedPrivacy}
-								<p class="text-xs font-medium text-red-500/80">{fieldErrors.acceptedPrivacy}</p>
+							{#if fieldErrors.acceptedConsent}
+								<p class="text-xs font-medium text-red-500/80">{fieldErrors.acceptedConsent}</p>
 							{/if}
+
 						</div>
 					</div>
 

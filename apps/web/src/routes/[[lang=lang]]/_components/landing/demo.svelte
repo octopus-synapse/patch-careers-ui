@@ -201,7 +201,7 @@ $effect(() => {
 			<!-- Before -->
 			<div class="relative rounded-2xl border border-zinc-800 bg-zinc-950 p-5 sm:p-7">
 				<div class="mb-3 flex items-center justify-between">
-					<span class="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+					<span class="font-mono text-xs font-semibold text-zinc-500">
 						Seu currículo genérico
 					</span>
 					<span class="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] text-zinc-500">Antes</span>
@@ -218,7 +218,7 @@ $effect(() => {
 			<!-- After -->
 			<div class="relative rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-zinc-950 to-zinc-900 p-5 shadow-[0_0_60px_-20px_rgba(6,182,212,0.4)] sm:p-7">
 				<div class="mb-3 flex items-center justify-between">
-					<span class="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cyan-400">
+					<span class="flex items-center gap-1.5 font-mono text-xs font-semibold text-cyan-400">
 						<Sparkles size={10} />
 						Reescrito pro {selected.role.split(' ').slice(-2).join(' ').toLowerCase()}
 					</span>
@@ -269,7 +269,7 @@ $effect(() => {
 			</a>
 		</div>
 
-		<p class="mt-4 text-center font-mono text-[10px] uppercase tracking-widest text-zinc-700">
+		<p class="mt-4 text-center font-mono text-xs text-zinc-700">
 			Demo ilustrativa · IA real roda com seu CV após o cadastro
 		</p>
 	</div>

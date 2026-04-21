@@ -35,7 +35,7 @@ let {
 				<tr class="bg-gray-50 dark:bg-neutral-800/80">
 					{#each columns as col}
 						<th
-							class="px-3 py-2.5 sm:px-4 sm:py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 whitespace-nowrap"
+							class="px-3 py-2.5 sm:px-4 sm:py-3 text-xs font-semibold text-gray-500 dark:text-neutral-500 whitespace-nowrap"
 							style={col.width ? `width: ${col.width}` : ''}
 						>
 							{col.label}

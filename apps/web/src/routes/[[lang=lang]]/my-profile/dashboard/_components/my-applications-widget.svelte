@@ -75,10 +75,12 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 			{/each}
 		</ul>
 	{:else if items.length === 0}
-		<div class="flex flex-col items-start gap-2">
-			<p class="text-xs text-gray-500 dark:text-neutral-500">{t('dashboard.applicationsEmpty')}</p>
-			<Button variant="ghost" size="xs" onclick={() => goto('/careers/browse-jobs')}>
-				{t('dashboard.applicationsBrowse')}
+		<div class="flex flex-col items-start gap-3 py-2">
+			<p class="text-sm text-gray-700 dark:text-neutral-300">
+				{t('dashboard.applicationsEmpty')}
+			</p>
+			<Button variant="solid" intent="accent" size="sm" onclick={() => goto('/careers/browse-jobs')}>
+				{t('dashboard.applicationsCtaFirst')}
 			</Button>
 		</div>
 	{:else}

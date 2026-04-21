@@ -142,12 +142,36 @@ function handleGlobalKeydown(e: KeyboardEvent) {
   }
 }
 
-const navLinks = [
-  { key: 'nav.dashboard', href: '/my-profile/dashboard', icon: LayoutDashboard },
-  { key: 'nav.feed', href: '/social/feed', icon: Rss },
-  { key: 'nav.jobs', href: '/careers/browse-jobs', icon: Briefcase },
-  { key: 'nav.myNetwork', href: '/social/network', icon: Users },
-];
+const firstName = $derived.by(() => {
+  const raw = (user?.name ?? '').toString().trim();
+  if (!raw) return '';
+  return raw.split(/\s+/)[0] ?? '';
+});
+
+const homeLabel = $derived(firstName ? `Olá, ${firstName}` : t('nav.dashboard'));
+
+const navLinks = $derived([
+  { key: 'nav.dashboard', label: homeLabel, href: '/my-profile/dashboard', icon: LayoutDashboard },
+  { key: 'nav.feed', label: t('nav.feed'), href: '/social/feed', icon: Rss },
+  { key: 'nav.jobs', label: t('nav.jobs'), href: '/careers/browse-jobs', icon: Briefcase },
+  { key: 'nav.myNetwork', label: t('nav.myNetwork'), href: '/social/network', icon: Users },
+]);
+
+// Rotating placeholder hints for the global search box.
+let searchHintIdx = $state(0);
+const searchHints = $derived([
+  t('nav.search'),
+  t('nav.searchHintPeople'),
+  t('nav.searchHintJobs'),
+  t('nav.searchHintRemote'),
+]);
+$effect(() => {
+  if (!browser) return;
+  const id = setInterval(() => {
+    searchHintIdx = (searchHintIdx + 1) % searchHints.length;
+  }, 4000);
+  return () => clearInterval(id);
+});
 </script>
 
 <svelte:window onkeydown={handleGlobalKeydown} />
@@ -167,11 +191,13 @@ const navLinks = [
 				<div class="mx-auto hidden max-w-md flex-1 px-4 lg:px-8 md:block">
 					<button
 						onclick={() => isSearchOpen = true}
-						class="flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors bg-gray-100/80 dark:bg-neutral-800/80 text-gray-400 dark:text-neutral-500 placeholder-gray-400 dark:placeholder-neutral-500 border-gray-200/60 dark:border-neutral-700/60"
+						title="{t('nav.search')} ({isMac ? '⌘K' : 'Ctrl + K'})"
+						aria-label="{t('nav.search')}"
+						class="flex w-full items-center gap-2 rounded-lg border py-1.5 pr-2 pl-3 transition-colors bg-gray-100/80 dark:bg-neutral-800/80 text-gray-500 dark:text-neutral-400 border-gray-200/60 dark:border-neutral-700/60 hover:border-gray-300 dark:hover:border-neutral-600"
 					>
-						<Search size={14} class="text-gray-500 dark:text-neutral-500" />
-						<span class="flex-1 text-left text-xs">{t('nav.search')}</span>
-						<kbd class="rounded border px-1.5 py-0.5 text-[10px] font-medium bg-gray-100/80 dark:bg-neutral-800/80 text-gray-400 dark:text-neutral-500 border-gray-200/60 dark:border-neutral-700/60">{isMac ? '⌘K' : 'Ctrl K'}</kbd>
+						<Search size={14} class="text-gray-500 dark:text-neutral-400" />
+						<span class="flex-1 text-left text-xs">{searchHints[searchHintIdx] ?? t('nav.search')}</span>
+						<kbd class="rounded border px-1.5 py-0.5 text-xs font-medium bg-white/60 dark:bg-neutral-900/40 text-gray-600 dark:text-neutral-300 border-gray-200/60 dark:border-neutral-700/60">{isMac ? '⌘K' : 'Ctrl K'}</kbd>
 					</button>
 				</div>
 			{:else}
@@ -187,13 +213,13 @@ const navLinks = [
 								href={link.href}
 								data-sveltekit-preload-data="hover"
 								aria-current={active ? 'page' : undefined}
-								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors
+								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors
 									{active
 										? 'text-gray-900 dark:text-neutral-100'
 										: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
 							>
 								<link.icon size={14} />
-								{t(link.key)}
+								{link.label}
 								{#if active}
 									<span class="absolute inset-x-3 -bottom-px h-px bg-current"></span>
 								{/if}
@@ -201,21 +227,21 @@ const navLinks = [
 						{/each}
 
 						{#if authenticated}
-							<Button
-								variant="ghost"
-								size="sm"
+							<button
+								type="button"
 								onclick={() => chatState.toggle()}
 								data-testid="chat-toggle"
-								class="relative"
+								title="{t('nav.messages')}"
+								aria-label="{t('nav.messages')}"
+								class="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 transition-colors hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50"
 							>
 								<MessageCircle size={14} />
-								{t('nav.messages')}
 								{#if unreadChatCount > 0}
-									<span class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+									<span class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
 										{unreadChatCount > 99 ? '99+' : unreadChatCount}
 									</span>
 								{/if}
-							</Button>
+							</button>
 
 							<NotificationBell />
 						{/if}
@@ -226,7 +252,7 @@ const navLinks = [
 								href="/recruiting/jobs"
 								data-sveltekit-preload-data="hover"
 								aria-current={companyActive ? 'page' : undefined}
-								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors
+								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors
 									{companyActive
 										? 'text-gray-900 dark:text-neutral-100'
 										: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
@@ -245,7 +271,7 @@ const navLinks = [
 								href="/platform/admin"
 								data-sveltekit-preload-data="hover"
 								aria-current={adminActive ? 'page' : undefined}
-								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors
+								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors
 									{adminActive
 										? 'text-gray-900 dark:text-neutral-100'
 										: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
@@ -284,14 +310,14 @@ const navLinks = [
 						<a
 							href="/identity/sign-in"
 							data-sveltekit-preload-data="hover"
-							class="text-[10px] font-semibold uppercase tracking-widest transition-colors {isLanding ? 'text-zinc-400 hover:text-white' : 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
+							class="text-xs font-medium transition-colors {isLanding ? 'text-zinc-400 hover:text-white' : 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
 						>
 							{t('nav.login')}
 						</a>
 						<a
 							href="/identity/sign-up"
 							data-sveltekit-preload-data="hover"
-							class="rounded-full border px-5 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-all {isLanding ? 'border-zinc-600 text-white hover:bg-white hover:text-black' : 'border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-gray-50 dark:border-neutral-200 dark:text-neutral-200 dark:hover:bg-neutral-200 dark:hover:text-neutral-900'}"
+							class="rounded-full border px-5 py-1.5 text-xs font-medium transition-all {isLanding ? 'border-zinc-600 text-white hover:bg-white hover:text-black' : 'border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-gray-50 dark:border-neutral-200 dark:text-neutral-200 dark:hover:bg-neutral-200 dark:hover:text-neutral-900'}"
 						>
 							{t('nav.join')}
 						</a>

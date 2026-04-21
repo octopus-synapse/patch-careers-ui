@@ -89,7 +89,7 @@ const templateSelection = $derived(
 						class="rounded-xl border border-gray-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800/60"
 					>
 						<h2
-							class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+							class="text-xs font-medium text-gray-500 dark:text-neutral-500"
 						>
 							Personal Information
 						</h2>
@@ -116,7 +116,7 @@ const templateSelection = $derived(
 						class="rounded-xl border border-gray-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800/60"
 					>
 						<h2
-							class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+							class="text-xs font-medium text-gray-500 dark:text-neutral-500"
 						>
 							Professional Profile
 						</h2>
@@ -143,7 +143,7 @@ const templateSelection = $derived(
 						class="rounded-xl border border-gray-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800/60"
 					>
 						<h2
-							class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+							class="text-xs font-medium text-gray-500 dark:text-neutral-500"
 						>
 							{section.sectionTypeKey ?? 'Section'}
 						</h2>
@@ -183,7 +183,7 @@ const templateSelection = $derived(
 						class="rounded-xl border border-gray-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800/60"
 					>
 						<h2
-							class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+							class="text-xs font-medium text-gray-500 dark:text-neutral-500"
 						>
 							Template Choice
 						</h2>
@@ -209,7 +209,7 @@ const templateSelection = $derived(
 					class="rounded-xl border border-gray-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800/60"
 				>
 					<h2
-						class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500"
+						class="text-xs font-medium text-gray-500 dark:text-neutral-500"
 					>
 						Leave Feedback
 					</h2>

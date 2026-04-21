@@ -137,16 +137,16 @@ const modes: Array<{
 									<mode.icon size={22} class={mode.iconClass} />
 								</div>
 								{#if active}
-									<span class="flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+									<span class="flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
 										<Check size={10} />
 										{t('applyModes.badgeActive')}
 									</span>
 								{:else if mode.available}
-									<span class="rounded-full bg-cyan-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300">
+									<span class="rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300">
 										{t('applyModes.badgeIncluded')}
 									</span>
 								{:else}
-									<span class="flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
+									<span class="flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
 										<Clock size={10} />
 										{t('applyModes.badgeSoon')}
 									</span>

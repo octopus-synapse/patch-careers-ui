@@ -102,12 +102,12 @@ const localeOptions = $derived(
 				</div>
 
 				<div class="flex items-center justify-between">
-					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>
+					<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>
 					<SegmentToggle options={themeOptions} selected={cs} size="sm" onchange={onthemetoggle} />
 				</div>
 
 				<div class="flex items-center justify-between">
-					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">Language</span>
+					<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">Language</span>
 					<SegmentToggle options={localeOptions} selected={currentLocale} size="sm" onchange={onlocalechange} />
 				</div>
 
@@ -122,7 +122,7 @@ const localeOptions = $derived(
 				</Button>
 			{:else}
 				<div class="flex items-center justify-between border-t pt-6 border-gray-200/60 dark:border-neutral-800/60">
-					<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>
+					<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>
 					<SegmentToggle options={themeOptions} selected={cs} size="sm" onchange={onthemetoggle} />
 				</div>
 

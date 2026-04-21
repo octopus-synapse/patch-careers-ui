@@ -68,7 +68,7 @@ const stats = $derived(platformStats.data);
 		</h1>
 		<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
 			<RefreshCw size={12} class="animate-spin" />
-			<span class="text-[10px] font-medium uppercase tracking-widest">
+			<span class="text-xs font-medium">
 				{t?.('admin.health.autoRefresh') ?? 'Auto-refresh: 15s'}
 			</span>
 		</div>

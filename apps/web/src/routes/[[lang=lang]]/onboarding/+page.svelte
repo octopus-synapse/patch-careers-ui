@@ -139,8 +139,10 @@ const complete = createOnboardingCompleteFromSession(() => ({
   mutation: {
     async onSuccess() {
       await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-      const username = auth.data?.user?.username;
-      goto(username ? `/my-profile/public/@${username}` : '/');
+      // Per UX feedback #33: post-onboarding lands on the dashboard, where
+      // the user's first action (apply, browse jobs, accept invites) lives.
+      // The public profile is one click away from the avatar dropdown.
+      goto('/my-profile/dashboard');
     },
     onError(err: unknown) {
       const msg = (err as Record<string, unknown>)?.message;
@@ -338,7 +340,7 @@ const isPending = $derived(
 					<!-- Content — fixed start position, scrolls independently -->
 					<div class="min-w-0 flex-1 max-w-lg pb-8 sm:pb-12">
 						<div class="mb-8 flex items-center justify-between">
-							<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+							<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('onboarding.title')}
 							</span>
 							{#if saveStatus === 'saving'}

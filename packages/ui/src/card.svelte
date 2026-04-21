@@ -10,7 +10,9 @@ type Props = {
 let { children, title, class: className = '' }: Props = $props();
 </script>
 
-<div class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 {className}">
+<div
+	class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 transition-shadow duration-200 hover:shadow-sm {className}"
+>
 	{#if title}
 		<div class="px-4 py-3 sm:px-5 sm:py-4 border-b border-gray-200 dark:border-neutral-800">
 			{@render title()}

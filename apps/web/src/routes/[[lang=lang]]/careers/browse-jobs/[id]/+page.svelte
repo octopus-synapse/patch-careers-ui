@@ -422,7 +422,7 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 				<!-- Description -->
 				{#if job.description}
 					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-4 sm:p-6">
-						<h2 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+						<h2 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 							{t('jobs.description')}
 						</h2>
 						<div class="whitespace-pre-wrap text-sm leading-relaxed text-gray-800 dark:text-neutral-200">{job.description}</div>
@@ -433,7 +433,7 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 				{#if job.requirements?.length}
 				{@const requirements = job.requirements}
 					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-6">
-						<h2 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+						<h2 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 							{t('jobs.requirements')}
 						</h2>
 						<ul class="list-disc space-y-1.5 pl-5 text-sm text-gray-800 dark:text-neutral-200">
@@ -448,7 +448,7 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 				{#if job.skills?.length}
 				{@const skills = job.skills}
 					<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-6">
-						<h2 class="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+						<h2 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 							{t('jobs.skills')}
 						</h2>
 						<div class="flex flex-wrap gap-2">

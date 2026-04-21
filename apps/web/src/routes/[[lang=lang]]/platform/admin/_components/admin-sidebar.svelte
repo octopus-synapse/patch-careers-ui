@@ -48,7 +48,7 @@ function isActive(href: string, exact?: boolean): boolean {
 <aside class="flex h-full flex-col border-r transition-all bg-white border-gray-200 dark:bg-neutral-900 dark:border-neutral-800 {collapsed ? 'w-16' : 'w-60'}">
 	<div class="flex items-center justify-between px-4 py-4">
 		{#if !collapsed}
-			<span class="text-[10px] font-bold uppercase tracking-widest text-gray-300 dark:text-neutral-600">Admin</span>
+			<span class="text-xs font-semibold text-gray-300 dark:text-neutral-600">Admin</span>
 		{/if}
 		<Button
 			variant="icon"

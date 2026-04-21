@@ -9,7 +9,9 @@ import MyApplicationsWidget from './_components/my-applications-widget.svelte';
 import PendingInvitationsWidget from './_components/pending-invitations-widget.svelte';
 import ProfileCompletionCard from './_components/profile-completion-card.svelte';
 import RemoteUsdWidget from './_components/remote-usd-widget.svelte';
-import UpcomingEventsCard from './_components/upcoming-events-card.svelte';
+// Hidden until the events backend ships — no point in promising AMAs that
+// don't exist yet (per UX feedback #12).
+// import UpcomingEventsCard from './_components/upcoming-events-card.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import { meDashboard } from '$lib/dashboard/me-dashboard.svelte';
 import { locale } from '$lib/state/locale.svelte';
@@ -51,23 +53,23 @@ const displayName = $derived(String(user?.name ?? user?.email ?? ''));
 		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 	</div>
 {:else if t && authenticated && user}
-	<div class="min-h-screen pt-20 pb-12">
-		<main class="mx-auto max-w-5xl px-4 sm:px-6">
+	<div class="min-h-[calc(100vh-3.5rem)] pt-20 pb-12">
+		<main class="mx-auto max-w-6xl px-4 sm:px-6">
 			<GreetingHero name={displayName} />
 
-			<div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-				<!-- Primary column (spans 2) -->
-				<div class="flex flex-col gap-4 md:col-span-2">
+			<!-- 60/40 grid on md+, single column on mobile. The side column gets
+				more room than the previous 2/3+1/3 split so widgets like Pending
+				Invitations and Remote-USD don't squeeze name/CTA real estate. -->
+			<div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-5">
+				<div class="flex flex-col gap-4 md:col-span-3">
 					<RecommendedJobsWidget />
 					<MyApplicationsWidget />
 				</div>
 
-				<!-- Side column -->
-				<div class="flex flex-col gap-4">
+				<div class="flex flex-col gap-4 md:col-span-2">
 					<ProfileCompletionCard {user} />
 					<RemoteUsdWidget />
 					<PendingInvitationsWidget />
-					<UpcomingEventsCard />
 				</div>
 			</div>
 

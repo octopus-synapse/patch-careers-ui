@@ -53,7 +53,10 @@
     "terms": "Terms",
     "privacy": "Privacy",
     "cookies": "Cookies",
-    "contact": "Contact"
+    "contact": "Contact",
+    "companyHeading": "Company",
+    "legalHeading": "Legal",
+    "dpo": "DPO"
   },
   "cookies": {
     "banner": {
@@ -182,6 +185,9 @@
     "close": "Close",
     "login": "Login",
     "search": "Search...",
+    "searchHintPeople": "Search people...",
+    "searchHintJobs": "Search jobs...",
+    "searchHintRemote": "Remote USD/EUR jobs...",
     "searchPlaceholder": "Search jobs, companies, and more...",
     "searchRecent": "Recent",
     "searchQuickLinks": "Quick links",
@@ -288,12 +294,14 @@
     "applicationsTitle": "Your applications",
     "applicationsEmpty": "You haven't applied to any job yet.",
     "applicationsBrowse": "Browse jobs",
+    "applicationsCtaFirst": "Apply to my first job \u2192",
     "applicationsSeeAll": "See all",
     "invitationsTitle": "Pending invitations",
     "invitationsEmpty": "No pending invitations.",
     "invitationsAccept": "Accept",
     "invitationsIgnore": "Ignore",
     "invitationsSeeAll": "See all invitations",
+    "invitationsShowing": "Showing {{shown}} of {{total}}",
     "eventsTitle": "This week",
     "eventsEmpty": "No events scheduled this week.",
     "eventsComingSoon": "Events launching soon \u2014 AMAs, workshops and meetups.",
@@ -817,7 +825,8 @@
       "dashboardCount_one": "remote job paying in hard currency",
       "dashboardCount_other": "remote jobs paying in hard currency",
       "dashboardCountEmpty": "No hard-currency jobs in your feed right now.",
-      "dashboardSeeAll": "See the list"
+      "dashboardSeeAll": "See the list",
+      "dashboardShowing": "Showing {{shown}} of {{total}}"
     },
     "fit": {
       "title": "Your fit",
@@ -845,6 +854,7 @@
       "fullName": "Full Name",
       "fullNamePlaceholder": "Jane Doe",
       "errorGeneric": "Something went wrong.",
+      "errorRateLimited": "Too many attempts. Try again in a few minutes.",
       "errorEmailInUse": "This email is already registered.",
       "errorEmailInvalid": "Invalid email.",
       "errorPasswordTooShort": "Password must be at least 8 characters."
@@ -862,8 +872,11 @@
         "tosLink": "Terms of Service",
         "privacyPrefix": "I have read and accept the",
         "privacyLink": "Privacy Policy",
+        "combinedPrefix": "I have read and accept the",
+        "combinedAnd": "and the",
         "errorTosRequired": "You must accept the Terms of Service to continue.",
-        "errorPrivacyRequired": "You must accept the Privacy Policy to continue."
+        "errorPrivacyRequired": "You must accept the Privacy Policy to continue.",
+        "errorRequired": "You must accept the Terms and Privacy Policy to continue."
       }
     },
     "sign-in": {

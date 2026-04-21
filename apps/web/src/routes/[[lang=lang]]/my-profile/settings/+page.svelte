@@ -376,7 +376,7 @@ const activeLabel = $derived(
 				<!-- Main content -->
 				<div class="flex-1 min-w-0 max-w-lg pb-12">
 					<div class="mb-4">
-						<span class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+						<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 							{t('settings.pageTitle')}
 						</span>
 						<h3 class="text-sm font-bold text-gray-800 dark:text-neutral-200">{activeLabel}</h3>
@@ -386,7 +386,7 @@ const activeLabel = $derived(
 					<!-- Profile Section -->
 					<section id="profile" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+							<h2 class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('settings.profile')}
 							</h2>
 							{#if profileSaved}
@@ -490,7 +490,7 @@ const activeLabel = $derived(
 					<!-- Username Section -->
 					<section id="username" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+							<h2 class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('settings.username')}
 							</h2>
 							{#if usernameSaved}
@@ -502,7 +502,7 @@ const activeLabel = $derived(
 						</div>
 						<div class="p-5 space-y-4">
 							<div>
-								<span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">{t('settings.currentUsername')}</span>
+								<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('settings.currentUsername')}</span>
 								<p class="mt-1 text-sm text-gray-800 dark:text-neutral-200">@{currentUsername || '---'}</p>
 							</div>
 							<div>
@@ -558,7 +558,7 @@ const activeLabel = $derived(
 					<!-- Password Section -->
 					<section id="password" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+							<h2 class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('settings.password')}
 							</h2>
 						</div>
@@ -640,7 +640,7 @@ const activeLabel = $derived(
 					<!-- Two-Factor Authentication Section -->
 					<section id="twoFactor" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+							<h2 class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('settings.twoFactor')}
 							</h2>
 							<span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider {tfaEnabled ? 'bg-emerald-500/10 text-emerald-500' : 'bg-neutral-500/10 text-gray-500 dark:text-neutral-500'}">
@@ -688,7 +688,7 @@ const activeLabel = $derived(
 										{/if}
 										{#if tfaSetupData.secret}
 											<div>
-												<p class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">{t('settings.manualEntry')}</p>
+												<p class="text-xs font-semibold text-gray-500 dark:text-neutral-500 mb-1">{t('settings.manualEntry')}</p>
 												<code class="block rounded-lg border p-2 text-xs font-mono bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500">{tfaSetupData.secret}</code>
 											</div>
 										{/if}
@@ -780,7 +780,7 @@ const activeLabel = $derived(
 					<!-- Preferences Section -->
 					<section id="preferences" class="rounded-xl border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+							<h2 class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('settings.preferences')}
 							</h2>
 						</div>
@@ -808,7 +808,7 @@ const activeLabel = $derived(
 					<!-- Danger Zone Section -->
 					<section id="danger" class="rounded-xl border border-red-500/30 bg-white dark:bg-neutral-800/50 overflow-hidden">
 						<div class="px-5 py-4 border-b border-red-500/30">
-							<h2 class="text-[10px] font-semibold uppercase tracking-widest text-red-500">
+							<h2 class="text-xs font-medium text-red-500">
 								{t('settings.dangerZone')}
 							</h2>
 						</div>

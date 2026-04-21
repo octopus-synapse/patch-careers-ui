@@ -224,7 +224,7 @@ $effect(() => {
 
 		<!-- Before -->
 		<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-neutral-700/60 dark:bg-neutral-900/50">
-			<p class="mb-2 font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
+			<p class="mb-2 font-mono text-xs font-semibold text-gray-500 dark:text-neutral-500">
 				{t('cv.rerender.beforeLabel')}
 			</p>
 			<p
@@ -238,7 +238,7 @@ $effect(() => {
 
 		<!-- After -->
 		<div class="rounded-xl border border-cyan-500/40 bg-gradient-to-br from-white to-cyan-50/40 p-4 shadow-[0_0_30px_-15px_rgba(6,182,212,0.4)] dark:from-neutral-900 dark:to-neutral-800/60">
-			<p class="mb-2 flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
+			<p class="mb-2 flex items-center gap-1.5 font-mono text-xs font-semibold text-cyan-600 dark:text-cyan-400">
 				<Sparkles size={10} />
 				{t('cv.rerender.afterLabel', { role: selected.role })}
 			</p>
@@ -257,7 +257,7 @@ $effect(() => {
 		</div>
 
 		<div class="flex items-center justify-between">
-			<p class="font-mono text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-600">
+			<p class="font-mono text-xs text-gray-400 dark:text-neutral-600">
 				{t('cv.rerender.demoDisclaimer')}
 			</p>
 			<div class="flex items-center gap-2">

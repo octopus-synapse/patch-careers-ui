@@ -233,7 +233,7 @@ let chatMenuOpen = $state(false);
 						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else}
 						<div class="flex flex-1 items-center justify-center">
-							<span class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-neutral-500">select a conversation</span>
+							<span class="text-xs text-gray-500 dark:text-neutral-500">select a conversation</span>
 						</div>
 					{/if}
 				</div>

@@ -311,7 +311,7 @@ function handleDeleteConfirm() {
 				<div class="flex items-center gap-1.5 text-sm flex-wrap">
 					<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
 					{#if isAnonymous}
-						<span class="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
+						<span class="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
 							Anonymous{anonymousCategory ? ` · ${anonymousCategory.toLowerCase().replace('_', ' ')}` : ''}
 						</span>
 					{/if}

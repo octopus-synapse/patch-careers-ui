@@ -3,6 +3,17 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Smooth dark/light theme transition — affects every element so the page
+ * doesn't snap when the user toggles colorSchema (UX feedback #37).
+ * Reduced-motion users opt out via the media query below.
+ */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
