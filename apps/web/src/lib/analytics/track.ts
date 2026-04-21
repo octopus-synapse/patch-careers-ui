@@ -1,4 +1,5 @@
 import { getBaseUrl } from 'api-client';
+import { consentStore } from '$lib/consent/consent-store.svelte';
 
 type EventProps = Record<string, unknown>;
 type QueuedEvent = { event: string; props?: EventProps; occurredAt: string };
@@ -74,6 +75,9 @@ function installUnloadHook(): void {
  */
 export function track(event: string, props?: EventProps): void {
   if (disabled) return;
+  // LGPD: no analytics tracking until the user explicitly opts in via the cookie banner.
+  consentStore.hydrate();
+  if (!consentStore.analytics) return;
   installUnloadHook();
   queue.push({ event, props, occurredAt: new Date().toISOString() });
   if (queue.length >= FLUSH_BATCH_SIZE) {

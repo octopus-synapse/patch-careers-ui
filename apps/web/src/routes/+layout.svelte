@@ -7,8 +7,10 @@ import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
 import { colorSchema } from '$lib/color-schema.svelte';
 import ChatWidget from '$lib/components/chat/chat-widget.svelte';
+import CookieBanner from '$lib/components/consent/cookie-banner.svelte';
 import ErrorBoundary from '$lib/components/errors/error-boundary.svelte';
 import OfflineBanner from '$lib/components/errors/offline-banner.svelte';
+import Footer from '$lib/components/footer.svelte';
 import Navbar from '$lib/components/navbar.svelte';
 import OnboardingGuard from '$lib/components/onboarding-guard.svelte';
 import { locale } from '$lib/locale.svelte';
@@ -53,25 +55,31 @@ $effect(() => {
 
 {#if isLanding}
 	<QueryClientProvider client={queryClient}>
-		<Navbar />
-		<ErrorBoundary>
-			<main id="main-content">
-				{@render children()}
-			</main>
-		</ErrorBoundary>
+		<div class="min-h-screen flex flex-col">
+			<Navbar />
+			<ErrorBoundary>
+				<main id="main-content" class="flex-1">
+					{@render children()}
+				</main>
+			</ErrorBoundary>
+			<Footer />
+		</div>
+		<CookieBanner />
 	</QueryClientProvider>
 {:else}
-	<div class="min-h-screen transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
+	<div class="min-h-screen flex flex-col transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
 		<QueryClientProvider client={queryClient}>
 			<OfflineBanner />
 			<OnboardingGuard />
 			<Navbar />
 			<ErrorBoundary>
-				<main id="main-content">
+				<main id="main-content" class="flex-1">
 					{@render children()}
 				</main>
 			</ErrorBoundary>
 			<ChatWidget />
+			<Footer />
 		</QueryClientProvider>
+		<CookieBanner />
 	</div>
 {/if}

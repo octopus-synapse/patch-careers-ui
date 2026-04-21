@@ -1,4 +1,86 @@
 {
+  "company": {
+    "nav": "Company",
+    "jobs": {
+      "pageTitle": "My jobs",
+      "title": "My jobs",
+      "subtitle": "Manage the jobs you posted.",
+      "newJob": "New job",
+      "empty": "You haven't posted any jobs yet. Click \"New job\" to get started.",
+      "confirmDelete": "Are you sure you want to delete this job?",
+      "col": {
+        "title": "Job",
+        "type": "Type",
+        "remote": "Remote",
+        "actions": "Actions",
+        "applications": "Applications"
+      },
+      "new": {
+        "pageTitle": "New job",
+        "title": "Post a new job",
+        "submit": "Publish job"
+      },
+      "edit": {
+        "pageTitle": "Edit job",
+        "title": "Edit job",
+        "submit": "Save changes",
+        "notFound": "Job not found or you lack permission."
+      },
+      "field": {
+        "title": "Job title",
+        "company": "Company",
+        "location": "Location",
+        "jobType": "Employment type",
+        "remotePolicy": "Remote policy",
+        "description": "Description",
+        "salaryRange": "Salary range",
+        "applyUrl": "External apply URL",
+        "skills": "Skills (comma-separated)"
+      }
+    },
+    "applications": {
+      "pageTitle": "Applications received",
+      "title": "Applications received",
+      "backToJobs": "Back to jobs",
+      "received": "applications received",
+      "empty": "Nobody has applied to this job yet.",
+      "viewProfile": "View profile",
+      "anonymous": "Candidate"
+    }
+  },
+  "footer": {
+    "tagline": "Résumés that become applications.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "contact": "Contact"
+  },
+  "cookies": {
+    "banner": {
+      "title": "Your privacy",
+      "body": "We use essential cookies to make the service work. Analytics cookies are only enabled if you consent.",
+      "learnMore": "Learn more",
+      "acceptAll": "Accept all",
+      "acceptEssential": "Essentials only",
+      "customize": "Customize",
+      "savePreferences": "Save preferences",
+      "dismiss": "Dismiss"
+    },
+    "categories": {
+      "essential": {
+        "name": "Essential",
+        "desc": "Session, authentication, language and theme. Always on."
+      },
+      "analytics": {
+        "name": "Analytics",
+        "desc": "Aggregated usage stats (self-hosted PostHog)."
+      },
+      "marketing": {
+        "name": "Marketing",
+        "desc": "Campaigns and retargeting (currently disabled)."
+      }
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
@@ -358,7 +440,7 @@
       "health": "Health",
       "performance": "Performance",
       "chat": "Chat & Collaboration",
-      "test": "Tests"
+      "devTools": "Dev Tools"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -764,6 +846,7 @@
       "fullNamePlaceholder": "Jane Doe",
       "errorGeneric": "Something went wrong.",
       "errorEmailInUse": "This email is already registered.",
+      "errorEmailInvalid": "Invalid email.",
       "errorPasswordTooShort": "Password must be at least 8 characters."
     },
     "sign-up": {
@@ -773,7 +856,15 @@
       "submitting": "Creating account...",
       "footer": "Already have an account?",
       "footerLink": "Login",
-      "pageTitle": "Sign up"
+      "pageTitle": "Sign up",
+      "consent": {
+        "tosPrefix": "I have read and accept the",
+        "tosLink": "Terms of Service",
+        "privacyPrefix": "I have read and accept the",
+        "privacyLink": "Privacy Policy",
+        "errorTosRequired": "You must accept the Terms of Service to continue.",
+        "errorPrivacyRequired": "You must accept the Privacy Policy to continue."
+      }
     },
     "sign-in": {
       "title": "Welcome back",

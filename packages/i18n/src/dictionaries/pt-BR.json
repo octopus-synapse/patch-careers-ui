@@ -1,4 +1,86 @@
 {
+  "company": {
+    "nav": "Empresa",
+    "jobs": {
+      "pageTitle": "Minhas vagas",
+      "title": "Minhas vagas",
+      "subtitle": "Gerencie as vagas que você publicou.",
+      "newJob": "Nova vaga",
+      "empty": "Você ainda não publicou vagas. Clique em \"Nova vaga\" para começar.",
+      "confirmDelete": "Tem certeza que deseja excluir esta vaga?",
+      "col": {
+        "title": "Vaga",
+        "type": "Tipo",
+        "remote": "Remoto",
+        "actions": "Ações",
+        "applications": "Candidaturas"
+      },
+      "new": {
+        "pageTitle": "Nova vaga",
+        "title": "Publicar nova vaga",
+        "submit": "Publicar vaga"
+      },
+      "edit": {
+        "pageTitle": "Editar vaga",
+        "title": "Editar vaga",
+        "submit": "Salvar alterações",
+        "notFound": "Vaga não encontrada ou você não tem permissão."
+      },
+      "field": {
+        "title": "Título da vaga",
+        "company": "Empresa",
+        "location": "Localização",
+        "jobType": "Tipo de contrato",
+        "remotePolicy": "Regime de trabalho",
+        "description": "Descrição",
+        "salaryRange": "Faixa salarial",
+        "applyUrl": "URL externa de candidatura",
+        "skills": "Skills (separadas por vírgula)"
+      }
+    },
+    "applications": {
+      "pageTitle": "Candidaturas recebidas",
+      "title": "Candidaturas recebidas",
+      "backToJobs": "Voltar para vagas",
+      "received": "candidaturas recebidas",
+      "empty": "Nenhum candidato se inscreveu nesta vaga ainda.",
+      "viewProfile": "Ver perfil",
+      "anonymous": "Candidato"
+    }
+  },
+  "footer": {
+    "tagline": "Currículos que viram candidaturas.",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "cookies": "Cookies",
+    "contact": "Contato"
+  },
+  "cookies": {
+    "banner": {
+      "title": "Sua privacidade",
+      "body": "Usamos cookies essenciais para o serviço funcionar. Cookies de analytics só são ativados se você consentir.",
+      "learnMore": "Saiba mais",
+      "acceptAll": "Aceitar tudo",
+      "acceptEssential": "Somente essenciais",
+      "customize": "Personalizar",
+      "savePreferences": "Salvar preferências",
+      "dismiss": "Fechar"
+    },
+    "categories": {
+      "essential": {
+        "name": "Essenciais",
+        "desc": "Sessão, autenticação, idioma e tema. Sempre ativos."
+      },
+      "analytics": {
+        "name": "Analytics",
+        "desc": "Estatísticas agregadas de uso (PostHog self-hosted)."
+      },
+      "marketing": {
+        "name": "Marketing",
+        "desc": "Campanhas e retargeting (atualmente desativado)."
+      }
+    }
+  },
   "common": {
     "save": "Salvar",
     "cancel": "Cancelar",
@@ -358,7 +440,7 @@
       "health": "Saúde",
       "performance": "Desempenho",
       "chat": "Chat & Colaboração",
-      "test": "Testes"
+      "devTools": "Dev Tools"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -764,6 +846,7 @@
       "fullNamePlaceholder": "Jane Doe",
       "errorGeneric": "Algo deu errado.",
       "errorEmailInUse": "Este e-mail já está em uso.",
+      "errorEmailInvalid": "E-mail inválido.",
       "errorPasswordTooShort": "A senha deve ter pelo menos 8 caracteres."
     },
     "sign-up": {
@@ -773,7 +856,15 @@
       "submitting": "Criando conta...",
       "footer": "Já tem uma conta?",
       "footerLink": "Entrar",
-      "pageTitle": "Criar conta"
+      "pageTitle": "Criar conta",
+      "consent": {
+        "tosPrefix": "Li e aceito os",
+        "tosLink": "Termos de Uso",
+        "privacyPrefix": "Li e aceito a",
+        "privacyLink": "Política de Privacidade",
+        "errorTosRequired": "Você precisa aceitar os Termos de Uso para continuar.",
+        "errorPrivacyRequired": "Você precisa aceitar a Política de Privacidade para continuar."
+      }
     },
     "sign-in": {
       "title": "Bem-vindo de volta",

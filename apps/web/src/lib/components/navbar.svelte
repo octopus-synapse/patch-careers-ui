@@ -220,6 +220,25 @@ const navLinks = [
 							<NotificationBell />
 						{/if}
 
+						{#if authenticated}
+							{@const companyActive = isActiveRoute('/company')}
+							<a
+								href="/company/jobs"
+								data-sveltekit-preload-data="hover"
+								aria-current={companyActive ? 'page' : undefined}
+								class="relative flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest transition-colors
+									{companyActive
+										? 'text-gray-900 dark:text-neutral-100'
+										: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
+							>
+								<Briefcase size={14} />
+								{t('company.nav')}
+								{#if companyActive}
+									<span class="absolute inset-x-3 -bottom-px h-px bg-current"></span>
+								{/if}
+							</a>
+						{/if}
+
 						{#if isAdmin}
 							{@const adminActive = isActiveRoute('/admin')}
 							<a

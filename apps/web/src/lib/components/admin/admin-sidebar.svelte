@@ -2,7 +2,6 @@
 import {
   Activity,
   BarChart3,
-  FlaskConical,
   Gauge,
   Layers,
   LayoutDashboard,
@@ -12,6 +11,7 @@ import {
   PanelLeftClose,
   Tags,
   Users,
+  Wrench,
 } from 'lucide-svelte';
 import { Button } from 'ui';
 import { locale } from '$lib/locale.svelte';
@@ -36,7 +36,7 @@ const links = $derived([
   { href: '/admin/health', label: t('admin.nav.health'), icon: Activity },
   { href: '/admin/performance', label: t('admin.nav.performance'), icon: Gauge },
   { href: '/admin/chat', label: t('admin.nav.chat'), icon: MessageSquare },
-  { href: '/admin/test', label: t('admin.nav.test'), icon: FlaskConical },
+  { href: '/admin/dev-tools', label: t('admin.nav.devTools'), icon: Wrench },
 ]);
 
 function isActive(href: string, exact?: boolean): boolean {
