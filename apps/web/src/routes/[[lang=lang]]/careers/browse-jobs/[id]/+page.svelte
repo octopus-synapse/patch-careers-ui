@@ -47,6 +47,7 @@ import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
+import SimilarJobsCarousel from '$lib/components/jobs/similar-jobs-carousel.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 interface Job {
@@ -474,6 +475,9 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 						</a>
 					</div>
 				{/if}
+
+				<!-- Similar jobs -->
+				<SimilarJobsCarousel {jobId} />
 			</div>
 		{/if}
 	</div>

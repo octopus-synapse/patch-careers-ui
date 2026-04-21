@@ -15,6 +15,7 @@ import { goto } from '$app/navigation';
 import DataTable from '$lib/components/data/data-table.svelte';
 import Pagination from '$lib/components/data/pagination.svelte';
 import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
+import NewJobsBadge from '$lib/components/jobs/new-jobs-badge.svelte';
 import { parseApiError } from '$lib/format/api-error';
 import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
 import { locale } from '$lib/state/locale.svelte';
@@ -306,9 +307,12 @@ async function runRageApply() {
 	<div class="mx-auto max-w-5xl px-3 sm:px-6">
 		<div class="space-y-6">
 			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-				<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-					{t('jobs.pageTitle')}
-				</h1>
+				<div class="flex items-center gap-3">
+					<h1 class="text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
+						{t('jobs.pageTitle')}
+					</h1>
+					<NewJobsBadge jobs={jobsList} />
+				</div>
 				<div class="flex items-center gap-2">
 					<Button variant="ghost" size="sm" onclick={() => goto('/careers/browse-jobs/saved')}>
 						<Bookmark size={14} />
@@ -329,6 +333,7 @@ async function runRageApply() {
 					</Button>
 				</div>
 			</div>
+
 
 			<a
 				href="/careers/apply-modes"
