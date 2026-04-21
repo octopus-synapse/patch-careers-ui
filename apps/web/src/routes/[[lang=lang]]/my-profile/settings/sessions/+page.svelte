@@ -14,7 +14,28 @@ interface SessionRow {
   ipAddress: string | null;
   userAgent: string | null;
   deviceName: string | null;
+  authMethod: string | null;
   revoked: boolean;
+}
+
+function formatAuthMethod(method: string | null): string | null {
+  if (!method) return null;
+  switch (method) {
+    case 'PASSWORD':
+      return 'senha';
+    case '2FA_TOTP':
+      return '2FA (app)';
+    case '2FA_BACKUP_CODE':
+      return '2FA (backup)';
+    case 'OAUTH_GITHUB':
+      return 'GitHub';
+    case 'OAUTH_LINKEDIN':
+      return 'LinkedIn';
+    case 'OAUTH_GOOGLE':
+      return 'Google';
+    default:
+      return method;
+  }
 }
 
 let sessions = $state<SessionRow[]>([]);
@@ -104,9 +125,16 @@ onMount(load);
               <Monitor size={20} class="mt-0.5 text-gray-400" />
             {/if}
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-neutral-100">
-                {s.deviceName ?? formatDevice(s.userAgent)}
-              </p>
+              <div class="flex items-center gap-2">
+                <p class="text-sm font-medium text-gray-900 dark:text-neutral-100">
+                  {s.deviceName ?? formatDevice(s.userAgent)}
+                </p>
+                {#if formatAuthMethod(s.authMethod)}
+                  <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-neutral-700 dark:text-neutral-300">
+                    via {formatAuthMethod(s.authMethod)}
+                  </span>
+                {/if}
+              </div>
               <p class="text-xs text-gray-500 dark:text-neutral-500">
                 {s.ipAddress ?? 'IP desconhecido'}
               </p>

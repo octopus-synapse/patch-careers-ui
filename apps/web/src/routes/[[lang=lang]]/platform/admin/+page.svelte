@@ -11,6 +11,7 @@ import {
   Users,
 } from 'lucide-svelte';
 import { browser } from '$app/environment';
+import AdminAlerts from './_components/admin-alerts.svelte';
 import StatCard from './_components/stat-card.svelte';
 import StatusBadge from './_components/status-badge.svelte';
 import { locale } from '$lib/state/locale.svelte';
@@ -51,6 +52,8 @@ const healthStatus = $derived<'healthy' | 'down'>(
 			{/if}
 		</div>
 	</div>
+
+	<AdminAlerts />
 
 	{#if metricsQuery.isLoading}
 		<div class="flex items-center justify-center py-20">

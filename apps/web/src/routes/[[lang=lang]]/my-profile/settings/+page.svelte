@@ -319,19 +319,39 @@ function handleDeleteAccount() {
   }
 }
 
-// Sidebar sections
+// Sidebar sections, grouped for scannability.
 type SectionId = 'profile' | 'username' | 'password' | 'twoFactor' | 'preferences' | 'danger';
-const sections: { id: SectionId; icon: typeof User; labelKey: string }[] = [
-  { id: 'profile', icon: User, labelKey: 'settings.profile' },
-  { id: 'username', icon: AtSign, labelKey: 'settings.username' },
-  { id: 'password', icon: Lock, labelKey: 'settings.password' },
-  { id: 'twoFactor', icon: ShieldCheck, labelKey: 'settings.twoFactor' },
-  { id: 'preferences', icon: Palette, labelKey: 'settings.preferences' },
-  { id: 'danger', icon: AlertTriangle, labelKey: 'settings.dangerZone' },
+type SectionItem = { id: SectionId; icon: typeof User; labelKey: string };
+type SectionGroup = { labelKey: string; items: SectionItem[] };
+
+const sectionGroups: SectionGroup[] = [
+  {
+    labelKey: 'settings.groupAccount',
+    items: [
+      { id: 'profile', icon: User, labelKey: 'settings.profile' },
+      { id: 'username', icon: AtSign, labelKey: 'settings.username' },
+    ],
+  },
+  {
+    labelKey: 'settings.groupSecurity',
+    items: [
+      { id: 'password', icon: Lock, labelKey: 'settings.password' },
+      { id: 'twoFactor', icon: ShieldCheck, labelKey: 'settings.twoFactor' },
+    ],
+  },
+  {
+    labelKey: 'settings.groupPreferences',
+    items: [{ id: 'preferences', icon: Palette, labelKey: 'settings.preferences' }],
+  },
+  {
+    labelKey: 'settings.groupDanger',
+    items: [{ id: 'danger', icon: AlertTriangle, labelKey: 'settings.dangerZone' }],
+  },
 ];
+const allSections = $derived(sectionGroups.flatMap((g) => g.items));
 let activeSection = $state<SectionId>('profile');
 const activeLabel = $derived(
-  t(sections.find((s) => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile',
+  t(allSections.find((s) => s.id === activeSection)?.labelKey ?? 'settings.profile') ?? 'Profile',
 );
 </script>
 
@@ -355,19 +375,28 @@ const activeLabel = $derived(
 								{t('settings.pageTitle')}
 							</h2>
 						</div>
-						<nav class="flex flex-col gap-1">
-							{#each sections as section}
-								{@const active = activeSection === section.id}
-								<button
-									onclick={() => activeSection = section.id}
-									class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors
-										{active ? 'bg-white dark:bg-neutral-700/50' : 'text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50'}"
-								>
-									<section.icon size={15} class={active ? 'text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500'} />
-									<span class={active ? 'font-bold text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500'}>
-										{t(section.labelKey)}
-									</span>
-								</button>
+						<nav class="flex flex-col gap-4">
+							{#each sectionGroups as group}
+								<div>
+									<p class="mb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-600">
+										{t(group.labelKey) ?? group.labelKey}
+									</p>
+									<div class="flex flex-col gap-1">
+										{#each group.items as section}
+											{@const active = activeSection === section.id}
+											<button
+												onclick={() => activeSection = section.id}
+												class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors
+													{active ? 'bg-white dark:bg-neutral-700/50' : 'text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50'}"
+											>
+												<section.icon size={15} class={active ? 'text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500'} />
+												<span class={active ? 'font-bold text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500'}>
+													{t(section.labelKey)}
+												</span>
+											</button>
+										{/each}
+									</div>
+								</div>
 							{/each}
 						</nav>
 					</div>
@@ -687,10 +716,12 @@ const activeLabel = $derived(
 											</div>
 										{/if}
 										{#if tfaSetupData.secret}
-											<div>
-												<p class="text-xs font-semibold text-gray-500 dark:text-neutral-500 mb-1">{t('settings.manualEntry')}</p>
-												<code class="block rounded-lg border p-2 text-xs font-mono bg-white border-gray-300 text-gray-800 placeholder-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:placeholder-neutral-500">{tfaSetupData.secret}</code>
-											</div>
+											<details class="group">
+												<summary class="cursor-pointer text-xs font-semibold text-gray-500 dark:text-neutral-500 select-none group-open:mb-2">
+													{t('settings.manualEntry')}
+												</summary>
+												<code class="block rounded-lg border p-2 text-xs font-mono bg-white border-gray-300 text-gray-800 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200">{tfaSetupData.secret}</code>
+											</details>
 										{/if}
 										<div>
 											<Label for="tfa-code">{t('settings.verificationCode')}</Label>
