@@ -31,6 +31,7 @@ import {
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { track } from '$lib/analytics/track';
+import { undoableAction } from '$lib/query/undoable-action';
 import { useAuth } from '$lib/state/auth.svelte';
 import ActivityStream from '$lib/components/feed/activity-stream.svelte';
 import CreatePostModal from '$lib/components/feed/create-post-modal.svelte';
@@ -355,46 +356,22 @@ async function handleUnbookmark(id: string) {
   queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
 }
 
-// Pending deletes: id → { timer, snapshot, undone } so the user can undo
-// within a 5s window before the API call actually fires.
-const pendingDeletes = new Map<
-  string,
-  { timer: ReturnType<typeof setTimeout>; snapshot: Record<string, unknown>[]; undone: boolean }
->();
-
 function handleDelete(id: string) {
-  // ConfirmModal already confirmed in post-card; proceed with optimistic delete.
   const snapshot = allPosts;
-  allPosts = allPosts.filter((p) => String(p.id) !== id);
-
-  const timer = setTimeout(async () => {
-    const entry = pendingDeletes.get(id);
-    pendingDeletes.delete(id);
-    if (!entry || entry.undone) return;
-    try {
-      await postsDelete(id);
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-    } catch {
-      allPosts = entry.snapshot;
-      toastState.show(t('feed.deleteFailed'), 'danger');
-    }
-  }, 5000);
-
-  pendingDeletes.set(id, { timer, snapshot, undone: false });
-
-  toastState.show(t('feed.postDeleted'), 'info', {
-    duration: 5000,
-    action: {
-      label: t('feed.undo'),
-      onClick: () => {
-        const entry = pendingDeletes.get(id);
-        if (!entry) return;
-        clearTimeout(entry.timer);
-        entry.undone = true;
-        pendingDeletes.delete(id);
-        allPosts = entry.snapshot;
-      },
+  undoableAction({
+    apply: () => {
+      allPosts = allPosts.filter((p) => String(p.id) !== id);
     },
+    revert: () => {
+      allPosts = snapshot;
+    },
+    commit: () => postsDelete(id),
+    onCommitted: () => {
+      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+    },
+    message: t('feed.postDeleted'),
+    undoLabel: t('feed.undo'),
+    errorMessage: t('feed.deleteFailed'),
   });
 }
 

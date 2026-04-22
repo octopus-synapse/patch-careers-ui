@@ -35,6 +35,7 @@ export * from "./feed/feed.zod";
 export * from "./gdpr/gdpr.zod";
 export * from "./github/github.zod";
 export * from "./health/health.zod";
+export * from "./i18n/i18n.zod";
 export * from "./jobs/jobs.zod";
 export * from "./mec-courses/mec-courses.zod";
 export * from "./mec-institutions/mec-institutions.zod";

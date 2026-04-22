@@ -15,7 +15,6 @@ import {
   Badge,
   Button,
   Card,
-  ConfirmModal,
   Dropdown,
   Poll,
   type PollOption,
@@ -57,7 +56,6 @@ let {
 
 let showComments = $state(false);
 let showMenu = $state(false);
-let showDeleteConfirm = $state(false);
 
 interface PostAuthor {
   id?: string;
@@ -253,12 +251,9 @@ function handleVoteClick(index: number) {
 }
 
 function handleDeleteRequest() {
+  // No confirm modal: the parent page shows a toast with an Undo button
+  // for the next 5s. Undo > confirm for reversible actions.
   showMenu = false;
-  showDeleteConfirm = true;
-}
-
-function handleDeleteConfirm() {
-  showDeleteConfirm = false;
   ondelete(postId);
 }
 </script>
@@ -555,17 +550,6 @@ function handleDeleteConfirm() {
 		{/if}
 	</Card>
 </article>
-
-<!-- Delete confirmation modal -->
-<ConfirmModal
-	open={showDeleteConfirm}
-	onClose={() => showDeleteConfirm = false}
-	onConfirm={handleDeleteConfirm}
-	title={t('feed.deleteConfirmTitle')}
-	message={t('feed.deleteConfirmMessage')}
-	confirmLabel={t('feed.deleteConfirmButton')}
-	confirmIntent="danger"
-/>
 
 <style>
 	.heart-burst {

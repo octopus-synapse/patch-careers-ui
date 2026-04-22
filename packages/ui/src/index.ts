@@ -5,6 +5,7 @@ export type { BadgeKind } from './badge-types';
 export { default as Button } from './button.svelte';
 export { default as Card } from './card.svelte';
 export { default as ConfirmModal } from './confirm-modal.svelte';
+export { default as DangerConfirmModal } from './danger-confirm-modal.svelte';
 export { default as Dropdown } from './dropdown.svelte';
 export { default as EmptyState } from './empty-state.svelte';
 export { default as FitScoreBreakdown } from './fit-score-breakdown.svelte';

@@ -17,6 +17,7 @@ import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import PostCard from '$lib/components/feed/post-card.svelte';
+import { undoableAction } from '$lib/query/undoable-action';
 
 const session = createAuthSession(() => ({
   query: { retry: false, enabled: browser },
@@ -142,10 +143,22 @@ async function handleUnbookmark(id: string) {
   queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
 }
 
-async function handleDelete(id: string) {
-  allPosts = allPosts.filter((p) => String(p.id) !== id);
-  await postsDelete(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+function handleDelete(id: string) {
+  const snapshot = allPosts;
+  undoableAction({
+    apply: () => {
+      allPosts = allPosts.filter((p) => String(p.id) !== id);
+    },
+    revert: () => {
+      allPosts = snapshot;
+    },
+    commit: () => postsDelete(id),
+    onCommitted: () => {
+      queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
+    },
+    message: 'Post excluído',
+    errorMessage: 'Falha ao excluir — alteração revertida',
+  });
 }
 
 async function handleRepost(id: string) {

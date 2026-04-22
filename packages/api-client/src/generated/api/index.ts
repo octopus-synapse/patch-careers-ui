@@ -39,6 +39,7 @@ export * from "./feed/feed";
 export * from "./gdpr/gdpr";
 export * from "./github/github";
 export * from "./health/health";
+export * from "./i18n/i18n";
 export * from "./import/import";
 export * from "./jobs/jobs";
 export * from "./mec-courses/mec-courses";
