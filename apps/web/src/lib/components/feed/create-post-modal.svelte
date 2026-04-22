@@ -1,18 +1,24 @@
 <script lang="ts">
 import { type CreatePostDto, postsCreate, postsUploadImage } from 'api-client';
 import {
+  AlertTriangle,
+  Banknote,
   BookOpen,
   Briefcase,
   Calendar,
   ChevronRight,
   Code,
+  Eye,
+  EyeOff,
   Hammer,
   HelpCircle,
   Image,
   Link,
   Loader2,
+  LogOut,
   MessageSquare,
   Plus,
+  ShieldAlert,
   Trophy,
   Upload,
   Users,
@@ -112,11 +118,24 @@ const codeLanguages = [
 let isThread = $state(false);
 let threadPosts = $state<string[]>(['']);
 
-// Blind Mode — only available in sensitive categories.
+// Blind Mode — only available in sensitive categories. Category must be
+// selected when `isAnonymous=true` (backend enforces via Zod refinement).
+type AnonymousCategory = 'SALARY' | 'INTERVIEW' | 'LAYOFF' | 'TOXIC_CULTURE' | 'HARASSMENT';
 let isAnonymous = $state(false);
-let anonymousCategory = $state<
-  'SALARY' | 'INTERVIEW' | 'LAYOFF' | 'TOXIC_CULTURE' | 'HARASSMENT' | ''
->('');
+let anonymousCategory = $state<AnonymousCategory | ''>('');
+const anonymousCategoryOptions: Array<{
+  value: AnonymousCategory;
+  label: string;
+  icon: typeof Trophy;
+}> = [
+  { value: 'SALARY', label: 'Salário', icon: Banknote },
+  { value: 'INTERVIEW', label: 'Entrevista', icon: MessageSquare },
+  { value: 'LAYOFF', label: 'Demissão', icon: LogOut },
+  { value: 'TOXIC_CULTURE', label: 'Cultura tóxica', icon: AlertTriangle },
+  { value: 'HARASSMENT', label: 'Assédio', icon: ShieldAlert },
+];
+
+const blindModeInvalid = $derived(isAnonymous && !anonymousCategory);
 
 const typeConfig: Record<PostType, { icon: typeof Trophy; description: string }> = {
   ACHIEVEMENT: { icon: Trophy, description: 'Share a win or milestone' },
@@ -627,34 +646,6 @@ const typeLabels: Record<PostType, string> = {
 						{/if}
 					</div>
 
-					<!-- Blind Mode toggle + category picker -->
-					<div class="rounded-lg border border-gray-200 p-3 dark:border-neutral-700/60">
-						<label class="flex items-center gap-2 text-xs font-medium text-gray-800 dark:text-neutral-200">
-							<input
-								type="checkbox"
-								bind:checked={isAnonymous}
-								class="h-4 w-4 rounded border-gray-300 dark:border-neutral-600"
-							/>
-							Post anonymously
-						</label>
-						<p class="mt-1 text-[11px] text-gray-500 dark:text-neutral-500">
-							Your name and avatar are hidden. The platform still tracks authorship for moderation.
-						</p>
-						{#if isAnonymous}
-							<select
-								bind:value={anonymousCategory}
-								class="mt-2 w-full rounded-lg border bg-transparent px-3 py-2 text-xs outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
-							>
-								<option value="">Select a category…</option>
-								<option value="SALARY">Salary</option>
-								<option value="INTERVIEW">Interview</option>
-								<option value="LAYOFF">Layoff</option>
-								<option value="TOXIC_CULTURE">Toxic culture</option>
-								<option value="HARASSMENT">Harassment</option>
-							</select>
-						{/if}
-					</div>
-
 					<!-- Thread mode -->
 					<div>
 						<Button
@@ -693,6 +684,59 @@ const typeLabels: Record<PostType, string> = {
 				</div>
 			</details>
 
+			<!-- Blind Mode — first-class section, not hidden under "Advanced".
+				Identity-hiding is a flagship feature for sensitive conversations
+				(salary, layoff, toxic culture, harassment, interview experiences)
+				so it deserves top-level real estate, not a collapsed toggle. -->
+			<div class="rounded-xl border-2 {isAnonymous ? 'border-violet-300 bg-violet-50 dark:border-violet-700/60 dark:bg-violet-950/20' : 'border-gray-200 dark:border-neutral-700/60'} p-3">
+				<label class="flex cursor-pointer items-start gap-3">
+					<input
+						type="checkbox"
+						bind:checked={isAnonymous}
+						class="mt-0.5 h-4 w-4 rounded border-gray-300 text-violet-600 dark:border-neutral-600"
+					/>
+					<div class="flex-1">
+						<div class="flex items-center gap-1.5 text-xs font-semibold text-gray-800 dark:text-neutral-200">
+							{#if isAnonymous}
+								<EyeOff size={14} class="text-violet-600 dark:text-violet-400" />
+							{:else}
+								<Eye size={14} class="text-gray-400 dark:text-neutral-500" />
+							{/if}
+							Postar anonimamente
+						</div>
+						<p class="mt-0.5 text-[11px] leading-relaxed text-gray-500 dark:text-neutral-500">
+							Seu nome e avatar ficam ocultos. Use pra conversas honestas sobre tópicos sensíveis — salário, cultura tóxica, layoff. A plataforma ainda rastreia autoria para moderação.
+						</p>
+					</div>
+				</label>
+
+				{#if isAnonymous}
+					<div class="mt-3 space-y-2">
+						<p class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-neutral-400">
+							Escolha a categoria <span class="text-red-500">*</span>
+						</p>
+						<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+							{#each anonymousCategoryOptions as opt}
+								{@const selected = anonymousCategory === opt.value}
+								<button
+									type="button"
+									class="flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-left text-xs transition-colors {selected ? 'border-violet-500 bg-violet-100 text-violet-800 dark:border-violet-400 dark:bg-violet-900/40 dark:text-violet-200' : 'border-gray-200 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700/50'}"
+									onclick={() => { anonymousCategory = opt.value; }}
+								>
+									<opt.icon size={12} class={selected ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400 dark:text-neutral-500'} />
+									<span class={selected ? 'font-medium' : ''}>{opt.label}</span>
+								</button>
+							{/each}
+						</div>
+						{#if blindModeInvalid}
+							<p class="text-[11px] text-red-600 dark:text-red-400">
+								Escolha uma categoria para postar anonimamente.
+							</p>
+						{/if}
+					</div>
+				{/if}
+			</div>
+
 			<!-- Actions -->
 			<div class="flex flex-wrap items-center gap-2 border-t pt-3 border-gray-200 dark:border-neutral-700">
 				<Button variant="ghost" size="sm" onclick={() => step = 1}>
@@ -702,7 +746,7 @@ const typeLabels: Record<PostType, string> = {
 				<Button variant="ghost" size="sm" onclick={handleCancel}>
 					Cancel
 				</Button>
-				<Button variant="solid" size="sm" onclick={handleSubmit} disabled={submitting || uploadingImage}>
+				<Button variant="solid" size="sm" onclick={handleSubmit} disabled={submitting || uploadingImage || blindModeInvalid}>
 					{#if submitting}
 						<Loader2 size={14} class="animate-spin" />
 						Posting...

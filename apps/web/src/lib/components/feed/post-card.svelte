@@ -106,6 +106,17 @@ const isLiked = $derived(Boolean(post.isLiked ?? post.liked));
 const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked));
 const isAnonymous = $derived(Boolean(post.isAnonymous));
 const anonymousCategory = $derived(post.anonymousCategory as string | undefined);
+
+const ANONYMOUS_CATEGORY_LABELS: Record<string, string> = {
+  SALARY: 'Salário',
+  INTERVIEW: 'Entrevista',
+  LAYOFF: 'Demissão',
+  TOXIC_CULTURE: 'Cultura tóxica',
+  HARASSMENT: 'Assédio',
+};
+const anonymousCategoryLabel = $derived(
+  anonymousCategory ? (ANONYMOUS_CATEGORY_LABELS[anonymousCategory] ?? anonymousCategory) : '',
+);
 // When anonymous, the server already masks the author to `__anonymous__`;
 // we also skip the owner branch so the author can't accidentally reveal
 // themselves through owner-only UI (delete menu).
@@ -307,7 +318,7 @@ function handleDeleteRequest() {
 					<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
 					{#if isAnonymous}
 						<span class="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
-							Anonymous{anonymousCategory ? ` · ${anonymousCategory.toLowerCase().replace('_', ' ')}` : ''}
+							Anônimo{anonymousCategoryLabel ? ` · ${anonymousCategoryLabel}` : ''}
 						</span>
 					{/if}
 					{#if coAuthors && !isAnonymous}
