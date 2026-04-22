@@ -26,6 +26,7 @@ export * from "./auth-oauth/auth-oauth";
 export * from "./authentication/authentication";
 export * from "./automation/automation";
 export * from "./badges/badges";
+export * from "./career-graph/career-graph";
 export * from "./chat/chat";
 export * from "./chat-block-users/chat-block-users";
 export * from "./collaboration/collaboration";

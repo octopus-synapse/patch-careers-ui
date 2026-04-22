@@ -22,6 +22,7 @@ export * from "./ats-validation/ats-validation.zod";
 export * from "./auth/auth.zod";
 export * from "./authentication/authentication.zod";
 export * from "./automation/automation.zod";
+export * from "./career-graph/career-graph.zod";
 export * from "./chat/chat.zod";
 export * from "./chat-block-users/chat-block-users.zod";
 export * from "./collaboration/collaboration.zod";
