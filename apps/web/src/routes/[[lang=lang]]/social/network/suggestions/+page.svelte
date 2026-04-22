@@ -196,14 +196,14 @@ $effect(() => {
 		{#if skillRecsLoading}
 			<div class="mt-10">
 				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-					Pessoas com skills parecidas
+					{t('network.suggestionsSkillsTitle')}
 				</h2>
 				<Skeleton shape="rect" width="100%" height="6rem" />
 			</div>
 		{:else if skillRecs.length > 0}
 			<div class="mt-10">
 				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-					Pessoas com skills parecidas
+					{t('network.suggestionsSkillsTitle')}
 				</h2>
 				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
 					{#each skillRecs as r (r.userId)}
@@ -214,7 +214,9 @@ $effect(() => {
 								username: r.username,
 								photoURL: null,
 							}}
-							subtitle={`${r.sharedSkills.length} skills em comum`}
+							subtitle={t('network.suggestionsSkillsInCommon', {
+								count: r.sharedSkills.length,
+							})}
 						>
 							{#snippet actions()}
 								{#if sentConnections.has(r.userId)}

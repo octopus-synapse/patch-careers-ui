@@ -57,6 +57,7 @@ export * from "./platform/platform";
 export * from "./platform-events/platform-events";
 export * from "./posts/posts";
 export * from "./public-resumes/public-resumes";
+export * from "./recruiting/recruiting";
 export * from "./resume-analytics/resume-analytics";
 export * from "./resume-analytics-stream/resume-analytics-stream";
 export * from "./resume-config/resume-config";

@@ -77,11 +77,12 @@ function handleConnect(userId: string) {
 				{@const commonSkills = suggestion.commonSkills ?? []}
 				{@const highlight =
 					mutual > 0
-						? mutual === 1
-							? '1 conexão em comum'
-							: `${mutual} conexões em comum`
+						? t('network.carouselMutualCount', { count: mutual })
 						: commonSkills.length > 0
-							? `Skills em comum: ${commonSkills.slice(0, 3).join(', ')}`
+							? t('network.carouselSkillsInCommon').replace(
+									'{skills}',
+									commonSkills.slice(0, 3).join(', '),
+								)
 							: (suggestion.reason ?? undefined)}
 				<div class="w-48 flex-shrink-0 snap-start">
 					<UserCard
@@ -94,7 +95,7 @@ function handleConnect(userId: string) {
 						subtitle={highlight}
 					>
 						{#snippet actions()}
-							{#if commonSkills.length > 0 && mutual > 0}
+							{#if commonSkills.length > 0}
 								<div class="mb-1 flex flex-wrap justify-center gap-1">
 									{#each commonSkills.slice(0, 3) as skill}
 										<span class="rounded-full bg-cyan-100 px-1.5 py-0.5 text-[9px] font-medium text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-200">

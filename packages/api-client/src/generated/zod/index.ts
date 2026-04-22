@@ -48,6 +48,7 @@ export * from "./platform/platform.zod";
 export * from "./platform-events/platform-events.zod";
 export * from "./posts/posts.zod";
 export * from "./public-resumes/public-resumes.zod";
+export * from "./recruiting/recruiting.zod";
 export * from "./resume-analytics/resume-analytics.zod";
 export * from "./resume-config/resume-config.zod";
 export * from "./resume-import/resume-import.zod";

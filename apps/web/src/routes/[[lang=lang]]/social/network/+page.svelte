@@ -1,46 +1,95 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
+  connectionAcceptConnection,
   connectionGetConnections,
-  createConnectionAcceptConnection,
-  createConnectionGetConnectionSuggestions,
-  createConnectionGetConnections,
-  createConnectionGetPendingRequests,
-  createConnectionRejectConnection,
-  createConnectionRemoveConnection,
+  connectionRejectConnection,
+  connectionRemoveConnection,
+  createConnectionGetNetworkSummary,
   createFollowGetFollowers,
   createFollowGetFollowing,
+  type FollowListDataDtoFollowersDataItem,
+  type FollowingListDataDtoFollowingDataItem,
   getConnectionGetConnectionsQueryKey,
+  getConnectionGetNetworkSummaryQueryKey,
   getConnectionGetPendingRequestsQueryKey,
+  type NetworkSummaryDataDtoSuggestionsDataItem,
 } from 'api-client';
-import { Eye, MessageCircle, UserCheck, Users } from 'lucide-svelte';
-import { Button, ConfirmModal } from 'ui';
+import { UserCheck } from 'lucide-svelte';
+import type { Component } from 'svelte';
+import { Button, EmptyState, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
+import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
-import { chatState } from '$lib/state/chat-state.svelte';
 import SuggestionsCarousel from '$lib/components/mynetwork/suggestions-carousel.svelte';
+import NetworkStatsCard from '$lib/components/mynetwork/network-stats-card.svelte';
+import QuickMessagePopover from '$lib/components/mynetwork/quick-message-popover.svelte';
 import UserRow from '$lib/components/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { undoableAction } from '$lib/query/undoable-action';
 import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+
+type UserInfo = {
+  id: string;
+  name: string | null;
+  username: string | null;
+  photoURL: string | null;
+};
+
+type PendingRow = { id: string; user: UserInfo };
+type ConnectionRow = { id: string; user: UserInfo };
+type FollowerRow = UserInfo;
+type FollowingRow = UserInfo;
+
+function extractUser(raw: Record<string, unknown> | undefined | null): UserInfo {
+  const r = raw ?? {};
+  return {
+    id: String((r.id as string | undefined) ?? ''),
+    name: (r.name as string | null | undefined) ?? null,
+    username: (r.username as string | null | undefined) ?? null,
+    photoURL: (r.photoURL as string | null | undefined) ?? null,
+  };
+}
+
+function toPending(raw: unknown): PendingRow {
+  const r = (raw as Record<string, unknown>) ?? {};
+  const user = extractUser(
+    (r.user ?? r.requester ?? r) as Record<string, unknown> | undefined,
+  );
+  return { id: String((r.id as string | undefined) ?? ''), user };
+}
+
+function toConnection(raw: unknown): ConnectionRow {
+  const r = (raw as Record<string, unknown>) ?? {};
+  const user = extractUser((r.user ?? r) as Record<string, unknown> | undefined);
+  return { id: String((r.id as string | undefined) ?? ''), user };
+}
+
+function toFollower(row: FollowListDataDtoFollowersDataItem): FollowerRow {
+  return {
+    id: row.follower?.id ?? '',
+    name: row.follower?.name ?? null,
+    username: row.follower?.username ?? null,
+    photoURL: row.follower?.photoURL ?? null,
+  };
+}
+
+function toFollowing(row: FollowingListDataDtoFollowingDataItem): FollowingRow {
+  return {
+    id: row.following?.id ?? '',
+    name: row.following?.name ?? null,
+    username: row.following?.username ?? null,
+    photoURL: row.following?.photoURL ?? null,
+  };
+}
 
 const t = $derived(locale.t);
 
-// Auth — after customFetch unwrap, data is the DTO directly
 const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 const authenticated = $derived(auth.data?.authenticated);
 
-// Queries
-const pendingQuery = createConnectionGetPendingRequests(
-  () => ({ page: 1, limit: 10 }),
-  () => ({ query: { enabled: browser && authenticated } }),
-);
-const connectionsQuery = createConnectionGetConnections(
-  () => ({ page: 1, limit: 10 }),
-  () => ({ query: { enabled: browser && authenticated } }),
-);
-const suggestionsQuery = createConnectionGetConnectionSuggestions(
-  () => ({ page: 1, limit: 20 }),
+const summaryQuery = createConnectionGetNetworkSummary(
   () => ({ query: { enabled: browser && authenticated } }),
 );
 const followersQuery = createFollowGetFollowers(
@@ -54,31 +103,45 @@ const followingQuery = createFollowGetFollowing(
   () => ({ query: { enabled: browser && !!currentUserId } }),
 );
 
-function paged(queryData: unknown, key: string) {
-  const outer = queryData as Record<string, unknown> | undefined;
-  const section = outer?.[key] as Record<string, unknown> | undefined;
-  return {
-    data: section?.data as Record<string, unknown>[],
-    total: section?.total as number | undefined,
-    totalPages: section?.totalPages as number | undefined,
-  };
-}
+const stats = $derived(
+  summaryQuery.data?.stats ?? { connections: 0, followers: 0, following: 0, pendingInvitations: 0 },
+);
+const pendingList = $derived((summaryQuery.data?.pendingRequests.data ?? []).map(toPending));
+const suggestionsList = $derived<NetworkSummaryDataDtoSuggestionsDataItem[]>(
+  summaryQuery.data?.suggestions.data ?? [],
+);
+const connectionsFirstPage = $derived(
+  (summaryQuery.data?.connections.data ?? []).map(toConnection),
+);
+const connectionsTotal = $derived(summaryQuery.data?.connections.total ?? 0);
+const connectionsTotalPages = $derived(summaryQuery.data?.connections.totalPages ?? 0);
 
-const pending = $derived(paged(pendingQuery.data, 'pendingRequests'));
-const connections = $derived(paged(connectionsQuery.data, 'connections'));
-const suggestions = $derived(paged(suggestionsQuery.data, 'suggestions'));
-const followers = $derived(paged(followersQuery.data, 'followers'));
-const following = $derived(paged(followingQuery.data, 'following'));
+const followersSection = $derived(
+  (followersQuery.data as { followers?: { data?: FollowListDataDtoFollowersDataItem[]; total?: number } } | undefined)
+    ?.followers,
+);
+const followingSection = $derived(
+  (followingQuery.data as { following?: { data?: FollowingListDataDtoFollowingDataItem[]; total?: number } } | undefined)
+    ?.following,
+);
+const followersList = $derived((followersSection?.data ?? []).map(toFollower));
+const followingList = $derived((followingSection?.data ?? []).map(toFollowing));
 
-// Infinite scroll (connections only — suggestions use carousel widget + dedicated page)
-let connectionsExtra = $state<Record<string, unknown>[]>([]);
+// Infinite scroll for connections — extra pages loaded after the first page
+// arrives from the network summary.
+let connectionsExtra = $state<ConnectionRow[]>([]);
 let connectionsPage = $state(1);
 let connectionsLoading = $state(false);
 
+// Rows the user has optimistically removed. Kept so undo can restore them
+// without waiting for another refetch.
+let hiddenConnectionIds = $state<Set<string>>(new Set());
+let hiddenPendingIds = $state<Set<string>>(new Set());
+
 const connectionsList = $derived(
-  connections.data ? [...connections.data, ...connectionsExtra] : connectionsExtra,
+  [...connectionsFirstPage, ...connectionsExtra].filter((c) => !hiddenConnectionIds.has(c.id)),
 );
-const suggestionsList = $derived(suggestions.data ?? []);
+const visiblePending = $derived(pendingList.filter((p) => !hiddenPendingIds.has(p.id)));
 
 async function loadMoreConnections() {
   if (connectionsLoading) return;
@@ -86,57 +149,99 @@ async function loadMoreConnections() {
   try {
     const next = connectionsPage + 1;
     const res = (await connectionGetConnections({ page: next, limit: 10 })) as unknown as
-      | Record<string, unknown>
+      | { connections?: { data?: unknown[] } }
       | undefined;
-    const connectionsData = res?.connections as Record<string, unknown> | undefined;
-    const items = connectionsData?.data as Record<string, unknown>[] | undefined;
-    if (items) connectionsExtra = [...connectionsExtra, ...items];
+    const items = res?.connections?.data ?? [];
+    connectionsExtra = [...connectionsExtra, ...items.map(toConnection)];
     connectionsPage = next;
   } finally {
     connectionsLoading = false;
   }
 }
 
-// Mutations
+// Mutations. All three use `undoableAction`: the UI reflects the change
+// immediately, a toast with "Undo" holds the server write for 5s, and a
+// mistimed click can be reversed without a round trip.
 const queryClient = useQueryClient();
 
-const acceptMutation = createConnectionAcceptConnection(() => ({
-  mutation: {
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetPendingRequestsQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionsQueryKey() });
+function invalidateNetwork() {
+  queryClient.invalidateQueries({
+    queryKey: getConnectionGetNetworkSummaryQueryKey(),
+    refetchType: 'all',
+  });
+  queryClient.invalidateQueries({
+    queryKey: getConnectionGetPendingRequestsQueryKey(),
+    refetchType: 'all',
+  });
+  queryClient.invalidateQueries({
+    queryKey: getConnectionGetConnectionsQueryKey(),
+    refetchType: 'all',
+  });
+}
+
+function handleAccept(row: PendingRow) {
+  undoableAction({
+    apply: () => (hiddenPendingIds = new Set([...hiddenPendingIds, row.id])),
+    revert: () => {
+      const next = new Set(hiddenPendingIds);
+      next.delete(row.id);
+      hiddenPendingIds = next;
     },
-  },
-}));
-const rejectMutation = createConnectionRejectConnection(() => ({
-  mutation: {
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetPendingRequestsQueryKey() });
+    commit: () => connectionAcceptConnection(row.id),
+    onCommitted: () => {
+      invalidateNetwork();
+      track('connection_accepted', { requestId: row.id, source: 'mynetwork_main' });
     },
-  },
-}));
-const removeMutation = createConnectionRemoveConnection(() => ({
-  mutation: {
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionsQueryKey() });
-      removeTarget = null;
+    message: t('network.connectionAcceptedUndo'),
+    undoLabel: t('network.undo'),
+    errorMessage: t('network.undoableFailed'),
+  });
+}
+
+function handleReject(row: PendingRow) {
+  undoableAction({
+    apply: () => (hiddenPendingIds = new Set([...hiddenPendingIds, row.id])),
+    revert: () => {
+      const next = new Set(hiddenPendingIds);
+      next.delete(row.id);
+      hiddenPendingIds = next;
     },
-  },
-}));
-let removeTarget = $state<{ id: string; name: string } | null>(null);
+    commit: () => connectionRejectConnection(row.id),
+    onCommitted: () => {
+      invalidateNetwork();
+      track('connection_rejected', { requestId: row.id, source: 'mynetwork_main' });
+    },
+    message: t('network.connectionRejectedUndo'),
+    undoLabel: t('network.undo'),
+    errorMessage: t('network.undoableFailed'),
+  });
+}
+
+function handleRemove(row: ConnectionRow) {
+  undoableAction({
+    apply: () => (hiddenConnectionIds = new Set([...hiddenConnectionIds, row.id])),
+    revert: () => {
+      const next = new Set(hiddenConnectionIds);
+      next.delete(row.id);
+      hiddenConnectionIds = next;
+    },
+    commit: () => connectionRemoveConnection(row.id),
+    onCommitted: () => {
+      invalidateNetwork();
+      track('connection_removed', { connectionId: row.id, source: 'mynetwork_main' });
+    },
+    message: t('network.connectionRemovedUndo'),
+    undoLabel: t('network.undo'),
+    errorMessage: t('network.undoableFailed'),
+  });
+}
+
+let followersTab = $state<'followers' | 'following'>('followers');
 </script>
 
 <svelte:head>
 	<title>{t('network.pageTitle')}</title>
 </svelte:head>
-
-<ConfirmModal
-	open={removeTarget !== null}
-	onClose={() => removeTarget = null}
-	onConfirm={() => { if (removeTarget) removeMutation.mutate({ id: removeTarget.id }); }}
-	title={t('network.removeConfirmTitle')}
-	message={t('network.removeConfirmMessage').replace('{name}', removeTarget?.name ?? '')}
-/>
 
 <div class="min-h-screen pt-20 pb-12">
 	<div class="mx-auto flex max-w-5xl gap-4 px-3 sm:gap-6 sm:px-6">
@@ -150,33 +255,21 @@ let removeTarget = $state<{ id: string; name: string } | null>(null);
 				</div>
 				<nav class="flex flex-col py-1">
 					<a href="/social/network/connections" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
-						<span class="flex items-center gap-2.5">
-							<Users size={16} class="text-gray-500 dark:text-neutral-500" />
-							{t('network.connections')}
-						</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{connections.total}</span>
+						<span>{t('network.connections')}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.connections}</span>
 					</a>
 					<a href="/social/network/followers" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
-						<span class="flex items-center gap-2.5">
-							<Eye size={16} class="text-gray-500 dark:text-neutral-500" />
-							{t('network.followers')}
-						</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{followers.total ?? 0}</span>
+						<span>{t('network.followers')}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.followers}</span>
 					</a>
 					<a href="/social/network/following" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
-						<span class="flex items-center gap-2.5">
-							<Eye size={16} class="text-gray-500 dark:text-neutral-500" />
-							{t('network.following')}
-						</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{following.total ?? 0}</span>
+						<span>{t('network.following')}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.following}</span>
 					</a>
-					<a href="#invitations" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
-						<span class="flex items-center gap-2.5">
-							<UserCheck size={16} class="text-gray-500 dark:text-neutral-500" />
-							{t('network.invitations')}
-						</span>
-						{#if (pending.total ?? 0) > 0}
-							<span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{pending.total}</span>
+					<a href="/social/network/invitation-manager/received" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
+						<span>{t('network.invitations')}</span>
+						{#if stats.pendingInvitations > 0}
+							<span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{stats.pendingInvitations}</span>
 						{:else}
 							<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">0</span>
 						{/if}
@@ -187,59 +280,71 @@ let removeTarget = $state<{ id: string; name: string } | null>(null);
 
 		<!-- Main -->
 		<main class="flex-1 min-w-0 flex flex-col gap-6">
+			<!-- Stats at a glance -->
+			<NetworkStatsCard
+				connections={stats.connections}
+				followers={stats.followers}
+				following={stats.following}
+				pending={stats.pendingInvitations}
+			/>
+
 			<!-- Invitations (always visible, preview of 2) -->
 			<section id="invitations" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 				<div class="flex items-center justify-between px-3 py-3 sm:px-5 sm:py-4 border-b border-gray-200 dark:border-neutral-800">
 					<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-						{t('network.invitations')} ({pending.total ?? 0})
+						{t('network.invitations')} ({stats.pendingInvitations})
 					</h2>
-					{#if (pending.total ?? 0) > 0}
+					{#if visiblePending.length > 0}
 						<a href="/social/network/invitation-manager/received" class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300">
 							{t('network.showAll')}
 						</a>
 					{/if}
 				</div>
-				{#if pending.data && pending.data.length > 0}
+				{#if summaryQuery.isLoading}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-						{#each pending.data.slice(0, 2) as request}
-							{@const user = (request.user ?? request.requester ?? request) as Record<string, string | null>}
-							{@const reqId = String(request.id ?? '')}
-							<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }}>
+						{#each Array(2) as _}
+							<div class="flex items-center gap-3 px-5 py-4">
+								<Skeleton shape="avatar" width="2.5rem" height="2.5rem" />
+								<div class="flex-1 space-y-2">
+									<Skeleton shape="text" width="35%" />
+									<Skeleton shape="text" width="20%" />
+								</div>
+								<Skeleton shape="rect" width="4.5rem" height="1.75rem" />
+							</div>
+						{/each}
+					</div>
+				{:else if visiblePending.length > 0}
+					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
+						{#each visiblePending.slice(0, 2) as request (request.id)}
+							<UserRow user={request.user}>
 								{#snippet actions()}
-									<Button variant="outline" size="sm" onclick={() => rejectMutation.mutate({ id: reqId })}>{t('network.ignore')}</Button>
-									<Button variant="outline" intent="accent" size="sm" onclick={() => acceptMutation.mutate({ id: reqId })}>{t('network.accept')}</Button>
+									<Button variant="outline" size="sm" onclick={() => handleReject(request)}>{t('network.ignore')}</Button>
+									<Button variant="outline" intent="accent" size="sm" onclick={() => handleAccept(request)}>{t('network.accept')}</Button>
 								{/snippet}
 							</UserRow>
 						{/each}
 					</div>
 				{:else}
-					<div class="flex flex-col items-center gap-2 px-6 py-10 text-center">
-						<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800">
-							<UserCheck size={18} class="text-gray-400 dark:text-neutral-500" />
-						</div>
-						<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">
-							{t('network.invitationsEmptyTitle')}
-						</p>
-						<p class="max-w-sm text-xs text-gray-500 dark:text-neutral-500">
-							{t('network.invitationsEmptyDescription')}
-						</p>
-					</div>
+					<EmptyState
+						message={t('network.invitationsEmptyTitle')}
+						icon={UserCheck as unknown as Component<{ size: number; class?: string }>}
+					/>
 				{/if}
 			</section>
 
-			<!-- Suggestions carousel (widget) -->
-			{#if suggestionsQuery.isLoading}
+			<!-- Suggestions carousel -->
+			{#if summaryQuery.isLoading}
 				<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 					<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.suggestions')}</h2>
 					</div>
 					<div class="grid grid-cols-1 gap-3 px-3 py-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:px-5 sm:py-4 sm:gap-4">
 						{#each Array(4) as _}
-							<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800 animate-pulse">
-								<div class="h-14 w-14 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
-								<div class="h-3 w-20 rounded bg-gray-200 dark:bg-neutral-700"></div>
-								<div class="h-2 w-14 rounded bg-gray-200 dark:bg-neutral-700"></div>
-								<div class="h-8 w-full rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+							<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800">
+								<Skeleton shape="avatar" width="3.5rem" height="3.5rem" />
+								<Skeleton shape="text" width="70%" />
+								<Skeleton shape="text" width="50%" />
+								<Skeleton shape="rect" width="100%" height="2rem" />
 							</div>
 						{/each}
 					</div>
@@ -248,13 +353,16 @@ let removeTarget = $state<{ id: string; name: string } | null>(null);
 				<div id="suggestions">
 					<SuggestionsCarousel
 						suggestions={suggestionsList.slice(0, 12).map((s) => ({
-							id: String(s.id ?? ''),
-							name: (s as Record<string, string | null>).name,
-							username: (s as Record<string, string | null>).username,
-							photoURL: (s as Record<string, string | null>).photoURL,
-							reason: (s as Record<string, string | null>).reason,
+							id: s.id,
+							name: s.name,
+							username: s.username,
+							photoURL: s.photoURL,
+							reason: s.reason,
+							mutualCount: s.mutualCount,
+							commonSkills: s.commonSkills,
 						}))}
 						seeAllHref="/social/network/suggestions"
+						source="mynetwork_carousel"
 					/>
 				</div>
 			{/if}
@@ -262,77 +370,92 @@ let removeTarget = $state<{ id: string; name: string } | null>(null);
 			<!-- Connections -->
 			<section id="connections" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 				<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-					<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.connections')} ({connections.total})</h2>
+					<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
+						{t('network.connections')} ({connectionsTotal})
+					</h2>
 				</div>
-				{#if connectionsQuery.isLoading}
+				{#if summaryQuery.isLoading}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(3) as _}
-							<div class="flex items-center gap-3 px-5 py-3.5 animate-pulse">
-								<div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+							<div class="flex items-center gap-3 px-5 py-3.5">
+								<Skeleton shape="avatar" width="2.5rem" height="2.5rem" />
 								<div class="flex-1 space-y-2">
-									<div class="h-3 w-32 rounded bg-gray-200 dark:bg-neutral-700"></div>
-									<div class="h-2 w-20 rounded bg-gray-200 dark:bg-neutral-700"></div>
+									<Skeleton shape="text" width="40%" />
+									<Skeleton shape="text" width="25%" />
 								</div>
+								<Skeleton shape="rect" width="5rem" height="1.75rem" />
 							</div>
 						{/each}
 					</div>
 				{:else if connectionsList.length === 0}
-					<p class="py-12 text-center text-sm text-gray-500 dark:text-neutral-500">{t('network.noConnections')}</p>
+					<EmptyState message={t('network.noConnections')} />
 				{:else}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-						{#each connectionsList as connection}
-							{@const user = (connection.user ?? connection) as Record<string, string | null>}
-							{@const connId = String(connection.id ?? '')}
-							{@const userName = String(user.name ?? user.username ?? '?')}
-							<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }}>
+						{#each connectionsList as connection (connection.id)}
+							{@const displayName = connection.user.name ?? connection.user.username ?? '?'}
+							<UserRow user={connection.user}>
 								{#snippet actions()}
-									<Button variant="outline" size="sm" onclick={() => chatState.startConversationWith(String(user.id ?? ''))}>
-										<MessageCircle size={12} />
-										{t('network.message')}
-									</Button>
-									<Button variant="ghost" intent="danger" size="xs" onclick={() => removeTarget = { id: connId, name: userName }}>
+									{#if connection.user.id}
+										<QuickMessagePopover recipientId={connection.user.id} recipientName={displayName} />
+									{/if}
+									<Button variant="ghost" intent="danger" size="xs" onclick={() => handleRemove(connection)}>
 										{t('network.remove')}
 									</Button>
 								{/snippet}
 							</UserRow>
 						{/each}
-						<InfiniteScrollTrigger onLoadMore={loadMoreConnections} hasMore={connectionsPage < (connections.totalPages ?? 0)} isLoading={connectionsLoading} />
+						<InfiniteScrollTrigger onLoadMore={loadMoreConnections} hasMore={connectionsPage < connectionsTotalPages} isLoading={connectionsLoading} />
 					</div>
 				{/if}
 			</section>
 
-			<!-- Followers & Following -->
+			<!-- Followers / Following tabs -->
 			<section id="followers" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-				<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
-					<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-						{t('network.followers')} ({followers.total}) · {t('network.following')} ({following.total})
-					</h2>
+				<div class="px-4 pt-2 sm:px-5">
+					<Tabs
+						tabs={[
+							{ value: 'followers', label: t('network.followers'), count: stats.followers },
+							{ value: 'following', label: t('network.following'), count: stats.following },
+						]}
+						selected={followersTab}
+						onchange={(v) => (followersTab = v as 'followers' | 'following')}
+					/>
 				</div>
-				{#if followersQuery.isLoading}
+				{#if followersTab === 'followers'}
+					{#if followersQuery.isLoading}
+						<div class="divide-y divide-gray-200 dark:divide-neutral-800">
+							{#each Array(3) as _}
+								<div class="flex items-center gap-3 px-5 py-3">
+									<Skeleton shape="avatar" width="2rem" height="2rem" />
+									<Skeleton shape="text" width="40%" />
+								</div>
+							{/each}
+						</div>
+					{:else if followersList.length === 0}
+						<EmptyState message={t('network.noFollowers')} />
+					{:else}
+						<div class="divide-y divide-gray-200 dark:divide-neutral-800">
+							{#each followersList as user (user.id)}
+								<UserRow {user} />
+							{/each}
+						</div>
+					{/if}
+				{:else if followingQuery.isLoading}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(3) as _}
-							<div class="flex items-center gap-3 px-5 py-3 animate-pulse">
-								<div class="h-8 w-8 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
-								<div class="flex-1"><div class="h-3 w-28 rounded bg-gray-200 dark:bg-neutral-700"></div></div>
+							<div class="flex items-center gap-3 px-5 py-3">
+								<Skeleton shape="avatar" width="2rem" height="2rem" />
+								<Skeleton shape="text" width="40%" />
 							</div>
 						{/each}
 					</div>
-				{:else if !followers.total && !following.total}
-					<p class="py-8 text-center text-sm text-gray-500 dark:text-neutral-500">{t('network.noFollowers')}</p>
+				{:else if followingList.length === 0}
+					<EmptyState message={t('network.noFollowing')} />
 				{:else}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-						{#if followers.data}
-							{#each followers.data as follower}
-								{@const user = (follower.user ?? follower.follower ?? follower) as Record<string, string | null>}
-								<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }} badge="follower" />
-							{/each}
-						{/if}
-						{#if following.data}
-							{#each following.data as followed}
-								{@const user = (followed.user ?? followed.following ?? followed) as Record<string, string | null>}
-								<UserRow user={{ id: String(user.id ?? ''), name: user.name, username: user.username, photoURL: user.photoURL }} badge="following" />
-							{/each}
-						{/if}
+						{#each followingList as user (user.id)}
+							<UserRow {user} />
+						{/each}
 					</div>
 				{/if}
 			</section>

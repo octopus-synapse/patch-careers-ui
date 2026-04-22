@@ -1,5 +1,4 @@
 <script lang="ts">
-import { Settings } from 'lucide-svelte';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
 import { locale } from '$lib/state/locale.svelte';
@@ -21,13 +20,6 @@ const isSent = $derived(currentPath.endsWith('/sent'));
 				<h1 class="text-base font-semibold text-gray-800 dark:text-neutral-200">
 					{t?.('network.manageInvitations')}
 				</h1>
-				<button
-					type="button"
-					aria-label="Settings"
-					class="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-gray-100 dark:hover:bg-neutral-700"
-				>
-					<Settings size={16} class="text-gray-600 dark:text-neutral-300" />
-				</button>
 			</header>
 
 			<nav class="flex items-center gap-6 border-b px-4 sm:px-6 border-gray-200 dark:border-neutral-800">

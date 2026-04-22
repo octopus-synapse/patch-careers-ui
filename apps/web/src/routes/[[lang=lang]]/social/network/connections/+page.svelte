@@ -219,15 +219,6 @@ const removeMutation = createConnectionRemoveConnection(() => ({
 							class="pl-8 text-xs"
 						/>
 					</div>
-					<button
-						type="button"
-						class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300 whitespace-nowrap"
-						onclick={() => {
-							/* placeholder: open filters modal */
-						}}
-					>
-						{t?.('network.searchWithFilters')}
-					</button>
 				</div>
 			</div>
 
