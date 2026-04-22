@@ -57,7 +57,10 @@ import type {
 
 import type {
   ResumesGetDiffParams,
-  TailorResumeRequestDto
+  TailorResumeDataDto,
+  TailorResumeRequestDto,
+  TailoredVersionDiffDataDto,
+  TailoredVersionsListDataDto
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -70,9 +73,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Rewrite this resume for a specific job using the AI pipeline.
  */
-export type resumesTailorForJobResponse201 = void
+export type resumesTailorForJobResponse200 = TailorResumeDataDto
 
-export type resumesTailorForJobResponseSuccess = resumesTailorForJobResponse201
+export type resumesTailorForJobResponseSuccess = resumesTailorForJobResponse200
 ;
 
 export type resumesTailorForJobResponse = (resumesTailorForJobResponseSuccess)
@@ -148,7 +151,7 @@ export const createResumesTailorForJob = <TError = unknown,
     /**
  * @summary List tailored resume variants produced by the AI.
  */
-export type resumesListTailoredResponse200 = void
+export type resumesListTailoredResponse200 = TailoredVersionsListDataDto
 
 export type resumesListTailoredResponseSuccess = resumesListTailoredResponse200
 ;
@@ -304,7 +307,7 @@ export const prefetchResumesListTailoredQuery = async <TData = Awaited<ReturnTyp
 /**
  * @summary Structured diff between the master resume and a tailored version.
  */
-export type resumesGetDiffResponse200 = void
+export type resumesGetDiffResponse200 = TailoredVersionDiffDataDto
 
 export type resumesGetDiffResponseSuccess = resumesGetDiffResponse200
 ;

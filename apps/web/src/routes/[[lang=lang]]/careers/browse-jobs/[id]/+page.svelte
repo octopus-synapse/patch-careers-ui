@@ -28,6 +28,7 @@ import {
   MapPin,
   Pencil,
   Send,
+  Sparkles,
   Trash2,
 } from 'lucide-svelte';
 import {
@@ -46,6 +47,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
+import TailorForJobModal from '$lib/components/cv/tailor-for-job-modal.svelte';
 import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
 import SimilarJobsCarousel from '$lib/components/jobs/similar-jobs-carousel.svelte';
 import { locale } from '$lib/state/locale.svelte';
@@ -150,6 +152,7 @@ function toggleBookmark() {
 let optimisticApplied = $state<boolean | null>(null);
 const hasApplied = $derived(optimisticApplied ?? Boolean(job?.hasApplied));
 let showApplyModal = $state(false);
+let showTailorModal = $state(false);
 let withdrawConfirm = $state(false);
 let applying = $state(false);
 let withdrawing = $state(false);
@@ -395,6 +398,16 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 									{isBookmarked ? t('jobs.unsaveJob') : t('jobs.saveJob')}
 								</Button>
 							{/if}
+							{#if currentUserId && !isOwner}
+								<Button
+									variant="outline"
+									size="sm"
+									onclick={() => (showTailorModal = true)}
+								>
+									<Sparkles size={14} />
+									Personalizar CV
+								</Button>
+							{/if}
 							{#if isOwner}
 								<Button variant="outline" size="sm" onclick={openEdit}>
 									<Pencil size={14} />
@@ -562,6 +575,16 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 	submitting={applying}
 	onsubmit={submitApplication}
 	oncancel={() => (showApplyModal = false)}
+/>
+
+<!-- Tailor CV with AI Modal (#45) -->
+<TailorForJobModal
+	open={showTailorModal}
+	onClose={() => (showTailorModal = false)}
+	jobId={jobId}
+	jobTitle={job?.title}
+	jobCompany={job?.company}
+	jobDescription={job?.description}
 />
 
 <!-- Withdraw Application Confirm -->

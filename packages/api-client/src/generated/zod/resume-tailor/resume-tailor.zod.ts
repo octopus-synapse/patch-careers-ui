@@ -57,3 +57,51 @@ export const ResumesTailorForJobBody = zod.object({
   "jobCompany": zod.string().max(resumesTailorForJobBodyJobCompanyMax).optional()
 })
 
+export const ResumesTailorForJobResponse = zod.object({
+  "versionId": zod.string(),
+  "versionNumber": zod.number(),
+  "label": zod.string(),
+  "summary": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "bullets": zod.array(zod.object({
+  "id": zod.string(),
+  "original": zod.string(),
+  "tailored": zod.string(),
+  "highlights": zod.array(zod.string())
+}))
+})
+
+/**
+ * @summary List tailored resume variants produced by the AI.
+ */
+export const ResumesListTailoredResponse = zod.object({
+  "versions": zod.array(zod.object({
+  "id": zod.string(),
+  "versionNumber": zod.number(),
+  "label": zod.string().nullable(),
+  "createdAt": zod.string().datetime({}),
+  "tailoredJobId": zod.string().nullable()
+}))
+})
+
+/**
+ * @summary Structured diff between the master resume and a tailored version.
+ */
+export const ResumesGetDiffResponse = zod.object({
+  "versionId": zod.string(),
+  "summary": zod.object({
+  "before": zod.string().nullable(),
+  "after": zod.string().nullable()
+}).nullable(),
+  "jobTitle": zod.object({
+  "before": zod.string().nullable(),
+  "after": zod.string().nullable()
+}).nullable(),
+  "bullets": zod.array(zod.object({
+  "id": zod.string(),
+  "before": zod.string(),
+  "after": zod.string(),
+  "highlights": zod.array(zod.string())
+}))
+})
+
