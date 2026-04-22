@@ -887,7 +887,17 @@
       "dimSoftSkills": "Soft skills",
       "dimExperience": "Experiência",
       "dimLanguages": "Idiomas",
-      "dimLocation": "Localização"
+      "dimLocation": "Localização",
+      "chipTitle": "Seu breakdown de match",
+      "englishLabel": "Inglês",
+      "remoteLabel": "Remoto",
+      "englishOk": "Atende",
+      "englishBelow": "Abaixo do pedido",
+      "englishUnknown": "Sem dado",
+      "remoteExact": "Alinhamento total",
+      "remotePartial": "Parcial",
+      "remoteMismatch": "Não bate",
+      "none": "Nenhuma"
     }
   },
   "auth": {

@@ -9,7 +9,7 @@ import {
 import type { CreateJobDto, CreateJobDtoJobType } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'lucide-svelte';
-import { Button, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
+import { Button, FitScoreChip, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import DataTable from '$lib/components/data/data-table.svelte';
@@ -20,6 +20,19 @@ import { parseApiError } from '$lib/format/api-error';
 import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
 import { locale } from '$lib/state/locale.svelte';
 
+interface FitScoreBreakdown {
+  skillOverlap: number;
+  englishMatch: number;
+  remoteMatch: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+}
+
+interface FitScoreDetail {
+  score: number;
+  breakdown: FitScoreBreakdown;
+}
+
 interface JobItem {
   id: string;
   title?: string;
@@ -28,6 +41,7 @@ interface JobItem {
   skills?: string[];
   createdAt: string;
   matchScore?: number;
+  fitScore?: FitScoreDetail;
   salaryRange?: string;
   paymentCurrency?: string;
   location?: string;
@@ -102,9 +116,9 @@ const recommendedData = $derived(
 );
 
 // Side-channel: pull structured fit scores for the current page of jobs from
-// the new /jobs/with-fit-score endpoint. Merge into the existing list under
-// the matchScore key so the badge keeps working without a column change.
-let fitScoreById = $state<Record<string, number>>({});
+// the /jobs/with-fit-score endpoint. Merge the full breakdown into each row
+// so the chip can expand into matched / missing skills on hover.
+let fitScoreById = $state<Record<string, FitScoreDetail>>({});
 $effect(() => {
   if (!browser || activeTab !== 'all') return;
   const params = new URLSearchParams({
@@ -115,10 +129,10 @@ $effect(() => {
   });
   fetch(`/api/v1/jobs/with-fit-score?${params}`, { credentials: 'include' })
     .then((r) => r.json())
-    .then((body: { items?: Array<{ id: string; fitScore?: { score: number } }> }) => {
-      const map: Record<string, number> = {};
+    .then((body: { items?: Array<{ id: string; fitScore?: FitScoreDetail }> }) => {
+      const map: Record<string, FitScoreDetail> = {};
       for (const item of body.items ?? []) {
-        if (item.fitScore) map[item.id] = item.fitScore.score;
+        if (item.fitScore) map[item.id] = item.fitScore;
       }
       fitScoreById = map;
     })
@@ -126,10 +140,14 @@ $effect(() => {
 });
 
 const allList = $derived(
-  (jobsData?.items ?? []).map((j) => ({
-    ...j,
-    matchScore: fitScoreById[j.id] ?? j.matchScore,
-  })),
+  (jobsData?.items ?? []).map((j) => {
+    const fit = fitScoreById[j.id];
+    return {
+      ...j,
+      matchScore: fit?.score ?? j.matchScore,
+      fitScore: fit,
+    };
+  }),
 );
 const recommendedList = $derived(recommendedData?.data);
 const jobsList = $derived(activeTab === 'recommended' ? recommendedList : allList);
@@ -400,7 +418,30 @@ async function runRageApply() {
 						{#if key === 'title'}
 							<div class="flex items-center gap-2">
 								<span class="font-medium">{row.title ?? '---'}</span>
-								{#if typeof row.matchScore === 'number'}
+								{#if row.fitScore}
+									<FitScoreChip
+										score={row.fitScore.score}
+										matchedSkills={row.fitScore.breakdown.matchedSkills}
+										missingSkills={row.fitScore.breakdown.missingSkills}
+										englishMatch={row.fitScore.breakdown.englishMatch}
+										remoteMatch={row.fitScore.breakdown.remoteMatch}
+										labels={{
+											match: t('jobs.matchLabel'),
+											title: t('jobs.fit.chipTitle'),
+											matchedHeader: t('jobs.fit.matchedTitle'),
+											missingHeader: t('jobs.fit.missingTitle'),
+											englishLabel: t('jobs.fit.englishLabel'),
+											remoteLabel: t('jobs.fit.remoteLabel'),
+											englishOk: t('jobs.fit.englishOk'),
+											englishBelow: t('jobs.fit.englishBelow'),
+											englishUnknown: t('jobs.fit.englishUnknown'),
+											remoteExact: t('jobs.fit.remoteExact'),
+											remotePartial: t('jobs.fit.remotePartial'),
+											remoteMismatch: t('jobs.fit.remoteMismatch'),
+											none: t('jobs.fit.none'),
+										}}
+									/>
+								{:else if typeof row.matchScore === 'number'}
 									<MatchBadge score={row.matchScore} label={t('jobs.matchLabel')} />
 								{/if}
 							</div>
