@@ -36,16 +36,27 @@ All errors follow a consistent format:
  * OpenAPI spec version: 1.0.0
  */
 import {
-  createMutation
+  createInfiniteQuery,
+  createMutation,
+  createQuery
 } from '@tanstack/svelte-query';
 import type {
+  CreateInfiniteQueryOptions,
+  CreateInfiniteQueryResult,
   CreateMutationOptions,
   CreateMutationResult,
+  CreateQueryOptions,
+  CreateQueryResult,
+  DataTag,
+  InfiniteData,
   MutationFunction,
-  QueryClient
+  QueryClient,
+  QueryFunction,
+  QueryKey
 } from '@tanstack/svelte-query';
 
 import type {
+  ResendCooldownResponseDto,
   SendVerificationEmailResponseDto,
   VerifyEmailDto,
   VerifyEmailResponseDto
@@ -59,7 +70,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * Sends a verification email to the authenticated user.
+ * Sends a verification email to the authenticated user. No body required.
  * @summary Send verification email
  */
 export type sendVerificationHandleResponse200 = SendVerificationEmailResponseDto
@@ -77,15 +88,14 @@ export const getSendVerificationHandleUrl = () => {
   return `/api/email-verification/send`
 }
 
-export const sendVerificationHandle = async (sendVerificationHandleBody?: string, options?: RequestInit): Promise<sendVerificationHandleResponse> => {
+export const sendVerificationHandle = async ( options?: RequestInit): Promise<sendVerificationHandleResponse> => {
 
   return customFetch<sendVerificationHandleResponse>(getSendVerificationHandleUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      sendVerificationHandleBody,)
+    method: 'POST'
+
+
   }
 );}
 
@@ -93,8 +103,8 @@ export const sendVerificationHandle = async (sendVerificationHandleBody?: string
 
 
 export const getSendVerificationHandleMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,{data: string}, TContext>, request?: SecondParameter<typeof customFetch>}
-): CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,{data: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,void, TContext> => {
 
 const mutationKey = ['sendVerificationHandle'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -106,10 +116,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendVerificationHandle>>, {data: string}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendVerificationHandle>>, void> = () => {
 
-          return  sendVerificationHandle(data,requestOptions)
+
+          return  sendVerificationHandle(requestOptions)
         }
 
 
@@ -120,23 +130,180 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type SendVerificationHandleMutationResult = NonNullable<Awaited<ReturnType<typeof sendVerificationHandle>>>
-    export type SendVerificationHandleMutationBody = string
+
     export type SendVerificationHandleMutationError = unknown
 
     /**
  * @summary Send verification email
  */
 export const createSendVerificationHandle = <TError = unknown,
-    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,{data: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sendVerificationHandle>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof sendVerificationHandle>>,
         TError,
-        {data: string},
+        void,
         TContext
       > => {
       return createMutation(() => ({ ...getSendVerificationHandleMutationOptions(options?.()) }), queryClient);
     }
     /**
+ * Returns how many seconds the authenticated user must wait before requesting another verification email. The UI uses this so the countdown survives page reloads.
+ * @summary Get verification email resend cooldown
+ */
+export type emailVerificationResendStatusResponse200 = ResendCooldownResponseDto
+
+export type emailVerificationResendStatusResponseSuccess = emailVerificationResendStatusResponse200
+;
+
+export type emailVerificationResendStatusResponse = (emailVerificationResendStatusResponseSuccess)
+
+export const getEmailVerificationResendStatusUrl = () => {
+
+
+
+
+  return `/api/email-verification/resend-status`
+}
+
+export const emailVerificationResendStatus = async ( options?: RequestInit): Promise<emailVerificationResendStatusResponse> => {
+
+  return customFetch<emailVerificationResendStatusResponse>(getEmailVerificationResendStatusUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getEmailVerificationResendStatusInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/email-verification/resend-status`
+    ] as const;
+    }
+
+export const getEmailVerificationResendStatusQueryKey = () => {
+    return [
+    `/api/email-verification/resend-status`
+    ] as const;
+    }
+
+
+export const getEmailVerificationResendStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof emailVerificationResendStatus>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEmailVerificationResendStatusInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof emailVerificationResendStatus>>> = ({ signal }) => emailVerificationResendStatus({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EmailVerificationResendStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof emailVerificationResendStatus>>>
+export type EmailVerificationResendStatusInfiniteQueryError = unknown
+
+
+/**
+ * @summary Get verification email resend cooldown
+ */
+
+export function createEmailVerificationResendStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof emailVerificationResendStatus>>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getEmailVerificationResendStatusInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get verification email resend cooldown
+ */
+export const prefetchEmailVerificationResendStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getEmailVerificationResendStatusInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getEmailVerificationResendStatusQueryOptions = <TData = Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getEmailVerificationResendStatusQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof emailVerificationResendStatus>>> = ({ signal }) => emailVerificationResendStatus({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type EmailVerificationResendStatusQueryResult = NonNullable<Awaited<ReturnType<typeof emailVerificationResendStatus>>>
+export type EmailVerificationResendStatusQueryError = unknown
+
+
+/**
+ * @summary Get verification email resend cooldown
+ */
+
+export function createEmailVerificationResendStatus<TData = Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError = unknown>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getEmailVerificationResendStatusQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary Get verification email resend cooldown
+ */
+export const prefetchEmailVerificationResendStatusQuery = async <TData = Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof emailVerificationResendStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getEmailVerificationResendStatusQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * Verifies the user email using the token received via email.
  * @summary Verify email with token
  */

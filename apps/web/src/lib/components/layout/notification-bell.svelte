@@ -1,0 +1,171 @@
+<script lang="ts">
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createNotificationsGetByUser,
+  createNotificationsGetUnreadCount,
+  getNotificationsGetByUserQueryKey,
+  getNotificationsGetUnreadCountQueryKey,
+  type NotificationDto,
+  notificationsMarkRead,
+} from 'api-client';
+import { formatDate } from 'i18n';
+import { ArrowRight, Bell } from 'lucide-svelte';
+import { Avatar, Button, Dropdown } from 'ui';
+import { browser } from '$app/environment';
+import { notificationVisual } from '$lib/utils/notification-icon';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
+const queryClient = useQueryClient();
+
+let isOpen = $state(false);
+
+const unreadQuery = createNotificationsGetUnreadCount(() => ({
+  query: {
+    enabled: browser,
+    refetchInterval: 30000,
+  },
+}));
+
+const unreadCount = $derived(unreadQuery.data?.count);
+
+const notificationsQuery = createNotificationsGetByUser(
+  () => ({ cursor: '', limit: 10 }),
+  () => ({
+    query: { enabled: browser && isOpen },
+  }),
+);
+
+const notifications = $derived(notificationsQuery.data?.data);
+
+function getNotificationMessage(notification: NotificationDto): string {
+  const type = notification.type;
+  const tKey = `notifications.${type}`;
+  return t(tKey) ?? type ?? '';
+}
+
+function timeAgo(dateStr: string): string {
+  const now = Date.now();
+  const diff = now - new Date(dateStr).getTime();
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return t('feed.justNow');
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d`;
+  return formatDate(dateStr, locale.current);
+}
+
+async function handleMarkAllRead() {
+  await notificationsMarkRead();
+  queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
+}
+
+async function handleNotificationClick(notification: NotificationDto) {
+  if (!notification.read) {
+    await notificationsMarkRead();
+    queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
+  }
+  isOpen = false;
+}
+</script>
+
+<Dropdown
+	open={isOpen}
+	onclose={() => isOpen = false}
+>
+	{#snippet trigger()}
+		<button
+			type="button"
+			onclick={() => isOpen = !isOpen}
+			aria-label={t('notifications.title')}
+			class="relative flex min-w-[4rem] flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200"
+		>
+			<span class="relative">
+				<Bell size={20} />
+				{#if unreadCount && unreadCount > 0}
+					<span class="absolute -top-1 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+						{unreadCount > 99 ? '99+' : unreadCount}
+					</span>
+				{/if}
+			</span>
+			<span>{t('notifications.title')}</span>
+		</button>
+	{/snippet}
+
+	<div class="w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] sm:max-h-96 overflow-hidden flex flex-col">
+		<!-- Header -->
+		<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700">
+			<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{t('notifications.title')}</span>
+			{#if unreadCount && unreadCount > 0}
+				<Button
+					variant="ghost"
+					size="xs"
+					onclick={handleMarkAllRead}
+					class="text-[10px] font-medium text-blue-500 hover:text-blue-600"
+				>
+					{t('notifications.markAllRead')}
+				</Button>
+			{/if}
+		</div>
+
+		<!-- Notifications list -->
+		<div class="overflow-y-auto flex-1">
+			{#if !notifications || notifications.length === 0}
+				<div class="px-4 py-8 text-center">
+					<Bell size={20} class="mx-auto mb-2 text-gray-500 dark:text-neutral-500" />
+					<p class="text-xs text-gray-500 dark:text-neutral-500">{t('notifications.noNotifications')}</p>
+				</div>
+			{:else}
+				{#each notifications as notification}
+					{@const actor = notification.actor}
+					{@const visual = notificationVisual(notification.type)}
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div
+						onclick={() => handleNotificationClick(notification)}
+						onkeydown={(e) => { if (e.key === 'Enter') handleNotificationClick(notification); }}
+						role="button"
+						tabindex="0"
+						class="flex items-start gap-2.5 px-4 py-3 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/50 {!notification.read ? 'bg-blue-50/50 dark:bg-neutral-800/30' : ''}"
+					>
+						<div class="relative">
+							<Avatar
+								name={actor?.name ?? actor?.username ?? '?'}
+								photoURL={actor?.photoURL}
+								size="sm"
+							/>
+							<span class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow dark:bg-neutral-800 {visual.colorClass}">
+								<visual.icon size={9} />
+							</span>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="text-xs leading-relaxed text-gray-800 dark:text-neutral-200">
+								<span class="font-semibold">{actor?.name ?? actor?.username}</span>
+								{' '}{getNotificationMessage(notification)}
+							</p>
+							<span class="text-[10px] text-gray-500 dark:text-neutral-500">
+								{timeAgo(notification.createdAt)}
+							</span>
+						</div>
+						{#if !notification.read}
+							<span class="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500"></span>
+						{/if}
+					</div>
+				{/each}
+			{/if}
+		</div>
+
+		<!-- Ver todas footer -->
+		<a
+			href="/social/notifications"
+			onclick={() => (isOpen = false)}
+			class="flex items-center justify-center gap-1 border-t border-gray-200 px-4 py-2 text-[11px] font-medium text-cyan-600 hover:underline dark:border-neutral-700 dark:text-cyan-400"
+		>
+			{t('notifications.viewAll') ?? 'Ver todas'}
+			<ArrowRight size={10} />
+		</a>
+	</div>
+</Dropdown>

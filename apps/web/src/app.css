@@ -1,7 +1,28 @@
 @import "tailwindcss";
 @source "../../../packages/ui/src/**/*.svelte";
+@source "../../../packages/ui/src/**/*.ts";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Brand typography — override Tailwind's default `--font-sans` so every
+ * `font-sans` / body text uses Inter regardless of OS. Inter is loaded via
+ * <link> in app.html (Google Fonts, `display=swap`).
+ *
+ * No `system-ui` fallback: we want the app to look identical on macOS,
+ * Windows and Linux, like Instagram/LinkedIn. Fallback chain still lists
+ * safe web-safe sans options in case Inter fails to load, but `system-ui`
+ * is intentionally excluded so the OS font is never inherited.
+ */
+@theme {
+  --font-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; /* Inter character variants for cleaner letterforms */
+}
 
 /*
  * Smooth dark/light theme transition — affects every element so the page

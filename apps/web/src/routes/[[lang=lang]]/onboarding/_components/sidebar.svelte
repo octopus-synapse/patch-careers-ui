@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Translator } from 'i18n';
-import SidebarNav from '$lib/components/sidebar-nav.svelte';
+import SidebarNav from '$lib/components/layout/sidebar-nav.svelte';
 
 type Step = {
   id: string;

@@ -47,7 +47,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
-import TailorForJobModal from '$lib/components/cv/tailor-for-job-modal.svelte';
+import TailorForJobModal from './_components/tailor-for-job-modal.svelte';
 import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
 import SimilarJobsCarousel from '$lib/components/jobs/similar-jobs-carousel.svelte';
 import { locale } from '$lib/state/locale.svelte';

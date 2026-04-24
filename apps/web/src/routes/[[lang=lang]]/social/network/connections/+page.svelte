@@ -278,6 +278,7 @@ const removeMutation = createConnectionRemoveConnection(() => ({
 								<Button
 									variant="outline"
 									size="sm"
+									textCase="normal"
 									onclick={() => chatState.startConversationWith(conn.user.id ?? '')}
 								>
 									<MessageCircle size={12} />

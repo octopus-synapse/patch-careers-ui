@@ -6,9 +6,9 @@ import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
-import { PRIVACY_VERSION, TOS_VERSION } from '$lib/domain/consent/versions';
+import { PRIVACY_VERSION, TOS_VERSION } from '$lib/utils/consent-versions';
 import PasswordStrength from '$lib/components/forms/password-strength.svelte';
-import { translateApiError } from '$lib/errors/translate-api-error';
+import { translateApiError } from '$lib/utils/translate-api-error';
 
 const queryClient = useQueryClient();
 

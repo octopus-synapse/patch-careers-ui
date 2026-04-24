@@ -40,8 +40,6 @@ export type UserDetailsDataDtoUserResumesItem = {
   id: string;
   /** @nullable */
   title: string | null;
-  /** @nullable */
-  template: string | null;
   isPublic: boolean;
   createdAt: string;
   updatedAt: string;

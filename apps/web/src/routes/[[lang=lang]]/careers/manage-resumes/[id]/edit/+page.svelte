@@ -5,7 +5,7 @@ import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { useFormDraft } from '$lib/forms/use-form-draft.svelte';
+import { useFormDraft } from '$lib/state/use-form-draft.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

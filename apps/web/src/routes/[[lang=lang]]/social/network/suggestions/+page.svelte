@@ -14,7 +14,7 @@ import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import UserCard from '$lib/components/user-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { sentConnections } from '$lib/network/sent-connections.svelte';
+import { sentConnections } from '$lib/state/sent-connections.svelte';
 import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
 
 const t = $derived(locale.t);
@@ -175,7 +175,7 @@ $effect(() => {
 									{t('network.requestSent')}
 								</span>
 							{:else}
-								<Button variant="solid" size="sm" fullWidth onclick={() => handleConnect(userId)}>
+								<Button variant="solid" size="sm" fullWidth textCase="normal" onclick={() => handleConnect(userId)}>
 									<UserPlus size={11} />
 									{t('network.connect')}
 								</Button>
@@ -224,7 +224,7 @@ $effect(() => {
 										{t('network.requestSent')}
 									</span>
 								{:else}
-									<Button variant="solid" size="sm" fullWidth onclick={() => handleConnect(r.userId)}>
+									<Button variant="solid" size="sm" fullWidth textCase="normal" onclick={() => handleConnect(r.userId)}>
 										<UserPlus size={11} />
 										{t('network.connect')}
 									</Button>

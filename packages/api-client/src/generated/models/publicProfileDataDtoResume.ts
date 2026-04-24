@@ -43,7 +43,6 @@ export type PublicProfileDataDtoResume = {
   id: string;
   /** @nullable */
   title: string | null;
-  template: string;
   language: string;
   isPublic: boolean;
   /** @nullable */

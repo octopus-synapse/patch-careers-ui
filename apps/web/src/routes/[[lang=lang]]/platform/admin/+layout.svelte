@@ -44,7 +44,7 @@ $effect(() => {
 		<div class="hidden md:block">
 			<AdminSidebar {currentPath} />
 		</div>
-		<main class="flex-1 overflow-auto p-3 sm:p-4 md:p-6">
+		<main class="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
 			{@render children()}
 		</main>
 	</div>

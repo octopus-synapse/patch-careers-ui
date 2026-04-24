@@ -15,7 +15,7 @@ import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import PostCard from '$lib/components/feed/post-card.svelte';
+import PostCard from '../../_components/post-card.svelte';
 
 const session = createAuthSession(() => ({
   query: { retry: false, enabled: browser },

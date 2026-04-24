@@ -1,20 +1,8 @@
 <script lang="ts">
-import {
-  Activity,
-  BarChart3,
-  Gauge,
-  Layers,
-  LayoutDashboard,
-  ListChecks,
-  MessageSquare,
-  PanelLeft,
-  PanelLeftClose,
-  Tags,
-  Users,
-  Wrench,
-} from 'lucide-svelte';
+import { PanelLeft, PanelLeftClose } from 'lucide-svelte';
 import { Button } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
+import { ADMIN_NAV_LINKS } from './admin-nav-links';
 
 type Props = {
   currentPath: string;
@@ -26,18 +14,14 @@ let collapsed = $state(false);
 
 const t = $derived(locale.t);
 
-const links = $derived([
-  { href: '/platform/admin', label: t('admin.nav.dashboard'), icon: LayoutDashboard, exact: true },
-  { href: '/platform/admin/users', label: t('admin.nav.users'), icon: Users },
-  { href: '/platform/admin/analytics', label: t('admin.nav.analytics'), icon: BarChart3 },
-  { href: '/platform/admin/skills', label: t('admin.nav.skills'), icon: Tags },
-  { href: '/platform/admin/sections', label: t('admin.nav.sections'), icon: Layers },
-  { href: '/platform/admin/onboarding', label: t('admin.nav.onboarding'), icon: ListChecks },
-  { href: '/platform/admin/health', label: t('admin.nav.health'), icon: Activity },
-  { href: '/platform/admin/performance', label: t('admin.nav.performance'), icon: Gauge },
-  { href: '/platform/admin/chat', label: t('admin.nav.chat'), icon: MessageSquare },
-  { href: '/platform/admin/dev-tools', label: t('admin.nav.devTools'), icon: Wrench },
-]);
+const links = $derived(
+  ADMIN_NAV_LINKS.map((l) => ({
+    href: l.href,
+    label: t(l.labelKey),
+    icon: l.icon,
+    exact: l.exact,
+  })),
+);
 
 function isActive(href: string, exact?: boolean): boolean {
   if (exact) return currentPath === href;

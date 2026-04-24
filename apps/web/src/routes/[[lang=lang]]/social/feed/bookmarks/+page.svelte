@@ -16,8 +16,8 @@ import { ArrowLeft, Loader2 } from 'lucide-svelte';
 import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import PostCard from '$lib/components/feed/post-card.svelte';
-import { undoableAction } from '$lib/query/undoable-action';
+import PostCard from '../_components/post-card.svelte';
+import { undoableAction } from '$lib/utils/undoable-action';
 
 const session = createAuthSession(() => ({
   query: { retry: false, enabled: browser },

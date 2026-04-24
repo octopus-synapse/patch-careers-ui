@@ -70,7 +70,7 @@ export type PublicResumeDataDtoResume = {
   /** @nullable */
   accentColor: string | null;
   /** @nullable */
-  activeThemeId: string | null;
+  styleId: string | null;
   createdAt: unknown;
   updatedAt: unknown;
   sections: {

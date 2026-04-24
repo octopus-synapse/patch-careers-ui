@@ -13,6 +13,7 @@ import {
 import { browser } from '$app/environment';
 import AdminAlerts from './_components/admin-alerts.svelte';
 import StatCard from './_components/stat-card.svelte';
+import StatCardSkeleton from './_components/stat-card-skeleton.svelte';
 import StatusBadge from './_components/status-badge.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -56,11 +57,13 @@ const healthStatus = $derived<'healthy' | 'down'>(
 	<AdminAlerts />
 
 	{#if metricsQuery.isLoading}
-		<div class="flex items-center justify-center py-20">
-			<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+			{#each Array(8) as _}
+				<StatCardSkeleton />
+			{/each}
 		</div>
 	{:else if metrics}
-		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
 			<StatCard
 				label={t('admin.dashboard.totalUsers')}
 				value={metrics.totalUsers}

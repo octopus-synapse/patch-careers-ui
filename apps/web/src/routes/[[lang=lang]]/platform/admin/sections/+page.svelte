@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import type { SectionTypeListDataDtoItemsItem } from 'api-client';
 import {
   adminSectionTypesCreate,
+  adminSectionTypesFindAll,
   adminSectionTypesRemove,
   adminSectionTypesUpdate,
   createAdminSectionTypesFindAll,
@@ -21,20 +22,58 @@ const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
 let page = $state(1);
+let pageSize = $state(20);
 let search = $state('');
+let statusFilter = $state<'' | 'active' | 'inactive'>('');
+let systemFilter = $state<'' | 'system' | 'user'>('');
 
 const sectionsQuery = createAdminSectionTypesFindAll(
   () => ({
     page,
-    pageSize: 20,
+    pageSize,
     search: search || undefined,
+    isActive: statusFilter === 'active' ? true : statusFilter === 'inactive' ? false : undefined,
   }),
   () => ({
     query: { enabled: browser },
   }),
 );
 
-const sections = $derived(sectionsQuery.data?.items);
+const rawSections = $derived(sectionsQuery.data?.items);
+
+async function fetchAllSectionsWithFilters(): Promise<Record<string, unknown>[]> {
+  const all: Record<string, unknown>[] = [];
+  let currentPage = 1;
+  const batchSize = 100;
+  while (true) {
+    const result = await adminSectionTypesFindAll({
+      page: currentPage,
+      pageSize: batchSize,
+      search: search || undefined,
+      isActive:
+        statusFilter === 'active' ? true : statusFilter === 'inactive' ? false : undefined,
+    });
+    const batch = (result.items ?? []) as Record<string, unknown>[];
+    const filtered =
+      systemFilter === 'system'
+        ? batch.filter((s) => s.isSystem)
+        : systemFilter === 'user'
+          ? batch.filter((s) => !s.isSystem)
+          : batch;
+    all.push(...filtered);
+    const totalPagesFetched = result.totalPages ?? 1;
+    if (currentPage >= totalPagesFetched || batch.length === 0) break;
+    currentPage += 1;
+  }
+  return all;
+}
+const sections = $derived(
+  systemFilter === 'system'
+    ? rawSections?.filter((s) => s.isSystem)
+    : systemFilter === 'user'
+      ? rawSections?.filter((s) => !s.isSystem)
+      : rawSections,
+);
 const totalPages = $derived(sectionsQuery.data?.totalPages);
 
 function jsonBody(data: Record<string, unknown>): RequestInit {
@@ -130,11 +169,11 @@ async function handleDelete() {
 }
 
 const columns = [
-  { key: 'key', label: 'Key' },
-  { key: 'title', label: 'Title' },
-  { key: 'semanticKind', label: 'Kind' },
+  { key: 'key', label: 'Key', sortable: true },
+  { key: 'title', label: 'Title', sortable: true },
+  { key: 'semanticKind', label: 'Kind', sortable: true, hideOnMobile: true },
   { key: 'isActive', label: 'Active', width: '80px' },
-  { key: 'isSystem', label: 'System', width: '80px' },
+  { key: 'isSystem', label: 'System', width: '80px', hideOnMobile: true },
   { key: 'actions', label: '', width: '120px' },
 ];
 </script>
@@ -146,8 +185,8 @@ const columns = [
 <div class="space-y-6">
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">Section Types</h1>
-		<div class="flex items-center gap-2">
-			<ExportButton data={sections} filename="section-types.csv" />
+		<div class="flex flex-wrap items-center gap-2">
+			<ExportButton data={sections} filename="section-types.csv" fetchAll={fetchAllSectionsWithFilters} />
 			<Button variant="solid" size="sm" onclick={openCreate}>
 				<Plus size={14} /> Add
 			</Button>
@@ -157,7 +196,32 @@ const columns = [
 	<SearchFilterBar
 		{search}
 		placeholder="Search by key, title, or slug..."
+		filters={[
+			{
+				key: 'status',
+				label: 'All Statuses',
+				options: [
+					{ value: 'active', label: 'Active' },
+					{ value: 'inactive', label: 'Inactive' },
+				],
+				value: statusFilter,
+			},
+			{
+				key: 'system',
+				label: 'All Types',
+				options: [
+					{ value: 'system', label: 'System' },
+					{ value: 'user', label: 'User' },
+				],
+				value: systemFilter,
+			},
+		]}
 		onsearch={(v) => { search = v; page = 1; }}
+		onfilterchange={(key, value) => {
+			if (key === 'status') statusFilter = value as '' | 'active' | 'inactive';
+			if (key === 'system') systemFilter = value as '' | 'system' | 'user';
+			page = 1;
+		}}
 	/>
 
 	<DataTable {columns} data={sections} loading={sectionsQuery.isLoading} emptyMessage="No section types">
@@ -185,20 +249,29 @@ const columns = [
 		{/snippet}
 	</DataTable>
 
-	{#if totalPages && totalPages > 1}
+	{#if totalPages}
 		<div class="flex justify-center">
-			<Pagination {page} {totalPages} onpagechange={(p) => page = p} />
+			<Pagination
+				{page}
+				totalPages={totalPages ?? 1}
+				onpagechange={(p) => page = p}
+				{pageSize}
+				pageSizeOptions={[10, 20, 50, 100]}
+				onpagesizechange={(s) => { pageSize = s; page = 1; }}
+			/>
 		</div>
 	{/if}
 </div>
 
 <FormModal open={formModal !== null} title={formModal?.mode === 'create' ? 'Add Section Type' : 'Edit Section Type'} loading={formLoading} onSubmit={handleFormSubmit} onClose={() => formModal = null}>
 	<div class="space-y-3">
-		<div><Label>Key *</Label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
-		<div><Label>Slug *</Label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+			<div><Label>Key *</Label><Input bind:value={formKey} placeholder="work_experience_v1" required disabled={formModal?.mode === 'edit'} /></div>
+			<div><Label>Slug *</Label><Input bind:value={formSlug} placeholder="work-experience" required /></div>
+		</div>
 		<div><Label>Title *</Label><Input bind:value={formTitle} placeholder="Work Experience" required /></div>
 		<div><Label>Description</Label><Input bind:value={formDescription} placeholder="Professional experience section" /></div>
-		<div class="grid grid-cols-2 gap-3">
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 			<div><Label>Semantic Kind *</Label><Input bind:value={formSemanticKind} placeholder="experience" required /></div>
 			{#if formModal?.mode === 'create'}
 				<div><Label>Version</Label><Input bind:value={formVersion} type="number" /></div>

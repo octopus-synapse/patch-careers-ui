@@ -8,7 +8,7 @@ import { useAuth } from '$lib/state/auth.svelte';
 import {
   statusIntent as resolveStatusIntent,
   statusLabel as resolveStatusLabel,
-} from '$lib/format/application-status';
+} from '$lib/utils/application-status';
 import { locale } from '$lib/state/locale.svelte';
 
 type ApplicationItem = {

@@ -15,7 +15,7 @@ import RemoteUsdWidget from './_components/remote-usd-widget.svelte';
 // import UpcomingEventsCard from './_components/upcoming-events-card.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import WidgetErrorBoundary from '$lib/components/errors/widget-error-boundary.svelte';
-import { meDashboard } from '$lib/dashboard/me-dashboard.svelte';
+import { meDashboard } from '$lib/state/me-dashboard.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

@@ -68,7 +68,7 @@ const columns = [
 		</div>
 	{:else if data}
 		<!-- Process Stats -->
-		<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
 			<StatCard label="Uptime" value={formatUptime(process?.uptimeSeconds ?? 0)}>
 				{#snippet icon()}<Clock size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
 			</StatCard>
@@ -84,7 +84,7 @@ const columns = [
 		</div>
 
 		<!-- Business Counters -->
-		<div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-5">
 			<StatCard label="Resumes Created" value={counters?.resumeCreated ?? 0} />
 			<StatCard label="User Signups" value={counters?.userSignups ?? 0} />
 			<StatCard label="Exports Done" value={counters?.exportCompleted ?? 0} />

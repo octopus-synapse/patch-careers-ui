@@ -39,13 +39,36 @@ import * as zod from 'zod';
 
 
 /**
- * Sends a verification email to the authenticated user.
+ * Sends a verification email to the authenticated user. No body required.
  * @summary Send verification email
  */
-export const SendVerificationHandleBody = zod.string()
+export const sendVerificationHandleResponseCooldownSecondsUntilResendAllowedMin = 0;
+
+export const sendVerificationHandleResponseCooldownCooldownSecondsExclusiveMin = 0;
+
+
 
 export const SendVerificationHandleResponse = zod.object({
-  "message": zod.string()
+  "message": zod.string(),
+  "cooldown": zod.object({
+  "secondsUntilResendAllowed": zod.number().min(sendVerificationHandleResponseCooldownSecondsUntilResendAllowedMin),
+  "cooldownSeconds": zod.number().gt(sendVerificationHandleResponseCooldownCooldownSecondsExclusiveMin)
+})
+})
+
+/**
+ * Returns how many seconds the authenticated user must wait before requesting another verification email. The UI uses this so the countdown survives page reloads.
+ * @summary Get verification email resend cooldown
+ */
+export const emailVerificationResendStatusResponseSecondsUntilResendAllowedMin = 0;
+
+export const emailVerificationResendStatusResponseCooldownSecondsExclusiveMin = 0;
+
+
+
+export const EmailVerificationResendStatusResponse = zod.object({
+  "secondsUntilResendAllowed": zod.number().min(emailVerificationResendStatusResponseSecondsUntilResendAllowedMin),
+  "cooldownSeconds": zod.number().gt(emailVerificationResendStatusResponseCooldownSecondsExclusiveMin)
 })
 
 /**

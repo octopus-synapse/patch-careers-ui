@@ -9,7 +9,7 @@ import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { EmptyState, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
-import { relativeFrom } from '$lib/format/relative';
+import { relativeFrom } from '$lib/utils/relative';
 import { locale } from '$lib/state/locale.svelte';
 
 type Props = {

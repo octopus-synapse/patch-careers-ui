@@ -149,6 +149,11 @@ $effect(() => {
 function onDragStart(e: PointerEvent) {
   if (chatState.isFullscreen) return;
   if (typeof window !== 'undefined' && window.innerWidth < 640) return;
+  // Only initiate drag when the user presses the header background itself —
+  // clicks on child controls (close, fullscreen, menu trigger, avatar link)
+  // would otherwise steal their pointer events via setPointerCapture.
+  const target = e.target as HTMLElement | null;
+  if (target && target !== e.currentTarget && target.closest('button, a')) return;
   (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   isDragging = true;
   dragStart = { x: e.clientX, y: e.clientY, offsetX: dragOffsetX, offsetY: dragOffsetY };

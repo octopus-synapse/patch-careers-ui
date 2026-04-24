@@ -45,7 +45,6 @@ export interface CreateResumeRequestDto {
   title: string;
   /** @maxLength 2000 */
   summary?: string;
-  template?: string;
   isPublic?: boolean;
   /** @maxLength 100 */
   fullName?: string;

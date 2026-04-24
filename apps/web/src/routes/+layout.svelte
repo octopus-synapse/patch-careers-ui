@@ -6,13 +6,14 @@ import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
 import { colorSchema } from '$lib/state/color-schema.svelte';
+import ChatFab from '$lib/components/chat/chat-fab.svelte';
 import ChatWidget from '$lib/components/chat/chat-widget.svelte';
 import CookieBanner from '$lib/components/consent/cookie-banner.svelte';
 import ErrorBoundary from '$lib/components/errors/error-boundary.svelte';
 import OfflineBanner from '$lib/components/errors/offline-banner.svelte';
-import Footer from '$lib/components/footer.svelte';
-import Navbar from '$lib/components/navbar.svelte';
-import OnboardingGuard from '$lib/components/onboarding-guard.svelte';
+import Footer from '$lib/components/layout/footer.svelte';
+import Navbar from '$lib/components/layout/navbar.svelte';
+import OnboardingGuard from '$lib/components/layout/onboarding-guard.svelte';
 import { trackPageView } from '$lib/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -89,6 +90,7 @@ $effect(() => {
 				</main>
 			</ErrorBoundary>
 			<ChatWidget />
+			<ChatFab />
 			<Footer />
 		</QueryClientProvider>
 		{#if showCookieBanner}<CookieBanner />{/if}

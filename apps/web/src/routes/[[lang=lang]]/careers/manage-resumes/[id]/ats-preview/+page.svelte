@@ -10,7 +10,7 @@ import { onMount } from 'svelte';
 import { Button, Card, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
-import { parseApiError } from '$lib/format/api-error';
+import { parseApiError } from '$lib/utils/api-error';
 
 const resumeId = $derived($page.params.id);
 

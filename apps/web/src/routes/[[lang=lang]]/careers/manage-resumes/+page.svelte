@@ -5,7 +5,7 @@ import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
-import CvRerenderModal from '$lib/components/cv/cv-rerender-modal.svelte';
+import CvRerenderModal from './_components/cv-rerender-modal.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 type Resume = {

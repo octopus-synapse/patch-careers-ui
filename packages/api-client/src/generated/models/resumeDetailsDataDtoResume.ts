@@ -43,7 +43,6 @@ export type ResumeDetailsDataDtoResume = {
   userId: string;
   /** @nullable */
   title: string | null;
-  template: string;
   language: string;
   isPublic: boolean;
   /** @nullable */
@@ -69,7 +68,7 @@ export type ResumeDetailsDataDtoResume = {
   /** @nullable */
   accentColor: string | null;
   /** @nullable */
-  activeThemeId: string | null;
+  styleId: string | null;
   createdAt: unknown;
   updatedAt: unknown;
   user: ResumeDetailsDataDtoResumeUser;

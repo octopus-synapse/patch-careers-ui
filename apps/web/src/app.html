@@ -9,6 +9,15 @@
 			SvelteKit env injection. -->
 		<link rel="preconnect" href="http://localhost:3001" crossorigin="use-credentials" />
 		<link rel="dns-prefetch" href="http://localhost:3001" />
+		<!-- Brand-consistent typography across every OS. Inter is pulled from
+			Google Fonts so the app never inherits the user's system font —
+			the UI looks identical on macOS, Windows and Linux. -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+		/>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

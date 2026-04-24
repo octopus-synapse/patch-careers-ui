@@ -15,18 +15,17 @@ import {
   getConnectionGetPendingRequestsQueryKey,
   type NetworkSummaryDataDtoSuggestionsDataItem,
 } from 'api-client';
-import { UserCheck } from 'lucide-svelte';
+import { Clock, Eye, UserCheck, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
-import { Button, EmptyState, Skeleton, Tabs } from 'ui';
+import { Button, EmptyState, Skeleton, StatGrid, type StatItem, Tabs } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
-import SuggestionsCarousel from '$lib/components/mynetwork/suggestions-carousel.svelte';
-import NetworkStatsCard from '$lib/components/mynetwork/network-stats-card.svelte';
-import QuickMessagePopover from '$lib/components/mynetwork/quick-message-popover.svelte';
+import SuggestionsCarousel from './_components/suggestions-carousel.svelte';
+import QuickMessagePopover from './_components/quick-message-popover.svelte';
 import UserRow from '$lib/components/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { undoableAction } from '$lib/query/undoable-action';
+import { undoableAction } from '$lib/utils/undoable-action';
 import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
 
 type UserInfo = {
@@ -237,6 +236,36 @@ function handleRemove(row: ConnectionRow) {
 }
 
 let followersTab = $state<'followers' | 'following'>('followers');
+
+type StatIcon = Component<{ size: number; class?: string }>;
+
+const statItems = $derived<StatItem[]>([
+  {
+    label: t('network.connections'),
+    value: stats.connections,
+    icon: Users as unknown as StatIcon,
+    href: '/social/network/connections',
+  },
+  {
+    label: t('network.followers'),
+    value: stats.followers,
+    icon: Eye as unknown as StatIcon,
+    href: '/social/network/followers',
+  },
+  {
+    label: t('network.following'),
+    value: stats.following,
+    icon: UserCheck as unknown as StatIcon,
+    href: '/social/network/following',
+  },
+  {
+    label: t('network.invitations'),
+    value: stats.pendingInvitations,
+    icon: Clock as unknown as StatIcon,
+    href: '/social/network/invitation-manager/received',
+    highlight: stats.pendingInvitations > 0,
+  },
+]);
 </script>
 
 <svelte:head>
@@ -281,12 +310,7 @@ let followersTab = $state<'followers' | 'following'>('followers');
 		<!-- Main -->
 		<main class="flex-1 min-w-0 flex flex-col gap-6">
 			<!-- Stats at a glance -->
-			<NetworkStatsCard
-				connections={stats.connections}
-				followers={stats.followers}
-				following={stats.following}
-				pending={stats.pendingInvitations}
-			/>
+			<StatGrid title={t('network.statsTitle')} items={statItems} columns={4} />
 
 			<!-- Invitations (always visible, preview of 2) -->
 			<section id="invitations" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
@@ -318,8 +342,8 @@ let followersTab = $state<'followers' | 'following'>('followers');
 						{#each visiblePending.slice(0, 2) as request (request.id)}
 							<UserRow user={request.user}>
 								{#snippet actions()}
-									<Button variant="outline" size="sm" onclick={() => handleReject(request)}>{t('network.ignore')}</Button>
-									<Button variant="outline" intent="accent" size="sm" onclick={() => handleAccept(request)}>{t('network.accept')}</Button>
+									<Button variant="outline" size="sm" textCase="normal" onclick={() => handleReject(request)}>{t('network.ignore')}</Button>
+									<Button variant="outline" intent="accent" size="sm" textCase="normal" onclick={() => handleAccept(request)}>{t('network.accept')}</Button>
 								{/snippet}
 							</UserRow>
 						{/each}
@@ -398,7 +422,7 @@ let followersTab = $state<'followers' | 'following'>('followers');
 									{#if connection.user.id}
 										<QuickMessagePopover recipientId={connection.user.id} recipientName={displayName} />
 									{/if}
-									<Button variant="ghost" intent="danger" size="xs" onclick={() => handleRemove(connection)}>
+									<Button variant="ghost" intent="danger" size="xs" textCase="normal" onclick={() => handleRemove(connection)}>
 										{t('network.remove')}
 									</Button>
 								{/snippet}

@@ -198,9 +198,9 @@ async function handleConfigSubmit() {
 }
 
 const columns = $derived([
-  { key: 'key', label: t?.('admin.onboarding.stepKey') ?? 'Key' },
-  { key: 'component', label: 'Component' },
-  { key: 'order', label: t?.('admin.onboarding.order') ?? 'Order', width: '80px' },
+  { key: 'key', label: t?.('admin.onboarding.stepKey') ?? 'Key', sortable: true },
+  { key: 'component', label: 'Component', sortable: true },
+  { key: 'order', label: t?.('admin.onboarding.order') ?? 'Order', width: '80px', sortable: true },
   { key: 'isActive', label: t?.('admin.onboarding.isActive') ?? 'Active', width: '80px' },
   { key: 'actions', label: '', width: '140px' },
 ]);
@@ -213,7 +213,7 @@ const columns = $derived([
 <div class="space-y-6">
 	<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">{t?.('admin.onboarding.title') ?? 'Onboarding Monitoring'}</h1>
 
-	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+	<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4">
 		<StatCard label={t?.('admin.onboarding.steps') ?? 'Total Steps'} value={steps?.length ?? 0} />
 		<StatCard label={t?.('admin.onboarding.isActive') ?? 'Active Steps'} value={steps?.filter(s => s.isActive).length ?? 0} />
 		<StatCard label="Inactive Steps" value={steps?.filter(s => !s.isActive).length ?? 0} />
@@ -264,7 +264,7 @@ const columns = $derived([
 			</Button>
 		</div>
 		{#if strengthLevels?.length}
-			<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+			<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
 				{#each strengthLevels ?? [] as level}
 					<div class="rounded-lg border px-4 py-3 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 						<p class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">{level.level}</p>

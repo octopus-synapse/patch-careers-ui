@@ -82,7 +82,6 @@ export const resumesCreateResumeForUserBodyLocationMax = 100;
 export const ResumesCreateResumeForUserBody = zod.object({
   "title": zod.string().min(1).max(resumesCreateResumeForUserBodyTitleMax),
   "summary": zod.string().max(resumesCreateResumeForUserBodySummaryMax).optional(),
-  "template": zod.string().optional(),
   "isPublic": zod.boolean().optional(),
   "fullName": zod.string().max(resumesCreateResumeForUserBodyFullNameMax).optional(),
   "jobTitle": zod.string().max(resumesCreateResumeForUserBodyJobTitleMax).optional(),
@@ -133,8 +132,8 @@ export const ResumesGetResumeByIdWithAllSectionsResponse = zod.object({
   "content": zod.record(zod.string(), zod.unknown()).optional()
 }))
 })),
-  "activeThemeId": zod.string().optional(),
-  "activeTheme": zod.object({
+  "styleId": zod.string().optional(),
+  "style": zod.object({
   "id": zod.string(),
   "name": zod.string(),
   "description": zod.string().optional()
@@ -175,8 +174,8 @@ export const ResumesGetResumeByIdForUserResponse = zod.object({
   "content": zod.record(zod.string(), zod.unknown()).optional()
 }))
 })),
-  "activeThemeId": zod.string().optional(),
-  "activeTheme": zod.object({
+  "styleId": zod.string().optional(),
+  "style": zod.object({
   "id": zod.string(),
   "name": zod.string(),
   "description": zod.string().optional()
@@ -208,7 +207,6 @@ export const resumesUpdateResumeForUserBodyLocationMax = 100;
 export const ResumesUpdateResumeForUserBody = zod.object({
   "title": zod.string().min(1).max(resumesUpdateResumeForUserBodyTitleMax).optional(),
   "summary": zod.string().max(resumesUpdateResumeForUserBodySummaryMax).optional(),
-  "template": zod.string().optional(),
   "isPublic": zod.boolean().optional(),
   "fullName": zod.string().max(resumesUpdateResumeForUserBodyFullNameMax).optional(),
   "jobTitle": zod.string().max(resumesUpdateResumeForUserBodyJobTitleMax).optional(),
@@ -247,7 +245,6 @@ export const ResumesListResumesForUserResponse = zod.object({
   "id": zod.string(),
   "userId": zod.string(),
   "title": zod.string().nullable(),
-  "template": zod.string(),
   "language": zod.string(),
   "isPublic": zod.boolean(),
   "slug": zod.string().nullable(),
@@ -255,7 +252,7 @@ export const ResumesListResumesForUserResponse = zod.object({
   "jobTitle": zod.string().nullable(),
   "summary": zod.string().nullable(),
   "accentColor": zod.string().nullable(),
-  "activeThemeId": zod.string().nullable(),
+  "styleId": zod.string().nullable(),
   "createdAt": zod.unknown(),
   "updatedAt": zod.unknown(),
   "resumeSections": zod.array(zod.object({
@@ -315,7 +312,6 @@ export const ResumesGetResumeDetailsResponse = zod.object({
   "id": zod.string(),
   "userId": zod.string(),
   "title": zod.string().nullable(),
-  "template": zod.string(),
   "language": zod.string(),
   "isPublic": zod.boolean(),
   "slug": zod.string().nullable(),
@@ -329,7 +325,7 @@ export const ResumesGetResumeDetailsResponse = zod.object({
   "website": zod.string().nullable(),
   "summary": zod.string().nullable(),
   "accentColor": zod.string().nullable(),
-  "activeThemeId": zod.string().nullable(),
+  "styleId": zod.string().nullable(),
   "createdAt": zod.unknown(),
   "updatedAt": zod.unknown(),
   "user": zod.object({

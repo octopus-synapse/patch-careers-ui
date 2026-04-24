@@ -1,6 +1,6 @@
 <script lang="ts">
 import { locale } from '$lib/state/locale.svelte';
-import { LEGAL_EFFECTIVE_DATE, TOS_VERSION } from '$lib/domain/consent/versions';
+import { LEGAL_EFFECTIVE_DATE, TOS_VERSION } from '$lib/utils/consent-versions';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
 
 const lang = $derived(locale.current ?? 'pt-BR');

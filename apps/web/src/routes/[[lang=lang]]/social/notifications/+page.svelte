@@ -13,10 +13,10 @@ import type { Component } from 'svelte';
 import { Avatar, Button, EmptyState, Skeleton, Tabs, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/analytics/track';
-import { notificationVisual } from '$lib/format/notification-icon';
+import { notificationVisual } from '$lib/utils/notification-icon';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { useSseSubscribe } from '$lib/query/use-sse-subscribe';
+import { useSseSubscribe } from '$lib/state/use-sse-subscribe';
 
 const t = $derived(locale.t);
 const auth = useAuth();

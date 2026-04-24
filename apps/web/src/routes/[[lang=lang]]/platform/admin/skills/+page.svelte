@@ -247,7 +247,7 @@ const formTitle = $derived(
 					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.areas')}</span>
 					<Button variant="icon" size="xs" onclick={() => openCreate('area')}><Plus size={14} /></Button>
 				</div>
-				<div class="max-h-[60vh] sm:max-h-[500px] overflow-y-auto">
+				<div class="max-h-[400px] sm:max-h-[60vh] overflow-y-auto">
 					{#if areasQuery.isLoading}
 						<div class="flex justify-center py-8"><Loader2 size={16} class="animate-spin text-gray-500 dark:text-neutral-500" /></div>
 					{:else}
@@ -283,7 +283,7 @@ const formTitle = $derived(
 					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.niches')}</span>
 					{#if selectedAreaId}<Button variant="icon" size="xs" onclick={() => openCreate('niche')}><Plus size={14} /></Button>{/if}
 				</div>
-				<div class="max-h-[500px] overflow-y-auto">
+				<div class="max-h-[400px] sm:max-h-[60vh] overflow-y-auto">
 					{#if !selectedAreaId}
 						<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">Select an area</p>
 					{:else if nichesQuery.isLoading}
@@ -315,7 +315,7 @@ const formTitle = $derived(
 					<span class="text-xs font-semibold text-gray-500 dark:text-neutral-500">{t('admin.skills.skillsList')}</span>
 					{#if selectedNicheId}<Button variant="icon" size="xs" onclick={() => openCreate('skill')}><Plus size={14} /></Button>{/if}
 				</div>
-				<div class="max-h-[500px] overflow-y-auto">
+				<div class="max-h-[400px] sm:max-h-[60vh] overflow-y-auto">
 					{#if !selectedNicheId}
 						<p class="px-4 py-8 text-center text-xs text-gray-500 dark:text-neutral-500">Select a niche</p>
 					{:else if skillsQuery.isLoading}
@@ -339,7 +339,7 @@ const formTitle = $derived(
 			</div>
 		</div>
 	{:else}
-		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+		<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 			<!-- Spoken Languages -->
 			<div class="rounded-xl border bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
 				<div class="flex items-center justify-between border-b px-4 py-3 border-gray-200 dark:border-neutral-700/50">

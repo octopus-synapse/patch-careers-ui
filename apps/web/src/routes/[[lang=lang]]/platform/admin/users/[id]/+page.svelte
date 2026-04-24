@@ -157,7 +157,7 @@ async function handleToggleRole() {
 			</div>
 
 			{#if !editing}
-				<dl class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+				<dl class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
 					<div>
 						<dt class="text-xs font-semibold text-gray-500 dark:text-neutral-500">Username</dt>
 						<dd class="mt-1 text-sm text-gray-800 dark:text-neutral-200">{user.username ?? '—'}</dd>
@@ -185,7 +185,7 @@ async function handleToggleRole() {
 		</div>
 
 		{#if counts}
-			<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+			<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
 				{#each Object.entries(counts) as [key, value]}
 					<StatCard label={key} {value} />
 				{/each}

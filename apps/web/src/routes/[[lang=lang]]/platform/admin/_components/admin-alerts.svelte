@@ -26,7 +26,7 @@ const total = $derived(alerts.total ?? 0);
 				Precisando de atenção
 			</h2>
 		</div>
-		<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
 			{#if (alerts.reportsPending ?? 0) > 0}
 				<a
 					href="/platform/admin/collaboration"

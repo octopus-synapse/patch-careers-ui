@@ -3,48 +3,31 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createConnectionGetConnectionSuggestions,
   createFeedGetTimeline,
-  engagementBookmark,
-  engagementLike,
-  engagementReport,
-  engagementRepost,
-  engagementUnbookmark,
-  engagementUnlike,
-  engagementVote,
   getFeedGetTimelineQueryKey,
-  isApiError,
-  postsDelete,
 } from 'api-client';
-import { AlertCircle, ArrowUp, Bookmark, PenSquare } from 'lucide-svelte';
-import type { Component } from 'svelte';
-import { cubicOut } from 'svelte/easing';
-import { fly } from 'svelte/transition';
-import {
-  Avatar,
-  Button,
-  Card,
-  EmptyState,
-  type ReactionType,
-  Tabs,
-  ToastContainer,
-  toastState,
-} from 'ui';
+import { Plus } from 'lucide-svelte';
+import { ToastContainer } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { track } from '$lib/analytics/track';
-import { undoableAction } from '$lib/query/undoable-action';
 import { useAuth } from '$lib/state/auth.svelte';
-import ActivityStream from '$lib/components/feed/activity-stream.svelte';
-import CreatePostModal from '$lib/components/feed/create-post-modal.svelte';
-import PostCard from '$lib/components/feed/post-card.svelte';
-import PostSkeleton from '$lib/components/feed/post-skeleton.svelte';
-import ReportModal from '$lib/components/feed/report-modal.svelte';
-import RepostModal from '$lib/components/feed/repost-modal.svelte';
-import SuggestionsCarousel from '$lib/components/mynetwork/suggestions-carousel.svelte';
+import ActivityStream from './_components/activity-stream.svelte';
+import CreatePostModal from './_components/create-post-modal.svelte';
+import FeedHeader, { type FeedMode } from './_components/feed-header.svelte';
+import FeedList from './_components/feed-list.svelte';
+import FeedSidebar from './_components/feed-sidebar.svelte';
+import NewPostsPill from './_components/new-posts-pill.svelte';
+import type { PostFitScore } from './_components/post-card.svelte';
+import PostSkeleton from './_components/post-skeleton.svelte';
+import ReportModal from './_components/report-modal.svelte';
+import RepostModal from './_components/repost-modal.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { useFeedEngagement } from '$lib/state/use-feed-engagement.svelte';
+import { useFeedPagination } from '$lib/state/use-feed-pagination.svelte';
+import { useUserSkills } from '$lib/state/use-user-skills.svelte';
 
 const t = $derived(locale.t);
 
-// Auth check
+// Auth
 const session = useAuth();
 const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
@@ -58,51 +41,15 @@ $effect(() => {
   }
 });
 
-// Filters — i18n labels
-const filterOptions = $derived([
-  { value: 'ALL', label: locale.t('feed.tabsAll') },
-  { value: 'ACHIEVEMENT', label: locale.t('feed.postTypes.ACHIEVEMENT') },
-  { value: 'OPPORTUNITY', label: locale.t('feed.postTypes.OPPORTUNITY') },
-  { value: 'LEARNING', label: locale.t('feed.postTypes.LEARNING') },
-  { value: 'BUILD', label: locale.t('feed.postTypes.BUILD') },
-  { value: 'QUESTION', label: locale.t('feed.postTypes.QUESTION') },
-  { value: 'CHALLENGE', label: locale.t('feed.postTypes.CHALLENGE') },
-]);
+// Feed selectors — single mode replaces the old source+scope pair.
 let selectedFilter = $state('ALL');
-let feedSource = $state<'posts' | 'activity'>('posts');
-let feedScope = $state<'bubble' | 'explore'>('bubble');
-const feedSourceTabs = $derived([
-  { value: 'posts', label: locale.t('feed.tabsPosts') },
-  { value: 'activity', label: locale.t('feed.tabsActivity') },
-]);
-const feedScopeTabs = $derived([
-  { value: 'bubble', label: locale.t('feed.scopeBubble') ?? 'Minha bolha' },
-  { value: 'explore', label: locale.t('feed.scopeExplore') ?? 'Explorar' },
-]);
+let feedMode = $state<FeedMode>('bubble');
+let searchTerm = $state('');
 
-// Cursor-based pagination
-let cursor = $state<string | undefined>(undefined);
-let allPosts = $state<Record<string, unknown>[]>([]);
-let hasMore = $state(true);
-let loadingMore = $state(false);
-
-// Buffer of posts detected at the top of the feed via polling
-let newPostsBuffer = $state<Record<string, unknown>[]>([]);
-
-// Local engagement state overrides
-let likedPosts = $state<Set<string>>(new Set());
-let unlikedPosts = $state<Set<string>>(new Set());
-let bookmarkedPosts = $state<Set<string>>(new Set());
-let unbookmarkedPosts = $state<Set<string>>(new Set());
-
-// Create post modal
+// Modals
 let showCreateModal = $state(false);
-
-// Report modal
 let showReportModal = $state(false);
 let reportPostId = $state<string | null>(null);
-
-// Repost modal
 let showRepostModal = $state(false);
 let repostTargetPost = $state<Record<string, unknown> | null>(null);
 
@@ -128,255 +75,77 @@ const feedSuggestions = $derived.by<SuggestionItem[]>(() => {
   return items;
 });
 
+const pagination = useFeedPagination({ getRawData: () => feedQuery.data });
+
+const engagement = useFeedEngagement({
+  getPosts: () => pagination.allPosts,
+  setPosts: (posts) => {
+    pagination.allPosts = posts;
+  },
+});
+
+const userSkills = useUserSkills();
+
+// Compute fit score for OPPORTUNITY posts by overlapping the post's
+// hardSkills with the user's skills. Empty / missing on either side
+// yields no chip (handled in PostCard via null fitScore).
+const fitScoreByPostId = $derived.by<Record<string, PostFitScore>>(() => {
+  const map: Record<string, PostFitScore> = {};
+  if (userSkills.skills.size === 0) return map;
+  for (const post of pagination.allPosts) {
+    if (post.type !== 'OPPORTUNITY') continue;
+    const postSkills = (post.hardSkills as string[] | undefined) ?? [];
+    if (postSkills.length === 0) continue;
+    const matched: string[] = [];
+    const missing: string[] = [];
+    for (const skill of postSkills) {
+      if (userSkills.skills.has(skill.toLowerCase())) matched.push(skill);
+      else missing.push(skill);
+    }
+    const score = Math.round((matched.length / postSkills.length) * 100);
+    map[String(post.id)] = {
+      score,
+      breakdown: { matchedSkills: matched, missingSkills: missing },
+    };
+  }
+  return map;
+});
+
 const feedQuery = createFeedGetTimeline(
   () => ({
-    cursor,
+    cursor: pagination.cursor,
     limit: 20,
     type: selectedFilter === 'ALL' ? undefined : selectedFilter,
-    followingOnly: feedScope === 'bubble',
+    followingOnly: feedMode === 'bubble',
   }),
   () => ({
     query: {
-      enabled: authenticated,
+      // Disable the posts query entirely when the user is on the activity tab.
+      enabled: authenticated && feedMode !== 'activity',
       // Only poll when the user is at the head of the feed — further
       // pages are stable and shouldn't be refetched in the background.
-      refetchInterval: cursor === undefined ? 60_000 : false,
+      refetchInterval: pagination.cursor === undefined ? 60_000 : false,
     },
   }),
 );
 
-function handleFeedScopeChange(value: string) {
-  if (value !== 'bubble' && value !== 'explore') return;
-  if (feedScope === value) return;
-  feedScope = value;
-  cursor = undefined;
-  allPosts = [];
-  newPostsBuffer = [];
-  hasMore = true;
+function handleModeChange(value: FeedMode) {
+  if (feedMode === value) return;
+  feedMode = value;
+  searchTerm = '';
+  pagination.reset();
 }
 
-const rawData = $derived(feedQuery.data);
-
-// When data arrives, append to allPosts
+// Reset pagination + engagement overrides + search when the filter changes.
 $effect(() => {
-  if (!rawData) return;
-  const postsArr = (Array.isArray(rawData) ? rawData : rawData?.posts) as
-    | Record<string, unknown>[]
-    | undefined;
-  if (!postsArr) return;
-
-  const nextCursor = rawData?.nextCursor;
-
-  if (cursor === undefined) {
-    if (allPosts.length === 0) {
-      // First page or filter change
-      allPosts = postsArr;
-      newPostsBuffer = [];
-    } else {
-      // Background refetch at head: detect new items without
-      // disrupting the user's scroll position.
-      const currentTopId = String(allPosts[0].id);
-      const newTopIndex = postsArr.findIndex((p) => String(p.id) === currentTopId);
-      if (newTopIndex > 0) {
-        newPostsBuffer = postsArr.slice(0, newTopIndex);
-      } else if (newTopIndex === -1) {
-        newPostsBuffer = postsArr;
-      }
-    }
-  } else {
-    // Appending
-    const existingIds = new Set(allPosts.map((p) => String(p.id)));
-    const newPosts = postsArr.filter((p) => !existingIds.has(String(p.id)));
-    if (newPosts.length > 0) {
-      allPosts = [...allPosts, ...newPosts];
-    }
-  }
-
-  hasMore = !!nextCursor && postsArr.length > 0;
-  loadingMore = false;
-});
-
-function applyNewPosts() {
-  if (newPostsBuffer.length === 0) return;
-  const existingIds = new Set(allPosts.map((p) => String(p.id)));
-  const fresh = newPostsBuffer.filter((p) => !existingIds.has(String(p.id)));
-  allPosts = [...fresh, ...allPosts];
-  newPostsBuffer = [];
-  if (browser) {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-// Reset when filter changes
-$effect(() => {
-  // Track selectedFilter
   selectedFilter;
-  cursor = undefined;
-  allPosts = [];
-  newPostsBuffer = [];
-  hasMore = true;
-  likedPosts = new Set();
-  unlikedPosts = new Set();
-  bookmarkedPosts = new Set();
-  unbookmarkedPosts = new Set();
+  searchTerm = '';
+  pagination.reset();
+  engagement.resetOverrides();
 });
-
-// Intersection observer for infinite scroll
-let sentinelEl: HTMLDivElement | undefined = $state();
-
-$effect(() => {
-  if (!sentinelEl || !browser) return;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && hasMore && !feedQuery.isLoading && !loadingMore) {
-        loadNextPage();
-      }
-    },
-    { rootMargin: '200px' },
-  );
-  observer.observe(sentinelEl);
-  return () => observer.disconnect();
-});
-
-function loadNextPage() {
-  if (!rawData || loadingMore) return;
-  const nextCursor = rawData?.nextCursor;
-  if (nextCursor) {
-    loadingMore = true;
-    cursor = nextCursor;
-  }
-}
-
-function isPostLiked(post: Record<string, unknown>): boolean {
-  const id = String(post.id);
-  if (likedPosts.has(id)) return true;
-  if (unlikedPosts.has(id)) return false;
-  return Boolean(post.isLiked ?? post.liked ?? false);
-}
-
-function isPostBookmarked(post: Record<string, unknown>): boolean {
-  const id = String(post.id);
-  if (bookmarkedPosts.has(id)) return true;
-  if (unbookmarkedPosts.has(id)) return false;
-  return Boolean(post.isBookmarked ?? post.bookmarked ?? false);
-}
-
-async function handleLike(id: string, reactionType?: ReactionType) {
-  const newType: ReactionType = reactionType ?? 'LIKE';
-  const snapshotPosts = allPosts;
-  const snapshotLiked = likedPosts;
-  const snapshotUnliked = unlikedPosts;
-  const target = allPosts.find((p) => String(p.id) === id);
-  const wasLiked = Boolean(target?.isLiked ?? target?.liked);
-  const previousType = (target?.reactionType as ReactionType | null | undefined) ?? null;
-
-  likedPosts = new Set([...likedPosts, id]);
-  unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
-  allPosts = allPosts.map((p) => {
-    if (String(p.id) !== id) return p;
-    const prevCount = Number(p.likesCount ?? p.likeCount ?? 0);
-    return {
-      ...p,
-      isLiked: true,
-      reactionType: newType,
-      likesCount: wasLiked ? prevCount : prevCount + 1,
-      likeCount: wasLiked ? prevCount : prevCount + 1,
-    };
-  });
-
-  try {
-    await engagementLike(id, {
-      body: JSON.stringify({ reactionType: newType }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    track(wasLiked ? 'post_reaction_changed' : 'post_reacted', {
-      postId: id,
-      reactionType: newType,
-      previousType,
-    });
-    queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-  } catch {
-    allPosts = snapshotPosts;
-    likedPosts = snapshotLiked;
-    unlikedPosts = snapshotUnliked;
-    toastState.show(locale.t('feed.reactions.errorGeneric'), 'danger');
-  }
-}
-
-async function handleUnlike(id: string) {
-  const snapshotPosts = allPosts;
-  const snapshotLiked = likedPosts;
-  const snapshotUnliked = unlikedPosts;
-
-  unlikedPosts = new Set([...unlikedPosts, id]);
-  likedPosts = new Set([...likedPosts].filter((x) => x !== id));
-  allPosts = allPosts.map((p) => {
-    if (String(p.id) !== id) return p;
-    const prevCount = Number(p.likesCount ?? p.likeCount ?? 0);
-    return {
-      ...p,
-      isLiked: false,
-      reactionType: null,
-      likesCount: Math.max(0, prevCount - 1),
-      likeCount: Math.max(0, prevCount - 1),
-    };
-  });
-
-  try {
-    await engagementUnlike(id);
-    track('post_unreacted', { postId: id });
-    queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-  } catch {
-    allPosts = snapshotPosts;
-    likedPosts = snapshotLiked;
-    unlikedPosts = snapshotUnliked;
-    toastState.show(locale.t('feed.reactions.errorGeneric'), 'danger');
-  }
-}
-
-async function handleBookmark(id: string) {
-  bookmarkedPosts = new Set([...bookmarkedPosts, id]);
-  unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
-  allPosts = allPosts.map((p) => {
-    if (String(p.id) === id) return { ...p, isBookmarked: true };
-    return p;
-  });
-  await engagementBookmark(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-}
-
-async function handleUnbookmark(id: string) {
-  unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
-  bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
-  allPosts = allPosts.map((p) => {
-    if (String(p.id) === id) return { ...p, isBookmarked: false };
-    return p;
-  });
-  await engagementUnbookmark(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-}
-
-function handleDelete(id: string) {
-  const snapshot = allPosts;
-  undoableAction({
-    apply: () => {
-      allPosts = allPosts.filter((p) => String(p.id) !== id);
-    },
-    revert: () => {
-      allPosts = snapshot;
-    },
-    commit: () => postsDelete(id),
-    onCommitted: () => {
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-    },
-    message: t('feed.postDeleted'),
-    undoLabel: t('feed.undo'),
-    errorMessage: t('feed.deleteFailed'),
-  });
-}
 
 function handleRepost(id: string) {
-  const post = allPosts.find((p) => String(p.id) === id);
+  const post = pagination.allPosts.find((p) => String(p.id) === id);
   if (post) {
     repostTargetPost = post;
     showRepostModal = true;
@@ -388,35 +157,7 @@ async function handleRepostSubmit(content: string) {
   const id = String(repostTargetPost.id);
   showRepostModal = false;
   repostTargetPost = null;
-  const commentary = content.trim();
-  const snapshot = allPosts;
-  allPosts = allPosts.map((p) => {
-    if (String(p.id) !== id) return p;
-    return {
-      ...p,
-      isReposted: true,
-      repostsCount: Number(p.repostsCount ?? p.repostCount ?? 0) + 1,
-    };
-  });
-  try {
-    if (commentary) {
-      await engagementRepost(id, {
-        body: JSON.stringify({ commentary }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-    } else {
-      await engagementRepost(id);
-    }
-    track('post_reposted', { postId: id, withCommentary: commentary.length > 0 });
-    queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-  } catch (err) {
-    allPosts = snapshot;
-    const message =
-      isApiError(err) && err.statusCode === 409
-        ? locale.t('feed.quoteRepost.alreadyRepostedError')
-        : locale.t('feed.quoteRepost.genericError');
-    toastState.show(message, 'danger');
-  }
+  await engagement.submitRepost(id, content.trim());
 }
 
 function handleReport(id: string) {
@@ -427,67 +168,14 @@ function handleReport(id: string) {
 async function handleReportSubmit(reason: string) {
   if (!reportPostId) return;
   showReportModal = false;
-  await engagementReport(reportPostId, {
-    body: JSON.stringify({ reason }),
-    headers: { 'Content-Type': 'application/json' },
-  });
+  await engagement.submitReport(reportPostId, reason);
   reportPostId = null;
-}
-
-let votingPosts = $state<Set<string>>(new Set());
-
-async function handleVote(id: string, optionIndex: number) {
-  if (votingPosts.has(id)) return;
-  const t = locale.t;
-  const snapshot = allPosts;
-  votingPosts = new Set([...votingPosts, id]);
-  allPosts = allPosts.map((p) => {
-    if (String(p.id) !== id) return p;
-    const data = (p.data ?? {}) as Record<string, unknown>;
-    const options = Array.isArray(data.options) ? [...data.options] : [];
-    const current = options[optionIndex] as { votes?: number } | undefined;
-    if (current) {
-      options[optionIndex] = { ...current, votes: Number(current.votes ?? 0) + 1 };
-    }
-    return {
-      ...p,
-      hasVoted: true,
-      myVoteIndex: optionIndex,
-      votesCount: Number(p.votesCount ?? 0) + 1,
-      data: { ...data, options },
-    };
-  });
-  try {
-    await engagementVote(id, {
-      body: JSON.stringify({ optionIndex }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    track('poll_voted', { postId: id, optionIndex });
-    queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-  } catch (err) {
-    allPosts = snapshot;
-    const message =
-      isApiError(err) && err.statusCode === 409
-        ? t('feed.poll.alreadyVotedError')
-        : t('feed.poll.voteError');
-    toastState.show(message, 'danger');
-  } finally {
-    votingPosts = new Set([...votingPosts].filter((x) => x !== id));
-  }
 }
 
 function handlePostCreated() {
   showCreateModal = false;
-  cursor = undefined;
-  allPosts = [];
+  pagination.reset();
   queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
-}
-
-function handleFilterChange(value: string, el?: HTMLElement) {
-  selectedFilter = value;
-  if (el && browser) {
-    el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-  }
 }
 </script>
 
@@ -496,7 +184,6 @@ function handleFilterChange(value: string, el?: HTMLElement) {
 </svelte:head>
 
 {#if session.isLoading}
-	<!-- Skeleton loading for auth check -->
 	<div class="flex min-h-screen items-center justify-center pt-14">
 		<div class="mx-auto w-full max-w-2xl px-4">
 			<PostSkeleton count={3} />
@@ -504,199 +191,97 @@ function handleFilterChange(value: string, el?: HTMLElement) {
 	</div>
 {:else if authenticated}
 	<div class="min-h-screen pt-20 pb-12">
-		<main class="mx-auto max-w-2xl px-4">
-			<!-- Trigger bar -->
-			<Card class="shadow-sm hover:shadow-md transition-shadow">
-				<div class="flex items-center gap-2">
-					<button
-						class="flex flex-1 items-center gap-3 rounded-xl p-2 transition-colors hover:opacity-80"
-						onclick={() => showCreateModal = true}
-					>
-						<Avatar name={userName || 'U'} photoURL={userPhoto} size="md" />
-						<span class="flex-1 text-left text-sm text-gray-400 dark:text-neutral-500">{t('feed.whatsOnYourMind')}</span>
-						<PenSquare size={18} class="text-gray-400 dark:text-neutral-500" />
-					</button>
-					<Button variant="ghost" size="sm" onclick={() => goto('/social/feed/bookmarks')}>
-						<Bookmark size={18} />
-						<span class="text-xs">{t('feed.saved')}</span>
-					</Button>
-				</div>
-			</Card>
-
-			<!-- Feed source tabs (Posts vs Activity stream) -->
-			<div class="mt-4">
-				<Tabs
-					tabs={feedSourceTabs}
-					selected={feedSource}
-					onchange={(v) => (feedSource = v as 'posts' | 'activity')}
+		<div class="mx-auto grid max-w-6xl gap-6 px-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+			<main class="min-w-0">
+				<FeedHeader
+					{userName}
+					{userPhoto}
+					{feedMode}
+					{selectedFilter}
+					oncreate={() => (showCreateModal = true)}
+					onmodechange={handleModeChange}
+					onfilterchange={(v) => (selectedFilter = v)}
 				/>
-			</div>
 
-			{#if feedSource === 'posts'}
-				<!-- Minha bolha vs Explorar -->
-				<div class="mt-3">
-					<Tabs
-						tabs={feedScopeTabs}
-						selected={feedScope}
-						onchange={handleFeedScopeChange}
+				{#if feedMode === 'activity'}
+					<div class="mt-6">
+						<ActivityStream />
+					</div>
+				{:else}
+					<NewPostsPill count={pagination.newPostsBuffer.length} onclick={pagination.applyNewPosts} />
+
+					<FeedList
+						posts={pagination.allPosts}
+						{currentUserId}
+						suggestions={feedSuggestions}
+						isLoading={feedQuery.isLoading}
+						isError={feedQuery.isError}
+						hasMore={pagination.hasMore}
+						loadingMore={pagination.loadingMore}
+						filterTerm={searchTerm}
+						{fitScoreByPostId}
+						isPostLiked={engagement.isPostLiked}
+						isPostBookmarked={engagement.isPostBookmarked}
+						onlike={engagement.handleLike}
+						onunlike={engagement.handleUnlike}
+						onbookmark={engagement.handleBookmark}
+						onunbookmark={engagement.handleUnbookmark}
+						ondelete={engagement.handleDelete}
+						onrepost={handleRepost}
+						onreport={handleReport}
+						onvote={engagement.handleVote}
+						onretry={() => feedQuery.refetch()}
+						onloadmore={pagination.loadNextPage}
+						onclearsearch={() => (searchTerm = '')}
 					/>
-				</div>
+				{/if}
+			</main>
 
-				<!-- Filters — horizontal scrollable pills with right-edge fade -->
-				<div class="mt-4 filter-strip">
-					<div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-						{#each filterOptions as option}
-							<button
-								class="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors {selectedFilter === option.value ? 'bg-gray-800 text-white dark:bg-neutral-200 dark:text-neutral-900' : 'bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-neutral-400 hover:bg-gray-200 dark:hover:bg-neutral-700'}"
-								onclick={(e) => handleFilterChange(option.value, e.currentTarget as HTMLElement)}
-							>
-								{option.label}
-							</button>
-						{/each}
-					</div>
-				</div>
+			{#if feedMode !== 'activity'}
+				<FeedSidebar
+					posts={pagination.allPosts}
+					{searchTerm}
+					onsearch={(v) => (searchTerm = v)}
+				/>
 			{/if}
-
-			{#if feedSource === 'activity'}
-				<div class="mt-6">
-					<ActivityStream />
-				</div>
-			{:else}
-			<!-- "N new posts" pill -->
-			{#if newPostsBuffer.length > 0}
-				<div class="sticky top-16 z-20 mt-4 flex justify-center" transition:fly={{ y: -8, duration: 180, easing: cubicOut }}>
-					<button
-						onclick={applyNewPosts}
-						class="flex items-center gap-1.5 rounded-full bg-blue-500 px-4 py-1.5 text-xs font-semibold text-white shadow-md transition-colors hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-					>
-						<ArrowUp size={14} />
-						{t('feed.newPosts', { count: newPostsBuffer.length })}
-					</button>
-				</div>
-			{/if}
-
-			<!-- Post list -->
-			<div class="mt-6 space-y-4">
-				{#each allPosts as post, i (String(post.id))}
-					<div in:fly={{ y: 8, duration: 220, easing: cubicOut }}>
-						<PostCard
-							post={{
-								...post,
-								isLiked: isPostLiked(post),
-								isBookmarked: isPostBookmarked(post)
-							}}
-							{currentUserId}
-							onlike={handleLike}
-							onunlike={handleUnlike}
-							onbookmark={handleBookmark}
-							onunbookmark={handleUnbookmark}
-							ondelete={handleDelete}
-							onrepost={handleRepost}
-							onreport={handleReport}
-							onvote={handleVote}
-						/>
-					</div>
-					{#if (i + 1) % 8 === 0 && feedSuggestions.length >= 3 && i < allPosts.length - 1}
-						{@const block = Math.floor((i + 1) / 8) - 1}
-						{@const chunkSize = 6}
-						{@const start = (block * chunkSize) % Math.max(1, feedSuggestions.length)}
-						{@const pool = feedSuggestions.concat(feedSuggestions)}
-						{@const chunk = pool.slice(start, start + chunkSize)}
-						{#if chunk.length > 0}
-							<SuggestionsCarousel
-								suggestions={chunk.map((s) => ({
-									id: String(s.id ?? ''),
-									name: s.name ?? null,
-									username: s.username ?? null,
-									photoURL: s.photoURL ?? null,
-									reason: s.reason ?? null
-								}))}
-								seeAllHref="/social/network/suggestions"
-								source="feed_inline"
-							/>
-						{/if}
-					{/if}
-				{/each}
-			</div>
-
-			<!-- Loading / error / empty -->
-			{#if feedQuery.isLoading && allPosts.length === 0}
-				<div class="mt-6">
-					<PostSkeleton count={3} />
-				</div>
-			{:else if feedQuery.isError && allPosts.length === 0}
-				<div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-900/50 dark:bg-red-900/10">
-					<AlertCircle size={32} class="mx-auto mb-2 text-red-500" />
-					<p class="text-sm text-gray-800 dark:text-neutral-200">{t('feed.errorLoading')}</p>
-					<Button variant="ghost" size="sm" class="mt-3" onclick={() => feedQuery.refetch()}>
-						{t('feed.retry')}
-					</Button>
-				</div>
-			{:else if allPosts.length === 0 && !feedQuery.isLoading}
-				<div class="py-12">
-					<EmptyState message={t('feed.noPost')} icon={PenSquare as unknown as Component<{ size: number; class?: string }>} />
-				</div>
-			{/if}
-
-			<!-- Infinite scroll sentinel -->
-			{#if hasMore && allPosts.length > 0}
-				<div bind:this={sentinelEl} class="flex justify-center py-8" aria-live="polite" aria-busy={loadingMore}>
-					{#if loadingMore}
-						<div class="flex gap-2" role="status">
-							<span class="sr-only">{t('feed.loadingMore')}</span>
-							{#each [0, 1, 2] as step}
-								<div
-									class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600"
-									style="animation-delay: {step * 150}ms"
-								></div>
-							{/each}
-						</div>
-					{/if}
-				</div>
-			{/if}
-			{/if}
-		</main>
+		</div>
 	</div>
 
-	<!-- Create post modal -->
+	{#if feedMode !== 'activity'}
+		<button
+			type="button"
+			aria-label={t('feed.whatsOnYourMind')}
+			onclick={() => (showCreateModal = true)}
+			class="fixed bottom-5 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 lg:hidden dark:bg-cyan-500 dark:hover:bg-cyan-400"
+		>
+			<Plus size={24} />
+		</button>
+	{/if}
+
 	<CreatePostModal
 		open={showCreateModal}
 		oncreate={handlePostCreated}
-		oncancel={() => showCreateModal = false}
+		oncancel={() => (showCreateModal = false)}
 	/>
 
-	<!-- Report modal -->
 	<ReportModal
 		open={showReportModal}
 		onsubmit={handleReportSubmit}
-		oncancel={() => { showReportModal = false; reportPostId = null; }}
+		oncancel={() => {
+			showReportModal = false;
+			reportPostId = null;
+		}}
 	/>
 
-	<!-- Repost modal -->
 	<RepostModal
 		open={showRepostModal}
 		post={repostTargetPost}
 		onsubmit={handleRepostSubmit}
-		oncancel={() => { showRepostModal = false; repostTargetPost = null; }}
+		oncancel={() => {
+			showRepostModal = false;
+			repostTargetPost = null;
+		}}
 	/>
 
 	<ToastContainer />
 {/if}
-
-<style>
-	.scrollbar-none::-webkit-scrollbar {
-		display: none;
-	}
-	.scrollbar-none {
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-	}
-	/* Fade out the right edge of the filter strip as a visual cue that more
-	   filters are scrollable offscreen. Uses mask-image so it plays nicely
-	   with horizontal scroll and dark mode (fades to transparent, not to a
-	   specific background color). */
-	.filter-strip {
-		-webkit-mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
-		mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
-	}
-</style>

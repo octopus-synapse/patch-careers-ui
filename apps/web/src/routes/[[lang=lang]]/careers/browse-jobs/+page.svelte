@@ -16,8 +16,8 @@ import DataTable from '$lib/components/data/data-table.svelte';
 import Pagination from '$lib/components/data/pagination.svelte';
 import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
 import NewJobsBadge from '$lib/components/jobs/new-jobs-badge.svelte';
-import { parseApiError } from '$lib/format/api-error';
-import { isUsdEurJob } from '$lib/jobs/is-usd-eur';
+import { parseApiError } from '$lib/utils/api-error';
+import { isUsdEurJob } from '$lib/utils/is-usd-eur';
 import { locale } from '$lib/state/locale.svelte';
 
 interface FitScoreBreakdown {

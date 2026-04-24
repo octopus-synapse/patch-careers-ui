@@ -56,7 +56,6 @@ export const UsersGetPublicProfileByUsernameResponse = zod.object({
   "resume": zod.object({
   "id": zod.string(),
   "title": zod.string().nullable(),
-  "template": zod.string(),
   "language": zod.string(),
   "isPublic": zod.boolean(),
   "slug": zod.string().nullable(),
@@ -410,7 +409,6 @@ export const UsersGetUserDetailsResponse = zod.object({
   "resumes": zod.array(zod.object({
   "id": zod.string(),
   "title": zod.string().nullable(),
-  "template": zod.string().nullable(),
   "isPublic": zod.boolean(),
   "createdAt": zod.string().datetime({}),
   "updatedAt": zod.string().datetime({})

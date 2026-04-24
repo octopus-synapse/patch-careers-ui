@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Search } from 'lucide-svelte';
+import { Search, X } from 'lucide-svelte';
 import { Input } from 'ui';
 
 type FilterOption = {
@@ -18,18 +18,51 @@ type Props = {
   search: string;
   filters?: FilterDef[];
   placeholder?: string;
-  onsearch: (value: string) => void;
+  searchFields?: string[];
+  onsearch: (value: string, field?: string) => void;
   onfilterchange?: (key: string, value: string) => void;
+  onsearchfield?: (field: string, value: string) => void;
 };
 
-let { search, filters = [], placeholder = 'Search...', onsearch, onfilterchange }: Props = $props();
+let {
+  search,
+  filters = [],
+  placeholder = 'Search...',
+  searchFields,
+  onsearch,
+  onfilterchange,
+  onsearchfield,
+}: Props = $props();
 
 let debounceTimer: ReturnType<typeof setTimeout>;
+let detectedField = $state<string | null>(null);
+
+function parseQuery(raw: string): { field: string | null; value: string } {
+  if (!searchFields || searchFields.length === 0) return { field: null, value: raw };
+  const match = raw.match(/^([a-zA-Z_]+):(.*)$/);
+  if (!match) return { field: null, value: raw };
+  const field = match[1].toLowerCase();
+  if (!searchFields.includes(field)) return { field: null, value: raw };
+  return { field, value: match[2].trim() };
+}
 
 function handleInput(e: Event) {
   const target = e.target as HTMLInputElement;
   clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => onsearch(target.value), 300);
+  debounceTimer = setTimeout(() => {
+    const { field, value } = parseQuery(target.value);
+    detectedField = field;
+    if (field && onsearchfield) {
+      onsearchfield(field, value);
+    } else {
+      onsearch(value, field ?? undefined);
+    }
+  }, 300);
+}
+
+function clearField() {
+  detectedField = null;
+  onsearch('');
 }
 </script>
 
@@ -40,8 +73,16 @@ function handleInput(e: Event) {
 			value={search}
 			oninput={handleInput}
 			{placeholder}
-			class="pl-5"
+			class="pl-5 {detectedField ? 'pr-20' : ''}"
 		/>
+		{#if detectedField}
+			<span class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+				{detectedField}
+				<button type="button" onclick={clearField} aria-label="Clear search field">
+					<X size={10} />
+				</button>
+			</span>
+		{/if}
 	</div>
 
 	{#each filters as filter}

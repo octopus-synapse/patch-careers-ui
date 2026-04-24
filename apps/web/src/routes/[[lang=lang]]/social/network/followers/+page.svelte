@@ -177,6 +177,7 @@ function handleToggleFollow(row: FollowerRow) {
 								<Button
 									variant={followed ? 'outline' : 'solid'}
 									size="sm"
+									textCase="normal"
 									onclick={() => handleToggleFollow(follower)}
 								>
 									{followed ? t('network.unfollow') : t('network.follow')}

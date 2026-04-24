@@ -60,7 +60,7 @@ export const ResumesGetPublicResumeResponse = zod.object({
   "website": zod.string().nullable(),
   "summary": zod.string().nullable(),
   "accentColor": zod.string().nullable(),
-  "activeThemeId": zod.string().nullable(),
+  "styleId": zod.string().nullable(),
   "createdAt": zod.unknown(),
   "updatedAt": zod.unknown(),
   "sections": zod.array(zod.object({
@@ -96,7 +96,7 @@ export const ResumesDownloadPublicResumeResponse = zod.object({
   "website": zod.string().nullable(),
   "summary": zod.string().nullable(),
   "accentColor": zod.string().nullable(),
-  "activeThemeId": zod.string().nullable(),
+  "styleId": zod.string().nullable(),
   "createdAt": zod.unknown(),
   "updatedAt": zod.unknown(),
   "sections": zod.array(zod.object({

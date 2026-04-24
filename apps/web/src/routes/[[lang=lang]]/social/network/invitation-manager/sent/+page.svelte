@@ -168,7 +168,7 @@ function formatSentAt(iso: string): string {
 						</p>
 					{/if}
 				</div>
-				<Button variant="outline" size="sm" onclick={() => withdrawMutation.mutate({ id: req.id })}>
+				<Button variant="outline" size="sm" textCase="normal" onclick={() => withdrawMutation.mutate({ id: req.id })}>
 					{t?.('network.withdraw')}
 				</Button>
 			</li>

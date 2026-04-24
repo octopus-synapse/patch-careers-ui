@@ -1,15 +1,31 @@
 <script lang="ts">
 import { createAdminAnalyticsGetOverview, createAdminDashboardGetMetrics } from 'api-client';
 import { Loader2 } from 'lucide-svelte';
-import { SegmentToggle } from 'ui';
 import { browser } from '$app/environment';
+import DateRangePicker, {
+  type DateRangePreset,
+} from '$lib/components/data/date-range-picker.svelte';
 import ExportButton from '$lib/components/data/export-button.svelte';
 import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
-let period = $state<'day' | 'week' | 'month'>('week');
+let rangePreset = $state<DateRangePreset>('last30d');
+let customFrom = $state<string | undefined>(undefined);
+let customTo = $state<string | undefined>(undefined);
+
+const period = $derived<'day' | 'week' | 'month'>(
+  rangePreset === 'last7d'
+    ? 'day'
+    : rangePreset === 'last30d'
+      ? 'day'
+      : rangePreset === 'last90d'
+        ? 'week'
+        : rangePreset === 'lastYear'
+          ? 'month'
+          : 'week',
+);
 
 const analyticsQuery = createAdminAnalyticsGetOverview(
   () => ({
@@ -27,11 +43,13 @@ const metricsQuery = createAdminDashboardGetMetrics(() => ({
 const data = $derived(analyticsQuery.data);
 const metrics = $derived(metricsQuery.data);
 
-const periodOptions = $derived([
-  { value: 'day', label: t?.('admin.analytics.last30Days') ?? '30 Days' },
-  { value: 'week', label: '12 Weeks' },
-  { value: 'month', label: t?.('admin.analytics.lastYear') ?? '12 Months' },
-]);
+const rangeLabels = $derived({
+  last7d: t?.('admin.analytics.last7Days') ?? 'Last 7 days',
+  last30d: t?.('admin.analytics.last30Days') ?? 'Last 30 days',
+  last90d: t?.('admin.analytics.last90Days') ?? 'Last 90 days',
+  lastYear: t?.('admin.analytics.lastYear') ?? 'Last year',
+  custom: t?.('admin.analytics.custom') ?? 'Custom',
+});
 
 const atsDist = $derived(data?.atsScoreDistribution);
 const byLang = $derived(data?.resumesByLanguage);
@@ -58,16 +76,30 @@ function maxValue(arr: { count: number }[]): number {
 		</h1>
 		<div class="flex flex-wrap items-center gap-2">
 			<ExportButton data={[...(atsDist ?? []), ...(byLang ?? []), ...(sections ?? []), ...(imports ?? [])]} filename="analytics.csv" />
-			<SegmentToggle
-			options={periodOptions}
-			selected={period}
-			onchange={(v) => period = v as 'day' | 'week' | 'month'}
-		/>
+			<DateRangePicker
+				preset={rangePreset}
+				from={customFrom}
+				to={customTo}
+				labels={rangeLabels}
+				onchange={(p, f, to2) => {
+					rangePreset = p;
+					customFrom = f;
+					customTo = to2;
+				}}
+			/>
 		</div>
 	</div>
 
+	{#if rangePreset === 'custom'}
+		<div class="rounded-lg border px-4 py-2 border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-950/30">
+			<p class="text-xs text-amber-700 dark:text-amber-400">
+				{t?.('admin.analytics.customFallbackNote') ?? 'Custom ranges are not yet supported by the backend. Showing the closest preset approximation.'}
+			</p>
+		</div>
+	{/if}
+
 	{#if metrics}
-		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
 			<StatCard label={t?.('admin.dashboard.signupsWeek') ?? 'Signups This Week'} value={metrics.signupsThisWeek} />
 			<StatCard label={t?.('admin.dashboard.signupsMonth') ?? 'Signups This Month'} value={metrics.signupsThisMonth} />
 			<StatCard label={t?.('admin.dashboard.avgAtsScore') ?? 'Avg ATS Score'} value={metrics.averageAtsScore} />
@@ -107,7 +139,7 @@ function maxValue(arr: { count: number }[]): number {
 
 		<!-- Social stats (connections + blocks) -->
 		{#if socialStats}
-			<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+			<div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
 				<StatCard label="Pending invites" value={socialStats.pendingInvitations} />
 				<StatCard label="Accepted" value={socialStats.acceptedConnections} />
 				<StatCard label="Rejected" value={socialStats.rejectedConnections} />
@@ -118,7 +150,7 @@ function maxValue(arr: { count: number }[]): number {
 
 		<!-- Job stats -->
 		{#if jobStats}
-			<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+			<div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
 				<StatCard label="Jobs posted" value={jobStats.postedJobs} />
 				<StatCard label="Active jobs" value={jobStats.activeJobs} />
 				<StatCard label="Applications" value={jobStats.applications} />

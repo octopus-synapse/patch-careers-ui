@@ -6,8 +6,8 @@ import { AuthLoginBody } from 'api-client/zod';
 import { Loader2, Lock } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 import { goto } from '$app/navigation';
-import { translateApiError } from '$lib/errors/translate-api-error';
-import { createForm } from '$lib/forms/create-form.svelte';
+import { translateApiError } from '$lib/utils/translate-api-error';
+import { createForm } from '$lib/state/create-form.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const queryClient = useQueryClient();

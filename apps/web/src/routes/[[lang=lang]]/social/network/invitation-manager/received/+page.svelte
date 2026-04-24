@@ -172,10 +172,10 @@ function timeAgo(iso: string): string {
 					{/if}
 				</div>
 				<div class="flex items-center gap-2">
-					<Button variant="outline" size="sm" onclick={() => rejectMutation.mutate({ id: req.id })}>
+					<Button variant="outline" size="sm" textCase="normal" onclick={() => rejectMutation.mutate({ id: req.id })}>
 						{t?.('network.ignore')}
 					</Button>
-					<Button variant="outline" intent="accent" size="sm" onclick={() => acceptMutation.mutate({ id: req.id })}>
+					<Button variant="outline" intent="accent" size="sm" textCase="normal" onclick={() => acceptMutation.mutate({ id: req.id })}>
 						{t?.('network.accept')}
 					</Button>
 				</div>

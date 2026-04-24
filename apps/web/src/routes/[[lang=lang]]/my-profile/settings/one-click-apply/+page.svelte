@@ -11,8 +11,8 @@ import { FileText, Loader2, Zap } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { parseApiError } from '$lib/format/api-error';
-import { useFormDraft } from '$lib/forms/use-form-draft.svelte';
+import { parseApiError } from '$lib/utils/api-error';
+import { useFormDraft } from '$lib/state/use-form-draft.svelte';
 
 interface Preferences extends Record<string, unknown> {
   enabled: boolean;

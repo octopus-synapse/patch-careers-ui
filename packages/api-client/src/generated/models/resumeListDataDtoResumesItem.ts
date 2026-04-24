@@ -43,7 +43,6 @@ export type ResumeListDataDtoResumesItem = {
   userId: string;
   /** @nullable */
   title: string | null;
-  template: string;
   language: string;
   isPublic: boolean;
   /** @nullable */
@@ -57,7 +56,7 @@ export type ResumeListDataDtoResumesItem = {
   /** @nullable */
   accentColor: string | null;
   /** @nullable */
-  activeThemeId: string | null;
+  styleId: string | null;
   createdAt: unknown;
   updatedAt: unknown;
   resumeSections: ResumeListDataDtoResumesItemResumeSectionsItem[];

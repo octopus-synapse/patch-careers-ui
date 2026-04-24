@@ -74,7 +74,7 @@ const stats = $derived(platformStats.data);
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 		{#each services as service}
 			{@const status = getStatus(service.query)}
 			{@const Icon = service.icon}
@@ -95,7 +95,7 @@ const stats = $derived(platformStats.data);
 			<h2 class="mb-4 text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
 				{t?.('admin.health.platformStats') ?? 'Platform Statistics'}
 			</h2>
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 				<StatCard
 					label={t?.('admin.dashboard.totalUsers') ?? 'Total Users'}
 					value={stats.totalUsers}

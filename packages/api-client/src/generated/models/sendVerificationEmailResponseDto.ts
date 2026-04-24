@@ -35,7 +35,9 @@ All errors follow a consistent format:
 ```
  * OpenAPI spec version: 1.0.0
  */
+import type { SendVerificationEmailResponseDtoCooldown } from './sendVerificationEmailResponseDtoCooldown';
 
 export interface SendVerificationEmailResponseDto {
   message: string;
+  cooldown: SendVerificationEmailResponseDtoCooldown;
 }

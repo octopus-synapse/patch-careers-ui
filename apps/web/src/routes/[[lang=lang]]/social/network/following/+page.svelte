@@ -155,7 +155,7 @@ function handleUnfollow(userId: string) {
 							}}
 						>
 							{#snippet actions()}
-								<Button variant="outline" size="sm" onclick={() => handleUnfollow(followed.id)}>
+								<Button variant="outline" size="sm" textCase="normal" onclick={() => handleUnfollow(followed.id)}>
 									{t('network.unfollow')}
 								</Button>
 							{/snippet}

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { buildZodFromFields, type FieldDescriptor } from '$lib/forms/build-zod-from-fields';
+import { buildZodFromFields, type FieldDescriptor } from '$lib/utils/build-zod-from-fields';
 import FieldRenderer from './field-renderer.svelte';
 
 type Field = FieldDescriptor & {
