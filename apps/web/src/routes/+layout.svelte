@@ -1,6 +1,6 @@
 <script lang="ts">
 import '../app.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 import { setBaseUrl } from 'api-client/client';
 import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
@@ -15,8 +15,10 @@ import FeatureFlagsStream from '$lib/components/feature-flags-stream.svelte';
 import Footer from '$lib/components/layout/footer.svelte';
 import Navbar from '$lib/components/layout/navbar.svelte';
 import OnboardingGuard from '$lib/components/layout/onboarding-guard.svelte';
-import { trackPageView } from '$lib/utils/analytics/track';
+import LockoutModal from '$lib/components/lockout-modal.svelte';
+import { extractLockoutCode, openLockout } from '$lib/state/lockout-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { trackPageView } from '$lib/utils/analytics/track';
 
 let { children }: { children: Snippet } = $props();
 
@@ -34,11 +36,24 @@ $effect(() => {
   }
 });
 
+/** Global 409 interceptor — catches scoring-subsystem lockouts
+ * (fit_profile_required, quality_score_below_threshold, etc.) and
+ * routes them through the one-at-a-time `LockoutModal`. Non-lockout
+ * 409s fall through for per-call handling. */
+function interceptLockout(err: unknown): void {
+  const code = extractLockoutCode(err);
+  if (code) openLockout(code);
+}
+
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({ onError: interceptLockout }),
   defaultOptions: {
     queries: {
       staleTime: 60 * 1000,
       retry: 1,
+    },
+    mutations: {
+      onError: interceptLockout,
     },
   },
 });
@@ -77,6 +92,7 @@ $effect(() => {
 				</main>
 			</ErrorBoundary>
 			<Footer />
+			<LockoutModal />
 		</div>
 		{#if showCookieBanner}<CookieBanner />{/if}
 	</QueryClientProvider>
@@ -95,6 +111,7 @@ $effect(() => {
 			<ChatWidget />
 			<ChatFab />
 			<Footer />
+			<LockoutModal />
 		</QueryClientProvider>
 		{#if showCookieBanner}<CookieBanner />{/if}
 	</div>
