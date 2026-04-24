@@ -1,0 +1,168 @@
+<script lang="ts">
+  import {
+    createFitProfileQuestions,
+    createFitProfileSubmitAnswers,
+    getFitProfileMeQueryKey,
+  } from 'api-client';
+  import { useQueryClient } from '@tanstack/svelte-query';
+  import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from 'lucide-svelte';
+  import { Button, toastState } from 'ui';
+  import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
+  import { locale } from '$lib/state/locale.svelte';
+
+  type Question = {
+    id: string;
+    key: string;
+    dimension: string;
+    textEn: string;
+    textPtBr: string;
+    scaleType: string;
+    weight: number;
+  };
+
+  const LIKERT_OPTIONS = [
+    { value: 1, label: 'Discordo fortemente' },
+    { value: 2, label: 'Discordo' },
+    { value: 3, label: 'Neutro' },
+    { value: 4, label: 'Concordo' },
+    { value: 5, label: 'Concordo fortemente' },
+  ] as const;
+
+  const questionsQuery = createFitProfileQuestions(() => ({
+    query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
+  }));
+
+  const submitMutation = createFitProfileSubmitAnswers(() => ({ mutation: {} }));
+  const queryClient = useQueryClient();
+
+  const questionSetId = $derived(questionsQuery.data?.questionSetId ?? '');
+  const questions = $derived<Question[]>((questionsQuery.data?.questions ?? []) as Question[]);
+  const total = $derived(questions.length);
+
+  let currentIndex = $state(0);
+  let answers = $state<Map<string, number>>(new Map());
+
+  const currentQuestion = $derived(questions[currentIndex]);
+  const currentAnswer = $derived(
+    currentQuestion ? (answers.get(currentQuestion.id) ?? null) : null,
+  );
+  const progress = $derived(total > 0 ? Math.round(((currentIndex + 1) / total) * 100) : 0);
+  const canAdvance = $derived(typeof currentAnswer === 'number');
+  const isLast = $derived(currentIndex === total - 1);
+  const localeTag = $derived(locale.current === 'en' ? 'en' : 'pt-BR');
+
+  function pick(value: number): void {
+    if (!currentQuestion) return;
+    const next = new Map(answers);
+    next.set(currentQuestion.id, value);
+    answers = next;
+  }
+
+  function prev(): void {
+    if (currentIndex > 0) currentIndex--;
+  }
+
+  function advance(): void {
+    if (!canAdvance) return;
+    if (!isLast) {
+      currentIndex++;
+      return;
+    }
+    void commit();
+  }
+
+  async function commit(): Promise<void> {
+    try {
+      await submitMutation.mutateAsync({
+        data: {
+          questionSetId,
+          answers: Array.from(answers, ([questionId, rawValue]) => ({ questionId, rawValue })),
+        },
+      });
+      await queryClient.invalidateQueries({ queryKey: getFitProfileMeQueryKey() });
+      toastState.show('Fit Profile salvo. Match Score liberado.', 'success');
+      void goto('/my-profile/scores');
+    } catch (err) {
+      // Global lockout interceptor won't fire (this is a POST, not a
+      // 409 lockout); surface the real message here.
+      const message = err instanceof Error ? err.message : 'Não foi possível salvar.';
+      toastState.show(message, 'danger');
+    }
+  }
+</script>
+
+<section class="mx-auto flex max-w-xl flex-col px-6 py-10">
+  {#if questionsQuery.isPending}
+    <div class="flex items-center justify-center py-16">
+      <Loader2 class="animate-spin text-neutral-500" size={24} />
+    </div>
+  {:else if questionsQuery.isError || total === 0}
+    <div class="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+      Não conseguimos carregar o questionário. Tente recarregar a página.
+    </div>
+  {:else}
+    <header class="mb-8 space-y-3">
+      <div class="flex items-center justify-between text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+        <span>Fit Profile</span>
+        <span>{currentIndex + 1} / {total}</span>
+      </div>
+      <div class="h-1 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
+        <div
+          class="h-full bg-emerald-500 transition-all"
+          style="width: {progress}%"
+        ></div>
+      </div>
+    </header>
+
+    {#if currentQuestion}
+      <h1 class="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+        {localeTag === 'en' ? currentQuestion.textEn : currentQuestion.textPtBr}
+      </h1>
+
+      <ul class="mt-6 space-y-2">
+        {#each LIKERT_OPTIONS as opt (opt.value)}
+          {@const selected = currentAnswer === opt.value}
+          <li>
+            <button
+              type="button"
+              class="flex w-full items-center justify-between rounded-lg border px-4 py-3 text-left text-sm transition {selected
+                ? 'border-emerald-500 bg-emerald-50 font-semibold text-emerald-800 dark:border-emerald-400 dark:bg-emerald-900/30 dark:text-emerald-200'
+                : 'border-neutral-200 hover:border-neutral-400 dark:border-neutral-700 dark:hover:border-neutral-500'}"
+              onclick={() => pick(opt.value)}
+            >
+              <span>{opt.label}</span>
+              {#if selected}
+                <CheckCircle2 size={16} />
+              {/if}
+            </button>
+          </li>
+        {/each}
+      </ul>
+
+      <div class="mt-8 flex items-center justify-between">
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={prev}
+          disabled={currentIndex === 0}
+        >
+          <ArrowLeft size={14} />
+          Voltar
+        </Button>
+        <Button
+          variant="solid"
+          size="sm"
+          onclick={advance}
+          disabled={!canAdvance || submitMutation.isPending}
+        >
+          {#if submitMutation.isPending}
+            <Loader2 size={14} class="animate-spin" />
+          {/if}
+          {isLast ? 'Salvar' : 'Próxima'}
+          {#if !isLast}<ArrowRight size={14} />{/if}
+        </Button>
+      </div>
+    {/if}
+  {/if}
+</section>
