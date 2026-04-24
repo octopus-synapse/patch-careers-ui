@@ -147,6 +147,8 @@ const BASE_CLASS =
   'inline-flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50';
 const MENU_BASE_CLASS = 'flex items-center gap-2 transition-colors disabled:opacity-50';
 
+export type ButtonCase = 'upper' | 'normal';
+
 export function getButtonClasses(
   variant: ButtonVariant,
   intent: IntentKey,
@@ -154,10 +156,18 @@ export function getButtonClasses(
   fullWidth: boolean,
   selected: boolean,
   extra = '',
+  textCase: ButtonCase = 'upper',
 ): string {
   const slots = buttonSlotsFor(variant, intent, selected);
   const base = variant === 'menu' ? MENU_BASE_CLASS : BASE_CLASS;
-  const sizeClasses = sizeStyles[variant][size];
+  const rawSize = sizeStyles[variant][size];
+  // When the caller opts into `case="normal"`, strip the typography tokens that
+  // force caps so the label renders in sentence case. Keeps every other shape
+  // concern (padding, radius, font weight baseline) intact.
+  const sizeClasses =
+    textCase === 'normal'
+      ? rawSize.replace(/\buppercase\b/g, 'normal-case').replace(/\btracking-widest\b/g, '')
+      : rawSize;
   const widthClass =
     fullWidth || (size === 'lg' && variant !== 'icon' && variant !== 'menu' && variant !== 'tab')
       ? 'w-full'

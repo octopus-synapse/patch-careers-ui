@@ -5,8 +5,9 @@ import { Button, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { useFormDraft } from '$lib/state/use-form-draft.svelte';
+import ResumeQualityCard from '$lib/components/scoring/resume-quality-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { useFormDraft } from '$lib/state/use-form-draft.svelte';
 
 const t = $derived(locale.t);
 const resumeId = $derived($page.params.id);
@@ -24,7 +25,7 @@ interface ResumeForm extends Record<string, unknown> {
   website: string;
 }
 
-const draft = useFormDraft<ResumeForm>(`cv-${resumeId}`, {
+const draft = useFormDraft<ResumeForm>(() => `cv-${resumeId}`, {
   title: '',
   fullName: '',
   jobTitle: '',
@@ -197,6 +198,12 @@ async function save() {
     <h1 class="mb-6 text-xl font-semibold text-gray-900 dark:text-neutral-100">
       Editar currículo
     </h1>
+
+    {#if resumeId}
+      <div class="mb-6">
+        <ResumeQualityCard resumeId={resumeId} detailsHref="/my-profile/scores" />
+      </div>
+    {/if}
 
     <form
       class="space-y-5"

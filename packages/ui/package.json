@@ -13,8 +13,12 @@
     "check": "echo 'ui components are type-checked transitively by the web app'"
   },
   "peerDependencies": {
+    "lucide-svelte": "*",
     "svelte": ">=5.0.0",
     "typescript": "^5"
+  },
+  "dependencies": {
+    "lucide-svelte": "^0.475.0"
   },
   "devDependencies": {
     "@types/bun": "latest",
