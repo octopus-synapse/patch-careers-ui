@@ -1,5 +1,5 @@
 <script lang="ts">
-import { customFetch } from 'api-client';
+import { usersCheckUsernameAvailability } from 'api-client';
 import { Button, Input, Label, Textarea } from 'ui';
 
 type Field = {
@@ -34,11 +34,9 @@ function checkUsername(val: string) {
   if (!val || val.length < 3) return;
   usernameCheckTimeout = setTimeout(async () => {
     try {
-      const res = await customFetch<{ available: boolean; reason?: UsernameUnavailableReason }>(
-        `/api/v1/users/username/check?username=${encodeURIComponent(val)}`,
-      );
+      const res = await usersCheckUsernameAvailability({ username: val });
       usernameAvailable = res.available;
-      usernameReason = res.reason ?? null;
+      usernameReason = (res.reason as UsernameUnavailableReason | undefined) ?? null;
     } catch {
       usernameAvailable = null;
       usernameReason = null;

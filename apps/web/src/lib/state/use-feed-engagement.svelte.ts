@@ -12,9 +12,9 @@ import {
   postsDelete,
 } from 'api-client';
 import { type ReactionType, toastState } from 'ui';
-import { track } from '$lib/analytics/track';
-import { undoableAction } from '$lib/utils/undoable-action';
 import { locale } from '$lib/state/locale.svelte';
+import { track } from '$lib/utils/analytics/track';
+import { undoableAction } from '$lib/utils/undoable-action';
 
 type Post = Record<string, unknown>;
 
@@ -133,9 +133,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
   async function handleBookmark(id: string) {
     bookmarkedPosts = new Set([...bookmarkedPosts, id]);
     unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
-    setPosts(
-      getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)),
-    );
+    setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)));
     await engagementBookmark(id);
     queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
   }
@@ -143,9 +141,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
   async function handleUnbookmark(id: string) {
     unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
     bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
-    setPosts(
-      getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)),
-    );
+    setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)));
     await engagementUnbookmark(id);
     queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
   }

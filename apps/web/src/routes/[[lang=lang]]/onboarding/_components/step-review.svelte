@@ -1,7 +1,5 @@
 <script lang="ts">
-import { customFetch } from 'api-client';
-import { Check, Minus, Send } from 'lucide-svelte';
-import { Button, Input } from 'ui';
+import { Check, Minus } from 'lucide-svelte';
 
 type StepDef = {
   id: string;
@@ -19,23 +17,9 @@ type Props = {
 
 let { session, steps, completedSteps, ongoto }: Props = $props();
 
-let shareEmail = $state('');
-let shareStatus = $state<'idle' | 'sending' | 'sent' | 'error'>('idle');
-
-async function sendReviewInvite() {
-  if (!shareEmail.trim()) return;
-  shareStatus = 'sending';
-  try {
-    await customFetch('/api/v1/onboarding/review/invite', {
-      method: 'POST',
-      body: JSON.stringify({ email: shareEmail }),
-    });
-    shareStatus = 'sent';
-    shareEmail = '';
-  } catch {
-    shareStatus = 'error';
-  }
-}
+// Review-invite feature is not currently exposed by the backend. When that
+// endpoint comes back (e.g. POST /api/v1/onboarding/review/invite), wire the
+// UI back through the generated SDK — do NOT reintroduce `customFetch`.
 
 type ReviewEntry = { label: string; value: string; long?: boolean };
 type ReviewSection = {
@@ -128,29 +112,6 @@ const sections = $derived.by(() => {
 </script>
 
 <div class="space-y-3">
-	<!-- Share for review -->
-	<div class="flex items-center gap-2 rounded-lg border border-dashed p-3 border-gray-300 dark:border-neutral-600">
-		<Send size={14} class="flex-shrink-0 text-gray-400 dark:text-neutral-500" />
-		<Input
-			type="email"
-			bind:value={shareEmail}
-			placeholder="Email to share for review"
-		/>
-		<Button
-			variant="ghost"
-			size="xs"
-			onclick={sendReviewInvite}
-			disabled={shareStatus === 'sending' || !shareEmail.trim()}
-		>
-			{shareStatus === 'sending' ? 'Sending...' : 'Send'}
-		</Button>
-	</div>
-	{#if shareStatus === 'sent'}
-		<p class="text-center text-xs text-emerald-500">Invite sent!</p>
-	{:else if shareStatus === 'error'}
-		<p class="text-center text-xs text-red-500">Failed to send. Try again.</p>
-	{/if}
-
 	{#each sections as section}
 		<button
 			onclick={() => ongoto(section.stepId)}

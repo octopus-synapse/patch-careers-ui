@@ -19,14 +19,14 @@ import { Clock, Eye, UserCheck, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Skeleton, StatGrid, type StatItem, Tabs } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import SuggestionsCarousel from './_components/suggestions-carousel.svelte';
 import QuickMessagePopover from './_components/quick-message-popover.svelte';
-import UserRow from '$lib/components/user-row.svelte';
+import UserRow from '$lib/components/user/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { undoableAction } from '$lib/utils/undoable-action';
-import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+import { InfiniteScrollTrigger } from 'ui';
 
 type UserInfo = {
   id: string;

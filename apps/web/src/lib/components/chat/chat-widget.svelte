@@ -202,8 +202,11 @@ function onDragEnd(e: PointerEvent) {
 				? 'inset-0 sm:inset-y-8 sm:left-1/2 sm:-translate-x-1/2 sm:w-[70vw] sm:max-w-6xl rounded-none sm:rounded-xl'
 				: 'bottom-0 right-0 sm:right-4 h-[100dvh] sm:h-[32rem] w-full sm:w-[22rem] rounded-none sm:rounded-t-xl'}"
 	>
-		<!-- Header (drag handle on desktop) -->
+		<!-- Header (drag handle on desktop; purely pointer-driven, no keyboard-equivalent) -->
 		<div
+			role="toolbar"
+			tabindex="-1"
+			aria-label="Chat window header"
 			class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 {chatState.isFullscreen ? '' : 'sm:cursor-move'}"
 			onpointerdown={onDragStart}
 			onpointermove={onDragMove}
@@ -289,12 +292,7 @@ function onDragEnd(e: PointerEvent) {
 						{@const fullscreenProfileHref = activeOther.username
 							? `/my-profile/public/@${activeOther.username}`
 							: undefined}
-						<svelte:element
-							this={fullscreenProfileHref ? 'a' : 'div'}
-							href={fullscreenProfileHref}
-							onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }}
-							class="flex items-center gap-3 border-b px-5 py-3 border-gray-200 dark:border-neutral-800 {fullscreenProfileHref ? 'transition-colors hover:opacity-80' : ''}"
-						>
+						{#snippet headerContent()}
 							<Avatar name={activeOther.name ?? activeOther.username ?? '?'} photoURL={activeOther.photoURL} size="lg" />
 							<div class="min-w-0">
 								<span class="block truncate text-sm font-semibold text-gray-800 dark:text-neutral-200">
@@ -304,7 +302,20 @@ function onDragEnd(e: PointerEvent) {
 									<span class="block text-[11px] text-gray-500 dark:text-neutral-500">@{activeOther.username}</span>
 								{/if}
 							</div>
-						</svelte:element>
+						{/snippet}
+						{#if fullscreenProfileHref}
+							<a
+								href={fullscreenProfileHref}
+								onclick={() => { if (chatState.isFullscreen) chatState.toggleFullscreen(); }}
+								class="flex items-center gap-3 border-b px-5 py-3 border-gray-200 dark:border-neutral-800 transition-colors hover:opacity-80"
+							>
+								{@render headerContent()}
+							</a>
+						{:else}
+							<div class="flex items-center gap-3 border-b px-5 py-3 border-gray-200 dark:border-neutral-800">
+								{@render headerContent()}
+							</div>
+						{/if}
 						<MessageThread messages={msgList} {currentUserId} />
 						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}

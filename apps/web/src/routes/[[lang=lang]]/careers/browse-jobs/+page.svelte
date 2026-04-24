@@ -12,9 +12,9 @@ import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'luci
 import { Button, FitScoreChip, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import DataTable from '$lib/components/data/data-table.svelte';
-import Pagination from '$lib/components/data/pagination.svelte';
-import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
+import { DataTable } from 'ui';
+import { Pagination } from 'ui';
+import { SearchFilterBar } from 'ui';
 import NewJobsBadge from '$lib/components/jobs/new-jobs-badge.svelte';
 import { parseApiError } from '$lib/utils/api-error';
 import { isUsdEurJob } from '$lib/utils/is-usd-eur';

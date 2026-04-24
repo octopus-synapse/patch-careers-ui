@@ -1,6 +1,6 @@
 <script lang="ts">
 import { AlertTriangle, Shield } from 'lucide-svelte';
-import DataTable from '$lib/components/data/data-table.svelte';
+import { DataTable } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

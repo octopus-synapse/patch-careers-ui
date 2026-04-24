@@ -7,7 +7,7 @@ import {
 } from 'api-client';
 import { Card, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -99,8 +99,8 @@ async function updateEmailMode(p: Preference, mode: EmailDelivery) {
 	<title>{t('notifications.preferencesTitle')}</title>
 </svelte:head>
 
-<div class="min-h-screen pt-20 pb-12">
-	<div class="mx-auto max-w-2xl px-3 sm:px-6">
+<div>
+	<div class="mx-auto max-w-2xl">
 		<header class="mb-4">
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('notifications.preferencesTitle')}

@@ -12,10 +12,10 @@ import {
 import { Pencil, Plus, ToggleLeft, ToggleRight, Trash2 } from 'lucide-svelte';
 import { Button, ConfirmModal, FormModal, Input, Label, Tooltip } from 'ui';
 import { browser } from '$app/environment';
-import DataTable from '$lib/components/data/data-table.svelte';
-import ExportButton from '$lib/components/data/export-button.svelte';
-import Pagination from '$lib/components/data/pagination.svelte';
-import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
+import { DataTable } from 'ui';
+import { ExportButton } from 'ui';
+import { Pagination } from 'ui';
+import { SearchFilterBar } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

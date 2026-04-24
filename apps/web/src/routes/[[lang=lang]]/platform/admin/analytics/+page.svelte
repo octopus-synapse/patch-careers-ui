@@ -2,10 +2,7 @@
 import { createAdminAnalyticsGetOverview, createAdminDashboardGetMetrics } from 'api-client';
 import { Loader2 } from 'lucide-svelte';
 import { browser } from '$app/environment';
-import DateRangePicker, {
-  type DateRangePreset,
-} from '$lib/components/data/date-range-picker.svelte';
-import ExportButton from '$lib/components/data/export-button.svelte';
+import { DateRangePicker, type DateRangePreset, ExportButton } from 'ui';
 import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 

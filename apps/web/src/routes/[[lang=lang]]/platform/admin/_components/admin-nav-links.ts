@@ -2,6 +2,7 @@ import {
   Activity,
   BarChart3,
   FileClock,
+  Flag,
   Gauge,
   Layers,
   LayoutDashboard,
@@ -18,6 +19,8 @@ export type AdminNavLink = {
   labelKey: string;
   icon: ComponentType;
   exact?: boolean;
+  /** Optional feature-flag key; when set, the link is hidden when the flag is OFF. */
+  flagKey?: string;
 };
 
 export const ADMIN_NAV_LINKS: AdminNavLink[] = [
@@ -31,6 +34,7 @@ export const ADMIN_NAV_LINKS: AdminNavLink[] = [
   { href: '/platform/admin/performance', labelKey: 'admin.nav.performance', icon: Gauge },
   { href: '/platform/admin/chat', labelKey: 'admin.nav.chat', icon: MessageSquare },
   { href: '/platform/admin/audit', labelKey: 'admin.nav.audit', icon: FileClock },
+  { href: '/platform/admin/feature-flags', labelKey: 'admin.nav.featureFlags', icon: Flag },
   { href: '/platform/admin/dev-tools', labelKey: 'admin.nav.devTools', icon: Wrench },
 ];
 

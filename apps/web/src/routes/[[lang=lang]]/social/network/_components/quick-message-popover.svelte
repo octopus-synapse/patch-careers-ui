@@ -2,7 +2,7 @@
 import { chatSendMessage } from 'api-client';
 import { MessageCircle, X } from 'lucide-svelte';
 import { Button, Popover, Textarea, toastState } from 'ui';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
 type Props = {

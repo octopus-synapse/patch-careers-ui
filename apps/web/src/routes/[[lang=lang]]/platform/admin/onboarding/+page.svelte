@@ -22,7 +22,7 @@ import {
 } from 'lucide-svelte';
 import { Button, ConfirmModal, FormModal, Input, Label, Tooltip } from 'ui';
 import { browser } from '$app/environment';
-import DataTable from '$lib/components/data/data-table.svelte';
+import { DataTable } from 'ui';
 import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 

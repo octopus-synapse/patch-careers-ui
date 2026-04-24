@@ -1,7 +1,12 @@
 <script lang="ts">
-import { customFetch } from 'api-client';
+import { getBaseUrl } from 'api-client';
 import { Check, FlaskConical, Loader2, Play, X } from 'lucide-svelte';
 import { Button } from 'ui';
+
+// Dev-tool: kept on plain `fetch()` because the generated `testRunnerRunTests`
+// hook doesn't yet carry the `{ suite }` body (backend decorator missing
+// @ApiBody). When the backend annotates it and orval picks it up, swap this
+// for the generated mutation.
 
 interface TestResult {
   name: string;
@@ -51,11 +56,15 @@ async function runSuite(suiteId: string) {
   results[suiteId] = null;
 
   try {
-    const data = await customFetch<TestResults>('/api/v1/admin/test/run', {
+    const res = await fetch(`${getBaseUrl()}/api/v1/admin/test/run`, {
       method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ suite: suiteId }),
     });
-    results[suiteId] = data;
+    if (!res.ok) throw new Error(await res.text());
+    const body = (await res.json()) as { data?: TestResults } | TestResults;
+    results[suiteId] = ('data' in body ? body.data : body) as TestResults;
   } catch (err) {
     const e = err as Record<string, unknown>;
     results[suiteId] = {

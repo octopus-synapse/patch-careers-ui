@@ -68,33 +68,68 @@ const steps = $derived.by<Step[]>(() => {
 });
 
 const incomplete = $derived(steps.filter((s) => !s.done));
+const doneCount = $derived(steps.length - incomplete.length);
+const progressPct = $derived(Math.round((doneCount / Math.max(steps.length, 1)) * 100));
 </script>
 
 {#if incomplete.length > 0}
 	<Card>
 		{#snippet title()}
-			<h2 class="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-				<Sparkles size={16} class="text-emerald-500" />
-				{t('dashboard.nextSteps.title')}
-				<span class="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 text-xs font-medium text-gray-600 dark:bg-neutral-800 dark:text-neutral-300">
-					{incomplete.length}
+			<div class="flex items-center gap-3">
+				<span
+					class="inline-flex size-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
+				>
+					<Sparkles size={14} />
 				</span>
-			</h2>
+				<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
+					{t('dashboard.nextSteps.title')}
+				</h2>
+				<span
+					class="tabular-nums text-xs font-medium text-gray-500 dark:text-neutral-500"
+				>
+					{doneCount}/{steps.length}
+				</span>
+				<div
+					class="ml-auto h-1.5 w-24 overflow-hidden rounded-full bg-gray-100 dark:bg-neutral-800"
+					role="progressbar"
+					aria-valuenow={progressPct}
+					aria-valuemin={0}
+					aria-valuemax={100}
+				>
+					<div
+						class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 motion-safe:transition-[width] motion-safe:duration-500"
+						style:width="{progressPct}%"
+					></div>
+				</div>
+			</div>
 		{/snippet}
-		<ul class="divide-y divide-gray-100 dark:divide-neutral-800">
+		<ul class="-mx-2 divide-y divide-gray-100 dark:divide-neutral-800">
 			{#each steps as step (step.id)}
 				<li>
 					<a
 						href={step.href}
-						class="flex items-center gap-3 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
+						class="group flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
 					>
 						{#if step.done}
-							<Check size={16} class="shrink-0 text-emerald-500" />
-							<span class="flex-1 text-gray-400 line-through dark:text-neutral-500">{step.label}</span>
+							<span
+								class="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm shadow-emerald-500/30"
+							>
+								<Check size={12} stroke-width={3} />
+							</span>
+							<span class="flex-1 text-gray-400 line-through dark:text-neutral-500">
+								{step.label}
+							</span>
 						{:else}
-							<Circle size={16} class="shrink-0 text-gray-400 dark:text-neutral-500" />
+							<Circle
+								size={20}
+								stroke-width={1.5}
+								class="shrink-0 text-gray-300 transition-colors group-hover:text-emerald-500 dark:text-neutral-600"
+							/>
 							<span class="flex-1 text-gray-800 dark:text-neutral-200">{step.label}</span>
-							<ChevronRight size={14} class="shrink-0 text-gray-400 dark:text-neutral-500" />
+							<ChevronRight
+								size={14}
+								class="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:text-emerald-500 dark:text-neutral-500"
+							/>
 						{/if}
 					</a>
 				</li>

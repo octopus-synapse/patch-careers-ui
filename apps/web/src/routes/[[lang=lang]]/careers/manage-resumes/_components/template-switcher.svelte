@@ -4,6 +4,7 @@
 -->
 <script lang="ts">
 import { Loader2 } from 'lucide-svelte';
+import { untrack } from 'svelte';
 import { toastState } from 'ui';
 
 type Template =
@@ -23,7 +24,13 @@ interface Props {
 
 let { resumeId, value, onchange }: Props = $props();
 
-let current = $state<Template>(value);
+// Mirror prop into local state so we can hold an optimistic update while the
+// PATCH is in flight. `untrack` at init signals we intentionally seed with the
+// current prop, and the $effect below re-syncs on future prop changes.
+let current = $state<Template>(untrack(() => value));
+$effect(() => {
+  current = value;
+});
 let saving = $state(false);
 
 const TEMPLATES: Array<{ value: Template; label: string }> = [

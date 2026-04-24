@@ -11,7 +11,7 @@ import { Loader2, UserCheck } from 'lucide-svelte';
 import { Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
-import UserRow from '$lib/components/user-row.svelte';
+import UserRow from '$lib/components/user/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -81,10 +81,16 @@ async function onReject(id: string) {
 	{#snippet title()}
 		<div class="flex items-center justify-between">
 			<h2 class="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-				<UserCheck size={16} />
+				<span
+					class="inline-flex size-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
+				>
+					<UserCheck size={14} />
+				</span>
 				{t('dashboard.invitationsTitle')}
 				{#if (pending.total ?? 0) > 0}
-					<span class="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 text-xs font-medium text-gray-600 dark:bg-neutral-800 dark:text-neutral-300">
+					<span
+						class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-100 px-1.5 text-[11px] font-semibold tabular-nums text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+					>
 						{pending.total}
 					</span>
 				{/if}

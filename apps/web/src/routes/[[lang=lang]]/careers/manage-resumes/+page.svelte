@@ -8,15 +8,23 @@ import { useAuth } from '$lib/state/auth.svelte';
 import CvRerenderModal from './_components/cv-rerender-modal.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
+// Shape matches the lean list DTO (PaginatedResumesDataDtoDataItem).
+// The detail endpoint (/:id/full) is what includes `resumeSections`,
+// `fullName`, `jobTitle`, `summary`, `template` — don't assume them here.
 type Resume = {
   id: string;
   title: string | null;
-  fullName: string | null;
-  jobTitle: string | null;
-  summary: string | null;
-  template: string;
-  language: string;
-  resumeSections: Array<Record<string, unknown>>;
+  language?: string | null;
+  targetRole?: string | null;
+  isPublic?: boolean;
+  slug?: string | null;
+  // Optional fields that MAY appear in detail responses but are absent
+  // from the list DTO — always treat as optional.
+  fullName?: string | null;
+  jobTitle?: string | null;
+  summary?: string | null;
+  template?: string | null;
+  resumeSections?: Array<Record<string, unknown>>;
 };
 
 const t = $derived(locale.t);
@@ -121,11 +129,17 @@ function openRerender(resume: Resume) {
 						<p class="text-[11px] text-gray-500 dark:text-neutral-500">{t('cv.masterHelp')}</p>
 
 						<div class="mt-3 flex gap-4">
+							<!-- Thumbnail endpoint may 404 for seeded users without a rendered
+							     SVG; hide the image element if it fails so we don't show a
+							     broken-image placeholder with alt text bleeding through. -->
 							<img
 								src="/api/v1/resumes/{master.id}/thumbnail.svg"
-								alt="Thumbnail do currículo"
+								alt=""
 								class="hidden h-32 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
 								loading="lazy"
+								onerror={(e) => {
+									(e.currentTarget as HTMLImageElement).style.display = 'none';
+								}}
 							/>
 							<div class="min-w-0 flex-1 space-y-1.5">
 								{#if master.jobTitle}
@@ -135,18 +149,22 @@ function openRerender(resume: Resume) {
 									<p class="text-xs leading-relaxed text-gray-600 dark:text-neutral-400">
 										{master.summary}
 									</p>
-								{:else}
-									<p class="text-xs italic text-gray-400 dark:text-neutral-600">{t('cv.noSummary')}</p>
 								{/if}
 							</div>
 						</div>
 
 						<div class="mt-4 flex items-center gap-3 text-[11px] text-gray-500 dark:text-neutral-500">
-							<span class="rounded-full bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-800">
-								{master.template}
-							</span>
-							<span>{t('cv.cardSections', { count: master.resumeSections.length })}</span>
-							<span class="uppercase">{master.language}</span>
+							{#if master.template}
+								<span class="rounded-full bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-800">
+									{master.template}
+								</span>
+							{/if}
+							{#if master.resumeSections}
+								<span>{t('cv.cardSections', { count: master.resumeSections.length })}</span>
+							{/if}
+							{#if master.language}
+								<span class="uppercase">{master.language}</span>
+							{/if}
 						</div>
 					</Card>
 				{/if}
@@ -171,6 +189,9 @@ function openRerender(resume: Resume) {
 												alt=""
 												class="hidden h-20 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
 												loading="lazy"
+												onerror={(e) => {
+													(e.currentTarget as HTMLImageElement).style.display = 'none';
+												}}
 											/>
 											<div class="min-w-0 flex-1">
 												<div class="flex items-center gap-2">
@@ -185,10 +206,14 @@ function openRerender(resume: Resume) {
 													</p>
 												{/if}
 												<div class="mt-2 flex items-center gap-2 text-[10px] text-gray-500 dark:text-neutral-500">
-													<span class="rounded-full bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-800">
-														{r.template}
-													</span>
-													<span>{t('cv.cardSections', { count: r.resumeSections.length })}</span>
+													{#if r.template}
+														<span class="rounded-full bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-800">
+															{r.template}
+														</span>
+													{/if}
+													{#if r.resumeSections}
+														<span>{t('cv.cardSections', { count: r.resumeSections.length })}</span>
+													{/if}
 												</div>
 											</div>
 											<Button variant="ghost" size="sm" onclick={() => openRerender(r)}>

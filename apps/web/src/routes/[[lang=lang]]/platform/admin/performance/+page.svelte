@@ -2,8 +2,8 @@
 import { createAdminMetricsGetOverview } from 'api-client';
 import { Clock, Cpu, HardDrive, Loader2, RefreshCw, Zap } from 'lucide-svelte';
 import { browser } from '$app/environment';
-import DataTable from '$lib/components/data/data-table.svelte';
-import ExportButton from '$lib/components/data/export-button.svelte';
+import { DataTable } from 'ui';
+import { ExportButton } from 'ui';
 import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 

@@ -11,7 +11,7 @@ import { UserCheck } from 'lucide-svelte';
 import { Avatar, Button } from 'ui';
 import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
-import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 

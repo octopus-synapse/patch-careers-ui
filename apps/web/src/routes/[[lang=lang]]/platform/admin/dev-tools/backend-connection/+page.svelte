@@ -1,6 +1,10 @@
 <script lang="ts">
-import { customFetch, getBaseUrl } from 'api-client';
+import { getBaseUrl } from 'api-client';
 import { Button } from 'ui';
+
+// Dev-tool deliberately uses plain `fetch()` to probe backend connectivity —
+// we want raw HTTP behavior visible here, not the envelope unwrapping done by
+// generated SDK hooks. No `customFetch` import.
 import { browser } from '$app/environment';
 
 let results = $state<Array<{ endpoint: string; status: string; data: string; time: number }>>([]);
@@ -38,13 +42,14 @@ async function runTests() {
           },
         ];
       } else {
-        const data = await customFetch<unknown>(ep.url);
+        const res = await fetch(`${baseUrl}${ep.url}`, { credentials: 'include' });
+        const body = await res.text();
         results = [
           ...results,
           {
             endpoint: ep.name,
-            status: 'ok',
-            data: JSON.stringify(data).slice(0, 200),
+            status: res.ok ? 'ok' : `${res.status}`,
+            data: body.slice(0, 200),
             time: Math.round(performance.now() - start),
           },
         ];

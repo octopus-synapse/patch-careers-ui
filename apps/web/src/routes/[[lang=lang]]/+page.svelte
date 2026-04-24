@@ -1,6 +1,5 @@
 <script lang="ts">
-import { Check } from 'lucide-svelte';
-import { Button } from 'ui';
+import { ArrowRight, Check, Plus, Minus } from 'lucide-svelte';
 import LandingDemo from './_components/landing/demo.svelte';
 import LandingSuccessStories from './_components/landing/success-stories.svelte';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
@@ -35,6 +34,10 @@ const faqs = [
   ],
 ];
 
+const poolUsed = 49;
+const poolCap = 200;
+const poolPct = Math.round((poolUsed / poolCap) * 100);
+
 let openFaq = $state<number | null>(null);
 </script>
 
@@ -51,80 +54,108 @@ let openFaq = $state<number | null>(null);
 	}}
 />
 
-<!--
-  Landing is deliberately always-dark (brand), but we reference a CSS custom
-  property so it's themeable if we ever ship a light variant of marketing.
--->
-<div class="landing-shell text-slate-200 antialiased selection:bg-cyan-300/20">
-	<!-- Hero -->
-	<section class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 sm:px-6 pt-20 text-center">
-		<div class="absolute inset-0 -z-10 bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent"></div>
-		<div class="absolute inset-x-0 top-0 -z-10 h-[200vh] origin-top bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px] md:bg-[size:60px_60px] [mask-image:radial-gradient(circle_at_center,black,transparent_80%)] [transform:perspective(1000px)_rotateX(60deg)]"></div>
-
-		<div class="z-10 mx-auto max-w-7xl space-y-8">
-			<div class="inline-block rounded-full border border-cyan-500/30 px-3 py-1 transition-all duration-500 hover:scale-105 hover:border-cyan-500/60">
-				<span class="font-mono text-xs uppercase tracking-widest text-cyan-400">
-					Early Access · Vagas limitadas
-				</span>
+<div class="landing-shell antialiased">
+	<!-- ═══════════════════════════════════════════════════════════════
+	     HERO · "Masthead"
+	     Editorial layout: mono slug → oversized serif headline → lede
+	     → single oxide CTA → mono inventory ticker (signature block).
+	     ═══════════════════════════════════════════════════════════════ -->
+	<section class="relative overflow-hidden px-6 pb-24 pt-24 sm:px-10 md:pb-32 md:pt-32 lg:px-16">
+		<!-- Signature masthead rule -->
+		<div class="mx-auto max-w-[1400px]">
+			<div class="reveal reveal-1 flex items-center justify-between pb-10 text-[11px] font-mono uppercase tracking-[0.18em]" style="color: var(--landing-muted-on-ink)">
+				<span>Patch Careers &mdash; Recursos de carreira</span>
+				<span class="hidden sm:inline">Nº 001 · Abril 2026</span>
 			</div>
-
-			<h1>
-				<span class="block text-3xl font-semibold leading-[0.8] tracking-tighter text-white sm:text-5xl md:text-[9rem]">
-					Sua Carreira,
-				</span>
-				<span class="relative mt-4 inline-block md:mt-0">
-					<span class="text-5xl font-black uppercase text-white drop-shadow-2xl sm:text-7xl md:text-[11rem]">
-						Patched
-					</span>
-					<span class="absolute -right-3 -top-3 text-5xl font-black text-cyan-500 animate-pulse sm:text-7xl sm:-right-6 sm:-top-6 md:text-[11rem]">
-						.
-					</span>
-				</span>
-			</h1>
-
-			<p class="mx-auto max-w-4xl text-xl font-light leading-relaxed text-zinc-400 md:text-3xl">
-				O Patch reescreve seu currículo para cada vaga —
-				<span class="font-bold text-white underline decoration-cyan-500 decoration-4 underline-offset-8">
-					automaticamente.
-				</span>
-			</p>
-
-			<div class="space-y-6 pt-12">
-				<div class="flex items-center justify-center gap-4">
-					<div class="flex -space-x-2">
-						<div class="h-8 w-8 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-cyan-400 to-blue-600"></div>
-						<div class="h-8 w-8 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-purple-400 to-pink-600"></div>
-						<div class="h-8 w-8 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-orange-400 to-red-600"></div>
-					</div>
-					<span class="text-sm text-zinc-400">
-						Primeiros beta users já conseguiram entrevistas
-					</span>
-				</div>
-
-				<div class="flex flex-col items-center justify-center gap-6 md:flex-row">
-					<a
-						href="/identity/sign-up"
-						class="group relative overflow-hidden bg-white px-10 py-5 text-sm font-black uppercase tracking-widest text-black transition-all duration-300 hover:scale-105 hover:bg-cyan-500 hover:shadow-2xl hover:shadow-cyan-500/25"
-					>
-						Quero entrevistas
-					</a>
-				</div>
-
-				<div class="flex flex-wrap items-center justify-center gap-6 text-sm text-zinc-500">
-					{#each heroBenefits as benefit}
-						<span class="flex items-center gap-1.5">
-							<span class="text-cyan-500">✓</span>
-							{benefit}
-						</span>
-					{/each}
-				</div>
-			</div>
+			<div class="h-px w-full" style="background: var(--landing-line-dark)"></div>
 		</div>
 
-		<div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-			<div class="flex h-10 w-6 justify-center rounded-full border-2 border-zinc-700">
-				<div class="mt-2 h-2 w-1 animate-pulse rounded-full bg-cyan-500"></div>
+		<!-- Masthead grid: headline (left) / meta column (right) -->
+		<div class="mx-auto mt-14 grid max-w-[1400px] gap-12 lg:mt-20 lg:grid-cols-[1.6fr_1fr] lg:gap-20">
+			<div>
+				<p class="reveal reveal-1 mb-8 font-mono text-xs uppercase tracking-[0.24em]" style="color: var(--landing-oxide)">
+					&mdash; Infraestrutura de candidatura
+				</p>
+
+				<h1 class="reveal reveal-2 font-display text-[15vw] leading-[0.92] sm:text-[11vw] lg:text-[8.5rem] xl:text-[10rem]">
+					<span class="block">Sua carreira,</span>
+					<span class="block">
+						<span class="font-display-italic" style="color: var(--landing-oxide)">patched</span>.
+					</span>
+				</h1>
+
+				<p class="reveal reveal-3 mt-10 max-w-xl text-lg leading-relaxed sm:text-xl" style="color: var(--landing-muted-on-ink)">
+					O Patch reescreve seu currículo para cada vaga, eleva o ATS acima de
+					<span style="color: var(--landing-text-on-ink)">90%</span>
+					e só candidata quando o match é real. Nenhum disparo em massa. Nenhum template genérico.
+				</p>
+
+				<div class="reveal reveal-4 mt-12 flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+					<a
+						href="/identity/sign-up"
+						class="group inline-flex items-center gap-3 px-7 py-4 text-sm font-medium transition-colors"
+						style="background: var(--landing-oxide); color: var(--landing-ink); transition-duration: var(--dur-tight); transition-timing-function: var(--ease-precise);"
+						onmouseenter={(e) => (e.currentTarget.style.background = 'var(--landing-oxide-ink)')}
+						onmouseleave={(e) => (e.currentTarget.style.background = 'var(--landing-oxide)')}
+					>
+						<span>Começar agora</span>
+						<ArrowRight size={16} class="transition-transform duration-200 group-hover:translate-x-1" />
+					</a>
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs uppercase tracking-[0.14em]" style="color: var(--landing-muted-on-ink)">
+						{#each heroBenefits as benefit, i}
+							<span class="inline-flex items-center gap-1.5">
+								{#if i > 0}
+									<span style="color: var(--landing-line-dark)">·</span>
+								{/if}
+								{benefit}
+							</span>
+						{/each}
+					</div>
+				</div>
 			</div>
+
+			<!-- Signature block: inventory ticker. No progress bar — a terminal-like readout. -->
+			<aside class="reveal reveal-5 self-end">
+				<div class="border p-6 font-mono text-sm" style="border-color: var(--landing-line-dark); background: var(--landing-ink-2);">
+					<div class="mb-5 flex items-center justify-between text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+						<span>Early Access</span>
+						<span class="inline-flex items-center gap-1.5">
+							<span class="h-1.5 w-1.5 rounded-full" style="background: var(--landing-oxide)"></span>
+							Ativo
+						</span>
+					</div>
+
+					<dl class="space-y-3">
+						<div class="flex items-baseline justify-between gap-4">
+							<dt class="text-xs" style="color: var(--landing-muted-on-ink)">Pool</dt>
+							<dd class="tabular-nums">
+								<span style="color: var(--landing-oxide)">{poolUsed}</span>
+								<span style="color: var(--landing-muted-on-ink)"> / {poolCap}</span>
+							</dd>
+						</div>
+						<!-- Ticker bar: flat 2px, not rounded progress. -->
+						<div class="h-[2px] w-full" style="background: var(--landing-line-dark)">
+							<div class="h-full" style="width: {poolPct}%; background: var(--landing-oxide)"></div>
+						</div>
+						<div class="flex items-baseline justify-between gap-4 pt-2">
+							<dt class="text-xs" style="color: var(--landing-muted-on-ink)">Ocupação</dt>
+							<dd class="tabular-nums text-xs">{poolPct}%</dd>
+						</div>
+						<div class="flex items-baseline justify-between gap-4">
+							<dt class="text-xs" style="color: var(--landing-muted-on-ink)">Preço</dt>
+							<dd class="tabular-nums text-xs">R$ 79,00 / mês</dd>
+						</div>
+						<div class="flex items-baseline justify-between gap-4">
+							<dt class="text-xs" style="color: var(--landing-muted-on-ink)">Travado</dt>
+							<dd class="text-xs">vitalício p/ pool atual</dd>
+						</div>
+					</dl>
+
+					<div class="mt-5 border-t pt-4 text-[10px] uppercase tracking-[0.22em]" style="border-color: var(--landing-line-dark); color: var(--landing-muted-on-ink)">
+						Últimos 30 dias · +17 pacthers
+					</div>
+				</div>
+			</aside>
 		</div>
 	</section>
 
@@ -134,125 +165,164 @@ let openFaq = $state<number | null>(null);
 	<!-- Success stories carousel (renders only when the backend has PUBLISHED rows). -->
 	<LandingSuccessStories />
 
-	<!-- CTA Emocional -->
-	<section class="relative overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-32 md:py-48 text-center">
-		<div class="absolute inset-0">
-			<div class="absolute left-1/2 top-0 h-px w-[800px] -translate-x-1/2 bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
-			<div class="absolute bottom-0 left-1/2 h-px w-[800px] -translate-x-1/2 bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
-		</div>
-		<div class="relative z-10 mx-auto max-w-4xl space-y-8">
-			<p class="font-mono text-xs uppercase tracking-[0.5em] text-zinc-600">
-				A hora é agora
-			</p>
-			<h2 class="text-4xl font-black uppercase leading-none tracking-tighter sm:text-6xl md:text-[9rem]">
-				Pare de ser
-				<br />
-				<span class="text-white [text-shadow:0_0_30px_rgba(0,242,255,0.3)]">ignorado.</span>
-			</h2>
-			<p class="mx-auto max-w-xl text-xl text-zinc-500">
-				Cada dia sem o Patch é mais um currículo mandado para o lixo antes de qualquer humano ler.
-			</p>
-			<div class="flex flex-col items-center gap-4 pt-4">
-				<a
-					href="/identity/sign-up"
-					class="bg-white px-8 py-5 text-base font-black uppercase tracking-widest text-black transition-all hover:bg-cyan-400 active:scale-95 sm:px-16 sm:py-8 sm:text-2xl"
-				>
-					Quero entrevistas
-				</a>
-				<p class="font-mono text-sm text-zinc-600">R$79/mês · cancele quando quiser</p>
+	<!-- ═══════════════════════════════════════════════════════════════
+	     EMOTIONAL CTA · "Column Rule"
+	     Tall serif statement. No glow, no uppercase shouting.
+	     ═══════════════════════════════════════════════════════════════ -->
+	<section class="relative px-6 py-24 sm:px-10 sm:py-32 md:py-40 lg:px-16" style="background: var(--landing-ink);">
+		<div class="mx-auto max-w-[1200px]">
+			<div class="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-20">
+				<div class="font-mono text-[11px] uppercase tracking-[0.24em] lg:pt-4" style="color: var(--landing-muted-on-ink)">
+					&mdash; A hora é agora
+				</div>
+
+				<div>
+					<h2 class="font-display text-5xl leading-[1.02] sm:text-6xl md:text-7xl lg:text-[7.5rem]">
+						Pare de ser
+						<span class="font-display-italic" style="color: var(--landing-oxide)">ignorado</span>.
+					</h2>
+
+					<p class="mt-10 max-w-xl text-lg leading-relaxed" style="color: var(--landing-muted-on-ink)">
+						Cada dia sem o Patch é mais um currículo enviado ao lixo antes de qualquer humano ler.
+						Triagens automatizadas filtram por palavra-chave. O Patch fala a língua delas.
+					</p>
+
+					<div class="mt-12 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-8">
+						<a
+							href="/identity/sign-up"
+							class="inline-flex items-center gap-3 px-8 py-5 text-sm font-medium transition-colors"
+							style="background: var(--landing-oxide); color: var(--landing-ink); transition-duration: var(--dur-tight); transition-timing-function: var(--ease-precise);"
+							onmouseenter={(e) => (e.currentTarget.style.background = 'var(--landing-oxide-ink)')}
+							onmouseleave={(e) => (e.currentTarget.style.background = 'var(--landing-oxide)')}
+						>
+							<span>Quero entrevistas</span>
+							<ArrowRight size={16} />
+						</a>
+						<p class="font-mono text-xs uppercase tracking-[0.18em]" style="color: var(--landing-muted-on-ink)">
+							R$ 79 / mês &nbsp;·&nbsp; cancele quando quiser
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Pricing -->
-	<section class="relative overflow-hidden bg-white px-4 py-16 sm:px-6 sm:py-24 md:py-40 text-zinc-900">
-		<div class="relative z-10 mx-auto max-w-5xl">
-			<div class="mb-16 text-center">
-				<h3 class="mb-4 font-mono text-xs uppercase tracking-[0.8em] text-cyan-600">
-					Simples assim
-				</h3>
-				<h2 class="text-3xl font-black uppercase tracking-tighter text-zinc-900 sm:text-5xl md:text-7xl">
-					Um plano.
-					<br />
-					<span class="text-cyan-600">Sem pegadinha.</span>
-				</h2>
+	<!-- ═══════════════════════════════════════════════════════════════
+	     PRICING + FAQ · "Vellum"
+	     Cream paper bg, editorial split. Oxide on ink for pricing card.
+	     ═══════════════════════════════════════════════════════════════ -->
+	<section class="relative px-6 py-24 sm:px-10 sm:py-32 md:py-40 lg:px-16" style="background: var(--landing-paper); color: var(--landing-text-on-paper);">
+		<div class="mx-auto max-w-[1400px]">
+			<!-- Section masthead -->
+			<div class="mb-16 flex flex-col gap-4 border-b pb-10 sm:flex-row sm:items-end sm:justify-between" style="border-color: var(--landing-line-light)">
+				<div>
+					<p class="mb-4 font-mono text-[11px] uppercase tracking-[0.24em]" style="color: var(--landing-oxide-ink)">
+						§ 02 &mdash; Plano
+					</p>
+					<h2 class="font-display text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-[6rem]">
+						Um plano. <span class="font-display-italic">Sem pegadinha.</span>
+					</h2>
+				</div>
+				<p class="max-w-sm font-mono text-xs uppercase leading-relaxed tracking-[0.14em]" style="color: var(--landing-muted-on-paper)">
+					Cancelamento em um clique. Sem cartão no cadastro.
+					Pool de early access limitado a {poolCap} pessoas.
+				</p>
 			</div>
 
-			<div class="grid items-start gap-8 sm:gap-12 lg:grid-cols-2">
-				<div>
-					<div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-5 sm:p-10 text-white">
-						<div class="mb-8 flex items-center justify-between">
-							<div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1.5">
-								<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-500"></span>
-								<span class="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">
-									PATCH Active
-								</span>
-							</div>
-							<span class="font-mono text-xs uppercase text-zinc-500">Early Access</span>
+			<div class="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+				<!-- Pricing card · ink background against paper section -->
+				<div class="relative p-8 sm:p-10 md:p-12" style="background: var(--landing-ink); color: var(--landing-text-on-ink);">
+					<!-- Decorative corner marks -->
+					<span class="absolute left-0 top-0 h-3 w-3 border-l border-t" style="border-color: var(--landing-oxide)"></span>
+					<span class="absolute right-0 top-0 h-3 w-3 border-r border-t" style="border-color: var(--landing-oxide)"></span>
+					<span class="absolute bottom-0 left-0 h-3 w-3 border-b border-l" style="border-color: var(--landing-oxide)"></span>
+					<span class="absolute bottom-0 right-0 h-3 w-3 border-b border-r" style="border-color: var(--landing-oxide)"></span>
+
+					<div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+						<span class="inline-flex items-center gap-2">
+							<span class="h-1.5 w-1.5 rounded-full" style="background: var(--landing-oxide)"></span>
+							Patch · Active
+						</span>
+						<span>Plano único</span>
+					</div>
+
+					<div class="mt-10 flex items-baseline gap-2">
+						<span class="font-mono text-base" style="color: var(--landing-muted-on-ink)">R$</span>
+						<span class="font-display text-[7rem] leading-[0.85] tabular-nums">79</span>
+						<span class="font-mono text-xs uppercase tracking-[0.18em]" style="color: var(--landing-muted-on-ink)">/ mês</span>
+					</div>
+
+					<!-- Inventory readout (echoes the hero signature block) -->
+					<div class="mt-8 border-t border-b py-5 font-mono text-xs" style="border-color: var(--landing-line-dark)">
+						<div class="flex items-baseline justify-between">
+							<span style="color: var(--landing-muted-on-ink)">Pool early access</span>
+							<span class="tabular-nums">
+								<span style="color: var(--landing-oxide)">{poolUsed}</span>
+								<span style="color: var(--landing-muted-on-ink)"> / {poolCap}</span>
+							</span>
 						</div>
-
-						<div class="mb-8">
-							<div class="flex items-end gap-2">
-								<span class="text-lg text-zinc-500">R$</span>
-								<span class="text-5xl font-black leading-none sm:text-7xl">79</span>
-								<span class="mb-2 text-sm text-zinc-500">/mês</span>
-							</div>
-							<p class="mt-2 text-sm text-zinc-500">Cancele quando quiser. Sem multa.</p>
+						<div class="mt-3 h-[2px] w-full" style="background: var(--landing-line-dark)">
+							<div class="h-full" style="width: {poolPct}%; background: var(--landing-oxide)"></div>
 						</div>
-
-						<div class="mb-8 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-							<div class="mb-2 flex items-center justify-between">
-								<span class="text-xs text-zinc-400">Vagas de early access restantes</span>
-								<span class="font-mono text-xs font-bold text-cyan-400">49 / 200</span>
-							</div>
-							<div class="h-2 w-full rounded-full bg-zinc-800">
-								<div class="h-2 w-[24.5%] rounded-full bg-cyan-500"></div>
-							</div>
-							<p class="mt-2 font-mono text-xs text-zinc-600">
-								Preço travado para os primeiros 200 usuários.
-							</p>
-						</div>
-
-						<div class="mb-8 h-px w-full bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
-						<ul class="mb-10 space-y-4">
-							{#each planFeatures as feature}
-								<li class="flex items-start gap-3 text-sm text-zinc-300">
-									<Check size={20} class="mt-0.5 shrink-0 text-cyan-500" />
-									{feature}
-								</li>
-							{/each}
-						</ul>
-
-						<a
-							href="/identity/sign-up"
-							class="block w-full rounded-lg bg-cyan-500 py-5 text-center text-sm font-black uppercase tracking-widest text-black transition-all duration-150 hover:bg-cyan-400 active:scale-95"
-						>
-							Ativar por R$79/mês
-						</a>
-						<p class="mt-4 text-center font-mono text-xs text-zinc-600">
-							Sem cartão no cadastro · Acesso imediato
+						<p class="mt-3 text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+							Preço travado para o pool atual
 						</p>
 					</div>
+
+					<ul class="mt-8 space-y-4">
+						{#each planFeatures as feature}
+							<li class="flex items-start gap-3 text-sm leading-relaxed" style="color: var(--landing-text-on-ink)">
+								<Check size={16} class="mt-[3px] shrink-0" style="color: var(--landing-oxide)" />
+								<span>{feature}</span>
+							</li>
+						{/each}
+					</ul>
+
+					<a
+						href="/identity/sign-up"
+						class="group mt-10 inline-flex w-full items-center justify-between px-6 py-5 text-sm font-medium transition-colors"
+						style="background: var(--landing-oxide); color: var(--landing-ink); transition-duration: var(--dur-tight); transition-timing-function: var(--ease-precise);"
+						onmouseenter={(e) => (e.currentTarget.style.background = 'var(--landing-oxide-ink)')}
+						onmouseleave={(e) => (e.currentTarget.style.background = 'var(--landing-oxide)')}
+					>
+						<span>Ativar por R$ 79 / mês</span>
+						<ArrowRight size={16} class="transition-transform duration-200 group-hover:translate-x-1" />
+					</a>
+					<p class="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+						Sem cartão no cadastro &nbsp;·&nbsp; acesso imediato
+					</p>
 				</div>
 
+				<!-- FAQ column · paper-native, editorial accordion -->
 				<div>
-					<p class="mb-8 font-mono text-xs uppercase tracking-widest text-zinc-500">
-						Perguntas frequentes
+					<p class="mb-6 font-mono text-[11px] uppercase tracking-[0.24em]" style="color: var(--landing-oxide-ink)">
+						§ 03 &mdash; Perguntas frequentes
 					</p>
-					<div class="space-y-0">
+					<div>
 						{#each faqs as [question, answer], i}
-							<div class="border-b border-zinc-200 py-6 last:border-none">
-								<Button
-									variant="ghost"
-									size="md"
-									onclick={() => openFaq = openFaq === i ? null : i}
-									class="flex w-full items-center justify-between text-left"
+							<div class="border-b last:border-none" style="border-color: var(--landing-line-light)">
+								<button
+									type="button"
+									onclick={() => (openFaq = openFaq === i ? null : i)}
+									class="flex w-full items-center justify-between gap-4 py-6 text-left transition-colors"
+									style="transition-duration: var(--dur-tight);"
+									aria-expanded={openFaq === i}
 								>
-									<p class="font-bold text-zinc-900">{question}</p>
-									<span class="ml-4 shrink-0 text-zinc-400 transition-transform {openFaq === i ? 'rotate-45' : ''}">+</span>
-								</Button>
+									<span class="font-display text-2xl leading-snug sm:text-3xl">
+										{question}
+									</span>
+									<span class="shrink-0 transition-transform" style="transition-duration: var(--dur-tight); transition-timing-function: var(--ease-precise); color: {openFaq === i ? 'var(--landing-oxide-ink)' : 'var(--landing-muted-on-paper)'};">
+										{#if openFaq === i}
+											<Minus size={20} />
+										{:else}
+											<Plus size={20} />
+										{/if}
+									</span>
+								</button>
 								{#if openFaq === i}
-									<p class="mt-3 text-sm leading-relaxed text-zinc-600">{answer}</p>
+									<p class="pb-6 pr-8 text-base leading-relaxed" style="color: var(--landing-muted-on-paper)">
+										{answer}
+									</p>
 								{/if}
 							</div>
 						{/each}
@@ -262,32 +332,55 @@ let openFaq = $state<number | null>(null);
 		</div>
 	</section>
 
-	<!-- Footer -->
-	<footer class="border-t border-zinc-900 bg-black px-4 py-8 sm:px-6 sm:py-12">
-		<div class="mx-auto max-w-6xl">
-			<div class="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-				<div class="space-y-2">
-					<div class="flex items-center gap-2">
-						<span class="text-2xl font-black tracking-tighter text-white">PATCH</span>
-						<span class="text-2xl font-black text-cyan-500">.</span>
+	<!-- ═══════════════════════════════════════════════════════════════
+	     FOOTER · "Colophon"
+	     ═══════════════════════════════════════════════════════════════ -->
+	<footer class="px-6 py-14 sm:px-10 sm:py-16 lg:px-16" style="background: var(--landing-ink); border-top: 1px solid var(--landing-line-dark);">
+		<div class="mx-auto max-w-[1400px]">
+			<div class="grid gap-10 md:grid-cols-[2fr_1fr_1fr] md:gap-16">
+				<div>
+					<div class="font-display text-3xl">
+						Patch<span class="font-display-italic" style="color: var(--landing-oxide)">.</span>
 					</div>
-					<p class="text-sm text-zinc-600">
-						Infraestrutura de carreira para profissionais de tech.
+					<p class="mt-3 max-w-sm text-sm leading-relaxed" style="color: var(--landing-muted-on-ink)">
+						Infraestrutura de carreira para profissionais de tech. Construído por devs, para devs.
 					</p>
 				</div>
-				<div class="flex flex-wrap gap-6 text-sm text-zinc-600">
-					<span>Privacidade</span>
-					<span>Termos de uso</span>
-					<a href="mailto:oi@patchcareers.org" class="transition-colors hover:text-zinc-400">
-						oi@patchcareers.org
-					</a>
+
+				<div>
+					<p class="mb-3 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+						Produto
+					</p>
+					<ul class="space-y-2 text-sm">
+						<li><a href="/identity/sign-up" class="hover:underline" style="text-decoration-color: var(--landing-oxide);">Começar</a></li>
+						<li><span style="color: var(--landing-muted-on-ink)">Privacidade</span></li>
+						<li><span style="color: var(--landing-muted-on-ink)">Termos de uso</span></li>
+					</ul>
+				</div>
+
+				<div>
+					<p class="mb-3 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+						Contato
+					</p>
+					<ul class="space-y-2 text-sm">
+						<li>
+							<a
+								href="mailto:oi@patchcareers.org"
+								class="transition-colors"
+								style="transition-duration: var(--dur-tight);"
+								onmouseenter={(e) => (e.currentTarget.style.color = 'var(--landing-oxide)')}
+								onmouseleave={(e) => (e.currentTarget.style.color = '')}
+							>
+								oi@patchcareers.org
+							</a>
+						</li>
+					</ul>
 				</div>
 			</div>
-			<div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-zinc-900 pt-8 md:flex-row">
-				<p class="font-mono text-xs text-zinc-700">
-					© 2026 PATCH Careers. Todos os direitos reservados.
-				</p>
-				<p class="font-mono text-xs text-zinc-700">Built by tech, for tech.</p>
+
+			<div class="mt-14 flex flex-col items-start justify-between gap-3 border-t pt-8 font-mono text-[10px] uppercase tracking-[0.22em] md:flex-row md:items-center" style="border-color: var(--landing-line-dark); color: var(--landing-muted-on-ink);">
+				<p>© 2026 Patch Careers &mdash; Todos os direitos reservados</p>
+				<p>Nº 001 · Abril 2026 · Set em Instrument Serif + Inter + JetBrains Mono</p>
 			</div>
 		</div>
 	</footer>

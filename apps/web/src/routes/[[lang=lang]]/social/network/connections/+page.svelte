@@ -1,9 +1,9 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
+  connectionGetConnections,
   createConnectionGetConnections,
   createConnectionRemoveConnection,
-  customFetch,
   getConnectionGetConnectionsQueryKey,
 } from 'api-client';
 import { ChevronDown, MessageCircle, MoreHorizontal, Search, Users } from 'lucide-svelte';
@@ -11,7 +11,7 @@ import { Avatar, Button, ConfirmModal, Input } from 'ui';
 import { browser } from '$app/environment';
 import { chatState } from '$lib/state/chat-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 
@@ -67,9 +67,9 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = page + 1;
-    const res = await customFetch<Record<string, unknown>>(
-      `/api/v1/users/me/connections?page=${next}&limit=20`,
-    );
+    const res = (await connectionGetConnections({ page: next, limit: 20 })) as unknown as
+      | Record<string, unknown>
+      | undefined;
     const section = res?.connections as Record<string, unknown> | undefined;
     const items = (section?.data as Record<string, unknown>[] | undefined) ?? [];
     extra = [...extra, ...items.map(extractRecord)];

@@ -11,10 +11,10 @@ import type { Component } from 'svelte';
 import { Button, Card, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 const auth = useAuth();

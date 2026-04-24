@@ -6,10 +6,10 @@ import {
 } from 'api-client';
 import { ChevronLeft, ChevronRight, UserPlus } from 'lucide-svelte';
 import { Button, SliderCarousel, toastState } from 'ui';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 import { sentConnections } from '$lib/state/sent-connections.svelte';
-import UserCard from '$lib/components/user-card.svelte';
+import UserCard from '$lib/components/user/user-card.svelte';
 
 type Suggestion = {
   id: string;

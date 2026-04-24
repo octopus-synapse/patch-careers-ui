@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Translator } from 'i18n';
-import SidebarNav from '$lib/components/layout/sidebar-nav.svelte';
+import { Sidebar } from 'ui';
 
 type Step = {
   id: string;
@@ -47,7 +47,7 @@ const navItems = $derived(
 );
 </script>
 
-<SidebarNav
+<Sidebar
 	items={navItems}
 	active={currentStep}
 	numbered

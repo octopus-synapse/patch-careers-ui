@@ -1,34 +1,28 @@
 <script lang="ts">
+import { createForgotPasswordHandle } from 'api-client';
 import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
 
 let email = $state('');
-let submitting = $state(false);
 let sent = $state(false);
 let error = $state<string | null>(null);
 
-async function handleSubmit(e: Event) {
-  e.preventDefault();
-  if (!email || submitting) return;
-  submitting = true;
-  error = null;
-  try {
-    const res = await fetch('/api/auth/forgot-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
-    // The endpoint always returns success to prevent email enumeration.
-    if (!res.ok && res.status !== 200) {
-      error = 'Não foi possível enviar o email. Tente novamente.';
-    } else {
+const forgotPassword = createForgotPasswordHandle(() => ({
+  mutation: {
+    onSuccess() {
       sent = true;
-    }
-  } catch {
-    error = 'Erro de rede. Tente novamente.';
-  } finally {
-    submitting = false;
-  }
+    },
+    onError() {
+      error = 'Não foi possível enviar o email. Tente novamente.';
+    },
+  },
+}));
+
+function handleSubmit(e: Event) {
+  e.preventDefault();
+  if (!email || forgotPassword.isPending) return;
+  error = null;
+  forgotPassword.mutate({ data: { email } });
 }
 </script>
 
@@ -70,8 +64,8 @@ async function handleSubmit(e: Event) {
         {#if error}
           <p class="text-xs font-medium text-red-500/80" role="alert">{error}</p>
         {/if}
-        <Button type="submit" disabled={submitting} variant="solid">
-          {#if submitting}
+        <Button type="submit" disabled={forgotPassword.isPending} variant="solid">
+          {#if forgotPassword.isPending}
             <Loader2 size={14} class="mx-auto animate-spin" />
           {:else}
             Enviar link de recuperação

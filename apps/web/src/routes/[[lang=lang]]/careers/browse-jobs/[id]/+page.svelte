@@ -5,6 +5,7 @@ import {
   createJobsFindById,
   createJobsGetFit,
   createJobsUnbookmark,
+  createResumesGetAllUserResumes,
   getJobsFindAllQueryKey,
   getJobsFindByIdQueryKey,
   getJobsGetBookmarkedJobsQueryKey,
@@ -45,8 +46,9 @@ import {
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { track } from '$lib/analytics/track';
+import MatchScorePanel from '$lib/components/scoring/match-score-panel.svelte';
 import { useAuth } from '$lib/state/auth.svelte';
+import { track } from '$lib/utils/analytics/track';
 import TailorForJobModal from './_components/tailor-for-job-modal.svelte';
 import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
 import SimilarJobsCarousel from '$lib/components/jobs/similar-jobs-carousel.svelte';
@@ -94,6 +96,23 @@ const isOwner = $derived(
 const fitQuery = createJobsGetFit(
   () => jobId,
   () => ({ query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } }),
+);
+
+// Primary resume lookup — the Match Score panel needs a resumeId. We take
+// the first resume in the user's list as the "primary-ish" candidate;
+// future iteration may expose a picker when the user has >1 resume.
+const myResumesQuery = createResumesGetAllUserResumes(
+  () => ({ userId: currentUserId, page: 1, limit: 1 }),
+  () => ({ query: { enabled: browser && !!currentUserId && !isOwner, retry: false } }),
+);
+const primaryResumeId = $derived<string | null>(
+  myResumesQuery.data &&
+    typeof myResumesQuery.data === 'object' &&
+    'data' in myResumesQuery.data &&
+    Array.isArray((myResumesQuery.data as { data: unknown[] }).data) &&
+    (myResumesQuery.data as { data: Array<{ id?: string }> }).data.length > 0
+    ? ((myResumesQuery.data as { data: Array<{ id?: string }> }).data[0]?.id ?? null)
+    : null,
 );
 
 type FitResponse = {
@@ -423,14 +442,18 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 				</div>
 
 				{#if currentUserId && !isOwner}
-					<FitScoreBreakdown
-						score={fit?.matchScore}
-						dimensions={fitDimensions}
-						matched={fit?.matchedKeywords ?? []}
-						missing={fit?.missingKeywords ?? []}
-						labels={fitLabels}
-						onTeaserCta={() => goto('/careers/manage-resumes')}
-					/>
+					{#if primaryResumeId}
+						<MatchScorePanel resumeId={primaryResumeId} {jobId} />
+					{:else}
+						<FitScoreBreakdown
+							score={fit?.matchScore}
+							dimensions={fitDimensions}
+							matched={fit?.matchedKeywords ?? []}
+							missing={fit?.missingKeywords ?? []}
+							labels={fitLabels}
+							onTeaserCta={() => goto('/careers/manage-resumes')}
+						/>
+					{/if}
 				{/if}
 
 				<!-- Description -->

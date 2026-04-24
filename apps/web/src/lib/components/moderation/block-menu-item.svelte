@@ -8,7 +8,7 @@ import {
 } from 'api-client';
 import { Shield } from 'lucide-svelte';
 import { Button, ConfirmModal, toastState } from 'ui';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
 type Props = {

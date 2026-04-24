@@ -90,12 +90,71 @@ body {
   outline-offset: 2px;
 }
 
-/* Marketing / landing brand shell — override via CSS var if a light theme
- * of marketing ever ships. Defaults to near-black for high-contrast brand. */
+/* Marketing / landing brand shell — "Editorial Utility" direction.
+ * Warm ink + cream paper + oxide accent. Scoped to .landing-shell so
+ * the rest of the app (Inter-based) is untouched. */
 :root {
-  --color-landing-bg: #050505;
-  --color-landing-surface: #0a0a0a;
+  --landing-ink: #0E0B08;
+  --landing-ink-2: #17130E;
+  --landing-ink-3: #1F1A13;
+  --landing-paper: #F3ECDC;
+  --landing-paper-2: #E8E0CC;
+  --landing-line-dark: #2A2419;
+  --landing-line-light: #D6CCB5;
+  --landing-text-on-ink: #F3ECDC;
+  --landing-text-on-paper: #171310;
+  --landing-muted-on-ink: #908875;
+  --landing-muted-on-paper: #6B6558;
+  --landing-oxide: #E0875C;
+  --landing-oxide-ink: #B8532A;
+  --landing-oxide-tint: #F4D8C2;
+  --color-landing-bg: var(--landing-ink);
+  --color-landing-surface: var(--landing-ink-2);
 }
 .landing-shell {
   background: var(--color-landing-bg);
+  color: var(--landing-text-on-ink);
+  font-feature-settings: 'ss01', 'cv02', 'cv11';
+  --ease-precise: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-tight: 180ms;
+  --dur-base: 240ms;
+}
+.landing-shell .font-display {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.landing-shell .font-display-italic {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+.landing-shell .font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-feature-settings: 'ss02', 'ss03';
+}
+.landing-shell .reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: landing-reveal var(--dur-base) var(--ease-precise) forwards;
+}
+.landing-shell .reveal-1 { animation-delay: 60ms; }
+.landing-shell .reveal-2 { animation-delay: 140ms; }
+.landing-shell .reveal-3 { animation-delay: 220ms; }
+.landing-shell .reveal-4 { animation-delay: 300ms; }
+.landing-shell .reveal-5 { animation-delay: 380ms; }
+@keyframes landing-reveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-shell .reveal { animation: none; opacity: 1; transform: none; }
+}
+/* Oxide underline that draws in on hover — replaces generic cyan underline. */
+.landing-shell .ox-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-size: 100% 2px;
+  background-repeat: no-repeat;
+  color: var(--landing-oxide);
 }

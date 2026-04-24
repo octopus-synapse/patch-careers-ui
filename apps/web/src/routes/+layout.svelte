@@ -11,10 +11,11 @@ import ChatWidget from '$lib/components/chat/chat-widget.svelte';
 import CookieBanner from '$lib/components/consent/cookie-banner.svelte';
 import ErrorBoundary from '$lib/components/errors/error-boundary.svelte';
 import OfflineBanner from '$lib/components/errors/offline-banner.svelte';
+import FeatureFlagsStream from '$lib/components/feature-flags-stream.svelte';
 import Footer from '$lib/components/layout/footer.svelte';
 import Navbar from '$lib/components/layout/navbar.svelte';
 import OnboardingGuard from '$lib/components/layout/onboarding-guard.svelte';
-import { trackPageView } from '$lib/analytics/track';
+import { trackPageView } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
 let { children }: { children: Snippet } = $props();
@@ -67,6 +68,7 @@ $effect(() => {
 
 {#if isLanding}
 	<QueryClientProvider client={queryClient}>
+		<FeatureFlagsStream />
 		<div class="min-h-screen flex flex-col">
 			<Navbar />
 			<ErrorBoundary>
@@ -81,6 +83,7 @@ $effect(() => {
 {:else}
 	<div class="min-h-screen flex flex-col transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
 		<QueryClientProvider client={queryClient}>
+			<FeatureFlagsStream />
 			<OfflineBanner />
 			<OnboardingGuard />
 			<Navbar />

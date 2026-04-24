@@ -16,7 +16,7 @@ import { Button } from 'ui';
 import { beforeNavigate, goto } from '$app/navigation';
 import PreviewPanel from './_components/preview-panel.svelte';
 import OnboardingProgress from './_components/onboarding-progress.svelte';
-import Sidebar from './_components/sidebar.svelte';
+import OnboardingSidebar from './_components/onboarding-sidebar.svelte';
 import StepForm from './_components/step-form.svelte';
 import StepMultiItems from './_components/step-multi-items.svelte';
 import StepReview from './_components/step-review.svelte';
@@ -325,7 +325,7 @@ const isPending = $derived(
 				<div class="flex gap-4 sm:gap-6 md:gap-10">
 					<!-- Desktop sidebar — always at same position -->
 					<div class="hidden md:block flex-shrink-0">
-						<Sidebar
+						<OnboardingSidebar
 							{steps}
 							currentStep={currentStepId}
 							{completedSteps}

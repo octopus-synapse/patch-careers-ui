@@ -1,4 +1,4 @@
-import { type ApiError, isApiError } from 'api-client/client';
+import { type ApiError, isApiError } from 'api-client';
 
 type Translate = (key: string, params?: Record<string, string | number>) => string;
 

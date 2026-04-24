@@ -1,6 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createAccountsSignup, getAuthSessionQueryKey } from 'api-client';
+import {
+  createAccountsSignup,
+  createSendVerificationHandle,
+  getAuthSessionQueryKey,
+} from 'api-client';
 import { isApiError } from 'api-client/client';
 import { Loader2 } from 'lucide-svelte';
 import { Button, Input, Label } from 'ui';
@@ -24,11 +28,21 @@ let serverError = $state('');
 
 const t = $derived(locale.t);
 
+// Fire verification email right after signup — the guard redirects the fresh
+// session to /identity/verify-email, where the user pastes the code.
+const sendVerification = createSendVerificationHandle(() => ({
+  mutation: {
+    // Ignore errors here; the verify-email page has its own resend button.
+    onError() {},
+  },
+}));
+
 const signup = createAccountsSignup(() => ({
   mutation: {
     async onSuccess() {
+      sendVerification.mutate();
       await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-      goto('/onboarding/start');
+      goto('/identity/verify-email');
     },
     onError(err: unknown) {
       if (!t) return;

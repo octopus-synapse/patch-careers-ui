@@ -12,11 +12,11 @@ import { Bell } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Avatar, Button, EmptyState, Skeleton, Tabs, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { notificationVisual } from '$lib/utils/notification-icon';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { useSseSubscribe } from '$lib/state/use-sse-subscribe';
+import { useSseSubscribe } from '$lib/state/use-sse-subscribe.svelte';
 
 const t = $derived(locale.t);
 const auth = useAuth();

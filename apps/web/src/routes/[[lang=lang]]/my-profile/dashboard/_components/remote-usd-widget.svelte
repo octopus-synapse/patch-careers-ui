@@ -43,15 +43,22 @@ const total = $derived((query.data as { total?: number } | undefined)?.total ?? 
 	{#snippet title()}
 		<div class="flex items-center justify-between">
 			<h2 class="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-				<Globe2 size={16} class="text-emerald-500" />
+				<span
+					class="inline-flex size-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
+				>
+					<Globe2 size={14} />
+				</span>
 				{t('jobs.remoteUsd.dashboardTitle')}
 			</h2>
 			<a
 				href="/careers/remote-usd-jobs"
-				class="flex items-center gap-1 text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
+				class="group flex items-center gap-1 text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
 			>
 				{t('jobs.remoteUsd.dashboardSeeAll')}
-				<ArrowRight size={11} />
+				<ArrowRight
+					size={11}
+					class="transition-transform group-hover:translate-x-0.5"
+				/>
 			</a>
 		</div>
 	{/snippet}
@@ -67,16 +74,16 @@ const total = $derived((query.data as { total?: number } | undefined)?.total ?? 
 			{t('jobs.remoteUsd.dashboardCountEmpty')}
 		</p>
 	{:else}
-		<ul class="divide-y divide-gray-100 dark:divide-neutral-700/40">
+		<ul class="-mx-2 divide-y divide-gray-100 dark:divide-neutral-800/80">
 			{#each items as job (job.id)}
 				<li>
 					<button
 						type="button"
-						class="flex w-full items-center justify-between gap-2 py-2 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/40"
+						class="group flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
 						onclick={() => job.id && goto(`/careers/browse-jobs/${job.id}`)}
 					>
 						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-medium text-gray-800 dark:text-neutral-200">
+							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700 dark:text-neutral-100 dark:group-hover:text-emerald-300">
 								{job.title ?? '—'}
 							</p>
 							{#if job.company}
@@ -84,7 +91,9 @@ const total = $derived((query.data as { total?: number } | undefined)?.total ?? 
 							{/if}
 						</div>
 						{#if job.paymentCurrency}
-							<span class="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+							<span
+								class="shrink-0 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[11px] font-semibold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
+							>
 								{job.paymentCurrency}
 							</span>
 						{/if}
@@ -93,7 +102,7 @@ const total = $derived((query.data as { total?: number } | undefined)?.total ?? 
 			{/each}
 		</ul>
 		{#if total > items.length}
-			<p class="mt-2 text-xs text-gray-500 dark:text-neutral-500">
+			<p class="mt-3 text-xs text-gray-500 dark:text-neutral-500">
 				{t('jobs.remoteUsd.dashboardShowing', { shown: items.length, total })}
 			</p>
 		{/if}

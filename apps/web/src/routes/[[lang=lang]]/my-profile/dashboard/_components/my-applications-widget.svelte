@@ -48,7 +48,11 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 	{#snippet title()}
 		<div class="flex items-center justify-between">
 			<h2 class="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-				<Briefcase size={16} />
+				<span
+					class="inline-flex size-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
+				>
+					<Briefcase size={14} />
+				</span>
 				{t('dashboard.applicationsTitle')}
 			</h2>
 			{#if items.length > 0}
@@ -75,7 +79,14 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 			{/each}
 		</ul>
 	{:else if items.length === 0}
-		<div class="flex flex-col items-start gap-3 py-2">
+		<div
+			class="flex flex-col items-start gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/60 p-5 dark:border-neutral-800 dark:bg-neutral-900/60"
+		>
+			<div
+				class="inline-flex size-9 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-sm ring-1 ring-gray-200 dark:bg-neutral-800 dark:text-emerald-300 dark:ring-neutral-700"
+			>
+				<Briefcase size={16} />
+			</div>
 			<p class="text-sm text-gray-700 dark:text-neutral-300">
 				{t('dashboard.applicationsEmpty')}
 			</p>
@@ -84,7 +95,7 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 			</Button>
 		</div>
 	{:else}
-		<ul class="divide-y divide-gray-100 dark:divide-neutral-700/40">
+		<ul class="-mx-2 divide-y divide-gray-100 dark:divide-neutral-800/80">
 			{#each items as app (app.id ?? app.jobId)}
 				{@const title = app.job?.title ?? app.jobTitle ?? '—'}
 				{@const company = app.job?.company ?? app.company ?? ''}
@@ -92,11 +103,11 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 				<li>
 					<button
 						type="button"
-						class="flex w-full items-center gap-3 py-2 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/40"
+						class="group flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
 						onclick={() => jobId && goto(`/careers/browse-jobs/${jobId}`)}
 					>
 						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-medium text-gray-800 dark:text-neutral-200">
+							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700 dark:text-neutral-100 dark:group-hover:text-emerald-300">
 								{title}
 							</p>
 							{#if company}

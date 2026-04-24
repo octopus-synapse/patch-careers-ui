@@ -30,7 +30,7 @@ import {
 } from 'lucide-svelte';
 import { Button, Dropdown, Modal, toastState } from 'ui';
 import { page } from '$app/stores';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
 import { usePermissions } from '$lib/state/permissions.svelte';

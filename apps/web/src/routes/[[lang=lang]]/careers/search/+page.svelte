@@ -6,10 +6,10 @@ import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { track } from '$lib/analytics/track';
-import UserCard from '$lib/components/user-card.svelte';
+import { track } from '$lib/utils/analytics/track';
+import UserCard from '$lib/components/user/user-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 

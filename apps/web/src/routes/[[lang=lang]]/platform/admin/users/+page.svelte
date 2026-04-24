@@ -16,10 +16,10 @@ import { Check, Copy, KeyRound, LogIn, Mail, MoreVertical, Plus, Shield, ShieldO
 import { Avatar, Button, ConfirmModal, Dropdown, FormModal, Input, Label, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import DataTable from '$lib/components/data/data-table.svelte';
-import ExportButton from '$lib/components/data/export-button.svelte';
-import Pagination from '$lib/components/data/pagination.svelte';
-import SearchFilterBar from '$lib/components/data/search-filter-bar.svelte';
+import { DataTable } from 'ui';
+import { ExportButton } from 'ui';
+import { Pagination } from 'ui';
+import { SearchFilterBar } from 'ui';
 import StatusBadge from '../_components/status-badge.svelte';
 import { translateApiError } from '$lib/utils/translate-api-error';
 import { locale } from '$lib/state/locale.svelte';

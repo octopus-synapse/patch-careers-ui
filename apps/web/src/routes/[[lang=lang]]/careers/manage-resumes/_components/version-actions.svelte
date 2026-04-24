@@ -3,6 +3,7 @@
 -->
 <script lang="ts">
 import { Check, Loader2, Pencil, Trash2, X } from 'lucide-svelte';
+import { untrack } from 'svelte';
 import { Button, Input, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -20,7 +21,14 @@ interface Props {
 let { resumeId, title, onRenamed, onDeleted, canDelete = true }: Props = $props();
 
 let editing = $state(false);
-let titleDraft = $state(title ?? '');
+// Re-seed titleDraft whenever the parent provides a new title (e.g. after a
+// successful rename elsewhere). `untrack` at init makes the seed explicit and
+// silences Svelte's state_referenced_locally warning; the $effect below is
+// what actually keeps the draft aligned with the prop while not editing.
+let titleDraft = $state(untrack(() => title ?? ''));
+$effect(() => {
+  if (!editing) titleDraft = title ?? '';
+});
 let saving = $state(false);
 let deleting = $state(false);
 

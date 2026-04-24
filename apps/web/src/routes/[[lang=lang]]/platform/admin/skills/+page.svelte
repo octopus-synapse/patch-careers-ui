@@ -30,7 +30,7 @@ import {
 import { Loader2, Pencil, Plus, ToggleLeft, ToggleRight, Trash2 } from 'lucide-svelte';
 import { Button, ConfirmModal, FormModal, Input, Label, SegmentToggle } from 'ui';
 import { browser } from '$app/environment';
-import ExportButton from '$lib/components/data/export-button.svelte';
+import { ExportButton } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

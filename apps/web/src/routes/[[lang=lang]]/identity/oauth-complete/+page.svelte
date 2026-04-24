@@ -1,4 +1,5 @@
 <script lang="ts">
+import { shadowProfileFindCandidates } from 'api-client';
 import { Loader2 } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { goto } from '$app/navigation';
@@ -13,44 +14,29 @@ onMount(async () => {
     error = 'Resposta OAuth inválida.';
     return;
   }
+
+  // Session is already attached by the backend's OAuth callback — no need
+  // to post anything here. We only probe for shadow candidates so we can
+  // offer the claim flow if we pre-built a profile for this user.
   try {
-    const res = await fetch('/api/auth/session/create-from-oauth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, provider }),
-      credentials: 'include',
-    });
-    if (!res.ok) {
-      error = 'Falha ao finalizar login. Tente novamente.';
-      return;
-    }
-
-    // Probe for a shadow profile we may have pre-built for this person.
-    // Doesn't block login on failure — it's an enhancement, not a guard.
-    const githubLogin = $page.url.searchParams.get('githubLogin');
-    const email = $page.url.searchParams.get('email');
-    try {
-      const params = new URLSearchParams();
-      if (githubLogin) params.set('githubLogin', githubLogin);
-      if (email) params.set('email', email);
-      if (params.toString()) {
-        const candRes = await fetch(`/api/v1/shadow-profiles/candidates?${params}`, {
-          credentials: 'include',
-        });
-        const candBody = (await candRes.json()) as { data?: { candidates?: Array<{ id: string }> } };
-        if ((candBody.data?.candidates ?? []).length > 0) {
-          goto(`/onboarding/claim-shadow?${params}`);
-          return;
-        }
+    const githubLogin = $page.url.searchParams.get('githubLogin') ?? undefined;
+    const email = $page.url.searchParams.get('email') ?? undefined;
+    if (githubLogin || email) {
+      const result = await shadowProfileFindCandidates({ githubLogin, email });
+      const candidates = (result as { candidates?: unknown[] })?.candidates ?? [];
+      if (candidates.length > 0) {
+        const params = new URLSearchParams();
+        if (githubLogin) params.set('githubLogin', githubLogin);
+        if (email) params.set('email', email);
+        goto(`/onboarding/claim-shadow?${params}`);
+        return;
       }
-    } catch {
-      // ignore — fall through to dashboard
     }
-
-    goto('/my-profile/dashboard');
   } catch {
-    error = 'Erro de rede ao finalizar login.';
+    // Candidate probe is an enhancement, not a guard — fall through.
   }
+
+  goto('/my-profile/dashboard');
 });
 </script>
 

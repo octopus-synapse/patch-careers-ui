@@ -14,7 +14,7 @@ import {
 } from 'lucide-svelte';
 import { Avatar } from 'ui';
 import { goto } from '$app/navigation';
-import { trackCtaClick } from '$lib/analytics/track';
+import { trackCtaClick } from '$lib/utils/analytics/track';
 
 type Props = {
   open: boolean;

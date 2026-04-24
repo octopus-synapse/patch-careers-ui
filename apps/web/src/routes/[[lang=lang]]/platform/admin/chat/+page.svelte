@@ -9,8 +9,8 @@ import { formatDate } from 'i18n';
 import { Loader2 } from 'lucide-svelte';
 import { SegmentToggle } from 'ui';
 import { browser } from '$app/environment';
-import DataTable from '$lib/components/data/data-table.svelte';
-import Pagination from '$lib/components/data/pagination.svelte';
+import { DataTable } from 'ui';
+import { Pagination } from 'ui';
 import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 

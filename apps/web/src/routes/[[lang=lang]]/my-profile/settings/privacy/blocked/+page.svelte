@@ -9,9 +9,9 @@ import { ShieldOff } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, ConfirmModal, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
-import UserRow from '$lib/components/user-row.svelte';
+import UserRow from '$lib/components/user/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);

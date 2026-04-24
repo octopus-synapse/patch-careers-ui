@@ -31,6 +31,7 @@ import {
   ADMIN_NAV_LINKS,
   isAdminPath,
 } from '../../../routes/[[lang=lang]]/platform/admin/_components/admin-nav-links';
+import { useFeatureFlags } from '$lib/state/feature-flags.svelte';
 
 const pathname = $derived($page.url.pathname);
 const isLanding = $derived(pathname === '/');
@@ -49,7 +50,10 @@ const session = createAuthSession(() => ({
 }));
 const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
-const hasCompletedOnboarding = $derived(user?.hasCompletedOnboarding);
+// Admins bypass onboarding entirely, so `hasCompletedOnboarding` stays
+// false for them — `!needsOnboarding` is the flag that's true for both
+// admins and regular users past the wizard.
+const showNavItems = $derived(Boolean(authenticated) && !(user?.needsOnboarding ?? false));
 const isAdmin = $derived(Boolean(user?.isAdmin));
 
 function isActiveRoute(href: string) {
@@ -130,7 +134,7 @@ function handleGlobalKeydown(e: KeyboardEvent) {
     !e.ctrlKey &&
     !e.altKey &&
     !isSearchOpen &&
-    hasCompletedOnboarding &&
+    showNavItems &&
     !isTypingTarget(e.target)
   ) {
     e.preventDefault();
@@ -146,12 +150,19 @@ const firstName = $derived.by(() => {
 
 const homeLabel = $derived(firstName ? `Olá, ${firstName}` : t('nav.dashboard'));
 
-const navLinks = $derived([
-  { key: 'nav.dashboard', label: homeLabel, href: '/my-profile/dashboard', icon: LayoutDashboard },
-  { key: 'nav.feed', label: t('nav.feed'), href: '/social/feed', icon: Rss },
-  { key: 'nav.jobs', label: t('nav.jobs'), href: '/careers/browse-jobs', icon: Briefcase },
-  { key: 'nav.myNetwork', label: t('nav.myNetwork'), href: '/social/network', icon: Users },
+// Each link may declare a feature-flag key. When the flag is OFF (or its
+// parents cascade off), the link is hidden. Dashboard has no flagKey so
+// it's always reachable.
+const flags = useFeatureFlags(() => ({ authenticated: Boolean(authenticated) }));
+const allNavLinks = $derived([
+  { key: 'nav.dashboard', label: homeLabel, href: '/my-profile/dashboard', icon: LayoutDashboard, flagKey: undefined as string | undefined },
+  { key: 'nav.feed', label: t('nav.feed'), href: '/social/feed', icon: Rss, flagKey: 'social.feed' },
+  { key: 'nav.jobs', label: t('nav.jobs'), href: '/careers/browse-jobs', icon: Briefcase, flagKey: 'jobs' },
+  { key: 'nav.myNetwork', label: t('nav.myNetwork'), href: '/social/network', icon: Users, flagKey: 'social.network' },
 ]);
+const navLinks = $derived(
+  allNavLinks.filter((l) => !l.flagKey || flags.enabled(l.flagKey)),
+);
 
 // Rotating placeholder hints for the global search box.
 let searchHintIdx = $state(0);
@@ -183,7 +194,7 @@ $effect(() => {
 				<NavLogo textClass={isLanding ? 'text-white' : 'text-gray-800 dark:text-neutral-200'} />
 			</div>
 
-			{#if hasCompletedOnboarding}
+			{#if showNavItems}
 				<div class="mx-auto hidden max-w-md flex-1 px-4 lg:px-8 md:block">
 					<button
 						onclick={() => isSearchOpen = true}
@@ -201,7 +212,7 @@ $effect(() => {
 			{/if}
 
 			<div class="flex shrink-0 items-center gap-1">
-				{#if hasCompletedOnboarding}
+				{#if showNavItems}
 					<div class="hidden items-center gap-1 md:flex">
 						{#each navLinks as link}
 							{@const active = isActiveRoute(link.href)}

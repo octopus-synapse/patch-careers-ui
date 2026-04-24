@@ -14,7 +14,7 @@ import ActivityStream from './_components/activity-stream.svelte';
 import CreatePostModal from './_components/create-post-modal.svelte';
 import FeedHeader, { type FeedMode } from './_components/feed-header.svelte';
 import FeedList from './_components/feed-list.svelte';
-import FeedSidebar from './_components/feed-sidebar.svelte';
+import FeedDiscoverPanel from './_components/feed-discover-panel.svelte';
 import NewPostsPill from './_components/new-posts-pill.svelte';
 import type { PostFitScore } from './_components/post-card.svelte';
 import PostSkeleton from './_components/post-skeleton.svelte';
@@ -238,7 +238,7 @@ function handlePostCreated() {
 			</main>
 
 			{#if feedMode !== 'activity'}
-				<FeedSidebar
+				<FeedDiscoverPanel
 					posts={pagination.allPosts}
 					{searchTerm}
 					onsearch={(v) => (searchTerm = v)}

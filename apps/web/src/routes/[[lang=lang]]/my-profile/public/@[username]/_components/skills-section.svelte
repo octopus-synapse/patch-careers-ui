@@ -10,7 +10,7 @@ import {
 import { Check, Plus } from 'lucide-svelte';
 import { Avatar, Button, Card, Skeleton, Tooltip, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
 type Props = {

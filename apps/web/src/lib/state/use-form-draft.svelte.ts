@@ -7,6 +7,10 @@
  *   const draft = useFormDraft('cv/experience', { title: '', company: '' });
  *   // bind:value={draft.state.title}
  *   // on submit:   draft.clear();
+ *
+ * If the key is derived from reactive state (e.g. a route param), pass a
+ * getter so the hook can re-key the storage slot when it changes:
+ *   useFormDraft(() => `cv-${resumeId}`, ...)
  */
 
 export interface FormDraft<T extends Record<string, unknown>> {
@@ -17,34 +21,37 @@ export interface FormDraft<T extends Record<string, unknown>> {
 
 const PREFIX = 'form-draft:';
 
+function hydrate<T extends Record<string, unknown>>(storageKey: string, initial: T): T {
+  const seed = structuredClone(initial);
+  if (typeof window === 'undefined') return seed;
+  try {
+    const raw = window.localStorage.getItem(storageKey);
+    if (!raw) return seed;
+    const parsed = JSON.parse(raw) as Partial<T>;
+    return { ...seed, ...parsed };
+  } catch {
+    return seed;
+  }
+}
+
 export function useFormDraft<T extends Record<string, unknown>>(
-  key: string,
+  key: string | (() => string),
   initial: T,
   options: { debounceMs?: number } = {},
 ): FormDraft<T> {
-  const storageKey = `${PREFIX}${key}`;
+  const getKey = typeof key === 'function' ? key : () => key;
   const debounceMs = options.debounceMs ?? 400;
 
-  let state = $state<T>(structuredClone(initial));
-
-  if (typeof window !== 'undefined') {
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<T>;
-        state = { ...state, ...parsed };
-      }
-    } catch {
-      // storage quota / privacy mode — fall back to in-memory only.
-    }
-  }
+  const initialStorageKey = `${PREFIX}${getKey()}`;
+  const state = $state<T>(hydrate(initialStorageKey, initial));
 
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
   $effect(() => {
     if (typeof window === 'undefined') return;
-    // Touch every key so the effect re-runs on any change.
+    // Read both state and key so the effect re-runs on either change.
     const snapshot = JSON.stringify(state);
+    const storageKey = `${PREFIX}${getKey()}`;
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       try {
@@ -55,28 +62,29 @@ export function useFormDraft<T extends Record<string, unknown>>(
     }, debounceMs);
   });
 
+  // When the key changes (e.g. route param), re-hydrate from the new slot.
+  let lastKey = $state(initialStorageKey);
+  $effect(() => {
+    const nextKey = `${PREFIX}${getKey()}`;
+    if (nextKey === lastKey) return;
+    lastKey = nextKey;
+    const rehydrated = hydrate(nextKey, initial);
+    Object.assign(state, rehydrated);
+  });
+
   function clear() {
     if (typeof window !== 'undefined') {
       try {
-        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(`${PREFIX}${getKey()}`);
       } catch {
         // ignore
       }
     }
-    state = structuredClone(initial);
+    Object.assign(state, structuredClone(initial));
   }
 
   function restoreFromStorage() {
-    if (typeof window === 'undefined') return;
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<T>;
-        state = { ...state, ...parsed };
-      }
-    } catch {
-      // ignore
-    }
+    Object.assign(state, hydrate(`${PREFIX}${getKey()}`, initial));
   }
 
   return {
@@ -84,7 +92,7 @@ export function useFormDraft<T extends Record<string, unknown>>(
       return state;
     },
     set state(next: T) {
-      state = next;
+      Object.assign(state, next);
     },
     clear,
     restoreFromStorage,

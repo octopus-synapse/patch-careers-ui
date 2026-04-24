@@ -44,6 +44,9 @@ $effect(() => {
 });
 
 const displayName = $derived(String(user?.name ?? user?.email ?? ''));
+const photoURL = $derived(
+  ((user as Record<string, unknown> | undefined)?.photoURL as string | null | undefined) ?? null,
+);
 </script>
 
 <svelte:head>
@@ -55,9 +58,11 @@ const displayName = $derived(String(user?.name ?? user?.email ?? ''));
 		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
 	</div>
 {:else if t && authenticated && user}
-	<div class="min-h-[calc(100vh-3.5rem)] pt-20 pb-12">
+	<div
+		class="relative min-h-[calc(100vh-3.5rem)] bg-gradient-to-b from-gray-50/60 via-white to-white pt-20 pb-16 dark:from-neutral-950 dark:via-neutral-950 dark:to-neutral-950"
+	>
 		<main class="mx-auto max-w-6xl px-4 sm:px-6">
-			<GreetingHero name={displayName} />
+			<GreetingHero name={displayName} {photoURL} />
 
 			<!-- Checklist goes above the widgets when anything's incomplete —
 				gives new users a single place to see "what do I do next?" -->
@@ -77,24 +82,28 @@ const displayName = $derived(String(user?.name ?? user?.email ?? ''));
 			<!-- 60/40 grid on md+, single column on mobile. The side column gets
 				more room than the previous 2/3+1/3 split so widgets like Pending
 				Invitations and Remote-USD don't squeeze name/CTA real estate. -->
-			<div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
-				<div class="flex flex-col gap-4 md:col-span-3">
+			<div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-5">
+				<div class="flex flex-col gap-5 md:col-span-3">
 					<WidgetErrorBoundary><RecommendedJobsWidget /></WidgetErrorBoundary>
 					<WidgetErrorBoundary><MyApplicationsWidget /></WidgetErrorBoundary>
 				</div>
 
-				<div class="flex flex-col gap-4 md:col-span-2">
+				<div class="flex flex-col gap-5 md:col-span-2">
 					<WidgetErrorBoundary><ProfileCompletionCard {user} /></WidgetErrorBoundary>
 					<WidgetErrorBoundary><RemoteUsdWidget /></WidgetErrorBoundary>
 					<WidgetErrorBoundary><PendingInvitationsWidget /></WidgetErrorBoundary>
 				</div>
 			</div>
 
-			<div class="mt-8 flex justify-center">
-				<Button variant="ghost" size="sm" onclick={() => goto('/social/feed')}>
-					<Rss size={14} />
-					{t('dashboard.openFeed')}
-				</Button>
+			<div class="mt-10 flex items-center justify-center">
+				<div class="flex items-center gap-3 text-gray-300 dark:text-neutral-800">
+					<span class="h-px w-10 bg-current"></span>
+					<Button variant="ghost" size="sm" onclick={() => goto('/social/feed')}>
+						<Rss size={14} />
+						{t('dashboard.openFeed')}
+					</Button>
+					<span class="h-px w-10 bg-current"></span>
+				</div>
 			</div>
 		</main>
 	</div>

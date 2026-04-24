@@ -9,9 +9,9 @@ import {
 import { UserCheck } from 'lucide-svelte';
 import { Avatar, Button, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/analytics/track';
+import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
-import InfiniteScrollTrigger from '$lib/components/data/infinite-scroll-trigger.svelte';
+import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 
