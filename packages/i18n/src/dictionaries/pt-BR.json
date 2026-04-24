@@ -15,6 +15,28 @@
         "actions": "Ações",
         "applications": "Candidaturas"
       },
+      "jobType": {
+        "INTERNSHIP": "Estágio",
+        "CONTRACT": "Contrato",
+        "FULL_TIME": "Efetivo",
+        "PART_TIME": "Meio período",
+        "VOLUNTEER": "Voluntário",
+        "FREELANCE": "Freelance"
+      },
+      "remotePolicy": {
+        "REMOTE": "Remoto",
+        "HYBRID": "Híbrido",
+        "ONSITE": "Presencial"
+      },
+      "statusActive": "Ativa",
+      "statusInactive": "Pausada",
+      "editLabel": "Editar",
+      "deleteLabel": "Excluir",
+      "deleteTitle": "Excluir vaga",
+      "deleteMessage": "Tem certeza que deseja excluir \"{title}\"? Essa ação não pode ser desfeita.",
+      "deleteConfirm": "Excluir vaga",
+      "deleteTypeKeyword": "excluir",
+      "postedOn": "Publicada em {date}",
       "new": {
         "pageTitle": "Nova vaga",
         "title": "Publicar nova vaga",
@@ -505,7 +527,20 @@
       "health": "Saúde",
       "performance": "Desempenho",
       "chat": "Chat & Colaboração",
+      "audit": "Log de Auditoria",
+      "featureFlags": "Feature Flags",
       "devTools": "Dev Tools"
+    },
+    "audit": {
+      "title": "Log de Auditoria",
+      "timestamp": "Data/Hora",
+      "actor": "Autor",
+      "action": "Ação",
+      "target": "Alvo",
+      "metadata": "Metadados",
+      "noEntries": "Nenhum registro de auditoria",
+      "backendPendingTitle": "Endpoint pendente no backend",
+      "backendPendingDescription": "O log de auditoria depende do endpoint GET /admin/audit-log no backend. Esta página é um placeholder para que a navegação e o layout fiquem prontos assim que o endpoint for entregue."
     },
     "dashboard": {
       "title": "Dashboard",
@@ -539,7 +574,48 @@
       "deleteUser": "Excluir Usuário",
       "confirmDelete": "Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.",
       "confirmResetPassword": "Tem certeza que deseja resetar a senha deste usuário?",
+      "confirmMakeAdmin": "Conceder privilégios de admin para este usuário?",
+      "confirmRevokeAdmin": "Remover privilégios de admin deste usuário?",
       "noUsers": "Nenhum usuário encontrado",
+      "newUser": "Novo Usuário",
+      "makeAdmin": "Tornar Admin",
+      "revokeAdmin": "Revogar Admin",
+      "delete": "Excluir",
+      "selected": "{count} selecionado(s)",
+      "deleteSelected": "Excluir Selecionados",
+      "clearSelection": "Limpar",
+      "emailRequired": "Email *",
+      "emailPlaceholder": "usuario@exemplo.com",
+      "namePlaceholder": "João da Silva",
+      "passwordRequired": "Senha *",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "bulkDeleteTitle": "Excluir Usuários Selecionados",
+      "bulkDeleteMessage": "Tem certeza que deseja excluir {count} usuário(s)? Esta ação não pode ser desfeita.",
+      "resetResultTitle": "Senha resetada",
+      "resetResultDescription": "Uma nova senha foi gerada. Copie agora e entregue ao usuário por um canal seguro — ela não será exibida novamente.",
+      "resetResultCopy": "Copiar senha",
+      "resetResultDone": "Pronto",
+      "resetResultWarning": "Por segurança, nunca envie senhas por email em texto puro.",
+      "toastCreated": "Usuário criado",
+      "toastDeleted": "Usuário excluído",
+      "toastRoleUpdated": "Role atualizado",
+      "toastBulkDeleted": "{count} usuário(s) excluído(s)",
+      "toastBulkPartial": "{ok} excluídos, {fail} com erro",
+      "toastCopyFailed": "Não foi possível copiar para a área de transferência",
+      "selectRowAria": "Selecionar {name}",
+      "rowActionsAria": "Abrir menu de ações de {name}",
+      "filterStatusAll": "Todos os Status",
+      "filterActive": "Ativo",
+      "filterInactive": "Inativo",
+      "statusFilterNote": "Filtro de status é client-side: apenas a página atual é filtrada.",
+      "bulkDeleteTypedPrompt": "Digite DELETE para confirmar.",
+      "bulkDeleteConfirmButton": "Excluir usuários",
+      "sendResetEmail": "Enviar email de reset",
+      "confirmSendResetEmail": "Enviar email de reset de senha para {email}?",
+      "toastResetEmailSent": "Email de reset enviado para {email}",
+      "impersonate": "Entrar como este usuário",
+      "impersonationNotAvailable": "Impersonar {name} requer o endpoint POST /admin/users/{id}/impersonate, que ainda não está disponível no backend.",
+      "noEmailOnRecord": "Este usuário não tem email cadastrado.",
       "detail": {
         "title": "Detalhes do Usuário",
         "resumes": "Currículos",
@@ -559,7 +635,9 @@
       "topSections": "Seções Mais Usadas",
       "topSkills": "Top Skills",
       "importSources": "Fontes de Importação",
-      "viewSources": "Fontes de Visualização"
+      "viewSources": "Fontes de Visualização",
+      "custom": "Personalizado",
+      "customFallbackNote": "Intervalos personalizados ainda não são suportados pelo backend. Mostrando a aproximação de preset mais próxima."
     },
     "skills": {
       "title": "Catálogo de Skills",
@@ -720,7 +798,12 @@
     "connectionAccepted": "aceitou sua conexão",
     "SKILL_DECAY": "Uma das suas skills está fria — atualize para não perder relevância.",
     "APPLICATION_STALE": "Aplicação sem resposta — vale enviar um follow-up.",
-    "CONNECTION_RECOMMENDATION": "Encontramos pessoas com skills parecidas com as suas."
+    "CONNECTION_RECOMMENDATION": "Encontramos pessoas com skills parecidas com as suas.",
+    "FIT_PROFILE_EXPIRED": "Seu Fit Profile expirou — refaça o questionário pra voltar a ver o Match Score.",
+    "FIT_PROFILE_EXPIRY_REMINDER": "Seu Fit Profile expira em breve — refaça o questionário antes pra não perder o match.",
+    "MATCH_RECOMMENDATIONS_READY": "Novas vagas foram rankeadas pra você — confira as recomendações.",
+    "RESUME_QUALITY_IMPROVED": "Seu currículo subiu de faixa — continua assim.",
+    "RESUME_QUALITY_REGRESSED": "Seu currículo caiu de faixa — confira o que mudou."
   },
   "feed": {
     "pageTitle": "Feed",
@@ -823,7 +906,29 @@
     "retry": "Tentar de novo",
     "postDeleted": "Post excluído",
     "undo": "Desfazer",
-    "deleteFailed": "Não foi possível excluir o post"
+    "deleteFailed": "Não foi possível excluir o post",
+    "sidebar": {
+      "searchLabel": "Buscar no feed",
+      "searchPlaceholder": "palavra ou #hashtag",
+      "clearSearch": "Limpar busca",
+      "trendingTitle": "Em alta",
+      "shortcutsTitle": "Atalhos",
+      "suggestions": "Sugestões de rede",
+      "browseJobs": "Ver vagas"
+    },
+    "composer": {
+      "placeholder": "Compartilhe uma conquista, vaga, build ou dúvida…",
+      "hintAchievement": "Conquista",
+      "hintOpportunity": "Vaga",
+      "hintBuild": "Build",
+      "hintQuestion": "Dúvida"
+    },
+    "empty": {
+      "allTitle": "Nada por aqui ainda",
+      "allSubtitle": "Quando alguém da sua bolha publicar, aparece aqui.",
+      "filterTitle": "Nenhum post desse tipo",
+      "filterSubtitle": "Experimente outro filtro ou limpe a busca."
+    }
   },
   "jobs": {
     "pageTitle": "Vagas",
@@ -962,6 +1067,26 @@
       "footer": "Não tem uma conta?",
       "footerLink": "Criar conta",
       "pageTitle": "Entrar"
+    }
+  },
+  "identity": {
+    "verifyEmail": {
+      "pageTitle": "Verificar email",
+      "title": "Confira seu email",
+      "subtitle": "Enviamos um código de verificação para {email}. Cole o código abaixo para continuar.",
+      "subtitleNoEmail": "Cole o código de verificação que enviamos ao seu email.",
+      "codeLabel": "Código de verificação",
+      "codePlaceholder": "Cole aqui o código do email",
+      "submit": "Verificar email",
+      "verifying": "Verificando seu email...",
+      "success": "Email verificado — redirecionando...",
+      "noEmailHelp": "Não recebeu o email? Confira o spam.",
+      "resend": "Reenviar código",
+      "resending": "Enviando...",
+      "resentOk": "Um novo código foi enviado.",
+      "resendCooldown": "Você pode reenviar o código em {seconds}s.",
+      "errorEmpty": "Cole o código do email para continuar.",
+      "errorIncomplete": "Digite os 6 dígitos para continuar."
     }
   }
 }

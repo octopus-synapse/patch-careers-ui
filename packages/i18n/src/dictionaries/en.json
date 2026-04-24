@@ -15,6 +15,28 @@
         "actions": "Actions",
         "applications": "Applications"
       },
+      "jobType": {
+        "INTERNSHIP": "Internship",
+        "CONTRACT": "Contract",
+        "FULL_TIME": "Full-time",
+        "PART_TIME": "Part-time",
+        "VOLUNTEER": "Volunteer",
+        "FREELANCE": "Freelance"
+      },
+      "remotePolicy": {
+        "REMOTE": "Remote",
+        "HYBRID": "Hybrid",
+        "ONSITE": "Onsite"
+      },
+      "statusActive": "Active",
+      "statusInactive": "Paused",
+      "editLabel": "Edit",
+      "deleteLabel": "Delete",
+      "deleteTitle": "Delete job",
+      "deleteMessage": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+      "deleteConfirm": "Delete job",
+      "deleteTypeKeyword": "delete",
+      "postedOn": "Posted on {date}",
       "new": {
         "pageTitle": "New job",
         "title": "Post a new job",
@@ -505,7 +527,20 @@
       "health": "Health",
       "performance": "Performance",
       "chat": "Chat & Collaboration",
+      "audit": "Audit Log",
+      "featureFlags": "Feature Flags",
       "devTools": "Dev Tools"
+    },
+    "audit": {
+      "title": "Audit Log",
+      "timestamp": "Timestamp",
+      "actor": "Actor",
+      "action": "Action",
+      "target": "Target",
+      "metadata": "Metadata",
+      "noEntries": "No audit entries",
+      "backendPendingTitle": "Backend endpoint pending",
+      "backendPendingDescription": "The audit log requires the backend endpoint GET /admin/audit-log. This page is a placeholder so the navigation and layout are ready once the endpoint ships."
     },
     "dashboard": {
       "title": "Dashboard",
@@ -539,7 +574,48 @@
       "deleteUser": "Delete User",
       "confirmDelete": "Are you sure you want to delete this user? This action cannot be undone.",
       "confirmResetPassword": "Are you sure you want to reset this user's password?",
+      "confirmMakeAdmin": "Grant admin privileges to this user?",
+      "confirmRevokeAdmin": "Remove admin privileges from this user?",
       "noUsers": "No users found",
+      "newUser": "New User",
+      "makeAdmin": "Make Admin",
+      "revokeAdmin": "Revoke Admin",
+      "delete": "Delete",
+      "selected": "{count} selected",
+      "deleteSelected": "Delete Selected",
+      "clearSelection": "Clear",
+      "emailRequired": "Email *",
+      "emailPlaceholder": "user@example.com",
+      "namePlaceholder": "John Doe",
+      "passwordRequired": "Password *",
+      "passwordPlaceholder": "Min 8 characters",
+      "bulkDeleteTitle": "Delete Selected Users",
+      "bulkDeleteMessage": "Are you sure you want to delete {count} user(s)? This cannot be undone.",
+      "resetResultTitle": "Password reset",
+      "resetResultDescription": "A new password was generated. Copy it now and deliver it to the user through a secure channel — it will not be shown again.",
+      "resetResultCopy": "Copy password",
+      "resetResultDone": "Done",
+      "resetResultWarning": "For security, never send passwords by plaintext email.",
+      "toastCreated": "User created",
+      "toastDeleted": "User deleted",
+      "toastRoleUpdated": "Role updated",
+      "toastBulkDeleted": "{count} user(s) deleted",
+      "toastBulkPartial": "{ok} deleted, {fail} failed",
+      "toastCopyFailed": "Could not copy to clipboard",
+      "selectRowAria": "Select {name}",
+      "rowActionsAria": "Open actions menu for {name}",
+      "filterStatusAll": "All Statuses",
+      "filterActive": "Active",
+      "filterInactive": "Inactive",
+      "statusFilterNote": "Status filter is client-side: only the current page is filtered.",
+      "bulkDeleteTypedPrompt": "Type DELETE to confirm.",
+      "bulkDeleteConfirmButton": "Delete users",
+      "sendResetEmail": "Send reset email",
+      "confirmSendResetEmail": "Send a password reset email to {email}?",
+      "toastResetEmailSent": "Reset email sent to {email}",
+      "impersonate": "Login as this user",
+      "impersonationNotAvailable": "Impersonation of {name} requires the backend endpoint POST /admin/users/{id}/impersonate, which isn't available yet.",
+      "noEmailOnRecord": "This user has no email on record.",
       "detail": {
         "title": "User Details",
         "resumes": "Resumes",
@@ -559,7 +635,9 @@
       "topSections": "Most Used Sections",
       "topSkills": "Top Skills",
       "importSources": "Import Sources",
-      "viewSources": "View Sources"
+      "viewSources": "View Sources",
+      "custom": "Custom",
+      "customFallbackNote": "Custom ranges are not yet supported by the backend. Showing the closest preset approximation."
     },
     "skills": {
       "title": "Skills Catalog",
@@ -720,7 +798,12 @@
     "connectionAccepted": "accepted your connection",
     "SKILL_DECAY": "One of your skills has gone stale — refresh it to stay relevant.",
     "APPLICATION_STALE": "An application got no reply — consider sending a follow-up.",
-    "CONNECTION_RECOMMENDATION": "We found people with overlapping skills."
+    "CONNECTION_RECOMMENDATION": "We found people with overlapping skills.",
+    "FIT_PROFILE_EXPIRED": "Your Fit Profile expired — retake the quiz to unlock match scoring again.",
+    "FIT_PROFILE_EXPIRY_REMINDER": "Your Fit Profile expires soon — retake it now to keep match scoring uninterrupted.",
+    "MATCH_RECOMMENDATIONS_READY": "New job matches are ready — see your fresh recommendations.",
+    "RESUME_QUALITY_IMPROVED": "Your resume moved up a rank — keep it going.",
+    "RESUME_QUALITY_REGRESSED": "Your resume dropped a rank — check what changed."
   },
   "feed": {
     "pageTitle": "Feed",
@@ -823,7 +906,29 @@
     "retry": "Try again",
     "postDeleted": "Post deleted",
     "undo": "Undo",
-    "deleteFailed": "Could not delete the post"
+    "deleteFailed": "Could not delete the post",
+    "sidebar": {
+      "searchLabel": "Search the feed",
+      "searchPlaceholder": "word or #hashtag",
+      "clearSearch": "Clear search",
+      "trendingTitle": "Trending",
+      "shortcutsTitle": "Shortcuts",
+      "suggestions": "Network suggestions",
+      "browseJobs": "Browse jobs"
+    },
+    "composer": {
+      "placeholder": "Share an achievement, job, build or question…",
+      "hintAchievement": "Win",
+      "hintOpportunity": "Job",
+      "hintBuild": "Build",
+      "hintQuestion": "Question"
+    },
+    "empty": {
+      "allTitle": "Nothing here yet",
+      "allSubtitle": "Posts from people in your bubble will show up here.",
+      "filterTitle": "No posts of this type",
+      "filterSubtitle": "Try a different filter or clear the search."
+    }
   },
   "jobs": {
     "pageTitle": "Jobs",
@@ -962,6 +1067,26 @@
       "footer": "Don't have an account?",
       "footerLink": "Sign up",
       "pageTitle": "Sign in"
+    }
+  },
+  "identity": {
+    "verifyEmail": {
+      "pageTitle": "Verify email",
+      "title": "Check your email",
+      "subtitle": "We sent a verification code to {email}. Paste it below to continue.",
+      "subtitleNoEmail": "Paste the verification code we sent to your email.",
+      "codeLabel": "Verification code",
+      "codePlaceholder": "Paste the code from the email",
+      "submit": "Verify email",
+      "verifying": "Verifying your email...",
+      "success": "Email verified — taking you in...",
+      "noEmailHelp": "Didn't receive the email? Check your spam folder.",
+      "resend": "Resend code",
+      "resending": "Sending...",
+      "resentOk": "A new code has been sent.",
+      "resendCooldown": "You can resend the code in {seconds}s.",
+      "errorEmpty": "Paste the code from your email to continue.",
+      "errorIncomplete": "Enter all 6 digits to continue."
     }
   }
 }
