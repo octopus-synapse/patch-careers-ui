@@ -20,13 +20,13 @@
     "api-client": "workspace:*",
     "i18n": "workspace:*",
     "lucide-svelte": "^0.475.0",
-    "svelte-adapter-bun": "^0.5.0",
+    "svelte-adapter-bun": "^1.0.1",
     "ui": "workspace:*",
     "zod": "^3.23.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",
-    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/svelte": "^5.3.1",
