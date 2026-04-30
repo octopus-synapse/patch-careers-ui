@@ -1,47 +1,47 @@
+import { pagesMeDashboard } from 'api-client';
 import { browser } from '$app/environment';
 
 /**
  * Server-driven payload for the dashboard page.
  *
- * Backend endpoint: GET /v1/pages/me-dashboard (controller in
+ * Backend endpoint: GET /api/v1/pages/me-dashboard (controller in
  * profile-services: bounded-contexts/platform/ui-metadata/controllers/
  * me-dashboard.controller.ts).
  *
  * The composite collapses what was N parallel widget fetches (resumes,
- * applications, notifications, viewer summary, recent activity) into one
- * round-trip. Widgets that opt in read from this store; widgets that
- * haven't been migrated yet keep their own per-widget fetch and just
- * never touch this store — both paths coexist while we migrate.
- *
- * SDK is currently stale for the `pages` namespace, so this uses fetch
- * directly; swap to the SDK call once orval picks up the controller.
+ * applications, notifications, viewer summary, recent activity) into a single
+ * widget envelope. The frontend is intentionally dumb here: each widget is
+ * an opaque `{ id, type, title, size, data, actions?, cta? }` and the page
+ * dispatches by `type` to a local component map. Unknown types render the
+ * `<UnsupportedWidget>` skeleton — no per-type translations or fallbacks.
  */
-export interface MeDashboardCounts {
-  resumes?: number;
-  applications?: number;
-  unreadNotifications?: number;
+export type WidgetSize = 'sm' | 'md' | 'lg' | 'full' | string;
+
+export interface DashboardWidgetCta {
+  label: string;
+  href?: string;
+  intent?: string;
 }
 
-export interface MeDashboardActivity {
+export interface DashboardWidgetAction {
   id: string;
-  type?: string;
-  createdAt?: string | null;
-  [key: string]: unknown;
+  label: string;
+  href?: string;
+  intent?: string;
 }
 
-export interface MeDashboardViewer {
-  id?: string;
-  name?: string | null;
-  email?: string;
-  profileCompletion?: number;
-  [key: string]: unknown;
+export interface DashboardWidget {
+  id: string;
+  type: string;
+  title?: string;
+  size?: WidgetSize;
+  data?: unknown;
+  actions?: DashboardWidgetAction[];
+  cta?: DashboardWidgetCta;
 }
 
 export interface MeDashboardPayload {
-  counts?: MeDashboardCounts;
-  recentActivity?: MeDashboardActivity[];
-  viewer?: MeDashboardViewer;
-  [key: string]: unknown;
+  widgets: DashboardWidget[];
 }
 
 let cached = $state<MeDashboardPayload | null>(null);
@@ -54,22 +54,21 @@ async function fetchMeDashboard(): Promise<MeDashboardPayload | null> {
   loading = true;
   error = null;
   try {
-    const res = await fetch('/api/v1/pages/me-dashboard', { credentials: 'include' });
-    if (!res.ok) {
-      // 404 is expected on backends that don't have the composite endpoint
-      // wired yet; widgets will fall back to their own fetches. Anything
-      // else is a real error worth surfacing in devtools.
-      if (res.status !== 404) {
-        error = `HTTP ${res.status}`;
-      }
-      return null;
-    }
-    const body = (await res.json()) as { data?: MeDashboardPayload };
-    cached = body.data ?? null;
+    // The generated SDK types `pagesMeDashboard` as returning `{ data: void }`
+    // because the swagger spec hasn't shipped a schema for the composite.
+    // We trust the runtime envelope and assert here — once the backend
+    // publishes a schema, orval will tighten this automatically.
+    const res = (await pagesMeDashboard()) as unknown as MeDashboardPayload | null;
+    cached = res ?? null;
     fetchedAt = Date.now();
     return cached;
   } catch (err) {
-    error = err instanceof Error ? err.message : 'unknown';
+    // 404 is expected on backends that don't have the composite endpoint
+    // wired yet; widgets fall back to their own per-widget fetches.
+    const status = (err as { statusCode?: number } | null)?.statusCode;
+    if (status !== undefined && status !== 404) {
+      error = `HTTP ${status}`;
+    }
     return null;
   } finally {
     loading = false;
@@ -79,6 +78,9 @@ async function fetchMeDashboard(): Promise<MeDashboardPayload | null> {
 export const meDashboard = {
   get data() {
     return cached;
+  },
+  get widgets(): DashboardWidget[] {
+    return cached?.widgets ?? [];
   },
   get loading() {
     return loading;

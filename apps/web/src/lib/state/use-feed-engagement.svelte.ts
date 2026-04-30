@@ -1,14 +1,13 @@
-// @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  engagementBookmark,
-  engagementLike,
-  engagementReport,
-  engagementRepost,
-  engagementUnbookmark,
-  engagementUnlike,
-  engagementVote,
-  getFeedGetTimelineQueryKey,
+  engagementPostsBookmarkDelete,
+  engagementPostsBookmarkPost,
+  engagementPostsLikeDelete,
+  engagementPostsLikePost,
+  engagementPostsPollVote,
+  engagementPostsReport,
+  engagementPostsRepost,
+  getFeedListQueryKey,
   isApiError,
   postsDelete,
 } from 'api-client';
@@ -17,6 +16,23 @@ import { locale } from '$lib/state/locale.svelte';
 import { track } from '$lib/utils/analytics/track';
 import { undoableAction } from '$lib/utils/undoable-action';
 
+/**
+ * Engagement overlay (frontend-burro): owns the optimistic-update sets for
+ * like/bookmark/vote, snapshots the previous list before each mutation, and
+ * rolls back on error. Domain truth (label, color, copy) is **not** computed
+ * here — every visible string comes from the locale layer or the backend
+ * payload. The only "logic" the hook owns is UX (debounce, snapshot, retry).
+ *
+ * Canonical post fields read by this hook (post-F1 backend):
+ *   - `isLiked: boolean`
+ *   - `isBookmarked: boolean`
+ *   - `hasVoted: boolean`
+ *   - `reactionType: ReactionType | null`
+ *   - `likesCount: number`
+ *   - `repostsCount: number`
+ *   - `votesCount: number`
+ *   - `myVoteIndex: number | null`
+ */
 type Post = Record<string, unknown>;
 
 type Options = {
@@ -37,14 +53,14 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     const id = String(post.id);
     if (likedPosts.has(id)) return true;
     if (unlikedPosts.has(id)) return false;
-    return Boolean(post.isLiked ?? post.liked ?? false);
+    return Boolean(post.isLiked);
   }
 
   function isPostBookmarked(post: Post): boolean {
     const id = String(post.id);
     if (bookmarkedPosts.has(id)) return true;
     if (unbookmarkedPosts.has(id)) return false;
-    return Boolean(post.isBookmarked ?? post.bookmarked ?? false);
+    return Boolean(post.isBookmarked);
   }
 
   function resetOverrides() {
@@ -60,7 +76,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     const snapshotLiked = likedPosts;
     const snapshotUnliked = unlikedPosts;
     const target = snapshotPosts.find((p) => String(p.id) === id);
-    const wasLiked = Boolean(target?.isLiked ?? target?.liked);
+    const wasLiked = Boolean(target?.isLiked);
     const previousType = (target?.reactionType as ReactionType | null | undefined) ?? null;
 
     likedPosts = new Set([...likedPosts, id]);
@@ -68,28 +84,24 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     setPosts(
       snapshotPosts.map((p) => {
         if (String(p.id) !== id) return p;
-        const prevCount = Number(p.likesCount ?? p.likeCount ?? 0);
+        const prevCount = Number(p.likesCount ?? 0);
         return {
           ...p,
           isLiked: true,
           reactionType: newType,
           likesCount: wasLiked ? prevCount : prevCount + 1,
-          likeCount: wasLiked ? prevCount : prevCount + 1,
         };
       }),
     );
 
     try {
-      await engagementLike(id, {
-        body: JSON.stringify({ reactionType: newType }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      await engagementPostsLikePost(id, { reactionType: newType });
       track(wasLiked ? 'post_reaction_changed' : 'post_reacted', {
         postId: id,
         reactionType: newType,
         previousType,
       });
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
@@ -108,21 +120,20 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     setPosts(
       snapshotPosts.map((p) => {
         if (String(p.id) !== id) return p;
-        const prevCount = Number(p.likesCount ?? p.likeCount ?? 0);
+        const prevCount = Number(p.likesCount ?? 0);
         return {
           ...p,
           isLiked: false,
           reactionType: null,
           likesCount: Math.max(0, prevCount - 1),
-          likeCount: Math.max(0, prevCount - 1),
         };
       }),
     );
 
     try {
-      await engagementUnlike(id);
+      await engagementPostsLikeDelete(id);
       track('post_unreacted', { postId: id });
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
@@ -135,16 +146,16 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     bookmarkedPosts = new Set([...bookmarkedPosts, id]);
     unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
     setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)));
-    await engagementBookmark(id);
-    queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+    await engagementPostsBookmarkPost(id);
+    queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
   }
 
   async function handleUnbookmark(id: string) {
     unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
     bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
     setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)));
-    await engagementUnbookmark(id);
-    queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+    await engagementPostsBookmarkDelete(id);
+    queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
   }
 
   function handleDelete(id: string) {
@@ -158,7 +169,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       },
       commit: () => postsDelete(id),
       onCommitted: () => {
-        queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
       },
       message: locale.t('feed.postDeleted'),
       undoLabel: locale.t('feed.undo'),
@@ -174,21 +185,14 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
         return {
           ...p,
           isReposted: true,
-          repostsCount: Number(p.repostsCount ?? p.repostCount ?? 0) + 1,
+          repostsCount: Number(p.repostsCount ?? 0) + 1,
         };
       }),
     );
     try {
-      if (commentary) {
-        await engagementRepost(id, {
-          body: JSON.stringify({ commentary }),
-          headers: { 'Content-Type': 'application/json' },
-        });
-      } else {
-        await engagementRepost(id);
-      }
+      await engagementPostsRepost(id, commentary ? { commentary } : {});
       track('post_reposted', { postId: id, withCommentary: commentary.length > 0 });
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
     } catch (err) {
       setPosts(snapshot);
       const message =
@@ -200,10 +204,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
   }
 
   async function submitReport(id: string, reason: string) {
-    await engagementReport(id, {
-      body: JSON.stringify({ reason }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await engagementPostsReport(id, { reason });
   }
 
   async function handleVote(id: string, optionIndex: number) {
@@ -230,12 +231,9 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       }),
     );
     try {
-      await engagementVote(id, {
-        body: JSON.stringify({ optionIndex }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      await engagementPostsPollVote(id, { optionIndex });
       track('poll_voted', { postId: id, optionIndex });
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
     } catch (err) {
       setPosts(snapshot);
       const message =

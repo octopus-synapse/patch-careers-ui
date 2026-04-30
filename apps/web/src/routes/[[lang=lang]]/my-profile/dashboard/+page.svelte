@@ -1,5 +1,4 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -14,10 +13,11 @@ import ProfileCompletionCard from './_components/profile-completion-card.svelte'
 // Hidden until the events backend ships — no point in promising AMAs that
 // don't exist yet (per UX feedback #12).
 // import UpcomingEventsCard from './_components/upcoming-events-card.svelte';
+import UnsupportedWidget from '$lib/components/dashboard/unsupported-widget.svelte';
 import WidgetErrorBoundary from '$lib/components/errors/widget-error-boundary.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { meDashboard } from '$lib/state/me-dashboard.svelte';
+import { type DashboardWidget, meDashboard } from '$lib/state/me-dashboard.svelte';
 
 const t = $derived(locale.t);
 
@@ -45,6 +45,22 @@ $effect(() => {
 });
 
 const displayName = $derived(String(user?.name ?? user?.email ?? ''));
+const widgets = $derived<DashboardWidget[]>(meDashboard.widgets);
+
+/**
+ * Known widget types the frontend can render as of F3. Anything else falls
+ * through to `<UnsupportedWidget>` — the backend is the source of truth for
+ * what to put on the dashboard, the frontend just resolves a `type` string
+ * to a component. Adding a new widget = adding an entry here + a component.
+ *
+ * The legacy fetching widgets (RecommendedJobs, MyApplications, etc.)
+ * coexist with the server-driven path until the backend wires those types
+ * into the composite payload (F4).
+ */
+type WidgetTypeKey = 'greeting-hero' | 'counter-grid' | 'list' | 'counter';
+function isKnownWidgetType(t: string): t is WidgetTypeKey {
+  return t === 'greeting-hero' || t === 'counter-grid' || t === 'list' || t === 'counter';
+}
 </script>
 
 <svelte:head>
@@ -60,37 +76,64 @@ const displayName = $derived(String(user?.name ?? user?.email ?? ''));
 		class="relative min-h-[calc(100vh-3.5rem)] bg-gradient-to-b from-gray-50/60 via-white to-white pt-20 pb-16 dark:from-neutral-950 dark:via-neutral-950 dark:to-neutral-950"
 	>
 		<main class="mx-auto max-w-6xl px-4 sm:px-6">
-			<GreetingHero name={displayName} />
+			{#if widgets.length > 0}
+				<!-- Server-driven path: backend ships an ordered widget list and
+					 the frontend just dispatches by `type`. Each entry is opaque
+					 — no per-widget fetch, no domain logic on the client. -->
+				<div class="flex flex-col gap-5">
+					{#each widgets as widget (widget.id)}
+						<WidgetErrorBoundary>
+							{#if isKnownWidgetType(widget.type)}
+								{#if widget.type === 'greeting-hero'}
+									<GreetingHero
+										name={String((widget.data as { name?: string } | undefined)?.name ?? displayName)}
+									/>
+								{:else}
+									<!-- TODO(F4): wire counter-grid / list / counter primitives. -->
+									<UnsupportedWidget id={widget.id} type={widget.type} label={widget.title} />
+								{/if}
+							{:else}
+								<UnsupportedWidget id={widget.id} type={widget.type} label={widget.title} />
+							{/if}
+						</WidgetErrorBoundary>
+					{/each}
+				</div>
+			{:else}
+				<!-- Fallback: static layout when the backend hasn't wired the
+					 composite. Matches what shipped pre-F3 so existing users
+					 don't see a regression while the migration lands. -->
+				<GreetingHero name={displayName} />
 
-			<!-- Checklist goes above the widgets when anything's incomplete —
-				gives new users a single place to see "what do I do next?" -->
-			<div class="mt-6">
-				<WidgetErrorBoundary>
-					<NextStepsChecklist
-						{user}
-						signals={{
-							pendingInvitationsTotal: (user as Record<string, unknown>)?.pendingInvitationsTotal as number | undefined,
-							applicationsCount: (user as Record<string, unknown>)?.applicationsCount as number | undefined,
-							resumeSectionsCount: (user as Record<string, unknown>)?.resumeSectionsCount as number | undefined,
-						}}
-					/>
-				</WidgetErrorBoundary>
-			</div>
-
-			<!-- 60/40 grid on md+, single column on mobile. Side column holds
-				Profile Completion + Pending Invitations since the Remote/USD
-				widget was retired. -->
-			<div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-5">
-				<div class="flex flex-col gap-5 md:col-span-3">
-					<WidgetErrorBoundary><RecommendedJobsWidget /></WidgetErrorBoundary>
-					<WidgetErrorBoundary><MyApplicationsWidget /></WidgetErrorBoundary>
+				<!-- Checklist goes above the widgets when anything's incomplete —
+					gives new users a single place to see "what do I do next?" -->
+				<div class="mt-6">
+					<WidgetErrorBoundary>
+						<NextStepsChecklist
+							user={user as Record<string, unknown>}
+							signals={{
+								pendingInvitationsTotal: (user as Record<string, unknown>)?.pendingInvitationsTotal as number | undefined,
+								applicationsCount: (user as Record<string, unknown>)?.applicationsCount as number | undefined,
+								resumeSectionsCount: (user as Record<string, unknown>)?.resumeSectionsCount as number | undefined,
+							}}
+						/>
+					</WidgetErrorBoundary>
 				</div>
 
-				<div class="flex flex-col gap-5 md:col-span-2">
-					<WidgetErrorBoundary><ProfileCompletionCard {user} /></WidgetErrorBoundary>
-					<WidgetErrorBoundary><PendingInvitationsWidget /></WidgetErrorBoundary>
+				<!-- 60/40 grid on md+, single column on mobile. Side column holds
+					Profile Completion + Pending Invitations since the Remote/USD
+					widget was retired. -->
+				<div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-5">
+					<div class="flex flex-col gap-5 md:col-span-3">
+						<WidgetErrorBoundary><RecommendedJobsWidget /></WidgetErrorBoundary>
+						<WidgetErrorBoundary><MyApplicationsWidget /></WidgetErrorBoundary>
+					</div>
+
+					<div class="flex flex-col gap-5 md:col-span-2">
+						<WidgetErrorBoundary><ProfileCompletionCard user={user as Record<string, unknown>} /></WidgetErrorBoundary>
+						<WidgetErrorBoundary><PendingInvitationsWidget /></WidgetErrorBoundary>
+					</div>
 				</div>
-			</div>
+			{/if}
 
 			<div class="mt-10 flex items-center justify-center">
 				<div class="flex items-center gap-3 text-gray-300 dark:text-neutral-800">

@@ -1,15 +1,41 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-  import { createJobMatchComputeNow, isApiError } from 'api-client';
+  import { createJobMatchMatchPost, isApiError } from 'api-client';
 
   import { onMount } from 'svelte';
   import { Loader, ScoreCard } from 'ui';
 
-  type SubScores = {
-    keyword: number | null;
-    requirements: number | null;
-    semantic: number | null;
-    fit: number | null;
+  /**
+   * Match Score panel — frontend-burro: every visible string and color comes
+   * from the backend. The hook iterates over `dimensions: [{key, label,
+   * value, target?, color?, hint?, weight?}]` exactly as it lands on the
+   * wire. No local table maps a dimension key to a label or to a tone — if
+   * a new dimension ships, it shows up automatically.
+   *
+   * Backend endpoint: POST /api/v1/job-match (T11.2 of F1). The response
+   * envelope is `{ overallScore, dimensions, ... }`. Until the swagger ships
+   * a tightened schema we cast the SDK response to the structural shape we
+   * need.
+   */
+
+  type Dimension = {
+    key: string;
+    label: string;
+    value: number | null;
+    target?: number | null;
+    color?: string | null;
+    hint?: string | null;
+    weight?: number | null;
+  };
+
+  type MatchBreakdown = {
+    overallScore: number;
+    dimensions: Dimension[];
+  };
+
+  type Teaser = {
+    title: string;
+    body: string;
+    cta?: { label: string; href: string };
   };
 
   type Props = {
@@ -19,41 +45,48 @@
 
   let { resumeId, jobId }: Props = $props();
 
-  const matchMutation = createJobMatchComputeNow(() => ({ mutation: {} }));
+  const matchMutation = createJobMatchMatchPost(() => ({ mutation: {} }));
 
-  let breakdown = $state<{ overall: number; subs: SubScores } | null>(null);
-  let lockoutMessage = $state<string | null>(null);
-  let errorMessage = $state<string | null>(null);
+  let breakdown = $state<MatchBreakdown | null>(null);
+  let lockoutTeaser = $state<Teaser | null>(null);
+  let errorTeaser = $state<Teaser | null>(null);
   let loading = $state(true);
 
   async function runCompute() {
     loading = true;
-    errorMessage = null;
-    lockoutMessage = null;
+    errorTeaser = null;
+    lockoutTeaser = null;
     try {
-      const res = await matchMutation.mutateAsync({
+      // Cast: the SDK's typed response is `{ data: void }` because the
+      // swagger spec hasn't shipped a schema yet. Trust the runtime payload.
+      const res = (await matchMutation.mutateAsync({
         data: { resumeId, jobId },
-      });
-      // The mutation type is the envelope `MatchBreakdownDto`.
-      const subs = res.subScores as unknown as SubScores;
-      breakdown = {
-        overall: res.overallScore,
-        subs: {
-          keyword: subs.keyword ?? null,
-          requirements: subs.requirements ?? null,
-          semantic: subs.semantic ?? null,
-          fit: subs.fit ?? null,
-        },
-      };
+      })) as unknown as MatchBreakdown | null;
+
+      if (res && typeof res.overallScore === 'number' && Array.isArray(res.dimensions)) {
+        breakdown = res;
+      } else {
+        breakdown = null;
+      }
     } catch (err) {
       breakdown = null;
-      // 409 fit_profile_required → the global lockout interceptor (4.6)
-      // surfaces the modal; this panel just shows the teaser so the
-      // empty state is obvious even when the modal is dismissed.
+      // 409 fit_profile_required → the backend's `suggestedAction` carries
+      // the CTA copy and href so the frontend doesn't have to know that
+      // detail. Fall through to a generic teaser when the action isn't set.
       if (isApiError(err) && err.statusCode === 409) {
-        lockoutMessage = 'Complete seu Fit Profile para ver o Match Score.';
+        const action = err.suggestedAction;
+        lockoutTeaser = {
+          title: err.message,
+          body: err.message,
+          cta:
+            action?.label && action?.href
+              ? { label: action.label, href: action.href }
+              : undefined,
+        };
+      } else if (isApiError(err)) {
+        errorTeaser = { title: err.message, body: err.message };
       } else {
-        errorMessage = isApiError(err) ? err.message : 'Não foi possível calcular o match.';
+        errorTeaser = { title: 'Erro', body: 'Não foi possível calcular o match.' };
       }
     } finally {
       loading = false;
@@ -69,41 +102,24 @@
   $effect(() => {
     if (resumeId && jobId) void runCompute();
   });
+
+  const subScores = $derived(
+    breakdown?.dimensions.map((d) => ({ label: d.label, score: d.value })) ?? [],
+  );
 </script>
 
 {#if loading && !breakdown}
   <div class="flex h-[160px] items-center justify-center rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
     <Loader size={20} />
   </div>
-{:else if lockoutMessage}
-  <ScoreCard
-    score={null}
-    label="Match Score"
-    teaser={{
-      title: 'Fit Profile necessário',
-      body: lockoutMessage,
-      cta: { label: 'Responder questionário', href: '/my-profile/fit-profile/questions' },
-    }}
-  />
-{:else if errorMessage}
-  <ScoreCard
-    score={null}
-    label="Match Score"
-    teaser={{
-      title: 'Não foi possível calcular',
-      body: errorMessage,
-    }}
-  />
+{:else if lockoutTeaser}
+  <ScoreCard score={null} label="Match Score" teaser={lockoutTeaser} />
+{:else if errorTeaser}
+  <ScoreCard score={null} label="Match Score" teaser={errorTeaser} />
 {:else if breakdown}
   <ScoreCard
-    score={breakdown.overall}
+    score={breakdown.overallScore}
     label="Match Score"
-    description="Keyword + requirements + semantic + fit"
-    subScores={[
-      { label: 'Palavras-chave', score: breakdown.subs.keyword },
-      { label: 'Requisitos', score: breakdown.subs.requirements },
-      { label: 'Semântica (IA)', score: breakdown.subs.semantic },
-      { label: 'Fit cultural', score: breakdown.subs.fit },
-    ]}
+    subScores={subScores}
   />
 {/if}

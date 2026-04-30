@@ -1,8 +1,40 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { browser } from '$app/environment';
-  import { createResumeQualityGet } from 'api-client';
+  import { createResumeQualityResumesQuality } from 'api-client';
   import { Badge, ScoreCard, Skeleton } from 'ui';
+
+  /**
+   * Resume Quality card — frontend-burro: backend ships a `breakdown`
+   * array of `{key, label, value, hint?, severity?}` and an `issues` list.
+   * Severity-to-tone mapping lives in the backend; this component only
+   * surfaces the count and the high-severity highlight that the backend
+   * already labelled "high".
+   *
+   * Endpoint: GET /api/v1/resume-quality/resumes/:id/quality. The SDK
+   * response is `{ data: void }` until the swagger schema lands; we cast
+   * to the structural shape.
+   */
+
+  type QualityBreakdownEntry = {
+    key: string;
+    label: string;
+    value: number | null;
+    hint?: string | null;
+    severity?: string | null;
+  };
+
+  type QualityIssue = {
+    key?: string;
+    label?: string;
+    severity: string;
+    hint?: string | null;
+  };
+
+  type QualitySnapshot = {
+    overallScore: number;
+    breakdown?: QualityBreakdownEntry[];
+    issues?: QualityIssue[];
+  };
 
   type Props = {
     resumeId: string;
@@ -12,15 +44,20 @@
 
   let { resumeId, detailsHref }: Props = $props();
 
-  const qualityQuery = createResumeQualityGet(
+  const qualityQuery = createResumeQualityResumesQuality(
     () => resumeId,
     () => ({ query: { enabled: browser && !!resumeId, refetchOnWindowFocus: false } }),
   );
 
-  const snapshot = $derived(qualityQuery.data ?? null);
+  const snapshot = $derived(
+    (qualityQuery.data ?? null) as unknown as QualitySnapshot | null,
+  );
   const issuesCount = $derived(snapshot?.issues?.length ?? 0);
   const highSeverity = $derived(
-    (snapshot?.issues ?? []).filter((i: { severity: string }) => i.severity === 'high').length,
+    (snapshot?.issues ?? []).filter((i) => i.severity === 'high').length,
+  );
+  const subScores = $derived(
+    snapshot?.breakdown?.map((b) => ({ label: b.label, score: b.value })) ?? [],
   );
 </script>
 
@@ -41,11 +78,7 @@
     <ScoreCard
       score={snapshot.overallScore}
       label="Resume Quality"
-      description="Completude + qualidade de conteúdo"
-      subScores={[
-        { label: 'Completude', score: snapshot.completenessScore },
-        { label: 'Conteúdo (IA)', score: snapshot.contentQualityScore },
-      ]}
+      subScores={subScores}
     />
     {#if issuesCount > 0}
       <div class="flex items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs dark:border-neutral-800 dark:bg-neutral-900/70">
@@ -69,4 +102,3 @@
     {/if}
   </div>
 {/if}
-

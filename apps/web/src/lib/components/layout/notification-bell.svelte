@@ -1,12 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createNotificationsGetByUser,
-  createNotificationsGetUnreadCount,
-  getNotificationsGetByUserQueryKey,
-  getNotificationsGetUnreadCountQueryKey,
-  type NotificationDto,
+  createNotificationsList,
+  createNotificationsUnreadCount,
+  getNotificationsListQueryKey,
+  getNotificationsUnreadCountQueryKey,
   notificationsMarkRead,
 } from 'api-client';
 import { formatDate } from 'i18n';
@@ -16,30 +14,55 @@ import { browser } from '$app/environment';
 import { notificationVisual } from '$lib/utils/notification-icon';
 import { locale } from '$lib/state/locale.svelte';
 
+/**
+ * Structural shape for a notification entry. The swagger spec ships
+ * `data: void` for `/notifications`, so until orval picks up the DTO
+ * we cast at the boundary. The backend is the source of truth for
+ * `type`, `read`, `actor`, and `createdAt`.
+ */
+type NotificationActor = {
+  id?: string;
+  name?: string | null;
+  username?: string | null;
+  photoURL?: string | null;
+};
+
+type NotificationItem = {
+  id: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+  actor?: NotificationActor;
+};
+
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
 let isOpen = $state(false);
 
-const unreadQuery = createNotificationsGetUnreadCount(() => ({
+const unreadQuery = createNotificationsUnreadCount(() => ({
   query: {
     enabled: browser,
     refetchInterval: 30000,
   },
 }));
 
-const unreadCount = $derived(unreadQuery.data?.count);
+const unreadCount = $derived(
+  (unreadQuery.data as { count?: number } | undefined)?.count,
+);
 
-const notificationsQuery = createNotificationsGetByUser(
-  () => ({ cursor: '', limit: 10 }),
+const notificationsQuery = createNotificationsList(
+  () => ({ cursor: '', limit: '10' }),
   () => ({
     query: { enabled: browser && isOpen },
   }),
 );
 
-const notifications = $derived(notificationsQuery.data?.data);
+const notifications = $derived(
+  (notificationsQuery.data as { items?: NotificationItem[] } | undefined)?.items,
+);
 
-function getNotificationMessage(notification: NotificationDto): string {
+function getNotificationMessage(notification: NotificationItem): string {
   const type = notification.type;
   const tKey = `notifications.${type}`;
   return t(tKey) ?? type ?? '';
@@ -59,16 +82,19 @@ function timeAgo(dateStr: string): string {
 }
 
 async function handleMarkAllRead() {
-  await notificationsMarkRead();
-  queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
-  queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
+  // The backend treats an empty body as "mark everything as read" — the
+  // payload is optional and lets a single-row mark-read share the same
+  // endpoint when `notificationId` is set.
+  await notificationsMarkRead({});
+  queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getNotificationsListQueryKey() });
 }
 
-async function handleNotificationClick(notification: NotificationDto) {
+async function handleNotificationClick(notification: NotificationItem) {
   if (!notification.read) {
-    await notificationsMarkRead();
-    queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
-    queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey() });
+    await notificationsMarkRead({ notificationId: notification.id });
+    queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getNotificationsListQueryKey() });
   }
   isOpen = false;
 }

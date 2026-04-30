@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createJobsGetMyApplications } from 'api-client';
+import { createJobsApplicationsGet } from 'api-client';
 import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -11,6 +10,11 @@ import {
   statusLabel as resolveStatusLabel,
 } from '$lib/utils/application-status';
 
+/**
+ * The applications endpoint returns whatever the backend ships under
+ * `items` (post-F1 canonical pagination). Schemas aren't yet emitted by
+ * orval so we cast — once the swagger picks up the DTO, the cast drops.
+ */
 type ApplicationItem = {
   id?: string;
   jobId?: string;
@@ -23,21 +27,16 @@ type ApplicationItem = {
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.data?.authenticated ?? false);
 
-const query = createJobsGetMyApplications(
-  () => ({ page: 1, limit: 5 }),
+const query = createJobsApplicationsGet(
+  () => ({ page: '1', limit: '5' }),
   () => ({ query: { enabled: browser && authenticated } }),
 );
 
 const items = $derived.by<ApplicationItem[]>(() => {
-  const d = query.data as Record<string, unknown> | undefined;
-  const candidate =
-    (d?.data as ApplicationItem[] | undefined) ??
-    (d?.applications as ApplicationItem[] | undefined) ??
-    (Array.isArray(d) ? (d as ApplicationItem[]) : undefined) ??
-    [];
-  return candidate;
+  const d = query.data as { items?: ApplicationItem[] } | undefined;
+  return d?.items ?? [];
 });
 
 const statusIntent = (status?: string) => resolveStatusIntent(status);
@@ -87,7 +86,7 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 	{:else}
 		<ul class="-mx-2 divide-y divide-gray-100 dark:divide-neutral-800/80">
 			{#each items as app (app.id ?? app.jobId)}
-				{@const title = app.job?.title ?? app.jobTitle ?? '—'}
+				{@const jobTitle = app.job?.title ?? app.jobTitle ?? '—'}
 				{@const company = app.job?.company ?? app.company ?? ''}
 				{@const jobId = app.job?.id ?? app.jobId}
 				<li>
@@ -98,7 +97,7 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 					>
 						<div class="min-w-0 flex-1">
 							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-cyan-700 dark:text-neutral-100 dark:group-hover:text-cyan-300">
-								{title}
+								{jobTitle}
 							</p>
 							{#if company}
 								<p class="truncate text-xs text-gray-500 dark:text-neutral-500">{company}</p>

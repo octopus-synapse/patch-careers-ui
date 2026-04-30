@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createJobsFindSimilar } from 'api-client';
+import { createJobsSimilar } from 'api-client';
 import { Briefcase, MapPin } from 'lucide-svelte';
 import { Card } from 'ui';
 import { browser } from '$app/environment';
@@ -14,9 +13,13 @@ const { jobId }: Props = $props();
 
 const t = $derived(locale.t);
 
-const similarQuery = createJobsFindSimilar(
+/**
+ * `JobsSimilarParams.limit` is a string in the swagger (it's a query param);
+ * the backend parses to int. Frontend just hands the string through.
+ */
+const similarQuery = createJobsSimilar(
   () => jobId,
-  () => ({ limit: 5 }),
+  () => ({ limit: '5' }),
   () => ({ query: { enabled: browser && !!jobId } }),
 );
 
@@ -31,7 +34,7 @@ type SimilarJob = {
 };
 
 const items = $derived(
-  ((similarQuery.data as unknown as { items?: SimilarJob[] } | undefined)?.items ?? []) as SimilarJob[],
+  ((similarQuery.data as { items?: SimilarJob[] } | undefined)?.items ?? []) as SimilarJob[],
 );
 </script>
 

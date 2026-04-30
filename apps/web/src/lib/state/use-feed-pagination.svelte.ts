@@ -1,8 +1,20 @@
 import { browser } from '$app/environment';
 
+/**
+ * Feed pagination overlay (cursor-based, infinite-scroll friendly).
+ *
+ * Backend contract (post-F1, canonical):
+ *   { items: Post[]; nextCursor?: string | null; hasNew?: boolean }
+ *
+ * The hook is the source of truth for the *materialized* list shown on screen
+ * (`allPosts`) and the *buffered* set of items that arrived at the head while
+ * the user was scrolling (`newPostsBuffer`). It does not derive any domain
+ * decision from the payload — it just unions cursor pages and detects head
+ * drift to surface a "X new posts" pill.
+ */
 type Post = Record<string, unknown>;
 
-type RawData = unknown;
+type RawData = { items?: Post[]; nextCursor?: string | null; hasNew?: boolean } | undefined;
 
 type Options = {
   getRawData: () => RawData;
@@ -15,25 +27,13 @@ export function useFeedPagination({ getRawData }: Options) {
   let loadingMore = $state(false);
   let newPostsBuffer = $state<Post[]>([]);
 
-  function extractPosts(rawData: unknown): Post[] | undefined {
-    if (!rawData) return undefined;
-    if (Array.isArray(rawData)) return rawData as Post[];
-    const maybe = (rawData as { posts?: unknown }).posts;
-    return Array.isArray(maybe) ? (maybe as Post[]) : undefined;
-  }
-
-  function extractNextCursor(rawData: unknown): string | undefined {
-    if (!rawData || Array.isArray(rawData)) return undefined;
-    const c = (rawData as { nextCursor?: unknown }).nextCursor;
-    return typeof c === 'string' ? c : undefined;
-  }
-
   $effect(() => {
     const rawData = getRawData();
-    const postsArr = extractPosts(rawData);
-    if (!postsArr) return;
+    if (!rawData) return;
+    const postsArr = rawData.items;
+    if (!Array.isArray(postsArr)) return;
 
-    const nextCursor = extractNextCursor(rawData);
+    const nextCursor = rawData.nextCursor ?? undefined;
 
     if (cursor === undefined) {
       if (allPosts.length === 0) {
@@ -75,7 +75,7 @@ export function useFeedPagination({ getRawData }: Options) {
 
   function loadNextPage() {
     if (loadingMore) return;
-    const nextCursor = extractNextCursor(getRawData());
+    const nextCursor = getRawData()?.nextCursor ?? undefined;
     if (nextCursor) {
       loadingMore = true;
       cursor = nextCursor;

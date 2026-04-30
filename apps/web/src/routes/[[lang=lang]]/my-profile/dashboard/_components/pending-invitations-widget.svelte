@@ -1,12 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createConnectionAcceptConnection,
-  createConnectionGetPendingRequests,
-  createConnectionRejectConnection,
-  getConnectionGetConnectionsQueryKey,
-  getConnectionGetPendingRequestsQueryKey,
+  createSocialConnectionsConnectionsAccept,
+  createSocialConnectionsConnectionsReject,
+  createSocialConnectionsUsersMeConnectionsPending,
+  getSocialConnectionsUsersMeConnectionsPendingQueryKey,
 } from 'api-client';
 import { Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -14,37 +12,58 @@ import { useAuth } from '$lib/state/auth.svelte';
 import UserRow from '$lib/components/user/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
+/**
+ * Pending invitation items come from the canonical paginated endpoint.
+ * Schema isn't yet emitted by orval (the swagger has `data: void`), so we
+ * cast to a structural shape — this widget is dumb and just renders what
+ * the backend ships under `items`.
+ */
+type PendingRequest = {
+  id?: string;
+  user?: { id?: string; name?: string | null; username?: string | null; photoURL?: string | null };
+  requester?: {
+    id?: string;
+    name?: string | null;
+    username?: string | null;
+    photoURL?: string | null;
+  };
+};
+
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.data?.authenticated ?? false);
 
-const pendingQuery = createConnectionGetPendingRequests(
-  () => ({ page: 1, limit: 3 }),
+const pendingQuery = createSocialConnectionsUsersMeConnectionsPending(
+  () => ({ page: '1', limit: '3' }),
   () => ({ query: { enabled: browser && authenticated } }),
 );
 
 const pending = $derived.by(() => {
-  const outer = pendingQuery.data as Record<string, unknown> | undefined;
-  const section = outer?.pendingRequests as Record<string, unknown> | undefined;
+  const outer = pendingQuery.data as
+    | { items?: PendingRequest[]; total?: number }
+    | undefined;
   return {
-    data: (section?.data as Record<string, unknown>[] | undefined) ?? [],
-    total: section?.total as number | undefined,
+    data: outer?.items ?? [],
+    total: outer?.total,
   };
 });
 
 const queryClient = useQueryClient();
-const acceptMutation = createConnectionAcceptConnection(() => ({
+const acceptMutation = createSocialConnectionsConnectionsAccept(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetPendingRequestsQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey(),
+      });
     },
   },
 }));
-const rejectMutation = createConnectionRejectConnection(() => ({
+const rejectMutation = createSocialConnectionsConnectionsReject(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetPendingRequestsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey(),
+      });
     },
   },
 }));
@@ -120,15 +139,15 @@ async function onReject(id: string) {
 	{:else}
 		<div class="divide-y divide-gray-100 dark:divide-neutral-700/40">
 			{#each pending.data as request}
-				{@const user = (request.user ?? request.requester ?? request) as Record<string, string | null>}
+				{@const u = request.user ?? request.requester ?? {}}
 				{@const reqId = String(request.id ?? '')}
 				<UserRow
 					layout="stacked"
 					user={{
-						id: String(user.id ?? ''),
-						name: user.name,
-						username: user.username,
-						photoURL: user.photoURL
+						id: String(u.id ?? ''),
+						name: u.name ?? null,
+						username: u.username ?? null,
+						photoURL: u.photoURL ?? null,
 					}}
 				>
 					{#snippet actions()}

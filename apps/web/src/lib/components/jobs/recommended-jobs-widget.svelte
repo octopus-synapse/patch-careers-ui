@@ -1,12 +1,16 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createJobsGetRecommendedJobs } from 'api-client';
+import { createJobsRecommended } from 'api-client';
 import { Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
+/**
+ * Structural shape — the SDK swagger ships `data: void` so we cast at the
+ * boundary. The widget is dumb: title/company/location/matchScore are
+ * surfaced verbatim from the backend.
+ */
 type RecommendedJob = {
   id: string;
   title?: string;
@@ -17,16 +21,16 @@ type RecommendedJob = {
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.data?.authenticated ?? false);
 
-const query = createJobsGetRecommendedJobs(
-  () => ({ page: 1, limit: 5 }),
+const query = createJobsRecommended(
+  () => ({ page: '1', limit: '5' }),
   () => ({ query: { enabled: browser && authenticated } }),
 );
 
 const items = $derived.by<RecommendedJob[]>(() => {
-  const data = query.data as Record<string, unknown> | undefined;
-  return (data?.data as RecommendedJob[] | undefined) ?? [];
+  const data = query.data as { items?: RecommendedJob[] } | undefined;
+  return data?.items ?? [];
 });
 </script>
 

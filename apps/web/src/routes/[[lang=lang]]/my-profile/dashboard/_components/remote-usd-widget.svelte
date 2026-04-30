@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createJobsFindAll } from 'api-client';
+import { createJobsList } from 'api-client';
 import { ArrowRight, Globe2 } from 'lucide-svelte';
 import { Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -19,23 +18,18 @@ type RemoteJob = {
 const t = $derived(locale.t);
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.data?.authenticated ?? false);
 
 // Show the first 3 USD/EUR remote jobs as mini cards instead of a raw count
 // — gives the user something to act on (per UX feedback #11).
-const query = createJobsFindAll(
-  () => ({ page: 1, limit: 3, search: '', skills: '', paymentCurrency: 'USD,EUR' }),
+const query = createJobsList(
+  () => ({ page: '1', limit: '3', search: '', skills: '', paymentCurrency: 'USD,EUR' }),
   () => ({ query: { enabled: browser && authenticated } }),
 );
 
 const items = $derived.by<RemoteJob[]>(() => {
-  const d = query.data as Record<string, unknown> | undefined;
-  return (
-    (d?.items as RemoteJob[] | undefined) ??
-    (d?.data as RemoteJob[] | undefined) ??
-    (Array.isArray(d) ? (d as RemoteJob[]) : []) ??
-    []
-  );
+  const d = query.data as { items?: RemoteJob[] } | undefined;
+  return d?.items ?? [];
 });
 const total = $derived((query.data as { total?: number } | undefined)?.total ?? items.length);
 </script>
