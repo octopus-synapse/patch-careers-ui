@@ -1,10 +1,13 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createAdminAlertsGetAlerts } from 'api-client';
+  /**
+   * Admin alerts widget — burra: chama SDK e renderiza chips/links.
+   * Backend retorna shape ainda não tipado pelo OpenAPI; cast local.
+   */
+import { createAdminAlertsList } from 'api-client';
 import { AlertTriangle, Flag, MailCheck, UserPlus } from 'lucide-svelte';
 import { browser } from '$app/environment';
 
-const alertsQuery = createAdminAlertsGetAlerts(() => ({
+const alertsQuery = createAdminAlertsList(() => ({
   query: { enabled: browser, refetchInterval: 60_000 },
 }));
 

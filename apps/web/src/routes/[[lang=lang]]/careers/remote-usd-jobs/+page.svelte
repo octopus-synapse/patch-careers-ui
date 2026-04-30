@@ -1,6 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createJobsFindAll } from 'api-client';
+  /**
+   * /careers/remote-usd-jobs — burra: lista vagas com paymentCurrency=USD.
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
+import { createJobsList } from 'api-client';
 import { ArrowRight, Briefcase, Globe2, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -18,8 +21,8 @@ type JobItem = {
 
 const t = $derived(locale.t);
 
-const query = createJobsFindAll(
-  () => ({ page: 1, limit: 30, search: '', skills: '', paymentCurrency: 'USD,EUR' }),
+const query = createJobsList(
+  () => ({ page: '1', limit: '30', paymentCurrency: 'USD' }),
   () => ({ query: { enabled: browser } }),
 );
 

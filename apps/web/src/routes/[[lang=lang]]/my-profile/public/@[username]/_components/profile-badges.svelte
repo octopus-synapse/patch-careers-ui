@@ -1,6 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createBadgesListForUser } from 'api-client';
+  /**
+   * Profile badges — burra: chama createBadgesUser e renderiza grid.
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
+import { createBadgesUser } from 'api-client';
 import { BadgeIcon, type BadgeKind, Tooltip } from 'ui';
 import { browser } from '$app/environment';
 
@@ -11,7 +14,7 @@ type Props = {
 };
 let { userId, showLocked = false }: Props = $props();
 
-const query = createBadgesListForUser(
+const query = createBadgesUser(
   () => userId,
   () => ({ query: { enabled: browser && Boolean(userId) } }),
 );

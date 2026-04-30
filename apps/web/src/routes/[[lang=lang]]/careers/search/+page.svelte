@@ -1,6 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { SearchSearchSortBy, createJobsFindAll, createSearchSearch, searchSearch } from 'api-client';
+  /**
+   * /careers/search — burra: pessoas + jobs via SDK.
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
+import { SearchListSortBy, createJobsList, createSearchList, searchList } from 'api-client';
 import { Search, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
@@ -56,18 +59,18 @@ const queryParams = $derived({
   maxExp: initialMaxExp,
   page: 1,
   limit: 20,
-  sortBy: SearchSearchSortBy.relevance,
+  sortBy: SearchListSortBy.relevance,
 });
 
-const query = createSearchSearch(
+const query = createSearchList(
   () => queryParams,
   () => ({
     query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'people' },
   }),
 );
 
-const jobsQuery = createJobsFindAll(
-  () => ({ search: initialQuery, skills: '', page: 1, limit: 20 }),
+const jobsQuery = createJobsList(
+  () => ({ search: initialQuery, page: '1', limit: '20' }),
   () => ({
     query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'jobs' },
   }),
@@ -85,7 +88,10 @@ function rowsFrom(items?: Record<string, unknown>[]): Person[] {
 
 const firstPage = $derived.by(() => {
   const data = query.data as Record<string, unknown> | undefined;
-  const items = (data?.data as Record<string, unknown>[] | undefined) ?? [];
+  const items =
+    (data?.items as Record<string, unknown>[] | undefined) ??
+    (data?.data as Record<string, unknown>[] | undefined) ??
+    [];
   return {
     rows: rowsFrom(items),
     total: Number(data?.total ?? 0),
@@ -113,11 +119,13 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await searchSearch({
+    const res = (await searchList({
       ...queryParams,
       page: next,
     })) as unknown as Record<string, unknown> | undefined;
-    const items = (res?.data as Record<string, unknown>[] | undefined) ?? [];
+    const items = (res?.items as Record<string, unknown>[] | undefined) ??
+      (res?.data as Record<string, unknown>[] | undefined) ??
+      [];
     extra = [...extra, ...rowsFrom(items)];
     pageNum = next;
   } finally {

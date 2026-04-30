@@ -1,42 +1,35 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-  import { createFitProfileMe, createResumesGetAllUserResumes } from 'api-client';
+  /**
+   * /my-profile/scores — burra: hub que mostra Resume Quality + Match Score
+   * + Style Score. Backend retorna `void` no schema OpenAPI; cast local.
+   */
+  import { createFitProfileMeGet, createResumesList } from 'api-client';
   import { ArrowRight } from 'lucide-svelte';
   import { browser } from '$app/environment';
   import ResumeQualityCard from '$lib/components/scoring/resume-quality-card.svelte';
-  import { useAuth } from '$lib/state/auth.svelte';
   import { Card, ScoreCard } from 'ui';
 
-  const auth = useAuth();
-  const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+  type ResumeRow = { id?: string };
+  type ResumesPage = { items?: ResumeRow[] };
+  type FitMe = { status?: 'responded' | 'expired' | 'never' };
 
-  /** Primary resume id — the hub's scores are anchored to the user's
-   *  first resume. Future iteration can add a picker for multi-resume
-   *  users. */
-  const myResumesQuery = createResumesGetAllUserResumes(
-    () => ({ userId: currentUserId, page: 1, limit: 1 }),
-    () => ({ query: { enabled: browser && !!currentUserId, retry: false } }),
+  const myResumesQuery = createResumesList(
+    () => ({ page: '1', limit: '1' }),
+    () => ({ query: { enabled: browser, retry: false } }),
   );
   const primaryResumeId = $derived<string | null>(
-    myResumesQuery.data &&
-      typeof myResumesQuery.data === 'object' &&
-      'data' in myResumesQuery.data &&
-      Array.isArray((myResumesQuery.data as { data: unknown[] }).data) &&
-      (myResumesQuery.data as { data: Array<{ id?: string }> }).data.length > 0
-      ? ((myResumesQuery.data as { data: Array<{ id?: string }> }).data[0]?.id ?? null)
-      : null,
+    ((myResumesQuery.data as unknown as ResumesPage | undefined)?.items?.[0]?.id ?? null) as
+      | string
+      | null,
   );
 
-  /** Fit Profile status — decides whether Match Score is available
-   *  vs teased. Match Score itself is per-job, so this hub only shows
-   *  "available / expired / never" with a link to /careers/browse-jobs. */
-  const fitMeQuery = createFitProfileMe(() => ({
-    query: { enabled: browser && !!currentUserId, retry: false },
+  const fitMeQuery = createFitProfileMeGet(() => ({
+    query: { enabled: browser, retry: false },
   }));
   const fitStatus = $derived<'responded' | 'expired' | 'never' | 'loading'>(
     fitMeQuery.isPending
       ? 'loading'
-      : ((fitMeQuery.data?.status as 'responded' | 'expired' | 'never' | undefined) ?? 'never'),
+      : (fitMeQuery.data as unknown as FitMe | undefined)?.status ?? 'never',
   );
 </script>
 

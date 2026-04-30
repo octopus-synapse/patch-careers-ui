@@ -1,19 +1,28 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+  /**
+   * /my-profile/styles — burra: catálogo de estilos do backend; aplica no
+   * primeiro currículo. Backend retorna `void` no schema OpenAPI; cast local.
+   */
   import {
-    createResumesGetAllUserResumes,
-    createResumeStylesApply,
+    createResumesList,
     createResumeStylesList,
     getBaseUrl,
+    resumeStylesStyle,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Lock } from 'lucide-svelte';
   import { Button, Card, Loader, RankBadge, toastState } from 'ui';
   import { browser } from '$app/environment';
-  import { useAuth } from '$lib/state/auth.svelte';
 
-  const auth = useAuth();
-  const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+  type Style = {
+    id: string;
+    name?: string;
+    description?: string;
+    isSystem?: boolean;
+    styleScore?: number;
+  };
+  type ResumeRow = { id?: string };
+
   const queryClient = useQueryClient();
 
   const listQuery = createResumeStylesList(
@@ -21,22 +30,14 @@
     () => ({ query: { enabled: browser, refetchOnWindowFocus: false } }),
   );
 
-  /** First resume for apply action. */
-  const myResumesQuery = createResumesGetAllUserResumes(
-    () => ({ userId: currentUserId, page: 1, limit: 1 }),
-    () => ({ query: { enabled: browser && !!currentUserId } }),
+  const myResumesQuery = createResumesList(
+    () => ({ page: '1', limit: '1' }),
+    () => ({ query: { enabled: browser } }),
   );
   const primaryResumeId = $derived<string | null>(
-    myResumesQuery.data &&
-      typeof myResumesQuery.data === 'object' &&
-      'data' in myResumesQuery.data &&
-      Array.isArray((myResumesQuery.data as { data: unknown[] }).data) &&
-      (myResumesQuery.data as { data: Array<{ id?: string }> }).data.length > 0
-      ? ((myResumesQuery.data as { data: Array<{ id?: string }> }).data[0]?.id ?? null)
-      : null,
+    ((myResumesQuery.data as unknown as { items?: ResumeRow[] } | undefined)?.items?.[0]?.id ??
+      null) as string | null,
   );
-
-  const applyMutation = createResumeStylesApply(() => ({ mutation: {} }));
 
   let applyingStyleId = $state<string | null>(null);
   async function applyStyle(styleId: string): Promise<void> {
@@ -46,10 +47,7 @@
     }
     applyingStyleId = styleId;
     try {
-      await applyMutation.mutateAsync({
-        resumeId: primaryResumeId,
-        data: { styleId },
-      });
+      await resumeStylesStyle(primaryResumeId, { styleId });
       toastState.show('Estilo aplicado ao seu currículo.', 'success');
       await queryClient.invalidateQueries({ queryKey: ['resume'] });
     } catch (err) {
@@ -62,15 +60,14 @@
     }
   }
 
-  /** Preview URL built by hand since the endpoint returns a PDF stream.
-   *  Loading it into an <object> lets the browser handle the PDF natively
-   *  and also benefits from the backend's MinIO cache transparently. */
   const baseUrl = $derived(browser ? getBaseUrl() : '');
   function previewUrl(id: string): string {
     return `${baseUrl}/v1/resume-styles/${id}/preview.pdf`;
   }
 
-  const styles = $derived(listQuery.data?.items ?? []);
+  const styles = $derived(
+    ((listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? []) as Style[],
+  );
 </script>
 
 <section class="mx-auto max-w-5xl space-y-6 p-6">

@@ -1,149 +1,195 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import {
-  createAdminChatGetConversations,
-  createAdminChatGetStats,
-  createAdminCollaborationsGetCollaborations,
-  createAdminCollaborationsGetStats,
-} from 'api-client';
-import { formatDate } from 'i18n';
-import { SegmentToggle } from 'ui';
-import { browser } from '$app/environment';
-import { DataTable } from 'ui';
-import { Pagination } from 'ui';
-import StatCard from '../_components/stat-card.svelte';
-import { locale } from '$lib/state/locale.svelte';
+  /**
+   * Admin chat & collaborations — burra: chama SDK e renderiza listas.
+   * Backend ainda devolve `void` no schema OpenAPI; cast local.
+   */
+  import {
+    createAdminChatConversations,
+    createAdminChatStats,
+    createAdminCollaborationsList,
+    createAdminCollaborationsStats,
+  } from 'api-client';
+  import { browser } from '$app/environment';
+  import StatCard from '../_components/stat-card.svelte';
+  import { locale } from '$lib/state/locale.svelte';
 
-const t = $derived(locale.t);
+  const t = $derived(locale.t);
 
-let activeTab = $state<'chat' | 'collaborations'>('chat');
-let chatPage = $state(1);
-let collabPage = $state(1);
+  type ChatStats = { totalConversations?: number; totalMessages?: number; activeUsers?: number };
+  type CollabStats = { totalCollaborations?: number };
+  type Conversation = {
+    id: string;
+    participants?: string[];
+    lastMessage?: string;
+    lastMessageAt?: string;
+  };
+  type Collaboration = {
+    id: string;
+    user?: string;
+    resume?: string;
+    role?: string;
+    createdAt?: string;
+  };
+  type Paged<T> = { items?: T[]; totalPages?: number; page?: number };
 
-const tabOptions = $derived([
-  { value: 'chat', label: t?.('admin.chat.chatTab') ?? 'Chat' },
-  { value: 'collaborations', label: t?.('admin.chat.collaborationsTab') ?? 'Collaborations' },
-]);
+  let activeTab = $state<'chat' | 'collaborations'>('chat');
+  let chatPage = $state(1);
+  let collabPage = $state(1);
 
-const chatStatsQuery = createAdminChatGetStats(() => ({
-  query: { enabled: browser },
-}));
-const chatConversationsQuery = createAdminChatGetConversations(
-  () => ({ page: chatPage, pageSize: 20 }),
-  () => ({ query: { enabled: browser && activeTab === 'chat' } }),
-);
-const collabStatsQuery = createAdminCollaborationsGetStats(() => ({
-  query: { enabled: browser },
-}));
-const collabListQuery = createAdminCollaborationsGetCollaborations(
-  () => ({ page: collabPage, pageSize: 20 }),
-  () => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
-);
+  const chatStatsQuery = createAdminChatStats(() => ({
+    query: { enabled: browser },
+  }));
+  const chatConversationsQuery = createAdminChatConversations(
+    () => ({ page: String(chatPage), pageSize: '20' }),
+    () => ({ query: { enabled: browser && activeTab === 'chat' } }),
+  );
+  const collabStatsQuery = createAdminCollaborationsStats(() => ({
+    query: { enabled: browser },
+  }));
+  const collabListQuery = createAdminCollaborationsList(
+    () => ({ page: String(collabPage), pageSize: '20' }),
+    () => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
+  );
 
-const chatStats = $derived(chatStatsQuery.data);
-const chatData = $derived(chatConversationsQuery.data);
-const conversations = $derived(chatData?.items);
-const chatTotalPages = $derived(chatData?.totalPages);
-
-const collabStats = $derived(collabStatsQuery.data);
-const collabData = $derived(collabListQuery.data);
-const collaborations = $derived(collabData?.items);
-const collabTotalPages = $derived(collabData?.totalPages);
-
-const chatColumns = $derived([
-  { key: 'participants', label: t?.('admin.chat.participants') ?? 'Participants' },
-  { key: 'lastMessage', label: t?.('admin.chat.lastMessage') ?? 'Last Message' },
-  { key: 'lastMessageAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
-]);
-
-const collabColumns = $derived([
-  { key: 'user', label: t?.('admin.chat.user') ?? 'User' },
-  { key: 'resume', label: t?.('admin.chat.resume') ?? 'Resume' },
-  { key: 'role', label: t?.('admin.chat.collaboratorRole') ?? 'Role', width: '100px' },
-  { key: 'invitedAt', label: t?.('admin.chat.date') ?? 'Date', width: '120px' },
-]);
+  const chatStats = $derived(chatStatsQuery.data as unknown as ChatStats | undefined);
+  const chatData = $derived(chatConversationsQuery.data as unknown as Paged<Conversation> | undefined);
+  const conversations = $derived(chatData?.items ?? []);
+  const collabStats = $derived(collabStatsQuery.data as unknown as CollabStats | undefined);
+  const collabData = $derived(collabListQuery.data as unknown as Paged<Collaboration> | undefined);
+  const collaborations = $derived(collabData?.items ?? []);
 </script>
 
 <svelte:head>
-	<title>{t?.('admin.chat.title') ?? 'Chat'}</title>
+  <title>{t('admin.chat.title')}</title>
 </svelte:head>
 
 <div class="space-y-6">
-	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-		<h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-			{t?.('admin.chat.title') ?? 'Chat & Collaboration'}
-		</h1>
-		<SegmentToggle
-			options={tabOptions}
-			selected={activeTab}
-			onchange={(v) => activeTab = v as 'chat' | 'collaborations'}
-		/>
-	</div>
+  <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
+    {t('admin.chat.title')}
+  </h1>
 
-	<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-		<StatCard label={t?.('admin.chat.totalConversations') ?? 'Conversations'} value={chatStats?.totalConversations ?? 0} />
-		<StatCard label={t?.('admin.chat.totalMessages') ?? 'Messages'} value={chatStats?.totalMessages ?? 0} />
-		<StatCard label={t?.('admin.chat.activeUsers') ?? 'Active Users'} value={chatStats?.activeChatUsers ?? 0} />
-		<StatCard label={t?.('admin.chat.totalCollaborations') ?? 'Collaborations'} value={collabStats?.totalCollaborations ?? 0} />
-	</div>
+  <div class="flex gap-2">
+    <button
+      type="button"
+      class="rounded-md border px-3 py-1.5 text-xs transition-colors {activeTab === 'chat'
+        ? 'border-primary bg-primary/10 text-primary'
+        : 'border-border text-gray-500 hover:bg-muted dark:text-neutral-500'}"
+      onclick={() => (activeTab = 'chat')}
+    >
+      {t('admin.chat.chatTab')}
+    </button>
+    <button
+      type="button"
+      class="rounded-md border px-3 py-1.5 text-xs transition-colors {activeTab === 'collaborations'
+        ? 'border-primary bg-primary/10 text-primary'
+        : 'border-border text-gray-500 hover:bg-muted dark:text-neutral-500'}"
+      onclick={() => (activeTab = 'collaborations')}
+    >
+      {t('admin.chat.collaborationsTab')}
+    </button>
+  </div>
 
-	{#if activeTab === 'chat'}
-		<DataTable
-			columns={chatColumns}
-			data={conversations}
-			loading={chatConversationsQuery.isLoading}
-			emptyMessage={t?.('admin.chat.noConversations') ?? 'No conversations'}
-		>
-			{#snippet cell({ row, key, value })}
-				{#if key === 'participants'}
-					{@const p1 = row.participant1}
-					{@const p2 = row.participant2}
-					<span class="text-sm">
-						{p1?.name ?? p1?.email ?? '—'} & {p2?.name ?? p2?.email ?? '—'}
-					</span>
-				{:else if key === 'lastMessage'}
-					<span class="max-w-[200px] truncate text-sm text-gray-500 dark:text-neutral-500">
-						{row.lastMessageContent ?? '—'}
-					</span>
-				{:else if key === 'lastMessageAt'}
-					{row.lastMessageAt ? formatDate(row.lastMessageAt, locale.current) : '—'}
-				{:else}
-					{value ?? '—'}
-				{/if}
-			{/snippet}
-		</DataTable>
+  {#if activeTab === 'chat'}
+    {#if chatStats}
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label={t('admin.chat.totalConversations')} value={chatStats.totalConversations ?? 0} />
+        <StatCard label={t('admin.chat.totalMessages')} value={chatStats.totalMessages ?? 0} />
+        <StatCard label={t('admin.chat.activeUsers')} value={chatStats.activeUsers ?? 0} />
+      </div>
+    {/if}
 
-		{#if chatTotalPages && chatTotalPages > 1}
-			<div class="flex justify-center">
-				<Pagination page={chatPage} totalPages={chatTotalPages} onpagechange={(p) => chatPage = p} />
-			</div>
-		{/if}
-	{:else}
-		<DataTable
-			columns={collabColumns}
-			data={collaborations}
-			loading={collabListQuery.isLoading}
-			emptyMessage={t?.('admin.chat.noCollaborations') ?? 'No collaborations'}
-		>
-			{#snippet cell({ row, key, value })}
-				{#if key === 'user'}
-					{@const user = row.user}
-					<span class="text-sm">{user?.name ?? user?.email ?? '—'}</span>
-				{:else if key === 'resume'}
-					{@const resume = row.resume}
-					<span class="text-sm">{resume?.title ?? '—'}</span>
-				{:else if key === 'invitedAt'}
-					{row.invitedAt ? formatDate(row.invitedAt, locale.current) : '—'}
-				{:else}
-					{value ?? '—'}
-				{/if}
-			{/snippet}
-		</DataTable>
+    <div class="rounded-xl border border-border">
+      <table class="w-full text-sm">
+        <thead class="bg-muted/40">
+          <tr class="text-left text-xs text-gray-500 dark:text-neutral-500">
+            <th class="px-3 py-2">{t('admin.chat.participants')}</th>
+            <th class="px-3 py-2">{t('admin.chat.lastMessage')}</th>
+            <th class="px-3 py-2">{t('admin.chat.date')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each conversations as c}
+            <tr class="border-t border-border">
+              <td class="px-3 py-2">{(c.participants ?? []).join(', ')}</td>
+              <td class="px-3 py-2 truncate max-w-md">{c.lastMessage ?? '—'}</td>
+              <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{c.lastMessageAt ?? ''}</td>
+            </tr>
+          {:else}
+            <tr><td colspan="3" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.chat.noConversations')}</td></tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
 
-		{#if collabTotalPages && collabTotalPages > 1}
-			<div class="flex justify-center">
-				<Pagination page={collabPage} totalPages={collabTotalPages} onpagechange={(p) => collabPage = p} />
-			</div>
-		{/if}
-	{/if}
+    <div class="flex justify-end gap-2">
+      <button
+        type="button"
+        class="rounded-md border border-border px-3 py-1 text-xs disabled:opacity-50"
+        disabled={chatPage <= 1}
+        onclick={() => (chatPage = Math.max(1, chatPage - 1))}
+      >
+        ←
+      </button>
+      <span class="text-xs text-gray-500 dark:text-neutral-500">{chatPage} / {chatData?.totalPages ?? 1}</span>
+      <button
+        type="button"
+        class="rounded-md border border-border px-3 py-1 text-xs disabled:opacity-50"
+        disabled={chatPage >= (chatData?.totalPages ?? 1)}
+        onclick={() => (chatPage = chatPage + 1)}
+      >
+        →
+      </button>
+    </div>
+  {:else}
+    {#if collabStats}
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label={t('admin.chat.totalCollaborations')} value={collabStats.totalCollaborations ?? 0} />
+      </div>
+    {/if}
+
+    <div class="rounded-xl border border-border">
+      <table class="w-full text-sm">
+        <thead class="bg-muted/40">
+          <tr class="text-left text-xs text-gray-500 dark:text-neutral-500">
+            <th class="px-3 py-2">{t('admin.chat.user')}</th>
+            <th class="px-3 py-2">{t('admin.chat.resume')}</th>
+            <th class="px-3 py-2">{t('admin.chat.collaboratorRole')}</th>
+            <th class="px-3 py-2">{t('admin.chat.date')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each collaborations as c}
+            <tr class="border-t border-border">
+              <td class="px-3 py-2">{c.user ?? '—'}</td>
+              <td class="px-3 py-2">{c.resume ?? '—'}</td>
+              <td class="px-3 py-2">{c.role ?? '—'}</td>
+              <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{c.createdAt ?? ''}</td>
+            </tr>
+          {:else}
+            <tr><td colspan="4" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.chat.noCollaborations')}</td></tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button
+        type="button"
+        class="rounded-md border border-border px-3 py-1 text-xs disabled:opacity-50"
+        disabled={collabPage <= 1}
+        onclick={() => (collabPage = Math.max(1, collabPage - 1))}
+      >
+        ←
+      </button>
+      <span class="text-xs text-gray-500 dark:text-neutral-500">{collabPage} / {collabData?.totalPages ?? 1}</span>
+      <button
+        type="button"
+        class="rounded-md border border-border px-3 py-1 text-xs disabled:opacity-50"
+        disabled={collabPage >= (collabData?.totalPages ?? 1)}
+        onclick={() => (collabPage = collabPage + 1)}
+      >
+        →
+      </button>
+    </div>
+  {/if}
 </div>

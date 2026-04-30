@@ -1,36 +1,39 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-  import { createFitProfileMe, fitProfileDeleteMe } from 'api-client';
+  /**
+   * /my-profile/fit-profile — burra: status do fit profile + delete + CTA.
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
+  import {
+    createFitProfileMeGet,
+    fitProfileMeDelete,
+    getFitProfileMeGetQueryKey,
+  } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
-  import { getFitProfileMeQueryKey } from 'api-client';
+
+  type MeStatus = { status?: 'responded' | 'expired' | 'never'; expiresAt?: string | null };
 
   const queryClient = useQueryClient();
-  const meQuery = createFitProfileMe(() => ({
+  const meQuery = createFitProfileMeGet(() => ({
     query: { enabled: browser, retry: false },
   }));
 
+  const me = $derived(meQuery.data as unknown as MeStatus | undefined);
   const status = $derived<'responded' | 'expired' | 'never' | 'loading'>(
-    meQuery.isPending
-      ? 'loading'
-      : ((meQuery.data?.status as 'responded' | 'expired' | 'never' | undefined) ?? 'never'),
+    meQuery.isPending ? 'loading' : (me?.status ?? 'never'),
   );
-  const expiresAt = $derived(
-    meQuery.data && 'expiresAt' in meQuery.data
-      ? (meQuery.data as { expiresAt?: string | null }).expiresAt ?? null
-      : null,
-  );
+  const expiresAt = $derived(me?.expiresAt ?? null);
 
   let deleting = $state(false);
   async function handleDelete(): Promise<void> {
     if (!confirm('Apagar seu Fit Profile? As respostas serão anonimizadas.')) return;
     deleting = true;
     try {
-      await fitProfileDeleteMe();
-      await queryClient.invalidateQueries({ queryKey: getFitProfileMeQueryKey() });
+      await fitProfileMeDelete();
+      await queryClient.invalidateQueries({ queryKey: getFitProfileMeGetQueryKey() });
       toastState.show('Fit Profile apagado.' , 'success');
     } catch (err) {
       toastState.show(

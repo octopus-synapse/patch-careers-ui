@@ -3,12 +3,15 @@
   backend-supported formats: PDF, DOCX, JSON Resume, LaTeX.
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+  /**
+   * ExportMenu — burra: chama os endpoints de export do backend.
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
 import {
-  exportDownloadUserResumePDF,
-  exportExportJson,
-  exportExportLatex,
-  exportExportResumeDOCX,
+  exportApiV1ExportJson,
+  exportApiV1ExportLatex,
+  exportResumeDocx,
+  exportUserResumePdf,
 } from 'api-client';
 import { Download, FileCode, FileJson, FileText, FileType } from 'lucide-svelte';
 import { Button, Dropdown, Loader, toastState } from 'ui';
@@ -41,13 +44,14 @@ async function downloadPdf() {
   if (!userId) return;
   loading = 'pdf';
   try {
-    const res = (await exportDownloadUserResumePDF(userId)) as unknown as Record<string, unknown>;
-    const data = res?.data as { pdf?: string; filename?: string } | undefined;
-    if (!data?.pdf) throw new Error();
-    const bytes = Uint8Array.from(atob(data.pdf), (c) => c.charCodeAt(0));
+    const res = (await exportUserResumePdf(userId)) as unknown as
+      | { pdf?: string; filename?: string }
+      | undefined;
+    if (!res?.pdf) throw new Error();
+    const bytes = Uint8Array.from(atob(res.pdf), (c) => c.charCodeAt(0));
     downloadBlob(
       new Blob([bytes], { type: 'application/pdf' }),
-      data.filename ?? `${filenameHint}.pdf`,
+      res.filename ?? `${filenameHint}.pdf`,
     );
   } catch {
     toastState.show(t('errors.exportPdfFailed'), 'danger');
@@ -60,15 +64,16 @@ async function downloadPdf() {
 async function downloadDocx() {
   loading = 'docx';
   try {
-    const res = (await exportExportResumeDOCX()) as unknown as Record<string, unknown>;
-    const data = res?.data as { docx?: string; filename?: string } | undefined;
-    if (!data?.docx) throw new Error();
-    const bytes = Uint8Array.from(atob(data.docx), (c) => c.charCodeAt(0));
+    const res = (await exportResumeDocx()) as unknown as
+      | { docx?: string; filename?: string }
+      | undefined;
+    if (!res?.docx) throw new Error();
+    const bytes = Uint8Array.from(atob(res.docx), (c) => c.charCodeAt(0));
     downloadBlob(
       new Blob([bytes], {
         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       }),
-      data.filename ?? `${filenameHint}.docx`,
+      res.filename ?? `${filenameHint}.docx`,
     );
   } catch {
     toastState.show(t('errors.exportDocxFailed'), 'danger');
@@ -82,8 +87,8 @@ async function downloadJson() {
   if (!resumeId) return;
   loading = 'json';
   try {
-    const res = (await exportExportJson(resumeId)) as unknown as Record<string, unknown>;
-    const blob = new Blob([JSON.stringify(res?.data ?? res, null, 2)], {
+    const res = (await exportApiV1ExportJson(resumeId)) as unknown;
+    const blob = new Blob([JSON.stringify(res ?? {}, null, 2)], {
       type: 'application/json',
     });
     downloadBlob(blob, `${filenameHint}.json`);
@@ -99,10 +104,11 @@ async function downloadLatex() {
   if (!resumeId) return;
   loading = 'latex';
   try {
-    const res = (await exportExportLatex(resumeId)) as unknown as Record<string, unknown>;
-    const data = res?.data as { latex?: string; filename?: string } | undefined;
-    const blob = new Blob([data?.latex ?? ''], { type: 'application/x-tex' });
-    downloadBlob(blob, data?.filename ?? `${filenameHint}.tex`);
+    const res = (await exportApiV1ExportLatex(resumeId)) as unknown as
+      | { latex?: string; filename?: string }
+      | undefined;
+    const blob = new Blob([res?.latex ?? ''], { type: 'application/x-tex' });
+    downloadBlob(blob, res?.filename ?? `${filenameHint}.tex`);
   } catch {
     toastState.show(t('errors.exportLatexFailed'), 'danger');
   } finally {

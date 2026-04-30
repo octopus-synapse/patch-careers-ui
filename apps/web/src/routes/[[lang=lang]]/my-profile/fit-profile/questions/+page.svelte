@@ -1,9 +1,12 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+  /**
+   * /my-profile/fit-profile/questions — burra: 25 perguntas Likert.
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
   import {
     createFitProfileQuestions,
-    createFitProfileSubmitAnswers,
-    getFitProfileMeQueryKey,
+    fitProfileAnswers,
+    getFitProfileMeGetQueryKey,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-svelte';
@@ -22,6 +25,8 @@
     weight: number;
   };
 
+  type QuestionsResponse = { questionSetId?: string; questions?: Question[] };
+
   const LIKERT_OPTIONS = [
     { value: 1, label: 'Discordo fortemente' },
     { value: 2, label: 'Discordo' },
@@ -34,12 +39,14 @@
     query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
   }));
 
-  const submitMutation = createFitProfileSubmitAnswers(() => ({ mutation: {} }));
   const queryClient = useQueryClient();
 
-  const questionSetId = $derived(questionsQuery.data?.questionSetId ?? '');
-  const questions = $derived<Question[]>((questionsQuery.data?.questions ?? []) as Question[]);
+  const questionsData = $derived(questionsQuery.data as unknown as QuestionsResponse | undefined);
+  const questionSetId = $derived(questionsData?.questionSetId ?? '');
+  const questions = $derived<Question[]>(questionsData?.questions ?? []);
   const total = $derived(questions.length);
+
+  let submitting = $state(false);
 
   let currentIndex = $state(0);
   let answers = $state<Map<string, number>>(new Map());
@@ -74,21 +81,20 @@
   }
 
   async function commit(): Promise<void> {
+    submitting = true;
     try {
-      await submitMutation.mutateAsync({
-        data: {
-          questionSetId,
-          answers: Array.from(answers, ([questionId, rawValue]) => ({ questionId, rawValue })),
-        },
+      await fitProfileAnswers({
+        questionSetId,
+        answers: Array.from(answers, ([questionId, rawValue]) => ({ questionId, rawValue })),
       });
-      await queryClient.invalidateQueries({ queryKey: getFitProfileMeQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getFitProfileMeGetQueryKey() });
       toastState.show('Fit Profile salvo. Match Score liberado.', 'success');
       void goto('/my-profile/scores');
     } catch (err) {
-      // Global lockout interceptor won't fire (this is a POST, not a
-      // 409 lockout); surface the real message here.
       const message = err instanceof Error ? err.message : 'Não foi possível salvar.';
       toastState.show(message, 'danger');
+    } finally {
+      submitting = false;
     }
   }
 </script>
@@ -155,9 +161,9 @@
           variant="solid"
           size="sm"
           onclick={advance}
-          disabled={!canAdvance || submitMutation.isPending}
+          disabled={!canAdvance || submitting}
         >
-          {#if submitMutation.isPending}
+          {#if submitting}
             <Loader size={14} />
           {/if}
           {isLast ? 'Salvar' : 'Próxima'}

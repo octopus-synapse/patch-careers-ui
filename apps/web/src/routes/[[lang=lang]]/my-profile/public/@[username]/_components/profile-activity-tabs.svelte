@@ -1,10 +1,13 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+  /**
+   * Profile activity tabs — burra: 4 tabs (posts/comments/reactions/activity).
+   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
+   */
 import {
-  createActivityGetUserActivities,
-  createFeedGetUserPosts,
-  createUserEngagementGetComments,
-  createUserEngagementGetReactions,
+  createFeedUser,
+  createSocialActivityUsersActivities,
+  createUserEngagementUsersComments,
+  createUserEngagementUsersReactions,
 } from 'api-client';
 import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -31,26 +34,27 @@ const tabs = $derived([
   { value: 'activity', label: t('feed.tabsActivity') },
 ]);
 
-const postsQuery = createFeedGetUserPosts(
+const postsQuery = createFeedUser(
   () => userId,
-  () => ({ limit: 20 }),
+  () => ({ limit: '20' }),
   () => ({ query: { enabled: browser && !!userId && active === 'posts' } }),
 );
 
-const commentsQuery = createUserEngagementGetComments(
+const commentsQuery = createUserEngagementUsersComments(
   () => userId,
-  () => ({ limit: 20 }),
+  () => ({ limit: '20' }),
   () => ({ query: { enabled: browser && !!userId && active === 'comments' } }),
 );
 
-const reactionsQuery = createUserEngagementGetReactions(
+const reactionsQuery = createUserEngagementUsersReactions(
   () => userId,
-  () => ({ limit: 20 }),
+  () => ({ limit: '20' }),
   () => ({ query: { enabled: browser && !!userId && active === 'reactions' } }),
 );
 
-const activitiesQuery = createActivityGetUserActivities(
+const activitiesQuery = createSocialActivityUsersActivities(
   () => userId,
+  () => ({ limit: '20' }),
   () => ({ query: { enabled: browser && !!userId && active === 'activity' } }),
 );
 
@@ -83,26 +87,23 @@ type ActivityItem = {
 };
 
 const posts = $derived.by<PostItem[]>(() => {
-  const data = postsQuery.data as Record<string, unknown> | undefined;
-  const items =
-    (data?.posts as PostItem[] | undefined) ?? (Array.isArray(data) ? (data as PostItem[]) : []);
-  return items;
+  const data = postsQuery.data as { items?: PostItem[]; posts?: PostItem[] } | undefined;
+  return data?.items ?? data?.posts ?? [];
 });
 
 const comments = $derived.by<CommentItem[]>(() => {
-  const data = commentsQuery.data as Record<string, unknown> | undefined;
-  return (data?.comments as CommentItem[] | undefined) ?? [];
+  const data = commentsQuery.data as { items?: CommentItem[]; comments?: CommentItem[] } | undefined;
+  return data?.items ?? data?.comments ?? [];
 });
 
 const reactions = $derived.by<ReactionItem[]>(() => {
-  const data = reactionsQuery.data as Record<string, unknown> | undefined;
-  return (data?.reactions as ReactionItem[] | undefined) ?? [];
+  const data = reactionsQuery.data as { items?: ReactionItem[]; reactions?: ReactionItem[] } | undefined;
+  return data?.items ?? data?.reactions ?? [];
 });
 
 const activities = $derived.by<ActivityItem[]>(() => {
-  const data = activitiesQuery.data as Record<string, unknown> | undefined;
-  const section = data?.activities as Record<string, unknown> | undefined;
-  return (section?.data as ActivityItem[] | undefined) ?? [];
+  const data = activitiesQuery.data as { items?: ActivityItem[]; activities?: ActivityItem[] } | undefined;
+  return data?.items ?? data?.activities ?? [];
 });
 
 
