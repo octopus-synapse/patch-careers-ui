@@ -38,7 +38,7 @@ let regenPassword = $state('');
 async function loadStatus() {
   loadingStatus = true;
   try {
-    const res = await fetch('/api/auth/2fa/status', { credentials: 'include' });
+    const res = await fetch('/api/v1/auth/2fa/status', { credentials: 'include' });
     const body = (await res.json()) as { data?: Status };
     status = body.data ?? { enabled: false, enabledAt: null, lastUsedAt: null };
   } finally {
@@ -49,7 +49,7 @@ async function loadStatus() {
 async function startSetup() {
   setupLoading = true;
   try {
-    const res = await fetch('/api/auth/2fa/setup', {
+    const res = await fetch('/api/v1/auth/2fa/setup', {
       method: 'POST',
       credentials: 'include',
     });
@@ -69,7 +69,7 @@ async function verifyAndEnable() {
   if (!verifyToken.trim()) return;
   verifyLoading = true;
   try {
-    const res = await fetch('/api/auth/2fa/verify', {
+    const res = await fetch('/api/v1/auth/2fa/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -93,7 +93,7 @@ async function disable() {
   if (!disablePassword) return;
   disableLoading = true;
   try {
-    const res = await fetch('/api/auth/2fa/disable', {
+    const res = await fetch('/api/v1/auth/2fa/disable', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -115,7 +115,7 @@ async function regenBackupCodes() {
   if (!regenPassword) return;
   regenLoading = true;
   try {
-    const res = await fetch('/api/auth/2fa/backup-codes/regenerate', {
+    const res = await fetch('/api/v1/auth/2fa/backup-codes/regenerate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

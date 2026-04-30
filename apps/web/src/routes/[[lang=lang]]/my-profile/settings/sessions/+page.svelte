@@ -45,7 +45,7 @@ let revoking = $state<string | null>(null);
 async function load() {
   loading = true;
   try {
-    const res = await fetch('/api/auth/sessions', { credentials: 'include' });
+    const res = await fetch('/api/v1/auth/sessions', { credentials: 'include' });
     const body = (await res.json()) as { data?: { sessions?: SessionRow[] } };
     sessions = body.data?.sessions ?? [];
   } catch {
@@ -58,7 +58,7 @@ async function load() {
 async function revoke(id: string) {
   revoking = id;
   try {
-    const res = await fetch(`/api/auth/sessions/${id}`, {
+    const res = await fetch(`/api/v1/auth/sessions/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });

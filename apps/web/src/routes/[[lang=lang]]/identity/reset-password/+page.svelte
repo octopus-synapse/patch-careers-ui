@@ -29,7 +29,7 @@ async function handleSubmit(e: Event) {
   submitting = true;
   error = null;
   try {
-    const res = await fetch('/api/auth/reset-password', {
+    const res = await fetch('/api/v1/auth/reset-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, password }),

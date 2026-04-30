@@ -46,7 +46,7 @@ let showResolved = $state(false);
 async function load() {
   loading = true;
   try {
-    const res = await fetch(`/api/resumes/${resumeId}/comments`, { credentials: 'include' });
+    const res = await fetch(`/api/v1/resumes/${resumeId}/comments`, { credentials: 'include' });
     const body = (await res.json()) as { data?: { comments?: Comment[] } };
     comments = body.data?.comments ?? [];
   } catch {
@@ -61,7 +61,7 @@ async function create(parentId?: string, contentOverride?: string) {
   if (!content) return;
   submitting = true;
   try {
-    const res = await fetch(`/api/resumes/${resumeId}/comments`, {
+    const res = await fetch(`/api/v1/resumes/${resumeId}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -79,7 +79,7 @@ async function create(parentId?: string, contentOverride?: string) {
 
 async function resolve(id: string) {
   try {
-    const res = await fetch(`/api/resumes/comments/${id}/resolve`, {
+    const res = await fetch(`/api/v1/resumes/comments/${id}/resolve`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -93,7 +93,7 @@ async function resolve(id: string) {
 async function remove(id: string) {
   if (!confirm('Remover este comentário?')) return;
   try {
-    const res = await fetch(`/api/resumes/comments/${id}`, {
+    const res = await fetch(`/api/v1/resumes/comments/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
