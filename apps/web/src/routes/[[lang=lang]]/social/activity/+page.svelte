@@ -3,8 +3,7 @@
   current user follows (plus their own). Uses createActivityGetFeed.
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createActivityGetFeed } from 'api-client';
+import { createSocialActivityUsersFeed } from 'api-client';
 import { AlarmClock, Award, Briefcase, FileText, Sparkles, TrendingDown, UserPlus, Users } from 'lucide-svelte';
 import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
@@ -27,14 +26,23 @@ interface ActivityItem {
   };
 }
 
-const feed = createActivityGetFeed(
+// Swagger declares the response as `void`; runtime ships
+// `{items?:[...], activities?:[...]}` (envelope key not yet finalized).
+type ActivityFeedResponse = {
+  items?: ActivityItem[];
+  activities?: ActivityItem[];
+  feed?: { data?: ActivityItem[] };
+};
+
+const feed = createSocialActivityUsersFeed(
   () => viewerId,
+  () => ({}),
   () => ({ query: { enabled: browser && Boolean(viewerId) } }),
 );
 
 const activities = $derived.by<ActivityItem[]>(() => {
-  const d = feed.data as Record<string, unknown> | undefined;
-  return (d?.activities as ActivityItem[] | undefined) ?? [];
+  const raw = feed.data as unknown as ActivityFeedResponse | undefined;
+  return raw?.items ?? raw?.activities ?? raw?.feed?.data ?? [];
 });
 
 function iconFor(type: string) {

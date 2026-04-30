@@ -1,26 +1,39 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import {
-  createAuthSession,
-  createPostsFindById,
-  engagementBookmark,
-  engagementLike,
-  engagementReport,
-  engagementRepost,
-  engagementUnbookmark,
-  engagementUnlike,
+  createPostsGetById,
+  engagementPostsBookmarkDelete,
+  engagementPostsBookmarkPost,
+  engagementPostsLikeDelete,
+  engagementPostsLikePost,
+  engagementPostsReport,
+  engagementPostsRepost,
   postsDelete,
 } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
-import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import PostCard from '../../_components/post-card.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+/**
+ * Thread page — frontend BURRO. Reads `GET /api/v1/posts/:id` (which the
+ * backend hydrates with `threadChildren` for thread-style posts) and
+ * renders each entry through the shared `PostCard`. Engagement
+ * (like/bookmark/repost/report/delete) is wired through the canonical
+ * engagement endpoints; optimistic state lives in local `Set`s because
+ * this view only ever shows one thread at a time.
+ *
+ * The swagger ships `void` schemas for these endpoints, so we cast to a
+ * documented runtime shape at the boundary.
+ */
+type ThreadPost = Record<string, unknown>;
+
+type ThreadResponse = {
+  post?: ThreadPost & { threadChildren?: ThreadPost[] };
+} & ThreadPost;
+
+const session = useAuth();
 const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
 const currentUserId = $derived(String(user?.id ?? ''));
@@ -33,26 +46,18 @@ $effect(() => {
 
 const threadId = $derived($page.params.id ?? '');
 
-const postQuery = createPostsFindById(
+const postQuery = createPostsGetById(
   () => threadId,
-  () => ({
-    query: { enabled: authenticated && !!threadId },
-  }),
+  () => ({ query: { enabled: Boolean(authenticated) && !!threadId } }),
 );
 
-const postData = $derived(postQuery.data);
-
-// Collect thread posts: main post + its thread children
-const threadPosts = $derived.by(() => {
-  if (!postData) return [];
-  const mainPost = postData as unknown as Record<string, unknown>;
-  const post = mainPost.post ? mainPost.post : mainPost;
-  const postRecord = post as Record<string, unknown>;
-  const threadChildren = postRecord.threadChildren;
-  if (threadChildren && Array.isArray(threadChildren)) {
-    return [postRecord, ...threadChildren];
-  }
-  return [postRecord];
+const threadPosts = $derived.by<ThreadPost[]>(() => {
+  const raw = postQuery.data as unknown as ThreadResponse | undefined;
+  if (!raw) return [];
+  // Backend may wrap the post under a `post` field or expose it directly.
+  const root = (raw.post ?? raw) as ThreadPost & { threadChildren?: ThreadPost[] };
+  const children = Array.isArray(root.threadChildren) ? root.threadChildren : [];
+  return [root, ...children];
 });
 
 let likedPosts = $state<Set<string>>(new Set());
@@ -60,14 +65,14 @@ let unlikedPosts = $state<Set<string>>(new Set());
 let bookmarkedPosts = $state<Set<string>>(new Set());
 let unbookmarkedPosts = $state<Set<string>>(new Set());
 
-function isPostLiked(post: Record<string, unknown>): boolean {
+function isPostLiked(post: ThreadPost): boolean {
   const id = String(post.id);
   if (likedPosts.has(id)) return true;
   if (unlikedPosts.has(id)) return false;
   return Boolean(post.isLiked ?? post.liked ?? false);
 }
 
-function isPostBookmarked(post: Record<string, unknown>): boolean {
+function isPostBookmarked(post: ThreadPost): boolean {
   const id = String(post.id);
   if (bookmarkedPosts.has(id)) return true;
   if (unbookmarkedPosts.has(id)) return false;
@@ -77,25 +82,25 @@ function isPostBookmarked(post: Record<string, unknown>): boolean {
 async function handleLike(id: string) {
   likedPosts = new Set([...likedPosts, id]);
   unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
-  await engagementLike(id);
+  await engagementPostsLikePost(id, { reactionType: 'LIKE' });
 }
 
 async function handleUnlike(id: string) {
   unlikedPosts = new Set([...unlikedPosts, id]);
   likedPosts = new Set([...likedPosts].filter((x) => x !== id));
-  await engagementUnlike(id);
+  await engagementPostsLikeDelete(id);
 }
 
 async function handleBookmark(id: string) {
   bookmarkedPosts = new Set([...bookmarkedPosts, id]);
   unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
-  await engagementBookmark(id);
+  await engagementPostsBookmarkPost(id);
 }
 
 async function handleUnbookmark(id: string) {
   unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
   bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
-  await engagementUnbookmark(id);
+  await engagementPostsBookmarkDelete(id);
 }
 
 async function handleDelete(id: string) {
@@ -104,11 +109,11 @@ async function handleDelete(id: string) {
 }
 
 async function handleRepost(id: string) {
-  await engagementRepost(id);
+  await engagementPostsRepost(id, {});
 }
 
 async function handleReport(id: string) {
-  await engagementReport(id);
+  await engagementPostsReport(id, { reason: 'unspecified' });
 }
 </script>
 
@@ -136,17 +141,16 @@ async function handleReport(id: string) {
 				</div>
 			{:else}
 				<div class="space-y-1">
-					{#each threadPosts as post, i (String((post as Record<string, unknown>).id))}
-						{@const postRec = post as Record<string, unknown>}
+					{#each threadPosts as post, i (String(post.id))}
 						<div class="relative">
 							{#if i < threadPosts.length - 1}
 								<div class="absolute left-7 top-14 bottom-0 w-0.5 bg-gray-200 dark:bg-neutral-700/50"></div>
 							{/if}
 							<PostCard
 								post={{
-									...postRec,
-									isLiked: isPostLiked(postRec),
-									isBookmarked: isPostBookmarked(postRec)
+									...post,
+									isLiked: isPostLiked(post),
+									isBookmarked: isPostBookmarked(post),
 								}}
 								{currentUserId}
 								onlike={handleLike}

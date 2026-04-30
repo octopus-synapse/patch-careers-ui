@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { chatSendMessage } from 'api-client';
+import { chatMessages } from 'api-client';
 import { MessageCircle, X } from 'lucide-svelte';
 import { Button, Popover, Textarea, toastState } from 'ui';
 import { track } from '$lib/utils/analytics/track';
@@ -33,7 +32,9 @@ async function send() {
   if (!trimmed || sending) return;
   sending = true;
   try {
-    await chatSendMessage({ recipientId, content: trimmed });
+    // POST /api/v1/chat/messages — kicks off (or reuses) a 1:1 conversation
+    // and posts the first message in one round-trip.
+    await chatMessages({ recipientId, content: trimmed });
     track('quick_message_sent', { recipientId, source: 'mynetwork_main' });
     toastState.show(t('network.quickMessageSent'), 'success');
     open = false;

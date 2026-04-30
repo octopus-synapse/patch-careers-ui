@@ -1,28 +1,32 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
-import {
-  createAuthSession,
-  createFeedGetBookmarks,
-  engagementBookmark,
-  engagementLike,
-  engagementReport,
-  engagementRepost,
-  engagementUnbookmark,
-  engagementUnlike,
-  getFeedGetBookmarksQueryKey,
-  postsDelete,
-} from 'api-client';
+import { createFeedBookmarks, getFeedBookmarksQueryKey } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import PostCard from '../_components/post-card.svelte';
-import { undoableAction } from '$lib/utils/undoable-action';
+import { useAuth } from '$lib/state/auth.svelte';
+import { useFeedEngagement } from '$lib/state/use-feed-engagement.svelte';
+import { useFeedPagination } from '$lib/state/use-feed-pagination.svelte';
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+/**
+ * Bookmarked posts page — frontend BURRO. Backend pagination envelope
+ * (`{items, nextCursor}`) is fed straight into `useFeedPagination`. The
+ * engagement overlay (likes, bookmarks, repost, report, delete, vote) is
+ * the same shared `useFeedEngagement` hook the timeline uses, so optimistic
+ * updates and undo behave identically.
+ *
+ * The swagger response is typed as `void`; the runtime contract is the
+ * canonical pagination envelope documented in F1.
+ */
+type FeedEnvelope = {
+  items?: Record<string, unknown>[];
+  nextCursor?: string | null;
+  hasNew?: boolean;
+};
+
+const session = useAuth();
 const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
 const currentUserId = $derived(String(user?.id ?? ''));
@@ -33,49 +37,23 @@ $effect(() => {
   }
 });
 
-let cursor = $state<string | undefined>(undefined);
-let allPosts = $state<Record<string, unknown>[]>([]);
-let hasMore = $state(true);
-let loadingMore = $state(false);
-
-let likedPosts = $state<Set<string>>(new Set());
-let unlikedPosts = $state<Set<string>>(new Set());
-let bookmarkedPosts = $state<Set<string>>(new Set());
-let unbookmarkedPosts = $state<Set<string>>(new Set());
-
 const queryClient = useQueryClient();
 
-const bookmarksQuery = createFeedGetBookmarks(
-  () => ({ cursor, limit: 20 }),
-  () => ({
-    query: { enabled: authenticated },
-  }),
-);
-
-const rawData = $derived(bookmarksQuery.data);
-
-$effect(() => {
-  if (!rawData) return;
-  const postsArr = (Array.isArray(rawData) ? rawData : rawData?.posts) as
-    | Record<string, unknown>[]
-    | undefined;
-  if (!postsArr) return;
-
-  const nextCursor = rawData?.nextCursor;
-
-  if (cursor === undefined) {
-    allPosts = postsArr;
-  } else {
-    const existingIds = new Set(allPosts.map((p) => String(p.id)));
-    const newPosts = postsArr.filter((p) => !existingIds.has(String(p.id)));
-    if (newPosts.length > 0) {
-      allPosts = [...allPosts, ...newPosts];
-    }
-  }
-
-  hasMore = !!nextCursor && postsArr.length > 0;
-  loadingMore = false;
+const pagination = useFeedPagination({
+  getRawData: () => bookmarksQuery.data as unknown as FeedEnvelope | undefined,
 });
+
+const engagement = useFeedEngagement({
+  getPosts: () => pagination.allPosts,
+  setPosts: (posts) => {
+    pagination.allPosts = posts;
+  },
+});
+
+const bookmarksQuery = createFeedBookmarks(
+  () => ({ cursor: pagination.cursor, limit: '20' }),
+  () => ({ query: { enabled: Boolean(authenticated) } }),
+);
 
 let sentinelEl: HTMLDivElement | undefined = $state();
 
@@ -83,8 +61,13 @@ $effect(() => {
   if (!sentinelEl || !browser) return;
   const observer = new IntersectionObserver(
     (entries) => {
-      if (entries[0].isIntersecting && hasMore && !bookmarksQuery.isLoading && !loadingMore) {
-        loadNextPage();
+      if (
+        entries[0].isIntersecting &&
+        pagination.hasMore &&
+        !bookmarksQuery.isLoading &&
+        !pagination.loadingMore
+      ) {
+        pagination.loadNextPage();
       }
     },
     { rootMargin: '200px' },
@@ -93,82 +76,13 @@ $effect(() => {
   return () => observer.disconnect();
 });
 
-function loadNextPage() {
-  if (!rawData || loadingMore) return;
-  const nextCursor = rawData?.nextCursor;
-  if (nextCursor) {
-    loadingMore = true;
-    cursor = nextCursor;
-  }
+function handleRepost(id: string) {
+  void engagement.submitRepost(id, '');
+  queryClient.invalidateQueries({ queryKey: getFeedBookmarksQueryKey() });
 }
 
-function isPostLiked(post: Record<string, unknown>): boolean {
-  const id = String(post.id);
-  if (likedPosts.has(id)) return true;
-  if (unlikedPosts.has(id)) return false;
-  return Boolean(post.isLiked ?? post.liked ?? false);
-}
-
-function isPostBookmarked(post: Record<string, unknown>): boolean {
-  const id = String(post.id);
-  if (bookmarkedPosts.has(id)) return true;
-  if (unbookmarkedPosts.has(id)) return false;
-  return Boolean(post.isBookmarked ?? post.bookmarked ?? true);
-}
-
-async function handleLike(id: string) {
-  likedPosts = new Set([...likedPosts, id]);
-  unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
-  await engagementLike(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-}
-
-async function handleUnlike(id: string) {
-  unlikedPosts = new Set([...unlikedPosts, id]);
-  likedPosts = new Set([...likedPosts].filter((x) => x !== id));
-  await engagementUnlike(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-}
-
-async function handleBookmark(id: string) {
-  bookmarkedPosts = new Set([...bookmarkedPosts, id]);
-  unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
-  await engagementBookmark(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-}
-
-async function handleUnbookmark(id: string) {
-  unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
-  bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
-  await engagementUnbookmark(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-}
-
-function handleDelete(id: string) {
-  const snapshot = allPosts;
-  undoableAction({
-    apply: () => {
-      allPosts = allPosts.filter((p) => String(p.id) !== id);
-    },
-    revert: () => {
-      allPosts = snapshot;
-    },
-    commit: () => postsDelete(id),
-    onCommitted: () => {
-      queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-    },
-    message: 'Post excluído',
-    errorMessage: 'Falha ao excluir — alteração revertida',
-  });
-}
-
-async function handleRepost(id: string) {
-  await engagementRepost(id);
-  queryClient.invalidateQueries({ queryKey: getFeedGetBookmarksQueryKey() });
-}
-
-async function handleReport(id: string) {
-  await engagementReport(id);
+function handleReport(id: string) {
+  void engagement.submitReport(id, '');
 }
 </script>
 
@@ -191,38 +105,39 @@ async function handleReport(id: string) {
 			</div>
 
 			<div class="space-y-4">
-				{#each allPosts as post (String(post.id))}
+				{#each pagination.allPosts as post (String(post.id))}
 					<PostCard
 						post={{
 							...post,
-							isLiked: isPostLiked(post),
-							isBookmarked: isPostBookmarked(post)
+							isLiked: engagement.isPostLiked(post),
+							isBookmarked: engagement.isPostBookmarked(post),
 						}}
 						{currentUserId}
-						onlike={handleLike}
-						onunlike={handleUnlike}
-						onbookmark={handleBookmark}
-						onunbookmark={handleUnbookmark}
-						ondelete={handleDelete}
+						onlike={engagement.handleLike}
+						onunlike={engagement.handleUnlike}
+						onbookmark={engagement.handleBookmark}
+						onunbookmark={engagement.handleUnbookmark}
+						ondelete={engagement.handleDelete}
 						onrepost={handleRepost}
 						onreport={handleReport}
+						onvote={engagement.handleVote}
 					/>
 				{/each}
 			</div>
 
-			{#if bookmarksQuery.isLoading && allPosts.length === 0}
+			{#if bookmarksQuery.isLoading && pagination.allPosts.length === 0}
 				<div class="flex justify-center py-12">
 					<Loader size={24} />
 				</div>
-			{:else if allPosts.length === 0 && !bookmarksQuery.isLoading}
+			{:else if pagination.allPosts.length === 0 && !bookmarksQuery.isLoading}
 				<div class="py-12 text-center">
 					<p class="text-sm text-gray-400 dark:text-neutral-500">No bookmarks yet.</p>
 				</div>
 			{/if}
 
-			{#if hasMore && allPosts.length > 0}
+			{#if pagination.hasMore && pagination.allPosts.length > 0}
 				<div bind:this={sentinelEl} class="flex justify-center py-8">
-					{#if loadingMore}
+					{#if pagination.loadingMore}
 						<Loader size={20} />
 					{/if}
 				</div>

@@ -1,20 +1,18 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createAuthSession,
-  createChatGetConversations,
-  createChatGetMessages,
-  createChatMarkConversationAsRead,
-  createChatSendMessage,
-  createChatSendMessageToConversation,
-  getChatGetConversationsQueryKey,
-  getChatGetMessagesQueryKey,
+  chatMessages,
+  createChatConversationsGet,
+  createChatConversationsMessagesGet,
+  createChatConversationsMessagesPost,
+  createChatConversationsRead,
+  getChatConversationsGetQueryKey,
+  getChatConversationsMessagesGetQueryKey,
 } from 'api-client';
 import { ArrowLeft, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
 import { fade, fly } from 'svelte/transition';
 import { Avatar, Button, Dropdown, Loader } from 'ui';
-import { browser } from '$app/environment';
+import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import ConversationList from './conversation-list.svelte';
@@ -22,33 +20,33 @@ import MessageInput from './message-input.svelte';
 import MessageThread from './message-thread.svelte';
 import UserSearch from './user-search.svelte';
 
-const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
-const authenticated = $derived(auth.data?.authenticated);
-const currentUserId = $derived(String(auth.data?.user?.id));
-// Same 3-stage gate as the FAB — chat UI stays unmounted + queries
-// disabled until the user is verified AND onboarded.
-const canUseApp = $derived(
-  Boolean(authenticated) &&
-    !(auth.data?.user?.needsEmailVerification ?? false) &&
-    !(auth.data?.user?.needsOnboarding ?? false),
-);
+/**
+ * Floating chat widget — frontend-burro renderer for the conversation
+ * inbox. The swagger ships `void` schemas for chat endpoints so we cast to
+ * documented runtime shapes at the boundary; backend stays the source of
+ * truth for participant/message metadata.
+ */
+type ConversationParticipant = {
+  id: string;
+  name: string | null;
+  photoURL: string | null;
+  username: string | null;
+};
 
-const conversations = createChatGetConversations(
-  () => ({ limit: 50 }),
-  () => ({ query: { enabled: canUseApp && chatState.isOpen } }),
-);
+type ConversationLastMessage = {
+  content: string;
+  senderId: string;
+  createdAt: string;
+  isRead: boolean;
+};
 
 type Conversation = {
   id: string;
-  participant: {
-    id: string;
-    name: string | null;
-    photoURL: string | null;
-    username: string | null;
-  };
-  lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null;
+  participant: ConversationParticipant;
+  lastMessage: ConversationLastMessage | null;
   unreadCount?: number;
 };
+
 type Message = {
   id: string;
   content: string;
@@ -58,35 +56,87 @@ type Message = {
   sender: { id: string; name: string | null; photoURL: string | null };
 };
 
-const convList = $derived(
-  (conversations.data?.conversations?.conversations ?? []) as Conversation[],
+type ConversationsResponse = {
+  items?: Conversation[];
+  conversations?: { conversations?: Conversation[] } | Conversation[];
+};
+
+type MessagesResponse = {
+  items?: Message[];
+  messages?: { messages?: Message[] } | Message[];
+};
+
+type StartConversationResponse = {
+  conversationId?: string;
+  id?: string;
+};
+
+const auth = useAuth();
+const authenticated = $derived(auth.data?.authenticated);
+const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+const canUseApp = $derived(
+  Boolean(authenticated) &&
+    !(auth.data?.user?.needsEmailVerification ?? false) &&
+    !(auth.data?.user?.needsOnboarding ?? false),
 );
 
-const messages = createChatGetMessages(
+function extractConversations(data: ConversationsResponse | undefined): Conversation[] {
+  if (!data) return [];
+  if (Array.isArray(data.items)) return data.items;
+  const inner = data.conversations;
+  if (Array.isArray(inner)) return inner;
+  if (inner && Array.isArray(inner.conversations)) return inner.conversations;
+  return [];
+}
+
+function extractMessages(data: MessagesResponse | undefined): Message[] {
+  if (!data) return [];
+  if (Array.isArray(data.items)) return data.items;
+  const inner = data.messages;
+  if (Array.isArray(inner)) return inner;
+  if (inner && Array.isArray(inner.messages)) return inner.messages;
+  return [];
+}
+
+const conversations = createChatConversationsGet(
+  () => ({ limit: 50 }),
+  () => ({ query: { enabled: canUseApp && chatState.isOpen } }),
+);
+
+const convList = $derived(
+  extractConversations(conversations.data as unknown as ConversationsResponse | undefined),
+);
+
+const messages = createChatConversationsMessagesGet(
   () => chatState.activeConversationId ?? '',
   () => ({ limit: 100 }),
   () => ({ query: { enabled: !!chatState.activeConversationId } }),
 );
 
-const msgList = $derived((messages.data?.messages?.messages ?? []) as Message[]);
+const msgList = $derived(
+  extractMessages(messages.data as unknown as MessagesResponse | undefined),
+);
 
 const queryClient = useQueryClient();
 
-const sendMessage = createChatSendMessageToConversation(() => ({
+const sendMessage = createChatConversationsMessagesPost(() => ({
   mutation: {
     onSuccess() {
       if (chatState.activeConversationId) {
         queryClient.invalidateQueries({
-          queryKey: getChatGetMessagesQueryKey(chatState.activeConversationId, { limit: 100 }),
+          queryKey: getChatConversationsMessagesGetQueryKey(chatState.activeConversationId, {
+            limit: 100,
+          }),
         });
-        queryClient.invalidateQueries({ queryKey: getChatGetConversationsQueryKey({ limit: 50 }) });
+        queryClient.invalidateQueries({
+          queryKey: getChatConversationsGetQueryKey({ limit: 50 }),
+        });
       }
     },
   },
 }));
 
-const markRead = createChatMarkConversationAsRead();
-const startConversation = createChatSendMessage();
+const markRead = createChatConversationsRead();
 
 function selectConversation(id: string) {
   chatState.setActiveConversation(id);
@@ -96,16 +146,19 @@ function selectConversation(id: string) {
 async function startNewConversation(recipientId: string) {
   let convId: string | null = null;
   try {
-    const res = await startConversation.mutateAsync({ data: { recipientId, content: '👋' } });
-    const json = JSON.stringify(res);
-    const match = json.match(/"conversationId"\s*:\s*"([^"]+)"/);
-    convId = match?.[1] ?? null;
+    // POST /api/v1/chat/messages — kicks off (or reuses) a 1:1 conversation
+    // with `recipientId`. Backend returns the conversation id; we cast to a
+    // local shape because the swagger response is `void`.
+    const res = (await chatMessages({ recipientId, content: '👋' })) as unknown as
+      | StartConversationResponse
+      | undefined;
+    convId = res?.conversationId ?? res?.id ?? null;
   } catch {
     /* may already exist */
   }
 
   if (convId) chatState.setActiveConversation(convId);
-  queryClient.invalidateQueries({ queryKey: getChatGetConversationsQueryKey({ limit: 50 }) });
+  queryClient.invalidateQueries({ queryKey: getChatConversationsGetQueryKey({ limit: 50 }) });
 }
 
 function handleSend(content: string) {
@@ -115,9 +168,8 @@ function handleSend(content: string) {
 
 const activeOther = $derived.by(() => {
   if (!chatState.activeConversationId) return null;
-  const conv = convList?.find((c) => c.id === chatState.activeConversationId);
-  if (!conv) return null;
-  return conv.participant;
+  const conv = convList.find((c) => c.id === chatState.activeConversationId);
+  return conv?.participant ?? null;
 });
 
 // Handle pending recipient (from profile "Message" button)
@@ -125,7 +177,7 @@ $effect(() => {
   if (chatState.pendingRecipientId && chatState.isOpen) {
     const rid = chatState.pendingRecipientId;
     chatState.clearPendingRecipient();
-    startNewConversation(rid);
+    void startNewConversation(rid);
   }
 });
 

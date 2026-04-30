@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { SearchSearchSortBy, searchSearch } from 'api-client';
+import { searchGlobal } from 'api-client';
 import {
   Briefcase,
   FileText,
@@ -13,10 +12,21 @@ import {
   User,
   Users,
 } from 'lucide-svelte';
-import { Avatar } from 'ui';
 import { goto } from '$app/navigation';
 import { trackCtaClick } from '$lib/utils/analytics/track';
 
+/**
+ * Global command palette — frontend BURRO renderer for the backend's
+ * `/api/v1/search/global` endpoint (T11.13). Backend ships the canonical
+ * `{groups:[{type,label,items:[{id,title,snippet?,href,badge?}]}]}` shape.
+ *
+ * The page's static "quick actions" + "navigation" lists stay client-owned
+ * because they're pure routing — no domain decision is made here.
+ *
+ * The swagger declares `searchGlobal` as `Promise<void>` because the
+ * response schema isn't shipped yet; we cast to a local interface at the
+ * boundary so the rest of the component stays typed.
+ */
 type Props = {
   open: boolean;
   t: (key: string, params?: Record<string, string | number>) => string;
@@ -33,17 +43,22 @@ type Action = {
   run: () => void;
 };
 
-type Section = {
+type GlobalSearchItem = {
   id: string;
-  label: string;
-  items: Action[];
+  title: string;
+  snippet?: string | null;
+  href: string;
+  badge?: string | null;
 };
 
-type PersonResult = {
-  userId: string;
-  fullName: string | null;
-  jobTitle: string | null;
-  slug: string | null;
+type GlobalSearchGroup = {
+  type: string;
+  label: string;
+  items: GlobalSearchItem[];
+};
+
+type GlobalSearchResponse = {
+  groups?: GlobalSearchGroup[];
 };
 
 const quickActions: Action[] = [
@@ -96,7 +111,7 @@ const navigation: Action[] = [
 
 let inputRef: HTMLInputElement | undefined = $state();
 let query = $state('');
-let people = $state<PersonResult[]>([]);
+let groups = $state<GlobalSearchGroup[]>([]);
 let searching = $state(false);
 let activeIdx = $state(0);
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -104,45 +119,35 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 $effect(() => {
   if (open) {
     query = '';
-    people = [];
+    groups = [];
     activeIdx = 0;
     setTimeout(() => inputRef?.focus(), 0);
   }
 });
 
-// Debounced people search — only fires when the user types ≥ 2 chars.
+// Debounced backend search — only fires when the user types ≥ 2 chars.
 $effect(() => {
   if (debounceTimer) clearTimeout(debounceTimer);
   const trimmed = query.trim();
   if (trimmed.length < 2) {
-    people = [];
+    groups = [];
     return;
   }
   searching = true;
   debounceTimer = setTimeout(async () => {
     try {
-      const res = (await searchSearch({
-        q: trimmed,
-        skills: '',
-        location: '',
-        minExp: 0,
-        maxExp: 0,
-        page: 1,
-        limit: 5,
-        sortBy: SearchSearchSortBy.relevance,
-      })) as unknown as { data?: Record<string, unknown>[] } | undefined;
-      const items = res?.data ?? [];
-      people = items.map((r) => ({
-        userId: String(r.userId ?? ''),
-        fullName: (r.fullName as string | null) ?? null,
-        jobTitle: (r.jobTitle as string | null) ?? null,
-        slug: (r.slug as string | null) ?? null,
-      }));
+      // `searchGlobal` is typed as `Promise<void>` in the generated SDK
+      // because the swagger response schema isn't shipped yet. The runtime
+      // contract (`{groups:[...]}`) is documented in T11.13.
+      const res = (await searchGlobal({ q: trimmed, limit: 20 })) as unknown as
+        | GlobalSearchResponse
+        | undefined;
+      groups = res?.groups ?? [];
     } catch {
-      people = [];
+      groups = [];
     }
     searching = false;
-  }, 250);
+  }, 200);
 });
 
 // Substring match — cheap and good enough until fuse.js lands.
@@ -158,13 +163,15 @@ function matches(action: Action, q: string): boolean {
 const filteredActions = $derived(quickActions.filter((a) => matches(a, query)));
 const filteredNav = $derived(navigation.filter((a) => matches(a, query)));
 
-// Flat list for keyboard nav — order: people → actions → nav.
+// Flat list for keyboard nav — order: backend hits → quick actions → nav.
 type FlatEntry =
-  | { kind: 'person'; person: PersonResult }
+  | { kind: 'item'; groupType: string; item: GlobalSearchItem }
   | { kind: 'action'; action: Action };
 
 const flat = $derived<FlatEntry[]>([
-  ...people.map((person) => ({ kind: 'person' as const, person })),
+  ...groups.flatMap((g) =>
+    g.items.map((item) => ({ kind: 'item' as const, groupType: g.type, item })),
+  ),
   ...filteredActions.map((action) => ({ kind: 'action' as const, action })),
   ...filteredNav.map((action) => ({ kind: 'action' as const, action })),
 ]);
@@ -174,11 +181,10 @@ $effect(() => {
 });
 
 function runEntry(entry: FlatEntry) {
-  if (entry.kind === 'person') {
-    if (!entry.person.slug) return;
+  if (entry.kind === 'item') {
     onclose();
-    trackCtaClick('palette_person', { userId: entry.person.userId });
-    goto(`/my-profile/public/@${entry.person.slug}`);
+    trackCtaClick('palette_item', { id: entry.item.id, type: entry.groupType });
+    goto(entry.item.href);
     return;
   }
   trackCtaClick('palette_action', { id: entry.action.id });
@@ -215,27 +221,16 @@ function handleKeydown(e: KeyboardEvent) {
   }
 }
 
-const sections = $derived<Section[]>(
-  [
-    {
-      id: 'people',
-      label: 'Pessoas',
-      items: people.map((p) => ({
-        id: `person-${p.userId}`,
-        label: p.fullName ?? p.slug ?? 'Sem nome',
-        hint: p.jobTitle ?? undefined,
-        icon: User,
-        run: () => {
-          if (!p.slug) return;
-          onclose();
-          goto(`/my-profile/public/@${p.slug}`);
-        },
-      })),
-    },
-    { id: 'actions', label: 'Ações rápidas', items: filteredActions },
-    { id: 'nav', label: 'Navegação', items: filteredNav },
-  ].filter((s) => s.items.length > 0),
-);
+// flat-index lookup helpers for hover/click ↔ keyboard sync.
+function indexOfItem(groupType: string, itemId: string): number {
+  return flat.findIndex(
+    (f) => f.kind === 'item' && f.groupType === groupType && f.item.id === itemId,
+  );
+}
+
+function indexOfAction(actionId: string): number {
+  return flat.findIndex((f) => f.kind === 'action' && f.action.id === actionId);
+}
 </script>
 
 {#if open}
@@ -268,45 +263,94 @@ const sections = $derived<Section[]>(
 			</div>
 
 			<div class="max-h-[50vh] overflow-y-auto py-1">
-				{#if sections.length === 0 && query.trim().length > 0}
+				{#if groups.length === 0 && filteredActions.length === 0 && filteredNav.length === 0 && query.trim().length > 0}
 					<p class="px-4 py-6 text-center text-sm text-gray-500 dark:text-neutral-500">
 						Nada encontrado. Pressione Enter pra buscar em todo lugar.
 					</p>
 				{/if}
-				{#each sections as section (section.id)}
+
+				<!-- Backend-driven groups (people, posts, jobs, etc) -->
+				{#each groups as group (group.type)}
+					{#if group.items.length > 0}
+						<div class="py-1">
+							<p class="px-4 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-600">
+								{group.label}
+							</p>
+							{#each group.items as item (item.id)}
+								{@const idx = indexOfItem(group.type, item.id)}
+								{@const active = idx === activeIdx}
+								<button
+									type="button"
+									onmouseenter={() => (activeIdx = idx)}
+									onclick={() => runEntry({ kind: 'item', groupType: group.type, item })}
+									class="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors {active
+										? 'bg-cyan-500/10 text-gray-900 dark:text-neutral-100'
+										: 'text-gray-700 dark:text-neutral-300'}"
+								>
+									<Search size={14} class="text-gray-500 dark:text-neutral-500" />
+									<span class="flex-1 truncate">{item.title}</span>
+									{#if item.badge}
+										<span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-neutral-700 dark:text-neutral-300">{item.badge}</span>
+									{/if}
+									{#if item.snippet}
+										<span class="text-[11px] text-gray-400 dark:text-neutral-500">{item.snippet}</span>
+									{/if}
+								</button>
+							{/each}
+						</div>
+					{/if}
+				{/each}
+
+				<!-- Static quick actions -->
+				{#if filteredActions.length > 0}
 					<div class="py-1">
 						<p class="px-4 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-600">
-							{section.label}
+							Ações rápidas
 						</p>
-						{#each section.items as item (item.id)}
-							{@const globalIdx = flat.findIndex((f) =>
-								f.kind === 'person'
-									? `person-${f.person.userId}` === item.id
-									: f.action.id === item.id,
-							)}
-							{@const active = globalIdx === activeIdx}
+						{#each filteredActions as action (action.id)}
+							{@const idx = indexOfAction(action.id)}
+							{@const active = idx === activeIdx}
 							<button
 								type="button"
-								onmouseenter={() => (activeIdx = globalIdx)}
-								onclick={() => runEntry(flat[globalIdx])}
+								onmouseenter={() => (activeIdx = idx)}
+								onclick={() => runEntry({ kind: 'action', action })}
 								class="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors {active
 									? 'bg-cyan-500/10 text-gray-900 dark:text-neutral-100'
 									: 'text-gray-700 dark:text-neutral-300'}"
 							>
-								{#if section.id === 'people'}
-									{@const person = people.find((p) => `person-${p.userId}` === item.id)}
-									<Avatar name={person?.fullName ?? 'U'} photoURL={null} size="sm" />
-								{:else}
-									<item.icon size={14} class="text-gray-500 dark:text-neutral-500" />
-								{/if}
-								<span class="flex-1">{item.label}</span>
-								{#if item.hint}
-									<span class="text-[11px] text-gray-400 dark:text-neutral-500">{item.hint}</span>
+								<action.icon size={14} class="text-gray-500 dark:text-neutral-500" />
+								<span class="flex-1">{action.label}</span>
+								{#if action.hint}
+									<span class="text-[11px] text-gray-400 dark:text-neutral-500">{action.hint}</span>
 								{/if}
 							</button>
 						{/each}
 					</div>
-				{/each}
+				{/if}
+
+				<!-- Navigation -->
+				{#if filteredNav.length > 0}
+					<div class="py-1">
+						<p class="px-4 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-neutral-600">
+							Navegação
+						</p>
+						{#each filteredNav as action (action.id)}
+							{@const idx = indexOfAction(action.id)}
+							{@const active = idx === activeIdx}
+							<button
+								type="button"
+								onmouseenter={() => (activeIdx = idx)}
+								onclick={() => runEntry({ kind: 'action', action })}
+								class="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors {active
+									? 'bg-cyan-500/10 text-gray-900 dark:text-neutral-100'
+									: 'text-gray-700 dark:text-neutral-300'}"
+							>
+								<action.icon size={14} class="text-gray-500 dark:text-neutral-500" />
+								<span class="flex-1">{action.label}</span>
+							</button>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>

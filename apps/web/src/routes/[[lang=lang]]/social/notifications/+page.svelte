@@ -1,12 +1,11 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createNotificationsGetByUser,
+  createNotificationsList,
   createNotificationsMarkRead,
-  getNotificationsGetByUserQueryKey,
-  getNotificationsGetUnreadCountQueryKey,
-  notificationsGetByUser,
+  getNotificationsListQueryKey,
+  getNotificationsUnreadCountQueryKey,
+  notificationsList,
   notificationsMarkRead,
 } from 'api-client';
 import { Bell } from 'lucide-svelte';
@@ -19,11 +18,28 @@ import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { useSseSubscribe } from '$lib/state/use-sse-subscribe.svelte';
 
-const t = $derived(locale.t);
-const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
-
+/**
+ * Notifications inbox page — frontend BURRO. Reads
+ * `GET /api/v1/notifications` (canonical pagination envelope `{items,
+ * nextCursor}`) and renders each entry through the locale layer +
+ * `notificationVisual` icon mapping. Mark-read actions hit `POST
+ * /api/v1/notifications/mark-read`. Backend stays the source of truth for
+ * `type`, `actor`, `message`, and read state.
+ *
+ * Real-time updates come through the platform SSE channel; on every event
+ * we invalidate the list + unread-count queries so TanStack Query refetches.
+ *
+ * Swagger marks the responses as `void` until the DTOs ship; we cast at
+ * the boundary to the documented runtime shape.
+ */
 type TabKey = 'all' | 'connections' | 'engagement';
+
+type NotificationActor = {
+  id: string;
+  name: string | null;
+  username: string | null;
+  photoURL: string | null;
+};
 
 type NotificationItem = {
   id: string;
@@ -31,13 +47,18 @@ type NotificationItem = {
   message: string;
   read: boolean;
   createdAt: string;
-  actor?: {
-    id: string;
-    name: string | null;
-    username: string | null;
-    photoURL: string | null;
-  } | null;
+  actor?: NotificationActor | null;
 };
+
+type NotificationsListResponse = {
+  items?: NotificationItem[];
+  data?: NotificationItem[];
+  nextCursor?: string | null;
+};
+
+const t = $derived(locale.t);
+const auth = useAuth();
+const authenticated = $derived(auth.data?.authenticated);
 
 let activeTab = $state<TabKey>('all');
 const tabs = $derived([
@@ -48,18 +69,18 @@ const tabs = $derived([
 
 const CONNECTION_TYPES = new Set(['CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW']);
 
-const initialQuery = createNotificationsGetByUser(
-  () => ({ limit: 20 }),
-  () => ({ query: { enabled: browser && authenticated } }),
+const initialQuery = createNotificationsList(
+  () => ({ limit: '20' }),
+  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
 );
 
 function unwrapNotifications(data: unknown): {
   items: NotificationItem[];
   nextCursor: string | null;
 } {
-  const outer = data as Record<string, unknown> | undefined;
-  const items = (outer?.data as NotificationItem[] | undefined) ?? [];
-  const nextCursor = (outer?.nextCursor as string | null | undefined) ?? null;
+  const raw = data as NotificationsListResponse | undefined;
+  const items = raw?.items ?? raw?.data ?? [];
+  const nextCursor = raw?.nextCursor ?? null;
   return { items, nextCursor };
 }
 
@@ -81,11 +102,8 @@ const queryClient = useQueryClient();
 // svelte-ignore state_referenced_locally
 useSseSubscribe('/v1/notifications/subscribe', {
   queryClient,
-  invalidateKeys: [
-    getNotificationsGetByUserQueryKey({ limit: 20 }),
-    getNotificationsGetUnreadCountQueryKey(),
-  ],
-  enabled: authenticated,
+  invalidateKeys: [getNotificationsListQueryKey({ limit: '20' }), getNotificationsUnreadCountQueryKey()],
+  enabled: Boolean(authenticated),
 });
 
 async function loadMore() {
@@ -93,9 +111,7 @@ async function loadMore() {
   if (loadingMore || !next) return;
   loadingMore = true;
   try {
-    const res = (await notificationsGetByUser({ cursor: next, limit: 20 })) as unknown as
-      | Record<string, unknown>
-      | undefined;
+    const res = (await notificationsList({ cursor: next, limit: '20' })) as unknown;
     const page = unwrapNotifications(res);
     extra = [...extra, ...page.items];
     cursor = page.nextCursor;
@@ -107,8 +123,8 @@ async function loadMore() {
 const markReadMutation = createNotificationsMarkRead(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getNotificationsGetByUserQueryKey({ limit: 20 }) });
-      queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getNotificationsListQueryKey({ limit: '20' }) });
+      queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
       extra = extra.map((n) => ({ ...n, read: true }));
       track('notifications_mark_all_read');
     },
@@ -120,15 +136,12 @@ const markReadMutation = createNotificationsMarkRead(() => ({
 
 async function markOne(id: string) {
   try {
-    await notificationsMarkRead({
-      body: JSON.stringify({ notificationId: id }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await notificationsMarkRead({ notificationId: id });
     extra = extra.map((n) => (n.id === id ? { ...n, read: true } : n));
     queryClient.invalidateQueries({
-      queryKey: getNotificationsGetByUserQueryKey({ limit: 20 }),
+      queryKey: getNotificationsListQueryKey({ limit: '20' }),
     });
-    queryClient.invalidateQueries({ queryKey: getNotificationsGetUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
   } catch {
     toastState.show(t('notifications.errorMarkRead'), 'danger');
   }
@@ -153,7 +166,7 @@ $effect(() => {
   if (!sentinel) return;
   const observer = new IntersectionObserver(
     (entries) => {
-      if (entries[0]?.isIntersecting) loadMore();
+      if (entries[0]?.isIntersecting) void loadMore();
     },
     { rootMargin: '200px' },
   );
@@ -173,10 +186,10 @@ function bucketFor(dateStr: string): Bucket {
   const today = start(now);
   const yesterday = today - dayMs;
   const weekAgo = today - 6 * dayMs;
-  const t = start(date);
-  if (t >= today) return 'today';
-  if (t >= yesterday) return 'yesterday';
-  if (t >= weekAgo) return 'thisWeek';
+  const ts = start(date);
+  if (ts >= today) return 'today';
+  if (ts >= yesterday) return 'yesterday';
+  if (ts >= weekAgo) return 'thisWeek';
   return 'older';
 }
 
@@ -218,7 +231,7 @@ const grouped = $derived.by(() => {
 				<Button
 					variant="outline"
 					size="sm"
-					onclick={() => markReadMutation.mutate(undefined)}
+					onclick={() => markReadMutation.mutate({ data: {} })}
 					disabled={markReadMutation.isPending}
 				>
 					{t('notifications.markAllRead')}
@@ -303,8 +316,8 @@ const grouped = $derived.by(() => {
 			<div bind:this={sentinel} class="flex justify-center py-6">
 				{#if loadingMore}
 					<div class="flex gap-2">
-						{#each [1, 2, 3] as _}
-							<div class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600" style="animation-delay: {_ * 150}ms"></div>
+						{#each [1, 2, 3] as _, i}
+							<div class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600" style="animation-delay: {i * 150}ms"></div>
 						{/each}
 					</div>
 				{/if}

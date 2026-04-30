@@ -1,38 +1,39 @@
 <!--
   Dedicated /messages route. Reuses the existing chat components but renders
   them in a persistent, full-screen two-pane layout with a URL that survives
-  reloads.
+  reloads. Frontend-burro: backend remains the source of truth for
+  conversation/message metadata; we only cast the `void` swagger responses
+  to the documented runtime shapes at the boundary.
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { Loader } from 'ui';
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createAuthSession,
-  createChatGetConversations,
-  createChatGetMessages,
-  createChatMarkConversationAsRead,
-  createChatSendMessageToConversation,
-  getChatGetConversationsQueryKey,
-  getChatGetMessagesQueryKey,
+  createChatConversationsGet,
+  createChatConversationsMessagesGet,
+  createChatConversationsMessagesPost,
+  createChatConversationsRead,
+  getChatConversationsGetQueryKey,
+  getChatConversationsMessagesGetQueryKey,
 } from 'api-client';
-
-import { browser } from '$app/environment';
+import { Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import ConversationList from '$lib/components/chat/conversation-list.svelte';
 import MessageInput from '$lib/components/chat/message-input.svelte';
 import MessageThread from '$lib/components/chat/message-thread.svelte';
 import UserSearch from '$lib/components/chat/user-search.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
+
+type ConversationParticipant = {
+  id: string;
+  name: string | null;
+  photoURL: string | null;
+  username: string | null;
+};
 
 type Conversation = {
   id: string;
-  participant: {
-    id: string;
-    name: string | null;
-    photoURL: string | null;
-    username: string | null;
-  };
+  participant: ConversationParticipant;
   lastMessage: { content: string; senderId: string; createdAt: string; isRead: boolean } | null;
   unreadCount?: number;
 };
@@ -46,7 +47,35 @@ type Message = {
   sender: { id: string; name: string | null; photoURL: string | null };
 };
 
-const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
+type ConversationsResponse = {
+  items?: Conversation[];
+  conversations?: { conversations?: Conversation[] } | Conversation[];
+};
+
+type MessagesResponse = {
+  items?: Message[];
+  messages?: { messages?: Message[] } | Message[];
+};
+
+function extractConversations(data: ConversationsResponse | undefined): Conversation[] {
+  if (!data) return [];
+  if (Array.isArray(data.items)) return data.items;
+  const inner = data.conversations;
+  if (Array.isArray(inner)) return inner;
+  if (inner && Array.isArray(inner.conversations)) return inner.conversations;
+  return [];
+}
+
+function extractMessages(data: MessagesResponse | undefined): Message[] {
+  if (!data) return [];
+  if (Array.isArray(data.items)) return data.items;
+  const inner = data.messages;
+  if (Array.isArray(inner)) return inner;
+  if (inner && Array.isArray(inner.messages)) return inner.messages;
+  return [];
+}
+
+const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
@@ -58,33 +87,35 @@ $effect(() => {
 
 const activeId = $derived($page.url.searchParams.get('c'));
 
-const conversations = createChatGetConversations(
+const conversations = createChatConversationsGet(
   () => ({ limit: 50 }),
   () => ({ query: { enabled: Boolean(authenticated) } }),
 );
 const convList = $derived(
-  (conversations.data?.conversations?.conversations ?? []) as Conversation[],
+  extractConversations(conversations.data as unknown as ConversationsResponse | undefined),
 );
 
-const messages = createChatGetMessages(
+const messages = createChatConversationsMessagesGet(
   () => activeId ?? '',
   () => ({ limit: 100 }),
   () => ({ query: { enabled: Boolean(activeId) } }),
 );
-const msgList = $derived((messages.data?.messages?.messages ?? []) as Message[]);
+const msgList = $derived(
+  extractMessages(messages.data as unknown as MessagesResponse | undefined),
+);
 
 const queryClient = useQueryClient();
 
-const markRead = createChatMarkConversationAsRead();
-const sendMessage = createChatSendMessageToConversation(() => ({
+const markRead = createChatConversationsRead();
+const sendMessage = createChatConversationsMessagesPost(() => ({
   mutation: {
     onSuccess() {
       if (activeId) {
         queryClient.invalidateQueries({
-          queryKey: getChatGetMessagesQueryKey(activeId, { limit: 100 }),
+          queryKey: getChatConversationsMessagesGetQueryKey(activeId, { limit: 100 }),
         });
         queryClient.invalidateQueries({
-          queryKey: getChatGetConversationsQueryKey({ limit: 50 }),
+          queryKey: getChatConversationsGetQueryKey({ limit: 50 }),
         });
       }
     },

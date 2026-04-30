@@ -1,12 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createFollowGetFollowing,
-  createFollowUnfollow,
-  type FollowingListDataDtoFollowingDataItem,
-  followGetFollowing,
-  getFollowGetFollowingQueryKey,
+  createSocialFollowUsersFollowDelete,
+  createSocialFollowUsersFollowing,
+  getSocialFollowUsersFollowingQueryKey,
+  socialFollowUsersFollowing,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -22,9 +20,9 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
-const query = createFollowGetFollowing(
+const query = createSocialFollowUsersFollowing(
   () => currentUserId,
-  () => ({ page: 1, limit: 20 }),
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser && !!currentUserId } }),
 );
 
@@ -35,7 +33,13 @@ type FollowingRow = {
   photoURL?: string | null;
 };
 
-function rowsFrom(items?: FollowingListDataDtoFollowingDataItem[]): FollowingRow[] {
+// Swagger ships `void` for the response; runtime contract is
+// `{following:{data:[{following:{...}}],total,totalPages}}`.
+type FollowingRecord = {
+  following?: { id?: string; name?: string | null; username?: string | null; photoURL?: string | null };
+};
+
+function rowsFrom(items?: FollowingRecord[]): FollowingRow[] {
   return (items ?? []).map((row) => ({
     id: row.following?.id ?? '',
     name: row.following?.name ?? null,
@@ -51,7 +55,7 @@ function pagedSection(data: unknown): {
 } {
   const outer = data as Record<string, unknown> | undefined;
   const section = outer?.following as
-    | { data?: FollowingListDataDtoFollowingDataItem[]; totalPages?: number; total?: number }
+    | { data?: FollowingRecord[]; totalPages?: number; total?: number }
     | undefined;
   return {
     rows: rowsFrom(section?.data),
@@ -71,13 +75,11 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await followGetFollowing(currentUserId, {
-      page: next,
-      limit: 20,
+    const res = (await socialFollowUsersFollowing(currentUserId, {
+      page: String(next),
+      limit: '20',
     })) as unknown as Record<string, unknown> | undefined;
-    const section = res?.following as
-      | { data?: FollowingListDataDtoFollowingDataItem[] }
-      | undefined;
+    const section = res?.following as { data?: FollowingRecord[] } | undefined;
     extra = [...extra, ...rowsFrom(section?.data)];
     pageNum = next;
   } finally {
@@ -89,10 +91,10 @@ const all = $derived([...firstPage.rows, ...extra].filter((r) => !hiddenIds.has(
 
 const queryClient = useQueryClient();
 
-const unfollowMutation = createFollowUnfollow(() => ({
+const unfollowMutation = createSocialFollowUsersFollowDelete(() => ({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getFollowGetFollowingQueryKey(currentUserId) });
+      queryClient.invalidateQueries({ queryKey: getSocialFollowUsersFollowingQueryKey(currentUserId) });
       track('user_unfollowed', { targetUserId: vars.userId, source: 'following_page' });
     },
     onError(_err, vars) {

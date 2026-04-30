@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createActivityGetFeed } from 'api-client';
+import { createSocialActivityUsersFeed } from 'api-client';
 import { Activity } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Card, EmptyState, Skeleton } from 'ui';
@@ -14,9 +13,10 @@ const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 const userId = $derived(String(auth.data?.user?.id ?? ''));
 
-const query = createActivityGetFeed(
+const query = createSocialActivityUsersFeed(
   () => userId,
-  () => ({ query: { enabled: browser && authenticated && !!userId } }),
+  () => ({}),
+  () => ({ query: { enabled: browser && Boolean(authenticated) && !!userId } }),
 );
 
 type ActivityItem = {
@@ -31,10 +31,16 @@ type ActivityItem = {
   } | null;
 };
 
+// Swagger declares `socialActivityUsersFeed` as `Promise<void>` because the
+// response schema isn't shipped yet. Runtime contract: `{items?, feed?:{data?}}`.
+type ActivityFeedResponse = {
+  items?: ActivityItem[];
+  feed?: { data?: ActivityItem[] };
+};
+
 const items = $derived.by<ActivityItem[]>(() => {
-  const data = query.data as Record<string, unknown> | undefined;
-  const section = data?.feed as Record<string, unknown> | undefined;
-  return (section?.data as ActivityItem[] | undefined) ?? [];
+  const raw = query.data as unknown as ActivityFeedResponse | undefined;
+  return raw?.items ?? raw?.feed?.data ?? [];
 });
 
 

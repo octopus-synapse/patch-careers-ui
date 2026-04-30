@@ -1,12 +1,11 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  connectionGetPendingRequests,
-  createConnectionAcceptConnection,
-  createConnectionGetPendingRequests,
-  createConnectionRejectConnection,
-  getConnectionGetPendingRequestsQueryKey,
+  createSocialConnectionsConnectionsAccept,
+  createSocialConnectionsConnectionsReject,
+  createSocialConnectionsUsersMeConnectionsPending,
+  getSocialConnectionsUsersMeConnectionsPendingQueryKey,
+  socialConnectionsUsersMeConnectionsPending,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
 import { Avatar, Button, Skeleton } from 'ui';
@@ -24,8 +23,8 @@ type U = {
 };
 type R = { id: string; createdAt: string; user: U };
 
-const query = createConnectionGetPendingRequests(
-  () => ({ page: 1, limit: 20 }),
+const query = createSocialConnectionsUsersMeConnectionsPending(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser } }),
 );
 
@@ -63,11 +62,15 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = page + 1;
-    const res = (await connectionGetPendingRequests({ page: next, limit: 20 })) as unknown as
-      | Record<string, unknown>
-      | undefined;
+    const res = (await socialConnectionsUsersMeConnectionsPending({
+      page: String(next),
+      limit: '20',
+    })) as unknown as Record<string, unknown> | undefined;
     const section = res?.pendingRequests as Record<string, unknown> | undefined;
-    const items = (section?.data as Record<string, unknown>[] | undefined) ?? [];
+    const items =
+      (section?.data as Record<string, unknown>[] | undefined) ??
+      (res?.items as Record<string, unknown>[] | undefined) ??
+      [];
     extra = [...extra, ...items.map(extractRecord)];
     page = next;
   } finally {
@@ -79,18 +82,18 @@ const all = $derived([...firstPage.data, ...extra]);
 
 const queryClient = useQueryClient();
 
-const acceptMutation = createConnectionAcceptConnection(() => ({
+const acceptMutation = createSocialConnectionsConnectionsAccept(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetPendingRequestsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey() });
     },
   },
 }));
 
-const rejectMutation = createConnectionRejectConnection(() => ({
+const rejectMutation = createSocialConnectionsConnectionsReject(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetPendingRequestsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey() });
     },
   },
 }));

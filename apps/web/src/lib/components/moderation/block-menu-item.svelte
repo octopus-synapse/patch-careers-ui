@@ -1,17 +1,23 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createChatBlockUsersBlockUser,
-  getChatBlockUsersGetBlockedUsersQueryKey,
-  getChatBlockUsersIsBlockedQueryKey,
-  getFeedGetTimelineQueryKey,
+  createChatBlockUsersBlockedPost,
+  getChatBlockUsersBlockedGetQueryKey,
+  getChatBlockUsersBlockedStatusQueryKey,
+  getFeedListQueryKey,
 } from 'api-client';
 import { Shield } from 'lucide-svelte';
 import { Button, ConfirmModal, toastState } from 'ui';
 import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 
+/**
+ * Frontend-burro renderer for the "Block user" affordance. The block
+ * mutation hits `POST /api/v1/chat/block-users/blocked`; success/error
+ * copy comes from the locale layer (no domain logic here). Once the
+ * server confirms, we invalidate the three views that may show the
+ * blocked user (block list, is-blocked status, feed timeline).
+ */
 type Props = {
   /** ID of the user being blocked. */
   targetUserId: string;
@@ -43,14 +49,14 @@ const t = $derived(locale.t);
 const queryClient = useQueryClient();
 let showConfirm = $state(false);
 
-const blockMutation = createChatBlockUsersBlockUser(() => ({
+const blockMutation = createChatBlockUsersBlockedPost(() => ({
   mutation: {
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: getChatBlockUsersIsBlockedQueryKey(targetUserId),
+        queryKey: getChatBlockUsersBlockedStatusQueryKey(targetUserId),
       });
-      queryClient.invalidateQueries({ queryKey: getChatBlockUsersGetBlockedUsersQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getChatBlockUsersBlockedGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
       track('user_blocked', { targetUserId, source });
       toastState.show(t('network.blockSuccess'), 'success');
       onblocked?.();

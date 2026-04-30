@@ -1,11 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  connectionGetConnectionSuggestions,
-  createConnectionGetConnectionSuggestions,
-  createConnectionSendConnectionRequest,
-  getConnectionGetConnectionSuggestionsQueryKey,
+  createSocialConnectionsUsersConnect,
+  createSocialConnectionsUsersMeConnectionsSuggestions,
+  getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey,
+  socialConnectionsUsersMeConnectionsSuggestions,
 } from 'api-client';
 import { UserPlus, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -22,9 +21,9 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
-const query = createConnectionGetConnectionSuggestions(
-  () => ({ page: 1, limit: 20 }),
-  () => ({ query: { enabled: browser && authenticated } }),
+const query = createSocialConnectionsUsersMeConnectionsSuggestions(
+  () => ({ page: '1', limit: '20' }),
+  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
 );
 
 type Suggestion = {
@@ -61,7 +60,10 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = await connectionGetConnectionSuggestions({ page: next, limit: 20 });
+    const res = await socialConnectionsUsersMeConnectionsSuggestions({
+      page: String(next),
+      limit: '20',
+    });
     const section = extractSuggestions(res);
     extra = [...extra, ...section.data];
     pageNum = next;
@@ -74,11 +76,11 @@ const all = $derived([...firstPage.data, ...extra]);
 
 const queryClient = useQueryClient();
 
-const connectMutation = createConnectionSendConnectionRequest(() => ({
+const connectMutation = createSocialConnectionsUsersConnect(() => ({
   mutation: {
     onSuccess(_data, variables) {
       queryClient.invalidateQueries({
-        queryKey: getConnectionGetConnectionSuggestionsQueryKey(),
+        queryKey: getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
       });
       track('connection_requested', {
         targetUserId: variables.userId,

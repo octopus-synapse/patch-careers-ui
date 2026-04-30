@@ -1,10 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createConnectionGetConnectionSuggestions,
-  createFeedGetTimeline,
-  getFeedGetTimelineQueryKey,
+  createFeedList,
+  createSocialConnectionsUsersMeConnectionsSuggestions,
+  getFeedListQueryKey,
 } from 'api-client';
 import { Plus } from 'lucide-svelte';
 import { Tabs, ToastContainer } from 'ui';
@@ -69,7 +68,7 @@ function handleTabChange(value: string) {
   if (next === activeTab) return;
   activeTab = next;
   pagination.reset();
-  queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
 }
 
 // Modals
@@ -81,9 +80,9 @@ let repostTargetPost = $state<Record<string, unknown> | null>(null);
 
 const queryClient = useQueryClient();
 
-const suggestionsQuery = createConnectionGetConnectionSuggestions(
-  () => ({ page: 1, limit: 20 }),
-  () => ({ query: { enabled: browser && authenticated } }),
+const suggestionsQuery = createSocialConnectionsUsersMeConnectionsSuggestions(
+  () => ({ limit: '20' }),
+  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
 );
 
 type SuggestionItem = {
@@ -101,7 +100,15 @@ const feedSuggestions = $derived.by<SuggestionItem[]>(() => {
   return items;
 });
 
-const pagination = useFeedPagination({ getRawData: () => feedQuery.data });
+// `feedQuery.data` is typed as `void` until the swagger response schema
+// ships; we cast to the canonical pagination envelope (`{items,nextCursor}`)
+// which is the runtime contract documented in F1.
+const pagination = useFeedPagination({
+  getRawData: () =>
+    feedQuery.data as unknown as
+      | { items?: Record<string, unknown>[]; nextCursor?: string | null; hasNew?: boolean }
+      | undefined,
+});
 
 const engagement = useFeedEngagement({
   getPosts: () => pagination.allPosts,
@@ -137,15 +144,15 @@ const fitScoreByPostId = $derived.by<Record<string, PostFitScore>>(() => {
   return map;
 });
 
-const feedQuery = createFeedGetTimeline(
+const feedQuery = createFeedList(
   () => ({
     cursor: pagination.cursor,
-    limit: 20,
-    ...(activeTab === 'bubble' ? { followingOnly: true } : {}),
+    limit: '20',
+    ...(activeTab === 'bubble' ? { followingOnly: 'true' } : {}),
   }),
   () => ({
     query: {
-      enabled: authenticated,
+      enabled: Boolean(authenticated),
       // Only poll when the user is at the head of the feed — further
       // pages are stable and shouldn't be refetched in the background.
       refetchInterval: pagination.cursor === undefined ? 60_000 : false,
@@ -184,7 +191,7 @@ async function handleReportSubmit(reason: string) {
 function handlePostCreated() {
   showCreateModal = false;
   pagination.reset();
-  queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
 }
 </script>
 

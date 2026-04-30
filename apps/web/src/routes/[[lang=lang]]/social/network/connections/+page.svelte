@@ -1,11 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  connectionGetConnections,
-  createConnectionGetConnections,
-  createConnectionRemoveConnection,
-  getConnectionGetConnectionsQueryKey,
+  createSocialConnectionsConnectionsWithdraw,
+  createSocialConnectionsUsersMeConnections,
+  getSocialConnectionsUsersMeConnectionsQueryKey,
+  socialConnectionsUsersMeConnections,
 } from 'api-client';
 import { ChevronDown, MessageCircle, MoreHorizontal, Search, Users } from 'lucide-svelte';
 import { Avatar, Button, ConfirmModal, Input, Skeleton } from 'ui';
@@ -29,8 +28,8 @@ type ConnectionRecord = {
   user: ConnectionUser;
 };
 
-const connectionsQuery = createConnectionGetConnections(
-  () => ({ page: 1, limit: 20 }),
+const connectionsQuery = createSocialConnectionsUsersMeConnections(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser } }),
 );
 
@@ -68,11 +67,15 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = page + 1;
-    const res = (await connectionGetConnections({ page: next, limit: 20 })) as unknown as
-      | Record<string, unknown>
-      | undefined;
+    const res = (await socialConnectionsUsersMeConnections({
+      page: String(next),
+      limit: '20',
+    })) as unknown as Record<string, unknown> | undefined;
     const section = res?.connections as Record<string, unknown> | undefined;
-    const items = (section?.data as Record<string, unknown>[] | undefined) ?? [];
+    const items =
+      (section?.data as Record<string, unknown>[] | undefined) ??
+      (res?.items as Record<string, unknown>[] | undefined) ??
+      [];
     extra = [...extra, ...items.map(extractRecord)];
     page = next;
   } finally {
@@ -134,10 +137,10 @@ const queryClient = useQueryClient();
 let removeTarget = $state<{ id: string; name: string } | null>(null);
 let menuOpenFor = $state<string | null>(null);
 
-const removeMutation = createConnectionRemoveConnection(() => ({
+const removeMutation = createSocialConnectionsConnectionsWithdraw(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetConnectionsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsQueryKey() });
       extra = extra.filter((c) => c.id !== removeTarget?.id);
       removeTarget = null;
     },

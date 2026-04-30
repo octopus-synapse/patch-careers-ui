@@ -1,6 +1,11 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { type CreatePostDto, postsCreate, postsUploadImage } from 'api-client';
+import {
+  type PostsCreateBody,
+  type PostsCreateBodyAnonymousCategory,
+  type PostsCreateBodyType,
+  postsCreate,
+  postsUploadImage,
+} from 'api-client';
 import { AlertTriangle, Banknote, BookOpen, Briefcase, Calendar, ChevronRight, Code, Eye, EyeOff, Hammer, HelpCircle, Image, Link, LogOut, MessageSquare, Plus, ShieldAlert, Trophy, Upload, Users, X, Zap } from 'lucide-svelte';
 import { Badge, Button, Input, Loader, Modal, Textarea } from 'ui';
 
@@ -12,7 +17,10 @@ type Props = {
 
 let { open, oncreate, oncancel }: Props = $props();
 
-const postTypes = [
+// Subset of `PostsCreateBodyType` exposed in this composer — REPOST is
+// surfaced through a separate "quote repost" flow.
+type PostType = Exclude<PostsCreateBodyType, 'REPOST'>;
+const postTypes: readonly PostType[] = [
   'ACHIEVEMENT',
   'OPPORTUNITY',
   'LEARNING',
@@ -20,7 +28,6 @@ const postTypes = [
   'QUESTION',
   'CHALLENGE',
 ] as const;
-type PostType = (typeof postTypes)[number];
 
 let step = $state<1 | 2>(1);
 let selectedType = $state<PostType>('ACHIEVEMENT');
@@ -97,11 +104,10 @@ let threadPosts = $state<string[]>(['']);
 
 // Blind Mode — only available in sensitive categories. Category must be
 // selected when `isAnonymous=true` (backend enforces via Zod refinement).
-type AnonymousCategory = 'SALARY' | 'INTERVIEW' | 'LAYOFF' | 'TOXIC_CULTURE' | 'HARASSMENT';
 let isAnonymous = $state(false);
-let anonymousCategory = $state<AnonymousCategory | ''>('');
+let anonymousCategory = $state<PostsCreateBodyAnonymousCategory | ''>('');
 const anonymousCategoryOptions: Array<{
-  value: AnonymousCategory;
+  value: PostsCreateBodyAnonymousCategory;
   label: string;
   icon: typeof Trophy;
 }> = [
@@ -216,8 +222,14 @@ async function handleImageSelect(e: Event) {
   imageFile = file;
   uploadingImage = true;
   try {
-    const result = await postsUploadImage({ file });
-    imageUrl = result.url;
+    // The endpoint accepts a multipart/form-data POST. Swagger ships a
+    // `void` response; the runtime contract returns `{url: string}`.
+    const formData = new FormData();
+    formData.append('file', file);
+    const result = (await postsUploadImage({ method: 'POST', body: formData })) as unknown as
+      | { url?: string }
+      | undefined;
+    imageUrl = result?.url ?? '';
   } catch {
     imageFile = null;
     imageUrl = '';
@@ -305,9 +317,11 @@ async function handleSubmit() {
       : [];
     const data = buildData();
 
-    const payload: CreatePostDto = {
+    const payload: PostsCreateBody = {
       type: selectedType,
-      data,
+      // `data` is loosely typed as `PostsCreateBodyData` (Record<string,
+      // unknown>) — backend validates per-type with Zod.
+      data: data as unknown as PostsCreateBody['data'],
       content: content || undefined,
       hardSkills: hardSkills.length > 0 ? hardSkills : undefined,
       softSkills: softSkills.length > 0 ? softSkills : undefined,

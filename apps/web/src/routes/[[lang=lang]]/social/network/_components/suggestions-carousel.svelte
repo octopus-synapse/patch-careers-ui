@@ -1,9 +1,8 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createConnectionSendConnectionRequest,
-  getConnectionGetConnectionSuggestionsQueryKey,
+  createSocialConnectionsUsersConnect,
+  getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey,
 } from 'api-client';
 import { ChevronLeft, ChevronRight, UserPlus } from 'lucide-svelte';
 import { Badge, Button, SliderCarousel, toastState } from 'ui';
@@ -35,11 +34,11 @@ let { suggestions, title, seeAllHref, source = 'suggestions', ondismiss }: Props
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-const connectMutation = createConnectionSendConnectionRequest(() => ({
+const connectMutation = createSocialConnectionsUsersConnect(() => ({
   mutation: {
     onSuccess(_data, variables) {
       queryClient.invalidateQueries({
-        queryKey: getConnectionGetConnectionSuggestionsQueryKey(),
+        queryKey: getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
       });
       track('connection_requested', { targetUserId: variables.userId, source });
     },

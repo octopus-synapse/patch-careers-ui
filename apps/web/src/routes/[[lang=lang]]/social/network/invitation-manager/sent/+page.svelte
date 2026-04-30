@@ -1,11 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  connectionGetSentRequests,
-  createConnectionGetSentRequests,
-  createConnectionWithdrawSentRequest,
-  getConnectionGetSentRequestsQueryKey,
+  createSocialConnectionsConnectionsWithdraw,
+  createSocialConnectionsUsersMeConnectionsSent,
+  getSocialConnectionsUsersMeConnectionsSentQueryKey,
+  socialConnectionsUsersMeConnectionsSent,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
 import { Avatar, Button, Skeleton, toastState } from 'ui';
@@ -24,8 +23,8 @@ type U = {
 };
 type R = { id: string; createdAt: string; user: U };
 
-const query = createConnectionGetSentRequests(
-  () => ({ page: 1, limit: 20 }),
+const query = createSocialConnectionsUsersMeConnectionsSent(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser } }),
 );
 
@@ -63,11 +62,15 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = page + 1;
-    const res = (await connectionGetSentRequests({ page: next, limit: 20 })) as unknown as
-      | Record<string, unknown>
-      | undefined;
+    const res = (await socialConnectionsUsersMeConnectionsSent({
+      page: String(next),
+      limit: '20',
+    })) as unknown as Record<string, unknown> | undefined;
     const section = res?.pendingRequests as Record<string, unknown> | undefined;
-    const items = (section?.data as Record<string, unknown>[] | undefined) ?? [];
+    const items =
+      (section?.data as Record<string, unknown>[] | undefined) ??
+      (res?.items as Record<string, unknown>[] | undefined) ??
+      [];
     extra = [...extra, ...items.map(extractRecord)];
     page = next;
   } finally {
@@ -79,10 +82,10 @@ const all = $derived([...firstPage.data, ...extra]);
 
 const queryClient = useQueryClient();
 
-const withdrawMutation = createConnectionWithdrawSentRequest(() => ({
+const withdrawMutation = createSocialConnectionsConnectionsWithdraw(() => ({
   mutation: {
     onSuccess(_data, variables) {
-      queryClient.invalidateQueries({ queryKey: getConnectionGetSentRequestsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsSentQueryKey() });
       extra = extra.filter((r) => r.id !== variables.id);
       track('connection_invite_withdrawn', { connectionId: variables.id });
     },

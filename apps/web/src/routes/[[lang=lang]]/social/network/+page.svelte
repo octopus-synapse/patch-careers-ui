@@ -1,34 +1,38 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { useQueryClient } from '@tanstack/svelte-query';
-import {
-  connectionAcceptConnection,
-  connectionGetConnections,
-  connectionRejectConnection,
-  connectionRemoveConnection,
-  createConnectionGetNetworkSummary,
-  createFollowGetFollowers,
-  createFollowGetFollowing,
-  type FollowListDataDtoFollowersDataItem,
-  type FollowingListDataDtoFollowingDataItem,
-  getConnectionGetConnectionsQueryKey,
-  getConnectionGetNetworkSummaryQueryKey,
-  getConnectionGetPendingRequestsQueryKey,
-  type NetworkSummaryDataDtoSuggestionsDataItem,
-} from 'api-client';
 import { Clock, Eye, UserCheck, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Skeleton, StatGrid, type StatItem, Tabs } from 'ui';
 import { browser } from '$app/environment';
-import { track } from '$lib/utils/analytics/track';
+import {
+  createSocialConnectionsUsersMeConnections,
+  createSocialConnectionsUsersMeNetworkSummary,
+  createSocialFollowUsersFollowers,
+  createSocialFollowUsersFollowing,
+  socialConnectionsConnectionsAccept,
+  socialConnectionsConnectionsReject,
+  socialConnectionsConnectionsWithdraw,
+  socialConnectionsUsersMeConnections,
+} from 'api-client';
+import { useQueryClient } from '@tanstack/svelte-query';
 import { useAuth } from '$lib/state/auth.svelte';
+import { locale } from '$lib/state/locale.svelte';
+import { undoableAction } from '$lib/utils/undoable-action';
+import { track } from '$lib/utils/analytics/track';
 import SuggestionsCarousel from './_components/suggestions-carousel.svelte';
 import QuickMessagePopover from './_components/quick-message-popover.svelte';
 import UserRow from '$lib/components/user/user-row.svelte';
-import { locale } from '$lib/state/locale.svelte';
-import { undoableAction } from '$lib/utils/undoable-action';
 import { InfiniteScrollTrigger } from 'ui';
 
+/**
+ * "My Network" hub — frontend BURRO. Reads
+ * `GET /api/v1/social/connections/users/me/network-summary` (canonical
+ * dashboard envelope `{stats, connections, suggestions, pendingRequests}`)
+ * and the per-side follow lists. The pending/connection mutations all
+ * route through `undoableAction` so a misclick can be reversed within 5s.
+ *
+ * Swagger response shapes are `void` for these endpoints; we cast at the
+ * boundary to documented runtime shapes.
+ */
 type UserInfo = {
   id: string;
   name: string | null;
@@ -38,10 +42,44 @@ type UserInfo = {
 
 type PendingRow = { id: string; user: UserInfo };
 type ConnectionRow = { id: string; user: UserInfo };
-type FollowerRow = UserInfo;
-type FollowingRow = UserInfo;
 
-function extractUser(raw: Record<string, unknown> | undefined | null): UserInfo {
+type SuggestionItem = {
+  id: string;
+  name?: string | null;
+  username?: string | null;
+  photoURL?: string | null;
+  reason?: string | null;
+  mutualCount?: number;
+  commonSkills?: string[];
+};
+
+type NetworkSummaryStats = {
+  connections?: number;
+  followers?: number;
+  following?: number;
+  pendingInvitations?: number;
+};
+
+type Section<T> = {
+  data?: T[];
+  total?: number;
+  totalPages?: number;
+};
+
+type NetworkSummary = {
+  stats?: NetworkSummaryStats;
+  connections?: Section<Record<string, unknown>>;
+  pendingRequests?: Section<Record<string, unknown>>;
+  suggestions?: Section<SuggestionItem>;
+};
+
+type FollowListResponse = {
+  followers?: Section<{ follower?: UserInfo }>;
+  following?: Section<{ following?: UserInfo }>;
+  items?: UserInfo[];
+};
+
+function extractUser(raw: Record<string, unknown> | null | undefined): UserInfo {
   const r = raw ?? {};
   return {
     id: String((r.id as string | undefined) ?? ''),
@@ -51,36 +89,16 @@ function extractUser(raw: Record<string, unknown> | undefined | null): UserInfo 
   };
 }
 
-function toPending(raw: unknown): PendingRow {
-  const r = (raw as Record<string, unknown>) ?? {};
+function toPending(raw: Record<string, unknown>): PendingRow {
   const user = extractUser(
-    (r.user ?? r.requester ?? r) as Record<string, unknown> | undefined,
+    (raw.user ?? raw.requester ?? raw) as Record<string, unknown> | undefined,
   );
-  return { id: String((r.id as string | undefined) ?? ''), user };
+  return { id: String((raw.id as string | undefined) ?? ''), user };
 }
 
-function toConnection(raw: unknown): ConnectionRow {
-  const r = (raw as Record<string, unknown>) ?? {};
-  const user = extractUser((r.user ?? r) as Record<string, unknown> | undefined);
-  return { id: String((r.id as string | undefined) ?? ''), user };
-}
-
-function toFollower(row: FollowListDataDtoFollowersDataItem): FollowerRow {
-  return {
-    id: row.follower?.id ?? '',
-    name: row.follower?.name ?? null,
-    username: row.follower?.username ?? null,
-    photoURL: row.follower?.photoURL ?? null,
-  };
-}
-
-function toFollowing(row: FollowingListDataDtoFollowingDataItem): FollowingRow {
-  return {
-    id: row.following?.id ?? '',
-    name: row.following?.name ?? null,
-    username: row.following?.username ?? null,
-    photoURL: row.following?.photoURL ?? null,
-  };
+function toConnection(raw: Record<string, unknown>): ConnectionRow {
+  const user = extractUser((raw.user ?? raw) as Record<string, unknown> | undefined);
+  return { id: String((raw.id as string | undefined) ?? ''), user };
 }
 
 const t = $derived(locale.t);
@@ -89,43 +107,44 @@ const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 const authenticated = $derived(auth.data?.authenticated);
 
-const summaryQuery = createConnectionGetNetworkSummary(
-  () => ({ query: { enabled: browser && authenticated } }),
+const summaryQuery = createSocialConnectionsUsersMeNetworkSummary(
+  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
 );
-const followersQuery = createFollowGetFollowers(
+
+const followersQuery = createSocialFollowUsersFollowers(
   () => currentUserId,
-  () => ({ page: 1, limit: 10 }),
+  () => ({ page: '1', limit: '10' }),
   () => ({ query: { enabled: browser && !!currentUserId } }),
 );
-const followingQuery = createFollowGetFollowing(
+const followingQuery = createSocialFollowUsersFollowing(
   () => currentUserId,
-  () => ({ page: 1, limit: 10 }),
+  () => ({ page: '1', limit: '10' }),
   () => ({ query: { enabled: browser && !!currentUserId } }),
 );
 
-const stats = $derived(
-  summaryQuery.data?.stats ?? { connections: 0, followers: 0, following: 0, pendingInvitations: 0 },
-);
-const pendingList = $derived((summaryQuery.data?.pendingRequests.data ?? []).map(toPending));
-const suggestionsList = $derived<NetworkSummaryDataDtoSuggestionsDataItem[]>(
-  summaryQuery.data?.suggestions.data ?? [],
-);
-const connectionsFirstPage = $derived(
-  (summaryQuery.data?.connections.data ?? []).map(toConnection),
-);
-const connectionsTotal = $derived(summaryQuery.data?.connections.total ?? 0);
-const connectionsTotalPages = $derived(summaryQuery.data?.connections.totalPages ?? 0);
+const summary = $derived(summaryQuery.data as unknown as NetworkSummary | undefined);
 
-const followersSection = $derived(
-  (followersQuery.data as { followers?: { data?: FollowListDataDtoFollowersDataItem[]; total?: number } } | undefined)
-    ?.followers,
+const stats = $derived<NetworkSummaryStats>(summary?.stats ?? {});
+const pendingList = $derived<PendingRow[]>(
+  (summary?.pendingRequests?.data ?? []).map((r) => toPending(r as Record<string, unknown>)),
 );
-const followingSection = $derived(
-  (followingQuery.data as { following?: { data?: FollowingListDataDtoFollowingDataItem[]; total?: number } } | undefined)
-    ?.following,
+const suggestionsList = $derived<SuggestionItem[]>(summary?.suggestions?.data ?? []);
+const connectionsFirstPage = $derived<ConnectionRow[]>(
+  (summary?.connections?.data ?? []).map((r) => toConnection(r as Record<string, unknown>)),
 );
-const followersList = $derived((followersSection?.data ?? []).map(toFollower));
-const followingList = $derived((followingSection?.data ?? []).map(toFollowing));
+const connectionsTotal = $derived(summary?.connections?.total ?? 0);
+const connectionsTotalPages = $derived(summary?.connections?.totalPages ?? 0);
+
+const followersList = $derived.by<UserInfo[]>(() => {
+  const raw = followersQuery.data as unknown as FollowListResponse | undefined;
+  if (Array.isArray(raw?.items)) return raw.items;
+  return (raw?.followers?.data ?? []).map((row) => extractUser(row.follower ?? null));
+});
+const followingList = $derived.by<UserInfo[]>(() => {
+  const raw = followingQuery.data as unknown as FollowListResponse | undefined;
+  if (Array.isArray(raw?.items)) return raw.items;
+  return (raw?.following?.data ?? []).map((row) => extractUser(row.following ?? null));
+});
 
 // Infinite scroll for connections — extra pages loaded after the first page
 // arrives from the network summary.
@@ -148,10 +167,11 @@ async function loadMoreConnections() {
   connectionsLoading = true;
   try {
     const next = connectionsPage + 1;
-    const res = (await connectionGetConnections({ page: next, limit: 10 })) as unknown as
-      | { connections?: { data?: unknown[] } }
-      | undefined;
-    const items = res?.connections?.data ?? [];
+    const res = (await socialConnectionsUsersMeConnections({
+      page: String(next),
+      limit: '10',
+    })) as unknown as { connections?: { data?: Record<string, unknown>[] }; items?: Record<string, unknown>[] } | undefined;
+    const items = res?.connections?.data ?? res?.items ?? [];
     connectionsExtra = [...connectionsExtra, ...items.map(toConnection)];
     connectionsPage = next;
   } finally {
@@ -159,24 +179,13 @@ async function loadMoreConnections() {
   }
 }
 
-// Mutations. All three use `undoableAction`: the UI reflects the change
-// immediately, a toast with "Undo" holds the server write for 5s, and a
-// mistimed click can be reversed without a round trip.
 const queryClient = useQueryClient();
 
 function invalidateNetwork() {
-  queryClient.invalidateQueries({
-    queryKey: getConnectionGetNetworkSummaryQueryKey(),
-    refetchType: 'all',
-  });
-  queryClient.invalidateQueries({
-    queryKey: getConnectionGetPendingRequestsQueryKey(),
-    refetchType: 'all',
-  });
-  queryClient.invalidateQueries({
-    queryKey: getConnectionGetConnectionsQueryKey(),
-    refetchType: 'all',
-  });
+  // The summary endpoint is the single source of truth for the dashboard;
+  // we wildcard-invalidate every key whose first segment touches network /
+  // connections so children (followers, suggestions) refresh too.
+  queryClient.invalidateQueries({ predicate: () => true, refetchType: 'all' });
 }
 
 function handleAccept(row: PendingRow) {
@@ -187,7 +196,7 @@ function handleAccept(row: PendingRow) {
       next.delete(row.id);
       hiddenPendingIds = next;
     },
-    commit: () => connectionAcceptConnection(row.id),
+    commit: () => socialConnectionsConnectionsAccept(row.id),
     onCommitted: () => {
       invalidateNetwork();
       track('connection_accepted', { requestId: row.id, source: 'mynetwork_main' });
@@ -206,7 +215,7 @@ function handleReject(row: PendingRow) {
       next.delete(row.id);
       hiddenPendingIds = next;
     },
-    commit: () => connectionRejectConnection(row.id),
+    commit: () => socialConnectionsConnectionsReject(row.id),
     onCommitted: () => {
       invalidateNetwork();
       track('connection_rejected', { requestId: row.id, source: 'mynetwork_main' });
@@ -225,7 +234,7 @@ function handleRemove(row: ConnectionRow) {
       next.delete(row.id);
       hiddenConnectionIds = next;
     },
-    commit: () => connectionRemoveConnection(row.id),
+    commit: () => socialConnectionsConnectionsWithdraw(row.id),
     onCommitted: () => {
       invalidateNetwork();
       track('connection_removed', { connectionId: row.id, source: 'mynetwork_main' });
@@ -243,28 +252,28 @@ type StatIcon = Component<{ size: number; class?: string }>;
 const statItems = $derived<StatItem[]>([
   {
     label: t('network.connections'),
-    value: stats.connections,
+    value: stats.connections ?? 0,
     icon: Users as unknown as StatIcon,
     href: '/social/network/connections',
   },
   {
     label: t('network.followers'),
-    value: stats.followers,
+    value: stats.followers ?? 0,
     icon: Eye as unknown as StatIcon,
     href: '/social/network/followers',
   },
   {
     label: t('network.following'),
-    value: stats.following,
+    value: stats.following ?? 0,
     icon: UserCheck as unknown as StatIcon,
     href: '/social/network/following',
   },
   {
     label: t('network.invitations'),
-    value: stats.pendingInvitations,
+    value: stats.pendingInvitations ?? 0,
     icon: Clock as unknown as StatIcon,
     href: '/social/network/invitation-manager/received',
-    highlight: stats.pendingInvitations > 0,
+    highlight: (stats.pendingInvitations ?? 0) > 0,
   },
 ]);
 </script>
@@ -286,19 +295,19 @@ const statItems = $derived<StatItem[]>([
 				<nav class="flex flex-col py-1">
 					<a href="/social/network/connections" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.connections')}</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.connections}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.connections ?? 0}</span>
 					</a>
 					<a href="/social/network/followers" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.followers')}</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.followers}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.followers ?? 0}</span>
 					</a>
 					<a href="/social/network/following" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.following')}</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.following}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.following ?? 0}</span>
 					</a>
 					<a href="/social/network/invitation-manager/received" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.invitations')}</span>
-						{#if stats.pendingInvitations > 0}
+						{#if (stats.pendingInvitations ?? 0) > 0}
 							<span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{stats.pendingInvitations}</span>
 						{:else}
 							<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">0</span>
@@ -317,7 +326,7 @@ const statItems = $derived<StatItem[]>([
 			<section id="invitations" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 				<div class="flex items-center justify-between px-3 py-3 sm:px-5 sm:py-4 border-b border-gray-200 dark:border-neutral-800">
 					<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-						{t('network.invitations')} ({stats.pendingInvitations})
+						{t('network.invitations')} ({stats.pendingInvitations ?? 0})
 					</h2>
 					{#if visiblePending.length > 0}
 						<a href="/social/network/invitation-manager/received" class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300">
@@ -379,10 +388,10 @@ const statItems = $derived<StatItem[]>([
 					<SuggestionsCarousel
 						suggestions={suggestionsList.slice(0, 12).map((s) => ({
 							id: s.id,
-							name: s.name,
-							username: s.username,
-							photoURL: s.photoURL,
-							reason: s.reason,
+							name: s.name ?? null,
+							username: s.username ?? null,
+							photoURL: s.photoURL ?? null,
+							reason: s.reason ?? null,
 							mutualCount: s.mutualCount,
 							commonSkills: s.commonSkills,
 						}))}
@@ -439,8 +448,8 @@ const statItems = $derived<StatItem[]>([
 				<div class="px-4 pt-2 sm:px-5">
 					<Tabs
 						tabs={[
-							{ value: 'followers', label: t('network.followers'), count: stats.followers },
-							{ value: 'following', label: t('network.following'), count: stats.following },
+							{ value: 'followers', label: t('network.followers'), count: stats.followers ?? 0 },
+							{ value: 'following', label: t('network.following'), count: stats.following ?? 0 },
 						]}
 						selected={followersTab}
 						onchange={(v) => (followersTab = v as 'followers' | 'following')}
