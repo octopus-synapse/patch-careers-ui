@@ -1,12 +1,11 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  getJobsGetMyJobsQueryKey,
+  getJobsMineQueryKey,
   jobsCreate,
   jobsImportFromUrl,
 } from 'api-client';
-import type { CreateJobDto, CreateJobDtoJobType } from 'api-client';
+import type { JobsCreateBody, JobsCreateBodyJobType } from 'api-client';
 import { ArrowRight, Globe, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -24,7 +23,7 @@ type Preview = {
   skills: string[];
   salaryRange: string;
   applyUrl: string;
-  jobType: CreateJobDtoJobType | null;
+  jobType: JobsCreateBodyJobType | null;
   remotePolicy: 'REMOTE' | 'HYBRID' | 'ONSITE' | null;
 };
 
@@ -40,7 +39,7 @@ function normalizePreview(raw: RawPreview): Preview {
     skills: Array.isArray(raw.skills) ? (raw.skills as string[]) : [],
     salaryRange: typeof raw.salaryRange === 'string' ? raw.salaryRange : '',
     applyUrl: typeof raw.applyUrl === 'string' ? raw.applyUrl : '',
-    jobType: (raw.jobType as CreateJobDtoJobType | null) ?? null,
+    jobType: (raw.jobType as JobsCreateBodyJobType | null) ?? null,
     remotePolicy: (raw.remotePolicy as 'REMOTE' | 'HYBRID' | 'ONSITE' | null) ?? null,
   };
 }
@@ -74,12 +73,12 @@ async function confirmCreate() {
   if (!preview) return;
   saving = true;
   try {
-    const body: CreateJobDto = {
+    const body: JobsCreateBody = {
       title: preview.title.trim() || 'Sem título',
       company: preview.company.trim() || 'Sem empresa',
       location: preview.location.trim() || undefined,
       description: preview.description.trim() || 'Sem descrição',
-      jobType: (preview.jobType ?? 'FULL_TIME') as CreateJobDtoJobType,
+      jobType: (preview.jobType ?? 'FULL_TIME') as JobsCreateBodyJobType,
       remotePolicy: preview.remotePolicy ?? undefined,
       salaryRange: preview.salaryRange.trim() || undefined,
       applyUrl: preview.applyUrl.trim() || url,
@@ -87,7 +86,7 @@ async function confirmCreate() {
       requirements: preview.requirements,
     };
     await jobsCreate(body);
-    await queryClient.invalidateQueries({ queryKey: getJobsGetMyJobsQueryKey() });
+    await queryClient.invalidateQueries({ queryKey: getJobsMineQueryKey() });
     toastState.show('Vaga criada a partir da URL.', 'success');
     goto('/recruiting/jobs');
   } catch (err) {

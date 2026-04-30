@@ -1,10 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createNotificationsGetPreferences,
-  getNotificationsGetPreferencesQueryKey,
-  notificationsSetPreference,
+  createNotificationsPreferencesGet,
+  getNotificationsPreferencesGetQueryKey,
+  notificationsPreferencesPut,
 } from 'api-client';
 import { Card, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -38,7 +37,7 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
-const query = createNotificationsGetPreferences(() => ({
+const query = createNotificationsPreferencesGet(() => ({
   query: { enabled: browser && authenticated },
 }));
 
@@ -62,11 +61,8 @@ async function toggle(p: Preference) {
   optimistic = { ...optimistic, [p.type]: next };
   pending = new Set([...pending, p.type]);
   try {
-    await notificationsSetPreference(p.type, {
-      body: JSON.stringify({ enabled: next }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    queryClient.invalidateQueries({ queryKey: getNotificationsGetPreferencesQueryKey() });
+    await notificationsPreferencesPut(p.type, { enabled: next });
+    queryClient.invalidateQueries({ queryKey: getNotificationsPreferencesGetQueryKey() });
     track('notification_preference_changed', { type: p.type, enabled: next });
   } catch {
     optimistic = { ...optimistic, [p.type]: wasEnabled };
@@ -79,14 +75,11 @@ async function toggle(p: Preference) {
 async function updateEmailMode(p: Preference, mode: EmailDelivery) {
   pending = new Set([...pending, `${p.type}-email`]);
   try {
-    await notificationsSetPreference(p.type, {
-      body: JSON.stringify({
-        emailDelivery: mode,
-        emailEnabled: mode !== 'OFF',
-      }),
-      headers: { 'Content-Type': 'application/json' },
+    await notificationsPreferencesPut(p.type, {
+      emailDelivery: mode,
+      emailEnabled: mode !== 'OFF',
     });
-    queryClient.invalidateQueries({ queryKey: getNotificationsGetPreferencesQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getNotificationsPreferencesGetQueryKey() });
     track('notification_email_mode_changed', { type: p.type, mode });
   } catch {
     toastState.show(t('notifications.preferenceError'), 'danger');

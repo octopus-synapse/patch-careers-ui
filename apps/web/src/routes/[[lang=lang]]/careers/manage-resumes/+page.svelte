@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createResumesGetAllUserResumes } from 'api-client';
+import { createResumesList } from 'api-client';
 import { FileText, PenSquare, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -39,14 +38,15 @@ $effect(() => {
   }
 });
 
-const query = createResumesGetAllUserResumes(
-  () => ({ page: 1, limit: 20 }),
+const query = createResumesList(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser && authenticated } }),
 );
 
 const resumes = $derived.by<Resume[]>(() => {
   const d = query.data as Record<string, unknown> | undefined;
   const arr =
+    (d?.items as Resume[] | undefined) ??
     (d?.resumes as Resume[] | undefined) ??
     (d?.data as Resume[] | undefined) ??
     (Array.isArray(d) ? (d as Resume[]) : undefined) ??

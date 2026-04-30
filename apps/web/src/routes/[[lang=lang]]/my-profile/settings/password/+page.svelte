@@ -1,7 +1,6 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createChangePasswordHandle } from 'api-client';
-import { ChangePasswordHandleBody } from 'api-client/zod';
+import { createPasswordManagementMePasswordChange } from 'api-client';
+import { PasswordManagementMePasswordChangeBody } from 'api-client/zod';
 import { Eye, EyeOff } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
 import { createForm } from '$lib/state/create-form.svelte';
@@ -17,7 +16,7 @@ let showCurrentPassword = $state(false);
 let showNewPassword = $state(false);
 let passwordMessage = $state<{ type: 'success' | 'error'; text: string } | null>(null);
 
-const changePassword = createChangePasswordHandle(() => ({
+const changePassword = createPasswordManagementMePasswordChange(() => ({
   mutation: {
     onSuccess() {
       passwordForm.reset();
@@ -33,7 +32,7 @@ const changePassword = createChangePasswordHandle(() => ({
 }));
 
 const passwordForm = createForm({
-  schema: ChangePasswordHandleBody,
+  schema: PasswordManagementMePasswordChangeBody,
   initial: { currentPassword: '', newPassword: '' },
   mutation: changePassword,
 });

@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createForgotPasswordHandle } from 'api-client';
+import { createPasswordManagementAuthForgotPassword } from 'api-client';
 
 import { Button, Input, Label, Loader } from 'ui';
 
@@ -8,7 +7,7 @@ let email = $state('');
 let sent = $state(false);
 let error = $state<string | null>(null);
 
-const forgotPassword = createForgotPasswordHandle(() => ({
+const forgotPassword = createPasswordManagementAuthForgotPassword(() => ({
   mutation: {
     onSuccess() {
       sent = true;

@@ -1,23 +1,22 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createJobsBookmark,
-  createJobsFindById,
-  createJobsGetFit,
-  createJobsUnbookmark,
-  createResumesGetAllUserResumes,
-  getJobsFindAllQueryKey,
-  getJobsFindByIdQueryKey,
-  getJobsGetBookmarkedJobsQueryKey,
-  getJobsGetMyApplicationsQueryKey,
-  isApiError,
-  jobsApply,
+  createJobsBookmarkPost,
+  createJobsBookmarkDelete,
+  createJobsGetById,
+  createJobsFit,
+  createResumesList,
+  getJobsListQueryKey,
+  getJobsGetByIdQueryKey,
+  getJobsBookmarksQueryKey,
+  getJobsApplicationsGetQueryKey,
+  jobsApplyPost,
+  jobsApplyDelete,
   jobsDelete,
   jobsUpdate,
-  jobsWithdrawApplication,
 } from 'api-client';
-import type { ApplyToJobDto, UpdateJobDto, UpdateJobDtoJobType } from 'api-client';
+import { isApiError } from 'api-client/client';
+import type { JobsApplyPostBody, JobsUpdateBody, JobsUpdateBodyJobType } from 'api-client';
 import { ArrowLeft, Bookmark, Briefcase, Building2, CheckCircle2, DollarSign, ExternalLink, MapPin, Pencil, Send, Sparkles, Trash2 } from 'lucide-svelte';
 import { Badge, Button, ConfirmModal, type FitDimension, FitScoreBreakdown, FormModal, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -57,7 +56,7 @@ const jobId = $derived(($page.params as Record<string, string>).id);
 const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
-const jobQuery = createJobsFindById(
+const jobQuery = createJobsGetById(
   () => jobId,
   () => ({ query: { enabled: browser && !!jobId } }),
 );
@@ -70,7 +69,7 @@ const isOwner = $derived(
 // Fit score — enabled for non-owners with a primary resume. Backend returns
 // 409 NO_PRIMARY_RESUME when the user has no master CV yet; the component
 // renders the teaser state automatically whenever `score` is undefined.
-const fitQuery = createJobsGetFit(
+const fitQuery = createJobsFit(
   () => jobId,
   () => ({ query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } }),
 );
@@ -78,19 +77,17 @@ const fitQuery = createJobsGetFit(
 // Primary resume lookup — the Match Score panel needs a resumeId. We take
 // the first resume in the user's list as the "primary-ish" candidate;
 // future iteration may expose a picker when the user has >1 resume.
-const myResumesQuery = createResumesGetAllUserResumes(
-  () => ({ userId: currentUserId, page: 1, limit: 1 }),
+const myResumesQuery = createResumesList(
+  () => ({ page: '1', limit: '1' }),
   () => ({ query: { enabled: browser && !!currentUserId && !isOwner, retry: false } }),
 );
-const primaryResumeId = $derived<string | null>(
-  myResumesQuery.data &&
-    typeof myResumesQuery.data === 'object' &&
-    'data' in myResumesQuery.data &&
-    Array.isArray((myResumesQuery.data as { data: unknown[] }).data) &&
-    (myResumesQuery.data as { data: Array<{ id?: string }> }).data.length > 0
-    ? ((myResumesQuery.data as { data: Array<{ id?: string }> }).data[0]?.id ?? null)
-    : null,
-);
+const primaryResumeId = $derived.by<string | null>(() => {
+  const data = myResumesQuery.data as unknown as
+    | { items?: Array<{ id?: string }>; data?: Array<{ id?: string }> }
+    | undefined;
+  const items = data?.items ?? data?.data ?? [];
+  return items.length > 0 ? (items[0]?.id ?? null) : null;
+});
 
 type FitResponse = {
   matchScore?: number;
@@ -105,13 +102,13 @@ const fit = $derived(fitQuery.data as unknown as FitResponse | undefined);
 let optimisticBookmarked = $state<boolean | null>(null);
 const isBookmarked = $derived(optimisticBookmarked ?? Boolean(job?.isBookmarked));
 
-const bookmarkMutation = createJobsBookmark(() => ({
+const bookmarkMutation = createJobsBookmarkPost(() => ({
   mutation: {
     onSuccess() {
       optimisticBookmarked = null;
-      queryClient.invalidateQueries({ queryKey: getJobsGetBookmarkedJobsQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
-      queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
       track('job_bookmarked', { jobId });
     },
     onError() {
@@ -121,13 +118,13 @@ const bookmarkMutation = createJobsBookmark(() => ({
   },
 }));
 
-const unbookmarkMutation = createJobsUnbookmark(() => ({
+const unbookmarkMutation = createJobsBookmarkDelete(() => ({
   mutation: {
     onSuccess() {
       optimisticBookmarked = null;
-      queryClient.invalidateQueries({ queryKey: getJobsGetBookmarkedJobsQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
-      queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
       track('job_unbookmarked', { jobId });
     },
     onError() {
@@ -154,17 +151,17 @@ let applying = $state(false);
 let withdrawing = $state(false);
 
 function invalidateJobQueries() {
-  queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
-  queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
-  queryClient.invalidateQueries({ queryKey: getJobsGetMyApplicationsQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
+  queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getJobsApplicationsGetQueryKey() });
 }
 
 async function submitApplication(coverLetter: string) {
   if (applying) return;
   applying = true;
   try {
-    const payload: ApplyToJobDto = coverLetter ? { coverLetter } : {};
-    await jobsApply(jobId, payload);
+    const payload: JobsApplyPostBody = coverLetter ? { coverLetter } : {};
+    await jobsApplyPost(jobId, payload);
     optimisticApplied = true;
     showApplyModal = false;
     invalidateJobQueries();
@@ -187,7 +184,7 @@ async function confirmWithdraw() {
   if (withdrawing) return;
   withdrawing = true;
   try {
-    await jobsWithdrawApplication(jobId);
+    await jobsApplyDelete(jobId);
     optimisticApplied = false;
     withdrawConfirm = false;
     invalidateJobQueries();
@@ -235,11 +232,11 @@ function openEdit() {
 async function handleEdit() {
   editLoading = true;
   try {
-    const data: UpdateJobDto = {
+    const data: JobsUpdateBody = {
       title: formTitle,
       company: formCompany,
       location: formLocation || undefined,
-      jobType: formJobType as UpdateJobDtoJobType,
+      jobType: formJobType as JobsUpdateBodyJobType,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -253,8 +250,8 @@ async function handleEdit() {
       applyUrl: formApplyUrl || undefined,
     };
     await jobsUpdate(jobId, data);
-    queryClient.invalidateQueries({ queryKey: getJobsFindByIdQueryKey(jobId) });
-    queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
+    queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
     editModal = false;
   } finally {
     editLoading = false;
@@ -265,7 +262,7 @@ async function handleDelete() {
   deleteLoading = true;
   try {
     await jobsDelete(jobId);
-    queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
     goto('/careers/browse-jobs');
   } finally {
     deleteLoading = false;

@@ -1,16 +1,15 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAuthSession,
-  createOnboardingCompleteFromSession,
-  createOnboardingGetSession,
-  createOnboardingGotoStep,
-  createOnboardingNextStep,
-  createOnboardingPreviousStep,
-  createOnboardingSaveStepData,
+  createOnboardingSession,
+  createOnboardingSessionComplete,
+  createOnboardingSessionGoto,
+  createOnboardingSessionNext,
+  createOnboardingSessionPrevious,
+  createOnboardingSessionSave,
   getAuthSessionQueryKey,
-  getOnboardingGetSessionQueryKey,
+  getOnboardingSessionQueryKey,
 } from 'api-client';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
@@ -37,13 +36,13 @@ $effect(() => {
   }
 });
 
-const session = createOnboardingGetSession(
+const session = createOnboardingSession(
   () => ({ locale: locale.current }),
   () => ({ query: { enabled: authenticated } }),
 );
 
 const queryClient = useQueryClient();
-const queryKey = $derived(getOnboardingGetSessionQueryKey({ locale: locale.current }));
+const queryKey = $derived(getOnboardingSessionQueryKey({ locale: locale.current }));
 
 function invalidateSession() {
   queryClient.invalidateQueries({ queryKey });
@@ -74,7 +73,24 @@ type Step = {
   }>;
 };
 
-const onboardingData = $derived(session.data);
+// Backend response shape (T11.x) — typed as `void` in the SDK because the
+// route lacks a response schema. TODO(backend): annotate /v1/onboarding/session.
+type OnboardingSessionData = {
+  steps?: Step[];
+  currentStep?: string;
+  completedSteps?: string[];
+  progress?: number;
+  strength?: { score: number; message: string; level: string };
+  missingRequired?: string[];
+  nextStep?: string | null;
+  previousStep?: string | null;
+  sections?: Array<{ sectionTypeKey?: string; items?: Array<{ id?: string; content?: Record<string, unknown> }> }>;
+  personalInfo?: Record<string, unknown>;
+  professionalProfile?: Record<string, unknown>;
+  templateSelection?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+const onboardingData = $derived(session.data as unknown as OnboardingSessionData | undefined);
 const steps = $derived((onboardingData?.steps ?? []) as Step[]);
 const currentStepId = $derived(onboardingData?.currentStep ?? '');
 const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
@@ -123,21 +139,21 @@ function getSavedDataForStep(stepId: string): Record<string, string> | null {
   return Object.keys(result).length > 0 ? result : null;
 }
 
-const nextStep = createOnboardingNextStep(() => ({
+const nextStep = createOnboardingSessionNext(() => ({
   mutation: { onSuccess: invalidateSession },
 }));
 
-const prevStep = createOnboardingPreviousStep(() => ({
+const prevStep = createOnboardingSessionPrevious(() => ({
   mutation: { onSuccess: invalidateSession },
 }));
 
-const gotoStep = createOnboardingGotoStep(() => ({
+const gotoStep = createOnboardingSessionGoto(() => ({
   mutation: { onSuccess: invalidateSession },
 }));
 
 let completeError = $state('');
 
-const complete = createOnboardingCompleteFromSession(() => ({
+const complete = createOnboardingSessionComplete(() => ({
   mutation: {
     async onSuccess() {
       await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
@@ -152,7 +168,7 @@ const complete = createOnboardingCompleteFromSession(() => ({
   },
 }));
 
-const saveStep = createOnboardingSaveStepData();
+const saveStep = createOnboardingSessionSave();
 let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 let lastSavedJson = '';

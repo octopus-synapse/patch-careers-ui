@@ -3,8 +3,7 @@
   resumeAnalyticsGetViewStats from the generated client.
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createResumeAnalyticsGetViewStats } from 'api-client';
+import { createResumeAnalyticsResumesAnalyticsViews } from 'api-client';
 import { Eye, TrendingUp, Users } from 'lucide-svelte';
 import { Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -12,9 +11,9 @@ import { page } from '$app/stores';
 
 const resumeId = $derived($page.params.id ?? '');
 
-const stats = createResumeAnalyticsGetViewStats(
+const stats = createResumeAnalyticsResumesAnalyticsViews(
   () => resumeId,
-  () => ({ period: 'month' as const }),
+  () => ({ period: 'month' }),
   () => ({ query: { enabled: browser && Boolean(resumeId) } }),
 );
 

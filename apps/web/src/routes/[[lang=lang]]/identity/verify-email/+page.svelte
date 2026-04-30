@@ -1,15 +1,14 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAuthSession,
-  createEmailVerificationResendStatus,
-  createSendVerificationHandle,
-  createVerifyEmailHandle,
+  createEmailVerificationAuthEmailVerificationResendStatus,
+  createEmailVerificationAuthEmailVerificationSend,
+  createEmailVerificationVerify,
   getAuthSessionQueryKey,
-  getEmailVerificationResendStatusQueryKey,
-  isApiError,
+  getEmailVerificationAuthEmailVerificationResendStatusQueryKey,
 } from 'api-client';
+import { isApiError } from 'api-client/client';
 import { CheckCircle2, Mail } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Badge, Button, Loader, OtpInput } from 'ui';
@@ -18,6 +17,17 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { locale } from '$lib/state/locale.svelte';
 import { translateApiError } from '$lib/utils/translate-api-error';
+
+// Resend status payload — backend returns `{ secondsUntilResendAllowed: number }`
+// but the route lacks a response schema in swagger so the SDK types it as `void`.
+// TODO(backend): annotate `GET /v1/auth/email-verification/resend-status` and
+// `POST /v1/auth/email-verification/send` with response schemas to drop these casts.
+interface ResendStatusPayload {
+  secondsUntilResendAllowed?: number;
+}
+interface SendVerificationPayload {
+  cooldown?: { secondsUntilResendAllowed?: number };
+}
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
@@ -37,7 +47,7 @@ const needsEmailVerification = $derived(
 
 // Resend cooldown is owned by the backend — the UI just mirrors it so the
 // countdown survives page reloads.
-const resendStatus = createEmailVerificationResendStatus(() => ({
+const resendStatus = createEmailVerificationAuthEmailVerificationResendStatus(() => ({
   query: { retry: false, enabled: browser && authenticated === true, refetchOnWindowFocus: false },
 }));
 
@@ -62,7 +72,7 @@ function isAlreadyVerified(err: unknown): boolean {
 
 let verifiedOnce = $state(false);
 
-const verifyEmail = createVerifyEmailHandle(() => ({
+const verifyEmail = createEmailVerificationVerify(() => ({
   mutation: {
     async onSuccess() {
       verifiedOnce = true;
@@ -85,7 +95,7 @@ const verifyEmail = createVerifyEmailHandle(() => ({
   },
 }));
 
-const sendVerification = createSendVerificationHandle(() => ({
+const sendVerification = createEmailVerificationAuthEmailVerificationSend(() => ({
   mutation: {
     async onError(err: unknown) {
       if (isAlreadyVerified(err)) {
@@ -116,7 +126,8 @@ function startCooldown(seconds: number) {
 
 // Sync the local ticker with the backend whenever resend-status refetches.
 $effect(() => {
-  const seconds = resendStatus.data?.secondsUntilResendAllowed;
+  const data = resendStatus.data as ResendStatusPayload | undefined;
+  const seconds = data?.secondsUntilResendAllowed;
   if (seconds === undefined) return;
   startCooldown(seconds);
 });
@@ -175,8 +186,12 @@ function handleResend() {
     onSuccess(response) {
       resentFlash = true;
       setTimeout(() => (resentFlash = false), 4000);
-      startCooldown(response.cooldown.secondsUntilResendAllowed);
-      queryClient.invalidateQueries({ queryKey: getEmailVerificationResendStatusQueryKey() });
+      const payload = response as SendVerificationPayload | undefined;
+      const seconds = payload?.cooldown?.secondsUntilResendAllowed;
+      if (typeof seconds === 'number') startCooldown(seconds);
+      queryClient.invalidateQueries({
+        queryKey: getEmailVerificationAuthEmailVerificationResendStatusQueryKey(),
+      });
     },
   });
 }

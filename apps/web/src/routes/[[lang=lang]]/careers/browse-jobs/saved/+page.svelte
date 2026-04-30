@@ -1,11 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createJobsGetBookmarkedJobs,
-  createJobsUnbookmark,
-  getJobsGetBookmarkedJobsQueryKey,
-  jobsGetBookmarkedJobs,
+  createJobsBookmarks,
+  createJobsBookmarkDelete,
+  getJobsBookmarksQueryKey,
+  jobsBookmarks,
 } from 'api-client';
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -31,8 +30,8 @@ type SavedJob = {
   skills: string[];
 };
 
-const query = createJobsGetBookmarkedJobs(
-  () => ({ page: 1, limit: 20 }),
+const query = createJobsBookmarks(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser && authenticated } }),
 );
 
@@ -50,7 +49,10 @@ function rowsFrom(items?: Record<string, unknown>[]): SavedJob[] {
 
 function pagedSection(data: unknown): { rows: SavedJob[]; total: number; totalPages: number } {
   const outer = data as Record<string, unknown> | undefined;
-  const items = (outer?.data as Record<string, unknown>[] | undefined) ?? [];
+  const items =
+    (outer?.items as Record<string, unknown>[] | undefined) ??
+    (outer?.data as Record<string, unknown>[] | undefined) ??
+    [];
   return {
     rows: rowsFrom(items),
     total: Number(outer?.total ?? 0),
@@ -69,10 +71,13 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await jobsGetBookmarkedJobs({ page: next, limit: 20 })) as unknown as
+    const res = (await jobsBookmarks({ page: String(next), limit: '20' })) as unknown as
       | Record<string, unknown>
       | undefined;
-    const items = (res?.data as Record<string, unknown>[] | undefined) ?? [];
+    const items =
+      (res?.items as Record<string, unknown>[] | undefined) ??
+      (res?.data as Record<string, unknown>[] | undefined) ??
+      [];
     extra = [...extra, ...rowsFrom(items)];
     pageNum = next;
   } finally {
@@ -84,10 +89,10 @@ const all = $derived([...firstPage.rows, ...extra].filter((j) => !removedIds.has
 
 const queryClient = useQueryClient();
 
-const unbookmarkMutation = createJobsUnbookmark(() => ({
+const unbookmarkMutation = createJobsBookmarkDelete(() => ({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getJobsGetBookmarkedJobsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getJobsBookmarksQueryKey() });
       track('job_unbookmarked', { jobId: vars.id });
     },
     onError(_err, vars) {

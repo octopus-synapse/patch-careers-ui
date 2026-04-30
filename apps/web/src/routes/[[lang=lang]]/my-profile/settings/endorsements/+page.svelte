@@ -3,8 +3,10 @@
   counts, and lets them inspect who endorsed each skill.
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createSkillEndorsementsGetSkills, skillEndorsementsGetEndorsers } from 'api-client';
+import {
+  createSkillEndorsementsUsersSkills,
+  skillEndorsementsUsersSkillsEndorsers,
+} from 'api-client';
 import { ChevronDown, ChevronUp } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Avatar, Loader, toastState } from 'ui';
@@ -23,7 +25,7 @@ type Endorser = {
   endorsedAt: string;
 };
 
-const skillsQuery = createSkillEndorsementsGetSkills(
+const skillsQuery = createSkillEndorsementsUsersSkills(
   () => viewerId,
   () => ({ query: { enabled: browser && Boolean(viewerId) } }),
 );
@@ -44,10 +46,10 @@ async function toggleExpand(skill: string) {
   if (!endorsersCache[skill]) {
     endorsersCache = { ...endorsersCache, [skill]: 'loading' };
     try {
-      const res = (await skillEndorsementsGetEndorsers(viewerId, skill)) as unknown as
-        | Record<string, unknown>
+      const res = (await skillEndorsementsUsersSkillsEndorsers(viewerId, skill)) as unknown as
+        | { data?: { endorsers?: Endorser[] }; endorsers?: Endorser[]; items?: Endorser[] }
         | undefined;
-      const list = (res?.data as { endorsers?: Endorser[] } | undefined)?.endorsers ?? [];
+      const list = res?.data?.endorsers ?? res?.endorsers ?? res?.items ?? [];
       endorsersCache = { ...endorsersCache, [skill]: list };
     } catch {
       toastState.show('Falha ao carregar endossos.', 'danger');

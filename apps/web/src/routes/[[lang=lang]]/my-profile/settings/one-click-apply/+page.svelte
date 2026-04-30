@@ -6,11 +6,13 @@
   - preferred tailoring mode (keep verbatim vs AI-tailor)
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createResumesGetAllUserResumes } from 'api-client';
+// TODO(backend): expose `/v1/users/me/one-click-apply` GET/PUT in swagger so we
+// can drop the hand-rolled fetch below and consume the generated SDK. Until
+// then, this page stays on raw fetch with the canonical envelope shape.
+import { createResumesList } from 'api-client';
 import { FileText, Zap } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, Checkbox, Input, Label, Loader, Radio, Select, Textarea, toastState } from 'ui';
+import { Button, Checkbox, Label, Loader, Radio, Select, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { parseApiError } from '$lib/utils/api-error';
 import { useFormDraft } from '$lib/state/use-form-draft.svelte';
@@ -35,13 +37,17 @@ const draft = useFormDraft<Preferences>('settings:one-click-apply', {
   alsoAttach: { githubUrl: true, linkedinUrl: true },
 });
 
-const resumesQuery = createResumesGetAllUserResumes(
-  () => ({ page: 1, limit: 20 }),
+const resumesQuery = createResumesList(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser } }),
 );
 const resumes = $derived.by(() => {
   const d = resumesQuery.data as Record<string, unknown> | undefined;
-  return (d?.resumes as Array<{ id: string; title: string | null }> | undefined) ?? [];
+  return (
+    (d?.items as Array<{ id: string; title: string | null }> | undefined) ??
+    (d?.resumes as Array<{ id: string; title: string | null }> | undefined) ??
+    []
+  );
 });
 
 let loading = $state(true);

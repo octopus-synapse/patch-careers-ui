@@ -1,13 +1,13 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createJobsFindAll,
-  createJobsGetRecommendedJobs,
-  getJobsFindAllQueryKey,
+  createJobsList,
+  createJobsRecommended,
+  createJobsWithFitScore,
+  getJobsListQueryKey,
   jobsCreate,
 } from 'api-client';
-import type { CreateJobDto, CreateJobDtoJobType } from 'api-client';
+import type { JobsCreateBody, JobsCreateBodyJobType } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Plus, Sparkles, Zap } from 'lucide-svelte';
 import { Badge, Button, FitScoreChip, FormModal, Input, Label, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
@@ -88,10 +88,10 @@ const tabs = $derived([
   { value: 'all', label: t('jobs.tabAll') },
 ]);
 
-const jobsQuery = createJobsFindAll(
+const jobsQuery = createJobsList(
   () => ({
-    page,
-    limit: 20,
+    page: String(page),
+    limit: '20',
     search: search || '',
     skills: '',
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
@@ -99,8 +99,8 @@ const jobsQuery = createJobsFindAll(
   () => ({ query: { enabled: browser && activeTab === 'all' } }),
 );
 
-const recommendedQuery = createJobsGetRecommendedJobs(
-  () => ({ page, limit: 20 }),
+const recommendedQuery = createJobsRecommended(
+  () => ({ page: String(page), limit: '20' }),
   () => ({ query: { enabled: browser && activeTab === 'recommended' } }),
 );
 
@@ -116,28 +116,27 @@ const recommendedData = $derived(
   recommendedQuery.data as unknown as RecommendedResponse | undefined,
 );
 
-// Side-channel: pull structured fit scores for the current page of jobs from
-// the /jobs/with-fit-score endpoint. Merge the full breakdown into each row
+// Side-channel: pull structured fit scores for the current page of jobs.
+// Backend canonical response merges the breakdown into each item; we mirror it
 // so the chip can expand into matched / missing skills on hover.
-let fitScoreById = $state<Record<string, FitScoreDetail>>({});
-$effect(() => {
-  if (!browser || activeTab !== 'all') return;
-  const params = new URLSearchParams({
+const fitScoreQuery = createJobsWithFitScore(
+  () => ({
     page: String(page),
     limit: '20',
     ...(search ? { search } : {}),
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
-  });
-  fetch(`/api/v1/jobs/with-fit-score?${params}`, { credentials: 'include' })
-    .then((r) => r.json())
-    .then((body: { items?: Array<{ id: string; fitScore?: FitScoreDetail }> }) => {
-      const map: Record<string, FitScoreDetail> = {};
-      for (const item of body.items ?? []) {
-        if (item.fitScore) map[item.id] = item.fitScore;
-      }
-      fitScoreById = map;
-    })
-    .catch(() => {});
+  }),
+  () => ({ query: { enabled: browser && activeTab === 'all' } }),
+);
+const fitScoreById = $derived.by(() => {
+  const data = fitScoreQuery.data as unknown as
+    | { items?: Array<{ id: string; fitScore?: FitScoreDetail }> }
+    | undefined;
+  const map: Record<string, FitScoreDetail> = {};
+  for (const item of data?.items ?? []) {
+    if (item.fitScore) map[item.id] = item.fitScore;
+  }
+  return map;
 });
 
 const allList = $derived(
@@ -207,11 +206,11 @@ function resetForm() {
 async function handleCreate() {
   createLoading = true;
   try {
-    const data: CreateJobDto = {
+    const data: JobsCreateBody = {
       title: formTitle,
       company: formCompany,
       location: formLocation || undefined,
-      jobType: formJobType as CreateJobDtoJobType,
+      jobType: formJobType as JobsCreateBodyJobType,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -225,7 +224,7 @@ async function handleCreate() {
       applyUrl: formApplyUrl || undefined,
     };
     await jobsCreate(data);
-    queryClient.invalidateQueries({ queryKey: getJobsFindAllQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
     createModal = false;
     resetForm();
   } finally {

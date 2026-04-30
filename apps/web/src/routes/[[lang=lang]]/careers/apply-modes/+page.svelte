@@ -1,11 +1,11 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createUsersGetFullPreferences,
-  createUsersUpdateFullPreferences,
-  getUsersGetFullPreferencesQueryKey,
+  createUsersPreferencesFullGet,
+  createUsersPreferencesFullPatch,
+  getUsersPreferencesFullGetQueryKey,
 } from 'api-client';
+import type { UsersPreferencesFullPatchBodyApplyMode } from 'api-client';
 import {
   ArrowRight,
   CalendarCheck,
@@ -34,21 +34,22 @@ $effect(() => {
 
 const queryClient = useQueryClient();
 
-const preferencesQuery = createUsersGetFullPreferences(() => ({
+const preferencesQuery = createUsersPreferencesFullGet(() => ({
   query: { enabled: browser && authenticated },
 }));
 
-type ModeKey = 'ONE_CLICK' | 'WEEKLY_CURATED' | 'AUTO_APPLY';
-type PrefsShape = { preferences?: { applyMode?: ModeKey } };
+type ModeKey = UsersPreferencesFullPatchBodyApplyMode;
+type PrefsShape = { preferences?: { applyMode?: ModeKey }; applyMode?: ModeKey };
 
-const currentMode = $derived<ModeKey>(
-  (preferencesQuery.data as PrefsShape | undefined)?.preferences?.applyMode ?? 'ONE_CLICK',
-);
+const currentMode = $derived.by<ModeKey>(() => {
+  const data = preferencesQuery.data as unknown as PrefsShape | undefined;
+  return data?.preferences?.applyMode ?? data?.applyMode ?? ('ONE_CLICK' as ModeKey);
+});
 
-const updateMutation = createUsersUpdateFullPreferences(() => ({
+const updateMutation = createUsersPreferencesFullPatch(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getUsersGetFullPreferencesQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getUsersPreferencesFullGetQueryKey() });
     },
     onError() {
       toastState.show('Failed to update preferences', 'danger');

@@ -1,10 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createChatBlockUsersGetBlockedUsers,
-  createChatBlockUsersUnblockUser,
-  getChatBlockUsersGetBlockedUsersQueryKey,
+  createChatBlockUsersBlockedGet,
+  createChatBlockUsersBlockedDelete,
+  getChatBlockUsersBlockedGetQueryKey,
 } from 'api-client';
 import { ShieldOff } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -19,7 +18,7 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
-const query = createChatBlockUsersGetBlockedUsers(() => ({
+const query = createChatBlockUsersBlockedGet(() => ({
   query: { enabled: browser && authenticated },
 }));
 
@@ -33,7 +32,10 @@ type Row = {
 
 const blocked = $derived.by<Row[]>(() => {
   const outer = query.data as Record<string, unknown> | undefined;
-  const list = (outer?.blockedUsers as Record<string, unknown>[] | undefined) ?? [];
+  const list =
+    (outer?.items as Record<string, unknown>[] | undefined) ??
+    (outer?.blockedUsers as Record<string, unknown>[] | undefined) ??
+    [];
   return list.map((raw) => {
     const user = (raw.user ?? {}) as Record<string, string | null>;
     return {
@@ -49,10 +51,10 @@ const blocked = $derived.by<Row[]>(() => {
 const queryClient = useQueryClient();
 let confirmTarget = $state<Row | null>(null);
 
-const unblockMutation = createChatBlockUsersUnblockUser(() => ({
+const unblockMutation = createChatBlockUsersBlockedDelete(() => ({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getChatBlockUsersGetBlockedUsersQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getChatBlockUsersBlockedGetQueryKey() });
       track('user_unblocked', { targetUserId: vars.userId });
       toastState.show(t('network.unblockSuccess'), 'success');
     },

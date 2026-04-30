@@ -1,13 +1,12 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createUsersGetProfile,
-  createUsersUpdateProfile,
-  getUsersGetProfileQueryKey,
-  onboardingRestartOnboarding,
+  createUsersProfileGet,
+  createUsersProfilePatch,
+  getUsersProfileGetQueryKey,
+  onboardingSessionRestart,
 } from 'api-client';
-import { UsersUpdateProfileBody } from 'api-client/zod';
+import { UsersProfilePatchBody } from 'api-client/zod';
 import { Check } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader, Textarea } from 'ui';
 import { browser } from '$app/environment';
@@ -17,17 +16,17 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-const profileQuery = createUsersGetProfile(() => ({
+const profileQuery = createUsersProfileGet(() => ({
   query: { enabled: browser },
 }));
 const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
 
 let profileSaved = $state(false);
 
-const updateProfile = createUsersUpdateProfile(() => ({
+const updateProfile = createUsersProfilePatch(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getUsersGetProfileQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getUsersProfileGetQueryKey() });
       profileSaved = true;
       setTimeout(() => (profileSaved = false), 3000);
     },
@@ -35,7 +34,7 @@ const updateProfile = createUsersUpdateProfile(() => ({
 }));
 
 const profileForm = createForm({
-  schema: UsersUpdateProfileBody,
+  schema: UsersProfilePatchBody,
   initial: { name: '', bio: '', location: '', website: '', linkedin: '', github: '' },
   mutation: updateProfile,
   transform: (v) => ({
@@ -168,7 +167,7 @@ function handleSaveProfile() {
 					variant="ghost"
 					size="xs"
 					onclick={async () => {
-						await onboardingRestartOnboarding();
+						await onboardingSessionRestart();
 						window.location.href = '/onboarding';
 					}}
 				>

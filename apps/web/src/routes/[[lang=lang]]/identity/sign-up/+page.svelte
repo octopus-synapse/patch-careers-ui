@@ -1,9 +1,8 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAccountsSignup,
-  createSendVerificationHandle,
+  createEmailVerificationAuthEmailVerificationSend,
   getAuthSessionQueryKey,
 } from 'api-client';
 import { isApiError } from 'api-client/client';
@@ -31,7 +30,7 @@ const t = $derived(locale.t);
 
 // Fire verification email right after signup — the guard redirects the fresh
 // session to /identity/verify-email, where the user pastes the code.
-const sendVerification = createSendVerificationHandle(() => ({
+const sendVerification = createEmailVerificationAuthEmailVerificationSend(() => ({
   mutation: {
     // Ignore errors here; the verify-email page has its own resend button.
     onError() {},

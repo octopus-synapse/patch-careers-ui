@@ -1,5 +1,6 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+import { accountLifecycleAccounts, authLogout } from 'api-client';
+import { isApiError } from 'api-client/client';
 import { AlertTriangle } from 'lucide-svelte';
 import { Button, Checkbox, Input, Label, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -23,23 +24,17 @@ async function submit(e: Event) {
   submitting = true;
   serverError = null;
   try {
-    const res = await fetch('/api/v1/users/me', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ password, confirmation: confirmPhrase }),
-    });
-    if (!res.ok) {
-      const body = (await res.json().catch(() => null)) as { message?: string } | null;
-      serverError = body?.message ?? 'Falha ao deletar. Verifique a senha.';
-      return;
-    }
+    await accountLifecycleAccounts({ confirmationPhrase: confirmPhrase });
     toastState.show('Conta removida. Até mais.', 'success');
     // Clear local session and send to landing.
-    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    await authLogout({}).catch(() => {});
     goto('/');
-  } catch {
-    serverError = 'Erro de rede. Tente novamente.';
+  } catch (err) {
+    if (isApiError(err) && err.message) {
+      serverError = err.message;
+    } else {
+      serverError = 'Falha ao deletar. Verifique a senha.';
+    }
   } finally {
     submitting = false;
   }

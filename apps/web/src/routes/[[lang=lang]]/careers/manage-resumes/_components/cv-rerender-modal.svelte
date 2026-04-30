@@ -1,7 +1,6 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createResumesTailorForJob, getResumesListTailoredQueryKey } from 'api-client';
+import { createResumeTailorResumesTailor, getResumesListQueryKey } from 'api-client';
 import { RotateCw, Sparkles } from 'lucide-svelte';
 import { Button, Modal, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
@@ -29,14 +28,12 @@ let { open, beforeText, resumeId, onClose }: Props = $props();
 const t = $derived(locale.t);
 
 const queryClient = useQueryClient();
-const tailorMutation = createResumesTailorForJob(() => ({
+const tailorMutation = createResumeTailorResumesTailor(() => ({
   mutation: {
     onSuccess() {
-      if (resumeId) {
-        queryClient.invalidateQueries({
-          queryKey: getResumesListTailoredQueryKey(resumeId),
-        });
-      }
+      // Invalidate the resume list so the freshly minted tailored version
+      // appears in /manage-resumes without a manual refresh.
+      queryClient.invalidateQueries({ queryKey: getResumesListQueryKey() });
       toastState.show(t('cv.rerender.saveCta'), 'success');
       onClose();
     },

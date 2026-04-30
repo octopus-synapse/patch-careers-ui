@@ -4,11 +4,10 @@
   and PDF upload.
 -->
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import {
-  resumeImportImportGithub,
-  resumeImportImportLinkedin,
-  resumeImportImportPdf,
+  resumeImportResumesImportsGithub,
+  resumeImportResumesImportsLinkedin,
+  getResumeImportResumesImportsPdfUrl,
 } from 'api-client';
 import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
 import { Button, Loader, toastState } from 'ui';
@@ -22,12 +21,13 @@ let pdfError = $state<string | null>(null);
 async function importGitHub() {
   githubLoading = true;
   try {
-    const res = (await resumeImportImportGithub()) as unknown as
-      | Record<string, unknown>
+    const res = (await resumeImportResumesImportsGithub()) as unknown as
+      | { data?: { primaryStack?: string[]; buildPostsCreated?: number; profileUpdated?: boolean } }
+      | { primaryStack?: string[]; buildPostsCreated?: number }
       | undefined;
-    const data = res?.data as
-      | { primaryStack?: string[]; buildPostsCreated?: number; profileUpdated?: boolean }
-      | undefined;
+    const data =
+      (res as { data?: { primaryStack?: string[]; buildPostsCreated?: number } })?.data ??
+      (res as { primaryStack?: string[]; buildPostsCreated?: number } | undefined);
     toastState.show(
       `Importado: ${data?.primaryStack?.length ?? 0} skills, ${data?.buildPostsCreated ?? 0} posts de build.`,
       'success',
@@ -47,7 +47,7 @@ async function importGitHub() {
 async function importLinkedIn() {
   linkedinLoading = true;
   try {
-    await resumeImportImportLinkedin();
+    await resumeImportResumesImportsLinkedin();
     toastState.show('LinkedIn importado.', 'success');
   } catch {
     // Endpoint returns 503 "not implemented yet".
@@ -67,12 +67,23 @@ async function uploadPdf(e: Event) {
   pdfError = null;
   pdfLoading = true;
   try {
-    const res = (await resumeImportImportPdf({ file })) as unknown as
-      | Record<string, unknown>
-      | undefined;
-    const data = res?.data as { importId?: string } | undefined;
+    // Multipart upload: the SDK's PDF mutation has no body parameter (orval
+    // can't model `file` form fields), so we hand-roll the request to the
+    // canonical URL helper.
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(getResumeImportResumesImportsPdfUrl(), {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = (await res.json().catch(() => null)) as
+      | { data?: { importId?: string }; importId?: string }
+      | null;
+    const importId = body?.data?.importId ?? body?.importId;
     toastState.show('PDF enviado. Processando…', 'success');
-    if (data?.importId) goto('/onboarding/review');
+    if (importId) goto('/onboarding/review');
   } catch (err) {
     pdfError = err instanceof Error ? err.message : 'Falha ao enviar PDF.';
   } finally {

@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createDeleteAccountHandle } from 'api-client';
+import { createAccountLifecycleAccounts } from 'api-client';
 import { Download, Trash2 } from 'lucide-svelte';
 import { Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -12,7 +11,7 @@ let deleteConfirmation = $state('');
 let showDeleteModal = $state(false);
 let isExporting = $state(false);
 
-const deleteAccount = createDeleteAccountHandle(() => ({
+const deleteAccount = createAccountLifecycleAccounts(() => ({
   mutation: {
     onSuccess() {
       goto('/identity/sign-in');
@@ -23,8 +22,8 @@ const deleteAccount = createDeleteAccountHandle(() => ({
 async function handleExportData() {
   isExporting = true;
   try {
-    const { userConsentExportData } = await import('api-client');
-    const response = await userConsentExportData();
+    const { gdprMeGdprExport } = await import('api-client');
+    const response = await gdprMeGdprExport();
     const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

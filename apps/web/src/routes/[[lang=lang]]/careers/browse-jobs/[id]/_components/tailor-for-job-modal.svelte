@@ -1,22 +1,15 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 /**
  * TailorForJobModal
  *
  * Opens from the job detail page. Lets the user pick which of their resumes
  * to tailor, previews the job context (auto-filled from the job detail), and
- * kicks off `POST /v1/resumes/:id/tailor` via Orval. On success, shows the
- * bullet-level diff inline and links to the new tailored variant.
- *
- * Keeps intentionally lean — no fancy diff viz yet, just highlights the
- * changed bullets side-by-side so the user can see concrete value from the AI.
+ * kicks off `POST /v1/resumes/:id/tailor` via Orval. On success, renders the
+ * server-supplied `changes[]` (path/op/before/after/highlights) — the
+ * frontend doesn't compute any diff itself.
  */
-import {
-  createResumesGetAllUserResumes,
-  resumesTailorForJob,
-  type TailorResumeDataDto,
-} from 'api-client';
-import { Sparkles, X } from 'lucide-svelte';
+import { createResumesList, resumeTailorResumesTailor } from 'api-client';
+import { Sparkles } from 'lucide-svelte';
 import { Button, Loader, Modal, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -30,22 +23,40 @@ type Props = {
   jobDescription?: string;
 };
 
+// Server-driven payload (T11.2). Backend lacks a response schema today so
+// the SDK types this as `void`; cast through `unknown` until annotated.
+// TODO(backend): annotate `POST /v1/resumes/:id/tailor` response.
+interface TailorChange {
+  path: string;
+  op: 'replace' | 'add' | 'remove';
+  before?: string;
+  after?: string;
+  highlights?: string[];
+}
+interface TailorResult {
+  versionId?: string;
+  label?: string;
+  changes: TailorChange[];
+}
+
 let { open, onClose, jobId, jobTitle, jobCompany, jobDescription }: Props = $props();
 
-const resumesQuery = createResumesGetAllUserResumes(
-  () => ({ page: 1, limit: 20 }),
+const resumesQuery = createResumesList(
+  () => ({ page: '1', limit: '20' }),
   () => ({ query: { enabled: browser && open } }),
 );
 
 const resumes = $derived.by(() => {
-  const d = resumesQuery.data as Record<string, unknown> | undefined;
-  return (d?.resumes as Array<{ id: string; title: string | null }> | undefined) ?? [];
+  const d = resumesQuery.data as unknown as
+    | { items?: Array<{ id: string; title: string | null }>; resumes?: Array<{ id: string; title: string | null }> }
+    | undefined;
+  return d?.items ?? d?.resumes ?? [];
 });
 
 let selectedResumeId = $state('');
 let jdText = $state('');
 let submitting = $state(false);
-let result = $state<TailorResumeDataDto | null>(null);
+let result = $state<TailorResult | null>(null);
 
 // Auto-select first resume + prefill JD when modal opens or props change.
 $effect(() => {
@@ -66,13 +77,13 @@ async function handleSubmit() {
   if (submitting || !selectedResumeId) return;
   submitting = true;
   try {
-    const res = await resumesTailorForJob(selectedResumeId, {
+    const res = (await resumeTailorResumesTailor(selectedResumeId, {
       jobId,
       jobTitle,
       jobCompany,
       jobDescription: jdText || jobDescription,
-    });
-    result = res;
+    })) as unknown as TailorResult | undefined;
+    result = res ?? { changes: [] };
   } catch (err) {
     toastState.show(
       err instanceof Error ? err.message : 'Falha ao personalizar o currículo',
@@ -85,7 +96,8 @@ async function handleSubmit() {
 
 function goToEdit() {
   if (!result) return;
-  goto(`/careers/manage-resumes/${selectedResumeId}/edit?version=${result.versionId}`);
+  const suffix = result.versionId ? `?version=${result.versionId}` : '';
+  goto(`/careers/manage-resumes/${selectedResumeId}/edit${suffix}`);
   onClose();
 }
 </script>
@@ -162,23 +174,29 @@ function goToEdit() {
 		<div class="space-y-3">
 			<div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-900/50 dark:bg-emerald-950/20">
 				<p class="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
-					Versão {result.label} pronta.
+					{result.label ? `Versão ${result.label} pronta.` : 'Versão personalizada pronta.'}
 				</p>
 				<p class="mt-0.5 text-[11px] text-emerald-700 dark:text-emerald-400">
-					{result.bullets.length} bullets ajustados. Nenhuma experiência inventada.
+					{result.changes.length} alterações. Nenhuma experiência inventada.
 				</p>
 			</div>
 
 			<div class="max-h-72 space-y-3 overflow-y-auto">
-				{#each result.bullets as bullet}
+				{#each result.changes as change}
 					<div class="rounded-lg border border-gray-200 p-3 dark:border-neutral-700/50">
-						<p class="mb-1 text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-500">Antes</p>
-						<p class="mb-2 text-xs text-gray-600 line-through dark:text-neutral-500">{bullet.original}</p>
-						<p class="mb-1 text-[10px] uppercase tracking-widest text-violet-600 dark:text-violet-400">Depois</p>
-						<p class="text-xs text-gray-800 dark:text-neutral-200">{bullet.tailored}</p>
-						{#if bullet.highlights.length > 0}
+						<p class="mb-1 text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-500">
+							{change.op === 'add' ? 'Adicionado' : change.op === 'remove' ? 'Removido' : 'Antes'} · {change.path}
+						</p>
+						{#if change.before}
+							<p class="mb-2 text-xs text-gray-600 line-through dark:text-neutral-500">{change.before}</p>
+						{/if}
+						{#if change.after}
+							<p class="mb-1 text-[10px] uppercase tracking-widest text-violet-600 dark:text-violet-400">Depois</p>
+							<p class="text-xs text-gray-800 dark:text-neutral-200">{change.after}</p>
+						{/if}
+						{#if change.highlights && change.highlights.length > 0}
 							<div class="mt-2 flex flex-wrap gap-1">
-								{#each bullet.highlights as h}
+								{#each change.highlights as h}
 									<span class="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">{h}</span>
 								{/each}
 							</div>

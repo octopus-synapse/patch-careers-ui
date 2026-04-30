@@ -1,11 +1,10 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createUsersCheckUsernameAvailability,
-  createUsersGetProfile,
-  createUsersUpdateUsername,
-  getUsersGetProfileQueryKey,
+  createUsersUsernameCheck,
+  createUsersProfileGet,
+  createUsersUsername,
+  getUsersProfileGetQueryKey,
 } from 'api-client';
 import { Check, X } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
@@ -18,7 +17,7 @@ const queryClient = useQueryClient();
 const successText = 'text-emerald-500';
 const errorText = 'text-red-500';
 
-const profileQuery = createUsersGetProfile(() => ({
+const profileQuery = createUsersProfileGet(() => ({
   query: { enabled: browser },
 }));
 const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
@@ -40,7 +39,7 @@ $effect(() => {
   }
 });
 
-const usernameCheck = createUsersCheckUsernameAvailability(
+const usernameCheck = createUsersUsernameCheck(
   () => ({ username: debouncedUsername }),
   () => ({ query: { enabled: browser && debouncedUsername.length >= 3 } }),
 );
@@ -48,10 +47,10 @@ const usernameAvailable = $derived(
   (usernameCheck.data as Record<string, boolean> | undefined)?.available,
 );
 
-const updateUsername = createUsersUpdateUsername(() => ({
+const updateUsername = createUsersUsername(() => ({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getUsersGetProfileQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getUsersProfileGetQueryKey() });
       newUsername = '';
       debouncedUsername = '';
       usernameSaved = true;
