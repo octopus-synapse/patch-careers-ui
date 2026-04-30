@@ -1,21 +1,21 @@
 {
   "version": "3",
-  "tree_hash": "9514b403910407fbc52571f1da3400ac88e965ef",
+  "tree_hash": "3f557150502638e48be494338476df1cc363e790",
   "checks": "typecheck lint",
   "metrics": {
     "typecheck": {
       "status": "ok",
-      "time_ms": 306
+      "time_ms": 34649
     },
     "lint": {
       "status": "ok",
-      "time_ms": 308
+      "time_ms": 348
     },
     "no-any": {
       "status": "ok",
-      "time_ms": 26
+      "time_ms": 20
     }
   },
-  "timestamp": "2026-04-30T17:21:58Z",
+  "timestamp": "2026-04-30T17:27:53Z",
   "git_user": "enzo.patti@aluno.senai.br"
 }

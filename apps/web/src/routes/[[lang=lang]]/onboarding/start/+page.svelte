@@ -1,6 +1,9 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createAuthAvailable, createResumeImportImportPdf, getBaseUrl } from 'api-client';
+import {
+  createAuthOauthAvailable,
+  createResumeImportResumesImportsPdf,
+  getBaseUrl,
+} from 'api-client';
 import { ArrowRight, Clock, FileUp, Github, Linkedin, PencilLine } from 'lucide-svelte';
 import { Badge, Button, Loader, Modal, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -21,11 +24,11 @@ $effect(() => {
 
 // Ask the backend whether each provider is wired (CLIENT_ID/SECRET present).
 // Keeps the cards in a truthful state without us hardcoding flags.
-const githubAvailability = createAuthAvailable(
+const githubAvailability = createAuthOauthAvailable(
   () => 'github',
   () => ({ query: { enabled: browser } }),
 );
-const linkedinAvailability = createAuthAvailable(
+const linkedinAvailability = createAuthOauthAvailable(
   () => 'linkedin',
   () => ({ query: { enabled: browser } }),
 );
@@ -42,7 +45,7 @@ type TrackKey = 'linkedin' | 'github' | 'upload' | 'manual';
 let soonOpen = $state(false);
 let pdfInput = $state<HTMLInputElement | null>(null);
 
-const pdfMutation = createResumeImportImportPdf(() => ({
+const pdfMutation = createResumeImportResumesImportsPdf(() => ({
   mutation: {
     onSuccess() {
       toastState.show('CV imported', 'success');
@@ -57,7 +60,12 @@ const pdfMutation = createResumeImportImportPdf(() => ({
 function handlePdfSelected(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (!file) return;
-  pdfMutation.mutate({ data: { file } });
+  // Orval models the multipart body as `void` because the OpenAPI spec doesn't
+  // describe File fields. The mutator passes `data` straight through to
+  // `customFetch`, so the cast is safe at runtime.
+  (pdfMutation.mutate as unknown as (vars: { data: { file: File } }) => void)({
+    data: { file },
+  });
 }
 
 function choose(track: TrackKey) {

@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { usersCheckUsernameAvailability } from 'api-client';
+import { usersUsernameCheck } from 'api-client';
 import { Button, Input, Label, Textarea } from 'ui';
 
 type Field = {
@@ -35,9 +34,12 @@ function checkUsername(val: string) {
   if (!val || val.length < 3) return;
   usernameCheckTimeout = setTimeout(async () => {
     try {
-      const res = await usersCheckUsernameAvailability({ username: val });
+      const res = (await usersUsernameCheck({ username: val })) as unknown as {
+        available: boolean;
+        reason?: UsernameUnavailableReason;
+      };
       usernameAvailable = res.available;
-      usernameReason = (res.reason as UsernameUnavailableReason | undefined) ?? null;
+      usernameReason = res.reason ?? null;
     } catch {
       usernameAvailable = null;
       usernameReason = null;
