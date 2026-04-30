@@ -39,14 +39,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Tech areas returned
  * @summary Get all tech areas
  */
-export type techSkillsQueryAreasResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQueryAreasResponse200 = void
 
-export type techSkillsQueryAreasResponseSuccess = (techSkillsQueryAreasResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQueryAreasResponseSuccess = techSkillsQueryAreasResponse200
 ;
 
 export type techSkillsQueryAreasResponse = (techSkillsQueryAreasResponseSuccess)
@@ -205,14 +200,9 @@ export const prefetchTechSkillsQueryAreasQuery = async <TData = Awaited<ReturnTy
  * Tech niches returned
  * @summary Get all tech niches
  */
-export type techSkillsQueryNichesResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQueryNichesResponse200 = void
 
-export type techSkillsQueryNichesResponseSuccess = (techSkillsQueryNichesResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQueryNichesResponseSuccess = techSkillsQueryNichesResponse200
 ;
 
 export type techSkillsQueryNichesResponse = (techSkillsQueryNichesResponseSuccess)
@@ -371,14 +361,9 @@ export const prefetchTechSkillsQueryNichesQuery = async <TData = Awaited<ReturnT
  * Niches by area returned
  * @summary Get niches by tech area type
  */
-export type techSkillsQueryAreasNichesResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQueryAreasNichesResponse200 = void
 
-export type techSkillsQueryAreasNichesResponseSuccess = (techSkillsQueryAreasNichesResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQueryAreasNichesResponseSuccess = techSkillsQueryAreasNichesResponse200
 ;
 
 export type techSkillsQueryAreasNichesResponse = (techSkillsQueryAreasNichesResponseSuccess)
@@ -537,14 +522,9 @@ export const prefetchTechSkillsQueryAreasNichesQuery = async <TData = Awaited<Re
  * Programming languages returned
  * @summary Get all programming languages
  */
-export type techSkillsQueryLanguagesResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQueryLanguagesResponse200 = void
 
-export type techSkillsQueryLanguagesResponseSuccess = (techSkillsQueryLanguagesResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQueryLanguagesResponseSuccess = techSkillsQueryLanguagesResponse200
 ;
 
 export type techSkillsQueryLanguagesResponse = (techSkillsQueryLanguagesResponseSuccess)
@@ -703,14 +683,9 @@ export const prefetchTechSkillsQueryLanguagesQuery = async <TData = Awaited<Retu
  * Programming language search results returned
  * @summary Search programming languages
  */
-export type techSkillsQueryLanguagesSearchResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQueryLanguagesSearchResponse200 = void
 
-export type techSkillsQueryLanguagesSearchResponseSuccess = (techSkillsQueryLanguagesSearchResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQueryLanguagesSearchResponseSuccess = techSkillsQueryLanguagesSearchResponse200
 ;
 
 export type techSkillsQueryLanguagesSearchResponse = (techSkillsQueryLanguagesSearchResponseSuccess)
@@ -876,14 +851,9 @@ export const prefetchTechSkillsQueryLanguagesSearchQuery = async <TData = Awaite
  * Tech skills returned
  * @summary Get all tech skills
  */
-export type techSkillsQuerySkillsResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQuerySkillsResponse200 = void
 
-export type techSkillsQuerySkillsResponseSuccess = (techSkillsQuerySkillsResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQuerySkillsResponseSuccess = techSkillsQuerySkillsResponse200
 ;
 
 export type techSkillsQuerySkillsResponse = (techSkillsQuerySkillsResponseSuccess)
@@ -1042,14 +1012,9 @@ export const prefetchTechSkillsQuerySkillsQuery = async <TData = Awaited<ReturnT
  * Tech skill search results returned
  * @summary Search tech skills
  */
-export type techSkillsQuerySkillsSearchResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQuerySkillsSearchResponse200 = void
 
-export type techSkillsQuerySkillsSearchResponseSuccess = (techSkillsQuerySkillsSearchResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQuerySkillsSearchResponseSuccess = techSkillsQuerySkillsSearchResponse200
 ;
 
 export type techSkillsQuerySkillsSearchResponse = (techSkillsQuerySkillsSearchResponseSuccess)
@@ -1215,14 +1180,9 @@ export const prefetchTechSkillsQuerySkillsSearchQuery = async <TData = Awaited<R
  * Skills by niche returned
  * @summary Get skills by niche
  */
-export type techSkillsQueryNichesSkillsResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQueryNichesSkillsResponse200 = void
 
-export type techSkillsQueryNichesSkillsResponseSuccess = (techSkillsQueryNichesSkillsResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQueryNichesSkillsResponseSuccess = techSkillsQueryNichesSkillsResponse200
 ;
 
 export type techSkillsQueryNichesSkillsResponse = (techSkillsQueryNichesSkillsResponseSuccess)
@@ -1381,14 +1341,9 @@ export const prefetchTechSkillsQueryNichesSkillsQuery = async <TData = Awaited<R
  * Skills by type returned
  * @summary Get skills by type
  */
-export type techSkillsQuerySkillsTypeResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQuerySkillsTypeResponse200 = void
 
-export type techSkillsQuerySkillsTypeResponseSuccess = (techSkillsQuerySkillsTypeResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQuerySkillsTypeResponseSuccess = techSkillsQuerySkillsTypeResponse200
 ;
 
 export type techSkillsQuerySkillsTypeResponse = (techSkillsQuerySkillsTypeResponseSuccess)
@@ -1566,14 +1521,9 @@ export const prefetchTechSkillsQuerySkillsTypeQuery = async <TData = Awaited<Ret
  * Combined search results returned
  * @summary Search languages and skills
  */
-export type techSkillsQuerySearchResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsQuerySearchResponse200 = void
 
-export type techSkillsQuerySearchResponseSuccess = (techSkillsQuerySearchResponse200) & {
-  headers: Headers;
-};
+export type techSkillsQuerySearchResponseSuccess = techSkillsQuerySearchResponse200
 ;
 
 export type techSkillsQuerySearchResponse = (techSkillsQuerySearchResponseSuccess)

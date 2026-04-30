@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Server-driven UI metadata
  * @summary List all enum keys exposed by the catalog.
  */
-export type uiMetadataEnumsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type uiMetadataEnumsGetResponse200 = void
 
-export type uiMetadataEnumsGetResponseSuccess = (uiMetadataEnumsGetResponse200) & {
-  headers: Headers;
-};
+export type uiMetadataEnumsGetResponseSuccess = uiMetadataEnumsGetResponse200
 ;
 
 export type uiMetadataEnumsGetResponse = (uiMetadataEnumsGetResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchUiMetadataEnumsGetQuery = async <TData = Awaited<ReturnType
  * Server-driven UI metadata
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  */
-export type uiMetadataEnumsGet2Response200 = {
-  data: void
-  status: 200
-}
+export type uiMetadataEnumsGet2Response200 = void
 
-export type uiMetadataEnumsGet2ResponseSuccess = (uiMetadataEnumsGet2Response200) & {
-  headers: Headers;
-};
+export type uiMetadataEnumsGet2ResponseSuccess = uiMetadataEnumsGet2Response200
 ;
 
 export type uiMetadataEnumsGet2Response = (uiMetadataEnumsGet2ResponseSuccess)
@@ -364,14 +354,9 @@ export const prefetchUiMetadataEnumsGet2Query = async <TData = Awaited<ReturnTyp
  * Server-driven UI metadata
  * @summary Permission-aware navigation tree for the current user with labels in the request locale.
  */
-export type uiMetadataMeMenuResponse200 = {
-  data: void
-  status: 200
-}
+export type uiMetadataMeMenuResponse200 = void
 
-export type uiMetadataMeMenuResponseSuccess = (uiMetadataMeMenuResponse200) & {
-  headers: Headers;
-};
+export type uiMetadataMeMenuResponseSuccess = uiMetadataMeMenuResponse200
 ;
 
 export type uiMetadataMeMenuResponse = (uiMetadataMeMenuResponseSuccess)

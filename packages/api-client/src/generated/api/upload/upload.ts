@@ -26,14 +26,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Upload API
  * @summary Upload user profile image
  */
-export type uploadProfileImageResponse200 = {
-  data: void
-  status: 200
-}
+export type uploadProfileImageResponse200 = void
 
-export type uploadProfileImageResponseSuccess = (uploadProfileImageResponse200) & {
-  headers: Headers;
-};
+export type uploadProfileImageResponseSuccess = uploadProfileImageResponse200
 ;
 
 export type uploadProfileImageResponse = (uploadProfileImageResponseSuccess)
@@ -108,14 +103,9 @@ export const createUploadProfileImage = <TError = unknown,
  * Upload API
  * @summary Upload company logo for resume
  */
-export type uploadCompanyLogoResponse200 = {
-  data: void
-  status: 200
-}
+export type uploadCompanyLogoResponse200 = void
 
-export type uploadCompanyLogoResponseSuccess = (uploadCompanyLogoResponse200) & {
-  headers: Headers;
-};
+export type uploadCompanyLogoResponseSuccess = uploadCompanyLogoResponse200
 ;
 
 export type uploadCompanyLogoResponse = (uploadCompanyLogoResponseSuccess)
@@ -190,14 +180,9 @@ export const createUploadCompanyLogo = <TError = unknown,
  * Upload API
  * @summary Delete uploaded file
  */
-export type uploadFileResponse200 = {
-  data: void
-  status: 200
-}
+export type uploadFileResponse200 = void
 
-export type uploadFileResponseSuccess = (uploadFileResponse200) & {
-  headers: Headers;
-};
+export type uploadFileResponseSuccess = uploadFileResponse200
 ;
 
 export type uploadFileResponse = (uploadFileResponseSuccess)

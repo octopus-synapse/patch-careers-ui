@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * State codes returned
  * @summary List all states (UFs)
  */
-export type mecMetadataUfsResponse200 = {
-  data: void
-  status: 200
-}
+export type mecMetadataUfsResponse200 = void
 
-export type mecMetadataUfsResponseSuccess = (mecMetadataUfsResponse200) & {
-  headers: Headers;
-};
+export type mecMetadataUfsResponseSuccess = mecMetadataUfsResponse200
 ;
 
 export type mecMetadataUfsResponse = (mecMetadataUfsResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchMecMetadataUfsQuery = async <TData = Awaited<ReturnType<typ
  * Knowledge areas returned
  * @summary List knowledge areas
  */
-export type mecMetadataAreasResponse200 = {
-  data: void
-  status: 200
-}
+export type mecMetadataAreasResponse200 = void
 
-export type mecMetadataAreasResponseSuccess = (mecMetadataAreasResponse200) & {
-  headers: Headers;
-};
+export type mecMetadataAreasResponseSuccess = mecMetadataAreasResponse200
 ;
 
 export type mecMetadataAreasResponse = (mecMetadataAreasResponseSuccess)
@@ -364,14 +354,9 @@ export const prefetchMecMetadataAreasQuery = async <TData = Awaited<ReturnType<t
  * MEC statistics returned
  * @summary Get MEC statistics
  */
-export type mecMetadataStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type mecMetadataStatsResponse200 = void
 
-export type mecMetadataStatsResponseSuccess = (mecMetadataStatsResponse200) & {
-  headers: Headers;
-};
+export type mecMetadataStatsResponseSuccess = mecMetadataStatsResponse200
 ;
 
 export type mecMetadataStatsResponse = (mecMetadataStatsResponseSuccess)

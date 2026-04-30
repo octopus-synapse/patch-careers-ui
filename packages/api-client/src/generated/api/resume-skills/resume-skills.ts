@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Skill created
  * @summary Add a skill to a resume
  */
-export type resumeSkillsSkillsPostResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeSkillsSkillsPostResponse200 = void
 
-export type resumeSkillsSkillsPostResponseSuccess = (resumeSkillsSkillsPostResponse200) & {
-  headers: Headers;
-};
+export type resumeSkillsSkillsPostResponseSuccess = resumeSkillsSkillsPostResponse200
 ;
 
 export type resumeSkillsSkillsPostResponse = (resumeSkillsSkillsPostResponseSuccess)
@@ -125,14 +120,9 @@ export const createResumeSkillsSkillsPost = <TError = unknown,
  * Skills returned
  * @summary List skills for a resume
  */
-export type resumeSkillsSkillsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeSkillsSkillsGetResponse200 = void
 
-export type resumeSkillsSkillsGetResponseSuccess = (resumeSkillsSkillsGetResponse200) & {
-  headers: Headers;
-};
+export type resumeSkillsSkillsGetResponseSuccess = resumeSkillsSkillsGetResponse200
 ;
 
 export type resumeSkillsSkillsGetResponse = (resumeSkillsSkillsGetResponseSuccess)
@@ -291,14 +281,9 @@ export const prefetchResumeSkillsSkillsGetQuery = async <TData = Awaited<ReturnT
  * Skill updated
  * @summary Update a resume skill
  */
-export type resumeSkillsSkillsPatchResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeSkillsSkillsPatchResponse200 = void
 
-export type resumeSkillsSkillsPatchResponseSuccess = (resumeSkillsSkillsPatchResponse200) & {
-  headers: Headers;
-};
+export type resumeSkillsSkillsPatchResponseSuccess = resumeSkillsSkillsPatchResponse200
 ;
 
 export type resumeSkillsSkillsPatchResponse = (resumeSkillsSkillsPatchResponseSuccess)
@@ -377,14 +362,9 @@ export const createResumeSkillsSkillsPatch = <TError = unknown,
  * Skill deleted
  * @summary Delete a resume skill
  */
-export type resumeSkillsSkillsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeSkillsSkillsDeleteResponse200 = void
 
-export type resumeSkillsSkillsDeleteResponseSuccess = (resumeSkillsSkillsDeleteResponse200) & {
-  headers: Headers;
-};
+export type resumeSkillsSkillsDeleteResponseSuccess = resumeSkillsSkillsDeleteResponse200
 ;
 
 export type resumeSkillsSkillsDeleteResponse = (resumeSkillsSkillsDeleteResponseSuccess)

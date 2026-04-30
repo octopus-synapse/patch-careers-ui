@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Records user acceptance of legal documents with IP and user agent for audit trail. Required before accessing protected API endpoints.
  * @summary Accept Terms of Service or Privacy Policy
  */
-export type userConsentAcceptConsentResponse200 = {
-  data: void
-  status: 200
-}
+export type userConsentAcceptConsentResponse200 = void
 
-export type userConsentAcceptConsentResponseSuccess = (userConsentAcceptConsentResponse200) & {
-  headers: Headers;
-};
+export type userConsentAcceptConsentResponseSuccess = userConsentAcceptConsentResponse200
 ;
 
 export type userConsentAcceptConsentResponse = (userConsentAcceptConsentResponseSuccess)
@@ -123,14 +118,9 @@ export const createUserConsentAcceptConsent = <TError = unknown,
  * Returns which documents the user has accepted for the current versions
  * @summary Check consent acceptance status
  */
-export type userConsentGetConsentStatusResponse200 = {
-  data: void
-  status: 200
-}
+export type userConsentGetConsentStatusResponse200 = void
 
-export type userConsentGetConsentStatusResponseSuccess = (userConsentGetConsentStatusResponse200) & {
-  headers: Headers;
-};
+export type userConsentGetConsentStatusResponseSuccess = userConsentGetConsentStatusResponse200
 ;
 
 export type userConsentGetConsentStatusResponse = (userConsentGetConsentStatusResponseSuccess)
@@ -289,14 +279,9 @@ export const prefetchUserConsentGetConsentStatusQuery = async <TData = Awaited<R
  * Retrieves all consent records for the authenticated user
  * @summary Get consent acceptance history
  */
-export type userConsentGetConsentHistoryResponse200 = {
-  data: void
-  status: 200
-}
+export type userConsentGetConsentHistoryResponse200 = void
 
-export type userConsentGetConsentHistoryResponseSuccess = (userConsentGetConsentHistoryResponse200) & {
-  headers: Headers;
-};
+export type userConsentGetConsentHistoryResponseSuccess = userConsentGetConsentHistoryResponse200
 ;
 
 export type userConsentGetConsentHistoryResponse = (userConsentGetConsentHistoryResponseSuccess)

@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Tech Skills API
  * @summary List all tech skills
  */
-export type adminTechSkillsListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechSkillsListResponse200 = void
 
-export type adminTechSkillsListResponseSuccess = (adminTechSkillsListResponse200) & {
-  headers: Headers;
-};
+export type adminTechSkillsListResponseSuccess = adminTechSkillsListResponse200
 ;
 
 export type adminTechSkillsListResponse = (adminTechSkillsListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchAdminTechSkillsListQuery = async <TData = Awaited<ReturnTyp
  * Admin Tech Skills API
  * @summary Create tech skill
  */
-export type adminTechSkillsCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechSkillsCreateResponse200 = void
 
-export type adminTechSkillsCreateResponseSuccess = (adminTechSkillsCreateResponse200) & {
-  headers: Headers;
-};
+export type adminTechSkillsCreateResponseSuccess = adminTechSkillsCreateResponse200
 ;
 
 export type adminTechSkillsCreateResponse = (adminTechSkillsCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createAdminTechSkillsCreate = <TError = unknown,
  * Admin Tech Skills API
  * @summary Get tech skill by ID
  */
-export type adminTechSkillsGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechSkillsGetByIdResponse200 = void
 
-export type adminTechSkillsGetByIdResponseSuccess = (adminTechSkillsGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminTechSkillsGetByIdResponseSuccess = adminTechSkillsGetByIdResponse200
 ;
 
 export type adminTechSkillsGetByIdResponse = (adminTechSkillsGetByIdResponseSuccess)
@@ -464,14 +449,9 @@ export const prefetchAdminTechSkillsGetByIdQuery = async <TData = Awaited<Return
  * Admin Tech Skills API
  * @summary Update tech skill
  */
-export type adminTechSkillsUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechSkillsUpdateResponse200 = void
 
-export type adminTechSkillsUpdateResponseSuccess = (adminTechSkillsUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminTechSkillsUpdateResponseSuccess = adminTechSkillsUpdateResponse200
 ;
 
 export type adminTechSkillsUpdateResponse = (adminTechSkillsUpdateResponseSuccess)
@@ -548,14 +528,9 @@ export const createAdminTechSkillsUpdate = <TError = unknown,
  * Admin Tech Skills API
  * @summary Delete tech skill
  */
-export type adminTechSkillsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechSkillsDeleteResponse200 = void
 
-export type adminTechSkillsDeleteResponseSuccess = (adminTechSkillsDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminTechSkillsDeleteResponseSuccess = adminTechSkillsDeleteResponse200
 ;
 
 export type adminTechSkillsDeleteResponse = (adminTechSkillsDeleteResponseSuccess)

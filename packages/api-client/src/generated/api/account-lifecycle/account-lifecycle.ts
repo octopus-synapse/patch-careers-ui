@@ -31,14 +31,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT".
  * @summary Delete account permanently
  */
-export type accountLifecycleAccountsResponse200 = {
-  data: void
-  status: 200
-}
+export type accountLifecycleAccountsResponse200 = void
 
-export type accountLifecycleAccountsResponseSuccess = (accountLifecycleAccountsResponse200) & {
-  headers: Headers;
-};
+export type accountLifecycleAccountsResponseSuccess = accountLifecycleAccountsResponse200
 ;
 
 export type accountLifecycleAccountsResponse = (accountLifecycleAccountsResponseSuccess)
@@ -114,14 +109,9 @@ export const createAccountLifecycleAccounts = <TError = unknown,
  * Deactivates the authenticated user account (soft delete).
  * @summary Deactivate account
  */
-export type accountLifecycleAccountsDeactivateResponse200 = {
-  data: void
-  status: 200
-}
+export type accountLifecycleAccountsDeactivateResponse200 = void
 
-export type accountLifecycleAccountsDeactivateResponseSuccess = (accountLifecycleAccountsDeactivateResponse200) & {
-  headers: Headers;
-};
+export type accountLifecycleAccountsDeactivateResponseSuccess = accountLifecycleAccountsDeactivateResponse200
 ;
 
 export type accountLifecycleAccountsDeactivateResponse = (accountLifecycleAccountsDeactivateResponseSuccess)

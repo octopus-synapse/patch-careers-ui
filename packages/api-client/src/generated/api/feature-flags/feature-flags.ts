@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{flags: Record<string, boolean>}`. A flag is `true` only if its own enabled state, every ancestor, and the role restriction all allow it. Frontend uses `flags[key]` directly without per-key resolution.
  * @summary Active flags for the current user
  */
-export type featureFlagsActiveResponse200 = {
-  data: void
-  status: 200
-}
+export type featureFlagsActiveResponse200 = void
 
-export type featureFlagsActiveResponseSuccess = (featureFlagsActiveResponse200) & {
-  headers: Headers;
-};
+export type featureFlagsActiveResponseSuccess = featureFlagsActiveResponse200
 ;
 
 export type featureFlagsActiveResponse = (featureFlagsActiveResponseSuccess)

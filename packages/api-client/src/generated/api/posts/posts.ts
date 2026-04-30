@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns the server-driven composer config the frontend uses to render the post-creation UI: limits, allowed media types, poll/repost availability, mention cap, post types.
  * @summary Composer configuration (server-driven UI)
  */
-export type postsComposerConfigResponse200 = {
-  data: void
-  status: 200
-}
+export type postsComposerConfigResponse200 = void
 
-export type postsComposerConfigResponseSuccess = (postsComposerConfigResponse200) & {
-  headers: Headers;
-};
+export type postsComposerConfigResponseSuccess = postsComposerConfigResponse200
 ;
 
 export type postsComposerConfigResponse = (postsComposerConfigResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchPostsComposerConfigQuery = async <TData = Awaited<ReturnTyp
  * Posts API
  * @summary Create a new post
  */
-export type postsCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type postsCreateResponse200 = void
 
-export type postsCreateResponseSuccess = (postsCreateResponse200) & {
-  headers: Headers;
-};
+export type postsCreateResponseSuccess = postsCreateResponse200
 ;
 
 export type postsCreateResponse = (postsCreateResponseSuccess)
@@ -289,14 +279,9 @@ export const createPostsCreate = <TError = unknown,
  * Posts API
  * @summary Get a post by ID
  */
-export type postsGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type postsGetByIdResponse200 = void
 
-export type postsGetByIdResponseSuccess = (postsGetByIdResponse200) & {
-  headers: Headers;
-};
+export type postsGetByIdResponseSuccess = postsGetByIdResponse200
 ;
 
 export type postsGetByIdResponse = (postsGetByIdResponseSuccess)
@@ -455,14 +440,9 @@ export const prefetchPostsGetByIdQuery = async <TData = Awaited<ReturnType<typeo
  * Posts API
  * @summary Delete a post
  */
-export type postsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type postsDeleteResponse200 = void
 
-export type postsDeleteResponseSuccess = (postsDeleteResponse200) & {
-  headers: Headers;
-};
+export type postsDeleteResponseSuccess = postsDeleteResponse200
 ;
 
 export type postsDeleteResponse = (postsDeleteResponseSuccess)
@@ -537,14 +517,9 @@ export const createPostsDelete = <TError = unknown,
  * Posts API
  * @summary Upload post image
  */
-export type postsUploadImageResponse200 = {
-  data: void
-  status: 200
-}
+export type postsUploadImageResponse200 = void
 
-export type postsUploadImageResponseSuccess = (postsUploadImageResponse200) & {
-  headers: Headers;
-};
+export type postsUploadImageResponseSuccess = postsUploadImageResponse200
 ;
 
 export type postsUploadImageResponse = (postsUploadImageResponseSuccess)

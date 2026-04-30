@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Programming Languages API
  * @summary List all programming languages
  */
-export type adminProgrammingLanguagesListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesListResponse200 = void
 
-export type adminProgrammingLanguagesListResponseSuccess = (adminProgrammingLanguagesListResponse200) & {
-  headers: Headers;
-};
+export type adminProgrammingLanguagesListResponseSuccess = adminProgrammingLanguagesListResponse200
 ;
 
 export type adminProgrammingLanguagesListResponse = (adminProgrammingLanguagesListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchAdminProgrammingLanguagesListQuery = async <TData = Awaited
  * Admin Programming Languages API
  * @summary Create programming language
  */
-export type adminProgrammingLanguagesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesCreateResponse200 = void
 
-export type adminProgrammingLanguagesCreateResponseSuccess = (adminProgrammingLanguagesCreateResponse200) & {
-  headers: Headers;
-};
+export type adminProgrammingLanguagesCreateResponseSuccess = adminProgrammingLanguagesCreateResponse200
 ;
 
 export type adminProgrammingLanguagesCreateResponse = (adminProgrammingLanguagesCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createAdminProgrammingLanguagesCreate = <TError = unknown,
  * Admin Programming Languages API
  * @summary Get programming language by slug
  */
-export type adminProgrammingLanguagesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesGetByIdResponse200 = void
 
-export type adminProgrammingLanguagesGetByIdResponseSuccess = (adminProgrammingLanguagesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminProgrammingLanguagesGetByIdResponseSuccess = adminProgrammingLanguagesGetByIdResponse200
 ;
 
 export type adminProgrammingLanguagesGetByIdResponse = (adminProgrammingLanguagesGetByIdResponseSuccess)
@@ -464,14 +449,9 @@ export const prefetchAdminProgrammingLanguagesGetByIdQuery = async <TData = Awai
  * Admin Programming Languages API
  * @summary Update programming language
  */
-export type adminProgrammingLanguagesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesUpdateResponse200 = void
 
-export type adminProgrammingLanguagesUpdateResponseSuccess = (adminProgrammingLanguagesUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminProgrammingLanguagesUpdateResponseSuccess = adminProgrammingLanguagesUpdateResponse200
 ;
 
 export type adminProgrammingLanguagesUpdateResponse = (adminProgrammingLanguagesUpdateResponseSuccess)
@@ -548,14 +528,9 @@ export const createAdminProgrammingLanguagesUpdate = <TError = unknown,
  * Admin Programming Languages API
  * @summary Delete programming language
  */
-export type adminProgrammingLanguagesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminProgrammingLanguagesDeleteResponse200 = void
 
-export type adminProgrammingLanguagesDeleteResponseSuccess = (adminProgrammingLanguagesDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminProgrammingLanguagesDeleteResponseSuccess = adminProgrammingLanguagesDeleteResponse200
 ;
 
 export type adminProgrammingLanguagesDeleteResponse = (adminProgrammingLanguagesDeleteResponseSuccess)

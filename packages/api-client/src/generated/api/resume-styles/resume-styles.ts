@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * ResumeStyle catalog + apply
  * @summary List published resume styles
  */
-export type resumeStylesListResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeStylesListResponse200 = void
 
-export type resumeStylesListResponseSuccess = (resumeStylesListResponse200) & {
-  headers: Headers;
-};
+export type resumeStylesListResponseSuccess = resumeStylesListResponse200
 ;
 
 export type resumeStylesListResponse = (resumeStylesListResponseSuccess)
@@ -214,14 +209,9 @@ export const prefetchResumeStylesListQuery = async <TData = Awaited<ReturnType<t
  * ResumeStyle catalog + apply
  * @summary Get one ResumeStyle by id
  */
-export type resumeStylesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeStylesGetByIdResponse200 = void
 
-export type resumeStylesGetByIdResponseSuccess = (resumeStylesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type resumeStylesGetByIdResponseSuccess = resumeStylesGetByIdResponse200
 ;
 
 export type resumeStylesGetByIdResponse = (resumeStylesGetByIdResponseSuccess)
@@ -380,14 +370,9 @@ export const prefetchResumeStylesGetByIdQuery = async <TData = Awaited<ReturnTyp
  * ResumeStyle catalog + apply
  * @summary Apply a ResumeStyle to a resume
  */
-export type resumeStylesStyleResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeStylesStyleResponse200 = void
 
-export type resumeStylesStyleResponseSuccess = (resumeStylesStyleResponse200) & {
-  headers: Headers;
-};
+export type resumeStylesStyleResponseSuccess = resumeStylesStyleResponse200
 ;
 
 export type resumeStylesStyleResponse = (resumeStylesStyleResponseSuccess)
@@ -464,14 +449,9 @@ export const createResumeStylesStyle = <TError = unknown,
  * ResumeStyle catalog + apply
  * @summary Render a generic preview PDF for the style
  */
-export type resumeStylesPreviewPdfResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeStylesPreviewPdfResponse200 = void
 
-export type resumeStylesPreviewPdfResponseSuccess = (resumeStylesPreviewPdfResponse200) & {
-  headers: Headers;
-};
+export type resumeStylesPreviewPdfResponseSuccess = resumeStylesPreviewPdfResponse200
 ;
 
 export type resumeStylesPreviewPdfResponse = (resumeStylesPreviewPdfResponseSuccess)

@@ -37,14 +37,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Institutions returned
  * @summary List institutions
  */
-export type mecInstitutionsListResponse200 = {
-  data: void
-  status: 200
-}
+export type mecInstitutionsListResponse200 = void
 
-export type mecInstitutionsListResponseSuccess = (mecInstitutionsListResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsListResponseSuccess = mecInstitutionsListResponse200
 ;
 
 export type mecInstitutionsListResponse = (mecInstitutionsListResponseSuccess)
@@ -210,14 +205,9 @@ export const prefetchMecInstitutionsListQuery = async <TData = Awaited<ReturnTyp
  * Institution search results returned
  * @summary Search institutions
  */
-export type mecInstitutionsSearchResponse200 = {
-  data: void
-  status: 200
-}
+export type mecInstitutionsSearchResponse200 = void
 
-export type mecInstitutionsSearchResponseSuccess = (mecInstitutionsSearchResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsSearchResponseSuccess = mecInstitutionsSearchResponse200
 ;
 
 export type mecInstitutionsSearchResponse = (mecInstitutionsSearchResponseSuccess)
@@ -383,14 +373,9 @@ export const prefetchMecInstitutionsSearchQuery = async <TData = Awaited<ReturnT
  * Institution returned by MEC code
  * @summary Get institution by MEC code
  */
-export type mecInstitutionsGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type mecInstitutionsGetByIdResponse200 = void
 
-export type mecInstitutionsGetByIdResponseSuccess = (mecInstitutionsGetByIdResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsGetByIdResponseSuccess = mecInstitutionsGetByIdResponse200
 ;
 
 export type mecInstitutionsGetByIdResponse = (mecInstitutionsGetByIdResponseSuccess)
@@ -549,14 +534,9 @@ export const prefetchMecInstitutionsGetByIdQuery = async <TData = Awaited<Return
  * Courses returned for institution
  * @summary Get courses by institution
  */
-export type mecInstitutionsCoursesResponse200 = {
-  data: void
-  status: 200
-}
+export type mecInstitutionsCoursesResponse200 = void
 
-export type mecInstitutionsCoursesResponseSuccess = (mecInstitutionsCoursesResponse200) & {
-  headers: Headers;
-};
+export type mecInstitutionsCoursesResponseSuccess = mecInstitutionsCoursesResponse200
 ;
 
 export type mecInstitutionsCoursesResponse = (mecInstitutionsCoursesResponseSuccess)

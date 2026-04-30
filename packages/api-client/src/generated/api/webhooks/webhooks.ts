@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * User-registered webhook subscriptions.
  * @summary List webhooks registered by the current user.
  */
-export type webhooksListResponse200 = {
-  data: void
-  status: 200
-}
+export type webhooksListResponse200 = void
 
-export type webhooksListResponseSuccess = (webhooksListResponse200) & {
-  headers: Headers;
-};
+export type webhooksListResponseSuccess = webhooksListResponse200
 ;
 
 export type webhooksListResponse = (webhooksListResponseSuccess)
@@ -207,14 +202,9 @@ export const prefetchWebhooksListQuery = async <TData = Awaited<ReturnType<typeo
  * User-registered webhook subscriptions.
  * @summary Register a new webhook subscription.
  */
-export type webhooksCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type webhooksCreateResponse200 = void
 
-export type webhooksCreateResponseSuccess = (webhooksCreateResponse200) & {
-  headers: Headers;
-};
+export type webhooksCreateResponseSuccess = webhooksCreateResponse200
 ;
 
 export type webhooksCreateResponse = (webhooksCreateResponseSuccess)
@@ -290,14 +280,9 @@ export const createWebhooksCreate = <TError = unknown,
  * User-registered webhook subscriptions.
  * @summary Update a webhook subscription.
  */
-export type webhooksUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type webhooksUpdateResponse200 = void
 
-export type webhooksUpdateResponseSuccess = (webhooksUpdateResponse200) & {
-  headers: Headers;
-};
+export type webhooksUpdateResponseSuccess = webhooksUpdateResponse200
 ;
 
 export type webhooksUpdateResponse = (webhooksUpdateResponseSuccess)
@@ -374,14 +359,9 @@ export const createWebhooksUpdate = <TError = unknown,
  * User-registered webhook subscriptions.
  * @summary Delete a webhook subscription.
  */
-export type webhooksDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type webhooksDeleteResponse200 = void
 
-export type webhooksDeleteResponseSuccess = (webhooksDeleteResponse200) & {
-  headers: Headers;
-};
+export type webhooksDeleteResponseSuccess = webhooksDeleteResponse200
 ;
 
 export type webhooksDeleteResponse = (webhooksDeleteResponseSuccess)
@@ -456,14 +436,9 @@ export const createWebhooksDelete = <TError = unknown,
  * User-registered webhook subscriptions.
  * @summary List recent delivery attempts for a webhook.
  */
-export type webhooksDeliveriesResponse200 = {
-  data: void
-  status: 200
-}
+export type webhooksDeliveriesResponse200 = void
 
-export type webhooksDeliveriesResponseSuccess = (webhooksDeliveriesResponse200) & {
-  headers: Headers;
-};
+export type webhooksDeliveriesResponseSuccess = webhooksDeliveriesResponse200
 ;
 
 export type webhooksDeliveriesResponse = (webhooksDeliveriesResponseSuccess)

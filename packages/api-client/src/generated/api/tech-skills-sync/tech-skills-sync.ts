@@ -26,14 +26,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Tech skills sync execution result
  * @summary Trigger tech skills synchronization
  */
-export type techSkillsSyncCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsSyncCreateResponse200 = void
 
-export type techSkillsSyncCreateResponseSuccess = (techSkillsSyncCreateResponse200) & {
-  headers: Headers;
-};
+export type techSkillsSyncCreateResponseSuccess = techSkillsSyncCreateResponse200
 ;
 
 export type techSkillsSyncCreateResponse = (techSkillsSyncCreateResponseSuccess)

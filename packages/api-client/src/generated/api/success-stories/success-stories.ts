@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Success stories — public carousel + admin CRUD
  * @summary Published success stories for the landing carousel.
  */
-export type successStoriesListResponse200 = {
-  data: void
-  status: 200
-}
+export type successStoriesListResponse200 = void
 
-export type successStoriesListResponseSuccess = (successStoriesListResponse200) & {
-  headers: Headers;
-};
+export type successStoriesListResponseSuccess = successStoriesListResponse200
 ;
 
 export type successStoriesListResponse = (successStoriesListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchSuccessStoriesListQuery = async <TData = Awaited<ReturnType
  * Success stories — public carousel + admin CRUD
  * @summary Create a success story (admin).
  */
-export type successStoriesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type successStoriesCreateResponse200 = void
 
-export type successStoriesCreateResponseSuccess = (successStoriesCreateResponse200) & {
-  headers: Headers;
-};
+export type successStoriesCreateResponseSuccess = successStoriesCreateResponse200
 ;
 
 export type successStoriesCreateResponse = (successStoriesCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createSuccessStoriesCreate = <TError = unknown,
  * Success stories — public carousel + admin CRUD
  * @summary Update a success story (admin).
  */
-export type successStoriesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type successStoriesUpdateResponse200 = void
 
-export type successStoriesUpdateResponseSuccess = (successStoriesUpdateResponse200) & {
-  headers: Headers;
-};
+export type successStoriesUpdateResponseSuccess = successStoriesUpdateResponse200
 ;
 
 export type successStoriesUpdateResponse = (successStoriesUpdateResponseSuccess)
@@ -382,14 +367,9 @@ export const createSuccessStoriesUpdate = <TError = unknown,
  * Success stories — public carousel + admin CRUD
  * @summary Delete a success story (admin).
  */
-export type successStoriesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type successStoriesDeleteResponse200 = void
 
-export type successStoriesDeleteResponseSuccess = (successStoriesDeleteResponse200) & {
-  headers: Headers;
-};
+export type successStoriesDeleteResponseSuccess = successStoriesDeleteResponse200
 ;
 
 export type successStoriesDeleteResponse = (successStoriesDeleteResponseSuccess)

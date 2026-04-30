@@ -38,14 +38,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Feed API
  * @summary Get feed timeline
  */
-export type feedListResponse200 = {
-  data: void
-  status: 200
-}
+export type feedListResponse200 = void
 
-export type feedListResponseSuccess = (feedListResponse200) & {
-  headers: Headers;
-};
+export type feedListResponseSuccess = feedListResponse200
 ;
 
 export type feedListResponse = (feedListResponseSuccess)
@@ -211,14 +206,9 @@ export const prefetchFeedListQuery = async <TData = Awaited<ReturnType<typeof fe
  * Feed API
  * @summary Get bookmarked posts
  */
-export type feedBookmarksResponse200 = {
-  data: void
-  status: 200
-}
+export type feedBookmarksResponse200 = void
 
-export type feedBookmarksResponseSuccess = (feedBookmarksResponse200) & {
-  headers: Headers;
-};
+export type feedBookmarksResponseSuccess = feedBookmarksResponse200
 ;
 
 export type feedBookmarksResponse = (feedBookmarksResponseSuccess)
@@ -384,14 +374,9 @@ export const prefetchFeedBookmarksQuery = async <TData = Awaited<ReturnType<type
  * Feed API
  * @summary Get posts by user
  */
-export type feedUserResponse200 = {
-  data: void
-  status: 200
-}
+export type feedUserResponse200 = void
 
-export type feedUserResponseSuccess = (feedUserResponse200) & {
-  headers: Headers;
-};
+export type feedUserResponseSuccess = feedUserResponse200
 ;
 
 export type feedUserResponse = (feedUserResponseSuccess)

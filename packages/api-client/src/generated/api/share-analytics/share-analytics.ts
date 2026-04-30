@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Share Analytics API
  * @summary Get analytics for a shared resume (nested route)
  */
-export type shareAnalyticsResumesSharesAnalyticsResponse200 = {
-  data: void
-  status: 200
-}
+export type shareAnalyticsResumesSharesAnalyticsResponse200 = void
 
-export type shareAnalyticsResumesSharesAnalyticsResponseSuccess = (shareAnalyticsResumesSharesAnalyticsResponse200) & {
-  headers: Headers;
-};
+export type shareAnalyticsResumesSharesAnalyticsResponseSuccess = shareAnalyticsResumesSharesAnalyticsResponse200
 ;
 
 export type shareAnalyticsResumesSharesAnalyticsResponse = (shareAnalyticsResumesSharesAnalyticsResponseSuccess)
@@ -214,14 +209,9 @@ export const prefetchShareAnalyticsResumesSharesAnalyticsQuery = async <TData = 
  * Share Analytics API
  * @summary Get analytics for a share id
  */
-export type shareAnalyticsAnalyticsResponse200 = {
-  data: void
-  status: 200
-}
+export type shareAnalyticsAnalyticsResponse200 = void
 
-export type shareAnalyticsAnalyticsResponseSuccess = (shareAnalyticsAnalyticsResponse200) & {
-  headers: Headers;
-};
+export type shareAnalyticsAnalyticsResponseSuccess = shareAnalyticsAnalyticsResponse200
 ;
 
 export type shareAnalyticsAnalyticsResponse = (shareAnalyticsAnalyticsResponseSuccess)
@@ -380,14 +370,9 @@ export const prefetchShareAnalyticsAnalyticsQuery = async <TData = Awaited<Retur
  * Share Analytics API
  * @summary Get analytics events for a share id
  */
-export type shareAnalyticsAnalyticsEventsResponse200 = {
-  data: void
-  status: 200
-}
+export type shareAnalyticsAnalyticsEventsResponse200 = void
 
-export type shareAnalyticsAnalyticsEventsResponseSuccess = (shareAnalyticsAnalyticsEventsResponse200) & {
-  headers: Headers;
-};
+export type shareAnalyticsAnalyticsEventsResponseSuccess = shareAnalyticsAnalyticsEventsResponse200
 ;
 
 export type shareAnalyticsAnalyticsEventsResponse = (shareAnalyticsAnalyticsEventsResponseSuccess)

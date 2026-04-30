@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Comments API
  * @summary Get comments for a post
  */
-export type commentsPostsCommentsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type commentsPostsCommentsGetResponse200 = void
 
-export type commentsPostsCommentsGetResponseSuccess = (commentsPostsCommentsGetResponse200) & {
-  headers: Headers;
-};
+export type commentsPostsCommentsGetResponseSuccess = commentsPostsCommentsGetResponse200
 ;
 
 export type commentsPostsCommentsGetResponse = (commentsPostsCommentsGetResponseSuccess)
@@ -226,14 +221,9 @@ export const prefetchCommentsPostsCommentsGetQuery = async <TData = Awaited<Retu
  * Comments API
  * @summary Create a comment
  */
-export type commentsPostsCommentsPostResponse200 = {
-  data: void
-  status: 200
-}
+export type commentsPostsCommentsPostResponse200 = void
 
-export type commentsPostsCommentsPostResponseSuccess = (commentsPostsCommentsPostResponse200) & {
-  headers: Headers;
-};
+export type commentsPostsCommentsPostResponseSuccess = commentsPostsCommentsPostResponse200
 ;
 
 export type commentsPostsCommentsPostResponse = (commentsPostsCommentsPostResponseSuccess)
@@ -310,14 +300,9 @@ export const createCommentsPostsCommentsPost = <TError = unknown,
  * Comments API
  * @summary Delete a comment
  */
-export type commentsPostsCommentsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type commentsPostsCommentsDeleteResponse200 = void
 
-export type commentsPostsCommentsDeleteResponseSuccess = (commentsPostsCommentsDeleteResponse200) & {
-  headers: Headers;
-};
+export type commentsPostsCommentsDeleteResponseSuccess = commentsPostsCommentsDeleteResponse200
 ;
 
 export type commentsPostsCommentsDeleteResponse = (commentsPostsCommentsDeleteResponseSuccess)

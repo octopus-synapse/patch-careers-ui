@@ -26,3 +26,61 @@ export const CareerGraphViewBody = zod.object({
   "maxBuckets": zod.number().min(1).max(careerGraphViewBodyMaxBucketsMax).default(careerGraphViewBodyMaxBucketsDefault)
 })
 
+export const careerGraphViewResponseTotalPeersMin = 0;
+
+export const careerGraphViewResponseCurrentExperienceYearsMin = 0;
+
+export const careerGraphViewResponseCurrentPeerCountMin = 0;
+
+export const careerGraphViewResponseCurrentTopJobTitlesItemCountMin = 0;
+
+export const careerGraphViewResponseBucketsItemExperienceYearsMin = 0;
+
+export const careerGraphViewResponseBucketsItemPeerCountMin = 0;
+
+export const careerGraphViewResponseBucketsItemTopJobTitlesItemCountMin = 0;
+
+export const careerGraphViewResponseProjectionsItemBucketExperienceYearsMin = 0;
+
+export const careerGraphViewResponseProjectionsItemBucketPeerCountMin = 0;
+
+export const careerGraphViewResponseProjectionsItemBucketTopJobTitlesItemCountMin = 0;
+
+
+
+export const CareerGraphViewResponse = zod.object({
+  "stack": zod.array(zod.string()),
+  "user": zod.object({
+  "experienceYears": zod.number(),
+  "jobTitle": zod.string().nullable()
+}),
+  "totalPeers": zod.number().min(careerGraphViewResponseTotalPeersMin),
+  "current": zod.object({
+  "experienceYears": zod.number().min(careerGraphViewResponseCurrentExperienceYearsMin),
+  "peerCount": zod.number().min(careerGraphViewResponseCurrentPeerCountMin),
+  "topJobTitles": zod.array(zod.object({
+  "title": zod.string(),
+  "count": zod.number().min(careerGraphViewResponseCurrentTopJobTitlesItemCountMin)
+}))
+}).nullable(),
+  "buckets": zod.array(zod.object({
+  "experienceYears": zod.number().min(careerGraphViewResponseBucketsItemExperienceYearsMin),
+  "peerCount": zod.number().min(careerGraphViewResponseBucketsItemPeerCountMin),
+  "topJobTitles": zod.array(zod.object({
+  "title": zod.string(),
+  "count": zod.number().min(careerGraphViewResponseBucketsItemTopJobTitlesItemCountMin)
+}))
+})),
+  "projections": zod.array(zod.object({
+  "yearsAhead": zod.number(),
+  "bucket": zod.object({
+  "experienceYears": zod.number().min(careerGraphViewResponseProjectionsItemBucketExperienceYearsMin),
+  "peerCount": zod.number().min(careerGraphViewResponseProjectionsItemBucketPeerCountMin),
+  "topJobTitles": zod.array(zod.object({
+  "title": zod.string(),
+  "count": zod.number().min(careerGraphViewResponseProjectionsItemBucketTopJobTitlesItemCountMin)
+}))
+}).nullable()
+}))
+})
+

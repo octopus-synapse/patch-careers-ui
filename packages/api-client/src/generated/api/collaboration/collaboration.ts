@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Collaboration API
  * @summary Invite user to collaborate on resume
  */
-export type collaborationResumesCollaboratorsPostResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCollaboratorsPostResponse200 = void
 
-export type collaborationResumesCollaboratorsPostResponseSuccess = (collaborationResumesCollaboratorsPostResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCollaboratorsPostResponseSuccess = collaborationResumesCollaboratorsPostResponse200
 ;
 
 export type collaborationResumesCollaboratorsPostResponse = (collaborationResumesCollaboratorsPostResponseSuccess)
@@ -126,14 +121,9 @@ export const createCollaborationResumesCollaboratorsPost = <TError = unknown,
  * Collaboration API
  * @summary Get collaborators for a resume
  */
-export type collaborationResumesCollaboratorsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCollaboratorsGetResponse200 = void
 
-export type collaborationResumesCollaboratorsGetResponseSuccess = (collaborationResumesCollaboratorsGetResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCollaboratorsGetResponseSuccess = collaborationResumesCollaboratorsGetResponse200
 ;
 
 export type collaborationResumesCollaboratorsGetResponse = (collaborationResumesCollaboratorsGetResponseSuccess)
@@ -292,14 +282,9 @@ export const prefetchCollaborationResumesCollaboratorsGetQuery = async <TData = 
  * Collaboration API
  * @summary Update collaborator role
  */
-export type collaborationResumesCollaboratorsPatchResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCollaboratorsPatchResponse200 = void
 
-export type collaborationResumesCollaboratorsPatchResponseSuccess = (collaborationResumesCollaboratorsPatchResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCollaboratorsPatchResponseSuccess = collaborationResumesCollaboratorsPatchResponse200
 ;
 
 export type collaborationResumesCollaboratorsPatchResponse = (collaborationResumesCollaboratorsPatchResponseSuccess)
@@ -378,14 +363,9 @@ export const createCollaborationResumesCollaboratorsPatch = <TError = unknown,
  * Collaboration API
  * @summary Remove collaborator from resume
  */
-export type collaborationResumesCollaboratorsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCollaboratorsDeleteResponse200 = void
 
-export type collaborationResumesCollaboratorsDeleteResponseSuccess = (collaborationResumesCollaboratorsDeleteResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCollaboratorsDeleteResponseSuccess = collaborationResumesCollaboratorsDeleteResponse200
 ;
 
 export type collaborationResumesCollaboratorsDeleteResponse = (collaborationResumesCollaboratorsDeleteResponseSuccess)
@@ -462,14 +442,9 @@ export const createCollaborationResumesCollaboratorsDelete = <TError = unknown,
  * Collaboration API
  * @summary Get resumes shared with current user
  */
-export type collaborationResumesSharedWithMeResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesSharedWithMeResponse200 = void
 
-export type collaborationResumesSharedWithMeResponseSuccess = (collaborationResumesSharedWithMeResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesSharedWithMeResponseSuccess = collaborationResumesSharedWithMeResponse200
 ;
 
 export type collaborationResumesSharedWithMeResponse = (collaborationResumesSharedWithMeResponseSuccess)
@@ -628,14 +603,9 @@ export const prefetchCollaborationResumesSharedWithMeQuery = async <TData = Awai
  * Collaboration API
  * @summary List collaboration comments on a resume
  */
-export type collaborationResumesCommentsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCommentsGetResponse200 = void
 
-export type collaborationResumesCommentsGetResponseSuccess = (collaborationResumesCommentsGetResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCommentsGetResponseSuccess = collaborationResumesCommentsGetResponse200
 ;
 
 export type collaborationResumesCommentsGetResponse = (collaborationResumesCommentsGetResponseSuccess)
@@ -794,14 +764,9 @@ export const prefetchCollaborationResumesCommentsGetQuery = async <TData = Await
  * Collaboration API
  * @summary Add a comment / reply to a resume
  */
-export type collaborationResumesCommentsPostResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCommentsPostResponse200 = void
 
-export type collaborationResumesCommentsPostResponseSuccess = (collaborationResumesCommentsPostResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCommentsPostResponseSuccess = collaborationResumesCommentsPostResponse200
 ;
 
 export type collaborationResumesCommentsPostResponse = (collaborationResumesCommentsPostResponseSuccess)
@@ -878,14 +843,9 @@ export const createCollaborationResumesCommentsPost = <TError = unknown,
  * Collaboration API
  * @summary Mark a comment thread as resolved
  */
-export type collaborationResumesCommentsResolveResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCommentsResolveResponse200 = void
 
-export type collaborationResumesCommentsResolveResponseSuccess = (collaborationResumesCommentsResolveResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCommentsResolveResponseSuccess = collaborationResumesCommentsResolveResponse200
 ;
 
 export type collaborationResumesCommentsResolveResponse = (collaborationResumesCommentsResolveResponseSuccess)
@@ -960,14 +920,9 @@ export const createCollaborationResumesCommentsResolve = <TError = unknown,
  * Collaboration API
  * @summary Delete a comment (author or resume owner)
  */
-export type collaborationResumesCommentsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type collaborationResumesCommentsDeleteResponse200 = void
 
-export type collaborationResumesCommentsDeleteResponseSuccess = (collaborationResumesCommentsDeleteResponse200) & {
-  headers: Headers;
-};
+export type collaborationResumesCommentsDeleteResponseSuccess = collaborationResumesCommentsDeleteResponse200
 ;
 
 export type collaborationResumesCommentsDeleteResponse = (collaborationResumesCommentsDeleteResponseSuccess)

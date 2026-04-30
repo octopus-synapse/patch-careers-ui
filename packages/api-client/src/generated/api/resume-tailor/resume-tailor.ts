@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * All tailored variants the user has generated so far.
  * @summary List tailored resume variants produced by the AI.
  */
-export type resumeTailorResumesTailoredVersionsResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeTailorResumesTailoredVersionsResponse200 = void
 
-export type resumeTailorResumesTailoredVersionsResponseSuccess = (resumeTailorResumesTailoredVersionsResponse200) & {
-  headers: Headers;
-};
+export type resumeTailorResumesTailoredVersionsResponseSuccess = resumeTailorResumesTailoredVersionsResponse200
 ;
 
 export type resumeTailorResumesTailoredVersionsResponse = (resumeTailorResumesTailoredVersionsResponseSuccess)
@@ -207,14 +202,9 @@ export const prefetchResumeTailorResumesTailoredVersionsQuery = async <TData = A
  * Summary / jobTitle / bullets before → after shape.
  * @summary Structured diff between the master resume and a tailored version.
  */
-export type resumeTailorResumesDiffResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeTailorResumesDiffResponse200 = void
 
-export type resumeTailorResumesDiffResponseSuccess = (resumeTailorResumesDiffResponse200) & {
-  headers: Headers;
-};
+export type resumeTailorResumesDiffResponseSuccess = resumeTailorResumesDiffResponse200
 ;
 
 export type resumeTailorResumesDiffResponse = (resumeTailorResumesDiffResponseSuccess)
@@ -392,14 +382,9 @@ export const prefetchResumeTailorResumesDiffQuery = async <TData = Awaited<Retur
  * Resume AI tailoring API
  * @summary Rewrite this resume for a specific job using the AI pipeline.
  */
-export type resumeTailorResumesTailorResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeTailorResumesTailorResponse200 = void
 
-export type resumeTailorResumesTailorResponseSuccess = (resumeTailorResumesTailorResponse200) & {
-  headers: Headers;
-};
+export type resumeTailorResumesTailorResponseSuccess = resumeTailorResumesTailorResponse200
 ;
 
 export type resumeTailorResumesTailorResponse = (resumeTailorResumesTailorResponseSuccess)

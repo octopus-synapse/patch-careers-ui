@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Match Score API
  * @summary Compute the Match Score for a (resume, job) pair
  */
-export type jobMatchMatchPostResponse200 = {
-  data: void
-  status: 200
-}
+export type jobMatchMatchPostResponse200 = void
 
-export type jobMatchMatchPostResponseSuccess = (jobMatchMatchPostResponse200) & {
-  headers: Headers;
-};
+export type jobMatchMatchPostResponseSuccess = jobMatchMatchPostResponse200
 ;
 
 export type jobMatchMatchPostResponse = (jobMatchMatchPostResponseSuccess)
@@ -123,14 +118,9 @@ export const createJobMatchMatchPost = <TError = unknown,
  * Match Score API
  * @summary Read the Match Score for a (resume, job) pair (cached)
  */
-export type jobMatchMatchGetResponse200 = {
-  data: void
-  status: 200
-}
+export type jobMatchMatchGetResponse200 = void
 
-export type jobMatchMatchGetResponseSuccess = (jobMatchMatchGetResponse200) & {
-  headers: Headers;
-};
+export type jobMatchMatchGetResponseSuccess = jobMatchMatchGetResponse200
 ;
 
 export type jobMatchMatchGetResponse = (jobMatchMatchGetResponseSuccess)

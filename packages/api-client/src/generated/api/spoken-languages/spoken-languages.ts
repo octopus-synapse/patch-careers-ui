@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Active spoken languages returned
  * @summary Get all active spoken languages
  */
-export type spokenLanguagesListResponse200 = {
-  data: void
-  status: 200
-}
+export type spokenLanguagesListResponse200 = void
 
-export type spokenLanguagesListResponseSuccess = (spokenLanguagesListResponse200) & {
-  headers: Headers;
-};
+export type spokenLanguagesListResponseSuccess = spokenLanguagesListResponse200
 ;
 
 export type spokenLanguagesListResponse = (spokenLanguagesListResponseSuccess)
@@ -202,14 +197,9 @@ export const prefetchSpokenLanguagesListQuery = async <TData = Awaited<ReturnTyp
  * Filtered spoken languages returned
  * @summary Search spoken languages by name
  */
-export type spokenLanguagesSearchResponse200 = {
-  data: void
-  status: 200
-}
+export type spokenLanguagesSearchResponse200 = void
 
-export type spokenLanguagesSearchResponseSuccess = (spokenLanguagesSearchResponse200) & {
-  headers: Headers;
-};
+export type spokenLanguagesSearchResponseSuccess = spokenLanguagesSearchResponse200
 ;
 
 export type spokenLanguagesSearchResponse = (spokenLanguagesSearchResponseSuccess)
@@ -375,14 +365,9 @@ export const prefetchSpokenLanguagesSearchQuery = async <TData = Awaited<ReturnT
  * Spoken language returned
  * @summary Get spoken language by code
  */
-export type spokenLanguagesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type spokenLanguagesGetByIdResponse200 = void
 
-export type spokenLanguagesGetByIdResponseSuccess = (spokenLanguagesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type spokenLanguagesGetByIdResponseSuccess = spokenLanguagesGetByIdResponse200
 ;
 
 export type spokenLanguagesGetByIdResponse = (spokenLanguagesGetByIdResponseSuccess)

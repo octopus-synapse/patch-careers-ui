@@ -39,14 +39,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Export API
  * @summary Export LinkedIn banner image
  */
-export type exportBannerResponse200 = {
-  data: void
-  status: 200
-}
+export type exportBannerResponse200 = void
 
-export type exportBannerResponseSuccess = (exportBannerResponse200) & {
-  headers: Headers;
-};
+export type exportBannerResponseSuccess = exportBannerResponse200
 ;
 
 export type exportBannerResponse = (exportBannerResponseSuccess)
@@ -212,14 +207,9 @@ export const prefetchExportBannerQuery = async <TData = Awaited<ReturnType<typeo
  * Export API
  * @summary Export resume as PDF document
  */
-export type exportResumePdfResponse200 = {
-  data: void
-  status: 200
-}
+export type exportResumePdfResponse200 = void
 
-export type exportResumePdfResponseSuccess = (exportResumePdfResponse200) & {
-  headers: Headers;
-};
+export type exportResumePdfResponseSuccess = exportResumePdfResponse200
 ;
 
 export type exportResumePdfResponse = (exportResumePdfResponseSuccess)
@@ -385,14 +375,9 @@ export const prefetchExportResumePdfQuery = async <TData = Awaited<ReturnType<ty
  * Export API
  * @summary Generate another user's resume as PDF (base64)
  */
-export type exportUserResumePdfResponse200 = {
-  data: void
-  status: 200
-}
+export type exportUserResumePdfResponse200 = void
 
-export type exportUserResumePdfResponseSuccess = (exportUserResumePdfResponse200) & {
-  headers: Headers;
-};
+export type exportUserResumePdfResponseSuccess = exportUserResumePdfResponse200
 ;
 
 export type exportUserResumePdfResponse = (exportUserResumePdfResponseSuccess)
@@ -551,14 +536,9 @@ export const prefetchExportUserResumePdfQuery = async <TData = Awaited<ReturnTyp
  * Export API
  * @summary Export resume as DOCX document
  */
-export type exportResumeDocxResponse200 = {
-  data: void
-  status: 200
-}
+export type exportResumeDocxResponse200 = void
 
-export type exportResumeDocxResponseSuccess = (exportResumeDocxResponse200) & {
-  headers: Headers;
-};
+export type exportResumeDocxResponseSuccess = exportResumeDocxResponse200
 ;
 
 export type exportResumeDocxResponse = (exportResumeDocxResponseSuccess)
@@ -717,14 +697,9 @@ export const prefetchExportResumeDocxQuery = async <TData = Awaited<ReturnType<t
  * Export API
  * @summary Export resume as JSON
  */
-export type exportApiV1ExportJsonResponse200 = {
-  data: void
-  status: 200
-}
+export type exportApiV1ExportJsonResponse200 = void
 
-export type exportApiV1ExportJsonResponseSuccess = (exportApiV1ExportJsonResponse200) & {
-  headers: Headers;
-};
+export type exportApiV1ExportJsonResponseSuccess = exportApiV1ExportJsonResponse200
 ;
 
 export type exportApiV1ExportJsonResponse = (exportApiV1ExportJsonResponseSuccess)
@@ -902,14 +877,9 @@ export const prefetchExportApiV1ExportJsonQuery = async <TData = Awaited<ReturnT
  * Export API
  * @summary Export resume as LaTeX
  */
-export type exportApiV1ExportLatexResponse200 = {
-  data: void
-  status: 200
-}
+export type exportApiV1ExportLatexResponse200 = void
 
-export type exportApiV1ExportLatexResponseSuccess = (exportApiV1ExportLatexResponse200) & {
-  headers: Headers;
-};
+export type exportApiV1ExportLatexResponseSuccess = exportApiV1ExportLatexResponse200
 ;
 
 export type exportApiV1ExportLatexResponse = (exportApiV1ExportLatexResponseSuccess)

@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Feature Flags API
  * @summary List all feature flags with metadata and blocking info
  */
-export type adminFeatureFlagsListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFeatureFlagsListResponse200 = void
 
-export type adminFeatureFlagsListResponseSuccess = (adminFeatureFlagsListResponse200) & {
-  headers: Headers;
-};
+export type adminFeatureFlagsListResponseSuccess = adminFeatureFlagsListResponse200
 ;
 
 export type adminFeatureFlagsListResponse = (adminFeatureFlagsListResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchAdminFeatureFlagsListQuery = async <TData = Awaited<ReturnT
  * Admin Feature Flags API
  * @summary Preview transitive descendants affected when a flag is turned OFF
  */
-export type adminFeatureFlagsImpactResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFeatureFlagsImpactResponse200 = void
 
-export type adminFeatureFlagsImpactResponseSuccess = (adminFeatureFlagsImpactResponse200) & {
-  headers: Headers;
-};
+export type adminFeatureFlagsImpactResponseSuccess = adminFeatureFlagsImpactResponse200
 ;
 
 export type adminFeatureFlagsImpactResponse = (adminFeatureFlagsImpactResponseSuccess)
@@ -372,14 +362,9 @@ export const prefetchAdminFeatureFlagsImpactQuery = async <TData = Awaited<Retur
  * Turning ON is rejected with 409 when any ancestor is OFF. Deprecated flags are read-only.
  * @summary Toggle a flag or update its role restriction
  */
-export type adminFeatureFlagsUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFeatureFlagsUpdateResponse200 = void
 
-export type adminFeatureFlagsUpdateResponseSuccess = (adminFeatureFlagsUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminFeatureFlagsUpdateResponseSuccess = adminFeatureFlagsUpdateResponse200
 ;
 
 export type adminFeatureFlagsUpdateResponse = (adminFeatureFlagsUpdateResponseSuccess)
@@ -456,14 +441,9 @@ export const createAdminFeatureFlagsUpdate = <TError = unknown,
  * Clears server-side caches and pushes an `invalidate` message through the SSE stream so every connected client refetches.
  * @summary Invalidate all client flag snapshots
  */
-export type adminFeatureFlagsBroadcastRefreshResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFeatureFlagsBroadcastRefreshResponse200 = void
 
-export type adminFeatureFlagsBroadcastRefreshResponseSuccess = (adminFeatureFlagsBroadcastRefreshResponse200) & {
-  headers: Headers;
-};
+export type adminFeatureFlagsBroadcastRefreshResponseSuccess = adminFeatureFlagsBroadcastRefreshResponse200
 ;
 
 export type adminFeatureFlagsBroadcastRefreshResponse = (adminFeatureFlagsBroadcastRefreshResponseSuccess)

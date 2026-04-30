@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Timeline + silence detection for job applications
  * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
  */
-export type applicationTrackerJobsApplicationsTrackerResponse200 = {
-  data: void
-  status: 200
-}
+export type applicationTrackerJobsApplicationsTrackerResponse200 = void
 
-export type applicationTrackerJobsApplicationsTrackerResponseSuccess = (applicationTrackerJobsApplicationsTrackerResponse200) & {
-  headers: Headers;
-};
+export type applicationTrackerJobsApplicationsTrackerResponseSuccess = applicationTrackerJobsApplicationsTrackerResponse200
 ;
 
 export type applicationTrackerJobsApplicationsTrackerResponse = (applicationTrackerJobsApplicationsTrackerResponseSuccess)
@@ -214,14 +209,9 @@ export const prefetchApplicationTrackerJobsApplicationsTrackerQuery = async <TDa
  * Timeline + silence detection for job applications
  * @summary Record a timeline event on an application (viewed, interview scheduled, offer, etc.).
  */
-export type applicationTrackerJobsApplicationsEventsResponse200 = {
-  data: void
-  status: 200
-}
+export type applicationTrackerJobsApplicationsEventsResponse200 = void
 
-export type applicationTrackerJobsApplicationsEventsResponseSuccess = (applicationTrackerJobsApplicationsEventsResponse200) & {
-  headers: Headers;
-};
+export type applicationTrackerJobsApplicationsEventsResponseSuccess = applicationTrackerJobsApplicationsEventsResponse200
 ;
 
 export type applicationTrackerJobsApplicationsEventsResponse = (applicationTrackerJobsApplicationsEventsResponseSuccess)
@@ -298,14 +288,9 @@ export const createApplicationTrackerJobsApplicationsEvents = <TError = unknown,
  * Timeline + silence detection for job applications
  * @summary Per-company response percentiles (p50/p90 days to first response).
  */
-export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200 = void
 
-export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSuccess = (applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200) & {
-  headers: Headers;
-};
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSuccess = applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200
 ;
 
 export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse = (applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSuccess)

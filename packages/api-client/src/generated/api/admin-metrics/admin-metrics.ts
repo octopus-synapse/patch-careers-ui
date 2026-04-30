@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Metrics API
  * @summary Get all metrics as JSON
  */
-export type adminMetricsOverviewResponse200 = {
-  data: void
-  status: 200
-}
+export type adminMetricsOverviewResponse200 = void
 
-export type adminMetricsOverviewResponseSuccess = (adminMetricsOverviewResponse200) & {
-  headers: Headers;
-};
+export type adminMetricsOverviewResponseSuccess = adminMetricsOverviewResponse200
 ;
 
 export type adminMetricsOverviewResponse = (adminMetricsOverviewResponseSuccess)

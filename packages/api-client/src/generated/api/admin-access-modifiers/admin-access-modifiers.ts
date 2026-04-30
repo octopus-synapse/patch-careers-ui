@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Authorization Admin API
  * @summary Apply an access modifier (suspension or grant) to a user
  */
-export type adminAccessModifiersUsersAccessModifiersPostResponse200 = {
-  data: void
-  status: 200
-}
+export type adminAccessModifiersUsersAccessModifiersPostResponse200 = void
 
-export type adminAccessModifiersUsersAccessModifiersPostResponseSuccess = (adminAccessModifiersUsersAccessModifiersPostResponse200) & {
-  headers: Headers;
-};
+export type adminAccessModifiersUsersAccessModifiersPostResponseSuccess = adminAccessModifiersUsersAccessModifiersPostResponse200
 ;
 
 export type adminAccessModifiersUsersAccessModifiersPostResponse = (adminAccessModifiersUsersAccessModifiersPostResponseSuccess)
@@ -124,14 +119,9 @@ export const createAdminAccessModifiersUsersAccessModifiersPost = <TError = unkn
  * Authorization Admin API
  * @summary List currently active access modifiers for a user
  */
-export type adminAccessModifiersUsersAccessModifiersGetResponse200 = {
-  data: void
-  status: 200
-}
+export type adminAccessModifiersUsersAccessModifiersGetResponse200 = void
 
-export type adminAccessModifiersUsersAccessModifiersGetResponseSuccess = (adminAccessModifiersUsersAccessModifiersGetResponse200) & {
-  headers: Headers;
-};
+export type adminAccessModifiersUsersAccessModifiersGetResponseSuccess = adminAccessModifiersUsersAccessModifiersGetResponse200
 ;
 
 export type adminAccessModifiersUsersAccessModifiersGetResponse = (adminAccessModifiersUsersAccessModifiersGetResponseSuccess)
@@ -290,14 +280,9 @@ export const prefetchAdminAccessModifiersUsersAccessModifiersGetQuery = async <T
  * Authorization Admin API
  * @summary Revoke an active access modifier
  */
-export type adminAccessModifiersUsersAccessModifiersDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminAccessModifiersUsersAccessModifiersDeleteResponse200 = void
 
-export type adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess = (adminAccessModifiersUsersAccessModifiersDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess = adminAccessModifiersUsersAccessModifiersDeleteResponse200
 ;
 
 export type adminAccessModifiersUsersAccessModifiersDeleteResponse = (adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess)

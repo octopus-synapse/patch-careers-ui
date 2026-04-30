@@ -1,6 +1,5 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
-import { createSuccessStoriesListPublic } from 'api-client';
+import { createSuccessStoriesList } from 'api-client';
 import { Quote } from 'lucide-svelte';
 import { browser } from '$app/environment';
 
@@ -15,8 +14,8 @@ type Story = {
   user: { name: string | null; username: string | null; photoURL: string | null };
 };
 
-const query = createSuccessStoriesListPublic(
-  () => ({ limit: 12 }),
+const query = createSuccessStoriesList(
+  () => ({ limit: '12' }),
   () => ({ query: { enabled: browser } }),
 );
 

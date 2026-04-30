@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Resume Quality Score
  * @summary Get the latest Resume Quality Score snapshot
  */
-export type resumeQualityResumesQualityResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeQualityResumesQualityResponse200 = void
 
-export type resumeQualityResumesQualityResponseSuccess = (resumeQualityResumesQualityResponse200) & {
-  headers: Headers;
-};
+export type resumeQualityResumesQualityResponseSuccess = resumeQualityResumesQualityResponse200
 ;
 
 export type resumeQualityResumesQualityResponse = (resumeQualityResumesQualityResponseSuccess)
@@ -202,14 +197,9 @@ export const prefetchResumeQualityResumesQualityQuery = async <TData = Awaited<R
  * Resume Quality Score
  * @summary Synchronously recompute Resume Quality Score
  */
-export type resumeQualityResumesQualityRecomputeResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeQualityResumesQualityRecomputeResponse200 = void
 
-export type resumeQualityResumesQualityRecomputeResponseSuccess = (resumeQualityResumesQualityRecomputeResponse200) & {
-  headers: Headers;
-};
+export type resumeQualityResumesQualityRecomputeResponseSuccess = resumeQualityResumesQualityRecomputeResponse200
 ;
 
 export type resumeQualityResumesQualityRecomputeResponse = (resumeQualityResumesQualityRecomputeResponseSuccess)

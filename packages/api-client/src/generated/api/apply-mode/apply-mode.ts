@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Weekly curated approval flow
  * @summary This week's curated batch for the viewer.
  */
-export type applyModeWeeklyCuratedCurrentResponse200 = {
-  data: void
-  status: 200
-}
+export type applyModeWeeklyCuratedCurrentResponse200 = void
 
-export type applyModeWeeklyCuratedCurrentResponseSuccess = (applyModeWeeklyCuratedCurrentResponse200) & {
-  headers: Headers;
-};
+export type applyModeWeeklyCuratedCurrentResponseSuccess = applyModeWeeklyCuratedCurrentResponse200
 ;
 
 export type applyModeWeeklyCuratedCurrentResponse = (applyModeWeeklyCuratedCurrentResponseSuccess)
@@ -202,14 +197,9 @@ export const prefetchApplyModeWeeklyCuratedCurrentQuery = async <TData = Awaited
  * Weekly curated approval flow
  * @summary Reject a curated item.
  */
-export type applyModeWeeklyCuratedRejectResponse200 = {
-  data: void
-  status: 200
-}
+export type applyModeWeeklyCuratedRejectResponse200 = void
 
-export type applyModeWeeklyCuratedRejectResponseSuccess = (applyModeWeeklyCuratedRejectResponse200) & {
-  headers: Headers;
-};
+export type applyModeWeeklyCuratedRejectResponseSuccess = applyModeWeeklyCuratedRejectResponse200
 ;
 
 export type applyModeWeeklyCuratedRejectResponse = (applyModeWeeklyCuratedRejectResponseSuccess)
@@ -284,14 +274,9 @@ export const createApplyModeWeeklyCuratedReject = <TError = unknown,
  * Weekly curated approval flow
  * @summary Approve a curated item — submits a JobApplication using the user's primary resume.
  */
-export type applyModeWeeklyCuratedApproveResponse200 = {
-  data: void
-  status: 200
-}
+export type applyModeWeeklyCuratedApproveResponse200 = void
 
-export type applyModeWeeklyCuratedApproveResponseSuccess = (applyModeWeeklyCuratedApproveResponse200) & {
-  headers: Headers;
-};
+export type applyModeWeeklyCuratedApproveResponseSuccess = applyModeWeeklyCuratedApproveResponse200
 ;
 
 export type applyModeWeeklyCuratedApproveResponse = (applyModeWeeklyCuratedApproveResponseSuccess)

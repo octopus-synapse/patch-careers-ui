@@ -30,14 +30,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Batch apply API
  * @summary Submit tailored applications to every open job that matches minFit. Bounded by maxApplications (default 20, cap 100).
  */
-export type automationRageApplyResponse200 = {
-  data: void
-  status: 200
-}
+export type automationRageApplyResponse200 = void
 
-export type automationRageApplyResponseSuccess = (automationRageApplyResponse200) & {
-  headers: Headers;
-};
+export type automationRageApplyResponseSuccess = automationRageApplyResponse200
 ;
 
 export type automationRageApplyResponse = (automationRageApplyResponseSuccess)

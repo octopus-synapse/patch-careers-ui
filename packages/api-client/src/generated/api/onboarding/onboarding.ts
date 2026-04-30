@@ -50,14 +50,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Onboarding API
  * @summary Get onboarding session with field definitions and navigation
  */
-export type onboardingSessionResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionResponse200 = void
 
-export type onboardingSessionResponseSuccess = (onboardingSessionResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionResponseSuccess = onboardingSessionResponse200
 ;
 
 export type onboardingSessionResponse = (onboardingSessionResponseSuccess)
@@ -223,14 +218,9 @@ export const prefetchOnboardingSessionQuery = async <TData = Awaited<ReturnType<
  * Onboarding API
  * @summary Save current step data and advance to next step
  */
-export type onboardingSessionNextResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionNextResponse200 = void
 
-export type onboardingSessionNextResponseSuccess = (onboardingSessionNextResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionNextResponseSuccess = onboardingSessionNextResponse200
 ;
 
 export type onboardingSessionNextResponse = (onboardingSessionNextResponseSuccess)
@@ -314,14 +304,9 @@ export const createOnboardingSessionNext = <TError = unknown,
  * Onboarding API
  * @summary Go back to previous step
  */
-export type onboardingSessionPreviousResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionPreviousResponse200 = void
 
-export type onboardingSessionPreviousResponseSuccess = (onboardingSessionPreviousResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionPreviousResponseSuccess = onboardingSessionPreviousResponse200
 ;
 
 export type onboardingSessionPreviousResponse = (onboardingSessionPreviousResponseSuccess)
@@ -403,14 +388,9 @@ export const createOnboardingSessionPrevious = <TError = unknown,
  * Onboarding API
  * @summary Jump to an accessible step
  */
-export type onboardingSessionGotoResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionGotoResponse200 = void
 
-export type onboardingSessionGotoResponseSuccess = (onboardingSessionGotoResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionGotoResponseSuccess = onboardingSessionGotoResponse200
 ;
 
 export type onboardingSessionGotoResponse = (onboardingSessionGotoResponseSuccess)
@@ -494,14 +474,9 @@ export const createOnboardingSessionGoto = <TError = unknown,
  * Onboarding API
  * @summary Save current step data without advancing
  */
-export type onboardingSessionSaveResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionSaveResponse200 = void
 
-export type onboardingSessionSaveResponseSuccess = (onboardingSessionSaveResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionSaveResponseSuccess = onboardingSessionSaveResponse200
 ;
 
 export type onboardingSessionSaveResponse = (onboardingSessionSaveResponseSuccess)
@@ -585,14 +560,9 @@ export const createOnboardingSessionSave = <TError = unknown,
  * Onboarding API
  * @summary Complete onboarding — backend builds payload from saved progress
  */
-export type onboardingSessionCompleteResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionCompleteResponse200 = void
 
-export type onboardingSessionCompleteResponseSuccess = (onboardingSessionCompleteResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionCompleteResponseSuccess = onboardingSessionCompleteResponse200
 ;
 
 export type onboardingSessionCompleteResponse = (onboardingSessionCompleteResponseSuccess)
@@ -667,14 +637,9 @@ export const createOnboardingSessionComplete = <TError = unknown,
  * Onboarding API
  * @summary Restart onboarding with existing profile data
  */
-export type onboardingSessionRestartResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingSessionRestartResponse200 = void
 
-export type onboardingSessionRestartResponseSuccess = (onboardingSessionRestartResponse200) & {
-  headers: Headers;
-};
+export type onboardingSessionRestartResponseSuccess = onboardingSessionRestartResponse200
 ;
 
 export type onboardingSessionRestartResponse = (onboardingSessionRestartResponseSuccess)
@@ -756,14 +721,9 @@ export const createOnboardingSessionRestart = <TError = unknown,
  * Onboarding API
  * @summary [Legacy] Get onboarding progress
  */
-export type onboardingProgressGetResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingProgressGetResponse200 = void
 
-export type onboardingProgressGetResponseSuccess = (onboardingProgressGetResponse200) & {
-  headers: Headers;
-};
+export type onboardingProgressGetResponseSuccess = onboardingProgressGetResponse200
 ;
 
 export type onboardingProgressGetResponse = (onboardingProgressGetResponseSuccess)
@@ -922,14 +882,9 @@ export const prefetchOnboardingProgressGetQuery = async <TData = Awaited<ReturnT
  * Onboarding API
  * @summary [Legacy] Save onboarding progress
  */
-export type onboardingProgressPutResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingProgressPutResponse200 = void
 
-export type onboardingProgressPutResponseSuccess = (onboardingProgressPutResponse200) & {
-  headers: Headers;
-};
+export type onboardingProgressPutResponseSuccess = onboardingProgressPutResponse200
 ;
 
 export type onboardingProgressPutResponse = (onboardingProgressPutResponseSuccess)
@@ -1005,14 +960,9 @@ export const createOnboardingProgressPut = <TError = unknown,
  * Onboarding API
  * @summary [Legacy] Get onboarding completion status
  */
-export type onboardingStatusResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingStatusResponse200 = void
 
-export type onboardingStatusResponseSuccess = (onboardingStatusResponse200) & {
-  headers: Headers;
-};
+export type onboardingStatusResponseSuccess = onboardingStatusResponse200
 ;
 
 export type onboardingStatusResponse = (onboardingStatusResponseSuccess)
@@ -1171,14 +1121,9 @@ export const prefetchOnboardingStatusQuery = async <TData = Awaited<ReturnType<t
  * Onboarding API
  * @summary [Legacy] Complete onboarding with explicit payload
  */
-export type onboardingCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type onboardingCreateResponse200 = void
 
-export type onboardingCreateResponseSuccess = (onboardingCreateResponse200) & {
-  headers: Headers;
-};
+export type onboardingCreateResponseSuccess = onboardingCreateResponse200
 ;
 
 export type onboardingCreateResponse = (onboardingCreateResponseSuccess)

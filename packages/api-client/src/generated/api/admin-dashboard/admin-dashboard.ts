@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Dashboard API
  * @summary Get platform metrics for admin dashboard
  */
-export type adminDashboardMetricsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminDashboardMetricsResponse200 = void
 
-export type adminDashboardMetricsResponseSuccess = (adminDashboardMetricsResponse200) & {
-  headers: Headers;
-};
+export type adminDashboardMetricsResponseSuccess = adminDashboardMetricsResponse200
 ;
 
 export type adminDashboardMetricsResponse = (adminDashboardMetricsResponseSuccess)

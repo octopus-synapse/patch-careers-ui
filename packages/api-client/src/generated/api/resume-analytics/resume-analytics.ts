@@ -45,14 +45,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Resume Analytics API
  * @summary Track resume view (public endpoint)
  */
-export type resumeAnalyticsResumesAnalyticsTrackViewResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsTrackViewResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsTrackViewResponseSuccess = (resumeAnalyticsResumesAnalyticsTrackViewResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsTrackViewResponseSuccess = resumeAnalyticsResumesAnalyticsTrackViewResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsTrackViewResponse = (resumeAnalyticsResumesAnalyticsTrackViewResponseSuccess)
@@ -129,14 +124,9 @@ export const createResumeAnalyticsResumesAnalyticsTrackView = <TError = unknown,
  * Resume Analytics API
  * @summary Get view statistics
  */
-export type resumeAnalyticsResumesAnalyticsViewsResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsViewsResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsViewsResponseSuccess = (resumeAnalyticsResumesAnalyticsViewsResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsViewsResponseSuccess = resumeAnalyticsResumesAnalyticsViewsResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsViewsResponse = (resumeAnalyticsResumesAnalyticsViewsResponseSuccess)
@@ -314,14 +304,9 @@ export const prefetchResumeAnalyticsResumesAnalyticsViewsQuery = async <TData = 
  * Resume Analytics API
  * @summary Calculate ATS compatibility score
  */
-export type resumeAnalyticsResumesAnalyticsAtsScoreResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsAtsScoreResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsAtsScoreResponseSuccess = (resumeAnalyticsResumesAnalyticsAtsScoreResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsAtsScoreResponseSuccess = resumeAnalyticsResumesAnalyticsAtsScoreResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsAtsScoreResponse = (resumeAnalyticsResumesAnalyticsAtsScoreResponseSuccess)
@@ -480,14 +465,9 @@ export const prefetchResumeAnalyticsResumesAnalyticsAtsScoreQuery = async <TData
  * Resume Analytics API
  * @summary Get keyword optimization suggestions
  */
-export type resumeAnalyticsResumesAnalyticsKeywordsResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsKeywordsResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsKeywordsResponseSuccess = (resumeAnalyticsResumesAnalyticsKeywordsResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsKeywordsResponseSuccess = resumeAnalyticsResumesAnalyticsKeywordsResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsKeywordsResponse = (resumeAnalyticsResumesAnalyticsKeywordsResponseSuccess)
@@ -665,14 +645,9 @@ export const prefetchResumeAnalyticsResumesAnalyticsKeywordsQuery = async <TData
  * Resume Analytics API
  * @summary Match resume against job description
  */
-export type resumeAnalyticsResumesAnalyticsMatchJobResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsMatchJobResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsMatchJobResponseSuccess = (resumeAnalyticsResumesAnalyticsMatchJobResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsMatchJobResponseSuccess = resumeAnalyticsResumesAnalyticsMatchJobResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsMatchJobResponse = (resumeAnalyticsResumesAnalyticsMatchJobResponseSuccess)
@@ -749,14 +724,9 @@ export const createResumeAnalyticsResumesAnalyticsMatchJob = <TError = unknown,
  * Resume Analytics API
  * @summary Get industry benchmark comparison
  */
-export type resumeAnalyticsResumesAnalyticsBenchmarkResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsBenchmarkResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsBenchmarkResponseSuccess = (resumeAnalyticsResumesAnalyticsBenchmarkResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsBenchmarkResponseSuccess = resumeAnalyticsResumesAnalyticsBenchmarkResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsBenchmarkResponse = (resumeAnalyticsResumesAnalyticsBenchmarkResponseSuccess)
@@ -934,14 +904,9 @@ export const prefetchResumeAnalyticsResumesAnalyticsBenchmarkQuery = async <TDat
  * Resume Analytics API
  * @summary Get complete analytics dashboard
  */
-export type resumeAnalyticsResumesAnalyticsDashboardResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsDashboardResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsDashboardResponseSuccess = (resumeAnalyticsResumesAnalyticsDashboardResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsDashboardResponseSuccess = resumeAnalyticsResumesAnalyticsDashboardResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsDashboardResponse = (resumeAnalyticsResumesAnalyticsDashboardResponseSuccess)
@@ -1100,14 +1065,9 @@ export const prefetchResumeAnalyticsResumesAnalyticsDashboardQuery = async <TDat
  * Resume Analytics API
  * @summary Save analytics snapshot for tracking progress
  */
-export type resumeAnalyticsResumesAnalyticsSnapshotResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsSnapshotResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsSnapshotResponseSuccess = (resumeAnalyticsResumesAnalyticsSnapshotResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsSnapshotResponseSuccess = resumeAnalyticsResumesAnalyticsSnapshotResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsSnapshotResponse = (resumeAnalyticsResumesAnalyticsSnapshotResponseSuccess)
@@ -1182,14 +1142,9 @@ export const createResumeAnalyticsResumesAnalyticsSnapshot = <TError = unknown,
  * Resume Analytics API
  * @summary Get analytics history
  */
-export type resumeAnalyticsResumesAnalyticsHistoryResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsHistoryResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsHistoryResponseSuccess = (resumeAnalyticsResumesAnalyticsHistoryResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsHistoryResponseSuccess = resumeAnalyticsResumesAnalyticsHistoryResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsHistoryResponse = (resumeAnalyticsResumesAnalyticsHistoryResponseSuccess)
@@ -1367,14 +1322,9 @@ export const prefetchResumeAnalyticsResumesAnalyticsHistoryQuery = async <TData 
  * Resume Analytics API
  * @summary Get score progression over time
  */
-export type resumeAnalyticsResumesAnalyticsProgressionResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeAnalyticsResumesAnalyticsProgressionResponse200 = void
 
-export type resumeAnalyticsResumesAnalyticsProgressionResponseSuccess = (resumeAnalyticsResumesAnalyticsProgressionResponse200) & {
-  headers: Headers;
-};
+export type resumeAnalyticsResumesAnalyticsProgressionResponseSuccess = resumeAnalyticsResumesAnalyticsProgressionResponse200
 ;
 
 export type resumeAnalyticsResumesAnalyticsProgressionResponse = (resumeAnalyticsResumesAnalyticsProgressionResponseSuccess)

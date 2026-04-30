@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Skill endorsements API
  * @summary List a user’s skills with endorsement counts
  */
-export type skillEndorsementsUsersSkillsResponse200 = {
-  data: void
-  status: 200
-}
+export type skillEndorsementsUsersSkillsResponse200 = void
 
-export type skillEndorsementsUsersSkillsResponseSuccess = (skillEndorsementsUsersSkillsResponse200) & {
-  headers: Headers;
-};
+export type skillEndorsementsUsersSkillsResponseSuccess = skillEndorsementsUsersSkillsResponse200
 ;
 
 export type skillEndorsementsUsersSkillsResponse = (skillEndorsementsUsersSkillsResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchSkillEndorsementsUsersSkillsQuery = async <TData = Awaited<
  * Skill endorsements API
  * @summary Endorse a user for a skill
  */
-export type skillEndorsementsUsersSkillsEndorsePostResponse200 = {
-  data: void
-  status: 200
-}
+export type skillEndorsementsUsersSkillsEndorsePostResponse200 = void
 
-export type skillEndorsementsUsersSkillsEndorsePostResponseSuccess = (skillEndorsementsUsersSkillsEndorsePostResponse200) & {
-  headers: Headers;
-};
+export type skillEndorsementsUsersSkillsEndorsePostResponseSuccess = skillEndorsementsUsersSkillsEndorsePostResponse200
 ;
 
 export type skillEndorsementsUsersSkillsEndorsePostResponse = (skillEndorsementsUsersSkillsEndorsePostResponseSuccess)
@@ -290,14 +280,9 @@ export const createSkillEndorsementsUsersSkillsEndorsePost = <TError = unknown,
  * Skill endorsements API
  * @summary Withdraw a previously given endorsement
  */
-export type skillEndorsementsUsersSkillsEndorseDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse200 = void
 
-export type skillEndorsementsUsersSkillsEndorseDeleteResponseSuccess = (skillEndorsementsUsersSkillsEndorseDeleteResponse200) & {
-  headers: Headers;
-};
+export type skillEndorsementsUsersSkillsEndorseDeleteResponseSuccess = skillEndorsementsUsersSkillsEndorseDeleteResponse200
 ;
 
 export type skillEndorsementsUsersSkillsEndorseDeleteResponse = (skillEndorsementsUsersSkillsEndorseDeleteResponseSuccess)
@@ -374,14 +359,9 @@ export const createSkillEndorsementsUsersSkillsEndorseDelete = <TError = unknown
  * Skill endorsements API
  * @summary List endorsers for a specific skill
  */
-export type skillEndorsementsUsersSkillsEndorsersResponse200 = {
-  data: void
-  status: 200
-}
+export type skillEndorsementsUsersSkillsEndorsersResponse200 = void
 
-export type skillEndorsementsUsersSkillsEndorsersResponseSuccess = (skillEndorsementsUsersSkillsEndorsersResponse200) & {
-  headers: Headers;
-};
+export type skillEndorsementsUsersSkillsEndorsersResponseSuccess = skillEndorsementsUsersSkillsEndorsersResponse200
 ;
 
 export type skillEndorsementsUsersSkillsEndorsersResponse = (skillEndorsementsUsersSkillsEndorsersResponseSuccess)

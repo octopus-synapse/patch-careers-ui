@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Tech Niches API
  * @summary List all tech niches
  */
-export type adminTechNichesListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesListResponse200 = void
 
-export type adminTechNichesListResponseSuccess = (adminTechNichesListResponse200) & {
-  headers: Headers;
-};
+export type adminTechNichesListResponseSuccess = adminTechNichesListResponse200
 ;
 
 export type adminTechNichesListResponse = (adminTechNichesListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchAdminTechNichesListQuery = async <TData = Awaited<ReturnTyp
  * Admin Tech Niches API
  * @summary Create tech niche
  */
-export type adminTechNichesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesCreateResponse200 = void
 
-export type adminTechNichesCreateResponseSuccess = (adminTechNichesCreateResponse200) & {
-  headers: Headers;
-};
+export type adminTechNichesCreateResponseSuccess = adminTechNichesCreateResponse200
 ;
 
 export type adminTechNichesCreateResponse = (adminTechNichesCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createAdminTechNichesCreate = <TError = unknown,
  * Admin Tech Niches API
  * @summary Get tech niche by ID
  */
-export type adminTechNichesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesGetByIdResponse200 = void
 
-export type adminTechNichesGetByIdResponseSuccess = (adminTechNichesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminTechNichesGetByIdResponseSuccess = adminTechNichesGetByIdResponse200
 ;
 
 export type adminTechNichesGetByIdResponse = (adminTechNichesGetByIdResponseSuccess)
@@ -464,14 +449,9 @@ export const prefetchAdminTechNichesGetByIdQuery = async <TData = Awaited<Return
  * Admin Tech Niches API
  * @summary Update tech niche
  */
-export type adminTechNichesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesUpdateResponse200 = void
 
-export type adminTechNichesUpdateResponseSuccess = (adminTechNichesUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminTechNichesUpdateResponseSuccess = adminTechNichesUpdateResponse200
 ;
 
 export type adminTechNichesUpdateResponse = (adminTechNichesUpdateResponseSuccess)
@@ -548,14 +528,9 @@ export const createAdminTechNichesUpdate = <TError = unknown,
  * Admin Tech Niches API
  * @summary Delete tech niche
  */
-export type adminTechNichesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechNichesDeleteResponse200 = void
 
-export type adminTechNichesDeleteResponseSuccess = (adminTechNichesDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminTechNichesDeleteResponseSuccess = adminTechNichesDeleteResponse200
 ;
 
 export type adminTechNichesDeleteResponse = (adminTechNichesDeleteResponseSuccess)

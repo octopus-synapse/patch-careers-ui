@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Platform API
  * @summary Get platform statistics
  */
-export type platformStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type platformStatsResponse200 = void
 
-export type platformStatsResponseSuccess = (platformStatsResponse200) & {
-  headers: Headers;
-};
+export type platformStatsResponseSuccess = platformStatsResponse200
 ;
 
 export type platformStatsResponse = (platformStatsResponseSuccess)

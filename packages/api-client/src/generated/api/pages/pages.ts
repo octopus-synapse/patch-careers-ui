@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{widgets:[{id,type,title,size,data,actions?,cta?}]}`. Adding/removing widgets is a backend-only change. Today the server emits widgets for greeting, counters, recent notifications and follow-ups; the frontend simply iterates `widgets[]` and dispatches on `type`.
  * @summary Composite dashboard widgets (server-driven)
  */
-export type pagesMeDashboardResponse200 = {
-  data: void
-  status: 200
-}
+export type pagesMeDashboardResponse200 = void
 
-export type pagesMeDashboardResponseSuccess = (pagesMeDashboardResponse200) & {
-  headers: Headers;
-};
+export type pagesMeDashboardResponseSuccess = pagesMeDashboardResponse200
 ;
 
 export type pagesMeDashboardResponse = (pagesMeDashboardResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchPagesMeDashboardQuery = async <TData = Awaited<ReturnType<t
  * Returns `{section, fields:[...], actions:[...], info:[...]}`. The frontend renders settings pages from this payload — adding a setting field or action is a backend-only change.
  * @summary Server-driven settings section (fields + actions + info)
  */
-export type pagesSettingsResponse200 = {
-  data: void
-  status: 200
-}
+export type pagesSettingsResponse200 = void
 
-export type pagesSettingsResponseSuccess = (pagesSettingsResponse200) & {
-  headers: Headers;
-};
+export type pagesSettingsResponseSuccess = pagesSettingsResponse200
 ;
 
 export type pagesSettingsResponse = (pagesSettingsResponseSuccess)

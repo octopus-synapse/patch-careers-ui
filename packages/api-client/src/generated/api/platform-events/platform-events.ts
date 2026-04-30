@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{events:[{name,version,propsSchema,requiredContext?,piiFields?}]}`. The frontend uses this to know which event names + prop shapes are valid before emitting.
  * @summary Catalog of allowed analytics events
  */
-export type platformEventsEventsSchemasResponse200 = {
-  data: void
-  status: 200
-}
+export type platformEventsEventsSchemasResponse200 = void
 
-export type platformEventsEventsSchemasResponseSuccess = (platformEventsEventsSchemasResponse200) & {
-  headers: Headers;
-};
+export type platformEventsEventsSchemasResponseSuccess = platformEventsEventsSchemasResponse200
 ;
 
 export type platformEventsEventsSchemasResponse = (platformEventsEventsSchemasResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchPlatformEventsEventsSchemasQuery = async <TData = Awaited<R
  * Accepts up to 100 events per request. Events are stored as-is; props is free-form JSON. The expected event names + shapes are listed by `/v1/events/schemas`.
  * @summary Ingest a batch of product events
  */
-export type platformEventsEventsResponse200 = {
-  data: void
-  status: 200
-}
+export type platformEventsEventsResponse200 = void
 
-export type platformEventsEventsResponseSuccess = (platformEventsEventsResponse200) & {
-  headers: Headers;
-};
+export type platformEventsEventsResponseSuccess = platformEventsEventsResponse200
 ;
 
 export type platformEventsEventsResponse = (platformEventsEventsResponseSuccess)

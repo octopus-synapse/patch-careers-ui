@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Chat API
  * @summary Get chat statistics
  */
-export type adminChatStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminChatStatsResponse200 = void
 
-export type adminChatStatsResponseSuccess = (adminChatStatsResponse200) & {
-  headers: Headers;
-};
+export type adminChatStatsResponseSuccess = adminChatStatsResponse200
 ;
 
 export type adminChatStatsResponse = (adminChatStatsResponseSuccess)
@@ -202,14 +197,9 @@ export const prefetchAdminChatStatsQuery = async <TData = Awaited<ReturnType<typ
  * Admin Chat API
  * @summary List all conversations
  */
-export type adminChatConversationsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminChatConversationsResponse200 = void
 
-export type adminChatConversationsResponseSuccess = (adminChatConversationsResponse200) & {
-  headers: Headers;
-};
+export type adminChatConversationsResponseSuccess = adminChatConversationsResponse200
 ;
 
 export type adminChatConversationsResponse = (adminChatConversationsResponseSuccess)

@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Exports all user data in machine-readable JSON format.
  * @summary Export user data (GDPR Article 20)
  */
-export type gdprMeGdprExportResponse200 = {
-  data: void
-  status: 200
-}
+export type gdprMeGdprExportResponse200 = void
 
-export type gdprMeGdprExportResponseSuccess = (gdprMeGdprExportResponse200) & {
-  headers: Headers;
-};
+export type gdprMeGdprExportResponseSuccess = gdprMeGdprExportResponse200
 ;
 
 export type gdprMeGdprExportResponse = (gdprMeGdprExportResponseSuccess)

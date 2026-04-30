@@ -37,14 +37,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * User-scoped feed engagement
  * @summary List comments authored by a user
  */
-export type userEngagementUsersCommentsResponse200 = {
-  data: void
-  status: 200
-}
+export type userEngagementUsersCommentsResponse200 = void
 
-export type userEngagementUsersCommentsResponseSuccess = (userEngagementUsersCommentsResponse200) & {
-  headers: Headers;
-};
+export type userEngagementUsersCommentsResponseSuccess = userEngagementUsersCommentsResponse200
 ;
 
 export type userEngagementUsersCommentsResponse = (userEngagementUsersCommentsResponseSuccess)
@@ -222,14 +217,9 @@ export const prefetchUserEngagementUsersCommentsQuery = async <TData = Awaited<R
  * User-scoped feed engagement
  * @summary List reactions given by a user
  */
-export type userEngagementUsersReactionsResponse200 = {
-  data: void
-  status: 200
-}
+export type userEngagementUsersReactionsResponse200 = void
 
-export type userEngagementUsersReactionsResponseSuccess = (userEngagementUsersReactionsResponse200) & {
-  headers: Headers;
-};
+export type userEngagementUsersReactionsResponseSuccess = userEngagementUsersReactionsResponse200
 ;
 
 export type userEngagementUsersReactionsResponse = (userEngagementUsersReactionsResponseSuccess)

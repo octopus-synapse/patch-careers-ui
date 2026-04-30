@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get network summary for authenticated user
  */
-export type socialConnectionsUsersMeNetworkSummaryResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersMeNetworkSummaryResponse200 = void
 
-export type socialConnectionsUsersMeNetworkSummaryResponseSuccess = (socialConnectionsUsersMeNetworkSummaryResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersMeNetworkSummaryResponseSuccess = socialConnectionsUsersMeNetworkSummaryResponse200
 ;
 
 export type socialConnectionsUsersMeNetworkSummaryResponse = (socialConnectionsUsersMeNetworkSummaryResponseSuccess)
@@ -207,14 +202,9 @@ export const prefetchSocialConnectionsUsersMeNetworkSummaryQuery = async <TData 
 /**
  * @summary Send a connection request
  */
-export type socialConnectionsUsersConnectResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersConnectResponse200 = void
 
-export type socialConnectionsUsersConnectResponseSuccess = (socialConnectionsUsersConnectResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersConnectResponseSuccess = socialConnectionsUsersConnectResponse200
 ;
 
 export type socialConnectionsUsersConnectResponse = (socialConnectionsUsersConnectResponseSuccess)
@@ -288,14 +278,9 @@ export const createSocialConnectionsUsersConnect = <TError = unknown,
     /**
  * @summary Accept a connection request
  */
-export type socialConnectionsConnectionsAcceptResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsConnectionsAcceptResponse200 = void
 
-export type socialConnectionsConnectionsAcceptResponseSuccess = (socialConnectionsConnectionsAcceptResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsConnectionsAcceptResponseSuccess = socialConnectionsConnectionsAcceptResponse200
 ;
 
 export type socialConnectionsConnectionsAcceptResponse = (socialConnectionsConnectionsAcceptResponseSuccess)
@@ -369,14 +354,9 @@ export const createSocialConnectionsConnectionsAccept = <TError = unknown,
     /**
  * @summary Reject a connection request
  */
-export type socialConnectionsConnectionsRejectResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsConnectionsRejectResponse200 = void
 
-export type socialConnectionsConnectionsRejectResponseSuccess = (socialConnectionsConnectionsRejectResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsConnectionsRejectResponseSuccess = socialConnectionsConnectionsRejectResponse200
 ;
 
 export type socialConnectionsConnectionsRejectResponse = (socialConnectionsConnectionsRejectResponseSuccess)
@@ -450,14 +430,9 @@ export const createSocialConnectionsConnectionsReject = <TError = unknown,
     /**
  * @summary Withdraw a sent (pending) connection request
  */
-export type socialConnectionsConnectionsWithdrawResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsConnectionsWithdrawResponse200 = void
 
-export type socialConnectionsConnectionsWithdrawResponseSuccess = (socialConnectionsConnectionsWithdrawResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsConnectionsWithdrawResponseSuccess = socialConnectionsConnectionsWithdrawResponse200
 ;
 
 export type socialConnectionsConnectionsWithdrawResponse = (socialConnectionsConnectionsWithdrawResponseSuccess)
@@ -531,14 +506,9 @@ export const createSocialConnectionsConnectionsWithdraw = <TError = unknown,
     /**
  * @summary Remove a connection
  */
-export type socialConnectionsConnectionsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsConnectionsResponse200 = void
 
-export type socialConnectionsConnectionsResponseSuccess = (socialConnectionsConnectionsResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsConnectionsResponseSuccess = socialConnectionsConnectionsResponse200
 ;
 
 export type socialConnectionsConnectionsResponse = (socialConnectionsConnectionsResponseSuccess)
@@ -612,14 +582,9 @@ export const createSocialConnectionsConnections = <TError = unknown,
     /**
  * @summary Get accepted connections
  */
-export type socialConnectionsUsersMeConnectionsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersMeConnectionsResponse200 = void
 
-export type socialConnectionsUsersMeConnectionsResponseSuccess = (socialConnectionsUsersMeConnectionsResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersMeConnectionsResponseSuccess = socialConnectionsUsersMeConnectionsResponse200
 ;
 
 export type socialConnectionsUsersMeConnectionsResponse = (socialConnectionsUsersMeConnectionsResponseSuccess)
@@ -784,14 +749,9 @@ export const prefetchSocialConnectionsUsersMeConnectionsQuery = async <TData = A
 /**
  * @summary Get pending connection requests
  */
-export type socialConnectionsUsersMeConnectionsPendingResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersMeConnectionsPendingResponse200 = void
 
-export type socialConnectionsUsersMeConnectionsPendingResponseSuccess = (socialConnectionsUsersMeConnectionsPendingResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersMeConnectionsPendingResponseSuccess = socialConnectionsUsersMeConnectionsPendingResponse200
 ;
 
 export type socialConnectionsUsersMeConnectionsPendingResponse = (socialConnectionsUsersMeConnectionsPendingResponseSuccess)
@@ -956,14 +916,9 @@ export const prefetchSocialConnectionsUsersMeConnectionsPendingQuery = async <TD
 /**
  * @summary Get sent (pending) connection requests
  */
-export type socialConnectionsUsersMeConnectionsSentResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersMeConnectionsSentResponse200 = void
 
-export type socialConnectionsUsersMeConnectionsSentResponseSuccess = (socialConnectionsUsersMeConnectionsSentResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersMeConnectionsSentResponseSuccess = socialConnectionsUsersMeConnectionsSentResponse200
 ;
 
 export type socialConnectionsUsersMeConnectionsSentResponse = (socialConnectionsUsersMeConnectionsSentResponseSuccess)
@@ -1128,14 +1083,9 @@ export const prefetchSocialConnectionsUsersMeConnectionsSentQuery = async <TData
 /**
  * @summary Get connection suggestions
  */
-export type socialConnectionsUsersMeConnectionsSuggestionsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersMeConnectionsSuggestionsResponse200 = void
 
-export type socialConnectionsUsersMeConnectionsSuggestionsResponseSuccess = (socialConnectionsUsersMeConnectionsSuggestionsResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersMeConnectionsSuggestionsResponseSuccess = socialConnectionsUsersMeConnectionsSuggestionsResponse200
 ;
 
 export type socialConnectionsUsersMeConnectionsSuggestionsResponse = (socialConnectionsUsersMeConnectionsSuggestionsResponseSuccess)
@@ -1300,14 +1250,9 @@ export const prefetchSocialConnectionsUsersMeConnectionsSuggestionsQuery = async
 /**
  * @summary Get connection stats for a user
  */
-export type socialConnectionsUsersConnectionStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersConnectionStatsResponse200 = void
 
-export type socialConnectionsUsersConnectionStatsResponseSuccess = (socialConnectionsUsersConnectionStatsResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersConnectionStatsResponseSuccess = socialConnectionsUsersConnectionStatsResponse200
 ;
 
 export type socialConnectionsUsersConnectionStatsResponse = (socialConnectionsUsersConnectionStatsResponseSuccess)
@@ -1465,14 +1410,9 @@ export const prefetchSocialConnectionsUsersConnectionStatsQuery = async <TData =
 /**
  * @summary Check connection status
  */
-export type socialConnectionsUsersIsConnectedResponse200 = {
-  data: void
-  status: 200
-}
+export type socialConnectionsUsersIsConnectedResponse200 = void
 
-export type socialConnectionsUsersIsConnectedResponseSuccess = (socialConnectionsUsersIsConnectedResponse200) & {
-  headers: Headers;
-};
+export type socialConnectionsUsersIsConnectedResponseSuccess = socialConnectionsUsersIsConnectedResponse200
 ;
 
 export type socialConnectionsUsersIsConnectedResponse = (socialConnectionsUsersIsConnectedResponseSuccess)

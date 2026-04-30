@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Share Management API
  * @summary Create share link for a resume
  */
-export type sharesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesCreateResponse200 = void
 
-export type sharesCreateResponseSuccess = (sharesCreateResponse200) & {
-  headers: Headers;
-};
+export type sharesCreateResponseSuccess = sharesCreateResponse200
 ;
 
 export type sharesCreateResponse = (sharesCreateResponseSuccess)
@@ -125,14 +120,9 @@ export const createSharesCreate = <TError = unknown,
  * Share Management API
  * @summary List share links for a resume
  */
-export type sharesResumeResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesResumeResponse200 = void
 
-export type sharesResumeResponseSuccess = (sharesResumeResponse200) & {
-  headers: Headers;
-};
+export type sharesResumeResponseSuccess = sharesResumeResponse200
 ;
 
 export type sharesResumeResponse = (sharesResumeResponseSuccess)
@@ -291,14 +281,9 @@ export const prefetchSharesResumeQuery = async <TData = Awaited<ReturnType<typeo
  * Share Management API
  * @summary Delete a share link
  */
-export type sharesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesDeleteResponse200 = void
 
-export type sharesDeleteResponseSuccess = (sharesDeleteResponse200) & {
-  headers: Headers;
-};
+export type sharesDeleteResponseSuccess = sharesDeleteResponse200
 ;
 
 export type sharesDeleteResponse = (sharesDeleteResponseSuccess)
@@ -373,14 +358,9 @@ export const createSharesDelete = <TError = unknown,
  * Share Management API
  * @summary Add a slug alias to a share
  */
-export type sharesAliasesPostResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesAliasesPostResponse200 = void
 
-export type sharesAliasesPostResponseSuccess = (sharesAliasesPostResponse200) & {
-  headers: Headers;
-};
+export type sharesAliasesPostResponseSuccess = sharesAliasesPostResponse200
 ;
 
 export type sharesAliasesPostResponse = (sharesAliasesPostResponseSuccess)
@@ -457,14 +437,9 @@ export const createSharesAliasesPost = <TError = unknown,
  * Share Management API
  * @summary List slug aliases for a share
  */
-export type sharesAliasesGetResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesAliasesGetResponse200 = void
 
-export type sharesAliasesGetResponseSuccess = (sharesAliasesGetResponse200) & {
-  headers: Headers;
-};
+export type sharesAliasesGetResponseSuccess = sharesAliasesGetResponse200
 ;
 
 export type sharesAliasesGetResponse = (sharesAliasesGetResponseSuccess)
@@ -623,14 +598,9 @@ export const prefetchSharesAliasesGetQuery = async <TData = Awaited<ReturnType<t
  * Share Management API
  * @summary Remove a slug alias
  */
-export type sharesAliasesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesAliasesDeleteResponse200 = void
 
-export type sharesAliasesDeleteResponseSuccess = (sharesAliasesDeleteResponse200) & {
-  headers: Headers;
-};
+export type sharesAliasesDeleteResponseSuccess = sharesAliasesDeleteResponse200
 ;
 
 export type sharesAliasesDeleteResponse = (sharesAliasesDeleteResponseSuccess)
@@ -705,14 +675,9 @@ export const createSharesAliasesDelete = <TError = unknown,
  * Share Management API
  * @summary Render a QR code PNG pointing to the share public URL
  */
-export type sharesQrPngResponse200 = {
-  data: void
-  status: 200
-}
+export type sharesQrPngResponse200 = void
 
-export type sharesQrPngResponseSuccess = (sharesQrPngResponse200) & {
-  headers: Headers;
-};
+export type sharesQrPngResponseSuccess = sharesQrPngResponse200
 ;
 
 export type sharesQrPngResponse = (sharesQrPngResponseSuccess)

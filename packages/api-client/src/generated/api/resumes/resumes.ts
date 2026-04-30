@@ -45,14 +45,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Generic Resume Sections API
  * @summary List active dynamic section types with resolved translations
  */
-export type resumesSectionsTypesResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesSectionsTypesResponse200 = void
 
-export type resumesSectionsTypesResponseSuccess = (resumesSectionsTypesResponse200) & {
-  headers: Headers;
-};
+export type resumesSectionsTypesResponseSuccess = resumesSectionsTypesResponse200
 ;
 
 export type resumesSectionsTypesResponse = (resumesSectionsTypesResponseSuccess)
@@ -230,14 +225,9 @@ export const prefetchResumesSectionsTypesQuery = async <TData = Awaited<ReturnTy
  * Generic Resume Sections API
  * @summary List sections and items for a resume
  */
-export type resumesSectionsResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesSectionsResponse200 = void
 
-export type resumesSectionsResponseSuccess = (resumesSectionsResponse200) & {
-  headers: Headers;
-};
+export type resumesSectionsResponseSuccess = resumesSectionsResponse200
 ;
 
 export type resumesSectionsResponse = (resumesSectionsResponseSuccess)
@@ -396,14 +386,9 @@ export const prefetchResumesSectionsQuery = async <TData = Awaited<ReturnType<ty
  * Generic Resume Sections API
  * @summary Create section item in a dynamic section type
  */
-export type resumesSectionsItemsPostResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesSectionsItemsPostResponse200 = void
 
-export type resumesSectionsItemsPostResponseSuccess = (resumesSectionsItemsPostResponse200) & {
-  headers: Headers;
-};
+export type resumesSectionsItemsPostResponseSuccess = resumesSectionsItemsPostResponse200
 ;
 
 export type resumesSectionsItemsPostResponse = (resumesSectionsItemsPostResponseSuccess)
@@ -482,14 +467,9 @@ export const createResumesSectionsItemsPost = <TError = unknown,
  * Generic Resume Sections API
  * @summary Update section item in a dynamic section type
  */
-export type resumesSectionsItemsPatchResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesSectionsItemsPatchResponse200 = void
 
-export type resumesSectionsItemsPatchResponseSuccess = (resumesSectionsItemsPatchResponse200) & {
-  headers: Headers;
-};
+export type resumesSectionsItemsPatchResponseSuccess = resumesSectionsItemsPatchResponse200
 ;
 
 export type resumesSectionsItemsPatchResponse = (resumesSectionsItemsPatchResponseSuccess)
@@ -570,14 +550,9 @@ export const createResumesSectionsItemsPatch = <TError = unknown,
  * Generic Resume Sections API
  * @summary Delete section item from a dynamic section type
  */
-export type resumesSectionsItemsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesSectionsItemsDeleteResponse200 = void
 
-export type resumesSectionsItemsDeleteResponseSuccess = (resumesSectionsItemsDeleteResponse200) & {
-  headers: Headers;
-};
+export type resumesSectionsItemsDeleteResponseSuccess = resumesSectionsItemsDeleteResponse200
 ;
 
 export type resumesSectionsItemsDeleteResponse = (resumesSectionsItemsDeleteResponseSuccess)
@@ -656,14 +631,9 @@ export const createResumesSectionsItemsDelete = <TError = unknown,
  * Resumes API
  * @summary List all resumes for a specific user
  */
-export type resumesManageUserResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesManageUserResponse200 = void
 
-export type resumesManageUserResponseSuccess = (resumesManageUserResponse200) & {
-  headers: Headers;
-};
+export type resumesManageUserResponseSuccess = resumesManageUserResponse200
 ;
 
 export type resumesManageUserResponse = (resumesManageUserResponseSuccess)
@@ -822,14 +792,9 @@ export const prefetchResumesManageUserQuery = async <TData = Awaited<ReturnType<
  * Resumes API
  * @summary Get full resume details
  */
-export type resumesManageGetResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesManageGetResponse200 = void
 
-export type resumesManageGetResponseSuccess = (resumesManageGetResponse200) & {
-  headers: Headers;
-};
+export type resumesManageGetResponseSuccess = resumesManageGetResponse200
 ;
 
 export type resumesManageGetResponse = (resumesManageGetResponseSuccess)
@@ -988,14 +953,9 @@ export const prefetchResumesManageGetQuery = async <TData = Awaited<ReturnType<t
  * Resumes API
  * @summary Delete a resume
  */
-export type resumesManageDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesManageDeleteResponse200 = void
 
-export type resumesManageDeleteResponseSuccess = (resumesManageDeleteResponse200) & {
-  headers: Headers;
-};
+export type resumesManageDeleteResponseSuccess = resumesManageDeleteResponse200
 ;
 
 export type resumesManageDeleteResponse = (resumesManageDeleteResponseSuccess)
@@ -1070,14 +1030,9 @@ export const createResumesManageDelete = <TError = unknown,
  * Resume CRUD operations
  * @summary Get all resumes for current user
  */
-export type resumesListResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesListResponse200 = void
 
-export type resumesListResponseSuccess = (resumesListResponse200) & {
-  headers: Headers;
-};
+export type resumesListResponseSuccess = resumesListResponse200
 ;
 
 export type resumesListResponse = (resumesListResponseSuccess)
@@ -1243,14 +1198,9 @@ export const prefetchResumesListQuery = async <TData = Awaited<ReturnType<typeof
  * Resume CRUD operations
  * @summary Create a new resume
  */
-export type resumesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesCreateResponse200 = void
 
-export type resumesCreateResponseSuccess = (resumesCreateResponse200) & {
-  headers: Headers;
-};
+export type resumesCreateResponseSuccess = resumesCreateResponse200
 ;
 
 export type resumesCreateResponse = (resumesCreateResponseSuccess)
@@ -1326,14 +1276,9 @@ export const createResumesCreate = <TError = unknown,
  * Resume CRUD operations
  * @summary Get remaining resume slots for current user
  */
-export type resumesSlotsResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesSlotsResponse200 = void
 
-export type resumesSlotsResponseSuccess = (resumesSlotsResponse200) & {
-  headers: Headers;
-};
+export type resumesSlotsResponseSuccess = resumesSlotsResponse200
 ;
 
 export type resumesSlotsResponse = (resumesSlotsResponseSuccess)
@@ -1492,14 +1437,9 @@ export const prefetchResumesSlotsQuery = async <TData = Awaited<ReturnType<typeo
  * Resume CRUD operations
  * @summary Get a resume with all sections
  */
-export type resumesFullResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesFullResponse200 = void
 
-export type resumesFullResponseSuccess = (resumesFullResponse200) & {
-  headers: Headers;
-};
+export type resumesFullResponseSuccess = resumesFullResponse200
 ;
 
 export type resumesFullResponse = (resumesFullResponseSuccess)
@@ -1658,14 +1598,9 @@ export const prefetchResumesFullQuery = async <TData = Awaited<ReturnType<typeof
  * Resume CRUD operations
  * @summary Get a specific resume
  */
-export type resumesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesGetByIdResponse200 = void
 
-export type resumesGetByIdResponseSuccess = (resumesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type resumesGetByIdResponseSuccess = resumesGetByIdResponse200
 ;
 
 export type resumesGetByIdResponse = (resumesGetByIdResponseSuccess)
@@ -1824,14 +1759,9 @@ export const prefetchResumesGetByIdQuery = async <TData = Awaited<ReturnType<typ
  * Resume CRUD operations
  * @summary Update a resume
  */
-export type resumesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesUpdateResponse200 = void
 
-export type resumesUpdateResponseSuccess = (resumesUpdateResponse200) & {
-  headers: Headers;
-};
+export type resumesUpdateResponseSuccess = resumesUpdateResponse200
 ;
 
 export type resumesUpdateResponse = (resumesUpdateResponseSuccess)
@@ -1908,14 +1838,9 @@ export const createResumesUpdate = <TError = unknown,
  * Resume CRUD operations
  * @summary Delete a resume
  */
-export type resumesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesDeleteResponse200 = void
 
-export type resumesDeleteResponseSuccess = (resumesDeleteResponse200) & {
-  headers: Headers;
-};
+export type resumesDeleteResponseSuccess = resumesDeleteResponse200
 ;
 
 export type resumesDeleteResponse = (resumesDeleteResponseSuccess)
@@ -1990,14 +1915,9 @@ export const createResumesDelete = <TError = unknown,
  * Resume CRUD operations
  * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
  */
-export type resumesThumbnailSvgResponse200 = {
-  data: void
-  status: 200
-}
+export type resumesThumbnailSvgResponse200 = void
 
-export type resumesThumbnailSvgResponseSuccess = (resumesThumbnailSvgResponse200) & {
-  headers: Headers;
-};
+export type resumesThumbnailSvgResponseSuccess = resumesThumbnailSvgResponse200
 ;
 
 export type resumesThumbnailSvgResponse = (resumesThumbnailSvgResponseSuccess)

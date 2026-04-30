@@ -51,14 +51,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Jobs API
  * @summary List jobs
  */
-export type jobsListResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsListResponse200 = void
 
-export type jobsListResponseSuccess = (jobsListResponse200) & {
-  headers: Headers;
-};
+export type jobsListResponseSuccess = jobsListResponse200
 ;
 
 export type jobsListResponse = (jobsListResponseSuccess)
@@ -224,14 +219,9 @@ export const prefetchJobsListQuery = async <TData = Awaited<ReturnType<typeof jo
  * Jobs API
  * @summary Create a new job posting
  */
-export type jobsCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsCreateResponse200 = void
 
-export type jobsCreateResponseSuccess = (jobsCreateResponse200) & {
-  headers: Headers;
-};
+export type jobsCreateResponseSuccess = jobsCreateResponse200
 ;
 
 export type jobsCreateResponse = (jobsCreateResponseSuccess)
@@ -307,14 +297,9 @@ export const createJobsCreate = <TError = unknown,
  * Jobs API
  * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
  */
-export type jobsWithFitScoreResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsWithFitScoreResponse200 = void
 
-export type jobsWithFitScoreResponseSuccess = (jobsWithFitScoreResponse200) & {
-  headers: Headers;
-};
+export type jobsWithFitScoreResponseSuccess = jobsWithFitScoreResponse200
 ;
 
 export type jobsWithFitScoreResponse = (jobsWithFitScoreResponseSuccess)
@@ -480,14 +465,9 @@ export const prefetchJobsWithFitScoreQuery = async <TData = Awaited<ReturnType<t
  * Jobs API
  * @summary List jobs the current user (recruiter) authored
  */
-export type jobsMineResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsMineResponse200 = void
 
-export type jobsMineResponseSuccess = (jobsMineResponse200) & {
-  headers: Headers;
-};
+export type jobsMineResponseSuccess = jobsMineResponse200
 ;
 
 export type jobsMineResponse = (jobsMineResponseSuccess)
@@ -653,14 +633,9 @@ export const prefetchJobsMineQuery = async <TData = Awaited<ReturnType<typeof jo
  * Jobs API
  * @summary List jobs bookmarked by the current user
  */
-export type jobsBookmarksResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsBookmarksResponse200 = void
 
-export type jobsBookmarksResponseSuccess = (jobsBookmarksResponse200) & {
-  headers: Headers;
-};
+export type jobsBookmarksResponseSuccess = jobsBookmarksResponse200
 ;
 
 export type jobsBookmarksResponse = (jobsBookmarksResponseSuccess)
@@ -826,14 +801,9 @@ export const prefetchJobsBookmarksQuery = async <TData = Awaited<ReturnType<type
  * Jobs API
  * @summary List jobs recommended for the current user based on resume skills
  */
-export type jobsRecommendedResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsRecommendedResponse200 = void
 
-export type jobsRecommendedResponseSuccess = (jobsRecommendedResponse200) & {
-  headers: Headers;
-};
+export type jobsRecommendedResponseSuccess = jobsRecommendedResponse200
 ;
 
 export type jobsRecommendedResponse = (jobsRecommendedResponseSuccess)
@@ -999,14 +969,9 @@ export const prefetchJobsRecommendedQuery = async <TData = Awaited<ReturnType<ty
  * Jobs API
  * @summary List active applications submitted by the current user
  */
-export type jobsApplicationsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsApplicationsGetResponse200 = void
 
-export type jobsApplicationsGetResponseSuccess = (jobsApplicationsGetResponse200) & {
-  headers: Headers;
-};
+export type jobsApplicationsGetResponseSuccess = jobsApplicationsGetResponse200
 ;
 
 export type jobsApplicationsGetResponse = (jobsApplicationsGetResponseSuccess)
@@ -1172,14 +1137,9 @@ export const prefetchJobsApplicationsGetQuery = async <TData = Awaited<ReturnTyp
  * Jobs API
  * @summary List applications received for a job (job owner only)
  */
-export type jobsApplicationsGet2Response200 = {
-  data: void
-  status: 200
-}
+export type jobsApplicationsGet2Response200 = void
 
-export type jobsApplicationsGet2ResponseSuccess = (jobsApplicationsGet2Response200) & {
-  headers: Headers;
-};
+export type jobsApplicationsGet2ResponseSuccess = jobsApplicationsGet2Response200
 ;
 
 export type jobsApplicationsGet2Response = (jobsApplicationsGet2ResponseSuccess)
@@ -1357,14 +1317,9 @@ export const prefetchJobsApplicationsGet2Query = async <TData = Awaited<ReturnTy
  * Jobs API
  * @summary Jobs similar to the given one (by skill overlap)
  */
-export type jobsSimilarResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsSimilarResponse200 = void
 
-export type jobsSimilarResponseSuccess = (jobsSimilarResponse200) & {
-  headers: Headers;
-};
+export type jobsSimilarResponseSuccess = jobsSimilarResponse200
 ;
 
 export type jobsSimilarResponse = (jobsSimilarResponseSuccess)
@@ -1542,14 +1497,9 @@ export const prefetchJobsSimilarQuery = async <TData = Awaited<ReturnType<typeof
  * Jobs API
  * @summary Fetch a single job by id
  */
-export type jobsGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsGetByIdResponse200 = void
 
-export type jobsGetByIdResponseSuccess = (jobsGetByIdResponse200) & {
-  headers: Headers;
-};
+export type jobsGetByIdResponseSuccess = jobsGetByIdResponse200
 ;
 
 export type jobsGetByIdResponse = (jobsGetByIdResponseSuccess)
@@ -1708,14 +1658,9 @@ export const prefetchJobsGetByIdQuery = async <TData = Awaited<ReturnType<typeof
  * Jobs API
  * @summary Update a job posting
  */
-export type jobsUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsUpdateResponse200 = void
 
-export type jobsUpdateResponseSuccess = (jobsUpdateResponse200) & {
-  headers: Headers;
-};
+export type jobsUpdateResponseSuccess = jobsUpdateResponse200
 ;
 
 export type jobsUpdateResponse = (jobsUpdateResponseSuccess)
@@ -1792,14 +1737,9 @@ export const createJobsUpdate = <TError = unknown,
  * Jobs API
  * @summary Delete a job posting
  */
-export type jobsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsDeleteResponse200 = void
 
-export type jobsDeleteResponseSuccess = (jobsDeleteResponse200) & {
-  headers: Headers;
-};
+export type jobsDeleteResponseSuccess = jobsDeleteResponse200
 ;
 
 export type jobsDeleteResponse = (jobsDeleteResponseSuccess)
@@ -1874,14 +1814,9 @@ export const createJobsDelete = <TError = unknown,
  * Returns `{score, dimensions:[{key,label,value,target,color,hint,weight}], matchedKeywords?, missingKeywords?}` so the frontend renders bars/cards by iterating dimensions[] without per-key mapping.
  * @summary Fit score breakdown for this job against the viewer's primary resume
  */
-export type jobsFitResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsFitResponse200 = void
 
-export type jobsFitResponseSuccess = (jobsFitResponse200) & {
-  headers: Headers;
-};
+export type jobsFitResponseSuccess = jobsFitResponse200
 ;
 
 export type jobsFitResponse = (jobsFitResponseSuccess)
@@ -2040,14 +1975,9 @@ export const prefetchJobsFitQuery = async <TData = Awaited<ReturnType<typeof job
  * Returns `{defaults:{coverLetter,resumeId},requirements:[{type,key,label,required,options?}],cta,oneClickAvailable,blockers?:[{code,message,suggestedAction?}]}` so the frontend renders the apply modal entirely server-driven.
  * @summary Apply-context: defaults + requirements + blockers for the apply modal
  */
-export type jobsApplyContextResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsApplyContextResponse200 = void
 
-export type jobsApplyContextResponseSuccess = (jobsApplyContextResponse200) & {
-  headers: Headers;
-};
+export type jobsApplyContextResponseSuccess = jobsApplyContextResponse200
 ;
 
 export type jobsApplyContextResponse = (jobsApplyContextResponseSuccess)
@@ -2206,14 +2136,9 @@ export const prefetchJobsApplyContextQuery = async <TData = Awaited<ReturnType<t
  * Jobs API
  * @summary Bookmark a job
  */
-export type jobsBookmarkPostResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsBookmarkPostResponse200 = void
 
-export type jobsBookmarkPostResponseSuccess = (jobsBookmarkPostResponse200) & {
-  headers: Headers;
-};
+export type jobsBookmarkPostResponseSuccess = jobsBookmarkPostResponse200
 ;
 
 export type jobsBookmarkPostResponse = (jobsBookmarkPostResponseSuccess)
@@ -2288,14 +2213,9 @@ export const createJobsBookmarkPost = <TError = unknown,
  * Jobs API
  * @summary Remove a job bookmark
  */
-export type jobsBookmarkDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsBookmarkDeleteResponse200 = void
 
-export type jobsBookmarkDeleteResponseSuccess = (jobsBookmarkDeleteResponse200) & {
-  headers: Headers;
-};
+export type jobsBookmarkDeleteResponseSuccess = jobsBookmarkDeleteResponse200
 ;
 
 export type jobsBookmarkDeleteResponse = (jobsBookmarkDeleteResponseSuccess)
@@ -2370,14 +2290,9 @@ export const createJobsBookmarkDelete = <TError = unknown,
  * Jobs API
  * @summary Submit a quick application to a job
  */
-export type jobsApplyPostResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsApplyPostResponse200 = void
 
-export type jobsApplyPostResponseSuccess = (jobsApplyPostResponse200) & {
-  headers: Headers;
-};
+export type jobsApplyPostResponseSuccess = jobsApplyPostResponse200
 ;
 
 export type jobsApplyPostResponse = (jobsApplyPostResponseSuccess)
@@ -2454,14 +2369,9 @@ export const createJobsApplyPost = <TError = unknown,
  * Jobs API
  * @summary Withdraw the current user application to a job
  */
-export type jobsApplyDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsApplyDeleteResponse200 = void
 
-export type jobsApplyDeleteResponseSuccess = (jobsApplyDeleteResponse200) & {
-  headers: Headers;
-};
+export type jobsApplyDeleteResponseSuccess = jobsApplyDeleteResponse200
 ;
 
 export type jobsApplyDeleteResponse = (jobsApplyDeleteResponseSuccess)
@@ -2536,14 +2446,9 @@ export const createJobsApplyDelete = <TError = unknown,
  * Jobs API
  * @summary Fetch a careers page and return an LLM-extracted job preview (not persisted)
  */
-export type jobsImportFromUrlResponse200 = {
-  data: void
-  status: 200
-}
+export type jobsImportFromUrlResponse200 = void
 
-export type jobsImportFromUrlResponseSuccess = (jobsImportFromUrlResponse200) & {
-  headers: Headers;
-};
+export type jobsImportFromUrlResponseSuccess = jobsImportFromUrlResponse200
 ;
 
 export type jobsImportFromUrlResponse = (jobsImportFromUrlResponseSuccess)

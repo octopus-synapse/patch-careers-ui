@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Sends a password reset email if the account exists. Always returns success to prevent email enumeration.
  * @summary Request password reset
  */
-export type passwordManagementAuthForgotPasswordResponse200 = {
-  data: void
-  status: 200
-}
+export type passwordManagementAuthForgotPasswordResponse200 = void
 
-export type passwordManagementAuthForgotPasswordResponseSuccess = (passwordManagementAuthForgotPasswordResponse200) & {
-  headers: Headers;
-};
+export type passwordManagementAuthForgotPasswordResponseSuccess = passwordManagementAuthForgotPasswordResponse200
 ;
 
 export type passwordManagementAuthForgotPasswordResponse = (passwordManagementAuthForgotPasswordResponseSuccess)
@@ -115,14 +110,9 @@ export const createPasswordManagementAuthForgotPassword = <TError = unknown,
  * Changes the password for the authenticated user after verifying the current password.
  * @summary Change password
  */
-export type passwordManagementMePasswordChangeResponse200 = {
-  data: void
-  status: 200
-}
+export type passwordManagementMePasswordChangeResponse200 = void
 
-export type passwordManagementMePasswordChangeResponseSuccess = (passwordManagementMePasswordChangeResponse200) & {
-  headers: Headers;
-};
+export type passwordManagementMePasswordChangeResponseSuccess = passwordManagementMePasswordChangeResponse200
 ;
 
 export type passwordManagementMePasswordChangeResponse = (passwordManagementMePasswordChangeResponseSuccess)
@@ -198,14 +188,9 @@ export const createPasswordManagementMePasswordChange = <TError = unknown,
  * Resets the user password using a valid reset token received via email.
  * @summary Reset password with token
  */
-export type passwordManagementAuthResetPasswordResponse200 = {
-  data: void
-  status: 200
-}
+export type passwordManagementAuthResetPasswordResponse200 = void
 
-export type passwordManagementAuthResetPasswordResponseSuccess = (passwordManagementAuthResetPasswordResponse200) & {
-  headers: Headers;
-};
+export type passwordManagementAuthResetPasswordResponseSuccess = passwordManagementAuthResetPasswordResponse200
 ;
 
 export type passwordManagementAuthResetPasswordResponse = (passwordManagementAuthResetPasswordResponseSuccess)

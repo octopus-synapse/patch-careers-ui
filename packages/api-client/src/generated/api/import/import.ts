@@ -30,14 +30,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * GitHub import API
  * @summary Parse a GitHub profile (repos + languages) into suggested resume content. Does not write to the resume — the client previews, the user accepts.
  */
-export type importGithubParseResponse200 = {
-  data: void
-  status: 200
-}
+export type importGithubParseResponse200 = void
 
-export type importGithubParseResponseSuccess = (importGithubParseResponse200) & {
-  headers: Headers;
-};
+export type importGithubParseResponseSuccess = importGithubParseResponse200
 ;
 
 export type importGithubParseResponse = (importGithubParseResponseSuccess)

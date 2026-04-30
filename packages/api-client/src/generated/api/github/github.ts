@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * GitHub summary with repositories, contributions, and stats
  * @summary Get GitHub profile summary for a username
  */
-export type githubIntegrationsGithubSummaryResponse200 = {
-  data: void
-  status: 200
-}
+export type githubIntegrationsGithubSummaryResponse200 = void
 
-export type githubIntegrationsGithubSummaryResponseSuccess = (githubIntegrationsGithubSummaryResponse200) & {
-  headers: Headers;
-};
+export type githubIntegrationsGithubSummaryResponseSuccess = githubIntegrationsGithubSummaryResponse200
 ;
 
 export type githubIntegrationsGithubSummaryResponse = (githubIntegrationsGithubSummaryResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchGithubIntegrationsGithubSummaryQuery = async <TData = Await
  * GitHub data synced successfully
  * @summary Sync GitHub data to user resume
  */
-export type githubIntegrationsGithubSyncResponse200 = {
-  data: void
-  status: 200
-}
+export type githubIntegrationsGithubSyncResponse200 = void
 
-export type githubIntegrationsGithubSyncResponseSuccess = (githubIntegrationsGithubSyncResponse200) & {
-  headers: Headers;
-};
+export type githubIntegrationsGithubSyncResponseSuccess = githubIntegrationsGithubSyncResponse200
 ;
 
 export type githubIntegrationsGithubSyncResponse = (githubIntegrationsGithubSyncResponseSuccess)
@@ -289,14 +279,9 @@ export const createGithubIntegrationsGithubSync = <TError = unknown,
  * GitHub data auto-synced successfully
  * @summary Auto-sync GitHub from resume GitHub link
  */
-export type githubIntegrationsGithubSyncAutoResponse200 = {
-  data: void
-  status: 200
-}
+export type githubIntegrationsGithubSyncAutoResponse200 = void
 
-export type githubIntegrationsGithubSyncAutoResponseSuccess = (githubIntegrationsGithubSyncAutoResponse200) & {
-  headers: Headers;
-};
+export type githubIntegrationsGithubSyncAutoResponseSuccess = githubIntegrationsGithubSyncAutoResponse200
 ;
 
 export type githubIntegrationsGithubSyncAutoResponse = (githubIntegrationsGithubSyncAutoResponseSuccess)
@@ -371,14 +356,9 @@ export const createGithubIntegrationsGithubSyncAuto = <TError = unknown,
  * Sync status
  * @summary Get GitHub sync status for a resume
  */
-export type githubIntegrationsGithubSyncStatusResponse200 = {
-  data: void
-  status: 200
-}
+export type githubIntegrationsGithubSyncStatusResponse200 = void
 
-export type githubIntegrationsGithubSyncStatusResponseSuccess = (githubIntegrationsGithubSyncStatusResponse200) & {
-  headers: Headers;
-};
+export type githubIntegrationsGithubSyncStatusResponseSuccess = githubIntegrationsGithubSyncStatusResponse200
 ;
 
 export type githubIntegrationsGithubSyncStatusResponse = (githubIntegrationsGithubSyncStatusResponseSuccess)

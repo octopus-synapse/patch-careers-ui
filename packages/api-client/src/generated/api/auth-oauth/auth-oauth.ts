@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * OAuth login endpoints
  * @summary Start GitHub OAuth sign-in.
  */
-export type authOauthGithubStartResponse200 = {
-  data: void
-  status: 200
-}
+export type authOauthGithubStartResponse200 = void
 
-export type authOauthGithubStartResponseSuccess = (authOauthGithubStartResponse200) & {
-  headers: Headers;
-};
+export type authOauthGithubStartResponseSuccess = authOauthGithubStartResponse200
 ;
 
 export type authOauthGithubStartResponse = (authOauthGithubStartResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchAuthOauthGithubStartQuery = async <TData = Awaited<ReturnTy
  * OAuth login endpoints
  * @summary GitHub OAuth callback.
  */
-export type authOauthGithubCallbackResponse200 = {
-  data: void
-  status: 200
-}
+export type authOauthGithubCallbackResponse200 = void
 
-export type authOauthGithubCallbackResponseSuccess = (authOauthGithubCallbackResponse200) & {
-  headers: Headers;
-};
+export type authOauthGithubCallbackResponseSuccess = authOauthGithubCallbackResponse200
 ;
 
 export type authOauthGithubCallbackResponse = (authOauthGithubCallbackResponseSuccess)
@@ -364,14 +354,9 @@ export const prefetchAuthOauthGithubCallbackQuery = async <TData = Awaited<Retur
  * OAuth login endpoints
  * @summary Start LinkedIn OAuth sign-in.
  */
-export type authOauthLinkedinStartResponse200 = {
-  data: void
-  status: 200
-}
+export type authOauthLinkedinStartResponse200 = void
 
-export type authOauthLinkedinStartResponseSuccess = (authOauthLinkedinStartResponse200) & {
-  headers: Headers;
-};
+export type authOauthLinkedinStartResponseSuccess = authOauthLinkedinStartResponse200
 ;
 
 export type authOauthLinkedinStartResponse = (authOauthLinkedinStartResponseSuccess)
@@ -530,14 +515,9 @@ export const prefetchAuthOauthLinkedinStartQuery = async <TData = Awaited<Return
  * OAuth login endpoints
  * @summary LinkedIn OAuth callback.
  */
-export type authOauthLinkedinCallbackResponse200 = {
-  data: void
-  status: 200
-}
+export type authOauthLinkedinCallbackResponse200 = void
 
-export type authOauthLinkedinCallbackResponseSuccess = (authOauthLinkedinCallbackResponse200) & {
-  headers: Headers;
-};
+export type authOauthLinkedinCallbackResponseSuccess = authOauthLinkedinCallbackResponse200
 ;
 
 export type authOauthLinkedinCallbackResponse = (authOauthLinkedinCallbackResponseSuccess)
@@ -696,14 +676,9 @@ export const prefetchAuthOauthLinkedinCallbackQuery = async <TData = Awaited<Ret
  * OAuth login endpoints
  * @summary Whether a given OAuth provider is configured.
  */
-export type authOauthAvailableResponse200 = {
-  data: void
-  status: 200
-}
+export type authOauthAvailableResponse200 = void
 
-export type authOauthAvailableResponseSuccess = (authOauthAvailableResponse200) & {
-  headers: Headers;
-};
+export type authOauthAvailableResponseSuccess = authOauthAvailableResponse200
 ;
 
 export type authOauthAvailableResponse = (authOauthAvailableResponseSuccess)

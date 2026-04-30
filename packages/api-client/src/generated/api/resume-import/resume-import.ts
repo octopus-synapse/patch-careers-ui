@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Placeholder endpoint. Returns 503 until the LinkedIn v2 API client lands. Frontend should treat this as 'em breve' for now.
  * @summary Import profile data from LinkedIn (scaffold)
  */
-export type resumeImportResumesImportsLinkedinResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsLinkedinResponse200 = void
 
-export type resumeImportResumesImportsLinkedinResponseSuccess = (resumeImportResumesImportsLinkedinResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsLinkedinResponseSuccess = resumeImportResumesImportsLinkedinResponse200
 ;
 
 export type resumeImportResumesImportsLinkedinResponse = (resumeImportResumesImportsLinkedinResponseSuccess)
@@ -123,14 +118,9 @@ export const createResumeImportResumesImportsLinkedin = <TError = unknown,
  * Creates import job and processes JSON Resume data (jsonresume.org standard)
  * @summary Import resume from JSON Resume format
  */
-export type resumeImportResumesImportsJsonResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsJsonResponse200 = void
 
-export type resumeImportResumesImportsJsonResponseSuccess = (resumeImportResumesImportsJsonResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsJsonResponseSuccess = resumeImportResumesImportsJsonResponse200
 ;
 
 export type resumeImportResumesImportsJsonResponse = (resumeImportResumesImportsJsonResponseSuccess)
@@ -206,14 +196,9 @@ export const createResumeImportResumesImportsJson = <TError = unknown,
  * Validates and transforms JSON Resume to internal format without saving
  * @summary Parse JSON Resume without importing
  */
-export type resumeImportResumesImportsParseResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsParseResponse200 = void
 
-export type resumeImportResumesImportsParseResponseSuccess = (resumeImportResumesImportsParseResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsParseResponseSuccess = resumeImportResumesImportsParseResponse200
 ;
 
 export type resumeImportResumesImportsParseResponse = (resumeImportResumesImportsParseResponseSuccess)
@@ -289,14 +274,9 @@ export const createResumeImportResumesImportsParse = <TError = unknown,
  * Returns current status, errors, and result of import job
  * @summary Get import job status
  */
-export type resumeImportResumesImportsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsGetResponse200 = void
 
-export type resumeImportResumesImportsGetResponseSuccess = (resumeImportResumesImportsGetResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsGetResponseSuccess = resumeImportResumesImportsGetResponse200
 ;
 
 export type resumeImportResumesImportsGetResponse = (resumeImportResumesImportsGetResponseSuccess)
@@ -455,14 +435,9 @@ export const prefetchResumeImportResumesImportsGetQuery = async <TData = Awaited
  * Cancels pending or processing import. Cannot cancel completed imports.
  * @summary Cancel import job
  */
-export type resumeImportResumesImportsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsDeleteResponse200 = void
 
-export type resumeImportResumesImportsDeleteResponseSuccess = (resumeImportResumesImportsDeleteResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsDeleteResponseSuccess = resumeImportResumesImportsDeleteResponse200
 ;
 
 export type resumeImportResumesImportsDeleteResponse = (resumeImportResumesImportsDeleteResponseSuccess)
@@ -537,14 +512,9 @@ export const createResumeImportResumesImportsDelete = <TError = unknown,
  * Returns all import jobs for authenticated user, ordered by creation date
  * @summary Get import history
  */
-export type resumeImportResumesImportsGet2Response200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsGet2Response200 = void
 
-export type resumeImportResumesImportsGet2ResponseSuccess = (resumeImportResumesImportsGet2Response200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsGet2ResponseSuccess = resumeImportResumesImportsGet2Response200
 ;
 
 export type resumeImportResumesImportsGet2Response = (resumeImportResumesImportsGet2ResponseSuccess)
@@ -703,14 +673,9 @@ export const prefetchResumeImportResumesImportsGet2Query = async <TData = Awaite
  * Retries processing of failed import job with same data
  * @summary Retry failed import
  */
-export type resumeImportResumesImportsRetryResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsRetryResponse200 = void
 
-export type resumeImportResumesImportsRetryResponseSuccess = (resumeImportResumesImportsRetryResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsRetryResponseSuccess = resumeImportResumesImportsRetryResponse200
 ;
 
 export type resumeImportResumesImportsRetryResponse = (resumeImportResumesImportsRetryResponseSuccess)
@@ -785,14 +750,9 @@ export const createResumeImportResumesImportsRetry = <TError = unknown,
  * Accepts a PDF upload (multipart/form-data, field name `file`), extracts the text with pdf-parse and structures it with the LLM. Creates a Resume row and marks it as primary when the user has none.
  * @summary Import resume from a PDF file
  */
-export type resumeImportResumesImportsPdfResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsPdfResponse200 = void
 
-export type resumeImportResumesImportsPdfResponseSuccess = (resumeImportResumesImportsPdfResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsPdfResponseSuccess = resumeImportResumesImportsPdfResponse200
 ;
 
 export type resumeImportResumesImportsPdfResponse = (resumeImportResumesImportsPdfResponseSuccess)
@@ -867,14 +827,9 @@ export const createResumeImportResumesImportsPdf = <TError = unknown,
  * Uses the user's previously-connected GitHub OAuth token to fetch top repos and derive skills + BUILD posts. Fails with 409 GITHUB_NOT_CONNECTED if the user hasn't linked GitHub yet.
  * @summary Import profile data from GitHub
  */
-export type resumeImportResumesImportsGithubResponse200 = {
-  data: void
-  status: 200
-}
+export type resumeImportResumesImportsGithubResponse200 = void
 
-export type resumeImportResumesImportsGithubResponseSuccess = (resumeImportResumesImportsGithubResponse200) & {
-  headers: Headers;
-};
+export type resumeImportResumesImportsGithubResponseSuccess = resumeImportResumesImportsGithubResponse200
 ;
 
 export type resumeImportResumesImportsGithubResponse = (resumeImportResumesImportsGithubResponseSuccess)

@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Alerts API
  * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
-export type adminAlertsListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminAlertsListResponse200 = void
 
-export type adminAlertsListResponseSuccess = (adminAlertsListResponse200) & {
-  headers: Headers;
-};
+export type adminAlertsListResponseSuccess = adminAlertsListResponse200
 ;
 
 export type adminAlertsListResponse = (adminAlertsListResponseSuccess)

@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Verifies the user email using the token received via email.
  * @summary Verify email with token
  */
-export type emailVerificationVerifyResponse200 = {
-  data: void
-  status: 200
-}
+export type emailVerificationVerifyResponse200 = void
 
-export type emailVerificationVerifyResponseSuccess = (emailVerificationVerifyResponse200) & {
-  headers: Headers;
-};
+export type emailVerificationVerifyResponseSuccess = emailVerificationVerifyResponse200
 ;
 
 export type emailVerificationVerifyResponse = (emailVerificationVerifyResponseSuccess)
@@ -123,14 +118,9 @@ export const createEmailVerificationVerify = <TError = unknown,
  * Sends a verification email to the authenticated user. No body required.
  * @summary Send verification email
  */
-export type emailVerificationAuthEmailVerificationSendResponse200 = {
-  data: void
-  status: 200
-}
+export type emailVerificationAuthEmailVerificationSendResponse200 = void
 
-export type emailVerificationAuthEmailVerificationSendResponseSuccess = (emailVerificationAuthEmailVerificationSendResponse200) & {
-  headers: Headers;
-};
+export type emailVerificationAuthEmailVerificationSendResponseSuccess = emailVerificationAuthEmailVerificationSendResponse200
 ;
 
 export type emailVerificationAuthEmailVerificationSendResponse = (emailVerificationAuthEmailVerificationSendResponseSuccess)
@@ -205,14 +195,9 @@ export const createEmailVerificationAuthEmailVerificationSend = <TError = unknow
  * Returns how many seconds the authenticated user must wait before requesting another verification email. The UI uses this so the countdown survives page reloads.
  * @summary Get verification email resend cooldown
  */
-export type emailVerificationAuthEmailVerificationResendStatusResponse200 = {
-  data: void
-  status: 200
-}
+export type emailVerificationAuthEmailVerificationResendStatusResponse200 = void
 
-export type emailVerificationAuthEmailVerificationResendStatusResponseSuccess = (emailVerificationAuthEmailVerificationResendStatusResponse200) & {
-  headers: Headers;
-};
+export type emailVerificationAuthEmailVerificationResendStatusResponseSuccess = emailVerificationAuthEmailVerificationResendStatusResponse200
 ;
 
 export type emailVerificationAuthEmailVerificationResendStatusResponse = (emailVerificationAuthEmailVerificationResendStatusResponseSuccess)

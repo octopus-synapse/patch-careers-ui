@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * List of tech areas
  * @summary Get all tech areas
  */
-export type techAreasListResponse200 = {
-  data: void
-  status: 200
-}
+export type techAreasListResponse200 = void
 
-export type techAreasListResponseSuccess = (techAreasListResponse200) & {
-  headers: Headers;
-};
+export type techAreasListResponseSuccess = techAreasListResponse200
 ;
 
 export type techAreasListResponse = (techAreasListResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchTechAreasListQuery = async <TData = Awaited<ReturnType<type
  * List of niches for the area
  * @summary Get niches by area type
  */
-export type techAreasNichesResponse200 = {
-  data: void
-  status: 200
-}
+export type techAreasNichesResponse200 = void
 
-export type techAreasNichesResponseSuccess = (techAreasNichesResponse200) & {
-  headers: Headers;
-};
+export type techAreasNichesResponseSuccess = techAreasNichesResponse200
 ;
 
 export type techAreasNichesResponse = (techAreasNichesResponseSuccess)

@@ -50,14 +50,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Per-user UI state
  * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
  */
-export type usersMeUiStateGetResponse200 = {
-  data: void
-  status: 200
-}
+export type usersMeUiStateGetResponse200 = void
 
-export type usersMeUiStateGetResponseSuccess = (usersMeUiStateGetResponse200) & {
-  headers: Headers;
-};
+export type usersMeUiStateGetResponseSuccess = usersMeUiStateGetResponse200
 ;
 
 export type usersMeUiStateGetResponse = (usersMeUiStateGetResponseSuccess)
@@ -216,14 +211,9 @@ export const prefetchUsersMeUiStateGetQuery = async <TData = Awaited<ReturnType<
  * Per-user UI state
  * @summary Upsert a single UI-state key/value (idempotent).
  */
-export type usersMeUiStatePatchResponse200 = {
-  data: void
-  status: 200
-}
+export type usersMeUiStatePatchResponse200 = void
 
-export type usersMeUiStatePatchResponseSuccess = (usersMeUiStatePatchResponse200) & {
-  headers: Headers;
-};
+export type usersMeUiStatePatchResponseSuccess = usersMeUiStatePatchResponse200
 ;
 
 export type usersMeUiStatePatchResponse = (usersMeUiStatePatchResponseSuccess)
@@ -300,14 +290,9 @@ export const createUsersMeUiStatePatch = <TError = unknown,
  * Per-user UI state
  * @summary Remove a UI-state key.
  */
-export type usersMeUiStateDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type usersMeUiStateDeleteResponse200 = void
 
-export type usersMeUiStateDeleteResponseSuccess = (usersMeUiStateDeleteResponse200) & {
-  headers: Headers;
-};
+export type usersMeUiStateDeleteResponseSuccess = usersMeUiStateDeleteResponse200
 ;
 
 export type usersMeUiStateDeleteResponse = (usersMeUiStateDeleteResponseSuccess)
@@ -382,14 +367,9 @@ export const createUsersMeUiStateDelete = <TError = unknown,
  * Users API
  * @summary Get a user's public profile by username
  */
-export type usersProfilesResponse200 = {
-  data: void
-  status: 200
-}
+export type usersProfilesResponse200 = void
 
-export type usersProfilesResponseSuccess = (usersProfilesResponse200) & {
-  headers: Headers;
-};
+export type usersProfilesResponseSuccess = usersProfilesResponse200
 ;
 
 export type usersProfilesResponse = (usersProfilesResponseSuccess)
@@ -548,14 +528,9 @@ export const prefetchUsersProfilesQuery = async <TData = Awaited<ReturnType<type
  * Users API
  * @summary Get current user profile
  */
-export type usersProfileGetResponse200 = {
-  data: void
-  status: 200
-}
+export type usersProfileGetResponse200 = void
 
-export type usersProfileGetResponseSuccess = (usersProfileGetResponse200) & {
-  headers: Headers;
-};
+export type usersProfileGetResponseSuccess = usersProfileGetResponse200
 ;
 
 export type usersProfileGetResponse = (usersProfileGetResponseSuccess)
@@ -714,14 +689,9 @@ export const prefetchUsersProfileGetQuery = async <TData = Awaited<ReturnType<ty
  * Users API
  * @summary Update current user profile
  */
-export type usersProfilePatchResponse200 = {
-  data: void
-  status: 200
-}
+export type usersProfilePatchResponse200 = void
 
-export type usersProfilePatchResponseSuccess = (usersProfilePatchResponse200) & {
-  headers: Headers;
-};
+export type usersProfilePatchResponseSuccess = usersProfilePatchResponse200
 ;
 
 export type usersProfilePatchResponse = (usersProfilePatchResponseSuccess)
@@ -797,14 +767,9 @@ export const createUsersProfilePatch = <TError = unknown,
  * Users API
  * @summary Update username (once every 30 days)
  */
-export type usersUsernameResponse200 = {
-  data: void
-  status: 200
-}
+export type usersUsernameResponse200 = void
 
-export type usersUsernameResponseSuccess = (usersUsernameResponse200) & {
-  headers: Headers;
-};
+export type usersUsernameResponseSuccess = usersUsernameResponse200
 ;
 
 export type usersUsernameResponse = (usersUsernameResponseSuccess)
@@ -880,14 +845,9 @@ export const createUsersUsername = <TError = unknown,
  * Users API
  * @summary Check if a username is available
  */
-export type usersUsernameCheckResponse200 = {
-  data: void
-  status: 200
-}
+export type usersUsernameCheckResponse200 = void
 
-export type usersUsernameCheckResponseSuccess = (usersUsernameCheckResponse200) & {
-  headers: Headers;
-};
+export type usersUsernameCheckResponseSuccess = usersUsernameCheckResponse200
 ;
 
 export type usersUsernameCheckResponse = (usersUsernameCheckResponseSuccess)
@@ -1053,14 +1013,9 @@ export const prefetchUsersUsernameCheckQuery = async <TData = Awaited<ReturnType
  * Users API
  * @summary Get user preferences (basic)
  */
-export type usersPreferencesGetResponse200 = {
-  data: void
-  status: 200
-}
+export type usersPreferencesGetResponse200 = void
 
-export type usersPreferencesGetResponseSuccess = (usersPreferencesGetResponse200) & {
-  headers: Headers;
-};
+export type usersPreferencesGetResponseSuccess = usersPreferencesGetResponse200
 ;
 
 export type usersPreferencesGetResponse = (usersPreferencesGetResponseSuccess)
@@ -1219,14 +1174,9 @@ export const prefetchUsersPreferencesGetQuery = async <TData = Awaited<ReturnTyp
  * Users API
  * @summary Update user preferences (basic)
  */
-export type usersPreferencesPatchResponse200 = {
-  data: void
-  status: 200
-}
+export type usersPreferencesPatchResponse200 = void
 
-export type usersPreferencesPatchResponseSuccess = (usersPreferencesPatchResponse200) & {
-  headers: Headers;
-};
+export type usersPreferencesPatchResponseSuccess = usersPreferencesPatchResponse200
 ;
 
 export type usersPreferencesPatchResponse = (usersPreferencesPatchResponseSuccess)
@@ -1302,14 +1252,9 @@ export const createUsersPreferencesPatch = <TError = unknown,
  * Users API
  * @summary Get all user preferences
  */
-export type usersPreferencesFullGetResponse200 = {
-  data: void
-  status: 200
-}
+export type usersPreferencesFullGetResponse200 = void
 
-export type usersPreferencesFullGetResponseSuccess = (usersPreferencesFullGetResponse200) & {
-  headers: Headers;
-};
+export type usersPreferencesFullGetResponseSuccess = usersPreferencesFullGetResponse200
 ;
 
 export type usersPreferencesFullGetResponse = (usersPreferencesFullGetResponseSuccess)
@@ -1468,14 +1413,9 @@ export const prefetchUsersPreferencesFullGetQuery = async <TData = Awaited<Retur
  * Users API
  * @summary Update all user preferences
  */
-export type usersPreferencesFullPatchResponse200 = {
-  data: void
-  status: 200
-}
+export type usersPreferencesFullPatchResponse200 = void
 
-export type usersPreferencesFullPatchResponseSuccess = (usersPreferencesFullPatchResponse200) & {
-  headers: Headers;
-};
+export type usersPreferencesFullPatchResponseSuccess = usersPreferencesFullPatchResponse200
 ;
 
 export type usersPreferencesFullPatchResponse = (usersPreferencesFullPatchResponseSuccess)
@@ -1551,14 +1491,9 @@ export const createUsersPreferencesFullPatch = <TError = unknown,
  * User permissions
  * @summary List permission keys granted to the current user (for UI gating)
  */
-export type usersMePermissionsResponse200 = {
-  data: void
-  status: 200
-}
+export type usersMePermissionsResponse200 = void
 
-export type usersMePermissionsResponseSuccess = (usersMePermissionsResponse200) & {
-  headers: Headers;
-};
+export type usersMePermissionsResponseSuccess = usersMePermissionsResponse200
 ;
 
 export type usersMePermissionsResponse = (usersMePermissionsResponseSuccess)
@@ -1717,14 +1652,9 @@ export const prefetchUsersMePermissionsQuery = async <TData = Awaited<ReturnType
  * Users API
  * @summary List all users with pagination
  */
-export type usersManageGetResponse200 = {
-  data: void
-  status: 200
-}
+export type usersManageGetResponse200 = void
 
-export type usersManageGetResponseSuccess = (usersManageGetResponse200) & {
-  headers: Headers;
-};
+export type usersManageGetResponseSuccess = usersManageGetResponse200
 ;
 
 export type usersManageGetResponse = (usersManageGetResponseSuccess)
@@ -1890,14 +1820,9 @@ export const prefetchUsersManageGetQuery = async <TData = Awaited<ReturnType<typ
  * Users API
  * @summary Create a new user
  */
-export type usersManagePostResponse200 = {
-  data: void
-  status: 200
-}
+export type usersManagePostResponse200 = void
 
-export type usersManagePostResponseSuccess = (usersManagePostResponse200) & {
-  headers: Headers;
-};
+export type usersManagePostResponseSuccess = usersManagePostResponse200
 ;
 
 export type usersManagePostResponse = (usersManagePostResponseSuccess)
@@ -1973,14 +1898,9 @@ export const createUsersManagePost = <TError = unknown,
  * Users API
  * @summary Get user details by ID
  */
-export type usersManageGet2Response200 = {
-  data: void
-  status: 200
-}
+export type usersManageGet2Response200 = void
 
-export type usersManageGet2ResponseSuccess = (usersManageGet2Response200) & {
-  headers: Headers;
-};
+export type usersManageGet2ResponseSuccess = usersManageGet2Response200
 ;
 
 export type usersManageGet2Response = (usersManageGet2ResponseSuccess)
@@ -2139,14 +2059,9 @@ export const prefetchUsersManageGet2Query = async <TData = Awaited<ReturnType<ty
  * Users API
  * @summary Update user information
  */
-export type usersManagePatchResponse200 = {
-  data: void
-  status: 200
-}
+export type usersManagePatchResponse200 = void
 
-export type usersManagePatchResponseSuccess = (usersManagePatchResponse200) & {
-  headers: Headers;
-};
+export type usersManagePatchResponseSuccess = usersManagePatchResponse200
 ;
 
 export type usersManagePatchResponse = (usersManagePatchResponseSuccess)
@@ -2223,14 +2138,9 @@ export const createUsersManagePatch = <TError = unknown,
  * GDPR-compliant deletion that removes all user data.
  * @summary Delete a user
  */
-export type usersManageDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type usersManageDeleteResponse200 = void
 
-export type usersManageDeleteResponseSuccess = (usersManageDeleteResponse200) & {
-  headers: Headers;
-};
+export type usersManageDeleteResponseSuccess = usersManageDeleteResponse200
 ;
 
 export type usersManageDeleteResponse = (usersManageDeleteResponseSuccess)
@@ -2305,14 +2215,9 @@ export const createUsersManageDelete = <TError = unknown,
  * Users API
  * @summary Reset user password
  */
-export type usersManageResetPasswordResponse200 = {
-  data: void
-  status: 200
-}
+export type usersManageResetPasswordResponse200 = void
 
-export type usersManageResetPasswordResponseSuccess = (usersManageResetPasswordResponse200) & {
-  headers: Headers;
-};
+export type usersManageResetPasswordResponseSuccess = usersManageResetPasswordResponse200
 ;
 
 export type usersManageResetPasswordResponse = (usersManageResetPasswordResponseSuccess)
@@ -2389,14 +2294,9 @@ export const createUsersManageResetPassword = <TError = unknown,
  * Users API
  * @summary Assign roles to a user
  */
-export type usersManageRolesResponse200 = {
-  data: void
-  status: 200
-}
+export type usersManageRolesResponse200 = void
 
-export type usersManageRolesResponseSuccess = (usersManageRolesResponse200) & {
-  headers: Headers;
-};
+export type usersManageRolesResponseSuccess = usersManageRolesResponse200
 ;
 
 export type usersManageRolesResponse = (usersManageRolesResponseSuccess)

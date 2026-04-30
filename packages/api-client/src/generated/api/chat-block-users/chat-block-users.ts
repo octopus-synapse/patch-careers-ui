@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Chat Block Users API
  * @summary Block a user
  */
-export type chatBlockUsersBlockedPostResponse200 = {
-  data: void
-  status: 200
-}
+export type chatBlockUsersBlockedPostResponse200 = void
 
-export type chatBlockUsersBlockedPostResponseSuccess = (chatBlockUsersBlockedPostResponse200) & {
-  headers: Headers;
-};
+export type chatBlockUsersBlockedPostResponseSuccess = chatBlockUsersBlockedPostResponse200
 ;
 
 export type chatBlockUsersBlockedPostResponse = (chatBlockUsersBlockedPostResponseSuccess)
@@ -123,14 +118,9 @@ export const createChatBlockUsersBlockedPost = <TError = unknown,
  * Chat Block Users API
  * @summary Get all blocked users
  */
-export type chatBlockUsersBlockedGetResponse200 = {
-  data: void
-  status: 200
-}
+export type chatBlockUsersBlockedGetResponse200 = void
 
-export type chatBlockUsersBlockedGetResponseSuccess = (chatBlockUsersBlockedGetResponse200) & {
-  headers: Headers;
-};
+export type chatBlockUsersBlockedGetResponseSuccess = chatBlockUsersBlockedGetResponse200
 ;
 
 export type chatBlockUsersBlockedGetResponse = (chatBlockUsersBlockedGetResponseSuccess)
@@ -289,14 +279,9 @@ export const prefetchChatBlockUsersBlockedGetQuery = async <TData = Awaited<Retu
  * Chat Block Users API
  * @summary Unblock a user
  */
-export type chatBlockUsersBlockedDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type chatBlockUsersBlockedDeleteResponse200 = void
 
-export type chatBlockUsersBlockedDeleteResponseSuccess = (chatBlockUsersBlockedDeleteResponse200) & {
-  headers: Headers;
-};
+export type chatBlockUsersBlockedDeleteResponseSuccess = chatBlockUsersBlockedDeleteResponse200
 ;
 
 export type chatBlockUsersBlockedDeleteResponse = (chatBlockUsersBlockedDeleteResponseSuccess)
@@ -371,14 +356,9 @@ export const createChatBlockUsersBlockedDelete = <TError = unknown,
  * Chat Block Users API
  * @summary Check if a user is blocked
  */
-export type chatBlockUsersBlockedStatusResponse200 = {
-  data: void
-  status: 200
-}
+export type chatBlockUsersBlockedStatusResponse200 = void
 
-export type chatBlockUsersBlockedStatusResponseSuccess = (chatBlockUsersBlockedStatusResponse200) & {
-  headers: Headers;
-};
+export type chatBlockUsersBlockedStatusResponseSuccess = chatBlockUsersBlockedStatusResponse200
 ;
 
 export type chatBlockUsersBlockedStatusResponse = (chatBlockUsersBlockedStatusResponseSuccess)

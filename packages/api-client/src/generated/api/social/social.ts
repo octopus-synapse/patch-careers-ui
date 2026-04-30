@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Connection recommendations API
  * @summary Users sharing the most skills with you
  */
-export type socialUsersMeConnectionRecommendationsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialUsersMeConnectionRecommendationsResponse200 = void
 
-export type socialUsersMeConnectionRecommendationsResponseSuccess = (socialUsersMeConnectionRecommendationsResponse200) & {
-  headers: Headers;
-};
+export type socialUsersMeConnectionRecommendationsResponseSuccess = socialUsersMeConnectionRecommendationsResponse200
 ;
 
 export type socialUsersMeConnectionRecommendationsResponse = (socialUsersMeConnectionRecommendationsResponseSuccess)

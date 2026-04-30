@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Section Types Management API
  * @summary List all section types with pagination
  */
-export type adminSectionTypesListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSectionTypesListResponse200 = void
 
-export type adminSectionTypesListResponseSuccess = (adminSectionTypesListResponse200) & {
-  headers: Headers;
-};
+export type adminSectionTypesListResponseSuccess = adminSectionTypesListResponse200
 ;
 
 export type adminSectionTypesListResponse = (adminSectionTypesListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchAdminSectionTypesListQuery = async <TData = Awaited<ReturnT
  * Admin Section Types Management API
  * @summary Create a new section type
  */
-export type adminSectionTypesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSectionTypesCreateResponse200 = void
 
-export type adminSectionTypesCreateResponseSuccess = (adminSectionTypesCreateResponse200) & {
-  headers: Headers;
-};
+export type adminSectionTypesCreateResponseSuccess = adminSectionTypesCreateResponse200
 ;
 
 export type adminSectionTypesCreateResponse = (adminSectionTypesCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createAdminSectionTypesCreate = <TError = unknown,
  * Admin Section Types Management API
  * @summary Get all unique semantic kinds
  */
-export type adminSectionTypesSemanticKindsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSectionTypesSemanticKindsResponse200 = void
 
-export type adminSectionTypesSemanticKindsResponseSuccess = (adminSectionTypesSemanticKindsResponse200) & {
-  headers: Headers;
-};
+export type adminSectionTypesSemanticKindsResponseSuccess = adminSectionTypesSemanticKindsResponse200
 ;
 
 export type adminSectionTypesSemanticKindsResponse = (adminSectionTypesSemanticKindsResponseSuccess)
@@ -464,14 +449,9 @@ export const prefetchAdminSectionTypesSemanticKindsQuery = async <TData = Awaite
  * Admin Section Types Management API
  * @summary Get a section type by key
  */
-export type adminSectionTypesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSectionTypesGetByIdResponse200 = void
 
-export type adminSectionTypesGetByIdResponseSuccess = (adminSectionTypesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminSectionTypesGetByIdResponseSuccess = adminSectionTypesGetByIdResponse200
 ;
 
 export type adminSectionTypesGetByIdResponse = (adminSectionTypesGetByIdResponseSuccess)
@@ -630,14 +610,9 @@ export const prefetchAdminSectionTypesGetByIdQuery = async <TData = Awaited<Retu
  * Admin Section Types Management API
  * @summary Update a section type
  */
-export type adminSectionTypesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSectionTypesUpdateResponse200 = void
 
-export type adminSectionTypesUpdateResponseSuccess = (adminSectionTypesUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminSectionTypesUpdateResponseSuccess = adminSectionTypesUpdateResponse200
 ;
 
 export type adminSectionTypesUpdateResponse = (adminSectionTypesUpdateResponseSuccess)
@@ -714,14 +689,9 @@ export const createAdminSectionTypesUpdate = <TError = unknown,
  * Admin Section Types Management API
  * @summary Delete a section type
  */
-export type adminSectionTypesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSectionTypesDeleteResponse200 = void
 
-export type adminSectionTypesDeleteResponseSuccess = (adminSectionTypesDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminSectionTypesDeleteResponseSuccess = adminSectionTypesDeleteResponse200
 ;
 
 export type adminSectionTypesDeleteResponse = (adminSectionTypesDeleteResponseSuccess)

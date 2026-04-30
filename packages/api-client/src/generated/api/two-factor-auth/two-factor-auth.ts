@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Generates TOTP secret and QR code. 2FA is not enabled until verified.
  * @summary Setup 2FA
  */
-export type twoFactorAuthAuth2faSetupResponse200 = {
-  data: void
-  status: 200
-}
+export type twoFactorAuthAuth2faSetupResponse200 = void
 
-export type twoFactorAuthAuth2faSetupResponseSuccess = (twoFactorAuthAuth2faSetupResponse200) & {
-  headers: Headers;
-};
+export type twoFactorAuthAuth2faSetupResponseSuccess = twoFactorAuthAuth2faSetupResponse200
 ;
 
 export type twoFactorAuthAuth2faSetupResponse = (twoFactorAuthAuth2faSetupResponseSuccess)
@@ -122,14 +117,9 @@ export const createTwoFactorAuthAuth2faSetup = <TError = unknown,
  * Verifies TOTP token and enables 2FA. Returns backup codes (shown only once).
  * @summary Verify token and enable 2FA
  */
-export type twoFactorAuthAuth2faVerifyResponse200 = {
-  data: void
-  status: 200
-}
+export type twoFactorAuthAuth2faVerifyResponse200 = void
 
-export type twoFactorAuthAuth2faVerifyResponseSuccess = (twoFactorAuthAuth2faVerifyResponse200) & {
-  headers: Headers;
-};
+export type twoFactorAuthAuth2faVerifyResponseSuccess = twoFactorAuthAuth2faVerifyResponse200
 ;
 
 export type twoFactorAuthAuth2faVerifyResponse = (twoFactorAuthAuth2faVerifyResponseSuccess)
@@ -205,14 +195,9 @@ export const createTwoFactorAuthAuth2faVerify = <TError = unknown,
  * Returns 2FA status including enabled state and backup codes remaining.
  * @summary Get 2FA status
  */
-export type twoFactorAuthAuth2faStatusResponse200 = {
-  data: void
-  status: 200
-}
+export type twoFactorAuthAuth2faStatusResponse200 = void
 
-export type twoFactorAuthAuth2faStatusResponseSuccess = (twoFactorAuthAuth2faStatusResponse200) & {
-  headers: Headers;
-};
+export type twoFactorAuthAuth2faStatusResponseSuccess = twoFactorAuthAuth2faStatusResponse200
 ;
 
 export type twoFactorAuthAuth2faStatusResponse = (twoFactorAuthAuth2faStatusResponseSuccess)
@@ -371,14 +356,9 @@ export const prefetchTwoFactorAuthAuth2faStatusQuery = async <TData = Awaited<Re
  * Generates new backup codes, replacing existing ones. Shown only once.
  * @summary Regenerate backup codes
  */
-export type twoFactorAuthAuth2faBackupCodesRegenerateResponse200 = {
-  data: void
-  status: 200
-}
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponse200 = void
 
-export type twoFactorAuthAuth2faBackupCodesRegenerateResponseSuccess = (twoFactorAuthAuth2faBackupCodesRegenerateResponse200) & {
-  headers: Headers;
-};
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponseSuccess = twoFactorAuthAuth2faBackupCodesRegenerateResponse200
 ;
 
 export type twoFactorAuthAuth2faBackupCodesRegenerateResponse = (twoFactorAuthAuth2faBackupCodesRegenerateResponseSuccess)
@@ -453,14 +433,9 @@ export const createTwoFactorAuthAuth2faBackupCodesRegenerate = <TError = unknown
  * Disables 2FA and removes all backup codes.
  * @summary Disable 2FA
  */
-export type twoFactorAuthAuth2faResponse200 = {
-  data: void
-  status: 200
-}
+export type twoFactorAuthAuth2faResponse200 = void
 
-export type twoFactorAuthAuth2faResponseSuccess = (twoFactorAuthAuth2faResponse200) & {
-  headers: Headers;
-};
+export type twoFactorAuthAuth2faResponseSuccess = twoFactorAuthAuth2faResponse200
 ;
 
 export type twoFactorAuthAuth2faResponse = (twoFactorAuthAuth2faResponseSuccess)

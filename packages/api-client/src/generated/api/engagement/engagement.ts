@@ -33,14 +33,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Engagement API
  * @summary Like a post
  */
-export type engagementPostsLikePostResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsLikePostResponse200 = void
 
-export type engagementPostsLikePostResponseSuccess = (engagementPostsLikePostResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsLikePostResponseSuccess = engagementPostsLikePostResponse200
 ;
 
 export type engagementPostsLikePostResponse = (engagementPostsLikePostResponseSuccess)
@@ -117,14 +112,9 @@ export const createEngagementPostsLikePost = <TError = unknown,
  * Engagement API
  * @summary Unlike a post
  */
-export type engagementPostsLikeDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsLikeDeleteResponse200 = void
 
-export type engagementPostsLikeDeleteResponseSuccess = (engagementPostsLikeDeleteResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsLikeDeleteResponseSuccess = engagementPostsLikeDeleteResponse200
 ;
 
 export type engagementPostsLikeDeleteResponse = (engagementPostsLikeDeleteResponseSuccess)
@@ -199,14 +189,9 @@ export const createEngagementPostsLikeDelete = <TError = unknown,
  * Engagement API
  * @summary Bookmark a post
  */
-export type engagementPostsBookmarkPostResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsBookmarkPostResponse200 = void
 
-export type engagementPostsBookmarkPostResponseSuccess = (engagementPostsBookmarkPostResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsBookmarkPostResponseSuccess = engagementPostsBookmarkPostResponse200
 ;
 
 export type engagementPostsBookmarkPostResponse = (engagementPostsBookmarkPostResponseSuccess)
@@ -281,14 +266,9 @@ export const createEngagementPostsBookmarkPost = <TError = unknown,
  * Engagement API
  * @summary Remove bookmark from a post
  */
-export type engagementPostsBookmarkDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsBookmarkDeleteResponse200 = void
 
-export type engagementPostsBookmarkDeleteResponseSuccess = (engagementPostsBookmarkDeleteResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsBookmarkDeleteResponseSuccess = engagementPostsBookmarkDeleteResponse200
 ;
 
 export type engagementPostsBookmarkDeleteResponse = (engagementPostsBookmarkDeleteResponseSuccess)
@@ -363,14 +343,9 @@ export const createEngagementPostsBookmarkDelete = <TError = unknown,
  * Engagement API
  * @summary Repost a post
  */
-export type engagementPostsRepostResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsRepostResponse200 = void
 
-export type engagementPostsRepostResponseSuccess = (engagementPostsRepostResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsRepostResponseSuccess = engagementPostsRepostResponse200
 ;
 
 export type engagementPostsRepostResponse = (engagementPostsRepostResponseSuccess)
@@ -447,14 +422,9 @@ export const createEngagementPostsRepost = <TError = unknown,
  * Engagement API
  * @summary Report a post
  */
-export type engagementPostsReportResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsReportResponse200 = void
 
-export type engagementPostsReportResponseSuccess = (engagementPostsReportResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsReportResponseSuccess = engagementPostsReportResponse200
 ;
 
 export type engagementPostsReportResponse = (engagementPostsReportResponseSuccess)
@@ -531,14 +501,9 @@ export const createEngagementPostsReport = <TError = unknown,
  * Engagement API
  * @summary Vote on a poll
  */
-export type engagementPostsPollVoteResponse200 = {
-  data: void
-  status: 200
-}
+export type engagementPostsPollVoteResponse200 = void
 
-export type engagementPostsPollVoteResponseSuccess = (engagementPostsPollVoteResponse200) & {
-  headers: Headers;
-};
+export type engagementPostsPollVoteResponseSuccess = engagementPostsPollVoteResponse200
 ;
 
 export type engagementPostsPollVoteResponse = (engagementPostsPollVoteResponseSuccess)

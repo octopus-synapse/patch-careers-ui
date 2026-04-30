@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Dsl API
  * @summary Validate DSL schema
  */
-export type dslValidateResponse200 = {
-  data: void
-  status: 200
-}
+export type dslValidateResponse200 = void
 
-export type dslValidateResponseSuccess = (dslValidateResponse200) & {
-  headers: Headers;
-};
+export type dslValidateResponseSuccess = dslValidateResponse200
 ;
 
 export type dslValidateResponse = (dslValidateResponseSuccess)
@@ -124,14 +119,9 @@ export const createDslValidate = <TError = unknown,
  * Dsl API
  * @summary Compile DSL to AST (preview, no persistence)
  */
-export type dslPreviewResponse200 = {
-  data: void
-  status: 200
-}
+export type dslPreviewResponse200 = void
 
-export type dslPreviewResponseSuccess = (dslPreviewResponse200) & {
-  headers: Headers;
-};
+export type dslPreviewResponseSuccess = dslPreviewResponse200
 ;
 
 export type dslPreviewResponse = (dslPreviewResponseSuccess)
@@ -213,14 +203,9 @@ export const createDslPreview = <TError = unknown,
  * Dsl API
  * @summary Get compiled AST for a resume
  */
-export type dslRenderResponse200 = {
-  data: void
-  status: 200
-}
+export type dslRenderResponse200 = void
 
-export type dslRenderResponseSuccess = (dslRenderResponse200) & {
-  headers: Headers;
-};
+export type dslRenderResponseSuccess = dslRenderResponse200
 ;
 
 export type dslRenderResponse = (dslRenderResponseSuccess)
@@ -398,14 +383,9 @@ export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof d
  * Dsl API
  * @summary Get compiled AST for a public resume
  */
-export type dslRenderPublicResponse200 = {
-  data: void
-  status: 200
-}
+export type dslRenderPublicResponse200 = void
 
-export type dslRenderPublicResponseSuccess = (dslRenderPublicResponse200) & {
-  headers: Headers;
-};
+export type dslRenderPublicResponseSuccess = dslRenderPublicResponse200
 ;
 
 export type dslRenderPublicResponse = (dslRenderPublicResponseSuccess)

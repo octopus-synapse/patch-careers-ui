@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Notifications API
  * @summary Get notifications for current user
  */
-export type notificationsListResponse200 = {
-  data: void
-  status: 200
-}
+export type notificationsListResponse200 = void
 
-export type notificationsListResponseSuccess = (notificationsListResponse200) & {
-  headers: Headers;
-};
+export type notificationsListResponseSuccess = notificationsListResponse200
 ;
 
 export type notificationsListResponse = (notificationsListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchNotificationsListQuery = async <TData = Awaited<ReturnType<
  * Notifications API
  * @summary Get unread notification count
  */
-export type notificationsUnreadCountResponse200 = {
-  data: void
-  status: 200
-}
+export type notificationsUnreadCountResponse200 = void
 
-export type notificationsUnreadCountResponseSuccess = (notificationsUnreadCountResponse200) & {
-  headers: Headers;
-};
+export type notificationsUnreadCountResponseSuccess = notificationsUnreadCountResponse200
 ;
 
 export type notificationsUnreadCountResponse = (notificationsUnreadCountResponseSuccess)
@@ -381,14 +371,9 @@ export const prefetchNotificationsUnreadCountQuery = async <TData = Awaited<Retu
  * Notifications API
  * @summary Mark notifications as read
  */
-export type notificationsMarkReadResponse200 = {
-  data: void
-  status: 200
-}
+export type notificationsMarkReadResponse200 = void
 
-export type notificationsMarkReadResponseSuccess = (notificationsMarkReadResponse200) & {
-  headers: Headers;
-};
+export type notificationsMarkReadResponseSuccess = notificationsMarkReadResponse200
 ;
 
 export type notificationsMarkReadResponse = (notificationsMarkReadResponseSuccess)
@@ -464,14 +449,9 @@ export const createNotificationsMarkRead = <TError = unknown,
  * Returns `{types:[{key,label,description,category,channels:[{key,enabled,locked?}],userEnabled}]}`. The frontend renders the settings matrix directly from this payload — adding a new type is a backend-only change.
  * @summary Notification types with channels + user preferences
  */
-export type notificationsTypesResponse200 = {
-  data: void
-  status: 200
-}
+export type notificationsTypesResponse200 = void
 
-export type notificationsTypesResponseSuccess = (notificationsTypesResponse200) & {
-  headers: Headers;
-};
+export type notificationsTypesResponseSuccess = notificationsTypesResponse200
 ;
 
 export type notificationsTypesResponse = (notificationsTypesResponseSuccess)
@@ -630,14 +610,9 @@ export const prefetchNotificationsTypesQuery = async <TData = Awaited<ReturnType
  * Notifications API
  * @summary Get notification preferences for the current user
  */
-export type notificationsPreferencesGetResponse200 = {
-  data: void
-  status: 200
-}
+export type notificationsPreferencesGetResponse200 = void
 
-export type notificationsPreferencesGetResponseSuccess = (notificationsPreferencesGetResponse200) & {
-  headers: Headers;
-};
+export type notificationsPreferencesGetResponseSuccess = notificationsPreferencesGetResponse200
 ;
 
 export type notificationsPreferencesGetResponse = (notificationsPreferencesGetResponseSuccess)
@@ -796,14 +771,9 @@ export const prefetchNotificationsPreferencesGetQuery = async <TData = Awaited<R
  * Notifications API
  * @summary Update a notification type preference (in-app enable + email channel + delivery mode).
  */
-export type notificationsPreferencesPutResponse200 = {
-  data: void
-  status: 200
-}
+export type notificationsPreferencesPutResponse200 = void
 
-export type notificationsPreferencesPutResponseSuccess = (notificationsPreferencesPutResponse200) & {
-  headers: Headers;
-};
+export type notificationsPreferencesPutResponseSuccess = notificationsPreferencesPutResponse200
 ;
 
 export type notificationsPreferencesPutResponse = (notificationsPreferencesPutResponseSuccess)

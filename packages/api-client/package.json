@@ -9,7 +9,7 @@
     "./zod": "./src/generated/zod/index.ts"
   },
   "scripts": {
-    "sdk:generate": "orval --config orval.config.ts && bun run scripts/generate-barrel.ts",
+    "sdk:generate": "orval --config orval.config.ts && bun run scripts/fix-response-types.ts && bun run scripts/generate-barrel.ts",
     "check": "tsc --noEmit"
   },
   "peerDependencies": {

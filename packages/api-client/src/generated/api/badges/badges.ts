@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * User achievement badges
  * @summary Badges awarded to the viewer.
  */
-export type badgesMeResponse200 = {
-  data: void
-  status: 200
-}
+export type badgesMeResponse200 = void
 
-export type badgesMeResponseSuccess = (badgesMeResponse200) & {
-  headers: Headers;
-};
+export type badgesMeResponseSuccess = badgesMeResponse200
 ;
 
 export type badgesMeResponse = (badgesMeResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchBadgesMeQuery = async <TData = Awaited<ReturnType<typeof ba
  * User achievement badges
  * @summary Public list of badges for a given user.
  */
-export type badgesUserResponse200 = {
-  data: void
-  status: 200
-}
+export type badgesUserResponse200 = void
 
-export type badgesUserResponseSuccess = (badgesUserResponse200) & {
-  headers: Headers;
-};
+export type badgesUserResponseSuccess = badgesUserResponse200
 ;
 
 export type badgesUserResponse = (badgesUserResponseSuccess)

@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin onboarding management
  * @summary List all onboarding steps
  */
-export type adminOnboardingStepsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingStepsGetResponse200 = void
 
-export type adminOnboardingStepsGetResponseSuccess = (adminOnboardingStepsGetResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingStepsGetResponseSuccess = adminOnboardingStepsGetResponse200
 ;
 
 export type adminOnboardingStepsGetResponse = (adminOnboardingStepsGetResponseSuccess)
@@ -208,14 +203,9 @@ export const prefetchAdminOnboardingStepsGetQuery = async <TData = Awaited<Retur
  * Admin onboarding management
  * @summary Create onboarding step
  */
-export type adminOnboardingStepsPostResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingStepsPostResponse200 = void
 
-export type adminOnboardingStepsPostResponseSuccess = (adminOnboardingStepsPostResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingStepsPostResponseSuccess = adminOnboardingStepsPostResponse200
 ;
 
 export type adminOnboardingStepsPostResponse = (adminOnboardingStepsPostResponseSuccess)
@@ -291,14 +281,9 @@ export const createAdminOnboardingStepsPost = <TError = unknown,
  * Admin onboarding management
  * @summary Get onboarding funnel statistics
  */
-export type adminOnboardingStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingStatsResponse200 = void
 
-export type adminOnboardingStatsResponseSuccess = (adminOnboardingStatsResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingStatsResponseSuccess = adminOnboardingStatsResponse200
 ;
 
 export type adminOnboardingStatsResponse = (adminOnboardingStatsResponseSuccess)
@@ -457,14 +442,9 @@ export const prefetchAdminOnboardingStatsQuery = async <TData = Awaited<ReturnTy
  * Admin onboarding management
  * @summary Get onboarding step by key
  */
-export type adminOnboardingStepsGet2Response200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingStepsGet2Response200 = void
 
-export type adminOnboardingStepsGet2ResponseSuccess = (adminOnboardingStepsGet2Response200) & {
-  headers: Headers;
-};
+export type adminOnboardingStepsGet2ResponseSuccess = adminOnboardingStepsGet2Response200
 ;
 
 export type adminOnboardingStepsGet2Response = (adminOnboardingStepsGet2ResponseSuccess)
@@ -623,14 +603,9 @@ export const prefetchAdminOnboardingStepsGet2Query = async <TData = Awaited<Retu
  * Admin onboarding management
  * @summary Update onboarding step
  */
-export type adminOnboardingStepsPutResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingStepsPutResponse200 = void
 
-export type adminOnboardingStepsPutResponseSuccess = (adminOnboardingStepsPutResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingStepsPutResponseSuccess = adminOnboardingStepsPutResponse200
 ;
 
 export type adminOnboardingStepsPutResponse = (adminOnboardingStepsPutResponseSuccess)
@@ -707,14 +682,9 @@ export const createAdminOnboardingStepsPut = <TError = unknown,
  * Admin onboarding management
  * @summary Delete onboarding step
  */
-export type adminOnboardingStepsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingStepsDeleteResponse200 = void
 
-export type adminOnboardingStepsDeleteResponseSuccess = (adminOnboardingStepsDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingStepsDeleteResponseSuccess = adminOnboardingStepsDeleteResponse200
 ;
 
 export type adminOnboardingStepsDeleteResponse = (adminOnboardingStepsDeleteResponseSuccess)
@@ -789,14 +759,9 @@ export const createAdminOnboardingStepsDelete = <TError = unknown,
  * Admin onboarding management
  * @summary Get onboarding config (strength levels)
  */
-export type adminOnboardingConfigGetResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingConfigGetResponse200 = void
 
-export type adminOnboardingConfigGetResponseSuccess = (adminOnboardingConfigGetResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingConfigGetResponseSuccess = adminOnboardingConfigGetResponse200
 ;
 
 export type adminOnboardingConfigGetResponse = (adminOnboardingConfigGetResponseSuccess)
@@ -955,14 +920,9 @@ export const prefetchAdminOnboardingConfigGetQuery = async <TData = Awaited<Retu
  * Admin onboarding management
  * @summary Update onboarding config
  */
-export type adminOnboardingConfigPutResponse200 = {
-  data: void
-  status: 200
-}
+export type adminOnboardingConfigPutResponse200 = void
 
-export type adminOnboardingConfigPutResponseSuccess = (adminOnboardingConfigPutResponse200) & {
-  headers: Headers;
-};
+export type adminOnboardingConfigPutResponseSuccess = adminOnboardingConfigPutResponse200
 ;
 
 export type adminOnboardingConfigPutResponse = (adminOnboardingConfigPutResponseSuccess)

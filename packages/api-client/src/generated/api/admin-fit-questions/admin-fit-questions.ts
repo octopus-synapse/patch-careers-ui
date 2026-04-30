@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin FitQuestion CRUD
  * @summary List every FitQuestion in the pool
  */
-export type adminFitQuestionsListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFitQuestionsListResponse200 = void
 
-export type adminFitQuestionsListResponseSuccess = (adminFitQuestionsListResponse200) & {
-  headers: Headers;
-};
+export type adminFitQuestionsListResponseSuccess = adminFitQuestionsListResponse200
 ;
 
 export type adminFitQuestionsListResponse = (adminFitQuestionsListResponseSuccess)
@@ -207,14 +202,9 @@ export const prefetchAdminFitQuestionsListQuery = async <TData = Awaited<ReturnT
  * Admin FitQuestion CRUD
  * @summary Create a new FitQuestion
  */
-export type adminFitQuestionsCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFitQuestionsCreateResponse200 = void
 
-export type adminFitQuestionsCreateResponseSuccess = (adminFitQuestionsCreateResponse200) & {
-  headers: Headers;
-};
+export type adminFitQuestionsCreateResponseSuccess = adminFitQuestionsCreateResponse200
 ;
 
 export type adminFitQuestionsCreateResponse = (adminFitQuestionsCreateResponseSuccess)
@@ -290,14 +280,9 @@ export const createAdminFitQuestionsCreate = <TError = unknown,
  * Admin FitQuestion CRUD
  * @summary Get one FitQuestion by id
  */
-export type adminFitQuestionsGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFitQuestionsGetByIdResponse200 = void
 
-export type adminFitQuestionsGetByIdResponseSuccess = (adminFitQuestionsGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminFitQuestionsGetByIdResponseSuccess = adminFitQuestionsGetByIdResponse200
 ;
 
 export type adminFitQuestionsGetByIdResponse = (adminFitQuestionsGetByIdResponseSuccess)
@@ -456,14 +441,9 @@ export const prefetchAdminFitQuestionsGetByIdQuery = async <TData = Awaited<Retu
  * Admin FitQuestion CRUD
  * @summary Update an existing FitQuestion
  */
-export type adminFitQuestionsUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFitQuestionsUpdateResponse200 = void
 
-export type adminFitQuestionsUpdateResponseSuccess = (adminFitQuestionsUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminFitQuestionsUpdateResponseSuccess = adminFitQuestionsUpdateResponse200
 ;
 
 export type adminFitQuestionsUpdateResponse = (adminFitQuestionsUpdateResponseSuccess)
@@ -540,14 +520,9 @@ export const createAdminFitQuestionsUpdate = <TError = unknown,
  * Admin FitQuestion CRUD
  * @summary Delete a FitQuestion
  */
-export type adminFitQuestionsDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminFitQuestionsDeleteResponse200 = void
 
-export type adminFitQuestionsDeleteResponseSuccess = (adminFitQuestionsDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminFitQuestionsDeleteResponseSuccess = adminFitQuestionsDeleteResponse200
 ;
 
 export type adminFitQuestionsDeleteResponse = (adminFitQuestionsDeleteResponseSuccess)

@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Follow a user
  */
-export type socialFollowUsersFollowPostResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersFollowPostResponse200 = void
 
-export type socialFollowUsersFollowPostResponseSuccess = (socialFollowUsersFollowPostResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersFollowPostResponseSuccess = socialFollowUsersFollowPostResponse200
 ;
 
 export type socialFollowUsersFollowPostResponse = (socialFollowUsersFollowPostResponseSuccess)
@@ -121,14 +116,9 @@ export const createSocialFollowUsersFollowPost = <TError = unknown,
     /**
  * @summary Unfollow a user
  */
-export type socialFollowUsersFollowDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersFollowDeleteResponse200 = void
 
-export type socialFollowUsersFollowDeleteResponseSuccess = (socialFollowUsersFollowDeleteResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersFollowDeleteResponseSuccess = socialFollowUsersFollowDeleteResponse200
 ;
 
 export type socialFollowUsersFollowDeleteResponse = (socialFollowUsersFollowDeleteResponseSuccess)
@@ -202,14 +192,9 @@ export const createSocialFollowUsersFollowDelete = <TError = unknown,
     /**
  * @summary Get followers for a user
  */
-export type socialFollowUsersFollowersResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersFollowersResponse200 = void
 
-export type socialFollowUsersFollowersResponseSuccess = (socialFollowUsersFollowersResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersFollowersResponseSuccess = socialFollowUsersFollowersResponse200
 ;
 
 export type socialFollowUsersFollowersResponse = (socialFollowUsersFollowersResponseSuccess)
@@ -386,14 +371,9 @@ export const prefetchSocialFollowUsersFollowersQuery = async <TData = Awaited<Re
 /**
  * @summary Get users followed by a user
  */
-export type socialFollowUsersFollowingResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersFollowingResponse200 = void
 
-export type socialFollowUsersFollowingResponseSuccess = (socialFollowUsersFollowingResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersFollowingResponseSuccess = socialFollowUsersFollowingResponse200
 ;
 
 export type socialFollowUsersFollowingResponse = (socialFollowUsersFollowingResponseSuccess)
@@ -570,14 +550,9 @@ export const prefetchSocialFollowUsersFollowingQuery = async <TData = Awaited<Re
 /**
  * @summary Check following relationship
  */
-export type socialFollowUsersIsFollowingResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersIsFollowingResponse200 = void
 
-export type socialFollowUsersIsFollowingResponseSuccess = (socialFollowUsersIsFollowingResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersIsFollowingResponseSuccess = socialFollowUsersIsFollowingResponse200
 ;
 
 export type socialFollowUsersIsFollowingResponse = (socialFollowUsersIsFollowingResponseSuccess)
@@ -735,14 +710,9 @@ export const prefetchSocialFollowUsersIsFollowingQuery = async <TData = Awaited<
 /**
  * @summary Get social stats for authenticated user
  */
-export type socialFollowUsersMeSocialStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersMeSocialStatsResponse200 = void
 
-export type socialFollowUsersMeSocialStatsResponseSuccess = (socialFollowUsersMeSocialStatsResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersMeSocialStatsResponseSuccess = socialFollowUsersMeSocialStatsResponse200
 ;
 
 export type socialFollowUsersMeSocialStatsResponse = (socialFollowUsersMeSocialStatsResponseSuccess)
@@ -900,14 +870,9 @@ export const prefetchSocialFollowUsersMeSocialStatsQuery = async <TData = Awaite
 /**
  * @summary Get social stats for a user
  */
-export type socialFollowUsersSocialStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type socialFollowUsersSocialStatsResponse200 = void
 
-export type socialFollowUsersSocialStatsResponseSuccess = (socialFollowUsersSocialStatsResponse200) & {
-  headers: Headers;
-};
+export type socialFollowUsersSocialStatsResponseSuccess = socialFollowUsersSocialStatsResponse200
 ;
 
 export type socialFollowUsersSocialStatsResponse = (socialFollowUsersSocialStatsResponseSuccess)

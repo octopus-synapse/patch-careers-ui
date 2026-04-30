@@ -16,6 +16,7 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  CareerGraphView200,
   CareerGraphViewBody
 } from '../../models';
 
@@ -30,14 +31,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Career cohort projection API
  * @summary Aggregate opt-in peers who share ≥60% of the requested stack into experienceYears buckets; returns current bucket + 3/5/10y projections.
  */
-export type careerGraphViewResponse200 = {
-  data: void
-  status: 200
-}
+export type careerGraphViewResponse200 = CareerGraphView200
 
-export type careerGraphViewResponseSuccess = (careerGraphViewResponse200) & {
-  headers: Headers;
-};
+export type careerGraphViewResponseSuccess = careerGraphViewResponse200
 ;
 
 export type careerGraphViewResponse = (careerGraphViewResponseSuccess)

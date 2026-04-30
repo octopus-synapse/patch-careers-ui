@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Tech Areas API
  * @summary List all tech areas
  */
-export type adminTechAreasListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechAreasListResponse200 = void
 
-export type adminTechAreasListResponseSuccess = (adminTechAreasListResponse200) & {
-  headers: Headers;
-};
+export type adminTechAreasListResponseSuccess = adminTechAreasListResponse200
 ;
 
 export type adminTechAreasListResponse = (adminTechAreasListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchAdminTechAreasListQuery = async <TData = Awaited<ReturnType
  * Admin Tech Areas API
  * @summary Create tech area
  */
-export type adminTechAreasCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechAreasCreateResponse200 = void
 
-export type adminTechAreasCreateResponseSuccess = (adminTechAreasCreateResponse200) & {
-  headers: Headers;
-};
+export type adminTechAreasCreateResponseSuccess = adminTechAreasCreateResponse200
 ;
 
 export type adminTechAreasCreateResponse = (adminTechAreasCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createAdminTechAreasCreate = <TError = unknown,
  * Admin Tech Areas API
  * @summary Get tech area by ID
  */
-export type adminTechAreasGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechAreasGetByIdResponse200 = void
 
-export type adminTechAreasGetByIdResponseSuccess = (adminTechAreasGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminTechAreasGetByIdResponseSuccess = adminTechAreasGetByIdResponse200
 ;
 
 export type adminTechAreasGetByIdResponse = (adminTechAreasGetByIdResponseSuccess)
@@ -464,14 +449,9 @@ export const prefetchAdminTechAreasGetByIdQuery = async <TData = Awaited<ReturnT
  * Admin Tech Areas API
  * @summary Update tech area
  */
-export type adminTechAreasUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechAreasUpdateResponse200 = void
 
-export type adminTechAreasUpdateResponseSuccess = (adminTechAreasUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminTechAreasUpdateResponseSuccess = adminTechAreasUpdateResponse200
 ;
 
 export type adminTechAreasUpdateResponse = (adminTechAreasUpdateResponseSuccess)
@@ -548,14 +528,9 @@ export const createAdminTechAreasUpdate = <TError = unknown,
  * Admin Tech Areas API
  * @summary Delete tech area
  */
-export type adminTechAreasDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTechAreasDeleteResponse200 = void
 
-export type adminTechAreasDeleteResponseSuccess = (adminTechAreasDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminTechAreasDeleteResponseSuccess = adminTechAreasDeleteResponse200
 ;
 
 export type adminTechAreasDeleteResponse = (adminTechAreasDeleteResponseSuccess)

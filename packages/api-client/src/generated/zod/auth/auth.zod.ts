@@ -56,3 +56,24 @@ export const AuthLogoutBody = zod.object({
   "logoutAllSessions": zod.boolean().default(authLogoutBodyLogoutAllSessionsDefault)
 })
 
+/**
+ * Returns current user data if authenticated via session cookie or JWT bearer.
+ * @summary Get Session
+ */
+export const AuthSessionResponse = zod.object({
+  "authenticated": zod.boolean(),
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "emailVerified": zod.boolean().nullish(),
+  "role": zod.enum(['USER', 'ADMIN']),
+  "roles": zod.array(zod.string()),
+  "isAdmin": zod.boolean(),
+  "needsOnboarding": zod.boolean(),
+  "needsEmailVerification": zod.boolean()
+}).nullish()
+})
+

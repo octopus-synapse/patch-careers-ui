@@ -1,5 +1,4 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createAuthSession } from 'api-client';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';

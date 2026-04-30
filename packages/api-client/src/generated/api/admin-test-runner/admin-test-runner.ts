@@ -39,14 +39,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Run a test suite
  */
-export type adminTestRunnerCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTestRunnerCreateResponse200 = void
 
-export type adminTestRunnerCreateResponseSuccess = (adminTestRunnerCreateResponse200) & {
-  headers: Headers;
-};
+export type adminTestRunnerCreateResponseSuccess = adminTestRunnerCreateResponse200
 ;
 
 export type adminTestRunnerCreateResponse = (adminTestRunnerCreateResponseSuccess)
@@ -121,14 +116,9 @@ export const createAdminTestRunnerCreate = <TError = unknown,
     /**
  * @summary List available test suites
  */
-export type adminTestRunnerSuitesResponse200 = {
-  data: void
-  status: 200
-}
+export type adminTestRunnerSuitesResponse200 = void
 
-export type adminTestRunnerSuitesResponseSuccess = (adminTestRunnerSuitesResponse200) & {
-  headers: Headers;
-};
+export type adminTestRunnerSuitesResponseSuccess = adminTestRunnerSuitesResponse200
 ;
 
 export type adminTestRunnerSuitesResponse = (adminTestRunnerSuitesResponseSuccess)

@@ -30,14 +30,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Registers a new user account and returns auth tokens for auto-login.
  * @summary Create new account
  */
-export type accountsSignupResponse200 = {
-  data: void
-  status: 200
-}
+export type accountsSignupResponse200 = void
 
-export type accountsSignupResponseSuccess = (accountsSignupResponse200) & {
-  headers: Headers;
-};
+export type accountsSignupResponseSuccess = accountsSignupResponse200
 ;
 
 export type accountsSignupResponse = (accountsSignupResponseSuccess)

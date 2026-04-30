@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Analytics API
  * @summary Get platform-wide analytics overview
  */
-export type adminAnalyticsOverviewResponse200 = {
-  data: void
-  status: 200
-}
+export type adminAnalyticsOverviewResponse200 = void
 
-export type adminAnalyticsOverviewResponseSuccess = (adminAnalyticsOverviewResponse200) & {
-  headers: Headers;
-};
+export type adminAnalyticsOverviewResponseSuccess = adminAnalyticsOverviewResponse200
 ;
 
 export type adminAnalyticsOverviewResponse = (adminAnalyticsOverviewResponseSuccess)

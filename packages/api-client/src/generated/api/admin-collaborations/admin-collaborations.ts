@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Collaborations API
  * @summary Get collaboration statistics
  */
-export type adminCollaborationsStatsResponse200 = {
-  data: void
-  status: 200
-}
+export type adminCollaborationsStatsResponse200 = void
 
-export type adminCollaborationsStatsResponseSuccess = (adminCollaborationsStatsResponse200) & {
-  headers: Headers;
-};
+export type adminCollaborationsStatsResponseSuccess = adminCollaborationsStatsResponse200
 ;
 
 export type adminCollaborationsStatsResponse = (adminCollaborationsStatsResponseSuccess)
@@ -202,14 +197,9 @@ export const prefetchAdminCollaborationsStatsQuery = async <TData = Awaited<Retu
  * Admin Collaborations API
  * @summary List all collaborations
  */
-export type adminCollaborationsListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminCollaborationsListResponse200 = void
 
-export type adminCollaborationsListResponseSuccess = (adminCollaborationsListResponse200) & {
-  headers: Headers;
-};
+export type adminCollaborationsListResponseSuccess = adminCollaborationsListResponse200
 ;
 
 export type adminCollaborationsListResponse = (adminCollaborationsListResponseSuccess)

@@ -31,14 +31,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin ResumeStyle CRUD
  * @summary Create a new ResumeStyle (validates ATS threshold)
  */
-export type adminResumeStylesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminResumeStylesCreateResponse200 = void
 
-export type adminResumeStylesCreateResponseSuccess = (adminResumeStylesCreateResponse200) & {
-  headers: Headers;
-};
+export type adminResumeStylesCreateResponseSuccess = adminResumeStylesCreateResponse200
 ;
 
 export type adminResumeStylesCreateResponse = (adminResumeStylesCreateResponseSuccess)
@@ -114,14 +109,9 @@ export const createAdminResumeStylesCreate = <TError = unknown,
  * Admin ResumeStyle CRUD
  * @summary Update a non-system ResumeStyle
  */
-export type adminResumeStylesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminResumeStylesUpdateResponse200 = void
 
-export type adminResumeStylesUpdateResponseSuccess = (adminResumeStylesUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminResumeStylesUpdateResponseSuccess = adminResumeStylesUpdateResponse200
 ;
 
 export type adminResumeStylesUpdateResponse = (adminResumeStylesUpdateResponseSuccess)
@@ -198,14 +188,9 @@ export const createAdminResumeStylesUpdate = <TError = unknown,
  * Admin ResumeStyle CRUD
  * @summary Delete a non-system ResumeStyle
  */
-export type adminResumeStylesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminResumeStylesDeleteResponse200 = void
 
-export type adminResumeStylesDeleteResponseSuccess = (adminResumeStylesDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminResumeStylesDeleteResponseSuccess = adminResumeStylesDeleteResponse200
 ;
 
 export type adminResumeStylesDeleteResponse = (adminResumeStylesDeleteResponseSuccess)

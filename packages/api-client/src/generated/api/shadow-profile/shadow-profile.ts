@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Shadow Profile API
  * @summary Admin: build or refresh a GitHub-based shadow profile. Call once per login; idempotent.
  */
-export type shadowProfileGithubResponse200 = {
-  data: void
-  status: 200
-}
+export type shadowProfileGithubResponse200 = void
 
-export type shadowProfileGithubResponseSuccess = (shadowProfileGithubResponse200) & {
-  headers: Headers;
-};
+export type shadowProfileGithubResponseSuccess = shadowProfileGithubResponse200
 ;
 
 export type shadowProfileGithubResponse = (shadowProfileGithubResponseSuccess)
@@ -124,14 +119,9 @@ export const createShadowProfileGithub = <TError = unknown,
  * Shadow Profile API
  * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
  */
-export type shadowProfileCandidatesResponse200 = {
-  data: void
-  status: 200
-}
+export type shadowProfileCandidatesResponse200 = void
 
-export type shadowProfileCandidatesResponseSuccess = (shadowProfileCandidatesResponse200) & {
-  headers: Headers;
-};
+export type shadowProfileCandidatesResponseSuccess = shadowProfileCandidatesResponse200
 ;
 
 export type shadowProfileCandidatesResponse = (shadowProfileCandidatesResponseSuccess)
@@ -297,14 +287,9 @@ export const prefetchShadowProfileCandidatesQuery = async <TData = Awaited<Retur
  * Shadow Profile API
  * @summary Claim a shadow profile as the authenticated user. One-shot — cannot be undone.
  */
-export type shadowProfileClaimResponse200 = {
-  data: void
-  status: 200
-}
+export type shadowProfileClaimResponse200 = void
 
-export type shadowProfileClaimResponseSuccess = (shadowProfileClaimResponse200) & {
-  headers: Headers;
-};
+export type shadowProfileClaimResponseSuccess = shadowProfileClaimResponse200
 ;
 
 export type shadowProfileClaimResponse = (shadowProfileClaimResponseSuccess)

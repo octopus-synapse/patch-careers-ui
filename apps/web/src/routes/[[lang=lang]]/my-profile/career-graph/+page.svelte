@@ -1,5 +1,4 @@
 <script lang="ts">
-  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 /**
  * /my-profile/career-graph — "Career graph" view.
  *
@@ -9,16 +8,16 @@
  * identities — the backend returns aggregated histograms only.
  */
 import {
+  type CareerGraphView200,
+  type CareerGraphViewBody,
   careerGraphView,
-  type ViewCareerGraphDataDto,
-  type ViewCareerGraphRequestDto,
 } from 'api-client';
 import { Sparkles, TrendingUp, Users } from 'lucide-svelte';
 import { Badge, Button, Input, Label, Loader, toastState } from 'ui';
 
 let skillsCsv = $state('');
 let submitting = $state(false);
-let data = $state<ViewCareerGraphDataDto | null>(null);
+let data = $state<CareerGraphView200 | null>(null);
 let searched = $state(false);
 
 const skills = $derived(
@@ -29,15 +28,13 @@ const skills = $derived(
 );
 
 // Max bucket count for the histogram — rendered as a relative bar chart.
-const maxPeerCount = $derived(
-  data ? Math.max(0, ...data.buckets.map((b) => b.peerCount)) : 0,
-);
+const maxPeerCount = $derived(data ? Math.max(0, ...data.buckets.map((b) => b.peerCount)) : 0);
 
 async function handleSearch() {
   if (skills.length === 0 || submitting) return;
   submitting = true;
   try {
-    const payload: ViewCareerGraphRequestDto = { stack: skills, maxBuckets: 20 };
+    const payload: CareerGraphViewBody = { stack: skills, maxBuckets: 20 };
     data = await careerGraphView(payload);
     searched = true;
   } catch (err) {

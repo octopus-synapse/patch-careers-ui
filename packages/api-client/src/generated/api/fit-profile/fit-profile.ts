@@ -41,14 +41,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Fit Profile (personality vector)
  * @summary Get the caller's Fit Profile lifecycle state
  */
-export type fitProfileMeGetResponse200 = {
-  data: void
-  status: 200
-}
+export type fitProfileMeGetResponse200 = void
 
-export type fitProfileMeGetResponseSuccess = (fitProfileMeGetResponse200) & {
-  headers: Headers;
-};
+export type fitProfileMeGetResponseSuccess = fitProfileMeGetResponse200
 ;
 
 export type fitProfileMeGetResponse = (fitProfileMeGetResponseSuccess)
@@ -207,14 +202,9 @@ export const prefetchFitProfileMeGetQuery = async <TData = Awaited<ReturnType<ty
  * Fit Profile (personality vector)
  * @summary LGPD - wipe the caller's Fit Answers and anonymize the vector
  */
-export type fitProfileMeDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type fitProfileMeDeleteResponse200 = void
 
-export type fitProfileMeDeleteResponseSuccess = (fitProfileMeDeleteResponse200) & {
-  headers: Headers;
-};
+export type fitProfileMeDeleteResponseSuccess = fitProfileMeDeleteResponse200
 ;
 
 export type fitProfileMeDeleteResponse = (fitProfileMeDeleteResponseSuccess)
@@ -289,14 +279,9 @@ export const createFitProfileMeDelete = <TError = unknown,
  * Fit Profile (personality vector)
  * @summary Get or create the caller's 25-question set
  */
-export type fitProfileQuestionsResponse200 = {
-  data: void
-  status: 200
-}
+export type fitProfileQuestionsResponse200 = void
 
-export type fitProfileQuestionsResponseSuccess = (fitProfileQuestionsResponse200) & {
-  headers: Headers;
-};
+export type fitProfileQuestionsResponseSuccess = fitProfileQuestionsResponse200
 ;
 
 export type fitProfileQuestionsResponse = (fitProfileQuestionsResponseSuccess)
@@ -455,14 +440,9 @@ export const prefetchFitProfileQuestionsQuery = async <TData = Awaited<ReturnTyp
  * Fit Profile (personality vector)
  * @summary Commit the 25 Fit Answers; compute and persist vector
  */
-export type fitProfileAnswersResponse200 = {
-  data: void
-  status: 200
-}
+export type fitProfileAnswersResponse200 = void
 
-export type fitProfileAnswersResponseSuccess = (fitProfileAnswersResponse200) & {
-  headers: Headers;
-};
+export type fitProfileAnswersResponseSuccess = fitProfileAnswersResponse200
 ;
 
 export type fitProfileAnswersResponse = (fitProfileAnswersResponseSuccess)
@@ -538,14 +518,9 @@ export const createFitProfileAnswers = <TError = unknown,
  * Job Fit Profile (recruiter sliders)
  * @summary Get the recruiter-authored Fit Profile for a job
  */
-export type fitProfileJobsFitProfileGetResponse200 = {
-  data: void
-  status: 200
-}
+export type fitProfileJobsFitProfileGetResponse200 = void
 
-export type fitProfileJobsFitProfileGetResponseSuccess = (fitProfileJobsFitProfileGetResponse200) & {
-  headers: Headers;
-};
+export type fitProfileJobsFitProfileGetResponseSuccess = fitProfileJobsFitProfileGetResponse200
 ;
 
 export type fitProfileJobsFitProfileGetResponse = (fitProfileJobsFitProfileGetResponseSuccess)
@@ -704,14 +679,9 @@ export const prefetchFitProfileJobsFitProfileGetQuery = async <TData = Awaited<R
  * Job Fit Profile (recruiter sliders)
  * @summary Upsert the recruiter-authored Fit Profile for a job
  */
-export type fitProfileJobsFitProfilePostResponse200 = {
-  data: void
-  status: 200
-}
+export type fitProfileJobsFitProfilePostResponse200 = void
 
-export type fitProfileJobsFitProfilePostResponseSuccess = (fitProfileJobsFitProfilePostResponse200) & {
-  headers: Headers;
-};
+export type fitProfileJobsFitProfilePostResponseSuccess = fitProfileJobsFitProfilePostResponse200
 ;
 
 export type fitProfileJobsFitProfilePostResponse = (fitProfileJobsFitProfilePostResponseSuccess)

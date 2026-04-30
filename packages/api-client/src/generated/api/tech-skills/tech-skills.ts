@@ -36,14 +36,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * List of tech skills
  * @summary Get all tech skills
  */
-export type techSkillsListResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsListResponse200 = void
 
-export type techSkillsListResponseSuccess = (techSkillsListResponse200) & {
-  headers: Headers;
-};
+export type techSkillsListResponseSuccess = techSkillsListResponse200
 ;
 
 export type techSkillsListResponse = (techSkillsListResponseSuccess)
@@ -202,14 +197,9 @@ export const prefetchTechSkillsListQuery = async <TData = Awaited<ReturnType<typ
  * List of skills by type
  * @summary Get skills by type
  */
-export type techSkillsTypeResponse200 = {
-  data: void
-  status: 200
-}
+export type techSkillsTypeResponse200 = void
 
-export type techSkillsTypeResponseSuccess = (techSkillsTypeResponse200) & {
-  headers: Headers;
-};
+export type techSkillsTypeResponseSuccess = techSkillsTypeResponse200
 ;
 
 export type techSkillsTypeResponse = (techSkillsTypeResponseSuccess)

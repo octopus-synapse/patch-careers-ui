@@ -44,14 +44,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Translation API
  * @summary Check translation service health
  */
-export type translationHealthResponse200 = {
-  data: void
-  status: 200
-}
+export type translationHealthResponse200 = void
 
-export type translationHealthResponseSuccess = (translationHealthResponse200) & {
-  headers: Headers;
-};
+export type translationHealthResponseSuccess = translationHealthResponse200
 ;
 
 export type translationHealthResponse = (translationHealthResponseSuccess)
@@ -210,14 +205,9 @@ export const prefetchTranslationHealthQuery = async <TData = Awaited<ReturnType<
  * Translation API
  * @summary Translate a single text
  */
-export type translationTextResponse200 = {
-  data: void
-  status: 200
-}
+export type translationTextResponse200 = void
 
-export type translationTextResponseSuccess = (translationTextResponse200) & {
-  headers: Headers;
-};
+export type translationTextResponseSuccess = translationTextResponse200
 ;
 
 export type translationTextResponse = (translationTextResponseSuccess)
@@ -293,14 +283,9 @@ export const createTranslationText = <TError = unknown,
  * Translation API
  * @summary Detect the language of a text
  */
-export type translationDetectResponse200 = {
-  data: void
-  status: 200
-}
+export type translationDetectResponse200 = void
 
-export type translationDetectResponseSuccess = (translationDetectResponse200) & {
-  headers: Headers;
-};
+export type translationDetectResponseSuccess = translationDetectResponse200
 ;
 
 export type translationDetectResponse = (translationDetectResponseSuccess)
@@ -376,14 +361,9 @@ export const createTranslationDetect = <TError = unknown,
  * Translation API
  * @summary Translate multiple texts in batch
  */
-export type translationBatchResponse200 = {
-  data: void
-  status: 200
-}
+export type translationBatchResponse200 = void
 
-export type translationBatchResponseSuccess = (translationBatchResponse200) & {
-  headers: Headers;
-};
+export type translationBatchResponseSuccess = translationBatchResponse200
 ;
 
 export type translationBatchResponse = (translationBatchResponseSuccess)
@@ -459,14 +439,9 @@ export const createTranslationBatch = <TError = unknown,
  * Translation API
  * @summary Translate Portuguese to English
  */
-export type translationPtToEnResponse200 = {
-  data: void
-  status: 200
-}
+export type translationPtToEnResponse200 = void
 
-export type translationPtToEnResponseSuccess = (translationPtToEnResponse200) & {
-  headers: Headers;
-};
+export type translationPtToEnResponseSuccess = translationPtToEnResponse200
 ;
 
 export type translationPtToEnResponse = (translationPtToEnResponseSuccess)
@@ -542,14 +517,9 @@ export const createTranslationPtToEn = <TError = unknown,
  * Translation API
  * @summary Translate English to Portuguese
  */
-export type translationEnToPtResponse200 = {
-  data: void
-  status: 200
-}
+export type translationEnToPtResponse200 = void
 
-export type translationEnToPtResponseSuccess = (translationEnToPtResponse200) & {
-  headers: Headers;
-};
+export type translationEnToPtResponseSuccess = translationEnToPtResponse200
 ;
 
 export type translationEnToPtResponse = (translationEnToPtResponseSuccess)

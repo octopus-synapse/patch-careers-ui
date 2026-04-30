@@ -46,14 +46,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Chat API
  * @summary Send a message to a user
  */
-export type chatMessagesResponse200 = {
-  data: void
-  status: 200
-}
+export type chatMessagesResponse200 = void
 
-export type chatMessagesResponseSuccess = (chatMessagesResponse200) & {
-  headers: Headers;
-};
+export type chatMessagesResponseSuccess = chatMessagesResponse200
 ;
 
 export type chatMessagesResponse = (chatMessagesResponseSuccess)
@@ -129,14 +124,9 @@ export const createChatMessages = <TError = unknown,
  * Chat API
  * @summary Send a message to an existing conversation
  */
-export type chatConversationsMessagesPostResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsMessagesPostResponse200 = void
 
-export type chatConversationsMessagesPostResponseSuccess = (chatConversationsMessagesPostResponse200) & {
-  headers: Headers;
-};
+export type chatConversationsMessagesPostResponseSuccess = chatConversationsMessagesPostResponse200
 ;
 
 export type chatConversationsMessagesPostResponse = (chatConversationsMessagesPostResponseSuccess)
@@ -213,14 +203,9 @@ export const createChatConversationsMessagesPost = <TError = unknown,
  * Chat API
  * @summary Get messages for a conversation
  */
-export type chatConversationsMessagesGetResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsMessagesGetResponse200 = void
 
-export type chatConversationsMessagesGetResponseSuccess = (chatConversationsMessagesGetResponse200) & {
-  headers: Headers;
-};
+export type chatConversationsMessagesGetResponseSuccess = chatConversationsMessagesGetResponse200
 ;
 
 export type chatConversationsMessagesGetResponse = (chatConversationsMessagesGetResponseSuccess)
@@ -398,14 +383,9 @@ export const prefetchChatConversationsMessagesGetQuery = async <TData = Awaited<
  * Chat API
  * @summary Get all conversations for the current user
  */
-export type chatConversationsGetResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsGetResponse200 = void
 
-export type chatConversationsGetResponseSuccess = (chatConversationsGetResponse200) & {
-  headers: Headers;
-};
+export type chatConversationsGetResponseSuccess = chatConversationsGetResponse200
 ;
 
 export type chatConversationsGetResponse = (chatConversationsGetResponseSuccess)
@@ -571,14 +551,9 @@ export const prefetchChatConversationsGetQuery = async <TData = Awaited<ReturnTy
  * Chat API
  * @summary Get a single conversation
  */
-export type chatConversationsGet2Response200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsGet2Response200 = void
 
-export type chatConversationsGet2ResponseSuccess = (chatConversationsGet2Response200) & {
-  headers: Headers;
-};
+export type chatConversationsGet2ResponseSuccess = chatConversationsGet2Response200
 ;
 
 export type chatConversationsGet2Response = (chatConversationsGet2ResponseSuccess)
@@ -737,14 +712,9 @@ export const prefetchChatConversationsGet2Query = async <TData = Awaited<ReturnT
  * Chat API
  * @summary Mark all messages in a conversation as read
  */
-export type chatConversationsReadResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsReadResponse200 = void
 
-export type chatConversationsReadResponseSuccess = (chatConversationsReadResponse200) & {
-  headers: Headers;
-};
+export type chatConversationsReadResponseSuccess = chatConversationsReadResponse200
 ;
 
 export type chatConversationsReadResponse = (chatConversationsReadResponseSuccess)
@@ -819,14 +789,9 @@ export const createChatConversationsRead = <TError = unknown,
  * Chat API
  * @summary Get unread message count
  */
-export type chatUnreadResponse200 = {
-  data: void
-  status: 200
-}
+export type chatUnreadResponse200 = void
 
-export type chatUnreadResponseSuccess = (chatUnreadResponse200) & {
-  headers: Headers;
-};
+export type chatUnreadResponseSuccess = chatUnreadResponse200
 ;
 
 export type chatUnreadResponse = (chatUnreadResponseSuccess)
@@ -985,14 +950,9 @@ export const prefetchChatUnreadQuery = async <TData = Awaited<ReturnType<typeof 
  * Chat API
  * @summary Get or create conversation with a user
  */
-export type chatConversationWithResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationWithResponse200 = void
 
-export type chatConversationWithResponseSuccess = (chatConversationWithResponse200) & {
-  headers: Headers;
-};
+export type chatConversationWithResponseSuccess = chatConversationWithResponse200
 ;
 
 export type chatConversationWithResponse = (chatConversationWithResponseSuccess)
@@ -1151,14 +1111,9 @@ export const prefetchChatConversationWithQuery = async <TData = Awaited<ReturnTy
  * Chat API
  * @summary Search users to start a conversation
  */
-export type chatUsersSearchResponse200 = {
-  data: void
-  status: 200
-}
+export type chatUsersSearchResponse200 = void
 
-export type chatUsersSearchResponseSuccess = (chatUsersSearchResponse200) & {
-  headers: Headers;
-};
+export type chatUsersSearchResponseSuccess = chatUsersSearchResponse200
 ;
 
 export type chatUsersSearchResponse = (chatUsersSearchResponseSuccess)
@@ -1324,14 +1279,9 @@ export const prefetchChatUsersSearchQuery = async <TData = Awaited<ReturnType<ty
  * Conversation preferences
  * @summary Pin / unpin a conversation for the current user.
  */
-export type chatConversationsPreferencesPinResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsPreferencesPinResponse200 = void
 
-export type chatConversationsPreferencesPinResponseSuccess = (chatConversationsPreferencesPinResponse200) & {
-  headers: Headers;
-};
+export type chatConversationsPreferencesPinResponseSuccess = chatConversationsPreferencesPinResponse200
 ;
 
 export type chatConversationsPreferencesPinResponse = (chatConversationsPreferencesPinResponseSuccess)
@@ -1408,14 +1358,9 @@ export const createChatConversationsPreferencesPin = <TError = unknown,
  * Conversation preferences
  * @summary Mute / unmute notifications for a conversation.
  */
-export type chatConversationsPreferencesMuteResponse200 = {
-  data: void
-  status: 200
-}
+export type chatConversationsPreferencesMuteResponse200 = void
 
-export type chatConversationsPreferencesMuteResponseSuccess = (chatConversationsPreferencesMuteResponse200) & {
-  headers: Headers;
-};
+export type chatConversationsPreferencesMuteResponseSuccess = chatConversationsPreferencesMuteResponse200
 ;
 
 export type chatConversationsPreferencesMuteResponse = (chatConversationsPreferencesMuteResponseSuccess)

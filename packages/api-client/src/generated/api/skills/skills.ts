@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Self-declared skill proficiency
  * @summary List my declared skill proficiencies.
  */
-export type skillsMeSkillProficiencyGetResponse200 = {
-  data: void
-  status: 200
-}
+export type skillsMeSkillProficiencyGetResponse200 = void
 
-export type skillsMeSkillProficiencyGetResponseSuccess = (skillsMeSkillProficiencyGetResponse200) & {
-  headers: Headers;
-};
+export type skillsMeSkillProficiencyGetResponseSuccess = skillsMeSkillProficiencyGetResponse200
 ;
 
 export type skillsMeSkillProficiencyGetResponse = (skillsMeSkillProficiencyGetResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchSkillsMeSkillProficiencyGetQuery = async <TData = Awaited<R
  * Self-declared skill proficiency
  * @summary Set proficiency for a skill (creates if missing).
  */
-export type skillsMeSkillProficiencyPutResponse200 = {
-  data: void
-  status: 200
-}
+export type skillsMeSkillProficiencyPutResponse200 = void
 
-export type skillsMeSkillProficiencyPutResponseSuccess = (skillsMeSkillProficiencyPutResponse200) & {
-  headers: Headers;
-};
+export type skillsMeSkillProficiencyPutResponseSuccess = skillsMeSkillProficiencyPutResponse200
 ;
 
 export type skillsMeSkillProficiencyPutResponse = (skillsMeSkillProficiencyPutResponseSuccess)
@@ -290,14 +280,9 @@ export const createSkillsMeSkillProficiencyPut = <TError = unknown,
  * Self-declared skill proficiency
  * @summary Clear proficiency for a skill.
  */
-export type skillsMeSkillProficiencyDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type skillsMeSkillProficiencyDeleteResponse200 = void
 
-export type skillsMeSkillProficiencyDeleteResponseSuccess = (skillsMeSkillProficiencyDeleteResponse200) & {
-  headers: Headers;
-};
+export type skillsMeSkillProficiencyDeleteResponseSuccess = skillsMeSkillProficiencyDeleteResponse200
 ;
 
 export type skillsMeSkillProficiencyDeleteResponse = (skillsMeSkillProficiencyDeleteResponseSuccess)

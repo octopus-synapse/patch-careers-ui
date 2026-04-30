@@ -40,14 +40,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{steps:[{id,label,fields:[...]}], options:{...}}`. The frontend iterates `steps[]` and renders inputs from each `field`. Adding a step or field is a backend-only change.
  * @summary Server-driven config for the create/edit-job wizard
  */
-export type recruitingJobsFormConfigResponse200 = {
-  data: void
-  status: 200
-}
+export type recruitingJobsFormConfigResponse200 = void
 
-export type recruitingJobsFormConfigResponseSuccess = (recruitingJobsFormConfigResponse200) & {
-  headers: Headers;
-};
+export type recruitingJobsFormConfigResponseSuccess = recruitingJobsFormConfigResponse200
 ;
 
 export type recruitingJobsFormConfigResponse = (recruitingJobsFormConfigResponseSuccess)
@@ -206,14 +201,9 @@ export const prefetchRecruitingJobsFormConfigQuery = async <TData = Awaited<Retu
  * Reverse candidate match API
  * @summary Rank up-to-N opt-in candidates for a job description using the same structured fit-score model used on the candidate side (reverse match).
  */
-export type recruitingMatchCandidatesResponse200 = {
-  data: void
-  status: 200
-}
+export type recruitingMatchCandidatesResponse200 = void
 
-export type recruitingMatchCandidatesResponseSuccess = (recruitingMatchCandidatesResponse200) & {
-  headers: Headers;
-};
+export type recruitingMatchCandidatesResponseSuccess = recruitingMatchCandidatesResponse200
 ;
 
 export type recruitingMatchCandidatesResponse = (recruitingMatchCandidatesResponseSuccess)

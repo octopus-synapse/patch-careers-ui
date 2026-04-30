@@ -42,14 +42,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Spoken Languages API
  * @summary List all spoken languages
  */
-export type adminSpokenLanguagesListResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSpokenLanguagesListResponse200 = void
 
-export type adminSpokenLanguagesListResponseSuccess = (adminSpokenLanguagesListResponse200) & {
-  headers: Headers;
-};
+export type adminSpokenLanguagesListResponseSuccess = adminSpokenLanguagesListResponse200
 ;
 
 export type adminSpokenLanguagesListResponse = (adminSpokenLanguagesListResponseSuccess)
@@ -215,14 +210,9 @@ export const prefetchAdminSpokenLanguagesListQuery = async <TData = Awaited<Retu
  * Admin Spoken Languages API
  * @summary Create spoken language
  */
-export type adminSpokenLanguagesCreateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSpokenLanguagesCreateResponse200 = void
 
-export type adminSpokenLanguagesCreateResponseSuccess = (adminSpokenLanguagesCreateResponse200) & {
-  headers: Headers;
-};
+export type adminSpokenLanguagesCreateResponseSuccess = adminSpokenLanguagesCreateResponse200
 ;
 
 export type adminSpokenLanguagesCreateResponse = (adminSpokenLanguagesCreateResponseSuccess)
@@ -298,14 +288,9 @@ export const createAdminSpokenLanguagesCreate = <TError = unknown,
  * Admin Spoken Languages API
  * @summary Get spoken language by code
  */
-export type adminSpokenLanguagesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSpokenLanguagesGetByIdResponse200 = void
 
-export type adminSpokenLanguagesGetByIdResponseSuccess = (adminSpokenLanguagesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type adminSpokenLanguagesGetByIdResponseSuccess = adminSpokenLanguagesGetByIdResponse200
 ;
 
 export type adminSpokenLanguagesGetByIdResponse = (adminSpokenLanguagesGetByIdResponseSuccess)
@@ -464,14 +449,9 @@ export const prefetchAdminSpokenLanguagesGetByIdQuery = async <TData = Awaited<R
  * Admin Spoken Languages API
  * @summary Update spoken language
  */
-export type adminSpokenLanguagesUpdateResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSpokenLanguagesUpdateResponse200 = void
 
-export type adminSpokenLanguagesUpdateResponseSuccess = (adminSpokenLanguagesUpdateResponse200) & {
-  headers: Headers;
-};
+export type adminSpokenLanguagesUpdateResponseSuccess = adminSpokenLanguagesUpdateResponse200
 ;
 
 export type adminSpokenLanguagesUpdateResponse = (adminSpokenLanguagesUpdateResponseSuccess)
@@ -548,14 +528,9 @@ export const createAdminSpokenLanguagesUpdate = <TError = unknown,
  * Admin Spoken Languages API
  * @summary Delete spoken language
  */
-export type adminSpokenLanguagesDeleteResponse200 = {
-  data: void
-  status: 200
-}
+export type adminSpokenLanguagesDeleteResponse200 = void
 
-export type adminSpokenLanguagesDeleteResponseSuccess = (adminSpokenLanguagesDeleteResponse200) & {
-  headers: Headers;
-};
+export type adminSpokenLanguagesDeleteResponseSuccess = adminSpokenLanguagesDeleteResponse200
 ;
 
 export type adminSpokenLanguagesDeleteResponse = (adminSpokenLanguagesDeleteResponseSuccess)

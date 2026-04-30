@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{ locale, entries: { [CODE]: localized message } }`. Locale is chosen from `Accept-Language` (supports `en`, `pt-BR`).
  * @summary Error-message dictionary in the negotiated locale
  */
-export type i18nDictionaryErrorsResponse200 = {
-  data: void
-  status: 200
-}
+export type i18nDictionaryErrorsResponse200 = void
 
-export type i18nDictionaryErrorsResponseSuccess = (i18nDictionaryErrorsResponse200) & {
-  headers: Headers;
-};
+export type i18nDictionaryErrorsResponseSuccess = i18nDictionaryErrorsResponse200
 ;
 
 export type i18nDictionaryErrorsResponse = (i18nDictionaryErrorsResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchI18nDictionaryErrorsQuery = async <TData = Awaited<ReturnTy
  * Returns `{ locale, entries: { [EnumName]: { [VALUE]: label } } }`. Locale is chosen from `Accept-Language` (supports `en`, `pt-BR`).
  * @summary Prisma enum label dictionary in the negotiated locale
  */
-export type i18nDictionaryEnumsResponse200 = {
-  data: void
-  status: 200
-}
+export type i18nDictionaryEnumsResponse200 = void
 
-export type i18nDictionaryEnumsResponseSuccess = (i18nDictionaryEnumsResponse200) & {
-  headers: Headers;
-};
+export type i18nDictionaryEnumsResponseSuccess = i18nDictionaryEnumsResponse200
 ;
 
 export type i18nDictionaryEnumsResponse = (i18nDictionaryEnumsResponseSuccess)
@@ -364,14 +354,9 @@ export const prefetchI18nDictionaryEnumsQuery = async <TData = Awaited<ReturnTyp
  * Returns `{ locale, entries: { [TYPE]: { title, body, params[] } } }`. Templates may contain `{ param }` placeholders — the client substitutes them at render time using the `params` list as the allowed key set.
  * @summary Notification-template dictionary in the negotiated locale
  */
-export type i18nDictionaryNotificationsResponse200 = {
-  data: void
-  status: 200
-}
+export type i18nDictionaryNotificationsResponse200 = void
 
-export type i18nDictionaryNotificationsResponseSuccess = (i18nDictionaryNotificationsResponse200) & {
-  headers: Headers;
-};
+export type i18nDictionaryNotificationsResponseSuccess = i18nDictionaryNotificationsResponse200
 ;
 
 export type i18nDictionaryNotificationsResponse = (i18nDictionaryNotificationsResponseSuccess)

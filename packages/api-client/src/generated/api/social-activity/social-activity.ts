@@ -37,14 +37,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get authenticated user activity feed
  */
-export type socialActivityUsersFeedResponse200 = {
-  data: void
-  status: 200
-}
+export type socialActivityUsersFeedResponse200 = void
 
-export type socialActivityUsersFeedResponseSuccess = (socialActivityUsersFeedResponse200) & {
-  headers: Headers;
-};
+export type socialActivityUsersFeedResponseSuccess = socialActivityUsersFeedResponse200
 ;
 
 export type socialActivityUsersFeedResponse = (socialActivityUsersFeedResponseSuccess)
@@ -221,14 +216,9 @@ export const prefetchSocialActivityUsersFeedQuery = async <TData = Awaited<Retur
 /**
  * @summary Get public activities for a user
  */
-export type socialActivityUsersActivitiesResponse200 = {
-  data: void
-  status: 200
-}
+export type socialActivityUsersActivitiesResponse200 = void
 
-export type socialActivityUsersActivitiesResponseSuccess = (socialActivityUsersActivitiesResponse200) & {
-  headers: Headers;
-};
+export type socialActivityUsersActivitiesResponseSuccess = socialActivityUsersActivitiesResponse200
 ;
 
 export type socialActivityUsersActivitiesResponse = (socialActivityUsersActivitiesResponseSuccess)
@@ -405,14 +395,9 @@ export const prefetchSocialActivityUsersActivitiesQuery = async <TData = Awaited
 /**
  * @summary Get user activities filtered by type
  */
-export type socialActivityUsersActivitiesByTypeResponse200 = {
-  data: void
-  status: 200
-}
+export type socialActivityUsersActivitiesByTypeResponse200 = void
 
-export type socialActivityUsersActivitiesByTypeResponseSuccess = (socialActivityUsersActivitiesByTypeResponse200) & {
-  headers: Headers;
-};
+export type socialActivityUsersActivitiesByTypeResponseSuccess = socialActivityUsersActivitiesByTypeResponse200
 ;
 
 export type socialActivityUsersActivitiesByTypeResponse = (socialActivityUsersActivitiesByTypeResponseSuccess)

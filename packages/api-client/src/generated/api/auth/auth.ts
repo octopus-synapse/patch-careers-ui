@@ -29,6 +29,7 @@ import type {
   AuthLoginBody,
   AuthLogoutBody,
   AuthRefreshBody,
+  AuthSession200,
   AuthVerify2faBody
 } from '../../models';
 
@@ -43,14 +44,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Rolls the session cookie. Body `refreshToken` is optional and used only by non-browser clients.
  * @summary Refresh access token
  */
-export type authRefreshResponse200 = {
-  data: void
-  status: 200
-}
+export type authRefreshResponse200 = void
 
-export type authRefreshResponseSuccess = (authRefreshResponse200) & {
-  headers: Headers;
-};
+export type authRefreshResponseSuccess = authRefreshResponse200
 ;
 
 export type authRefreshResponse = (authRefreshResponseSuccess)
@@ -126,14 +122,9 @@ export const createAuthRefresh = <TError = unknown,
  * Authenticates user with email and password. Sets the session cookie. Returns `{userId}` or `{userId, twoFactorRequired}` when 2FA is enabled.
  * @summary Login
  */
-export type authLoginResponse200 = {
-  data: void
-  status: 200
-}
+export type authLoginResponse200 = void
 
-export type authLoginResponseSuccess = (authLoginResponse200) & {
-  headers: Headers;
-};
+export type authLoginResponseSuccess = authLoginResponse200
 ;
 
 export type authLoginResponse = (authLoginResponseSuccess)
@@ -209,14 +200,9 @@ export const createAuthLogin = <TError = unknown,
  * Completes login by validating a TOTP or backup code. Sets the session cookie.
  * @summary Verify 2FA code during login
  */
-export type authVerify2faResponse200 = {
-  data: void
-  status: 200
-}
+export type authVerify2faResponse200 = void
 
-export type authVerify2faResponseSuccess = (authVerify2faResponse200) & {
-  headers: Headers;
-};
+export type authVerify2faResponseSuccess = authVerify2faResponse200
 ;
 
 export type authVerify2faResponse = (authVerify2faResponseSuccess)
@@ -292,14 +278,9 @@ export const createAuthVerify2fa = <TError = unknown,
  * Logs out the user by invalidating refresh token(s) and clearing the session cookie.
  * @summary Logout
  */
-export type authLogoutResponse200 = {
-  data: void
-  status: 200
-}
+export type authLogoutResponse200 = void
 
-export type authLogoutResponseSuccess = (authLogoutResponse200) & {
-  headers: Headers;
-};
+export type authLogoutResponseSuccess = authLogoutResponse200
 ;
 
 export type authLogoutResponse = (authLogoutResponseSuccess)
@@ -375,14 +356,9 @@ export const createAuthLogout = <TError = unknown,
  * Returns current user data if authenticated via session cookie or JWT bearer.
  * @summary Get Session
  */
-export type authSessionResponse200 = {
-  data: void
-  status: 200
-}
+export type authSessionResponse200 = AuthSession200
 
-export type authSessionResponseSuccess = (authSessionResponse200) & {
-  headers: Headers;
-};
+export type authSessionResponseSuccess = authSessionResponse200
 ;
 
 export type authSessionResponse = (authSessionResponseSuccess)
@@ -540,14 +516,9 @@ export const prefetchAuthSessionQuery = async <TData = Awaited<ReturnType<typeof
 /**
  * @summary List active sessions (devices) for the current user.
  */
-export type authListSessionsResponse200 = {
-  data: void
-  status: 200
-}
+export type authListSessionsResponse200 = void
 
-export type authListSessionsResponseSuccess = (authListSessionsResponse200) & {
-  headers: Headers;
-};
+export type authListSessionsResponseSuccess = authListSessionsResponse200
 ;
 
 export type authListSessionsResponse = (authListSessionsResponseSuccess)
@@ -705,14 +676,9 @@ export const prefetchAuthListSessionsQuery = async <TData = Awaited<ReturnType<t
 /**
  * @summary Revoke a specific session (device) by refresh-token id.
  */
-export type authRevokeSessionResponse200 = {
-  data: void
-  status: 200
-}
+export type authRevokeSessionResponse200 = void
 
-export type authRevokeSessionResponseSuccess = (authRevokeSessionResponse200) & {
-  headers: Headers;
-};
+export type authRevokeSessionResponseSuccess = authRevokeSessionResponse200
 ;
 
 export type authRevokeSessionResponse = (authRevokeSessionResponseSuccess)

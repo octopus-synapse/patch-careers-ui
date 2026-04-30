@@ -39,14 +39,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Resume Search API
  * @summary Search public resumes
  */
-export type searchListResponse200 = {
-  data: void
-  status: 200
-}
+export type searchListResponse200 = void
 
-export type searchListResponseSuccess = (searchListResponse200) & {
-  headers: Headers;
-};
+export type searchListResponseSuccess = searchListResponse200
 ;
 
 export type searchListResponse = (searchListResponseSuccess)
@@ -212,14 +207,9 @@ export const prefetchSearchListQuery = async <TData = Awaited<ReturnType<typeof 
  * Resume Search API
  * @summary Get search autocomplete suggestions
  */
-export type searchSuggestionsResponse200 = {
-  data: void
-  status: 200
-}
+export type searchSuggestionsResponse200 = void
 
-export type searchSuggestionsResponseSuccess = (searchSuggestionsResponse200) & {
-  headers: Headers;
-};
+export type searchSuggestionsResponseSuccess = searchSuggestionsResponse200
 ;
 
 export type searchSuggestionsResponse = (searchSuggestionsResponseSuccess)
@@ -385,14 +375,9 @@ export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<
  * Returns results grouped by entity type. Each item carries `{id,title,snippet?,href,badge?}` so the frontend can render a generic list. Today only the `resumes` group is populated; `users`, `jobs`, `posts` groups stream in once their dedicated indexes are wired.
  * @summary Global multi-type search (resumes, users, jobs, posts)
  */
-export type searchGlobalResponse200 = {
-  data: void
-  status: 200
-}
+export type searchGlobalResponse200 = void
 
-export type searchGlobalResponseSuccess = (searchGlobalResponse200) & {
-  headers: Headers;
-};
+export type searchGlobalResponseSuccess = searchGlobalResponse200
 ;
 
 export type searchGlobalResponse = (searchGlobalResponseSuccess)
@@ -558,14 +543,9 @@ export const prefetchSearchGlobalQuery = async <TData = Awaited<ReturnType<typeo
  * Resume Search API
  * @summary Find similar resumes by resume id
  */
-export type searchSimilarResponse200 = {
-  data: void
-  status: 200
-}
+export type searchSimilarResponse200 = void
 
-export type searchSimilarResponseSuccess = (searchSimilarResponse200) & {
-  headers: Headers;
-};
+export type searchSimilarResponseSuccess = searchSimilarResponse200
 ;
 
 export type searchSimilarResponse = (searchSimilarResponseSuccess)

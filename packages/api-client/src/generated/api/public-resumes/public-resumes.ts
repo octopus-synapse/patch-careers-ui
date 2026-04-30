@@ -32,14 +32,9 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Public Resume API
  * @summary Get public resume by share slug
  */
-export type publicResumesGetByIdResponse200 = {
-  data: void
-  status: 200
-}
+export type publicResumesGetByIdResponse200 = void
 
-export type publicResumesGetByIdResponseSuccess = (publicResumesGetByIdResponse200) & {
-  headers: Headers;
-};
+export type publicResumesGetByIdResponseSuccess = publicResumesGetByIdResponse200
 ;
 
 export type publicResumesGetByIdResponse = (publicResumesGetByIdResponseSuccess)
@@ -198,14 +193,9 @@ export const prefetchPublicResumesGetByIdQuery = async <TData = Awaited<ReturnTy
  * Public Resume API
  * @summary Download public resume by share slug
  */
-export type publicResumesDownloadResponse200 = {
-  data: void
-  status: 200
-}
+export type publicResumesDownloadResponse200 = void
 
-export type publicResumesDownloadResponseSuccess = (publicResumesDownloadResponse200) & {
-  headers: Headers;
-};
+export type publicResumesDownloadResponseSuccess = publicResumesDownloadResponse200
 ;
 
 export type publicResumesDownloadResponse = (publicResumesDownloadResponseSuccess)
@@ -364,14 +354,9 @@ export const prefetchPublicResumesDownloadQuery = async <TData = Awaited<ReturnT
  * Public Resume API
  * @summary OpenGraph preview image for a public share slug
  */
-export type publicResumesOgPngResponse200 = {
-  data: void
-  status: 200
-}
+export type publicResumesOgPngResponse200 = void
 
-export type publicResumesOgPngResponseSuccess = (publicResumesOgPngResponse200) & {
-  headers: Headers;
-};
+export type publicResumesOgPngResponseSuccess = publicResumesOgPngResponse200
 ;
 
 export type publicResumesOgPngResponse = (publicResumesOgPngResponseSuccess)
