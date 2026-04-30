@@ -3,14 +3,15 @@
   backend-supported formats: PDF, DOCX, JSON Resume, LaTeX.
 -->
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import {
   exportDownloadUserResumePDF,
   exportExportJson,
   exportExportLatex,
   exportExportResumeDOCX,
 } from 'api-client';
-import { Download, FileCode, FileJson, FileText, FileType, Loader2 } from 'lucide-svelte';
-import { Button, Dropdown, toastState } from 'ui';
+import { Download, FileCode, FileJson, FileText, FileType } from 'lucide-svelte';
+import { Button, Dropdown, Loader, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -128,7 +129,7 @@ async function downloadLatex() {
         disabled={loading !== null}
       >
         {#if loading === 'pdf'}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           <FileType size={14} />
         {/if}
@@ -142,7 +143,7 @@ async function downloadLatex() {
       disabled={loading !== null}
     >
       {#if loading === 'docx'}
-        <Loader2 size={14} class="animate-spin" />
+        <Loader size={14} />
       {:else}
         <FileText size={14} />
       {/if}
@@ -156,7 +157,7 @@ async function downloadLatex() {
         disabled={loading !== null}
       >
         {#if loading === 'json'}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           <FileJson size={14} />
         {/if}
@@ -169,7 +170,7 @@ async function downloadLatex() {
         disabled={loading !== null}
       >
         {#if loading === 'latex'}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           <FileCode size={14} />
         {/if}

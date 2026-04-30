@@ -1,22 +1,14 @@
 /**
- * Pull a user-safe message + suggested action from a profile-services error
- * response. Backend ships an envelope shaped like:
+ * @deprecated Use `ApiError` from `api-client` and let `customFetch`
+ * throw it. Manual `parseApiError(response, fallback)` callsites only
+ * exist on legacy fetch() handlers; F3 migrates them to the SDK.
  *
- *   {
- *     success: false,
- *     error: {
- *       code, message, userMessage?, action?: 'redirect:/login'|'retry'|'toast'|'highlight-fields',
- *       details?
- *     }
- *   }
- *
- * `userMessage` is the localized copy the UI can show in a toast directly
- * without knowing the error code; `action` tells the UI whether to redirect,
- * surface a retry, or just toast.
- *
- * Use this instead of building toast strings from `err.message` so future
- * backend copy changes flow through automatically.
+ * This file is kept as a thin shim so the legacy callers continue to
+ * compile during the cleanup window.
  */
+
+import { type ApiError, isApiError } from 'api-client';
+
 export type ApiErrorAction =
   | { kind: 'redirect'; to: string }
   | { kind: 'retry' }
@@ -30,6 +22,19 @@ export interface ParsedApiError {
   details?: Record<string, unknown>;
 }
 
+function actionFromSeverity(
+  severity: ApiError['severity'] | undefined,
+  status?: number,
+): ApiErrorAction {
+  if (severity === 'modal' && status === 401) {
+    return { kind: 'redirect', to: '/identity/sign-in' };
+  }
+  if (severity === 'inline') return { kind: 'highlight-fields' };
+  if (severity === 'modal' || severity === 'banner') return { kind: 'toast' };
+  if (status && status >= 500) return { kind: 'retry' };
+  return { kind: 'toast' };
+}
+
 export async function parseApiError(
   res: Response,
   fallbackMessage: string,
@@ -38,7 +43,7 @@ export async function parseApiError(
   try {
     body = await res.json();
   } catch {
-    return { message: fallbackMessage, action: actionFromStatus(res.status) };
+    return { message: fallbackMessage, action: actionFromSeverity(undefined, res.status) };
   }
   return parseApiErrorBody(body, fallbackMessage, res.status);
 }
@@ -48,39 +53,26 @@ export function parseApiErrorBody(
   fallbackMessage: string,
   status?: number,
 ): ParsedApiError {
-  if (!body || typeof body !== 'object') {
-    return { message: fallbackMessage, action: actionFromStatus(status) };
+  if (isApiError(body)) {
+    return {
+      message: body.message ?? fallbackMessage,
+      code: body.code,
+      action: actionFromSeverity(body.severity, body.statusCode ?? status),
+      details: body.params,
+    };
   }
-  const err = (body as { error?: unknown }).error;
-  if (!err || typeof err !== 'object') {
-    return { message: fallbackMessage, action: actionFromStatus(status) };
+  // F1 wire format: `{statusCode, code, message, severity, suggestedAction?, params?, fields?}`.
+  if (body && typeof body === 'object') {
+    const e = body as Record<string, unknown>;
+    return {
+      message: typeof e.message === 'string' ? e.message : fallbackMessage,
+      code: typeof e.code === 'string' ? e.code : undefined,
+      action: actionFromSeverity(e.severity as ApiError['severity'] | undefined, status),
+      details:
+        e.params && typeof e.params === 'object'
+          ? (e.params as Record<string, unknown>)
+          : undefined,
+    };
   }
-  const e = err as Record<string, unknown>;
-  const message =
-    typeof e.userMessage === 'string'
-      ? e.userMessage
-      : typeof e.message === 'string'
-        ? e.message
-        : fallbackMessage;
-  const code = typeof e.code === 'string' ? e.code : undefined;
-  const action = parseAction(typeof e.action === 'string' ? e.action : undefined, status);
-  const details =
-    e.details && typeof e.details === 'object' ? (e.details as Record<string, unknown>) : undefined;
-  return { message, code, action, details };
-}
-
-function parseAction(raw: string | undefined, status?: number): ApiErrorAction {
-  if (!raw) return actionFromStatus(status);
-  if (raw.startsWith('redirect:')) {
-    return { kind: 'redirect', to: raw.slice('redirect:'.length) };
-  }
-  if (raw === 'retry') return { kind: 'retry' };
-  if (raw === 'highlight-fields') return { kind: 'highlight-fields' };
-  return { kind: 'toast' };
-}
-
-function actionFromStatus(status?: number): ApiErrorAction {
-  if (status === 401) return { kind: 'redirect', to: '/identity/sign-in' };
-  if (status && status >= 500) return { kind: 'retry' };
-  return { kind: 'toast' };
+  return { message: fallbackMessage, action: actionFromSeverity(undefined, status) };
 }

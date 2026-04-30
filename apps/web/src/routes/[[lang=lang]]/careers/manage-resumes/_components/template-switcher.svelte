@@ -3,9 +3,9 @@
   field. Optimistic UI: updates local state immediately, rolls back on error.
 -->
 <script lang="ts">
-import { Loader2 } from 'lucide-svelte';
+
 import { untrack } from 'svelte';
-import { toastState } from 'ui';
+import { Loader, toastState } from 'ui';
 
 type Template =
   | 'PROFESSIONAL'
@@ -81,9 +81,9 @@ async function handleChange(e: Event) {
       {/each}
     </select>
     {#if saving}
-      <Loader2
+      <Loader
         size={12}
-        class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 animate-spin text-gray-400"
+        class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2"
       />
     {/if}
   </div>

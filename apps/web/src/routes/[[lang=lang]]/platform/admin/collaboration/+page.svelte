@@ -3,9 +3,9 @@
   with filters by role + search. Admins can revoke any collaborator.
 -->
 <script lang="ts">
-import { Loader2, Shield, Trash2 } from 'lucide-svelte';
+import { Shield, Trash2 } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Avatar, Button, Input, toastState } from 'ui';
+import { Avatar, Button, Input, Loader, Select, toastState } from 'ui';
 import { browser } from '$app/environment';
 
 interface CollabRow {
@@ -98,21 +98,18 @@ onMount(load);
       placeholder="Buscar por nome, username ou título do currículo"
       class="flex-1 min-w-[200px]"
     />
-    <select
-      bind:value={roleFilter}
-      class="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-800"
-    >
+    <Select bind:value={roleFilter}>
       <option value="ALL">Todas as roles</option>
       <option value="VIEWER">Viewer</option>
       <option value="EDITOR">Editor</option>
       <option value="ADMIN">Admin</option>
-    </select>
+    </Select>
     <Button type="submit" variant="outline">Filtrar</Button>
   </form>
 
   {#if loading}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if rows.length === 0}
     <p class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500">
@@ -188,7 +185,7 @@ onMount(load);
                   aria-label="Revogar acesso"
                 >
                   {#if revoking === r.id}
-                    <Loader2 size={14} class="animate-spin" />
+                    <Loader size={14} />
                   {:else}
                     <Trash2 size={14} class="text-red-500" />
                   {/if}

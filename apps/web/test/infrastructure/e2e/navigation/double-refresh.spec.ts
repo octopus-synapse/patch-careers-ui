@@ -1,10 +1,58 @@
-import { expect, test } from '@playwright/test';
+import { type BrowserContext, expect, test } from '@playwright/test';
+
+const API_URL = 'http://localhost:3001';
+
+// `/test-404` used to exist as a top-level public dev route; it now lives under
+// the admin dev-tools segment, so these tests need an authenticated admin
+// session to reach it. Credentials come from the backend seed — see
+// `profile-services/prisma/seed.ts` (ADMIN_EMAIL/ADMIN_PASSWORD defaults).
+const ADMIN_EMAIL = 'admin@example.com';
+const ADMIN_PASSWORD = 'Admin123!@#';
+const ADMIN_TEST_PATH = '/platform/admin/dev-tools/test-404';
+
+let adminContext: BrowserContext;
+
+async function loginAdminContext(browser: import('@playwright/test').Browser) {
+  const res = await fetch(`${API_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
+  });
+  if (!res.ok) throw new Error(`Admin login failed: ${res.status} ${await res.text()}`);
+  const match = (res.headers.get('set-cookie') ?? '').match(/session=([^;]+)/);
+  if (!match) throw new Error('No session cookie from admin login');
+  const ctx = await browser.newContext();
+  await ctx.addCookies([
+    {
+      name: 'session',
+      value: match[1],
+      domain: 'localhost',
+      path: '/',
+      httpOnly: true,
+      sameSite: 'Lax',
+    },
+  ]);
+  return ctx;
+}
 
 test.describe('Double refresh bug', () => {
-  const pages = ['/', '/test-404'];
+  test.beforeAll(async ({ browser }) => {
+    adminContext = await loginAdminContext(browser);
+  });
 
-  for (const path of pages) {
-    test(`page ${path} survives two consecutive F5 refreshes`, async ({ page }) => {
+  test.afterAll(async () => {
+    await adminContext?.close();
+  });
+
+  const pages = [
+    { path: '/', requiresAdmin: false },
+    { path: ADMIN_TEST_PATH, requiresAdmin: true },
+  ];
+
+  for (const { path, requiresAdmin } of pages) {
+    test(`page ${path} survives two consecutive F5 refreshes`, async ({ browser }) => {
+      const page = requiresAdmin ? await adminContext.newPage() : await browser.newPage();
+
       const consoleErrors: string[] = [];
       const failedRequests: string[] = [];
 
@@ -67,6 +115,8 @@ test.describe('Double refresh bug', () => {
 
       // Verify no failed network requests
       expect(failedRequests).toEqual([]);
+
+      await page.close();
     });
   }
 
@@ -76,7 +126,9 @@ test.describe('Double refresh bug', () => {
     expect(cacheControl).toBe('no-store');
   });
 
-  test('page does not go blank after rapid consecutive refreshes', async ({ page }) => {
+  test('page does not go blank after rapid consecutive refreshes', async () => {
+    const page = await adminContext.newPage();
+
     const consoleErrors: string[] = [];
 
     page.on('console', (msg) => {
@@ -85,7 +137,7 @@ test.describe('Double refresh bug', () => {
       }
     });
 
-    await page.goto('/test-404', { waitUntil: 'networkidle' });
+    await page.goto(ADMIN_TEST_PATH, { waitUntil: 'networkidle' });
 
     // Rapid-fire 5 reloads
     for (let i = 0; i < 5; i++) {
@@ -100,5 +152,7 @@ test.describe('Double refresh bug', () => {
 
     const text = await heading.textContent();
     expect(text).toBe('Test Page');
+
+    await page.close();
   });
 });

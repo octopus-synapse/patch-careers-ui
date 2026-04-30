@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Loader2 } from 'lucide-svelte';
-import { Button, Modal, Textarea } from 'ui';
+
+import { Button, Loader, Modal, Textarea } from 'ui';
 
 type Props = {
   open: boolean;
@@ -49,7 +49,7 @@ function handleCancel() {
 			</Button>
 			<Button variant="solid" size="sm" onclick={handleSubmit} disabled={submitting || !reason.trim()}>
 				{#if submitting}
-					<Loader2 size={14} class="animate-spin" />
+					<Loader size={14} />
 					Reporting...
 				{:else}
 					Report

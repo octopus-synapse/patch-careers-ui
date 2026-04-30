@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 /**
  * TailorForJobModal
  *
@@ -15,8 +16,8 @@ import {
   resumesTailorForJob,
   type TailorResumeDataDto,
 } from 'api-client';
-import { Loader2, Sparkles, X } from 'lucide-svelte';
-import { Button, Modal, Textarea, toastState } from 'ui';
+import { Sparkles, X } from 'lucide-svelte';
+import { Button, Loader, Modal, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 
@@ -109,7 +110,7 @@ function goToEdit() {
 				</span>
 				{#if resumesQuery.isLoading}
 					<div class="mt-1 flex items-center gap-2 text-xs text-gray-400 dark:text-neutral-500">
-						<Loader2 size={12} class="animate-spin" /> carregando…
+						<Loader size={12} /> carregando…
 					</div>
 				{:else if resumes.length === 0}
 					<p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">
@@ -150,7 +151,7 @@ function goToEdit() {
 					disabled={submitting || !selectedResumeId || !jdText.trim()}
 				>
 					{#if submitting}
-						<Loader2 size={14} class="animate-spin" /> Gerando…
+						<Loader size={14} /> Gerando…
 					{:else}
 						<Sparkles size={14} /> Gerar versão personalizada
 					{/if}

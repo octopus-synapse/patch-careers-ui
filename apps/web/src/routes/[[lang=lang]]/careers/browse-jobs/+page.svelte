@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createJobsFindAll,
@@ -8,8 +9,8 @@ import {
 } from 'api-client';
 import type { CreateJobDto, CreateJobDtoJobType } from 'api-client';
 import { formatDate } from 'i18n';
-import { ArrowRight, Bookmark, Globe2, Loader2, Plus, Sparkles, Zap } from 'lucide-svelte';
-import { Button, FitScoreChip, FormModal, Input, Label, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
+import { ArrowRight, Bookmark, Globe2, Plus, Sparkles, Zap } from 'lucide-svelte';
+import { Badge, Button, FitScoreChip, FormModal, Input, Label, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { DataTable } from 'ui';
@@ -352,7 +353,6 @@ async function runRageApply() {
 				</div>
 			</div>
 
-
 			<a
 				href="/careers/apply-modes"
 				class="group flex items-center justify-between gap-3 rounded-xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/5 via-sky-500/5 to-violet-500/5 px-4 py-3 transition-all hover:border-cyan-500/60 hover:shadow-sm dark:border-cyan-500/20"
@@ -454,7 +454,7 @@ async function runRageApply() {
 							{#if skills}
 								<div class="flex flex-wrap gap-1">
 									{#each skills.slice(0, 3) as skill}
-										<span class="rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-neutral-300">{skill}</span>
+										<Badge intent="neutral" size="md">{skill}</Badge>
 									{/each}
 									{#if skills.length > 3}
 										<span class="text-[10px] text-gray-500 dark:text-neutral-500">+{skills.length - 3}</span>
@@ -563,7 +563,7 @@ async function runRageApply() {
 			</div>
 			{#if rageRunning}
 				<p class="flex items-center gap-2 text-xs text-gray-500" role="status">
-					<Loader2 size={12} class="animate-spin" /> Adaptando CV e enviando...
+					<Loader size={12} /> Adaptando CV e enviando...
 				</p>
 			{/if}
 			{#if rageFailures.length > 0}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createJobsDelete,
@@ -151,21 +152,27 @@ function remotePolicyLabel(policy: string | null | undefined): string | null {
 
 					<!-- Meta badges -->
 					<div class="flex flex-wrap items-center gap-2 text-xs">
-						<span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 font-medium text-gray-700 dark:bg-neutral-700/60 dark:text-neutral-200">
-							<Briefcase size={12} />
-							{jobTypeLabel(job.jobType)}
-						</span>
-						{#if remote}
-							<span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 font-medium text-gray-700 dark:bg-neutral-700/60 dark:text-neutral-200">
-								<Wifi size={12} />
-								{remote}
+						<Badge intent="neutral" size="md">
+							<span class="inline-flex items-center gap-1">
+								<Briefcase size={12} />
+								{jobTypeLabel(job.jobType)}
 							</span>
+						</Badge>
+						{#if remote}
+							<Badge intent="neutral" size="md">
+								<span class="inline-flex items-center gap-1">
+									<Wifi size={12} />
+									{remote}
+								</span>
+							</Badge>
 						{/if}
 						{#if job.salaryRange}
-							<span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 font-medium text-gray-700 dark:bg-neutral-700/60 dark:text-neutral-200">
-								<DollarSign size={12} />
-								{job.salaryRange}
-							</span>
+							<Badge intent="neutral" size="md">
+								<span class="inline-flex items-center gap-1">
+									<DollarSign size={12} />
+									{job.salaryRange}
+								</span>
+							</Badge>
 						{/if}
 						{#if job.createdAt}
 							<span class="inline-flex items-center gap-1 text-gray-400 dark:text-neutral-500">

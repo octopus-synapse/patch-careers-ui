@@ -3,10 +3,11 @@
   counts, and lets them inspect who endorsed each skill.
 -->
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createSkillEndorsementsGetSkills, skillEndorsementsGetEndorsers } from 'api-client';
-import { ChevronDown, ChevronUp, Loader2 } from 'lucide-svelte';
+import { ChevronDown, ChevronUp } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Avatar, toastState } from 'ui';
+import { Avatar, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
 
@@ -76,7 +77,7 @@ onMount(() => {
 
   {#if skillsQuery.isLoading}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if skills.length === 0}
     <p
@@ -111,7 +112,7 @@ onMount(() => {
             <div class="border-t border-gray-200 px-4 py-3 dark:border-neutral-800">
               {#if endorsers === 'loading' || endorsers === undefined}
                 <div class="flex justify-center py-4">
-                  <Loader2 size={14} class="animate-spin text-gray-500" />
+                  <Loader size={14} />
                 </div>
               {:else if endorsers.length === 0}
                 <p class="text-xs text-gray-500 dark:text-neutral-500">

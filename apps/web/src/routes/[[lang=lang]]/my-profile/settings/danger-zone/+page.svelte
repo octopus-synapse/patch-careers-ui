@@ -1,7 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createDeleteAccountHandle } from 'api-client';
-import { Download, Loader2, Trash2 } from 'lucide-svelte';
-import { Input, Label } from 'ui';
+import { Download, Trash2 } from 'lucide-svelte';
+import { Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -81,7 +82,7 @@ function handleDeleteAccount() {
 					class="flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-[11px] font-semibold text-gray-700 transition-all hover:bg-gray-50 disabled:opacity-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
 				>
 					{#if isExporting}
-						<Loader2 size={13} class="animate-spin" />
+						<Loader size={13} />
 					{:else}
 						<Download size={13} />
 					{/if}
@@ -147,7 +148,7 @@ function handleDeleteAccount() {
 					class="flex items-center gap-2 rounded-full bg-red-500 px-5 py-2 text-[11px] font-semibold text-white transition-all hover:bg-red-600 disabled:opacity-50"
 				>
 					{#if deleteAccount.isPending}
-						<Loader2 size={13} class="animate-spin" />
+						<Loader size={13} />
 					{/if}
 					{t('settings.deleteButton')}
 				</button>

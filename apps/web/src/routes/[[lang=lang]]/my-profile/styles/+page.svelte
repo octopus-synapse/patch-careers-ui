@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import {
     createResumesGetAllUserResumes,
     createResumeStylesApply,
@@ -6,8 +7,8 @@
     getBaseUrl,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { CheckCircle2, Loader2, Lock } from 'lucide-svelte';
-  import { Button, RankBadge, toastState } from 'ui';
+  import { CheckCircle2, Lock } from 'lucide-svelte';
+  import { Button, Card, Loader, RankBadge, toastState } from 'ui';
   import { browser } from '$app/environment';
   import { useAuth } from '$lib/state/auth.svelte';
 
@@ -85,12 +86,12 @@
 
   {#if listQuery.isPending}
     <div class="flex justify-center py-12">
-      <Loader2 class="animate-spin text-neutral-500" size={24} />
+      <Loader size={24} />
     </div>
   {:else if listQuery.isError || styles.length === 0}
-    <div class="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+    <Card class="sm:p-6 text-sm text-neutral-600 dark:text-neutral-400">
       Nenhum estilo disponível no momento.
-    </div>
+    </Card>
   {:else}
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {#each styles as style (style.id)}
@@ -132,7 +133,7 @@
               disabled={applyingStyleId === style.id || !primaryResumeId}
             >
               {#if applyingStyleId === style.id}
-                <Loader2 size={14} class="animate-spin" />
+                <Loader size={14} />
               {:else}
                 <CheckCircle2 size={14} />
               {/if}

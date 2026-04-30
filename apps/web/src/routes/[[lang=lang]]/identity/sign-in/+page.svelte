@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import { createAuthLogin, getAuthSessionQueryKey } from 'api-client';
 import { isApiError } from 'api-client/client';
 import { AuthLoginBody } from 'api-client/zod';
-import { Loader2, Lock } from 'lucide-svelte';
-import { Button, Input, Label } from 'ui';
+import { Lock } from 'lucide-svelte';
+import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { translateApiError } from '$lib/utils/translate-api-error';
 import { createForm } from '$lib/state/create-form.svelte';
@@ -109,9 +109,9 @@ function handleSubmit(e: Event) {
 						variant="solid"
 					>
 						{#if form.isSubmitting}
-							<Loader2
+							<Loader
 								size={14}
-								class="mx-auto animate-spin"
+							 class="mx-auto"
 								role="status"
 								aria-label={t('common.loading')}
 							/>

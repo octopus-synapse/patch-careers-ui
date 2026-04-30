@@ -6,9 +6,9 @@
   - Disable (requires confirmation)
 -->
 <script lang="ts">
-import { Copy, Download, Loader2, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
+import { Copy, Download, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, Input, Label, toastState } from 'ui';
+import { Button, Input, Label, Loader, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -173,7 +173,7 @@ onMount(loadStatus);
 
   {#if loadingStatus}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if backupCodes}
     <!-- Backup codes reveal (one-time display) -->
@@ -244,7 +244,7 @@ onMount(loadStatus);
             disabled={regenLoading || !regenPassword}
           >
             {#if regenLoading}
-              <Loader2 size={14} class="animate-spin" />
+              <Loader size={14} />
             {:else}
               <RefreshCw size={14} class="mr-1" />
               Regenerar
@@ -271,7 +271,7 @@ onMount(loadStatus);
               disabled={disableLoading || !disablePassword}
             >
               {#if disableLoading}
-                <Loader2 size={14} class="animate-spin" />
+                <Loader size={14} />
               {:else}
                 Confirmar
               {/if}
@@ -323,7 +323,7 @@ onMount(loadStatus);
         disabled={verifyLoading || verifyToken.length !== 6}
       >
         {#if verifyLoading}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           Verificar e ativar
         {/if}
@@ -340,7 +340,7 @@ onMount(loadStatus);
       </p>
       <Button variant="solid" onclick={startSetup} disabled={setupLoading}>
         {#if setupLoading}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           Iniciar configuração
         {/if}

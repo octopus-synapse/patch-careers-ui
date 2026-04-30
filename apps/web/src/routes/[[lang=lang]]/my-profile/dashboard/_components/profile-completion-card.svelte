@@ -1,5 +1,4 @@
 <script lang="ts">
-import { ArrowRight, CheckCircle2, UserCheck } from 'lucide-svelte';
 import { Button, Card } from 'ui';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
@@ -41,20 +40,9 @@ const dashOffset = $derived(CIRCUMFERENCE * (1 - percent / 100));
 
 <Card>
 	{#snippet title()}
-		<div class="flex items-center gap-2">
-			<span
-				class="inline-flex size-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
-			>
-				{#if isComplete}
-					<CheckCircle2 size={14} />
-				{:else}
-					<UserCheck size={14} />
-				{/if}
-			</span>
-			<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-				{t('dashboard.profileCompletion')}
-			</h2>
-		</div>
+		<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
+			{t('dashboard.profileCompletion')}
+		</h2>
 	{/snippet}
 
 	<div class="flex items-center gap-4">
@@ -83,9 +71,7 @@ const dashOffset = $derived(CIRCUMFERENCE * (1 - percent / 100));
 					stroke-linecap="round"
 					stroke-dasharray={CIRCUMFERENCE}
 					stroke-dashoffset={dashOffset}
-					class="motion-safe:transition-[stroke-dashoffset] motion-safe:duration-700 {isComplete
-						? 'stroke-emerald-500'
-						: 'stroke-emerald-500 dark:stroke-emerald-400'}"
+					class="motion-safe:transition-[stroke-dashoffset] motion-safe:duration-700 stroke-cyan-500 dark:stroke-cyan-400"
 				/>
 			</svg>
 			<div class="absolute inset-0 flex items-center justify-center">
@@ -103,7 +89,6 @@ const dashOffset = $derived(CIRCUMFERENCE * (1 - percent / 100));
 				<div class="mt-2">
 					<Button variant="ghost" size="xs" onclick={() => goto('/my-profile/settings')}>
 						{t('dashboard.profileCompletionCta')}
-						<ArrowRight size={12} />
 					</Button>
 				</div>
 			{/if}

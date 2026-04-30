@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { Cookie, X } from 'lucide-svelte';
-import { Button } from 'ui';
+import { Button, Checkbox } from 'ui';
 import { consentStore } from '$lib/state/consent-store.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -68,33 +68,30 @@ onMount(() => {
           </p>
 
           <div class="mt-4 space-y-2 text-sm">
-            <label class="flex items-start gap-3 opacity-70">
-              <input type="checkbox" checked disabled class="mt-1" />
+            <Checkbox checked disabled class="gap-3">
               <span>
                 <strong>{t('cookies.categories.essential.name')}</strong>
                 <span class="block text-xs text-gray-500 dark:text-neutral-400">
                   {t('cookies.categories.essential.desc')}
                 </span>
               </span>
-            </label>
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" bind:checked={analytics} class="mt-1" />
+            </Checkbox>
+            <Checkbox bind:checked={analytics} class="gap-3">
               <span>
                 <strong>{t('cookies.categories.analytics.name')}</strong>
                 <span class="block text-xs text-gray-500 dark:text-neutral-400">
                   {t('cookies.categories.analytics.desc')}
                 </span>
               </span>
-            </label>
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" bind:checked={marketing} class="mt-1" />
+            </Checkbox>
+            <Checkbox bind:checked={marketing} class="gap-3">
               <span>
                 <strong>{t('cookies.categories.marketing.name')}</strong>
                 <span class="block text-xs text-gray-500 dark:text-neutral-400">
                   {t('cookies.categories.marketing.desc')}
                 </span>
               </span>
-            </label>
+            </Checkbox>
           </div>
 
           <div class="mt-4 flex flex-wrap gap-2">

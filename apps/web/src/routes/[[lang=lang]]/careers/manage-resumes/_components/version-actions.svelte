@@ -2,9 +2,9 @@
   VersionActions — rename + delete controls for a resume version card.
 -->
 <script lang="ts">
-import { Check, Loader2, Pencil, Trash2, X } from 'lucide-svelte';
+import { Check, Pencil, Trash2, X } from 'lucide-svelte';
 import { untrack } from 'svelte';
-import { Button, Input, toastState } from 'ui';
+import { Button, Input, Loader, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -95,7 +95,7 @@ async function remove() {
     />
     <Button variant="icon" size="xs" onclick={saveRename} disabled={saving} aria-label={t('actions.save')}>
       {#if saving}
-        <Loader2 size={14} class="animate-spin" />
+        <Loader size={14} />
       {:else}
         <Check size={14} class="text-emerald-500" />
       {/if}
@@ -110,7 +110,7 @@ async function remove() {
     {#if canDelete}
       <Button variant="icon" size="xs" onclick={remove} disabled={deleting} aria-label={t('actions.remove')}>
         {#if deleting}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           <Trash2 size={14} class="text-red-500" />
         {/if}

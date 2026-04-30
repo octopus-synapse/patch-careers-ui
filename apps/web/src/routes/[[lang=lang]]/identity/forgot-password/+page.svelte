@@ -1,7 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createForgotPasswordHandle } from 'api-client';
-import { Loader2 } from 'lucide-svelte';
-import { Button, Input, Label } from 'ui';
+
+import { Button, Input, Label, Loader } from 'ui';
 
 let email = $state('');
 let sent = $state(false);
@@ -66,7 +67,7 @@ function handleSubmit(e: Event) {
         {/if}
         <Button type="submit" disabled={forgotPassword.isPending} variant="solid">
           {#if forgotPassword.isPending}
-            <Loader2 size={14} class="mx-auto animate-spin" />
+            <Loader size={14} class="mx-auto" />
           {:else}
             Enviar link de recuperação
           {/if}

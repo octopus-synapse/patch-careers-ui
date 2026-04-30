@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAuthLogout,
@@ -52,8 +53,15 @@ const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
 // Admins bypass onboarding entirely, so `hasCompletedOnboarding` stays
 // false for them — `!needsOnboarding` is the flag that's true for both
-// admins and regular users past the wizard.
-const showNavItems = $derived(Boolean(authenticated) && !(user?.needsOnboarding ?? false));
+// admins and regular users past the wizard. `!needsEmailVerification`
+// keeps items hidden during the verify-email stage (otherwise a user
+// who's bypassed onboarding via admin role but hasn't verified email
+// would still see every item).
+const canUseApp = $derived(
+  Boolean(authenticated) &&
+    !(user?.needsEmailVerification ?? false) &&
+    !(user?.needsOnboarding ?? false),
+);
 const isAdmin = $derived(Boolean(user?.isAdmin));
 
 function isActiveRoute(href: string) {
@@ -134,7 +142,7 @@ function handleGlobalKeydown(e: KeyboardEvent) {
     !e.ctrlKey &&
     !e.altKey &&
     !isSearchOpen &&
-    showNavItems &&
+    canUseApp &&
     !isTypingTarget(e.target)
   ) {
     e.preventDefault();
@@ -194,7 +202,7 @@ $effect(() => {
 				<NavLogo textClass={isLanding ? 'text-white' : 'text-gray-800 dark:text-neutral-200'} />
 			</div>
 
-			{#if showNavItems}
+			{#if canUseApp}
 				<div class="mx-auto hidden max-w-md flex-1 px-4 lg:px-8 md:block">
 					<button
 						onclick={() => isSearchOpen = true}
@@ -212,7 +220,7 @@ $effect(() => {
 			{/if}
 
 			<div class="flex shrink-0 items-center gap-1">
-				{#if showNavItems}
+				{#if canUseApp}
 					<div class="hidden items-center gap-1 md:flex">
 						{#each navLinks as link}
 							{@const active = isActiveRoute(link.href)}

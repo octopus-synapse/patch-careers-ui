@@ -1,4 +1,4 @@
-import { createUsersListMyPermissions } from 'api-client';
+import { createUsersMePermissions } from 'api-client';
 import { browser } from '$app/environment';
 
 type UsePermissionsOptions = {
@@ -12,7 +12,7 @@ type UsePermissionsOptions = {
  * re-implementing the query shape in every component.
  */
 export function usePermissions(opts: () => UsePermissionsOptions) {
-  const query = createUsersListMyPermissions(() => ({
+  const query = createUsersMePermissions(() => ({
     query: { enabled: browser && opts().authenticated, staleTime: 5 * 60 * 1000 },
   }));
 

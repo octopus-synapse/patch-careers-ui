@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Loader2 } from 'lucide-svelte';
-import { Button, Input, Label } from 'ui';
+
+import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 
@@ -90,7 +90,7 @@ async function handleSubmit(e: Event) {
         {/if}
         <Button type="submit" disabled={submitting} variant="solid">
           {#if submitting}
-            <Loader2 size={14} class="mx-auto animate-spin" />
+            <Loader size={14} class="mx-auto" />
           {:else}
             Redefinir senha
           {/if}

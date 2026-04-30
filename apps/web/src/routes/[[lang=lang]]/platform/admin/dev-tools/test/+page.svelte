@@ -1,7 +1,7 @@
 <script lang="ts">
 import { getBaseUrl } from 'api-client';
-import { Check, FlaskConical, Loader2, Play, X } from 'lucide-svelte';
-import { Button } from 'ui';
+import { Check, FlaskConical, Play, X } from 'lucide-svelte';
+import { Button, Card, Loader } from 'ui';
 
 // Dev-tool: kept on plain `fetch()` because the generated `testRunnerRunTests`
 // hook doesn't yet carry the `{ suite }` body (backend decorator missing
@@ -105,7 +105,7 @@ async function runAll() {
 		</div>
 		<Button variant="solid" size="sm" onclick={runAll} disabled={runningAll}>
 			{#if runningAll}
-				<Loader2 size={14} class="animate-spin" />
+				<Loader size={14} />
 				Running...
 			{:else}
 				<Play size={14} />
@@ -119,9 +119,7 @@ async function runAll() {
 			{@const suiteResults = results[suite.id]}
 			{@const isRunning = running[suite.id] ?? false}
 
-			<div
-				class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50"
-			>
+			<Card>
 				<div class="flex items-start justify-between gap-3">
 					<div class="min-w-0 flex-1">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
@@ -133,7 +131,7 @@ async function runAll() {
 					</div>
 					<Button variant="outline" size="xs" onclick={() => runSuite(suite.id)} disabled={isRunning} class="shrink-0">
 						{#if isRunning}
-							<Loader2 size={12} class="animate-spin" />
+							<Loader size={12} />
 							Running
 						{:else}
 							<Play size={12} />
@@ -144,7 +142,7 @@ async function runAll() {
 
 				{#if isRunning && !suiteResults}
 					<div class="mt-4 flex items-center justify-center py-6">
-						<Loader2 size={20} class="animate-spin text-gray-400 dark:text-neutral-500" />
+						<Loader size={20} />
 					</div>
 				{/if}
 
@@ -216,7 +214,7 @@ async function runAll() {
 						</span>
 					</div>
 				{/if}
-			</div>
+			</Card>
 		{/each}
 	</div>
 </div>

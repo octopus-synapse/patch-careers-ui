@@ -4,22 +4,10 @@
   and grab the all-formats bundle zip.
 -->
 <script lang="ts">
-import {
-  ChevronDown,
-  ChevronRight,
-  Copy,
-  Download,
-  Link as LinkIcon,
-  Loader2,
-  Lock,
-  Package,
-  Plus,
-  QrCode,
-  Trash2,
-} from 'lucide-svelte';
+import { ChevronDown, ChevronRight, Copy, Download, Link as LinkIcon, Lock, Package, Plus, QrCode, Trash2 } from 'lucide-svelte';
 import QRCode from 'qrcode';
 import { onMount } from 'svelte';
-import { Button, Input, Label, toastState } from 'ui';
+import { Button, Input, Label, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { locale } from '$lib/state/locale.svelte';
@@ -298,7 +286,7 @@ onMount(load);
     </div>
     <Button variant="outline" size="sm" onclick={downloadBundle} disabled={bundleDownloading}>
       {#if bundleDownloading}
-        <Loader2 size={14} class="mr-2 animate-spin" />
+        <Loader size={14} class="mr-2" />
       {:else}
         <Package size={14} class="mr-2" />
       {/if}
@@ -372,7 +360,7 @@ onMount(load);
 
       <Button type="submit" variant="solid" disabled={creating}>
         {#if creating}
-          <Loader2 size={14} class="mr-2 animate-spin" />
+          <Loader size={14} class="mr-2" />
         {:else}
           <LinkIcon size={14} class="mr-2" />
         {/if}
@@ -387,7 +375,7 @@ onMount(load);
     </h2>
     {#if loading}
       <div class="flex justify-center py-6">
-        <Loader2 size={16} class="animate-spin text-gray-500" />
+        <Loader size={16} />
       </div>
     {:else if shares.length === 0}
       <p class="rounded-lg border border-gray-200 p-6 text-center text-xs text-gray-500 dark:border-neutral-800 dark:text-neutral-500">
@@ -457,7 +445,7 @@ onMount(load);
             {#if expandedShare[s.id]}
               <div class="mt-3 space-y-2 border-t border-gray-100 pt-3 dark:border-neutral-800">
                 {#if aliasLoading[s.id]}
-                  <Loader2 size={12} class="animate-spin text-gray-500" />
+                  <Loader size={12} />
                 {:else if (aliasesByShare[s.id]?.length ?? 0) === 0}
                   <p class="text-[11px] text-gray-400">
                     Sem aliases. Crie um pra renomear esse link sem invalidar QR codes/cards já distribuídos.

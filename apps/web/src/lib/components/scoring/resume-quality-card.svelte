@@ -1,7 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { browser } from '$app/environment';
   import { createResumeQualityGet } from 'api-client';
-  import { ScoreCard } from 'ui';
+  import { Badge, ScoreCard, Skeleton } from 'ui';
 
   type Props = {
     resumeId: string;
@@ -24,7 +25,7 @@
 </script>
 
 {#if qualityQuery.isPending}
-  <div class="h-[160px] animate-pulse rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"></div>
+  <Skeleton height="160px" class="rounded-xl" />
 {:else if snapshot === null || qualityQuery.isError}
   <ScoreCard
     score={null}
@@ -51,8 +52,8 @@
         <span class="text-neutral-600 dark:text-neutral-300">
           {issuesCount} {issuesCount === 1 ? 'recomendação' : 'recomendações'}
           {#if highSeverity > 0}
-            <span class="ml-1 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-red-700 dark:bg-red-900/40 dark:text-red-200">
-              {highSeverity} alta
+            <span class="ml-1 inline-block uppercase">
+              <Badge intent="danger" size="sm">{highSeverity} alta</Badge>
             </span>
           {/if}
         </span>

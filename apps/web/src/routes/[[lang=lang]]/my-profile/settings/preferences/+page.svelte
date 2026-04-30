@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Locale } from 'i18n';
 import { Globe, Moon, Sun } from 'lucide-svelte';
-import { SegmentToggle } from 'ui';
+import { Card, SegmentToggle } from 'ui';
 import { colorSchema } from '$lib/state/color-schema.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -38,15 +38,13 @@ function handleLocaleChange(value: string) {
 		</h3>
 	</div>
 
-	<section
-		class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-800/50"
-	>
-		<div class="border-b border-gray-200 px-5 py-4 dark:border-neutral-800">
+	<Card>
+		{#snippet title()}
 			<h2 class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 				{t('settings.preferences')}
 			</h2>
-		</div>
-		<div class="space-y-4 p-5">
+		{/snippet}
+		<div class="space-y-4">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-2">
 					<Sun size={16} class="hidden text-neutral-500 dark:block" />
@@ -71,5 +69,5 @@ function handleLocaleChange(value: string) {
 				/>
 			</div>
 		</div>
-	</section>
+	</Card>
 </div>

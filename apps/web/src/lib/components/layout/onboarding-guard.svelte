@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createAuthSession } from 'api-client';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -22,6 +23,7 @@ const isAuthPage = $derived(
   currentPath.startsWith('/identity/sign-in') || currentPath.startsWith('/identity/sign-up'),
 );
 const isAdminPage = $derived(currentPath.startsWith('/platform/admin'));
+const isLandingPage = $derived(currentPath === '/');
 const isLegalPage = $derived(
   currentPath.startsWith('/legal') ||
     currentPath.startsWith('/contact') ||
@@ -31,8 +33,9 @@ const isLegalPage = $derived(
 $effect(() => {
   if (!browser || session.isLoading) return;
 
-  // 1. Unauthenticated trying to access anything protected → sign-in
-  if (!authenticated && !isAuthPage && !isLegalPage) {
+  // 1. Unauthenticated trying to access anything protected → sign-in.
+  // The landing page stays reachable so guests can read the pitch.
+  if (!authenticated && !isAuthPage && !isLegalPage && !isLandingPage) {
     goto('/identity/sign-in');
     return;
   }

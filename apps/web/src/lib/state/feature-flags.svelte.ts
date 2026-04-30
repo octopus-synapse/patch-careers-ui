@@ -1,4 +1,4 @@
-import { createFeatureFlagsEvaluate, getFeatureFlagsEvaluateQueryKey } from 'api-client';
+import { createFeatureFlagsActive, getFeatureFlagsActiveQueryKey } from 'api-client';
 import { browser } from '$app/environment';
 
 type UseFeatureFlagsOptions = {
@@ -12,7 +12,7 @@ type UseFeatureFlagsOptions = {
  * just need to ask `flags.enabled('resumes.export.pdf')`.
  */
 export function useFeatureFlags(opts: () => UseFeatureFlagsOptions) {
-  const query = createFeatureFlagsEvaluate(() => ({
+  const query = createFeatureFlagsActive(() => ({
     query: { enabled: browser && opts().authenticated, staleTime: 5 * 60 * 1000 },
   }));
 
@@ -35,4 +35,4 @@ export function useFeatureFlags(opts: () => UseFeatureFlagsOptions) {
   };
 }
 
-export { getFeatureFlagsEvaluateQueryKey };
+export { getFeatureFlagsActiveQueryKey };

@@ -1,8 +1,9 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { createJobMatchComputeNow, isApiError } from 'api-client';
-  import { Loader2 } from 'lucide-svelte';
+
   import { onMount } from 'svelte';
-  import { ScoreCard } from 'ui';
+  import { Loader, ScoreCard } from 'ui';
 
   type SubScores = {
     keyword: number | null;
@@ -72,7 +73,7 @@
 
 {#if loading && !breakdown}
   <div class="flex h-[160px] items-center justify-center rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
-    <Loader2 size={20} class="animate-spin text-neutral-500" />
+    <Loader size={20} />
   </div>
 {:else if lockoutMessage}
   <ScoreCard

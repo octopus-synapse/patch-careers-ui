@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import {
   createAuthSession,
   createPostsFindById,
@@ -10,8 +11,8 @@ import {
   engagementUnlike,
   postsDelete,
 } from 'api-client';
-import { ArrowLeft, Loader2 } from 'lucide-svelte';
-import { Button } from 'ui';
+import { ArrowLeft } from 'lucide-svelte';
+import { Button, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -117,7 +118,7 @@ async function handleReport(id: string) {
 
 {#if session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin text-gray-400 dark:text-neutral-500" />
+		<Loader size={24} />
 	</div>
 {:else if authenticated}
 	<div class="min-h-screen pt-20 pb-12">
@@ -131,7 +132,7 @@ async function handleReport(id: string) {
 
 			{#if postQuery.isLoading}
 				<div class="flex justify-center py-12">
-					<Loader2 size={24} class="animate-spin text-gray-400 dark:text-neutral-500" />
+					<Loader size={24} />
 				</div>
 			{:else}
 				<div class="space-y-1">

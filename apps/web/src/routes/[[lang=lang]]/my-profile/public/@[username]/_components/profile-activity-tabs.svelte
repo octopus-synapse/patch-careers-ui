@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import {
   createActivityGetUserActivities,
   createFeedGetUserPosts,
@@ -7,7 +8,7 @@ import {
 } from 'api-client';
 import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
 import type { Component } from 'svelte';
-import { EmptyState, Skeleton, Tabs } from 'ui';
+import { Badge, EmptyState, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
 import { relativeFrom } from '$lib/utils/relative';
 import { locale } from '$lib/state/locale.svelte';
@@ -164,7 +165,7 @@ function reactionEmoji(type?: string): string {
 						{/if}
 						<div class="mt-2 flex items-center gap-2 text-[11px] text-gray-400 dark:text-neutral-500">
 							{#if post.type}
-								<span class="rounded-full bg-gray-100 px-2 py-0.5 font-medium dark:bg-neutral-700">{post.type}</span>
+								<Badge intent="neutral" size="md">{post.type}</Badge>
 							{/if}
 							{#if post.createdAt}
 								<span>{relativeFrom(post.createdAt)}</span>

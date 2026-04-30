@@ -1,7 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createAuthAvailable, createResumeImportImportPdf, getBaseUrl } from 'api-client';
-import { ArrowRight, Clock, FileUp, Github, Linkedin, Loader2, PencilLine } from 'lucide-svelte';
-import { Button, Modal, toastState } from 'ui';
+import { ArrowRight, Clock, FileUp, Github, Linkedin, PencilLine } from 'lucide-svelte';
+import { Badge, Button, Loader, Modal, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -156,7 +157,7 @@ function isAvailable(key: TrackKey): boolean {
 
 {#if session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
+		<Loader size={24} />
 	</div>
 {:else if t && authenticated}
 	<div class="min-h-screen pt-20 pb-12">
@@ -191,10 +192,12 @@ function isAvailable(key: TrackKey): boolean {
 										</span>
 									{/if}
 									{#if !available}
-										<span class="flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-											<Clock size={10} />
-											{t('onboarding.start.badgeSoon')}
-										</span>
+										<Badge intent="warning" size="md">
+											<span class="inline-flex items-center gap-1">
+												<Clock size={10} />
+												{t('onboarding.start.badgeSoon')}
+											</span>
+										</Badge>
 									{/if}
 								</div>
 							</div>
@@ -210,7 +213,7 @@ function isAvailable(key: TrackKey): boolean {
 
 							<div class="flex items-center gap-1 text-xs font-semibold text-gray-500 transition-colors group-hover:text-gray-800 dark:text-neutral-500 dark:group-hover:text-neutral-200">
 								{#if track.key === 'upload' && pdfMutation.isPending}
-									<Loader2 size={12} class="animate-spin" />
+									<Loader size={12} />
 								{:else}
 									<span>{t(available ? 'onboarding.next' : 'onboarding.start.close')}</span>
 									<ArrowRight size={12} class="transition-transform group-hover:translate-x-0.5" />

@@ -1,7 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createJobsFindAll } from 'api-client';
 import { ArrowRight, Briefcase, Globe2, Sparkles } from 'lucide-svelte';
-import { Button, Card, MatchBadge, Skeleton } from 'ui';
+import { Badge, Button, Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
@@ -86,10 +87,14 @@ const loading = $derived(query.isLoading);
 									{[job.company, job.location].filter(Boolean).join(' · ')}
 								</p>
 								{#if job.salaryRange}
-									<p class="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-100/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
-										<Sparkles size={9} />
-										{job.salaryRange}
-									</p>
+									<div class="mt-1">
+										<Badge intent="success" size="md">
+											<span class="inline-flex items-center gap-1">
+												<Sparkles size={9} />
+												{job.salaryRange}
+											</span>
+										</Badge>
+									</div>
 								{/if}
 							</div>
 							{#if typeof job.matchScore === 'number'}

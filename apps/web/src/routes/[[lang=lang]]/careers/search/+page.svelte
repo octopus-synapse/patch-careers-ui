@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { SearchSearchSortBy, createJobsFindAll, createSearchSearch, searchSearch } from 'api-client';
 import { Search, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';

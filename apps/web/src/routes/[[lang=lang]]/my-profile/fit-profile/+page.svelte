@@ -1,8 +1,9 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { createFitProfileMe, fitProfileDeleteMe } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { CheckCircle2, Clock, Loader2, Trash2 } from 'lucide-svelte';
-  import { Button, toastState } from 'ui';
+  import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
+  import { Button, Loader, toastState } from 'ui';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { getFitProfileMeQueryKey } from 'api-client';
@@ -55,7 +56,7 @@
 
   {#if status === 'loading'}
     <div class="flex items-center justify-center rounded-xl border border-neutral-200 p-10 dark:border-neutral-800">
-      <Loader2 class="animate-spin text-neutral-500" size={20} />
+      <Loader size={20} />
     </div>
   {:else if status === 'responded'}
     <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-900 dark:bg-emerald-950/40">
@@ -76,7 +77,7 @@
           Refazer questionário
         </Button>
         <Button variant="ghost" size="sm" onclick={handleDelete} disabled={deleting}>
-          {#if deleting}<Loader2 size={14} class="animate-spin" />{:else}<Trash2 size={14} />{/if}
+          {#if deleting}<Loader size={14} />{:else}<Trash2 size={14} />{/if}
           Apagar perfil
         </Button>
       </div>

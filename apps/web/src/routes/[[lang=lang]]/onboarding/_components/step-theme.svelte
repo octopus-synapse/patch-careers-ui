@@ -1,5 +1,6 @@
 <script lang="ts">
 import { Check, Shield } from 'lucide-svelte';
+import { Badge } from 'ui';
 
 type ThemeOption = {
   id: string;
@@ -52,16 +53,20 @@ let { themes, selectedThemeId, onselect }: Props = $props();
 				{/if}
 
 				{#if theme.atsScore}
-					<div class="mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-						<Shield size={11} />
-						ATS {theme.atsScore}/100
+					<div class="mt-3">
+						<Badge intent="success" size="md">
+							<span class="inline-flex items-center gap-1.5">
+								<Shield size={11} />
+								ATS {theme.atsScore}/100
+							</span>
+						</Badge>
 					</div>
 				{/if}
 
 				{#if theme.tags?.length}
 					<div class="mt-2 flex flex-wrap gap-1">
 						{#each theme.tags.slice(0, 3) as tag}
-							<span class="rounded px-1.5 py-0.5 text-[9px] text-gray-500 dark:text-neutral-500 bg-gray-100 dark:bg-neutral-700/50">{tag}</span>
+							<Badge intent="neutral" size="sm">{tag}</Badge>
 						{/each}
 					</div>
 				{/if}

@@ -1,40 +1,24 @@
-export { default as Avatar } from './avatar.svelte';
-export { default as Badge } from './badge.svelte';
-export { default as BadgeIcon } from './badge-icon.svelte';
-export type { BadgeKind } from './badge-types';
-export { default as Button } from './button.svelte';
-export type { ButtonCase } from './button-intents';
-export { default as Card } from './card.svelte';
-export { default as ConfirmModal } from './confirm-modal.svelte';
-export { default as DangerConfirmModal } from './danger-confirm-modal.svelte';
-export { default as DataTable } from './data-table.svelte';
-export { type DateRangePreset, default as DateRangePicker } from './date-range-picker.svelte';
-export { default as Dropdown } from './dropdown.svelte';
-export { default as EmptyState } from './empty-state.svelte';
-export { default as ExportButton } from './export-button.svelte';
-export { default as FitScoreBreakdown } from './fit-score-breakdown.svelte';
-export { default as FitScoreChip } from './fit-score-chip.svelte';
-export type { FitDimension, FitScoreLabels } from './fit-score-types';
-export { type FocusTrapOptions, focusTrap, prefersReducedMotion } from './focus-trap';
-export { default as FormField } from './form-field.svelte';
-export { default as FormModal } from './form-modal.svelte';
-export { default as InfiniteList } from './infinite-list.svelte';
-export { default as InfiniteScrollTrigger } from './infinite-scroll-trigger.svelte';
-export { default as Input } from './input.svelte';
-export { default as Label } from './label.svelte';
-export { default as MatchBadge } from './match-badge.svelte';
-export { default as Modal } from './modal.svelte';
-export { default as OtpInput } from './otp-input.svelte';
-export { default as Pagination } from './pagination.svelte';
-export { default as Poll } from './poll.svelte';
-export type { PollOption } from './poll-types';
-export { default as Popover } from './popover.svelte';
-export { default as QuoteCard } from './quote-card.svelte';
-export { default as RankBadge } from './rank-badge.svelte';
-export { default as ReactionIcon } from './reaction-icon.svelte';
-export { default as ReactionPicker } from './reaction-picker.svelte';
-export { REACTIONS, type ReactionType } from './reactions';
-export { default as ScoreCard } from './score-card.svelte';
+export { default as Avatar } from './components/avatar/avatar.component.svelte';
+export { default as Badge } from './components/badge/badge.component.svelte';
+export type { BadgeKind } from './components/badge/badge.types';
+export { default as BadgeIcon } from './components/badge/badge-icon.component.svelte';
+export { default as Button } from './components/button/button.component.svelte';
+/** @deprecated No longer needed — use Tailwind dark: classes instead */
+export type { ButtonCase, ButtonSize, ButtonVariant } from './components/button/button.types';
+export { default as Card } from './components/card/card.component.svelte';
+export { default as Checkbox } from './components/checkbox/checkbox.component.svelte';
+export { default as DataTable } from './components/data-table/data-table.component.svelte';
+export {
+  type DateRangePreset,
+  default as DateRangePicker,
+} from './components/date-range-picker/date-range-picker.component.svelte';
+export { default as Dropdown } from './components/dropdown/dropdown.component.svelte';
+export { default as EmptyState } from './components/empty-state/empty-state.component.svelte';
+export { default as ExportButton } from './components/export-button/export-button.component.svelte';
+export type { FitDimension, FitScoreLabels } from './components/fit-score/fit-score.types';
+export { default as FitScoreBreakdown } from './components/fit-score/fit-score-breakdown.component.svelte';
+export { default as FitScoreChip } from './components/fit-score/fit-score-chip.component.svelte';
+export { default as ScoreCard } from './components/fit-score/score-card.component.svelte';
 export {
   RANK_ORDER,
   RANK_RANGES,
@@ -44,19 +28,47 @@ export {
   type ScoreRank,
   toneForRank,
   toneForScore,
-} from './score-rank';
-export { default as SearchFilterBar } from './search-filter-bar.svelte';
-export { default as SegmentToggle } from './segment-toggle.svelte';
-export { default as Sidebar } from './sidebar.svelte';
-export { default as Skeleton } from './skeleton.svelte';
-export { default as SliderCarousel } from './slider-carousel.svelte';
-export { default as StatGrid } from './stat-grid.svelte';
-export type { StatItem } from './stat-grid-types';
-export { default as Tabs } from './tabs.svelte';
-export { default as Textarea } from './textarea.svelte';
-export { default as Toast } from './toast.svelte';
-export { default as ToastContainer } from './toast-container.svelte';
-export { toastState } from './toast-state.svelte';
-export { default as Tooltip } from './tooltip.svelte';
-/** @deprecated No longer needed — use Tailwind dark: classes instead */
-export type { ButtonSize, ButtonVariant, ColorSchema } from './types';
+} from './components/fit-score/score-rank';
+export { default as FormField } from './components/form-field/form-field.component.svelte';
+export { default as FormModal } from './components/form-modal/form-modal.component.svelte';
+export { default as InfiniteList } from './components/infinite-list/infinite-list.component.svelte';
+export { default as InfiniteScrollTrigger } from './components/infinite-list/infinite-scroll-trigger.component.svelte';
+export { default as Input } from './components/input/input.component.svelte';
+export { default as Textarea } from './components/input/textarea.component.svelte';
+export { default as Label } from './components/label/label.component.svelte';
+export { default as Loader } from './components/loader/loader.component.svelte';
+export { default as MatchBadge } from './components/matching/match-badge.component.svelte';
+export { default as RankBadge } from './components/matching/rank-badge.component.svelte';
+export { default as ConfirmModal } from './components/modal/confirm-modal.component.svelte';
+export { default as DangerConfirmModal } from './components/modal/danger-confirm-modal.component.svelte';
+export { default as Modal } from './components/modal/modal.component.svelte';
+export {
+  type FocusTrapOptions,
+  focusTrap,
+  prefersReducedMotion,
+} from './components/modal/modal.focus-trap';
+export { default as OtpInput } from './components/otp-input/otp-input.component.svelte';
+export { default as Pagination } from './components/pagination/pagination.component.svelte';
+export { default as Poll } from './components/poll/poll.component.svelte';
+export type { PollOption } from './components/poll/poll.types';
+export { default as Popover } from './components/popover/popover.component.svelte';
+export { default as QuoteCard } from './components/quote-card/quote-card.component.svelte';
+export { default as Radio } from './components/radio/radio.component.svelte';
+export { default as ReactionIcon } from './components/reactions/reaction-icon.component.svelte';
+export { default as ReactionPicker } from './components/reactions/reaction-picker.component.svelte';
+export { REACTIONS, type ReactionType } from './components/reactions/reactions';
+export { default as SearchFilterBar } from './components/search/search-filter-bar.component.svelte';
+export { default as SegmentToggle } from './components/search/segment-toggle.component.svelte';
+export { default as Select } from './components/select/select.component.svelte';
+export { default as Sidebar } from './components/sidebar/sidebar.component.svelte';
+export { default as Skeleton } from './components/skeleton/skeleton.component.svelte';
+export { default as SliderCarousel } from './components/slider-carousel/slider-carousel.component.svelte';
+export { default as StatGrid } from './components/stat-grid/stat-grid.component.svelte';
+export type { StatItem } from './components/stat-grid/stat-grid.types';
+export { default as Tabs } from './components/tabs/tabs.component.svelte';
+export { default as Toast } from './components/toast/toast.component.svelte';
+export { toastState } from './components/toast/toast.state.svelte';
+export { default as ToastContainer } from './components/toast/toast-container.component.svelte';
+export { default as Tooltip } from './components/tooltip/tooltip.component.svelte';
+/** @deprecated Use `ColorScheme` from shared types. */
+export type { ColorSchema } from './shared';

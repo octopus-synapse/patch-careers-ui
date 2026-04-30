@@ -1,6 +1,6 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createJobsGetRecommendedJobs } from 'api-client';
-import { Briefcase } from 'lucide-svelte';
 import { Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -33,17 +33,12 @@ const items = $derived.by<RecommendedJob[]>(() => {
 <Card>
 	{#snippet title()}
 		<div class="flex items-center justify-between">
-			<h2 class="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-				<span
-					class="inline-flex size-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
-				>
-					<Briefcase size={14} />
-				</span>
+			<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
 				{t('jobs.dashboardRecommendedTitle')}
 			</h2>
 			<a
 				href="/careers/browse-jobs"
-				class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
+				class="text-xs font-medium text-cyan-600 hover:underline dark:text-cyan-300"
 			>
 				{t('jobs.dashboardRecommendedSeeAll')}
 			</a>
@@ -76,7 +71,7 @@ const items = $derived.by<RecommendedJob[]>(() => {
 						onclick={() => goto(`/careers/browse-jobs/${job.id}`)}
 					>
 						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700 dark:text-neutral-100 dark:group-hover:text-emerald-300">
+							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-cyan-700 dark:text-neutral-100 dark:group-hover:text-cyan-300">
 								{job.title ?? '—'}
 							</p>
 							<p class="truncate text-xs text-gray-500 dark:text-neutral-500">

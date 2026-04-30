@@ -4,17 +4,9 @@
   /v1/jobs/applications/:id/events.
 -->
 <script lang="ts">
-import {
-  Briefcase,
-  Calendar,
-  CheckCircle2,
-  Eye,
-  Loader2,
-  MessageSquarePlus,
-  XCircle,
-} from 'lucide-svelte';
+import { Briefcase, Calendar, CheckCircle2, Eye, MessageSquarePlus, XCircle } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, toastState } from 'ui';
+import { Button, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -160,7 +152,7 @@ onMount(load);
 
   {#if loading}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if applications.length === 0}
     <p class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500">
@@ -245,7 +237,7 @@ onMount(load);
                   disabled={adding === app.id}
                 >
                   {#if adding === app.id}
-                    <Loader2 size={14} class="animate-spin" />
+                    <Loader size={14} />
                   {:else}
                     Adicionar
                   {/if}

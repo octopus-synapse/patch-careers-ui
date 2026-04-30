@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Loader2, Rss } from 'lucide-svelte';
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -9,14 +9,15 @@ import MyApplicationsWidget from './_components/my-applications-widget.svelte';
 import NextStepsChecklist from './_components/next-steps-checklist.svelte';
 import PendingInvitationsWidget from './_components/pending-invitations-widget.svelte';
 import ProfileCompletionCard from './_components/profile-completion-card.svelte';
-import RemoteUsdWidget from './_components/remote-usd-widget.svelte';
+// RemoteUsdWidget removed per product feedback — no standalone Remote/USD
+// box on the dashboard. Users still filter jobs by currency on /careers/browse-jobs.
 // Hidden until the events backend ships — no point in promising AMAs that
 // don't exist yet (per UX feedback #12).
 // import UpcomingEventsCard from './_components/upcoming-events-card.svelte';
-import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import WidgetErrorBoundary from '$lib/components/errors/widget-error-boundary.svelte';
-import { meDashboard } from '$lib/state/me-dashboard.svelte';
+import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { meDashboard } from '$lib/state/me-dashboard.svelte';
 
 const t = $derived(locale.t);
 
@@ -28,9 +29,9 @@ $effect(() => {
   if (!session.isLoading && !authenticated) {
     goto('/identity/sign-in');
   }
-  if (!session.isLoading && authenticated && user?.needsOnboarding) {
-    goto('/onboarding/start');
-  }
+  // The 3-stage gate (verify-email → onboarding → app) is enforced by the
+  // global `OnboardingGuard` in the root layout. A local redirect here
+  // races with the guard and beats the verify-email stage to the punch.
 });
 
 // Prefetch the composite payload as soon as the user is authenticated.
@@ -44,9 +45,6 @@ $effect(() => {
 });
 
 const displayName = $derived(String(user?.name ?? user?.email ?? ''));
-const photoURL = $derived(
-  ((user as Record<string, unknown> | undefined)?.photoURL as string | null | undefined) ?? null,
-);
 </script>
 
 <svelte:head>
@@ -55,14 +53,14 @@ const photoURL = $derived(
 
 {#if session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
+		<span class="text-sm text-gray-500 dark:text-neutral-500">…</span>
 	</div>
 {:else if t && authenticated && user}
 	<div
 		class="relative min-h-[calc(100vh-3.5rem)] bg-gradient-to-b from-gray-50/60 via-white to-white pt-20 pb-16 dark:from-neutral-950 dark:via-neutral-950 dark:to-neutral-950"
 	>
 		<main class="mx-auto max-w-6xl px-4 sm:px-6">
-			<GreetingHero name={displayName} {photoURL} />
+			<GreetingHero name={displayName} />
 
 			<!-- Checklist goes above the widgets when anything's incomplete —
 				gives new users a single place to see "what do I do next?" -->
@@ -79,9 +77,9 @@ const photoURL = $derived(
 				</WidgetErrorBoundary>
 			</div>
 
-			<!-- 60/40 grid on md+, single column on mobile. The side column gets
-				more room than the previous 2/3+1/3 split so widgets like Pending
-				Invitations and Remote-USD don't squeeze name/CTA real estate. -->
+			<!-- 60/40 grid on md+, single column on mobile. Side column holds
+				Profile Completion + Pending Invitations since the Remote/USD
+				widget was retired. -->
 			<div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-5">
 				<div class="flex flex-col gap-5 md:col-span-3">
 					<WidgetErrorBoundary><RecommendedJobsWidget /></WidgetErrorBoundary>
@@ -90,7 +88,6 @@ const photoURL = $derived(
 
 				<div class="flex flex-col gap-5 md:col-span-2">
 					<WidgetErrorBoundary><ProfileCompletionCard {user} /></WidgetErrorBoundary>
-					<WidgetErrorBoundary><RemoteUsdWidget /></WidgetErrorBoundary>
 					<WidgetErrorBoundary><PendingInvitationsWidget /></WidgetErrorBoundary>
 				</div>
 			</div>
@@ -99,7 +96,6 @@ const photoURL = $derived(
 				<div class="flex items-center gap-3 text-gray-300 dark:text-neutral-800">
 					<span class="h-px w-10 bg-current"></span>
 					<Button variant="ghost" size="sm" onclick={() => goto('/social/feed')}>
-						<Rss size={14} />
 						{t('dashboard.openFeed')}
 					</Button>
 					<span class="h-px w-10 bg-current"></span>

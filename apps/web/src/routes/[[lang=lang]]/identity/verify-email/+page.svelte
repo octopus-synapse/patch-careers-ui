@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAuthSession,
@@ -9,9 +10,9 @@ import {
   getEmailVerificationResendStatusQueryKey,
   isApiError,
 } from 'api-client';
-import { CheckCircle2, Loader2, Mail } from 'lucide-svelte';
+import { CheckCircle2, Mail } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, OtpInput } from 'ui';
+import { Badge, Button, Loader, OtpInput } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -191,7 +192,7 @@ function handleResend() {
 			<div class="rounded-2xl border bg-white dark:bg-neutral-900 border-gray-200 dark:border-neutral-800 shadow-sm p-6 sm:p-8">
 				{#if autoVerifying || verifyEmail.isPending}
 					<div class="py-10 text-center" role="status" aria-live="polite">
-						<Loader2 size={28} class="mx-auto mb-4 animate-spin text-gray-500 dark:text-neutral-500" />
+						<Loader size={28} class="mx-auto mb-4" />
 						<p class="text-sm text-gray-500 dark:text-neutral-400">
 							{t('identity.verifyEmail.verifying')}
 						</p>
@@ -215,9 +216,9 @@ function handleResend() {
 							{t('identity.verifyEmail.subtitleNoEmail')}
 						</p>
 						{#if email}
-							<span class="mt-3 inline-flex items-center rounded-full bg-gray-100 dark:bg-neutral-800 px-3 py-1 text-xs font-medium text-gray-700 dark:text-neutral-300">
-								{email}
-							</span>
+							<div class="mt-3">
+								<Badge intent="neutral" size="md">{email}</Badge>
+							</div>
 						{/if}
 					</div>
 

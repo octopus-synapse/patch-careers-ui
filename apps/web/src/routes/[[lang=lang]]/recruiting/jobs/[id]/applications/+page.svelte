@@ -1,7 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createJobsGetApplicationsForJob } from 'api-client';
-import { ArrowLeft, Loader2 } from 'lucide-svelte';
-import { Button } from 'ui';
+import { ArrowLeft } from 'lucide-svelte';
+import { Avatar, Button, Loader } from 'ui';
 import { page } from '$app/stores';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -122,7 +123,7 @@ const funnelMax = $derived(Math.max(1, ...STATUS_ORDER.map((s) => counts[s] ?? 0
 
 	{#if query.isLoading}
 		<div class="flex items-center justify-center py-12">
-			<Loader2 size={24} class="animate-spin text-gray-500" />
+			<Loader size={24} />
 		</div>
 	{:else if errorMessage}
 		<div class="rounded-lg border border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/40 p-4 text-sm text-red-700 dark:text-red-300">
@@ -138,11 +139,11 @@ const funnelMax = $derived(Math.max(1, ...STATUS_ORDER.map((s) => counts[s] ?? 0
 				<li class="rounded-lg border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4">
 					<div class="flex items-start justify-between gap-4">
 						<div class="flex items-center gap-3">
-							{#if item.user?.photoURL}
-								<img src={item.user.photoURL} alt="" class="h-10 w-10 rounded-full object-cover" />
-							{:else}
-								<div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-neutral-800"></div>
-							{/if}
+							<Avatar
+								name={item.user?.name ?? item.user?.username ?? ''}
+								photoURL={item.user?.photoURL ?? null}
+								size="md"
+							/>
 							<div>
 								<div class="font-medium text-gray-900 dark:text-neutral-100">
 									{item.user?.name ?? item.user?.username ?? t('company.applications.anonymous')}

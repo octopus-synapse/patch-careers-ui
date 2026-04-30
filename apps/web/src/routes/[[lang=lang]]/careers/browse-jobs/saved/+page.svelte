@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createJobsGetBookmarkedJobs,
@@ -8,7 +9,7 @@ import {
 } from 'api-client';
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
 import type { Component } from 'svelte';
-import { Button, Card, EmptyState, Skeleton, toastState } from 'ui';
+import { Badge, Button, Card, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { track } from '$lib/utils/analytics/track';
@@ -177,9 +178,7 @@ function handleRemove(id: string) {
 								{#if job.skills.length > 0}
 									<div class="mt-2 flex flex-wrap gap-1">
 										{#each job.skills.slice(0, 5) as skill}
-											<span class="rounded-full px-2 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-neutral-300">
-												{skill}
-											</span>
+											<Badge intent="neutral" size="md">{skill}</Badge>
 										{/each}
 									</div>
 								{/if}

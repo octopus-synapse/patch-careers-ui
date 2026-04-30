@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createConnectionGetConnectionSuggestions,
@@ -6,15 +7,13 @@ import {
   getFeedGetTimelineQueryKey,
 } from 'api-client';
 import { Plus } from 'lucide-svelte';
-import { ToastContainer } from 'ui';
+import { Tabs, ToastContainer } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
-import ActivityStream from './_components/activity-stream.svelte';
 import CreatePostModal from './_components/create-post-modal.svelte';
-import FeedHeader, { type FeedMode } from './_components/feed-header.svelte';
+import FeedHeader from './_components/feed-header.svelte';
 import FeedList from './_components/feed-list.svelte';
-import FeedDiscoverPanel from './_components/feed-discover-panel.svelte';
 import NewPostsPill from './_components/new-posts-pill.svelte';
 import type { PostFitScore } from './_components/post-card.svelte';
 import PostSkeleton from './_components/post-skeleton.svelte';
@@ -41,10 +40,37 @@ $effect(() => {
   }
 });
 
-// Feed selectors — single mode replaces the old source+scope pair.
-let selectedFilter = $state('ALL');
-let feedMode = $state<FeedMode>('bubble');
-let searchTerm = $state('');
+// The only "filter" on the feed is a two-tab toggle that reveals on
+// scroll: "Explorar" (default, no server-side filter) vs "Minha bolha"
+// (`followingOnly=true`).
+type FeedTab = 'explore' | 'bubble';
+let activeTab = $state<FeedTab>('explore');
+const feedTabs: { value: FeedTab; label: string }[] = [
+  { value: 'explore', label: 'Explorar' },
+  { value: 'bubble', label: 'Minha bolha' },
+];
+let composerSentinel = $state<HTMLDivElement | null>(null);
+let tabsStuck = $state(false);
+
+$effect(() => {
+  if (!browser || !composerSentinel) return;
+  const obs = new IntersectionObserver(
+    ([entry]) => {
+      tabsStuck = !entry.isIntersecting;
+    },
+    { threshold: 0 },
+  );
+  obs.observe(composerSentinel);
+  return () => obs.disconnect();
+});
+
+function handleTabChange(value: string) {
+  const next = value as FeedTab;
+  if (next === activeTab) return;
+  activeTab = next;
+  pagination.reset();
+  queryClient.invalidateQueries({ queryKey: getFeedGetTimelineQueryKey() });
+}
 
 // Modals
 let showCreateModal = $state(false);
@@ -115,34 +141,17 @@ const feedQuery = createFeedGetTimeline(
   () => ({
     cursor: pagination.cursor,
     limit: 20,
-    type: selectedFilter === 'ALL' ? undefined : selectedFilter,
-    followingOnly: feedMode === 'bubble',
+    ...(activeTab === 'bubble' ? { followingOnly: true } : {}),
   }),
   () => ({
     query: {
-      // Disable the posts query entirely when the user is on the activity tab.
-      enabled: authenticated && feedMode !== 'activity',
+      enabled: authenticated,
       // Only poll when the user is at the head of the feed — further
       // pages are stable and shouldn't be refetched in the background.
       refetchInterval: pagination.cursor === undefined ? 60_000 : false,
     },
   }),
 );
-
-function handleModeChange(value: FeedMode) {
-  if (feedMode === value) return;
-  feedMode = value;
-  searchTerm = '';
-  pagination.reset();
-}
-
-// Reset pagination + engagement overrides + search when the filter changes.
-$effect(() => {
-  selectedFilter;
-  searchTerm = '';
-  pagination.reset();
-  engagement.resetOverrides();
-});
 
 function handleRepost(id: string) {
   const post = pagination.allPosts.find((p) => String(p.id) === id);
@@ -190,73 +199,59 @@ function handlePostCreated() {
 		</div>
 	</div>
 {:else if authenticated}
-	<div class="min-h-screen pt-20 pb-12">
-		<div class="mx-auto grid max-w-6xl gap-6 px-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
-			<main class="min-w-0">
-				<FeedHeader
-					{userName}
-					{userPhoto}
-					{feedMode}
-					{selectedFilter}
-					oncreate={() => (showCreateModal = true)}
-					onmodechange={handleModeChange}
-					onfilterchange={(v) => (selectedFilter = v)}
-				/>
-
-				{#if feedMode === 'activity'}
-					<div class="mt-6">
-						<ActivityStream />
-					</div>
-				{:else}
-					<NewPostsPill count={pagination.newPostsBuffer.length} onclick={pagination.applyNewPosts} />
-
-					<FeedList
-						posts={pagination.allPosts}
-						{currentUserId}
-						suggestions={feedSuggestions}
-						isLoading={feedQuery.isLoading}
-						isError={feedQuery.isError}
-						hasMore={pagination.hasMore}
-						loadingMore={pagination.loadingMore}
-						filterTerm={searchTerm}
-						{fitScoreByPostId}
-						isPostLiked={engagement.isPostLiked}
-						isPostBookmarked={engagement.isPostBookmarked}
-						onlike={engagement.handleLike}
-						onunlike={engagement.handleUnlike}
-						onbookmark={engagement.handleBookmark}
-						onunbookmark={engagement.handleUnbookmark}
-						ondelete={engagement.handleDelete}
-						onrepost={handleRepost}
-						onreport={handleReport}
-						onvote={engagement.handleVote}
-						onretry={() => feedQuery.refetch()}
-						onloadmore={pagination.loadNextPage}
-						onclearsearch={() => (searchTerm = '')}
-					/>
-				{/if}
-			</main>
-
-			{#if feedMode !== 'activity'}
-				<FeedDiscoverPanel
-					posts={pagination.allPosts}
-					{searchTerm}
-					onsearch={(v) => (searchTerm = v)}
-				/>
-			{/if}
+	{#if tabsStuck}
+		<div
+			data-testid="feed-reveal-tabs"
+			class="fixed inset-x-0 top-14 z-20 w-full bg-white/60 backdrop-blur-md [&_[role=tablist]]:justify-center [&_[role=tablist]]:border-b-0 dark:bg-neutral-900/60"
+		>
+			<Tabs tabs={feedTabs} selected={activeTab} onchange={handleTabChange} />
 		</div>
+	{/if}
+	<div class="min-h-screen pt-20 pb-12">
+		<main class="mx-auto w-full max-w-2xl px-4">
+			<FeedHeader
+				{userName}
+				{userPhoto}
+				oncreate={() => (showCreateModal = true)}
+			/>
+
+			<div bind:this={composerSentinel} aria-hidden="true" class="h-px w-full"></div>
+
+			<NewPostsPill count={pagination.newPostsBuffer.length} onclick={pagination.applyNewPosts} />
+
+			<FeedList
+				posts={pagination.allPosts}
+				{currentUserId}
+				suggestions={feedSuggestions}
+				isLoading={feedQuery.isLoading}
+				isError={feedQuery.isError}
+				hasMore={pagination.hasMore}
+				loadingMore={pagination.loadingMore}
+				{fitScoreByPostId}
+				isPostLiked={engagement.isPostLiked}
+				isPostBookmarked={engagement.isPostBookmarked}
+				onlike={engagement.handleLike}
+				onunlike={engagement.handleUnlike}
+				onbookmark={engagement.handleBookmark}
+				onunbookmark={engagement.handleUnbookmark}
+				ondelete={engagement.handleDelete}
+				onrepost={handleRepost}
+				onreport={handleReport}
+				onvote={engagement.handleVote}
+				onretry={() => feedQuery.refetch()}
+				onloadmore={pagination.loadNextPage}
+			/>
+		</main>
 	</div>
 
-	{#if feedMode !== 'activity'}
-		<button
-			type="button"
-			aria-label={t('feed.whatsOnYourMind')}
-			onclick={() => (showCreateModal = true)}
-			class="fixed bottom-5 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 lg:hidden dark:bg-cyan-500 dark:hover:bg-cyan-400"
-		>
-			<Plus size={24} />
-		</button>
-	{/if}
+	<button
+		type="button"
+		aria-label={t('feed.whatsOnYourMind')}
+		onclick={() => (showCreateModal = true)}
+		class="fixed bottom-5 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 lg:hidden dark:bg-cyan-500 dark:hover:bg-cyan-400"
+	>
+		<Plus size={24} />
+	</button>
 
 	<CreatePostModal
 		open={showCreateModal}

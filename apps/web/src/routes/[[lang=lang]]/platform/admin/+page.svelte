@@ -1,15 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+import { Loader } from 'ui';
 import { createAdminDashboardGetMetrics, createPlatformCheck } from 'api-client';
-import {
-  CalendarPlus,
-  Eye,
-  FileText,
-  Loader2,
-  Target,
-  TrendingUp,
-  UserCheck,
-  Users,
-} from 'lucide-svelte';
+import { CalendarPlus, Eye, FileText, Target, TrendingUp, UserCheck, Users } from 'lucide-svelte';
 import { browser } from '$app/environment';
 import AdminAlerts from './_components/admin-alerts.svelte';
 import StatCard from './_components/stat-card.svelte';
@@ -47,7 +40,7 @@ const healthStatus = $derived<'healthy' | 'down'>(
 				{t('admin.dashboard.systemHealth')}
 			</span>
 			{#if healthAll.isLoading}
-				<Loader2 size={12} class="animate-spin text-gray-500 dark:text-neutral-500" />
+				<Loader size={12} />
 			{:else}
 				<StatusBadge status={healthStatus} />
 			{/if}

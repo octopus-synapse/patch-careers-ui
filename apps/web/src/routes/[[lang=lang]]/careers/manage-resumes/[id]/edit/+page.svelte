@@ -1,7 +1,7 @@
 <script lang="ts">
-import { ArrowLeft, Loader2, Save } from 'lucide-svelte';
+import { ArrowLeft, Save } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, Input, Label, toastState } from 'ui';
+import { Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -167,7 +167,7 @@ async function save() {
         aria-live="polite"
       >
         {#if saving && dirtyForAutoSave}
-          <Loader2 size={10} class="animate-spin" />
+          <Loader size={10} />
         {:else if lastSaveError}
           <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
         {:else}
@@ -180,7 +180,7 @@ async function save() {
 
   {#if loading}
     <div class="flex justify-center py-12" role="status" aria-label={t('common.loading')}>
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if loadError}
     <div
@@ -228,13 +228,12 @@ async function save() {
       </div>
       <div>
         <Label for="summary">Resumo profissional</Label>
-        <textarea
+        <Textarea
           id="summary"
           bind:value={draft.state.summary}
-          rows="5"
-          class="w-full rounded-lg border border-gray-200 bg-white p-3 text-sm outline-none focus:border-cyan-500 dark:border-neutral-700 dark:bg-neutral-800"
+          rows={5}
           placeholder="2–3 parágrafos sobre sua trajetória"
-        ></textarea>
+        />
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
@@ -267,7 +266,7 @@ async function save() {
         <Button type="button" variant="outline" onclick={() => goto('/careers/manage-resumes')}>Cancelar</Button>
         <Button type="submit" variant="solid" disabled={saving}>
           {#if saving}
-            <Loader2 size={14} class="mr-2 animate-spin" />
+            <Loader size={14} class="mr-2" />
           {:else}
             <Save size={14} class="mr-2" />
           {/if}

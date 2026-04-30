@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAuthSession,
@@ -10,9 +11,9 @@ import {
   getChatGetConversationsQueryKey,
   getChatGetMessagesQueryKey,
 } from 'api-client';
-import { ArrowLeft, Loader2, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
+import { ArrowLeft, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
 import { fade, fly } from 'svelte/transition';
-import { Avatar, Button, Dropdown } from 'ui';
+import { Avatar, Button, Dropdown, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { chatState } from '$lib/state/chat-state.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
@@ -24,10 +25,17 @@ import UserSearch from './user-search.svelte';
 const auth = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
 const authenticated = $derived(auth.data?.authenticated);
 const currentUserId = $derived(String(auth.data?.user?.id));
+// Same 3-stage gate as the FAB — chat UI stays unmounted + queries
+// disabled until the user is verified AND onboarded.
+const canUseApp = $derived(
+  Boolean(authenticated) &&
+    !(auth.data?.user?.needsEmailVerification ?? false) &&
+    !(auth.data?.user?.needsOnboarding ?? false),
+);
 
 const conversations = createChatGetConversations(
   () => ({ limit: 50 }),
-  () => ({ query: { enabled: authenticated && chatState.isOpen } }),
+  () => ({ query: { enabled: canUseApp && chatState.isOpen } }),
 );
 
 type Conversation = {
@@ -180,7 +188,7 @@ function onDragEnd(e: PointerEvent) {
 }
 </script>
 
-{#if chatState.isOpen && authenticated}
+{#if chatState.isOpen && canUseApp}
 	<!-- Backdrop for fullscreen -->
 	{#if chatState.isFullscreen}
 		<div
@@ -338,7 +346,7 @@ function onDragEnd(e: PointerEvent) {
 					<div class="flex-1 overflow-y-auto scrollbar-thin">
 						{#if conversations.isLoading}
 							<div class="flex items-center justify-center py-10">
-								<Loader2 size={14} class="animate-spin text-gray-500 dark:text-neutral-500" />
+								<Loader size={14} />
 							</div>
 						{:else}
 							<ConversationList

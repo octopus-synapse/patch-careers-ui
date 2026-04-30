@@ -37,8 +37,19 @@ export function useFeedPagination({ getRawData }: Options) {
 
     if (cursor === undefined) {
       if (allPosts.length === 0) {
-        allPosts = postsArr;
-        newPostsBuffer = [];
+        // Guard against an empty→empty reassignment loop: the extracted
+        // array can be a fresh `[]` reference on each tick (e.g. after
+        // switching to a tab whose timeline returns zero items). This
+        // effect reads `allPosts.length` while writing `allPosts`, so a
+        // new empty ref retriggers it and Svelte trips
+        // `effect_update_depth_exceeded`, which pegs the event loop and
+        // silently kills every other click on the page.
+        if (postsArr.length > 0) {
+          allPosts = postsArr;
+          newPostsBuffer = [];
+        } else if (newPostsBuffer.length > 0) {
+          newPostsBuffer = [];
+        }
       } else {
         // Background refetch at head: detect new items without
         // disrupting the user's scroll position.

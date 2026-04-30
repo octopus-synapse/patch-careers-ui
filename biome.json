@@ -17,6 +17,16 @@
     "rules": {
       "suspicious": {
         "noExplicitAny": "error"
+      },
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "api-client/client": "Hand-rolled requests are banned. Consume the generated `createXxx` hooks / `xxx()` functions from `api-client/generated/api/*` instead."
+            }
+          }
+        }
       }
     }
   }

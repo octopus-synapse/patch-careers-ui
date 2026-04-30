@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Loader2 } from 'lucide-svelte';
-import { Button, Modal, QuoteCard, Textarea } from 'ui';
+
+import { Button, Loader, Modal, QuoteCard, Textarea } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
@@ -78,7 +78,7 @@ function handleCancel() {
 			</Button>
 			<Button variant="solid" size="sm" onclick={handleSubmit} disabled={submitting}>
 				{#if submitting}
-					<Loader2 size={14} class="animate-spin" />
+					<Loader size={14} />
 					{t('feed.quoteRepost.submitting')}
 				{:else}
 					{t('feed.quoteRepost.submit')}

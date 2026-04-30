@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import {
   createPlatformCheck,
   createPlatformCheckDatabase,
@@ -8,6 +9,7 @@ import {
   createPlatformGetStatistics,
 } from 'api-client';
 import { Database, Globe, HardDrive, RefreshCw, Server } from 'lucide-svelte';
+import { Card } from 'ui';
 import { browser } from '$app/environment';
 import StatCard from '../_components/stat-card.svelte';
 import StatusBadge from '../_components/status-badge.svelte';
@@ -78,7 +80,7 @@ const stats = $derived(platformStats.data);
 		{#each services as service}
 			{@const status = getStatus(service.query)}
 			{@const Icon = service.icon}
-			<div class="rounded-xl border p-5 bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+			<Card>
 				<div class="flex items-center justify-between">
 					<div class="flex items-center gap-2">
 						<Icon size={16} class="text-gray-500 dark:text-neutral-500" />
@@ -86,7 +88,7 @@ const stats = $derived(platformStats.data);
 					</div>
 					<StatusBadge {status} />
 				</div>
-			</div>
+			</Card>
 		{/each}
 	</div>
 

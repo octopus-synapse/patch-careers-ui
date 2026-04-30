@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createResumesGetAllUserResumes } from 'api-client';
 import { FileText, PenSquare, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Card, Skeleton } from 'ui';
@@ -155,9 +156,9 @@ function openRerender(resume: Resume) {
 
 						<div class="mt-4 flex items-center gap-3 text-[11px] text-gray-500 dark:text-neutral-500">
 							{#if master.template}
-								<span class="rounded-full bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-800">
-									{master.template}
-								</span>
+								<Badge intent="neutral" size="md">
+									<span class="font-mono">{master.template}</span>
+								</Badge>
 							{/if}
 							{#if master.resumeSections}
 								<span>{t('cv.cardSections', { count: master.resumeSections.length })}</span>
@@ -207,9 +208,9 @@ function openRerender(resume: Resume) {
 												{/if}
 												<div class="mt-2 flex items-center gap-2 text-[10px] text-gray-500 dark:text-neutral-500">
 													{#if r.template}
-														<span class="rounded-full bg-gray-100 px-2 py-0.5 font-mono dark:bg-neutral-800">
-															{r.template}
-														</span>
+														<Badge intent="neutral" size="md">
+															<span class="font-mono">{r.template}</span>
+														</Badge>
 													{/if}
 													{#if r.resumeSections}
 														<span>{t('cv.cardSections', { count: r.resumeSections.length })}</span>

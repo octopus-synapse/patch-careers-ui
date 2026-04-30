@@ -1,7 +1,7 @@
 <script lang="ts">
-import { Loader2, Monitor, Smartphone, X } from 'lucide-svelte';
+import { Monitor, Smartphone, X } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, toastState } from 'ui';
+import { Badge, Button, Loader, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -101,7 +101,7 @@ onMount(load);
 
   {#if loading}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if sessions.length === 0}
     <p class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500">
@@ -130,9 +130,9 @@ onMount(load);
                   {s.deviceName ?? formatDevice(s.userAgent)}
                 </p>
                 {#if formatAuthMethod(s.authMethod)}
-                  <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-neutral-700 dark:text-neutral-300">
+                  <Badge intent="neutral" size="md">
                     via {formatAuthMethod(s.authMethod)}
-                  </span>
+                  </Badge>
                 {/if}
               </div>
               <p class="text-xs text-gray-500 dark:text-neutral-500">
@@ -154,7 +154,7 @@ onMount(load);
               disabled={revoking === s.id}
             >
               {#if revoking === s.id}
-                <Loader2 size={14} class="animate-spin" />
+                <Loader size={14} />
               {:else}
                 <X size={14} />
                 Revogar

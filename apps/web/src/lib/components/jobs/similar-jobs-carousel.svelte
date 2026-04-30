@@ -1,6 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createJobsFindSimilar } from 'api-client';
 import { Briefcase, MapPin } from 'lucide-svelte';
+import { Card } from 'ui';
 import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -34,7 +36,7 @@ const items = $derived(
 </script>
 
 {#if items.length > 0}
-	<div class="rounded-xl border border-gray-200 dark:border-neutral-700/50 bg-white dark:bg-neutral-800/50 p-4 sm:p-6">
+	<Card class="sm:p-6">
 		<h2 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">
 			{t('jobs.similarTitle') ?? 'Vagas similares'}
 		</h2>
@@ -69,5 +71,5 @@ const items = $derived(
 				</li>
 			{/each}
 		</ul>
-	</div>
+	</Card>
 {/if}

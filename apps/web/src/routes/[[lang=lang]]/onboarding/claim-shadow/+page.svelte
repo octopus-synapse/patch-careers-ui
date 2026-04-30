@@ -4,9 +4,9 @@
   their fresh account in one click instead of redoing onboarding.
 -->
 <script lang="ts">
-import { Check, Loader2, X } from 'lucide-svelte';
+import { Check, X } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, Card, toastState } from 'ui';
+import { Button, Card, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -98,7 +98,7 @@ onMount(load);
 
   {#if loading}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else}
     <ul class="space-y-4">
@@ -127,7 +127,7 @@ onMount(load);
                 disabled={claiming === cand.id}
               >
                 {#if claiming === cand.id}
-                  <Loader2 size={14} class="mr-2 animate-spin" />
+                  <Loader size={14} class="mr-2" />
                 {:else}
                   <Check size={14} class="mr-2" />
                 {/if}

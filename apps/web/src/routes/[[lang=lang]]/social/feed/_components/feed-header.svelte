@@ -1,80 +1,27 @@
 <script lang="ts">
-import {
-  Activity,
-  Award,
-  Bookmark,
-  Briefcase,
-  Code,
-  Compass,
-  GraduationCap,
-  HelpCircle,
-  ImagePlus,
-  Link2,
-  Smile,
-  Sparkles,
-  Target,
-  Users,
-} from 'lucide-svelte';
-import type { Component } from 'svelte';
+import { Bookmark, ImagePlus, Link2, Smile } from 'lucide-svelte';
 import { Avatar } from 'ui';
-import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
 
-export type FeedMode = 'bubble' | 'explore' | 'activity';
-
-type FilterIconProps = { size: number; class?: string };
-type FilterIcon = Component<FilterIconProps> | null;
+/**
+ * `FeedMode` used to be a union of 'bubble' / 'explore' / 'activity' —
+ * the three tabs that lived on this header. Filters were removed so
+ * the feed is a single unfiltered stream. The type is kept exported so
+ * any downstream consumer can still reference it; new callers should
+ * treat it as always the single default mode.
+ */
+export type FeedMode = 'default';
 
 type Props = {
   userName: string;
   userPhoto: string | null;
-  feedMode: FeedMode;
-  selectedFilter: string;
   oncreate: () => void;
-  onmodechange: (value: FeedMode) => void;
-  onfilterchange: (value: string) => void;
 };
 
-let {
-  userName,
-  userPhoto,
-  feedMode,
-  selectedFilter,
-  oncreate,
-  onmodechange,
-  onfilterchange,
-}: Props = $props();
+let { userName, userPhoto, oncreate }: Props = $props();
 
 const t = $derived(locale.t);
-
-type FilterOption = { value: string; label: string; icon: FilterIcon };
-
-const filterOptions = $derived<FilterOption[]>([
-  { value: 'ALL', label: t('feed.tabsAll'), icon: Sparkles as unknown as FilterIcon },
-  { value: 'ACHIEVEMENT', label: t('feed.postTypes.ACHIEVEMENT'), icon: Award as unknown as FilterIcon },
-  { value: 'OPPORTUNITY', label: t('feed.postTypes.OPPORTUNITY'), icon: Briefcase as unknown as FilterIcon },
-  { value: 'LEARNING', label: t('feed.postTypes.LEARNING'), icon: GraduationCap as unknown as FilterIcon },
-  { value: 'BUILD', label: t('feed.postTypes.BUILD'), icon: Code as unknown as FilterIcon },
-  { value: 'QUESTION', label: t('feed.postTypes.QUESTION'), icon: HelpCircle as unknown as FilterIcon },
-  { value: 'CHALLENGE', label: t('feed.postTypes.CHALLENGE'), icon: Target as unknown as FilterIcon },
-]);
-
-type ModeIconProps = { size: number; class?: string };
-type ModeIcon = Component<ModeIconProps>;
-
-const feedModeTabs = $derived<Array<{ value: FeedMode; label: string; icon: ModeIcon }>>([
-  { value: 'bubble', label: t('feed.scopeBubble') ?? 'Minha bolha', icon: Users as unknown as ModeIcon },
-  { value: 'explore', label: t('feed.scopeExplore') ?? 'Explorar', icon: Compass as unknown as ModeIcon },
-  { value: 'activity', label: t('feed.tabsActivity') ?? 'Atividade', icon: Activity as unknown as ModeIcon },
-]);
-
-function handleFilterClick(value: string, el: HTMLElement) {
-  onfilterchange(value);
-  if (browser) {
-    el.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-  }
-}
 </script>
 
 <!--
@@ -102,7 +49,7 @@ function handleFilterClick(value: string, el: HTMLElement) {
 				aria-label="Anexar imagem"
 				class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
 			>
-				<ImagePlus size={16} class="text-emerald-500" />
+				<ImagePlus size={16} class="text-cyan-500" />
 				<span class="hidden sm:inline">Imagem</span>
 			</button>
 			<button
@@ -111,7 +58,7 @@ function handleFilterClick(value: string, el: HTMLElement) {
 				aria-label="Anexar link"
 				class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
 			>
-				<Link2 size={16} class="text-sky-500" />
+				<Link2 size={16} class="text-cyan-500" />
 				<span class="hidden sm:inline">Link</span>
 			</button>
 			<button
@@ -120,7 +67,7 @@ function handleFilterClick(value: string, el: HTMLElement) {
 				aria-label="Adicionar sentimento"
 				class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
 			>
-				<Smile size={16} class="text-amber-500" />
+				<Smile size={16} class="text-cyan-500" />
 				<span class="hidden sm:inline">Sentimento</span>
 			</button>
 		</div>
@@ -144,67 +91,3 @@ function handleFilterClick(value: string, el: HTMLElement) {
 		</div>
 	</div>
 </div>
-
-<!--
-  Mode switcher — segmented control style. Active tab has a solid pill
-  instead of just a color change; this reads faster at a glance.
--->
-<div class="mt-4 inline-flex rounded-full border border-gray-200 bg-gray-50 p-1 dark:border-neutral-800 dark:bg-neutral-900">
-	{#each feedModeTabs as tab (tab.value)}
-		{@const active = feedMode === tab.value}
-		{@const Icon = tab.icon}
-		<button
-			type="button"
-			onclick={() => onmodechange(tab.value)}
-			aria-pressed={active}
-			class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors {active
-				? 'bg-white text-gray-900 shadow-sm dark:bg-neutral-700 dark:text-neutral-100'
-				: 'text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-200'}"
-		>
-			<Icon size={13} />
-			{tab.label}
-		</button>
-	{/each}
-</div>
-
-{#if feedMode !== 'activity'}
-	<!--
-	  Filter strip — same visual family as mode tabs so the admin-feel
-	  is consistent. Horizontal scroll with a gradient mask so users
-	  discover there's more beyond the fold.
-	-->
-	<div class="mt-3 filter-strip">
-		<div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-			{#each filterOptions as option}
-				{@const active = selectedFilter === option.value}
-				{@const Icon = option.icon}
-				<button
-					class="shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors {active
-						? 'border-gray-900 bg-gray-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
-						: 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 hover:text-gray-900 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-200'}"
-					aria-pressed={active}
-					onclick={(e) => handleFilterClick(option.value, e.currentTarget as HTMLElement)}
-				>
-					{#if Icon}
-						<Icon size={13} />
-					{/if}
-					{option.label}
-				</button>
-			{/each}
-		</div>
-	</div>
-{/if}
-
-<style>
-	.scrollbar-none::-webkit-scrollbar {
-		display: none;
-	}
-	.scrollbar-none {
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-	}
-	.filter-strip {
-		-webkit-mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
-		mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent);
-	}
-</style>

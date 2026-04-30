@@ -6,16 +6,22 @@ const testUser = {
   name: `E2E Onboarding ${Date.now()}`,
   email: `e2e-onboarding-${Date.now()}@test.com`,
   password: 'T3stP@ssw0rd!',
+  acceptedTosVersion: '1.0.0',
+  acceptedPrivacyVersion: '1.0.0',
 };
 
 let authContext: BrowserContext;
 
 async function createAuthenticatedContext(browser: import('@playwright/test').Browser) {
-  await fetch(`${API_URL}/api/accounts`, {
+  const signupRes = await fetch(`${API_URL}/api/accounts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(testUser),
   });
+  if (!signupRes.ok) {
+    const body = await signupRes.text();
+    throw new Error(`Signup failed: ${signupRes.status} ${body}`);
+  }
 
   const loginRes = await fetch(`${API_URL}/api/auth/login`, {
     method: 'POST',
@@ -60,10 +66,10 @@ async function enterStepper(page: Page) {
 
 test.describe('Onboarding page', () => {
   test.describe('Unauthenticated', () => {
-    test('should redirect to /login when not authenticated', async ({ page }) => {
+    test('should redirect to /identity/sign-in when not authenticated', async ({ page }) => {
       await page.goto('/onboarding');
-      await page.waitForURL('**/login', { timeout: 10000 });
-      expect(page.url()).toContain('/login');
+      await page.waitForURL('**/identity/sign-in', { timeout: 10000 });
+      expect(page.url()).toContain('/identity/sign-in');
     });
   });
 

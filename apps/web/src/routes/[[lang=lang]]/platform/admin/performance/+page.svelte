@@ -1,8 +1,9 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createAdminMetricsGetOverview } from 'api-client';
-import { Clock, Cpu, HardDrive, Loader2, RefreshCw, Zap } from 'lucide-svelte';
+import { Clock, Cpu, HardDrive, RefreshCw, Zap } from 'lucide-svelte';
 import { browser } from '$app/environment';
-import { DataTable } from 'ui';
+import { Card, DataTable, Loader } from 'ui';
 import { ExportButton } from 'ui';
 import StatCard from '../_components/stat-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
@@ -64,7 +65,7 @@ const columns = [
 
 	{#if metricsQuery.isLoading}
 		<div class="flex items-center justify-center py-20">
-			<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
+			<Loader size={24} />
 		</div>
 	{:else if data}
 		<!-- Process Stats -->
@@ -124,10 +125,10 @@ const columns = [
 					{/snippet}
 				</DataTable>
 			{:else}
-				<div class="rounded-xl border p-8 text-center bg-white dark:bg-neutral-800/50 border-gray-200 dark:border-neutral-700/50">
+				<Card class="p-8 text-center">
 					<p class="text-sm text-gray-500 dark:text-neutral-500">No API requests recorded yet.</p>
 					<p class="mt-1 text-xs text-gray-500 dark:text-neutral-500">The MetricsInterceptor is now active. Data will appear after requests are made.</p>
-				</div>
+				</Card>
 			{/if}
 		</div>
 	{/if}

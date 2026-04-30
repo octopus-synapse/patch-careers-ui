@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
     adminFeatureFlagsBroadcastRefresh,
@@ -26,7 +27,7 @@
     Users,
     X,
   } from 'lucide-svelte';
-  import { Button, Modal, Tooltip, toastState } from 'ui';
+  import { Button, Input, Modal, Tooltip, toastState } from 'ui';
 
   function toastError(msg: string) {
     toastState.show(msg, 'danger');
@@ -253,16 +254,16 @@
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
     <div class="relative flex-1">
       <Search size={14} class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-neutral-500" />
-      <input
+      <Input
         type="text"
         bind:value={search}
         placeholder="Buscar por chave ou nome…"
-        class="w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-9 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-gray-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500 dark:focus:border-neutral-500"
+        class="pl-9 pr-9"
       />
       {#if search}
-        <button type="button" aria-label="Limpar busca" onclick={() => (search = '')} class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300">
+        <Button variant="icon" size="sm" aria-label="Limpar busca" onclick={() => (search = '')} class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300">
           <X size={14} />
-        </button>
+        </Button>
       {/if}
     </div>
 

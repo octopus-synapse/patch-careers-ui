@@ -10,7 +10,7 @@ test.describe('Signup page', () => {
       if (msg.type() === 'error') consoleErrors.push(msg.text());
     });
 
-    const response = await page.goto('/signup');
+    const response = await page.goto('/identity/sign-up');
     await page.waitForTimeout(2000);
 
     expect(response?.status()).toBe(200);
@@ -22,7 +22,7 @@ test.describe('Signup page', () => {
   });
 
   test('should display signup form with all fields', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('/identity/sign-up');
 
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('input#name')).toBeVisible();
@@ -34,7 +34,7 @@ test.describe('Signup page', () => {
   test('should bind input values and submit form without client validation errors', async ({
     page,
   }) => {
-    await page.goto('/signup');
+    await page.goto('/identity/sign-up');
 
     await page.fill('input#name', 'Test User');
     await page.fill('input#email', 'test@example.com');
@@ -51,10 +51,11 @@ test.describe('Signup page', () => {
   });
 
   test('should show navbar in unauthenticated state', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('/identity/sign-up');
 
-    await expect(page.locator('nav')).toBeVisible();
-    await expect(page.locator('nav a[href="/login"]')).toBeVisible();
-    await expect(page.locator('nav a[href="/signup"]')).toBeVisible();
+    const topNav = page.locator('nav.fixed').first();
+    await expect(topNav).toBeVisible();
+    await expect(topNav.locator('a[href="/identity/sign-in"]')).toBeVisible();
+    await expect(topNav.locator('a[href="/identity/sign-up"]')).toBeVisible();
   });
 });

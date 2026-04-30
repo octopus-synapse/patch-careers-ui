@@ -6,11 +6,15 @@ const user1 = {
   name: 'Chat User 1',
   email: `chat1-${Date.now()}@test.com`,
   password: 'T3stP@ssw0rd!',
+  acceptedTosVersion: '1.0.0',
+  acceptedPrivacyVersion: '1.0.0',
 };
 const user2 = {
   name: 'Chat User 2',
   email: `chat2-${Date.now()}@test.com`,
   password: 'T3stP@ssw0rd!',
+  acceptedTosVersion: '1.0.0',
+  acceptedPrivacyVersion: '1.0.0',
 };
 
 let ctx1: BrowserContext;
@@ -43,6 +47,24 @@ async function loginContext(browser: import('@playwright/test').Browser, user: t
       sameSite: 'Lax',
     },
   ]);
+  // Pre-accept cookie consent so the LGPD banner doesn't overlap the chat
+  // compose on mobile viewport and intercept button clicks.
+  await ctx.addInitScript(() => {
+    try {
+      localStorage.setItem(
+        'consent_v1',
+        JSON.stringify({
+          essential: true,
+          analytics: false,
+          marketing: false,
+          version: 1,
+          acceptedAt: new Date().toISOString(),
+        }),
+      );
+    } catch {
+      /* storage not available */
+    }
+  });
   return ctx;
 }
 

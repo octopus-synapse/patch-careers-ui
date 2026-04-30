@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Loader2 } from 'lucide-svelte';
 
+import { Loader } from 'ui';
 type Props = {
   token?: string;
 };
@@ -58,7 +58,7 @@ $effect(() => {
 	{:else}
 		<div class="flex h-72 items-center justify-center">
 			{#if status === 'connecting'}
-				<Loader2 size={16} class="animate-spin text-gray-400 dark:text-neutral-500" />
+				<Loader size={16} />
 			{:else}
 				<span class="text-xs text-gray-400 dark:text-neutral-500">preview</span>
 			{/if}

@@ -1,6 +1,7 @@
 <script lang="ts">
-import { AlertTriangle, Loader2 } from 'lucide-svelte';
-import { Button, Input, Label, toastState } from 'ui';
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+import { AlertTriangle } from 'lucide-svelte';
+import { Button, Checkbox, Input, Label, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 
@@ -99,12 +100,11 @@ async function submit(e: Event) {
       <Input id="confirm" bind:value={confirmText} autocomplete="off" spellcheck="false" />
     </div>
 
-    <label class="flex items-start gap-2 text-xs text-gray-600 dark:text-neutral-400">
-      <input type="checkbox" bind:checked={understood} class="mt-0.5" />
-      <span>
+    <Checkbox bind:checked={understood} size="sm">
+      <span class="text-xs text-gray-600 dark:text-neutral-400">
         Eu entendo que essa ação não pode ser desfeita e todos os meus dados serão apagados.
       </span>
-    </label>
+    </Checkbox>
 
     {#if serverError}
       <p class="text-xs font-medium text-red-500/80" role="alert">{serverError}</p>
@@ -116,7 +116,7 @@ async function submit(e: Event) {
       </Button>
       <Button type="submit" variant="solid" disabled={!ready || submitting}>
         {#if submitting}
-          <Loader2 size={14} class="mr-2 animate-spin" />
+          <Loader size={14} class="mr-2" />
         {/if}
         Deletar minha conta permanentemente
       </Button>

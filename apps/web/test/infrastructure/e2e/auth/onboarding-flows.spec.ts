@@ -5,6 +5,8 @@ const testUser = {
   name: `E2E Flow ${Date.now()}`,
   email: `e2e-flow-${Date.now()}@test.com`,
   password: 'T3stP@ssw0rd!',
+  acceptedTosVersion: '1.0.0',
+  acceptedPrivacyVersion: '1.0.0',
 };
 
 let authContext: BrowserContext;

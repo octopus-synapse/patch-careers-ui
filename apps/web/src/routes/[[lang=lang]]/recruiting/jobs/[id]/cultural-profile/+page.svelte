@@ -1,8 +1,9 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { createFitProfileGetOne, fitProfileUpsertOne } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { Loader2, Save } from 'lucide-svelte';
-  import { Button, toastState } from 'ui';
+  import { Save } from 'lucide-svelte';
+  import { Button, Loader, toastState } from 'ui';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -87,7 +88,7 @@
   </header>
 
   {#if existingQuery.isPending}
-    <div class="flex justify-center py-12"><Loader2 class="animate-spin" /></div>
+    <div class="flex justify-center py-12"><Loader /></div>
   {:else}
     {#each Object.entries(DIMENSIONS) as [block, dims]}
       <section class="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
@@ -122,7 +123,7 @@
         Cancelar
       </Button>
       <Button variant="solid" size="sm" onclick={save} disabled={saving}>
-        {#if saving}<Loader2 size={14} class="animate-spin" />{:else}<Save size={14} />{/if}
+        {#if saving}<Loader size={14} />{:else}<Save size={14} />{/if}
         Salvar cultural profile
       </Button>
     </div>

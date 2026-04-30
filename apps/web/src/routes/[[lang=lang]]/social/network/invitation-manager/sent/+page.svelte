@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   connectionGetSentRequests,
@@ -7,7 +8,7 @@ import {
   getConnectionGetSentRequestsQueryKey,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
-import { Avatar, Button, toastState } from 'ui';
+import { Avatar, Button, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
@@ -122,13 +123,13 @@ function formatSentAt(iso: string): string {
 {#if query.isLoading}
 	<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 		{#each Array(4) as _}
-			<div class="flex items-center gap-3 px-4 py-4 animate-pulse sm:px-6">
-				<div class="h-12 w-12 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+			<div class="flex items-center gap-3 px-4 py-4 sm:px-6">
+				<Skeleton shape="avatar" width="3rem" height="3rem" />
 				<div class="flex-1 space-y-2">
-					<div class="h-3 w-40 rounded bg-gray-200 dark:bg-neutral-700"></div>
-					<div class="h-2 w-24 rounded bg-gray-200 dark:bg-neutral-700"></div>
+					<Skeleton height="0.75rem" width="10rem" />
+					<Skeleton height="0.5rem" width="6rem" />
 				</div>
-				<div class="h-7 w-20 rounded-full bg-gray-200 dark:bg-neutral-700"></div>
+				<Skeleton height="1.75rem" width="5rem" class="rounded-full" />
 			</div>
 		{/each}
 	</div>

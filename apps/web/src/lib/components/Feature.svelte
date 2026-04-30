@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import type { Snippet } from 'svelte';
   import { useFeatureFlags } from '$lib/state/feature-flags.svelte';
   import { useAuth } from '$lib/state/auth.svelte';

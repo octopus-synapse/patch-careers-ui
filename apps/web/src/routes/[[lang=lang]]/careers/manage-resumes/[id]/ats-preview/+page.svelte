@@ -5,9 +5,9 @@
   unknown-section warnings.
 -->
 <script lang="ts">
-import { AlertTriangle, Eye, Loader2, ScanText } from 'lucide-svelte';
+import { AlertTriangle, Eye, ScanText } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, Card, toastState } from 'ui';
+import { Button, Card, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { parseApiError } from '$lib/utils/api-error';
@@ -81,7 +81,7 @@ onMount(simulate);
     </div>
     <Button variant="outline" size="sm" onclick={simulate} disabled={running}>
       {#if running}
-        <Loader2 size={14} class="mr-2 animate-spin" />
+        <Loader size={14} class="mr-2" />
       {:else}
         <Eye size={14} class="mr-2" />
       {/if}
@@ -99,10 +99,9 @@ onMount(simulate);
     </p>
   </div>
 
-
   {#if loading || running}
     <div class="flex justify-center py-16">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if !result}
     <p class="rounded-lg border border-gray-200 p-6 text-center text-sm text-gray-500 dark:border-neutral-800">

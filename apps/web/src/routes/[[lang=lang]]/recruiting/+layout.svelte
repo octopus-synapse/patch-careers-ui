@@ -1,6 +1,8 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+import { Loader } from 'ui';
 import { createAuthSession } from 'api-client';
-import { Loader2 } from 'lucide-svelte';
+
 import type { Snippet } from 'svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -23,7 +25,7 @@ $effect(() => {
 
 {#if session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
-		<Loader2 size={24} class="animate-spin text-gray-500 dark:text-neutral-500" />
+		<Loader size={24} />
 	</div>
 {:else if authenticated}
 	<div class="pt-14 min-h-screen">

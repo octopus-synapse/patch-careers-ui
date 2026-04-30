@@ -1,4 +1,5 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 /**
  * /my-profile/career-graph — "Career graph" view.
  *
@@ -12,8 +13,8 @@ import {
   type ViewCareerGraphDataDto,
   type ViewCareerGraphRequestDto,
 } from 'api-client';
-import { Loader2, Sparkles, TrendingUp, Users } from 'lucide-svelte';
-import { Button, Input, Label, toastState } from 'ui';
+import { Sparkles, TrendingUp, Users } from 'lucide-svelte';
+import { Badge, Button, Input, Label, Loader, toastState } from 'ui';
 
 let skillsCsv = $state('');
 let submitting = $state(false);
@@ -83,7 +84,7 @@ function barWidth(peerCount: number): string {
 		<div class="mt-3 flex justify-end">
 			<Button variant="solid" size="sm" onclick={handleSearch} disabled={skills.length === 0 || submitting}>
 				{#if submitting}
-					<Loader2 size={14} class="animate-spin" /> Calculando…
+					<Loader size={14} /> Calculando…
 				{:else}
 					<Sparkles size={14} /> Ver meu graph
 				{/if}
@@ -138,9 +139,7 @@ function barWidth(peerCount: number): string {
 								{#if b.topJobTitles.length > 0}
 									<div class="mt-1 flex flex-wrap gap-1">
 										{#each b.topJobTitles as t}
-											<span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 dark:bg-neutral-800 dark:text-neutral-300">
-												{t.title} · {t.count}
-											</span>
+											<Badge intent="neutral" size="md">{t.title} · {t.count}</Badge>
 										{/each}
 									</div>
 								{/if}

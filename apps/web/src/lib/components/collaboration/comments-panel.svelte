@@ -4,9 +4,9 @@
   /resumes/:id/comments endpoints.
 -->
 <script lang="ts">
-import { CheckCircle2, Loader2, MessageSquare, Trash2 } from 'lucide-svelte';
+import { CheckCircle2, MessageSquare, Trash2 } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, toastState } from 'ui';
+import { Button, Checkbox, Loader, Textarea, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -137,16 +137,15 @@ onMount(load);
       <MessageSquare size={16} />
       <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">Comentários</h2>
     </div>
-    <label class="flex items-center gap-2 text-xs text-gray-500 dark:text-neutral-500">
-      <input type="checkbox" bind:checked={showResolved} class="rounded" />
-      Mostrar resolvidos
-    </label>
+    <Checkbox bind:checked={showResolved} size="sm" class="text-xs text-gray-500 dark:text-neutral-500">
+      <span class="text-xs">Mostrar resolvidos</span>
+    </Checkbox>
   </header>
 
   <div class="flex-1 overflow-y-auto p-4">
     {#if loading}
       <div class="flex justify-center py-10">
-        <Loader2 size={16} class="animate-spin text-gray-500" />
+        <Loader size={16} />
       </div>
     {:else if topLevel.length === 0}
       <p class="text-center text-xs text-gray-500 dark:text-neutral-500">Nenhum comentário.</p>
@@ -252,16 +251,15 @@ onMount(load);
       create();
     }}
   >
-    <textarea
+    <Textarea
       bind:value={newContent}
-      rows="3"
+      rows={3}
       placeholder="Adicionar comentário…"
-      class="w-full rounded-md border border-gray-200 p-2 text-sm outline-none focus:border-cyan-500 dark:border-neutral-700 dark:bg-neutral-800"
-    ></textarea>
+    />
     <div class="mt-2 flex justify-end">
       <Button type="submit" size="sm" variant="solid" disabled={submitting || !newContent.trim()}>
         {#if submitting}
-          <Loader2 size={14} class="animate-spin" />
+          <Loader size={14} />
         {:else}
           Comentar
         {/if}

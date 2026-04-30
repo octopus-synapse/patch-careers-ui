@@ -6,6 +6,8 @@ const user = {
   name: 'Download Test User',
   email: `dl-${Date.now()}@test.com`,
   password: 'T3stP@ssw0rd!',
+  acceptedTosVersion: '1.0.0',
+  acceptedPrivacyVersion: '1.0.0',
 };
 
 let accessToken: string;
@@ -132,7 +134,7 @@ test.describe('Resume PDF Download', () => {
       failedRequests.push(`${req.url()} - ${req.failure()?.errorText}`),
     );
 
-    await page.goto('/@enzoferracini', { waitUntil: 'networkidle' });
+    await page.goto('/my-profile/public/@enzoferracini', { waitUntil: 'networkidle' });
 
     // Check download button exists
     const downloadBtn = page.locator('button', { hasText: 'Download' });

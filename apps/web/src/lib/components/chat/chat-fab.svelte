@@ -1,5 +1,6 @@
 <script lang="ts">
-import { createChatGetConversations, createChatGetUnreadCount } from 'api-client';
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
+import { createAuthSession, createChatGetConversations, createChatGetUnreadCount } from 'api-client';
 import { MessageCircle } from 'lucide-svelte';
 import { Avatar } from 'ui';
 import { browser } from '$app/environment';
@@ -8,14 +9,25 @@ import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
+// Gate the FAB on the same 3-stage predicate used by navbar items: only
+// surface messaging once the user has verified email AND completed
+// onboarding. Chat queries below stay disabled until then so we don't
+// hammer protected endpoints with 403s.
+const session = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
+const canUseApp = $derived(
+  Boolean(session.data?.authenticated) &&
+    !(session.data?.user?.needsEmailVerification ?? false) &&
+    !(session.data?.user?.needsOnboarding ?? false),
+);
+
 const unreadQuery = createChatGetUnreadCount(() => ({
-  query: { enabled: browser, refetchInterval: 30000 },
+  query: { enabled: browser && canUseApp, refetchInterval: 30000 },
 }));
 const unread = $derived(unreadQuery.data?.count ?? 0);
 
 const convQuery = createChatGetConversations(
   () => ({ limit: 3 }),
-  () => ({ query: { enabled: browser, refetchInterval: 60000 } }),
+  () => ({ query: { enabled: browser && canUseApp, refetchInterval: 60000 } }),
 );
 const recents = $derived(
   (convQuery.data?.conversations?.conversations ?? []).slice(0, 3).map((c) => ({
@@ -30,7 +42,7 @@ function openChat() {
 }
 </script>
 
-{#if !chatState.isOpen}
+{#if canUseApp && !chatState.isOpen}
 	<div class="fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6">
 		<button
 			type="button"

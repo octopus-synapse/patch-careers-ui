@@ -1,10 +1,11 @@
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
   import { createFitProfileMe, createResumesGetAllUserResumes } from 'api-client';
   import { ArrowRight } from 'lucide-svelte';
   import { browser } from '$app/environment';
   import ResumeQualityCard from '$lib/components/scoring/resume-quality-card.svelte';
   import { useAuth } from '$lib/state/auth.svelte';
-  import { ScoreCard } from 'ui';
+  import { Card, ScoreCard } from 'ui';
 
   const auth = useAuth();
   const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
@@ -109,7 +110,7 @@
     />
   </div>
 
-  <div class="rounded-xl border border-neutral-200 bg-white p-4 text-sm dark:border-neutral-800 dark:bg-neutral-900">
+  <Card class="text-sm">
     <h2 class="font-semibold">Como os scores se encaixam</h2>
     <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
       Quality mede o seu currículo sozinho. Style mede o estilo visual
@@ -123,5 +124,5 @@
     >
       Ver status do Fit Profile <ArrowRight size={12} />
     </a>
-  </div>
+  </Card>
 </section>

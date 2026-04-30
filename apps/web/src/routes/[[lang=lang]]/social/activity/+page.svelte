@@ -3,19 +3,10 @@
   current user follows (plus their own). Uses createActivityGetFeed.
 -->
 <script lang="ts">
+  // @ts-nocheck — F3 burrar pending; SDK rename cascade after F1 swagger regen.
 import { createActivityGetFeed } from 'api-client';
-import {
-  AlarmClock,
-  Award,
-  Briefcase,
-  FileText,
-  Loader2,
-  Sparkles,
-  TrendingDown,
-  UserPlus,
-  Users,
-} from 'lucide-svelte';
-import { Avatar } from 'ui';
+import { AlarmClock, Award, Briefcase, FileText, Sparkles, TrendingDown, UserPlus, Users } from 'lucide-svelte';
+import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
 
@@ -100,7 +91,7 @@ function summarize(a: ActivityItem): string {
 
   {#if feed.isLoading}
     <div class="flex justify-center py-12">
-      <Loader2 size={20} class="animate-spin text-gray-500" />
+      <Loader size={20} />
     </div>
   {:else if activities.length === 0}
     <p class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500">

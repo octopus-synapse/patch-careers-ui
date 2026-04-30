@@ -84,6 +84,7 @@ $effect(() => {
 {#if isLanding}
 	<QueryClientProvider client={queryClient}>
 		<FeatureFlagsStream />
+		<OnboardingGuard />
 		<div class="min-h-screen flex flex-col">
 			<Navbar />
 			<ErrorBoundary>

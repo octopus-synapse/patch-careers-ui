@@ -8,6 +8,8 @@ const testUser = {
   name: 'E2E Login User',
   email: `e2e-login-${suffix}@test.com`,
   password: 'T3stP@ssw0rd!',
+  acceptedTosVersion: '1.0.0',
+  acceptedPrivacyVersion: '1.0.0',
 };
 
 test.describe.configure({ mode: 'serial' });
@@ -26,7 +28,7 @@ test.describe('Login Flow', () => {
   });
 
   test('login page renders correctly', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/identity/sign-in');
     await expect(page.locator('h1')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('input[type="email"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
@@ -34,19 +36,19 @@ test.describe('Login Flow', () => {
   });
 
   test('login with valid credentials redirects', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/identity/sign-in');
     await page.waitForLoadState('networkidle');
 
     await page.locator('input[type="email"]').fill(testUser.email);
     await page.locator('input[type="password"]').fill(testUser.password);
     await page.locator('button[type="submit"]').click();
 
-    await page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 15000 });
-    expect(page.url()).not.toMatch(/\/login$/);
+    await page.waitForURL((url) => !url.pathname.endsWith('/identity/sign-in'), { timeout: 15000 });
+    expect(page.url()).not.toMatch(/\/identity\/sign-in$/);
   });
 
   test('login with wrong password stays on login', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/identity/sign-in');
     await page.waitForLoadState('networkidle');
 
     await page.locator('input[type="email"]').fill(testUser.email);
@@ -54,11 +56,11 @@ test.describe('Login Flow', () => {
     await page.locator('button[type="submit"]').click();
 
     await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/login');
+    expect(page.url()).toContain('/identity/sign-in');
   });
 
   test('login with nonexistent email stays on login', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/identity/sign-in');
     await page.waitForLoadState('networkidle');
 
     await page.locator('input[type="email"]').fill('nobody@nowhere.com');
@@ -66,15 +68,15 @@ test.describe('Login Flow', () => {
     await page.locator('button[type="submit"]').click();
 
     await page.waitForTimeout(3000);
-    expect(page.url()).toContain('/login');
+    expect(page.url()).toContain('/identity/sign-in');
   });
 
   test('empty form does not submit', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/identity/sign-in');
     await page.waitForLoadState('networkidle');
 
     await page.locator('button[type="submit"]').click();
     await page.waitForTimeout(1000);
-    expect(page.url()).toContain('/login');
+    expect(page.url()).toContain('/identity/sign-in');
   });
 });
