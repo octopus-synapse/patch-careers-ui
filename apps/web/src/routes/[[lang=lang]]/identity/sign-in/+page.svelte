@@ -5,7 +5,6 @@ import { AuthLoginBody } from 'api-client/zod';
 import { Lock } from 'lucide-svelte';
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
-import { translateApiError } from '$lib/utils/translate-api-error';
 import { createForm } from '$lib/state/create-form.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -27,7 +26,7 @@ const login = createAuthLogin(() => ({
         serverError = t('auth.shared.errorInvalidCredentials');
         return;
       }
-      serverError = translateApiError(err, t);
+      if (isApiError(err)) serverError = err.message;
     },
   },
 }));

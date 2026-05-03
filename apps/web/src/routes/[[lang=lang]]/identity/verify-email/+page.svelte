@@ -16,7 +16,6 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { translateApiError } from '$lib/utils/translate-api-error';
 
 // Resend status payload — backend returns `{ secondsUntilResendAllowed: number }`
 // but the route lacks a response schema in swagger so the SDK types it as `void`.
@@ -85,7 +84,7 @@ const verifyEmail = createEmailVerificationVerify(() => ({
       if (verifiedOnce) return;
       if (!t) return;
       autoVerifying = false;
-      verifyError = translateApiError(err, t);
+      if (isApiError(err)) verifyError = err.message;
       verificationCode = '';
     },
   },
@@ -99,7 +98,7 @@ const sendVerification = createEmailVerificationAuthEmailVerificationSend(() => 
         return;
       }
       if (!t) return;
-      verifyError = translateApiError(err, t);
+      if (isApiError(err)) verifyError = err.message;
     },
   },
 }));

@@ -12,7 +12,6 @@ import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
 import { PRIVACY_VERSION, TOS_VERSION } from '$lib/utils/consent-versions';
 import PasswordStrength from '$lib/components/forms/password-strength.svelte';
-import { translateApiError } from '$lib/utils/translate-api-error';
 
 const queryClient = useQueryClient();
 
@@ -50,7 +49,7 @@ const signup = createAccountsSignup(() => ({
         serverError = t('auth.shared.errorEmailInUse');
         return;
       }
-      serverError = translateApiError(err, t);
+      if (isApiError(err)) serverError = err.message;
     },
   },
 }));

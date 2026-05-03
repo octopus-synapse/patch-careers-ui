@@ -10,6 +10,7 @@ import ChatFab from '$lib/components/chat/chat-fab.svelte';
 import ChatWidget from '$lib/components/chat/chat-widget.svelte';
 import CookieBanner from '$lib/components/consent/cookie-banner.svelte';
 import ErrorBoundary from '$lib/components/errors/error-boundary.svelte';
+import ErrorRenderer from '$lib/components/errors/error-renderer.svelte';
 import OfflineBanner from '$lib/components/errors/offline-banner.svelte';
 import FeatureFlagsStream from '$lib/components/feature-flags-stream.svelte';
 import Footer from '$lib/components/layout/footer.svelte';
@@ -85,6 +86,7 @@ $effect(() => {
 	<QueryClientProvider client={queryClient}>
 		<FeatureFlagsStream />
 		<OnboardingGuard />
+		<ErrorRenderer />
 		<div class="min-h-screen flex flex-col">
 			<Navbar />
 			<ErrorBoundary>
@@ -103,6 +105,7 @@ $effect(() => {
 			<FeatureFlagsStream />
 			<OfflineBanner />
 			<OnboardingGuard />
+			<ErrorRenderer />
 			<Navbar />
 			<ErrorBoundary>
 				<main id="main-content" class="flex-1">
