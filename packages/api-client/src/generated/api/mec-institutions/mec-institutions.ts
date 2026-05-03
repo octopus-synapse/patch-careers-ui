@@ -22,7 +22,15 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  MecInstitutionsCourses200,
+  MecInstitutionsCourses400,
+  MecInstitutionsGetById200,
+  MecInstitutionsGetById400,
+  MecInstitutionsList200,
+  MecInstitutionsList400,
   MecInstitutionsListParams,
+  MecInstitutionsSearch200,
+  MecInstitutionsSearch400,
   MecInstitutionsSearchParams
 } from '../../models';
 
@@ -37,12 +45,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Institutions returned
  * @summary List institutions
  */
-export type mecInstitutionsListResponse200 = void
+export type mecInstitutionsListResponse200 = MecInstitutionsList200
+
+export type mecInstitutionsListResponse400 = MecInstitutionsList400
 
 export type mecInstitutionsListResponseSuccess = mecInstitutionsListResponse200
-;
+export type mecInstitutionsListResponseError = (mecInstitutionsListResponse400) & {
+  headers: Headers;
+};
 
-export type mecInstitutionsListResponse = (mecInstitutionsListResponseSuccess)
+export type mecInstitutionsListResponse = (mecInstitutionsListResponseSuccess | mecInstitutionsListResponseError)
 
 export const getMecInstitutionsListUrl = (params?: MecInstitutionsListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -87,7 +99,7 @@ export const getMecInstitutionsListQueryKey = (params?: MecInstitutionsListParam
     }
 
 
-export const getMecInstitutionsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsList>>>, TError = unknown>(params?: MecInstitutionsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsList>>>, TError = MecInstitutionsList400>(params?: MecInstitutionsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -106,14 +118,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsList>>>
-export type MecInstitutionsListInfiniteQueryError = unknown
+export type MecInstitutionsListInfiniteQueryError = MecInstitutionsList400
 
 
 /**
  * @summary List institutions
  */
 
-export function createMecInstitutionsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsList>>>, TError = unknown>(
+export function createMecInstitutionsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsList>>>, TError = MecInstitutionsList400>(
  params?: () =>  MecInstitutionsListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -128,7 +140,7 @@ export function createMecInstitutionsListInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary List institutions
  */
-export const prefetchMecInstitutionsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = unknown>(
+export const prefetchMecInstitutionsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = MecInstitutionsList400>(
  queryClient: QueryClient, params?: MecInstitutionsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -144,7 +156,7 @@ export const prefetchMecInstitutionsListInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getMecInstitutionsListQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = unknown>(params?: MecInstitutionsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsListQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = MecInstitutionsList400>(params?: MecInstitutionsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -163,14 +175,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsListQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsList>>>
-export type MecInstitutionsListQueryError = unknown
+export type MecInstitutionsListQueryError = MecInstitutionsList400
 
 
 /**
  * @summary List institutions
  */
 
-export function createMecInstitutionsList<TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = unknown>(
+export function createMecInstitutionsList<TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = MecInstitutionsList400>(
  params?: () =>  MecInstitutionsListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -185,7 +197,7 @@ export function createMecInstitutionsList<TData = Awaited<ReturnType<typeof mecI
 /**
  * @summary List institutions
  */
-export const prefetchMecInstitutionsListQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = unknown>(
+export const prefetchMecInstitutionsListQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsList>>, TError = MecInstitutionsList400>(
  queryClient: QueryClient, params?: MecInstitutionsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -205,12 +217,16 @@ export const prefetchMecInstitutionsListQuery = async <TData = Awaited<ReturnTyp
  * Institution search results returned
  * @summary Search institutions
  */
-export type mecInstitutionsSearchResponse200 = void
+export type mecInstitutionsSearchResponse200 = MecInstitutionsSearch200
+
+export type mecInstitutionsSearchResponse400 = MecInstitutionsSearch400
 
 export type mecInstitutionsSearchResponseSuccess = mecInstitutionsSearchResponse200
-;
+export type mecInstitutionsSearchResponseError = (mecInstitutionsSearchResponse400) & {
+  headers: Headers;
+};
 
-export type mecInstitutionsSearchResponse = (mecInstitutionsSearchResponseSuccess)
+export type mecInstitutionsSearchResponse = (mecInstitutionsSearchResponseSuccess | mecInstitutionsSearchResponseError)
 
 export const getMecInstitutionsSearchUrl = (params: MecInstitutionsSearchParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -255,7 +271,7 @@ export const getMecInstitutionsSearchQueryKey = (params?: MecInstitutionsSearchP
     }
 
 
-export const getMecInstitutionsSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsSearch>>>, TError = unknown>(params: MecInstitutionsSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsSearch>>>, TError = MecInstitutionsSearch400>(params: MecInstitutionsSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -274,14 +290,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsSearchInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsSearch>>>
-export type MecInstitutionsSearchInfiniteQueryError = unknown
+export type MecInstitutionsSearchInfiniteQueryError = MecInstitutionsSearch400
 
 
 /**
  * @summary Search institutions
  */
 
-export function createMecInstitutionsSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsSearch>>>, TError = unknown>(
+export function createMecInstitutionsSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsSearch>>>, TError = MecInstitutionsSearch400>(
  params: () =>  MecInstitutionsSearchParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -296,7 +312,7 @@ export function createMecInstitutionsSearchInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Search institutions
  */
-export const prefetchMecInstitutionsSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = unknown>(
+export const prefetchMecInstitutionsSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = MecInstitutionsSearch400>(
  queryClient: QueryClient, params: MecInstitutionsSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -312,7 +328,7 @@ export const prefetchMecInstitutionsSearchInfiniteQuery = async <TData = Awaited
 
 
 
-export const getMecInstitutionsSearchQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = unknown>(params: MecInstitutionsSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsSearchQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = MecInstitutionsSearch400>(params: MecInstitutionsSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -331,14 +347,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsSearchQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsSearch>>>
-export type MecInstitutionsSearchQueryError = unknown
+export type MecInstitutionsSearchQueryError = MecInstitutionsSearch400
 
 
 /**
  * @summary Search institutions
  */
 
-export function createMecInstitutionsSearch<TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = unknown>(
+export function createMecInstitutionsSearch<TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = MecInstitutionsSearch400>(
  params: () =>  MecInstitutionsSearchParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -353,7 +369,7 @@ export function createMecInstitutionsSearch<TData = Awaited<ReturnType<typeof me
 /**
  * @summary Search institutions
  */
-export const prefetchMecInstitutionsSearchQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = unknown>(
+export const prefetchMecInstitutionsSearchQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError = MecInstitutionsSearch400>(
  queryClient: QueryClient, params: MecInstitutionsSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -373,12 +389,16 @@ export const prefetchMecInstitutionsSearchQuery = async <TData = Awaited<ReturnT
  * Institution returned by MEC code
  * @summary Get institution by MEC code
  */
-export type mecInstitutionsGetByIdResponse200 = void
+export type mecInstitutionsGetByIdResponse200 = MecInstitutionsGetById200
+
+export type mecInstitutionsGetByIdResponse400 = MecInstitutionsGetById400
 
 export type mecInstitutionsGetByIdResponseSuccess = mecInstitutionsGetByIdResponse200
-;
+export type mecInstitutionsGetByIdResponseError = (mecInstitutionsGetByIdResponse400) & {
+  headers: Headers;
+};
 
-export type mecInstitutionsGetByIdResponse = (mecInstitutionsGetByIdResponseSuccess)
+export type mecInstitutionsGetByIdResponse = (mecInstitutionsGetByIdResponseSuccess | mecInstitutionsGetByIdResponseError)
 
 export const getMecInstitutionsGetByIdUrl = (codigoIes: string,) => {
 
@@ -416,7 +436,7 @@ export const getMecInstitutionsGetByIdQueryKey = (codigoIes: string,) => {
     }
 
 
-export const getMecInstitutionsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsGetById>>>, TError = unknown>(codigoIes: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsGetById>>>, TError = MecInstitutionsGetById400>(codigoIes: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -435,14 +455,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsGetById>>>
-export type MecInstitutionsGetByIdInfiniteQueryError = unknown
+export type MecInstitutionsGetByIdInfiniteQueryError = MecInstitutionsGetById400
 
 
 /**
  * @summary Get institution by MEC code
  */
 
-export function createMecInstitutionsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsGetById>>>, TError = unknown>(
+export function createMecInstitutionsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsGetById>>>, TError = MecInstitutionsGetById400>(
  codigoIes: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -457,7 +477,7 @@ export function createMecInstitutionsGetByIdInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Get institution by MEC code
  */
-export const prefetchMecInstitutionsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = unknown>(
+export const prefetchMecInstitutionsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = MecInstitutionsGetById400>(
  queryClient: QueryClient, codigoIes: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -473,7 +493,7 @@ export const prefetchMecInstitutionsGetByIdInfiniteQuery = async <TData = Awaite
 
 
 
-export const getMecInstitutionsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = unknown>(codigoIes: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = MecInstitutionsGetById400>(codigoIes: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -492,14 +512,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsGetById>>>
-export type MecInstitutionsGetByIdQueryError = unknown
+export type MecInstitutionsGetByIdQueryError = MecInstitutionsGetById400
 
 
 /**
  * @summary Get institution by MEC code
  */
 
-export function createMecInstitutionsGetById<TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = unknown>(
+export function createMecInstitutionsGetById<TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = MecInstitutionsGetById400>(
  codigoIes: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -514,7 +534,7 @@ export function createMecInstitutionsGetById<TData = Awaited<ReturnType<typeof m
 /**
  * @summary Get institution by MEC code
  */
-export const prefetchMecInstitutionsGetByIdQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = unknown>(
+export const prefetchMecInstitutionsGetByIdQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError = MecInstitutionsGetById400>(
  queryClient: QueryClient, codigoIes: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -534,12 +554,16 @@ export const prefetchMecInstitutionsGetByIdQuery = async <TData = Awaited<Return
  * Courses returned for institution
  * @summary Get courses by institution
  */
-export type mecInstitutionsCoursesResponse200 = void
+export type mecInstitutionsCoursesResponse200 = MecInstitutionsCourses200
+
+export type mecInstitutionsCoursesResponse400 = MecInstitutionsCourses400
 
 export type mecInstitutionsCoursesResponseSuccess = mecInstitutionsCoursesResponse200
-;
+export type mecInstitutionsCoursesResponseError = (mecInstitutionsCoursesResponse400) & {
+  headers: Headers;
+};
 
-export type mecInstitutionsCoursesResponse = (mecInstitutionsCoursesResponseSuccess)
+export type mecInstitutionsCoursesResponse = (mecInstitutionsCoursesResponseSuccess | mecInstitutionsCoursesResponseError)
 
 export const getMecInstitutionsCoursesUrl = (codigoIes: string,) => {
 
@@ -577,7 +601,7 @@ export const getMecInstitutionsCoursesQueryKey = (codigoIes: string,) => {
     }
 
 
-export const getMecInstitutionsCoursesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsCourses>>>, TError = unknown>(codigoIes: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsCoursesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsCourses>>>, TError = MecInstitutionsCourses400>(codigoIes: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -596,14 +620,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsCoursesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsCourses>>>
-export type MecInstitutionsCoursesInfiniteQueryError = unknown
+export type MecInstitutionsCoursesInfiniteQueryError = MecInstitutionsCourses400
 
 
 /**
  * @summary Get courses by institution
  */
 
-export function createMecInstitutionsCoursesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsCourses>>>, TError = unknown>(
+export function createMecInstitutionsCoursesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInstitutionsCourses>>>, TError = MecInstitutionsCourses400>(
  codigoIes: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -618,7 +642,7 @@ export function createMecInstitutionsCoursesInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Get courses by institution
  */
-export const prefetchMecInstitutionsCoursesInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = unknown>(
+export const prefetchMecInstitutionsCoursesInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = MecInstitutionsCourses400>(
  queryClient: QueryClient, codigoIes: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -634,7 +658,7 @@ export const prefetchMecInstitutionsCoursesInfiniteQuery = async <TData = Awaite
 
 
 
-export const getMecInstitutionsCoursesQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = unknown>(codigoIes: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInstitutionsCoursesQueryOptions = <TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = MecInstitutionsCourses400>(codigoIes: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -653,14 +677,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInstitutionsCoursesQueryResult = NonNullable<Awaited<ReturnType<typeof mecInstitutionsCourses>>>
-export type MecInstitutionsCoursesQueryError = unknown
+export type MecInstitutionsCoursesQueryError = MecInstitutionsCourses400
 
 
 /**
  * @summary Get courses by institution
  */
 
-export function createMecInstitutionsCourses<TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = unknown>(
+export function createMecInstitutionsCourses<TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = MecInstitutionsCourses400>(
  codigoIes: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -675,7 +699,7 @@ export function createMecInstitutionsCourses<TData = Awaited<ReturnType<typeof m
 /**
  * @summary Get courses by institution
  */
-export const prefetchMecInstitutionsCoursesQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = unknown>(
+export const prefetchMecInstitutionsCoursesQuery = async <TData = Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError = MecInstitutionsCourses400>(
  queryClient: QueryClient, codigoIes: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInstitutionsCourses>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

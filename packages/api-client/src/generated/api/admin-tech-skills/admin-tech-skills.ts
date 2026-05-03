@@ -26,8 +26,28 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminTechSkillsCreate200,
+  AdminTechSkillsCreate400,
+  AdminTechSkillsCreate401,
+  AdminTechSkillsCreate403,
   AdminTechSkillsCreateBody,
+  AdminTechSkillsDelete200,
+  AdminTechSkillsDelete400,
+  AdminTechSkillsDelete401,
+  AdminTechSkillsDelete403,
+  AdminTechSkillsGetById200,
+  AdminTechSkillsGetById400,
+  AdminTechSkillsGetById401,
+  AdminTechSkillsGetById403,
+  AdminTechSkillsList200,
+  AdminTechSkillsList400,
+  AdminTechSkillsList401,
+  AdminTechSkillsList403,
   AdminTechSkillsListParams,
+  AdminTechSkillsUpdate200,
+  AdminTechSkillsUpdate400,
+  AdminTechSkillsUpdate401,
+  AdminTechSkillsUpdate403,
   AdminTechSkillsUpdateBody
 } from '../../models';
 
@@ -42,12 +62,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Tech Skills API
  * @summary List all tech skills
  */
-export type adminTechSkillsListResponse200 = void
+export type adminTechSkillsListResponse200 = AdminTechSkillsList200
+
+export type adminTechSkillsListResponse400 = AdminTechSkillsList400
+
+export type adminTechSkillsListResponse401 = AdminTechSkillsList401
+
+export type adminTechSkillsListResponse403 = AdminTechSkillsList403
 
 export type adminTechSkillsListResponseSuccess = adminTechSkillsListResponse200
-;
+export type adminTechSkillsListResponseError = (adminTechSkillsListResponse400 | adminTechSkillsListResponse401 | adminTechSkillsListResponse403) & {
+  headers: Headers;
+};
 
-export type adminTechSkillsListResponse = (adminTechSkillsListResponseSuccess)
+export type adminTechSkillsListResponse = (adminTechSkillsListResponseSuccess | adminTechSkillsListResponseError)
 
 export const getAdminTechSkillsListUrl = (params?: AdminTechSkillsListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -92,7 +120,7 @@ export const getAdminTechSkillsListQueryKey = (params?: AdminTechSkillsListParam
     }
 
 
-export const getAdminTechSkillsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsList>>>, TError = unknown>(params?: AdminTechSkillsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechSkillsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsList>>>, TError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403>(params?: AdminTechSkillsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -111,14 +139,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechSkillsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsList>>>
-export type AdminTechSkillsListInfiniteQueryError = unknown
+export type AdminTechSkillsListInfiniteQueryError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403
 
 
 /**
  * @summary List all tech skills
  */
 
-export function createAdminTechSkillsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsList>>>, TError = unknown>(
+export function createAdminTechSkillsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsList>>>, TError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403>(
  params?: () =>  AdminTechSkillsListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -133,7 +161,7 @@ export function createAdminTechSkillsListInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary List all tech skills
  */
-export const prefetchAdminTechSkillsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = unknown>(
+export const prefetchAdminTechSkillsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403>(
  queryClient: QueryClient, params?: AdminTechSkillsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -149,7 +177,7 @@ export const prefetchAdminTechSkillsListInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getAdminTechSkillsListQueryOptions = <TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = unknown>(params?: AdminTechSkillsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechSkillsListQueryOptions = <TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403>(params?: AdminTechSkillsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -168,14 +196,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechSkillsListQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsList>>>
-export type AdminTechSkillsListQueryError = unknown
+export type AdminTechSkillsListQueryError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403
 
 
 /**
  * @summary List all tech skills
  */
 
-export function createAdminTechSkillsList<TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = unknown>(
+export function createAdminTechSkillsList<TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403>(
  params?: () =>  AdminTechSkillsListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -190,7 +218,7 @@ export function createAdminTechSkillsList<TData = Awaited<ReturnType<typeof admi
 /**
  * @summary List all tech skills
  */
-export const prefetchAdminTechSkillsListQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = unknown>(
+export const prefetchAdminTechSkillsListQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsList>>, TError = AdminTechSkillsList400 | AdminTechSkillsList401 | AdminTechSkillsList403>(
  queryClient: QueryClient, params?: AdminTechSkillsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -210,12 +238,20 @@ export const prefetchAdminTechSkillsListQuery = async <TData = Awaited<ReturnTyp
  * Admin Tech Skills API
  * @summary Create tech skill
  */
-export type adminTechSkillsCreateResponse200 = void
+export type adminTechSkillsCreateResponse200 = AdminTechSkillsCreate200
+
+export type adminTechSkillsCreateResponse400 = AdminTechSkillsCreate400
+
+export type adminTechSkillsCreateResponse401 = AdminTechSkillsCreate401
+
+export type adminTechSkillsCreateResponse403 = AdminTechSkillsCreate403
 
 export type adminTechSkillsCreateResponseSuccess = adminTechSkillsCreateResponse200
-;
+export type adminTechSkillsCreateResponseError = (adminTechSkillsCreateResponse400 | adminTechSkillsCreateResponse401 | adminTechSkillsCreateResponse403) & {
+  headers: Headers;
+};
 
-export type adminTechSkillsCreateResponse = (adminTechSkillsCreateResponseSuccess)
+export type adminTechSkillsCreateResponse = (adminTechSkillsCreateResponseSuccess | adminTechSkillsCreateResponseError)
 
 export const getAdminTechSkillsCreateUrl = () => {
 
@@ -240,7 +276,7 @@ export const adminTechSkillsCreate = async (adminTechSkillsCreateBody: AdminTech
 
 
 
-export const getAdminTechSkillsCreateMutationOptions = <TError = unknown,
+export const getAdminTechSkillsCreateMutationOptions = <TError = AdminTechSkillsCreate400 | AdminTechSkillsCreate401 | AdminTechSkillsCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsCreate>>, TError,{data: AdminTechSkillsCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsCreate>>, TError,{data: AdminTechSkillsCreateBody}, TContext> => {
 
@@ -269,12 +305,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTechSkillsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsCreate>>>
     export type AdminTechSkillsCreateMutationBody = AdminTechSkillsCreateBody
-    export type AdminTechSkillsCreateMutationError = unknown
+    export type AdminTechSkillsCreateMutationError = AdminTechSkillsCreate400 | AdminTechSkillsCreate401 | AdminTechSkillsCreate403
 
     /**
  * @summary Create tech skill
  */
-export const createAdminTechSkillsCreate = <TError = unknown,
+export const createAdminTechSkillsCreate = <TError = AdminTechSkillsCreate400 | AdminTechSkillsCreate401 | AdminTechSkillsCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsCreate>>, TError,{data: AdminTechSkillsCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTechSkillsCreate>>,
@@ -288,12 +324,20 @@ export const createAdminTechSkillsCreate = <TError = unknown,
  * Admin Tech Skills API
  * @summary Get tech skill by ID
  */
-export type adminTechSkillsGetByIdResponse200 = void
+export type adminTechSkillsGetByIdResponse200 = AdminTechSkillsGetById200
+
+export type adminTechSkillsGetByIdResponse400 = AdminTechSkillsGetById400
+
+export type adminTechSkillsGetByIdResponse401 = AdminTechSkillsGetById401
+
+export type adminTechSkillsGetByIdResponse403 = AdminTechSkillsGetById403
 
 export type adminTechSkillsGetByIdResponseSuccess = adminTechSkillsGetByIdResponse200
-;
+export type adminTechSkillsGetByIdResponseError = (adminTechSkillsGetByIdResponse400 | adminTechSkillsGetByIdResponse401 | adminTechSkillsGetByIdResponse403) & {
+  headers: Headers;
+};
 
-export type adminTechSkillsGetByIdResponse = (adminTechSkillsGetByIdResponseSuccess)
+export type adminTechSkillsGetByIdResponse = (adminTechSkillsGetByIdResponseSuccess | adminTechSkillsGetByIdResponseError)
 
 export const getAdminTechSkillsGetByIdUrl = (id: string,) => {
 
@@ -331,7 +375,7 @@ export const getAdminTechSkillsGetByIdQueryKey = (id: string,) => {
     }
 
 
-export const getAdminTechSkillsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsGetById>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechSkillsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsGetById>>>, TError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -350,14 +394,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechSkillsGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsGetById>>>
-export type AdminTechSkillsGetByIdInfiniteQueryError = unknown
+export type AdminTechSkillsGetByIdInfiniteQueryError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403
 
 
 /**
  * @summary Get tech skill by ID
  */
 
-export function createAdminTechSkillsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsGetById>>>, TError = unknown>(
+export function createAdminTechSkillsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTechSkillsGetById>>>, TError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -372,7 +416,7 @@ export function createAdminTechSkillsGetByIdInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Get tech skill by ID
  */
-export const prefetchAdminTechSkillsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = unknown>(
+export const prefetchAdminTechSkillsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -388,7 +432,7 @@ export const prefetchAdminTechSkillsGetByIdInfiniteQuery = async <TData = Awaite
 
 
 
-export const getAdminTechSkillsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTechSkillsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -407,14 +451,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTechSkillsGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsGetById>>>
-export type AdminTechSkillsGetByIdQueryError = unknown
+export type AdminTechSkillsGetByIdQueryError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403
 
 
 /**
  * @summary Get tech skill by ID
  */
 
-export function createAdminTechSkillsGetById<TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = unknown>(
+export function createAdminTechSkillsGetById<TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -429,7 +473,7 @@ export function createAdminTechSkillsGetById<TData = Awaited<ReturnType<typeof a
 /**
  * @summary Get tech skill by ID
  */
-export const prefetchAdminTechSkillsGetByIdQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = unknown>(
+export const prefetchAdminTechSkillsGetByIdQuery = async <TData = Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError = AdminTechSkillsGetById400 | AdminTechSkillsGetById401 | AdminTechSkillsGetById403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTechSkillsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -449,12 +493,20 @@ export const prefetchAdminTechSkillsGetByIdQuery = async <TData = Awaited<Return
  * Admin Tech Skills API
  * @summary Update tech skill
  */
-export type adminTechSkillsUpdateResponse200 = void
+export type adminTechSkillsUpdateResponse200 = AdminTechSkillsUpdate200
+
+export type adminTechSkillsUpdateResponse400 = AdminTechSkillsUpdate400
+
+export type adminTechSkillsUpdateResponse401 = AdminTechSkillsUpdate401
+
+export type adminTechSkillsUpdateResponse403 = AdminTechSkillsUpdate403
 
 export type adminTechSkillsUpdateResponseSuccess = adminTechSkillsUpdateResponse200
-;
+export type adminTechSkillsUpdateResponseError = (adminTechSkillsUpdateResponse400 | adminTechSkillsUpdateResponse401 | adminTechSkillsUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type adminTechSkillsUpdateResponse = (adminTechSkillsUpdateResponseSuccess)
+export type adminTechSkillsUpdateResponse = (adminTechSkillsUpdateResponseSuccess | adminTechSkillsUpdateResponseError)
 
 export const getAdminTechSkillsUpdateUrl = (id: string,) => {
 
@@ -480,7 +532,7 @@ export const adminTechSkillsUpdate = async (id: string,
 
 
 
-export const getAdminTechSkillsUpdateMutationOptions = <TError = unknown,
+export const getAdminTechSkillsUpdateMutationOptions = <TError = AdminTechSkillsUpdate400 | AdminTechSkillsUpdate401 | AdminTechSkillsUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsUpdate>>, TError,{id: string;data: AdminTechSkillsUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsUpdate>>, TError,{id: string;data: AdminTechSkillsUpdateBody}, TContext> => {
 
@@ -509,12 +561,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTechSkillsUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsUpdate>>>
     export type AdminTechSkillsUpdateMutationBody = AdminTechSkillsUpdateBody
-    export type AdminTechSkillsUpdateMutationError = unknown
+    export type AdminTechSkillsUpdateMutationError = AdminTechSkillsUpdate400 | AdminTechSkillsUpdate401 | AdminTechSkillsUpdate403
 
     /**
  * @summary Update tech skill
  */
-export const createAdminTechSkillsUpdate = <TError = unknown,
+export const createAdminTechSkillsUpdate = <TError = AdminTechSkillsUpdate400 | AdminTechSkillsUpdate401 | AdminTechSkillsUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsUpdate>>, TError,{id: string;data: AdminTechSkillsUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTechSkillsUpdate>>,
@@ -528,12 +580,20 @@ export const createAdminTechSkillsUpdate = <TError = unknown,
  * Admin Tech Skills API
  * @summary Delete tech skill
  */
-export type adminTechSkillsDeleteResponse200 = void
+export type adminTechSkillsDeleteResponse200 = AdminTechSkillsDelete200
+
+export type adminTechSkillsDeleteResponse400 = AdminTechSkillsDelete400
+
+export type adminTechSkillsDeleteResponse401 = AdminTechSkillsDelete401
+
+export type adminTechSkillsDeleteResponse403 = AdminTechSkillsDelete403
 
 export type adminTechSkillsDeleteResponseSuccess = adminTechSkillsDeleteResponse200
-;
+export type adminTechSkillsDeleteResponseError = (adminTechSkillsDeleteResponse400 | adminTechSkillsDeleteResponse401 | adminTechSkillsDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type adminTechSkillsDeleteResponse = (adminTechSkillsDeleteResponseSuccess)
+export type adminTechSkillsDeleteResponse = (adminTechSkillsDeleteResponseSuccess | adminTechSkillsDeleteResponseError)
 
 export const getAdminTechSkillsDeleteUrl = (id: string,) => {
 
@@ -557,7 +617,7 @@ export const adminTechSkillsDelete = async (id: string, options?: RequestInit): 
 
 
 
-export const getAdminTechSkillsDeleteMutationOptions = <TError = unknown,
+export const getAdminTechSkillsDeleteMutationOptions = <TError = AdminTechSkillsDelete400 | AdminTechSkillsDelete401 | AdminTechSkillsDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsDelete>>, TError,{id: string}, TContext> => {
 
@@ -586,12 +646,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTechSkillsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof adminTechSkillsDelete>>>
 
-    export type AdminTechSkillsDeleteMutationError = unknown
+    export type AdminTechSkillsDeleteMutationError = AdminTechSkillsDelete400 | AdminTechSkillsDelete401 | AdminTechSkillsDelete403
 
     /**
  * @summary Delete tech skill
  */
-export const createAdminTechSkillsDelete = <TError = unknown,
+export const createAdminTechSkillsDelete = <TError = AdminTechSkillsDelete400 | AdminTechSkillsDelete401 | AdminTechSkillsDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTechSkillsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTechSkillsDelete>>,

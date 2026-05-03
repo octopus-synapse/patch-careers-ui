@@ -10,10 +10,86 @@ import * as zod from 'zod';
 
 /**
  * Notifications API
+ * @summary Get notifications for current user
+ */
+export const NotificationsListResponse = zod.object({
+  "data": zod.array(zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "type": zod.enum(['POST_LIKED', 'POST_COMMENTED', 'POST_REPOSTED', 'POST_BOOKMARKED', 'COMMENT_REPLIED', 'CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW', 'CONNECTION_RECOMMENDATION', 'SKILL_DECAY', 'APPLICATION_STALE', 'FIT_PROFILE_EXPIRED', 'FIT_PROFILE_EXPIRY_REMINDER', 'MATCH_RECOMMENDATIONS_READY', 'RESUME_QUALITY_IMPROVED', 'RESUME_QUALITY_REGRESSED']),
+  "actorId": zod.string().nullable(),
+  "entityType": zod.string().nullable(),
+  "entityId": zod.string().nullable(),
+  "message": zod.string(),
+  "read": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "actor": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullable()
+})),
+  "nextCursor": zod.string().nullable()
+})
+
+/**
+ * Notifications API
+ * @summary Get unread notification count
+ */
+export const notificationsUnreadCountResponseCountMin = 0;
+
+
+
+export const NotificationsUnreadCountResponse = zod.object({
+  "count": zod.number().min(notificationsUnreadCountResponseCountMin)
+})
+
+/**
+ * Notifications API
  * @summary Mark notifications as read
  */
 export const NotificationsMarkReadBody = zod.object({
   "notificationId": zod.string().optional()
+})
+
+export const notificationsMarkReadResponseCountMin = 0;
+
+
+
+export const NotificationsMarkReadResponse = zod.object({
+  "count": zod.number().min(notificationsMarkReadResponseCountMin)
+})
+
+/**
+ * Returns `{types:[{key,label,description,category,channels:[{key,enabled,locked?}],userEnabled}]}`. The frontend renders the settings matrix directly from this payload — adding a new type is a backend-only change.
+ * @summary Notification types with channels + user preferences
+ */
+export const NotificationsTypesResponse = zod.object({
+  "types": zod.array(zod.object({
+  "key": zod.enum(['POST_LIKED', 'POST_COMMENTED', 'POST_REPOSTED', 'POST_BOOKMARKED', 'COMMENT_REPLIED', 'CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW', 'CONNECTION_RECOMMENDATION', 'SKILL_DECAY', 'APPLICATION_STALE', 'FIT_PROFILE_EXPIRED', 'FIT_PROFILE_EXPIRY_REMINDER', 'MATCH_RECOMMENDATIONS_READY', 'RESUME_QUALITY_IMPROVED', 'RESUME_QUALITY_REGRESSED']),
+  "label": zod.string(),
+  "description": zod.string(),
+  "category": zod.enum(['social', 'jobs', 'scoring', 'system']),
+  "channels": zod.array(zod.object({
+  "key": zod.enum(['inapp', 'email']),
+  "enabled": zod.boolean()
+})),
+  "userEnabled": zod.boolean()
+}))
+})
+
+/**
+ * Notifications API
+ * @summary Get notification preferences for the current user
+ */
+export const NotificationsPreferencesGetResponse = zod.object({
+  "preferences": zod.array(zod.object({
+  "type": zod.enum(['POST_LIKED', 'POST_COMMENTED', 'POST_REPOSTED', 'POST_BOOKMARKED', 'COMMENT_REPLIED', 'CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW', 'CONNECTION_RECOMMENDATION', 'SKILL_DECAY', 'APPLICATION_STALE', 'FIT_PROFILE_EXPIRED', 'FIT_PROFILE_EXPIRY_REMINDER', 'MATCH_RECOMMENDATIONS_READY', 'RESUME_QUALITY_IMPROVED', 'RESUME_QUALITY_REGRESSED']),
+  "enabled": zod.boolean(),
+  "emailEnabled": zod.boolean(),
+  "emailDelivery": zod.enum(['INSTANT', 'DAILY', 'WEEKLY', 'OFF'])
+}))
 })
 
 /**
@@ -24,5 +100,12 @@ export const NotificationsPreferencesPutBody = zod.object({
   "enabled": zod.boolean().optional(),
   "emailEnabled": zod.boolean().optional(),
   "emailDelivery": zod.enum(['INSTANT', 'DAILY', 'WEEKLY', 'OFF']).optional()
+})
+
+export const NotificationsPreferencesPutResponse = zod.object({
+  "type": zod.enum(['POST_LIKED', 'POST_COMMENTED', 'POST_REPOSTED', 'POST_BOOKMARKED', 'COMMENT_REPLIED', 'CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW', 'CONNECTION_RECOMMENDATION', 'SKILL_DECAY', 'APPLICATION_STALE', 'FIT_PROFILE_EXPIRED', 'FIT_PROFILE_EXPIRY_REMINDER', 'MATCH_RECOMMENDATIONS_READY', 'RESUME_QUALITY_IMPROVED', 'RESUME_QUALITY_REGRESSED']),
+  "enabled": zod.boolean(),
+  "emailEnabled": zod.boolean(),
+  "emailDelivery": zod.enum(['INSTANT', 'DAILY', 'WEEKLY', 'OFF'])
 })
 

@@ -21,6 +21,13 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  AuthOauthAvailable200,
+  AuthOauthAvailable400,
+  AuthOauthProviders200,
+  AuthOauthProviders400
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -30,658 +37,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
  * OAuth login endpoints
- * @summary Start GitHub OAuth sign-in.
- */
-export type authOauthGithubStartResponse200 = void
-
-export type authOauthGithubStartResponseSuccess = authOauthGithubStartResponse200
-;
-
-export type authOauthGithubStartResponse = (authOauthGithubStartResponseSuccess)
-
-export const getAuthOauthGithubStartUrl = () => {
-
-
-
-
-  return `/api/v1/auth/oauth/github/start`
-}
-
-export const authOauthGithubStart = async ( options?: RequestInit): Promise<authOauthGithubStartResponse> => {
-
-  return customFetch<authOauthGithubStartResponse>(getAuthOauthGithubStartUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getAuthOauthGithubStartInfiniteQueryKey = () => {
-    return [
-    'infinite', `/api/v1/auth/oauth/github/start`
-    ] as const;
-    }
-
-export const getAuthOauthGithubStartQueryKey = () => {
-    return [
-    `/api/v1/auth/oauth/github/start`
-    ] as const;
-    }
-
-
-export const getAuthOauthGithubStartInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthGithubStart>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthGithubStartInfiniteQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthGithubStart>>> = ({ signal }) => authOauthGithubStart({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthGithubStartInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthGithubStart>>>
-export type AuthOauthGithubStartInfiniteQueryError = unknown
-
-
-/**
- * @summary Start GitHub OAuth sign-in.
- */
-
-export function createAuthOauthGithubStartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthGithubStart>>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createInfiniteQuery(() => getAuthOauthGithubStartInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary Start GitHub OAuth sign-in.
- */
-export const prefetchAuthOauthGithubStartInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthGithubStart>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthGithubStartInfiniteQueryOptions(options)
-
-  await queryClient.prefetchInfiniteQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-export const getAuthOauthGithubStartQueryOptions = <TData = Awaited<ReturnType<typeof authOauthGithubStart>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthGithubStartQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthGithubStart>>> = ({ signal }) => authOauthGithubStart({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthGithubStartQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthGithubStart>>>
-export type AuthOauthGithubStartQueryError = unknown
-
-
-/**
- * @summary Start GitHub OAuth sign-in.
- */
-
-export function createAuthOauthGithubStart<TData = Awaited<ReturnType<typeof authOauthGithubStart>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAuthOauthGithubStartQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary Start GitHub OAuth sign-in.
- */
-export const prefetchAuthOauthGithubStartQuery = async <TData = Awaited<ReturnType<typeof authOauthGithubStart>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthGithubStartQueryOptions(options)
-
-  await queryClient.prefetchQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-/**
- * OAuth login endpoints
- * @summary GitHub OAuth callback.
- */
-export type authOauthGithubCallbackResponse200 = void
-
-export type authOauthGithubCallbackResponseSuccess = authOauthGithubCallbackResponse200
-;
-
-export type authOauthGithubCallbackResponse = (authOauthGithubCallbackResponseSuccess)
-
-export const getAuthOauthGithubCallbackUrl = () => {
-
-
-
-
-  return `/api/v1/auth/oauth/github/callback`
-}
-
-export const authOauthGithubCallback = async ( options?: RequestInit): Promise<authOauthGithubCallbackResponse> => {
-
-  return customFetch<authOauthGithubCallbackResponse>(getAuthOauthGithubCallbackUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getAuthOauthGithubCallbackInfiniteQueryKey = () => {
-    return [
-    'infinite', `/api/v1/auth/oauth/github/callback`
-    ] as const;
-    }
-
-export const getAuthOauthGithubCallbackQueryKey = () => {
-    return [
-    `/api/v1/auth/oauth/github/callback`
-    ] as const;
-    }
-
-
-export const getAuthOauthGithubCallbackInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthGithubCallback>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthGithubCallbackInfiniteQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthGithubCallback>>> = ({ signal }) => authOauthGithubCallback({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthGithubCallbackInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthGithubCallback>>>
-export type AuthOauthGithubCallbackInfiniteQueryError = unknown
-
-
-/**
- * @summary GitHub OAuth callback.
- */
-
-export function createAuthOauthGithubCallbackInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthGithubCallback>>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createInfiniteQuery(() => getAuthOauthGithubCallbackInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary GitHub OAuth callback.
- */
-export const prefetchAuthOauthGithubCallbackInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthGithubCallback>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthGithubCallbackInfiniteQueryOptions(options)
-
-  await queryClient.prefetchInfiniteQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-export const getAuthOauthGithubCallbackQueryOptions = <TData = Awaited<ReturnType<typeof authOauthGithubCallback>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthGithubCallbackQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthGithubCallback>>> = ({ signal }) => authOauthGithubCallback({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthGithubCallbackQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthGithubCallback>>>
-export type AuthOauthGithubCallbackQueryError = unknown
-
-
-/**
- * @summary GitHub OAuth callback.
- */
-
-export function createAuthOauthGithubCallback<TData = Awaited<ReturnType<typeof authOauthGithubCallback>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAuthOauthGithubCallbackQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary GitHub OAuth callback.
- */
-export const prefetchAuthOauthGithubCallbackQuery = async <TData = Awaited<ReturnType<typeof authOauthGithubCallback>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthGithubCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthGithubCallbackQueryOptions(options)
-
-  await queryClient.prefetchQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-/**
- * OAuth login endpoints
- * @summary Start LinkedIn OAuth sign-in.
- */
-export type authOauthLinkedinStartResponse200 = void
-
-export type authOauthLinkedinStartResponseSuccess = authOauthLinkedinStartResponse200
-;
-
-export type authOauthLinkedinStartResponse = (authOauthLinkedinStartResponseSuccess)
-
-export const getAuthOauthLinkedinStartUrl = () => {
-
-
-
-
-  return `/api/v1/auth/oauth/linkedin/start`
-}
-
-export const authOauthLinkedinStart = async ( options?: RequestInit): Promise<authOauthLinkedinStartResponse> => {
-
-  return customFetch<authOauthLinkedinStartResponse>(getAuthOauthLinkedinStartUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getAuthOauthLinkedinStartInfiniteQueryKey = () => {
-    return [
-    'infinite', `/api/v1/auth/oauth/linkedin/start`
-    ] as const;
-    }
-
-export const getAuthOauthLinkedinStartQueryKey = () => {
-    return [
-    `/api/v1/auth/oauth/linkedin/start`
-    ] as const;
-    }
-
-
-export const getAuthOauthLinkedinStartInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthLinkedinStart>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthLinkedinStartInfiniteQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthLinkedinStart>>> = ({ signal }) => authOauthLinkedinStart({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthLinkedinStartInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthLinkedinStart>>>
-export type AuthOauthLinkedinStartInfiniteQueryError = unknown
-
-
-/**
- * @summary Start LinkedIn OAuth sign-in.
- */
-
-export function createAuthOauthLinkedinStartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthLinkedinStart>>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createInfiniteQuery(() => getAuthOauthLinkedinStartInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary Start LinkedIn OAuth sign-in.
- */
-export const prefetchAuthOauthLinkedinStartInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthLinkedinStartInfiniteQueryOptions(options)
-
-  await queryClient.prefetchInfiniteQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-export const getAuthOauthLinkedinStartQueryOptions = <TData = Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthLinkedinStartQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthLinkedinStart>>> = ({ signal }) => authOauthLinkedinStart({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthLinkedinStartQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthLinkedinStart>>>
-export type AuthOauthLinkedinStartQueryError = unknown
-
-
-/**
- * @summary Start LinkedIn OAuth sign-in.
- */
-
-export function createAuthOauthLinkedinStart<TData = Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAuthOauthLinkedinStartQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary Start LinkedIn OAuth sign-in.
- */
-export const prefetchAuthOauthLinkedinStartQuery = async <TData = Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinStart>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthLinkedinStartQueryOptions(options)
-
-  await queryClient.prefetchQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-/**
- * OAuth login endpoints
- * @summary LinkedIn OAuth callback.
- */
-export type authOauthLinkedinCallbackResponse200 = void
-
-export type authOauthLinkedinCallbackResponseSuccess = authOauthLinkedinCallbackResponse200
-;
-
-export type authOauthLinkedinCallbackResponse = (authOauthLinkedinCallbackResponseSuccess)
-
-export const getAuthOauthLinkedinCallbackUrl = () => {
-
-
-
-
-  return `/api/v1/auth/oauth/linkedin/callback`
-}
-
-export const authOauthLinkedinCallback = async ( options?: RequestInit): Promise<authOauthLinkedinCallbackResponse> => {
-
-  return customFetch<authOauthLinkedinCallbackResponse>(getAuthOauthLinkedinCallbackUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getAuthOauthLinkedinCallbackInfiniteQueryKey = () => {
-    return [
-    'infinite', `/api/v1/auth/oauth/linkedin/callback`
-    ] as const;
-    }
-
-export const getAuthOauthLinkedinCallbackQueryKey = () => {
-    return [
-    `/api/v1/auth/oauth/linkedin/callback`
-    ] as const;
-    }
-
-
-export const getAuthOauthLinkedinCallbackInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthLinkedinCallback>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthLinkedinCallbackInfiniteQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthLinkedinCallback>>> = ({ signal }) => authOauthLinkedinCallback({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthLinkedinCallbackInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthLinkedinCallback>>>
-export type AuthOauthLinkedinCallbackInfiniteQueryError = unknown
-
-
-/**
- * @summary LinkedIn OAuth callback.
- */
-
-export function createAuthOauthLinkedinCallbackInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthLinkedinCallback>>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createInfiniteQuery(() => getAuthOauthLinkedinCallbackInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary LinkedIn OAuth callback.
- */
-export const prefetchAuthOauthLinkedinCallbackInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthLinkedinCallbackInfiniteQueryOptions(options)
-
-  await queryClient.prefetchInfiniteQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-export const getAuthOauthLinkedinCallbackQueryOptions = <TData = Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getAuthOauthLinkedinCallbackQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthLinkedinCallback>>> = ({ signal }) => authOauthLinkedinCallback({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type AuthOauthLinkedinCallbackQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthLinkedinCallback>>>
-export type AuthOauthLinkedinCallbackQueryError = unknown
-
-
-/**
- * @summary LinkedIn OAuth callback.
- */
-
-export function createAuthOauthLinkedinCallback<TData = Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError = unknown>(
-  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: () => QueryClient
- ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-
-
-  const query = createQuery(() => getAuthOauthLinkedinCallbackQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return query
-}
-
-/**
- * @summary LinkedIn OAuth callback.
- */
-export const prefetchAuthOauthLinkedinCallbackQuery = async <TData = Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError = unknown>(
- queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthLinkedinCallback>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-
-  ): Promise<QueryClient> => {
-
-  const queryOptions = getAuthOauthLinkedinCallbackQueryOptions(options)
-
-  await queryClient.prefetchQuery(queryOptions);
-
-  return queryClient;
-}
-
-
-
-
-
-/**
- * OAuth login endpoints
  * @summary Whether a given OAuth provider is configured.
  */
-export type authOauthAvailableResponse200 = void
+export type authOauthAvailableResponse200 = AuthOauthAvailable200
+
+export type authOauthAvailableResponse400 = AuthOauthAvailable400
 
 export type authOauthAvailableResponseSuccess = authOauthAvailableResponse200
-;
+export type authOauthAvailableResponseError = (authOauthAvailableResponse400) & {
+  headers: Headers;
+};
 
-export type authOauthAvailableResponse = (authOauthAvailableResponseSuccess)
+export type authOauthAvailableResponse = (authOauthAvailableResponseSuccess | authOauthAvailableResponseError)
 
 export const getAuthOauthAvailableUrl = (provider: string,) => {
 
@@ -719,7 +86,7 @@ export const getAuthOauthAvailableQueryKey = (provider: string,) => {
     }
 
 
-export const getAuthOauthAvailableInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthAvailable>>>, TError = unknown>(provider: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAuthOauthAvailableInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthAvailable>>>, TError = AuthOauthAvailable400>(provider: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -738,14 +105,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuthOauthAvailableInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthAvailable>>>
-export type AuthOauthAvailableInfiniteQueryError = unknown
+export type AuthOauthAvailableInfiniteQueryError = AuthOauthAvailable400
 
 
 /**
  * @summary Whether a given OAuth provider is configured.
  */
 
-export function createAuthOauthAvailableInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthAvailable>>>, TError = unknown>(
+export function createAuthOauthAvailableInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthAvailable>>>, TError = AuthOauthAvailable400>(
  provider: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -760,7 +127,7 @@ export function createAuthOauthAvailableInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Whether a given OAuth provider is configured.
  */
-export const prefetchAuthOauthAvailableInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = unknown>(
+export const prefetchAuthOauthAvailableInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = AuthOauthAvailable400>(
  queryClient: QueryClient, provider: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -776,7 +143,7 @@ export const prefetchAuthOauthAvailableInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getAuthOauthAvailableQueryOptions = <TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = unknown>(provider: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAuthOauthAvailableQueryOptions = <TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = AuthOauthAvailable400>(provider: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -795,14 +162,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuthOauthAvailableQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthAvailable>>>
-export type AuthOauthAvailableQueryError = unknown
+export type AuthOauthAvailableQueryError = AuthOauthAvailable400
 
 
 /**
  * @summary Whether a given OAuth provider is configured.
  */
 
-export function createAuthOauthAvailable<TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = unknown>(
+export function createAuthOauthAvailable<TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = AuthOauthAvailable400>(
  provider: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -817,12 +184,177 @@ export function createAuthOauthAvailable<TData = Awaited<ReturnType<typeof authO
 /**
  * @summary Whether a given OAuth provider is configured.
  */
-export const prefetchAuthOauthAvailableQuery = async <TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = unknown>(
+export const prefetchAuthOauthAvailableQuery = async <TData = Awaited<ReturnType<typeof authOauthAvailable>>, TError = AuthOauthAvailable400>(
  queryClient: QueryClient, provider: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthAvailable>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
   const queryOptions = getAuthOauthAvailableQueryOptions(provider,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+
+
+/**
+ * Frontend renders a button per provider and uses `window.location.href = startUrl` to begin the flow.
+ * @summary List enabled OAuth providers (server-driven catalog)
+ */
+export type authOauthProvidersResponse200 = AuthOauthProviders200
+
+export type authOauthProvidersResponse400 = AuthOauthProviders400
+
+export type authOauthProvidersResponseSuccess = authOauthProvidersResponse200
+export type authOauthProvidersResponseError = (authOauthProvidersResponse400) & {
+  headers: Headers;
+};
+
+export type authOauthProvidersResponse = (authOauthProvidersResponseSuccess | authOauthProvidersResponseError)
+
+export const getAuthOauthProvidersUrl = () => {
+
+
+
+
+  return `/api/v1/auth/oauth/providers`
+}
+
+export const authOauthProviders = async ( options?: RequestInit): Promise<authOauthProvidersResponse> => {
+
+  return customFetch<authOauthProvidersResponse>(getAuthOauthProvidersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAuthOauthProvidersInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/auth/oauth/providers`
+    ] as const;
+    }
+
+export const getAuthOauthProvidersQueryKey = () => {
+    return [
+    `/api/v1/auth/oauth/providers`
+    ] as const;
+    }
+
+
+export const getAuthOauthProvidersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authOauthProviders>>>, TError = AuthOauthProviders400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAuthOauthProvidersInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthProviders>>> = ({ signal }) => authOauthProviders({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AuthOauthProvidersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthProviders>>>
+export type AuthOauthProvidersInfiniteQueryError = AuthOauthProviders400
+
+
+/**
+ * @summary List enabled OAuth providers (server-driven catalog)
+ */
+
+export function createAuthOauthProvidersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authOauthProviders>>>, TError = AuthOauthProviders400>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getAuthOauthProvidersInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List enabled OAuth providers (server-driven catalog)
+ */
+export const prefetchAuthOauthProvidersInfiniteQuery = async <TData = Awaited<ReturnType<typeof authOauthProviders>>, TError = AuthOauthProviders400>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getAuthOauthProvidersInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+
+
+export const getAuthOauthProvidersQueryOptions = <TData = Awaited<ReturnType<typeof authOauthProviders>>, TError = AuthOauthProviders400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAuthOauthProvidersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof authOauthProviders>>> = ({ signal }) => authOauthProviders({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AuthOauthProvidersQueryResult = NonNullable<Awaited<ReturnType<typeof authOauthProviders>>>
+export type AuthOauthProvidersQueryError = AuthOauthProviders400
+
+
+/**
+ * @summary List enabled OAuth providers (server-driven catalog)
+ */
+
+export function createAuthOauthProviders<TData = Awaited<ReturnType<typeof authOauthProviders>>, TError = AuthOauthProviders400>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getAuthOauthProvidersQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List enabled OAuth providers (server-driven catalog)
+ */
+export const prefetchAuthOauthProvidersQuery = async <TData = Awaited<ReturnType<typeof authOauthProviders>>, TError = AuthOauthProviders400>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authOauthProviders>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getAuthOauthProvidersQueryOptions(options)
 
   await queryClient.prefetchQuery(queryOptions);
 

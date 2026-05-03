@@ -1,15 +1,12 @@
 <!--
-  ExportMenu — dropdown that lets the user download a resume in any of the
-  backend-supported formats: PDF, DOCX, JSON Resume, LaTeX.
+  ExportMenu — dropdown que dispara o backend pra gerar PDF / DOCX /
+  JSON Resume / LaTeX. O backend faz upload pro MinIO e devolve uma URL
+  assinada com TTL curto; o browser baixa nativamente via <a download>.
 -->
 <script lang="ts">
-  /**
-   * ExportMenu — burra: chama os endpoints de export do backend.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
-   */
 import {
-  exportApiV1ExportJson,
-  exportApiV1ExportLatex,
+  exportJson,
+  exportLatex,
   exportResumeDocx,
   exportUserResumePdf,
 } from 'api-client';
@@ -31,28 +28,37 @@ let { userId, resumeId, filenameHint = 'resume' }: Props = $props();
 let open = $state(false);
 let loading = $state<string | null>(null);
 
-function downloadBlob(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob);
+function triggerDownload(downloadUrl: string, filename: string) {
   const a = document.createElement('a');
-  a.href = url;
+  a.href = downloadUrl;
   a.download = filename;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+}
+
+// customFetch throws on non-2xx, so a defined response is always the 200
+// shape — but the SDK types it as a discriminated union. We narrow once
+// per response by checking a 200-only field.
+function ensurePresigned<T extends { downloadUrl: string; filename: string }>(
+  res: unknown,
+): T {
+  if (res && typeof res === 'object' && 'downloadUrl' in res) return res as T;
+  throw new Error('Backend returned an unexpected response shape');
 }
 
 async function downloadPdf() {
   if (!userId) return;
   loading = 'pdf';
   try {
-    const res = (await exportUserResumePdf(userId)) as unknown as
-      | { pdf?: string; filename?: string }
-      | undefined;
-    if (!res?.pdf) throw new Error();
+    const res = await exportUserResumePdf(userId);
+    if (!('pdf' in res)) throw new Error('Backend returned an unexpected response shape');
     const bytes = Uint8Array.from(atob(res.pdf), (c) => c.charCodeAt(0));
-    downloadBlob(
-      new Blob([bytes], { type: 'application/pdf' }),
-      res.filename ?? `${filenameHint}.pdf`,
-    );
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    triggerDownload(url, res.filename || `${filenameHint}.pdf`);
+    URL.revokeObjectURL(url);
   } catch {
     toastState.show(t('errors.exportPdfFailed'), 'danger');
   } finally {
@@ -64,17 +70,10 @@ async function downloadPdf() {
 async function downloadDocx() {
   loading = 'docx';
   try {
-    const res = (await exportResumeDocx()) as unknown as
-      | { docx?: string; filename?: string }
-      | undefined;
-    if (!res?.docx) throw new Error();
-    const bytes = Uint8Array.from(atob(res.docx), (c) => c.charCodeAt(0));
-    downloadBlob(
-      new Blob([bytes], {
-        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      }),
-      res.filename ?? `${filenameHint}.docx`,
+    const res = ensurePresigned<{ downloadUrl: string; filename: string }>(
+      await exportResumeDocx(),
     );
+    triggerDownload(res.downloadUrl, res.filename);
   } catch {
     toastState.show(t('errors.exportDocxFailed'), 'danger');
   } finally {
@@ -87,11 +86,10 @@ async function downloadJson() {
   if (!resumeId) return;
   loading = 'json';
   try {
-    const res = (await exportApiV1ExportJson(resumeId)) as unknown;
-    const blob = new Blob([JSON.stringify(res ?? {}, null, 2)], {
-      type: 'application/json',
-    });
-    downloadBlob(blob, `${filenameHint}.json`);
+    const res = ensurePresigned<{ downloadUrl: string; filename: string }>(
+      await exportJson(resumeId),
+    );
+    triggerDownload(res.downloadUrl, res.filename);
   } catch {
     toastState.show(t('errors.exportJsonFailed'), 'danger');
   } finally {
@@ -104,11 +102,10 @@ async function downloadLatex() {
   if (!resumeId) return;
   loading = 'latex';
   try {
-    const res = (await exportApiV1ExportLatex(resumeId)) as unknown as
-      | { latex?: string; filename?: string }
-      | undefined;
-    const blob = new Blob([res?.latex ?? ''], { type: 'application/x-tex' });
-    downloadBlob(blob, res?.filename ?? `${filenameHint}.tex`);
+    const res = ensurePresigned<{ downloadUrl: string; filename: string }>(
+      await exportLatex(resumeId),
+    );
+    triggerDownload(res.downloadUrl, res.filename);
   } catch {
     toastState.show(t('errors.exportLatexFailed'), 'danger');
   } finally {
@@ -180,7 +177,7 @@ async function downloadLatex() {
         {:else}
           <FileCode size={14} />
         {/if}
-        LaTeX
+        LaTeX (.tex)
       </button>
     {/if}
   </div>

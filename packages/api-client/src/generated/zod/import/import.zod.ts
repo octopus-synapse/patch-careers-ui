@@ -18,3 +18,25 @@ export const ImportGithubParseBody = zod.object({
   "repoLimit": zod.number().optional()
 })
 
+export const ImportGithubParseResponse = zod.object({
+  "suggestedHeadline": zod.string().nullable(),
+  "suggestedSummary": zod.string().nullable(),
+  "primaryStack": zod.array(zod.string()),
+  "projectBullets": zod.array(zod.object({
+  "name": zod.string(),
+  "url": zod.string(),
+  "description": zod.string().nullable(),
+  "languages": zod.array(zod.string()),
+  "bullet": zod.string()
+})),
+  "stats": zod.object({
+  "totalRepos": zod.number(),
+  "nonForkRepos": zod.number(),
+  "totalStars": zod.number(),
+  "languagesByBytes": zod.array(zod.object({
+  "language": zod.string(),
+  "bytes": zod.number()
+}))
+})
+})
+

@@ -26,7 +26,19 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ShadowProfileCandidates200,
+  ShadowProfileCandidates400,
+  ShadowProfileCandidates401,
+  ShadowProfileCandidates403,
   ShadowProfileCandidatesParams,
+  ShadowProfileClaim200,
+  ShadowProfileClaim400,
+  ShadowProfileClaim401,
+  ShadowProfileClaim403,
+  ShadowProfileGithub200,
+  ShadowProfileGithub400,
+  ShadowProfileGithub401,
+  ShadowProfileGithub403,
   ShadowProfileGithubBody
 } from '../../models';
 
@@ -41,12 +53,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Shadow Profile API
  * @summary Admin: build or refresh a GitHub-based shadow profile. Call once per login; idempotent.
  */
-export type shadowProfileGithubResponse200 = void
+export type shadowProfileGithubResponse200 = ShadowProfileGithub200
+
+export type shadowProfileGithubResponse400 = ShadowProfileGithub400
+
+export type shadowProfileGithubResponse401 = ShadowProfileGithub401
+
+export type shadowProfileGithubResponse403 = ShadowProfileGithub403
 
 export type shadowProfileGithubResponseSuccess = shadowProfileGithubResponse200
-;
+export type shadowProfileGithubResponseError = (shadowProfileGithubResponse400 | shadowProfileGithubResponse401 | shadowProfileGithubResponse403) & {
+  headers: Headers;
+};
 
-export type shadowProfileGithubResponse = (shadowProfileGithubResponseSuccess)
+export type shadowProfileGithubResponse = (shadowProfileGithubResponseSuccess | shadowProfileGithubResponseError)
 
 export const getShadowProfileGithubUrl = () => {
 
@@ -71,7 +91,7 @@ export const shadowProfileGithub = async (shadowProfileGithubBody: ShadowProfile
 
 
 
-export const getShadowProfileGithubMutationOptions = <TError = unknown,
+export const getShadowProfileGithubMutationOptions = <TError = ShadowProfileGithub400 | ShadowProfileGithub401 | ShadowProfileGithub403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof shadowProfileGithub>>, TError,{data: ShadowProfileGithubBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof shadowProfileGithub>>, TError,{data: ShadowProfileGithubBody}, TContext> => {
 
@@ -100,12 +120,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ShadowProfileGithubMutationResult = NonNullable<Awaited<ReturnType<typeof shadowProfileGithub>>>
     export type ShadowProfileGithubMutationBody = ShadowProfileGithubBody
-    export type ShadowProfileGithubMutationError = unknown
+    export type ShadowProfileGithubMutationError = ShadowProfileGithub400 | ShadowProfileGithub401 | ShadowProfileGithub403
 
     /**
  * @summary Admin: build or refresh a GitHub-based shadow profile. Call once per login; idempotent.
  */
-export const createShadowProfileGithub = <TError = unknown,
+export const createShadowProfileGithub = <TError = ShadowProfileGithub400 | ShadowProfileGithub401 | ShadowProfileGithub403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof shadowProfileGithub>>, TError,{data: ShadowProfileGithubBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof shadowProfileGithub>>,
@@ -119,12 +139,20 @@ export const createShadowProfileGithub = <TError = unknown,
  * Shadow Profile API
  * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
  */
-export type shadowProfileCandidatesResponse200 = void
+export type shadowProfileCandidatesResponse200 = ShadowProfileCandidates200
+
+export type shadowProfileCandidatesResponse400 = ShadowProfileCandidates400
+
+export type shadowProfileCandidatesResponse401 = ShadowProfileCandidates401
+
+export type shadowProfileCandidatesResponse403 = ShadowProfileCandidates403
 
 export type shadowProfileCandidatesResponseSuccess = shadowProfileCandidatesResponse200
-;
+export type shadowProfileCandidatesResponseError = (shadowProfileCandidatesResponse400 | shadowProfileCandidatesResponse401 | shadowProfileCandidatesResponse403) & {
+  headers: Headers;
+};
 
-export type shadowProfileCandidatesResponse = (shadowProfileCandidatesResponseSuccess)
+export type shadowProfileCandidatesResponse = (shadowProfileCandidatesResponseSuccess | shadowProfileCandidatesResponseError)
 
 export const getShadowProfileCandidatesUrl = (params?: ShadowProfileCandidatesParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -169,7 +197,7 @@ export const getShadowProfileCandidatesQueryKey = (params?: ShadowProfileCandida
     }
 
 
-export const getShadowProfileCandidatesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shadowProfileCandidates>>>, TError = unknown>(params?: ShadowProfileCandidatesParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getShadowProfileCandidatesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof shadowProfileCandidates>>>, TError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403>(params?: ShadowProfileCandidatesParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -188,14 +216,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShadowProfileCandidatesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof shadowProfileCandidates>>>
-export type ShadowProfileCandidatesInfiniteQueryError = unknown
+export type ShadowProfileCandidatesInfiniteQueryError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403
 
 
 /**
  * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
  */
 
-export function createShadowProfileCandidatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shadowProfileCandidates>>>, TError = unknown>(
+export function createShadowProfileCandidatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof shadowProfileCandidates>>>, TError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403>(
  params?: () =>  ShadowProfileCandidatesParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -210,7 +238,7 @@ export function createShadowProfileCandidatesInfinite<TData = InfiniteData<Await
 /**
  * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
  */
-export const prefetchShadowProfileCandidatesInfiniteQuery = async <TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = unknown>(
+export const prefetchShadowProfileCandidatesInfiniteQuery = async <TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403>(
  queryClient: QueryClient, params?: ShadowProfileCandidatesParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -226,7 +254,7 @@ export const prefetchShadowProfileCandidatesInfiniteQuery = async <TData = Await
 
 
 
-export const getShadowProfileCandidatesQueryOptions = <TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = unknown>(params?: ShadowProfileCandidatesParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getShadowProfileCandidatesQueryOptions = <TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403>(params?: ShadowProfileCandidatesParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -245,14 +273,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ShadowProfileCandidatesQueryResult = NonNullable<Awaited<ReturnType<typeof shadowProfileCandidates>>>
-export type ShadowProfileCandidatesQueryError = unknown
+export type ShadowProfileCandidatesQueryError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403
 
 
 /**
  * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
  */
 
-export function createShadowProfileCandidates<TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = unknown>(
+export function createShadowProfileCandidates<TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403>(
  params?: () =>  ShadowProfileCandidatesParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -267,7 +295,7 @@ export function createShadowProfileCandidates<TData = Awaited<ReturnType<typeof 
 /**
  * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
  */
-export const prefetchShadowProfileCandidatesQuery = async <TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = unknown>(
+export const prefetchShadowProfileCandidatesQuery = async <TData = Awaited<ReturnType<typeof shadowProfileCandidates>>, TError = ShadowProfileCandidates400 | ShadowProfileCandidates401 | ShadowProfileCandidates403>(
  queryClient: QueryClient, params?: ShadowProfileCandidatesParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof shadowProfileCandidates>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -287,12 +315,20 @@ export const prefetchShadowProfileCandidatesQuery = async <TData = Awaited<Retur
  * Shadow Profile API
  * @summary Claim a shadow profile as the authenticated user. One-shot — cannot be undone.
  */
-export type shadowProfileClaimResponse200 = void
+export type shadowProfileClaimResponse200 = ShadowProfileClaim200
+
+export type shadowProfileClaimResponse400 = ShadowProfileClaim400
+
+export type shadowProfileClaimResponse401 = ShadowProfileClaim401
+
+export type shadowProfileClaimResponse403 = ShadowProfileClaim403
 
 export type shadowProfileClaimResponseSuccess = shadowProfileClaimResponse200
-;
+export type shadowProfileClaimResponseError = (shadowProfileClaimResponse400 | shadowProfileClaimResponse401 | shadowProfileClaimResponse403) & {
+  headers: Headers;
+};
 
-export type shadowProfileClaimResponse = (shadowProfileClaimResponseSuccess)
+export type shadowProfileClaimResponse = (shadowProfileClaimResponseSuccess | shadowProfileClaimResponseError)
 
 export const getShadowProfileClaimUrl = (id: string,) => {
 
@@ -316,7 +352,7 @@ export const shadowProfileClaim = async (id: string, options?: RequestInit): Pro
 
 
 
-export const getShadowProfileClaimMutationOptions = <TError = unknown,
+export const getShadowProfileClaimMutationOptions = <TError = ShadowProfileClaim400 | ShadowProfileClaim401 | ShadowProfileClaim403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof shadowProfileClaim>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof shadowProfileClaim>>, TError,{id: string}, TContext> => {
 
@@ -345,12 +381,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ShadowProfileClaimMutationResult = NonNullable<Awaited<ReturnType<typeof shadowProfileClaim>>>
 
-    export type ShadowProfileClaimMutationError = unknown
+    export type ShadowProfileClaimMutationError = ShadowProfileClaim400 | ShadowProfileClaim401 | ShadowProfileClaim403
 
     /**
  * @summary Claim a shadow profile as the authenticated user. One-shot — cannot be undone.
  */
-export const createShadowProfileClaim = <TError = unknown,
+export const createShadowProfileClaim = <TError = ShadowProfileClaim400 | ShadowProfileClaim401 | ShadowProfileClaim403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof shadowProfileClaim>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof shadowProfileClaim>>,

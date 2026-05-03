@@ -22,7 +22,17 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  UserEngagementUsersComments200,
+  UserEngagementUsersComments400,
+  UserEngagementUsersComments401,
+  UserEngagementUsersComments403,
+  UserEngagementUsersComments404,
   UserEngagementUsersCommentsParams,
+  UserEngagementUsersReactions200,
+  UserEngagementUsersReactions400,
+  UserEngagementUsersReactions401,
+  UserEngagementUsersReactions403,
+  UserEngagementUsersReactions404,
   UserEngagementUsersReactionsParams
 } from '../../models';
 
@@ -37,12 +47,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * User-scoped feed engagement
  * @summary List comments authored by a user
  */
-export type userEngagementUsersCommentsResponse200 = void
+export type userEngagementUsersCommentsResponse200 = UserEngagementUsersComments200
+
+export type userEngagementUsersCommentsResponse400 = UserEngagementUsersComments400
+
+export type userEngagementUsersCommentsResponse401 = UserEngagementUsersComments401
+
+export type userEngagementUsersCommentsResponse403 = UserEngagementUsersComments403
+
+export type userEngagementUsersCommentsResponse404 = UserEngagementUsersComments404
 
 export type userEngagementUsersCommentsResponseSuccess = userEngagementUsersCommentsResponse200
-;
+export type userEngagementUsersCommentsResponseError = (userEngagementUsersCommentsResponse400 | userEngagementUsersCommentsResponse401 | userEngagementUsersCommentsResponse403 | userEngagementUsersCommentsResponse404) & {
+  headers: Headers;
+};
 
-export type userEngagementUsersCommentsResponse = (userEngagementUsersCommentsResponseSuccess)
+export type userEngagementUsersCommentsResponse = (userEngagementUsersCommentsResponseSuccess | userEngagementUsersCommentsResponseError)
 
 export const getUserEngagementUsersCommentsUrl = (userId: string,
     params?: UserEngagementUsersCommentsParams,) => {
@@ -91,7 +111,7 @@ export const getUserEngagementUsersCommentsQueryKey = (userId: string,
     }
 
 
-export const getUserEngagementUsersCommentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersComments>>>, TError = unknown>(userId: string,
+export const getUserEngagementUsersCommentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersComments>>>, TError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404>(userId: string,
     params?: UserEngagementUsersCommentsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userEngagementUsersComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -111,14 +131,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserEngagementUsersCommentsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof userEngagementUsersComments>>>
-export type UserEngagementUsersCommentsInfiniteQueryError = unknown
+export type UserEngagementUsersCommentsInfiniteQueryError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404
 
 
 /**
  * @summary List comments authored by a user
  */
 
-export function createUserEngagementUsersCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersComments>>>, TError = unknown>(
+export function createUserEngagementUsersCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersComments>>>, TError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404>(
  userId: () =>  string,
     params?: () =>  UserEngagementUsersCommentsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userEngagementUsersComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -135,7 +155,7 @@ export function createUserEngagementUsersCommentsInfinite<TData = InfiniteData<A
 /**
  * @summary List comments authored by a user
  */
-export const prefetchUserEngagementUsersCommentsInfiniteQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = unknown>(
+export const prefetchUserEngagementUsersCommentsInfiniteQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404>(
  queryClient: QueryClient, userId: string,
     params?: UserEngagementUsersCommentsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userEngagementUsersComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -152,7 +172,7 @@ export const prefetchUserEngagementUsersCommentsInfiniteQuery = async <TData = A
 
 
 
-export const getUserEngagementUsersCommentsQueryOptions = <TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = unknown>(userId: string,
+export const getUserEngagementUsersCommentsQueryOptions = <TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404>(userId: string,
     params?: UserEngagementUsersCommentsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userEngagementUsersComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -172,14 +192,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserEngagementUsersCommentsQueryResult = NonNullable<Awaited<ReturnType<typeof userEngagementUsersComments>>>
-export type UserEngagementUsersCommentsQueryError = unknown
+export type UserEngagementUsersCommentsQueryError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404
 
 
 /**
  * @summary List comments authored by a user
  */
 
-export function createUserEngagementUsersComments<TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = unknown>(
+export function createUserEngagementUsersComments<TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404>(
  userId: () =>  string,
     params?: () =>  UserEngagementUsersCommentsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userEngagementUsersComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -196,7 +216,7 @@ export function createUserEngagementUsersComments<TData = Awaited<ReturnType<typ
 /**
  * @summary List comments authored by a user
  */
-export const prefetchUserEngagementUsersCommentsQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = unknown>(
+export const prefetchUserEngagementUsersCommentsQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersComments>>, TError = UserEngagementUsersComments400 | UserEngagementUsersComments401 | UserEngagementUsersComments403 | UserEngagementUsersComments404>(
  queryClient: QueryClient, userId: string,
     params?: UserEngagementUsersCommentsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userEngagementUsersComments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -217,12 +237,22 @@ export const prefetchUserEngagementUsersCommentsQuery = async <TData = Awaited<R
  * User-scoped feed engagement
  * @summary List reactions given by a user
  */
-export type userEngagementUsersReactionsResponse200 = void
+export type userEngagementUsersReactionsResponse200 = UserEngagementUsersReactions200
+
+export type userEngagementUsersReactionsResponse400 = UserEngagementUsersReactions400
+
+export type userEngagementUsersReactionsResponse401 = UserEngagementUsersReactions401
+
+export type userEngagementUsersReactionsResponse403 = UserEngagementUsersReactions403
+
+export type userEngagementUsersReactionsResponse404 = UserEngagementUsersReactions404
 
 export type userEngagementUsersReactionsResponseSuccess = userEngagementUsersReactionsResponse200
-;
+export type userEngagementUsersReactionsResponseError = (userEngagementUsersReactionsResponse400 | userEngagementUsersReactionsResponse401 | userEngagementUsersReactionsResponse403 | userEngagementUsersReactionsResponse404) & {
+  headers: Headers;
+};
 
-export type userEngagementUsersReactionsResponse = (userEngagementUsersReactionsResponseSuccess)
+export type userEngagementUsersReactionsResponse = (userEngagementUsersReactionsResponseSuccess | userEngagementUsersReactionsResponseError)
 
 export const getUserEngagementUsersReactionsUrl = (userId: string,
     params?: UserEngagementUsersReactionsParams,) => {
@@ -271,7 +301,7 @@ export const getUserEngagementUsersReactionsQueryKey = (userId: string,
     }
 
 
-export const getUserEngagementUsersReactionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersReactions>>>, TError = unknown>(userId: string,
+export const getUserEngagementUsersReactionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersReactions>>>, TError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404>(userId: string,
     params?: UserEngagementUsersReactionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -291,14 +321,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserEngagementUsersReactionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof userEngagementUsersReactions>>>
-export type UserEngagementUsersReactionsInfiniteQueryError = unknown
+export type UserEngagementUsersReactionsInfiniteQueryError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404
 
 
 /**
  * @summary List reactions given by a user
  */
 
-export function createUserEngagementUsersReactionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersReactions>>>, TError = unknown>(
+export function createUserEngagementUsersReactionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userEngagementUsersReactions>>>, TError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404>(
  userId: () =>  string,
     params?: () =>  UserEngagementUsersReactionsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -315,7 +345,7 @@ export function createUserEngagementUsersReactionsInfinite<TData = InfiniteData<
 /**
  * @summary List reactions given by a user
  */
-export const prefetchUserEngagementUsersReactionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = unknown>(
+export const prefetchUserEngagementUsersReactionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404>(
  queryClient: QueryClient, userId: string,
     params?: UserEngagementUsersReactionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -332,7 +362,7 @@ export const prefetchUserEngagementUsersReactionsInfiniteQuery = async <TData = 
 
 
 
-export const getUserEngagementUsersReactionsQueryOptions = <TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = unknown>(userId: string,
+export const getUserEngagementUsersReactionsQueryOptions = <TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404>(userId: string,
     params?: UserEngagementUsersReactionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -352,14 +382,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserEngagementUsersReactionsQueryResult = NonNullable<Awaited<ReturnType<typeof userEngagementUsersReactions>>>
-export type UserEngagementUsersReactionsQueryError = unknown
+export type UserEngagementUsersReactionsQueryError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404
 
 
 /**
  * @summary List reactions given by a user
  */
 
-export function createUserEngagementUsersReactions<TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = unknown>(
+export function createUserEngagementUsersReactions<TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404>(
  userId: () =>  string,
     params?: () =>  UserEngagementUsersReactionsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -376,7 +406,7 @@ export function createUserEngagementUsersReactions<TData = Awaited<ReturnType<ty
 /**
  * @summary List reactions given by a user
  */
-export const prefetchUserEngagementUsersReactionsQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = unknown>(
+export const prefetchUserEngagementUsersReactionsQuery = async <TData = Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError = UserEngagementUsersReactions400 | UserEngagementUsersReactions401 | UserEngagementUsersReactions403 | UserEngagementUsersReactions404>(
  queryClient: QueryClient, userId: string,
     params?: UserEngagementUsersReactionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userEngagementUsersReactions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

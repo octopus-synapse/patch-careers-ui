@@ -16,6 +16,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AutomationRageApply200,
+  AutomationRageApply400,
+  AutomationRageApply401,
+  AutomationRageApply403,
   AutomationRageApplyBody
 } from '../../models';
 
@@ -30,12 +34,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Batch apply API
  * @summary Submit tailored applications to every open job that matches minFit. Bounded by maxApplications (default 20, cap 100).
  */
-export type automationRageApplyResponse200 = void
+export type automationRageApplyResponse200 = AutomationRageApply200
+
+export type automationRageApplyResponse400 = AutomationRageApply400
+
+export type automationRageApplyResponse401 = AutomationRageApply401
+
+export type automationRageApplyResponse403 = AutomationRageApply403
 
 export type automationRageApplyResponseSuccess = automationRageApplyResponse200
-;
+export type automationRageApplyResponseError = (automationRageApplyResponse400 | automationRageApplyResponse401 | automationRageApplyResponse403) & {
+  headers: Headers;
+};
 
-export type automationRageApplyResponse = (automationRageApplyResponseSuccess)
+export type automationRageApplyResponse = (automationRageApplyResponseSuccess | automationRageApplyResponseError)
 
 export const getAutomationRageApplyUrl = () => {
 
@@ -60,7 +72,7 @@ export const automationRageApply = async (automationRageApplyBody: AutomationRag
 
 
 
-export const getAutomationRageApplyMutationOptions = <TError = unknown,
+export const getAutomationRageApplyMutationOptions = <TError = AutomationRageApply400 | AutomationRageApply401 | AutomationRageApply403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof automationRageApply>>, TError,{data: AutomationRageApplyBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof automationRageApply>>, TError,{data: AutomationRageApplyBody}, TContext> => {
 
@@ -89,12 +101,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AutomationRageApplyMutationResult = NonNullable<Awaited<ReturnType<typeof automationRageApply>>>
     export type AutomationRageApplyMutationBody = AutomationRageApplyBody
-    export type AutomationRageApplyMutationError = unknown
+    export type AutomationRageApplyMutationError = AutomationRageApply400 | AutomationRageApply401 | AutomationRageApply403
 
     /**
  * @summary Submit tailored applications to every open job that matches minFit. Bounded by maxApplications (default 20, cap 100).
  */
-export const createAutomationRageApply = <TError = unknown,
+export const createAutomationRageApply = <TError = AutomationRageApply400 | AutomationRageApply401 | AutomationRageApply403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof automationRageApply>>, TError,{data: AutomationRageApplyBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof automationRageApply>>,

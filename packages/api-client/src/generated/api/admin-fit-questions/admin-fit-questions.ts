@@ -26,7 +26,26 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminFitQuestionsCreate200,
+  AdminFitQuestionsCreate400,
+  AdminFitQuestionsCreate401,
+  AdminFitQuestionsCreate403,
   AdminFitQuestionsCreateBody,
+  AdminFitQuestionsDelete400,
+  AdminFitQuestionsDelete401,
+  AdminFitQuestionsDelete403,
+  AdminFitQuestionsGetById200,
+  AdminFitQuestionsGetById400,
+  AdminFitQuestionsGetById401,
+  AdminFitQuestionsGetById403,
+  AdminFitQuestionsList200,
+  AdminFitQuestionsList400,
+  AdminFitQuestionsList401,
+  AdminFitQuestionsList403,
+  AdminFitQuestionsUpdate200,
+  AdminFitQuestionsUpdate400,
+  AdminFitQuestionsUpdate401,
+  AdminFitQuestionsUpdate403,
   AdminFitQuestionsUpdateBody
 } from '../../models';
 
@@ -41,12 +60,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin FitQuestion CRUD
  * @summary List every FitQuestion in the pool
  */
-export type adminFitQuestionsListResponse200 = void
+export type adminFitQuestionsListResponse200 = AdminFitQuestionsList200
+
+export type adminFitQuestionsListResponse400 = AdminFitQuestionsList400
+
+export type adminFitQuestionsListResponse401 = AdminFitQuestionsList401
+
+export type adminFitQuestionsListResponse403 = AdminFitQuestionsList403
 
 export type adminFitQuestionsListResponseSuccess = adminFitQuestionsListResponse200
-;
+export type adminFitQuestionsListResponseError = (adminFitQuestionsListResponse400 | adminFitQuestionsListResponse401 | adminFitQuestionsListResponse403) & {
+  headers: Headers;
+};
 
-export type adminFitQuestionsListResponse = (adminFitQuestionsListResponseSuccess)
+export type adminFitQuestionsListResponse = (adminFitQuestionsListResponseSuccess | adminFitQuestionsListResponseError)
 
 export const getAdminFitQuestionsListUrl = () => {
 
@@ -84,7 +111,7 @@ export const getAdminFitQuestionsListQueryKey = () => {
     }
 
 
-export const getAdminFitQuestionsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFitQuestionsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsList>>>, TError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -103,14 +130,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFitQuestionsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsList>>>
-export type AdminFitQuestionsListInfiniteQueryError = unknown
+export type AdminFitQuestionsListInfiniteQueryError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403
 
 
 /**
  * @summary List every FitQuestion in the pool
  */
 
-export function createAdminFitQuestionsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsList>>>, TError = unknown>(
+export function createAdminFitQuestionsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsList>>>, TError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -125,7 +152,7 @@ export function createAdminFitQuestionsListInfinite<TData = InfiniteData<Awaited
 /**
  * @summary List every FitQuestion in the pool
  */
-export const prefetchAdminFitQuestionsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = unknown>(
+export const prefetchAdminFitQuestionsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -141,7 +168,7 @@ export const prefetchAdminFitQuestionsListInfiniteQuery = async <TData = Awaited
 
 
 
-export const getAdminFitQuestionsListQueryOptions = <TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFitQuestionsListQueryOptions = <TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -160,14 +187,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFitQuestionsListQueryResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsList>>>
-export type AdminFitQuestionsListQueryError = unknown
+export type AdminFitQuestionsListQueryError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403
 
 
 /**
  * @summary List every FitQuestion in the pool
  */
 
-export function createAdminFitQuestionsList<TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = unknown>(
+export function createAdminFitQuestionsList<TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -182,7 +209,7 @@ export function createAdminFitQuestionsList<TData = Awaited<ReturnType<typeof ad
 /**
  * @summary List every FitQuestion in the pool
  */
-export const prefetchAdminFitQuestionsListQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = unknown>(
+export const prefetchAdminFitQuestionsListQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsList>>, TError = AdminFitQuestionsList400 | AdminFitQuestionsList401 | AdminFitQuestionsList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -202,12 +229,20 @@ export const prefetchAdminFitQuestionsListQuery = async <TData = Awaited<ReturnT
  * Admin FitQuestion CRUD
  * @summary Create a new FitQuestion
  */
-export type adminFitQuestionsCreateResponse200 = void
+export type adminFitQuestionsCreateResponse200 = AdminFitQuestionsCreate200
+
+export type adminFitQuestionsCreateResponse400 = AdminFitQuestionsCreate400
+
+export type adminFitQuestionsCreateResponse401 = AdminFitQuestionsCreate401
+
+export type adminFitQuestionsCreateResponse403 = AdminFitQuestionsCreate403
 
 export type adminFitQuestionsCreateResponseSuccess = adminFitQuestionsCreateResponse200
-;
+export type adminFitQuestionsCreateResponseError = (adminFitQuestionsCreateResponse400 | adminFitQuestionsCreateResponse401 | adminFitQuestionsCreateResponse403) & {
+  headers: Headers;
+};
 
-export type adminFitQuestionsCreateResponse = (adminFitQuestionsCreateResponseSuccess)
+export type adminFitQuestionsCreateResponse = (adminFitQuestionsCreateResponseSuccess | adminFitQuestionsCreateResponseError)
 
 export const getAdminFitQuestionsCreateUrl = () => {
 
@@ -232,7 +267,7 @@ export const adminFitQuestionsCreate = async (adminFitQuestionsCreateBody: Admin
 
 
 
-export const getAdminFitQuestionsCreateMutationOptions = <TError = unknown,
+export const getAdminFitQuestionsCreateMutationOptions = <TError = AdminFitQuestionsCreate400 | AdminFitQuestionsCreate401 | AdminFitQuestionsCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsCreate>>, TError,{data: AdminFitQuestionsCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsCreate>>, TError,{data: AdminFitQuestionsCreateBody}, TContext> => {
 
@@ -261,12 +296,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminFitQuestionsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsCreate>>>
     export type AdminFitQuestionsCreateMutationBody = AdminFitQuestionsCreateBody
-    export type AdminFitQuestionsCreateMutationError = unknown
+    export type AdminFitQuestionsCreateMutationError = AdminFitQuestionsCreate400 | AdminFitQuestionsCreate401 | AdminFitQuestionsCreate403
 
     /**
  * @summary Create a new FitQuestion
  */
-export const createAdminFitQuestionsCreate = <TError = unknown,
+export const createAdminFitQuestionsCreate = <TError = AdminFitQuestionsCreate400 | AdminFitQuestionsCreate401 | AdminFitQuestionsCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsCreate>>, TError,{data: AdminFitQuestionsCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminFitQuestionsCreate>>,
@@ -280,12 +315,20 @@ export const createAdminFitQuestionsCreate = <TError = unknown,
  * Admin FitQuestion CRUD
  * @summary Get one FitQuestion by id
  */
-export type adminFitQuestionsGetByIdResponse200 = void
+export type adminFitQuestionsGetByIdResponse200 = AdminFitQuestionsGetById200
+
+export type adminFitQuestionsGetByIdResponse400 = AdminFitQuestionsGetById400
+
+export type adminFitQuestionsGetByIdResponse401 = AdminFitQuestionsGetById401
+
+export type adminFitQuestionsGetByIdResponse403 = AdminFitQuestionsGetById403
 
 export type adminFitQuestionsGetByIdResponseSuccess = adminFitQuestionsGetByIdResponse200
-;
+export type adminFitQuestionsGetByIdResponseError = (adminFitQuestionsGetByIdResponse400 | adminFitQuestionsGetByIdResponse401 | adminFitQuestionsGetByIdResponse403) & {
+  headers: Headers;
+};
 
-export type adminFitQuestionsGetByIdResponse = (adminFitQuestionsGetByIdResponseSuccess)
+export type adminFitQuestionsGetByIdResponse = (adminFitQuestionsGetByIdResponseSuccess | adminFitQuestionsGetByIdResponseError)
 
 export const getAdminFitQuestionsGetByIdUrl = (id: string,) => {
 
@@ -323,7 +366,7 @@ export const getAdminFitQuestionsGetByIdQueryKey = (id: string,) => {
     }
 
 
-export const getAdminFitQuestionsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsGetById>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFitQuestionsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsGetById>>>, TError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -342,14 +385,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFitQuestionsGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsGetById>>>
-export type AdminFitQuestionsGetByIdInfiniteQueryError = unknown
+export type AdminFitQuestionsGetByIdInfiniteQueryError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403
 
 
 /**
  * @summary Get one FitQuestion by id
  */
 
-export function createAdminFitQuestionsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsGetById>>>, TError = unknown>(
+export function createAdminFitQuestionsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFitQuestionsGetById>>>, TError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -364,7 +407,7 @@ export function createAdminFitQuestionsGetByIdInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get one FitQuestion by id
  */
-export const prefetchAdminFitQuestionsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = unknown>(
+export const prefetchAdminFitQuestionsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -380,7 +423,7 @@ export const prefetchAdminFitQuestionsGetByIdInfiniteQuery = async <TData = Awai
 
 
 
-export const getAdminFitQuestionsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFitQuestionsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -399,14 +442,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFitQuestionsGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsGetById>>>
-export type AdminFitQuestionsGetByIdQueryError = unknown
+export type AdminFitQuestionsGetByIdQueryError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403
 
 
 /**
  * @summary Get one FitQuestion by id
  */
 
-export function createAdminFitQuestionsGetById<TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = unknown>(
+export function createAdminFitQuestionsGetById<TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -421,7 +464,7 @@ export function createAdminFitQuestionsGetById<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get one FitQuestion by id
  */
-export const prefetchAdminFitQuestionsGetByIdQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = unknown>(
+export const prefetchAdminFitQuestionsGetByIdQuery = async <TData = Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError = AdminFitQuestionsGetById400 | AdminFitQuestionsGetById401 | AdminFitQuestionsGetById403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFitQuestionsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -441,12 +484,20 @@ export const prefetchAdminFitQuestionsGetByIdQuery = async <TData = Awaited<Retu
  * Admin FitQuestion CRUD
  * @summary Update an existing FitQuestion
  */
-export type adminFitQuestionsUpdateResponse200 = void
+export type adminFitQuestionsUpdateResponse200 = AdminFitQuestionsUpdate200
+
+export type adminFitQuestionsUpdateResponse400 = AdminFitQuestionsUpdate400
+
+export type adminFitQuestionsUpdateResponse401 = AdminFitQuestionsUpdate401
+
+export type adminFitQuestionsUpdateResponse403 = AdminFitQuestionsUpdate403
 
 export type adminFitQuestionsUpdateResponseSuccess = adminFitQuestionsUpdateResponse200
-;
+export type adminFitQuestionsUpdateResponseError = (adminFitQuestionsUpdateResponse400 | adminFitQuestionsUpdateResponse401 | adminFitQuestionsUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type adminFitQuestionsUpdateResponse = (adminFitQuestionsUpdateResponseSuccess)
+export type adminFitQuestionsUpdateResponse = (adminFitQuestionsUpdateResponseSuccess | adminFitQuestionsUpdateResponseError)
 
 export const getAdminFitQuestionsUpdateUrl = (id: string,) => {
 
@@ -472,7 +523,7 @@ export const adminFitQuestionsUpdate = async (id: string,
 
 
 
-export const getAdminFitQuestionsUpdateMutationOptions = <TError = unknown,
+export const getAdminFitQuestionsUpdateMutationOptions = <TError = AdminFitQuestionsUpdate400 | AdminFitQuestionsUpdate401 | AdminFitQuestionsUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsUpdate>>, TError,{id: string;data: AdminFitQuestionsUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsUpdate>>, TError,{id: string;data: AdminFitQuestionsUpdateBody}, TContext> => {
 
@@ -501,12 +552,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminFitQuestionsUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsUpdate>>>
     export type AdminFitQuestionsUpdateMutationBody = AdminFitQuestionsUpdateBody
-    export type AdminFitQuestionsUpdateMutationError = unknown
+    export type AdminFitQuestionsUpdateMutationError = AdminFitQuestionsUpdate400 | AdminFitQuestionsUpdate401 | AdminFitQuestionsUpdate403
 
     /**
  * @summary Update an existing FitQuestion
  */
-export const createAdminFitQuestionsUpdate = <TError = unknown,
+export const createAdminFitQuestionsUpdate = <TError = AdminFitQuestionsUpdate400 | AdminFitQuestionsUpdate401 | AdminFitQuestionsUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsUpdate>>, TError,{id: string;data: AdminFitQuestionsUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminFitQuestionsUpdate>>,
@@ -520,12 +571,20 @@ export const createAdminFitQuestionsUpdate = <TError = unknown,
  * Admin FitQuestion CRUD
  * @summary Delete a FitQuestion
  */
-export type adminFitQuestionsDeleteResponse200 = void
+export type adminFitQuestionsDeleteResponse200 = unknown | null
+
+export type adminFitQuestionsDeleteResponse400 = AdminFitQuestionsDelete400
+
+export type adminFitQuestionsDeleteResponse401 = AdminFitQuestionsDelete401
+
+export type adminFitQuestionsDeleteResponse403 = AdminFitQuestionsDelete403
 
 export type adminFitQuestionsDeleteResponseSuccess = adminFitQuestionsDeleteResponse200
-;
+export type adminFitQuestionsDeleteResponseError = (adminFitQuestionsDeleteResponse400 | adminFitQuestionsDeleteResponse401 | adminFitQuestionsDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type adminFitQuestionsDeleteResponse = (adminFitQuestionsDeleteResponseSuccess)
+export type adminFitQuestionsDeleteResponse = (adminFitQuestionsDeleteResponseSuccess | adminFitQuestionsDeleteResponseError)
 
 export const getAdminFitQuestionsDeleteUrl = (id: string,) => {
 
@@ -549,7 +608,7 @@ export const adminFitQuestionsDelete = async (id: string, options?: RequestInit)
 
 
 
-export const getAdminFitQuestionsDeleteMutationOptions = <TError = unknown,
+export const getAdminFitQuestionsDeleteMutationOptions = <TError = AdminFitQuestionsDelete400 | AdminFitQuestionsDelete401 | AdminFitQuestionsDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsDelete>>, TError,{id: string}, TContext> => {
 
@@ -578,12 +637,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminFitQuestionsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof adminFitQuestionsDelete>>>
 
-    export type AdminFitQuestionsDeleteMutationError = unknown
+    export type AdminFitQuestionsDeleteMutationError = AdminFitQuestionsDelete400 | AdminFitQuestionsDelete401 | AdminFitQuestionsDelete403
 
     /**
  * @summary Delete a FitQuestion
  */
-export const createAdminFitQuestionsDelete = <TError = unknown,
+export const createAdminFitQuestionsDelete = <TError = AdminFitQuestionsDelete400 | AdminFitQuestionsDelete401 | AdminFitQuestionsDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFitQuestionsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminFitQuestionsDelete>>,

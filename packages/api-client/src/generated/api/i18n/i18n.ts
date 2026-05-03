@@ -21,6 +21,15 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  I18nDictionaryEnums200,
+  I18nDictionaryEnums400,
+  I18nDictionaryErrors200,
+  I18nDictionaryErrors400,
+  I18nDictionaryNotifications200,
+  I18nDictionaryNotifications400
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +41,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{ locale, entries: { [CODE]: localized message } }`. Locale is chosen from `Accept-Language` (supports `en`, `pt-BR`).
  * @summary Error-message dictionary in the negotiated locale
  */
-export type i18nDictionaryErrorsResponse200 = void
+export type i18nDictionaryErrorsResponse200 = I18nDictionaryErrors200
+
+export type i18nDictionaryErrorsResponse400 = I18nDictionaryErrors400
 
 export type i18nDictionaryErrorsResponseSuccess = i18nDictionaryErrorsResponse200
-;
+export type i18nDictionaryErrorsResponseError = (i18nDictionaryErrorsResponse400) & {
+  headers: Headers;
+};
 
-export type i18nDictionaryErrorsResponse = (i18nDictionaryErrorsResponseSuccess)
+export type i18nDictionaryErrorsResponse = (i18nDictionaryErrorsResponseSuccess | i18nDictionaryErrorsResponseError)
 
 export const getI18nDictionaryErrorsUrl = () => {
 
@@ -75,7 +88,7 @@ export const getI18nDictionaryErrorsQueryKey = () => {
     }
 
 
-export const getI18nDictionaryErrorsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryErrors>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getI18nDictionaryErrorsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryErrors>>>, TError = I18nDictionaryErrors400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +107,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type I18nDictionaryErrorsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof i18nDictionaryErrors>>>
-export type I18nDictionaryErrorsInfiniteQueryError = unknown
+export type I18nDictionaryErrorsInfiniteQueryError = I18nDictionaryErrors400
 
 
 /**
  * @summary Error-message dictionary in the negotiated locale
  */
 
-export function createI18nDictionaryErrorsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryErrors>>>, TError = unknown>(
+export function createI18nDictionaryErrorsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryErrors>>>, TError = I18nDictionaryErrors400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +129,7 @@ export function createI18nDictionaryErrorsInfinite<TData = InfiniteData<Awaited<
 /**
  * @summary Error-message dictionary in the negotiated locale
  */
-export const prefetchI18nDictionaryErrorsInfiniteQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = unknown>(
+export const prefetchI18nDictionaryErrorsInfiniteQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = I18nDictionaryErrors400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +145,7 @@ export const prefetchI18nDictionaryErrorsInfiniteQuery = async <TData = Awaited<
 
 
 
-export const getI18nDictionaryErrorsQueryOptions = <TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getI18nDictionaryErrorsQueryOptions = <TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = I18nDictionaryErrors400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +164,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type I18nDictionaryErrorsQueryResult = NonNullable<Awaited<ReturnType<typeof i18nDictionaryErrors>>>
-export type I18nDictionaryErrorsQueryError = unknown
+export type I18nDictionaryErrorsQueryError = I18nDictionaryErrors400
 
 
 /**
  * @summary Error-message dictionary in the negotiated locale
  */
 
-export function createI18nDictionaryErrors<TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = unknown>(
+export function createI18nDictionaryErrors<TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = I18nDictionaryErrors400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +186,7 @@ export function createI18nDictionaryErrors<TData = Awaited<ReturnType<typeof i18
 /**
  * @summary Error-message dictionary in the negotiated locale
  */
-export const prefetchI18nDictionaryErrorsQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = unknown>(
+export const prefetchI18nDictionaryErrorsQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError = I18nDictionaryErrors400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryErrors>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +206,16 @@ export const prefetchI18nDictionaryErrorsQuery = async <TData = Awaited<ReturnTy
  * Returns `{ locale, entries: { [EnumName]: { [VALUE]: label } } }`. Locale is chosen from `Accept-Language` (supports `en`, `pt-BR`).
  * @summary Prisma enum label dictionary in the negotiated locale
  */
-export type i18nDictionaryEnumsResponse200 = void
+export type i18nDictionaryEnumsResponse200 = I18nDictionaryEnums200
+
+export type i18nDictionaryEnumsResponse400 = I18nDictionaryEnums400
 
 export type i18nDictionaryEnumsResponseSuccess = i18nDictionaryEnumsResponse200
-;
+export type i18nDictionaryEnumsResponseError = (i18nDictionaryEnumsResponse400) & {
+  headers: Headers;
+};
 
-export type i18nDictionaryEnumsResponse = (i18nDictionaryEnumsResponseSuccess)
+export type i18nDictionaryEnumsResponse = (i18nDictionaryEnumsResponseSuccess | i18nDictionaryEnumsResponseError)
 
 export const getI18nDictionaryEnumsUrl = () => {
 
@@ -236,7 +253,7 @@ export const getI18nDictionaryEnumsQueryKey = () => {
     }
 
 
-export const getI18nDictionaryEnumsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryEnums>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getI18nDictionaryEnumsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryEnums>>>, TError = I18nDictionaryEnums400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +272,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type I18nDictionaryEnumsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof i18nDictionaryEnums>>>
-export type I18nDictionaryEnumsInfiniteQueryError = unknown
+export type I18nDictionaryEnumsInfiniteQueryError = I18nDictionaryEnums400
 
 
 /**
  * @summary Prisma enum label dictionary in the negotiated locale
  */
 
-export function createI18nDictionaryEnumsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryEnums>>>, TError = unknown>(
+export function createI18nDictionaryEnumsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryEnums>>>, TError = I18nDictionaryEnums400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +294,7 @@ export function createI18nDictionaryEnumsInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Prisma enum label dictionary in the negotiated locale
  */
-export const prefetchI18nDictionaryEnumsInfiniteQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = unknown>(
+export const prefetchI18nDictionaryEnumsInfiniteQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = I18nDictionaryEnums400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +310,7 @@ export const prefetchI18nDictionaryEnumsInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getI18nDictionaryEnumsQueryOptions = <TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getI18nDictionaryEnumsQueryOptions = <TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = I18nDictionaryEnums400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +329,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type I18nDictionaryEnumsQueryResult = NonNullable<Awaited<ReturnType<typeof i18nDictionaryEnums>>>
-export type I18nDictionaryEnumsQueryError = unknown
+export type I18nDictionaryEnumsQueryError = I18nDictionaryEnums400
 
 
 /**
  * @summary Prisma enum label dictionary in the negotiated locale
  */
 
-export function createI18nDictionaryEnums<TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = unknown>(
+export function createI18nDictionaryEnums<TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = I18nDictionaryEnums400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +351,7 @@ export function createI18nDictionaryEnums<TData = Awaited<ReturnType<typeof i18n
 /**
  * @summary Prisma enum label dictionary in the negotiated locale
  */
-export const prefetchI18nDictionaryEnumsQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = unknown>(
+export const prefetchI18nDictionaryEnumsQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError = I18nDictionaryEnums400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryEnums>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -354,12 +371,16 @@ export const prefetchI18nDictionaryEnumsQuery = async <TData = Awaited<ReturnTyp
  * Returns `{ locale, entries: { [TYPE]: { title, body, params[] } } }`. Templates may contain `{ param }` placeholders — the client substitutes them at render time using the `params` list as the allowed key set.
  * @summary Notification-template dictionary in the negotiated locale
  */
-export type i18nDictionaryNotificationsResponse200 = void
+export type i18nDictionaryNotificationsResponse200 = I18nDictionaryNotifications200
+
+export type i18nDictionaryNotificationsResponse400 = I18nDictionaryNotifications400
 
 export type i18nDictionaryNotificationsResponseSuccess = i18nDictionaryNotificationsResponse200
-;
+export type i18nDictionaryNotificationsResponseError = (i18nDictionaryNotificationsResponse400) & {
+  headers: Headers;
+};
 
-export type i18nDictionaryNotificationsResponse = (i18nDictionaryNotificationsResponseSuccess)
+export type i18nDictionaryNotificationsResponse = (i18nDictionaryNotificationsResponseSuccess | i18nDictionaryNotificationsResponseError)
 
 export const getI18nDictionaryNotificationsUrl = () => {
 
@@ -397,7 +418,7 @@ export const getI18nDictionaryNotificationsQueryKey = () => {
     }
 
 
-export const getI18nDictionaryNotificationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryNotifications>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getI18nDictionaryNotificationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryNotifications>>>, TError = I18nDictionaryNotifications400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -416,14 +437,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type I18nDictionaryNotificationsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof i18nDictionaryNotifications>>>
-export type I18nDictionaryNotificationsInfiniteQueryError = unknown
+export type I18nDictionaryNotificationsInfiniteQueryError = I18nDictionaryNotifications400
 
 
 /**
  * @summary Notification-template dictionary in the negotiated locale
  */
 
-export function createI18nDictionaryNotificationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryNotifications>>>, TError = unknown>(
+export function createI18nDictionaryNotificationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof i18nDictionaryNotifications>>>, TError = I18nDictionaryNotifications400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -438,7 +459,7 @@ export function createI18nDictionaryNotificationsInfinite<TData = InfiniteData<A
 /**
  * @summary Notification-template dictionary in the negotiated locale
  */
-export const prefetchI18nDictionaryNotificationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = unknown>(
+export const prefetchI18nDictionaryNotificationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = I18nDictionaryNotifications400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -454,7 +475,7 @@ export const prefetchI18nDictionaryNotificationsInfiniteQuery = async <TData = A
 
 
 
-export const getI18nDictionaryNotificationsQueryOptions = <TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getI18nDictionaryNotificationsQueryOptions = <TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = I18nDictionaryNotifications400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -473,14 +494,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type I18nDictionaryNotificationsQueryResult = NonNullable<Awaited<ReturnType<typeof i18nDictionaryNotifications>>>
-export type I18nDictionaryNotificationsQueryError = unknown
+export type I18nDictionaryNotificationsQueryError = I18nDictionaryNotifications400
 
 
 /**
  * @summary Notification-template dictionary in the negotiated locale
  */
 
-export function createI18nDictionaryNotifications<TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = unknown>(
+export function createI18nDictionaryNotifications<TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = I18nDictionaryNotifications400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -495,7 +516,7 @@ export function createI18nDictionaryNotifications<TData = Awaited<ReturnType<typ
 /**
  * @summary Notification-template dictionary in the negotiated locale
  */
-export const prefetchI18nDictionaryNotificationsQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = unknown>(
+export const prefetchI18nDictionaryNotificationsQuery = async <TData = Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError = I18nDictionaryNotifications400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof i18nDictionaryNotifications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

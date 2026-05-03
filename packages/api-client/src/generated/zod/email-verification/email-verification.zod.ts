@@ -19,3 +19,41 @@ export const EmailVerificationVerifyBody = zod.object({
   "token": zod.string().min(1)
 })
 
+export const EmailVerificationVerifyResponse = zod.object({
+  "email": zod.string(),
+  "message": zod.string()
+})
+
+/**
+ * Sends a verification email to the authenticated user. No body required.
+ * @summary Send verification email
+ */
+export const emailVerificationAuthEmailVerificationSendResponseCooldownSecondsUntilResendAllowedMin = 0;
+
+export const emailVerificationAuthEmailVerificationSendResponseCooldownCooldownSecondsMin = 0;
+
+
+
+export const EmailVerificationAuthEmailVerificationSendResponse = zod.object({
+  "message": zod.string(),
+  "cooldown": zod.object({
+  "secondsUntilResendAllowed": zod.number().min(emailVerificationAuthEmailVerificationSendResponseCooldownSecondsUntilResendAllowedMin),
+  "cooldownSeconds": zod.number().min(emailVerificationAuthEmailVerificationSendResponseCooldownCooldownSecondsMin)
+})
+})
+
+/**
+ * Returns how many seconds the authenticated user must wait before requesting another verification email. The UI uses this so the countdown survives page reloads.
+ * @summary Get verification email resend cooldown
+ */
+export const emailVerificationAuthEmailVerificationResendStatusResponseSecondsUntilResendAllowedMin = 0;
+
+export const emailVerificationAuthEmailVerificationResendStatusResponseCooldownSecondsMin = 0;
+
+
+
+export const EmailVerificationAuthEmailVerificationResendStatusResponse = zod.object({
+  "secondsUntilResendAllowed": zod.number().min(emailVerificationAuthEmailVerificationResendStatusResponseSecondsUntilResendAllowedMin),
+  "cooldownSeconds": zod.number().min(emailVerificationAuthEmailVerificationResendStatusResponseCooldownSecondsMin)
+})
+

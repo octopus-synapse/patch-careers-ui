@@ -16,7 +16,18 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminResumeStylesCreate200,
+  AdminResumeStylesCreate400,
+  AdminResumeStylesCreate401,
+  AdminResumeStylesCreate403,
   AdminResumeStylesCreateBody,
+  AdminResumeStylesDelete400,
+  AdminResumeStylesDelete401,
+  AdminResumeStylesDelete403,
+  AdminResumeStylesUpdate200,
+  AdminResumeStylesUpdate400,
+  AdminResumeStylesUpdate401,
+  AdminResumeStylesUpdate403,
   AdminResumeStylesUpdateBody
 } from '../../models';
 
@@ -31,12 +42,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin ResumeStyle CRUD
  * @summary Create a new ResumeStyle (validates ATS threshold)
  */
-export type adminResumeStylesCreateResponse200 = void
+export type adminResumeStylesCreateResponse200 = AdminResumeStylesCreate200
+
+export type adminResumeStylesCreateResponse400 = AdminResumeStylesCreate400
+
+export type adminResumeStylesCreateResponse401 = AdminResumeStylesCreate401
+
+export type adminResumeStylesCreateResponse403 = AdminResumeStylesCreate403
 
 export type adminResumeStylesCreateResponseSuccess = adminResumeStylesCreateResponse200
-;
+export type adminResumeStylesCreateResponseError = (adminResumeStylesCreateResponse400 | adminResumeStylesCreateResponse401 | adminResumeStylesCreateResponse403) & {
+  headers: Headers;
+};
 
-export type adminResumeStylesCreateResponse = (adminResumeStylesCreateResponseSuccess)
+export type adminResumeStylesCreateResponse = (adminResumeStylesCreateResponseSuccess | adminResumeStylesCreateResponseError)
 
 export const getAdminResumeStylesCreateUrl = () => {
 
@@ -61,7 +80,7 @@ export const adminResumeStylesCreate = async (adminResumeStylesCreateBody: Admin
 
 
 
-export const getAdminResumeStylesCreateMutationOptions = <TError = unknown,
+export const getAdminResumeStylesCreateMutationOptions = <TError = AdminResumeStylesCreate400 | AdminResumeStylesCreate401 | AdminResumeStylesCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesCreate>>, TError,{data: AdminResumeStylesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesCreate>>, TError,{data: AdminResumeStylesCreateBody}, TContext> => {
 
@@ -90,12 +109,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminResumeStylesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminResumeStylesCreate>>>
     export type AdminResumeStylesCreateMutationBody = AdminResumeStylesCreateBody
-    export type AdminResumeStylesCreateMutationError = unknown
+    export type AdminResumeStylesCreateMutationError = AdminResumeStylesCreate400 | AdminResumeStylesCreate401 | AdminResumeStylesCreate403
 
     /**
  * @summary Create a new ResumeStyle (validates ATS threshold)
  */
-export const createAdminResumeStylesCreate = <TError = unknown,
+export const createAdminResumeStylesCreate = <TError = AdminResumeStylesCreate400 | AdminResumeStylesCreate401 | AdminResumeStylesCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesCreate>>, TError,{data: AdminResumeStylesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminResumeStylesCreate>>,
@@ -109,12 +128,20 @@ export const createAdminResumeStylesCreate = <TError = unknown,
  * Admin ResumeStyle CRUD
  * @summary Update a non-system ResumeStyle
  */
-export type adminResumeStylesUpdateResponse200 = void
+export type adminResumeStylesUpdateResponse200 = AdminResumeStylesUpdate200
+
+export type adminResumeStylesUpdateResponse400 = AdminResumeStylesUpdate400
+
+export type adminResumeStylesUpdateResponse401 = AdminResumeStylesUpdate401
+
+export type adminResumeStylesUpdateResponse403 = AdminResumeStylesUpdate403
 
 export type adminResumeStylesUpdateResponseSuccess = adminResumeStylesUpdateResponse200
-;
+export type adminResumeStylesUpdateResponseError = (adminResumeStylesUpdateResponse400 | adminResumeStylesUpdateResponse401 | adminResumeStylesUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type adminResumeStylesUpdateResponse = (adminResumeStylesUpdateResponseSuccess)
+export type adminResumeStylesUpdateResponse = (adminResumeStylesUpdateResponseSuccess | adminResumeStylesUpdateResponseError)
 
 export const getAdminResumeStylesUpdateUrl = (id: string,) => {
 
@@ -140,7 +167,7 @@ export const adminResumeStylesUpdate = async (id: string,
 
 
 
-export const getAdminResumeStylesUpdateMutationOptions = <TError = unknown,
+export const getAdminResumeStylesUpdateMutationOptions = <TError = AdminResumeStylesUpdate400 | AdminResumeStylesUpdate401 | AdminResumeStylesUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesUpdate>>, TError,{id: string;data: AdminResumeStylesUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesUpdate>>, TError,{id: string;data: AdminResumeStylesUpdateBody}, TContext> => {
 
@@ -169,12 +196,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminResumeStylesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminResumeStylesUpdate>>>
     export type AdminResumeStylesUpdateMutationBody = AdminResumeStylesUpdateBody
-    export type AdminResumeStylesUpdateMutationError = unknown
+    export type AdminResumeStylesUpdateMutationError = AdminResumeStylesUpdate400 | AdminResumeStylesUpdate401 | AdminResumeStylesUpdate403
 
     /**
  * @summary Update a non-system ResumeStyle
  */
-export const createAdminResumeStylesUpdate = <TError = unknown,
+export const createAdminResumeStylesUpdate = <TError = AdminResumeStylesUpdate400 | AdminResumeStylesUpdate401 | AdminResumeStylesUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesUpdate>>, TError,{id: string;data: AdminResumeStylesUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminResumeStylesUpdate>>,
@@ -188,12 +215,20 @@ export const createAdminResumeStylesUpdate = <TError = unknown,
  * Admin ResumeStyle CRUD
  * @summary Delete a non-system ResumeStyle
  */
-export type adminResumeStylesDeleteResponse200 = void
+export type adminResumeStylesDeleteResponse200 = unknown | null
+
+export type adminResumeStylesDeleteResponse400 = AdminResumeStylesDelete400
+
+export type adminResumeStylesDeleteResponse401 = AdminResumeStylesDelete401
+
+export type adminResumeStylesDeleteResponse403 = AdminResumeStylesDelete403
 
 export type adminResumeStylesDeleteResponseSuccess = adminResumeStylesDeleteResponse200
-;
+export type adminResumeStylesDeleteResponseError = (adminResumeStylesDeleteResponse400 | adminResumeStylesDeleteResponse401 | adminResumeStylesDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type adminResumeStylesDeleteResponse = (adminResumeStylesDeleteResponseSuccess)
+export type adminResumeStylesDeleteResponse = (adminResumeStylesDeleteResponseSuccess | adminResumeStylesDeleteResponseError)
 
 export const getAdminResumeStylesDeleteUrl = (id: string,) => {
 
@@ -217,7 +252,7 @@ export const adminResumeStylesDelete = async (id: string, options?: RequestInit)
 
 
 
-export const getAdminResumeStylesDeleteMutationOptions = <TError = unknown,
+export const getAdminResumeStylesDeleteMutationOptions = <TError = AdminResumeStylesDelete400 | AdminResumeStylesDelete401 | AdminResumeStylesDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesDelete>>, TError,{id: string}, TContext> => {
 
@@ -246,12 +281,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminResumeStylesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof adminResumeStylesDelete>>>
 
-    export type AdminResumeStylesDeleteMutationError = unknown
+    export type AdminResumeStylesDeleteMutationError = AdminResumeStylesDelete400 | AdminResumeStylesDelete401 | AdminResumeStylesDelete403
 
     /**
  * @summary Delete a non-system ResumeStyle
  */
-export const createAdminResumeStylesDelete = <TError = unknown,
+export const createAdminResumeStylesDelete = <TError = AdminResumeStylesDelete400 | AdminResumeStylesDelete401 | AdminResumeStylesDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminResumeStylesDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminResumeStylesDelete>>,

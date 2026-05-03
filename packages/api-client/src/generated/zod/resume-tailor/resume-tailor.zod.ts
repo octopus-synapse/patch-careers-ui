@@ -9,6 +9,42 @@ import * as zod from 'zod';
 
 
 /**
+ * All tailored variants the user has generated so far.
+ * @summary List tailored resume variants produced by the AI.
+ */
+export const ResumeTailorResumesTailoredVersionsResponse = zod.object({
+  "versions": zod.array(zod.object({
+  "id": zod.string(),
+  "versionNumber": zod.number(),
+  "label": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "tailoredJobId": zod.string().nullable()
+}))
+})
+
+/**
+ * Summary / jobTitle / bullets before → after shape.
+ * @summary Structured diff between the master resume and a tailored version.
+ */
+export const ResumeTailorResumesDiffResponse = zod.object({
+  "versionId": zod.string(),
+  "summary": zod.object({
+  "before": zod.string().nullable(),
+  "after": zod.string().nullable()
+}).nullable(),
+  "jobTitle": zod.object({
+  "before": zod.string().nullable(),
+  "after": zod.string().nullable()
+}).nullable(),
+  "bullets": zod.array(zod.object({
+  "id": zod.string(),
+  "before": zod.string(),
+  "after": zod.string(),
+  "highlights": zod.array(zod.string())
+}))
+})
+
+/**
  * Resume AI tailoring API
  * @summary Rewrite this resume for a specific job using the AI pipeline.
  */
@@ -26,5 +62,26 @@ export const ResumeTailorResumesTailorBody = zod.object({
   "jobDescription": zod.string().min(resumeTailorResumesTailorBodyJobDescriptionMin).optional(),
   "jobTitle": zod.string().max(resumeTailorResumesTailorBodyJobTitleMax).optional(),
   "jobCompany": zod.string().max(resumeTailorResumesTailorBodyJobCompanyMax).optional()
+})
+
+export const ResumeTailorResumesTailorResponse = zod.object({
+  "versionId": zod.string(),
+  "versionNumber": zod.number(),
+  "label": zod.string(),
+  "summary": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "bullets": zod.array(zod.object({
+  "id": zod.string(),
+  "original": zod.string(),
+  "tailored": zod.string(),
+  "highlights": zod.array(zod.string())
+})),
+  "changes": zod.array(zod.object({
+  "path": zod.array(zod.union([zod.string(),zod.number()])),
+  "op": zod.enum(['add', 'remove', 'replace']),
+  "before": zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()]).optional(),
+  "after": zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()]).optional(),
+  "highlights": zod.array(zod.string()).optional()
+}))
 })
 

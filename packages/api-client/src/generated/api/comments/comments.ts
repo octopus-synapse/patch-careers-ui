@@ -26,7 +26,19 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  CommentsPostsCommentsDelete200,
+  CommentsPostsCommentsDelete400,
+  CommentsPostsCommentsDelete401,
+  CommentsPostsCommentsDelete403,
+  CommentsPostsCommentsGet200,
+  CommentsPostsCommentsGet400,
+  CommentsPostsCommentsGet401,
+  CommentsPostsCommentsGet403,
   CommentsPostsCommentsGetParams,
+  CommentsPostsCommentsPost200,
+  CommentsPostsCommentsPost400,
+  CommentsPostsCommentsPost401,
+  CommentsPostsCommentsPost403,
   CommentsPostsCommentsPostBody
 } from '../../models';
 
@@ -41,12 +53,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Comments API
  * @summary Get comments for a post
  */
-export type commentsPostsCommentsGetResponse200 = void
+export type commentsPostsCommentsGetResponse200 = CommentsPostsCommentsGet200
+
+export type commentsPostsCommentsGetResponse400 = CommentsPostsCommentsGet400
+
+export type commentsPostsCommentsGetResponse401 = CommentsPostsCommentsGet401
+
+export type commentsPostsCommentsGetResponse403 = CommentsPostsCommentsGet403
 
 export type commentsPostsCommentsGetResponseSuccess = commentsPostsCommentsGetResponse200
-;
+export type commentsPostsCommentsGetResponseError = (commentsPostsCommentsGetResponse400 | commentsPostsCommentsGetResponse401 | commentsPostsCommentsGetResponse403) & {
+  headers: Headers;
+};
 
-export type commentsPostsCommentsGetResponse = (commentsPostsCommentsGetResponseSuccess)
+export type commentsPostsCommentsGetResponse = (commentsPostsCommentsGetResponseSuccess | commentsPostsCommentsGetResponseError)
 
 export const getCommentsPostsCommentsGetUrl = (id: string,
     params?: CommentsPostsCommentsGetParams,) => {
@@ -95,7 +115,7 @@ export const getCommentsPostsCommentsGetQueryKey = (id: string,
     }
 
 
-export const getCommentsPostsCommentsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsPostsCommentsGet>>>, TError = unknown>(id: string,
+export const getCommentsPostsCommentsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsPostsCommentsGet>>>, TError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403>(id: string,
     params?: CommentsPostsCommentsGetParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -115,14 +135,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CommentsPostsCommentsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentsPostsCommentsGet>>>
-export type CommentsPostsCommentsGetInfiniteQueryError = unknown
+export type CommentsPostsCommentsGetInfiniteQueryError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403
 
 
 /**
  * @summary Get comments for a post
  */
 
-export function createCommentsPostsCommentsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsPostsCommentsGet>>>, TError = unknown>(
+export function createCommentsPostsCommentsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsPostsCommentsGet>>>, TError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403>(
  id: () =>  string,
     params?: () =>  CommentsPostsCommentsGetParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -139,7 +159,7 @@ export function createCommentsPostsCommentsGetInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get comments for a post
  */
-export const prefetchCommentsPostsCommentsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = unknown>(
+export const prefetchCommentsPostsCommentsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403>(
  queryClient: QueryClient, id: string,
     params?: CommentsPostsCommentsGetParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -156,7 +176,7 @@ export const prefetchCommentsPostsCommentsGetInfiniteQuery = async <TData = Awai
 
 
 
-export const getCommentsPostsCommentsGetQueryOptions = <TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = unknown>(id: string,
+export const getCommentsPostsCommentsGetQueryOptions = <TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403>(id: string,
     params?: CommentsPostsCommentsGetParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -176,14 +196,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CommentsPostsCommentsGetQueryResult = NonNullable<Awaited<ReturnType<typeof commentsPostsCommentsGet>>>
-export type CommentsPostsCommentsGetQueryError = unknown
+export type CommentsPostsCommentsGetQueryError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403
 
 
 /**
  * @summary Get comments for a post
  */
 
-export function createCommentsPostsCommentsGet<TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = unknown>(
+export function createCommentsPostsCommentsGet<TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403>(
  id: () =>  string,
     params?: () =>  CommentsPostsCommentsGetParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -200,7 +220,7 @@ export function createCommentsPostsCommentsGet<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get comments for a post
  */
-export const prefetchCommentsPostsCommentsGetQuery = async <TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = unknown>(
+export const prefetchCommentsPostsCommentsGetQuery = async <TData = Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError = CommentsPostsCommentsGet400 | CommentsPostsCommentsGet401 | CommentsPostsCommentsGet403>(
  queryClient: QueryClient, id: string,
     params?: CommentsPostsCommentsGetParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof commentsPostsCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -221,12 +241,20 @@ export const prefetchCommentsPostsCommentsGetQuery = async <TData = Awaited<Retu
  * Comments API
  * @summary Create a comment
  */
-export type commentsPostsCommentsPostResponse200 = void
+export type commentsPostsCommentsPostResponse200 = CommentsPostsCommentsPost200
+
+export type commentsPostsCommentsPostResponse400 = CommentsPostsCommentsPost400
+
+export type commentsPostsCommentsPostResponse401 = CommentsPostsCommentsPost401
+
+export type commentsPostsCommentsPostResponse403 = CommentsPostsCommentsPost403
 
 export type commentsPostsCommentsPostResponseSuccess = commentsPostsCommentsPostResponse200
-;
+export type commentsPostsCommentsPostResponseError = (commentsPostsCommentsPostResponse400 | commentsPostsCommentsPostResponse401 | commentsPostsCommentsPostResponse403) & {
+  headers: Headers;
+};
 
-export type commentsPostsCommentsPostResponse = (commentsPostsCommentsPostResponseSuccess)
+export type commentsPostsCommentsPostResponse = (commentsPostsCommentsPostResponseSuccess | commentsPostsCommentsPostResponseError)
 
 export const getCommentsPostsCommentsPostUrl = (id: string,) => {
 
@@ -252,7 +280,7 @@ export const commentsPostsCommentsPost = async (id: string,
 
 
 
-export const getCommentsPostsCommentsPostMutationOptions = <TError = unknown,
+export const getCommentsPostsCommentsPostMutationOptions = <TError = CommentsPostsCommentsPost400 | CommentsPostsCommentsPost401 | CommentsPostsCommentsPost403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsPostsCommentsPost>>, TError,{id: string;data: CommentsPostsCommentsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof commentsPostsCommentsPost>>, TError,{id: string;data: CommentsPostsCommentsPostBody}, TContext> => {
 
@@ -281,12 +309,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CommentsPostsCommentsPostMutationResult = NonNullable<Awaited<ReturnType<typeof commentsPostsCommentsPost>>>
     export type CommentsPostsCommentsPostMutationBody = CommentsPostsCommentsPostBody
-    export type CommentsPostsCommentsPostMutationError = unknown
+    export type CommentsPostsCommentsPostMutationError = CommentsPostsCommentsPost400 | CommentsPostsCommentsPost401 | CommentsPostsCommentsPost403
 
     /**
  * @summary Create a comment
  */
-export const createCommentsPostsCommentsPost = <TError = unknown,
+export const createCommentsPostsCommentsPost = <TError = CommentsPostsCommentsPost400 | CommentsPostsCommentsPost401 | CommentsPostsCommentsPost403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsPostsCommentsPost>>, TError,{id: string;data: CommentsPostsCommentsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof commentsPostsCommentsPost>>,
@@ -300,12 +328,20 @@ export const createCommentsPostsCommentsPost = <TError = unknown,
  * Comments API
  * @summary Delete a comment
  */
-export type commentsPostsCommentsDeleteResponse200 = void
+export type commentsPostsCommentsDeleteResponse200 = CommentsPostsCommentsDelete200
+
+export type commentsPostsCommentsDeleteResponse400 = CommentsPostsCommentsDelete400
+
+export type commentsPostsCommentsDeleteResponse401 = CommentsPostsCommentsDelete401
+
+export type commentsPostsCommentsDeleteResponse403 = CommentsPostsCommentsDelete403
 
 export type commentsPostsCommentsDeleteResponseSuccess = commentsPostsCommentsDeleteResponse200
-;
+export type commentsPostsCommentsDeleteResponseError = (commentsPostsCommentsDeleteResponse400 | commentsPostsCommentsDeleteResponse401 | commentsPostsCommentsDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type commentsPostsCommentsDeleteResponse = (commentsPostsCommentsDeleteResponseSuccess)
+export type commentsPostsCommentsDeleteResponse = (commentsPostsCommentsDeleteResponseSuccess | commentsPostsCommentsDeleteResponseError)
 
 export const getCommentsPostsCommentsDeleteUrl = (id: string,) => {
 
@@ -329,7 +365,7 @@ export const commentsPostsCommentsDelete = async (id: string, options?: RequestI
 
 
 
-export const getCommentsPostsCommentsDeleteMutationOptions = <TError = unknown,
+export const getCommentsPostsCommentsDeleteMutationOptions = <TError = CommentsPostsCommentsDelete400 | CommentsPostsCommentsDelete401 | CommentsPostsCommentsDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsPostsCommentsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof commentsPostsCommentsDelete>>, TError,{id: string}, TContext> => {
 
@@ -358,12 +394,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CommentsPostsCommentsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof commentsPostsCommentsDelete>>>
 
-    export type CommentsPostsCommentsDeleteMutationError = unknown
+    export type CommentsPostsCommentsDeleteMutationError = CommentsPostsCommentsDelete400 | CommentsPostsCommentsDelete401 | CommentsPostsCommentsDelete403
 
     /**
  * @summary Delete a comment
  */
-export const createCommentsPostsCommentsDelete = <TError = unknown,
+export const createCommentsPostsCommentsDelete = <TError = CommentsPostsCommentsDelete400 | CommentsPostsCommentsDelete401 | CommentsPostsCommentsDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof commentsPostsCommentsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof commentsPostsCommentsDelete>>,

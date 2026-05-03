@@ -22,10 +22,35 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ExportApiV1ExportJsonParams,
-  ExportApiV1ExportLatexParams,
+  ExportBanner400,
+  ExportBanner401,
+  ExportBanner403,
   ExportBannerParams,
-  ExportResumePdfParams
+  ExportJson200,
+  ExportJson400,
+  ExportJson401,
+  ExportJson403,
+  ExportJson404,
+  ExportJsonParams,
+  ExportLatex200,
+  ExportLatex400,
+  ExportLatex401,
+  ExportLatex403,
+  ExportLatex404,
+  ExportLatexParams,
+  ExportResumeDocx200,
+  ExportResumeDocx400,
+  ExportResumeDocx401,
+  ExportResumeDocx403,
+  ExportResumePdf200,
+  ExportResumePdf400,
+  ExportResumePdf401,
+  ExportResumePdf403,
+  ExportResumePdfParams,
+  ExportUserResumePdf200,
+  ExportUserResumePdf400,
+  ExportUserResumePdf401,
+  ExportUserResumePdf404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -39,12 +64,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Export API
  * @summary Export LinkedIn banner image
  */
-export type exportBannerResponse200 = void
+export type exportBannerResponse200 = Blob
+
+export type exportBannerResponse400 = ExportBanner400
+
+export type exportBannerResponse401 = ExportBanner401
+
+export type exportBannerResponse403 = ExportBanner403
 
 export type exportBannerResponseSuccess = exportBannerResponse200
-;
+export type exportBannerResponseError = (exportBannerResponse400 | exportBannerResponse401 | exportBannerResponse403) & {
+  headers: Headers;
+};
 
-export type exportBannerResponse = (exportBannerResponseSuccess)
+export type exportBannerResponse = (exportBannerResponseSuccess | exportBannerResponseError)
 
 export const getExportBannerUrl = (params?: ExportBannerParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -89,7 +122,7 @@ export const getExportBannerQueryKey = (params?: ExportBannerParams,) => {
     }
 
 
-export const getExportBannerInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportBanner>>>, TError = unknown>(params?: ExportBannerParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportBannerInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportBanner>>>, TError = ExportBanner400 | ExportBanner401 | ExportBanner403>(params?: ExportBannerParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -108,14 +141,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportBannerInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportBanner>>>
-export type ExportBannerInfiniteQueryError = unknown
+export type ExportBannerInfiniteQueryError = ExportBanner400 | ExportBanner401 | ExportBanner403
 
 
 /**
  * @summary Export LinkedIn banner image
  */
 
-export function createExportBannerInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportBanner>>>, TError = unknown>(
+export function createExportBannerInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportBanner>>>, TError = ExportBanner400 | ExportBanner401 | ExportBanner403>(
  params?: () =>  ExportBannerParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -130,7 +163,7 @@ export function createExportBannerInfinite<TData = InfiniteData<Awaited<ReturnTy
 /**
  * @summary Export LinkedIn banner image
  */
-export const prefetchExportBannerInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportBanner>>, TError = unknown>(
+export const prefetchExportBannerInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportBanner>>, TError = ExportBanner400 | ExportBanner401 | ExportBanner403>(
  queryClient: QueryClient, params?: ExportBannerParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -146,7 +179,7 @@ export const prefetchExportBannerInfiniteQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getExportBannerQueryOptions = <TData = Awaited<ReturnType<typeof exportBanner>>, TError = unknown>(params?: ExportBannerParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportBannerQueryOptions = <TData = Awaited<ReturnType<typeof exportBanner>>, TError = ExportBanner400 | ExportBanner401 | ExportBanner403>(params?: ExportBannerParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -165,14 +198,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportBannerQueryResult = NonNullable<Awaited<ReturnType<typeof exportBanner>>>
-export type ExportBannerQueryError = unknown
+export type ExportBannerQueryError = ExportBanner400 | ExportBanner401 | ExportBanner403
 
 
 /**
  * @summary Export LinkedIn banner image
  */
 
-export function createExportBanner<TData = Awaited<ReturnType<typeof exportBanner>>, TError = unknown>(
+export function createExportBanner<TData = Awaited<ReturnType<typeof exportBanner>>, TError = ExportBanner400 | ExportBanner401 | ExportBanner403>(
  params?: () =>  ExportBannerParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -187,7 +220,7 @@ export function createExportBanner<TData = Awaited<ReturnType<typeof exportBanne
 /**
  * @summary Export LinkedIn banner image
  */
-export const prefetchExportBannerQuery = async <TData = Awaited<ReturnType<typeof exportBanner>>, TError = unknown>(
+export const prefetchExportBannerQuery = async <TData = Awaited<ReturnType<typeof exportBanner>>, TError = ExportBanner400 | ExportBanner401 | ExportBanner403>(
  queryClient: QueryClient, params?: ExportBannerParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportBanner>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -205,14 +238,22 @@ export const prefetchExportBannerQuery = async <TData = Awaited<ReturnType<typeo
 
 /**
  * Export API
- * @summary Export resume as PDF document
+ * @summary Generate resume PDF (returns signed download URL)
  */
-export type exportResumePdfResponse200 = void
+export type exportResumePdfResponse200 = ExportResumePdf200
+
+export type exportResumePdfResponse400 = ExportResumePdf400
+
+export type exportResumePdfResponse401 = ExportResumePdf401
+
+export type exportResumePdfResponse403 = ExportResumePdf403
 
 export type exportResumePdfResponseSuccess = exportResumePdfResponse200
-;
+export type exportResumePdfResponseError = (exportResumePdfResponse400 | exportResumePdfResponse401 | exportResumePdfResponse403) & {
+  headers: Headers;
+};
 
-export type exportResumePdfResponse = (exportResumePdfResponseSuccess)
+export type exportResumePdfResponse = (exportResumePdfResponseSuccess | exportResumePdfResponseError)
 
 export const getExportResumePdfUrl = (params?: ExportResumePdfParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -257,7 +298,7 @@ export const getExportResumePdfQueryKey = (params?: ExportResumePdfParams,) => {
     }
 
 
-export const getExportResumePdfInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportResumePdf>>>, TError = unknown>(params?: ExportResumePdfParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportResumePdfInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportResumePdf>>>, TError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403>(params?: ExportResumePdfParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -276,14 +317,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportResumePdfInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportResumePdf>>>
-export type ExportResumePdfInfiniteQueryError = unknown
+export type ExportResumePdfInfiniteQueryError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403
 
 
 /**
- * @summary Export resume as PDF document
+ * @summary Generate resume PDF (returns signed download URL)
  */
 
-export function createExportResumePdfInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportResumePdf>>>, TError = unknown>(
+export function createExportResumePdfInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportResumePdf>>>, TError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403>(
  params?: () =>  ExportResumePdfParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -296,9 +337,9 @@ export function createExportResumePdfInfinite<TData = InfiniteData<Awaited<Retur
 }
 
 /**
- * @summary Export resume as PDF document
+ * @summary Generate resume PDF (returns signed download URL)
  */
-export const prefetchExportResumePdfInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = unknown>(
+export const prefetchExportResumePdfInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403>(
  queryClient: QueryClient, params?: ExportResumePdfParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -314,7 +355,7 @@ export const prefetchExportResumePdfInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getExportResumePdfQueryOptions = <TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = unknown>(params?: ExportResumePdfParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportResumePdfQueryOptions = <TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403>(params?: ExportResumePdfParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -333,14 +374,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportResumePdfQueryResult = NonNullable<Awaited<ReturnType<typeof exportResumePdf>>>
-export type ExportResumePdfQueryError = unknown
+export type ExportResumePdfQueryError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403
 
 
 /**
- * @summary Export resume as PDF document
+ * @summary Generate resume PDF (returns signed download URL)
  */
 
-export function createExportResumePdf<TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = unknown>(
+export function createExportResumePdf<TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403>(
  params?: () =>  ExportResumePdfParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -353,9 +394,9 @@ export function createExportResumePdf<TData = Awaited<ReturnType<typeof exportRe
 }
 
 /**
- * @summary Export resume as PDF document
+ * @summary Generate resume PDF (returns signed download URL)
  */
-export const prefetchExportResumePdfQuery = async <TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = unknown>(
+export const prefetchExportResumePdfQuery = async <TData = Awaited<ReturnType<typeof exportResumePdf>>, TError = ExportResumePdf400 | ExportResumePdf401 | ExportResumePdf403>(
  queryClient: QueryClient, params?: ExportResumePdfParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -375,12 +416,20 @@ export const prefetchExportResumePdfQuery = async <TData = Awaited<ReturnType<ty
  * Export API
  * @summary Generate another user's resume as PDF (base64)
  */
-export type exportUserResumePdfResponse200 = void
+export type exportUserResumePdfResponse200 = ExportUserResumePdf200
+
+export type exportUserResumePdfResponse400 = ExportUserResumePdf400
+
+export type exportUserResumePdfResponse401 = ExportUserResumePdf401
+
+export type exportUserResumePdfResponse404 = ExportUserResumePdf404
 
 export type exportUserResumePdfResponseSuccess = exportUserResumePdfResponse200
-;
+export type exportUserResumePdfResponseError = (exportUserResumePdfResponse400 | exportUserResumePdfResponse401 | exportUserResumePdfResponse404) & {
+  headers: Headers;
+};
 
-export type exportUserResumePdfResponse = (exportUserResumePdfResponseSuccess)
+export type exportUserResumePdfResponse = (exportUserResumePdfResponseSuccess | exportUserResumePdfResponseError)
 
 export const getExportUserResumePdfUrl = (userId: string,) => {
 
@@ -418,7 +467,7 @@ export const getExportUserResumePdfQueryKey = (userId: string,) => {
     }
 
 
-export const getExportUserResumePdfInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportUserResumePdf>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportUserResumePdfInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportUserResumePdf>>>, TError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -437,14 +486,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportUserResumePdfInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportUserResumePdf>>>
-export type ExportUserResumePdfInfiniteQueryError = unknown
+export type ExportUserResumePdfInfiniteQueryError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404
 
 
 /**
  * @summary Generate another user's resume as PDF (base64)
  */
 
-export function createExportUserResumePdfInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportUserResumePdf>>>, TError = unknown>(
+export function createExportUserResumePdfInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportUserResumePdf>>>, TError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -459,7 +508,7 @@ export function createExportUserResumePdfInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Generate another user's resume as PDF (base64)
  */
-export const prefetchExportUserResumePdfInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = unknown>(
+export const prefetchExportUserResumePdfInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -475,7 +524,7 @@ export const prefetchExportUserResumePdfInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getExportUserResumePdfQueryOptions = <TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportUserResumePdfQueryOptions = <TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -494,14 +543,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportUserResumePdfQueryResult = NonNullable<Awaited<ReturnType<typeof exportUserResumePdf>>>
-export type ExportUserResumePdfQueryError = unknown
+export type ExportUserResumePdfQueryError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404
 
 
 /**
  * @summary Generate another user's resume as PDF (base64)
  */
 
-export function createExportUserResumePdf<TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = unknown>(
+export function createExportUserResumePdf<TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -516,7 +565,7 @@ export function createExportUserResumePdf<TData = Awaited<ReturnType<typeof expo
 /**
  * @summary Generate another user's resume as PDF (base64)
  */
-export const prefetchExportUserResumePdfQuery = async <TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = unknown>(
+export const prefetchExportUserResumePdfQuery = async <TData = Awaited<ReturnType<typeof exportUserResumePdf>>, TError = ExportUserResumePdf400 | ExportUserResumePdf401 | ExportUserResumePdf404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportUserResumePdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -534,14 +583,22 @@ export const prefetchExportUserResumePdfQuery = async <TData = Awaited<ReturnTyp
 
 /**
  * Export API
- * @summary Export resume as DOCX document
+ * @summary Generate resume DOCX (returns signed download URL)
  */
-export type exportResumeDocxResponse200 = void
+export type exportResumeDocxResponse200 = ExportResumeDocx200
+
+export type exportResumeDocxResponse400 = ExportResumeDocx400
+
+export type exportResumeDocxResponse401 = ExportResumeDocx401
+
+export type exportResumeDocxResponse403 = ExportResumeDocx403
 
 export type exportResumeDocxResponseSuccess = exportResumeDocxResponse200
-;
+export type exportResumeDocxResponseError = (exportResumeDocxResponse400 | exportResumeDocxResponse401 | exportResumeDocxResponse403) & {
+  headers: Headers;
+};
 
-export type exportResumeDocxResponse = (exportResumeDocxResponseSuccess)
+export type exportResumeDocxResponse = (exportResumeDocxResponseSuccess | exportResumeDocxResponseError)
 
 export const getExportResumeDocxUrl = () => {
 
@@ -579,7 +636,7 @@ export const getExportResumeDocxQueryKey = () => {
     }
 
 
-export const getExportResumeDocxInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportResumeDocx>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportResumeDocxInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportResumeDocx>>>, TError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -598,14 +655,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportResumeDocxInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportResumeDocx>>>
-export type ExportResumeDocxInfiniteQueryError = unknown
+export type ExportResumeDocxInfiniteQueryError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403
 
 
 /**
- * @summary Export resume as DOCX document
+ * @summary Generate resume DOCX (returns signed download URL)
  */
 
-export function createExportResumeDocxInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportResumeDocx>>>, TError = unknown>(
+export function createExportResumeDocxInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportResumeDocx>>>, TError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -618,9 +675,9 @@ export function createExportResumeDocxInfinite<TData = InfiniteData<Awaited<Retu
 }
 
 /**
- * @summary Export resume as DOCX document
+ * @summary Generate resume DOCX (returns signed download URL)
  */
-export const prefetchExportResumeDocxInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = unknown>(
+export const prefetchExportResumeDocxInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -636,7 +693,7 @@ export const prefetchExportResumeDocxInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getExportResumeDocxQueryOptions = <TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportResumeDocxQueryOptions = <TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -655,14 +712,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ExportResumeDocxQueryResult = NonNullable<Awaited<ReturnType<typeof exportResumeDocx>>>
-export type ExportResumeDocxQueryError = unknown
+export type ExportResumeDocxQueryError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403
 
 
 /**
- * @summary Export resume as DOCX document
+ * @summary Generate resume DOCX (returns signed download URL)
  */
 
-export function createExportResumeDocx<TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = unknown>(
+export function createExportResumeDocx<TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -675,9 +732,9 @@ export function createExportResumeDocx<TData = Awaited<ReturnType<typeof exportR
 }
 
 /**
- * @summary Export resume as DOCX document
+ * @summary Generate resume DOCX (returns signed download URL)
  */
-export const prefetchExportResumeDocxQuery = async <TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = unknown>(
+export const prefetchExportResumeDocxQuery = async <TData = Awaited<ReturnType<typeof exportResumeDocx>>, TError = ExportResumeDocx400 | ExportResumeDocx401 | ExportResumeDocx403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportResumeDocx>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -695,17 +752,27 @@ export const prefetchExportResumeDocxQuery = async <TData = Awaited<ReturnType<t
 
 /**
  * Export API
- * @summary Export resume as JSON
+ * @summary Generate resume JSON (returns signed download URL)
  */
-export type exportApiV1ExportJsonResponse200 = void
+export type exportJsonResponse200 = ExportJson200
 
-export type exportApiV1ExportJsonResponseSuccess = exportApiV1ExportJsonResponse200
-;
+export type exportJsonResponse400 = ExportJson400
 
-export type exportApiV1ExportJsonResponse = (exportApiV1ExportJsonResponseSuccess)
+export type exportJsonResponse401 = ExportJson401
 
-export const getExportApiV1ExportJsonUrl = (resumeId: string,
-    params?: ExportApiV1ExportJsonParams,) => {
+export type exportJsonResponse403 = ExportJson403
+
+export type exportJsonResponse404 = ExportJson404
+
+export type exportJsonResponseSuccess = exportJsonResponse200
+export type exportJsonResponseError = (exportJsonResponse400 | exportJsonResponse401 | exportJsonResponse403 | exportJsonResponse404) & {
+  headers: Headers;
+};
+
+export type exportJsonResponse = (exportJsonResponseSuccess | exportJsonResponseError)
+
+export const getExportJsonUrl = (resumeId: string,
+    params?: ExportJsonParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -717,13 +784,13 @@ export const getExportApiV1ExportJsonUrl = (resumeId: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/api/v1/export/${resumeId}/json?${stringifiedParams}` : `/api/api/v1/export/${resumeId}/json`
+  return stringifiedParams.length > 0 ? `/api/v1/export/${resumeId}/json?${stringifiedParams}` : `/api/v1/export/${resumeId}/json`
 }
 
-export const exportApiV1ExportJson = async (resumeId: string,
-    params?: ExportApiV1ExportJsonParams, options?: RequestInit): Promise<exportApiV1ExportJsonResponse> => {
+export const exportJson = async (resumeId: string,
+    params?: ExportJsonParams, options?: RequestInit): Promise<exportJsonResponse> => {
 
-  return customFetch<exportApiV1ExportJsonResponse>(getExportApiV1ExportJsonUrl(resumeId,params),
+  return customFetch<exportJsonResponse>(getExportJsonUrl(resumeId,params),
   {
     ...options,
     method: 'GET'
@@ -736,72 +803,72 @@ export const exportApiV1ExportJson = async (resumeId: string,
 
 
 
-export const getExportApiV1ExportJsonInfiniteQueryKey = (resumeId: string,
-    params?: ExportApiV1ExportJsonParams,) => {
+export const getExportJsonInfiniteQueryKey = (resumeId: string,
+    params?: ExportJsonParams,) => {
     return [
-    'infinite', `/api/api/v1/export/${resumeId}/json`, ...(params ? [params] : [])
+    'infinite', `/api/v1/export/${resumeId}/json`, ...(params ? [params] : [])
     ] as const;
     }
 
-export const getExportApiV1ExportJsonQueryKey = (resumeId: string,
-    params?: ExportApiV1ExportJsonParams,) => {
+export const getExportJsonQueryKey = (resumeId: string,
+    params?: ExportJsonParams,) => {
     return [
-    `/api/api/v1/export/${resumeId}/json`, ...(params ? [params] : [])
+    `/api/v1/export/${resumeId}/json`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getExportApiV1ExportJsonInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportApiV1ExportJson>>>, TError = unknown>(resumeId: string,
-    params?: ExportApiV1ExportJsonParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportJsonInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportJson>>>, TError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404>(resumeId: string,
+    params?: ExportJsonParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getExportApiV1ExportJsonInfiniteQueryKey(resumeId,params);
+  const queryKey =  queryOptions?.queryKey ?? getExportJsonInfiniteQueryKey(resumeId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportApiV1ExportJson>>> = ({ signal }) => exportApiV1ExportJson(resumeId,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportJson>>> = ({ signal }) => exportJson(resumeId,params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ExportApiV1ExportJsonInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportApiV1ExportJson>>>
-export type ExportApiV1ExportJsonInfiniteQueryError = unknown
+export type ExportJsonInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportJson>>>
+export type ExportJsonInfiniteQueryError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404
 
 
 /**
- * @summary Export resume as JSON
+ * @summary Generate resume JSON (returns signed download URL)
  */
 
-export function createExportApiV1ExportJsonInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportApiV1ExportJson>>>, TError = unknown>(
+export function createExportJsonInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportJson>>>, TError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404>(
  resumeId: () =>  string,
-    params?: () =>  ExportApiV1ExportJsonParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: () =>  ExportJsonParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createInfiniteQuery(() => getExportApiV1ExportJsonInfiniteQueryOptions(resumeId(),
+  const query = createInfiniteQuery(() => getExportJsonInfiniteQueryOptions(resumeId(),
     params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
 /**
- * @summary Export resume as JSON
+ * @summary Generate resume JSON (returns signed download URL)
  */
-export const prefetchExportApiV1ExportJsonInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError = unknown>(
+export const prefetchExportJsonInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportJson>>, TError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404>(
  queryClient: QueryClient, resumeId: string,
-    params?: ExportApiV1ExportJsonParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: ExportJsonParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getExportApiV1ExportJsonInfiniteQueryOptions(resumeId,params,options)
+  const queryOptions = getExportJsonInfiniteQueryOptions(resumeId,params,options)
 
   await queryClient.prefetchInfiniteQuery(queryOptions);
 
@@ -812,57 +879,57 @@ export const prefetchExportApiV1ExportJsonInfiniteQuery = async <TData = Awaited
 
 
 
-export const getExportApiV1ExportJsonQueryOptions = <TData = Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError = unknown>(resumeId: string,
-    params?: ExportApiV1ExportJsonParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportJsonQueryOptions = <TData = Awaited<ReturnType<typeof exportJson>>, TError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404>(resumeId: string,
+    params?: ExportJsonParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getExportApiV1ExportJsonQueryKey(resumeId,params);
+  const queryKey =  queryOptions?.queryKey ?? getExportJsonQueryKey(resumeId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportApiV1ExportJson>>> = ({ signal }) => exportApiV1ExportJson(resumeId,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportJson>>> = ({ signal }) => exportJson(resumeId,params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ExportApiV1ExportJsonQueryResult = NonNullable<Awaited<ReturnType<typeof exportApiV1ExportJson>>>
-export type ExportApiV1ExportJsonQueryError = unknown
+export type ExportJsonQueryResult = NonNullable<Awaited<ReturnType<typeof exportJson>>>
+export type ExportJsonQueryError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404
 
 
 /**
- * @summary Export resume as JSON
+ * @summary Generate resume JSON (returns signed download URL)
  */
 
-export function createExportApiV1ExportJson<TData = Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError = unknown>(
+export function createExportJson<TData = Awaited<ReturnType<typeof exportJson>>, TError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404>(
  resumeId: () =>  string,
-    params?: () =>  ExportApiV1ExportJsonParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: () =>  ExportJsonParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createQuery(() => getExportApiV1ExportJsonQueryOptions(resumeId(),
+  const query = createQuery(() => getExportJsonQueryOptions(resumeId(),
     params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
 /**
- * @summary Export resume as JSON
+ * @summary Generate resume JSON (returns signed download URL)
  */
-export const prefetchExportApiV1ExportJsonQuery = async <TData = Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError = unknown>(
+export const prefetchExportJsonQuery = async <TData = Awaited<ReturnType<typeof exportJson>>, TError = ExportJson400 | ExportJson401 | ExportJson403 | ExportJson404>(
  queryClient: QueryClient, resumeId: string,
-    params?: ExportApiV1ExportJsonParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: ExportJsonParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportJson>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getExportApiV1ExportJsonQueryOptions(resumeId,params,options)
+  const queryOptions = getExportJsonQueryOptions(resumeId,params,options)
 
   await queryClient.prefetchQuery(queryOptions);
 
@@ -875,17 +942,27 @@ export const prefetchExportApiV1ExportJsonQuery = async <TData = Awaited<ReturnT
 
 /**
  * Export API
- * @summary Export resume as LaTeX
+ * @summary Generate resume LaTeX (returns signed download URL)
  */
-export type exportApiV1ExportLatexResponse200 = void
+export type exportLatexResponse200 = ExportLatex200
 
-export type exportApiV1ExportLatexResponseSuccess = exportApiV1ExportLatexResponse200
-;
+export type exportLatexResponse400 = ExportLatex400
 
-export type exportApiV1ExportLatexResponse = (exportApiV1ExportLatexResponseSuccess)
+export type exportLatexResponse401 = ExportLatex401
 
-export const getExportApiV1ExportLatexUrl = (resumeId: string,
-    params?: ExportApiV1ExportLatexParams,) => {
+export type exportLatexResponse403 = ExportLatex403
+
+export type exportLatexResponse404 = ExportLatex404
+
+export type exportLatexResponseSuccess = exportLatexResponse200
+export type exportLatexResponseError = (exportLatexResponse400 | exportLatexResponse401 | exportLatexResponse403 | exportLatexResponse404) & {
+  headers: Headers;
+};
+
+export type exportLatexResponse = (exportLatexResponseSuccess | exportLatexResponseError)
+
+export const getExportLatexUrl = (resumeId: string,
+    params?: ExportLatexParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -897,13 +974,13 @@ export const getExportApiV1ExportLatexUrl = (resumeId: string,
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/api/v1/export/${resumeId}/latex?${stringifiedParams}` : `/api/api/v1/export/${resumeId}/latex`
+  return stringifiedParams.length > 0 ? `/api/v1/export/${resumeId}/latex?${stringifiedParams}` : `/api/v1/export/${resumeId}/latex`
 }
 
-export const exportApiV1ExportLatex = async (resumeId: string,
-    params?: ExportApiV1ExportLatexParams, options?: RequestInit): Promise<exportApiV1ExportLatexResponse> => {
+export const exportLatex = async (resumeId: string,
+    params?: ExportLatexParams, options?: RequestInit): Promise<exportLatexResponse> => {
 
-  return customFetch<exportApiV1ExportLatexResponse>(getExportApiV1ExportLatexUrl(resumeId,params),
+  return customFetch<exportLatexResponse>(getExportLatexUrl(resumeId,params),
   {
     ...options,
     method: 'GET'
@@ -916,72 +993,72 @@ export const exportApiV1ExportLatex = async (resumeId: string,
 
 
 
-export const getExportApiV1ExportLatexInfiniteQueryKey = (resumeId: string,
-    params?: ExportApiV1ExportLatexParams,) => {
+export const getExportLatexInfiniteQueryKey = (resumeId: string,
+    params?: ExportLatexParams,) => {
     return [
-    'infinite', `/api/api/v1/export/${resumeId}/latex`, ...(params ? [params] : [])
+    'infinite', `/api/v1/export/${resumeId}/latex`, ...(params ? [params] : [])
     ] as const;
     }
 
-export const getExportApiV1ExportLatexQueryKey = (resumeId: string,
-    params?: ExportApiV1ExportLatexParams,) => {
+export const getExportLatexQueryKey = (resumeId: string,
+    params?: ExportLatexParams,) => {
     return [
-    `/api/api/v1/export/${resumeId}/latex`, ...(params ? [params] : [])
+    `/api/v1/export/${resumeId}/latex`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getExportApiV1ExportLatexInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportApiV1ExportLatex>>>, TError = unknown>(resumeId: string,
-    params?: ExportApiV1ExportLatexParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportLatexInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof exportLatex>>>, TError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404>(resumeId: string,
+    params?: ExportLatexParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getExportApiV1ExportLatexInfiniteQueryKey(resumeId,params);
+  const queryKey =  queryOptions?.queryKey ?? getExportLatexInfiniteQueryKey(resumeId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportApiV1ExportLatex>>> = ({ signal }) => exportApiV1ExportLatex(resumeId,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportLatex>>> = ({ signal }) => exportLatex(resumeId,params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ExportApiV1ExportLatexInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportApiV1ExportLatex>>>
-export type ExportApiV1ExportLatexInfiniteQueryError = unknown
+export type ExportLatexInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof exportLatex>>>
+export type ExportLatexInfiniteQueryError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404
 
 
 /**
- * @summary Export resume as LaTeX
+ * @summary Generate resume LaTeX (returns signed download URL)
  */
 
-export function createExportApiV1ExportLatexInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportApiV1ExportLatex>>>, TError = unknown>(
+export function createExportLatexInfinite<TData = InfiniteData<Awaited<ReturnType<typeof exportLatex>>>, TError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404>(
  resumeId: () =>  string,
-    params?: () =>  ExportApiV1ExportLatexParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: () =>  ExportLatexParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createInfiniteQuery(() => getExportApiV1ExportLatexInfiniteQueryOptions(resumeId(),
+  const query = createInfiniteQuery(() => getExportLatexInfiniteQueryOptions(resumeId(),
     params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
 /**
- * @summary Export resume as LaTeX
+ * @summary Generate resume LaTeX (returns signed download URL)
  */
-export const prefetchExportApiV1ExportLatexInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError = unknown>(
+export const prefetchExportLatexInfiniteQuery = async <TData = Awaited<ReturnType<typeof exportLatex>>, TError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404>(
  queryClient: QueryClient, resumeId: string,
-    params?: ExportApiV1ExportLatexParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: ExportLatexParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getExportApiV1ExportLatexInfiniteQueryOptions(resumeId,params,options)
+  const queryOptions = getExportLatexInfiniteQueryOptions(resumeId,params,options)
 
   await queryClient.prefetchInfiniteQuery(queryOptions);
 
@@ -992,57 +1069,57 @@ export const prefetchExportApiV1ExportLatexInfiniteQuery = async <TData = Awaite
 
 
 
-export const getExportApiV1ExportLatexQueryOptions = <TData = Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError = unknown>(resumeId: string,
-    params?: ExportApiV1ExportLatexParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getExportLatexQueryOptions = <TData = Awaited<ReturnType<typeof exportLatex>>, TError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404>(resumeId: string,
+    params?: ExportLatexParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getExportApiV1ExportLatexQueryKey(resumeId,params);
+  const queryKey =  queryOptions?.queryKey ?? getExportLatexQueryKey(resumeId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportApiV1ExportLatex>>> = ({ signal }) => exportApiV1ExportLatex(resumeId,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportLatex>>> = ({ signal }) => exportLatex(resumeId,params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(resumeId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ExportApiV1ExportLatexQueryResult = NonNullable<Awaited<ReturnType<typeof exportApiV1ExportLatex>>>
-export type ExportApiV1ExportLatexQueryError = unknown
+export type ExportLatexQueryResult = NonNullable<Awaited<ReturnType<typeof exportLatex>>>
+export type ExportLatexQueryError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404
 
 
 /**
- * @summary Export resume as LaTeX
+ * @summary Generate resume LaTeX (returns signed download URL)
  */
 
-export function createExportApiV1ExportLatex<TData = Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError = unknown>(
+export function createExportLatex<TData = Awaited<ReturnType<typeof exportLatex>>, TError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404>(
  resumeId: () =>  string,
-    params?: () =>  ExportApiV1ExportLatexParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: () =>  ExportLatexParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
 
 
-  const query = createQuery(() => getExportApiV1ExportLatexQueryOptions(resumeId(),
+  const query = createQuery(() => getExportLatexQueryOptions(resumeId(),
     params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return query
 }
 
 /**
- * @summary Export resume as LaTeX
+ * @summary Generate resume LaTeX (returns signed download URL)
  */
-export const prefetchExportApiV1ExportLatexQuery = async <TData = Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError = unknown>(
+export const prefetchExportLatexQuery = async <TData = Awaited<ReturnType<typeof exportLatex>>, TError = ExportLatex400 | ExportLatex401 | ExportLatex403 | ExportLatex404>(
  queryClient: QueryClient, resumeId: string,
-    params?: ExportApiV1ExportLatexParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportApiV1ExportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+    params?: ExportLatexParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof exportLatex>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getExportApiV1ExportLatexQueryOptions(resumeId,params,options)
+  const queryOptions = getExportLatexQueryOptions(resumeId,params,options)
 
   await queryClient.prefetchQuery(queryOptions);
 

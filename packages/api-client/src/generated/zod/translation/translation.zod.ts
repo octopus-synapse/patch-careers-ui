@@ -10,6 +10,15 @@ import * as zod from 'zod';
 
 /**
  * Translation API
+ * @summary Check translation service health
+ */
+export const TranslationHealthResponse = zod.object({
+  "status": zod.enum(['healthy', 'unavailable']),
+  "timestamp": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Translation API
  * @summary Translate a single text
  */
 
@@ -21,6 +30,14 @@ export const TranslationTextBody = zod.object({
   "targetLanguage": zod.enum(['pt', 'en'])
 })
 
+export const TranslationTextResponse = zod.object({
+  "original": zod.string(),
+  "translated": zod.string(),
+  "sourceLanguage": zod.enum(['pt', 'en', 'auto']),
+  "targetLanguage": zod.enum(['pt', 'en']),
+  "detectedLanguage": zod.enum(['pt', 'en']).optional()
+})
+
 /**
  * Translation API
  * @summary Detect the language of a text
@@ -30,6 +47,13 @@ export const TranslationTextBody = zod.object({
 
 export const TranslationDetectBody = zod.object({
   "text": zod.string().min(1)
+})
+
+export const TranslationDetectResponse = zod.object({
+  "detections": zod.array(zod.object({
+  "language": zod.string(),
+  "confidence": zod.number()
+}))
 })
 
 /**
@@ -46,6 +70,20 @@ export const TranslationBatchBody = zod.object({
   "targetLanguage": zod.enum(['pt', 'en'])
 })
 
+export const TranslationBatchResponse = zod.object({
+  "translations": zod.array(zod.object({
+  "original": zod.string(),
+  "translated": zod.string(),
+  "sourceLanguage": zod.enum(['pt', 'en', 'auto']),
+  "targetLanguage": zod.enum(['pt', 'en']),
+  "detectedLanguage": zod.enum(['pt', 'en']).optional()
+})),
+  "failed": zod.array(zod.object({
+  "text": zod.string(),
+  "error": zod.string()
+}))
+})
+
 /**
  * Translation API
  * @summary Translate Portuguese to English
@@ -57,6 +95,14 @@ export const TranslationPtToEnBody = zod.object({
   "text": zod.string().min(1)
 })
 
+export const TranslationPtToEnResponse = zod.object({
+  "original": zod.string(),
+  "translated": zod.string(),
+  "sourceLanguage": zod.enum(['pt', 'en', 'auto']),
+  "targetLanguage": zod.enum(['pt', 'en']),
+  "detectedLanguage": zod.enum(['pt', 'en']).optional()
+})
+
 /**
  * Translation API
  * @summary Translate English to Portuguese
@@ -66,5 +112,13 @@ export const TranslationPtToEnBody = zod.object({
 
 export const TranslationEnToPtBody = zod.object({
   "text": zod.string().min(1)
+})
+
+export const TranslationEnToPtResponse = zod.object({
+  "original": zod.string(),
+  "translated": zod.string(),
+  "sourceLanguage": zod.enum(['pt', 'en', 'auto']),
+  "targetLanguage": zod.enum(['pt', 'en']),
+  "detectedLanguage": zod.enum(['pt', 'en']).optional()
 })
 

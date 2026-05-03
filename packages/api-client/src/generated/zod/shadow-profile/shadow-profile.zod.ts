@@ -17,3 +17,46 @@ export const ShadowProfileGithubBody = zod.object({
   "username": zod.string()
 })
 
+export const ShadowProfileGithubResponse = zod.object({
+  "id": zod.string(),
+  "source": zod.string(),
+  "externalHandle": zod.string(),
+  "contactEmail": zod.string().nullable(),
+  "payload": zod.object({
+
+}).passthrough().nullable(),
+  "claimedByUserId": zod.string().nullable()
+})
+
+/**
+ * Shadow Profile API
+ * @summary Find unclaimed shadow profiles matching an email and/or github login. Used by the signup flow.
+ */
+export const ShadowProfileCandidatesResponse = zod.object({
+  "candidates": zod.array(zod.object({
+  "id": zod.string(),
+  "source": zod.string(),
+  "externalHandle": zod.string(),
+  "contactEmail": zod.string().nullable(),
+  "payload": zod.object({
+
+}).passthrough().nullable(),
+  "claimedByUserId": zod.string().nullable()
+}))
+})
+
+/**
+ * Shadow Profile API
+ * @summary Claim a shadow profile as the authenticated user. One-shot — cannot be undone.
+ */
+export const ShadowProfileClaimResponse = zod.object({
+  "id": zod.string(),
+  "source": zod.string(),
+  "externalHandle": zod.string(),
+  "contactEmail": zod.string().nullable(),
+  "payload": zod.object({
+
+}).passthrough().nullable(),
+  "claimedByUserId": zod.string().nullable()
+})
+

@@ -19,9 +19,17 @@ export const AuthRefreshBody = zod.object({
   "refreshToken": zod.string().min(1).optional()
 })
 
+export const AuthRefreshResponse = zod.union([zod.object({
+  "accessToken": zod.string(),
+  "refreshToken": zod.string(),
+  "expiresIn": zod.number()
+}),zod.object({
+  "ok": zod.literal(true)
+})])
+
 /**
  * Authenticates user with email and password. Sets the session cookie. Returns `{userId}` or `{userId, twoFactorRequired}` when 2FA is enabled.
- * @summary Login
+ * @summary Authenticate user with email + password
  */
 
 
@@ -30,6 +38,13 @@ export const AuthLoginBody = zod.object({
   "email": zod.string().email(),
   "password": zod.string().min(1)
 })
+
+export const AuthLoginResponse = zod.union([zod.object({
+  "userId": zod.string(),
+  "twoFactorRequired": zod.literal(true)
+}),zod.object({
+  "userId": zod.string()
+})])
 
 /**
  * Completes login by validating a TOTP or backup code. Sets the session cookie.
@@ -45,15 +60,23 @@ export const AuthVerify2faBody = zod.object({
   "code": zod.string().min(authVerify2faBodyCodeMin)
 })
 
+export const AuthVerify2faResponse = zod.object({
+  "userId": zod.string()
+})
+
 /**
  * Logs out the user by invalidating refresh token(s) and clearing the session cookie.
- * @summary Logout
+ * @summary Invalidate the current session cookie
  */
 export const authLogoutBodyLogoutAllSessionsDefault = false;
 
 export const AuthLogoutBody = zod.object({
   "refreshToken": zod.string().optional(),
   "logoutAllSessions": zod.boolean().default(authLogoutBodyLogoutAllSessionsDefault)
+})
+
+export const AuthLogoutResponse = zod.object({
+  "message": zod.string()
 })
 
 /**
@@ -75,5 +98,29 @@ export const AuthSessionResponse = zod.object({
   "needsOnboarding": zod.boolean(),
   "needsEmailVerification": zod.boolean()
 }).nullish()
+})
+
+/**
+ * @summary List active sessions (devices) for the current user.
+ */
+export const AuthListSessionsResponse = zod.object({
+  "sessions": zod.array(zod.object({
+  "id": zod.string(),
+  "createdAt": zod.string(),
+  "lastUsedAt": zod.string().nullable(),
+  "expiresAt": zod.string(),
+  "ipAddress": zod.string().nullable(),
+  "userAgent": zod.string().nullable(),
+  "deviceName": zod.string().nullable(),
+  "authMethod": zod.string().nullable(),
+  "revoked": zod.boolean()
+}))
+})
+
+/**
+ * @summary Revoke a specific session (device) by refresh-token id.
+ */
+export const AuthRevokeSessionResponse = zod.object({
+  "revoked": zod.literal(true)
 })
 

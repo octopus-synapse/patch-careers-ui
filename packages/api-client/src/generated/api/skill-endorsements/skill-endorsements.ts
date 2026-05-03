@@ -26,6 +26,30 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SkillEndorsementsUsersMeSkills200,
+  SkillEndorsementsUsersMeSkills400,
+  SkillEndorsementsUsersMeSkills401,
+  SkillEndorsementsUsersMeSkills403,
+  SkillEndorsementsUsersSkills200,
+  SkillEndorsementsUsersSkills400,
+  SkillEndorsementsUsersSkills401,
+  SkillEndorsementsUsersSkills403,
+  SkillEndorsementsUsersSkills404,
+  SkillEndorsementsUsersSkillsEndorseDelete200,
+  SkillEndorsementsUsersSkillsEndorseDelete400,
+  SkillEndorsementsUsersSkillsEndorseDelete401,
+  SkillEndorsementsUsersSkillsEndorseDelete403,
+  SkillEndorsementsUsersSkillsEndorseDelete404,
+  SkillEndorsementsUsersSkillsEndorsePost200,
+  SkillEndorsementsUsersSkillsEndorsePost400,
+  SkillEndorsementsUsersSkillsEndorsePost401,
+  SkillEndorsementsUsersSkillsEndorsePost403,
+  SkillEndorsementsUsersSkillsEndorsePost404,
+  SkillEndorsementsUsersSkillsEndorsers200,
+  SkillEndorsementsUsersSkillsEndorsers400,
+  SkillEndorsementsUsersSkillsEndorsers401,
+  SkillEndorsementsUsersSkillsEndorsers403,
+  SkillEndorsementsUsersSkillsEndorsers404,
   SkillEndorsementsUsersSkillsEndorsersParams
 } from '../../models';
 
@@ -38,14 +62,193 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
  * Skill endorsements API
+ * @summary List the authenticated user’s own skills with endorsement counts
+ */
+export type skillEndorsementsUsersMeSkillsResponse200 = SkillEndorsementsUsersMeSkills200
+
+export type skillEndorsementsUsersMeSkillsResponse400 = SkillEndorsementsUsersMeSkills400
+
+export type skillEndorsementsUsersMeSkillsResponse401 = SkillEndorsementsUsersMeSkills401
+
+export type skillEndorsementsUsersMeSkillsResponse403 = SkillEndorsementsUsersMeSkills403
+
+export type skillEndorsementsUsersMeSkillsResponseSuccess = skillEndorsementsUsersMeSkillsResponse200
+export type skillEndorsementsUsersMeSkillsResponseError = (skillEndorsementsUsersMeSkillsResponse400 | skillEndorsementsUsersMeSkillsResponse401 | skillEndorsementsUsersMeSkillsResponse403) & {
+  headers: Headers;
+};
+
+export type skillEndorsementsUsersMeSkillsResponse = (skillEndorsementsUsersMeSkillsResponseSuccess | skillEndorsementsUsersMeSkillsResponseError)
+
+export const getSkillEndorsementsUsersMeSkillsUrl = () => {
+
+
+
+
+  return `/api/v1/users/me/skills`
+}
+
+export const skillEndorsementsUsersMeSkills = async ( options?: RequestInit): Promise<skillEndorsementsUsersMeSkillsResponse> => {
+
+  return customFetch<skillEndorsementsUsersMeSkillsResponse>(getSkillEndorsementsUsersMeSkillsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSkillEndorsementsUsersMeSkillsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/v1/users/me/skills`
+    ] as const;
+    }
+
+export const getSkillEndorsementsUsersMeSkillsQueryKey = () => {
+    return [
+    `/api/v1/users/me/skills`
+    ] as const;
+    }
+
+
+export const getSkillEndorsementsUsersMeSkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>>, TError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSkillEndorsementsUsersMeSkillsInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>> = ({ signal }) => skillEndorsementsUsersMeSkills({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SkillEndorsementsUsersMeSkillsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>>
+export type SkillEndorsementsUsersMeSkillsInfiniteQueryError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403
+
+
+/**
+ * @summary List the authenticated user’s own skills with endorsement counts
+ */
+
+export function createSkillEndorsementsUsersMeSkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>>, TError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403>(
+  options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getSkillEndorsementsUsersMeSkillsInfiniteQueryOptions(options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List the authenticated user’s own skills with endorsement counts
+ */
+export const prefetchSkillEndorsementsUsersMeSkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getSkillEndorsementsUsersMeSkillsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+
+
+export const getSkillEndorsementsUsersMeSkillsQueryOptions = <TData = Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSkillEndorsementsUsersMeSkillsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>> = ({ signal }) => skillEndorsementsUsersMeSkills({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SkillEndorsementsUsersMeSkillsQueryResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>>
+export type SkillEndorsementsUsersMeSkillsQueryError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403
+
+
+/**
+ * @summary List the authenticated user’s own skills with endorsement counts
+ */
+
+export function createSkillEndorsementsUsersMeSkills<TData = Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403>(
+  options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getSkillEndorsementsUsersMeSkillsQueryOptions(options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List the authenticated user’s own skills with endorsement counts
+ */
+export const prefetchSkillEndorsementsUsersMeSkillsQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError = SkillEndorsementsUsersMeSkills400 | SkillEndorsementsUsersMeSkills401 | SkillEndorsementsUsersMeSkills403>(
+ queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersMeSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getSkillEndorsementsUsersMeSkillsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+
+
+/**
+ * Skill endorsements API
  * @summary List a user’s skills with endorsement counts
  */
-export type skillEndorsementsUsersSkillsResponse200 = void
+export type skillEndorsementsUsersSkillsResponse200 = SkillEndorsementsUsersSkills200
+
+export type skillEndorsementsUsersSkillsResponse400 = SkillEndorsementsUsersSkills400
+
+export type skillEndorsementsUsersSkillsResponse401 = SkillEndorsementsUsersSkills401
+
+export type skillEndorsementsUsersSkillsResponse403 = SkillEndorsementsUsersSkills403
+
+export type skillEndorsementsUsersSkillsResponse404 = SkillEndorsementsUsersSkills404
 
 export type skillEndorsementsUsersSkillsResponseSuccess = skillEndorsementsUsersSkillsResponse200
-;
+export type skillEndorsementsUsersSkillsResponseError = (skillEndorsementsUsersSkillsResponse400 | skillEndorsementsUsersSkillsResponse401 | skillEndorsementsUsersSkillsResponse403 | skillEndorsementsUsersSkillsResponse404) & {
+  headers: Headers;
+};
 
-export type skillEndorsementsUsersSkillsResponse = (skillEndorsementsUsersSkillsResponseSuccess)
+export type skillEndorsementsUsersSkillsResponse = (skillEndorsementsUsersSkillsResponseSuccess | skillEndorsementsUsersSkillsResponseError)
 
 export const getSkillEndorsementsUsersSkillsUrl = (userId: string,) => {
 
@@ -83,7 +286,7 @@ export const getSkillEndorsementsUsersSkillsQueryKey = (userId: string,) => {
     }
 
 
-export const getSkillEndorsementsUsersSkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillEndorsementsUsersSkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>>, TError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +305,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillEndorsementsUsersSkillsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>>
-export type SkillEndorsementsUsersSkillsInfiniteQueryError = unknown
+export type SkillEndorsementsUsersSkillsInfiniteQueryError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404
 
 
 /**
  * @summary List a user’s skills with endorsement counts
  */
 
-export function createSkillEndorsementsUsersSkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>>, TError = unknown>(
+export function createSkillEndorsementsUsersSkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>>, TError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +327,7 @@ export function createSkillEndorsementsUsersSkillsInfinite<TData = InfiniteData<
 /**
  * @summary List a user’s skills with endorsement counts
  */
-export const prefetchSkillEndorsementsUsersSkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = unknown>(
+export const prefetchSkillEndorsementsUsersSkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +343,7 @@ export const prefetchSkillEndorsementsUsersSkillsInfiniteQuery = async <TData = 
 
 
 
-export const getSkillEndorsementsUsersSkillsQueryOptions = <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillEndorsementsUsersSkillsQueryOptions = <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +362,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillEndorsementsUsersSkillsQueryResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>>
-export type SkillEndorsementsUsersSkillsQueryError = unknown
+export type SkillEndorsementsUsersSkillsQueryError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404
 
 
 /**
  * @summary List a user’s skills with endorsement counts
  */
 
-export function createSkillEndorsementsUsersSkills<TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = unknown>(
+export function createSkillEndorsementsUsersSkills<TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +384,7 @@ export function createSkillEndorsementsUsersSkills<TData = Awaited<ReturnType<ty
 /**
  * @summary List a user’s skills with endorsement counts
  */
-export const prefetchSkillEndorsementsUsersSkillsQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = unknown>(
+export const prefetchSkillEndorsementsUsersSkillsQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError = SkillEndorsementsUsersSkills400 | SkillEndorsementsUsersSkills401 | SkillEndorsementsUsersSkills403 | SkillEndorsementsUsersSkills404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +404,22 @@ export const prefetchSkillEndorsementsUsersSkillsQuery = async <TData = Awaited<
  * Skill endorsements API
  * @summary Endorse a user for a skill
  */
-export type skillEndorsementsUsersSkillsEndorsePostResponse200 = void
+export type skillEndorsementsUsersSkillsEndorsePostResponse200 = SkillEndorsementsUsersSkillsEndorsePost200
+
+export type skillEndorsementsUsersSkillsEndorsePostResponse400 = SkillEndorsementsUsersSkillsEndorsePost400
+
+export type skillEndorsementsUsersSkillsEndorsePostResponse401 = SkillEndorsementsUsersSkillsEndorsePost401
+
+export type skillEndorsementsUsersSkillsEndorsePostResponse403 = SkillEndorsementsUsersSkillsEndorsePost403
+
+export type skillEndorsementsUsersSkillsEndorsePostResponse404 = SkillEndorsementsUsersSkillsEndorsePost404
 
 export type skillEndorsementsUsersSkillsEndorsePostResponseSuccess = skillEndorsementsUsersSkillsEndorsePostResponse200
-;
+export type skillEndorsementsUsersSkillsEndorsePostResponseError = (skillEndorsementsUsersSkillsEndorsePostResponse400 | skillEndorsementsUsersSkillsEndorsePostResponse401 | skillEndorsementsUsersSkillsEndorsePostResponse403 | skillEndorsementsUsersSkillsEndorsePostResponse404) & {
+  headers: Headers;
+};
 
-export type skillEndorsementsUsersSkillsEndorsePostResponse = (skillEndorsementsUsersSkillsEndorsePostResponseSuccess)
+export type skillEndorsementsUsersSkillsEndorsePostResponse = (skillEndorsementsUsersSkillsEndorsePostResponseSuccess | skillEndorsementsUsersSkillsEndorsePostResponseError)
 
 export const getSkillEndorsementsUsersSkillsEndorsePostUrl = (userId: string,
     skill: string,) => {
@@ -232,7 +445,7 @@ export const skillEndorsementsUsersSkillsEndorsePost = async (userId: string,
 
 
 
-export const getSkillEndorsementsUsersSkillsEndorsePostMutationOptions = <TError = unknown,
+export const getSkillEndorsementsUsersSkillsEndorsePostMutationOptions = <TError = SkillEndorsementsUsersSkillsEndorsePost400 | SkillEndorsementsUsersSkillsEndorsePost401 | SkillEndorsementsUsersSkillsEndorsePost403 | SkillEndorsementsUsersSkillsEndorsePost404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsePost>>, TError,{userId: string;skill: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsePost>>, TError,{userId: string;skill: string}, TContext> => {
 
@@ -261,12 +474,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SkillEndorsementsUsersSkillsEndorsePostMutationResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsePost>>>
 
-    export type SkillEndorsementsUsersSkillsEndorsePostMutationError = unknown
+    export type SkillEndorsementsUsersSkillsEndorsePostMutationError = SkillEndorsementsUsersSkillsEndorsePost400 | SkillEndorsementsUsersSkillsEndorsePost401 | SkillEndorsementsUsersSkillsEndorsePost403 | SkillEndorsementsUsersSkillsEndorsePost404
 
     /**
  * @summary Endorse a user for a skill
  */
-export const createSkillEndorsementsUsersSkillsEndorsePost = <TError = unknown,
+export const createSkillEndorsementsUsersSkillsEndorsePost = <TError = SkillEndorsementsUsersSkillsEndorsePost400 | SkillEndorsementsUsersSkillsEndorsePost401 | SkillEndorsementsUsersSkillsEndorsePost403 | SkillEndorsementsUsersSkillsEndorsePost404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsePost>>, TError,{userId: string;skill: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsePost>>,
@@ -280,12 +493,22 @@ export const createSkillEndorsementsUsersSkillsEndorsePost = <TError = unknown,
  * Skill endorsements API
  * @summary Withdraw a previously given endorsement
  */
-export type skillEndorsementsUsersSkillsEndorseDeleteResponse200 = void
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse200 = SkillEndorsementsUsersSkillsEndorseDelete200
+
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse400 = SkillEndorsementsUsersSkillsEndorseDelete400
+
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse401 = SkillEndorsementsUsersSkillsEndorseDelete401
+
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse403 = SkillEndorsementsUsersSkillsEndorseDelete403
+
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse404 = SkillEndorsementsUsersSkillsEndorseDelete404
 
 export type skillEndorsementsUsersSkillsEndorseDeleteResponseSuccess = skillEndorsementsUsersSkillsEndorseDeleteResponse200
-;
+export type skillEndorsementsUsersSkillsEndorseDeleteResponseError = (skillEndorsementsUsersSkillsEndorseDeleteResponse400 | skillEndorsementsUsersSkillsEndorseDeleteResponse401 | skillEndorsementsUsersSkillsEndorseDeleteResponse403 | skillEndorsementsUsersSkillsEndorseDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type skillEndorsementsUsersSkillsEndorseDeleteResponse = (skillEndorsementsUsersSkillsEndorseDeleteResponseSuccess)
+export type skillEndorsementsUsersSkillsEndorseDeleteResponse = (skillEndorsementsUsersSkillsEndorseDeleteResponseSuccess | skillEndorsementsUsersSkillsEndorseDeleteResponseError)
 
 export const getSkillEndorsementsUsersSkillsEndorseDeleteUrl = (userId: string,
     skill: string,) => {
@@ -311,7 +534,7 @@ export const skillEndorsementsUsersSkillsEndorseDelete = async (userId: string,
 
 
 
-export const getSkillEndorsementsUsersSkillsEndorseDeleteMutationOptions = <TError = unknown,
+export const getSkillEndorsementsUsersSkillsEndorseDeleteMutationOptions = <TError = SkillEndorsementsUsersSkillsEndorseDelete400 | SkillEndorsementsUsersSkillsEndorseDelete401 | SkillEndorsementsUsersSkillsEndorseDelete403 | SkillEndorsementsUsersSkillsEndorseDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorseDelete>>, TError,{userId: string;skill: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorseDelete>>, TError,{userId: string;skill: string}, TContext> => {
 
@@ -340,12 +563,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SkillEndorsementsUsersSkillsEndorseDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorseDelete>>>
 
-    export type SkillEndorsementsUsersSkillsEndorseDeleteMutationError = unknown
+    export type SkillEndorsementsUsersSkillsEndorseDeleteMutationError = SkillEndorsementsUsersSkillsEndorseDelete400 | SkillEndorsementsUsersSkillsEndorseDelete401 | SkillEndorsementsUsersSkillsEndorseDelete403 | SkillEndorsementsUsersSkillsEndorseDelete404
 
     /**
  * @summary Withdraw a previously given endorsement
  */
-export const createSkillEndorsementsUsersSkillsEndorseDelete = <TError = unknown,
+export const createSkillEndorsementsUsersSkillsEndorseDelete = <TError = SkillEndorsementsUsersSkillsEndorseDelete400 | SkillEndorsementsUsersSkillsEndorseDelete401 | SkillEndorsementsUsersSkillsEndorseDelete403 | SkillEndorsementsUsersSkillsEndorseDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorseDelete>>, TError,{userId: string;skill: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorseDelete>>,
@@ -359,12 +582,22 @@ export const createSkillEndorsementsUsersSkillsEndorseDelete = <TError = unknown
  * Skill endorsements API
  * @summary List endorsers for a specific skill
  */
-export type skillEndorsementsUsersSkillsEndorsersResponse200 = void
+export type skillEndorsementsUsersSkillsEndorsersResponse200 = SkillEndorsementsUsersSkillsEndorsers200
+
+export type skillEndorsementsUsersSkillsEndorsersResponse400 = SkillEndorsementsUsersSkillsEndorsers400
+
+export type skillEndorsementsUsersSkillsEndorsersResponse401 = SkillEndorsementsUsersSkillsEndorsers401
+
+export type skillEndorsementsUsersSkillsEndorsersResponse403 = SkillEndorsementsUsersSkillsEndorsers403
+
+export type skillEndorsementsUsersSkillsEndorsersResponse404 = SkillEndorsementsUsersSkillsEndorsers404
 
 export type skillEndorsementsUsersSkillsEndorsersResponseSuccess = skillEndorsementsUsersSkillsEndorsersResponse200
-;
+export type skillEndorsementsUsersSkillsEndorsersResponseError = (skillEndorsementsUsersSkillsEndorsersResponse400 | skillEndorsementsUsersSkillsEndorsersResponse401 | skillEndorsementsUsersSkillsEndorsersResponse403 | skillEndorsementsUsersSkillsEndorsersResponse404) & {
+  headers: Headers;
+};
 
-export type skillEndorsementsUsersSkillsEndorsersResponse = (skillEndorsementsUsersSkillsEndorsersResponseSuccess)
+export type skillEndorsementsUsersSkillsEndorsersResponse = (skillEndorsementsUsersSkillsEndorsersResponseSuccess | skillEndorsementsUsersSkillsEndorsersResponseError)
 
 export const getSkillEndorsementsUsersSkillsEndorsersUrl = (userId: string,
     skill: string,
@@ -417,7 +650,7 @@ export const getSkillEndorsementsUsersSkillsEndorsersQueryKey = (userId: string,
     }
 
 
-export const getSkillEndorsementsUsersSkillsEndorsersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>>, TError = unknown>(userId: string,
+export const getSkillEndorsementsUsersSkillsEndorsersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>>, TError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404>(userId: string,
     skill: string,
     params?: SkillEndorsementsUsersSkillsEndorsersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
@@ -438,14 +671,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillEndorsementsUsersSkillsEndorsersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>>
-export type SkillEndorsementsUsersSkillsEndorsersInfiniteQueryError = unknown
+export type SkillEndorsementsUsersSkillsEndorsersInfiniteQueryError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404
 
 
 /**
  * @summary List endorsers for a specific skill
  */
 
-export function createSkillEndorsementsUsersSkillsEndorsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>>, TError = unknown>(
+export function createSkillEndorsementsUsersSkillsEndorsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>>, TError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404>(
  userId: () =>  string,
     skill: () =>  string,
     params?: () =>  SkillEndorsementsUsersSkillsEndorsersParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -464,7 +697,7 @@ export function createSkillEndorsementsUsersSkillsEndorsersInfinite<TData = Infi
 /**
  * @summary List endorsers for a specific skill
  */
-export const prefetchSkillEndorsementsUsersSkillsEndorsersInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = unknown>(
+export const prefetchSkillEndorsementsUsersSkillsEndorsersInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404>(
  queryClient: QueryClient, userId: string,
     skill: string,
     params?: SkillEndorsementsUsersSkillsEndorsersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -482,7 +715,7 @@ export const prefetchSkillEndorsementsUsersSkillsEndorsersInfiniteQuery = async 
 
 
 
-export const getSkillEndorsementsUsersSkillsEndorsersQueryOptions = <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = unknown>(userId: string,
+export const getSkillEndorsementsUsersSkillsEndorsersQueryOptions = <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404>(userId: string,
     skill: string,
     params?: SkillEndorsementsUsersSkillsEndorsersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
@@ -503,14 +736,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillEndorsementsUsersSkillsEndorsersQueryResult = NonNullable<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>>
-export type SkillEndorsementsUsersSkillsEndorsersQueryError = unknown
+export type SkillEndorsementsUsersSkillsEndorsersQueryError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404
 
 
 /**
  * @summary List endorsers for a specific skill
  */
 
-export function createSkillEndorsementsUsersSkillsEndorsers<TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = unknown>(
+export function createSkillEndorsementsUsersSkillsEndorsers<TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404>(
  userId: () =>  string,
     skill: () =>  string,
     params?: () =>  SkillEndorsementsUsersSkillsEndorsersParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -529,7 +762,7 @@ export function createSkillEndorsementsUsersSkillsEndorsers<TData = Awaited<Retu
 /**
  * @summary List endorsers for a specific skill
  */
-export const prefetchSkillEndorsementsUsersSkillsEndorsersQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = unknown>(
+export const prefetchSkillEndorsementsUsersSkillsEndorsersQuery = async <TData = Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError = SkillEndorsementsUsersSkillsEndorsers400 | SkillEndorsementsUsersSkillsEndorsers401 | SkillEndorsementsUsersSkillsEndorsers403 | SkillEndorsementsUsersSkillsEndorsers404>(
  queryClient: QueryClient, userId: string,
     skill: string,
     params?: SkillEndorsementsUsersSkillsEndorsersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillEndorsementsUsersSkillsEndorsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}

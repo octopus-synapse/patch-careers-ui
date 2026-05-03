@@ -26,8 +26,30 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminSectionTypesCreate200,
+  AdminSectionTypesCreate400,
+  AdminSectionTypesCreate401,
+  AdminSectionTypesCreate403,
   AdminSectionTypesCreateBody,
+  AdminSectionTypesDelete400,
+  AdminSectionTypesDelete401,
+  AdminSectionTypesDelete403,
+  AdminSectionTypesGetById200,
+  AdminSectionTypesGetById400,
+  AdminSectionTypesGetById401,
+  AdminSectionTypesGetById403,
+  AdminSectionTypesList200,
+  AdminSectionTypesList400,
+  AdminSectionTypesList401,
+  AdminSectionTypesList403,
   AdminSectionTypesListParams,
+  AdminSectionTypesSemanticKinds400,
+  AdminSectionTypesSemanticKinds401,
+  AdminSectionTypesSemanticKinds403,
+  AdminSectionTypesUpdate200,
+  AdminSectionTypesUpdate400,
+  AdminSectionTypesUpdate401,
+  AdminSectionTypesUpdate403,
   AdminSectionTypesUpdateBody
 } from '../../models';
 
@@ -42,12 +64,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Section Types Management API
  * @summary List all section types with pagination
  */
-export type adminSectionTypesListResponse200 = void
+export type adminSectionTypesListResponse200 = AdminSectionTypesList200
+
+export type adminSectionTypesListResponse400 = AdminSectionTypesList400
+
+export type adminSectionTypesListResponse401 = AdminSectionTypesList401
+
+export type adminSectionTypesListResponse403 = AdminSectionTypesList403
 
 export type adminSectionTypesListResponseSuccess = adminSectionTypesListResponse200
-;
+export type adminSectionTypesListResponseError = (adminSectionTypesListResponse400 | adminSectionTypesListResponse401 | adminSectionTypesListResponse403) & {
+  headers: Headers;
+};
 
-export type adminSectionTypesListResponse = (adminSectionTypesListResponseSuccess)
+export type adminSectionTypesListResponse = (adminSectionTypesListResponseSuccess | adminSectionTypesListResponseError)
 
 export const getAdminSectionTypesListUrl = (params?: AdminSectionTypesListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -92,7 +122,7 @@ export const getAdminSectionTypesListQueryKey = (params?: AdminSectionTypesListP
     }
 
 
-export const getAdminSectionTypesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesList>>>, TError = unknown>(params?: AdminSectionTypesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminSectionTypesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesList>>>, TError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403>(params?: AdminSectionTypesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -111,14 +141,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminSectionTypesListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesList>>>
-export type AdminSectionTypesListInfiniteQueryError = unknown
+export type AdminSectionTypesListInfiniteQueryError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403
 
 
 /**
  * @summary List all section types with pagination
  */
 
-export function createAdminSectionTypesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesList>>>, TError = unknown>(
+export function createAdminSectionTypesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesList>>>, TError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403>(
  params?: () =>  AdminSectionTypesListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -133,7 +163,7 @@ export function createAdminSectionTypesListInfinite<TData = InfiniteData<Awaited
 /**
  * @summary List all section types with pagination
  */
-export const prefetchAdminSectionTypesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = unknown>(
+export const prefetchAdminSectionTypesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403>(
  queryClient: QueryClient, params?: AdminSectionTypesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -149,7 +179,7 @@ export const prefetchAdminSectionTypesListInfiniteQuery = async <TData = Awaited
 
 
 
-export const getAdminSectionTypesListQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = unknown>(params?: AdminSectionTypesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminSectionTypesListQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403>(params?: AdminSectionTypesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -168,14 +198,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminSectionTypesListQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesList>>>
-export type AdminSectionTypesListQueryError = unknown
+export type AdminSectionTypesListQueryError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403
 
 
 /**
  * @summary List all section types with pagination
  */
 
-export function createAdminSectionTypesList<TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = unknown>(
+export function createAdminSectionTypesList<TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403>(
  params?: () =>  AdminSectionTypesListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -190,7 +220,7 @@ export function createAdminSectionTypesList<TData = Awaited<ReturnType<typeof ad
 /**
  * @summary List all section types with pagination
  */
-export const prefetchAdminSectionTypesListQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = unknown>(
+export const prefetchAdminSectionTypesListQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesList>>, TError = AdminSectionTypesList400 | AdminSectionTypesList401 | AdminSectionTypesList403>(
  queryClient: QueryClient, params?: AdminSectionTypesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -210,12 +240,20 @@ export const prefetchAdminSectionTypesListQuery = async <TData = Awaited<ReturnT
  * Admin Section Types Management API
  * @summary Create a new section type
  */
-export type adminSectionTypesCreateResponse200 = void
+export type adminSectionTypesCreateResponse200 = AdminSectionTypesCreate200
+
+export type adminSectionTypesCreateResponse400 = AdminSectionTypesCreate400
+
+export type adminSectionTypesCreateResponse401 = AdminSectionTypesCreate401
+
+export type adminSectionTypesCreateResponse403 = AdminSectionTypesCreate403
 
 export type adminSectionTypesCreateResponseSuccess = adminSectionTypesCreateResponse200
-;
+export type adminSectionTypesCreateResponseError = (adminSectionTypesCreateResponse400 | adminSectionTypesCreateResponse401 | adminSectionTypesCreateResponse403) & {
+  headers: Headers;
+};
 
-export type adminSectionTypesCreateResponse = (adminSectionTypesCreateResponseSuccess)
+export type adminSectionTypesCreateResponse = (adminSectionTypesCreateResponseSuccess | adminSectionTypesCreateResponseError)
 
 export const getAdminSectionTypesCreateUrl = () => {
 
@@ -240,7 +278,7 @@ export const adminSectionTypesCreate = async (adminSectionTypesCreateBody: Admin
 
 
 
-export const getAdminSectionTypesCreateMutationOptions = <TError = unknown,
+export const getAdminSectionTypesCreateMutationOptions = <TError = AdminSectionTypesCreate400 | AdminSectionTypesCreate401 | AdminSectionTypesCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesCreate>>, TError,{data: AdminSectionTypesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesCreate>>, TError,{data: AdminSectionTypesCreateBody}, TContext> => {
 
@@ -269,12 +307,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminSectionTypesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesCreate>>>
     export type AdminSectionTypesCreateMutationBody = AdminSectionTypesCreateBody
-    export type AdminSectionTypesCreateMutationError = unknown
+    export type AdminSectionTypesCreateMutationError = AdminSectionTypesCreate400 | AdminSectionTypesCreate401 | AdminSectionTypesCreate403
 
     /**
  * @summary Create a new section type
  */
-export const createAdminSectionTypesCreate = <TError = unknown,
+export const createAdminSectionTypesCreate = <TError = AdminSectionTypesCreate400 | AdminSectionTypesCreate401 | AdminSectionTypesCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesCreate>>, TError,{data: AdminSectionTypesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminSectionTypesCreate>>,
@@ -288,12 +326,20 @@ export const createAdminSectionTypesCreate = <TError = unknown,
  * Admin Section Types Management API
  * @summary Get all unique semantic kinds
  */
-export type adminSectionTypesSemanticKindsResponse200 = void
+export type adminSectionTypesSemanticKindsResponse200 = string[]
+
+export type adminSectionTypesSemanticKindsResponse400 = AdminSectionTypesSemanticKinds400
+
+export type adminSectionTypesSemanticKindsResponse401 = AdminSectionTypesSemanticKinds401
+
+export type adminSectionTypesSemanticKindsResponse403 = AdminSectionTypesSemanticKinds403
 
 export type adminSectionTypesSemanticKindsResponseSuccess = adminSectionTypesSemanticKindsResponse200
-;
+export type adminSectionTypesSemanticKindsResponseError = (adminSectionTypesSemanticKindsResponse400 | adminSectionTypesSemanticKindsResponse401 | adminSectionTypesSemanticKindsResponse403) & {
+  headers: Headers;
+};
 
-export type adminSectionTypesSemanticKindsResponse = (adminSectionTypesSemanticKindsResponseSuccess)
+export type adminSectionTypesSemanticKindsResponse = (adminSectionTypesSemanticKindsResponseSuccess | adminSectionTypesSemanticKindsResponseError)
 
 export const getAdminSectionTypesSemanticKindsUrl = () => {
 
@@ -331,7 +377,7 @@ export const getAdminSectionTypesSemanticKindsQueryKey = () => {
     }
 
 
-export const getAdminSectionTypesSemanticKindsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminSectionTypesSemanticKindsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>>, TError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -350,14 +396,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminSectionTypesSemanticKindsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>>
-export type AdminSectionTypesSemanticKindsInfiniteQueryError = unknown
+export type AdminSectionTypesSemanticKindsInfiniteQueryError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403
 
 
 /**
  * @summary Get all unique semantic kinds
  */
 
-export function createAdminSectionTypesSemanticKindsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>>, TError = unknown>(
+export function createAdminSectionTypesSemanticKindsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>>, TError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -372,7 +418,7 @@ export function createAdminSectionTypesSemanticKindsInfinite<TData = InfiniteDat
 /**
  * @summary Get all unique semantic kinds
  */
-export const prefetchAdminSectionTypesSemanticKindsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = unknown>(
+export const prefetchAdminSectionTypesSemanticKindsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -388,7 +434,7 @@ export const prefetchAdminSectionTypesSemanticKindsInfiniteQuery = async <TData 
 
 
 
-export const getAdminSectionTypesSemanticKindsQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminSectionTypesSemanticKindsQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -407,14 +453,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminSectionTypesSemanticKindsQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>>
-export type AdminSectionTypesSemanticKindsQueryError = unknown
+export type AdminSectionTypesSemanticKindsQueryError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403
 
 
 /**
  * @summary Get all unique semantic kinds
  */
 
-export function createAdminSectionTypesSemanticKinds<TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = unknown>(
+export function createAdminSectionTypesSemanticKinds<TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -429,7 +475,7 @@ export function createAdminSectionTypesSemanticKinds<TData = Awaited<ReturnType<
 /**
  * @summary Get all unique semantic kinds
  */
-export const prefetchAdminSectionTypesSemanticKindsQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = unknown>(
+export const prefetchAdminSectionTypesSemanticKindsQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError = AdminSectionTypesSemanticKinds400 | AdminSectionTypesSemanticKinds401 | AdminSectionTypesSemanticKinds403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesSemanticKinds>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -449,12 +495,20 @@ export const prefetchAdminSectionTypesSemanticKindsQuery = async <TData = Awaite
  * Admin Section Types Management API
  * @summary Get a section type by key
  */
-export type adminSectionTypesGetByIdResponse200 = void
+export type adminSectionTypesGetByIdResponse200 = AdminSectionTypesGetById200
+
+export type adminSectionTypesGetByIdResponse400 = AdminSectionTypesGetById400
+
+export type adminSectionTypesGetByIdResponse401 = AdminSectionTypesGetById401
+
+export type adminSectionTypesGetByIdResponse403 = AdminSectionTypesGetById403
 
 export type adminSectionTypesGetByIdResponseSuccess = adminSectionTypesGetByIdResponse200
-;
+export type adminSectionTypesGetByIdResponseError = (adminSectionTypesGetByIdResponse400 | adminSectionTypesGetByIdResponse401 | adminSectionTypesGetByIdResponse403) & {
+  headers: Headers;
+};
 
-export type adminSectionTypesGetByIdResponse = (adminSectionTypesGetByIdResponseSuccess)
+export type adminSectionTypesGetByIdResponse = (adminSectionTypesGetByIdResponseSuccess | adminSectionTypesGetByIdResponseError)
 
 export const getAdminSectionTypesGetByIdUrl = (key: string,) => {
 
@@ -492,7 +546,7 @@ export const getAdminSectionTypesGetByIdQueryKey = (key: string,) => {
     }
 
 
-export const getAdminSectionTypesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesGetById>>>, TError = unknown>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminSectionTypesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesGetById>>>, TError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -511,14 +565,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminSectionTypesGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesGetById>>>
-export type AdminSectionTypesGetByIdInfiniteQueryError = unknown
+export type AdminSectionTypesGetByIdInfiniteQueryError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403
 
 
 /**
  * @summary Get a section type by key
  */
 
-export function createAdminSectionTypesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesGetById>>>, TError = unknown>(
+export function createAdminSectionTypesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminSectionTypesGetById>>>, TError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403>(
  key: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -533,7 +587,7 @@ export function createAdminSectionTypesGetByIdInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get a section type by key
  */
-export const prefetchAdminSectionTypesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = unknown>(
+export const prefetchAdminSectionTypesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -549,7 +603,7 @@ export const prefetchAdminSectionTypesGetByIdInfiniteQuery = async <TData = Awai
 
 
 
-export const getAdminSectionTypesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = unknown>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminSectionTypesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -568,14 +622,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminSectionTypesGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesGetById>>>
-export type AdminSectionTypesGetByIdQueryError = unknown
+export type AdminSectionTypesGetByIdQueryError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403
 
 
 /**
  * @summary Get a section type by key
  */
 
-export function createAdminSectionTypesGetById<TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = unknown>(
+export function createAdminSectionTypesGetById<TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403>(
  key: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -590,7 +644,7 @@ export function createAdminSectionTypesGetById<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get a section type by key
  */
-export const prefetchAdminSectionTypesGetByIdQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = unknown>(
+export const prefetchAdminSectionTypesGetByIdQuery = async <TData = Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError = AdminSectionTypesGetById400 | AdminSectionTypesGetById401 | AdminSectionTypesGetById403>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminSectionTypesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -610,12 +664,20 @@ export const prefetchAdminSectionTypesGetByIdQuery = async <TData = Awaited<Retu
  * Admin Section Types Management API
  * @summary Update a section type
  */
-export type adminSectionTypesUpdateResponse200 = void
+export type adminSectionTypesUpdateResponse200 = AdminSectionTypesUpdate200
+
+export type adminSectionTypesUpdateResponse400 = AdminSectionTypesUpdate400
+
+export type adminSectionTypesUpdateResponse401 = AdminSectionTypesUpdate401
+
+export type adminSectionTypesUpdateResponse403 = AdminSectionTypesUpdate403
 
 export type adminSectionTypesUpdateResponseSuccess = adminSectionTypesUpdateResponse200
-;
+export type adminSectionTypesUpdateResponseError = (adminSectionTypesUpdateResponse400 | adminSectionTypesUpdateResponse401 | adminSectionTypesUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type adminSectionTypesUpdateResponse = (adminSectionTypesUpdateResponseSuccess)
+export type adminSectionTypesUpdateResponse = (adminSectionTypesUpdateResponseSuccess | adminSectionTypesUpdateResponseError)
 
 export const getAdminSectionTypesUpdateUrl = (key: string,) => {
 
@@ -641,7 +703,7 @@ export const adminSectionTypesUpdate = async (key: string,
 
 
 
-export const getAdminSectionTypesUpdateMutationOptions = <TError = unknown,
+export const getAdminSectionTypesUpdateMutationOptions = <TError = AdminSectionTypesUpdate400 | AdminSectionTypesUpdate401 | AdminSectionTypesUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesUpdate>>, TError,{key: string;data: AdminSectionTypesUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesUpdate>>, TError,{key: string;data: AdminSectionTypesUpdateBody}, TContext> => {
 
@@ -670,12 +732,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminSectionTypesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesUpdate>>>
     export type AdminSectionTypesUpdateMutationBody = AdminSectionTypesUpdateBody
-    export type AdminSectionTypesUpdateMutationError = unknown
+    export type AdminSectionTypesUpdateMutationError = AdminSectionTypesUpdate400 | AdminSectionTypesUpdate401 | AdminSectionTypesUpdate403
 
     /**
  * @summary Update a section type
  */
-export const createAdminSectionTypesUpdate = <TError = unknown,
+export const createAdminSectionTypesUpdate = <TError = AdminSectionTypesUpdate400 | AdminSectionTypesUpdate401 | AdminSectionTypesUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesUpdate>>, TError,{key: string;data: AdminSectionTypesUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminSectionTypesUpdate>>,
@@ -689,12 +751,20 @@ export const createAdminSectionTypesUpdate = <TError = unknown,
  * Admin Section Types Management API
  * @summary Delete a section type
  */
-export type adminSectionTypesDeleteResponse200 = void
+export type adminSectionTypesDeleteResponse200 = unknown | null
+
+export type adminSectionTypesDeleteResponse400 = AdminSectionTypesDelete400
+
+export type adminSectionTypesDeleteResponse401 = AdminSectionTypesDelete401
+
+export type adminSectionTypesDeleteResponse403 = AdminSectionTypesDelete403
 
 export type adminSectionTypesDeleteResponseSuccess = adminSectionTypesDeleteResponse200
-;
+export type adminSectionTypesDeleteResponseError = (adminSectionTypesDeleteResponse400 | adminSectionTypesDeleteResponse401 | adminSectionTypesDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type adminSectionTypesDeleteResponse = (adminSectionTypesDeleteResponseSuccess)
+export type adminSectionTypesDeleteResponse = (adminSectionTypesDeleteResponseSuccess | adminSectionTypesDeleteResponseError)
 
 export const getAdminSectionTypesDeleteUrl = (key: string,) => {
 
@@ -718,7 +788,7 @@ export const adminSectionTypesDelete = async (key: string, options?: RequestInit
 
 
 
-export const getAdminSectionTypesDeleteMutationOptions = <TError = unknown,
+export const getAdminSectionTypesDeleteMutationOptions = <TError = AdminSectionTypesDelete400 | AdminSectionTypesDelete401 | AdminSectionTypesDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesDelete>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesDelete>>, TError,{key: string}, TContext> => {
 
@@ -747,12 +817,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminSectionTypesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof adminSectionTypesDelete>>>
 
-    export type AdminSectionTypesDeleteMutationError = unknown
+    export type AdminSectionTypesDeleteMutationError = AdminSectionTypesDelete400 | AdminSectionTypesDelete401 | AdminSectionTypesDelete403
 
     /**
  * @summary Delete a section type
  */
-export const createAdminSectionTypesDelete = <TError = unknown,
+export const createAdminSectionTypesDelete = <TError = AdminSectionTypesDelete400 | AdminSectionTypesDelete401 | AdminSectionTypesDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminSectionTypesDelete>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminSectionTypesDelete>>,

@@ -10,13 +10,129 @@ import * as zod from 'zod';
 
 /**
  * Admin Tech Skills API
+ * @summary List all tech skills
+ */
+export const adminTechSkillsListResponseTotalMin = 0;
+
+
+
+export const adminTechSkillsListResponseTotalPagesMin = 0;
+
+
+
+export const AdminTechSkillsListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "type": zod.enum(['LANGUAGE', 'FRAMEWORK', 'LIBRARY', 'DATABASE', 'TOOL', 'PLATFORM', 'METHODOLOGY', 'SOFT_SKILL', 'CERTIFICATION', 'OTHER']),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "nicheId": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "keywords": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number().min(adminTechSkillsListResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(adminTechSkillsListResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Admin Tech Skills API
  * @summary Create tech skill
  */
 export const AdminTechSkillsCreateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminTechSkillsCreateResponse = zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "type": zod.enum(['LANGUAGE', 'FRAMEWORK', 'LIBRARY', 'DATABASE', 'TOOL', 'PLATFORM', 'METHODOLOGY', 'SOFT_SKILL', 'CERTIFICATION', 'OTHER']),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "nicheId": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "keywords": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Tech Skills API
+ * @summary Get tech skill by ID
+ */
+export const AdminTechSkillsGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "type": zod.enum(['LANGUAGE', 'FRAMEWORK', 'LIBRARY', 'DATABASE', 'TOOL', 'PLATFORM', 'METHODOLOGY', 'SOFT_SKILL', 'CERTIFICATION', 'OTHER']),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "nicheId": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "keywords": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
 
 /**
  * Admin Tech Skills API
  * @summary Update tech skill
  */
 export const AdminTechSkillsUpdateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminTechSkillsUpdateResponse = zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "type": zod.enum(['LANGUAGE', 'FRAMEWORK', 'LIBRARY', 'DATABASE', 'TOOL', 'PLATFORM', 'METHODOLOGY', 'SOFT_SKILL', 'CERTIFICATION', 'OTHER']),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "nicheId": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "keywords": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Tech Skills API
+ * @summary Delete tech skill
+ */
+export const AdminTechSkillsDeleteResponse = zod.object({
+
+})
 

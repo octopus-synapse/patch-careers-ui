@@ -30,6 +30,44 @@ export const SharesCreateBody = zod.object({
   "expiresAt": zod.string().nullish()
 })
 
+export const SharesCreateResponse = zod.object({
+  "share": zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "resumeId": zod.string(),
+  "isActive": zod.boolean(),
+  "hasPassword": zod.boolean(),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "publicUrl": zod.string()
+})
+})
+
+/**
+ * Share Management API
+ * @summary List share links for a resume
+ */
+export const SharesResumeResponse = zod.object({
+  "shares": zod.array(zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "resumeId": zod.string(),
+  "isActive": zod.boolean(),
+  "hasPassword": zod.boolean(),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "publicUrl": zod.string()
+}))
+})
+
+/**
+ * Share Management API
+ * @summary Delete a share link
+ */
+export const SharesDeleteResponse = zod.object({
+  "deleted": zod.boolean()
+})
+
 /**
  * Share Management API
  * @summary Add a slug alias to a share
@@ -43,5 +81,33 @@ export const sharesAliasesPostBodySlugRegExp = new RegExp('^[a-zA-Z0-9-]+$');
 
 export const SharesAliasesPostBody = zod.object({
   "slug": zod.string().min(sharesAliasesPostBodySlugMin).max(sharesAliasesPostBodySlugMax).regex(sharesAliasesPostBodySlugRegExp)
+})
+
+export const SharesAliasesPostResponse = zod.object({
+  "alias": zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "shareId": zod.string()
+})
+})
+
+/**
+ * Share Management API
+ * @summary List slug aliases for a share
+ */
+export const SharesAliasesGetResponse = zod.object({
+  "aliases": zod.array(zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "shareId": zod.string()
+}))
+})
+
+/**
+ * Share Management API
+ * @summary Remove a slug alias
+ */
+export const SharesAliasesDeleteResponse = zod.object({
+  "deleted": zod.boolean()
 })
 

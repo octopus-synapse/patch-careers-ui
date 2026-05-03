@@ -26,7 +26,13 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  PlatformEventsEventsBody
+  PlatformEventsEvents200,
+  PlatformEventsEvents400,
+  PlatformEventsEvents401,
+  PlatformEventsEventsBody,
+  PlatformEventsEventsSchemas200,
+  PlatformEventsEventsSchemas400,
+  PlatformEventsEventsSchemas401
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +46,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{events:[{name,version,propsSchema,requiredContext?,piiFields?}]}`. The frontend uses this to know which event names + prop shapes are valid before emitting.
  * @summary Catalog of allowed analytics events
  */
-export type platformEventsEventsSchemasResponse200 = void
+export type platformEventsEventsSchemasResponse200 = PlatformEventsEventsSchemas200
+
+export type platformEventsEventsSchemasResponse400 = PlatformEventsEventsSchemas400
+
+export type platformEventsEventsSchemasResponse401 = PlatformEventsEventsSchemas401
 
 export type platformEventsEventsSchemasResponseSuccess = platformEventsEventsSchemasResponse200
-;
+export type platformEventsEventsSchemasResponseError = (platformEventsEventsSchemasResponse400 | platformEventsEventsSchemasResponse401) & {
+  headers: Headers;
+};
 
-export type platformEventsEventsSchemasResponse = (platformEventsEventsSchemasResponseSuccess)
+export type platformEventsEventsSchemasResponse = (platformEventsEventsSchemasResponseSuccess | platformEventsEventsSchemasResponseError)
 
 export const getPlatformEventsEventsSchemasUrl = () => {
 
@@ -83,7 +95,7 @@ export const getPlatformEventsEventsSchemasQueryKey = () => {
     }
 
 
-export const getPlatformEventsEventsSchemasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformEventsEventsSchemas>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformEventsEventsSchemasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof platformEventsEventsSchemas>>>, TError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +114,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformEventsEventsSchemasInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof platformEventsEventsSchemas>>>
-export type PlatformEventsEventsSchemasInfiniteQueryError = unknown
+export type PlatformEventsEventsSchemasInfiniteQueryError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401
 
 
 /**
  * @summary Catalog of allowed analytics events
  */
 
-export function createPlatformEventsEventsSchemasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformEventsEventsSchemas>>>, TError = unknown>(
+export function createPlatformEventsEventsSchemasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof platformEventsEventsSchemas>>>, TError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +136,7 @@ export function createPlatformEventsEventsSchemasInfinite<TData = InfiniteData<A
 /**
  * @summary Catalog of allowed analytics events
  */
-export const prefetchPlatformEventsEventsSchemasInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = unknown>(
+export const prefetchPlatformEventsEventsSchemasInfiniteQuery = async <TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +152,7 @@ export const prefetchPlatformEventsEventsSchemasInfiniteQuery = async <TData = A
 
 
 
-export const getPlatformEventsEventsSchemasQueryOptions = <TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPlatformEventsEventsSchemasQueryOptions = <TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +171,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PlatformEventsEventsSchemasQueryResult = NonNullable<Awaited<ReturnType<typeof platformEventsEventsSchemas>>>
-export type PlatformEventsEventsSchemasQueryError = unknown
+export type PlatformEventsEventsSchemasQueryError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401
 
 
 /**
  * @summary Catalog of allowed analytics events
  */
 
-export function createPlatformEventsEventsSchemas<TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = unknown>(
+export function createPlatformEventsEventsSchemas<TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +193,7 @@ export function createPlatformEventsEventsSchemas<TData = Awaited<ReturnType<typ
 /**
  * @summary Catalog of allowed analytics events
  */
-export const prefetchPlatformEventsEventsSchemasQuery = async <TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = unknown>(
+export const prefetchPlatformEventsEventsSchemasQuery = async <TData = Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError = PlatformEventsEventsSchemas400 | PlatformEventsEventsSchemas401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof platformEventsEventsSchemas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +213,18 @@ export const prefetchPlatformEventsEventsSchemasQuery = async <TData = Awaited<R
  * Accepts up to 100 events per request. Events are stored as-is; props is free-form JSON. The expected event names + shapes are listed by `/v1/events/schemas`.
  * @summary Ingest a batch of product events
  */
-export type platformEventsEventsResponse200 = void
+export type platformEventsEventsResponse200 = PlatformEventsEvents200
+
+export type platformEventsEventsResponse400 = PlatformEventsEvents400
+
+export type platformEventsEventsResponse401 = PlatformEventsEvents401
 
 export type platformEventsEventsResponseSuccess = platformEventsEventsResponse200
-;
+export type platformEventsEventsResponseError = (platformEventsEventsResponse400 | platformEventsEventsResponse401) & {
+  headers: Headers;
+};
 
-export type platformEventsEventsResponse = (platformEventsEventsResponseSuccess)
+export type platformEventsEventsResponse = (platformEventsEventsResponseSuccess | platformEventsEventsResponseError)
 
 export const getPlatformEventsEventsUrl = () => {
 
@@ -231,7 +249,7 @@ export const platformEventsEvents = async (platformEventsEventsBody: PlatformEve
 
 
 
-export const getPlatformEventsEventsMutationOptions = <TError = unknown,
+export const getPlatformEventsEventsMutationOptions = <TError = PlatformEventsEvents400 | PlatformEventsEvents401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof platformEventsEvents>>, TError,{data: PlatformEventsEventsBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof platformEventsEvents>>, TError,{data: PlatformEventsEventsBody}, TContext> => {
 
@@ -260,12 +278,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PlatformEventsEventsMutationResult = NonNullable<Awaited<ReturnType<typeof platformEventsEvents>>>
     export type PlatformEventsEventsMutationBody = PlatformEventsEventsBody
-    export type PlatformEventsEventsMutationError = unknown
+    export type PlatformEventsEventsMutationError = PlatformEventsEvents400 | PlatformEventsEvents401
 
     /**
  * @summary Ingest a batch of product events
  */
-export const createPlatformEventsEvents = <TError = unknown,
+export const createPlatformEventsEvents = <TError = PlatformEventsEvents400 | PlatformEventsEvents401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof platformEventsEvents>>, TError,{data: PlatformEventsEventsBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof platformEventsEvents>>,

@@ -19,11 +19,19 @@ export const AccountLifecycleAccountsBody = zod.object({
   "confirmationPhrase": zod.string().min(1)
 })
 
+export const AccountLifecycleAccountsResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Deactivates the authenticated user account (soft delete).
  * @summary Deactivate account
  */
 export const AccountLifecycleAccountsDeactivateBody = zod.object({
   "reason": zod.string().optional()
+})
+
+export const AccountLifecycleAccountsDeactivateResponse = zod.object({
+  "message": zod.string()
 })
 

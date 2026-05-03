@@ -26,7 +26,27 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  WebhooksCreate200,
+  WebhooksCreate400,
+  WebhooksCreate401,
+  WebhooksCreate403,
   WebhooksCreateBody,
+  WebhooksDelete200,
+  WebhooksDelete400,
+  WebhooksDelete401,
+  WebhooksDelete403,
+  WebhooksDeliveries200,
+  WebhooksDeliveries400,
+  WebhooksDeliveries401,
+  WebhooksDeliveries403,
+  WebhooksList200,
+  WebhooksList400,
+  WebhooksList401,
+  WebhooksList403,
+  WebhooksUpdate200,
+  WebhooksUpdate400,
+  WebhooksUpdate401,
+  WebhooksUpdate403,
   WebhooksUpdateBody
 } from '../../models';
 
@@ -41,12 +61,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * User-registered webhook subscriptions.
  * @summary List webhooks registered by the current user.
  */
-export type webhooksListResponse200 = void
+export type webhooksListResponse200 = WebhooksList200
+
+export type webhooksListResponse400 = WebhooksList400
+
+export type webhooksListResponse401 = WebhooksList401
+
+export type webhooksListResponse403 = WebhooksList403
 
 export type webhooksListResponseSuccess = webhooksListResponse200
-;
+export type webhooksListResponseError = (webhooksListResponse400 | webhooksListResponse401 | webhooksListResponse403) & {
+  headers: Headers;
+};
 
-export type webhooksListResponse = (webhooksListResponseSuccess)
+export type webhooksListResponse = (webhooksListResponseSuccess | webhooksListResponseError)
 
 export const getWebhooksListUrl = () => {
 
@@ -84,7 +112,7 @@ export const getWebhooksListQueryKey = () => {
     }
 
 
-export const getWebhooksListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof webhooksList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getWebhooksListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof webhooksList>>>, TError = WebhooksList400 | WebhooksList401 | WebhooksList403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -103,14 +131,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhooksListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof webhooksList>>>
-export type WebhooksListInfiniteQueryError = unknown
+export type WebhooksListInfiniteQueryError = WebhooksList400 | WebhooksList401 | WebhooksList403
 
 
 /**
  * @summary List webhooks registered by the current user.
  */
 
-export function createWebhooksListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof webhooksList>>>, TError = unknown>(
+export function createWebhooksListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof webhooksList>>>, TError = WebhooksList400 | WebhooksList401 | WebhooksList403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -125,7 +153,7 @@ export function createWebhooksListInfinite<TData = InfiniteData<Awaited<ReturnTy
 /**
  * @summary List webhooks registered by the current user.
  */
-export const prefetchWebhooksListInfiniteQuery = async <TData = Awaited<ReturnType<typeof webhooksList>>, TError = unknown>(
+export const prefetchWebhooksListInfiniteQuery = async <TData = Awaited<ReturnType<typeof webhooksList>>, TError = WebhooksList400 | WebhooksList401 | WebhooksList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -141,7 +169,7 @@ export const prefetchWebhooksListInfiniteQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getWebhooksListQueryOptions = <TData = Awaited<ReturnType<typeof webhooksList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getWebhooksListQueryOptions = <TData = Awaited<ReturnType<typeof webhooksList>>, TError = WebhooksList400 | WebhooksList401 | WebhooksList403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -160,14 +188,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhooksListQueryResult = NonNullable<Awaited<ReturnType<typeof webhooksList>>>
-export type WebhooksListQueryError = unknown
+export type WebhooksListQueryError = WebhooksList400 | WebhooksList401 | WebhooksList403
 
 
 /**
  * @summary List webhooks registered by the current user.
  */
 
-export function createWebhooksList<TData = Awaited<ReturnType<typeof webhooksList>>, TError = unknown>(
+export function createWebhooksList<TData = Awaited<ReturnType<typeof webhooksList>>, TError = WebhooksList400 | WebhooksList401 | WebhooksList403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -182,7 +210,7 @@ export function createWebhooksList<TData = Awaited<ReturnType<typeof webhooksLis
 /**
  * @summary List webhooks registered by the current user.
  */
-export const prefetchWebhooksListQuery = async <TData = Awaited<ReturnType<typeof webhooksList>>, TError = unknown>(
+export const prefetchWebhooksListQuery = async <TData = Awaited<ReturnType<typeof webhooksList>>, TError = WebhooksList400 | WebhooksList401 | WebhooksList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -202,12 +230,20 @@ export const prefetchWebhooksListQuery = async <TData = Awaited<ReturnType<typeo
  * User-registered webhook subscriptions.
  * @summary Register a new webhook subscription.
  */
-export type webhooksCreateResponse200 = void
+export type webhooksCreateResponse200 = WebhooksCreate200
+
+export type webhooksCreateResponse400 = WebhooksCreate400
+
+export type webhooksCreateResponse401 = WebhooksCreate401
+
+export type webhooksCreateResponse403 = WebhooksCreate403
 
 export type webhooksCreateResponseSuccess = webhooksCreateResponse200
-;
+export type webhooksCreateResponseError = (webhooksCreateResponse400 | webhooksCreateResponse401 | webhooksCreateResponse403) & {
+  headers: Headers;
+};
 
-export type webhooksCreateResponse = (webhooksCreateResponseSuccess)
+export type webhooksCreateResponse = (webhooksCreateResponseSuccess | webhooksCreateResponseError)
 
 export const getWebhooksCreateUrl = () => {
 
@@ -232,7 +268,7 @@ export const webhooksCreate = async (webhooksCreateBody: WebhooksCreateBody, opt
 
 
 
-export const getWebhooksCreateMutationOptions = <TError = unknown,
+export const getWebhooksCreateMutationOptions = <TError = WebhooksCreate400 | WebhooksCreate401 | WebhooksCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof webhooksCreate>>, TError,{data: WebhooksCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof webhooksCreate>>, TError,{data: WebhooksCreateBody}, TContext> => {
 
@@ -261,12 +297,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhooksCreateMutationResult = NonNullable<Awaited<ReturnType<typeof webhooksCreate>>>
     export type WebhooksCreateMutationBody = WebhooksCreateBody
-    export type WebhooksCreateMutationError = unknown
+    export type WebhooksCreateMutationError = WebhooksCreate400 | WebhooksCreate401 | WebhooksCreate403
 
     /**
  * @summary Register a new webhook subscription.
  */
-export const createWebhooksCreate = <TError = unknown,
+export const createWebhooksCreate = <TError = WebhooksCreate400 | WebhooksCreate401 | WebhooksCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof webhooksCreate>>, TError,{data: WebhooksCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof webhooksCreate>>,
@@ -280,12 +316,20 @@ export const createWebhooksCreate = <TError = unknown,
  * User-registered webhook subscriptions.
  * @summary Update a webhook subscription.
  */
-export type webhooksUpdateResponse200 = void
+export type webhooksUpdateResponse200 = WebhooksUpdate200
+
+export type webhooksUpdateResponse400 = WebhooksUpdate400
+
+export type webhooksUpdateResponse401 = WebhooksUpdate401
+
+export type webhooksUpdateResponse403 = WebhooksUpdate403
 
 export type webhooksUpdateResponseSuccess = webhooksUpdateResponse200
-;
+export type webhooksUpdateResponseError = (webhooksUpdateResponse400 | webhooksUpdateResponse401 | webhooksUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type webhooksUpdateResponse = (webhooksUpdateResponseSuccess)
+export type webhooksUpdateResponse = (webhooksUpdateResponseSuccess | webhooksUpdateResponseError)
 
 export const getWebhooksUpdateUrl = (id: string,) => {
 
@@ -311,7 +355,7 @@ export const webhooksUpdate = async (id: string,
 
 
 
-export const getWebhooksUpdateMutationOptions = <TError = unknown,
+export const getWebhooksUpdateMutationOptions = <TError = WebhooksUpdate400 | WebhooksUpdate401 | WebhooksUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof webhooksUpdate>>, TError,{id: string;data: WebhooksUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof webhooksUpdate>>, TError,{id: string;data: WebhooksUpdateBody}, TContext> => {
 
@@ -340,12 +384,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhooksUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof webhooksUpdate>>>
     export type WebhooksUpdateMutationBody = WebhooksUpdateBody
-    export type WebhooksUpdateMutationError = unknown
+    export type WebhooksUpdateMutationError = WebhooksUpdate400 | WebhooksUpdate401 | WebhooksUpdate403
 
     /**
  * @summary Update a webhook subscription.
  */
-export const createWebhooksUpdate = <TError = unknown,
+export const createWebhooksUpdate = <TError = WebhooksUpdate400 | WebhooksUpdate401 | WebhooksUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof webhooksUpdate>>, TError,{id: string;data: WebhooksUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof webhooksUpdate>>,
@@ -359,12 +403,20 @@ export const createWebhooksUpdate = <TError = unknown,
  * User-registered webhook subscriptions.
  * @summary Delete a webhook subscription.
  */
-export type webhooksDeleteResponse200 = void
+export type webhooksDeleteResponse200 = WebhooksDelete200
+
+export type webhooksDeleteResponse400 = WebhooksDelete400
+
+export type webhooksDeleteResponse401 = WebhooksDelete401
+
+export type webhooksDeleteResponse403 = WebhooksDelete403
 
 export type webhooksDeleteResponseSuccess = webhooksDeleteResponse200
-;
+export type webhooksDeleteResponseError = (webhooksDeleteResponse400 | webhooksDeleteResponse401 | webhooksDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type webhooksDeleteResponse = (webhooksDeleteResponseSuccess)
+export type webhooksDeleteResponse = (webhooksDeleteResponseSuccess | webhooksDeleteResponseError)
 
 export const getWebhooksDeleteUrl = (id: string,) => {
 
@@ -388,7 +440,7 @@ export const webhooksDelete = async (id: string, options?: RequestInit): Promise
 
 
 
-export const getWebhooksDeleteMutationOptions = <TError = unknown,
+export const getWebhooksDeleteMutationOptions = <TError = WebhooksDelete400 | WebhooksDelete401 | WebhooksDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof webhooksDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof webhooksDelete>>, TError,{id: string}, TContext> => {
 
@@ -417,12 +469,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhooksDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof webhooksDelete>>>
 
-    export type WebhooksDeleteMutationError = unknown
+    export type WebhooksDeleteMutationError = WebhooksDelete400 | WebhooksDelete401 | WebhooksDelete403
 
     /**
  * @summary Delete a webhook subscription.
  */
-export const createWebhooksDelete = <TError = unknown,
+export const createWebhooksDelete = <TError = WebhooksDelete400 | WebhooksDelete401 | WebhooksDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof webhooksDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof webhooksDelete>>,
@@ -436,12 +488,20 @@ export const createWebhooksDelete = <TError = unknown,
  * User-registered webhook subscriptions.
  * @summary List recent delivery attempts for a webhook.
  */
-export type webhooksDeliveriesResponse200 = void
+export type webhooksDeliveriesResponse200 = WebhooksDeliveries200
+
+export type webhooksDeliveriesResponse400 = WebhooksDeliveries400
+
+export type webhooksDeliveriesResponse401 = WebhooksDeliveries401
+
+export type webhooksDeliveriesResponse403 = WebhooksDeliveries403
 
 export type webhooksDeliveriesResponseSuccess = webhooksDeliveriesResponse200
-;
+export type webhooksDeliveriesResponseError = (webhooksDeliveriesResponse400 | webhooksDeliveriesResponse401 | webhooksDeliveriesResponse403) & {
+  headers: Headers;
+};
 
-export type webhooksDeliveriesResponse = (webhooksDeliveriesResponseSuccess)
+export type webhooksDeliveriesResponse = (webhooksDeliveriesResponseSuccess | webhooksDeliveriesResponseError)
 
 export const getWebhooksDeliveriesUrl = (id: string,) => {
 
@@ -479,7 +539,7 @@ export const getWebhooksDeliveriesQueryKey = (id: string,) => {
     }
 
 
-export const getWebhooksDeliveriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof webhooksDeliveries>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getWebhooksDeliveriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof webhooksDeliveries>>>, TError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -498,14 +558,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhooksDeliveriesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof webhooksDeliveries>>>
-export type WebhooksDeliveriesInfiniteQueryError = unknown
+export type WebhooksDeliveriesInfiniteQueryError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403
 
 
 /**
  * @summary List recent delivery attempts for a webhook.
  */
 
-export function createWebhooksDeliveriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof webhooksDeliveries>>>, TError = unknown>(
+export function createWebhooksDeliveriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof webhooksDeliveries>>>, TError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -520,7 +580,7 @@ export function createWebhooksDeliveriesInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary List recent delivery attempts for a webhook.
  */
-export const prefetchWebhooksDeliveriesInfiniteQuery = async <TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = unknown>(
+export const prefetchWebhooksDeliveriesInfiniteQuery = async <TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -536,7 +596,7 @@ export const prefetchWebhooksDeliveriesInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getWebhooksDeliveriesQueryOptions = <TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getWebhooksDeliveriesQueryOptions = <TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -555,14 +615,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhooksDeliveriesQueryResult = NonNullable<Awaited<ReturnType<typeof webhooksDeliveries>>>
-export type WebhooksDeliveriesQueryError = unknown
+export type WebhooksDeliveriesQueryError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403
 
 
 /**
  * @summary List recent delivery attempts for a webhook.
  */
 
-export function createWebhooksDeliveries<TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = unknown>(
+export function createWebhooksDeliveries<TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -577,7 +637,7 @@ export function createWebhooksDeliveries<TData = Awaited<ReturnType<typeof webho
 /**
  * @summary List recent delivery attempts for a webhook.
  */
-export const prefetchWebhooksDeliveriesQuery = async <TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = unknown>(
+export const prefetchWebhooksDeliveriesQuery = async <TData = Awaited<ReturnType<typeof webhooksDeliveries>>, TError = WebhooksDeliveries400 | WebhooksDeliveries401 | WebhooksDeliveries403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof webhooksDeliveries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

@@ -9,11 +9,55 @@ import * as zod from 'zod';
 
 
 /**
+ * GitHub summary with repositories, contributions, and stats
+ * @summary Get GitHub profile summary for a username
+ */
+export const GithubIntegrationsGithubSummaryResponse = zod.object({
+  "username": zod.string(),
+  "name": zod.string().optional(),
+  "bio": zod.string().optional(),
+  "publicRepos": zod.number(),
+  "followers": zod.number(),
+  "following": zod.number(),
+  "topLanguages": zod.array(zod.string()),
+  "pinnedRepos": zod.array(zod.object({
+  "name": zod.string(),
+  "description": zod.string().optional(),
+  "url": zod.string()
+}))
+})
+
+/**
  * GitHub data synced successfully
  * @summary Sync GitHub data to user resume
  */
 export const GithubIntegrationsGithubSyncBody = zod.object({
   "githubUsername": zod.string(),
   "resumeId": zod.string()
+})
+
+export const GithubIntegrationsGithubSyncResponse = zod.object({
+  "synced": zod.boolean(),
+  "message": zod.string()
+})
+
+/**
+ * GitHub data auto-synced successfully
+ * @summary Auto-sync GitHub from resume GitHub link
+ */
+export const GithubIntegrationsGithubSyncAutoResponse = zod.object({
+  "synced": zod.boolean(),
+  "message": zod.string()
+})
+
+/**
+ * Sync status
+ * @summary Get GitHub sync status for a resume
+ */
+export const GithubIntegrationsGithubSyncStatusResponse = zod.object({
+  "status": zod.enum(['IDLE', 'COMPLETED']),
+  "progress": zod.number(),
+  "startedAt": zod.string().datetime({"offset":true}).optional(),
+  "currentTask": zod.string().optional()
 })
 

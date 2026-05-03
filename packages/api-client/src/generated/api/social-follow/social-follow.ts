@@ -26,8 +26,40 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SocialFollowUsersFollowDelete200,
+  SocialFollowUsersFollowDelete400,
+  SocialFollowUsersFollowDelete401,
+  SocialFollowUsersFollowDelete403,
+  SocialFollowUsersFollowDelete404,
+  SocialFollowUsersFollowPost200,
+  SocialFollowUsersFollowPost400,
+  SocialFollowUsersFollowPost401,
+  SocialFollowUsersFollowPost403,
+  SocialFollowUsersFollowPost404,
+  SocialFollowUsersFollowers200,
+  SocialFollowUsersFollowers400,
+  SocialFollowUsersFollowers401,
+  SocialFollowUsersFollowers403,
+  SocialFollowUsersFollowers404,
   SocialFollowUsersFollowersParams,
-  SocialFollowUsersFollowingParams
+  SocialFollowUsersFollowing200,
+  SocialFollowUsersFollowing400,
+  SocialFollowUsersFollowing401,
+  SocialFollowUsersFollowing403,
+  SocialFollowUsersFollowing404,
+  SocialFollowUsersFollowingParams,
+  SocialFollowUsersIsFollowing200,
+  SocialFollowUsersIsFollowing400,
+  SocialFollowUsersIsFollowing401,
+  SocialFollowUsersIsFollowing403,
+  SocialFollowUsersIsFollowing404,
+  SocialFollowUsersMeSocialStats200,
+  SocialFollowUsersMeSocialStats400,
+  SocialFollowUsersMeSocialStats401,
+  SocialFollowUsersMeSocialStats403,
+  SocialFollowUsersSocialStats200,
+  SocialFollowUsersSocialStats400,
+  SocialFollowUsersSocialStats404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +72,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Follow a user
  */
-export type socialFollowUsersFollowPostResponse200 = void
+export type socialFollowUsersFollowPostResponse200 = SocialFollowUsersFollowPost200
+
+export type socialFollowUsersFollowPostResponse400 = SocialFollowUsersFollowPost400
+
+export type socialFollowUsersFollowPostResponse401 = SocialFollowUsersFollowPost401
+
+export type socialFollowUsersFollowPostResponse403 = SocialFollowUsersFollowPost403
+
+export type socialFollowUsersFollowPostResponse404 = SocialFollowUsersFollowPost404
 
 export type socialFollowUsersFollowPostResponseSuccess = socialFollowUsersFollowPostResponse200
-;
+export type socialFollowUsersFollowPostResponseError = (socialFollowUsersFollowPostResponse400 | socialFollowUsersFollowPostResponse401 | socialFollowUsersFollowPostResponse403 | socialFollowUsersFollowPostResponse404) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersFollowPostResponse = (socialFollowUsersFollowPostResponseSuccess)
+export type socialFollowUsersFollowPostResponse = (socialFollowUsersFollowPostResponseSuccess | socialFollowUsersFollowPostResponseError)
 
 export const getSocialFollowUsersFollowPostUrl = (userId: string,) => {
 
@@ -69,7 +111,7 @@ export const socialFollowUsersFollowPost = async (userId: string, options?: Requ
 
 
 
-export const getSocialFollowUsersFollowPostMutationOptions = <TError = unknown,
+export const getSocialFollowUsersFollowPostMutationOptions = <TError = SocialFollowUsersFollowPost400 | SocialFollowUsersFollowPost401 | SocialFollowUsersFollowPost403 | SocialFollowUsersFollowPost404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof socialFollowUsersFollowPost>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof socialFollowUsersFollowPost>>, TError,{userId: string}, TContext> => {
 
@@ -98,12 +140,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SocialFollowUsersFollowPostMutationResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersFollowPost>>>
 
-    export type SocialFollowUsersFollowPostMutationError = unknown
+    export type SocialFollowUsersFollowPostMutationError = SocialFollowUsersFollowPost400 | SocialFollowUsersFollowPost401 | SocialFollowUsersFollowPost403 | SocialFollowUsersFollowPost404
 
     /**
  * @summary Follow a user
  */
-export const createSocialFollowUsersFollowPost = <TError = unknown,
+export const createSocialFollowUsersFollowPost = <TError = SocialFollowUsersFollowPost400 | SocialFollowUsersFollowPost401 | SocialFollowUsersFollowPost403 | SocialFollowUsersFollowPost404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof socialFollowUsersFollowPost>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof socialFollowUsersFollowPost>>,
@@ -116,12 +158,22 @@ export const createSocialFollowUsersFollowPost = <TError = unknown,
     /**
  * @summary Unfollow a user
  */
-export type socialFollowUsersFollowDeleteResponse200 = void
+export type socialFollowUsersFollowDeleteResponse200 = SocialFollowUsersFollowDelete200
+
+export type socialFollowUsersFollowDeleteResponse400 = SocialFollowUsersFollowDelete400
+
+export type socialFollowUsersFollowDeleteResponse401 = SocialFollowUsersFollowDelete401
+
+export type socialFollowUsersFollowDeleteResponse403 = SocialFollowUsersFollowDelete403
+
+export type socialFollowUsersFollowDeleteResponse404 = SocialFollowUsersFollowDelete404
 
 export type socialFollowUsersFollowDeleteResponseSuccess = socialFollowUsersFollowDeleteResponse200
-;
+export type socialFollowUsersFollowDeleteResponseError = (socialFollowUsersFollowDeleteResponse400 | socialFollowUsersFollowDeleteResponse401 | socialFollowUsersFollowDeleteResponse403 | socialFollowUsersFollowDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersFollowDeleteResponse = (socialFollowUsersFollowDeleteResponseSuccess)
+export type socialFollowUsersFollowDeleteResponse = (socialFollowUsersFollowDeleteResponseSuccess | socialFollowUsersFollowDeleteResponseError)
 
 export const getSocialFollowUsersFollowDeleteUrl = (userId: string,) => {
 
@@ -145,7 +197,7 @@ export const socialFollowUsersFollowDelete = async (userId: string, options?: Re
 
 
 
-export const getSocialFollowUsersFollowDeleteMutationOptions = <TError = unknown,
+export const getSocialFollowUsersFollowDeleteMutationOptions = <TError = SocialFollowUsersFollowDelete400 | SocialFollowUsersFollowDelete401 | SocialFollowUsersFollowDelete403 | SocialFollowUsersFollowDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof socialFollowUsersFollowDelete>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof socialFollowUsersFollowDelete>>, TError,{userId: string}, TContext> => {
 
@@ -174,12 +226,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SocialFollowUsersFollowDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersFollowDelete>>>
 
-    export type SocialFollowUsersFollowDeleteMutationError = unknown
+    export type SocialFollowUsersFollowDeleteMutationError = SocialFollowUsersFollowDelete400 | SocialFollowUsersFollowDelete401 | SocialFollowUsersFollowDelete403 | SocialFollowUsersFollowDelete404
 
     /**
  * @summary Unfollow a user
  */
-export const createSocialFollowUsersFollowDelete = <TError = unknown,
+export const createSocialFollowUsersFollowDelete = <TError = SocialFollowUsersFollowDelete400 | SocialFollowUsersFollowDelete401 | SocialFollowUsersFollowDelete403 | SocialFollowUsersFollowDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof socialFollowUsersFollowDelete>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof socialFollowUsersFollowDelete>>,
@@ -192,12 +244,22 @@ export const createSocialFollowUsersFollowDelete = <TError = unknown,
     /**
  * @summary Get followers for a user
  */
-export type socialFollowUsersFollowersResponse200 = void
+export type socialFollowUsersFollowersResponse200 = SocialFollowUsersFollowers200
+
+export type socialFollowUsersFollowersResponse400 = SocialFollowUsersFollowers400
+
+export type socialFollowUsersFollowersResponse401 = SocialFollowUsersFollowers401
+
+export type socialFollowUsersFollowersResponse403 = SocialFollowUsersFollowers403
+
+export type socialFollowUsersFollowersResponse404 = SocialFollowUsersFollowers404
 
 export type socialFollowUsersFollowersResponseSuccess = socialFollowUsersFollowersResponse200
-;
+export type socialFollowUsersFollowersResponseError = (socialFollowUsersFollowersResponse400 | socialFollowUsersFollowersResponse401 | socialFollowUsersFollowersResponse403 | socialFollowUsersFollowersResponse404) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersFollowersResponse = (socialFollowUsersFollowersResponseSuccess)
+export type socialFollowUsersFollowersResponse = (socialFollowUsersFollowersResponseSuccess | socialFollowUsersFollowersResponseError)
 
 export const getSocialFollowUsersFollowersUrl = (userId: string,
     params?: SocialFollowUsersFollowersParams,) => {
@@ -246,7 +308,7 @@ export const getSocialFollowUsersFollowersQueryKey = (userId: string,
     }
 
 
-export const getSocialFollowUsersFollowersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowers>>>, TError = unknown>(userId: string,
+export const getSocialFollowUsersFollowersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowers>>>, TError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404>(userId: string,
     params?: SocialFollowUsersFollowersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -266,14 +328,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersFollowersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersFollowers>>>
-export type SocialFollowUsersFollowersInfiniteQueryError = unknown
+export type SocialFollowUsersFollowersInfiniteQueryError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404
 
 
 /**
  * @summary Get followers for a user
  */
 
-export function createSocialFollowUsersFollowersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowers>>>, TError = unknown>(
+export function createSocialFollowUsersFollowersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowers>>>, TError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404>(
  userId: () =>  string,
     params?: () =>  SocialFollowUsersFollowersParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -290,7 +352,7 @@ export function createSocialFollowUsersFollowersInfinite<TData = InfiniteData<Aw
 /**
  * @summary Get followers for a user
  */
-export const prefetchSocialFollowUsersFollowersInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = unknown>(
+export const prefetchSocialFollowUsersFollowersInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404>(
  queryClient: QueryClient, userId: string,
     params?: SocialFollowUsersFollowersParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -307,7 +369,7 @@ export const prefetchSocialFollowUsersFollowersInfiniteQuery = async <TData = Aw
 
 
 
-export const getSocialFollowUsersFollowersQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = unknown>(userId: string,
+export const getSocialFollowUsersFollowersQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404>(userId: string,
     params?: SocialFollowUsersFollowersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -327,14 +389,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersFollowersQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersFollowers>>>
-export type SocialFollowUsersFollowersQueryError = unknown
+export type SocialFollowUsersFollowersQueryError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404
 
 
 /**
  * @summary Get followers for a user
  */
 
-export function createSocialFollowUsersFollowers<TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = unknown>(
+export function createSocialFollowUsersFollowers<TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404>(
  userId: () =>  string,
     params?: () =>  SocialFollowUsersFollowersParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -351,7 +413,7 @@ export function createSocialFollowUsersFollowers<TData = Awaited<ReturnType<type
 /**
  * @summary Get followers for a user
  */
-export const prefetchSocialFollowUsersFollowersQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = unknown>(
+export const prefetchSocialFollowUsersFollowersQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError = SocialFollowUsersFollowers400 | SocialFollowUsersFollowers401 | SocialFollowUsersFollowers403 | SocialFollowUsersFollowers404>(
  queryClient: QueryClient, userId: string,
     params?: SocialFollowUsersFollowersParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -371,12 +433,22 @@ export const prefetchSocialFollowUsersFollowersQuery = async <TData = Awaited<Re
 /**
  * @summary Get users followed by a user
  */
-export type socialFollowUsersFollowingResponse200 = void
+export type socialFollowUsersFollowingResponse200 = SocialFollowUsersFollowing200
+
+export type socialFollowUsersFollowingResponse400 = SocialFollowUsersFollowing400
+
+export type socialFollowUsersFollowingResponse401 = SocialFollowUsersFollowing401
+
+export type socialFollowUsersFollowingResponse403 = SocialFollowUsersFollowing403
+
+export type socialFollowUsersFollowingResponse404 = SocialFollowUsersFollowing404
 
 export type socialFollowUsersFollowingResponseSuccess = socialFollowUsersFollowingResponse200
-;
+export type socialFollowUsersFollowingResponseError = (socialFollowUsersFollowingResponse400 | socialFollowUsersFollowingResponse401 | socialFollowUsersFollowingResponse403 | socialFollowUsersFollowingResponse404) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersFollowingResponse = (socialFollowUsersFollowingResponseSuccess)
+export type socialFollowUsersFollowingResponse = (socialFollowUsersFollowingResponseSuccess | socialFollowUsersFollowingResponseError)
 
 export const getSocialFollowUsersFollowingUrl = (userId: string,
     params?: SocialFollowUsersFollowingParams,) => {
@@ -425,7 +497,7 @@ export const getSocialFollowUsersFollowingQueryKey = (userId: string,
     }
 
 
-export const getSocialFollowUsersFollowingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowing>>>, TError = unknown>(userId: string,
+export const getSocialFollowUsersFollowingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowing>>>, TError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404>(userId: string,
     params?: SocialFollowUsersFollowingParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -445,14 +517,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersFollowingInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersFollowing>>>
-export type SocialFollowUsersFollowingInfiniteQueryError = unknown
+export type SocialFollowUsersFollowingInfiniteQueryError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404
 
 
 /**
  * @summary Get users followed by a user
  */
 
-export function createSocialFollowUsersFollowingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowing>>>, TError = unknown>(
+export function createSocialFollowUsersFollowingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersFollowing>>>, TError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404>(
  userId: () =>  string,
     params?: () =>  SocialFollowUsersFollowingParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -469,7 +541,7 @@ export function createSocialFollowUsersFollowingInfinite<TData = InfiniteData<Aw
 /**
  * @summary Get users followed by a user
  */
-export const prefetchSocialFollowUsersFollowingInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = unknown>(
+export const prefetchSocialFollowUsersFollowingInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404>(
  queryClient: QueryClient, userId: string,
     params?: SocialFollowUsersFollowingParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -486,7 +558,7 @@ export const prefetchSocialFollowUsersFollowingInfiniteQuery = async <TData = Aw
 
 
 
-export const getSocialFollowUsersFollowingQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = unknown>(userId: string,
+export const getSocialFollowUsersFollowingQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404>(userId: string,
     params?: SocialFollowUsersFollowingParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -506,14 +578,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersFollowingQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersFollowing>>>
-export type SocialFollowUsersFollowingQueryError = unknown
+export type SocialFollowUsersFollowingQueryError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404
 
 
 /**
  * @summary Get users followed by a user
  */
 
-export function createSocialFollowUsersFollowing<TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = unknown>(
+export function createSocialFollowUsersFollowing<TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404>(
  userId: () =>  string,
     params?: () =>  SocialFollowUsersFollowingParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -530,7 +602,7 @@ export function createSocialFollowUsersFollowing<TData = Awaited<ReturnType<type
 /**
  * @summary Get users followed by a user
  */
-export const prefetchSocialFollowUsersFollowingQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = unknown>(
+export const prefetchSocialFollowUsersFollowingQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError = SocialFollowUsersFollowing400 | SocialFollowUsersFollowing401 | SocialFollowUsersFollowing403 | SocialFollowUsersFollowing404>(
  queryClient: QueryClient, userId: string,
     params?: SocialFollowUsersFollowingParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -550,12 +622,22 @@ export const prefetchSocialFollowUsersFollowingQuery = async <TData = Awaited<Re
 /**
  * @summary Check following relationship
  */
-export type socialFollowUsersIsFollowingResponse200 = void
+export type socialFollowUsersIsFollowingResponse200 = SocialFollowUsersIsFollowing200
+
+export type socialFollowUsersIsFollowingResponse400 = SocialFollowUsersIsFollowing400
+
+export type socialFollowUsersIsFollowingResponse401 = SocialFollowUsersIsFollowing401
+
+export type socialFollowUsersIsFollowingResponse403 = SocialFollowUsersIsFollowing403
+
+export type socialFollowUsersIsFollowingResponse404 = SocialFollowUsersIsFollowing404
 
 export type socialFollowUsersIsFollowingResponseSuccess = socialFollowUsersIsFollowingResponse200
-;
+export type socialFollowUsersIsFollowingResponseError = (socialFollowUsersIsFollowingResponse400 | socialFollowUsersIsFollowingResponse401 | socialFollowUsersIsFollowingResponse403 | socialFollowUsersIsFollowingResponse404) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersIsFollowingResponse = (socialFollowUsersIsFollowingResponseSuccess)
+export type socialFollowUsersIsFollowingResponse = (socialFollowUsersIsFollowingResponseSuccess | socialFollowUsersIsFollowingResponseError)
 
 export const getSocialFollowUsersIsFollowingUrl = (userId: string,) => {
 
@@ -593,7 +675,7 @@ export const getSocialFollowUsersIsFollowingQueryKey = (userId: string,) => {
     }
 
 
-export const getSocialFollowUsersIsFollowingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialFollowUsersIsFollowingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>>, TError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -612,14 +694,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersIsFollowingInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>>
-export type SocialFollowUsersIsFollowingInfiniteQueryError = unknown
+export type SocialFollowUsersIsFollowingInfiniteQueryError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404
 
 
 /**
  * @summary Check following relationship
  */
 
-export function createSocialFollowUsersIsFollowingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>>, TError = unknown>(
+export function createSocialFollowUsersIsFollowingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>>, TError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -634,7 +716,7 @@ export function createSocialFollowUsersIsFollowingInfinite<TData = InfiniteData<
 /**
  * @summary Check following relationship
  */
-export const prefetchSocialFollowUsersIsFollowingInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = unknown>(
+export const prefetchSocialFollowUsersIsFollowingInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -650,7 +732,7 @@ export const prefetchSocialFollowUsersIsFollowingInfiniteQuery = async <TData = 
 
 
 
-export const getSocialFollowUsersIsFollowingQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialFollowUsersIsFollowingQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -669,14 +751,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersIsFollowingQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>>
-export type SocialFollowUsersIsFollowingQueryError = unknown
+export type SocialFollowUsersIsFollowingQueryError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404
 
 
 /**
  * @summary Check following relationship
  */
 
-export function createSocialFollowUsersIsFollowing<TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = unknown>(
+export function createSocialFollowUsersIsFollowing<TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -691,7 +773,7 @@ export function createSocialFollowUsersIsFollowing<TData = Awaited<ReturnType<ty
 /**
  * @summary Check following relationship
  */
-export const prefetchSocialFollowUsersIsFollowingQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = unknown>(
+export const prefetchSocialFollowUsersIsFollowingQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError = SocialFollowUsersIsFollowing400 | SocialFollowUsersIsFollowing401 | SocialFollowUsersIsFollowing403 | SocialFollowUsersIsFollowing404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersIsFollowing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -710,12 +792,20 @@ export const prefetchSocialFollowUsersIsFollowingQuery = async <TData = Awaited<
 /**
  * @summary Get social stats for authenticated user
  */
-export type socialFollowUsersMeSocialStatsResponse200 = void
+export type socialFollowUsersMeSocialStatsResponse200 = SocialFollowUsersMeSocialStats200
+
+export type socialFollowUsersMeSocialStatsResponse400 = SocialFollowUsersMeSocialStats400
+
+export type socialFollowUsersMeSocialStatsResponse401 = SocialFollowUsersMeSocialStats401
+
+export type socialFollowUsersMeSocialStatsResponse403 = SocialFollowUsersMeSocialStats403
 
 export type socialFollowUsersMeSocialStatsResponseSuccess = socialFollowUsersMeSocialStatsResponse200
-;
+export type socialFollowUsersMeSocialStatsResponseError = (socialFollowUsersMeSocialStatsResponse400 | socialFollowUsersMeSocialStatsResponse401 | socialFollowUsersMeSocialStatsResponse403) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersMeSocialStatsResponse = (socialFollowUsersMeSocialStatsResponseSuccess)
+export type socialFollowUsersMeSocialStatsResponse = (socialFollowUsersMeSocialStatsResponseSuccess | socialFollowUsersMeSocialStatsResponseError)
 
 export const getSocialFollowUsersMeSocialStatsUrl = () => {
 
@@ -753,7 +843,7 @@ export const getSocialFollowUsersMeSocialStatsQueryKey = () => {
     }
 
 
-export const getSocialFollowUsersMeSocialStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialFollowUsersMeSocialStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>>, TError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -772,14 +862,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersMeSocialStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>>
-export type SocialFollowUsersMeSocialStatsInfiniteQueryError = unknown
+export type SocialFollowUsersMeSocialStatsInfiniteQueryError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403
 
 
 /**
  * @summary Get social stats for authenticated user
  */
 
-export function createSocialFollowUsersMeSocialStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>>, TError = unknown>(
+export function createSocialFollowUsersMeSocialStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>>, TError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -794,7 +884,7 @@ export function createSocialFollowUsersMeSocialStatsInfinite<TData = InfiniteDat
 /**
  * @summary Get social stats for authenticated user
  */
-export const prefetchSocialFollowUsersMeSocialStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = unknown>(
+export const prefetchSocialFollowUsersMeSocialStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -810,7 +900,7 @@ export const prefetchSocialFollowUsersMeSocialStatsInfiniteQuery = async <TData 
 
 
 
-export const getSocialFollowUsersMeSocialStatsQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialFollowUsersMeSocialStatsQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -829,14 +919,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersMeSocialStatsQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>>
-export type SocialFollowUsersMeSocialStatsQueryError = unknown
+export type SocialFollowUsersMeSocialStatsQueryError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403
 
 
 /**
  * @summary Get social stats for authenticated user
  */
 
-export function createSocialFollowUsersMeSocialStats<TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = unknown>(
+export function createSocialFollowUsersMeSocialStats<TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -851,7 +941,7 @@ export function createSocialFollowUsersMeSocialStats<TData = Awaited<ReturnType<
 /**
  * @summary Get social stats for authenticated user
  */
-export const prefetchSocialFollowUsersMeSocialStatsQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = unknown>(
+export const prefetchSocialFollowUsersMeSocialStatsQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError = SocialFollowUsersMeSocialStats400 | SocialFollowUsersMeSocialStats401 | SocialFollowUsersMeSocialStats403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersMeSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -870,12 +960,18 @@ export const prefetchSocialFollowUsersMeSocialStatsQuery = async <TData = Awaite
 /**
  * @summary Get social stats for a user
  */
-export type socialFollowUsersSocialStatsResponse200 = void
+export type socialFollowUsersSocialStatsResponse200 = SocialFollowUsersSocialStats200
+
+export type socialFollowUsersSocialStatsResponse400 = SocialFollowUsersSocialStats400
+
+export type socialFollowUsersSocialStatsResponse404 = SocialFollowUsersSocialStats404
 
 export type socialFollowUsersSocialStatsResponseSuccess = socialFollowUsersSocialStatsResponse200
-;
+export type socialFollowUsersSocialStatsResponseError = (socialFollowUsersSocialStatsResponse400 | socialFollowUsersSocialStatsResponse404) & {
+  headers: Headers;
+};
 
-export type socialFollowUsersSocialStatsResponse = (socialFollowUsersSocialStatsResponseSuccess)
+export type socialFollowUsersSocialStatsResponse = (socialFollowUsersSocialStatsResponseSuccess | socialFollowUsersSocialStatsResponseError)
 
 export const getSocialFollowUsersSocialStatsUrl = (userId: string,) => {
 
@@ -913,7 +1009,7 @@ export const getSocialFollowUsersSocialStatsQueryKey = (userId: string,) => {
     }
 
 
-export const getSocialFollowUsersSocialStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialFollowUsersSocialStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>>, TError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -932,14 +1028,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersSocialStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>>
-export type SocialFollowUsersSocialStatsInfiniteQueryError = unknown
+export type SocialFollowUsersSocialStatsInfiniteQueryError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404
 
 
 /**
  * @summary Get social stats for a user
  */
 
-export function createSocialFollowUsersSocialStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>>, TError = unknown>(
+export function createSocialFollowUsersSocialStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>>, TError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -954,7 +1050,7 @@ export function createSocialFollowUsersSocialStatsInfinite<TData = InfiniteData<
 /**
  * @summary Get social stats for a user
  */
-export const prefetchSocialFollowUsersSocialStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = unknown>(
+export const prefetchSocialFollowUsersSocialStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -970,7 +1066,7 @@ export const prefetchSocialFollowUsersSocialStatsInfiniteQuery = async <TData = 
 
 
 
-export const getSocialFollowUsersSocialStatsQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialFollowUsersSocialStatsQueryOptions = <TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -989,14 +1085,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialFollowUsersSocialStatsQueryResult = NonNullable<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>>
-export type SocialFollowUsersSocialStatsQueryError = unknown
+export type SocialFollowUsersSocialStatsQueryError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404
 
 
 /**
  * @summary Get social stats for a user
  */
 
-export function createSocialFollowUsersSocialStats<TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = unknown>(
+export function createSocialFollowUsersSocialStats<TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1011,7 +1107,7 @@ export function createSocialFollowUsersSocialStats<TData = Awaited<ReturnType<ty
 /**
  * @summary Get social stats for a user
  */
-export const prefetchSocialFollowUsersSocialStatsQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = unknown>(
+export const prefetchSocialFollowUsersSocialStatsQuery = async <TData = Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError = SocialFollowUsersSocialStats400 | SocialFollowUsersSocialStats404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialFollowUsersSocialStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

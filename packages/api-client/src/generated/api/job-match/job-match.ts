@@ -26,6 +26,15 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  JobMatchMatchGet200,
+  JobMatchMatchGet400,
+  JobMatchMatchGet401,
+  JobMatchMatchGet403,
+  JobMatchMatchGet404,
+  JobMatchMatchPost200,
+  JobMatchMatchPost400,
+  JobMatchMatchPost401,
+  JobMatchMatchPost403,
   JobMatchMatchPostBody
 } from '../../models';
 
@@ -40,12 +49,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Match Score API
  * @summary Compute the Match Score for a (resume, job) pair
  */
-export type jobMatchMatchPostResponse200 = void
+export type jobMatchMatchPostResponse200 = JobMatchMatchPost200
+
+export type jobMatchMatchPostResponse400 = JobMatchMatchPost400
+
+export type jobMatchMatchPostResponse401 = JobMatchMatchPost401
+
+export type jobMatchMatchPostResponse403 = JobMatchMatchPost403
 
 export type jobMatchMatchPostResponseSuccess = jobMatchMatchPostResponse200
-;
+export type jobMatchMatchPostResponseError = (jobMatchMatchPostResponse400 | jobMatchMatchPostResponse401 | jobMatchMatchPostResponse403) & {
+  headers: Headers;
+};
 
-export type jobMatchMatchPostResponse = (jobMatchMatchPostResponseSuccess)
+export type jobMatchMatchPostResponse = (jobMatchMatchPostResponseSuccess | jobMatchMatchPostResponseError)
 
 export const getJobMatchMatchPostUrl = () => {
 
@@ -70,7 +87,7 @@ export const jobMatchMatchPost = async (jobMatchMatchPostBody: JobMatchMatchPost
 
 
 
-export const getJobMatchMatchPostMutationOptions = <TError = unknown,
+export const getJobMatchMatchPostMutationOptions = <TError = JobMatchMatchPost400 | JobMatchMatchPost401 | JobMatchMatchPost403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobMatchMatchPost>>, TError,{data: JobMatchMatchPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof jobMatchMatchPost>>, TError,{data: JobMatchMatchPostBody}, TContext> => {
 
@@ -99,12 +116,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type JobMatchMatchPostMutationResult = NonNullable<Awaited<ReturnType<typeof jobMatchMatchPost>>>
     export type JobMatchMatchPostMutationBody = JobMatchMatchPostBody
-    export type JobMatchMatchPostMutationError = unknown
+    export type JobMatchMatchPostMutationError = JobMatchMatchPost400 | JobMatchMatchPost401 | JobMatchMatchPost403
 
     /**
  * @summary Compute the Match Score for a (resume, job) pair
  */
-export const createJobMatchMatchPost = <TError = unknown,
+export const createJobMatchMatchPost = <TError = JobMatchMatchPost400 | JobMatchMatchPost401 | JobMatchMatchPost403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof jobMatchMatchPost>>, TError,{data: JobMatchMatchPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof jobMatchMatchPost>>,
@@ -118,12 +135,22 @@ export const createJobMatchMatchPost = <TError = unknown,
  * Match Score API
  * @summary Read the Match Score for a (resume, job) pair (cached)
  */
-export type jobMatchMatchGetResponse200 = void
+export type jobMatchMatchGetResponse200 = JobMatchMatchGet200
+
+export type jobMatchMatchGetResponse400 = JobMatchMatchGet400
+
+export type jobMatchMatchGetResponse401 = JobMatchMatchGet401
+
+export type jobMatchMatchGetResponse403 = JobMatchMatchGet403
+
+export type jobMatchMatchGetResponse404 = JobMatchMatchGet404
 
 export type jobMatchMatchGetResponseSuccess = jobMatchMatchGetResponse200
-;
+export type jobMatchMatchGetResponseError = (jobMatchMatchGetResponse400 | jobMatchMatchGetResponse401 | jobMatchMatchGetResponse403 | jobMatchMatchGetResponse404) & {
+  headers: Headers;
+};
 
-export type jobMatchMatchGetResponse = (jobMatchMatchGetResponseSuccess)
+export type jobMatchMatchGetResponse = (jobMatchMatchGetResponseSuccess | jobMatchMatchGetResponseError)
 
 export const getJobMatchMatchGetUrl = (resumeId: string,
     jobId: string,) => {
@@ -165,7 +192,7 @@ export const getJobMatchMatchGetQueryKey = (resumeId: string,
     }
 
 
-export const getJobMatchMatchGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobMatchMatchGet>>>, TError = unknown>(resumeId: string,
+export const getJobMatchMatchGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof jobMatchMatchGet>>>, TError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404>(resumeId: string,
     jobId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobMatchMatchGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -185,14 +212,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type JobMatchMatchGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof jobMatchMatchGet>>>
-export type JobMatchMatchGetInfiniteQueryError = unknown
+export type JobMatchMatchGetInfiniteQueryError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404
 
 
 /**
  * @summary Read the Match Score for a (resume, job) pair (cached)
  */
 
-export function createJobMatchMatchGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobMatchMatchGet>>>, TError = unknown>(
+export function createJobMatchMatchGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof jobMatchMatchGet>>>, TError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404>(
  resumeId: () =>  string,
     jobId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobMatchMatchGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -209,7 +236,7 @@ export function createJobMatchMatchGetInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary Read the Match Score for a (resume, job) pair (cached)
  */
-export const prefetchJobMatchMatchGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = unknown>(
+export const prefetchJobMatchMatchGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404>(
  queryClient: QueryClient, resumeId: string,
     jobId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof jobMatchMatchGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -226,7 +253,7 @@ export const prefetchJobMatchMatchGetInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getJobMatchMatchGetQueryOptions = <TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = unknown>(resumeId: string,
+export const getJobMatchMatchGetQueryOptions = <TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404>(resumeId: string,
     jobId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobMatchMatchGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -246,14 +273,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type JobMatchMatchGetQueryResult = NonNullable<Awaited<ReturnType<typeof jobMatchMatchGet>>>
-export type JobMatchMatchGetQueryError = unknown
+export type JobMatchMatchGetQueryError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404
 
 
 /**
  * @summary Read the Match Score for a (resume, job) pair (cached)
  */
 
-export function createJobMatchMatchGet<TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = unknown>(
+export function createJobMatchMatchGet<TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404>(
  resumeId: () =>  string,
     jobId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobMatchMatchGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -270,7 +297,7 @@ export function createJobMatchMatchGet<TData = Awaited<ReturnType<typeof jobMatc
 /**
  * @summary Read the Match Score for a (resume, job) pair (cached)
  */
-export const prefetchJobMatchMatchGetQuery = async <TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = unknown>(
+export const prefetchJobMatchMatchGetQuery = async <TData = Awaited<ReturnType<typeof jobMatchMatchGet>>, TError = JobMatchMatchGet400 | JobMatchMatchGet401 | JobMatchMatchGet403 | JobMatchMatchGet404>(
  queryClient: QueryClient, resumeId: string,
     jobId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof jobMatchMatchGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

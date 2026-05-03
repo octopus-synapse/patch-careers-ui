@@ -26,9 +26,42 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SharesAliasesDelete200,
+  SharesAliasesDelete400,
+  SharesAliasesDelete401,
+  SharesAliasesDelete403,
+  SharesAliasesDelete404,
+  SharesAliasesGet200,
+  SharesAliasesGet400,
+  SharesAliasesGet401,
+  SharesAliasesGet403,
+  SharesAliasesGet404,
+  SharesAliasesPost200,
+  SharesAliasesPost400,
+  SharesAliasesPost401,
+  SharesAliasesPost403,
+  SharesAliasesPost404,
   SharesAliasesPostBody,
+  SharesCreate200,
+  SharesCreate400,
+  SharesCreate401,
+  SharesCreate403,
   SharesCreateBody,
-  SharesQrPngParams
+  SharesDelete200,
+  SharesDelete400,
+  SharesDelete401,
+  SharesDelete403,
+  SharesDelete404,
+  SharesQrPng400,
+  SharesQrPng401,
+  SharesQrPng403,
+  SharesQrPng404,
+  SharesQrPngParams,
+  SharesResume200,
+  SharesResume400,
+  SharesResume401,
+  SharesResume403,
+  SharesResume404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -42,12 +75,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Share Management API
  * @summary Create share link for a resume
  */
-export type sharesCreateResponse200 = void
+export type sharesCreateResponse200 = SharesCreate200
+
+export type sharesCreateResponse400 = SharesCreate400
+
+export type sharesCreateResponse401 = SharesCreate401
+
+export type sharesCreateResponse403 = SharesCreate403
 
 export type sharesCreateResponseSuccess = sharesCreateResponse200
-;
+export type sharesCreateResponseError = (sharesCreateResponse400 | sharesCreateResponse401 | sharesCreateResponse403) & {
+  headers: Headers;
+};
 
-export type sharesCreateResponse = (sharesCreateResponseSuccess)
+export type sharesCreateResponse = (sharesCreateResponseSuccess | sharesCreateResponseError)
 
 export const getSharesCreateUrl = () => {
 
@@ -72,7 +113,7 @@ export const sharesCreate = async (sharesCreateBody: SharesCreateBody, options?:
 
 
 
-export const getSharesCreateMutationOptions = <TError = unknown,
+export const getSharesCreateMutationOptions = <TError = SharesCreate400 | SharesCreate401 | SharesCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesCreate>>, TError,{data: SharesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof sharesCreate>>, TError,{data: SharesCreateBody}, TContext> => {
 
@@ -101,12 +142,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SharesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof sharesCreate>>>
     export type SharesCreateMutationBody = SharesCreateBody
-    export type SharesCreateMutationError = unknown
+    export type SharesCreateMutationError = SharesCreate400 | SharesCreate401 | SharesCreate403
 
     /**
  * @summary Create share link for a resume
  */
-export const createSharesCreate = <TError = unknown,
+export const createSharesCreate = <TError = SharesCreate400 | SharesCreate401 | SharesCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesCreate>>, TError,{data: SharesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof sharesCreate>>,
@@ -120,12 +161,22 @@ export const createSharesCreate = <TError = unknown,
  * Share Management API
  * @summary List share links for a resume
  */
-export type sharesResumeResponse200 = void
+export type sharesResumeResponse200 = SharesResume200
+
+export type sharesResumeResponse400 = SharesResume400
+
+export type sharesResumeResponse401 = SharesResume401
+
+export type sharesResumeResponse403 = SharesResume403
+
+export type sharesResumeResponse404 = SharesResume404
 
 export type sharesResumeResponseSuccess = sharesResumeResponse200
-;
+export type sharesResumeResponseError = (sharesResumeResponse400 | sharesResumeResponse401 | sharesResumeResponse403 | sharesResumeResponse404) & {
+  headers: Headers;
+};
 
-export type sharesResumeResponse = (sharesResumeResponseSuccess)
+export type sharesResumeResponse = (sharesResumeResponseSuccess | sharesResumeResponseError)
 
 export const getSharesResumeUrl = (resumeId: string,) => {
 
@@ -163,7 +214,7 @@ export const getSharesResumeQueryKey = (resumeId: string,) => {
     }
 
 
-export const getSharesResumeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof sharesResume>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSharesResumeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof sharesResume>>>, TError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -182,14 +233,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SharesResumeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof sharesResume>>>
-export type SharesResumeInfiniteQueryError = unknown
+export type SharesResumeInfiniteQueryError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404
 
 
 /**
  * @summary List share links for a resume
  */
 
-export function createSharesResumeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof sharesResume>>>, TError = unknown>(
+export function createSharesResumeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof sharesResume>>>, TError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -204,7 +255,7 @@ export function createSharesResumeInfinite<TData = InfiniteData<Awaited<ReturnTy
 /**
  * @summary List share links for a resume
  */
-export const prefetchSharesResumeInfiniteQuery = async <TData = Awaited<ReturnType<typeof sharesResume>>, TError = unknown>(
+export const prefetchSharesResumeInfiniteQuery = async <TData = Awaited<ReturnType<typeof sharesResume>>, TError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -220,7 +271,7 @@ export const prefetchSharesResumeInfiniteQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getSharesResumeQueryOptions = <TData = Awaited<ReturnType<typeof sharesResume>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSharesResumeQueryOptions = <TData = Awaited<ReturnType<typeof sharesResume>>, TError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -239,14 +290,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SharesResumeQueryResult = NonNullable<Awaited<ReturnType<typeof sharesResume>>>
-export type SharesResumeQueryError = unknown
+export type SharesResumeQueryError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404
 
 
 /**
  * @summary List share links for a resume
  */
 
-export function createSharesResume<TData = Awaited<ReturnType<typeof sharesResume>>, TError = unknown>(
+export function createSharesResume<TData = Awaited<ReturnType<typeof sharesResume>>, TError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -261,7 +312,7 @@ export function createSharesResume<TData = Awaited<ReturnType<typeof sharesResum
 /**
  * @summary List share links for a resume
  */
-export const prefetchSharesResumeQuery = async <TData = Awaited<ReturnType<typeof sharesResume>>, TError = unknown>(
+export const prefetchSharesResumeQuery = async <TData = Awaited<ReturnType<typeof sharesResume>>, TError = SharesResume400 | SharesResume401 | SharesResume403 | SharesResume404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesResume>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -281,12 +332,22 @@ export const prefetchSharesResumeQuery = async <TData = Awaited<ReturnType<typeo
  * Share Management API
  * @summary Delete a share link
  */
-export type sharesDeleteResponse200 = void
+export type sharesDeleteResponse200 = SharesDelete200
+
+export type sharesDeleteResponse400 = SharesDelete400
+
+export type sharesDeleteResponse401 = SharesDelete401
+
+export type sharesDeleteResponse403 = SharesDelete403
+
+export type sharesDeleteResponse404 = SharesDelete404
 
 export type sharesDeleteResponseSuccess = sharesDeleteResponse200
-;
+export type sharesDeleteResponseError = (sharesDeleteResponse400 | sharesDeleteResponse401 | sharesDeleteResponse403 | sharesDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type sharesDeleteResponse = (sharesDeleteResponseSuccess)
+export type sharesDeleteResponse = (sharesDeleteResponseSuccess | sharesDeleteResponseError)
 
 export const getSharesDeleteUrl = (shareId: string,) => {
 
@@ -310,7 +371,7 @@ export const sharesDelete = async (shareId: string, options?: RequestInit): Prom
 
 
 
-export const getSharesDeleteMutationOptions = <TError = unknown,
+export const getSharesDeleteMutationOptions = <TError = SharesDelete400 | SharesDelete401 | SharesDelete403 | SharesDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesDelete>>, TError,{shareId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof sharesDelete>>, TError,{shareId: string}, TContext> => {
 
@@ -339,12 +400,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SharesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof sharesDelete>>>
 
-    export type SharesDeleteMutationError = unknown
+    export type SharesDeleteMutationError = SharesDelete400 | SharesDelete401 | SharesDelete403 | SharesDelete404
 
     /**
  * @summary Delete a share link
  */
-export const createSharesDelete = <TError = unknown,
+export const createSharesDelete = <TError = SharesDelete400 | SharesDelete401 | SharesDelete403 | SharesDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesDelete>>, TError,{shareId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof sharesDelete>>,
@@ -358,12 +419,22 @@ export const createSharesDelete = <TError = unknown,
  * Share Management API
  * @summary Add a slug alias to a share
  */
-export type sharesAliasesPostResponse200 = void
+export type sharesAliasesPostResponse200 = SharesAliasesPost200
+
+export type sharesAliasesPostResponse400 = SharesAliasesPost400
+
+export type sharesAliasesPostResponse401 = SharesAliasesPost401
+
+export type sharesAliasesPostResponse403 = SharesAliasesPost403
+
+export type sharesAliasesPostResponse404 = SharesAliasesPost404
 
 export type sharesAliasesPostResponseSuccess = sharesAliasesPostResponse200
-;
+export type sharesAliasesPostResponseError = (sharesAliasesPostResponse400 | sharesAliasesPostResponse401 | sharesAliasesPostResponse403 | sharesAliasesPostResponse404) & {
+  headers: Headers;
+};
 
-export type sharesAliasesPostResponse = (sharesAliasesPostResponseSuccess)
+export type sharesAliasesPostResponse = (sharesAliasesPostResponseSuccess | sharesAliasesPostResponseError)
 
 export const getSharesAliasesPostUrl = (shareId: string,) => {
 
@@ -389,7 +460,7 @@ export const sharesAliasesPost = async (shareId: string,
 
 
 
-export const getSharesAliasesPostMutationOptions = <TError = unknown,
+export const getSharesAliasesPostMutationOptions = <TError = SharesAliasesPost400 | SharesAliasesPost401 | SharesAliasesPost403 | SharesAliasesPost404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesAliasesPost>>, TError,{shareId: string;data: SharesAliasesPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof sharesAliasesPost>>, TError,{shareId: string;data: SharesAliasesPostBody}, TContext> => {
 
@@ -418,12 +489,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SharesAliasesPostMutationResult = NonNullable<Awaited<ReturnType<typeof sharesAliasesPost>>>
     export type SharesAliasesPostMutationBody = SharesAliasesPostBody
-    export type SharesAliasesPostMutationError = unknown
+    export type SharesAliasesPostMutationError = SharesAliasesPost400 | SharesAliasesPost401 | SharesAliasesPost403 | SharesAliasesPost404
 
     /**
  * @summary Add a slug alias to a share
  */
-export const createSharesAliasesPost = <TError = unknown,
+export const createSharesAliasesPost = <TError = SharesAliasesPost400 | SharesAliasesPost401 | SharesAliasesPost403 | SharesAliasesPost404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesAliasesPost>>, TError,{shareId: string;data: SharesAliasesPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof sharesAliasesPost>>,
@@ -437,12 +508,22 @@ export const createSharesAliasesPost = <TError = unknown,
  * Share Management API
  * @summary List slug aliases for a share
  */
-export type sharesAliasesGetResponse200 = void
+export type sharesAliasesGetResponse200 = SharesAliasesGet200
+
+export type sharesAliasesGetResponse400 = SharesAliasesGet400
+
+export type sharesAliasesGetResponse401 = SharesAliasesGet401
+
+export type sharesAliasesGetResponse403 = SharesAliasesGet403
+
+export type sharesAliasesGetResponse404 = SharesAliasesGet404
 
 export type sharesAliasesGetResponseSuccess = sharesAliasesGetResponse200
-;
+export type sharesAliasesGetResponseError = (sharesAliasesGetResponse400 | sharesAliasesGetResponse401 | sharesAliasesGetResponse403 | sharesAliasesGetResponse404) & {
+  headers: Headers;
+};
 
-export type sharesAliasesGetResponse = (sharesAliasesGetResponseSuccess)
+export type sharesAliasesGetResponse = (sharesAliasesGetResponseSuccess | sharesAliasesGetResponseError)
 
 export const getSharesAliasesGetUrl = (shareId: string,) => {
 
@@ -480,7 +561,7 @@ export const getSharesAliasesGetQueryKey = (shareId: string,) => {
     }
 
 
-export const getSharesAliasesGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof sharesAliasesGet>>>, TError = unknown>(shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSharesAliasesGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof sharesAliasesGet>>>, TError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404>(shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -499,14 +580,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SharesAliasesGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof sharesAliasesGet>>>
-export type SharesAliasesGetInfiniteQueryError = unknown
+export type SharesAliasesGetInfiniteQueryError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404
 
 
 /**
  * @summary List slug aliases for a share
  */
 
-export function createSharesAliasesGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof sharesAliasesGet>>>, TError = unknown>(
+export function createSharesAliasesGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof sharesAliasesGet>>>, TError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404>(
  shareId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -521,7 +602,7 @@ export function createSharesAliasesGetInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary List slug aliases for a share
  */
-export const prefetchSharesAliasesGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = unknown>(
+export const prefetchSharesAliasesGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404>(
  queryClient: QueryClient, shareId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -537,7 +618,7 @@ export const prefetchSharesAliasesGetInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getSharesAliasesGetQueryOptions = <TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = unknown>(shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSharesAliasesGetQueryOptions = <TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404>(shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -556,14 +637,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SharesAliasesGetQueryResult = NonNullable<Awaited<ReturnType<typeof sharesAliasesGet>>>
-export type SharesAliasesGetQueryError = unknown
+export type SharesAliasesGetQueryError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404
 
 
 /**
  * @summary List slug aliases for a share
  */
 
-export function createSharesAliasesGet<TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = unknown>(
+export function createSharesAliasesGet<TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404>(
  shareId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -578,7 +659,7 @@ export function createSharesAliasesGet<TData = Awaited<ReturnType<typeof sharesA
 /**
  * @summary List slug aliases for a share
  */
-export const prefetchSharesAliasesGetQuery = async <TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = unknown>(
+export const prefetchSharesAliasesGetQuery = async <TData = Awaited<ReturnType<typeof sharesAliasesGet>>, TError = SharesAliasesGet400 | SharesAliasesGet401 | SharesAliasesGet403 | SharesAliasesGet404>(
  queryClient: QueryClient, shareId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesAliasesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -598,12 +679,22 @@ export const prefetchSharesAliasesGetQuery = async <TData = Awaited<ReturnType<t
  * Share Management API
  * @summary Remove a slug alias
  */
-export type sharesAliasesDeleteResponse200 = void
+export type sharesAliasesDeleteResponse200 = SharesAliasesDelete200
+
+export type sharesAliasesDeleteResponse400 = SharesAliasesDelete400
+
+export type sharesAliasesDeleteResponse401 = SharesAliasesDelete401
+
+export type sharesAliasesDeleteResponse403 = SharesAliasesDelete403
+
+export type sharesAliasesDeleteResponse404 = SharesAliasesDelete404
 
 export type sharesAliasesDeleteResponseSuccess = sharesAliasesDeleteResponse200
-;
+export type sharesAliasesDeleteResponseError = (sharesAliasesDeleteResponse400 | sharesAliasesDeleteResponse401 | sharesAliasesDeleteResponse403 | sharesAliasesDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type sharesAliasesDeleteResponse = (sharesAliasesDeleteResponseSuccess)
+export type sharesAliasesDeleteResponse = (sharesAliasesDeleteResponseSuccess | sharesAliasesDeleteResponseError)
 
 export const getSharesAliasesDeleteUrl = (aliasId: string,) => {
 
@@ -627,7 +718,7 @@ export const sharesAliasesDelete = async (aliasId: string, options?: RequestInit
 
 
 
-export const getSharesAliasesDeleteMutationOptions = <TError = unknown,
+export const getSharesAliasesDeleteMutationOptions = <TError = SharesAliasesDelete400 | SharesAliasesDelete401 | SharesAliasesDelete403 | SharesAliasesDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesAliasesDelete>>, TError,{aliasId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof sharesAliasesDelete>>, TError,{aliasId: string}, TContext> => {
 
@@ -656,12 +747,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SharesAliasesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof sharesAliasesDelete>>>
 
-    export type SharesAliasesDeleteMutationError = unknown
+    export type SharesAliasesDeleteMutationError = SharesAliasesDelete400 | SharesAliasesDelete401 | SharesAliasesDelete403 | SharesAliasesDelete404
 
     /**
  * @summary Remove a slug alias
  */
-export const createSharesAliasesDelete = <TError = unknown,
+export const createSharesAliasesDelete = <TError = SharesAliasesDelete400 | SharesAliasesDelete401 | SharesAliasesDelete403 | SharesAliasesDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof sharesAliasesDelete>>, TError,{aliasId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof sharesAliasesDelete>>,
@@ -675,12 +766,22 @@ export const createSharesAliasesDelete = <TError = unknown,
  * Share Management API
  * @summary Render a QR code PNG pointing to the share public URL
  */
-export type sharesQrPngResponse200 = void
+export type sharesQrPngResponse200 = Blob
+
+export type sharesQrPngResponse400 = SharesQrPng400
+
+export type sharesQrPngResponse401 = SharesQrPng401
+
+export type sharesQrPngResponse403 = SharesQrPng403
+
+export type sharesQrPngResponse404 = SharesQrPng404
 
 export type sharesQrPngResponseSuccess = sharesQrPngResponse200
-;
+export type sharesQrPngResponseError = (sharesQrPngResponse400 | sharesQrPngResponse401 | sharesQrPngResponse403 | sharesQrPngResponse404) & {
+  headers: Headers;
+};
 
-export type sharesQrPngResponse = (sharesQrPngResponseSuccess)
+export type sharesQrPngResponse = (sharesQrPngResponseSuccess | sharesQrPngResponseError)
 
 export const getSharesQrPngUrl = (shareId: string,
     params?: SharesQrPngParams,) => {
@@ -729,7 +830,7 @@ export const getSharesQrPngQueryKey = (shareId: string,
     }
 
 
-export const getSharesQrPngInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof sharesQrPng>>>, TError = unknown>(shareId: string,
+export const getSharesQrPngInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof sharesQrPng>>>, TError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404>(shareId: string,
     params?: SharesQrPngParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesQrPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -749,14 +850,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SharesQrPngInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof sharesQrPng>>>
-export type SharesQrPngInfiniteQueryError = unknown
+export type SharesQrPngInfiniteQueryError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404
 
 
 /**
  * @summary Render a QR code PNG pointing to the share public URL
  */
 
-export function createSharesQrPngInfinite<TData = InfiniteData<Awaited<ReturnType<typeof sharesQrPng>>>, TError = unknown>(
+export function createSharesQrPngInfinite<TData = InfiniteData<Awaited<ReturnType<typeof sharesQrPng>>>, TError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404>(
  shareId: () =>  string,
     params?: () =>  SharesQrPngParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesQrPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -773,7 +874,7 @@ export function createSharesQrPngInfinite<TData = InfiniteData<Awaited<ReturnTyp
 /**
  * @summary Render a QR code PNG pointing to the share public URL
  */
-export const prefetchSharesQrPngInfiniteQuery = async <TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = unknown>(
+export const prefetchSharesQrPngInfiniteQuery = async <TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404>(
  queryClient: QueryClient, shareId: string,
     params?: SharesQrPngParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof sharesQrPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -790,7 +891,7 @@ export const prefetchSharesQrPngInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getSharesQrPngQueryOptions = <TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = unknown>(shareId: string,
+export const getSharesQrPngQueryOptions = <TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404>(shareId: string,
     params?: SharesQrPngParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesQrPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -810,14 +911,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SharesQrPngQueryResult = NonNullable<Awaited<ReturnType<typeof sharesQrPng>>>
-export type SharesQrPngQueryError = unknown
+export type SharesQrPngQueryError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404
 
 
 /**
  * @summary Render a QR code PNG pointing to the share public URL
  */
 
-export function createSharesQrPng<TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = unknown>(
+export function createSharesQrPng<TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404>(
  shareId: () =>  string,
     params?: () =>  SharesQrPngParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesQrPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -834,7 +935,7 @@ export function createSharesQrPng<TData = Awaited<ReturnType<typeof sharesQrPng>
 /**
  * @summary Render a QR code PNG pointing to the share public URL
  */
-export const prefetchSharesQrPngQuery = async <TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = unknown>(
+export const prefetchSharesQrPngQuery = async <TData = Awaited<ReturnType<typeof sharesQrPng>>, TError = SharesQrPng400 | SharesQrPng401 | SharesQrPng403 | SharesQrPng404>(
  queryClient: QueryClient, shareId: string,
     params?: SharesQrPngParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof sharesQrPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

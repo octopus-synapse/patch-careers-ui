@@ -26,7 +26,18 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ResumeStylesGetById200,
+  ResumeStylesGetById400,
+  ResumeStylesGetById401,
+  ResumeStylesList200,
+  ResumeStylesList400,
+  ResumeStylesList401,
   ResumeStylesListParams,
+  ResumeStylesPreviewPdf400,
+  ResumeStylesPreviewPdf401,
+  ResumeStylesStyle400,
+  ResumeStylesStyle401,
+  ResumeStylesStyle404,
   ResumeStylesStyleBody
 } from '../../models';
 
@@ -41,12 +52,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * ResumeStyle catalog + apply
  * @summary List published resume styles
  */
-export type resumeStylesListResponse200 = void
+export type resumeStylesListResponse200 = ResumeStylesList200
+
+export type resumeStylesListResponse400 = ResumeStylesList400
+
+export type resumeStylesListResponse401 = ResumeStylesList401
 
 export type resumeStylesListResponseSuccess = resumeStylesListResponse200
-;
+export type resumeStylesListResponseError = (resumeStylesListResponse400 | resumeStylesListResponse401) & {
+  headers: Headers;
+};
 
-export type resumeStylesListResponse = (resumeStylesListResponseSuccess)
+export type resumeStylesListResponse = (resumeStylesListResponseSuccess | resumeStylesListResponseError)
 
 export const getResumeStylesListUrl = (params?: ResumeStylesListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -91,7 +108,7 @@ export const getResumeStylesListQueryKey = (params?: ResumeStylesListParams,) =>
     }
 
 
-export const getResumeStylesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesList>>>, TError = unknown>(params?: ResumeStylesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeStylesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesList>>>, TError = ResumeStylesList400 | ResumeStylesList401>(params?: ResumeStylesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -110,14 +127,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeStylesListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeStylesList>>>
-export type ResumeStylesListInfiniteQueryError = unknown
+export type ResumeStylesListInfiniteQueryError = ResumeStylesList400 | ResumeStylesList401
 
 
 /**
  * @summary List published resume styles
  */
 
-export function createResumeStylesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesList>>>, TError = unknown>(
+export function createResumeStylesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesList>>>, TError = ResumeStylesList400 | ResumeStylesList401>(
  params?: () =>  ResumeStylesListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -132,7 +149,7 @@ export function createResumeStylesListInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary List published resume styles
  */
-export const prefetchResumeStylesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = unknown>(
+export const prefetchResumeStylesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = ResumeStylesList400 | ResumeStylesList401>(
  queryClient: QueryClient, params?: ResumeStylesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -148,7 +165,7 @@ export const prefetchResumeStylesListInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getResumeStylesListQueryOptions = <TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = unknown>(params?: ResumeStylesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeStylesListQueryOptions = <TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = ResumeStylesList400 | ResumeStylesList401>(params?: ResumeStylesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -167,14 +184,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeStylesListQueryResult = NonNullable<Awaited<ReturnType<typeof resumeStylesList>>>
-export type ResumeStylesListQueryError = unknown
+export type ResumeStylesListQueryError = ResumeStylesList400 | ResumeStylesList401
 
 
 /**
  * @summary List published resume styles
  */
 
-export function createResumeStylesList<TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = unknown>(
+export function createResumeStylesList<TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = ResumeStylesList400 | ResumeStylesList401>(
  params?: () =>  ResumeStylesListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -189,7 +206,7 @@ export function createResumeStylesList<TData = Awaited<ReturnType<typeof resumeS
 /**
  * @summary List published resume styles
  */
-export const prefetchResumeStylesListQuery = async <TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = unknown>(
+export const prefetchResumeStylesListQuery = async <TData = Awaited<ReturnType<typeof resumeStylesList>>, TError = ResumeStylesList400 | ResumeStylesList401>(
  queryClient: QueryClient, params?: ResumeStylesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -209,12 +226,18 @@ export const prefetchResumeStylesListQuery = async <TData = Awaited<ReturnType<t
  * ResumeStyle catalog + apply
  * @summary Get one ResumeStyle by id
  */
-export type resumeStylesGetByIdResponse200 = void
+export type resumeStylesGetByIdResponse200 = ResumeStylesGetById200
+
+export type resumeStylesGetByIdResponse400 = ResumeStylesGetById400
+
+export type resumeStylesGetByIdResponse401 = ResumeStylesGetById401
 
 export type resumeStylesGetByIdResponseSuccess = resumeStylesGetByIdResponse200
-;
+export type resumeStylesGetByIdResponseError = (resumeStylesGetByIdResponse400 | resumeStylesGetByIdResponse401) & {
+  headers: Headers;
+};
 
-export type resumeStylesGetByIdResponse = (resumeStylesGetByIdResponseSuccess)
+export type resumeStylesGetByIdResponse = (resumeStylesGetByIdResponseSuccess | resumeStylesGetByIdResponseError)
 
 export const getResumeStylesGetByIdUrl = (id: string,) => {
 
@@ -252,7 +275,7 @@ export const getResumeStylesGetByIdQueryKey = (id: string,) => {
     }
 
 
-export const getResumeStylesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesGetById>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeStylesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesGetById>>>, TError = ResumeStylesGetById400 | ResumeStylesGetById401>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -271,14 +294,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeStylesGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeStylesGetById>>>
-export type ResumeStylesGetByIdInfiniteQueryError = unknown
+export type ResumeStylesGetByIdInfiniteQueryError = ResumeStylesGetById400 | ResumeStylesGetById401
 
 
 /**
  * @summary Get one ResumeStyle by id
  */
 
-export function createResumeStylesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesGetById>>>, TError = unknown>(
+export function createResumeStylesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesGetById>>>, TError = ResumeStylesGetById400 | ResumeStylesGetById401>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -293,7 +316,7 @@ export function createResumeStylesGetByIdInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Get one ResumeStyle by id
  */
-export const prefetchResumeStylesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = unknown>(
+export const prefetchResumeStylesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = ResumeStylesGetById400 | ResumeStylesGetById401>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -309,7 +332,7 @@ export const prefetchResumeStylesGetByIdInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getResumeStylesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeStylesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = ResumeStylesGetById400 | ResumeStylesGetById401>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -328,14 +351,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeStylesGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof resumeStylesGetById>>>
-export type ResumeStylesGetByIdQueryError = unknown
+export type ResumeStylesGetByIdQueryError = ResumeStylesGetById400 | ResumeStylesGetById401
 
 
 /**
  * @summary Get one ResumeStyle by id
  */
 
-export function createResumeStylesGetById<TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = unknown>(
+export function createResumeStylesGetById<TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = ResumeStylesGetById400 | ResumeStylesGetById401>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -350,7 +373,7 @@ export function createResumeStylesGetById<TData = Awaited<ReturnType<typeof resu
 /**
  * @summary Get one ResumeStyle by id
  */
-export const prefetchResumeStylesGetByIdQuery = async <TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = unknown>(
+export const prefetchResumeStylesGetByIdQuery = async <TData = Awaited<ReturnType<typeof resumeStylesGetById>>, TError = ResumeStylesGetById400 | ResumeStylesGetById401>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -370,12 +393,20 @@ export const prefetchResumeStylesGetByIdQuery = async <TData = Awaited<ReturnTyp
  * ResumeStyle catalog + apply
  * @summary Apply a ResumeStyle to a resume
  */
-export type resumeStylesStyleResponse200 = void
+export type resumeStylesStyleResponse200 = unknown | null
+
+export type resumeStylesStyleResponse400 = ResumeStylesStyle400
+
+export type resumeStylesStyleResponse401 = ResumeStylesStyle401
+
+export type resumeStylesStyleResponse404 = ResumeStylesStyle404
 
 export type resumeStylesStyleResponseSuccess = resumeStylesStyleResponse200
-;
+export type resumeStylesStyleResponseError = (resumeStylesStyleResponse400 | resumeStylesStyleResponse401 | resumeStylesStyleResponse404) & {
+  headers: Headers;
+};
 
-export type resumeStylesStyleResponse = (resumeStylesStyleResponseSuccess)
+export type resumeStylesStyleResponse = (resumeStylesStyleResponseSuccess | resumeStylesStyleResponseError)
 
 export const getResumeStylesStyleUrl = (resumeId: string,) => {
 
@@ -401,7 +432,7 @@ export const resumeStylesStyle = async (resumeId: string,
 
 
 
-export const getResumeStylesStyleMutationOptions = <TError = unknown,
+export const getResumeStylesStyleMutationOptions = <TError = ResumeStylesStyle400 | ResumeStylesStyle401 | ResumeStylesStyle404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeStylesStyle>>, TError,{resumeId: string;data: ResumeStylesStyleBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeStylesStyle>>, TError,{resumeId: string;data: ResumeStylesStyleBody}, TContext> => {
 
@@ -430,12 +461,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeStylesStyleMutationResult = NonNullable<Awaited<ReturnType<typeof resumeStylesStyle>>>
     export type ResumeStylesStyleMutationBody = ResumeStylesStyleBody
-    export type ResumeStylesStyleMutationError = unknown
+    export type ResumeStylesStyleMutationError = ResumeStylesStyle400 | ResumeStylesStyle401 | ResumeStylesStyle404
 
     /**
  * @summary Apply a ResumeStyle to a resume
  */
-export const createResumeStylesStyle = <TError = unknown,
+export const createResumeStylesStyle = <TError = ResumeStylesStyle400 | ResumeStylesStyle401 | ResumeStylesStyle404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeStylesStyle>>, TError,{resumeId: string;data: ResumeStylesStyleBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeStylesStyle>>,
@@ -449,12 +480,18 @@ export const createResumeStylesStyle = <TError = unknown,
  * ResumeStyle catalog + apply
  * @summary Render a generic preview PDF for the style
  */
-export type resumeStylesPreviewPdfResponse200 = void
+export type resumeStylesPreviewPdfResponse200 = Blob
+
+export type resumeStylesPreviewPdfResponse400 = ResumeStylesPreviewPdf400
+
+export type resumeStylesPreviewPdfResponse401 = ResumeStylesPreviewPdf401
 
 export type resumeStylesPreviewPdfResponseSuccess = resumeStylesPreviewPdfResponse200
-;
+export type resumeStylesPreviewPdfResponseError = (resumeStylesPreviewPdfResponse400 | resumeStylesPreviewPdfResponse401) & {
+  headers: Headers;
+};
 
-export type resumeStylesPreviewPdfResponse = (resumeStylesPreviewPdfResponseSuccess)
+export type resumeStylesPreviewPdfResponse = (resumeStylesPreviewPdfResponseSuccess | resumeStylesPreviewPdfResponseError)
 
 export const getResumeStylesPreviewPdfUrl = (id: string,) => {
 
@@ -492,7 +529,7 @@ export const getResumeStylesPreviewPdfQueryKey = (id: string,) => {
     }
 
 
-export const getResumeStylesPreviewPdfInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeStylesPreviewPdfInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>>, TError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -511,14 +548,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeStylesPreviewPdfInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>>
-export type ResumeStylesPreviewPdfInfiniteQueryError = unknown
+export type ResumeStylesPreviewPdfInfiniteQueryError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401
 
 
 /**
  * @summary Render a generic preview PDF for the style
  */
 
-export function createResumeStylesPreviewPdfInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>>, TError = unknown>(
+export function createResumeStylesPreviewPdfInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>>, TError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -533,7 +570,7 @@ export function createResumeStylesPreviewPdfInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Render a generic preview PDF for the style
  */
-export const prefetchResumeStylesPreviewPdfInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = unknown>(
+export const prefetchResumeStylesPreviewPdfInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -549,7 +586,7 @@ export const prefetchResumeStylesPreviewPdfInfiniteQuery = async <TData = Awaite
 
 
 
-export const getResumeStylesPreviewPdfQueryOptions = <TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeStylesPreviewPdfQueryOptions = <TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -568,14 +605,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeStylesPreviewPdfQueryResult = NonNullable<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>>
-export type ResumeStylesPreviewPdfQueryError = unknown
+export type ResumeStylesPreviewPdfQueryError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401
 
 
 /**
  * @summary Render a generic preview PDF for the style
  */
 
-export function createResumeStylesPreviewPdf<TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = unknown>(
+export function createResumeStylesPreviewPdf<TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -590,7 +627,7 @@ export function createResumeStylesPreviewPdf<TData = Awaited<ReturnType<typeof r
 /**
  * @summary Render a generic preview PDF for the style
  */
-export const prefetchResumeStylesPreviewPdfQuery = async <TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = unknown>(
+export const prefetchResumeStylesPreviewPdfQuery = async <TData = Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError = ResumeStylesPreviewPdf400 | ResumeStylesPreviewPdf401>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeStylesPreviewPdf>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

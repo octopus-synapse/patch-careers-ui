@@ -25,6 +25,20 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  ApplyModeWeeklyCuratedApprove200,
+  ApplyModeWeeklyCuratedApprove400,
+  ApplyModeWeeklyCuratedApprove401,
+  ApplyModeWeeklyCuratedApprove404,
+  ApplyModeWeeklyCuratedCurrent200,
+  ApplyModeWeeklyCuratedCurrent400,
+  ApplyModeWeeklyCuratedCurrent401,
+  ApplyModeWeeklyCuratedReject200,
+  ApplyModeWeeklyCuratedReject400,
+  ApplyModeWeeklyCuratedReject401,
+  ApplyModeWeeklyCuratedReject404
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -36,12 +50,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Weekly curated approval flow
  * @summary This week's curated batch for the viewer.
  */
-export type applyModeWeeklyCuratedCurrentResponse200 = void
+export type applyModeWeeklyCuratedCurrentResponse200 = ApplyModeWeeklyCuratedCurrent200
+
+export type applyModeWeeklyCuratedCurrentResponse400 = ApplyModeWeeklyCuratedCurrent400
+
+export type applyModeWeeklyCuratedCurrentResponse401 = ApplyModeWeeklyCuratedCurrent401
 
 export type applyModeWeeklyCuratedCurrentResponseSuccess = applyModeWeeklyCuratedCurrentResponse200
-;
+export type applyModeWeeklyCuratedCurrentResponseError = (applyModeWeeklyCuratedCurrentResponse400 | applyModeWeeklyCuratedCurrentResponse401) & {
+  headers: Headers;
+};
 
-export type applyModeWeeklyCuratedCurrentResponse = (applyModeWeeklyCuratedCurrentResponseSuccess)
+export type applyModeWeeklyCuratedCurrentResponse = (applyModeWeeklyCuratedCurrentResponseSuccess | applyModeWeeklyCuratedCurrentResponseError)
 
 export const getApplyModeWeeklyCuratedCurrentUrl = () => {
 
@@ -79,7 +99,7 @@ export const getApplyModeWeeklyCuratedCurrentQueryKey = () => {
     }
 
 
-export const getApplyModeWeeklyCuratedCurrentInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getApplyModeWeeklyCuratedCurrentInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>>, TError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -98,14 +118,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApplyModeWeeklyCuratedCurrentInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>>
-export type ApplyModeWeeklyCuratedCurrentInfiniteQueryError = unknown
+export type ApplyModeWeeklyCuratedCurrentInfiniteQueryError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401
 
 
 /**
  * @summary This week's curated batch for the viewer.
  */
 
-export function createApplyModeWeeklyCuratedCurrentInfinite<TData = InfiniteData<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>>, TError = unknown>(
+export function createApplyModeWeeklyCuratedCurrentInfinite<TData = InfiniteData<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>>, TError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -120,7 +140,7 @@ export function createApplyModeWeeklyCuratedCurrentInfinite<TData = InfiniteData
 /**
  * @summary This week's curated batch for the viewer.
  */
-export const prefetchApplyModeWeeklyCuratedCurrentInfiniteQuery = async <TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = unknown>(
+export const prefetchApplyModeWeeklyCuratedCurrentInfiniteQuery = async <TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -136,7 +156,7 @@ export const prefetchApplyModeWeeklyCuratedCurrentInfiniteQuery = async <TData =
 
 
 
-export const getApplyModeWeeklyCuratedCurrentQueryOptions = <TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getApplyModeWeeklyCuratedCurrentQueryOptions = <TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -155,14 +175,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApplyModeWeeklyCuratedCurrentQueryResult = NonNullable<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>>
-export type ApplyModeWeeklyCuratedCurrentQueryError = unknown
+export type ApplyModeWeeklyCuratedCurrentQueryError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401
 
 
 /**
  * @summary This week's curated batch for the viewer.
  */
 
-export function createApplyModeWeeklyCuratedCurrent<TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = unknown>(
+export function createApplyModeWeeklyCuratedCurrent<TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -177,7 +197,7 @@ export function createApplyModeWeeklyCuratedCurrent<TData = Awaited<ReturnType<t
 /**
  * @summary This week's curated batch for the viewer.
  */
-export const prefetchApplyModeWeeklyCuratedCurrentQuery = async <TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = unknown>(
+export const prefetchApplyModeWeeklyCuratedCurrentQuery = async <TData = Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError = ApplyModeWeeklyCuratedCurrent400 | ApplyModeWeeklyCuratedCurrent401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedCurrent>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -197,12 +217,20 @@ export const prefetchApplyModeWeeklyCuratedCurrentQuery = async <TData = Awaited
  * Weekly curated approval flow
  * @summary Reject a curated item.
  */
-export type applyModeWeeklyCuratedRejectResponse200 = void
+export type applyModeWeeklyCuratedRejectResponse200 = ApplyModeWeeklyCuratedReject200
+
+export type applyModeWeeklyCuratedRejectResponse400 = ApplyModeWeeklyCuratedReject400
+
+export type applyModeWeeklyCuratedRejectResponse401 = ApplyModeWeeklyCuratedReject401
+
+export type applyModeWeeklyCuratedRejectResponse404 = ApplyModeWeeklyCuratedReject404
 
 export type applyModeWeeklyCuratedRejectResponseSuccess = applyModeWeeklyCuratedRejectResponse200
-;
+export type applyModeWeeklyCuratedRejectResponseError = (applyModeWeeklyCuratedRejectResponse400 | applyModeWeeklyCuratedRejectResponse401 | applyModeWeeklyCuratedRejectResponse404) & {
+  headers: Headers;
+};
 
-export type applyModeWeeklyCuratedRejectResponse = (applyModeWeeklyCuratedRejectResponseSuccess)
+export type applyModeWeeklyCuratedRejectResponse = (applyModeWeeklyCuratedRejectResponseSuccess | applyModeWeeklyCuratedRejectResponseError)
 
 export const getApplyModeWeeklyCuratedRejectUrl = (itemId: string,) => {
 
@@ -226,7 +254,7 @@ export const applyModeWeeklyCuratedReject = async (itemId: string, options?: Req
 
 
 
-export const getApplyModeWeeklyCuratedRejectMutationOptions = <TError = unknown,
+export const getApplyModeWeeklyCuratedRejectMutationOptions = <TError = ApplyModeWeeklyCuratedReject400 | ApplyModeWeeklyCuratedReject401 | ApplyModeWeeklyCuratedReject404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedReject>>, TError,{itemId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedReject>>, TError,{itemId: string}, TContext> => {
 
@@ -255,12 +283,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ApplyModeWeeklyCuratedRejectMutationResult = NonNullable<Awaited<ReturnType<typeof applyModeWeeklyCuratedReject>>>
 
-    export type ApplyModeWeeklyCuratedRejectMutationError = unknown
+    export type ApplyModeWeeklyCuratedRejectMutationError = ApplyModeWeeklyCuratedReject400 | ApplyModeWeeklyCuratedReject401 | ApplyModeWeeklyCuratedReject404
 
     /**
  * @summary Reject a curated item.
  */
-export const createApplyModeWeeklyCuratedReject = <TError = unknown,
+export const createApplyModeWeeklyCuratedReject = <TError = ApplyModeWeeklyCuratedReject400 | ApplyModeWeeklyCuratedReject401 | ApplyModeWeeklyCuratedReject404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedReject>>, TError,{itemId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof applyModeWeeklyCuratedReject>>,
@@ -274,12 +302,20 @@ export const createApplyModeWeeklyCuratedReject = <TError = unknown,
  * Weekly curated approval flow
  * @summary Approve a curated item — submits a JobApplication using the user's primary resume.
  */
-export type applyModeWeeklyCuratedApproveResponse200 = void
+export type applyModeWeeklyCuratedApproveResponse200 = ApplyModeWeeklyCuratedApprove200
+
+export type applyModeWeeklyCuratedApproveResponse400 = ApplyModeWeeklyCuratedApprove400
+
+export type applyModeWeeklyCuratedApproveResponse401 = ApplyModeWeeklyCuratedApprove401
+
+export type applyModeWeeklyCuratedApproveResponse404 = ApplyModeWeeklyCuratedApprove404
 
 export type applyModeWeeklyCuratedApproveResponseSuccess = applyModeWeeklyCuratedApproveResponse200
-;
+export type applyModeWeeklyCuratedApproveResponseError = (applyModeWeeklyCuratedApproveResponse400 | applyModeWeeklyCuratedApproveResponse401 | applyModeWeeklyCuratedApproveResponse404) & {
+  headers: Headers;
+};
 
-export type applyModeWeeklyCuratedApproveResponse = (applyModeWeeklyCuratedApproveResponseSuccess)
+export type applyModeWeeklyCuratedApproveResponse = (applyModeWeeklyCuratedApproveResponseSuccess | applyModeWeeklyCuratedApproveResponseError)
 
 export const getApplyModeWeeklyCuratedApproveUrl = (itemId: string,) => {
 
@@ -303,7 +339,7 @@ export const applyModeWeeklyCuratedApprove = async (itemId: string, options?: Re
 
 
 
-export const getApplyModeWeeklyCuratedApproveMutationOptions = <TError = unknown,
+export const getApplyModeWeeklyCuratedApproveMutationOptions = <TError = ApplyModeWeeklyCuratedApprove400 | ApplyModeWeeklyCuratedApprove401 | ApplyModeWeeklyCuratedApprove404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedApprove>>, TError,{itemId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedApprove>>, TError,{itemId: string}, TContext> => {
 
@@ -332,12 +368,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ApplyModeWeeklyCuratedApproveMutationResult = NonNullable<Awaited<ReturnType<typeof applyModeWeeklyCuratedApprove>>>
 
-    export type ApplyModeWeeklyCuratedApproveMutationError = unknown
+    export type ApplyModeWeeklyCuratedApproveMutationError = ApplyModeWeeklyCuratedApprove400 | ApplyModeWeeklyCuratedApprove401 | ApplyModeWeeklyCuratedApprove404
 
     /**
  * @summary Approve a curated item — submits a JobApplication using the user's primary resume.
  */
-export const createApplyModeWeeklyCuratedApprove = <TError = unknown,
+export const createApplyModeWeeklyCuratedApprove = <TError = ApplyModeWeeklyCuratedApprove400 | ApplyModeWeeklyCuratedApprove401 | ApplyModeWeeklyCuratedApprove404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof applyModeWeeklyCuratedApprove>>, TError,{itemId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof applyModeWeeklyCuratedApprove>>,

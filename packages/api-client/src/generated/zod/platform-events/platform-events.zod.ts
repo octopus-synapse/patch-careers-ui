@@ -9,6 +9,28 @@ import * as zod from 'zod';
 
 
 /**
+ * Returns `{events:[{name,version,propsSchema,requiredContext?,piiFields?}]}`. The frontend uses this to know which event names + prop shapes are valid before emitting.
+ * @summary Catalog of allowed analytics events
+ */
+export const PlatformEventsEventsSchemasResponse = zod.object({
+  "events": zod.array(zod.object({
+  "name": zod.string(),
+  "version": zod.number(),
+  "propsSchema": zod.object({
+  "type": zod.string(),
+  "properties": zod.record(zod.string(), zod.object({
+  "type": zod.string().optional(),
+  "description": zod.string().optional(),
+  "enum": zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])).optional()
+})).optional(),
+  "required": zod.array(zod.string()).optional()
+}),
+  "requiredContext": zod.array(zod.string()).optional(),
+  "piiFields": zod.array(zod.string()).optional()
+}))
+})
+
+/**
  * Accepts up to 100 events per request. Events are stored as-is; props is free-form JSON. The expected event names + shapes are listed by `/v1/events/schemas`.
  * @summary Ingest a batch of product events
  */
@@ -24,5 +46,13 @@ export const PlatformEventsEventsBody = zod.object({
   "props": zod.record(zod.string(), zod.unknown().nullable()).optional(),
   "occurredAt": zod.string().datetime({"offset":true})
 })).min(1).max(platformEventsEventsBodyEventsMax)
+})
+
+export const platformEventsEventsResponseAcceptedMin = 0;
+
+
+
+export const PlatformEventsEventsResponse = zod.object({
+  "accepted": zod.number().min(platformEventsEventsResponseAcceptedMin)
 })
 

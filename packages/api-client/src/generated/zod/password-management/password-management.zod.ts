@@ -16,6 +16,10 @@ export const PasswordManagementAuthForgotPasswordBody = zod.object({
   "email": zod.string().email()
 })
 
+export const PasswordManagementAuthForgotPasswordResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Changes the password for the authenticated user after verifying the current password.
  * @summary Change password
@@ -30,6 +34,10 @@ export const PasswordManagementMePasswordChangeBody = zod.object({
   "newPassword": zod.string().min(passwordManagementMePasswordChangeBodyNewPasswordMin)
 })
 
+export const PasswordManagementMePasswordChangeResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Resets the user password using a valid reset token received via email.
  * @summary Reset password with token
@@ -42,5 +50,9 @@ export const passwordManagementAuthResetPasswordBodyNewPasswordMin = 8;
 export const PasswordManagementAuthResetPasswordBody = zod.object({
   "token": zod.string().min(1),
   "newPassword": zod.string().min(passwordManagementAuthResetPasswordBodyNewPasswordMin)
+})
+
+export const PasswordManagementAuthResetPasswordResponse = zod.object({
+  "message": zod.string()
 })
 

@@ -26,17 +26,50 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  OnboardingCreate200,
+  OnboardingCreate400,
+  OnboardingCreate401,
   OnboardingCreateBody,
+  OnboardingProgressGet200,
+  OnboardingProgressGet400,
+  OnboardingProgressGet401,
+  OnboardingProgressPut200,
+  OnboardingProgressPut400,
+  OnboardingProgressPut401,
   OnboardingProgressPutBody,
+  OnboardingSession200,
+  OnboardingSession400,
+  OnboardingSession401,
+  OnboardingSessionComplete200,
+  OnboardingSessionComplete400,
+  OnboardingSessionComplete401,
+  OnboardingSessionGoto200,
+  OnboardingSessionGoto400,
+  OnboardingSessionGoto401,
   OnboardingSessionGotoBody,
   OnboardingSessionGotoParams,
+  OnboardingSessionNext200,
+  OnboardingSessionNext400,
+  OnboardingSessionNext401,
   OnboardingSessionNextBody,
   OnboardingSessionNextParams,
   OnboardingSessionParams,
+  OnboardingSessionPrevious200,
+  OnboardingSessionPrevious400,
+  OnboardingSessionPrevious401,
   OnboardingSessionPreviousParams,
+  OnboardingSessionRestart200,
+  OnboardingSessionRestart400,
+  OnboardingSessionRestart401,
   OnboardingSessionRestartParams,
+  OnboardingSessionSave200,
+  OnboardingSessionSave400,
+  OnboardingSessionSave401,
   OnboardingSessionSaveBody,
-  OnboardingSessionSaveParams
+  OnboardingSessionSaveParams,
+  OnboardingStatus200,
+  OnboardingStatus400,
+  OnboardingStatus401
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -50,12 +83,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Onboarding API
  * @summary Get onboarding session with field definitions and navigation
  */
-export type onboardingSessionResponse200 = void
+export type onboardingSessionResponse200 = OnboardingSession200
+
+export type onboardingSessionResponse400 = OnboardingSession400
+
+export type onboardingSessionResponse401 = OnboardingSession401
 
 export type onboardingSessionResponseSuccess = onboardingSessionResponse200
-;
+export type onboardingSessionResponseError = (onboardingSessionResponse400 | onboardingSessionResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionResponse = (onboardingSessionResponseSuccess)
+export type onboardingSessionResponse = (onboardingSessionResponseSuccess | onboardingSessionResponseError)
 
 export const getOnboardingSessionUrl = (params?: OnboardingSessionParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -100,7 +139,7 @@ export const getOnboardingSessionQueryKey = (params?: OnboardingSessionParams,) 
     }
 
 
-export const getOnboardingSessionInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof onboardingSession>>>, TError = unknown>(params?: OnboardingSessionParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getOnboardingSessionInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof onboardingSession>>>, TError = OnboardingSession400 | OnboardingSession401>(params?: OnboardingSessionParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -119,14 +158,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type OnboardingSessionInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingSession>>>
-export type OnboardingSessionInfiniteQueryError = unknown
+export type OnboardingSessionInfiniteQueryError = OnboardingSession400 | OnboardingSession401
 
 
 /**
  * @summary Get onboarding session with field definitions and navigation
  */
 
-export function createOnboardingSessionInfinite<TData = InfiniteData<Awaited<ReturnType<typeof onboardingSession>>>, TError = unknown>(
+export function createOnboardingSessionInfinite<TData = InfiniteData<Awaited<ReturnType<typeof onboardingSession>>>, TError = OnboardingSession400 | OnboardingSession401>(
  params?: () =>  OnboardingSessionParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -141,7 +180,7 @@ export function createOnboardingSessionInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Get onboarding session with field definitions and navigation
  */
-export const prefetchOnboardingSessionInfiniteQuery = async <TData = Awaited<ReturnType<typeof onboardingSession>>, TError = unknown>(
+export const prefetchOnboardingSessionInfiniteQuery = async <TData = Awaited<ReturnType<typeof onboardingSession>>, TError = OnboardingSession400 | OnboardingSession401>(
  queryClient: QueryClient, params?: OnboardingSessionParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -157,7 +196,7 @@ export const prefetchOnboardingSessionInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getOnboardingSessionQueryOptions = <TData = Awaited<ReturnType<typeof onboardingSession>>, TError = unknown>(params?: OnboardingSessionParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getOnboardingSessionQueryOptions = <TData = Awaited<ReturnType<typeof onboardingSession>>, TError = OnboardingSession400 | OnboardingSession401>(params?: OnboardingSessionParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -176,14 +215,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type OnboardingSessionQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingSession>>>
-export type OnboardingSessionQueryError = unknown
+export type OnboardingSessionQueryError = OnboardingSession400 | OnboardingSession401
 
 
 /**
  * @summary Get onboarding session with field definitions and navigation
  */
 
-export function createOnboardingSession<TData = Awaited<ReturnType<typeof onboardingSession>>, TError = unknown>(
+export function createOnboardingSession<TData = Awaited<ReturnType<typeof onboardingSession>>, TError = OnboardingSession400 | OnboardingSession401>(
  params?: () =>  OnboardingSessionParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -198,7 +237,7 @@ export function createOnboardingSession<TData = Awaited<ReturnType<typeof onboar
 /**
  * @summary Get onboarding session with field definitions and navigation
  */
-export const prefetchOnboardingSessionQuery = async <TData = Awaited<ReturnType<typeof onboardingSession>>, TError = unknown>(
+export const prefetchOnboardingSessionQuery = async <TData = Awaited<ReturnType<typeof onboardingSession>>, TError = OnboardingSession400 | OnboardingSession401>(
  queryClient: QueryClient, params?: OnboardingSessionParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -218,12 +257,18 @@ export const prefetchOnboardingSessionQuery = async <TData = Awaited<ReturnType<
  * Onboarding API
  * @summary Save current step data and advance to next step
  */
-export type onboardingSessionNextResponse200 = void
+export type onboardingSessionNextResponse200 = OnboardingSessionNext200
+
+export type onboardingSessionNextResponse400 = OnboardingSessionNext400
+
+export type onboardingSessionNextResponse401 = OnboardingSessionNext401
 
 export type onboardingSessionNextResponseSuccess = onboardingSessionNextResponse200
-;
+export type onboardingSessionNextResponseError = (onboardingSessionNextResponse400 | onboardingSessionNextResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionNextResponse = (onboardingSessionNextResponseSuccess)
+export type onboardingSessionNextResponse = (onboardingSessionNextResponseSuccess | onboardingSessionNextResponseError)
 
 export const getOnboardingSessionNextUrl = (params?: OnboardingSessionNextParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -256,7 +301,7 @@ export const onboardingSessionNext = async (onboardingSessionNextBody: Onboardin
 
 
 
-export const getOnboardingSessionNextMutationOptions = <TError = unknown,
+export const getOnboardingSessionNextMutationOptions = <TError = OnboardingSessionNext400 | OnboardingSessionNext401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionNext>>, TError,{data: OnboardingSessionNextBody;params?: OnboardingSessionNextParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionNext>>, TError,{data: OnboardingSessionNextBody;params?: OnboardingSessionNextParams}, TContext> => {
 
@@ -285,12 +330,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingSessionNextMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSessionNext>>>
     export type OnboardingSessionNextMutationBody = OnboardingSessionNextBody
-    export type OnboardingSessionNextMutationError = unknown
+    export type OnboardingSessionNextMutationError = OnboardingSessionNext400 | OnboardingSessionNext401
 
     /**
  * @summary Save current step data and advance to next step
  */
-export const createOnboardingSessionNext = <TError = unknown,
+export const createOnboardingSessionNext = <TError = OnboardingSessionNext400 | OnboardingSessionNext401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionNext>>, TError,{data: OnboardingSessionNextBody;params?: OnboardingSessionNextParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingSessionNext>>,
@@ -304,12 +349,18 @@ export const createOnboardingSessionNext = <TError = unknown,
  * Onboarding API
  * @summary Go back to previous step
  */
-export type onboardingSessionPreviousResponse200 = void
+export type onboardingSessionPreviousResponse200 = OnboardingSessionPrevious200
+
+export type onboardingSessionPreviousResponse400 = OnboardingSessionPrevious400
+
+export type onboardingSessionPreviousResponse401 = OnboardingSessionPrevious401
 
 export type onboardingSessionPreviousResponseSuccess = onboardingSessionPreviousResponse200
-;
+export type onboardingSessionPreviousResponseError = (onboardingSessionPreviousResponse400 | onboardingSessionPreviousResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionPreviousResponse = (onboardingSessionPreviousResponseSuccess)
+export type onboardingSessionPreviousResponse = (onboardingSessionPreviousResponseSuccess | onboardingSessionPreviousResponseError)
 
 export const getOnboardingSessionPreviousUrl = (params?: OnboardingSessionPreviousParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -340,7 +391,7 @@ export const onboardingSessionPrevious = async (params?: OnboardingSessionPrevio
 
 
 
-export const getOnboardingSessionPreviousMutationOptions = <TError = unknown,
+export const getOnboardingSessionPreviousMutationOptions = <TError = OnboardingSessionPrevious400 | OnboardingSessionPrevious401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionPrevious>>, TError,{params?: OnboardingSessionPreviousParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionPrevious>>, TError,{params?: OnboardingSessionPreviousParams}, TContext> => {
 
@@ -369,12 +420,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingSessionPreviousMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSessionPrevious>>>
 
-    export type OnboardingSessionPreviousMutationError = unknown
+    export type OnboardingSessionPreviousMutationError = OnboardingSessionPrevious400 | OnboardingSessionPrevious401
 
     /**
  * @summary Go back to previous step
  */
-export const createOnboardingSessionPrevious = <TError = unknown,
+export const createOnboardingSessionPrevious = <TError = OnboardingSessionPrevious400 | OnboardingSessionPrevious401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionPrevious>>, TError,{params?: OnboardingSessionPreviousParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingSessionPrevious>>,
@@ -388,12 +439,18 @@ export const createOnboardingSessionPrevious = <TError = unknown,
  * Onboarding API
  * @summary Jump to an accessible step
  */
-export type onboardingSessionGotoResponse200 = void
+export type onboardingSessionGotoResponse200 = OnboardingSessionGoto200
+
+export type onboardingSessionGotoResponse400 = OnboardingSessionGoto400
+
+export type onboardingSessionGotoResponse401 = OnboardingSessionGoto401
 
 export type onboardingSessionGotoResponseSuccess = onboardingSessionGotoResponse200
-;
+export type onboardingSessionGotoResponseError = (onboardingSessionGotoResponse400 | onboardingSessionGotoResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionGotoResponse = (onboardingSessionGotoResponseSuccess)
+export type onboardingSessionGotoResponse = (onboardingSessionGotoResponseSuccess | onboardingSessionGotoResponseError)
 
 export const getOnboardingSessionGotoUrl = (params?: OnboardingSessionGotoParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -426,7 +483,7 @@ export const onboardingSessionGoto = async (onboardingSessionGotoBody: Onboardin
 
 
 
-export const getOnboardingSessionGotoMutationOptions = <TError = unknown,
+export const getOnboardingSessionGotoMutationOptions = <TError = OnboardingSessionGoto400 | OnboardingSessionGoto401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionGoto>>, TError,{data: OnboardingSessionGotoBody;params?: OnboardingSessionGotoParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionGoto>>, TError,{data: OnboardingSessionGotoBody;params?: OnboardingSessionGotoParams}, TContext> => {
 
@@ -455,12 +512,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingSessionGotoMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSessionGoto>>>
     export type OnboardingSessionGotoMutationBody = OnboardingSessionGotoBody
-    export type OnboardingSessionGotoMutationError = unknown
+    export type OnboardingSessionGotoMutationError = OnboardingSessionGoto400 | OnboardingSessionGoto401
 
     /**
  * @summary Jump to an accessible step
  */
-export const createOnboardingSessionGoto = <TError = unknown,
+export const createOnboardingSessionGoto = <TError = OnboardingSessionGoto400 | OnboardingSessionGoto401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionGoto>>, TError,{data: OnboardingSessionGotoBody;params?: OnboardingSessionGotoParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingSessionGoto>>,
@@ -474,12 +531,18 @@ export const createOnboardingSessionGoto = <TError = unknown,
  * Onboarding API
  * @summary Save current step data without advancing
  */
-export type onboardingSessionSaveResponse200 = void
+export type onboardingSessionSaveResponse200 = OnboardingSessionSave200
+
+export type onboardingSessionSaveResponse400 = OnboardingSessionSave400
+
+export type onboardingSessionSaveResponse401 = OnboardingSessionSave401
 
 export type onboardingSessionSaveResponseSuccess = onboardingSessionSaveResponse200
-;
+export type onboardingSessionSaveResponseError = (onboardingSessionSaveResponse400 | onboardingSessionSaveResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionSaveResponse = (onboardingSessionSaveResponseSuccess)
+export type onboardingSessionSaveResponse = (onboardingSessionSaveResponseSuccess | onboardingSessionSaveResponseError)
 
 export const getOnboardingSessionSaveUrl = (params?: OnboardingSessionSaveParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -512,7 +575,7 @@ export const onboardingSessionSave = async (onboardingSessionSaveBody: Onboardin
 
 
 
-export const getOnboardingSessionSaveMutationOptions = <TError = unknown,
+export const getOnboardingSessionSaveMutationOptions = <TError = OnboardingSessionSave400 | OnboardingSessionSave401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionSave>>, TError,{data: OnboardingSessionSaveBody;params?: OnboardingSessionSaveParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionSave>>, TError,{data: OnboardingSessionSaveBody;params?: OnboardingSessionSaveParams}, TContext> => {
 
@@ -541,12 +604,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingSessionSaveMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSessionSave>>>
     export type OnboardingSessionSaveMutationBody = OnboardingSessionSaveBody
-    export type OnboardingSessionSaveMutationError = unknown
+    export type OnboardingSessionSaveMutationError = OnboardingSessionSave400 | OnboardingSessionSave401
 
     /**
  * @summary Save current step data without advancing
  */
-export const createOnboardingSessionSave = <TError = unknown,
+export const createOnboardingSessionSave = <TError = OnboardingSessionSave400 | OnboardingSessionSave401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionSave>>, TError,{data: OnboardingSessionSaveBody;params?: OnboardingSessionSaveParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingSessionSave>>,
@@ -560,12 +623,18 @@ export const createOnboardingSessionSave = <TError = unknown,
  * Onboarding API
  * @summary Complete onboarding — backend builds payload from saved progress
  */
-export type onboardingSessionCompleteResponse200 = void
+export type onboardingSessionCompleteResponse200 = OnboardingSessionComplete200
+
+export type onboardingSessionCompleteResponse400 = OnboardingSessionComplete400
+
+export type onboardingSessionCompleteResponse401 = OnboardingSessionComplete401
 
 export type onboardingSessionCompleteResponseSuccess = onboardingSessionCompleteResponse200
-;
+export type onboardingSessionCompleteResponseError = (onboardingSessionCompleteResponse400 | onboardingSessionCompleteResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionCompleteResponse = (onboardingSessionCompleteResponseSuccess)
+export type onboardingSessionCompleteResponse = (onboardingSessionCompleteResponseSuccess | onboardingSessionCompleteResponseError)
 
 export const getOnboardingSessionCompleteUrl = () => {
 
@@ -589,7 +658,7 @@ export const onboardingSessionComplete = async ( options?: RequestInit): Promise
 
 
 
-export const getOnboardingSessionCompleteMutationOptions = <TError = unknown,
+export const getOnboardingSessionCompleteMutationOptions = <TError = OnboardingSessionComplete400 | OnboardingSessionComplete401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionComplete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionComplete>>, TError,void, TContext> => {
 
@@ -618,12 +687,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingSessionCompleteMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSessionComplete>>>
 
-    export type OnboardingSessionCompleteMutationError = unknown
+    export type OnboardingSessionCompleteMutationError = OnboardingSessionComplete400 | OnboardingSessionComplete401
 
     /**
  * @summary Complete onboarding — backend builds payload from saved progress
  */
-export const createOnboardingSessionComplete = <TError = unknown,
+export const createOnboardingSessionComplete = <TError = OnboardingSessionComplete400 | OnboardingSessionComplete401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionComplete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingSessionComplete>>,
@@ -637,12 +706,18 @@ export const createOnboardingSessionComplete = <TError = unknown,
  * Onboarding API
  * @summary Restart onboarding with existing profile data
  */
-export type onboardingSessionRestartResponse200 = void
+export type onboardingSessionRestartResponse200 = OnboardingSessionRestart200
+
+export type onboardingSessionRestartResponse400 = OnboardingSessionRestart400
+
+export type onboardingSessionRestartResponse401 = OnboardingSessionRestart401
 
 export type onboardingSessionRestartResponseSuccess = onboardingSessionRestartResponse200
-;
+export type onboardingSessionRestartResponseError = (onboardingSessionRestartResponse400 | onboardingSessionRestartResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingSessionRestartResponse = (onboardingSessionRestartResponseSuccess)
+export type onboardingSessionRestartResponse = (onboardingSessionRestartResponseSuccess | onboardingSessionRestartResponseError)
 
 export const getOnboardingSessionRestartUrl = (params?: OnboardingSessionRestartParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -673,7 +748,7 @@ export const onboardingSessionRestart = async (params?: OnboardingSessionRestart
 
 
 
-export const getOnboardingSessionRestartMutationOptions = <TError = unknown,
+export const getOnboardingSessionRestartMutationOptions = <TError = OnboardingSessionRestart400 | OnboardingSessionRestart401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionRestart>>, TError,{params?: OnboardingSessionRestartParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionRestart>>, TError,{params?: OnboardingSessionRestartParams}, TContext> => {
 
@@ -702,12 +777,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingSessionRestartMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSessionRestart>>>
 
-    export type OnboardingSessionRestartMutationError = unknown
+    export type OnboardingSessionRestartMutationError = OnboardingSessionRestart400 | OnboardingSessionRestart401
 
     /**
  * @summary Restart onboarding with existing profile data
  */
-export const createOnboardingSessionRestart = <TError = unknown,
+export const createOnboardingSessionRestart = <TError = OnboardingSessionRestart400 | OnboardingSessionRestart401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingSessionRestart>>, TError,{params?: OnboardingSessionRestartParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingSessionRestart>>,
@@ -721,12 +796,18 @@ export const createOnboardingSessionRestart = <TError = unknown,
  * Onboarding API
  * @summary [Legacy] Get onboarding progress
  */
-export type onboardingProgressGetResponse200 = void
+export type onboardingProgressGetResponse200 = OnboardingProgressGet200
+
+export type onboardingProgressGetResponse400 = OnboardingProgressGet400
+
+export type onboardingProgressGetResponse401 = OnboardingProgressGet401
 
 export type onboardingProgressGetResponseSuccess = onboardingProgressGetResponse200
-;
+export type onboardingProgressGetResponseError = (onboardingProgressGetResponse400 | onboardingProgressGetResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingProgressGetResponse = (onboardingProgressGetResponseSuccess)
+export type onboardingProgressGetResponse = (onboardingProgressGetResponseSuccess | onboardingProgressGetResponseError)
 
 export const getOnboardingProgressGetUrl = () => {
 
@@ -764,7 +845,7 @@ export const getOnboardingProgressGetQueryKey = () => {
     }
 
 
-export const getOnboardingProgressGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof onboardingProgressGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getOnboardingProgressGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof onboardingProgressGet>>>, TError = OnboardingProgressGet400 | OnboardingProgressGet401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -783,14 +864,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type OnboardingProgressGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingProgressGet>>>
-export type OnboardingProgressGetInfiniteQueryError = unknown
+export type OnboardingProgressGetInfiniteQueryError = OnboardingProgressGet400 | OnboardingProgressGet401
 
 
 /**
  * @summary [Legacy] Get onboarding progress
  */
 
-export function createOnboardingProgressGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof onboardingProgressGet>>>, TError = unknown>(
+export function createOnboardingProgressGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof onboardingProgressGet>>>, TError = OnboardingProgressGet400 | OnboardingProgressGet401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -805,7 +886,7 @@ export function createOnboardingProgressGetInfinite<TData = InfiniteData<Awaited
 /**
  * @summary [Legacy] Get onboarding progress
  */
-export const prefetchOnboardingProgressGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = unknown>(
+export const prefetchOnboardingProgressGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = OnboardingProgressGet400 | OnboardingProgressGet401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -821,7 +902,7 @@ export const prefetchOnboardingProgressGetInfiniteQuery = async <TData = Awaited
 
 
 
-export const getOnboardingProgressGetQueryOptions = <TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getOnboardingProgressGetQueryOptions = <TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = OnboardingProgressGet400 | OnboardingProgressGet401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -840,14 +921,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type OnboardingProgressGetQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingProgressGet>>>
-export type OnboardingProgressGetQueryError = unknown
+export type OnboardingProgressGetQueryError = OnboardingProgressGet400 | OnboardingProgressGet401
 
 
 /**
  * @summary [Legacy] Get onboarding progress
  */
 
-export function createOnboardingProgressGet<TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = unknown>(
+export function createOnboardingProgressGet<TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = OnboardingProgressGet400 | OnboardingProgressGet401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -862,7 +943,7 @@ export function createOnboardingProgressGet<TData = Awaited<ReturnType<typeof on
 /**
  * @summary [Legacy] Get onboarding progress
  */
-export const prefetchOnboardingProgressGetQuery = async <TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = unknown>(
+export const prefetchOnboardingProgressGetQuery = async <TData = Awaited<ReturnType<typeof onboardingProgressGet>>, TError = OnboardingProgressGet400 | OnboardingProgressGet401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingProgressGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -882,12 +963,18 @@ export const prefetchOnboardingProgressGetQuery = async <TData = Awaited<ReturnT
  * Onboarding API
  * @summary [Legacy] Save onboarding progress
  */
-export type onboardingProgressPutResponse200 = void
+export type onboardingProgressPutResponse200 = OnboardingProgressPut200
+
+export type onboardingProgressPutResponse400 = OnboardingProgressPut400
+
+export type onboardingProgressPutResponse401 = OnboardingProgressPut401
 
 export type onboardingProgressPutResponseSuccess = onboardingProgressPutResponse200
-;
+export type onboardingProgressPutResponseError = (onboardingProgressPutResponse400 | onboardingProgressPutResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingProgressPutResponse = (onboardingProgressPutResponseSuccess)
+export type onboardingProgressPutResponse = (onboardingProgressPutResponseSuccess | onboardingProgressPutResponseError)
 
 export const getOnboardingProgressPutUrl = () => {
 
@@ -912,7 +999,7 @@ export const onboardingProgressPut = async (onboardingProgressPutBody: Onboardin
 
 
 
-export const getOnboardingProgressPutMutationOptions = <TError = unknown,
+export const getOnboardingProgressPutMutationOptions = <TError = OnboardingProgressPut400 | OnboardingProgressPut401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingProgressPut>>, TError,{data: OnboardingProgressPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingProgressPut>>, TError,{data: OnboardingProgressPutBody}, TContext> => {
 
@@ -941,12 +1028,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingProgressPutMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingProgressPut>>>
     export type OnboardingProgressPutMutationBody = OnboardingProgressPutBody
-    export type OnboardingProgressPutMutationError = unknown
+    export type OnboardingProgressPutMutationError = OnboardingProgressPut400 | OnboardingProgressPut401
 
     /**
  * @summary [Legacy] Save onboarding progress
  */
-export const createOnboardingProgressPut = <TError = unknown,
+export const createOnboardingProgressPut = <TError = OnboardingProgressPut400 | OnboardingProgressPut401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingProgressPut>>, TError,{data: OnboardingProgressPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingProgressPut>>,
@@ -960,12 +1047,18 @@ export const createOnboardingProgressPut = <TError = unknown,
  * Onboarding API
  * @summary [Legacy] Get onboarding completion status
  */
-export type onboardingStatusResponse200 = void
+export type onboardingStatusResponse200 = OnboardingStatus200
+
+export type onboardingStatusResponse400 = OnboardingStatus400
+
+export type onboardingStatusResponse401 = OnboardingStatus401
 
 export type onboardingStatusResponseSuccess = onboardingStatusResponse200
-;
+export type onboardingStatusResponseError = (onboardingStatusResponse400 | onboardingStatusResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingStatusResponse = (onboardingStatusResponseSuccess)
+export type onboardingStatusResponse = (onboardingStatusResponseSuccess | onboardingStatusResponseError)
 
 export const getOnboardingStatusUrl = () => {
 
@@ -1003,7 +1096,7 @@ export const getOnboardingStatusQueryKey = () => {
     }
 
 
-export const getOnboardingStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof onboardingStatus>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getOnboardingStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof onboardingStatus>>>, TError = OnboardingStatus400 | OnboardingStatus401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1022,14 +1115,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type OnboardingStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingStatus>>>
-export type OnboardingStatusInfiniteQueryError = unknown
+export type OnboardingStatusInfiniteQueryError = OnboardingStatus400 | OnboardingStatus401
 
 
 /**
  * @summary [Legacy] Get onboarding completion status
  */
 
-export function createOnboardingStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof onboardingStatus>>>, TError = unknown>(
+export function createOnboardingStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof onboardingStatus>>>, TError = OnboardingStatus400 | OnboardingStatus401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1044,7 +1137,7 @@ export function createOnboardingStatusInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary [Legacy] Get onboarding completion status
  */
-export const prefetchOnboardingStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = unknown>(
+export const prefetchOnboardingStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = OnboardingStatus400 | OnboardingStatus401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1060,7 +1153,7 @@ export const prefetchOnboardingStatusInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getOnboardingStatusQueryOptions = <TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getOnboardingStatusQueryOptions = <TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = OnboardingStatus400 | OnboardingStatus401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1079,14 +1172,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type OnboardingStatusQueryResult = NonNullable<Awaited<ReturnType<typeof onboardingStatus>>>
-export type OnboardingStatusQueryError = unknown
+export type OnboardingStatusQueryError = OnboardingStatus400 | OnboardingStatus401
 
 
 /**
  * @summary [Legacy] Get onboarding completion status
  */
 
-export function createOnboardingStatus<TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = unknown>(
+export function createOnboardingStatus<TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = OnboardingStatus400 | OnboardingStatus401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1101,7 +1194,7 @@ export function createOnboardingStatus<TData = Awaited<ReturnType<typeof onboard
 /**
  * @summary [Legacy] Get onboarding completion status
  */
-export const prefetchOnboardingStatusQuery = async <TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = unknown>(
+export const prefetchOnboardingStatusQuery = async <TData = Awaited<ReturnType<typeof onboardingStatus>>, TError = OnboardingStatus400 | OnboardingStatus401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof onboardingStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1121,12 +1214,18 @@ export const prefetchOnboardingStatusQuery = async <TData = Awaited<ReturnType<t
  * Onboarding API
  * @summary [Legacy] Complete onboarding with explicit payload
  */
-export type onboardingCreateResponse200 = void
+export type onboardingCreateResponse200 = OnboardingCreate200
+
+export type onboardingCreateResponse400 = OnboardingCreate400
+
+export type onboardingCreateResponse401 = OnboardingCreate401
 
 export type onboardingCreateResponseSuccess = onboardingCreateResponse200
-;
+export type onboardingCreateResponseError = (onboardingCreateResponse400 | onboardingCreateResponse401) & {
+  headers: Headers;
+};
 
-export type onboardingCreateResponse = (onboardingCreateResponseSuccess)
+export type onboardingCreateResponse = (onboardingCreateResponseSuccess | onboardingCreateResponseError)
 
 export const getOnboardingCreateUrl = () => {
 
@@ -1151,7 +1250,7 @@ export const onboardingCreate = async (onboardingCreateBody: OnboardingCreateBod
 
 
 
-export const getOnboardingCreateMutationOptions = <TError = unknown,
+export const getOnboardingCreateMutationOptions = <TError = OnboardingCreate400 | OnboardingCreate401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingCreate>>, TError,{data: OnboardingCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof onboardingCreate>>, TError,{data: OnboardingCreateBody}, TContext> => {
 
@@ -1180,12 +1279,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type OnboardingCreateMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingCreate>>>
     export type OnboardingCreateMutationBody = OnboardingCreateBody
-    export type OnboardingCreateMutationError = unknown
+    export type OnboardingCreateMutationError = OnboardingCreate400 | OnboardingCreate401
 
     /**
  * @summary [Legacy] Complete onboarding with explicit payload
  */
-export const createOnboardingCreate = <TError = unknown,
+export const createOnboardingCreate = <TError = OnboardingCreate400 | OnboardingCreate401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof onboardingCreate>>, TError,{data: OnboardingCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof onboardingCreate>>,

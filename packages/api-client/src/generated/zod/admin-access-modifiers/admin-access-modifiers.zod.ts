@@ -26,3 +26,39 @@ export const AdminAccessModifiersUsersAccessModifiersPostBody = zod.object({
   "endsAt": zod.string().datetime({"offset":true}).optional()
 })
 
+export const AdminAccessModifiersUsersAccessModifiersPostResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "modifierType": zod.enum(['SUSPEND_EMAIL_VERIFIED', 'SUSPEND_ONBOARDING', 'SUSPEND_ROLE_USER', 'SUSPEND_ROLE_ADMIN', 'GRANT_PERMISSION']),
+  "effect": zod.enum(['DENY', 'GRANT']),
+  "permissionId": zod.string().nullable(),
+  "reason": zod.string(),
+  "startsAt": zod.string().datetime({"offset":true}),
+  "endsAt": zod.string().datetime({"offset":true}).nullable(),
+  "createdBy": zod.string(),
+  "revokedAt": zod.string().datetime({"offset":true}).nullable(),
+  "revokedBy": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Authorization Admin API
+ * @summary List currently active access modifiers for a user
+ */
+export const AdminAccessModifiersUsersAccessModifiersGetResponse = zod.object({
+  "modifiers": zod.array(zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "modifierType": zod.enum(['SUSPEND_EMAIL_VERIFIED', 'SUSPEND_ONBOARDING', 'SUSPEND_ROLE_USER', 'SUSPEND_ROLE_ADMIN', 'GRANT_PERMISSION']),
+  "effect": zod.enum(['DENY', 'GRANT']),
+  "permissionId": zod.string().nullable(),
+  "reason": zod.string(),
+  "startsAt": zod.string().datetime({"offset":true}),
+  "endsAt": zod.string().datetime({"offset":true}).nullable(),
+  "createdBy": zod.string(),
+  "revokedAt": zod.string().datetime({"offset":true}).nullable(),
+  "revokedBy": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true})
+}))
+})
+

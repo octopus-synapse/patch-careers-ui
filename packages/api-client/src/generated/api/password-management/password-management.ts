@@ -16,8 +16,15 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  PasswordManagementAuthForgotPassword200,
+  PasswordManagementAuthForgotPassword400,
   PasswordManagementAuthForgotPasswordBody,
+  PasswordManagementAuthResetPassword200,
+  PasswordManagementAuthResetPassword400,
   PasswordManagementAuthResetPasswordBody,
+  PasswordManagementMePasswordChange200,
+  PasswordManagementMePasswordChange400,
+  PasswordManagementMePasswordChange401,
   PasswordManagementMePasswordChangeBody
 } from '../../models';
 
@@ -32,12 +39,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Sends a password reset email if the account exists. Always returns success to prevent email enumeration.
  * @summary Request password reset
  */
-export type passwordManagementAuthForgotPasswordResponse200 = void
+export type passwordManagementAuthForgotPasswordResponse200 = PasswordManagementAuthForgotPassword200
+
+export type passwordManagementAuthForgotPasswordResponse400 = PasswordManagementAuthForgotPassword400
 
 export type passwordManagementAuthForgotPasswordResponseSuccess = passwordManagementAuthForgotPasswordResponse200
-;
+export type passwordManagementAuthForgotPasswordResponseError = (passwordManagementAuthForgotPasswordResponse400) & {
+  headers: Headers;
+};
 
-export type passwordManagementAuthForgotPasswordResponse = (passwordManagementAuthForgotPasswordResponseSuccess)
+export type passwordManagementAuthForgotPasswordResponse = (passwordManagementAuthForgotPasswordResponseSuccess | passwordManagementAuthForgotPasswordResponseError)
 
 export const getPasswordManagementAuthForgotPasswordUrl = () => {
 
@@ -62,7 +73,7 @@ export const passwordManagementAuthForgotPassword = async (passwordManagementAut
 
 
 
-export const getPasswordManagementAuthForgotPasswordMutationOptions = <TError = unknown,
+export const getPasswordManagementAuthForgotPasswordMutationOptions = <TError = PasswordManagementAuthForgotPassword400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementAuthForgotPassword>>, TError,{data: PasswordManagementAuthForgotPasswordBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementAuthForgotPassword>>, TError,{data: PasswordManagementAuthForgotPasswordBody}, TContext> => {
 
@@ -91,12 +102,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PasswordManagementAuthForgotPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof passwordManagementAuthForgotPassword>>>
     export type PasswordManagementAuthForgotPasswordMutationBody = PasswordManagementAuthForgotPasswordBody
-    export type PasswordManagementAuthForgotPasswordMutationError = unknown
+    export type PasswordManagementAuthForgotPasswordMutationError = PasswordManagementAuthForgotPassword400
 
     /**
  * @summary Request password reset
  */
-export const createPasswordManagementAuthForgotPassword = <TError = unknown,
+export const createPasswordManagementAuthForgotPassword = <TError = PasswordManagementAuthForgotPassword400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementAuthForgotPassword>>, TError,{data: PasswordManagementAuthForgotPasswordBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof passwordManagementAuthForgotPassword>>,
@@ -110,12 +121,18 @@ export const createPasswordManagementAuthForgotPassword = <TError = unknown,
  * Changes the password for the authenticated user after verifying the current password.
  * @summary Change password
  */
-export type passwordManagementMePasswordChangeResponse200 = void
+export type passwordManagementMePasswordChangeResponse200 = PasswordManagementMePasswordChange200
+
+export type passwordManagementMePasswordChangeResponse400 = PasswordManagementMePasswordChange400
+
+export type passwordManagementMePasswordChangeResponse401 = PasswordManagementMePasswordChange401
 
 export type passwordManagementMePasswordChangeResponseSuccess = passwordManagementMePasswordChangeResponse200
-;
+export type passwordManagementMePasswordChangeResponseError = (passwordManagementMePasswordChangeResponse400 | passwordManagementMePasswordChangeResponse401) & {
+  headers: Headers;
+};
 
-export type passwordManagementMePasswordChangeResponse = (passwordManagementMePasswordChangeResponseSuccess)
+export type passwordManagementMePasswordChangeResponse = (passwordManagementMePasswordChangeResponseSuccess | passwordManagementMePasswordChangeResponseError)
 
 export const getPasswordManagementMePasswordChangeUrl = () => {
 
@@ -140,7 +157,7 @@ export const passwordManagementMePasswordChange = async (passwordManagementMePas
 
 
 
-export const getPasswordManagementMePasswordChangeMutationOptions = <TError = unknown,
+export const getPasswordManagementMePasswordChangeMutationOptions = <TError = PasswordManagementMePasswordChange400 | PasswordManagementMePasswordChange401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementMePasswordChange>>, TError,{data: PasswordManagementMePasswordChangeBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementMePasswordChange>>, TError,{data: PasswordManagementMePasswordChangeBody}, TContext> => {
 
@@ -169,12 +186,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PasswordManagementMePasswordChangeMutationResult = NonNullable<Awaited<ReturnType<typeof passwordManagementMePasswordChange>>>
     export type PasswordManagementMePasswordChangeMutationBody = PasswordManagementMePasswordChangeBody
-    export type PasswordManagementMePasswordChangeMutationError = unknown
+    export type PasswordManagementMePasswordChangeMutationError = PasswordManagementMePasswordChange400 | PasswordManagementMePasswordChange401
 
     /**
  * @summary Change password
  */
-export const createPasswordManagementMePasswordChange = <TError = unknown,
+export const createPasswordManagementMePasswordChange = <TError = PasswordManagementMePasswordChange400 | PasswordManagementMePasswordChange401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementMePasswordChange>>, TError,{data: PasswordManagementMePasswordChangeBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof passwordManagementMePasswordChange>>,
@@ -188,12 +205,16 @@ export const createPasswordManagementMePasswordChange = <TError = unknown,
  * Resets the user password using a valid reset token received via email.
  * @summary Reset password with token
  */
-export type passwordManagementAuthResetPasswordResponse200 = void
+export type passwordManagementAuthResetPasswordResponse200 = PasswordManagementAuthResetPassword200
+
+export type passwordManagementAuthResetPasswordResponse400 = PasswordManagementAuthResetPassword400
 
 export type passwordManagementAuthResetPasswordResponseSuccess = passwordManagementAuthResetPasswordResponse200
-;
+export type passwordManagementAuthResetPasswordResponseError = (passwordManagementAuthResetPasswordResponse400) & {
+  headers: Headers;
+};
 
-export type passwordManagementAuthResetPasswordResponse = (passwordManagementAuthResetPasswordResponseSuccess)
+export type passwordManagementAuthResetPasswordResponse = (passwordManagementAuthResetPasswordResponseSuccess | passwordManagementAuthResetPasswordResponseError)
 
 export const getPasswordManagementAuthResetPasswordUrl = () => {
 
@@ -218,7 +239,7 @@ export const passwordManagementAuthResetPassword = async (passwordManagementAuth
 
 
 
-export const getPasswordManagementAuthResetPasswordMutationOptions = <TError = unknown,
+export const getPasswordManagementAuthResetPasswordMutationOptions = <TError = PasswordManagementAuthResetPassword400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementAuthResetPassword>>, TError,{data: PasswordManagementAuthResetPasswordBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementAuthResetPassword>>, TError,{data: PasswordManagementAuthResetPasswordBody}, TContext> => {
 
@@ -247,12 +268,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PasswordManagementAuthResetPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof passwordManagementAuthResetPassword>>>
     export type PasswordManagementAuthResetPasswordMutationBody = PasswordManagementAuthResetPasswordBody
-    export type PasswordManagementAuthResetPasswordMutationError = unknown
+    export type PasswordManagementAuthResetPasswordMutationError = PasswordManagementAuthResetPassword400
 
     /**
  * @summary Reset password with token
  */
-export const createPasswordManagementAuthResetPassword = <TError = unknown,
+export const createPasswordManagementAuthResetPassword = <TError = PasswordManagementAuthResetPassword400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof passwordManagementAuthResetPassword>>, TError,{data: PasswordManagementAuthResetPasswordBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof passwordManagementAuthResetPassword>>,

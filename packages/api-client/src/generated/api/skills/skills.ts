@@ -26,6 +26,17 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SkillsMeSkillProficiencyDelete400,
+  SkillsMeSkillProficiencyDelete401,
+  SkillsMeSkillProficiencyDelete403,
+  SkillsMeSkillProficiencyGet200,
+  SkillsMeSkillProficiencyGet400,
+  SkillsMeSkillProficiencyGet401,
+  SkillsMeSkillProficiencyGet403,
+  SkillsMeSkillProficiencyPut200,
+  SkillsMeSkillProficiencyPut400,
+  SkillsMeSkillProficiencyPut401,
+  SkillsMeSkillProficiencyPut403,
   SkillsMeSkillProficiencyPutBody
 } from '../../models';
 
@@ -40,12 +51,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Self-declared skill proficiency
  * @summary List my declared skill proficiencies.
  */
-export type skillsMeSkillProficiencyGetResponse200 = void
+export type skillsMeSkillProficiencyGetResponse200 = SkillsMeSkillProficiencyGet200
+
+export type skillsMeSkillProficiencyGetResponse400 = SkillsMeSkillProficiencyGet400
+
+export type skillsMeSkillProficiencyGetResponse401 = SkillsMeSkillProficiencyGet401
+
+export type skillsMeSkillProficiencyGetResponse403 = SkillsMeSkillProficiencyGet403
 
 export type skillsMeSkillProficiencyGetResponseSuccess = skillsMeSkillProficiencyGetResponse200
-;
+export type skillsMeSkillProficiencyGetResponseError = (skillsMeSkillProficiencyGetResponse400 | skillsMeSkillProficiencyGetResponse401 | skillsMeSkillProficiencyGetResponse403) & {
+  headers: Headers;
+};
 
-export type skillsMeSkillProficiencyGetResponse = (skillsMeSkillProficiencyGetResponseSuccess)
+export type skillsMeSkillProficiencyGetResponse = (skillsMeSkillProficiencyGetResponseSuccess | skillsMeSkillProficiencyGetResponseError)
 
 export const getSkillsMeSkillProficiencyGetUrl = () => {
 
@@ -83,7 +102,7 @@ export const getSkillsMeSkillProficiencyGetQueryKey = () => {
     }
 
 
-export const getSkillsMeSkillProficiencyGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsMeSkillProficiencyGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>>, TError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +121,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsMeSkillProficiencyGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>>
-export type SkillsMeSkillProficiencyGetInfiniteQueryError = unknown
+export type SkillsMeSkillProficiencyGetInfiniteQueryError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403
 
 
 /**
  * @summary List my declared skill proficiencies.
  */
 
-export function createSkillsMeSkillProficiencyGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>>, TError = unknown>(
+export function createSkillsMeSkillProficiencyGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>>, TError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +143,7 @@ export function createSkillsMeSkillProficiencyGetInfinite<TData = InfiniteData<A
 /**
  * @summary List my declared skill proficiencies.
  */
-export const prefetchSkillsMeSkillProficiencyGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = unknown>(
+export const prefetchSkillsMeSkillProficiencyGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +159,7 @@ export const prefetchSkillsMeSkillProficiencyGetInfiniteQuery = async <TData = A
 
 
 
-export const getSkillsMeSkillProficiencyGetQueryOptions = <TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSkillsMeSkillProficiencyGetQueryOptions = <TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +178,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SkillsMeSkillProficiencyGetQueryResult = NonNullable<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>>
-export type SkillsMeSkillProficiencyGetQueryError = unknown
+export type SkillsMeSkillProficiencyGetQueryError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403
 
 
 /**
  * @summary List my declared skill proficiencies.
  */
 
-export function createSkillsMeSkillProficiencyGet<TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = unknown>(
+export function createSkillsMeSkillProficiencyGet<TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +200,7 @@ export function createSkillsMeSkillProficiencyGet<TData = Awaited<ReturnType<typ
 /**
  * @summary List my declared skill proficiencies.
  */
-export const prefetchSkillsMeSkillProficiencyGetQuery = async <TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = unknown>(
+export const prefetchSkillsMeSkillProficiencyGetQuery = async <TData = Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError = SkillsMeSkillProficiencyGet400 | SkillsMeSkillProficiencyGet401 | SkillsMeSkillProficiencyGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +220,20 @@ export const prefetchSkillsMeSkillProficiencyGetQuery = async <TData = Awaited<R
  * Self-declared skill proficiency
  * @summary Set proficiency for a skill (creates if missing).
  */
-export type skillsMeSkillProficiencyPutResponse200 = void
+export type skillsMeSkillProficiencyPutResponse200 = SkillsMeSkillProficiencyPut200
+
+export type skillsMeSkillProficiencyPutResponse400 = SkillsMeSkillProficiencyPut400
+
+export type skillsMeSkillProficiencyPutResponse401 = SkillsMeSkillProficiencyPut401
+
+export type skillsMeSkillProficiencyPutResponse403 = SkillsMeSkillProficiencyPut403
 
 export type skillsMeSkillProficiencyPutResponseSuccess = skillsMeSkillProficiencyPutResponse200
-;
+export type skillsMeSkillProficiencyPutResponseError = (skillsMeSkillProficiencyPutResponse400 | skillsMeSkillProficiencyPutResponse401 | skillsMeSkillProficiencyPutResponse403) & {
+  headers: Headers;
+};
 
-export type skillsMeSkillProficiencyPutResponse = (skillsMeSkillProficiencyPutResponseSuccess)
+export type skillsMeSkillProficiencyPutResponse = (skillsMeSkillProficiencyPutResponseSuccess | skillsMeSkillProficiencyPutResponseError)
 
 export const getSkillsMeSkillProficiencyPutUrl = (skillName: string,) => {
 
@@ -232,7 +259,7 @@ export const skillsMeSkillProficiencyPut = async (skillName: string,
 
 
 
-export const getSkillsMeSkillProficiencyPutMutationOptions = <TError = unknown,
+export const getSkillsMeSkillProficiencyPutMutationOptions = <TError = SkillsMeSkillProficiencyPut400 | SkillsMeSkillProficiencyPut401 | SkillsMeSkillProficiencyPut403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyPut>>, TError,{skillName: string;data: SkillsMeSkillProficiencyPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyPut>>, TError,{skillName: string;data: SkillsMeSkillProficiencyPutBody}, TContext> => {
 
@@ -261,12 +288,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SkillsMeSkillProficiencyPutMutationResult = NonNullable<Awaited<ReturnType<typeof skillsMeSkillProficiencyPut>>>
     export type SkillsMeSkillProficiencyPutMutationBody = SkillsMeSkillProficiencyPutBody
-    export type SkillsMeSkillProficiencyPutMutationError = unknown
+    export type SkillsMeSkillProficiencyPutMutationError = SkillsMeSkillProficiencyPut400 | SkillsMeSkillProficiencyPut401 | SkillsMeSkillProficiencyPut403
 
     /**
  * @summary Set proficiency for a skill (creates if missing).
  */
-export const createSkillsMeSkillProficiencyPut = <TError = unknown,
+export const createSkillsMeSkillProficiencyPut = <TError = SkillsMeSkillProficiencyPut400 | SkillsMeSkillProficiencyPut401 | SkillsMeSkillProficiencyPut403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyPut>>, TError,{skillName: string;data: SkillsMeSkillProficiencyPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof skillsMeSkillProficiencyPut>>,
@@ -280,12 +307,20 @@ export const createSkillsMeSkillProficiencyPut = <TError = unknown,
  * Self-declared skill proficiency
  * @summary Clear proficiency for a skill.
  */
-export type skillsMeSkillProficiencyDeleteResponse200 = void
+export type skillsMeSkillProficiencyDeleteResponse200 = unknown | null
+
+export type skillsMeSkillProficiencyDeleteResponse400 = SkillsMeSkillProficiencyDelete400
+
+export type skillsMeSkillProficiencyDeleteResponse401 = SkillsMeSkillProficiencyDelete401
+
+export type skillsMeSkillProficiencyDeleteResponse403 = SkillsMeSkillProficiencyDelete403
 
 export type skillsMeSkillProficiencyDeleteResponseSuccess = skillsMeSkillProficiencyDeleteResponse200
-;
+export type skillsMeSkillProficiencyDeleteResponseError = (skillsMeSkillProficiencyDeleteResponse400 | skillsMeSkillProficiencyDeleteResponse401 | skillsMeSkillProficiencyDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type skillsMeSkillProficiencyDeleteResponse = (skillsMeSkillProficiencyDeleteResponseSuccess)
+export type skillsMeSkillProficiencyDeleteResponse = (skillsMeSkillProficiencyDeleteResponseSuccess | skillsMeSkillProficiencyDeleteResponseError)
 
 export const getSkillsMeSkillProficiencyDeleteUrl = (skillName: string,) => {
 
@@ -309,7 +344,7 @@ export const skillsMeSkillProficiencyDelete = async (skillName: string, options?
 
 
 
-export const getSkillsMeSkillProficiencyDeleteMutationOptions = <TError = unknown,
+export const getSkillsMeSkillProficiencyDeleteMutationOptions = <TError = SkillsMeSkillProficiencyDelete400 | SkillsMeSkillProficiencyDelete401 | SkillsMeSkillProficiencyDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyDelete>>, TError,{skillName: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyDelete>>, TError,{skillName: string}, TContext> => {
 
@@ -338,12 +373,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SkillsMeSkillProficiencyDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof skillsMeSkillProficiencyDelete>>>
 
-    export type SkillsMeSkillProficiencyDeleteMutationError = unknown
+    export type SkillsMeSkillProficiencyDeleteMutationError = SkillsMeSkillProficiencyDelete400 | SkillsMeSkillProficiencyDelete401 | SkillsMeSkillProficiencyDelete403
 
     /**
  * @summary Clear proficiency for a skill.
  */
-export const createSkillsMeSkillProficiencyDelete = <TError = unknown,
+export const createSkillsMeSkillProficiencyDelete = <TError = SkillsMeSkillProficiencyDelete400 | SkillsMeSkillProficiencyDelete401 | SkillsMeSkillProficiencyDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof skillsMeSkillProficiencyDelete>>, TError,{skillName: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof skillsMeSkillProficiencyDelete>>,

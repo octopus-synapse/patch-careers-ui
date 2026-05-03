@@ -26,9 +26,33 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  NotificationsList200,
+  NotificationsList400,
+  NotificationsList401,
+  NotificationsList403,
   NotificationsListParams,
+  NotificationsMarkRead200,
+  NotificationsMarkRead400,
+  NotificationsMarkRead401,
+  NotificationsMarkRead403,
   NotificationsMarkReadBody,
-  NotificationsPreferencesPutBody
+  NotificationsPreferencesGet200,
+  NotificationsPreferencesGet400,
+  NotificationsPreferencesGet401,
+  NotificationsPreferencesGet403,
+  NotificationsPreferencesPut200,
+  NotificationsPreferencesPut400,
+  NotificationsPreferencesPut401,
+  NotificationsPreferencesPut403,
+  NotificationsPreferencesPutBody,
+  NotificationsTypes200,
+  NotificationsTypes400,
+  NotificationsTypes401,
+  NotificationsTypes403,
+  NotificationsUnreadCount200,
+  NotificationsUnreadCount400,
+  NotificationsUnreadCount401,
+  NotificationsUnreadCount403
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -42,12 +66,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Notifications API
  * @summary Get notifications for current user
  */
-export type notificationsListResponse200 = void
+export type notificationsListResponse200 = NotificationsList200
+
+export type notificationsListResponse400 = NotificationsList400
+
+export type notificationsListResponse401 = NotificationsList401
+
+export type notificationsListResponse403 = NotificationsList403
 
 export type notificationsListResponseSuccess = notificationsListResponse200
-;
+export type notificationsListResponseError = (notificationsListResponse400 | notificationsListResponse401 | notificationsListResponse403) & {
+  headers: Headers;
+};
 
-export type notificationsListResponse = (notificationsListResponseSuccess)
+export type notificationsListResponse = (notificationsListResponseSuccess | notificationsListResponseError)
 
 export const getNotificationsListUrl = (params?: NotificationsListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -92,7 +124,7 @@ export const getNotificationsListQueryKey = (params?: NotificationsListParams,) 
     }
 
 
-export const getNotificationsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsList>>>, TError = unknown>(params?: NotificationsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsList>>>, TError = NotificationsList400 | NotificationsList401 | NotificationsList403>(params?: NotificationsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -111,14 +143,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsList>>>
-export type NotificationsListInfiniteQueryError = unknown
+export type NotificationsListInfiniteQueryError = NotificationsList400 | NotificationsList401 | NotificationsList403
 
 
 /**
  * @summary Get notifications for current user
  */
 
-export function createNotificationsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsList>>>, TError = unknown>(
+export function createNotificationsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsList>>>, TError = NotificationsList400 | NotificationsList401 | NotificationsList403>(
  params?: () =>  NotificationsListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -133,7 +165,7 @@ export function createNotificationsListInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Get notifications for current user
  */
-export const prefetchNotificationsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsList>>, TError = unknown>(
+export const prefetchNotificationsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsList>>, TError = NotificationsList400 | NotificationsList401 | NotificationsList403>(
  queryClient: QueryClient, params?: NotificationsListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -149,7 +181,7 @@ export const prefetchNotificationsListInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getNotificationsListQueryOptions = <TData = Awaited<ReturnType<typeof notificationsList>>, TError = unknown>(params?: NotificationsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsListQueryOptions = <TData = Awaited<ReturnType<typeof notificationsList>>, TError = NotificationsList400 | NotificationsList401 | NotificationsList403>(params?: NotificationsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -168,14 +200,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsListQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsList>>>
-export type NotificationsListQueryError = unknown
+export type NotificationsListQueryError = NotificationsList400 | NotificationsList401 | NotificationsList403
 
 
 /**
  * @summary Get notifications for current user
  */
 
-export function createNotificationsList<TData = Awaited<ReturnType<typeof notificationsList>>, TError = unknown>(
+export function createNotificationsList<TData = Awaited<ReturnType<typeof notificationsList>>, TError = NotificationsList400 | NotificationsList401 | NotificationsList403>(
  params?: () =>  NotificationsListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -190,7 +222,7 @@ export function createNotificationsList<TData = Awaited<ReturnType<typeof notifi
 /**
  * @summary Get notifications for current user
  */
-export const prefetchNotificationsListQuery = async <TData = Awaited<ReturnType<typeof notificationsList>>, TError = unknown>(
+export const prefetchNotificationsListQuery = async <TData = Awaited<ReturnType<typeof notificationsList>>, TError = NotificationsList400 | NotificationsList401 | NotificationsList403>(
  queryClient: QueryClient, params?: NotificationsListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -210,12 +242,20 @@ export const prefetchNotificationsListQuery = async <TData = Awaited<ReturnType<
  * Notifications API
  * @summary Get unread notification count
  */
-export type notificationsUnreadCountResponse200 = void
+export type notificationsUnreadCountResponse200 = NotificationsUnreadCount200
+
+export type notificationsUnreadCountResponse400 = NotificationsUnreadCount400
+
+export type notificationsUnreadCountResponse401 = NotificationsUnreadCount401
+
+export type notificationsUnreadCountResponse403 = NotificationsUnreadCount403
 
 export type notificationsUnreadCountResponseSuccess = notificationsUnreadCountResponse200
-;
+export type notificationsUnreadCountResponseError = (notificationsUnreadCountResponse400 | notificationsUnreadCountResponse401 | notificationsUnreadCountResponse403) & {
+  headers: Headers;
+};
 
-export type notificationsUnreadCountResponse = (notificationsUnreadCountResponseSuccess)
+export type notificationsUnreadCountResponse = (notificationsUnreadCountResponseSuccess | notificationsUnreadCountResponseError)
 
 export const getNotificationsUnreadCountUrl = () => {
 
@@ -253,7 +293,7 @@ export const getNotificationsUnreadCountQueryKey = () => {
     }
 
 
-export const getNotificationsUnreadCountInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsUnreadCount>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsUnreadCountInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsUnreadCount>>>, TError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -272,14 +312,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsUnreadCountInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsUnreadCount>>>
-export type NotificationsUnreadCountInfiniteQueryError = unknown
+export type NotificationsUnreadCountInfiniteQueryError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403
 
 
 /**
  * @summary Get unread notification count
  */
 
-export function createNotificationsUnreadCountInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsUnreadCount>>>, TError = unknown>(
+export function createNotificationsUnreadCountInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsUnreadCount>>>, TError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -294,7 +334,7 @@ export function createNotificationsUnreadCountInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get unread notification count
  */
-export const prefetchNotificationsUnreadCountInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = unknown>(
+export const prefetchNotificationsUnreadCountInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -310,7 +350,7 @@ export const prefetchNotificationsUnreadCountInfiniteQuery = async <TData = Awai
 
 
 
-export const getNotificationsUnreadCountQueryOptions = <TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsUnreadCountQueryOptions = <TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -329,14 +369,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsUnreadCountQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsUnreadCount>>>
-export type NotificationsUnreadCountQueryError = unknown
+export type NotificationsUnreadCountQueryError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403
 
 
 /**
  * @summary Get unread notification count
  */
 
-export function createNotificationsUnreadCount<TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = unknown>(
+export function createNotificationsUnreadCount<TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -351,7 +391,7 @@ export function createNotificationsUnreadCount<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get unread notification count
  */
-export const prefetchNotificationsUnreadCountQuery = async <TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = unknown>(
+export const prefetchNotificationsUnreadCountQuery = async <TData = Awaited<ReturnType<typeof notificationsUnreadCount>>, TError = NotificationsUnreadCount400 | NotificationsUnreadCount401 | NotificationsUnreadCount403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsUnreadCount>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -371,12 +411,20 @@ export const prefetchNotificationsUnreadCountQuery = async <TData = Awaited<Retu
  * Notifications API
  * @summary Mark notifications as read
  */
-export type notificationsMarkReadResponse200 = void
+export type notificationsMarkReadResponse200 = NotificationsMarkRead200
+
+export type notificationsMarkReadResponse400 = NotificationsMarkRead400
+
+export type notificationsMarkReadResponse401 = NotificationsMarkRead401
+
+export type notificationsMarkReadResponse403 = NotificationsMarkRead403
 
 export type notificationsMarkReadResponseSuccess = notificationsMarkReadResponse200
-;
+export type notificationsMarkReadResponseError = (notificationsMarkReadResponse400 | notificationsMarkReadResponse401 | notificationsMarkReadResponse403) & {
+  headers: Headers;
+};
 
-export type notificationsMarkReadResponse = (notificationsMarkReadResponseSuccess)
+export type notificationsMarkReadResponse = (notificationsMarkReadResponseSuccess | notificationsMarkReadResponseError)
 
 export const getNotificationsMarkReadUrl = () => {
 
@@ -401,7 +449,7 @@ export const notificationsMarkRead = async (notificationsMarkReadBody: Notificat
 
 
 
-export const getNotificationsMarkReadMutationOptions = <TError = unknown,
+export const getNotificationsMarkReadMutationOptions = <TError = NotificationsMarkRead400 | NotificationsMarkRead401 | NotificationsMarkRead403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsMarkRead>>, TError,{data: NotificationsMarkReadBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof notificationsMarkRead>>, TError,{data: NotificationsMarkReadBody}, TContext> => {
 
@@ -430,12 +478,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type NotificationsMarkReadMutationResult = NonNullable<Awaited<ReturnType<typeof notificationsMarkRead>>>
     export type NotificationsMarkReadMutationBody = NotificationsMarkReadBody
-    export type NotificationsMarkReadMutationError = unknown
+    export type NotificationsMarkReadMutationError = NotificationsMarkRead400 | NotificationsMarkRead401 | NotificationsMarkRead403
 
     /**
  * @summary Mark notifications as read
  */
-export const createNotificationsMarkRead = <TError = unknown,
+export const createNotificationsMarkRead = <TError = NotificationsMarkRead400 | NotificationsMarkRead401 | NotificationsMarkRead403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsMarkRead>>, TError,{data: NotificationsMarkReadBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof notificationsMarkRead>>,
@@ -449,12 +497,20 @@ export const createNotificationsMarkRead = <TError = unknown,
  * Returns `{types:[{key,label,description,category,channels:[{key,enabled,locked?}],userEnabled}]}`. The frontend renders the settings matrix directly from this payload — adding a new type is a backend-only change.
  * @summary Notification types with channels + user preferences
  */
-export type notificationsTypesResponse200 = void
+export type notificationsTypesResponse200 = NotificationsTypes200
+
+export type notificationsTypesResponse400 = NotificationsTypes400
+
+export type notificationsTypesResponse401 = NotificationsTypes401
+
+export type notificationsTypesResponse403 = NotificationsTypes403
 
 export type notificationsTypesResponseSuccess = notificationsTypesResponse200
-;
+export type notificationsTypesResponseError = (notificationsTypesResponse400 | notificationsTypesResponse401 | notificationsTypesResponse403) & {
+  headers: Headers;
+};
 
-export type notificationsTypesResponse = (notificationsTypesResponseSuccess)
+export type notificationsTypesResponse = (notificationsTypesResponseSuccess | notificationsTypesResponseError)
 
 export const getNotificationsTypesUrl = () => {
 
@@ -492,7 +548,7 @@ export const getNotificationsTypesQueryKey = () => {
     }
 
 
-export const getNotificationsTypesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsTypes>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsTypesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsTypes>>>, TError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -511,14 +567,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsTypesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsTypes>>>
-export type NotificationsTypesInfiniteQueryError = unknown
+export type NotificationsTypesInfiniteQueryError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403
 
 
 /**
  * @summary Notification types with channels + user preferences
  */
 
-export function createNotificationsTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsTypes>>>, TError = unknown>(
+export function createNotificationsTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsTypes>>>, TError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -533,7 +589,7 @@ export function createNotificationsTypesInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Notification types with channels + user preferences
  */
-export const prefetchNotificationsTypesInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = unknown>(
+export const prefetchNotificationsTypesInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -549,7 +605,7 @@ export const prefetchNotificationsTypesInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getNotificationsTypesQueryOptions = <TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsTypesQueryOptions = <TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -568,14 +624,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsTypesQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsTypes>>>
-export type NotificationsTypesQueryError = unknown
+export type NotificationsTypesQueryError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403
 
 
 /**
  * @summary Notification types with channels + user preferences
  */
 
-export function createNotificationsTypes<TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = unknown>(
+export function createNotificationsTypes<TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -590,7 +646,7 @@ export function createNotificationsTypes<TData = Awaited<ReturnType<typeof notif
 /**
  * @summary Notification types with channels + user preferences
  */
-export const prefetchNotificationsTypesQuery = async <TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = unknown>(
+export const prefetchNotificationsTypesQuery = async <TData = Awaited<ReturnType<typeof notificationsTypes>>, TError = NotificationsTypes400 | NotificationsTypes401 | NotificationsTypes403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -610,12 +666,20 @@ export const prefetchNotificationsTypesQuery = async <TData = Awaited<ReturnType
  * Notifications API
  * @summary Get notification preferences for the current user
  */
-export type notificationsPreferencesGetResponse200 = void
+export type notificationsPreferencesGetResponse200 = NotificationsPreferencesGet200
+
+export type notificationsPreferencesGetResponse400 = NotificationsPreferencesGet400
+
+export type notificationsPreferencesGetResponse401 = NotificationsPreferencesGet401
+
+export type notificationsPreferencesGetResponse403 = NotificationsPreferencesGet403
 
 export type notificationsPreferencesGetResponseSuccess = notificationsPreferencesGetResponse200
-;
+export type notificationsPreferencesGetResponseError = (notificationsPreferencesGetResponse400 | notificationsPreferencesGetResponse401 | notificationsPreferencesGetResponse403) & {
+  headers: Headers;
+};
 
-export type notificationsPreferencesGetResponse = (notificationsPreferencesGetResponseSuccess)
+export type notificationsPreferencesGetResponse = (notificationsPreferencesGetResponseSuccess | notificationsPreferencesGetResponseError)
 
 export const getNotificationsPreferencesGetUrl = () => {
 
@@ -653,7 +717,7 @@ export const getNotificationsPreferencesGetQueryKey = () => {
     }
 
 
-export const getNotificationsPreferencesGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsPreferencesGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsPreferencesGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof notificationsPreferencesGet>>>, TError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -672,14 +736,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsPreferencesGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsPreferencesGet>>>
-export type NotificationsPreferencesGetInfiniteQueryError = unknown
+export type NotificationsPreferencesGetInfiniteQueryError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403
 
 
 /**
  * @summary Get notification preferences for the current user
  */
 
-export function createNotificationsPreferencesGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsPreferencesGet>>>, TError = unknown>(
+export function createNotificationsPreferencesGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof notificationsPreferencesGet>>>, TError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -694,7 +758,7 @@ export function createNotificationsPreferencesGetInfinite<TData = InfiniteData<A
 /**
  * @summary Get notification preferences for the current user
  */
-export const prefetchNotificationsPreferencesGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = unknown>(
+export const prefetchNotificationsPreferencesGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -710,7 +774,7 @@ export const prefetchNotificationsPreferencesGetInfiniteQuery = async <TData = A
 
 
 
-export const getNotificationsPreferencesGetQueryOptions = <TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getNotificationsPreferencesGetQueryOptions = <TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -729,14 +793,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type NotificationsPreferencesGetQueryResult = NonNullable<Awaited<ReturnType<typeof notificationsPreferencesGet>>>
-export type NotificationsPreferencesGetQueryError = unknown
+export type NotificationsPreferencesGetQueryError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403
 
 
 /**
  * @summary Get notification preferences for the current user
  */
 
-export function createNotificationsPreferencesGet<TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = unknown>(
+export function createNotificationsPreferencesGet<TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -751,7 +815,7 @@ export function createNotificationsPreferencesGet<TData = Awaited<ReturnType<typ
 /**
  * @summary Get notification preferences for the current user
  */
-export const prefetchNotificationsPreferencesGetQuery = async <TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = unknown>(
+export const prefetchNotificationsPreferencesGetQuery = async <TData = Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError = NotificationsPreferencesGet400 | NotificationsPreferencesGet401 | NotificationsPreferencesGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof notificationsPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -771,12 +835,20 @@ export const prefetchNotificationsPreferencesGetQuery = async <TData = Awaited<R
  * Notifications API
  * @summary Update a notification type preference (in-app enable + email channel + delivery mode).
  */
-export type notificationsPreferencesPutResponse200 = void
+export type notificationsPreferencesPutResponse200 = NotificationsPreferencesPut200
+
+export type notificationsPreferencesPutResponse400 = NotificationsPreferencesPut400
+
+export type notificationsPreferencesPutResponse401 = NotificationsPreferencesPut401
+
+export type notificationsPreferencesPutResponse403 = NotificationsPreferencesPut403
 
 export type notificationsPreferencesPutResponseSuccess = notificationsPreferencesPutResponse200
-;
+export type notificationsPreferencesPutResponseError = (notificationsPreferencesPutResponse400 | notificationsPreferencesPutResponse401 | notificationsPreferencesPutResponse403) & {
+  headers: Headers;
+};
 
-export type notificationsPreferencesPutResponse = (notificationsPreferencesPutResponseSuccess)
+export type notificationsPreferencesPutResponse = (notificationsPreferencesPutResponseSuccess | notificationsPreferencesPutResponseError)
 
 export const getNotificationsPreferencesPutUrl = (type: string,) => {
 
@@ -802,7 +874,7 @@ export const notificationsPreferencesPut = async (type: string,
 
 
 
-export const getNotificationsPreferencesPutMutationOptions = <TError = unknown,
+export const getNotificationsPreferencesPutMutationOptions = <TError = NotificationsPreferencesPut400 | NotificationsPreferencesPut401 | NotificationsPreferencesPut403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsPreferencesPut>>, TError,{type: string;data: NotificationsPreferencesPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof notificationsPreferencesPut>>, TError,{type: string;data: NotificationsPreferencesPutBody}, TContext> => {
 
@@ -831,12 +903,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type NotificationsPreferencesPutMutationResult = NonNullable<Awaited<ReturnType<typeof notificationsPreferencesPut>>>
     export type NotificationsPreferencesPutMutationBody = NotificationsPreferencesPutBody
-    export type NotificationsPreferencesPutMutationError = unknown
+    export type NotificationsPreferencesPutMutationError = NotificationsPreferencesPut400 | NotificationsPreferencesPut401 | NotificationsPreferencesPut403
 
     /**
  * @summary Update a notification type preference (in-app enable + email channel + delivery mode).
  */
-export const createNotificationsPreferencesPut = <TError = unknown,
+export const createNotificationsPreferencesPut = <TError = NotificationsPreferencesPut400 | NotificationsPreferencesPut401 | NotificationsPreferencesPut403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof notificationsPreferencesPut>>, TError,{type: string;data: NotificationsPreferencesPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof notificationsPreferencesPut>>,

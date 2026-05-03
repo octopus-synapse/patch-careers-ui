@@ -22,3 +22,49 @@ export const ChatBlockUsersBlockedPostBody = zod.object({
   "reason": zod.string().max(chatBlockUsersBlockedPostBodyReasonMax).optional()
 })
 
+export const ChatBlockUsersBlockedPostResponse = zod.object({
+  "block": zod.object({
+  "id": zod.string(),
+  "blockedAt": zod.string().datetime({"offset":true}),
+  "reason": zod.string().nullable(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "username": zod.string().nullable()
+})
+})
+})
+
+/**
+ * Chat Block Users API
+ * @summary Get all blocked users
+ */
+export const ChatBlockUsersBlockedGetResponse = zod.object({
+  "blockedUsers": zod.array(zod.object({
+  "id": zod.string(),
+  "blockedAt": zod.string().datetime({"offset":true}),
+  "reason": zod.string().nullable(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "username": zod.string().nullable()
+})
+}))
+})
+
+/**
+ * Chat Block Users API
+ * @summary Unblock a user
+ */
+export const ChatBlockUsersBlockedDeleteResponse = zod.unknown().nullable()
+
+/**
+ * Chat Block Users API
+ * @summary Check if a user is blocked
+ */
+export const ChatBlockUsersBlockedStatusResponse = zod.object({
+  "isBlocked": zod.boolean()
+})
+

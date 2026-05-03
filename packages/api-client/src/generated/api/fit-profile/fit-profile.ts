@@ -26,8 +26,27 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  FitProfileAnswers200,
+  FitProfileAnswers400,
+  FitProfileAnswers401,
   FitProfileAnswersBody,
-  FitProfileJobsFitProfilePostBody
+  FitProfileJobsFitProfileGet200,
+  FitProfileJobsFitProfileGet400,
+  FitProfileJobsFitProfileGet401,
+  FitProfileJobsFitProfileGet403,
+  FitProfileJobsFitProfilePost200,
+  FitProfileJobsFitProfilePost400,
+  FitProfileJobsFitProfilePost401,
+  FitProfileJobsFitProfilePost403,
+  FitProfileJobsFitProfilePostBody,
+  FitProfileMeDelete400,
+  FitProfileMeDelete401,
+  FitProfileMeGet200,
+  FitProfileMeGet400,
+  FitProfileMeGet401,
+  FitProfileQuestions200,
+  FitProfileQuestions400,
+  FitProfileQuestions401
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -41,12 +60,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Fit Profile (personality vector)
  * @summary Get the caller's Fit Profile lifecycle state
  */
-export type fitProfileMeGetResponse200 = void
+export type fitProfileMeGetResponse200 = FitProfileMeGet200
+
+export type fitProfileMeGetResponse400 = FitProfileMeGet400
+
+export type fitProfileMeGetResponse401 = FitProfileMeGet401
 
 export type fitProfileMeGetResponseSuccess = fitProfileMeGetResponse200
-;
+export type fitProfileMeGetResponseError = (fitProfileMeGetResponse400 | fitProfileMeGetResponse401) & {
+  headers: Headers;
+};
 
-export type fitProfileMeGetResponse = (fitProfileMeGetResponseSuccess)
+export type fitProfileMeGetResponse = (fitProfileMeGetResponseSuccess | fitProfileMeGetResponseError)
 
 export const getFitProfileMeGetUrl = () => {
 
@@ -84,7 +109,7 @@ export const getFitProfileMeGetQueryKey = () => {
     }
 
 
-export const getFitProfileMeGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof fitProfileMeGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFitProfileMeGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof fitProfileMeGet>>>, TError = FitProfileMeGet400 | FitProfileMeGet401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -103,14 +128,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FitProfileMeGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof fitProfileMeGet>>>
-export type FitProfileMeGetInfiniteQueryError = unknown
+export type FitProfileMeGetInfiniteQueryError = FitProfileMeGet400 | FitProfileMeGet401
 
 
 /**
  * @summary Get the caller's Fit Profile lifecycle state
  */
 
-export function createFitProfileMeGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof fitProfileMeGet>>>, TError = unknown>(
+export function createFitProfileMeGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof fitProfileMeGet>>>, TError = FitProfileMeGet400 | FitProfileMeGet401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -125,7 +150,7 @@ export function createFitProfileMeGetInfinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Get the caller's Fit Profile lifecycle state
  */
-export const prefetchFitProfileMeGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = unknown>(
+export const prefetchFitProfileMeGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = FitProfileMeGet400 | FitProfileMeGet401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -141,7 +166,7 @@ export const prefetchFitProfileMeGetInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getFitProfileMeGetQueryOptions = <TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFitProfileMeGetQueryOptions = <TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = FitProfileMeGet400 | FitProfileMeGet401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -160,14 +185,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FitProfileMeGetQueryResult = NonNullable<Awaited<ReturnType<typeof fitProfileMeGet>>>
-export type FitProfileMeGetQueryError = unknown
+export type FitProfileMeGetQueryError = FitProfileMeGet400 | FitProfileMeGet401
 
 
 /**
  * @summary Get the caller's Fit Profile lifecycle state
  */
 
-export function createFitProfileMeGet<TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = unknown>(
+export function createFitProfileMeGet<TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = FitProfileMeGet400 | FitProfileMeGet401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -182,7 +207,7 @@ export function createFitProfileMeGet<TData = Awaited<ReturnType<typeof fitProfi
 /**
  * @summary Get the caller's Fit Profile lifecycle state
  */
-export const prefetchFitProfileMeGetQuery = async <TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = unknown>(
+export const prefetchFitProfileMeGetQuery = async <TData = Awaited<ReturnType<typeof fitProfileMeGet>>, TError = FitProfileMeGet400 | FitProfileMeGet401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileMeGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -202,12 +227,18 @@ export const prefetchFitProfileMeGetQuery = async <TData = Awaited<ReturnType<ty
  * Fit Profile (personality vector)
  * @summary LGPD - wipe the caller's Fit Answers and anonymize the vector
  */
-export type fitProfileMeDeleteResponse200 = void
+export type fitProfileMeDeleteResponse200 = unknown | null
+
+export type fitProfileMeDeleteResponse400 = FitProfileMeDelete400
+
+export type fitProfileMeDeleteResponse401 = FitProfileMeDelete401
 
 export type fitProfileMeDeleteResponseSuccess = fitProfileMeDeleteResponse200
-;
+export type fitProfileMeDeleteResponseError = (fitProfileMeDeleteResponse400 | fitProfileMeDeleteResponse401) & {
+  headers: Headers;
+};
 
-export type fitProfileMeDeleteResponse = (fitProfileMeDeleteResponseSuccess)
+export type fitProfileMeDeleteResponse = (fitProfileMeDeleteResponseSuccess | fitProfileMeDeleteResponseError)
 
 export const getFitProfileMeDeleteUrl = () => {
 
@@ -231,7 +262,7 @@ export const fitProfileMeDelete = async ( options?: RequestInit): Promise<fitPro
 
 
 
-export const getFitProfileMeDeleteMutationOptions = <TError = unknown,
+export const getFitProfileMeDeleteMutationOptions = <TError = FitProfileMeDelete400 | FitProfileMeDelete401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof fitProfileMeDelete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof fitProfileMeDelete>>, TError,void, TContext> => {
 
@@ -260,12 +291,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type FitProfileMeDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof fitProfileMeDelete>>>
 
-    export type FitProfileMeDeleteMutationError = unknown
+    export type FitProfileMeDeleteMutationError = FitProfileMeDelete400 | FitProfileMeDelete401
 
     /**
  * @summary LGPD - wipe the caller's Fit Answers and anonymize the vector
  */
-export const createFitProfileMeDelete = <TError = unknown,
+export const createFitProfileMeDelete = <TError = FitProfileMeDelete400 | FitProfileMeDelete401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof fitProfileMeDelete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof fitProfileMeDelete>>,
@@ -279,12 +310,18 @@ export const createFitProfileMeDelete = <TError = unknown,
  * Fit Profile (personality vector)
  * @summary Get or create the caller's 25-question set
  */
-export type fitProfileQuestionsResponse200 = void
+export type fitProfileQuestionsResponse200 = FitProfileQuestions200
+
+export type fitProfileQuestionsResponse400 = FitProfileQuestions400
+
+export type fitProfileQuestionsResponse401 = FitProfileQuestions401
 
 export type fitProfileQuestionsResponseSuccess = fitProfileQuestionsResponse200
-;
+export type fitProfileQuestionsResponseError = (fitProfileQuestionsResponse400 | fitProfileQuestionsResponse401) & {
+  headers: Headers;
+};
 
-export type fitProfileQuestionsResponse = (fitProfileQuestionsResponseSuccess)
+export type fitProfileQuestionsResponse = (fitProfileQuestionsResponseSuccess | fitProfileQuestionsResponseError)
 
 export const getFitProfileQuestionsUrl = () => {
 
@@ -322,7 +359,7 @@ export const getFitProfileQuestionsQueryKey = () => {
     }
 
 
-export const getFitProfileQuestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof fitProfileQuestions>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFitProfileQuestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof fitProfileQuestions>>>, TError = FitProfileQuestions400 | FitProfileQuestions401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -341,14 +378,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FitProfileQuestionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof fitProfileQuestions>>>
-export type FitProfileQuestionsInfiniteQueryError = unknown
+export type FitProfileQuestionsInfiniteQueryError = FitProfileQuestions400 | FitProfileQuestions401
 
 
 /**
  * @summary Get or create the caller's 25-question set
  */
 
-export function createFitProfileQuestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof fitProfileQuestions>>>, TError = unknown>(
+export function createFitProfileQuestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof fitProfileQuestions>>>, TError = FitProfileQuestions400 | FitProfileQuestions401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -363,7 +400,7 @@ export function createFitProfileQuestionsInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Get or create the caller's 25-question set
  */
-export const prefetchFitProfileQuestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = unknown>(
+export const prefetchFitProfileQuestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = FitProfileQuestions400 | FitProfileQuestions401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -379,7 +416,7 @@ export const prefetchFitProfileQuestionsInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getFitProfileQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFitProfileQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = FitProfileQuestions400 | FitProfileQuestions401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -398,14 +435,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FitProfileQuestionsQueryResult = NonNullable<Awaited<ReturnType<typeof fitProfileQuestions>>>
-export type FitProfileQuestionsQueryError = unknown
+export type FitProfileQuestionsQueryError = FitProfileQuestions400 | FitProfileQuestions401
 
 
 /**
  * @summary Get or create the caller's 25-question set
  */
 
-export function createFitProfileQuestions<TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = unknown>(
+export function createFitProfileQuestions<TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = FitProfileQuestions400 | FitProfileQuestions401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -420,7 +457,7 @@ export function createFitProfileQuestions<TData = Awaited<ReturnType<typeof fitP
 /**
  * @summary Get or create the caller's 25-question set
  */
-export const prefetchFitProfileQuestionsQuery = async <TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = unknown>(
+export const prefetchFitProfileQuestionsQuery = async <TData = Awaited<ReturnType<typeof fitProfileQuestions>>, TError = FitProfileQuestions400 | FitProfileQuestions401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileQuestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -440,12 +477,18 @@ export const prefetchFitProfileQuestionsQuery = async <TData = Awaited<ReturnTyp
  * Fit Profile (personality vector)
  * @summary Commit the 25 Fit Answers; compute and persist vector
  */
-export type fitProfileAnswersResponse200 = void
+export type fitProfileAnswersResponse200 = FitProfileAnswers200
+
+export type fitProfileAnswersResponse400 = FitProfileAnswers400
+
+export type fitProfileAnswersResponse401 = FitProfileAnswers401
 
 export type fitProfileAnswersResponseSuccess = fitProfileAnswersResponse200
-;
+export type fitProfileAnswersResponseError = (fitProfileAnswersResponse400 | fitProfileAnswersResponse401) & {
+  headers: Headers;
+};
 
-export type fitProfileAnswersResponse = (fitProfileAnswersResponseSuccess)
+export type fitProfileAnswersResponse = (fitProfileAnswersResponseSuccess | fitProfileAnswersResponseError)
 
 export const getFitProfileAnswersUrl = () => {
 
@@ -470,7 +513,7 @@ export const fitProfileAnswers = async (fitProfileAnswersBody: FitProfileAnswers
 
 
 
-export const getFitProfileAnswersMutationOptions = <TError = unknown,
+export const getFitProfileAnswersMutationOptions = <TError = FitProfileAnswers400 | FitProfileAnswers401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof fitProfileAnswers>>, TError,{data: FitProfileAnswersBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof fitProfileAnswers>>, TError,{data: FitProfileAnswersBody}, TContext> => {
 
@@ -499,12 +542,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type FitProfileAnswersMutationResult = NonNullable<Awaited<ReturnType<typeof fitProfileAnswers>>>
     export type FitProfileAnswersMutationBody = FitProfileAnswersBody
-    export type FitProfileAnswersMutationError = unknown
+    export type FitProfileAnswersMutationError = FitProfileAnswers400 | FitProfileAnswers401
 
     /**
  * @summary Commit the 25 Fit Answers; compute and persist vector
  */
-export const createFitProfileAnswers = <TError = unknown,
+export const createFitProfileAnswers = <TError = FitProfileAnswers400 | FitProfileAnswers401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof fitProfileAnswers>>, TError,{data: FitProfileAnswersBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof fitProfileAnswers>>,
@@ -518,12 +561,20 @@ export const createFitProfileAnswers = <TError = unknown,
  * Job Fit Profile (recruiter sliders)
  * @summary Get the recruiter-authored Fit Profile for a job
  */
-export type fitProfileJobsFitProfileGetResponse200 = void
+export type fitProfileJobsFitProfileGetResponse200 = FitProfileJobsFitProfileGet200
+
+export type fitProfileJobsFitProfileGetResponse400 = FitProfileJobsFitProfileGet400
+
+export type fitProfileJobsFitProfileGetResponse401 = FitProfileJobsFitProfileGet401
+
+export type fitProfileJobsFitProfileGetResponse403 = FitProfileJobsFitProfileGet403
 
 export type fitProfileJobsFitProfileGetResponseSuccess = fitProfileJobsFitProfileGetResponse200
-;
+export type fitProfileJobsFitProfileGetResponseError = (fitProfileJobsFitProfileGetResponse400 | fitProfileJobsFitProfileGetResponse401 | fitProfileJobsFitProfileGetResponse403) & {
+  headers: Headers;
+};
 
-export type fitProfileJobsFitProfileGetResponse = (fitProfileJobsFitProfileGetResponseSuccess)
+export type fitProfileJobsFitProfileGetResponse = (fitProfileJobsFitProfileGetResponseSuccess | fitProfileJobsFitProfileGetResponseError)
 
 export const getFitProfileJobsFitProfileGetUrl = (id: string,) => {
 
@@ -561,7 +612,7 @@ export const getFitProfileJobsFitProfileGetQueryKey = (id: string,) => {
     }
 
 
-export const getFitProfileJobsFitProfileGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFitProfileJobsFitProfileGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>>, TError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -580,14 +631,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FitProfileJobsFitProfileGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>>
-export type FitProfileJobsFitProfileGetInfiniteQueryError = unknown
+export type FitProfileJobsFitProfileGetInfiniteQueryError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403
 
 
 /**
  * @summary Get the recruiter-authored Fit Profile for a job
  */
 
-export function createFitProfileJobsFitProfileGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>>, TError = unknown>(
+export function createFitProfileJobsFitProfileGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>>, TError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -602,7 +653,7 @@ export function createFitProfileJobsFitProfileGetInfinite<TData = InfiniteData<A
 /**
  * @summary Get the recruiter-authored Fit Profile for a job
  */
-export const prefetchFitProfileJobsFitProfileGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = unknown>(
+export const prefetchFitProfileJobsFitProfileGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -618,7 +669,7 @@ export const prefetchFitProfileJobsFitProfileGetInfiniteQuery = async <TData = A
 
 
 
-export const getFitProfileJobsFitProfileGetQueryOptions = <TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFitProfileJobsFitProfileGetQueryOptions = <TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -637,14 +688,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FitProfileJobsFitProfileGetQueryResult = NonNullable<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>>
-export type FitProfileJobsFitProfileGetQueryError = unknown
+export type FitProfileJobsFitProfileGetQueryError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403
 
 
 /**
  * @summary Get the recruiter-authored Fit Profile for a job
  */
 
-export function createFitProfileJobsFitProfileGet<TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = unknown>(
+export function createFitProfileJobsFitProfileGet<TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -659,7 +710,7 @@ export function createFitProfileJobsFitProfileGet<TData = Awaited<ReturnType<typ
 /**
  * @summary Get the recruiter-authored Fit Profile for a job
  */
-export const prefetchFitProfileJobsFitProfileGetQuery = async <TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = unknown>(
+export const prefetchFitProfileJobsFitProfileGetQuery = async <TData = Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError = FitProfileJobsFitProfileGet400 | FitProfileJobsFitProfileGet401 | FitProfileJobsFitProfileGet403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -679,12 +730,20 @@ export const prefetchFitProfileJobsFitProfileGetQuery = async <TData = Awaited<R
  * Job Fit Profile (recruiter sliders)
  * @summary Upsert the recruiter-authored Fit Profile for a job
  */
-export type fitProfileJobsFitProfilePostResponse200 = void
+export type fitProfileJobsFitProfilePostResponse200 = FitProfileJobsFitProfilePost200
+
+export type fitProfileJobsFitProfilePostResponse400 = FitProfileJobsFitProfilePost400
+
+export type fitProfileJobsFitProfilePostResponse401 = FitProfileJobsFitProfilePost401
+
+export type fitProfileJobsFitProfilePostResponse403 = FitProfileJobsFitProfilePost403
 
 export type fitProfileJobsFitProfilePostResponseSuccess = fitProfileJobsFitProfilePostResponse200
-;
+export type fitProfileJobsFitProfilePostResponseError = (fitProfileJobsFitProfilePostResponse400 | fitProfileJobsFitProfilePostResponse401 | fitProfileJobsFitProfilePostResponse403) & {
+  headers: Headers;
+};
 
-export type fitProfileJobsFitProfilePostResponse = (fitProfileJobsFitProfilePostResponseSuccess)
+export type fitProfileJobsFitProfilePostResponse = (fitProfileJobsFitProfilePostResponseSuccess | fitProfileJobsFitProfilePostResponseError)
 
 export const getFitProfileJobsFitProfilePostUrl = (id: string,) => {
 
@@ -710,7 +769,7 @@ export const fitProfileJobsFitProfilePost = async (id: string,
 
 
 
-export const getFitProfileJobsFitProfilePostMutationOptions = <TError = unknown,
+export const getFitProfileJobsFitProfilePostMutationOptions = <TError = FitProfileJobsFitProfilePost400 | FitProfileJobsFitProfilePost401 | FitProfileJobsFitProfilePost403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfilePost>>, TError,{id: string;data: FitProfileJobsFitProfilePostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfilePost>>, TError,{id: string;data: FitProfileJobsFitProfilePostBody}, TContext> => {
 
@@ -739,12 +798,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type FitProfileJobsFitProfilePostMutationResult = NonNullable<Awaited<ReturnType<typeof fitProfileJobsFitProfilePost>>>
     export type FitProfileJobsFitProfilePostMutationBody = FitProfileJobsFitProfilePostBody
-    export type FitProfileJobsFitProfilePostMutationError = unknown
+    export type FitProfileJobsFitProfilePostMutationError = FitProfileJobsFitProfilePost400 | FitProfileJobsFitProfilePost401 | FitProfileJobsFitProfilePost403
 
     /**
  * @summary Upsert the recruiter-authored Fit Profile for a job
  */
-export const createFitProfileJobsFitProfilePost = <TError = unknown,
+export const createFitProfileJobsFitProfilePost = <TError = FitProfileJobsFitProfilePost400 | FitProfileJobsFitProfilePost401 | FitProfileJobsFitProfilePost403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof fitProfileJobsFitProfilePost>>, TError,{id: string;data: FitProfileJobsFitProfilePostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof fitProfileJobsFitProfilePost>>,

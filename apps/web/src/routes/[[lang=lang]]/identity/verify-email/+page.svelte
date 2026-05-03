@@ -1,7 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createAuthSession,
   createEmailVerificationAuthEmailVerificationResendStatus,
   createEmailVerificationAuthEmailVerificationSend,
   createEmailVerificationVerify,
@@ -15,6 +14,7 @@ import { Badge, Button, Loader, OtpInput } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { translateApiError } from '$lib/utils/translate-api-error';
 
@@ -36,14 +36,10 @@ const CODE_LENGTH = 6;
 
 const tokenFromUrl = $derived($page.url.searchParams.get('token') ?? '');
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+const session = useAuth();
 const authenticated = $derived(session.data?.authenticated);
 const email = $derived(session.data?.user?.email ?? '');
-const needsEmailVerification = $derived(
-  Boolean((session.data?.user as { needsEmailVerification?: boolean } | null | undefined)?.needsEmailVerification),
-);
+const needsEmailVerification = $derived(Boolean(session.data?.user?.needsEmailVerification));
 
 // Resend cooldown is owned by the backend — the UI just mirrors it so the
 // countdown survives page reloads.

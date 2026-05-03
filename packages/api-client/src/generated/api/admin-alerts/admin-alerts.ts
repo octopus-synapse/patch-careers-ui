@@ -21,6 +21,13 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  AdminAlertsList200,
+  AdminAlertsList400,
+  AdminAlertsList401,
+  AdminAlertsList403
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +39,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Alerts API
  * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
-export type adminAlertsListResponse200 = void
+export type adminAlertsListResponse200 = AdminAlertsList200
+
+export type adminAlertsListResponse400 = AdminAlertsList400
+
+export type adminAlertsListResponse401 = AdminAlertsList401
+
+export type adminAlertsListResponse403 = AdminAlertsList403
 
 export type adminAlertsListResponseSuccess = adminAlertsListResponse200
-;
+export type adminAlertsListResponseError = (adminAlertsListResponse400 | adminAlertsListResponse401 | adminAlertsListResponse403) & {
+  headers: Headers;
+};
 
-export type adminAlertsListResponse = (adminAlertsListResponseSuccess)
+export type adminAlertsListResponse = (adminAlertsListResponseSuccess | adminAlertsListResponseError)
 
 export const getAdminAlertsListUrl = () => {
 
@@ -75,7 +90,7 @@ export const getAdminAlertsListQueryKey = () => {
     }
 
 
-export const getAdminAlertsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminAlertsList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminAlertsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminAlertsList>>>, TError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +109,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminAlertsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminAlertsList>>>
-export type AdminAlertsListInfiniteQueryError = unknown
+export type AdminAlertsListInfiniteQueryError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403
 
 
 /**
  * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
 
-export function createAdminAlertsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminAlertsList>>>, TError = unknown>(
+export function createAdminAlertsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminAlertsList>>>, TError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +131,7 @@ export function createAdminAlertsListInfinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
-export const prefetchAdminAlertsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = unknown>(
+export const prefetchAdminAlertsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +147,7 @@ export const prefetchAdminAlertsListInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getAdminAlertsListQueryOptions = <TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminAlertsListQueryOptions = <TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +166,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminAlertsListQueryResult = NonNullable<Awaited<ReturnType<typeof adminAlertsList>>>
-export type AdminAlertsListQueryError = unknown
+export type AdminAlertsListQueryError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403
 
 
 /**
  * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
 
-export function createAdminAlertsList<TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = unknown>(
+export function createAdminAlertsList<TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +188,7 @@ export function createAdminAlertsList<TData = Awaited<ReturnType<typeof adminAle
 /**
  * @summary Counts of admin-actionable queues: reports, verifications, stale shadow profiles
  */
-export const prefetchAdminAlertsListQuery = async <TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = unknown>(
+export const prefetchAdminAlertsListQuery = async <TData = Awaited<ReturnType<typeof adminAlertsList>>, TError = AdminAlertsList400 | AdminAlertsList401 | AdminAlertsList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAlertsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

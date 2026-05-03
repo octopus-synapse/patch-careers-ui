@@ -27,3 +27,21 @@ export const AutomationRageApplyBody = zod.object({
   "sinceDays": zod.number().min(1).max(automationRageApplyBodySinceDaysMax).optional()
 })
 
+export const automationRageApplyResponseAttemptedMin = 0;
+
+export const automationRageApplyResponseSubmittedMin = 0;
+
+export const automationRageApplyResponseSkippedExistingMin = 0;
+
+
+
+export const AutomationRageApplyResponse = zod.object({
+  "attempted": zod.number().min(automationRageApplyResponseAttemptedMin),
+  "submitted": zod.number().min(automationRageApplyResponseSubmittedMin),
+  "skippedExisting": zod.number().min(automationRageApplyResponseSkippedExistingMin),
+  "failed": zod.array(zod.object({
+  "jobId": zod.string(),
+  "reason": zod.string()
+}))
+})
+

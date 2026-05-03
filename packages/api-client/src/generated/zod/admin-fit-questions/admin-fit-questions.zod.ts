@@ -10,6 +10,24 @@ import * as zod from 'zod';
 
 /**
  * Admin FitQuestion CRUD
+ * @summary List every FitQuestion in the pool
+ */
+export const AdminFitQuestionsListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "dimension": zod.enum(['BIG_FIVE_OPENNESS', 'BIG_FIVE_CONSCIENTIOUSNESS', 'BIG_FIVE_EXTRAVERSION', 'BIG_FIVE_AGREEABLENESS', 'BIG_FIVE_NEUROTICISM', 'SCHWARTZ_SELF_DIRECTION', 'SCHWARTZ_STIMULATION', 'SCHWARTZ_HEDONISM', 'SCHWARTZ_ACHIEVEMENT', 'SCHWARTZ_POWER', 'SCHWARTZ_SECURITY', 'SCHWARTZ_CONFORMITY', 'SCHWARTZ_TRADITION', 'SCHWARTZ_BENEVOLENCE', 'SCHWARTZ_UNIVERSALISM', 'SDT_AUTONOMY', 'SDT_COMPETENCE', 'SDT_RELATEDNESS']),
+  "textEn": zod.string(),
+  "textPtBr": zod.string(),
+  "scaleType": zod.enum(['likert5', 'binary']),
+  "weight": zod.number(),
+  "isActive": zod.boolean(),
+  "reverseScored": zod.boolean()
+}))
+})
+
+/**
+ * Admin FitQuestion CRUD
  * @summary Create a new FitQuestion
  */
 export const adminFitQuestionsCreateBodyKeyMax = 120;
@@ -33,6 +51,34 @@ export const AdminFitQuestionsCreateBody = zod.object({
   "reverseScored": zod.boolean().default(adminFitQuestionsCreateBodyReverseScoredDefault)
 })
 
+export const AdminFitQuestionsCreateResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "dimension": zod.enum(['BIG_FIVE_OPENNESS', 'BIG_FIVE_CONSCIENTIOUSNESS', 'BIG_FIVE_EXTRAVERSION', 'BIG_FIVE_AGREEABLENESS', 'BIG_FIVE_NEUROTICISM', 'SCHWARTZ_SELF_DIRECTION', 'SCHWARTZ_STIMULATION', 'SCHWARTZ_HEDONISM', 'SCHWARTZ_ACHIEVEMENT', 'SCHWARTZ_POWER', 'SCHWARTZ_SECURITY', 'SCHWARTZ_CONFORMITY', 'SCHWARTZ_TRADITION', 'SCHWARTZ_BENEVOLENCE', 'SCHWARTZ_UNIVERSALISM', 'SDT_AUTONOMY', 'SDT_COMPETENCE', 'SDT_RELATEDNESS']),
+  "textEn": zod.string(),
+  "textPtBr": zod.string(),
+  "scaleType": zod.enum(['likert5', 'binary']),
+  "weight": zod.number(),
+  "isActive": zod.boolean(),
+  "reverseScored": zod.boolean()
+})
+
+/**
+ * Admin FitQuestion CRUD
+ * @summary Get one FitQuestion by id
+ */
+export const AdminFitQuestionsGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "dimension": zod.enum(['BIG_FIVE_OPENNESS', 'BIG_FIVE_CONSCIENTIOUSNESS', 'BIG_FIVE_EXTRAVERSION', 'BIG_FIVE_AGREEABLENESS', 'BIG_FIVE_NEUROTICISM', 'SCHWARTZ_SELF_DIRECTION', 'SCHWARTZ_STIMULATION', 'SCHWARTZ_HEDONISM', 'SCHWARTZ_ACHIEVEMENT', 'SCHWARTZ_POWER', 'SCHWARTZ_SECURITY', 'SCHWARTZ_CONFORMITY', 'SCHWARTZ_TRADITION', 'SCHWARTZ_BENEVOLENCE', 'SCHWARTZ_UNIVERSALISM', 'SDT_AUTONOMY', 'SDT_COMPETENCE', 'SDT_RELATEDNESS']),
+  "textEn": zod.string(),
+  "textPtBr": zod.string(),
+  "scaleType": zod.enum(['likert5', 'binary']),
+  "weight": zod.number(),
+  "isActive": zod.boolean(),
+  "reverseScored": zod.boolean()
+})
+
 /**
  * Admin FitQuestion CRUD
  * @summary Update an existing FitQuestion
@@ -52,4 +98,22 @@ export const AdminFitQuestionsUpdateBody = zod.object({
   "isActive": zod.boolean().optional(),
   "reverseScored": zod.boolean().optional()
 })
+
+export const AdminFitQuestionsUpdateResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "dimension": zod.enum(['BIG_FIVE_OPENNESS', 'BIG_FIVE_CONSCIENTIOUSNESS', 'BIG_FIVE_EXTRAVERSION', 'BIG_FIVE_AGREEABLENESS', 'BIG_FIVE_NEUROTICISM', 'SCHWARTZ_SELF_DIRECTION', 'SCHWARTZ_STIMULATION', 'SCHWARTZ_HEDONISM', 'SCHWARTZ_ACHIEVEMENT', 'SCHWARTZ_POWER', 'SCHWARTZ_SECURITY', 'SCHWARTZ_CONFORMITY', 'SCHWARTZ_TRADITION', 'SCHWARTZ_BENEVOLENCE', 'SCHWARTZ_UNIVERSALISM', 'SDT_AUTONOMY', 'SDT_COMPETENCE', 'SDT_RELATEDNESS']),
+  "textEn": zod.string(),
+  "textPtBr": zod.string(),
+  "scaleType": zod.enum(['likert5', 'binary']),
+  "weight": zod.number(),
+  "isActive": zod.boolean(),
+  "reverseScored": zod.boolean()
+})
+
+/**
+ * Admin FitQuestion CRUD
+ * @summary Delete a FitQuestion
+ */
+export const AdminFitQuestionsDeleteResponse = zod.unknown().nullable()
 

@@ -26,8 +26,39 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminOnboardingConfigGet200,
+  AdminOnboardingConfigGet400,
+  AdminOnboardingConfigGet401,
+  AdminOnboardingConfigGet403,
+  AdminOnboardingConfigPut200,
+  AdminOnboardingConfigPut400,
+  AdminOnboardingConfigPut401,
+  AdminOnboardingConfigPut403,
   AdminOnboardingConfigPutBody,
+  AdminOnboardingStats200,
+  AdminOnboardingStats400,
+  AdminOnboardingStats401,
+  AdminOnboardingStats403,
+  AdminOnboardingStepsDelete400,
+  AdminOnboardingStepsDelete401,
+  AdminOnboardingStepsDelete403,
+  AdminOnboardingStepsGet200,
+  AdminOnboardingStepsGet2200,
+  AdminOnboardingStepsGet2400,
+  AdminOnboardingStepsGet2401,
+  AdminOnboardingStepsGet2403,
+  AdminOnboardingStepsGet400,
+  AdminOnboardingStepsGet401,
+  AdminOnboardingStepsGet403,
+  AdminOnboardingStepsPost200,
+  AdminOnboardingStepsPost400,
+  AdminOnboardingStepsPost401,
+  AdminOnboardingStepsPost403,
   AdminOnboardingStepsPostBody,
+  AdminOnboardingStepsPut200,
+  AdminOnboardingStepsPut400,
+  AdminOnboardingStepsPut401,
+  AdminOnboardingStepsPut403,
   AdminOnboardingStepsPutBody
 } from '../../models';
 
@@ -42,12 +73,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin onboarding management
  * @summary List all onboarding steps
  */
-export type adminOnboardingStepsGetResponse200 = void
+export type adminOnboardingStepsGetResponse200 = AdminOnboardingStepsGet200
+
+export type adminOnboardingStepsGetResponse400 = AdminOnboardingStepsGet400
+
+export type adminOnboardingStepsGetResponse401 = AdminOnboardingStepsGet401
+
+export type adminOnboardingStepsGetResponse403 = AdminOnboardingStepsGet403
 
 export type adminOnboardingStepsGetResponseSuccess = adminOnboardingStepsGetResponse200
-;
+export type adminOnboardingStepsGetResponseError = (adminOnboardingStepsGetResponse400 | adminOnboardingStepsGetResponse401 | adminOnboardingStepsGetResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingStepsGetResponse = (adminOnboardingStepsGetResponseSuccess)
+export type adminOnboardingStepsGetResponse = (adminOnboardingStepsGetResponseSuccess | adminOnboardingStepsGetResponseError)
 
 export const getAdminOnboardingStepsGetUrl = () => {
 
@@ -85,7 +124,7 @@ export const getAdminOnboardingStepsGetQueryKey = () => {
     }
 
 
-export const getAdminOnboardingStepsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingStepsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet>>>, TError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -104,14 +143,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingStepsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsGet>>>
-export type AdminOnboardingStepsGetInfiniteQueryError = unknown
+export type AdminOnboardingStepsGetInfiniteQueryError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403
 
 
 /**
  * @summary List all onboarding steps
  */
 
-export function createAdminOnboardingStepsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet>>>, TError = unknown>(
+export function createAdminOnboardingStepsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet>>>, TError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -126,7 +165,7 @@ export function createAdminOnboardingStepsGetInfinite<TData = InfiniteData<Await
 /**
  * @summary List all onboarding steps
  */
-export const prefetchAdminOnboardingStepsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = unknown>(
+export const prefetchAdminOnboardingStepsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -142,7 +181,7 @@ export const prefetchAdminOnboardingStepsGetInfiniteQuery = async <TData = Await
 
 
 
-export const getAdminOnboardingStepsGetQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingStepsGetQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -161,14 +200,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingStepsGetQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsGet>>>
-export type AdminOnboardingStepsGetQueryError = unknown
+export type AdminOnboardingStepsGetQueryError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403
 
 
 /**
  * @summary List all onboarding steps
  */
 
-export function createAdminOnboardingStepsGet<TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = unknown>(
+export function createAdminOnboardingStepsGet<TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -183,7 +222,7 @@ export function createAdminOnboardingStepsGet<TData = Awaited<ReturnType<typeof 
 /**
  * @summary List all onboarding steps
  */
-export const prefetchAdminOnboardingStepsGetQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = unknown>(
+export const prefetchAdminOnboardingStepsGetQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError = AdminOnboardingStepsGet400 | AdminOnboardingStepsGet401 | AdminOnboardingStepsGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -203,12 +242,20 @@ export const prefetchAdminOnboardingStepsGetQuery = async <TData = Awaited<Retur
  * Admin onboarding management
  * @summary Create onboarding step
  */
-export type adminOnboardingStepsPostResponse200 = void
+export type adminOnboardingStepsPostResponse200 = AdminOnboardingStepsPost200
+
+export type adminOnboardingStepsPostResponse400 = AdminOnboardingStepsPost400
+
+export type adminOnboardingStepsPostResponse401 = AdminOnboardingStepsPost401
+
+export type adminOnboardingStepsPostResponse403 = AdminOnboardingStepsPost403
 
 export type adminOnboardingStepsPostResponseSuccess = adminOnboardingStepsPostResponse200
-;
+export type adminOnboardingStepsPostResponseError = (adminOnboardingStepsPostResponse400 | adminOnboardingStepsPostResponse401 | adminOnboardingStepsPostResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingStepsPostResponse = (adminOnboardingStepsPostResponseSuccess)
+export type adminOnboardingStepsPostResponse = (adminOnboardingStepsPostResponseSuccess | adminOnboardingStepsPostResponseError)
 
 export const getAdminOnboardingStepsPostUrl = () => {
 
@@ -233,7 +280,7 @@ export const adminOnboardingStepsPost = async (adminOnboardingStepsPostBody: Adm
 
 
 
-export const getAdminOnboardingStepsPostMutationOptions = <TError = unknown,
+export const getAdminOnboardingStepsPostMutationOptions = <TError = AdminOnboardingStepsPost400 | AdminOnboardingStepsPost401 | AdminOnboardingStepsPost403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsPost>>, TError,{data: AdminOnboardingStepsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsPost>>, TError,{data: AdminOnboardingStepsPostBody}, TContext> => {
 
@@ -262,12 +309,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminOnboardingStepsPostMutationResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsPost>>>
     export type AdminOnboardingStepsPostMutationBody = AdminOnboardingStepsPostBody
-    export type AdminOnboardingStepsPostMutationError = unknown
+    export type AdminOnboardingStepsPostMutationError = AdminOnboardingStepsPost400 | AdminOnboardingStepsPost401 | AdminOnboardingStepsPost403
 
     /**
  * @summary Create onboarding step
  */
-export const createAdminOnboardingStepsPost = <TError = unknown,
+export const createAdminOnboardingStepsPost = <TError = AdminOnboardingStepsPost400 | AdminOnboardingStepsPost401 | AdminOnboardingStepsPost403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsPost>>, TError,{data: AdminOnboardingStepsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminOnboardingStepsPost>>,
@@ -281,12 +328,20 @@ export const createAdminOnboardingStepsPost = <TError = unknown,
  * Admin onboarding management
  * @summary Get onboarding funnel statistics
  */
-export type adminOnboardingStatsResponse200 = void
+export type adminOnboardingStatsResponse200 = AdminOnboardingStats200
+
+export type adminOnboardingStatsResponse400 = AdminOnboardingStats400
+
+export type adminOnboardingStatsResponse401 = AdminOnboardingStats401
+
+export type adminOnboardingStatsResponse403 = AdminOnboardingStats403
 
 export type adminOnboardingStatsResponseSuccess = adminOnboardingStatsResponse200
-;
+export type adminOnboardingStatsResponseError = (adminOnboardingStatsResponse400 | adminOnboardingStatsResponse401 | adminOnboardingStatsResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingStatsResponse = (adminOnboardingStatsResponseSuccess)
+export type adminOnboardingStatsResponse = (adminOnboardingStatsResponseSuccess | adminOnboardingStatsResponseError)
 
 export const getAdminOnboardingStatsUrl = () => {
 
@@ -324,7 +379,7 @@ export const getAdminOnboardingStatsQueryKey = () => {
     }
 
 
-export const getAdminOnboardingStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStats>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStats>>>, TError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -343,14 +398,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStats>>>
-export type AdminOnboardingStatsInfiniteQueryError = unknown
+export type AdminOnboardingStatsInfiniteQueryError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403
 
 
 /**
  * @summary Get onboarding funnel statistics
  */
 
-export function createAdminOnboardingStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStats>>>, TError = unknown>(
+export function createAdminOnboardingStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStats>>>, TError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -365,7 +420,7 @@ export function createAdminOnboardingStatsInfinite<TData = InfiniteData<Awaited<
 /**
  * @summary Get onboarding funnel statistics
  */
-export const prefetchAdminOnboardingStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = unknown>(
+export const prefetchAdminOnboardingStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -381,7 +436,7 @@ export const prefetchAdminOnboardingStatsInfiniteQuery = async <TData = Awaited<
 
 
 
-export const getAdminOnboardingStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingStatsQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -400,14 +455,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingStatsQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStats>>>
-export type AdminOnboardingStatsQueryError = unknown
+export type AdminOnboardingStatsQueryError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403
 
 
 /**
  * @summary Get onboarding funnel statistics
  */
 
-export function createAdminOnboardingStats<TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = unknown>(
+export function createAdminOnboardingStats<TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -422,7 +477,7 @@ export function createAdminOnboardingStats<TData = Awaited<ReturnType<typeof adm
 /**
  * @summary Get onboarding funnel statistics
  */
-export const prefetchAdminOnboardingStatsQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = unknown>(
+export const prefetchAdminOnboardingStatsQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStats>>, TError = AdminOnboardingStats400 | AdminOnboardingStats401 | AdminOnboardingStats403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -442,12 +497,20 @@ export const prefetchAdminOnboardingStatsQuery = async <TData = Awaited<ReturnTy
  * Admin onboarding management
  * @summary Get onboarding step by key
  */
-export type adminOnboardingStepsGet2Response200 = void
+export type adminOnboardingStepsGet2Response200 = AdminOnboardingStepsGet2200
+
+export type adminOnboardingStepsGet2Response400 = AdminOnboardingStepsGet2400
+
+export type adminOnboardingStepsGet2Response401 = AdminOnboardingStepsGet2401
+
+export type adminOnboardingStepsGet2Response403 = AdminOnboardingStepsGet2403
 
 export type adminOnboardingStepsGet2ResponseSuccess = adminOnboardingStepsGet2Response200
-;
+export type adminOnboardingStepsGet2ResponseError = (adminOnboardingStepsGet2Response400 | adminOnboardingStepsGet2Response401 | adminOnboardingStepsGet2Response403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingStepsGet2Response = (adminOnboardingStepsGet2ResponseSuccess)
+export type adminOnboardingStepsGet2Response = (adminOnboardingStepsGet2ResponseSuccess | adminOnboardingStepsGet2ResponseError)
 
 export const getAdminOnboardingStepsGet2Url = (key: string,) => {
 
@@ -485,7 +548,7 @@ export const getAdminOnboardingStepsGet2QueryKey = (key: string,) => {
     }
 
 
-export const getAdminOnboardingStepsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>>, TError = unknown>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingStepsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>>, TError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -504,14 +567,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingStepsGet2InfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>>
-export type AdminOnboardingStepsGet2InfiniteQueryError = unknown
+export type AdminOnboardingStepsGet2InfiniteQueryError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403
 
 
 /**
  * @summary Get onboarding step by key
  */
 
-export function createAdminOnboardingStepsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>>, TError = unknown>(
+export function createAdminOnboardingStepsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>>, TError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403>(
  key: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -526,7 +589,7 @@ export function createAdminOnboardingStepsGet2Infinite<TData = InfiniteData<Awai
 /**
  * @summary Get onboarding step by key
  */
-export const prefetchAdminOnboardingStepsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = unknown>(
+export const prefetchAdminOnboardingStepsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -542,7 +605,7 @@ export const prefetchAdminOnboardingStepsGet2InfiniteQuery = async <TData = Awai
 
 
 
-export const getAdminOnboardingStepsGet2QueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = unknown>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingStepsGet2QueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -561,14 +624,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingStepsGet2QueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>>
-export type AdminOnboardingStepsGet2QueryError = unknown
+export type AdminOnboardingStepsGet2QueryError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403
 
 
 /**
  * @summary Get onboarding step by key
  */
 
-export function createAdminOnboardingStepsGet2<TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = unknown>(
+export function createAdminOnboardingStepsGet2<TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403>(
  key: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -583,7 +646,7 @@ export function createAdminOnboardingStepsGet2<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get onboarding step by key
  */
-export const prefetchAdminOnboardingStepsGet2Query = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = unknown>(
+export const prefetchAdminOnboardingStepsGet2Query = async <TData = Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError = AdminOnboardingStepsGet2400 | AdminOnboardingStepsGet2401 | AdminOnboardingStepsGet2403>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingStepsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -603,12 +666,20 @@ export const prefetchAdminOnboardingStepsGet2Query = async <TData = Awaited<Retu
  * Admin onboarding management
  * @summary Update onboarding step
  */
-export type adminOnboardingStepsPutResponse200 = void
+export type adminOnboardingStepsPutResponse200 = AdminOnboardingStepsPut200
+
+export type adminOnboardingStepsPutResponse400 = AdminOnboardingStepsPut400
+
+export type adminOnboardingStepsPutResponse401 = AdminOnboardingStepsPut401
+
+export type adminOnboardingStepsPutResponse403 = AdminOnboardingStepsPut403
 
 export type adminOnboardingStepsPutResponseSuccess = adminOnboardingStepsPutResponse200
-;
+export type adminOnboardingStepsPutResponseError = (adminOnboardingStepsPutResponse400 | adminOnboardingStepsPutResponse401 | adminOnboardingStepsPutResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingStepsPutResponse = (adminOnboardingStepsPutResponseSuccess)
+export type adminOnboardingStepsPutResponse = (adminOnboardingStepsPutResponseSuccess | adminOnboardingStepsPutResponseError)
 
 export const getAdminOnboardingStepsPutUrl = (key: string,) => {
 
@@ -634,7 +705,7 @@ export const adminOnboardingStepsPut = async (key: string,
 
 
 
-export const getAdminOnboardingStepsPutMutationOptions = <TError = unknown,
+export const getAdminOnboardingStepsPutMutationOptions = <TError = AdminOnboardingStepsPut400 | AdminOnboardingStepsPut401 | AdminOnboardingStepsPut403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsPut>>, TError,{key: string;data: AdminOnboardingStepsPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsPut>>, TError,{key: string;data: AdminOnboardingStepsPutBody}, TContext> => {
 
@@ -663,12 +734,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminOnboardingStepsPutMutationResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsPut>>>
     export type AdminOnboardingStepsPutMutationBody = AdminOnboardingStepsPutBody
-    export type AdminOnboardingStepsPutMutationError = unknown
+    export type AdminOnboardingStepsPutMutationError = AdminOnboardingStepsPut400 | AdminOnboardingStepsPut401 | AdminOnboardingStepsPut403
 
     /**
  * @summary Update onboarding step
  */
-export const createAdminOnboardingStepsPut = <TError = unknown,
+export const createAdminOnboardingStepsPut = <TError = AdminOnboardingStepsPut400 | AdminOnboardingStepsPut401 | AdminOnboardingStepsPut403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsPut>>, TError,{key: string;data: AdminOnboardingStepsPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminOnboardingStepsPut>>,
@@ -682,12 +753,20 @@ export const createAdminOnboardingStepsPut = <TError = unknown,
  * Admin onboarding management
  * @summary Delete onboarding step
  */
-export type adminOnboardingStepsDeleteResponse200 = void
+export type adminOnboardingStepsDeleteResponse200 = unknown | null
+
+export type adminOnboardingStepsDeleteResponse400 = AdminOnboardingStepsDelete400
+
+export type adminOnboardingStepsDeleteResponse401 = AdminOnboardingStepsDelete401
+
+export type adminOnboardingStepsDeleteResponse403 = AdminOnboardingStepsDelete403
 
 export type adminOnboardingStepsDeleteResponseSuccess = adminOnboardingStepsDeleteResponse200
-;
+export type adminOnboardingStepsDeleteResponseError = (adminOnboardingStepsDeleteResponse400 | adminOnboardingStepsDeleteResponse401 | adminOnboardingStepsDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingStepsDeleteResponse = (adminOnboardingStepsDeleteResponseSuccess)
+export type adminOnboardingStepsDeleteResponse = (adminOnboardingStepsDeleteResponseSuccess | adminOnboardingStepsDeleteResponseError)
 
 export const getAdminOnboardingStepsDeleteUrl = (key: string,) => {
 
@@ -711,7 +790,7 @@ export const adminOnboardingStepsDelete = async (key: string, options?: RequestI
 
 
 
-export const getAdminOnboardingStepsDeleteMutationOptions = <TError = unknown,
+export const getAdminOnboardingStepsDeleteMutationOptions = <TError = AdminOnboardingStepsDelete400 | AdminOnboardingStepsDelete401 | AdminOnboardingStepsDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsDelete>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsDelete>>, TError,{key: string}, TContext> => {
 
@@ -740,12 +819,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminOnboardingStepsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingStepsDelete>>>
 
-    export type AdminOnboardingStepsDeleteMutationError = unknown
+    export type AdminOnboardingStepsDeleteMutationError = AdminOnboardingStepsDelete400 | AdminOnboardingStepsDelete401 | AdminOnboardingStepsDelete403
 
     /**
  * @summary Delete onboarding step
  */
-export const createAdminOnboardingStepsDelete = <TError = unknown,
+export const createAdminOnboardingStepsDelete = <TError = AdminOnboardingStepsDelete400 | AdminOnboardingStepsDelete401 | AdminOnboardingStepsDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingStepsDelete>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminOnboardingStepsDelete>>,
@@ -759,12 +838,20 @@ export const createAdminOnboardingStepsDelete = <TError = unknown,
  * Admin onboarding management
  * @summary Get onboarding config (strength levels)
  */
-export type adminOnboardingConfigGetResponse200 = void
+export type adminOnboardingConfigGetResponse200 = AdminOnboardingConfigGet200
+
+export type adminOnboardingConfigGetResponse400 = AdminOnboardingConfigGet400
+
+export type adminOnboardingConfigGetResponse401 = AdminOnboardingConfigGet401
+
+export type adminOnboardingConfigGetResponse403 = AdminOnboardingConfigGet403
 
 export type adminOnboardingConfigGetResponseSuccess = adminOnboardingConfigGetResponse200
-;
+export type adminOnboardingConfigGetResponseError = (adminOnboardingConfigGetResponse400 | adminOnboardingConfigGetResponse401 | adminOnboardingConfigGetResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingConfigGetResponse = (adminOnboardingConfigGetResponseSuccess)
+export type adminOnboardingConfigGetResponse = (adminOnboardingConfigGetResponseSuccess | adminOnboardingConfigGetResponseError)
 
 export const getAdminOnboardingConfigGetUrl = () => {
 
@@ -802,7 +889,7 @@ export const getAdminOnboardingConfigGetQueryKey = () => {
     }
 
 
-export const getAdminOnboardingConfigGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingConfigGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingConfigGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingConfigGet>>>, TError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -821,14 +908,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingConfigGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingConfigGet>>>
-export type AdminOnboardingConfigGetInfiniteQueryError = unknown
+export type AdminOnboardingConfigGetInfiniteQueryError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403
 
 
 /**
  * @summary Get onboarding config (strength levels)
  */
 
-export function createAdminOnboardingConfigGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingConfigGet>>>, TError = unknown>(
+export function createAdminOnboardingConfigGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminOnboardingConfigGet>>>, TError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -843,7 +930,7 @@ export function createAdminOnboardingConfigGetInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get onboarding config (strength levels)
  */
-export const prefetchAdminOnboardingConfigGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = unknown>(
+export const prefetchAdminOnboardingConfigGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -859,7 +946,7 @@ export const prefetchAdminOnboardingConfigGetInfiniteQuery = async <TData = Awai
 
 
 
-export const getAdminOnboardingConfigGetQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminOnboardingConfigGetQueryOptions = <TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -878,14 +965,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminOnboardingConfigGetQueryResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingConfigGet>>>
-export type AdminOnboardingConfigGetQueryError = unknown
+export type AdminOnboardingConfigGetQueryError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403
 
 
 /**
  * @summary Get onboarding config (strength levels)
  */
 
-export function createAdminOnboardingConfigGet<TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = unknown>(
+export function createAdminOnboardingConfigGet<TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -900,7 +987,7 @@ export function createAdminOnboardingConfigGet<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get onboarding config (strength levels)
  */
-export const prefetchAdminOnboardingConfigGetQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = unknown>(
+export const prefetchAdminOnboardingConfigGetQuery = async <TData = Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError = AdminOnboardingConfigGet400 | AdminOnboardingConfigGet401 | AdminOnboardingConfigGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminOnboardingConfigGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -920,12 +1007,20 @@ export const prefetchAdminOnboardingConfigGetQuery = async <TData = Awaited<Retu
  * Admin onboarding management
  * @summary Update onboarding config
  */
-export type adminOnboardingConfigPutResponse200 = void
+export type adminOnboardingConfigPutResponse200 = AdminOnboardingConfigPut200
+
+export type adminOnboardingConfigPutResponse400 = AdminOnboardingConfigPut400
+
+export type adminOnboardingConfigPutResponse401 = AdminOnboardingConfigPut401
+
+export type adminOnboardingConfigPutResponse403 = AdminOnboardingConfigPut403
 
 export type adminOnboardingConfigPutResponseSuccess = adminOnboardingConfigPutResponse200
-;
+export type adminOnboardingConfigPutResponseError = (adminOnboardingConfigPutResponse400 | adminOnboardingConfigPutResponse401 | adminOnboardingConfigPutResponse403) & {
+  headers: Headers;
+};
 
-export type adminOnboardingConfigPutResponse = (adminOnboardingConfigPutResponseSuccess)
+export type adminOnboardingConfigPutResponse = (adminOnboardingConfigPutResponseSuccess | adminOnboardingConfigPutResponseError)
 
 export const getAdminOnboardingConfigPutUrl = () => {
 
@@ -950,7 +1045,7 @@ export const adminOnboardingConfigPut = async (adminOnboardingConfigPutBody: Adm
 
 
 
-export const getAdminOnboardingConfigPutMutationOptions = <TError = unknown,
+export const getAdminOnboardingConfigPutMutationOptions = <TError = AdminOnboardingConfigPut400 | AdminOnboardingConfigPut401 | AdminOnboardingConfigPut403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingConfigPut>>, TError,{data: AdminOnboardingConfigPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingConfigPut>>, TError,{data: AdminOnboardingConfigPutBody}, TContext> => {
 
@@ -979,12 +1074,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminOnboardingConfigPutMutationResult = NonNullable<Awaited<ReturnType<typeof adminOnboardingConfigPut>>>
     export type AdminOnboardingConfigPutMutationBody = AdminOnboardingConfigPutBody
-    export type AdminOnboardingConfigPutMutationError = unknown
+    export type AdminOnboardingConfigPutMutationError = AdminOnboardingConfigPut400 | AdminOnboardingConfigPut401 | AdminOnboardingConfigPut403
 
     /**
  * @summary Update onboarding config
  */
-export const createAdminOnboardingConfigPut = <TError = unknown,
+export const createAdminOnboardingConfigPut = <TError = AdminOnboardingConfigPut400 | AdminOnboardingConfigPut401 | AdminOnboardingConfigPut403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminOnboardingConfigPut>>, TError,{data: AdminOnboardingConfigPutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminOnboardingConfigPut>>,

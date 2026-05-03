@@ -9,6 +9,34 @@ import * as zod from 'zod';
 
 
 /**
+ * Returns `{steps:[{id,label,fields:[...]}], options:{...}}`. The frontend iterates `steps[]` and renders inputs from each `field`. Adding a step or field is a backend-only change.
+ * @summary Server-driven config for the create/edit-job wizard
+ */
+export const RecruitingJobsFormConfigResponse = zod.object({
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "maxLength": zod.number().optional(),
+  "optionsKey": zod.string().optional(),
+  "maxItems": zod.number().optional(),
+  "itemMaxLength": zod.number().optional(),
+  "min": zod.number().optional()
+}))
+})),
+  "options": zod.object({
+  "jobTypes": zod.array(zod.string()),
+  "remotePolicies": zod.array(zod.string()),
+  "englishLevels": zod.array(zod.string()),
+  "currencies": zod.array(zod.string())
+})
+})
+
+/**
  * Reverse candidate match API
  * @summary Rank up-to-N opt-in candidates for a job description using the same structured fit-score model used on the candidate side (reverse match).
  */
@@ -32,5 +60,31 @@ export const RecruitingMatchCandidatesBody = zod.object({
   "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).optional(),
   "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).optional(),
   "limit": zod.number().min(1).max(recruitingMatchCandidatesBodyLimitMax).default(recruitingMatchCandidatesBodyLimitDefault)
+})
+
+export const recruitingMatchCandidatesResponsePoolSizeMin = 0;
+
+
+
+export const RecruitingMatchCandidatesResponse = zod.object({
+  "candidates": zod.array(zod.object({
+  "userId": zod.string(),
+  "username": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullable(),
+  "primaryStack": zod.array(zod.string()),
+  "fit": zod.object({
+  "score": zod.number(),
+  "breakdown": zod.object({
+  "skillOverlap": zod.number(),
+  "englishMatch": zod.number(),
+  "remoteMatch": zod.number(),
+  "matchedSkills": zod.array(zod.string()),
+  "missingSkills": zod.array(zod.string())
+})
+})
+})),
+  "poolSize": zod.number().min(recruitingMatchCandidatesResponsePoolSizeMin)
 })
 

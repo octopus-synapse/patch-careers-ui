@@ -26,8 +26,20 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ResumeTailorResumesDiff200,
+  ResumeTailorResumesDiff400,
+  ResumeTailorResumesDiff401,
+  ResumeTailorResumesDiff404,
   ResumeTailorResumesDiffParams,
-  ResumeTailorResumesTailorBody
+  ResumeTailorResumesTailor200,
+  ResumeTailorResumesTailor400,
+  ResumeTailorResumesTailor401,
+  ResumeTailorResumesTailor404,
+  ResumeTailorResumesTailorBody,
+  ResumeTailorResumesTailoredVersions200,
+  ResumeTailorResumesTailoredVersions400,
+  ResumeTailorResumesTailoredVersions401,
+  ResumeTailorResumesTailoredVersions404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -41,12 +53,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * All tailored variants the user has generated so far.
  * @summary List tailored resume variants produced by the AI.
  */
-export type resumeTailorResumesTailoredVersionsResponse200 = void
+export type resumeTailorResumesTailoredVersionsResponse200 = ResumeTailorResumesTailoredVersions200
+
+export type resumeTailorResumesTailoredVersionsResponse400 = ResumeTailorResumesTailoredVersions400
+
+export type resumeTailorResumesTailoredVersionsResponse401 = ResumeTailorResumesTailoredVersions401
+
+export type resumeTailorResumesTailoredVersionsResponse404 = ResumeTailorResumesTailoredVersions404
 
 export type resumeTailorResumesTailoredVersionsResponseSuccess = resumeTailorResumesTailoredVersionsResponse200
-;
+export type resumeTailorResumesTailoredVersionsResponseError = (resumeTailorResumesTailoredVersionsResponse400 | resumeTailorResumesTailoredVersionsResponse401 | resumeTailorResumesTailoredVersionsResponse404) & {
+  headers: Headers;
+};
 
-export type resumeTailorResumesTailoredVersionsResponse = (resumeTailorResumesTailoredVersionsResponseSuccess)
+export type resumeTailorResumesTailoredVersionsResponse = (resumeTailorResumesTailoredVersionsResponseSuccess | resumeTailorResumesTailoredVersionsResponseError)
 
 export const getResumeTailorResumesTailoredVersionsUrl = (resumeId: string,) => {
 
@@ -84,7 +104,7 @@ export const getResumeTailorResumesTailoredVersionsQueryKey = (resumeId: string,
     }
 
 
-export const getResumeTailorResumesTailoredVersionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeTailorResumesTailoredVersionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>>, TError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -103,14 +123,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeTailorResumesTailoredVersionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>>
-export type ResumeTailorResumesTailoredVersionsInfiniteQueryError = unknown
+export type ResumeTailorResumesTailoredVersionsInfiniteQueryError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404
 
 
 /**
  * @summary List tailored resume variants produced by the AI.
  */
 
-export function createResumeTailorResumesTailoredVersionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>>, TError = unknown>(
+export function createResumeTailorResumesTailoredVersionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>>, TError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -125,7 +145,7 @@ export function createResumeTailorResumesTailoredVersionsInfinite<TData = Infini
 /**
  * @summary List tailored resume variants produced by the AI.
  */
-export const prefetchResumeTailorResumesTailoredVersionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = unknown>(
+export const prefetchResumeTailorResumesTailoredVersionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -141,7 +161,7 @@ export const prefetchResumeTailorResumesTailoredVersionsInfiniteQuery = async <T
 
 
 
-export const getResumeTailorResumesTailoredVersionsQueryOptions = <TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeTailorResumesTailoredVersionsQueryOptions = <TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -160,14 +180,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeTailorResumesTailoredVersionsQueryResult = NonNullable<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>>
-export type ResumeTailorResumesTailoredVersionsQueryError = unknown
+export type ResumeTailorResumesTailoredVersionsQueryError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404
 
 
 /**
  * @summary List tailored resume variants produced by the AI.
  */
 
-export function createResumeTailorResumesTailoredVersions<TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = unknown>(
+export function createResumeTailorResumesTailoredVersions<TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -182,7 +202,7 @@ export function createResumeTailorResumesTailoredVersions<TData = Awaited<Return
 /**
  * @summary List tailored resume variants produced by the AI.
  */
-export const prefetchResumeTailorResumesTailoredVersionsQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = unknown>(
+export const prefetchResumeTailorResumesTailoredVersionsQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError = ResumeTailorResumesTailoredVersions400 | ResumeTailorResumesTailoredVersions401 | ResumeTailorResumesTailoredVersions404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesTailoredVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -202,12 +222,20 @@ export const prefetchResumeTailorResumesTailoredVersionsQuery = async <TData = A
  * Summary / jobTitle / bullets before → after shape.
  * @summary Structured diff between the master resume and a tailored version.
  */
-export type resumeTailorResumesDiffResponse200 = void
+export type resumeTailorResumesDiffResponse200 = ResumeTailorResumesDiff200
+
+export type resumeTailorResumesDiffResponse400 = ResumeTailorResumesDiff400
+
+export type resumeTailorResumesDiffResponse401 = ResumeTailorResumesDiff401
+
+export type resumeTailorResumesDiffResponse404 = ResumeTailorResumesDiff404
 
 export type resumeTailorResumesDiffResponseSuccess = resumeTailorResumesDiffResponse200
-;
+export type resumeTailorResumesDiffResponseError = (resumeTailorResumesDiffResponse400 | resumeTailorResumesDiffResponse401 | resumeTailorResumesDiffResponse404) & {
+  headers: Headers;
+};
 
-export type resumeTailorResumesDiffResponse = (resumeTailorResumesDiffResponseSuccess)
+export type resumeTailorResumesDiffResponse = (resumeTailorResumesDiffResponseSuccess | resumeTailorResumesDiffResponseError)
 
 export const getResumeTailorResumesDiffUrl = (resumeId: string,
     params: ResumeTailorResumesDiffParams,) => {
@@ -256,7 +284,7 @@ export const getResumeTailorResumesDiffQueryKey = (resumeId: string,
     }
 
 
-export const getResumeTailorResumesDiffInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesDiff>>>, TError = unknown>(resumeId: string,
+export const getResumeTailorResumesDiffInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesDiff>>>, TError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404>(resumeId: string,
     params: ResumeTailorResumesDiffParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -276,14 +304,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeTailorResumesDiffInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeTailorResumesDiff>>>
-export type ResumeTailorResumesDiffInfiniteQueryError = unknown
+export type ResumeTailorResumesDiffInfiniteQueryError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404
 
 
 /**
  * @summary Structured diff between the master resume and a tailored version.
  */
 
-export function createResumeTailorResumesDiffInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesDiff>>>, TError = unknown>(
+export function createResumeTailorResumesDiffInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeTailorResumesDiff>>>, TError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404>(
  resumeId: () =>  string,
     params: () =>  ResumeTailorResumesDiffParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -300,7 +328,7 @@ export function createResumeTailorResumesDiffInfinite<TData = InfiniteData<Await
 /**
  * @summary Structured diff between the master resume and a tailored version.
  */
-export const prefetchResumeTailorResumesDiffInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = unknown>(
+export const prefetchResumeTailorResumesDiffInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeTailorResumesDiffParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -317,7 +345,7 @@ export const prefetchResumeTailorResumesDiffInfiniteQuery = async <TData = Await
 
 
 
-export const getResumeTailorResumesDiffQueryOptions = <TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = unknown>(resumeId: string,
+export const getResumeTailorResumesDiffQueryOptions = <TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404>(resumeId: string,
     params: ResumeTailorResumesDiffParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -337,14 +365,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeTailorResumesDiffQueryResult = NonNullable<Awaited<ReturnType<typeof resumeTailorResumesDiff>>>
-export type ResumeTailorResumesDiffQueryError = unknown
+export type ResumeTailorResumesDiffQueryError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404
 
 
 /**
  * @summary Structured diff between the master resume and a tailored version.
  */
 
-export function createResumeTailorResumesDiff<TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = unknown>(
+export function createResumeTailorResumesDiff<TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404>(
  resumeId: () =>  string,
     params: () =>  ResumeTailorResumesDiffParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -361,7 +389,7 @@ export function createResumeTailorResumesDiff<TData = Awaited<ReturnType<typeof 
 /**
  * @summary Structured diff between the master resume and a tailored version.
  */
-export const prefetchResumeTailorResumesDiffQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = unknown>(
+export const prefetchResumeTailorResumesDiffQuery = async <TData = Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError = ResumeTailorResumesDiff400 | ResumeTailorResumesDiff401 | ResumeTailorResumesDiff404>(
  queryClient: QueryClient, resumeId: string,
     params: ResumeTailorResumesDiffParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeTailorResumesDiff>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -382,12 +410,20 @@ export const prefetchResumeTailorResumesDiffQuery = async <TData = Awaited<Retur
  * Resume AI tailoring API
  * @summary Rewrite this resume for a specific job using the AI pipeline.
  */
-export type resumeTailorResumesTailorResponse200 = void
+export type resumeTailorResumesTailorResponse200 = ResumeTailorResumesTailor200
+
+export type resumeTailorResumesTailorResponse400 = ResumeTailorResumesTailor400
+
+export type resumeTailorResumesTailorResponse401 = ResumeTailorResumesTailor401
+
+export type resumeTailorResumesTailorResponse404 = ResumeTailorResumesTailor404
 
 export type resumeTailorResumesTailorResponseSuccess = resumeTailorResumesTailorResponse200
-;
+export type resumeTailorResumesTailorResponseError = (resumeTailorResumesTailorResponse400 | resumeTailorResumesTailorResponse401 | resumeTailorResumesTailorResponse404) & {
+  headers: Headers;
+};
 
-export type resumeTailorResumesTailorResponse = (resumeTailorResumesTailorResponseSuccess)
+export type resumeTailorResumesTailorResponse = (resumeTailorResumesTailorResponseSuccess | resumeTailorResumesTailorResponseError)
 
 export const getResumeTailorResumesTailorUrl = (resumeId: string,) => {
 
@@ -413,7 +449,7 @@ export const resumeTailorResumesTailor = async (resumeId: string,
 
 
 
-export const getResumeTailorResumesTailorMutationOptions = <TError = unknown,
+export const getResumeTailorResumesTailorMutationOptions = <TError = ResumeTailorResumesTailor400 | ResumeTailorResumesTailor401 | ResumeTailorResumesTailor404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeTailorResumesTailor>>, TError,{resumeId: string;data: ResumeTailorResumesTailorBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeTailorResumesTailor>>, TError,{resumeId: string;data: ResumeTailorResumesTailorBody}, TContext> => {
 
@@ -442,12 +478,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeTailorResumesTailorMutationResult = NonNullable<Awaited<ReturnType<typeof resumeTailorResumesTailor>>>
     export type ResumeTailorResumesTailorMutationBody = ResumeTailorResumesTailorBody
-    export type ResumeTailorResumesTailorMutationError = unknown
+    export type ResumeTailorResumesTailorMutationError = ResumeTailorResumesTailor400 | ResumeTailorResumesTailor401 | ResumeTailorResumesTailor404
 
     /**
  * @summary Rewrite this resume for a specific job using the AI pipeline.
  */
-export const createResumeTailorResumesTailor = <TError = unknown,
+export const createResumeTailorResumesTailor = <TError = ResumeTailorResumesTailor400 | ResumeTailorResumesTailor401 | ResumeTailorResumesTailor404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeTailorResumesTailor>>, TError,{resumeId: string;data: ResumeTailorResumesTailorBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeTailorResumesTailor>>,

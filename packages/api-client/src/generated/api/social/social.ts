@@ -22,6 +22,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SocialUsersMeConnectionRecommendations200,
+  SocialUsersMeConnectionRecommendations400,
+  SocialUsersMeConnectionRecommendations401,
+  SocialUsersMeConnectionRecommendations403,
   SocialUsersMeConnectionRecommendationsParams
 } from '../../models';
 
@@ -36,12 +40,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Connection recommendations API
  * @summary Users sharing the most skills with you
  */
-export type socialUsersMeConnectionRecommendationsResponse200 = void
+export type socialUsersMeConnectionRecommendationsResponse200 = SocialUsersMeConnectionRecommendations200
+
+export type socialUsersMeConnectionRecommendationsResponse400 = SocialUsersMeConnectionRecommendations400
+
+export type socialUsersMeConnectionRecommendationsResponse401 = SocialUsersMeConnectionRecommendations401
+
+export type socialUsersMeConnectionRecommendationsResponse403 = SocialUsersMeConnectionRecommendations403
 
 export type socialUsersMeConnectionRecommendationsResponseSuccess = socialUsersMeConnectionRecommendationsResponse200
-;
+export type socialUsersMeConnectionRecommendationsResponseError = (socialUsersMeConnectionRecommendationsResponse400 | socialUsersMeConnectionRecommendationsResponse401 | socialUsersMeConnectionRecommendationsResponse403) & {
+  headers: Headers;
+};
 
-export type socialUsersMeConnectionRecommendationsResponse = (socialUsersMeConnectionRecommendationsResponseSuccess)
+export type socialUsersMeConnectionRecommendationsResponse = (socialUsersMeConnectionRecommendationsResponseSuccess | socialUsersMeConnectionRecommendationsResponseError)
 
 export const getSocialUsersMeConnectionRecommendationsUrl = (params?: SocialUsersMeConnectionRecommendationsParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -86,7 +98,7 @@ export const getSocialUsersMeConnectionRecommendationsQueryKey = (params?: Socia
     }
 
 
-export const getSocialUsersMeConnectionRecommendationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>>, TError = unknown>(params?: SocialUsersMeConnectionRecommendationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialUsersMeConnectionRecommendationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>>, TError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403>(params?: SocialUsersMeConnectionRecommendationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -105,14 +117,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialUsersMeConnectionRecommendationsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>>
-export type SocialUsersMeConnectionRecommendationsInfiniteQueryError = unknown
+export type SocialUsersMeConnectionRecommendationsInfiniteQueryError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403
 
 
 /**
  * @summary Users sharing the most skills with you
  */
 
-export function createSocialUsersMeConnectionRecommendationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>>, TError = unknown>(
+export function createSocialUsersMeConnectionRecommendationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>>, TError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403>(
  params?: () =>  SocialUsersMeConnectionRecommendationsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -127,7 +139,7 @@ export function createSocialUsersMeConnectionRecommendationsInfinite<TData = Inf
 /**
  * @summary Users sharing the most skills with you
  */
-export const prefetchSocialUsersMeConnectionRecommendationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = unknown>(
+export const prefetchSocialUsersMeConnectionRecommendationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403>(
  queryClient: QueryClient, params?: SocialUsersMeConnectionRecommendationsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -143,7 +155,7 @@ export const prefetchSocialUsersMeConnectionRecommendationsInfiniteQuery = async
 
 
 
-export const getSocialUsersMeConnectionRecommendationsQueryOptions = <TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = unknown>(params?: SocialUsersMeConnectionRecommendationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSocialUsersMeConnectionRecommendationsQueryOptions = <TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403>(params?: SocialUsersMeConnectionRecommendationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -162,14 +174,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialUsersMeConnectionRecommendationsQueryResult = NonNullable<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>>
-export type SocialUsersMeConnectionRecommendationsQueryError = unknown
+export type SocialUsersMeConnectionRecommendationsQueryError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403
 
 
 /**
  * @summary Users sharing the most skills with you
  */
 
-export function createSocialUsersMeConnectionRecommendations<TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = unknown>(
+export function createSocialUsersMeConnectionRecommendations<TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403>(
  params?: () =>  SocialUsersMeConnectionRecommendationsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -184,7 +196,7 @@ export function createSocialUsersMeConnectionRecommendations<TData = Awaited<Ret
 /**
  * @summary Users sharing the most skills with you
  */
-export const prefetchSocialUsersMeConnectionRecommendationsQuery = async <TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = unknown>(
+export const prefetchSocialUsersMeConnectionRecommendationsQuery = async <TData = Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError = SocialUsersMeConnectionRecommendations400 | SocialUsersMeConnectionRecommendations401 | SocialUsersMeConnectionRecommendations403>(
  queryClient: QueryClient, params?: SocialUsersMeConnectionRecommendationsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialUsersMeConnectionRecommendations>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

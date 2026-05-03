@@ -21,6 +21,30 @@ export const AdminResumeStylesCreateBody = zod.object({
   "sectionStyles": zod.record(zod.string(), zod.unknown().nullable())
 })
 
+export const adminResumeStylesCreateResponseStyleScoreMin = 0;
+export const adminResumeStylesCreateResponseStyleScoreMax = 100;
+
+
+
+export const AdminResumeStylesCreateResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "styleScore": zod.number().min(adminResumeStylesCreateResponseStyleScoreMin).max(adminResumeStylesCreateResponseStyleScoreMax),
+  "layoutKind": zod.enum(['SINGLE_COLUMN', 'DOUBLE_COLUMN']),
+  "typstTemplate": zod.string(),
+  "isSystem": zod.boolean(),
+  "thumbnailUrl": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "version": zod.number(),
+  "styleConfig": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "sectionStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "atsSafetyBreakdown": zod.record(zod.string(), zod.number()),
+  "previewImages": zod.array(zod.string()),
+  "authorId": zod.string()
+})
+
 /**
  * Admin ResumeStyle CRUD
  * @summary Update a non-system ResumeStyle
@@ -33,4 +57,34 @@ export const AdminResumeStylesUpdateBody = zod.object({
   "styleConfig": zod.record(zod.string(), zod.unknown().nullable()).optional(),
   "sectionStyles": zod.record(zod.string(), zod.unknown().nullable()).optional()
 })
+
+export const adminResumeStylesUpdateResponseStyleScoreMin = 0;
+export const adminResumeStylesUpdateResponseStyleScoreMax = 100;
+
+
+
+export const AdminResumeStylesUpdateResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "styleScore": zod.number().min(adminResumeStylesUpdateResponseStyleScoreMin).max(adminResumeStylesUpdateResponseStyleScoreMax),
+  "layoutKind": zod.enum(['SINGLE_COLUMN', 'DOUBLE_COLUMN']),
+  "typstTemplate": zod.string(),
+  "isSystem": zod.boolean(),
+  "thumbnailUrl": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "version": zod.number(),
+  "styleConfig": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "sectionStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "atsSafetyBreakdown": zod.record(zod.string(), zod.number()),
+  "previewImages": zod.array(zod.string()),
+  "authorId": zod.string()
+})
+
+/**
+ * Admin ResumeStyle CRUD
+ * @summary Delete a non-system ResumeStyle
+ */
+export const AdminResumeStylesDeleteResponse = zod.unknown().nullable()
 

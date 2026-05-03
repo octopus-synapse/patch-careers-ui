@@ -16,6 +16,8 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AccountsSignup200,
+  AccountsSignup400,
   AccountsSignupBody
 } from '../../models';
 
@@ -30,12 +32,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Registers a new user account and returns auth tokens for auto-login.
  * @summary Create new account
  */
-export type accountsSignupResponse200 = void
+export type accountsSignupResponse200 = AccountsSignup200
+
+export type accountsSignupResponse400 = AccountsSignup400
 
 export type accountsSignupResponseSuccess = accountsSignupResponse200
-;
+export type accountsSignupResponseError = (accountsSignupResponse400) & {
+  headers: Headers;
+};
 
-export type accountsSignupResponse = (accountsSignupResponseSuccess)
+export type accountsSignupResponse = (accountsSignupResponseSuccess | accountsSignupResponseError)
 
 export const getAccountsSignupUrl = () => {
 
@@ -60,7 +66,7 @@ export const accountsSignup = async (accountsSignupBody: AccountsSignupBody, opt
 
 
 
-export const getAccountsSignupMutationOptions = <TError = unknown,
+export const getAccountsSignupMutationOptions = <TError = AccountsSignup400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountsSignup>>, TError,{data: AccountsSignupBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof accountsSignup>>, TError,{data: AccountsSignupBody}, TContext> => {
 
@@ -89,12 +95,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AccountsSignupMutationResult = NonNullable<Awaited<ReturnType<typeof accountsSignup>>>
     export type AccountsSignupMutationBody = AccountsSignupBody
-    export type AccountsSignupMutationError = unknown
+    export type AccountsSignupMutationError = AccountsSignup400
 
     /**
  * @summary Create new account
  */
-export const createAccountsSignup = <TError = unknown,
+export const createAccountsSignup = <TError = AccountsSignup400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountsSignup>>, TError,{data: AccountsSignupBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof accountsSignup>>,

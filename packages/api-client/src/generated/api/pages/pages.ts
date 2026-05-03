@@ -21,6 +21,15 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  PagesMeDashboard200,
+  PagesMeDashboard400,
+  PagesMeDashboard401,
+  PagesSettings200,
+  PagesSettings400,
+  PagesSettings401
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +41,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{widgets:[{id,type,title,size,data,actions?,cta?}]}`. Adding/removing widgets is a backend-only change. Today the server emits widgets for greeting, counters, recent notifications and follow-ups; the frontend simply iterates `widgets[]` and dispatches on `type`.
  * @summary Composite dashboard widgets (server-driven)
  */
-export type pagesMeDashboardResponse200 = void
+export type pagesMeDashboardResponse200 = PagesMeDashboard200
+
+export type pagesMeDashboardResponse400 = PagesMeDashboard400
+
+export type pagesMeDashboardResponse401 = PagesMeDashboard401
 
 export type pagesMeDashboardResponseSuccess = pagesMeDashboardResponse200
-;
+export type pagesMeDashboardResponseError = (pagesMeDashboardResponse400 | pagesMeDashboardResponse401) & {
+  headers: Headers;
+};
 
-export type pagesMeDashboardResponse = (pagesMeDashboardResponseSuccess)
+export type pagesMeDashboardResponse = (pagesMeDashboardResponseSuccess | pagesMeDashboardResponseError)
 
 export const getPagesMeDashboardUrl = () => {
 
@@ -75,7 +90,7 @@ export const getPagesMeDashboardQueryKey = () => {
     }
 
 
-export const getPagesMeDashboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof pagesMeDashboard>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPagesMeDashboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof pagesMeDashboard>>>, TError = PagesMeDashboard400 | PagesMeDashboard401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +109,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PagesMeDashboardInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof pagesMeDashboard>>>
-export type PagesMeDashboardInfiniteQueryError = unknown
+export type PagesMeDashboardInfiniteQueryError = PagesMeDashboard400 | PagesMeDashboard401
 
 
 /**
  * @summary Composite dashboard widgets (server-driven)
  */
 
-export function createPagesMeDashboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof pagesMeDashboard>>>, TError = unknown>(
+export function createPagesMeDashboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof pagesMeDashboard>>>, TError = PagesMeDashboard400 | PagesMeDashboard401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +131,7 @@ export function createPagesMeDashboardInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary Composite dashboard widgets (server-driven)
  */
-export const prefetchPagesMeDashboardInfiniteQuery = async <TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = unknown>(
+export const prefetchPagesMeDashboardInfiniteQuery = async <TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = PagesMeDashboard400 | PagesMeDashboard401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +147,7 @@ export const prefetchPagesMeDashboardInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getPagesMeDashboardQueryOptions = <TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPagesMeDashboardQueryOptions = <TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = PagesMeDashboard400 | PagesMeDashboard401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +166,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PagesMeDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof pagesMeDashboard>>>
-export type PagesMeDashboardQueryError = unknown
+export type PagesMeDashboardQueryError = PagesMeDashboard400 | PagesMeDashboard401
 
 
 /**
  * @summary Composite dashboard widgets (server-driven)
  */
 
-export function createPagesMeDashboard<TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = unknown>(
+export function createPagesMeDashboard<TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = PagesMeDashboard400 | PagesMeDashboard401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +188,7 @@ export function createPagesMeDashboard<TData = Awaited<ReturnType<typeof pagesMe
 /**
  * @summary Composite dashboard widgets (server-driven)
  */
-export const prefetchPagesMeDashboardQuery = async <TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = unknown>(
+export const prefetchPagesMeDashboardQuery = async <TData = Awaited<ReturnType<typeof pagesMeDashboard>>, TError = PagesMeDashboard400 | PagesMeDashboard401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesMeDashboard>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +208,18 @@ export const prefetchPagesMeDashboardQuery = async <TData = Awaited<ReturnType<t
  * Returns `{section, fields:[...], actions:[...], info:[...]}`. The frontend renders settings pages from this payload — adding a setting field or action is a backend-only change.
  * @summary Server-driven settings section (fields + actions + info)
  */
-export type pagesSettingsResponse200 = void
+export type pagesSettingsResponse200 = PagesSettings200
+
+export type pagesSettingsResponse400 = PagesSettings400
+
+export type pagesSettingsResponse401 = PagesSettings401
 
 export type pagesSettingsResponseSuccess = pagesSettingsResponse200
-;
+export type pagesSettingsResponseError = (pagesSettingsResponse400 | pagesSettingsResponse401) & {
+  headers: Headers;
+};
 
-export type pagesSettingsResponse = (pagesSettingsResponseSuccess)
+export type pagesSettingsResponse = (pagesSettingsResponseSuccess | pagesSettingsResponseError)
 
 export const getPagesSettingsUrl = (section: string,) => {
 
@@ -236,7 +257,7 @@ export const getPagesSettingsQueryKey = (section: string,) => {
     }
 
 
-export const getPagesSettingsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof pagesSettings>>>, TError = unknown>(section: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPagesSettingsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof pagesSettings>>>, TError = PagesSettings400 | PagesSettings401>(section: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +276,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PagesSettingsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof pagesSettings>>>
-export type PagesSettingsInfiniteQueryError = unknown
+export type PagesSettingsInfiniteQueryError = PagesSettings400 | PagesSettings401
 
 
 /**
  * @summary Server-driven settings section (fields + actions + info)
  */
 
-export function createPagesSettingsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof pagesSettings>>>, TError = unknown>(
+export function createPagesSettingsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof pagesSettings>>>, TError = PagesSettings400 | PagesSettings401>(
  section: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +298,7 @@ export function createPagesSettingsInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Server-driven settings section (fields + actions + info)
  */
-export const prefetchPagesSettingsInfiniteQuery = async <TData = Awaited<ReturnType<typeof pagesSettings>>, TError = unknown>(
+export const prefetchPagesSettingsInfiniteQuery = async <TData = Awaited<ReturnType<typeof pagesSettings>>, TError = PagesSettings400 | PagesSettings401>(
  queryClient: QueryClient, section: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +314,7 @@ export const prefetchPagesSettingsInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getPagesSettingsQueryOptions = <TData = Awaited<ReturnType<typeof pagesSettings>>, TError = unknown>(section: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPagesSettingsQueryOptions = <TData = Awaited<ReturnType<typeof pagesSettings>>, TError = PagesSettings400 | PagesSettings401>(section: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +333,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PagesSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof pagesSettings>>>
-export type PagesSettingsQueryError = unknown
+export type PagesSettingsQueryError = PagesSettings400 | PagesSettings401
 
 
 /**
  * @summary Server-driven settings section (fields + actions + info)
  */
 
-export function createPagesSettings<TData = Awaited<ReturnType<typeof pagesSettings>>, TError = unknown>(
+export function createPagesSettings<TData = Awaited<ReturnType<typeof pagesSettings>>, TError = PagesSettings400 | PagesSettings401>(
  section: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +355,7 @@ export function createPagesSettings<TData = Awaited<ReturnType<typeof pagesSetti
 /**
  * @summary Server-driven settings section (fields + actions + info)
  */
-export const prefetchPagesSettingsQuery = async <TData = Awaited<ReturnType<typeof pagesSettings>>, TError = unknown>(
+export const prefetchPagesSettingsQuery = async <TData = Awaited<ReturnType<typeof pagesSettings>>, TError = PagesSettings400 | PagesSettings401>(
  queryClient: QueryClient, section: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof pagesSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

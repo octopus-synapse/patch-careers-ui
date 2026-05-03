@@ -9,6 +9,17 @@ import * as zod from 'zod';
 
 
 /**
+ * Placeholder endpoint. Returns 503 until the LinkedIn v2 API client lands. Frontend should treat this as 'em breve' for now.
+ * @summary Import profile data from LinkedIn (scaffold)
+ */
+export const ResumeImportResumesImportsLinkedinResponse = zod.object({
+  "importId": zod.string(),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional()
+})
+
+/**
  * Creates import job and processes JSON Resume data (jsonresume.org standard)
  * @summary Import resume from JSON Resume format
  */
@@ -16,6 +27,13 @@ export const ResumeImportResumesImportsJsonBody = zod.object({
   "data": zod.object({
 
 }).passthrough()
+})
+
+export const ResumeImportResumesImportsJsonResponse = zod.object({
+  "importId": zod.string(),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional()
 })
 
 /**
@@ -26,5 +44,122 @@ export const ResumeImportResumesImportsParseBody = zod.object({
   "data": zod.object({
 
 }).passthrough()
+})
+
+export const ResumeImportResumesImportsParseResponse = zod.object({
+  "personalInfo": zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "website": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional()
+}),
+  "summary": zod.string().optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])))
+}))
+})
+
+/**
+ * Returns current status, errors, and result of import job
+ * @summary Get import job status
+ */
+export const ResumeImportResumesImportsGetResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "source": zod.enum(['LINKEDIN', 'PDF', 'DOCX', 'JSON', 'GITHUB']),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "data": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).optional(),
+  "parsedData": zod.object({
+  "personalInfo": zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "website": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional()
+}),
+  "summary": zod.string().optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])))
+}))
+}).optional(),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().optional()
+})
+
+/**
+ * Cancels pending or processing import. Cannot cancel completed imports.
+ * @summary Cancel import job
+ */
+export const ResumeImportResumesImportsDeleteResponse = zod.unknown().nullable()
+
+/**
+ * Returns all import jobs for authenticated user, ordered by creation date
+ * @summary Get import history
+ */
+export const ResumeImportResumesImportsGet2ResponseItem = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "source": zod.enum(['LINKEDIN', 'PDF', 'DOCX', 'JSON', 'GITHUB']),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "data": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).optional(),
+  "parsedData": zod.object({
+  "personalInfo": zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "website": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional()
+}),
+  "summary": zod.string().optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])))
+}))
+}).optional(),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string().optional()
+})
+export const ResumeImportResumesImportsGet2Response = zod.array(ResumeImportResumesImportsGet2ResponseItem)
+
+/**
+ * Retries processing of failed import job with same data
+ * @summary Retry failed import
+ */
+export const ResumeImportResumesImportsRetryResponse = zod.object({
+  "importId": zod.string(),
+  "status": zod.enum(['PENDING', 'PROCESSING', 'MAPPING', 'VALIDATING', 'IMPORTING', 'COMPLETED', 'FAILED', 'PARTIAL']),
+  "resumeId": zod.string().optional(),
+  "errors": zod.array(zod.string()).optional()
+})
+
+/**
+ * Accepts a PDF upload (multipart/form-data, field name `file`), extracts the text with pdf-parse and structures it with the LLM. Creates a Resume row and marks it as primary when the user has none.
+ * @summary Import resume from a PDF file
+ */
+export const ResumeImportResumesImportsPdfResponse = zod.object({
+  "resumeId": zod.string()
+})
+
+/**
+ * Uses the user's previously-connected GitHub OAuth token to fetch top repos and derive skills + BUILD posts. Fails with 409 GITHUB_NOT_CONNECTED if the user hasn't linked GitHub yet.
+ * @summary Import profile data from GitHub
+ */
+export const ResumeImportResumesImportsGithubResponse = zod.object({
+  "primaryStack": zod.array(zod.string()),
+  "buildPostsCreated": zod.number(),
+  "profileUpdated": zod.boolean()
 })
 

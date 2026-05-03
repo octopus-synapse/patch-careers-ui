@@ -1,10 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import {
-  createAuthLogout,
-  createAuthSession,
-  getAuthSessionQueryKey,
-} from 'api-client';
+import { createAuthLogout, getAuthSessionQueryKey } from 'api-client';
 import type { Locale } from 'i18n';
 import {
   Briefcase,
@@ -31,6 +27,7 @@ import {
   ADMIN_NAV_LINKS,
   isAdminPath,
 } from '../../../routes/[[lang=lang]]/platform/admin/_components/admin-nav-links';
+import { useAuth } from '$lib/state/auth.svelte';
 import { useFeatureFlags } from '$lib/state/feature-flags.svelte';
 
 const pathname = $derived($page.url.pathname);
@@ -45,9 +42,7 @@ let isSearchOpen = $state(false);
 
 const isMac = $derived(browser && /Mac|iPhone|iPad|iPod/i.test(navigator.platform));
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+const session = useAuth();
 const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
 // Admins bypass onboarding entirely, so `hasCompletedOnboarding` stays

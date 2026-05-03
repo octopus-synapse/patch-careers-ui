@@ -9,11 +9,74 @@ import * as zod from 'zod';
 
 
 /**
+ * Admin Feature Flags API
+ * @summary List all feature flags with metadata and blocking info
+ */
+export const AdminFeatureFlagsListResponse = zod.object({
+  "flags": zod.array(zod.object({
+  "key": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "enabled": zod.boolean(),
+  "enabledForRoles": zod.array(zod.string()),
+  "deprecated": zod.boolean(),
+  "dependsOn": zod.array(zod.string()),
+  "effectiveGlobal": zod.boolean(),
+  "blockedBy": zod.array(zod.string())
+}))
+})
+
+/**
+ * Admin Feature Flags API
+ * @summary Preview transitive descendants affected when a flag is turned OFF
+ */
+export const AdminFeatureFlagsImpactResponse = zod.object({
+  "tree": zod.object({
+  "key": zod.string(),
+  "children": zod.array(zod.object({
+  "key": zod.string(),
+  "children": zod.array(zod.object({
+  "key": zod.string(),
+  "children": zod.array(zod.object({
+  "key": zod.string(),
+  "children": zod.array(zod.object({
+  "key": zod.string(),
+  "children": zod.array(zod.object({
+  "key": zod.string()
+}))
+}))
+}))
+}))
+}))
+})
+})
+
+/**
  * Turning ON is rejected with 409 when any ancestor is OFF. Deprecated flags are read-only.
  * @summary Toggle a flag or update its role restriction
  */
 export const AdminFeatureFlagsUpdateBody = zod.object({
   "enabled": zod.boolean().optional(),
   "enabledForRoles": zod.array(zod.string()).optional()
+})
+
+export const AdminFeatureFlagsUpdateResponse = zod.object({
+  "key": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "enabled": zod.boolean(),
+  "enabledForRoles": zod.array(zod.string()),
+  "deprecated": zod.boolean(),
+  "dependsOn": zod.array(zod.string()),
+  "blockedBy": zod.array(zod.string()),
+  "effectiveGlobal": zod.boolean()
+})
+
+/**
+ * Clears server-side caches and pushes an `invalidate` message through the SSE stream so every connected client refetches.
+ * @summary Invalidate all client flag snapshots
+ */
+export const AdminFeatureFlagsBroadcastRefreshResponse = zod.object({
+
 })
 

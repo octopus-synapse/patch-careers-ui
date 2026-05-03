@@ -21,6 +21,15 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  BadgesMe200,
+  BadgesMe400,
+  BadgesMe401,
+  BadgesUser200,
+  BadgesUser400,
+  BadgesUser404
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +41,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * User achievement badges
  * @summary Badges awarded to the viewer.
  */
-export type badgesMeResponse200 = void
+export type badgesMeResponse200 = BadgesMe200
+
+export type badgesMeResponse400 = BadgesMe400
+
+export type badgesMeResponse401 = BadgesMe401
 
 export type badgesMeResponseSuccess = badgesMeResponse200
-;
+export type badgesMeResponseError = (badgesMeResponse400 | badgesMeResponse401) & {
+  headers: Headers;
+};
 
-export type badgesMeResponse = (badgesMeResponseSuccess)
+export type badgesMeResponse = (badgesMeResponseSuccess | badgesMeResponseError)
 
 export const getBadgesMeUrl = () => {
 
@@ -75,7 +90,7 @@ export const getBadgesMeQueryKey = () => {
     }
 
 
-export const getBadgesMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof badgesMe>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getBadgesMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof badgesMe>>>, TError = BadgesMe400 | BadgesMe401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +109,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type BadgesMeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof badgesMe>>>
-export type BadgesMeInfiniteQueryError = unknown
+export type BadgesMeInfiniteQueryError = BadgesMe400 | BadgesMe401
 
 
 /**
  * @summary Badges awarded to the viewer.
  */
 
-export function createBadgesMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof badgesMe>>>, TError = unknown>(
+export function createBadgesMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof badgesMe>>>, TError = BadgesMe400 | BadgesMe401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +131,7 @@ export function createBadgesMeInfinite<TData = InfiniteData<Awaited<ReturnType<t
 /**
  * @summary Badges awarded to the viewer.
  */
-export const prefetchBadgesMeInfiniteQuery = async <TData = Awaited<ReturnType<typeof badgesMe>>, TError = unknown>(
+export const prefetchBadgesMeInfiniteQuery = async <TData = Awaited<ReturnType<typeof badgesMe>>, TError = BadgesMe400 | BadgesMe401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +147,7 @@ export const prefetchBadgesMeInfiniteQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export const getBadgesMeQueryOptions = <TData = Awaited<ReturnType<typeof badgesMe>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getBadgesMeQueryOptions = <TData = Awaited<ReturnType<typeof badgesMe>>, TError = BadgesMe400 | BadgesMe401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +166,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type BadgesMeQueryResult = NonNullable<Awaited<ReturnType<typeof badgesMe>>>
-export type BadgesMeQueryError = unknown
+export type BadgesMeQueryError = BadgesMe400 | BadgesMe401
 
 
 /**
  * @summary Badges awarded to the viewer.
  */
 
-export function createBadgesMe<TData = Awaited<ReturnType<typeof badgesMe>>, TError = unknown>(
+export function createBadgesMe<TData = Awaited<ReturnType<typeof badgesMe>>, TError = BadgesMe400 | BadgesMe401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +188,7 @@ export function createBadgesMe<TData = Awaited<ReturnType<typeof badgesMe>>, TEr
 /**
  * @summary Badges awarded to the viewer.
  */
-export const prefetchBadgesMeQuery = async <TData = Awaited<ReturnType<typeof badgesMe>>, TError = unknown>(
+export const prefetchBadgesMeQuery = async <TData = Awaited<ReturnType<typeof badgesMe>>, TError = BadgesMe400 | BadgesMe401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +208,18 @@ export const prefetchBadgesMeQuery = async <TData = Awaited<ReturnType<typeof ba
  * User achievement badges
  * @summary Public list of badges for a given user.
  */
-export type badgesUserResponse200 = void
+export type badgesUserResponse200 = BadgesUser200
+
+export type badgesUserResponse400 = BadgesUser400
+
+export type badgesUserResponse404 = BadgesUser404
 
 export type badgesUserResponseSuccess = badgesUserResponse200
-;
+export type badgesUserResponseError = (badgesUserResponse400 | badgesUserResponse404) & {
+  headers: Headers;
+};
 
-export type badgesUserResponse = (badgesUserResponseSuccess)
+export type badgesUserResponse = (badgesUserResponseSuccess | badgesUserResponseError)
 
 export const getBadgesUserUrl = (userId: string,) => {
 
@@ -236,7 +257,7 @@ export const getBadgesUserQueryKey = (userId: string,) => {
     }
 
 
-export const getBadgesUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof badgesUser>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getBadgesUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof badgesUser>>>, TError = BadgesUser400 | BadgesUser404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +276,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type BadgesUserInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof badgesUser>>>
-export type BadgesUserInfiniteQueryError = unknown
+export type BadgesUserInfiniteQueryError = BadgesUser400 | BadgesUser404
 
 
 /**
  * @summary Public list of badges for a given user.
  */
 
-export function createBadgesUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof badgesUser>>>, TError = unknown>(
+export function createBadgesUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof badgesUser>>>, TError = BadgesUser400 | BadgesUser404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +298,7 @@ export function createBadgesUserInfinite<TData = InfiniteData<Awaited<ReturnType
 /**
  * @summary Public list of badges for a given user.
  */
-export const prefetchBadgesUserInfiniteQuery = async <TData = Awaited<ReturnType<typeof badgesUser>>, TError = unknown>(
+export const prefetchBadgesUserInfiniteQuery = async <TData = Awaited<ReturnType<typeof badgesUser>>, TError = BadgesUser400 | BadgesUser404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +314,7 @@ export const prefetchBadgesUserInfiniteQuery = async <TData = Awaited<ReturnType
 
 
 
-export const getBadgesUserQueryOptions = <TData = Awaited<ReturnType<typeof badgesUser>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getBadgesUserQueryOptions = <TData = Awaited<ReturnType<typeof badgesUser>>, TError = BadgesUser400 | BadgesUser404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +333,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type BadgesUserQueryResult = NonNullable<Awaited<ReturnType<typeof badgesUser>>>
-export type BadgesUserQueryError = unknown
+export type BadgesUserQueryError = BadgesUser400 | BadgesUser404
 
 
 /**
  * @summary Public list of badges for a given user.
  */
 
-export function createBadgesUser<TData = Awaited<ReturnType<typeof badgesUser>>, TError = unknown>(
+export function createBadgesUser<TData = Awaited<ReturnType<typeof badgesUser>>, TError = BadgesUser400 | BadgesUser404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +355,7 @@ export function createBadgesUser<TData = Awaited<ReturnType<typeof badgesUser>>,
 /**
  * @summary Public list of badges for a given user.
  */
-export const prefetchBadgesUserQuery = async <TData = Awaited<ReturnType<typeof badgesUser>>, TError = unknown>(
+export const prefetchBadgesUserQuery = async <TData = Awaited<ReturnType<typeof badgesUser>>, TError = BadgesUser400 | BadgesUser404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof badgesUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

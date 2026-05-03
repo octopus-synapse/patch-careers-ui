@@ -21,6 +21,16 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  UiMetadataEnumsGet200,
+  UiMetadataEnumsGet2200,
+  UiMetadataEnumsGet2400,
+  UiMetadataEnumsGet400,
+  UiMetadataMeMenu200,
+  UiMetadataMeMenu400,
+  UiMetadataMeMenu401
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +42,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Server-driven UI metadata
  * @summary List all enum keys exposed by the catalog.
  */
-export type uiMetadataEnumsGetResponse200 = void
+export type uiMetadataEnumsGetResponse200 = UiMetadataEnumsGet200
+
+export type uiMetadataEnumsGetResponse400 = UiMetadataEnumsGet400
 
 export type uiMetadataEnumsGetResponseSuccess = uiMetadataEnumsGetResponse200
-;
+export type uiMetadataEnumsGetResponseError = (uiMetadataEnumsGetResponse400) & {
+  headers: Headers;
+};
 
-export type uiMetadataEnumsGetResponse = (uiMetadataEnumsGetResponseSuccess)
+export type uiMetadataEnumsGetResponse = (uiMetadataEnumsGetResponseSuccess | uiMetadataEnumsGetResponseError)
 
 export const getUiMetadataEnumsGetUrl = () => {
 
@@ -75,7 +89,7 @@ export const getUiMetadataEnumsGetQueryKey = () => {
     }
 
 
-export const getUiMetadataEnumsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUiMetadataEnumsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet>>>, TError = UiMetadataEnumsGet400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +108,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UiMetadataEnumsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof uiMetadataEnumsGet>>>
-export type UiMetadataEnumsGetInfiniteQueryError = unknown
+export type UiMetadataEnumsGetInfiniteQueryError = UiMetadataEnumsGet400
 
 
 /**
  * @summary List all enum keys exposed by the catalog.
  */
 
-export function createUiMetadataEnumsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet>>>, TError = unknown>(
+export function createUiMetadataEnumsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet>>>, TError = UiMetadataEnumsGet400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +130,7 @@ export function createUiMetadataEnumsGetInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary List all enum keys exposed by the catalog.
  */
-export const prefetchUiMetadataEnumsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = unknown>(
+export const prefetchUiMetadataEnumsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = UiMetadataEnumsGet400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +146,7 @@ export const prefetchUiMetadataEnumsGetInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getUiMetadataEnumsGetQueryOptions = <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUiMetadataEnumsGetQueryOptions = <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = UiMetadataEnumsGet400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +165,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UiMetadataEnumsGetQueryResult = NonNullable<Awaited<ReturnType<typeof uiMetadataEnumsGet>>>
-export type UiMetadataEnumsGetQueryError = unknown
+export type UiMetadataEnumsGetQueryError = UiMetadataEnumsGet400
 
 
 /**
  * @summary List all enum keys exposed by the catalog.
  */
 
-export function createUiMetadataEnumsGet<TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = unknown>(
+export function createUiMetadataEnumsGet<TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = UiMetadataEnumsGet400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +187,7 @@ export function createUiMetadataEnumsGet<TData = Awaited<ReturnType<typeof uiMet
 /**
  * @summary List all enum keys exposed by the catalog.
  */
-export const prefetchUiMetadataEnumsGetQuery = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = unknown>(
+export const prefetchUiMetadataEnumsGetQuery = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError = UiMetadataEnumsGet400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +207,16 @@ export const prefetchUiMetadataEnumsGetQuery = async <TData = Awaited<ReturnType
  * Server-driven UI metadata
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  */
-export type uiMetadataEnumsGet2Response200 = void
+export type uiMetadataEnumsGet2Response200 = UiMetadataEnumsGet2200
+
+export type uiMetadataEnumsGet2Response400 = UiMetadataEnumsGet2400
 
 export type uiMetadataEnumsGet2ResponseSuccess = uiMetadataEnumsGet2Response200
-;
+export type uiMetadataEnumsGet2ResponseError = (uiMetadataEnumsGet2Response400) & {
+  headers: Headers;
+};
 
-export type uiMetadataEnumsGet2Response = (uiMetadataEnumsGet2ResponseSuccess)
+export type uiMetadataEnumsGet2Response = (uiMetadataEnumsGet2ResponseSuccess | uiMetadataEnumsGet2ResponseError)
 
 export const getUiMetadataEnumsGet2Url = (key: string,) => {
 
@@ -236,7 +254,7 @@ export const getUiMetadataEnumsGet2QueryKey = (key: string,) => {
     }
 
 
-export const getUiMetadataEnumsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>>, TError = unknown>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUiMetadataEnumsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>>, TError = UiMetadataEnumsGet2400>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +273,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UiMetadataEnumsGet2InfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>>
-export type UiMetadataEnumsGet2InfiniteQueryError = unknown
+export type UiMetadataEnumsGet2InfiniteQueryError = UiMetadataEnumsGet2400
 
 
 /**
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  */
 
-export function createUiMetadataEnumsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>>, TError = unknown>(
+export function createUiMetadataEnumsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>>, TError = UiMetadataEnumsGet2400>(
  key: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +295,7 @@ export function createUiMetadataEnumsGet2Infinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  */
-export const prefetchUiMetadataEnumsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = unknown>(
+export const prefetchUiMetadataEnumsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = UiMetadataEnumsGet2400>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +311,7 @@ export const prefetchUiMetadataEnumsGet2InfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getUiMetadataEnumsGet2QueryOptions = <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = unknown>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUiMetadataEnumsGet2QueryOptions = <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = UiMetadataEnumsGet2400>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +330,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UiMetadataEnumsGet2QueryResult = NonNullable<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>>
-export type UiMetadataEnumsGet2QueryError = unknown
+export type UiMetadataEnumsGet2QueryError = UiMetadataEnumsGet2400
 
 
 /**
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  */
 
-export function createUiMetadataEnumsGet2<TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = unknown>(
+export function createUiMetadataEnumsGet2<TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = UiMetadataEnumsGet2400>(
  key: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +352,7 @@ export function createUiMetadataEnumsGet2<TData = Awaited<ReturnType<typeof uiMe
 /**
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  */
-export const prefetchUiMetadataEnumsGet2Query = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = unknown>(
+export const prefetchUiMetadataEnumsGet2Query = async <TData = Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError = UiMetadataEnumsGet2400>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataEnumsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -354,12 +372,18 @@ export const prefetchUiMetadataEnumsGet2Query = async <TData = Awaited<ReturnTyp
  * Server-driven UI metadata
  * @summary Permission-aware navigation tree for the current user with labels in the request locale.
  */
-export type uiMetadataMeMenuResponse200 = void
+export type uiMetadataMeMenuResponse200 = UiMetadataMeMenu200
+
+export type uiMetadataMeMenuResponse400 = UiMetadataMeMenu400
+
+export type uiMetadataMeMenuResponse401 = UiMetadataMeMenu401
 
 export type uiMetadataMeMenuResponseSuccess = uiMetadataMeMenuResponse200
-;
+export type uiMetadataMeMenuResponseError = (uiMetadataMeMenuResponse400 | uiMetadataMeMenuResponse401) & {
+  headers: Headers;
+};
 
-export type uiMetadataMeMenuResponse = (uiMetadataMeMenuResponseSuccess)
+export type uiMetadataMeMenuResponse = (uiMetadataMeMenuResponseSuccess | uiMetadataMeMenuResponseError)
 
 export const getUiMetadataMeMenuUrl = () => {
 
@@ -397,7 +421,7 @@ export const getUiMetadataMeMenuQueryKey = () => {
     }
 
 
-export const getUiMetadataMeMenuInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataMeMenu>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUiMetadataMeMenuInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataMeMenu>>>, TError = UiMetadataMeMenu400 | UiMetadataMeMenu401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -416,14 +440,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UiMetadataMeMenuInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof uiMetadataMeMenu>>>
-export type UiMetadataMeMenuInfiniteQueryError = unknown
+export type UiMetadataMeMenuInfiniteQueryError = UiMetadataMeMenu400 | UiMetadataMeMenu401
 
 
 /**
  * @summary Permission-aware navigation tree for the current user with labels in the request locale.
  */
 
-export function createUiMetadataMeMenuInfinite<TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataMeMenu>>>, TError = unknown>(
+export function createUiMetadataMeMenuInfinite<TData = InfiniteData<Awaited<ReturnType<typeof uiMetadataMeMenu>>>, TError = UiMetadataMeMenu400 | UiMetadataMeMenu401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -438,7 +462,7 @@ export function createUiMetadataMeMenuInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary Permission-aware navigation tree for the current user with labels in the request locale.
  */
-export const prefetchUiMetadataMeMenuInfiniteQuery = async <TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = unknown>(
+export const prefetchUiMetadataMeMenuInfiniteQuery = async <TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = UiMetadataMeMenu400 | UiMetadataMeMenu401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -454,7 +478,7 @@ export const prefetchUiMetadataMeMenuInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getUiMetadataMeMenuQueryOptions = <TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUiMetadataMeMenuQueryOptions = <TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = UiMetadataMeMenu400 | UiMetadataMeMenu401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -473,14 +497,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UiMetadataMeMenuQueryResult = NonNullable<Awaited<ReturnType<typeof uiMetadataMeMenu>>>
-export type UiMetadataMeMenuQueryError = unknown
+export type UiMetadataMeMenuQueryError = UiMetadataMeMenu400 | UiMetadataMeMenu401
 
 
 /**
  * @summary Permission-aware navigation tree for the current user with labels in the request locale.
  */
 
-export function createUiMetadataMeMenu<TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = unknown>(
+export function createUiMetadataMeMenu<TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = UiMetadataMeMenu400 | UiMetadataMeMenu401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -495,7 +519,7 @@ export function createUiMetadataMeMenu<TData = Awaited<ReturnType<typeof uiMetad
 /**
  * @summary Permission-aware navigation tree for the current user with labels in the request locale.
  */
-export const prefetchUiMetadataMeMenuQuery = async <TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = unknown>(
+export const prefetchUiMetadataMeMenuQuery = async <TData = Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError = UiMetadataMeMenu400 | UiMetadataMeMenu401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof uiMetadataMeMenu>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

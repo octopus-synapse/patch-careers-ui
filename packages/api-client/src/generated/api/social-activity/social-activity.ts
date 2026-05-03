@@ -22,8 +22,21 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SocialActivityUsersActivities200,
+  SocialActivityUsersActivities400,
+  SocialActivityUsersActivities401,
+  SocialActivityUsersActivities404,
+  SocialActivityUsersActivitiesByType200,
+  SocialActivityUsersActivitiesByType400,
+  SocialActivityUsersActivitiesByType401,
+  SocialActivityUsersActivitiesByType404,
   SocialActivityUsersActivitiesByTypeParams,
   SocialActivityUsersActivitiesParams,
+  SocialActivityUsersFeed200,
+  SocialActivityUsersFeed400,
+  SocialActivityUsersFeed401,
+  SocialActivityUsersFeed403,
+  SocialActivityUsersFeed404,
   SocialActivityUsersFeedParams
 } from '../../models';
 
@@ -37,12 +50,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get authenticated user activity feed
  */
-export type socialActivityUsersFeedResponse200 = void
+export type socialActivityUsersFeedResponse200 = SocialActivityUsersFeed200
+
+export type socialActivityUsersFeedResponse400 = SocialActivityUsersFeed400
+
+export type socialActivityUsersFeedResponse401 = SocialActivityUsersFeed401
+
+export type socialActivityUsersFeedResponse403 = SocialActivityUsersFeed403
+
+export type socialActivityUsersFeedResponse404 = SocialActivityUsersFeed404
 
 export type socialActivityUsersFeedResponseSuccess = socialActivityUsersFeedResponse200
-;
+export type socialActivityUsersFeedResponseError = (socialActivityUsersFeedResponse400 | socialActivityUsersFeedResponse401 | socialActivityUsersFeedResponse403 | socialActivityUsersFeedResponse404) & {
+  headers: Headers;
+};
 
-export type socialActivityUsersFeedResponse = (socialActivityUsersFeedResponseSuccess)
+export type socialActivityUsersFeedResponse = (socialActivityUsersFeedResponseSuccess | socialActivityUsersFeedResponseError)
 
 export const getSocialActivityUsersFeedUrl = (userId: string,
     params?: SocialActivityUsersFeedParams,) => {
@@ -91,7 +114,7 @@ export const getSocialActivityUsersFeedQueryKey = (userId: string,
     }
 
 
-export const getSocialActivityUsersFeedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersFeed>>>, TError = unknown>(userId: string,
+export const getSocialActivityUsersFeedInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersFeed>>>, TError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404>(userId: string,
     params?: SocialActivityUsersFeedParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -111,14 +134,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialActivityUsersFeedInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialActivityUsersFeed>>>
-export type SocialActivityUsersFeedInfiniteQueryError = unknown
+export type SocialActivityUsersFeedInfiniteQueryError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404
 
 
 /**
  * @summary Get authenticated user activity feed
  */
 
-export function createSocialActivityUsersFeedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersFeed>>>, TError = unknown>(
+export function createSocialActivityUsersFeedInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersFeed>>>, TError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404>(
  userId: () =>  string,
     params?: () =>  SocialActivityUsersFeedParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -135,7 +158,7 @@ export function createSocialActivityUsersFeedInfinite<TData = InfiniteData<Await
 /**
  * @summary Get authenticated user activity feed
  */
-export const prefetchSocialActivityUsersFeedInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = unknown>(
+export const prefetchSocialActivityUsersFeedInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404>(
  queryClient: QueryClient, userId: string,
     params?: SocialActivityUsersFeedParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -152,7 +175,7 @@ export const prefetchSocialActivityUsersFeedInfiniteQuery = async <TData = Await
 
 
 
-export const getSocialActivityUsersFeedQueryOptions = <TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = unknown>(userId: string,
+export const getSocialActivityUsersFeedQueryOptions = <TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404>(userId: string,
     params?: SocialActivityUsersFeedParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -172,14 +195,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialActivityUsersFeedQueryResult = NonNullable<Awaited<ReturnType<typeof socialActivityUsersFeed>>>
-export type SocialActivityUsersFeedQueryError = unknown
+export type SocialActivityUsersFeedQueryError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404
 
 
 /**
  * @summary Get authenticated user activity feed
  */
 
-export function createSocialActivityUsersFeed<TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = unknown>(
+export function createSocialActivityUsersFeed<TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404>(
  userId: () =>  string,
     params?: () =>  SocialActivityUsersFeedParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -196,7 +219,7 @@ export function createSocialActivityUsersFeed<TData = Awaited<ReturnType<typeof 
 /**
  * @summary Get authenticated user activity feed
  */
-export const prefetchSocialActivityUsersFeedQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = unknown>(
+export const prefetchSocialActivityUsersFeedQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError = SocialActivityUsersFeed400 | SocialActivityUsersFeed401 | SocialActivityUsersFeed403 | SocialActivityUsersFeed404>(
  queryClient: QueryClient, userId: string,
     params?: SocialActivityUsersFeedParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersFeed>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -216,12 +239,20 @@ export const prefetchSocialActivityUsersFeedQuery = async <TData = Awaited<Retur
 /**
  * @summary Get public activities for a user
  */
-export type socialActivityUsersActivitiesResponse200 = void
+export type socialActivityUsersActivitiesResponse200 = SocialActivityUsersActivities200
+
+export type socialActivityUsersActivitiesResponse400 = SocialActivityUsersActivities400
+
+export type socialActivityUsersActivitiesResponse401 = SocialActivityUsersActivities401
+
+export type socialActivityUsersActivitiesResponse404 = SocialActivityUsersActivities404
 
 export type socialActivityUsersActivitiesResponseSuccess = socialActivityUsersActivitiesResponse200
-;
+export type socialActivityUsersActivitiesResponseError = (socialActivityUsersActivitiesResponse400 | socialActivityUsersActivitiesResponse401 | socialActivityUsersActivitiesResponse404) & {
+  headers: Headers;
+};
 
-export type socialActivityUsersActivitiesResponse = (socialActivityUsersActivitiesResponseSuccess)
+export type socialActivityUsersActivitiesResponse = (socialActivityUsersActivitiesResponseSuccess | socialActivityUsersActivitiesResponseError)
 
 export const getSocialActivityUsersActivitiesUrl = (userId: string,
     params?: SocialActivityUsersActivitiesParams,) => {
@@ -270,7 +301,7 @@ export const getSocialActivityUsersActivitiesQueryKey = (userId: string,
     }
 
 
-export const getSocialActivityUsersActivitiesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivities>>>, TError = unknown>(userId: string,
+export const getSocialActivityUsersActivitiesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivities>>>, TError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404>(userId: string,
     params?: SocialActivityUsersActivitiesParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -290,14 +321,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialActivityUsersActivitiesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialActivityUsersActivities>>>
-export type SocialActivityUsersActivitiesInfiniteQueryError = unknown
+export type SocialActivityUsersActivitiesInfiniteQueryError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404
 
 
 /**
  * @summary Get public activities for a user
  */
 
-export function createSocialActivityUsersActivitiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivities>>>, TError = unknown>(
+export function createSocialActivityUsersActivitiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivities>>>, TError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404>(
  userId: () =>  string,
     params?: () =>  SocialActivityUsersActivitiesParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -314,7 +345,7 @@ export function createSocialActivityUsersActivitiesInfinite<TData = InfiniteData
 /**
  * @summary Get public activities for a user
  */
-export const prefetchSocialActivityUsersActivitiesInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = unknown>(
+export const prefetchSocialActivityUsersActivitiesInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404>(
  queryClient: QueryClient, userId: string,
     params?: SocialActivityUsersActivitiesParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -331,7 +362,7 @@ export const prefetchSocialActivityUsersActivitiesInfiniteQuery = async <TData =
 
 
 
-export const getSocialActivityUsersActivitiesQueryOptions = <TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = unknown>(userId: string,
+export const getSocialActivityUsersActivitiesQueryOptions = <TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404>(userId: string,
     params?: SocialActivityUsersActivitiesParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -351,14 +382,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialActivityUsersActivitiesQueryResult = NonNullable<Awaited<ReturnType<typeof socialActivityUsersActivities>>>
-export type SocialActivityUsersActivitiesQueryError = unknown
+export type SocialActivityUsersActivitiesQueryError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404
 
 
 /**
  * @summary Get public activities for a user
  */
 
-export function createSocialActivityUsersActivities<TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = unknown>(
+export function createSocialActivityUsersActivities<TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404>(
  userId: () =>  string,
     params?: () =>  SocialActivityUsersActivitiesParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -375,7 +406,7 @@ export function createSocialActivityUsersActivities<TData = Awaited<ReturnType<t
 /**
  * @summary Get public activities for a user
  */
-export const prefetchSocialActivityUsersActivitiesQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = unknown>(
+export const prefetchSocialActivityUsersActivitiesQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError = SocialActivityUsersActivities400 | SocialActivityUsersActivities401 | SocialActivityUsersActivities404>(
  queryClient: QueryClient, userId: string,
     params?: SocialActivityUsersActivitiesParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivities>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -395,12 +426,20 @@ export const prefetchSocialActivityUsersActivitiesQuery = async <TData = Awaited
 /**
  * @summary Get user activities filtered by type
  */
-export type socialActivityUsersActivitiesByTypeResponse200 = void
+export type socialActivityUsersActivitiesByTypeResponse200 = SocialActivityUsersActivitiesByType200
+
+export type socialActivityUsersActivitiesByTypeResponse400 = SocialActivityUsersActivitiesByType400
+
+export type socialActivityUsersActivitiesByTypeResponse401 = SocialActivityUsersActivitiesByType401
+
+export type socialActivityUsersActivitiesByTypeResponse404 = SocialActivityUsersActivitiesByType404
 
 export type socialActivityUsersActivitiesByTypeResponseSuccess = socialActivityUsersActivitiesByTypeResponse200
-;
+export type socialActivityUsersActivitiesByTypeResponseError = (socialActivityUsersActivitiesByTypeResponse400 | socialActivityUsersActivitiesByTypeResponse401 | socialActivityUsersActivitiesByTypeResponse404) & {
+  headers: Headers;
+};
 
-export type socialActivityUsersActivitiesByTypeResponse = (socialActivityUsersActivitiesByTypeResponseSuccess)
+export type socialActivityUsersActivitiesByTypeResponse = (socialActivityUsersActivitiesByTypeResponseSuccess | socialActivityUsersActivitiesByTypeResponseError)
 
 export const getSocialActivityUsersActivitiesByTypeUrl = (userId: string,
     type: string,
@@ -453,7 +492,7 @@ export const getSocialActivityUsersActivitiesByTypeQueryKey = (userId: string,
     }
 
 
-export const getSocialActivityUsersActivitiesByTypeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>>, TError = unknown>(userId: string,
+export const getSocialActivityUsersActivitiesByTypeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>>, TError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404>(userId: string,
     type: string,
     params?: SocialActivityUsersActivitiesByTypeParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
@@ -474,14 +513,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialActivityUsersActivitiesByTypeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>>
-export type SocialActivityUsersActivitiesByTypeInfiniteQueryError = unknown
+export type SocialActivityUsersActivitiesByTypeInfiniteQueryError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404
 
 
 /**
  * @summary Get user activities filtered by type
  */
 
-export function createSocialActivityUsersActivitiesByTypeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>>, TError = unknown>(
+export function createSocialActivityUsersActivitiesByTypeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>>, TError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404>(
  userId: () =>  string,
     type: () =>  string,
     params?: () =>  SocialActivityUsersActivitiesByTypeParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -500,7 +539,7 @@ export function createSocialActivityUsersActivitiesByTypeInfinite<TData = Infini
 /**
  * @summary Get user activities filtered by type
  */
-export const prefetchSocialActivityUsersActivitiesByTypeInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = unknown>(
+export const prefetchSocialActivityUsersActivitiesByTypeInfiniteQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404>(
  queryClient: QueryClient, userId: string,
     type: string,
     params?: SocialActivityUsersActivitiesByTypeParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -518,7 +557,7 @@ export const prefetchSocialActivityUsersActivitiesByTypeInfiniteQuery = async <T
 
 
 
-export const getSocialActivityUsersActivitiesByTypeQueryOptions = <TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = unknown>(userId: string,
+export const getSocialActivityUsersActivitiesByTypeQueryOptions = <TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404>(userId: string,
     type: string,
     params?: SocialActivityUsersActivitiesByTypeParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
@@ -539,14 +578,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SocialActivityUsersActivitiesByTypeQueryResult = NonNullable<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>>
-export type SocialActivityUsersActivitiesByTypeQueryError = unknown
+export type SocialActivityUsersActivitiesByTypeQueryError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404
 
 
 /**
  * @summary Get user activities filtered by type
  */
 
-export function createSocialActivityUsersActivitiesByType<TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = unknown>(
+export function createSocialActivityUsersActivitiesByType<TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404>(
  userId: () =>  string,
     type: () =>  string,
     params?: () =>  SocialActivityUsersActivitiesByTypeParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
@@ -565,7 +604,7 @@ export function createSocialActivityUsersActivitiesByType<TData = Awaited<Return
 /**
  * @summary Get user activities filtered by type
  */
-export const prefetchSocialActivityUsersActivitiesByTypeQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = unknown>(
+export const prefetchSocialActivityUsersActivitiesByTypeQuery = async <TData = Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError = SocialActivityUsersActivitiesByType400 | SocialActivityUsersActivitiesByType401 | SocialActivityUsersActivitiesByType404>(
  queryClient: QueryClient, userId: string,
     type: string,
     params?: SocialActivityUsersActivitiesByTypeParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof socialActivityUsersActivitiesByType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}

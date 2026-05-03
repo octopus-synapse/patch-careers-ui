@@ -1,7 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createAuthSession,
   createOnboardingSession,
   createOnboardingSessionComplete,
   createOnboardingSessionGoto,
@@ -23,11 +22,12 @@ import StepReview from './_components/step-review.svelte';
 import StepTheme from './_components/step-theme.svelte';
 import StepWelcome from './_components/step-welcome.svelte';
 import StepperMobile from './_components/stepper-mobile.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
-const auth = createAuthSession(() => ({ query: { retry: false } }));
+const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
 $effect(() => {

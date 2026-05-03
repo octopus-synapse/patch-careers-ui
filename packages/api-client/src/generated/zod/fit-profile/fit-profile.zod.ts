@@ -10,6 +10,268 @@ import * as zod from 'zod';
 
 /**
  * Fit Profile (personality vector)
+ * @summary Get the caller's Fit Profile lifecycle state
+ */
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVEOPENNESSMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVENEUROTICISMMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZHEDONISMMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZPOWERMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZPOWERMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZSECURITYMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZSECURITYMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZCONFORMITYMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZTRADITIONMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSDTAUTONOMYMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSDTAUTONOMYMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSDTCOMPETENCEMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSDTCOMPETENCEMax = 1;
+
+export const fitProfileMeGetResponseVectorBigFiveSDTRELATEDNESSMin = 0;
+export const fitProfileMeGetResponseVectorBigFiveSDTRELATEDNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVEOPENNESSMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVENEUROTICISMMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZHEDONISMMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZPOWERMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZPOWERMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZSECURITYMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZSECURITYMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZCONFORMITYMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZTRADITIONMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSDTAUTONOMYMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSDTAUTONOMYMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSDTCOMPETENCEMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSDTCOMPETENCEMax = 1;
+
+export const fitProfileMeGetResponseVectorSchwartzSDTRELATEDNESSMin = 0;
+export const fitProfileMeGetResponseVectorSchwartzSDTRELATEDNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtBIGFIVEOPENNESSMin = 0;
+export const fitProfileMeGetResponseVectorSdtBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileMeGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileMeGetResponseVectorSdtBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileMeGetResponseVectorSdtBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtBIGFIVENEUROTICISMMin = 0;
+export const fitProfileMeGetResponseVectorSdtBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZHEDONISMMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZPOWERMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZPOWERMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZSECURITYMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZSECURITYMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZCONFORMITYMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZTRADITIONMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileMeGetResponseVectorSdtSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSDTAUTONOMYMin = 0;
+export const fitProfileMeGetResponseVectorSdtSDTAUTONOMYMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSDTCOMPETENCEMin = 0;
+export const fitProfileMeGetResponseVectorSdtSDTCOMPETENCEMax = 1;
+
+export const fitProfileMeGetResponseVectorSdtSDTRELATEDNESSMin = 0;
+export const fitProfileMeGetResponseVectorSdtSDTRELATEDNESSMax = 1;
+
+
+
+export const FitProfileMeGetResponse = zod.object({
+  "status": zod.enum(['never', 'responded', 'expired']),
+  "vector": zod.object({
+  "bigFive": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileMeGetResponseVectorBigFiveBIGFIVEOPENNESSMin).max(fitProfileMeGetResponseVectorBigFiveBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileMeGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileMeGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileMeGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMin).max(fitProfileMeGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileMeGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMin).max(fitProfileMeGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileMeGetResponseVectorBigFiveBIGFIVENEUROTICISMMin).max(fitProfileMeGetResponseVectorBigFiveBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZSTIMULATIONMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZHEDONISMMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZPOWERMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZSECURITYMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZCONFORMITYMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZTRADITIONMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileMeGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMin).max(fitProfileMeGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileMeGetResponseVectorBigFiveSDTAUTONOMYMin).max(fitProfileMeGetResponseVectorBigFiveSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileMeGetResponseVectorBigFiveSDTCOMPETENCEMin).max(fitProfileMeGetResponseVectorBigFiveSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileMeGetResponseVectorBigFiveSDTRELATEDNESSMin).max(fitProfileMeGetResponseVectorBigFiveSDTRELATEDNESSMax).optional()
+}),
+  "schwartz": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileMeGetResponseVectorSchwartzBIGFIVEOPENNESSMin).max(fitProfileMeGetResponseVectorSchwartzBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileMeGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileMeGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileMeGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMin).max(fitProfileMeGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileMeGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMin).max(fitProfileMeGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileMeGetResponseVectorSchwartzBIGFIVENEUROTICISMMin).max(fitProfileMeGetResponseVectorSchwartzBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZSTIMULATIONMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZHEDONISMMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZPOWERMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZSECURITYMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZCONFORMITYMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZTRADITIONMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileMeGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMin).max(fitProfileMeGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileMeGetResponseVectorSchwartzSDTAUTONOMYMin).max(fitProfileMeGetResponseVectorSchwartzSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileMeGetResponseVectorSchwartzSDTCOMPETENCEMin).max(fitProfileMeGetResponseVectorSchwartzSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileMeGetResponseVectorSchwartzSDTRELATEDNESSMin).max(fitProfileMeGetResponseVectorSchwartzSDTRELATEDNESSMax).optional()
+}),
+  "sdt": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileMeGetResponseVectorSdtBIGFIVEOPENNESSMin).max(fitProfileMeGetResponseVectorSdtBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileMeGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileMeGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileMeGetResponseVectorSdtBIGFIVEEXTRAVERSIONMin).max(fitProfileMeGetResponseVectorSdtBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileMeGetResponseVectorSdtBIGFIVEAGREEABLENESSMin).max(fitProfileMeGetResponseVectorSdtBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileMeGetResponseVectorSdtBIGFIVENEUROTICISMMin).max(fitProfileMeGetResponseVectorSdtBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZSELFDIRECTIONMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZSTIMULATIONMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZHEDONISMMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZACHIEVEMENTMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZPOWERMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZSECURITYMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZCONFORMITYMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZTRADITIONMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZBENEVOLENCEMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileMeGetResponseVectorSdtSCHWARTZUNIVERSALISMMin).max(fitProfileMeGetResponseVectorSdtSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileMeGetResponseVectorSdtSDTAUTONOMYMin).max(fitProfileMeGetResponseVectorSdtSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileMeGetResponseVectorSdtSDTCOMPETENCEMin).max(fitProfileMeGetResponseVectorSdtSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileMeGetResponseVectorSdtSDTRELATEDNESSMin).max(fitProfileMeGetResponseVectorSdtSDTRELATEDNESSMax).optional()
+})
+}).nullable(),
+  "answeredAt": zod.string().datetime({"offset":true}).nullable(),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "remainingQuestions": zod.union([zod.literal(0),zod.literal(25)])
+})
+
+/**
+ * Fit Profile (personality vector)
+ * @summary LGPD - wipe the caller's Fit Answers and anonymize the vector
+ */
+export const FitProfileMeDeleteResponse = zod.unknown().nullable()
+
+/**
+ * Fit Profile (personality vector)
+ * @summary Get or create the caller's 25-question set
+ */
+export const FitProfileQuestionsResponse = zod.object({
+  "questionSetId": zod.string(),
+  "seed": zod.string(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "questions": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "dimension": zod.enum(['BIG_FIVE_OPENNESS', 'BIG_FIVE_CONSCIENTIOUSNESS', 'BIG_FIVE_EXTRAVERSION', 'BIG_FIVE_AGREEABLENESS', 'BIG_FIVE_NEUROTICISM', 'SCHWARTZ_SELF_DIRECTION', 'SCHWARTZ_STIMULATION', 'SCHWARTZ_HEDONISM', 'SCHWARTZ_ACHIEVEMENT', 'SCHWARTZ_POWER', 'SCHWARTZ_SECURITY', 'SCHWARTZ_CONFORMITY', 'SCHWARTZ_TRADITION', 'SCHWARTZ_BENEVOLENCE', 'SCHWARTZ_UNIVERSALISM', 'SDT_AUTONOMY', 'SDT_COMPETENCE', 'SDT_RELATEDNESS']),
+  "textEn": zod.string(),
+  "textPtBr": zod.string(),
+  "scaleType": zod.enum(['likert5', 'binary']),
+  "weight": zod.number()
+}))
+})
+
+/**
+ * Fit Profile (personality vector)
  * @summary Commit the 25 Fit Answers; compute and persist vector
  */
 export const fitProfileAnswersBodyAnswersItemRawValueMin = 0;
@@ -23,6 +285,253 @@ export const FitProfileAnswersBody = zod.object({
   "questionId": zod.string(),
   "rawValue": zod.number().min(fitProfileAnswersBodyAnswersItemRawValueMin).max(fitProfileAnswersBodyAnswersItemRawValueMax)
 }))
+})
+
+
+
+
+export const FitProfileAnswersResponse = zod.object({
+  "profileId": zod.string(),
+  "version": zod.number().min(1),
+  "computedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Job Fit Profile (recruiter sliders)
+ * @summary Get the recruiter-authored Fit Profile for a job
+ */
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEOPENNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVENEUROTICISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZHEDONISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZPOWERMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZPOWERMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSECURITYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSECURITYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZCONFORMITYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZTRADITIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSDTAUTONOMYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSDTAUTONOMYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSDTCOMPETENCEMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSDTCOMPETENCEMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSDTRELATEDNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorBigFiveSDTRELATEDNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEOPENNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVENEUROTICISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZHEDONISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZPOWERMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZPOWERMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSECURITYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSECURITYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZCONFORMITYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZTRADITIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSDTAUTONOMYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSDTAUTONOMYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSDTCOMPETENCEMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSDTCOMPETENCEMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSDTRELATEDNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSchwartzSDTRELATEDNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEOPENNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVENEUROTICISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZHEDONISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZPOWERMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZPOWERMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSECURITYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSECURITYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZCONFORMITYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZTRADITIONMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSDTAUTONOMYMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSDTAUTONOMYMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSDTCOMPETENCEMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSDTCOMPETENCEMax = 1;
+
+export const fitProfileJobsFitProfileGetResponseVectorSdtSDTRELATEDNESSMin = 0;
+export const fitProfileJobsFitProfileGetResponseVectorSdtSDTRELATEDNESSMax = 1;
+
+
+
+export const FitProfileJobsFitProfileGetResponse = zod.object({
+  "id": zod.string(),
+  "jobId": zod.string(),
+  "editedByUserId": zod.string(),
+  "computedAt": zod.string().datetime({"offset":true}),
+  "vector": zod.object({
+  "bigFive": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEOPENNESSMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVENEUROTICISMMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSTIMULATIONMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZHEDONISMMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZPOWERMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSECURITYMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZCONFORMITYMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZTRADITIONMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSDTAUTONOMYMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSDTCOMPETENCEMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorBigFiveSDTRELATEDNESSMin).max(fitProfileJobsFitProfileGetResponseVectorBigFiveSDTRELATEDNESSMax).optional()
+}),
+  "schwartz": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEOPENNESSMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVENEUROTICISMMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSTIMULATIONMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZHEDONISMMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZPOWERMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSECURITYMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZCONFORMITYMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZTRADITIONMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSDTAUTONOMYMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSDTCOMPETENCEMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSchwartzSDTRELATEDNESSMin).max(fitProfileJobsFitProfileGetResponseVectorSchwartzSDTRELATEDNESSMax).optional()
+}),
+  "sdt": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEOPENNESSMin).max(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEEXTRAVERSIONMin).max(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEAGREEABLENESSMin).max(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVENEUROTICISMMin).max(fitProfileJobsFitProfileGetResponseVectorSdtBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSELFDIRECTIONMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSTIMULATIONMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZHEDONISMMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZACHIEVEMENTMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZPOWERMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSECURITYMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZCONFORMITYMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZTRADITIONMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZBENEVOLENCEMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZUNIVERSALISMMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSDTAUTONOMYMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSDTCOMPETENCEMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfileGetResponseVectorSdtSDTRELATEDNESSMin).max(fitProfileJobsFitProfileGetResponseVectorSdtSDTRELATEDNESSMax).optional()
+})
+})
 })
 
 /**
@@ -105,6 +614,239 @@ export const FitProfileJobsFitProfilePostBody = zod.object({
   "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfilePostBodySlidersSDTAUTONOMYMin).max(fitProfileJobsFitProfilePostBodySlidersSDTAUTONOMYMax).optional(),
   "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfilePostBodySlidersSDTCOMPETENCEMin).max(fitProfileJobsFitProfilePostBodySlidersSDTCOMPETENCEMax).optional(),
   "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfilePostBodySlidersSDTRELATEDNESSMin).max(fitProfileJobsFitProfilePostBodySlidersSDTRELATEDNESSMax).optional()
+})
+})
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEOPENNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVENEUROTICISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZHEDONISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZPOWERMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZPOWERMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSECURITYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSECURITYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZCONFORMITYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZTRADITIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSDTAUTONOMYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSDTAUTONOMYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSDTCOMPETENCEMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSDTCOMPETENCEMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSDTRELATEDNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorBigFiveSDTRELATEDNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEOPENNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVENEUROTICISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZHEDONISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZPOWERMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZPOWERMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSECURITYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSECURITYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZCONFORMITYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZTRADITIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSDTAUTONOMYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSDTAUTONOMYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSDTCOMPETENCEMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSDTCOMPETENCEMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSDTRELATEDNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSchwartzSDTRELATEDNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEOPENNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEOPENNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEEXTRAVERSIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEEXTRAVERSIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEAGREEABLENESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEAGREEABLENESSMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVENEUROTICISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVENEUROTICISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSELFDIRECTIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSELFDIRECTIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSTIMULATIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSTIMULATIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZHEDONISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZHEDONISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZACHIEVEMENTMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZACHIEVEMENTMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZPOWERMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZPOWERMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSECURITYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSECURITYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZCONFORMITYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZCONFORMITYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZTRADITIONMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZTRADITIONMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZBENEVOLENCEMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZBENEVOLENCEMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZUNIVERSALISMMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZUNIVERSALISMMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSDTAUTONOMYMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSDTAUTONOMYMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSDTCOMPETENCEMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSDTCOMPETENCEMax = 1;
+
+export const fitProfileJobsFitProfilePostResponseVectorSdtSDTRELATEDNESSMin = 0;
+export const fitProfileJobsFitProfilePostResponseVectorSdtSDTRELATEDNESSMax = 1;
+
+
+
+export const FitProfileJobsFitProfilePostResponse = zod.object({
+  "id": zod.string(),
+  "jobId": zod.string(),
+  "editedByUserId": zod.string(),
+  "computedAt": zod.string().datetime({"offset":true}),
+  "vector": zod.object({
+  "bigFive": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEOPENNESSMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEEXTRAVERSIONMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEAGREEABLENESSMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVENEUROTICISMMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSELFDIRECTIONMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSTIMULATIONMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZHEDONISMMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZACHIEVEMENTMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZPOWERMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSECURITYMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZCONFORMITYMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZTRADITIONMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZBENEVOLENCEMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZUNIVERSALISMMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSDTAUTONOMYMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSDTCOMPETENCEMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorBigFiveSDTRELATEDNESSMin).max(fitProfileJobsFitProfilePostResponseVectorBigFiveSDTRELATEDNESSMax).optional()
+}),
+  "schwartz": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEOPENNESSMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEEXTRAVERSIONMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEAGREEABLENESSMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVENEUROTICISMMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSELFDIRECTIONMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSTIMULATIONMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZHEDONISMMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZACHIEVEMENTMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZPOWERMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSECURITYMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZCONFORMITYMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZTRADITIONMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZBENEVOLENCEMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZUNIVERSALISMMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSDTAUTONOMYMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSDTCOMPETENCEMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSchwartzSDTRELATEDNESSMin).max(fitProfileJobsFitProfilePostResponseVectorSchwartzSDTRELATEDNESSMax).optional()
+}),
+  "sdt": zod.object({
+  "BIG_FIVE_OPENNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEOPENNESSMin).max(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEOPENNESSMax).optional(),
+  "BIG_FIVE_CONSCIENTIOUSNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMin).max(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVECONSCIENTIOUSNESSMax).optional(),
+  "BIG_FIVE_EXTRAVERSION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEEXTRAVERSIONMin).max(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEEXTRAVERSIONMax).optional(),
+  "BIG_FIVE_AGREEABLENESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEAGREEABLENESSMin).max(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVEAGREEABLENESSMax).optional(),
+  "BIG_FIVE_NEUROTICISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVENEUROTICISMMin).max(fitProfileJobsFitProfilePostResponseVectorSdtBIGFIVENEUROTICISMMax).optional(),
+  "SCHWARTZ_SELF_DIRECTION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSELFDIRECTIONMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSELFDIRECTIONMax).optional(),
+  "SCHWARTZ_STIMULATION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSTIMULATIONMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSTIMULATIONMax).optional(),
+  "SCHWARTZ_HEDONISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZHEDONISMMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZHEDONISMMax).optional(),
+  "SCHWARTZ_ACHIEVEMENT": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZACHIEVEMENTMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZACHIEVEMENTMax).optional(),
+  "SCHWARTZ_POWER": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZPOWERMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZPOWERMax).optional(),
+  "SCHWARTZ_SECURITY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSECURITYMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZSECURITYMax).optional(),
+  "SCHWARTZ_CONFORMITY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZCONFORMITYMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZCONFORMITYMax).optional(),
+  "SCHWARTZ_TRADITION": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZTRADITIONMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZTRADITIONMax).optional(),
+  "SCHWARTZ_BENEVOLENCE": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZBENEVOLENCEMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZBENEVOLENCEMax).optional(),
+  "SCHWARTZ_UNIVERSALISM": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZUNIVERSALISMMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSCHWARTZUNIVERSALISMMax).optional(),
+  "SDT_AUTONOMY": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSDTAUTONOMYMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSDTAUTONOMYMax).optional(),
+  "SDT_COMPETENCE": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSDTCOMPETENCEMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSDTCOMPETENCEMax).optional(),
+  "SDT_RELATEDNESS": zod.number().min(fitProfileJobsFitProfilePostResponseVectorSdtSDTRELATEDNESSMin).max(fitProfileJobsFitProfilePostResponseVectorSdtSDTRELATEDNESSMax).optional()
+})
 })
 })
 

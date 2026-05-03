@@ -21,6 +21,12 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  GdprMeGdprExport200,
+  GdprMeGdprExport400,
+  GdprMeGdprExport401
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +38,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Exports all user data in machine-readable JSON format.
  * @summary Export user data (GDPR Article 20)
  */
-export type gdprMeGdprExportResponse200 = void
+export type gdprMeGdprExportResponse200 = GdprMeGdprExport200
+
+export type gdprMeGdprExportResponse400 = GdprMeGdprExport400
+
+export type gdprMeGdprExportResponse401 = GdprMeGdprExport401
 
 export type gdprMeGdprExportResponseSuccess = gdprMeGdprExportResponse200
-;
+export type gdprMeGdprExportResponseError = (gdprMeGdprExportResponse400 | gdprMeGdprExportResponse401) & {
+  headers: Headers;
+};
 
-export type gdprMeGdprExportResponse = (gdprMeGdprExportResponseSuccess)
+export type gdprMeGdprExportResponse = (gdprMeGdprExportResponseSuccess | gdprMeGdprExportResponseError)
 
 export const getGdprMeGdprExportUrl = () => {
 
@@ -75,7 +87,7 @@ export const getGdprMeGdprExportQueryKey = () => {
     }
 
 
-export const getGdprMeGdprExportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof gdprMeGdprExport>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGdprMeGdprExportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof gdprMeGdprExport>>>, TError = GdprMeGdprExport400 | GdprMeGdprExport401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +106,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GdprMeGdprExportInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof gdprMeGdprExport>>>
-export type GdprMeGdprExportInfiniteQueryError = unknown
+export type GdprMeGdprExportInfiniteQueryError = GdprMeGdprExport400 | GdprMeGdprExport401
 
 
 /**
  * @summary Export user data (GDPR Article 20)
  */
 
-export function createGdprMeGdprExportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof gdprMeGdprExport>>>, TError = unknown>(
+export function createGdprMeGdprExportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof gdprMeGdprExport>>>, TError = GdprMeGdprExport400 | GdprMeGdprExport401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +128,7 @@ export function createGdprMeGdprExportInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary Export user data (GDPR Article 20)
  */
-export const prefetchGdprMeGdprExportInfiniteQuery = async <TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = unknown>(
+export const prefetchGdprMeGdprExportInfiniteQuery = async <TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = GdprMeGdprExport400 | GdprMeGdprExport401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +144,7 @@ export const prefetchGdprMeGdprExportInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getGdprMeGdprExportQueryOptions = <TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGdprMeGdprExportQueryOptions = <TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = GdprMeGdprExport400 | GdprMeGdprExport401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +163,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GdprMeGdprExportQueryResult = NonNullable<Awaited<ReturnType<typeof gdprMeGdprExport>>>
-export type GdprMeGdprExportQueryError = unknown
+export type GdprMeGdprExportQueryError = GdprMeGdprExport400 | GdprMeGdprExport401
 
 
 /**
  * @summary Export user data (GDPR Article 20)
  */
 
-export function createGdprMeGdprExport<TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = unknown>(
+export function createGdprMeGdprExport<TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = GdprMeGdprExport400 | GdprMeGdprExport401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +185,7 @@ export function createGdprMeGdprExport<TData = Awaited<ReturnType<typeof gdprMeG
 /**
  * @summary Export user data (GDPR Article 20)
  */
-export const prefetchGdprMeGdprExportQuery = async <TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = unknown>(
+export const prefetchGdprMeGdprExportQuery = async <TData = Awaited<ReturnType<typeof gdprMeGdprExport>>, TError = GdprMeGdprExport400 | GdprMeGdprExport401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof gdprMeGdprExport>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

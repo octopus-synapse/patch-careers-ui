@@ -10,10 +10,103 @@ import * as zod from 'zod';
 
 /**
  * Generic Resume Sections API
+ * @summary List active dynamic section types with resolved translations
+ */
+export const ResumesSectionsTypesResponse = zod.object({
+  "sectionTypes": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "label": zod.string(),
+  "noDataLabel": zod.string(),
+  "placeholder": zod.string(),
+  "addLabel": zod.string(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number().nullable(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "fieldStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()]))
+}))
+})
+
+/**
+ * Generic Resume Sections API
+ * @summary List sections and items for a resume
+ */
+export const ResumesSectionsResponse = zod.object({
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "sectionTypeId": zod.string(),
+  "titleOverride": zod.string().nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "fieldStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "examples": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+}).nullable(),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+}))
+}))
+})
+
+/**
+ * Generic Resume Sections API
  * @summary Create section item in a dynamic section type
  */
 export const ResumesSectionsItemsPostBody = zod.object({
   "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})
+
+export const ResumesSectionsItemsPostResponse = zod.object({
+  "item": zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
 })
 
 /**
@@ -22,6 +115,200 @@ export const ResumesSectionsItemsPostBody = zod.object({
  */
 export const ResumesSectionsItemsPatchBody = zod.object({
   "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})
+
+export const ResumesSectionsItemsPatchResponse = zod.object({
+  "item": zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+})
+
+/**
+ * Generic Resume Sections API
+ * @summary Delete section item from a dynamic section type
+ */
+export const ResumesSectionsItemsDeleteResponse = zod.object({
+  "deleted": zod.boolean()
+})
+
+/**
+ * Resumes API
+ * @summary List all resumes for a specific user
+ */
+export const ResumesManageUserResponse = zod.object({
+  "resumes": zod.array(zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "title": zod.string().nullable(),
+  "language": zod.string(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().nullable(),
+  "fullName": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "summary": zod.string().nullable(),
+  "accentColor": zod.string().nullable(),
+  "styleId": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "sectionTypeId": zod.string(),
+  "titleOverride": zod.string().nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "fieldStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "examples": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+}))
+})),
+  "_count": zod.object({
+  "resumeSections": zod.number()
+})
+}))
+})
+
+/**
+ * Resumes API
+ * @summary Get full resume details
+ */
+export const ResumesManageGetResponse = zod.object({
+  "resume": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "title": zod.string().nullable(),
+  "language": zod.string(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().nullable(),
+  "fullName": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "phone": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "linkedin": zod.string().nullable(),
+  "github": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "summary": zod.string().nullable(),
+  "accentColor": zod.string().nullable(),
+  "styleId": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable()
+}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "sectionTypeId": zod.string(),
+  "titleOverride": zod.string().nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "fieldStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "examples": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeSectionId": zod.string(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "isVisible": zod.boolean(),
+  "order": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+}))
+}))
+})
+})
+
+/**
+ * Resumes API
+ * @summary Delete a resume
+ */
+export const ResumesManageDeleteResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Resume CRUD operations
+ * @summary Get all resumes for current user
+ */
+export const ResumesListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "limit": zod.number(),
+  "totalPages": zod.number(),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
 })
 
 /**
@@ -56,6 +343,113 @@ export const ResumesCreateBody = zod.object({
   "sections": zod.array(zod.record(zod.string(), zod.unknown().nullable())).optional()
 })
 
+export const ResumesCreateResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Resume CRUD operations
+ * @summary Get remaining resume slots for current user
+ */
+export const ResumesSlotsResponse = zod.object({
+  "used": zod.number(),
+  "limit": zod.number(),
+  "remaining": zod.number()
+})
+
+/**
+ * Resume CRUD operations
+ * @summary Get a resume with all sections
+ */
+export const ResumesFullResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "visible": zod.boolean(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "semanticKind": zod.string().optional(),
+  "title": zod.string().optional(),
+  "version": zod.number().optional()
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).optional()
+}))
+})),
+  "styleId": zod.string().optional(),
+  "style": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().optional()
+}).optional(),
+  "fullName": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "summary": zod.string().optional()
+})
+
+/**
+ * Resume CRUD operations
+ * @summary Get a specific resume
+ */
+export const ResumesGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "resumeSections": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "visible": zod.boolean(),
+  "sectionType": zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "semanticKind": zod.string().optional(),
+  "title": zod.string().optional(),
+  "version": zod.number().optional()
+}),
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "order": zod.number(),
+  "content": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).optional()
+}))
+})),
+  "styleId": zod.string().optional(),
+  "style": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().optional()
+}).optional(),
+  "fullName": zod.string().optional(),
+  "email": zod.string().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional(),
+  "summary": zod.string().optional()
+})
+
 /**
  * Resume CRUD operations
  * @summary Update a resume
@@ -86,5 +480,25 @@ export const ResumesUpdateBody = zod.object({
   "github": zod.string().url().optional(),
   "website": zod.string().url().optional(),
   "sections": zod.array(zod.record(zod.string(), zod.unknown().nullable())).optional()
+})
+
+export const ResumesUpdateResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "language": zod.string().optional(),
+  "targetRole": zod.string().optional(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().optional(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Resume CRUD operations
+ * @summary Delete a resume
+ */
+export const ResumesDeleteResponse = zod.object({
+  "deleted": zod.boolean(),
+  "id": zod.string()
 })
 

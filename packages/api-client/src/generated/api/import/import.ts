@@ -16,6 +16,10 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ImportGithubParse200,
+  ImportGithubParse400,
+  ImportGithubParse401,
+  ImportGithubParse403,
   ImportGithubParseBody
 } from '../../models';
 
@@ -30,12 +34,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * GitHub import API
  * @summary Parse a GitHub profile (repos + languages) into suggested resume content. Does not write to the resume — the client previews, the user accepts.
  */
-export type importGithubParseResponse200 = void
+export type importGithubParseResponse200 = ImportGithubParse200
+
+export type importGithubParseResponse400 = ImportGithubParse400
+
+export type importGithubParseResponse401 = ImportGithubParse401
+
+export type importGithubParseResponse403 = ImportGithubParse403
 
 export type importGithubParseResponseSuccess = importGithubParseResponse200
-;
+export type importGithubParseResponseError = (importGithubParseResponse400 | importGithubParseResponse401 | importGithubParseResponse403) & {
+  headers: Headers;
+};
 
-export type importGithubParseResponse = (importGithubParseResponseSuccess)
+export type importGithubParseResponse = (importGithubParseResponseSuccess | importGithubParseResponseError)
 
 export const getImportGithubParseUrl = () => {
 
@@ -60,7 +72,7 @@ export const importGithubParse = async (importGithubParseBody: ImportGithubParse
 
 
 
-export const getImportGithubParseMutationOptions = <TError = unknown,
+export const getImportGithubParseMutationOptions = <TError = ImportGithubParse400 | ImportGithubParse401 | ImportGithubParse403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof importGithubParse>>, TError,{data: ImportGithubParseBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof importGithubParse>>, TError,{data: ImportGithubParseBody}, TContext> => {
 
@@ -89,12 +101,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ImportGithubParseMutationResult = NonNullable<Awaited<ReturnType<typeof importGithubParse>>>
     export type ImportGithubParseMutationBody = ImportGithubParseBody
-    export type ImportGithubParseMutationError = unknown
+    export type ImportGithubParseMutationError = ImportGithubParse400 | ImportGithubParse401 | ImportGithubParse403
 
     /**
  * @summary Parse a GitHub profile (repos + languages) into suggested resume content. Does not write to the resume — the client previews, the user accepts.
  */
-export const createImportGithubParse = <TError = unknown,
+export const createImportGithubParse = <TError = ImportGithubParse400 | ImportGithubParse401 | ImportGithubParse403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof importGithubParse>>, TError,{data: ImportGithubParseBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof importGithubParse>>,

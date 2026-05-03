@@ -26,7 +26,24 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  ChatBlockUsersBlockedPostBody
+  ChatBlockUsersBlockedDelete400,
+  ChatBlockUsersBlockedDelete401,
+  ChatBlockUsersBlockedDelete403,
+  ChatBlockUsersBlockedDelete404,
+  ChatBlockUsersBlockedGet200,
+  ChatBlockUsersBlockedGet400,
+  ChatBlockUsersBlockedGet401,
+  ChatBlockUsersBlockedGet403,
+  ChatBlockUsersBlockedPost200,
+  ChatBlockUsersBlockedPost400,
+  ChatBlockUsersBlockedPost401,
+  ChatBlockUsersBlockedPost403,
+  ChatBlockUsersBlockedPostBody,
+  ChatBlockUsersBlockedStatus200,
+  ChatBlockUsersBlockedStatus400,
+  ChatBlockUsersBlockedStatus401,
+  ChatBlockUsersBlockedStatus403,
+  ChatBlockUsersBlockedStatus404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +57,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Chat Block Users API
  * @summary Block a user
  */
-export type chatBlockUsersBlockedPostResponse200 = void
+export type chatBlockUsersBlockedPostResponse200 = ChatBlockUsersBlockedPost200
+
+export type chatBlockUsersBlockedPostResponse400 = ChatBlockUsersBlockedPost400
+
+export type chatBlockUsersBlockedPostResponse401 = ChatBlockUsersBlockedPost401
+
+export type chatBlockUsersBlockedPostResponse403 = ChatBlockUsersBlockedPost403
 
 export type chatBlockUsersBlockedPostResponseSuccess = chatBlockUsersBlockedPostResponse200
-;
+export type chatBlockUsersBlockedPostResponseError = (chatBlockUsersBlockedPostResponse400 | chatBlockUsersBlockedPostResponse401 | chatBlockUsersBlockedPostResponse403) & {
+  headers: Headers;
+};
 
-export type chatBlockUsersBlockedPostResponse = (chatBlockUsersBlockedPostResponseSuccess)
+export type chatBlockUsersBlockedPostResponse = (chatBlockUsersBlockedPostResponseSuccess | chatBlockUsersBlockedPostResponseError)
 
 export const getChatBlockUsersBlockedPostUrl = () => {
 
@@ -70,7 +95,7 @@ export const chatBlockUsersBlockedPost = async (chatBlockUsersBlockedPostBody: C
 
 
 
-export const getChatBlockUsersBlockedPostMutationOptions = <TError = unknown,
+export const getChatBlockUsersBlockedPostMutationOptions = <TError = ChatBlockUsersBlockedPost400 | ChatBlockUsersBlockedPost401 | ChatBlockUsersBlockedPost403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedPost>>, TError,{data: ChatBlockUsersBlockedPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedPost>>, TError,{data: ChatBlockUsersBlockedPostBody}, TContext> => {
 
@@ -99,12 +124,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ChatBlockUsersBlockedPostMutationResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersBlockedPost>>>
     export type ChatBlockUsersBlockedPostMutationBody = ChatBlockUsersBlockedPostBody
-    export type ChatBlockUsersBlockedPostMutationError = unknown
+    export type ChatBlockUsersBlockedPostMutationError = ChatBlockUsersBlockedPost400 | ChatBlockUsersBlockedPost401 | ChatBlockUsersBlockedPost403
 
     /**
  * @summary Block a user
  */
-export const createChatBlockUsersBlockedPost = <TError = unknown,
+export const createChatBlockUsersBlockedPost = <TError = ChatBlockUsersBlockedPost400 | ChatBlockUsersBlockedPost401 | ChatBlockUsersBlockedPost403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedPost>>, TError,{data: ChatBlockUsersBlockedPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof chatBlockUsersBlockedPost>>,
@@ -118,12 +143,20 @@ export const createChatBlockUsersBlockedPost = <TError = unknown,
  * Chat Block Users API
  * @summary Get all blocked users
  */
-export type chatBlockUsersBlockedGetResponse200 = void
+export type chatBlockUsersBlockedGetResponse200 = ChatBlockUsersBlockedGet200
+
+export type chatBlockUsersBlockedGetResponse400 = ChatBlockUsersBlockedGet400
+
+export type chatBlockUsersBlockedGetResponse401 = ChatBlockUsersBlockedGet401
+
+export type chatBlockUsersBlockedGetResponse403 = ChatBlockUsersBlockedGet403
 
 export type chatBlockUsersBlockedGetResponseSuccess = chatBlockUsersBlockedGetResponse200
-;
+export type chatBlockUsersBlockedGetResponseError = (chatBlockUsersBlockedGetResponse400 | chatBlockUsersBlockedGetResponse401 | chatBlockUsersBlockedGetResponse403) & {
+  headers: Headers;
+};
 
-export type chatBlockUsersBlockedGetResponse = (chatBlockUsersBlockedGetResponseSuccess)
+export type chatBlockUsersBlockedGetResponse = (chatBlockUsersBlockedGetResponseSuccess | chatBlockUsersBlockedGetResponseError)
 
 export const getChatBlockUsersBlockedGetUrl = () => {
 
@@ -161,7 +194,7 @@ export const getChatBlockUsersBlockedGetQueryKey = () => {
     }
 
 
-export const getChatBlockUsersBlockedGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getChatBlockUsersBlockedGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>>, TError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -180,14 +213,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ChatBlockUsersBlockedGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>>
-export type ChatBlockUsersBlockedGetInfiniteQueryError = unknown
+export type ChatBlockUsersBlockedGetInfiniteQueryError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403
 
 
 /**
  * @summary Get all blocked users
  */
 
-export function createChatBlockUsersBlockedGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>>, TError = unknown>(
+export function createChatBlockUsersBlockedGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>>, TError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -202,7 +235,7 @@ export function createChatBlockUsersBlockedGetInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get all blocked users
  */
-export const prefetchChatBlockUsersBlockedGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = unknown>(
+export const prefetchChatBlockUsersBlockedGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -218,7 +251,7 @@ export const prefetchChatBlockUsersBlockedGetInfiniteQuery = async <TData = Awai
 
 
 
-export const getChatBlockUsersBlockedGetQueryOptions = <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getChatBlockUsersBlockedGetQueryOptions = <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -237,14 +270,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ChatBlockUsersBlockedGetQueryResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>>
-export type ChatBlockUsersBlockedGetQueryError = unknown
+export type ChatBlockUsersBlockedGetQueryError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403
 
 
 /**
  * @summary Get all blocked users
  */
 
-export function createChatBlockUsersBlockedGet<TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = unknown>(
+export function createChatBlockUsersBlockedGet<TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -259,7 +292,7 @@ export function createChatBlockUsersBlockedGet<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get all blocked users
  */
-export const prefetchChatBlockUsersBlockedGetQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = unknown>(
+export const prefetchChatBlockUsersBlockedGetQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError = ChatBlockUsersBlockedGet400 | ChatBlockUsersBlockedGet401 | ChatBlockUsersBlockedGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -279,12 +312,22 @@ export const prefetchChatBlockUsersBlockedGetQuery = async <TData = Awaited<Retu
  * Chat Block Users API
  * @summary Unblock a user
  */
-export type chatBlockUsersBlockedDeleteResponse200 = void
+export type chatBlockUsersBlockedDeleteResponse200 = unknown | null
+
+export type chatBlockUsersBlockedDeleteResponse400 = ChatBlockUsersBlockedDelete400
+
+export type chatBlockUsersBlockedDeleteResponse401 = ChatBlockUsersBlockedDelete401
+
+export type chatBlockUsersBlockedDeleteResponse403 = ChatBlockUsersBlockedDelete403
+
+export type chatBlockUsersBlockedDeleteResponse404 = ChatBlockUsersBlockedDelete404
 
 export type chatBlockUsersBlockedDeleteResponseSuccess = chatBlockUsersBlockedDeleteResponse200
-;
+export type chatBlockUsersBlockedDeleteResponseError = (chatBlockUsersBlockedDeleteResponse400 | chatBlockUsersBlockedDeleteResponse401 | chatBlockUsersBlockedDeleteResponse403 | chatBlockUsersBlockedDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type chatBlockUsersBlockedDeleteResponse = (chatBlockUsersBlockedDeleteResponseSuccess)
+export type chatBlockUsersBlockedDeleteResponse = (chatBlockUsersBlockedDeleteResponseSuccess | chatBlockUsersBlockedDeleteResponseError)
 
 export const getChatBlockUsersBlockedDeleteUrl = (userId: string,) => {
 
@@ -308,7 +351,7 @@ export const chatBlockUsersBlockedDelete = async (userId: string, options?: Requ
 
 
 
-export const getChatBlockUsersBlockedDeleteMutationOptions = <TError = unknown,
+export const getChatBlockUsersBlockedDeleteMutationOptions = <TError = ChatBlockUsersBlockedDelete400 | ChatBlockUsersBlockedDelete401 | ChatBlockUsersBlockedDelete403 | ChatBlockUsersBlockedDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedDelete>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedDelete>>, TError,{userId: string}, TContext> => {
 
@@ -337,12 +380,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ChatBlockUsersBlockedDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersBlockedDelete>>>
 
-    export type ChatBlockUsersBlockedDeleteMutationError = unknown
+    export type ChatBlockUsersBlockedDeleteMutationError = ChatBlockUsersBlockedDelete400 | ChatBlockUsersBlockedDelete401 | ChatBlockUsersBlockedDelete403 | ChatBlockUsersBlockedDelete404
 
     /**
  * @summary Unblock a user
  */
-export const createChatBlockUsersBlockedDelete = <TError = unknown,
+export const createChatBlockUsersBlockedDelete = <TError = ChatBlockUsersBlockedDelete400 | ChatBlockUsersBlockedDelete401 | ChatBlockUsersBlockedDelete403 | ChatBlockUsersBlockedDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedDelete>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof chatBlockUsersBlockedDelete>>,
@@ -356,12 +399,22 @@ export const createChatBlockUsersBlockedDelete = <TError = unknown,
  * Chat Block Users API
  * @summary Check if a user is blocked
  */
-export type chatBlockUsersBlockedStatusResponse200 = void
+export type chatBlockUsersBlockedStatusResponse200 = ChatBlockUsersBlockedStatus200
+
+export type chatBlockUsersBlockedStatusResponse400 = ChatBlockUsersBlockedStatus400
+
+export type chatBlockUsersBlockedStatusResponse401 = ChatBlockUsersBlockedStatus401
+
+export type chatBlockUsersBlockedStatusResponse403 = ChatBlockUsersBlockedStatus403
+
+export type chatBlockUsersBlockedStatusResponse404 = ChatBlockUsersBlockedStatus404
 
 export type chatBlockUsersBlockedStatusResponseSuccess = chatBlockUsersBlockedStatusResponse200
-;
+export type chatBlockUsersBlockedStatusResponseError = (chatBlockUsersBlockedStatusResponse400 | chatBlockUsersBlockedStatusResponse401 | chatBlockUsersBlockedStatusResponse403 | chatBlockUsersBlockedStatusResponse404) & {
+  headers: Headers;
+};
 
-export type chatBlockUsersBlockedStatusResponse = (chatBlockUsersBlockedStatusResponseSuccess)
+export type chatBlockUsersBlockedStatusResponse = (chatBlockUsersBlockedStatusResponseSuccess | chatBlockUsersBlockedStatusResponseError)
 
 export const getChatBlockUsersBlockedStatusUrl = (userId: string,) => {
 
@@ -399,7 +452,7 @@ export const getChatBlockUsersBlockedStatusQueryKey = (userId: string,) => {
     }
 
 
-export const getChatBlockUsersBlockedStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getChatBlockUsersBlockedStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>>, TError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -418,14 +471,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ChatBlockUsersBlockedStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>>
-export type ChatBlockUsersBlockedStatusInfiniteQueryError = unknown
+export type ChatBlockUsersBlockedStatusInfiniteQueryError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404
 
 
 /**
  * @summary Check if a user is blocked
  */
 
-export function createChatBlockUsersBlockedStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>>, TError = unknown>(
+export function createChatBlockUsersBlockedStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>>, TError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -440,7 +493,7 @@ export function createChatBlockUsersBlockedStatusInfinite<TData = InfiniteData<A
 /**
  * @summary Check if a user is blocked
  */
-export const prefetchChatBlockUsersBlockedStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = unknown>(
+export const prefetchChatBlockUsersBlockedStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -456,7 +509,7 @@ export const prefetchChatBlockUsersBlockedStatusInfiniteQuery = async <TData = A
 
 
 
-export const getChatBlockUsersBlockedStatusQueryOptions = <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getChatBlockUsersBlockedStatusQueryOptions = <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -475,14 +528,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ChatBlockUsersBlockedStatusQueryResult = NonNullable<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>>
-export type ChatBlockUsersBlockedStatusQueryError = unknown
+export type ChatBlockUsersBlockedStatusQueryError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404
 
 
 /**
  * @summary Check if a user is blocked
  */
 
-export function createChatBlockUsersBlockedStatus<TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = unknown>(
+export function createChatBlockUsersBlockedStatus<TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -497,7 +550,7 @@ export function createChatBlockUsersBlockedStatus<TData = Awaited<ReturnType<typ
 /**
  * @summary Check if a user is blocked
  */
-export const prefetchChatBlockUsersBlockedStatusQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = unknown>(
+export const prefetchChatBlockUsersBlockedStatusQuery = async <TData = Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError = ChatBlockUsersBlockedStatus400 | ChatBlockUsersBlockedStatus401 | ChatBlockUsersBlockedStatus403 | ChatBlockUsersBlockedStatus404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof chatBlockUsersBlockedStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

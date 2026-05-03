@@ -16,6 +16,43 @@ export const EngagementPostsLikePostBody = zod.object({
   "reactionType": zod.enum(['LIKE', 'CELEBRATE', 'LOVE', 'INSIGHTFUL', 'CURIOUS']).optional()
 })
 
+export const EngagementPostsLikePostResponse = zod.object({
+  "postId": zod.string(),
+  "userId": zod.string(),
+  "reactionType": zod.enum(['LIKE', 'CELEBRATE', 'LOVE', 'INSIGHTFUL', 'CURIOUS']),
+  "postAuthorId": zod.string().optional(),
+  "alreadyLiked": zod.boolean(),
+  "updated": zod.boolean().optional()
+})
+
+/**
+ * Engagement API
+ * @summary Unlike a post
+ */
+export const EngagementPostsLikeDeleteResponse = zod.object({
+  "postId": zod.string(),
+  "userId": zod.string()
+})
+
+/**
+ * Engagement API
+ * @summary Bookmark a post
+ */
+export const EngagementPostsBookmarkPostResponse = zod.object({
+  "postId": zod.string(),
+  "userId": zod.string(),
+  "alreadyBookmarked": zod.boolean()
+})
+
+/**
+ * Engagement API
+ * @summary Remove bookmark from a post
+ */
+export const EngagementPostsBookmarkDeleteResponse = zod.object({
+  "postId": zod.string(),
+  "userId": zod.string()
+})
+
 /**
  * Engagement API
  * @summary Repost a post
@@ -24,12 +61,77 @@ export const EngagementPostsRepostBody = zod.object({
   "commentary": zod.string().optional()
 })
 
+export const EngagementPostsRepostResponse = zod.union([zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "type": zod.enum(['ACHIEVEMENT', 'OPPORTUNITY', 'LEARNING', 'BUILD', 'QUESTION', 'REPOST', 'CHALLENGE']),
+  "subtype": zod.string().nullable(),
+  "content": zod.string().nullable(),
+  "hardSkills": zod.array(zod.string()),
+  "softSkills": zod.array(zod.string()),
+  "hashtags": zod.array(zod.string()),
+  "data": zod.object({
+
+}).passthrough().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "linkUrl": zod.string().nullable(),
+  "linkPreview": zod.object({
+  "title": zod.string().nullable(),
+  "description": zod.string().nullable(),
+  "image": zod.string().nullable(),
+  "domain": zod.string()
+}).nullable(),
+  "originalPostId": zod.string().nullable(),
+  "coAuthors": zod.array(zod.string()),
+  "scheduledAt": zod.string().datetime({"offset":true}).nullable(),
+  "isPublished": zod.boolean(),
+  "threadId": zod.string().nullable(),
+  "pollDeadline": zod.string().datetime({"offset":true}).nullable(),
+  "votesCount": zod.number(),
+  "codeSnippet": zod.object({
+  "language": zod.string(),
+  "code": zod.string(),
+  "filename": zod.string().optional()
+}).nullable(),
+  "likesCount": zod.number(),
+  "commentsCount": zod.number(),
+  "repostsCount": zod.number(),
+  "bookmarksCount": zod.number(),
+  "isDeleted": zod.boolean(),
+  "deletedAt": zod.string().datetime({"offset":true}).nullable(),
+  "isAnonymous": zod.boolean(),
+  "anonymousCategory": zod.enum(['SALARY', 'INTERVIEW', 'LAYOFF', 'TOXIC_CULTURE', 'HARASSMENT']).nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish()
+})
+}),zod.object({
+  "postId": zod.string(),
+  "userId": zod.string(),
+  "reposted": zod.boolean()
+})])
+
 /**
  * Engagement API
  * @summary Report a post
  */
 export const EngagementPostsReportBody = zod.object({
   "reason": zod.string()
+})
+
+export const EngagementPostsReportResponse = zod.object({
+  "id": zod.string(),
+  "postId": zod.string(),
+  "userId": zod.string(),
+  "reason": zod.string(),
+  "status": zod.string(),
+  "createdAt": zod.string().datetime({"offset":true})
 })
 
 /**
@@ -42,5 +144,13 @@ export const engagementPostsPollVoteBodyOptionIndexMin = 0;
 
 export const EngagementPostsPollVoteBody = zod.object({
   "optionIndex": zod.number().min(engagementPostsPollVoteBodyOptionIndexMin)
+})
+
+export const EngagementPostsPollVoteResponse = zod.object({
+  "id": zod.string(),
+  "postId": zod.string(),
+  "userId": zod.string(),
+  "optionIndex": zod.number(),
+  "createdAt": zod.string().datetime({"offset":true})
 })
 

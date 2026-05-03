@@ -21,6 +21,12 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  FeatureFlagsActive200,
+  FeatureFlagsActive400,
+  FeatureFlagsActive401
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +38,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{flags: Record<string, boolean>}`. A flag is `true` only if its own enabled state, every ancestor, and the role restriction all allow it. Frontend uses `flags[key]` directly without per-key resolution.
  * @summary Active flags for the current user
  */
-export type featureFlagsActiveResponse200 = void
+export type featureFlagsActiveResponse200 = FeatureFlagsActive200
+
+export type featureFlagsActiveResponse400 = FeatureFlagsActive400
+
+export type featureFlagsActiveResponse401 = FeatureFlagsActive401
 
 export type featureFlagsActiveResponseSuccess = featureFlagsActiveResponse200
-;
+export type featureFlagsActiveResponseError = (featureFlagsActiveResponse400 | featureFlagsActiveResponse401) & {
+  headers: Headers;
+};
 
-export type featureFlagsActiveResponse = (featureFlagsActiveResponseSuccess)
+export type featureFlagsActiveResponse = (featureFlagsActiveResponseSuccess | featureFlagsActiveResponseError)
 
 export const getFeatureFlagsActiveUrl = () => {
 
@@ -75,7 +87,7 @@ export const getFeatureFlagsActiveQueryKey = () => {
     }
 
 
-export const getFeatureFlagsActiveInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof featureFlagsActive>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFeatureFlagsActiveInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof featureFlagsActive>>>, TError = FeatureFlagsActive400 | FeatureFlagsActive401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +106,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeatureFlagsActiveInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof featureFlagsActive>>>
-export type FeatureFlagsActiveInfiniteQueryError = unknown
+export type FeatureFlagsActiveInfiniteQueryError = FeatureFlagsActive400 | FeatureFlagsActive401
 
 
 /**
  * @summary Active flags for the current user
  */
 
-export function createFeatureFlagsActiveInfinite<TData = InfiniteData<Awaited<ReturnType<typeof featureFlagsActive>>>, TError = unknown>(
+export function createFeatureFlagsActiveInfinite<TData = InfiniteData<Awaited<ReturnType<typeof featureFlagsActive>>>, TError = FeatureFlagsActive400 | FeatureFlagsActive401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +128,7 @@ export function createFeatureFlagsActiveInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Active flags for the current user
  */
-export const prefetchFeatureFlagsActiveInfiniteQuery = async <TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = unknown>(
+export const prefetchFeatureFlagsActiveInfiniteQuery = async <TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = FeatureFlagsActive400 | FeatureFlagsActive401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +144,7 @@ export const prefetchFeatureFlagsActiveInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getFeatureFlagsActiveQueryOptions = <TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFeatureFlagsActiveQueryOptions = <TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = FeatureFlagsActive400 | FeatureFlagsActive401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +163,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeatureFlagsActiveQueryResult = NonNullable<Awaited<ReturnType<typeof featureFlagsActive>>>
-export type FeatureFlagsActiveQueryError = unknown
+export type FeatureFlagsActiveQueryError = FeatureFlagsActive400 | FeatureFlagsActive401
 
 
 /**
  * @summary Active flags for the current user
  */
 
-export function createFeatureFlagsActive<TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = unknown>(
+export function createFeatureFlagsActive<TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = FeatureFlagsActive400 | FeatureFlagsActive401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +185,7 @@ export function createFeatureFlagsActive<TData = Awaited<ReturnType<typeof featu
 /**
  * @summary Active flags for the current user
  */
-export const prefetchFeatureFlagsActiveQuery = async <TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = unknown>(
+export const prefetchFeatureFlagsActiveQuery = async <TData = Awaited<ReturnType<typeof featureFlagsActive>>, TError = FeatureFlagsActive400 | FeatureFlagsActive401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof featureFlagsActive>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

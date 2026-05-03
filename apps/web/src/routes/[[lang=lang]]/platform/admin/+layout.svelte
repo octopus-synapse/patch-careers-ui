@@ -1,19 +1,17 @@
 <script lang="ts">
 import { Loader } from 'ui';
-import { createAuthSession } from 'api-client';
 
 import type { Snippet } from 'svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import AdminSidebar from './_components/admin-sidebar.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
 let { children }: { children: Snippet } = $props();
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+const session = useAuth();
 
 const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);

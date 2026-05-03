@@ -22,6 +22,18 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SpokenLanguagesGetById200,
+  SpokenLanguagesGetById400,
+  SpokenLanguagesGetById401,
+  SpokenLanguagesGetById403,
+  SpokenLanguagesList200,
+  SpokenLanguagesList400,
+  SpokenLanguagesList401,
+  SpokenLanguagesList403,
+  SpokenLanguagesSearch200,
+  SpokenLanguagesSearch400,
+  SpokenLanguagesSearch401,
+  SpokenLanguagesSearch403,
   SpokenLanguagesSearchParams
 } from '../../models';
 
@@ -36,12 +48,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Active spoken languages returned
  * @summary Get all active spoken languages
  */
-export type spokenLanguagesListResponse200 = void
+export type spokenLanguagesListResponse200 = SpokenLanguagesList200
+
+export type spokenLanguagesListResponse400 = SpokenLanguagesList400
+
+export type spokenLanguagesListResponse401 = SpokenLanguagesList401
+
+export type spokenLanguagesListResponse403 = SpokenLanguagesList403
 
 export type spokenLanguagesListResponseSuccess = spokenLanguagesListResponse200
-;
+export type spokenLanguagesListResponseError = (spokenLanguagesListResponse400 | spokenLanguagesListResponse401 | spokenLanguagesListResponse403) & {
+  headers: Headers;
+};
 
-export type spokenLanguagesListResponse = (spokenLanguagesListResponseSuccess)
+export type spokenLanguagesListResponse = (spokenLanguagesListResponseSuccess | spokenLanguagesListResponseError)
 
 export const getSpokenLanguagesListUrl = () => {
 
@@ -79,7 +99,7 @@ export const getSpokenLanguagesListQueryKey = () => {
     }
 
 
-export const getSpokenLanguagesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSpokenLanguagesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesList>>>, TError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -98,14 +118,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SpokenLanguagesListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof spokenLanguagesList>>>
-export type SpokenLanguagesListInfiniteQueryError = unknown
+export type SpokenLanguagesListInfiniteQueryError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403
 
 
 /**
  * @summary Get all active spoken languages
  */
 
-export function createSpokenLanguagesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesList>>>, TError = unknown>(
+export function createSpokenLanguagesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesList>>>, TError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -120,7 +140,7 @@ export function createSpokenLanguagesListInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Get all active spoken languages
  */
-export const prefetchSpokenLanguagesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = unknown>(
+export const prefetchSpokenLanguagesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -136,7 +156,7 @@ export const prefetchSpokenLanguagesListInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getSpokenLanguagesListQueryOptions = <TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSpokenLanguagesListQueryOptions = <TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -155,14 +175,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SpokenLanguagesListQueryResult = NonNullable<Awaited<ReturnType<typeof spokenLanguagesList>>>
-export type SpokenLanguagesListQueryError = unknown
+export type SpokenLanguagesListQueryError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403
 
 
 /**
  * @summary Get all active spoken languages
  */
 
-export function createSpokenLanguagesList<TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = unknown>(
+export function createSpokenLanguagesList<TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -177,7 +197,7 @@ export function createSpokenLanguagesList<TData = Awaited<ReturnType<typeof spok
 /**
  * @summary Get all active spoken languages
  */
-export const prefetchSpokenLanguagesListQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = unknown>(
+export const prefetchSpokenLanguagesListQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesList>>, TError = SpokenLanguagesList400 | SpokenLanguagesList401 | SpokenLanguagesList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -197,12 +217,20 @@ export const prefetchSpokenLanguagesListQuery = async <TData = Awaited<ReturnTyp
  * Filtered spoken languages returned
  * @summary Search spoken languages by name
  */
-export type spokenLanguagesSearchResponse200 = void
+export type spokenLanguagesSearchResponse200 = SpokenLanguagesSearch200
+
+export type spokenLanguagesSearchResponse400 = SpokenLanguagesSearch400
+
+export type spokenLanguagesSearchResponse401 = SpokenLanguagesSearch401
+
+export type spokenLanguagesSearchResponse403 = SpokenLanguagesSearch403
 
 export type spokenLanguagesSearchResponseSuccess = spokenLanguagesSearchResponse200
-;
+export type spokenLanguagesSearchResponseError = (spokenLanguagesSearchResponse400 | spokenLanguagesSearchResponse401 | spokenLanguagesSearchResponse403) & {
+  headers: Headers;
+};
 
-export type spokenLanguagesSearchResponse = (spokenLanguagesSearchResponseSuccess)
+export type spokenLanguagesSearchResponse = (spokenLanguagesSearchResponseSuccess | spokenLanguagesSearchResponseError)
 
 export const getSpokenLanguagesSearchUrl = (params?: SpokenLanguagesSearchParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -247,7 +275,7 @@ export const getSpokenLanguagesSearchQueryKey = (params?: SpokenLanguagesSearchP
     }
 
 
-export const getSpokenLanguagesSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesSearch>>>, TError = unknown>(params?: SpokenLanguagesSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSpokenLanguagesSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesSearch>>>, TError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403>(params?: SpokenLanguagesSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -266,14 +294,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SpokenLanguagesSearchInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof spokenLanguagesSearch>>>
-export type SpokenLanguagesSearchInfiniteQueryError = unknown
+export type SpokenLanguagesSearchInfiniteQueryError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403
 
 
 /**
  * @summary Search spoken languages by name
  */
 
-export function createSpokenLanguagesSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesSearch>>>, TError = unknown>(
+export function createSpokenLanguagesSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesSearch>>>, TError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403>(
  params?: () =>  SpokenLanguagesSearchParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -288,7 +316,7 @@ export function createSpokenLanguagesSearchInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Search spoken languages by name
  */
-export const prefetchSpokenLanguagesSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = unknown>(
+export const prefetchSpokenLanguagesSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403>(
  queryClient: QueryClient, params?: SpokenLanguagesSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -304,7 +332,7 @@ export const prefetchSpokenLanguagesSearchInfiniteQuery = async <TData = Awaited
 
 
 
-export const getSpokenLanguagesSearchQueryOptions = <TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = unknown>(params?: SpokenLanguagesSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSpokenLanguagesSearchQueryOptions = <TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403>(params?: SpokenLanguagesSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -323,14 +351,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SpokenLanguagesSearchQueryResult = NonNullable<Awaited<ReturnType<typeof spokenLanguagesSearch>>>
-export type SpokenLanguagesSearchQueryError = unknown
+export type SpokenLanguagesSearchQueryError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403
 
 
 /**
  * @summary Search spoken languages by name
  */
 
-export function createSpokenLanguagesSearch<TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = unknown>(
+export function createSpokenLanguagesSearch<TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403>(
  params?: () =>  SpokenLanguagesSearchParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -345,7 +373,7 @@ export function createSpokenLanguagesSearch<TData = Awaited<ReturnType<typeof sp
 /**
  * @summary Search spoken languages by name
  */
-export const prefetchSpokenLanguagesSearchQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = unknown>(
+export const prefetchSpokenLanguagesSearchQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError = SpokenLanguagesSearch400 | SpokenLanguagesSearch401 | SpokenLanguagesSearch403>(
  queryClient: QueryClient, params?: SpokenLanguagesSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -365,12 +393,20 @@ export const prefetchSpokenLanguagesSearchQuery = async <TData = Awaited<ReturnT
  * Spoken language returned
  * @summary Get spoken language by code
  */
-export type spokenLanguagesGetByIdResponse200 = void
+export type spokenLanguagesGetByIdResponse200 = SpokenLanguagesGetById200
+
+export type spokenLanguagesGetByIdResponse400 = SpokenLanguagesGetById400
+
+export type spokenLanguagesGetByIdResponse401 = SpokenLanguagesGetById401
+
+export type spokenLanguagesGetByIdResponse403 = SpokenLanguagesGetById403
 
 export type spokenLanguagesGetByIdResponseSuccess = spokenLanguagesGetByIdResponse200
-;
+export type spokenLanguagesGetByIdResponseError = (spokenLanguagesGetByIdResponse400 | spokenLanguagesGetByIdResponse401 | spokenLanguagesGetByIdResponse403) & {
+  headers: Headers;
+};
 
-export type spokenLanguagesGetByIdResponse = (spokenLanguagesGetByIdResponseSuccess)
+export type spokenLanguagesGetByIdResponse = (spokenLanguagesGetByIdResponseSuccess | spokenLanguagesGetByIdResponseError)
 
 export const getSpokenLanguagesGetByIdUrl = (code: string,) => {
 
@@ -408,7 +444,7 @@ export const getSpokenLanguagesGetByIdQueryKey = (code: string,) => {
     }
 
 
-export const getSpokenLanguagesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesGetById>>>, TError = unknown>(code: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSpokenLanguagesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesGetById>>>, TError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403>(code: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -427,14 +463,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SpokenLanguagesGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof spokenLanguagesGetById>>>
-export type SpokenLanguagesGetByIdInfiniteQueryError = unknown
+export type SpokenLanguagesGetByIdInfiniteQueryError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403
 
 
 /**
  * @summary Get spoken language by code
  */
 
-export function createSpokenLanguagesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesGetById>>>, TError = unknown>(
+export function createSpokenLanguagesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spokenLanguagesGetById>>>, TError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403>(
  code: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -449,7 +485,7 @@ export function createSpokenLanguagesGetByIdInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Get spoken language by code
  */
-export const prefetchSpokenLanguagesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = unknown>(
+export const prefetchSpokenLanguagesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403>(
  queryClient: QueryClient, code: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -465,7 +501,7 @@ export const prefetchSpokenLanguagesGetByIdInfiniteQuery = async <TData = Awaite
 
 
 
-export const getSpokenLanguagesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = unknown>(code: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSpokenLanguagesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403>(code: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -484,14 +520,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SpokenLanguagesGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof spokenLanguagesGetById>>>
-export type SpokenLanguagesGetByIdQueryError = unknown
+export type SpokenLanguagesGetByIdQueryError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403
 
 
 /**
  * @summary Get spoken language by code
  */
 
-export function createSpokenLanguagesGetById<TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = unknown>(
+export function createSpokenLanguagesGetById<TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403>(
  code: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -506,7 +542,7 @@ export function createSpokenLanguagesGetById<TData = Awaited<ReturnType<typeof s
 /**
  * @summary Get spoken language by code
  */
-export const prefetchSpokenLanguagesGetByIdQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = unknown>(
+export const prefetchSpokenLanguagesGetByIdQuery = async <TData = Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError = SpokenLanguagesGetById400 | SpokenLanguagesGetById401 | SpokenLanguagesGetById403>(
  queryClient: QueryClient, code: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof spokenLanguagesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

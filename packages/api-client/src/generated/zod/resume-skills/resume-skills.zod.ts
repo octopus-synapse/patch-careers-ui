@@ -18,6 +18,32 @@ export const ResumeSkillsSkillsPostBody = zod.object({
   "level": zod.number().optional()
 })
 
+export const ResumeSkillsSkillsPostResponse = zod.object({
+  "skill": zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "level": zod.number().optional(),
+  "order": zod.number()
+})
+})
+
+/**
+ * Skills returned
+ * @summary List skills for a resume
+ */
+export const ResumeSkillsSkillsGetResponse = zod.object({
+  "skills": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "level": zod.number().optional(),
+  "order": zod.number()
+}))
+})
+
 /**
  * Skill updated
  * @summary Update a resume skill
@@ -26,5 +52,26 @@ export const ResumeSkillsSkillsPatchBody = zod.object({
   "name": zod.string().optional(),
   "category": zod.string().optional(),
   "level": zod.number().optional()
+})
+
+export const ResumeSkillsSkillsPatchResponse = zod.object({
+  "skill": zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "level": zod.number().optional(),
+  "order": zod.number()
+})
+})
+
+/**
+ * Skill deleted
+ * @summary Delete a resume skill
+ */
+export const ResumeSkillsSkillsDeleteResponse = zod.object({
+  "result": zod.object({
+  "deleted": zod.boolean()
+})
 })
 

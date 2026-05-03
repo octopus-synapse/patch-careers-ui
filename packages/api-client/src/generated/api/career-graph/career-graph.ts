@@ -17,6 +17,8 @@ import type {
 
 import type {
   CareerGraphView200,
+  CareerGraphView400,
+  CareerGraphView401,
   CareerGraphViewBody
 } from '../../models';
 
@@ -33,10 +35,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export type careerGraphViewResponse200 = CareerGraphView200
 
-export type careerGraphViewResponseSuccess = careerGraphViewResponse200
-;
+export type careerGraphViewResponse400 = CareerGraphView400
 
-export type careerGraphViewResponse = (careerGraphViewResponseSuccess)
+export type careerGraphViewResponse401 = CareerGraphView401
+
+export type careerGraphViewResponseSuccess = careerGraphViewResponse200
+export type careerGraphViewResponseError = (careerGraphViewResponse400 | careerGraphViewResponse401) & {
+  headers: Headers;
+};
+
+export type careerGraphViewResponse = (careerGraphViewResponseSuccess | careerGraphViewResponseError)
 
 export const getCareerGraphViewUrl = () => {
 
@@ -61,7 +69,7 @@ export const careerGraphView = async (careerGraphViewBody: CareerGraphViewBody, 
 
 
 
-export const getCareerGraphViewMutationOptions = <TError = unknown,
+export const getCareerGraphViewMutationOptions = <TError = CareerGraphView400 | CareerGraphView401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof careerGraphView>>, TError,{data: CareerGraphViewBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof careerGraphView>>, TError,{data: CareerGraphViewBody}, TContext> => {
 
@@ -90,12 +98,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CareerGraphViewMutationResult = NonNullable<Awaited<ReturnType<typeof careerGraphView>>>
     export type CareerGraphViewMutationBody = CareerGraphViewBody
-    export type CareerGraphViewMutationError = unknown
+    export type CareerGraphViewMutationError = CareerGraphView400 | CareerGraphView401
 
     /**
  * @summary Aggregate opt-in peers who share ≥60% of the requested stack into experienceYears buckets; returns current bucket + 3/5/10y projections.
  */
-export const createCareerGraphView = <TError = unknown,
+export const createCareerGraphView = <TError = CareerGraphView400 | CareerGraphView401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof careerGraphView>>, TError,{data: CareerGraphViewBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof careerGraphView>>,

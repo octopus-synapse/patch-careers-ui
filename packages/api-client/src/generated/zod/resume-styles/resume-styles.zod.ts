@@ -10,9 +10,66 @@ import * as zod from 'zod';
 
 /**
  * ResumeStyle catalog + apply
+ * @summary List published resume styles
+ */
+export const resumeStylesListResponseItemsItemStyleScoreMin = 0;
+export const resumeStylesListResponseItemsItemStyleScoreMax = 100;
+
+
+
+export const ResumeStylesListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "styleScore": zod.number().min(resumeStylesListResponseItemsItemStyleScoreMin).max(resumeStylesListResponseItemsItemStyleScoreMax),
+  "layoutKind": zod.enum(['SINGLE_COLUMN', 'DOUBLE_COLUMN']),
+  "typstTemplate": zod.string(),
+  "isSystem": zod.boolean(),
+  "thumbnailUrl": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "limit": zod.number()
+})
+
+/**
+ * ResumeStyle catalog + apply
+ * @summary Get one ResumeStyle by id
+ */
+export const resumeStylesGetByIdResponseStyleScoreMin = 0;
+export const resumeStylesGetByIdResponseStyleScoreMax = 100;
+
+
+
+export const ResumeStylesGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "styleScore": zod.number().min(resumeStylesGetByIdResponseStyleScoreMin).max(resumeStylesGetByIdResponseStyleScoreMax),
+  "layoutKind": zod.enum(['SINGLE_COLUMN', 'DOUBLE_COLUMN']),
+  "typstTemplate": zod.string(),
+  "isSystem": zod.boolean(),
+  "thumbnailUrl": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "version": zod.number(),
+  "styleConfig": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "sectionStyles": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "atsSafetyBreakdown": zod.record(zod.string(), zod.number()),
+  "previewImages": zod.array(zod.string()),
+  "authorId": zod.string()
+})
+
+/**
+ * ResumeStyle catalog + apply
  * @summary Apply a ResumeStyle to a resume
  */
 export const ResumeStylesStyleBody = zod.object({
   "styleId": zod.string()
 })
+
+export const ResumeStylesStyleResponse = zod.unknown().nullable()
 

@@ -26,6 +26,20 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminAccessModifiersUsersAccessModifiersDelete400,
+  AdminAccessModifiersUsersAccessModifiersDelete401,
+  AdminAccessModifiersUsersAccessModifiersDelete403,
+  AdminAccessModifiersUsersAccessModifiersDelete404,
+  AdminAccessModifiersUsersAccessModifiersGet200,
+  AdminAccessModifiersUsersAccessModifiersGet400,
+  AdminAccessModifiersUsersAccessModifiersGet401,
+  AdminAccessModifiersUsersAccessModifiersGet403,
+  AdminAccessModifiersUsersAccessModifiersGet404,
+  AdminAccessModifiersUsersAccessModifiersPost200,
+  AdminAccessModifiersUsersAccessModifiersPost400,
+  AdminAccessModifiersUsersAccessModifiersPost401,
+  AdminAccessModifiersUsersAccessModifiersPost403,
+  AdminAccessModifiersUsersAccessModifiersPost404,
   AdminAccessModifiersUsersAccessModifiersPostBody
 } from '../../models';
 
@@ -40,12 +54,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Authorization Admin API
  * @summary Apply an access modifier (suspension or grant) to a user
  */
-export type adminAccessModifiersUsersAccessModifiersPostResponse200 = void
+export type adminAccessModifiersUsersAccessModifiersPostResponse200 = AdminAccessModifiersUsersAccessModifiersPost200
+
+export type adminAccessModifiersUsersAccessModifiersPostResponse400 = AdminAccessModifiersUsersAccessModifiersPost400
+
+export type adminAccessModifiersUsersAccessModifiersPostResponse401 = AdminAccessModifiersUsersAccessModifiersPost401
+
+export type adminAccessModifiersUsersAccessModifiersPostResponse403 = AdminAccessModifiersUsersAccessModifiersPost403
+
+export type adminAccessModifiersUsersAccessModifiersPostResponse404 = AdminAccessModifiersUsersAccessModifiersPost404
 
 export type adminAccessModifiersUsersAccessModifiersPostResponseSuccess = adminAccessModifiersUsersAccessModifiersPostResponse200
-;
+export type adminAccessModifiersUsersAccessModifiersPostResponseError = (adminAccessModifiersUsersAccessModifiersPostResponse400 | adminAccessModifiersUsersAccessModifiersPostResponse401 | adminAccessModifiersUsersAccessModifiersPostResponse403 | adminAccessModifiersUsersAccessModifiersPostResponse404) & {
+  headers: Headers;
+};
 
-export type adminAccessModifiersUsersAccessModifiersPostResponse = (adminAccessModifiersUsersAccessModifiersPostResponseSuccess)
+export type adminAccessModifiersUsersAccessModifiersPostResponse = (adminAccessModifiersUsersAccessModifiersPostResponseSuccess | adminAccessModifiersUsersAccessModifiersPostResponseError)
 
 export const getAdminAccessModifiersUsersAccessModifiersPostUrl = (userId: string,) => {
 
@@ -71,7 +95,7 @@ export const adminAccessModifiersUsersAccessModifiersPost = async (userId: strin
 
 
 
-export const getAdminAccessModifiersUsersAccessModifiersPostMutationOptions = <TError = unknown,
+export const getAdminAccessModifiersUsersAccessModifiersPostMutationOptions = <TError = AdminAccessModifiersUsersAccessModifiersPost400 | AdminAccessModifiersUsersAccessModifiersPost401 | AdminAccessModifiersUsersAccessModifiersPost403 | AdminAccessModifiersUsersAccessModifiersPost404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersPost>>, TError,{userId: string;data: AdminAccessModifiersUsersAccessModifiersPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersPost>>, TError,{userId: string;data: AdminAccessModifiersUsersAccessModifiersPostBody}, TContext> => {
 
@@ -100,12 +124,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminAccessModifiersUsersAccessModifiersPostMutationResult = NonNullable<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersPost>>>
     export type AdminAccessModifiersUsersAccessModifiersPostMutationBody = AdminAccessModifiersUsersAccessModifiersPostBody
-    export type AdminAccessModifiersUsersAccessModifiersPostMutationError = unknown
+    export type AdminAccessModifiersUsersAccessModifiersPostMutationError = AdminAccessModifiersUsersAccessModifiersPost400 | AdminAccessModifiersUsersAccessModifiersPost401 | AdminAccessModifiersUsersAccessModifiersPost403 | AdminAccessModifiersUsersAccessModifiersPost404
 
     /**
  * @summary Apply an access modifier (suspension or grant) to a user
  */
-export const createAdminAccessModifiersUsersAccessModifiersPost = <TError = unknown,
+export const createAdminAccessModifiersUsersAccessModifiersPost = <TError = AdminAccessModifiersUsersAccessModifiersPost400 | AdminAccessModifiersUsersAccessModifiersPost401 | AdminAccessModifiersUsersAccessModifiersPost403 | AdminAccessModifiersUsersAccessModifiersPost404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersPost>>, TError,{userId: string;data: AdminAccessModifiersUsersAccessModifiersPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersPost>>,
@@ -119,12 +143,22 @@ export const createAdminAccessModifiersUsersAccessModifiersPost = <TError = unkn
  * Authorization Admin API
  * @summary List currently active access modifiers for a user
  */
-export type adminAccessModifiersUsersAccessModifiersGetResponse200 = void
+export type adminAccessModifiersUsersAccessModifiersGetResponse200 = AdminAccessModifiersUsersAccessModifiersGet200
+
+export type adminAccessModifiersUsersAccessModifiersGetResponse400 = AdminAccessModifiersUsersAccessModifiersGet400
+
+export type adminAccessModifiersUsersAccessModifiersGetResponse401 = AdminAccessModifiersUsersAccessModifiersGet401
+
+export type adminAccessModifiersUsersAccessModifiersGetResponse403 = AdminAccessModifiersUsersAccessModifiersGet403
+
+export type adminAccessModifiersUsersAccessModifiersGetResponse404 = AdminAccessModifiersUsersAccessModifiersGet404
 
 export type adminAccessModifiersUsersAccessModifiersGetResponseSuccess = adminAccessModifiersUsersAccessModifiersGetResponse200
-;
+export type adminAccessModifiersUsersAccessModifiersGetResponseError = (adminAccessModifiersUsersAccessModifiersGetResponse400 | adminAccessModifiersUsersAccessModifiersGetResponse401 | adminAccessModifiersUsersAccessModifiersGetResponse403 | adminAccessModifiersUsersAccessModifiersGetResponse404) & {
+  headers: Headers;
+};
 
-export type adminAccessModifiersUsersAccessModifiersGetResponse = (adminAccessModifiersUsersAccessModifiersGetResponseSuccess)
+export type adminAccessModifiersUsersAccessModifiersGetResponse = (adminAccessModifiersUsersAccessModifiersGetResponseSuccess | adminAccessModifiersUsersAccessModifiersGetResponseError)
 
 export const getAdminAccessModifiersUsersAccessModifiersGetUrl = (userId: string,) => {
 
@@ -162,7 +196,7 @@ export const getAdminAccessModifiersUsersAccessModifiersGetQueryKey = (userId: s
     }
 
 
-export const getAdminAccessModifiersUsersAccessModifiersGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminAccessModifiersUsersAccessModifiersGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>>, TError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404>(userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -181,14 +215,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminAccessModifiersUsersAccessModifiersGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>>
-export type AdminAccessModifiersUsersAccessModifiersGetInfiniteQueryError = unknown
+export type AdminAccessModifiersUsersAccessModifiersGetInfiniteQueryError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404
 
 
 /**
  * @summary List currently active access modifiers for a user
  */
 
-export function createAdminAccessModifiersUsersAccessModifiersGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>>, TError = unknown>(
+export function createAdminAccessModifiersUsersAccessModifiersGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>>, TError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -203,7 +237,7 @@ export function createAdminAccessModifiersUsersAccessModifiersGetInfinite<TData 
 /**
  * @summary List currently active access modifiers for a user
  */
-export const prefetchAdminAccessModifiersUsersAccessModifiersGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = unknown>(
+export const prefetchAdminAccessModifiersUsersAccessModifiersGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -219,7 +253,7 @@ export const prefetchAdminAccessModifiersUsersAccessModifiersGetInfiniteQuery = 
 
 
 
-export const getAdminAccessModifiersUsersAccessModifiersGetQueryOptions = <TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = unknown>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminAccessModifiersUsersAccessModifiersGetQueryOptions = <TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404>(userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -238,14 +272,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminAccessModifiersUsersAccessModifiersGetQueryResult = NonNullable<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>>
-export type AdminAccessModifiersUsersAccessModifiersGetQueryError = unknown
+export type AdminAccessModifiersUsersAccessModifiersGetQueryError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404
 
 
 /**
  * @summary List currently active access modifiers for a user
  */
 
-export function createAdminAccessModifiersUsersAccessModifiersGet<TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = unknown>(
+export function createAdminAccessModifiersUsersAccessModifiersGet<TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404>(
  userId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -260,7 +294,7 @@ export function createAdminAccessModifiersUsersAccessModifiersGet<TData = Awaite
 /**
  * @summary List currently active access modifiers for a user
  */
-export const prefetchAdminAccessModifiersUsersAccessModifiersGetQuery = async <TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = unknown>(
+export const prefetchAdminAccessModifiersUsersAccessModifiersGetQuery = async <TData = Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError = AdminAccessModifiersUsersAccessModifiersGet400 | AdminAccessModifiersUsersAccessModifiersGet401 | AdminAccessModifiersUsersAccessModifiersGet403 | AdminAccessModifiersUsersAccessModifiersGet404>(
  queryClient: QueryClient, userId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -282,10 +316,20 @@ export const prefetchAdminAccessModifiersUsersAccessModifiersGetQuery = async <T
  */
 export type adminAccessModifiersUsersAccessModifiersDeleteResponse200 = void
 
-export type adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess = adminAccessModifiersUsersAccessModifiersDeleteResponse200
-;
+export type adminAccessModifiersUsersAccessModifiersDeleteResponse400 = AdminAccessModifiersUsersAccessModifiersDelete400
 
-export type adminAccessModifiersUsersAccessModifiersDeleteResponse = (adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess)
+export type adminAccessModifiersUsersAccessModifiersDeleteResponse401 = AdminAccessModifiersUsersAccessModifiersDelete401
+
+export type adminAccessModifiersUsersAccessModifiersDeleteResponse403 = AdminAccessModifiersUsersAccessModifiersDelete403
+
+export type adminAccessModifiersUsersAccessModifiersDeleteResponse404 = AdminAccessModifiersUsersAccessModifiersDelete404
+
+export type adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess = adminAccessModifiersUsersAccessModifiersDeleteResponse200
+export type adminAccessModifiersUsersAccessModifiersDeleteResponseError = (adminAccessModifiersUsersAccessModifiersDeleteResponse400 | adminAccessModifiersUsersAccessModifiersDeleteResponse401 | adminAccessModifiersUsersAccessModifiersDeleteResponse403 | adminAccessModifiersUsersAccessModifiersDeleteResponse404) & {
+  headers: Headers;
+};
+
+export type adminAccessModifiersUsersAccessModifiersDeleteResponse = (adminAccessModifiersUsersAccessModifiersDeleteResponseSuccess | adminAccessModifiersUsersAccessModifiersDeleteResponseError)
 
 export const getAdminAccessModifiersUsersAccessModifiersDeleteUrl = (userId: string,
     modifierId: string,) => {
@@ -311,7 +355,7 @@ export const adminAccessModifiersUsersAccessModifiersDelete = async (userId: str
 
 
 
-export const getAdminAccessModifiersUsersAccessModifiersDeleteMutationOptions = <TError = unknown,
+export const getAdminAccessModifiersUsersAccessModifiersDeleteMutationOptions = <TError = AdminAccessModifiersUsersAccessModifiersDelete400 | AdminAccessModifiersUsersAccessModifiersDelete401 | AdminAccessModifiersUsersAccessModifiersDelete403 | AdminAccessModifiersUsersAccessModifiersDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersDelete>>, TError,{userId: string;modifierId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersDelete>>, TError,{userId: string;modifierId: string}, TContext> => {
 
@@ -340,12 +384,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminAccessModifiersUsersAccessModifiersDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersDelete>>>
 
-    export type AdminAccessModifiersUsersAccessModifiersDeleteMutationError = unknown
+    export type AdminAccessModifiersUsersAccessModifiersDeleteMutationError = AdminAccessModifiersUsersAccessModifiersDelete400 | AdminAccessModifiersUsersAccessModifiersDelete401 | AdminAccessModifiersUsersAccessModifiersDelete403 | AdminAccessModifiersUsersAccessModifiersDelete404
 
     /**
  * @summary Revoke an active access modifier
  */
-export const createAdminAccessModifiersUsersAccessModifiersDelete = <TError = unknown,
+export const createAdminAccessModifiersUsersAccessModifiersDelete = <TError = AdminAccessModifiersUsersAccessModifiersDelete400 | AdminAccessModifiersUsersAccessModifiersDelete401 | AdminAccessModifiersUsersAccessModifiersDelete403 | AdminAccessModifiersUsersAccessModifiersDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersDelete>>, TError,{userId: string;modifierId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminAccessModifiersUsersAccessModifiersDelete>>,

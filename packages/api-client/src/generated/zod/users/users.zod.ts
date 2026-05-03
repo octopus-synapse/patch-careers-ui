@@ -10,10 +10,92 @@ import * as zod from 'zod';
 
 /**
  * Per-user UI state
+ * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
+ */
+export const UsersMeUiStateGetResponse = zod.object({
+  "state": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.unknown().nullable()),zod.object({
+
+}).passthrough(),zod.unknown().nullable()]))
+})
+
+/**
+ * Per-user UI state
  * @summary Upsert a single UI-state key/value (idempotent).
  */
 export const UsersMeUiStatePatchBody = zod.object({
   "value": zod.unknown().nullish()
+})
+
+export const UsersMeUiStatePatchResponse = zod.object({
+  "key": zod.string(),
+  "value": zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.unknown().nullable()),zod.object({
+
+}).passthrough(),zod.unknown().nullable()])
+})
+
+/**
+ * Per-user UI state
+ * @summary Remove a UI-state key.
+ */
+export const UsersMeUiStateDeleteResponse = zod.object({
+  "deleted": zod.literal(true)
+})
+
+/**
+ * Users API
+ * @summary Get a user's public profile by username
+ */
+export const UsersProfilesResponse = zod.object({
+  "user": zod.object({
+  "id": zod.string(),
+  "username": zod.string(),
+  "name": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "linkedin": zod.string().nullable(),
+  "github": zod.string().nullable()
+}),
+  "resume": zod.object({
+  "id": zod.string(),
+  "title": zod.string().nullable(),
+  "language": zod.string(),
+  "isPublic": zod.boolean(),
+  "slug": zod.string().nullable(),
+  "fullName": zod.string().nullable(),
+  "jobTitle": zod.string().nullable(),
+  "phone": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "linkedin": zod.string().nullable(),
+  "github": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "summary": zod.string().nullable(),
+  "accentColor": zod.string().nullable(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+}).nullable()
+})
+
+/**
+ * Users API
+ * @summary Get current user profile
+ */
+export const UsersProfileGetResponse = zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "username": zod.string().nullish(),
+  "name": zod.string().nullish(),
+  "photoURL": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "linkedin": zod.string().nullish(),
+  "github": zod.string().nullish(),
+  "twitter": zod.string().nullish(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
 })
 
 /**
@@ -71,6 +153,64 @@ export const UsersProfilePatchBody = zod.object({
   "image": zod.string().url().optional()
 })
 
+export const UsersProfilePatchResponse = zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "username": zod.string().nullish(),
+  "name": zod.string().nullish(),
+  "photoURL": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "linkedin": zod.string().nullish(),
+  "github": zod.string().nullish(),
+  "twitter": zod.string().nullish(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "profile": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "username": zod.string().nullish(),
+  "name": zod.string().nullish(),
+  "photoURL": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "linkedin": zod.string().nullish(),
+  "github": zod.string().nullish(),
+  "twitter": zod.string().nullish(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+})
+
+/**
+ * Users API
+ * @summary List users with a public username (paginated)
+ */
+export const usersPublicResponseTotalMin = 0;
+
+
+
+export const usersPublicResponseTotalPagesMin = 0;
+
+
+
+export const UsersPublicResponse = zod.object({
+  "items": zod.array(zod.object({
+  "username": zod.string(),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number().min(usersPublicResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(usersPublicResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
 /**
  * Users API
  * @summary Update username (once every 30 days)
@@ -84,6 +224,33 @@ export const usersUsernameBodyUsernameRegExp = new RegExp('^[a-z0-9_]+$');
 
 export const UsersUsernameBody = zod.object({
   "username": zod.string().min(usersUsernameBodyUsernameMin).max(usersUsernameBodyUsernameMax).regex(usersUsernameBodyUsernameRegExp)
+})
+
+export const UsersUsernameResponse = zod.object({
+  "username": zod.string(),
+  "message": zod.string()
+})
+
+/**
+ * Users API
+ * @summary Check if a username is available
+ */
+export const UsersUsernameCheckResponse = zod.object({
+  "username": zod.string(),
+  "available": zod.boolean(),
+  "reason": zod.enum(['taken', 'reserved', 'invalid_format']).optional()
+})
+
+/**
+ * Users API
+ * @summary Get user preferences (basic)
+ */
+export const UsersPreferencesGetResponse = zod.object({
+  "preferences": zod.object({
+  "theme": zod.string().optional(),
+  "language": zod.string().optional(),
+  "emailNotifications": zod.boolean().optional()
+})
 })
 
 /**
@@ -101,6 +268,57 @@ export const UsersPreferencesPatchBody = zod.object({
   "bannerColor": zod.string().optional(),
   "name": zod.string().max(usersPreferencesPatchBodyNameMax).optional(),
   "photoURL": zod.string().url().max(usersPreferencesPatchBodyPhotoURLMax).optional()
+})
+
+export const UsersPreferencesPatchResponse = zod.object({
+  "message": zod.string()
+})
+
+/**
+ * Users API
+ * @summary Get all user preferences
+ */
+export const usersPreferencesFullGetResponsePreferencesApplyCriteriaMinFitMin = 0;
+export const usersPreferencesFullGetResponsePreferencesApplyCriteriaMinFitMax = 100;
+
+
+
+export const UsersPreferencesFullGetResponse = zod.object({
+  "preferences": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "theme": zod.string(),
+  "palette": zod.string(),
+  "bannerColor": zod.string().nullable(),
+  "language": zod.string(),
+  "dateFormat": zod.string(),
+  "timezone": zod.string(),
+  "emailNotifications": zod.boolean(),
+  "resumeExpiryAlerts": zod.boolean(),
+  "weeklyDigest": zod.boolean(),
+  "marketingEmails": zod.boolean(),
+  "emailMilestones": zod.boolean(),
+  "emailShareExpiring": zod.boolean(),
+  "digestFrequency": zod.string(),
+  "profileVisibility": zod.string(),
+  "showEmail": zod.boolean(),
+  "showPhone": zod.boolean(),
+  "allowSearchEngineIndex": zod.boolean(),
+  "defaultExportFormat": zod.string(),
+  "includePhotoInExport": zod.boolean(),
+  "applyMode": zod.enum(['ONE_CLICK', 'WEEKLY_CURATED', 'AUTO_APPLY']),
+  "applyCriteria": zod.object({
+  "minFit": zod.number().min(usersPreferencesFullGetResponsePreferencesApplyCriteriaMinFitMin).max(usersPreferencesFullGetResponsePreferencesApplyCriteriaMinFitMax).nullable(),
+  "stacks": zod.array(zod.string()),
+  "seniorities": zod.array(zod.string()),
+  "remotePolicies": zod.array(zod.enum(['REMOTE', 'HYBRID', 'ONSITE'])),
+  "paymentCurrencies": zod.array(zod.enum(['BRL', 'USD', 'EUR', 'GBP'])),
+  "minSalaryUsd": zod.number().nullable(),
+  "defaultCover": zod.string().nullable()
+}).nullable(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
 })
 
 /**
@@ -166,6 +384,85 @@ export const UsersPreferencesFullPatchBody = zod.object({
 }).optional()
 })
 
+export const usersPreferencesFullPatchResponsePreferencesApplyCriteriaMinFitMin = 0;
+export const usersPreferencesFullPatchResponsePreferencesApplyCriteriaMinFitMax = 100;
+
+
+
+export const UsersPreferencesFullPatchResponse = zod.object({
+  "preferences": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "theme": zod.string(),
+  "palette": zod.string(),
+  "bannerColor": zod.string().nullable(),
+  "language": zod.string(),
+  "dateFormat": zod.string(),
+  "timezone": zod.string(),
+  "emailNotifications": zod.boolean(),
+  "resumeExpiryAlerts": zod.boolean(),
+  "weeklyDigest": zod.boolean(),
+  "marketingEmails": zod.boolean(),
+  "emailMilestones": zod.boolean(),
+  "emailShareExpiring": zod.boolean(),
+  "digestFrequency": zod.string(),
+  "profileVisibility": zod.string(),
+  "showEmail": zod.boolean(),
+  "showPhone": zod.boolean(),
+  "allowSearchEngineIndex": zod.boolean(),
+  "defaultExportFormat": zod.string(),
+  "includePhotoInExport": zod.boolean(),
+  "applyMode": zod.enum(['ONE_CLICK', 'WEEKLY_CURATED', 'AUTO_APPLY']),
+  "applyCriteria": zod.object({
+  "minFit": zod.number().min(usersPreferencesFullPatchResponsePreferencesApplyCriteriaMinFitMin).max(usersPreferencesFullPatchResponsePreferencesApplyCriteriaMinFitMax).nullable(),
+  "stacks": zod.array(zod.string()),
+  "seniorities": zod.array(zod.string()),
+  "remotePolicies": zod.array(zod.enum(['REMOTE', 'HYBRID', 'ONSITE'])),
+  "paymentCurrencies": zod.array(zod.enum(['BRL', 'USD', 'EUR', 'GBP'])),
+  "minSalaryUsd": zod.number().nullable(),
+  "defaultCover": zod.string().nullable()
+}).nullable(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+})
+
+/**
+ * User permissions
+ * @summary List permission keys granted to the current user (for UI gating)
+ */
+export const UsersMePermissionsResponse = zod.object({
+  "permissions": zod.array(zod.string())
+})
+
+/**
+ * Users API
+ * @summary List all users with pagination
+ */
+export const UsersManageGetResponse = zod.object({
+  "users": zod.array(zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "image": zod.string().nullable(),
+  "emailVerified": zod.string().datetime({"offset":true}).nullable(),
+  "resumeCount": zod.number(),
+  "role": zod.enum(['USER', 'ADMIN']),
+  "isActive": zod.boolean(),
+  "lastLoginAt": zod.string().datetime({"offset":true}).nullable()
+})),
+  "pagination": zod.object({
+  "page": zod.number(),
+  "limit": zod.number(),
+  "total": zod.number(),
+  "totalPages": zod.number()
+})
+})
+
 /**
  * Users API
  * @summary Create a new user
@@ -181,6 +478,52 @@ export const UsersManagePostBody = zod.object({
   "role": zod.enum(['USER', 'ADMIN']).default(usersManagePostBodyRoleDefault)
 })
 
+export const UsersManagePostResponse = zod.object({
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true})
+}),
+  "message": zod.string()
+})
+
+/**
+ * Users API
+ * @summary Get user details by ID
+ */
+export const UsersManageGet2Response = zod.object({
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "image": zod.string().nullable(),
+  "emailVerified": zod.string().datetime({"offset":true}).nullable(),
+  "isActive": zod.boolean(),
+  "lastLoginAt": zod.string().datetime({"offset":true}).nullable(),
+  "roles": zod.array(zod.string()),
+  "resumes": zod.array(zod.object({
+  "id": zod.string(),
+  "title": zod.string().nullable(),
+  "isPublic": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "preferences": zod.object({
+
+}).passthrough().nullable(),
+  "counts": zod.object({
+  "accounts": zod.number(),
+  "sessions": zod.number(),
+  "resumes": zod.number()
+})
+})
+})
+
 /**
  * Users API
  * @summary Update user information
@@ -191,6 +534,26 @@ export const UsersManagePatchBody = zod.object({
   "role": zod.enum(['USER', 'ADMIN']).optional(),
   "isActive": zod.boolean().optional(),
   "isEmailVerified": zod.boolean().optional()
+})
+
+export const UsersManagePatchResponse = zod.object({
+  "user": zod.object({
+  "id": zod.string(),
+  "email": zod.string().nullable(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "hasCompletedOnboarding": zod.boolean(),
+  "updatedAt": zod.string().datetime({"offset":true})
+}),
+  "message": zod.string()
+})
+
+/**
+ * GDPR-compliant deletion that removes all user data.
+ * @summary Delete a user
+ */
+export const UsersManageDeleteResponse = zod.object({
+  "message": zod.string()
 })
 
 /**
@@ -205,11 +568,19 @@ export const UsersManageResetPasswordBody = zod.object({
   "newPassword": zod.string().min(usersManageResetPasswordBodyNewPasswordMin)
 })
 
+export const UsersManageResetPasswordResponse = zod.object({
+  "message": zod.string()
+})
+
 /**
  * Users API
  * @summary Assign roles to a user
  */
 export const UsersManageRolesBody = zod.object({
   "roles": zod.array(zod.string())
+})
+
+export const UsersManageRolesResponse = zod.object({
+  "message": zod.string()
 })
 

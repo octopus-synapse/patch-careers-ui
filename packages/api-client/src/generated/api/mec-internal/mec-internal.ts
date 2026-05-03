@@ -26,7 +26,13 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  MecInternalSyncHistoryParams
+  MecInternalSync200,
+  MecInternalSync400,
+  MecInternalSyncHistory200,
+  MecInternalSyncHistory400,
+  MecInternalSyncHistoryParams,
+  MecInternalSyncStatus200,
+  MecInternalSyncStatus400
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +46,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Mec Internal API
  * @summary Trigger MEC data synchronization
  */
-export type mecInternalSyncResponse200 = void
+export type mecInternalSyncResponse200 = MecInternalSync200
+
+export type mecInternalSyncResponse400 = MecInternalSync400
 
 export type mecInternalSyncResponseSuccess = mecInternalSyncResponse200
-;
+export type mecInternalSyncResponseError = (mecInternalSyncResponse400) & {
+  headers: Headers;
+};
 
-export type mecInternalSyncResponse = (mecInternalSyncResponseSuccess)
+export type mecInternalSyncResponse = (mecInternalSyncResponseSuccess | mecInternalSyncResponseError)
 
 export const getMecInternalSyncUrl = () => {
 
@@ -69,7 +79,7 @@ export const mecInternalSync = async ( options?: RequestInit): Promise<mecIntern
 
 
 
-export const getMecInternalSyncMutationOptions = <TError = unknown,
+export const getMecInternalSyncMutationOptions = <TError = MecInternalSync400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof mecInternalSync>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof mecInternalSync>>, TError,void, TContext> => {
 
@@ -98,12 +108,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type MecInternalSyncMutationResult = NonNullable<Awaited<ReturnType<typeof mecInternalSync>>>
 
-    export type MecInternalSyncMutationError = unknown
+    export type MecInternalSyncMutationError = MecInternalSync400
 
     /**
  * @summary Trigger MEC data synchronization
  */
-export const createMecInternalSync = <TError = unknown,
+export const createMecInternalSync = <TError = MecInternalSync400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof mecInternalSync>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof mecInternalSync>>,
@@ -117,12 +127,16 @@ export const createMecInternalSync = <TError = unknown,
  * Mec Internal API
  * @summary Get sync status
  */
-export type mecInternalSyncStatusResponse200 = void
+export type mecInternalSyncStatusResponse200 = MecInternalSyncStatus200
+
+export type mecInternalSyncStatusResponse400 = MecInternalSyncStatus400
 
 export type mecInternalSyncStatusResponseSuccess = mecInternalSyncStatusResponse200
-;
+export type mecInternalSyncStatusResponseError = (mecInternalSyncStatusResponse400) & {
+  headers: Headers;
+};
 
-export type mecInternalSyncStatusResponse = (mecInternalSyncStatusResponseSuccess)
+export type mecInternalSyncStatusResponse = (mecInternalSyncStatusResponseSuccess | mecInternalSyncStatusResponseError)
 
 export const getMecInternalSyncStatusUrl = () => {
 
@@ -160,7 +174,7 @@ export const getMecInternalSyncStatusQueryKey = () => {
     }
 
 
-export const getMecInternalSyncStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncStatus>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInternalSyncStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncStatus>>>, TError = MecInternalSyncStatus400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -179,14 +193,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInternalSyncStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecInternalSyncStatus>>>
-export type MecInternalSyncStatusInfiniteQueryError = unknown
+export type MecInternalSyncStatusInfiniteQueryError = MecInternalSyncStatus400
 
 
 /**
  * @summary Get sync status
  */
 
-export function createMecInternalSyncStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncStatus>>>, TError = unknown>(
+export function createMecInternalSyncStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncStatus>>>, TError = MecInternalSyncStatus400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -201,7 +215,7 @@ export function createMecInternalSyncStatusInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Get sync status
  */
-export const prefetchMecInternalSyncStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = unknown>(
+export const prefetchMecInternalSyncStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = MecInternalSyncStatus400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -217,7 +231,7 @@ export const prefetchMecInternalSyncStatusInfiniteQuery = async <TData = Awaited
 
 
 
-export const getMecInternalSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInternalSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = MecInternalSyncStatus400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -236,14 +250,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInternalSyncStatusQueryResult = NonNullable<Awaited<ReturnType<typeof mecInternalSyncStatus>>>
-export type MecInternalSyncStatusQueryError = unknown
+export type MecInternalSyncStatusQueryError = MecInternalSyncStatus400
 
 
 /**
  * @summary Get sync status
  */
 
-export function createMecInternalSyncStatus<TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = unknown>(
+export function createMecInternalSyncStatus<TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = MecInternalSyncStatus400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -258,7 +272,7 @@ export function createMecInternalSyncStatus<TData = Awaited<ReturnType<typeof me
 /**
  * @summary Get sync status
  */
-export const prefetchMecInternalSyncStatusQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = unknown>(
+export const prefetchMecInternalSyncStatusQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError = MecInternalSyncStatus400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -278,12 +292,16 @@ export const prefetchMecInternalSyncStatusQuery = async <TData = Awaited<ReturnT
  * Mec Internal API
  * @summary Get sync history
  */
-export type mecInternalSyncHistoryResponse200 = void
+export type mecInternalSyncHistoryResponse200 = MecInternalSyncHistory200
+
+export type mecInternalSyncHistoryResponse400 = MecInternalSyncHistory400
 
 export type mecInternalSyncHistoryResponseSuccess = mecInternalSyncHistoryResponse200
-;
+export type mecInternalSyncHistoryResponseError = (mecInternalSyncHistoryResponse400) & {
+  headers: Headers;
+};
 
-export type mecInternalSyncHistoryResponse = (mecInternalSyncHistoryResponseSuccess)
+export type mecInternalSyncHistoryResponse = (mecInternalSyncHistoryResponseSuccess | mecInternalSyncHistoryResponseError)
 
 export const getMecInternalSyncHistoryUrl = (params?: MecInternalSyncHistoryParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -328,7 +346,7 @@ export const getMecInternalSyncHistoryQueryKey = (params?: MecInternalSyncHistor
     }
 
 
-export const getMecInternalSyncHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncHistory>>>, TError = unknown>(params?: MecInternalSyncHistoryParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInternalSyncHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncHistory>>>, TError = MecInternalSyncHistory400>(params?: MecInternalSyncHistoryParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -347,14 +365,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInternalSyncHistoryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecInternalSyncHistory>>>
-export type MecInternalSyncHistoryInfiniteQueryError = unknown
+export type MecInternalSyncHistoryInfiniteQueryError = MecInternalSyncHistory400
 
 
 /**
  * @summary Get sync history
  */
 
-export function createMecInternalSyncHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncHistory>>>, TError = unknown>(
+export function createMecInternalSyncHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecInternalSyncHistory>>>, TError = MecInternalSyncHistory400>(
  params?: () =>  MecInternalSyncHistoryParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -369,7 +387,7 @@ export function createMecInternalSyncHistoryInfinite<TData = InfiniteData<Awaite
 /**
  * @summary Get sync history
  */
-export const prefetchMecInternalSyncHistoryInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = unknown>(
+export const prefetchMecInternalSyncHistoryInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = MecInternalSyncHistory400>(
  queryClient: QueryClient, params?: MecInternalSyncHistoryParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -385,7 +403,7 @@ export const prefetchMecInternalSyncHistoryInfiniteQuery = async <TData = Awaite
 
 
 
-export const getMecInternalSyncHistoryQueryOptions = <TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = unknown>(params?: MecInternalSyncHistoryParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecInternalSyncHistoryQueryOptions = <TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = MecInternalSyncHistory400>(params?: MecInternalSyncHistoryParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -404,14 +422,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecInternalSyncHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof mecInternalSyncHistory>>>
-export type MecInternalSyncHistoryQueryError = unknown
+export type MecInternalSyncHistoryQueryError = MecInternalSyncHistory400
 
 
 /**
  * @summary Get sync history
  */
 
-export function createMecInternalSyncHistory<TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = unknown>(
+export function createMecInternalSyncHistory<TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = MecInternalSyncHistory400>(
  params?: () =>  MecInternalSyncHistoryParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -426,7 +444,7 @@ export function createMecInternalSyncHistory<TData = Awaited<ReturnType<typeof m
 /**
  * @summary Get sync history
  */
-export const prefetchMecInternalSyncHistoryQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = unknown>(
+export const prefetchMecInternalSyncHistoryQuery = async <TData = Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError = MecInternalSyncHistory400>(
  queryClient: QueryClient, params?: MecInternalSyncHistoryParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecInternalSyncHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

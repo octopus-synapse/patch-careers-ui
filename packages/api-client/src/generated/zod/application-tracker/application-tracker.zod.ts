@@ -10,6 +10,33 @@ import * as zod from 'zod';
 
 /**
  * Timeline + silence detection for job applications
+ * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
+ */
+export const ApplicationTrackerJobsApplicationsTrackerResponse = zod.object({
+  "applications": zod.array(zod.object({
+  "id": zod.string(),
+  "jobId": zod.string(),
+  "status": zod.string(),
+  "appliedAt": zod.string().datetime({"offset":true}),
+  "job": zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable()
+}),
+  "events": zod.array(zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['SUBMITTED', 'VIEWED', 'INTERVIEW_SCHEDULED', 'INTERVIEW_COMPLETED', 'OFFER_RECEIVED', 'REJECTED', 'WITHDRAWN', 'FOLLOW_UP_SENT']),
+  "note": zod.string().nullable(),
+  "occurredAt": zod.string().datetime({"offset":true})
+})),
+  "daysSinceLastResponse": zod.number().nullable(),
+  "needsFollowUp": zod.boolean()
+}))
+})
+
+/**
+ * Timeline + silence detection for job applications
  * @summary Record a timeline event on an application (viewed, interview scheduled, offer, etc.).
  */
 export const applicationTrackerJobsApplicationsEventsBodyNoteMax = 2000;
@@ -20,5 +47,31 @@ export const ApplicationTrackerJobsApplicationsEventsBody = zod.object({
   "type": zod.enum(['VIEWED', 'INTERVIEW_SCHEDULED', 'INTERVIEW_COMPLETED', 'OFFER_RECEIVED', 'REJECTED', 'WITHDRAWN', 'FOLLOW_UP_SENT']),
   "note": zod.string().max(applicationTrackerJobsApplicationsEventsBodyNoteMax).optional(),
   "occurredAt": zod.string().datetime({"offset":true}).optional()
+})
+
+export const ApplicationTrackerJobsApplicationsEventsResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.string(),
+  "note": zod.string().nullable(),
+  "occurredAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Timeline + silence detection for job applications
+ * @summary Per-company response percentiles (p50/p90 days to first response).
+ */
+export const applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSampleSizeMin = 0;
+
+export const applicationTrackerJobsApplicationsCompaniesResponseStatsResponseResponseRateMin = 0;
+export const applicationTrackerJobsApplicationsCompaniesResponseStatsResponseResponseRateMax = 1;
+
+
+
+export const ApplicationTrackerJobsApplicationsCompaniesResponseStatsResponse = zod.object({
+  "company": zod.string(),
+  "sampleSize": zod.number().min(applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSampleSizeMin),
+  "p50Days": zod.number().nullable(),
+  "p90Days": zod.number().nullable(),
+  "responseRate": zod.number().min(applicationTrackerJobsApplicationsCompaniesResponseStatsResponseResponseRateMin).max(applicationTrackerJobsApplicationsCompaniesResponseStatsResponseResponseRateMax)
 })
 

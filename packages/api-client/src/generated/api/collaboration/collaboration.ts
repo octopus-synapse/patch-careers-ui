@@ -26,9 +26,53 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  CollaborationResumesCollaboratorsDelete200,
+  CollaborationResumesCollaboratorsDelete400,
+  CollaborationResumesCollaboratorsDelete401,
+  CollaborationResumesCollaboratorsDelete403,
+  CollaborationResumesCollaboratorsDelete404,
+  CollaborationResumesCollaboratorsGet200,
+  CollaborationResumesCollaboratorsGet400,
+  CollaborationResumesCollaboratorsGet401,
+  CollaborationResumesCollaboratorsGet403,
+  CollaborationResumesCollaboratorsGet404,
+  CollaborationResumesCollaboratorsPatch200,
+  CollaborationResumesCollaboratorsPatch400,
+  CollaborationResumesCollaboratorsPatch401,
+  CollaborationResumesCollaboratorsPatch403,
+  CollaborationResumesCollaboratorsPatch404,
   CollaborationResumesCollaboratorsPatchBody,
+  CollaborationResumesCollaboratorsPost200,
+  CollaborationResumesCollaboratorsPost400,
+  CollaborationResumesCollaboratorsPost401,
+  CollaborationResumesCollaboratorsPost403,
+  CollaborationResumesCollaboratorsPost404,
   CollaborationResumesCollaboratorsPostBody,
-  CollaborationResumesCommentsPostBody
+  CollaborationResumesCommentsDelete200,
+  CollaborationResumesCommentsDelete400,
+  CollaborationResumesCommentsDelete401,
+  CollaborationResumesCommentsDelete403,
+  CollaborationResumesCommentsDelete404,
+  CollaborationResumesCommentsGet200,
+  CollaborationResumesCommentsGet400,
+  CollaborationResumesCommentsGet401,
+  CollaborationResumesCommentsGet403,
+  CollaborationResumesCommentsGet404,
+  CollaborationResumesCommentsPost200,
+  CollaborationResumesCommentsPost400,
+  CollaborationResumesCommentsPost401,
+  CollaborationResumesCommentsPost403,
+  CollaborationResumesCommentsPost404,
+  CollaborationResumesCommentsPostBody,
+  CollaborationResumesCommentsResolve200,
+  CollaborationResumesCommentsResolve400,
+  CollaborationResumesCommentsResolve401,
+  CollaborationResumesCommentsResolve403,
+  CollaborationResumesCommentsResolve404,
+  CollaborationResumesSharedWithMe200,
+  CollaborationResumesSharedWithMe400,
+  CollaborationResumesSharedWithMe401,
+  CollaborationResumesSharedWithMe403
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -42,12 +86,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Collaboration API
  * @summary Invite user to collaborate on resume
  */
-export type collaborationResumesCollaboratorsPostResponse200 = void
+export type collaborationResumesCollaboratorsPostResponse200 = CollaborationResumesCollaboratorsPost200
+
+export type collaborationResumesCollaboratorsPostResponse400 = CollaborationResumesCollaboratorsPost400
+
+export type collaborationResumesCollaboratorsPostResponse401 = CollaborationResumesCollaboratorsPost401
+
+export type collaborationResumesCollaboratorsPostResponse403 = CollaborationResumesCollaboratorsPost403
+
+export type collaborationResumesCollaboratorsPostResponse404 = CollaborationResumesCollaboratorsPost404
 
 export type collaborationResumesCollaboratorsPostResponseSuccess = collaborationResumesCollaboratorsPostResponse200
-;
+export type collaborationResumesCollaboratorsPostResponseError = (collaborationResumesCollaboratorsPostResponse400 | collaborationResumesCollaboratorsPostResponse401 | collaborationResumesCollaboratorsPostResponse403 | collaborationResumesCollaboratorsPostResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCollaboratorsPostResponse = (collaborationResumesCollaboratorsPostResponseSuccess)
+export type collaborationResumesCollaboratorsPostResponse = (collaborationResumesCollaboratorsPostResponseSuccess | collaborationResumesCollaboratorsPostResponseError)
 
 export const getCollaborationResumesCollaboratorsPostUrl = (resumeId: string,) => {
 
@@ -73,7 +127,7 @@ export const collaborationResumesCollaboratorsPost = async (resumeId: string,
 
 
 
-export const getCollaborationResumesCollaboratorsPostMutationOptions = <TError = unknown,
+export const getCollaborationResumesCollaboratorsPostMutationOptions = <TError = CollaborationResumesCollaboratorsPost400 | CollaborationResumesCollaboratorsPost401 | CollaborationResumesCollaboratorsPost403 | CollaborationResumesCollaboratorsPost404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPost>>, TError,{resumeId: string;data: CollaborationResumesCollaboratorsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPost>>, TError,{resumeId: string;data: CollaborationResumesCollaboratorsPostBody}, TContext> => {
 
@@ -102,12 +156,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CollaborationResumesCollaboratorsPostMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPost>>>
     export type CollaborationResumesCollaboratorsPostMutationBody = CollaborationResumesCollaboratorsPostBody
-    export type CollaborationResumesCollaboratorsPostMutationError = unknown
+    export type CollaborationResumesCollaboratorsPostMutationError = CollaborationResumesCollaboratorsPost400 | CollaborationResumesCollaboratorsPost401 | CollaborationResumesCollaboratorsPost403 | CollaborationResumesCollaboratorsPost404
 
     /**
  * @summary Invite user to collaborate on resume
  */
-export const createCollaborationResumesCollaboratorsPost = <TError = unknown,
+export const createCollaborationResumesCollaboratorsPost = <TError = CollaborationResumesCollaboratorsPost400 | CollaborationResumesCollaboratorsPost401 | CollaborationResumesCollaboratorsPost403 | CollaborationResumesCollaboratorsPost404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPost>>, TError,{resumeId: string;data: CollaborationResumesCollaboratorsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof collaborationResumesCollaboratorsPost>>,
@@ -121,12 +175,22 @@ export const createCollaborationResumesCollaboratorsPost = <TError = unknown,
  * Collaboration API
  * @summary Get collaborators for a resume
  */
-export type collaborationResumesCollaboratorsGetResponse200 = void
+export type collaborationResumesCollaboratorsGetResponse200 = CollaborationResumesCollaboratorsGet200
+
+export type collaborationResumesCollaboratorsGetResponse400 = CollaborationResumesCollaboratorsGet400
+
+export type collaborationResumesCollaboratorsGetResponse401 = CollaborationResumesCollaboratorsGet401
+
+export type collaborationResumesCollaboratorsGetResponse403 = CollaborationResumesCollaboratorsGet403
+
+export type collaborationResumesCollaboratorsGetResponse404 = CollaborationResumesCollaboratorsGet404
 
 export type collaborationResumesCollaboratorsGetResponseSuccess = collaborationResumesCollaboratorsGetResponse200
-;
+export type collaborationResumesCollaboratorsGetResponseError = (collaborationResumesCollaboratorsGetResponse400 | collaborationResumesCollaboratorsGetResponse401 | collaborationResumesCollaboratorsGetResponse403 | collaborationResumesCollaboratorsGetResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCollaboratorsGetResponse = (collaborationResumesCollaboratorsGetResponseSuccess)
+export type collaborationResumesCollaboratorsGetResponse = (collaborationResumesCollaboratorsGetResponseSuccess | collaborationResumesCollaboratorsGetResponseError)
 
 export const getCollaborationResumesCollaboratorsGetUrl = (resumeId: string,) => {
 
@@ -164,7 +228,7 @@ export const getCollaborationResumesCollaboratorsGetQueryKey = (resumeId: string
     }
 
 
-export const getCollaborationResumesCollaboratorsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCollaborationResumesCollaboratorsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>>, TError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -183,14 +247,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CollaborationResumesCollaboratorsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>>
-export type CollaborationResumesCollaboratorsGetInfiniteQueryError = unknown
+export type CollaborationResumesCollaboratorsGetInfiniteQueryError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404
 
 
 /**
  * @summary Get collaborators for a resume
  */
 
-export function createCollaborationResumesCollaboratorsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>>, TError = unknown>(
+export function createCollaborationResumesCollaboratorsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>>, TError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -205,7 +269,7 @@ export function createCollaborationResumesCollaboratorsGetInfinite<TData = Infin
 /**
  * @summary Get collaborators for a resume
  */
-export const prefetchCollaborationResumesCollaboratorsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = unknown>(
+export const prefetchCollaborationResumesCollaboratorsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -221,7 +285,7 @@ export const prefetchCollaborationResumesCollaboratorsGetInfiniteQuery = async <
 
 
 
-export const getCollaborationResumesCollaboratorsGetQueryOptions = <TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCollaborationResumesCollaboratorsGetQueryOptions = <TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -240,14 +304,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CollaborationResumesCollaboratorsGetQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>>
-export type CollaborationResumesCollaboratorsGetQueryError = unknown
+export type CollaborationResumesCollaboratorsGetQueryError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404
 
 
 /**
  * @summary Get collaborators for a resume
  */
 
-export function createCollaborationResumesCollaboratorsGet<TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = unknown>(
+export function createCollaborationResumesCollaboratorsGet<TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -262,7 +326,7 @@ export function createCollaborationResumesCollaboratorsGet<TData = Awaited<Retur
 /**
  * @summary Get collaborators for a resume
  */
-export const prefetchCollaborationResumesCollaboratorsGetQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = unknown>(
+export const prefetchCollaborationResumesCollaboratorsGetQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError = CollaborationResumesCollaboratorsGet400 | CollaborationResumesCollaboratorsGet401 | CollaborationResumesCollaboratorsGet403 | CollaborationResumesCollaboratorsGet404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -282,12 +346,22 @@ export const prefetchCollaborationResumesCollaboratorsGetQuery = async <TData = 
  * Collaboration API
  * @summary Update collaborator role
  */
-export type collaborationResumesCollaboratorsPatchResponse200 = void
+export type collaborationResumesCollaboratorsPatchResponse200 = CollaborationResumesCollaboratorsPatch200
+
+export type collaborationResumesCollaboratorsPatchResponse400 = CollaborationResumesCollaboratorsPatch400
+
+export type collaborationResumesCollaboratorsPatchResponse401 = CollaborationResumesCollaboratorsPatch401
+
+export type collaborationResumesCollaboratorsPatchResponse403 = CollaborationResumesCollaboratorsPatch403
+
+export type collaborationResumesCollaboratorsPatchResponse404 = CollaborationResumesCollaboratorsPatch404
 
 export type collaborationResumesCollaboratorsPatchResponseSuccess = collaborationResumesCollaboratorsPatchResponse200
-;
+export type collaborationResumesCollaboratorsPatchResponseError = (collaborationResumesCollaboratorsPatchResponse400 | collaborationResumesCollaboratorsPatchResponse401 | collaborationResumesCollaboratorsPatchResponse403 | collaborationResumesCollaboratorsPatchResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCollaboratorsPatchResponse = (collaborationResumesCollaboratorsPatchResponseSuccess)
+export type collaborationResumesCollaboratorsPatchResponse = (collaborationResumesCollaboratorsPatchResponseSuccess | collaborationResumesCollaboratorsPatchResponseError)
 
 export const getCollaborationResumesCollaboratorsPatchUrl = (resumeId: string,
     userId: string,) => {
@@ -315,7 +389,7 @@ export const collaborationResumesCollaboratorsPatch = async (resumeId: string,
 
 
 
-export const getCollaborationResumesCollaboratorsPatchMutationOptions = <TError = unknown,
+export const getCollaborationResumesCollaboratorsPatchMutationOptions = <TError = CollaborationResumesCollaboratorsPatch400 | CollaborationResumesCollaboratorsPatch401 | CollaborationResumesCollaboratorsPatch403 | CollaborationResumesCollaboratorsPatch404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPatch>>, TError,{resumeId: string;userId: string;data: CollaborationResumesCollaboratorsPatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPatch>>, TError,{resumeId: string;userId: string;data: CollaborationResumesCollaboratorsPatchBody}, TContext> => {
 
@@ -344,12 +418,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CollaborationResumesCollaboratorsPatchMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPatch>>>
     export type CollaborationResumesCollaboratorsPatchMutationBody = CollaborationResumesCollaboratorsPatchBody
-    export type CollaborationResumesCollaboratorsPatchMutationError = unknown
+    export type CollaborationResumesCollaboratorsPatchMutationError = CollaborationResumesCollaboratorsPatch400 | CollaborationResumesCollaboratorsPatch401 | CollaborationResumesCollaboratorsPatch403 | CollaborationResumesCollaboratorsPatch404
 
     /**
  * @summary Update collaborator role
  */
-export const createCollaborationResumesCollaboratorsPatch = <TError = unknown,
+export const createCollaborationResumesCollaboratorsPatch = <TError = CollaborationResumesCollaboratorsPatch400 | CollaborationResumesCollaboratorsPatch401 | CollaborationResumesCollaboratorsPatch403 | CollaborationResumesCollaboratorsPatch404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsPatch>>, TError,{resumeId: string;userId: string;data: CollaborationResumesCollaboratorsPatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof collaborationResumesCollaboratorsPatch>>,
@@ -363,12 +437,22 @@ export const createCollaborationResumesCollaboratorsPatch = <TError = unknown,
  * Collaboration API
  * @summary Remove collaborator from resume
  */
-export type collaborationResumesCollaboratorsDeleteResponse200 = void
+export type collaborationResumesCollaboratorsDeleteResponse200 = CollaborationResumesCollaboratorsDelete200
+
+export type collaborationResumesCollaboratorsDeleteResponse400 = CollaborationResumesCollaboratorsDelete400
+
+export type collaborationResumesCollaboratorsDeleteResponse401 = CollaborationResumesCollaboratorsDelete401
+
+export type collaborationResumesCollaboratorsDeleteResponse403 = CollaborationResumesCollaboratorsDelete403
+
+export type collaborationResumesCollaboratorsDeleteResponse404 = CollaborationResumesCollaboratorsDelete404
 
 export type collaborationResumesCollaboratorsDeleteResponseSuccess = collaborationResumesCollaboratorsDeleteResponse200
-;
+export type collaborationResumesCollaboratorsDeleteResponseError = (collaborationResumesCollaboratorsDeleteResponse400 | collaborationResumesCollaboratorsDeleteResponse401 | collaborationResumesCollaboratorsDeleteResponse403 | collaborationResumesCollaboratorsDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCollaboratorsDeleteResponse = (collaborationResumesCollaboratorsDeleteResponseSuccess)
+export type collaborationResumesCollaboratorsDeleteResponse = (collaborationResumesCollaboratorsDeleteResponseSuccess | collaborationResumesCollaboratorsDeleteResponseError)
 
 export const getCollaborationResumesCollaboratorsDeleteUrl = (resumeId: string,
     userId: string,) => {
@@ -394,7 +478,7 @@ export const collaborationResumesCollaboratorsDelete = async (resumeId: string,
 
 
 
-export const getCollaborationResumesCollaboratorsDeleteMutationOptions = <TError = unknown,
+export const getCollaborationResumesCollaboratorsDeleteMutationOptions = <TError = CollaborationResumesCollaboratorsDelete400 | CollaborationResumesCollaboratorsDelete401 | CollaborationResumesCollaboratorsDelete403 | CollaborationResumesCollaboratorsDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsDelete>>, TError,{resumeId: string;userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsDelete>>, TError,{resumeId: string;userId: string}, TContext> => {
 
@@ -423,12 +507,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CollaborationResumesCollaboratorsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCollaboratorsDelete>>>
 
-    export type CollaborationResumesCollaboratorsDeleteMutationError = unknown
+    export type CollaborationResumesCollaboratorsDeleteMutationError = CollaborationResumesCollaboratorsDelete400 | CollaborationResumesCollaboratorsDelete401 | CollaborationResumesCollaboratorsDelete403 | CollaborationResumesCollaboratorsDelete404
 
     /**
  * @summary Remove collaborator from resume
  */
-export const createCollaborationResumesCollaboratorsDelete = <TError = unknown,
+export const createCollaborationResumesCollaboratorsDelete = <TError = CollaborationResumesCollaboratorsDelete400 | CollaborationResumesCollaboratorsDelete401 | CollaborationResumesCollaboratorsDelete403 | CollaborationResumesCollaboratorsDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCollaboratorsDelete>>, TError,{resumeId: string;userId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof collaborationResumesCollaboratorsDelete>>,
@@ -442,12 +526,20 @@ export const createCollaborationResumesCollaboratorsDelete = <TError = unknown,
  * Collaboration API
  * @summary Get resumes shared with current user
  */
-export type collaborationResumesSharedWithMeResponse200 = void
+export type collaborationResumesSharedWithMeResponse200 = CollaborationResumesSharedWithMe200
+
+export type collaborationResumesSharedWithMeResponse400 = CollaborationResumesSharedWithMe400
+
+export type collaborationResumesSharedWithMeResponse401 = CollaborationResumesSharedWithMe401
+
+export type collaborationResumesSharedWithMeResponse403 = CollaborationResumesSharedWithMe403
 
 export type collaborationResumesSharedWithMeResponseSuccess = collaborationResumesSharedWithMeResponse200
-;
+export type collaborationResumesSharedWithMeResponseError = (collaborationResumesSharedWithMeResponse400 | collaborationResumesSharedWithMeResponse401 | collaborationResumesSharedWithMeResponse403) & {
+  headers: Headers;
+};
 
-export type collaborationResumesSharedWithMeResponse = (collaborationResumesSharedWithMeResponseSuccess)
+export type collaborationResumesSharedWithMeResponse = (collaborationResumesSharedWithMeResponseSuccess | collaborationResumesSharedWithMeResponseError)
 
 export const getCollaborationResumesSharedWithMeUrl = () => {
 
@@ -485,7 +577,7 @@ export const getCollaborationResumesSharedWithMeQueryKey = () => {
     }
 
 
-export const getCollaborationResumesSharedWithMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCollaborationResumesSharedWithMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>>, TError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -504,14 +596,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CollaborationResumesSharedWithMeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>>
-export type CollaborationResumesSharedWithMeInfiniteQueryError = unknown
+export type CollaborationResumesSharedWithMeInfiniteQueryError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403
 
 
 /**
  * @summary Get resumes shared with current user
  */
 
-export function createCollaborationResumesSharedWithMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>>, TError = unknown>(
+export function createCollaborationResumesSharedWithMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>>, TError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -526,7 +618,7 @@ export function createCollaborationResumesSharedWithMeInfinite<TData = InfiniteD
 /**
  * @summary Get resumes shared with current user
  */
-export const prefetchCollaborationResumesSharedWithMeInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = unknown>(
+export const prefetchCollaborationResumesSharedWithMeInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -542,7 +634,7 @@ export const prefetchCollaborationResumesSharedWithMeInfiniteQuery = async <TDat
 
 
 
-export const getCollaborationResumesSharedWithMeQueryOptions = <TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCollaborationResumesSharedWithMeQueryOptions = <TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -561,14 +653,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CollaborationResumesSharedWithMeQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>>
-export type CollaborationResumesSharedWithMeQueryError = unknown
+export type CollaborationResumesSharedWithMeQueryError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403
 
 
 /**
  * @summary Get resumes shared with current user
  */
 
-export function createCollaborationResumesSharedWithMe<TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = unknown>(
+export function createCollaborationResumesSharedWithMe<TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -583,7 +675,7 @@ export function createCollaborationResumesSharedWithMe<TData = Awaited<ReturnTyp
 /**
  * @summary Get resumes shared with current user
  */
-export const prefetchCollaborationResumesSharedWithMeQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = unknown>(
+export const prefetchCollaborationResumesSharedWithMeQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError = CollaborationResumesSharedWithMe400 | CollaborationResumesSharedWithMe401 | CollaborationResumesSharedWithMe403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesSharedWithMe>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -603,12 +695,22 @@ export const prefetchCollaborationResumesSharedWithMeQuery = async <TData = Awai
  * Collaboration API
  * @summary List collaboration comments on a resume
  */
-export type collaborationResumesCommentsGetResponse200 = void
+export type collaborationResumesCommentsGetResponse200 = CollaborationResumesCommentsGet200
+
+export type collaborationResumesCommentsGetResponse400 = CollaborationResumesCommentsGet400
+
+export type collaborationResumesCommentsGetResponse401 = CollaborationResumesCommentsGet401
+
+export type collaborationResumesCommentsGetResponse403 = CollaborationResumesCommentsGet403
+
+export type collaborationResumesCommentsGetResponse404 = CollaborationResumesCommentsGet404
 
 export type collaborationResumesCommentsGetResponseSuccess = collaborationResumesCommentsGetResponse200
-;
+export type collaborationResumesCommentsGetResponseError = (collaborationResumesCommentsGetResponse400 | collaborationResumesCommentsGetResponse401 | collaborationResumesCommentsGetResponse403 | collaborationResumesCommentsGetResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCommentsGetResponse = (collaborationResumesCommentsGetResponseSuccess)
+export type collaborationResumesCommentsGetResponse = (collaborationResumesCommentsGetResponseSuccess | collaborationResumesCommentsGetResponseError)
 
 export const getCollaborationResumesCommentsGetUrl = (resumeId: string,) => {
 
@@ -646,7 +748,7 @@ export const getCollaborationResumesCommentsGetQueryKey = (resumeId: string,) =>
     }
 
 
-export const getCollaborationResumesCommentsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCollaborationResumesCommentsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>>, TError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -665,14 +767,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CollaborationResumesCommentsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>>
-export type CollaborationResumesCommentsGetInfiniteQueryError = unknown
+export type CollaborationResumesCommentsGetInfiniteQueryError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404
 
 
 /**
  * @summary List collaboration comments on a resume
  */
 
-export function createCollaborationResumesCommentsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>>, TError = unknown>(
+export function createCollaborationResumesCommentsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>>, TError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -687,7 +789,7 @@ export function createCollaborationResumesCommentsGetInfinite<TData = InfiniteDa
 /**
  * @summary List collaboration comments on a resume
  */
-export const prefetchCollaborationResumesCommentsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = unknown>(
+export const prefetchCollaborationResumesCommentsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -703,7 +805,7 @@ export const prefetchCollaborationResumesCommentsGetInfiniteQuery = async <TData
 
 
 
-export const getCollaborationResumesCommentsGetQueryOptions = <TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCollaborationResumesCommentsGetQueryOptions = <TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -722,14 +824,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CollaborationResumesCommentsGetQueryResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>>
-export type CollaborationResumesCommentsGetQueryError = unknown
+export type CollaborationResumesCommentsGetQueryError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404
 
 
 /**
  * @summary List collaboration comments on a resume
  */
 
-export function createCollaborationResumesCommentsGet<TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = unknown>(
+export function createCollaborationResumesCommentsGet<TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -744,7 +846,7 @@ export function createCollaborationResumesCommentsGet<TData = Awaited<ReturnType
 /**
  * @summary List collaboration comments on a resume
  */
-export const prefetchCollaborationResumesCommentsGetQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = unknown>(
+export const prefetchCollaborationResumesCommentsGetQuery = async <TData = Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError = CollaborationResumesCommentsGet400 | CollaborationResumesCommentsGet401 | CollaborationResumesCommentsGet403 | CollaborationResumesCommentsGet404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof collaborationResumesCommentsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -764,12 +866,22 @@ export const prefetchCollaborationResumesCommentsGetQuery = async <TData = Await
  * Collaboration API
  * @summary Add a comment / reply to a resume
  */
-export type collaborationResumesCommentsPostResponse200 = void
+export type collaborationResumesCommentsPostResponse200 = CollaborationResumesCommentsPost200
+
+export type collaborationResumesCommentsPostResponse400 = CollaborationResumesCommentsPost400
+
+export type collaborationResumesCommentsPostResponse401 = CollaborationResumesCommentsPost401
+
+export type collaborationResumesCommentsPostResponse403 = CollaborationResumesCommentsPost403
+
+export type collaborationResumesCommentsPostResponse404 = CollaborationResumesCommentsPost404
 
 export type collaborationResumesCommentsPostResponseSuccess = collaborationResumesCommentsPostResponse200
-;
+export type collaborationResumesCommentsPostResponseError = (collaborationResumesCommentsPostResponse400 | collaborationResumesCommentsPostResponse401 | collaborationResumesCommentsPostResponse403 | collaborationResumesCommentsPostResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCommentsPostResponse = (collaborationResumesCommentsPostResponseSuccess)
+export type collaborationResumesCommentsPostResponse = (collaborationResumesCommentsPostResponseSuccess | collaborationResumesCommentsPostResponseError)
 
 export const getCollaborationResumesCommentsPostUrl = (resumeId: string,) => {
 
@@ -795,7 +907,7 @@ export const collaborationResumesCommentsPost = async (resumeId: string,
 
 
 
-export const getCollaborationResumesCommentsPostMutationOptions = <TError = unknown,
+export const getCollaborationResumesCommentsPostMutationOptions = <TError = CollaborationResumesCommentsPost400 | CollaborationResumesCommentsPost401 | CollaborationResumesCommentsPost403 | CollaborationResumesCommentsPost404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsPost>>, TError,{resumeId: string;data: CollaborationResumesCommentsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsPost>>, TError,{resumeId: string;data: CollaborationResumesCommentsPostBody}, TContext> => {
 
@@ -824,12 +936,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CollaborationResumesCommentsPostMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCommentsPost>>>
     export type CollaborationResumesCommentsPostMutationBody = CollaborationResumesCommentsPostBody
-    export type CollaborationResumesCommentsPostMutationError = unknown
+    export type CollaborationResumesCommentsPostMutationError = CollaborationResumesCommentsPost400 | CollaborationResumesCommentsPost401 | CollaborationResumesCommentsPost403 | CollaborationResumesCommentsPost404
 
     /**
  * @summary Add a comment / reply to a resume
  */
-export const createCollaborationResumesCommentsPost = <TError = unknown,
+export const createCollaborationResumesCommentsPost = <TError = CollaborationResumesCommentsPost400 | CollaborationResumesCommentsPost401 | CollaborationResumesCommentsPost403 | CollaborationResumesCommentsPost404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsPost>>, TError,{resumeId: string;data: CollaborationResumesCommentsPostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof collaborationResumesCommentsPost>>,
@@ -843,12 +955,22 @@ export const createCollaborationResumesCommentsPost = <TError = unknown,
  * Collaboration API
  * @summary Mark a comment thread as resolved
  */
-export type collaborationResumesCommentsResolveResponse200 = void
+export type collaborationResumesCommentsResolveResponse200 = CollaborationResumesCommentsResolve200
+
+export type collaborationResumesCommentsResolveResponse400 = CollaborationResumesCommentsResolve400
+
+export type collaborationResumesCommentsResolveResponse401 = CollaborationResumesCommentsResolve401
+
+export type collaborationResumesCommentsResolveResponse403 = CollaborationResumesCommentsResolve403
+
+export type collaborationResumesCommentsResolveResponse404 = CollaborationResumesCommentsResolve404
 
 export type collaborationResumesCommentsResolveResponseSuccess = collaborationResumesCommentsResolveResponse200
-;
+export type collaborationResumesCommentsResolveResponseError = (collaborationResumesCommentsResolveResponse400 | collaborationResumesCommentsResolveResponse401 | collaborationResumesCommentsResolveResponse403 | collaborationResumesCommentsResolveResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCommentsResolveResponse = (collaborationResumesCommentsResolveResponseSuccess)
+export type collaborationResumesCommentsResolveResponse = (collaborationResumesCommentsResolveResponseSuccess | collaborationResumesCommentsResolveResponseError)
 
 export const getCollaborationResumesCommentsResolveUrl = (commentId: string,) => {
 
@@ -872,7 +994,7 @@ export const collaborationResumesCommentsResolve = async (commentId: string, opt
 
 
 
-export const getCollaborationResumesCommentsResolveMutationOptions = <TError = unknown,
+export const getCollaborationResumesCommentsResolveMutationOptions = <TError = CollaborationResumesCommentsResolve400 | CollaborationResumesCommentsResolve401 | CollaborationResumesCommentsResolve403 | CollaborationResumesCommentsResolve404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsResolve>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsResolve>>, TError,{commentId: string}, TContext> => {
 
@@ -901,12 +1023,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CollaborationResumesCommentsResolveMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCommentsResolve>>>
 
-    export type CollaborationResumesCommentsResolveMutationError = unknown
+    export type CollaborationResumesCommentsResolveMutationError = CollaborationResumesCommentsResolve400 | CollaborationResumesCommentsResolve401 | CollaborationResumesCommentsResolve403 | CollaborationResumesCommentsResolve404
 
     /**
  * @summary Mark a comment thread as resolved
  */
-export const createCollaborationResumesCommentsResolve = <TError = unknown,
+export const createCollaborationResumesCommentsResolve = <TError = CollaborationResumesCommentsResolve400 | CollaborationResumesCommentsResolve401 | CollaborationResumesCommentsResolve403 | CollaborationResumesCommentsResolve404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsResolve>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof collaborationResumesCommentsResolve>>,
@@ -920,12 +1042,22 @@ export const createCollaborationResumesCommentsResolve = <TError = unknown,
  * Collaboration API
  * @summary Delete a comment (author or resume owner)
  */
-export type collaborationResumesCommentsDeleteResponse200 = void
+export type collaborationResumesCommentsDeleteResponse200 = CollaborationResumesCommentsDelete200
+
+export type collaborationResumesCommentsDeleteResponse400 = CollaborationResumesCommentsDelete400
+
+export type collaborationResumesCommentsDeleteResponse401 = CollaborationResumesCommentsDelete401
+
+export type collaborationResumesCommentsDeleteResponse403 = CollaborationResumesCommentsDelete403
+
+export type collaborationResumesCommentsDeleteResponse404 = CollaborationResumesCommentsDelete404
 
 export type collaborationResumesCommentsDeleteResponseSuccess = collaborationResumesCommentsDeleteResponse200
-;
+export type collaborationResumesCommentsDeleteResponseError = (collaborationResumesCommentsDeleteResponse400 | collaborationResumesCommentsDeleteResponse401 | collaborationResumesCommentsDeleteResponse403 | collaborationResumesCommentsDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type collaborationResumesCommentsDeleteResponse = (collaborationResumesCommentsDeleteResponseSuccess)
+export type collaborationResumesCommentsDeleteResponse = (collaborationResumesCommentsDeleteResponseSuccess | collaborationResumesCommentsDeleteResponseError)
 
 export const getCollaborationResumesCommentsDeleteUrl = (commentId: string,) => {
 
@@ -949,7 +1081,7 @@ export const collaborationResumesCommentsDelete = async (commentId: string, opti
 
 
 
-export const getCollaborationResumesCommentsDeleteMutationOptions = <TError = unknown,
+export const getCollaborationResumesCommentsDeleteMutationOptions = <TError = CollaborationResumesCommentsDelete400 | CollaborationResumesCommentsDelete401 | CollaborationResumesCommentsDelete403 | CollaborationResumesCommentsDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsDelete>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsDelete>>, TError,{commentId: string}, TContext> => {
 
@@ -978,12 +1110,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CollaborationResumesCommentsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof collaborationResumesCommentsDelete>>>
 
-    export type CollaborationResumesCommentsDeleteMutationError = unknown
+    export type CollaborationResumesCommentsDeleteMutationError = CollaborationResumesCommentsDelete400 | CollaborationResumesCommentsDelete401 | CollaborationResumesCommentsDelete403 | CollaborationResumesCommentsDelete404
 
     /**
  * @summary Delete a comment (author or resume owner)
  */
-export const createCollaborationResumesCommentsDelete = <TError = unknown,
+export const createCollaborationResumesCommentsDelete = <TError = CollaborationResumesCommentsDelete400 | CollaborationResumesCommentsDelete401 | CollaborationResumesCommentsDelete403 | CollaborationResumesCommentsDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof collaborationResumesCommentsDelete>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof collaborationResumesCommentsDelete>>,

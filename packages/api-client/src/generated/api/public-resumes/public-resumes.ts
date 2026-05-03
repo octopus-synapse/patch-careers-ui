@@ -21,6 +21,14 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  PublicResumesDownload200,
+  PublicResumesDownload400,
+  PublicResumesGetById200,
+  PublicResumesGetById400,
+  PublicResumesOgPng400
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +40,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Public Resume API
  * @summary Get public resume by share slug
  */
-export type publicResumesGetByIdResponse200 = void
+export type publicResumesGetByIdResponse200 = PublicResumesGetById200
+
+export type publicResumesGetByIdResponse400 = PublicResumesGetById400
 
 export type publicResumesGetByIdResponseSuccess = publicResumesGetByIdResponse200
-;
+export type publicResumesGetByIdResponseError = (publicResumesGetByIdResponse400) & {
+  headers: Headers;
+};
 
-export type publicResumesGetByIdResponse = (publicResumesGetByIdResponseSuccess)
+export type publicResumesGetByIdResponse = (publicResumesGetByIdResponseSuccess | publicResumesGetByIdResponseError)
 
 export const getPublicResumesGetByIdUrl = (slug: string,) => {
 
@@ -75,7 +87,7 @@ export const getPublicResumesGetByIdQueryKey = (slug: string,) => {
     }
 
 
-export const getPublicResumesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof publicResumesGetById>>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPublicResumesGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof publicResumesGetById>>>, TError = PublicResumesGetById400>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +106,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PublicResumesGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof publicResumesGetById>>>
-export type PublicResumesGetByIdInfiniteQueryError = unknown
+export type PublicResumesGetByIdInfiniteQueryError = PublicResumesGetById400
 
 
 /**
  * @summary Get public resume by share slug
  */
 
-export function createPublicResumesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof publicResumesGetById>>>, TError = unknown>(
+export function createPublicResumesGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof publicResumesGetById>>>, TError = PublicResumesGetById400>(
  slug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +128,7 @@ export function createPublicResumesGetByIdInfinite<TData = InfiniteData<Awaited<
 /**
  * @summary Get public resume by share slug
  */
-export const prefetchPublicResumesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = unknown>(
+export const prefetchPublicResumesGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = PublicResumesGetById400>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +144,7 @@ export const prefetchPublicResumesGetByIdInfiniteQuery = async <TData = Awaited<
 
 
 
-export const getPublicResumesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPublicResumesGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = PublicResumesGetById400>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +163,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PublicResumesGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof publicResumesGetById>>>
-export type PublicResumesGetByIdQueryError = unknown
+export type PublicResumesGetByIdQueryError = PublicResumesGetById400
 
 
 /**
  * @summary Get public resume by share slug
  */
 
-export function createPublicResumesGetById<TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = unknown>(
+export function createPublicResumesGetById<TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = PublicResumesGetById400>(
  slug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +185,7 @@ export function createPublicResumesGetById<TData = Awaited<ReturnType<typeof pub
 /**
  * @summary Get public resume by share slug
  */
-export const prefetchPublicResumesGetByIdQuery = async <TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = unknown>(
+export const prefetchPublicResumesGetByIdQuery = async <TData = Awaited<ReturnType<typeof publicResumesGetById>>, TError = PublicResumesGetById400>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +205,16 @@ export const prefetchPublicResumesGetByIdQuery = async <TData = Awaited<ReturnTy
  * Public Resume API
  * @summary Download public resume by share slug
  */
-export type publicResumesDownloadResponse200 = void
+export type publicResumesDownloadResponse200 = PublicResumesDownload200
+
+export type publicResumesDownloadResponse400 = PublicResumesDownload400
 
 export type publicResumesDownloadResponseSuccess = publicResumesDownloadResponse200
-;
+export type publicResumesDownloadResponseError = (publicResumesDownloadResponse400) & {
+  headers: Headers;
+};
 
-export type publicResumesDownloadResponse = (publicResumesDownloadResponseSuccess)
+export type publicResumesDownloadResponse = (publicResumesDownloadResponseSuccess | publicResumesDownloadResponseError)
 
 export const getPublicResumesDownloadUrl = (slug: string,) => {
 
@@ -236,7 +252,7 @@ export const getPublicResumesDownloadQueryKey = (slug: string,) => {
     }
 
 
-export const getPublicResumesDownloadInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof publicResumesDownload>>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPublicResumesDownloadInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof publicResumesDownload>>>, TError = PublicResumesDownload400>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +271,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PublicResumesDownloadInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof publicResumesDownload>>>
-export type PublicResumesDownloadInfiniteQueryError = unknown
+export type PublicResumesDownloadInfiniteQueryError = PublicResumesDownload400
 
 
 /**
  * @summary Download public resume by share slug
  */
 
-export function createPublicResumesDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof publicResumesDownload>>>, TError = unknown>(
+export function createPublicResumesDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof publicResumesDownload>>>, TError = PublicResumesDownload400>(
  slug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +293,7 @@ export function createPublicResumesDownloadInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Download public resume by share slug
  */
-export const prefetchPublicResumesDownloadInfiniteQuery = async <TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = unknown>(
+export const prefetchPublicResumesDownloadInfiniteQuery = async <TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = PublicResumesDownload400>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +309,7 @@ export const prefetchPublicResumesDownloadInfiniteQuery = async <TData = Awaited
 
 
 
-export const getPublicResumesDownloadQueryOptions = <TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPublicResumesDownloadQueryOptions = <TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = PublicResumesDownload400>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +328,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PublicResumesDownloadQueryResult = NonNullable<Awaited<ReturnType<typeof publicResumesDownload>>>
-export type PublicResumesDownloadQueryError = unknown
+export type PublicResumesDownloadQueryError = PublicResumesDownload400
 
 
 /**
  * @summary Download public resume by share slug
  */
 
-export function createPublicResumesDownload<TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = unknown>(
+export function createPublicResumesDownload<TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = PublicResumesDownload400>(
  slug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +350,7 @@ export function createPublicResumesDownload<TData = Awaited<ReturnType<typeof pu
 /**
  * @summary Download public resume by share slug
  */
-export const prefetchPublicResumesDownloadQuery = async <TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = unknown>(
+export const prefetchPublicResumesDownloadQuery = async <TData = Awaited<ReturnType<typeof publicResumesDownload>>, TError = PublicResumesDownload400>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesDownload>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -354,12 +370,16 @@ export const prefetchPublicResumesDownloadQuery = async <TData = Awaited<ReturnT
  * Public Resume API
  * @summary OpenGraph preview image for a public share slug
  */
-export type publicResumesOgPngResponse200 = void
+export type publicResumesOgPngResponse200 = Blob
+
+export type publicResumesOgPngResponse400 = PublicResumesOgPng400
 
 export type publicResumesOgPngResponseSuccess = publicResumesOgPngResponse200
-;
+export type publicResumesOgPngResponseError = (publicResumesOgPngResponse400) & {
+  headers: Headers;
+};
 
-export type publicResumesOgPngResponse = (publicResumesOgPngResponseSuccess)
+export type publicResumesOgPngResponse = (publicResumesOgPngResponseSuccess | publicResumesOgPngResponseError)
 
 export const getPublicResumesOgPngUrl = (slug: string,) => {
 
@@ -397,7 +417,7 @@ export const getPublicResumesOgPngQueryKey = (slug: string,) => {
     }
 
 
-export const getPublicResumesOgPngInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof publicResumesOgPng>>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPublicResumesOgPngInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof publicResumesOgPng>>>, TError = PublicResumesOgPng400>(slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -416,14 +436,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PublicResumesOgPngInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof publicResumesOgPng>>>
-export type PublicResumesOgPngInfiniteQueryError = unknown
+export type PublicResumesOgPngInfiniteQueryError = PublicResumesOgPng400
 
 
 /**
  * @summary OpenGraph preview image for a public share slug
  */
 
-export function createPublicResumesOgPngInfinite<TData = InfiniteData<Awaited<ReturnType<typeof publicResumesOgPng>>>, TError = unknown>(
+export function createPublicResumesOgPngInfinite<TData = InfiniteData<Awaited<ReturnType<typeof publicResumesOgPng>>>, TError = PublicResumesOgPng400>(
  slug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -438,7 +458,7 @@ export function createPublicResumesOgPngInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary OpenGraph preview image for a public share slug
  */
-export const prefetchPublicResumesOgPngInfiniteQuery = async <TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = unknown>(
+export const prefetchPublicResumesOgPngInfiniteQuery = async <TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = PublicResumesOgPng400>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -454,7 +474,7 @@ export const prefetchPublicResumesOgPngInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getPublicResumesOgPngQueryOptions = <TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = unknown>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPublicResumesOgPngQueryOptions = <TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = PublicResumesOgPng400>(slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -473,14 +493,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PublicResumesOgPngQueryResult = NonNullable<Awaited<ReturnType<typeof publicResumesOgPng>>>
-export type PublicResumesOgPngQueryError = unknown
+export type PublicResumesOgPngQueryError = PublicResumesOgPng400
 
 
 /**
  * @summary OpenGraph preview image for a public share slug
  */
 
-export function createPublicResumesOgPng<TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = unknown>(
+export function createPublicResumesOgPng<TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = PublicResumesOgPng400>(
  slug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -495,7 +515,7 @@ export function createPublicResumesOgPng<TData = Awaited<ReturnType<typeof publi
 /**
  * @summary OpenGraph preview image for a public share slug
  */
-export const prefetchPublicResumesOgPngQuery = async <TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = unknown>(
+export const prefetchPublicResumesOgPngQuery = async <TData = Awaited<ReturnType<typeof publicResumesOgPng>>, TError = PublicResumesOgPng400>(
  queryClient: QueryClient, slug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof publicResumesOgPng>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

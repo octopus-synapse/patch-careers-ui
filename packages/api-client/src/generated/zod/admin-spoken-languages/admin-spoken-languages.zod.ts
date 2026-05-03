@@ -10,13 +10,97 @@ import * as zod from 'zod';
 
 /**
  * Admin Spoken Languages API
+ * @summary List all spoken languages
+ */
+export const adminSpokenLanguagesListResponseTotalMin = 0;
+
+
+
+export const adminSpokenLanguagesListResponseTotalPagesMin = 0;
+
+
+
+export const AdminSpokenLanguagesListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "code": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "nameEs": zod.string(),
+  "nativeName": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number().min(adminSpokenLanguagesListResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(adminSpokenLanguagesListResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Admin Spoken Languages API
  * @summary Create spoken language
  */
 export const AdminSpokenLanguagesCreateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminSpokenLanguagesCreateResponse = zod.object({
+  "id": zod.string(),
+  "code": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "nameEs": zod.string(),
+  "nativeName": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Spoken Languages API
+ * @summary Get spoken language by code
+ */
+export const AdminSpokenLanguagesGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "code": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "nameEs": zod.string(),
+  "nativeName": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
 
 /**
  * Admin Spoken Languages API
  * @summary Update spoken language
  */
 export const AdminSpokenLanguagesUpdateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminSpokenLanguagesUpdateResponse = zod.object({
+  "id": zod.string(),
+  "code": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "nameEs": zod.string(),
+  "nativeName": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Spoken Languages API
+ * @summary Delete spoken language
+ */
+export const AdminSpokenLanguagesDeleteResponse = zod.object({
+
+})
 

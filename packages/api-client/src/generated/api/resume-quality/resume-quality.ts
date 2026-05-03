@@ -25,6 +25,19 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  ResumeQualityResumesQuality200,
+  ResumeQualityResumesQuality400,
+  ResumeQualityResumesQuality401,
+  ResumeQualityResumesQuality403,
+  ResumeQualityResumesQuality404,
+  ResumeQualityResumesQualityRecompute200,
+  ResumeQualityResumesQualityRecompute400,
+  ResumeQualityResumesQualityRecompute401,
+  ResumeQualityResumesQualityRecompute403,
+  ResumeQualityResumesQualityRecompute404
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -36,12 +49,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Resume Quality Score
  * @summary Get the latest Resume Quality Score snapshot
  */
-export type resumeQualityResumesQualityResponse200 = void
+export type resumeQualityResumesQualityResponse200 = ResumeQualityResumesQuality200
+
+export type resumeQualityResumesQualityResponse400 = ResumeQualityResumesQuality400
+
+export type resumeQualityResumesQualityResponse401 = ResumeQualityResumesQuality401
+
+export type resumeQualityResumesQualityResponse403 = ResumeQualityResumesQuality403
+
+export type resumeQualityResumesQualityResponse404 = ResumeQualityResumesQuality404
 
 export type resumeQualityResumesQualityResponseSuccess = resumeQualityResumesQualityResponse200
-;
+export type resumeQualityResumesQualityResponseError = (resumeQualityResumesQualityResponse400 | resumeQualityResumesQualityResponse401 | resumeQualityResumesQualityResponse403 | resumeQualityResumesQualityResponse404) & {
+  headers: Headers;
+};
 
-export type resumeQualityResumesQualityResponse = (resumeQualityResumesQualityResponseSuccess)
+export type resumeQualityResumesQualityResponse = (resumeQualityResumesQualityResponseSuccess | resumeQualityResumesQualityResponseError)
 
 export const getResumeQualityResumesQualityUrl = (resumeId: string,) => {
 
@@ -79,7 +102,7 @@ export const getResumeQualityResumesQualityQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumeQualityResumesQualityInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeQualityResumesQuality>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeQualityResumesQualityInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeQualityResumesQuality>>>, TError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -98,14 +121,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeQualityResumesQualityInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeQualityResumesQuality>>>
-export type ResumeQualityResumesQualityInfiniteQueryError = unknown
+export type ResumeQualityResumesQualityInfiniteQueryError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404
 
 
 /**
  * @summary Get the latest Resume Quality Score snapshot
  */
 
-export function createResumeQualityResumesQualityInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeQualityResumesQuality>>>, TError = unknown>(
+export function createResumeQualityResumesQualityInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeQualityResumesQuality>>>, TError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -120,7 +143,7 @@ export function createResumeQualityResumesQualityInfinite<TData = InfiniteData<A
 /**
  * @summary Get the latest Resume Quality Score snapshot
  */
-export const prefetchResumeQualityResumesQualityInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = unknown>(
+export const prefetchResumeQualityResumesQualityInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -136,7 +159,7 @@ export const prefetchResumeQualityResumesQualityInfiniteQuery = async <TData = A
 
 
 
-export const getResumeQualityResumesQualityQueryOptions = <TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeQualityResumesQualityQueryOptions = <TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -155,14 +178,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeQualityResumesQualityQueryResult = NonNullable<Awaited<ReturnType<typeof resumeQualityResumesQuality>>>
-export type ResumeQualityResumesQualityQueryError = unknown
+export type ResumeQualityResumesQualityQueryError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404
 
 
 /**
  * @summary Get the latest Resume Quality Score snapshot
  */
 
-export function createResumeQualityResumesQuality<TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = unknown>(
+export function createResumeQualityResumesQuality<TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -177,7 +200,7 @@ export function createResumeQualityResumesQuality<TData = Awaited<ReturnType<typ
 /**
  * @summary Get the latest Resume Quality Score snapshot
  */
-export const prefetchResumeQualityResumesQualityQuery = async <TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = unknown>(
+export const prefetchResumeQualityResumesQualityQuery = async <TData = Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError = ResumeQualityResumesQuality400 | ResumeQualityResumesQuality401 | ResumeQualityResumesQuality403 | ResumeQualityResumesQuality404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeQualityResumesQuality>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -197,12 +220,22 @@ export const prefetchResumeQualityResumesQualityQuery = async <TData = Awaited<R
  * Resume Quality Score
  * @summary Synchronously recompute Resume Quality Score
  */
-export type resumeQualityResumesQualityRecomputeResponse200 = void
+export type resumeQualityResumesQualityRecomputeResponse200 = ResumeQualityResumesQualityRecompute200
+
+export type resumeQualityResumesQualityRecomputeResponse400 = ResumeQualityResumesQualityRecompute400
+
+export type resumeQualityResumesQualityRecomputeResponse401 = ResumeQualityResumesQualityRecompute401
+
+export type resumeQualityResumesQualityRecomputeResponse403 = ResumeQualityResumesQualityRecompute403
+
+export type resumeQualityResumesQualityRecomputeResponse404 = ResumeQualityResumesQualityRecompute404
 
 export type resumeQualityResumesQualityRecomputeResponseSuccess = resumeQualityResumesQualityRecomputeResponse200
-;
+export type resumeQualityResumesQualityRecomputeResponseError = (resumeQualityResumesQualityRecomputeResponse400 | resumeQualityResumesQualityRecomputeResponse401 | resumeQualityResumesQualityRecomputeResponse403 | resumeQualityResumesQualityRecomputeResponse404) & {
+  headers: Headers;
+};
 
-export type resumeQualityResumesQualityRecomputeResponse = (resumeQualityResumesQualityRecomputeResponseSuccess)
+export type resumeQualityResumesQualityRecomputeResponse = (resumeQualityResumesQualityRecomputeResponseSuccess | resumeQualityResumesQualityRecomputeResponseError)
 
 export const getResumeQualityResumesQualityRecomputeUrl = (resumeId: string,) => {
 
@@ -226,7 +259,7 @@ export const resumeQualityResumesQualityRecompute = async (resumeId: string, opt
 
 
 
-export const getResumeQualityResumesQualityRecomputeMutationOptions = <TError = unknown,
+export const getResumeQualityResumesQualityRecomputeMutationOptions = <TError = ResumeQualityResumesQualityRecompute400 | ResumeQualityResumesQualityRecompute401 | ResumeQualityResumesQualityRecompute403 | ResumeQualityResumesQualityRecompute404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeQualityResumesQualityRecompute>>, TError,{resumeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeQualityResumesQualityRecompute>>, TError,{resumeId: string}, TContext> => {
 
@@ -255,12 +288,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeQualityResumesQualityRecomputeMutationResult = NonNullable<Awaited<ReturnType<typeof resumeQualityResumesQualityRecompute>>>
 
-    export type ResumeQualityResumesQualityRecomputeMutationError = unknown
+    export type ResumeQualityResumesQualityRecomputeMutationError = ResumeQualityResumesQualityRecompute400 | ResumeQualityResumesQualityRecompute401 | ResumeQualityResumesQualityRecompute403 | ResumeQualityResumesQualityRecompute404
 
     /**
  * @summary Synchronously recompute Resume Quality Score
  */
-export const createResumeQualityResumesQualityRecompute = <TError = unknown,
+export const createResumeQualityResumesQualityRecompute = <TError = ResumeQualityResumesQualityRecompute400 | ResumeQualityResumesQualityRecompute401 | ResumeQualityResumesQualityRecompute403 | ResumeQualityResumesQualityRecompute404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeQualityResumesQualityRecompute>>, TError,{resumeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeQualityResumesQualityRecompute>>,

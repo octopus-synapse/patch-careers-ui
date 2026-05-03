@@ -10,6 +10,47 @@ import * as zod from 'zod';
 
 /**
  * Admin Section Types Management API
+ * @summary List all section types with pagination
+ */
+export const AdminSectionTypesListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "fieldStyles": zod.record(zod.string(), zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()]))),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.object({
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "label": zod.string(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional()
+})),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number(),
+  "page": zod.number(),
+  "pageSize": zod.number(),
+  "totalPages": zod.number()
+})
+
+/**
+ * Admin Section Types Management API
  * @summary Create a new section type
  */
 export const adminSectionTypesCreateBodyKeyMin = 3;
@@ -88,6 +129,79 @@ export const AdminSectionTypesCreateBody = zod.object({
 }))
 })
 
+export const AdminSectionTypesCreateResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "fieldStyles": zod.record(zod.string(), zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()]))),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.object({
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "label": zod.string(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional()
+})),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Section Types Management API
+ * @summary Get all unique semantic kinds
+ */
+export const AdminSectionTypesSemanticKindsResponseItem = zod.string()
+export const AdminSectionTypesSemanticKindsResponse = zod.array(AdminSectionTypesSemanticKindsResponseItem)
+
+/**
+ * Admin Section Types Management API
+ * @summary Get a section type by key
+ */
+export const AdminSectionTypesGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "fieldStyles": zod.record(zod.string(), zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()]))),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.object({
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "label": zod.string(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional()
+})),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
 /**
  * Admin Section Types Management API
  * @summary Update a section type
@@ -154,4 +268,41 @@ export const AdminSectionTypesUpdateBody = zod.object({
   "addLabel": zod.string().min(1).optional()
 })).optional()
 })
+
+export const AdminSectionTypesUpdateResponse = zod.object({
+  "id": zod.string(),
+  "key": zod.string(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "semanticKind": zod.string(),
+  "version": zod.number(),
+  "isActive": zod.boolean(),
+  "isSystem": zod.boolean(),
+  "isRepeatable": zod.boolean(),
+  "minItems": zod.number(),
+  "maxItems": zod.number().nullable(),
+  "definition": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "uiSchema": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])).nullable(),
+  "renderHints": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()])),
+  "fieldStyles": zod.record(zod.string(), zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.array(zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean(),zod.unknown().nullable(),zod.unknown().nullable()])),zod.unknown().nullable()])),zod.unknown().nullable()]))),
+  "iconType": zod.string(),
+  "icon": zod.string(),
+  "translations": zod.record(zod.string(), zod.object({
+  "title": zod.string(),
+  "description": zod.string().optional(),
+  "label": zod.string(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional()
+})),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Section Types Management API
+ * @summary Delete a section type
+ */
+export const AdminSectionTypesDeleteResponse = zod.unknown().nullable()
 

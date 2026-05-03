@@ -26,7 +26,20 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ApplicationTrackerJobsApplicationsCompaniesResponseStats200,
+  ApplicationTrackerJobsApplicationsCompaniesResponseStats400,
+  ApplicationTrackerJobsApplicationsCompaniesResponseStats401,
+  ApplicationTrackerJobsApplicationsCompaniesResponseStats403,
+  ApplicationTrackerJobsApplicationsEvents200,
+  ApplicationTrackerJobsApplicationsEvents400,
+  ApplicationTrackerJobsApplicationsEvents401,
+  ApplicationTrackerJobsApplicationsEvents403,
+  ApplicationTrackerJobsApplicationsEvents404,
   ApplicationTrackerJobsApplicationsEventsBody,
+  ApplicationTrackerJobsApplicationsTracker200,
+  ApplicationTrackerJobsApplicationsTracker400,
+  ApplicationTrackerJobsApplicationsTracker401,
+  ApplicationTrackerJobsApplicationsTracker403,
   ApplicationTrackerJobsApplicationsTrackerParams
 } from '../../models';
 
@@ -41,12 +54,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Timeline + silence detection for job applications
  * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
  */
-export type applicationTrackerJobsApplicationsTrackerResponse200 = void
+export type applicationTrackerJobsApplicationsTrackerResponse200 = ApplicationTrackerJobsApplicationsTracker200
+
+export type applicationTrackerJobsApplicationsTrackerResponse400 = ApplicationTrackerJobsApplicationsTracker400
+
+export type applicationTrackerJobsApplicationsTrackerResponse401 = ApplicationTrackerJobsApplicationsTracker401
+
+export type applicationTrackerJobsApplicationsTrackerResponse403 = ApplicationTrackerJobsApplicationsTracker403
 
 export type applicationTrackerJobsApplicationsTrackerResponseSuccess = applicationTrackerJobsApplicationsTrackerResponse200
-;
+export type applicationTrackerJobsApplicationsTrackerResponseError = (applicationTrackerJobsApplicationsTrackerResponse400 | applicationTrackerJobsApplicationsTrackerResponse401 | applicationTrackerJobsApplicationsTrackerResponse403) & {
+  headers: Headers;
+};
 
-export type applicationTrackerJobsApplicationsTrackerResponse = (applicationTrackerJobsApplicationsTrackerResponseSuccess)
+export type applicationTrackerJobsApplicationsTrackerResponse = (applicationTrackerJobsApplicationsTrackerResponseSuccess | applicationTrackerJobsApplicationsTrackerResponseError)
 
 export const getApplicationTrackerJobsApplicationsTrackerUrl = (params?: ApplicationTrackerJobsApplicationsTrackerParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -91,7 +112,7 @@ export const getApplicationTrackerJobsApplicationsTrackerQueryKey = (params?: Ap
     }
 
 
-export const getApplicationTrackerJobsApplicationsTrackerInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>>, TError = unknown>(params?: ApplicationTrackerJobsApplicationsTrackerParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getApplicationTrackerJobsApplicationsTrackerInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>>, TError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403>(params?: ApplicationTrackerJobsApplicationsTrackerParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -110,14 +131,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApplicationTrackerJobsApplicationsTrackerInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>>
-export type ApplicationTrackerJobsApplicationsTrackerInfiniteQueryError = unknown
+export type ApplicationTrackerJobsApplicationsTrackerInfiniteQueryError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403
 
 
 /**
  * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
  */
 
-export function createApplicationTrackerJobsApplicationsTrackerInfinite<TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>>, TError = unknown>(
+export function createApplicationTrackerJobsApplicationsTrackerInfinite<TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>>, TError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403>(
  params?: () =>  ApplicationTrackerJobsApplicationsTrackerParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -132,7 +153,7 @@ export function createApplicationTrackerJobsApplicationsTrackerInfinite<TData = 
 /**
  * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
  */
-export const prefetchApplicationTrackerJobsApplicationsTrackerInfiniteQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = unknown>(
+export const prefetchApplicationTrackerJobsApplicationsTrackerInfiniteQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403>(
  queryClient: QueryClient, params?: ApplicationTrackerJobsApplicationsTrackerParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -148,7 +169,7 @@ export const prefetchApplicationTrackerJobsApplicationsTrackerInfiniteQuery = as
 
 
 
-export const getApplicationTrackerJobsApplicationsTrackerQueryOptions = <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = unknown>(params?: ApplicationTrackerJobsApplicationsTrackerParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getApplicationTrackerJobsApplicationsTrackerQueryOptions = <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403>(params?: ApplicationTrackerJobsApplicationsTrackerParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -167,14 +188,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApplicationTrackerJobsApplicationsTrackerQueryResult = NonNullable<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>>
-export type ApplicationTrackerJobsApplicationsTrackerQueryError = unknown
+export type ApplicationTrackerJobsApplicationsTrackerQueryError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403
 
 
 /**
  * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
  */
 
-export function createApplicationTrackerJobsApplicationsTracker<TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = unknown>(
+export function createApplicationTrackerJobsApplicationsTracker<TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403>(
  params?: () =>  ApplicationTrackerJobsApplicationsTrackerParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -189,7 +210,7 @@ export function createApplicationTrackerJobsApplicationsTracker<TData = Awaited<
 /**
  * @summary Full application timeline for the viewer (enviada → visualizada → entrevista → oferta/silêncio).
  */
-export const prefetchApplicationTrackerJobsApplicationsTrackerQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = unknown>(
+export const prefetchApplicationTrackerJobsApplicationsTrackerQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError = ApplicationTrackerJobsApplicationsTracker400 | ApplicationTrackerJobsApplicationsTracker401 | ApplicationTrackerJobsApplicationsTracker403>(
  queryClient: QueryClient, params?: ApplicationTrackerJobsApplicationsTrackerParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsTracker>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -209,12 +230,22 @@ export const prefetchApplicationTrackerJobsApplicationsTrackerQuery = async <TDa
  * Timeline + silence detection for job applications
  * @summary Record a timeline event on an application (viewed, interview scheduled, offer, etc.).
  */
-export type applicationTrackerJobsApplicationsEventsResponse200 = void
+export type applicationTrackerJobsApplicationsEventsResponse200 = ApplicationTrackerJobsApplicationsEvents200
+
+export type applicationTrackerJobsApplicationsEventsResponse400 = ApplicationTrackerJobsApplicationsEvents400
+
+export type applicationTrackerJobsApplicationsEventsResponse401 = ApplicationTrackerJobsApplicationsEvents401
+
+export type applicationTrackerJobsApplicationsEventsResponse403 = ApplicationTrackerJobsApplicationsEvents403
+
+export type applicationTrackerJobsApplicationsEventsResponse404 = ApplicationTrackerJobsApplicationsEvents404
 
 export type applicationTrackerJobsApplicationsEventsResponseSuccess = applicationTrackerJobsApplicationsEventsResponse200
-;
+export type applicationTrackerJobsApplicationsEventsResponseError = (applicationTrackerJobsApplicationsEventsResponse400 | applicationTrackerJobsApplicationsEventsResponse401 | applicationTrackerJobsApplicationsEventsResponse403 | applicationTrackerJobsApplicationsEventsResponse404) & {
+  headers: Headers;
+};
 
-export type applicationTrackerJobsApplicationsEventsResponse = (applicationTrackerJobsApplicationsEventsResponseSuccess)
+export type applicationTrackerJobsApplicationsEventsResponse = (applicationTrackerJobsApplicationsEventsResponseSuccess | applicationTrackerJobsApplicationsEventsResponseError)
 
 export const getApplicationTrackerJobsApplicationsEventsUrl = (applicationId: string,) => {
 
@@ -240,7 +271,7 @@ export const applicationTrackerJobsApplicationsEvents = async (applicationId: st
 
 
 
-export const getApplicationTrackerJobsApplicationsEventsMutationOptions = <TError = unknown,
+export const getApplicationTrackerJobsApplicationsEventsMutationOptions = <TError = ApplicationTrackerJobsApplicationsEvents400 | ApplicationTrackerJobsApplicationsEvents401 | ApplicationTrackerJobsApplicationsEvents403 | ApplicationTrackerJobsApplicationsEvents404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsEvents>>, TError,{applicationId: string;data: ApplicationTrackerJobsApplicationsEventsBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsEvents>>, TError,{applicationId: string;data: ApplicationTrackerJobsApplicationsEventsBody}, TContext> => {
 
@@ -269,12 +300,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ApplicationTrackerJobsApplicationsEventsMutationResult = NonNullable<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsEvents>>>
     export type ApplicationTrackerJobsApplicationsEventsMutationBody = ApplicationTrackerJobsApplicationsEventsBody
-    export type ApplicationTrackerJobsApplicationsEventsMutationError = unknown
+    export type ApplicationTrackerJobsApplicationsEventsMutationError = ApplicationTrackerJobsApplicationsEvents400 | ApplicationTrackerJobsApplicationsEvents401 | ApplicationTrackerJobsApplicationsEvents403 | ApplicationTrackerJobsApplicationsEvents404
 
     /**
  * @summary Record a timeline event on an application (viewed, interview scheduled, offer, etc.).
  */
-export const createApplicationTrackerJobsApplicationsEvents = <TError = unknown,
+export const createApplicationTrackerJobsApplicationsEvents = <TError = ApplicationTrackerJobsApplicationsEvents400 | ApplicationTrackerJobsApplicationsEvents401 | ApplicationTrackerJobsApplicationsEvents403 | ApplicationTrackerJobsApplicationsEvents404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsEvents>>, TError,{applicationId: string;data: ApplicationTrackerJobsApplicationsEventsBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof applicationTrackerJobsApplicationsEvents>>,
@@ -288,12 +319,20 @@ export const createApplicationTrackerJobsApplicationsEvents = <TError = unknown,
  * Timeline + silence detection for job applications
  * @summary Per-company response percentiles (p50/p90 days to first response).
  */
-export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200 = void
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200 = ApplicationTrackerJobsApplicationsCompaniesResponseStats200
+
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse400 = ApplicationTrackerJobsApplicationsCompaniesResponseStats400
+
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse401 = ApplicationTrackerJobsApplicationsCompaniesResponseStats401
+
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse403 = ApplicationTrackerJobsApplicationsCompaniesResponseStats403
 
 export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSuccess = applicationTrackerJobsApplicationsCompaniesResponseStatsResponse200
-;
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponseError = (applicationTrackerJobsApplicationsCompaniesResponseStatsResponse400 | applicationTrackerJobsApplicationsCompaniesResponseStatsResponse401 | applicationTrackerJobsApplicationsCompaniesResponseStatsResponse403) & {
+  headers: Headers;
+};
 
-export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse = (applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSuccess)
+export type applicationTrackerJobsApplicationsCompaniesResponseStatsResponse = (applicationTrackerJobsApplicationsCompaniesResponseStatsResponseSuccess | applicationTrackerJobsApplicationsCompaniesResponseStatsResponseError)
 
 export const getApplicationTrackerJobsApplicationsCompaniesResponseStatsUrl = (company: string,) => {
 
@@ -331,7 +370,7 @@ export const getApplicationTrackerJobsApplicationsCompaniesResponseStatsQueryKey
     }
 
 
-export const getApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>>, TError = unknown>(company: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>>, TError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403>(company: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -350,14 +389,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>>
-export type ApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQueryError = unknown
+export type ApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQueryError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403
 
 
 /**
  * @summary Per-company response percentiles (p50/p90 days to first response).
  */
 
-export function createApplicationTrackerJobsApplicationsCompaniesResponseStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>>, TError = unknown>(
+export function createApplicationTrackerJobsApplicationsCompaniesResponseStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>>, TError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403>(
  company: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -372,7 +411,7 @@ export function createApplicationTrackerJobsApplicationsCompaniesResponseStatsIn
 /**
  * @summary Per-company response percentiles (p50/p90 days to first response).
  */
-export const prefetchApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = unknown>(
+export const prefetchApplicationTrackerJobsApplicationsCompaniesResponseStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403>(
  queryClient: QueryClient, company: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -388,7 +427,7 @@ export const prefetchApplicationTrackerJobsApplicationsCompaniesResponseStatsInf
 
 
 
-export const getApplicationTrackerJobsApplicationsCompaniesResponseStatsQueryOptions = <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = unknown>(company: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getApplicationTrackerJobsApplicationsCompaniesResponseStatsQueryOptions = <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403>(company: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -407,14 +446,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApplicationTrackerJobsApplicationsCompaniesResponseStatsQueryResult = NonNullable<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>>
-export type ApplicationTrackerJobsApplicationsCompaniesResponseStatsQueryError = unknown
+export type ApplicationTrackerJobsApplicationsCompaniesResponseStatsQueryError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403
 
 
 /**
  * @summary Per-company response percentiles (p50/p90 days to first response).
  */
 
-export function createApplicationTrackerJobsApplicationsCompaniesResponseStats<TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = unknown>(
+export function createApplicationTrackerJobsApplicationsCompaniesResponseStats<TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403>(
  company: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -429,7 +468,7 @@ export function createApplicationTrackerJobsApplicationsCompaniesResponseStats<T
 /**
  * @summary Per-company response percentiles (p50/p90 days to first response).
  */
-export const prefetchApplicationTrackerJobsApplicationsCompaniesResponseStatsQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = unknown>(
+export const prefetchApplicationTrackerJobsApplicationsCompaniesResponseStatsQuery = async <TData = Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError = ApplicationTrackerJobsApplicationsCompaniesResponseStats400 | ApplicationTrackerJobsApplicationsCompaniesResponseStats401 | ApplicationTrackerJobsApplicationsCompaniesResponseStats403>(
  queryClient: QueryClient, company: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof applicationTrackerJobsApplicationsCompaniesResponseStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

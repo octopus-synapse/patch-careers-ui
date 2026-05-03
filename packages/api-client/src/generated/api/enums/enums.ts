@@ -21,6 +21,15 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  EnumsExportFormats200,
+  EnumsExportFormats400,
+  EnumsSectionTypes200,
+  EnumsSectionTypes400,
+  EnumsUserRoles200,
+  EnumsUserRoles400
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +41,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns all available export formats for resume export
  * @summary Get available export formats
  */
-export type enumsExportFormatsResponse200 = void
+export type enumsExportFormatsResponse200 = EnumsExportFormats200
+
+export type enumsExportFormatsResponse400 = EnumsExportFormats400
 
 export type enumsExportFormatsResponseSuccess = enumsExportFormatsResponse200
-;
+export type enumsExportFormatsResponseError = (enumsExportFormatsResponse400) & {
+  headers: Headers;
+};
 
-export type enumsExportFormatsResponse = (enumsExportFormatsResponseSuccess)
+export type enumsExportFormatsResponse = (enumsExportFormatsResponseSuccess | enumsExportFormatsResponseError)
 
 export const getEnumsExportFormatsUrl = () => {
 
@@ -75,7 +88,7 @@ export const getEnumsExportFormatsQueryKey = () => {
     }
 
 
-export const getEnumsExportFormatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof enumsExportFormats>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getEnumsExportFormatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof enumsExportFormats>>>, TError = EnumsExportFormats400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +107,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EnumsExportFormatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof enumsExportFormats>>>
-export type EnumsExportFormatsInfiniteQueryError = unknown
+export type EnumsExportFormatsInfiniteQueryError = EnumsExportFormats400
 
 
 /**
  * @summary Get available export formats
  */
 
-export function createEnumsExportFormatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof enumsExportFormats>>>, TError = unknown>(
+export function createEnumsExportFormatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof enumsExportFormats>>>, TError = EnumsExportFormats400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +129,7 @@ export function createEnumsExportFormatsInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Get available export formats
  */
-export const prefetchEnumsExportFormatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = unknown>(
+export const prefetchEnumsExportFormatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = EnumsExportFormats400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +145,7 @@ export const prefetchEnumsExportFormatsInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getEnumsExportFormatsQueryOptions = <TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getEnumsExportFormatsQueryOptions = <TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = EnumsExportFormats400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +164,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EnumsExportFormatsQueryResult = NonNullable<Awaited<ReturnType<typeof enumsExportFormats>>>
-export type EnumsExportFormatsQueryError = unknown
+export type EnumsExportFormatsQueryError = EnumsExportFormats400
 
 
 /**
  * @summary Get available export formats
  */
 
-export function createEnumsExportFormats<TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = unknown>(
+export function createEnumsExportFormats<TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = EnumsExportFormats400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +186,7 @@ export function createEnumsExportFormats<TData = Awaited<ReturnType<typeof enums
 /**
  * @summary Get available export formats
  */
-export const prefetchEnumsExportFormatsQuery = async <TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = unknown>(
+export const prefetchEnumsExportFormatsQuery = async <TData = Awaited<ReturnType<typeof enumsExportFormats>>, TError = EnumsExportFormats400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsExportFormats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +206,16 @@ export const prefetchEnumsExportFormatsQuery = async <TData = Awaited<ReturnType
  * Returns all available user roles in the system
  * @summary Get available user roles
  */
-export type enumsUserRolesResponse200 = void
+export type enumsUserRolesResponse200 = EnumsUserRoles200
+
+export type enumsUserRolesResponse400 = EnumsUserRoles400
 
 export type enumsUserRolesResponseSuccess = enumsUserRolesResponse200
-;
+export type enumsUserRolesResponseError = (enumsUserRolesResponse400) & {
+  headers: Headers;
+};
 
-export type enumsUserRolesResponse = (enumsUserRolesResponseSuccess)
+export type enumsUserRolesResponse = (enumsUserRolesResponseSuccess | enumsUserRolesResponseError)
 
 export const getEnumsUserRolesUrl = () => {
 
@@ -236,7 +253,7 @@ export const getEnumsUserRolesQueryKey = () => {
     }
 
 
-export const getEnumsUserRolesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof enumsUserRoles>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getEnumsUserRolesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof enumsUserRoles>>>, TError = EnumsUserRoles400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +272,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EnumsUserRolesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof enumsUserRoles>>>
-export type EnumsUserRolesInfiniteQueryError = unknown
+export type EnumsUserRolesInfiniteQueryError = EnumsUserRoles400
 
 
 /**
  * @summary Get available user roles
  */
 
-export function createEnumsUserRolesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof enumsUserRoles>>>, TError = unknown>(
+export function createEnumsUserRolesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof enumsUserRoles>>>, TError = EnumsUserRoles400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +294,7 @@ export function createEnumsUserRolesInfinite<TData = InfiniteData<Awaited<Return
 /**
  * @summary Get available user roles
  */
-export const prefetchEnumsUserRolesInfiniteQuery = async <TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = unknown>(
+export const prefetchEnumsUserRolesInfiniteQuery = async <TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = EnumsUserRoles400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +310,7 @@ export const prefetchEnumsUserRolesInfiniteQuery = async <TData = Awaited<Return
 
 
 
-export const getEnumsUserRolesQueryOptions = <TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getEnumsUserRolesQueryOptions = <TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = EnumsUserRoles400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +329,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EnumsUserRolesQueryResult = NonNullable<Awaited<ReturnType<typeof enumsUserRoles>>>
-export type EnumsUserRolesQueryError = unknown
+export type EnumsUserRolesQueryError = EnumsUserRoles400
 
 
 /**
  * @summary Get available user roles
  */
 
-export function createEnumsUserRoles<TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = unknown>(
+export function createEnumsUserRoles<TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = EnumsUserRoles400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +351,7 @@ export function createEnumsUserRoles<TData = Awaited<ReturnType<typeof enumsUser
 /**
  * @summary Get available user roles
  */
-export const prefetchEnumsUserRolesQuery = async <TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = unknown>(
+export const prefetchEnumsUserRolesQuery = async <TData = Awaited<ReturnType<typeof enumsUserRoles>>, TError = EnumsUserRoles400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsUserRoles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -354,12 +371,16 @@ export const prefetchEnumsUserRolesQuery = async <TData = Awaited<ReturnType<typ
  * Returns all available resume section types from definitions
  * @summary Get available section types
  */
-export type enumsSectionTypesResponse200 = void
+export type enumsSectionTypesResponse200 = EnumsSectionTypes200
+
+export type enumsSectionTypesResponse400 = EnumsSectionTypes400
 
 export type enumsSectionTypesResponseSuccess = enumsSectionTypesResponse200
-;
+export type enumsSectionTypesResponseError = (enumsSectionTypesResponse400) & {
+  headers: Headers;
+};
 
-export type enumsSectionTypesResponse = (enumsSectionTypesResponseSuccess)
+export type enumsSectionTypesResponse = (enumsSectionTypesResponseSuccess | enumsSectionTypesResponseError)
 
 export const getEnumsSectionTypesUrl = () => {
 
@@ -397,7 +418,7 @@ export const getEnumsSectionTypesQueryKey = () => {
     }
 
 
-export const getEnumsSectionTypesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof enumsSectionTypes>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getEnumsSectionTypesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof enumsSectionTypes>>>, TError = EnumsSectionTypes400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -416,14 +437,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EnumsSectionTypesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof enumsSectionTypes>>>
-export type EnumsSectionTypesInfiniteQueryError = unknown
+export type EnumsSectionTypesInfiniteQueryError = EnumsSectionTypes400
 
 
 /**
  * @summary Get available section types
  */
 
-export function createEnumsSectionTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof enumsSectionTypes>>>, TError = unknown>(
+export function createEnumsSectionTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof enumsSectionTypes>>>, TError = EnumsSectionTypes400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -438,7 +459,7 @@ export function createEnumsSectionTypesInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Get available section types
  */
-export const prefetchEnumsSectionTypesInfiniteQuery = async <TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = unknown>(
+export const prefetchEnumsSectionTypesInfiniteQuery = async <TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = EnumsSectionTypes400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -454,7 +475,7 @@ export const prefetchEnumsSectionTypesInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getEnumsSectionTypesQueryOptions = <TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getEnumsSectionTypesQueryOptions = <TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = EnumsSectionTypes400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -473,14 +494,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EnumsSectionTypesQueryResult = NonNullable<Awaited<ReturnType<typeof enumsSectionTypes>>>
-export type EnumsSectionTypesQueryError = unknown
+export type EnumsSectionTypesQueryError = EnumsSectionTypes400
 
 
 /**
  * @summary Get available section types
  */
 
-export function createEnumsSectionTypes<TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = unknown>(
+export function createEnumsSectionTypes<TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = EnumsSectionTypes400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -495,7 +516,7 @@ export function createEnumsSectionTypes<TData = Awaited<ReturnType<typeof enumsS
 /**
  * @summary Get available section types
  */
-export const prefetchEnumsSectionTypesQuery = async <TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = unknown>(
+export const prefetchEnumsSectionTypesQuery = async <TData = Awaited<ReturnType<typeof enumsSectionTypes>>, TError = EnumsSectionTypes400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof enumsSectionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

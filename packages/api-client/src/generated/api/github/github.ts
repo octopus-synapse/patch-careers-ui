@@ -26,7 +26,20 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  GithubIntegrationsGithubSyncBody
+  GithubIntegrationsGithubSummary200,
+  GithubIntegrationsGithubSummary400,
+  GithubIntegrationsGithubSync200,
+  GithubIntegrationsGithubSync400,
+  GithubIntegrationsGithubSync401,
+  GithubIntegrationsGithubSyncAuto200,
+  GithubIntegrationsGithubSyncAuto400,
+  GithubIntegrationsGithubSyncAuto401,
+  GithubIntegrationsGithubSyncAuto404,
+  GithubIntegrationsGithubSyncBody,
+  GithubIntegrationsGithubSyncStatus200,
+  GithubIntegrationsGithubSyncStatus400,
+  GithubIntegrationsGithubSyncStatus401,
+  GithubIntegrationsGithubSyncStatus404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +53,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * GitHub summary with repositories, contributions, and stats
  * @summary Get GitHub profile summary for a username
  */
-export type githubIntegrationsGithubSummaryResponse200 = void
+export type githubIntegrationsGithubSummaryResponse200 = GithubIntegrationsGithubSummary200
+
+export type githubIntegrationsGithubSummaryResponse400 = GithubIntegrationsGithubSummary400
 
 export type githubIntegrationsGithubSummaryResponseSuccess = githubIntegrationsGithubSummaryResponse200
-;
+export type githubIntegrationsGithubSummaryResponseError = (githubIntegrationsGithubSummaryResponse400) & {
+  headers: Headers;
+};
 
-export type githubIntegrationsGithubSummaryResponse = (githubIntegrationsGithubSummaryResponseSuccess)
+export type githubIntegrationsGithubSummaryResponse = (githubIntegrationsGithubSummaryResponseSuccess | githubIntegrationsGithubSummaryResponseError)
 
 export const getGithubIntegrationsGithubSummaryUrl = (username: string,) => {
 
@@ -83,7 +100,7 @@ export const getGithubIntegrationsGithubSummaryQueryKey = (username: string,) =>
     }
 
 
-export const getGithubIntegrationsGithubSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>>, TError = unknown>(username: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGithubIntegrationsGithubSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>>, TError = GithubIntegrationsGithubSummary400>(username: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +119,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GithubIntegrationsGithubSummaryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>>
-export type GithubIntegrationsGithubSummaryInfiniteQueryError = unknown
+export type GithubIntegrationsGithubSummaryInfiniteQueryError = GithubIntegrationsGithubSummary400
 
 
 /**
  * @summary Get GitHub profile summary for a username
  */
 
-export function createGithubIntegrationsGithubSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>>, TError = unknown>(
+export function createGithubIntegrationsGithubSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>>, TError = GithubIntegrationsGithubSummary400>(
  username: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +141,7 @@ export function createGithubIntegrationsGithubSummaryInfinite<TData = InfiniteDa
 /**
  * @summary Get GitHub profile summary for a username
  */
-export const prefetchGithubIntegrationsGithubSummaryInfiniteQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = unknown>(
+export const prefetchGithubIntegrationsGithubSummaryInfiniteQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = GithubIntegrationsGithubSummary400>(
  queryClient: QueryClient, username: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +157,7 @@ export const prefetchGithubIntegrationsGithubSummaryInfiniteQuery = async <TData
 
 
 
-export const getGithubIntegrationsGithubSummaryQueryOptions = <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = unknown>(username: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGithubIntegrationsGithubSummaryQueryOptions = <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = GithubIntegrationsGithubSummary400>(username: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +176,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GithubIntegrationsGithubSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>>
-export type GithubIntegrationsGithubSummaryQueryError = unknown
+export type GithubIntegrationsGithubSummaryQueryError = GithubIntegrationsGithubSummary400
 
 
 /**
  * @summary Get GitHub profile summary for a username
  */
 
-export function createGithubIntegrationsGithubSummary<TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = unknown>(
+export function createGithubIntegrationsGithubSummary<TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = GithubIntegrationsGithubSummary400>(
  username: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +198,7 @@ export function createGithubIntegrationsGithubSummary<TData = Awaited<ReturnType
 /**
  * @summary Get GitHub profile summary for a username
  */
-export const prefetchGithubIntegrationsGithubSummaryQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = unknown>(
+export const prefetchGithubIntegrationsGithubSummaryQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError = GithubIntegrationsGithubSummary400>(
  queryClient: QueryClient, username: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +218,18 @@ export const prefetchGithubIntegrationsGithubSummaryQuery = async <TData = Await
  * GitHub data synced successfully
  * @summary Sync GitHub data to user resume
  */
-export type githubIntegrationsGithubSyncResponse200 = void
+export type githubIntegrationsGithubSyncResponse200 = GithubIntegrationsGithubSync200
+
+export type githubIntegrationsGithubSyncResponse400 = GithubIntegrationsGithubSync400
+
+export type githubIntegrationsGithubSyncResponse401 = GithubIntegrationsGithubSync401
 
 export type githubIntegrationsGithubSyncResponseSuccess = githubIntegrationsGithubSyncResponse200
-;
+export type githubIntegrationsGithubSyncResponseError = (githubIntegrationsGithubSyncResponse400 | githubIntegrationsGithubSyncResponse401) & {
+  headers: Headers;
+};
 
-export type githubIntegrationsGithubSyncResponse = (githubIntegrationsGithubSyncResponseSuccess)
+export type githubIntegrationsGithubSyncResponse = (githubIntegrationsGithubSyncResponseSuccess | githubIntegrationsGithubSyncResponseError)
 
 export const getGithubIntegrationsGithubSyncUrl = () => {
 
@@ -231,7 +254,7 @@ export const githubIntegrationsGithubSync = async (githubIntegrationsGithubSyncB
 
 
 
-export const getGithubIntegrationsGithubSyncMutationOptions = <TError = unknown,
+export const getGithubIntegrationsGithubSyncMutationOptions = <TError = GithubIntegrationsGithubSync400 | GithubIntegrationsGithubSync401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSync>>, TError,{data: GithubIntegrationsGithubSyncBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSync>>, TError,{data: GithubIntegrationsGithubSyncBody}, TContext> => {
 
@@ -260,12 +283,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type GithubIntegrationsGithubSyncMutationResult = NonNullable<Awaited<ReturnType<typeof githubIntegrationsGithubSync>>>
     export type GithubIntegrationsGithubSyncMutationBody = GithubIntegrationsGithubSyncBody
-    export type GithubIntegrationsGithubSyncMutationError = unknown
+    export type GithubIntegrationsGithubSyncMutationError = GithubIntegrationsGithubSync400 | GithubIntegrationsGithubSync401
 
     /**
  * @summary Sync GitHub data to user resume
  */
-export const createGithubIntegrationsGithubSync = <TError = unknown,
+export const createGithubIntegrationsGithubSync = <TError = GithubIntegrationsGithubSync400 | GithubIntegrationsGithubSync401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSync>>, TError,{data: GithubIntegrationsGithubSyncBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof githubIntegrationsGithubSync>>,
@@ -279,12 +302,20 @@ export const createGithubIntegrationsGithubSync = <TError = unknown,
  * GitHub data auto-synced successfully
  * @summary Auto-sync GitHub from resume GitHub link
  */
-export type githubIntegrationsGithubSyncAutoResponse200 = void
+export type githubIntegrationsGithubSyncAutoResponse200 = GithubIntegrationsGithubSyncAuto200
+
+export type githubIntegrationsGithubSyncAutoResponse400 = GithubIntegrationsGithubSyncAuto400
+
+export type githubIntegrationsGithubSyncAutoResponse401 = GithubIntegrationsGithubSyncAuto401
+
+export type githubIntegrationsGithubSyncAutoResponse404 = GithubIntegrationsGithubSyncAuto404
 
 export type githubIntegrationsGithubSyncAutoResponseSuccess = githubIntegrationsGithubSyncAutoResponse200
-;
+export type githubIntegrationsGithubSyncAutoResponseError = (githubIntegrationsGithubSyncAutoResponse400 | githubIntegrationsGithubSyncAutoResponse401 | githubIntegrationsGithubSyncAutoResponse404) & {
+  headers: Headers;
+};
 
-export type githubIntegrationsGithubSyncAutoResponse = (githubIntegrationsGithubSyncAutoResponseSuccess)
+export type githubIntegrationsGithubSyncAutoResponse = (githubIntegrationsGithubSyncAutoResponseSuccess | githubIntegrationsGithubSyncAutoResponseError)
 
 export const getGithubIntegrationsGithubSyncAutoUrl = (resumeId: string,) => {
 
@@ -308,7 +339,7 @@ export const githubIntegrationsGithubSyncAuto = async (resumeId: string, options
 
 
 
-export const getGithubIntegrationsGithubSyncAutoMutationOptions = <TError = unknown,
+export const getGithubIntegrationsGithubSyncAutoMutationOptions = <TError = GithubIntegrationsGithubSyncAuto400 | GithubIntegrationsGithubSyncAuto401 | GithubIntegrationsGithubSyncAuto404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncAuto>>, TError,{resumeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncAuto>>, TError,{resumeId: string}, TContext> => {
 
@@ -337,12 +368,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type GithubIntegrationsGithubSyncAutoMutationResult = NonNullable<Awaited<ReturnType<typeof githubIntegrationsGithubSyncAuto>>>
 
-    export type GithubIntegrationsGithubSyncAutoMutationError = unknown
+    export type GithubIntegrationsGithubSyncAutoMutationError = GithubIntegrationsGithubSyncAuto400 | GithubIntegrationsGithubSyncAuto401 | GithubIntegrationsGithubSyncAuto404
 
     /**
  * @summary Auto-sync GitHub from resume GitHub link
  */
-export const createGithubIntegrationsGithubSyncAuto = <TError = unknown,
+export const createGithubIntegrationsGithubSyncAuto = <TError = GithubIntegrationsGithubSyncAuto400 | GithubIntegrationsGithubSyncAuto401 | GithubIntegrationsGithubSyncAuto404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncAuto>>, TError,{resumeId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof githubIntegrationsGithubSyncAuto>>,
@@ -356,12 +387,20 @@ export const createGithubIntegrationsGithubSyncAuto = <TError = unknown,
  * Sync status
  * @summary Get GitHub sync status for a resume
  */
-export type githubIntegrationsGithubSyncStatusResponse200 = void
+export type githubIntegrationsGithubSyncStatusResponse200 = GithubIntegrationsGithubSyncStatus200
+
+export type githubIntegrationsGithubSyncStatusResponse400 = GithubIntegrationsGithubSyncStatus400
+
+export type githubIntegrationsGithubSyncStatusResponse401 = GithubIntegrationsGithubSyncStatus401
+
+export type githubIntegrationsGithubSyncStatusResponse404 = GithubIntegrationsGithubSyncStatus404
 
 export type githubIntegrationsGithubSyncStatusResponseSuccess = githubIntegrationsGithubSyncStatusResponse200
-;
+export type githubIntegrationsGithubSyncStatusResponseError = (githubIntegrationsGithubSyncStatusResponse400 | githubIntegrationsGithubSyncStatusResponse401 | githubIntegrationsGithubSyncStatusResponse404) & {
+  headers: Headers;
+};
 
-export type githubIntegrationsGithubSyncStatusResponse = (githubIntegrationsGithubSyncStatusResponseSuccess)
+export type githubIntegrationsGithubSyncStatusResponse = (githubIntegrationsGithubSyncStatusResponseSuccess | githubIntegrationsGithubSyncStatusResponseError)
 
 export const getGithubIntegrationsGithubSyncStatusUrl = (resumeId: string,) => {
 
@@ -399,7 +438,7 @@ export const getGithubIntegrationsGithubSyncStatusQueryKey = (resumeId: string,)
     }
 
 
-export const getGithubIntegrationsGithubSyncStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGithubIntegrationsGithubSyncStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>>, TError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -418,14 +457,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GithubIntegrationsGithubSyncStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>>
-export type GithubIntegrationsGithubSyncStatusInfiniteQueryError = unknown
+export type GithubIntegrationsGithubSyncStatusInfiniteQueryError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404
 
 
 /**
  * @summary Get GitHub sync status for a resume
  */
 
-export function createGithubIntegrationsGithubSyncStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>>, TError = unknown>(
+export function createGithubIntegrationsGithubSyncStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>>, TError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -440,7 +479,7 @@ export function createGithubIntegrationsGithubSyncStatusInfinite<TData = Infinit
 /**
  * @summary Get GitHub sync status for a resume
  */
-export const prefetchGithubIntegrationsGithubSyncStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = unknown>(
+export const prefetchGithubIntegrationsGithubSyncStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -456,7 +495,7 @@ export const prefetchGithubIntegrationsGithubSyncStatusInfiniteQuery = async <TD
 
 
 
-export const getGithubIntegrationsGithubSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getGithubIntegrationsGithubSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -475,14 +514,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GithubIntegrationsGithubSyncStatusQueryResult = NonNullable<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>>
-export type GithubIntegrationsGithubSyncStatusQueryError = unknown
+export type GithubIntegrationsGithubSyncStatusQueryError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404
 
 
 /**
  * @summary Get GitHub sync status for a resume
  */
 
-export function createGithubIntegrationsGithubSyncStatus<TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = unknown>(
+export function createGithubIntegrationsGithubSyncStatus<TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -497,7 +536,7 @@ export function createGithubIntegrationsGithubSyncStatus<TData = Awaited<ReturnT
 /**
  * @summary Get GitHub sync status for a resume
  */
-export const prefetchGithubIntegrationsGithubSyncStatusQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = unknown>(
+export const prefetchGithubIntegrationsGithubSyncStatusQuery = async <TData = Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError = GithubIntegrationsGithubSyncStatus400 | GithubIntegrationsGithubSyncStatus401 | GithubIntegrationsGithubSyncStatus404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof githubIntegrationsGithubSyncStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

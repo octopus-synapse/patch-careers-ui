@@ -26,8 +26,46 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  ResumeImportResumesImportsDelete400,
+  ResumeImportResumesImportsDelete401,
+  ResumeImportResumesImportsDelete403,
+  ResumeImportResumesImportsDelete404,
+  ResumeImportResumesImportsGet200,
+  ResumeImportResumesImportsGet2200Item,
+  ResumeImportResumesImportsGet2400,
+  ResumeImportResumesImportsGet2401,
+  ResumeImportResumesImportsGet2403,
+  ResumeImportResumesImportsGet400,
+  ResumeImportResumesImportsGet401,
+  ResumeImportResumesImportsGet403,
+  ResumeImportResumesImportsGet404,
+  ResumeImportResumesImportsGithub200,
+  ResumeImportResumesImportsGithub400,
+  ResumeImportResumesImportsGithub401,
+  ResumeImportResumesImportsGithub403,
+  ResumeImportResumesImportsJson200,
+  ResumeImportResumesImportsJson400,
+  ResumeImportResumesImportsJson401,
+  ResumeImportResumesImportsJson403,
   ResumeImportResumesImportsJsonBody,
-  ResumeImportResumesImportsParseBody
+  ResumeImportResumesImportsLinkedin200,
+  ResumeImportResumesImportsLinkedin400,
+  ResumeImportResumesImportsLinkedin401,
+  ResumeImportResumesImportsLinkedin403,
+  ResumeImportResumesImportsParse200,
+  ResumeImportResumesImportsParse400,
+  ResumeImportResumesImportsParse401,
+  ResumeImportResumesImportsParse403,
+  ResumeImportResumesImportsParseBody,
+  ResumeImportResumesImportsPdf200,
+  ResumeImportResumesImportsPdf400,
+  ResumeImportResumesImportsPdf401,
+  ResumeImportResumesImportsPdf403,
+  ResumeImportResumesImportsRetry200,
+  ResumeImportResumesImportsRetry400,
+  ResumeImportResumesImportsRetry401,
+  ResumeImportResumesImportsRetry403,
+  ResumeImportResumesImportsRetry404
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -41,12 +79,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Placeholder endpoint. Returns 503 until the LinkedIn v2 API client lands. Frontend should treat this as 'em breve' for now.
  * @summary Import profile data from LinkedIn (scaffold)
  */
-export type resumeImportResumesImportsLinkedinResponse200 = void
+export type resumeImportResumesImportsLinkedinResponse200 = ResumeImportResumesImportsLinkedin200
+
+export type resumeImportResumesImportsLinkedinResponse400 = ResumeImportResumesImportsLinkedin400
+
+export type resumeImportResumesImportsLinkedinResponse401 = ResumeImportResumesImportsLinkedin401
+
+export type resumeImportResumesImportsLinkedinResponse403 = ResumeImportResumesImportsLinkedin403
 
 export type resumeImportResumesImportsLinkedinResponseSuccess = resumeImportResumesImportsLinkedinResponse200
-;
+export type resumeImportResumesImportsLinkedinResponseError = (resumeImportResumesImportsLinkedinResponse400 | resumeImportResumesImportsLinkedinResponse401 | resumeImportResumesImportsLinkedinResponse403) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsLinkedinResponse = (resumeImportResumesImportsLinkedinResponseSuccess)
+export type resumeImportResumesImportsLinkedinResponse = (resumeImportResumesImportsLinkedinResponseSuccess | resumeImportResumesImportsLinkedinResponseError)
 
 export const getResumeImportResumesImportsLinkedinUrl = () => {
 
@@ -70,7 +116,7 @@ export const resumeImportResumesImportsLinkedin = async ( options?: RequestInit)
 
 
 
-export const getResumeImportResumesImportsLinkedinMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsLinkedinMutationOptions = <TError = ResumeImportResumesImportsLinkedin400 | ResumeImportResumesImportsLinkedin401 | ResumeImportResumesImportsLinkedin403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsLinkedin>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsLinkedin>>, TError,void, TContext> => {
 
@@ -99,12 +145,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsLinkedinMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsLinkedin>>>
 
-    export type ResumeImportResumesImportsLinkedinMutationError = unknown
+    export type ResumeImportResumesImportsLinkedinMutationError = ResumeImportResumesImportsLinkedin400 | ResumeImportResumesImportsLinkedin401 | ResumeImportResumesImportsLinkedin403
 
     /**
  * @summary Import profile data from LinkedIn (scaffold)
  */
-export const createResumeImportResumesImportsLinkedin = <TError = unknown,
+export const createResumeImportResumesImportsLinkedin = <TError = ResumeImportResumesImportsLinkedin400 | ResumeImportResumesImportsLinkedin401 | ResumeImportResumesImportsLinkedin403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsLinkedin>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsLinkedin>>,
@@ -118,12 +164,20 @@ export const createResumeImportResumesImportsLinkedin = <TError = unknown,
  * Creates import job and processes JSON Resume data (jsonresume.org standard)
  * @summary Import resume from JSON Resume format
  */
-export type resumeImportResumesImportsJsonResponse200 = void
+export type resumeImportResumesImportsJsonResponse200 = ResumeImportResumesImportsJson200
+
+export type resumeImportResumesImportsJsonResponse400 = ResumeImportResumesImportsJson400
+
+export type resumeImportResumesImportsJsonResponse401 = ResumeImportResumesImportsJson401
+
+export type resumeImportResumesImportsJsonResponse403 = ResumeImportResumesImportsJson403
 
 export type resumeImportResumesImportsJsonResponseSuccess = resumeImportResumesImportsJsonResponse200
-;
+export type resumeImportResumesImportsJsonResponseError = (resumeImportResumesImportsJsonResponse400 | resumeImportResumesImportsJsonResponse401 | resumeImportResumesImportsJsonResponse403) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsJsonResponse = (resumeImportResumesImportsJsonResponseSuccess)
+export type resumeImportResumesImportsJsonResponse = (resumeImportResumesImportsJsonResponseSuccess | resumeImportResumesImportsJsonResponseError)
 
 export const getResumeImportResumesImportsJsonUrl = () => {
 
@@ -148,7 +202,7 @@ export const resumeImportResumesImportsJson = async (resumeImportResumesImportsJ
 
 
 
-export const getResumeImportResumesImportsJsonMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsJsonMutationOptions = <TError = ResumeImportResumesImportsJson400 | ResumeImportResumesImportsJson401 | ResumeImportResumesImportsJson403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsJson>>, TError,{data: ResumeImportResumesImportsJsonBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsJson>>, TError,{data: ResumeImportResumesImportsJsonBody}, TContext> => {
 
@@ -177,12 +231,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsJsonMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsJson>>>
     export type ResumeImportResumesImportsJsonMutationBody = ResumeImportResumesImportsJsonBody
-    export type ResumeImportResumesImportsJsonMutationError = unknown
+    export type ResumeImportResumesImportsJsonMutationError = ResumeImportResumesImportsJson400 | ResumeImportResumesImportsJson401 | ResumeImportResumesImportsJson403
 
     /**
  * @summary Import resume from JSON Resume format
  */
-export const createResumeImportResumesImportsJson = <TError = unknown,
+export const createResumeImportResumesImportsJson = <TError = ResumeImportResumesImportsJson400 | ResumeImportResumesImportsJson401 | ResumeImportResumesImportsJson403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsJson>>, TError,{data: ResumeImportResumesImportsJsonBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsJson>>,
@@ -196,12 +250,20 @@ export const createResumeImportResumesImportsJson = <TError = unknown,
  * Validates and transforms JSON Resume to internal format without saving
  * @summary Parse JSON Resume without importing
  */
-export type resumeImportResumesImportsParseResponse200 = void
+export type resumeImportResumesImportsParseResponse200 = ResumeImportResumesImportsParse200
+
+export type resumeImportResumesImportsParseResponse400 = ResumeImportResumesImportsParse400
+
+export type resumeImportResumesImportsParseResponse401 = ResumeImportResumesImportsParse401
+
+export type resumeImportResumesImportsParseResponse403 = ResumeImportResumesImportsParse403
 
 export type resumeImportResumesImportsParseResponseSuccess = resumeImportResumesImportsParseResponse200
-;
+export type resumeImportResumesImportsParseResponseError = (resumeImportResumesImportsParseResponse400 | resumeImportResumesImportsParseResponse401 | resumeImportResumesImportsParseResponse403) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsParseResponse = (resumeImportResumesImportsParseResponseSuccess)
+export type resumeImportResumesImportsParseResponse = (resumeImportResumesImportsParseResponseSuccess | resumeImportResumesImportsParseResponseError)
 
 export const getResumeImportResumesImportsParseUrl = () => {
 
@@ -226,7 +288,7 @@ export const resumeImportResumesImportsParse = async (resumeImportResumesImports
 
 
 
-export const getResumeImportResumesImportsParseMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsParseMutationOptions = <TError = ResumeImportResumesImportsParse400 | ResumeImportResumesImportsParse401 | ResumeImportResumesImportsParse403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsParse>>, TError,{data: ResumeImportResumesImportsParseBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsParse>>, TError,{data: ResumeImportResumesImportsParseBody}, TContext> => {
 
@@ -255,12 +317,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsParseMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsParse>>>
     export type ResumeImportResumesImportsParseMutationBody = ResumeImportResumesImportsParseBody
-    export type ResumeImportResumesImportsParseMutationError = unknown
+    export type ResumeImportResumesImportsParseMutationError = ResumeImportResumesImportsParse400 | ResumeImportResumesImportsParse401 | ResumeImportResumesImportsParse403
 
     /**
  * @summary Parse JSON Resume without importing
  */
-export const createResumeImportResumesImportsParse = <TError = unknown,
+export const createResumeImportResumesImportsParse = <TError = ResumeImportResumesImportsParse400 | ResumeImportResumesImportsParse401 | ResumeImportResumesImportsParse403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsParse>>, TError,{data: ResumeImportResumesImportsParseBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsParse>>,
@@ -274,12 +336,22 @@ export const createResumeImportResumesImportsParse = <TError = unknown,
  * Returns current status, errors, and result of import job
  * @summary Get import job status
  */
-export type resumeImportResumesImportsGetResponse200 = void
+export type resumeImportResumesImportsGetResponse200 = ResumeImportResumesImportsGet200
+
+export type resumeImportResumesImportsGetResponse400 = ResumeImportResumesImportsGet400
+
+export type resumeImportResumesImportsGetResponse401 = ResumeImportResumesImportsGet401
+
+export type resumeImportResumesImportsGetResponse403 = ResumeImportResumesImportsGet403
+
+export type resumeImportResumesImportsGetResponse404 = ResumeImportResumesImportsGet404
 
 export type resumeImportResumesImportsGetResponseSuccess = resumeImportResumesImportsGetResponse200
-;
+export type resumeImportResumesImportsGetResponseError = (resumeImportResumesImportsGetResponse400 | resumeImportResumesImportsGetResponse401 | resumeImportResumesImportsGetResponse403 | resumeImportResumesImportsGetResponse404) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsGetResponse = (resumeImportResumesImportsGetResponseSuccess)
+export type resumeImportResumesImportsGetResponse = (resumeImportResumesImportsGetResponseSuccess | resumeImportResumesImportsGetResponseError)
 
 export const getResumeImportResumesImportsGetUrl = (importId: string,) => {
 
@@ -317,7 +389,7 @@ export const getResumeImportResumesImportsGetQueryKey = (importId: string,) => {
     }
 
 
-export const getResumeImportResumesImportsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>>, TError = unknown>(importId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeImportResumesImportsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>>, TError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404>(importId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -336,14 +408,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeImportResumesImportsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>>
-export type ResumeImportResumesImportsGetInfiniteQueryError = unknown
+export type ResumeImportResumesImportsGetInfiniteQueryError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404
 
 
 /**
  * @summary Get import job status
  */
 
-export function createResumeImportResumesImportsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>>, TError = unknown>(
+export function createResumeImportResumesImportsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>>, TError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404>(
  importId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -358,7 +430,7 @@ export function createResumeImportResumesImportsGetInfinite<TData = InfiniteData
 /**
  * @summary Get import job status
  */
-export const prefetchResumeImportResumesImportsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = unknown>(
+export const prefetchResumeImportResumesImportsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404>(
  queryClient: QueryClient, importId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -374,7 +446,7 @@ export const prefetchResumeImportResumesImportsGetInfiniteQuery = async <TData =
 
 
 
-export const getResumeImportResumesImportsGetQueryOptions = <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = unknown>(importId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeImportResumesImportsGetQueryOptions = <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404>(importId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -393,14 +465,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeImportResumesImportsGetQueryResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>>
-export type ResumeImportResumesImportsGetQueryError = unknown
+export type ResumeImportResumesImportsGetQueryError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404
 
 
 /**
  * @summary Get import job status
  */
 
-export function createResumeImportResumesImportsGet<TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = unknown>(
+export function createResumeImportResumesImportsGet<TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404>(
  importId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -415,7 +487,7 @@ export function createResumeImportResumesImportsGet<TData = Awaited<ReturnType<t
 /**
  * @summary Get import job status
  */
-export const prefetchResumeImportResumesImportsGetQuery = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = unknown>(
+export const prefetchResumeImportResumesImportsGetQuery = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError = ResumeImportResumesImportsGet400 | ResumeImportResumesImportsGet401 | ResumeImportResumesImportsGet403 | ResumeImportResumesImportsGet404>(
  queryClient: QueryClient, importId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -435,12 +507,22 @@ export const prefetchResumeImportResumesImportsGetQuery = async <TData = Awaited
  * Cancels pending or processing import. Cannot cancel completed imports.
  * @summary Cancel import job
  */
-export type resumeImportResumesImportsDeleteResponse200 = void
+export type resumeImportResumesImportsDeleteResponse200 = unknown | null
+
+export type resumeImportResumesImportsDeleteResponse400 = ResumeImportResumesImportsDelete400
+
+export type resumeImportResumesImportsDeleteResponse401 = ResumeImportResumesImportsDelete401
+
+export type resumeImportResumesImportsDeleteResponse403 = ResumeImportResumesImportsDelete403
+
+export type resumeImportResumesImportsDeleteResponse404 = ResumeImportResumesImportsDelete404
 
 export type resumeImportResumesImportsDeleteResponseSuccess = resumeImportResumesImportsDeleteResponse200
-;
+export type resumeImportResumesImportsDeleteResponseError = (resumeImportResumesImportsDeleteResponse400 | resumeImportResumesImportsDeleteResponse401 | resumeImportResumesImportsDeleteResponse403 | resumeImportResumesImportsDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsDeleteResponse = (resumeImportResumesImportsDeleteResponseSuccess)
+export type resumeImportResumesImportsDeleteResponse = (resumeImportResumesImportsDeleteResponseSuccess | resumeImportResumesImportsDeleteResponseError)
 
 export const getResumeImportResumesImportsDeleteUrl = (importId: string,) => {
 
@@ -464,7 +546,7 @@ export const resumeImportResumesImportsDelete = async (importId: string, options
 
 
 
-export const getResumeImportResumesImportsDeleteMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsDeleteMutationOptions = <TError = ResumeImportResumesImportsDelete400 | ResumeImportResumesImportsDelete401 | ResumeImportResumesImportsDelete403 | ResumeImportResumesImportsDelete404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsDelete>>, TError,{importId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsDelete>>, TError,{importId: string}, TContext> => {
 
@@ -493,12 +575,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsDelete>>>
 
-    export type ResumeImportResumesImportsDeleteMutationError = unknown
+    export type ResumeImportResumesImportsDeleteMutationError = ResumeImportResumesImportsDelete400 | ResumeImportResumesImportsDelete401 | ResumeImportResumesImportsDelete403 | ResumeImportResumesImportsDelete404
 
     /**
  * @summary Cancel import job
  */
-export const createResumeImportResumesImportsDelete = <TError = unknown,
+export const createResumeImportResumesImportsDelete = <TError = ResumeImportResumesImportsDelete400 | ResumeImportResumesImportsDelete401 | ResumeImportResumesImportsDelete403 | ResumeImportResumesImportsDelete404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsDelete>>, TError,{importId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsDelete>>,
@@ -512,12 +594,20 @@ export const createResumeImportResumesImportsDelete = <TError = unknown,
  * Returns all import jobs for authenticated user, ordered by creation date
  * @summary Get import history
  */
-export type resumeImportResumesImportsGet2Response200 = void
+export type resumeImportResumesImportsGet2Response200 = ResumeImportResumesImportsGet2200Item[]
+
+export type resumeImportResumesImportsGet2Response400 = ResumeImportResumesImportsGet2400
+
+export type resumeImportResumesImportsGet2Response401 = ResumeImportResumesImportsGet2401
+
+export type resumeImportResumesImportsGet2Response403 = ResumeImportResumesImportsGet2403
 
 export type resumeImportResumesImportsGet2ResponseSuccess = resumeImportResumesImportsGet2Response200
-;
+export type resumeImportResumesImportsGet2ResponseError = (resumeImportResumesImportsGet2Response400 | resumeImportResumesImportsGet2Response401 | resumeImportResumesImportsGet2Response403) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsGet2Response = (resumeImportResumesImportsGet2ResponseSuccess)
+export type resumeImportResumesImportsGet2Response = (resumeImportResumesImportsGet2ResponseSuccess | resumeImportResumesImportsGet2ResponseError)
 
 export const getResumeImportResumesImportsGet2Url = () => {
 
@@ -555,7 +645,7 @@ export const getResumeImportResumesImportsGet2QueryKey = () => {
     }
 
 
-export const getResumeImportResumesImportsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeImportResumesImportsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>>, TError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -574,14 +664,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeImportResumesImportsGet2InfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>>
-export type ResumeImportResumesImportsGet2InfiniteQueryError = unknown
+export type ResumeImportResumesImportsGet2InfiniteQueryError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403
 
 
 /**
  * @summary Get import history
  */
 
-export function createResumeImportResumesImportsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>>, TError = unknown>(
+export function createResumeImportResumesImportsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>>, TError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -596,7 +686,7 @@ export function createResumeImportResumesImportsGet2Infinite<TData = InfiniteDat
 /**
  * @summary Get import history
  */
-export const prefetchResumeImportResumesImportsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = unknown>(
+export const prefetchResumeImportResumesImportsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -612,7 +702,7 @@ export const prefetchResumeImportResumesImportsGet2InfiniteQuery = async <TData 
 
 
 
-export const getResumeImportResumesImportsGet2QueryOptions = <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeImportResumesImportsGet2QueryOptions = <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -631,14 +721,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeImportResumesImportsGet2QueryResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>>
-export type ResumeImportResumesImportsGet2QueryError = unknown
+export type ResumeImportResumesImportsGet2QueryError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403
 
 
 /**
  * @summary Get import history
  */
 
-export function createResumeImportResumesImportsGet2<TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = unknown>(
+export function createResumeImportResumesImportsGet2<TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -653,7 +743,7 @@ export function createResumeImportResumesImportsGet2<TData = Awaited<ReturnType<
 /**
  * @summary Get import history
  */
-export const prefetchResumeImportResumesImportsGet2Query = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = unknown>(
+export const prefetchResumeImportResumesImportsGet2Query = async <TData = Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError = ResumeImportResumesImportsGet2400 | ResumeImportResumesImportsGet2401 | ResumeImportResumesImportsGet2403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -673,12 +763,22 @@ export const prefetchResumeImportResumesImportsGet2Query = async <TData = Awaite
  * Retries processing of failed import job with same data
  * @summary Retry failed import
  */
-export type resumeImportResumesImportsRetryResponse200 = void
+export type resumeImportResumesImportsRetryResponse200 = ResumeImportResumesImportsRetry200
+
+export type resumeImportResumesImportsRetryResponse400 = ResumeImportResumesImportsRetry400
+
+export type resumeImportResumesImportsRetryResponse401 = ResumeImportResumesImportsRetry401
+
+export type resumeImportResumesImportsRetryResponse403 = ResumeImportResumesImportsRetry403
+
+export type resumeImportResumesImportsRetryResponse404 = ResumeImportResumesImportsRetry404
 
 export type resumeImportResumesImportsRetryResponseSuccess = resumeImportResumesImportsRetryResponse200
-;
+export type resumeImportResumesImportsRetryResponseError = (resumeImportResumesImportsRetryResponse400 | resumeImportResumesImportsRetryResponse401 | resumeImportResumesImportsRetryResponse403 | resumeImportResumesImportsRetryResponse404) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsRetryResponse = (resumeImportResumesImportsRetryResponseSuccess)
+export type resumeImportResumesImportsRetryResponse = (resumeImportResumesImportsRetryResponseSuccess | resumeImportResumesImportsRetryResponseError)
 
 export const getResumeImportResumesImportsRetryUrl = (importId: string,) => {
 
@@ -702,7 +802,7 @@ export const resumeImportResumesImportsRetry = async (importId: string, options?
 
 
 
-export const getResumeImportResumesImportsRetryMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsRetryMutationOptions = <TError = ResumeImportResumesImportsRetry400 | ResumeImportResumesImportsRetry401 | ResumeImportResumesImportsRetry403 | ResumeImportResumesImportsRetry404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsRetry>>, TError,{importId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsRetry>>, TError,{importId: string}, TContext> => {
 
@@ -731,12 +831,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsRetryMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsRetry>>>
 
-    export type ResumeImportResumesImportsRetryMutationError = unknown
+    export type ResumeImportResumesImportsRetryMutationError = ResumeImportResumesImportsRetry400 | ResumeImportResumesImportsRetry401 | ResumeImportResumesImportsRetry403 | ResumeImportResumesImportsRetry404
 
     /**
  * @summary Retry failed import
  */
-export const createResumeImportResumesImportsRetry = <TError = unknown,
+export const createResumeImportResumesImportsRetry = <TError = ResumeImportResumesImportsRetry400 | ResumeImportResumesImportsRetry401 | ResumeImportResumesImportsRetry403 | ResumeImportResumesImportsRetry404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsRetry>>, TError,{importId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsRetry>>,
@@ -750,12 +850,20 @@ export const createResumeImportResumesImportsRetry = <TError = unknown,
  * Accepts a PDF upload (multipart/form-data, field name `file`), extracts the text with pdf-parse and structures it with the LLM. Creates a Resume row and marks it as primary when the user has none.
  * @summary Import resume from a PDF file
  */
-export type resumeImportResumesImportsPdfResponse200 = void
+export type resumeImportResumesImportsPdfResponse200 = ResumeImportResumesImportsPdf200
+
+export type resumeImportResumesImportsPdfResponse400 = ResumeImportResumesImportsPdf400
+
+export type resumeImportResumesImportsPdfResponse401 = ResumeImportResumesImportsPdf401
+
+export type resumeImportResumesImportsPdfResponse403 = ResumeImportResumesImportsPdf403
 
 export type resumeImportResumesImportsPdfResponseSuccess = resumeImportResumesImportsPdfResponse200
-;
+export type resumeImportResumesImportsPdfResponseError = (resumeImportResumesImportsPdfResponse400 | resumeImportResumesImportsPdfResponse401 | resumeImportResumesImportsPdfResponse403) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsPdfResponse = (resumeImportResumesImportsPdfResponseSuccess)
+export type resumeImportResumesImportsPdfResponse = (resumeImportResumesImportsPdfResponseSuccess | resumeImportResumesImportsPdfResponseError)
 
 export const getResumeImportResumesImportsPdfUrl = () => {
 
@@ -779,7 +887,7 @@ export const resumeImportResumesImportsPdf = async ( options?: RequestInit): Pro
 
 
 
-export const getResumeImportResumesImportsPdfMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsPdfMutationOptions = <TError = ResumeImportResumesImportsPdf400 | ResumeImportResumesImportsPdf401 | ResumeImportResumesImportsPdf403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsPdf>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsPdf>>, TError,void, TContext> => {
 
@@ -808,12 +916,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsPdfMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsPdf>>>
 
-    export type ResumeImportResumesImportsPdfMutationError = unknown
+    export type ResumeImportResumesImportsPdfMutationError = ResumeImportResumesImportsPdf400 | ResumeImportResumesImportsPdf401 | ResumeImportResumesImportsPdf403
 
     /**
  * @summary Import resume from a PDF file
  */
-export const createResumeImportResumesImportsPdf = <TError = unknown,
+export const createResumeImportResumesImportsPdf = <TError = ResumeImportResumesImportsPdf400 | ResumeImportResumesImportsPdf401 | ResumeImportResumesImportsPdf403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsPdf>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsPdf>>,
@@ -827,12 +935,20 @@ export const createResumeImportResumesImportsPdf = <TError = unknown,
  * Uses the user's previously-connected GitHub OAuth token to fetch top repos and derive skills + BUILD posts. Fails with 409 GITHUB_NOT_CONNECTED if the user hasn't linked GitHub yet.
  * @summary Import profile data from GitHub
  */
-export type resumeImportResumesImportsGithubResponse200 = void
+export type resumeImportResumesImportsGithubResponse200 = ResumeImportResumesImportsGithub200
+
+export type resumeImportResumesImportsGithubResponse400 = ResumeImportResumesImportsGithub400
+
+export type resumeImportResumesImportsGithubResponse401 = ResumeImportResumesImportsGithub401
+
+export type resumeImportResumesImportsGithubResponse403 = ResumeImportResumesImportsGithub403
 
 export type resumeImportResumesImportsGithubResponseSuccess = resumeImportResumesImportsGithubResponse200
-;
+export type resumeImportResumesImportsGithubResponseError = (resumeImportResumesImportsGithubResponse400 | resumeImportResumesImportsGithubResponse401 | resumeImportResumesImportsGithubResponse403) & {
+  headers: Headers;
+};
 
-export type resumeImportResumesImportsGithubResponse = (resumeImportResumesImportsGithubResponseSuccess)
+export type resumeImportResumesImportsGithubResponse = (resumeImportResumesImportsGithubResponseSuccess | resumeImportResumesImportsGithubResponseError)
 
 export const getResumeImportResumesImportsGithubUrl = () => {
 
@@ -856,7 +972,7 @@ export const resumeImportResumesImportsGithub = async ( options?: RequestInit): 
 
 
 
-export const getResumeImportResumesImportsGithubMutationOptions = <TError = unknown,
+export const getResumeImportResumesImportsGithubMutationOptions = <TError = ResumeImportResumesImportsGithub400 | ResumeImportResumesImportsGithub401 | ResumeImportResumesImportsGithub403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGithub>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGithub>>, TError,void, TContext> => {
 
@@ -885,12 +1001,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeImportResumesImportsGithubMutationResult = NonNullable<Awaited<ReturnType<typeof resumeImportResumesImportsGithub>>>
 
-    export type ResumeImportResumesImportsGithubMutationError = unknown
+    export type ResumeImportResumesImportsGithubMutationError = ResumeImportResumesImportsGithub400 | ResumeImportResumesImportsGithub401 | ResumeImportResumesImportsGithub403
 
     /**
  * @summary Import profile data from GitHub
  */
-export const createResumeImportResumesImportsGithub = <TError = unknown,
+export const createResumeImportResumesImportsGithub = <TError = ResumeImportResumesImportsGithub400 | ResumeImportResumesImportsGithub401 | ResumeImportResumesImportsGithub403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeImportResumesImportsGithub>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeImportResumesImportsGithub>>,

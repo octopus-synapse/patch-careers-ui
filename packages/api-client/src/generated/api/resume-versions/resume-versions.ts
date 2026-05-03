@@ -25,6 +25,29 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  ResumeVersionsResumesVersions200,
+  ResumeVersionsResumesVersions400,
+  ResumeVersionsResumesVersions401,
+  ResumeVersionsResumesVersions404,
+  ResumeVersionsResumesVersionsRestore200,
+  ResumeVersionsResumesVersionsRestore400,
+  ResumeVersionsResumesVersionsRestore401,
+  ResumeVersionsResumesVersionsRestore404,
+  ResumeVersionsVersionsGet200,
+  ResumeVersionsVersionsGet2200,
+  ResumeVersionsVersionsGet2400,
+  ResumeVersionsVersionsGet2401,
+  ResumeVersionsVersionsGet2404,
+  ResumeVersionsVersionsGet400,
+  ResumeVersionsVersionsGet401,
+  ResumeVersionsVersionsGet404,
+  ResumeVersionsVersionsRestore200,
+  ResumeVersionsVersionsRestore400,
+  ResumeVersionsVersionsRestore401,
+  ResumeVersionsVersionsRestore404
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -36,12 +59,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Resume versions returned
  * @summary List resume versions (nested route)
  */
-export type resumeVersionsResumesVersionsResponse200 = void
+export type resumeVersionsResumesVersionsResponse200 = ResumeVersionsResumesVersions200
+
+export type resumeVersionsResumesVersionsResponse400 = ResumeVersionsResumesVersions400
+
+export type resumeVersionsResumesVersionsResponse401 = ResumeVersionsResumesVersions401
+
+export type resumeVersionsResumesVersionsResponse404 = ResumeVersionsResumesVersions404
 
 export type resumeVersionsResumesVersionsResponseSuccess = resumeVersionsResumesVersionsResponse200
-;
+export type resumeVersionsResumesVersionsResponseError = (resumeVersionsResumesVersionsResponse400 | resumeVersionsResumesVersionsResponse401 | resumeVersionsResumesVersionsResponse404) & {
+  headers: Headers;
+};
 
-export type resumeVersionsResumesVersionsResponse = (resumeVersionsResumesVersionsResponseSuccess)
+export type resumeVersionsResumesVersionsResponse = (resumeVersionsResumesVersionsResponseSuccess | resumeVersionsResumesVersionsResponseError)
 
 export const getResumeVersionsResumesVersionsUrl = (resumeId: string,) => {
 
@@ -79,7 +110,7 @@ export const getResumeVersionsResumesVersionsQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumeVersionsResumesVersionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeVersionsResumesVersionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>>, TError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -98,14 +129,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeVersionsResumesVersionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>>
-export type ResumeVersionsResumesVersionsInfiniteQueryError = unknown
+export type ResumeVersionsResumesVersionsInfiniteQueryError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404
 
 
 /**
  * @summary List resume versions (nested route)
  */
 
-export function createResumeVersionsResumesVersionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>>, TError = unknown>(
+export function createResumeVersionsResumesVersionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>>, TError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -120,7 +151,7 @@ export function createResumeVersionsResumesVersionsInfinite<TData = InfiniteData
 /**
  * @summary List resume versions (nested route)
  */
-export const prefetchResumeVersionsResumesVersionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = unknown>(
+export const prefetchResumeVersionsResumesVersionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -136,7 +167,7 @@ export const prefetchResumeVersionsResumesVersionsInfiniteQuery = async <TData =
 
 
 
-export const getResumeVersionsResumesVersionsQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeVersionsResumesVersionsQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -155,14 +186,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeVersionsResumesVersionsQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>>
-export type ResumeVersionsResumesVersionsQueryError = unknown
+export type ResumeVersionsResumesVersionsQueryError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404
 
 
 /**
  * @summary List resume versions (nested route)
  */
 
-export function createResumeVersionsResumesVersions<TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = unknown>(
+export function createResumeVersionsResumesVersions<TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -177,7 +208,7 @@ export function createResumeVersionsResumesVersions<TData = Awaited<ReturnType<t
 /**
  * @summary List resume versions (nested route)
  */
-export const prefetchResumeVersionsResumesVersionsQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = unknown>(
+export const prefetchResumeVersionsResumesVersionsQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError = ResumeVersionsResumesVersions400 | ResumeVersionsResumesVersions401 | ResumeVersionsResumesVersions404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -197,12 +228,20 @@ export const prefetchResumeVersionsResumesVersionsQuery = async <TData = Awaited
  * Resume version restored
  * @summary Restore resume version (nested route)
  */
-export type resumeVersionsResumesVersionsRestoreResponse200 = void
+export type resumeVersionsResumesVersionsRestoreResponse200 = ResumeVersionsResumesVersionsRestore200
+
+export type resumeVersionsResumesVersionsRestoreResponse400 = ResumeVersionsResumesVersionsRestore400
+
+export type resumeVersionsResumesVersionsRestoreResponse401 = ResumeVersionsResumesVersionsRestore401
+
+export type resumeVersionsResumesVersionsRestoreResponse404 = ResumeVersionsResumesVersionsRestore404
 
 export type resumeVersionsResumesVersionsRestoreResponseSuccess = resumeVersionsResumesVersionsRestoreResponse200
-;
+export type resumeVersionsResumesVersionsRestoreResponseError = (resumeVersionsResumesVersionsRestoreResponse400 | resumeVersionsResumesVersionsRestoreResponse401 | resumeVersionsResumesVersionsRestoreResponse404) & {
+  headers: Headers;
+};
 
-export type resumeVersionsResumesVersionsRestoreResponse = (resumeVersionsResumesVersionsRestoreResponseSuccess)
+export type resumeVersionsResumesVersionsRestoreResponse = (resumeVersionsResumesVersionsRestoreResponseSuccess | resumeVersionsResumesVersionsRestoreResponseError)
 
 export const getResumeVersionsResumesVersionsRestoreUrl = (resumeId: string,
     versionId: string,) => {
@@ -228,7 +267,7 @@ export const resumeVersionsResumesVersionsRestore = async (resumeId: string,
 
 
 
-export const getResumeVersionsResumesVersionsRestoreMutationOptions = <TError = unknown,
+export const getResumeVersionsResumesVersionsRestoreMutationOptions = <TError = ResumeVersionsResumesVersionsRestore400 | ResumeVersionsResumesVersionsRestore401 | ResumeVersionsResumesVersionsRestore404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersionsRestore>>, TError,{resumeId: string;versionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersionsRestore>>, TError,{resumeId: string;versionId: string}, TContext> => {
 
@@ -257,12 +296,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeVersionsResumesVersionsRestoreMutationResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsResumesVersionsRestore>>>
 
-    export type ResumeVersionsResumesVersionsRestoreMutationError = unknown
+    export type ResumeVersionsResumesVersionsRestoreMutationError = ResumeVersionsResumesVersionsRestore400 | ResumeVersionsResumesVersionsRestore401 | ResumeVersionsResumesVersionsRestore404
 
     /**
  * @summary Restore resume version (nested route)
  */
-export const createResumeVersionsResumesVersionsRestore = <TError = unknown,
+export const createResumeVersionsResumesVersionsRestore = <TError = ResumeVersionsResumesVersionsRestore400 | ResumeVersionsResumesVersionsRestore401 | ResumeVersionsResumesVersionsRestore404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeVersionsResumesVersionsRestore>>, TError,{resumeId: string;versionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeVersionsResumesVersionsRestore>>,
@@ -276,12 +315,20 @@ export const createResumeVersionsResumesVersionsRestore = <TError = unknown,
  * Resume versions returned
  * @summary List resume versions
  */
-export type resumeVersionsVersionsGetResponse200 = void
+export type resumeVersionsVersionsGetResponse200 = ResumeVersionsVersionsGet200
+
+export type resumeVersionsVersionsGetResponse400 = ResumeVersionsVersionsGet400
+
+export type resumeVersionsVersionsGetResponse401 = ResumeVersionsVersionsGet401
+
+export type resumeVersionsVersionsGetResponse404 = ResumeVersionsVersionsGet404
 
 export type resumeVersionsVersionsGetResponseSuccess = resumeVersionsVersionsGetResponse200
-;
+export type resumeVersionsVersionsGetResponseError = (resumeVersionsVersionsGetResponse400 | resumeVersionsVersionsGetResponse401 | resumeVersionsVersionsGetResponse404) & {
+  headers: Headers;
+};
 
-export type resumeVersionsVersionsGetResponse = (resumeVersionsVersionsGetResponseSuccess)
+export type resumeVersionsVersionsGetResponse = (resumeVersionsVersionsGetResponseSuccess | resumeVersionsVersionsGetResponseError)
 
 export const getResumeVersionsVersionsGetUrl = (resumeId: string,) => {
 
@@ -319,7 +366,7 @@ export const getResumeVersionsVersionsGetQueryKey = (resumeId: string,) => {
     }
 
 
-export const getResumeVersionsVersionsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeVersionsVersionsGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>>, TError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404>(resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -338,14 +385,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeVersionsVersionsGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>>
-export type ResumeVersionsVersionsGetInfiniteQueryError = unknown
+export type ResumeVersionsVersionsGetInfiniteQueryError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404
 
 
 /**
  * @summary List resume versions
  */
 
-export function createResumeVersionsVersionsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>>, TError = unknown>(
+export function createResumeVersionsVersionsGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>>, TError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -360,7 +407,7 @@ export function createResumeVersionsVersionsGetInfinite<TData = InfiniteData<Awa
 /**
  * @summary List resume versions
  */
-export const prefetchResumeVersionsVersionsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = unknown>(
+export const prefetchResumeVersionsVersionsGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -376,7 +423,7 @@ export const prefetchResumeVersionsVersionsGetInfiniteQuery = async <TData = Awa
 
 
 
-export const getResumeVersionsVersionsGetQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = unknown>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getResumeVersionsVersionsGetQueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404>(resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -395,14 +442,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeVersionsVersionsGetQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>>
-export type ResumeVersionsVersionsGetQueryError = unknown
+export type ResumeVersionsVersionsGetQueryError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404
 
 
 /**
  * @summary List resume versions
  */
 
-export function createResumeVersionsVersionsGet<TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = unknown>(
+export function createResumeVersionsVersionsGet<TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404>(
  resumeId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -417,7 +464,7 @@ export function createResumeVersionsVersionsGet<TData = Awaited<ReturnType<typeo
 /**
  * @summary List resume versions
  */
-export const prefetchResumeVersionsVersionsGetQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = unknown>(
+export const prefetchResumeVersionsVersionsGetQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError = ResumeVersionsVersionsGet400 | ResumeVersionsVersionsGet401 | ResumeVersionsVersionsGet404>(
  queryClient: QueryClient, resumeId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -437,12 +484,20 @@ export const prefetchResumeVersionsVersionsGetQuery = async <TData = Awaited<Ret
  * Resume version returned
  * @summary Get a specific resume version
  */
-export type resumeVersionsVersionsGet2Response200 = void
+export type resumeVersionsVersionsGet2Response200 = ResumeVersionsVersionsGet2200
+
+export type resumeVersionsVersionsGet2Response400 = ResumeVersionsVersionsGet2400
+
+export type resumeVersionsVersionsGet2Response401 = ResumeVersionsVersionsGet2401
+
+export type resumeVersionsVersionsGet2Response404 = ResumeVersionsVersionsGet2404
 
 export type resumeVersionsVersionsGet2ResponseSuccess = resumeVersionsVersionsGet2Response200
-;
+export type resumeVersionsVersionsGet2ResponseError = (resumeVersionsVersionsGet2Response400 | resumeVersionsVersionsGet2Response401 | resumeVersionsVersionsGet2Response404) & {
+  headers: Headers;
+};
 
-export type resumeVersionsVersionsGet2Response = (resumeVersionsVersionsGet2ResponseSuccess)
+export type resumeVersionsVersionsGet2Response = (resumeVersionsVersionsGet2ResponseSuccess | resumeVersionsVersionsGet2ResponseError)
 
 export const getResumeVersionsVersionsGet2Url = (resumeId: string,
     versionId: string,) => {
@@ -484,7 +539,7 @@ export const getResumeVersionsVersionsGet2QueryKey = (resumeId: string,
     }
 
 
-export const getResumeVersionsVersionsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>>, TError = unknown>(resumeId: string,
+export const getResumeVersionsVersionsGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>>, TError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404>(resumeId: string,
     versionId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -504,14 +559,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeVersionsVersionsGet2InfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>>
-export type ResumeVersionsVersionsGet2InfiniteQueryError = unknown
+export type ResumeVersionsVersionsGet2InfiniteQueryError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404
 
 
 /**
  * @summary Get a specific resume version
  */
 
-export function createResumeVersionsVersionsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>>, TError = unknown>(
+export function createResumeVersionsVersionsGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>>, TError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404>(
  resumeId: () =>  string,
     versionId: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -528,7 +583,7 @@ export function createResumeVersionsVersionsGet2Infinite<TData = InfiniteData<Aw
 /**
  * @summary Get a specific resume version
  */
-export const prefetchResumeVersionsVersionsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = unknown>(
+export const prefetchResumeVersionsVersionsGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404>(
  queryClient: QueryClient, resumeId: string,
     versionId: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -545,7 +600,7 @@ export const prefetchResumeVersionsVersionsGet2InfiniteQuery = async <TData = Aw
 
 
 
-export const getResumeVersionsVersionsGet2QueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = unknown>(resumeId: string,
+export const getResumeVersionsVersionsGet2QueryOptions = <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404>(resumeId: string,
     versionId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -565,14 +620,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ResumeVersionsVersionsGet2QueryResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>>
-export type ResumeVersionsVersionsGet2QueryError = unknown
+export type ResumeVersionsVersionsGet2QueryError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404
 
 
 /**
  * @summary Get a specific resume version
  */
 
-export function createResumeVersionsVersionsGet2<TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = unknown>(
+export function createResumeVersionsVersionsGet2<TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404>(
  resumeId: () =>  string,
     versionId: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -589,7 +644,7 @@ export function createResumeVersionsVersionsGet2<TData = Awaited<ReturnType<type
 /**
  * @summary Get a specific resume version
  */
-export const prefetchResumeVersionsVersionsGet2Query = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = unknown>(
+export const prefetchResumeVersionsVersionsGet2Query = async <TData = Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError = ResumeVersionsVersionsGet2400 | ResumeVersionsVersionsGet2401 | ResumeVersionsVersionsGet2404>(
  queryClient: QueryClient, resumeId: string,
     versionId: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof resumeVersionsVersionsGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -610,12 +665,20 @@ export const prefetchResumeVersionsVersionsGet2Query = async <TData = Awaited<Re
  * Resume version restored
  * @summary Restore resume version
  */
-export type resumeVersionsVersionsRestoreResponse200 = void
+export type resumeVersionsVersionsRestoreResponse200 = ResumeVersionsVersionsRestore200
+
+export type resumeVersionsVersionsRestoreResponse400 = ResumeVersionsVersionsRestore400
+
+export type resumeVersionsVersionsRestoreResponse401 = ResumeVersionsVersionsRestore401
+
+export type resumeVersionsVersionsRestoreResponse404 = ResumeVersionsVersionsRestore404
 
 export type resumeVersionsVersionsRestoreResponseSuccess = resumeVersionsVersionsRestoreResponse200
-;
+export type resumeVersionsVersionsRestoreResponseError = (resumeVersionsVersionsRestoreResponse400 | resumeVersionsVersionsRestoreResponse401 | resumeVersionsVersionsRestoreResponse404) & {
+  headers: Headers;
+};
 
-export type resumeVersionsVersionsRestoreResponse = (resumeVersionsVersionsRestoreResponseSuccess)
+export type resumeVersionsVersionsRestoreResponse = (resumeVersionsVersionsRestoreResponseSuccess | resumeVersionsVersionsRestoreResponseError)
 
 export const getResumeVersionsVersionsRestoreUrl = (resumeId: string,
     versionId: string,) => {
@@ -641,7 +704,7 @@ export const resumeVersionsVersionsRestore = async (resumeId: string,
 
 
 
-export const getResumeVersionsVersionsRestoreMutationOptions = <TError = unknown,
+export const getResumeVersionsVersionsRestoreMutationOptions = <TError = ResumeVersionsVersionsRestore400 | ResumeVersionsVersionsRestore401 | ResumeVersionsVersionsRestore404,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeVersionsVersionsRestore>>, TError,{resumeId: string;versionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof resumeVersionsVersionsRestore>>, TError,{resumeId: string;versionId: string}, TContext> => {
 
@@ -670,12 +733,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ResumeVersionsVersionsRestoreMutationResult = NonNullable<Awaited<ReturnType<typeof resumeVersionsVersionsRestore>>>
 
-    export type ResumeVersionsVersionsRestoreMutationError = unknown
+    export type ResumeVersionsVersionsRestoreMutationError = ResumeVersionsVersionsRestore400 | ResumeVersionsVersionsRestore401 | ResumeVersionsVersionsRestore404
 
     /**
  * @summary Restore resume version
  */
-export const createResumeVersionsVersionsRestore = <TError = unknown,
+export const createResumeVersionsVersionsRestore = <TError = ResumeVersionsVersionsRestore400 | ResumeVersionsVersionsRestore401 | ResumeVersionsVersionsRestore404,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof resumeVersionsVersionsRestore>>, TError,{resumeId: string;versionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof resumeVersionsVersionsRestore>>,

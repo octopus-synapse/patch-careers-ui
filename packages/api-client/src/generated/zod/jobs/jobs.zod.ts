@@ -10,6 +10,55 @@ import * as zod from 'zod';
 
 /**
  * Jobs API
+ * @summary List paginated job postings
+ */
+export const jobsListResponseTotalMin = 0;
+
+
+
+export const jobsListResponseTotalPagesMin = 0;
+
+
+
+export const JobsListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish(),
+  "isBookmarked": zod.boolean().optional(),
+  "hasApplied": zod.boolean().optional()
+})),
+  "total": zod.number().min(jobsListResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(jobsListResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Jobs API
  * @summary Create a new job posting
  */
 export const jobsCreateBodyTitleMax = 200;
@@ -37,6 +86,381 @@ export const JobsCreateBody = zod.object({
   "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).optional(),
   "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).optional(),
   "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).optional()
+})
+
+export const JobsCreateResponse = zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable()
+})
+
+/**
+ * Jobs API
+ * @summary Same as GET /jobs but each item is enriched with a 0-100 structured fit score for the current user.
+ */
+export const jobsWithFitScoreResponseTotalMin = 0;
+
+
+
+export const jobsWithFitScoreResponseTotalPagesMin = 0;
+
+
+
+export const JobsWithFitScoreResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish(),
+  "isBookmarked": zod.boolean().optional(),
+  "hasApplied": zod.boolean().optional(),
+  "fitScore": zod.object({
+  "score": zod.number(),
+  "breakdown": zod.object({
+  "skillOverlap": zod.number(),
+  "englishMatch": zod.number(),
+  "remoteMatch": zod.number(),
+  "matchedSkills": zod.array(zod.string()),
+  "missingSkills": zod.array(zod.string())
+})
+}).nullable()
+})),
+  "total": zod.number().min(jobsWithFitScoreResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(jobsWithFitScoreResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Jobs API
+ * @summary List jobs the current user (recruiter) authored
+ */
+export const jobsMineResponseTotalMin = 0;
+
+
+
+export const jobsMineResponseTotalPagesMin = 0;
+
+
+
+export const JobsMineResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable()
+})),
+  "total": zod.number().min(jobsMineResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(jobsMineResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Jobs API
+ * @summary List jobs bookmarked by the current user
+ */
+export const jobsBookmarksResponseTotalMin = 0;
+
+
+
+export const jobsBookmarksResponseTotalPagesMin = 0;
+
+
+
+export const JobsBookmarksResponse = zod.object({
+  "data": zod.array(zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish(),
+  "bookmarkedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number().min(jobsBookmarksResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(jobsBookmarksResponseTotalPagesMin)
+})
+
+/**
+ * Jobs API
+ * @summary List jobs recommended for the current user based on resume skills
+ */
+export const jobsRecommendedResponseTotalMin = 0;
+
+
+
+export const jobsRecommendedResponseTotalPagesMin = 0;
+
+
+
+export const JobsRecommendedResponse = zod.object({
+  "data": zod.array(zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish(),
+  "isBookmarked": zod.boolean().optional(),
+  "hasApplied": zod.boolean().optional(),
+  "matchScore": zod.number()
+})),
+  "total": zod.number().min(jobsRecommendedResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(jobsRecommendedResponseTotalPagesMin)
+})
+
+/**
+ * Jobs API
+ * @summary List active applications submitted by the current user
+ */
+export const jobsApplicationsGetResponseTotalMin = 0;
+
+
+
+export const jobsApplicationsGetResponseTotalPagesMin = 0;
+
+
+
+export const JobsApplicationsGetResponse = zod.object({
+  "data": zod.array(zod.object({
+  "id": zod.string(),
+  "jobId": zod.string(),
+  "userId": zod.string(),
+  "status": zod.enum(['SUBMITTED', 'VIEWED', 'REJECTED', 'ACCEPTED', 'WITHDRAWN']),
+  "coverLetter": zod.string().nullable(),
+  "resumeId": zod.string().nullable(),
+  "tailoredVersionId": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "job": zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish()
+})
+})),
+  "total": zod.number().min(jobsApplicationsGetResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(jobsApplicationsGetResponseTotalPagesMin)
+})
+
+/**
+ * Jobs API
+ * @summary List applications received for a job (job owner only)
+ */
+
+
+export const jobsApplicationsGet2ResponsePaginationTotalMin = 0;
+
+export const jobsApplicationsGet2ResponsePaginationTotalPagesMin = 0;
+
+
+
+export const JobsApplicationsGet2Response = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "status": zod.enum(['SUBMITTED', 'VIEWED', 'REJECTED', 'ACCEPTED', 'WITHDRAWN']),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "coverLetter": zod.string().nullable(),
+  "resumeId": zod.string().nullable(),
+  "tailoredVersionId": zod.string().nullable(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "email": zod.string(),
+  "photoURL": zod.string().nullable()
+}).nullable()
+})),
+  "pagination": zod.object({
+  "page": zod.number().min(1),
+  "pageSize": zod.number().min(1),
+  "total": zod.number().min(jobsApplicationsGet2ResponsePaginationTotalMin),
+  "totalPages": zod.number().min(jobsApplicationsGet2ResponsePaginationTotalPagesMin)
+})
+})
+
+/**
+ * Jobs API
+ * @summary Jobs similar to the given one (by skill overlap)
+ */
+export const JobsSimilarResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish(),
+  "isBookmarked": zod.boolean().optional(),
+  "hasApplied": zod.boolean().optional(),
+  "skillOverlap": zod.number()
+}))
+})
+
+/**
+ * Jobs API
+ * @summary Fetch a single job by id
+ */
+export const JobsGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable(),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+}).nullish(),
+  "isBookmarked": zod.boolean().optional(),
+  "hasApplied": zod.boolean().optional()
 })
 
 /**
@@ -71,6 +495,122 @@ export const JobsUpdateBody = zod.object({
   "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullish()
 })
 
+export const JobsUpdateResponse = zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable()
+})
+
+/**
+ * Jobs API
+ * @summary Delete a job posting
+ */
+export const JobsDeleteResponse = zod.object({
+  "id": zod.string(),
+  "authorId": zod.string(),
+  "title": zod.string(),
+  "company": zod.string(),
+  "location": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']),
+  "description": zod.string(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "expiresAt": zod.string().datetime({"offset":true}).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable()
+})
+
+/**
+ * Returns `{score, dimensions:[{key,label,value,target,color,hint,weight}], matchedKeywords?, missingKeywords?}` so the frontend renders bars/cards by iterating dimensions[] without per-key mapping.
+ * @summary Fit score breakdown for this job against the viewer's primary resume
+ */
+export const JobsFitResponse = zod.object({
+  "score": zod.number(),
+  "dimensions": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "value": zod.number(),
+  "target": zod.number(),
+  "color": zod.string(),
+  "hint": zod.string(),
+  "weight": zod.number()
+})),
+  "matchedKeywords": zod.array(zod.string()),
+  "missingKeywords": zod.array(zod.string())
+})
+
+/**
+ * Returns `{defaults:{coverLetter,resumeId},requirements:[{type,key,label,required,options?}],cta,oneClickAvailable,blockers?:[{code,message,suggestedAction?}]}` so the frontend renders the apply modal entirely server-driven.
+ * @summary Apply-context: defaults + requirements + blockers for the apply modal
+ */
+export const JobsApplyContextResponse = zod.object({
+  "defaults": zod.object({
+  "coverLetter": zod.string(),
+  "resumeId": zod.string().nullable()
+}),
+  "requirements": zod.array(zod.object({
+  "type": zod.string(),
+  "key": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "maxLength": zod.number().optional(),
+  "options": zod.array(zod.string()).optional()
+})),
+  "cta": zod.object({
+  "label": zod.string(),
+  "endpoint": zod.object({
+  "method": zod.string(),
+  "path": zod.string()
+})
+}),
+  "oneClickAvailable": zod.boolean(),
+  "blockers": zod.array(zod.object({
+  "code": zod.string(),
+  "message": zod.string()
+})).optional()
+})
+
+/**
+ * Jobs API
+ * @summary Bookmark a job
+ */
+export const JobsBookmarkPostResponse = zod.object({
+  "jobId": zod.string(),
+  "userId": zod.string(),
+  "alreadyBookmarked": zod.boolean()
+})
+
+/**
+ * Jobs API
+ * @summary Remove a job bookmark
+ */
+export const JobsBookmarkDeleteResponse = zod.object({
+  "jobId": zod.string(),
+  "userId": zod.string(),
+  "removed": zod.literal(true)
+})
+
 /**
  * Jobs API
  * @summary Submit a quick application to a job
@@ -78,6 +618,28 @@ export const JobsUpdateBody = zod.object({
 export const JobsApplyPostBody = zod.object({
   "coverLetter": zod.string().optional(),
   "resumeId": zod.string().optional()
+})
+
+export const JobsApplyPostResponse = zod.object({
+  "id": zod.string(),
+  "jobId": zod.string(),
+  "userId": zod.string(),
+  "status": zod.enum(['SUBMITTED', 'VIEWED', 'REJECTED', 'ACCEPTED', 'WITHDRAWN']),
+  "coverLetter": zod.string().nullable(),
+  "resumeId": zod.string().nullable(),
+  "tailoredVersionId": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "alreadyApplied": zod.boolean()
+})
+
+/**
+ * Jobs API
+ * @summary Withdraw the current user application to a job
+ */
+export const JobsApplyDeleteResponse = zod.object({
+  "jobId": zod.string(),
+  "userId": zod.string(),
+  "withdrawn": zod.literal(true)
 })
 
 /**
@@ -90,5 +652,23 @@ export const jobsImportFromUrlBodyUrlMax = 2000;
 
 export const JobsImportFromUrlBody = zod.object({
   "url": zod.string().url().max(jobsImportFromUrlBodyUrlMax)
+})
+
+export const JobsImportFromUrlResponse = zod.object({
+  "source": zod.string(),
+  "preview": zod.object({
+  "title": zod.string().nullable(),
+  "company": zod.string().nullable(),
+  "location": zod.string().nullable(),
+  "description": zod.string().nullable(),
+  "requirements": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "salaryRange": zod.string().nullable(),
+  "applyUrl": zod.string().nullable(),
+  "jobType": zod.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE']).nullable(),
+  "remotePolicy": zod.enum(['REMOTE', 'HYBRID', 'ONSITE']).nullable(),
+  "paymentCurrency": zod.enum(['BRL', 'USD', 'EUR', 'GBP']).nullable(),
+  "minEnglishLevel": zod.enum(['BASIC', 'INTERMEDIATE', 'ADVANCED', 'FLUENT']).nullable()
+})
 })
 

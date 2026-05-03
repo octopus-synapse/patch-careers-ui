@@ -21,6 +21,17 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  TechAreasList200,
+  TechAreasList400,
+  TechAreasList401,
+  TechAreasList403,
+  TechAreasNiches200,
+  TechAreasNiches400,
+  TechAreasNiches401,
+  TechAreasNiches403
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +43,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * List of tech areas
  * @summary Get all tech areas
  */
-export type techAreasListResponse200 = void
+export type techAreasListResponse200 = TechAreasList200
+
+export type techAreasListResponse400 = TechAreasList400
+
+export type techAreasListResponse401 = TechAreasList401
+
+export type techAreasListResponse403 = TechAreasList403
 
 export type techAreasListResponseSuccess = techAreasListResponse200
-;
+export type techAreasListResponseError = (techAreasListResponse400 | techAreasListResponse401 | techAreasListResponse403) & {
+  headers: Headers;
+};
 
-export type techAreasListResponse = (techAreasListResponseSuccess)
+export type techAreasListResponse = (techAreasListResponseSuccess | techAreasListResponseError)
 
 export const getTechAreasListUrl = () => {
 
@@ -75,7 +94,7 @@ export const getTechAreasListQueryKey = () => {
     }
 
 
-export const getTechAreasListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techAreasList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechAreasListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techAreasList>>>, TError = TechAreasList400 | TechAreasList401 | TechAreasList403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +113,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechAreasListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techAreasList>>>
-export type TechAreasListInfiniteQueryError = unknown
+export type TechAreasListInfiniteQueryError = TechAreasList400 | TechAreasList401 | TechAreasList403
 
 
 /**
  * @summary Get all tech areas
  */
 
-export function createTechAreasListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techAreasList>>>, TError = unknown>(
+export function createTechAreasListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techAreasList>>>, TError = TechAreasList400 | TechAreasList401 | TechAreasList403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +135,7 @@ export function createTechAreasListInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Get all tech areas
  */
-export const prefetchTechAreasListInfiniteQuery = async <TData = Awaited<ReturnType<typeof techAreasList>>, TError = unknown>(
+export const prefetchTechAreasListInfiniteQuery = async <TData = Awaited<ReturnType<typeof techAreasList>>, TError = TechAreasList400 | TechAreasList401 | TechAreasList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +151,7 @@ export const prefetchTechAreasListInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getTechAreasListQueryOptions = <TData = Awaited<ReturnType<typeof techAreasList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechAreasListQueryOptions = <TData = Awaited<ReturnType<typeof techAreasList>>, TError = TechAreasList400 | TechAreasList401 | TechAreasList403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +170,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechAreasListQueryResult = NonNullable<Awaited<ReturnType<typeof techAreasList>>>
-export type TechAreasListQueryError = unknown
+export type TechAreasListQueryError = TechAreasList400 | TechAreasList401 | TechAreasList403
 
 
 /**
  * @summary Get all tech areas
  */
 
-export function createTechAreasList<TData = Awaited<ReturnType<typeof techAreasList>>, TError = unknown>(
+export function createTechAreasList<TData = Awaited<ReturnType<typeof techAreasList>>, TError = TechAreasList400 | TechAreasList401 | TechAreasList403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +192,7 @@ export function createTechAreasList<TData = Awaited<ReturnType<typeof techAreasL
 /**
  * @summary Get all tech areas
  */
-export const prefetchTechAreasListQuery = async <TData = Awaited<ReturnType<typeof techAreasList>>, TError = unknown>(
+export const prefetchTechAreasListQuery = async <TData = Awaited<ReturnType<typeof techAreasList>>, TError = TechAreasList400 | TechAreasList401 | TechAreasList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +212,20 @@ export const prefetchTechAreasListQuery = async <TData = Awaited<ReturnType<type
  * List of niches for the area
  * @summary Get niches by area type
  */
-export type techAreasNichesResponse200 = void
+export type techAreasNichesResponse200 = TechAreasNiches200
+
+export type techAreasNichesResponse400 = TechAreasNiches400
+
+export type techAreasNichesResponse401 = TechAreasNiches401
+
+export type techAreasNichesResponse403 = TechAreasNiches403
 
 export type techAreasNichesResponseSuccess = techAreasNichesResponse200
-;
+export type techAreasNichesResponseError = (techAreasNichesResponse400 | techAreasNichesResponse401 | techAreasNichesResponse403) & {
+  headers: Headers;
+};
 
-export type techAreasNichesResponse = (techAreasNichesResponseSuccess)
+export type techAreasNichesResponse = (techAreasNichesResponseSuccess | techAreasNichesResponseError)
 
 export const getTechAreasNichesUrl = (areaType: string,) => {
 
@@ -236,7 +263,7 @@ export const getTechAreasNichesQueryKey = (areaType: string,) => {
     }
 
 
-export const getTechAreasNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techAreasNiches>>>, TError = unknown>(areaType: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechAreasNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techAreasNiches>>>, TError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403>(areaType: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +282,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechAreasNichesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techAreasNiches>>>
-export type TechAreasNichesInfiniteQueryError = unknown
+export type TechAreasNichesInfiniteQueryError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403
 
 
 /**
  * @summary Get niches by area type
  */
 
-export function createTechAreasNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techAreasNiches>>>, TError = unknown>(
+export function createTechAreasNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techAreasNiches>>>, TError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403>(
  areaType: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +304,7 @@ export function createTechAreasNichesInfinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Get niches by area type
  */
-export const prefetchTechAreasNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = unknown>(
+export const prefetchTechAreasNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403>(
  queryClient: QueryClient, areaType: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +320,7 @@ export const prefetchTechAreasNichesInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getTechAreasNichesQueryOptions = <TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = unknown>(areaType: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechAreasNichesQueryOptions = <TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403>(areaType: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +339,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechAreasNichesQueryResult = NonNullable<Awaited<ReturnType<typeof techAreasNiches>>>
-export type TechAreasNichesQueryError = unknown
+export type TechAreasNichesQueryError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403
 
 
 /**
  * @summary Get niches by area type
  */
 
-export function createTechAreasNiches<TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = unknown>(
+export function createTechAreasNiches<TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403>(
  areaType: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +361,7 @@ export function createTechAreasNiches<TData = Awaited<ReturnType<typeof techArea
 /**
  * @summary Get niches by area type
  */
-export const prefetchTechAreasNichesQuery = async <TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = unknown>(
+export const prefetchTechAreasNichesQuery = async <TData = Awaited<ReturnType<typeof techAreasNiches>>, TError = TechAreasNiches400 | TechAreasNiches401 | TechAreasNiches403>(
  queryClient: QueryClient, areaType: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

@@ -21,6 +21,15 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  MecMetadataAreas200,
+  MecMetadataAreas400,
+  MecMetadataStats200,
+  MecMetadataStats400,
+  MecMetadataUfs200,
+  MecMetadataUfs400
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -32,12 +41,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * State codes returned
  * @summary List all states (UFs)
  */
-export type mecMetadataUfsResponse200 = void
+export type mecMetadataUfsResponse200 = MecMetadataUfs200
+
+export type mecMetadataUfsResponse400 = MecMetadataUfs400
 
 export type mecMetadataUfsResponseSuccess = mecMetadataUfsResponse200
-;
+export type mecMetadataUfsResponseError = (mecMetadataUfsResponse400) & {
+  headers: Headers;
+};
 
-export type mecMetadataUfsResponse = (mecMetadataUfsResponseSuccess)
+export type mecMetadataUfsResponse = (mecMetadataUfsResponseSuccess | mecMetadataUfsResponseError)
 
 export const getMecMetadataUfsUrl = () => {
 
@@ -75,7 +88,7 @@ export const getMecMetadataUfsQueryKey = () => {
     }
 
 
-export const getMecMetadataUfsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataUfs>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecMetadataUfsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataUfs>>>, TError = MecMetadataUfs400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +107,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecMetadataUfsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataUfs>>>
-export type MecMetadataUfsInfiniteQueryError = unknown
+export type MecMetadataUfsInfiniteQueryError = MecMetadataUfs400
 
 
 /**
  * @summary List all states (UFs)
  */
 
-export function createMecMetadataUfsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataUfs>>>, TError = unknown>(
+export function createMecMetadataUfsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataUfs>>>, TError = MecMetadataUfs400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +129,7 @@ export function createMecMetadataUfsInfinite<TData = InfiniteData<Awaited<Return
 /**
  * @summary List all states (UFs)
  */
-export const prefetchMecMetadataUfsInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = unknown>(
+export const prefetchMecMetadataUfsInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = MecMetadataUfs400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +145,7 @@ export const prefetchMecMetadataUfsInfiniteQuery = async <TData = Awaited<Return
 
 
 
-export const getMecMetadataUfsQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecMetadataUfsQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = MecMetadataUfs400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +164,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecMetadataUfsQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataUfs>>>
-export type MecMetadataUfsQueryError = unknown
+export type MecMetadataUfsQueryError = MecMetadataUfs400
 
 
 /**
  * @summary List all states (UFs)
  */
 
-export function createMecMetadataUfs<TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = unknown>(
+export function createMecMetadataUfs<TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = MecMetadataUfs400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +186,7 @@ export function createMecMetadataUfs<TData = Awaited<ReturnType<typeof mecMetada
 /**
  * @summary List all states (UFs)
  */
-export const prefetchMecMetadataUfsQuery = async <TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = unknown>(
+export const prefetchMecMetadataUfsQuery = async <TData = Awaited<ReturnType<typeof mecMetadataUfs>>, TError = MecMetadataUfs400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataUfs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -193,12 +206,16 @@ export const prefetchMecMetadataUfsQuery = async <TData = Awaited<ReturnType<typ
  * Knowledge areas returned
  * @summary List knowledge areas
  */
-export type mecMetadataAreasResponse200 = void
+export type mecMetadataAreasResponse200 = MecMetadataAreas200
+
+export type mecMetadataAreasResponse400 = MecMetadataAreas400
 
 export type mecMetadataAreasResponseSuccess = mecMetadataAreasResponse200
-;
+export type mecMetadataAreasResponseError = (mecMetadataAreasResponse400) & {
+  headers: Headers;
+};
 
-export type mecMetadataAreasResponse = (mecMetadataAreasResponseSuccess)
+export type mecMetadataAreasResponse = (mecMetadataAreasResponseSuccess | mecMetadataAreasResponseError)
 
 export const getMecMetadataAreasUrl = () => {
 
@@ -236,7 +253,7 @@ export const getMecMetadataAreasQueryKey = () => {
     }
 
 
-export const getMecMetadataAreasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataAreas>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecMetadataAreasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataAreas>>>, TError = MecMetadataAreas400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -255,14 +272,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecMetadataAreasInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataAreas>>>
-export type MecMetadataAreasInfiniteQueryError = unknown
+export type MecMetadataAreasInfiniteQueryError = MecMetadataAreas400
 
 
 /**
  * @summary List knowledge areas
  */
 
-export function createMecMetadataAreasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataAreas>>>, TError = unknown>(
+export function createMecMetadataAreasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataAreas>>>, TError = MecMetadataAreas400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -277,7 +294,7 @@ export function createMecMetadataAreasInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary List knowledge areas
  */
-export const prefetchMecMetadataAreasInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = unknown>(
+export const prefetchMecMetadataAreasInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = MecMetadataAreas400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -293,7 +310,7 @@ export const prefetchMecMetadataAreasInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getMecMetadataAreasQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecMetadataAreasQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = MecMetadataAreas400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -312,14 +329,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecMetadataAreasQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataAreas>>>
-export type MecMetadataAreasQueryError = unknown
+export type MecMetadataAreasQueryError = MecMetadataAreas400
 
 
 /**
  * @summary List knowledge areas
  */
 
-export function createMecMetadataAreas<TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = unknown>(
+export function createMecMetadataAreas<TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = MecMetadataAreas400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,7 +351,7 @@ export function createMecMetadataAreas<TData = Awaited<ReturnType<typeof mecMeta
 /**
  * @summary List knowledge areas
  */
-export const prefetchMecMetadataAreasQuery = async <TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = unknown>(
+export const prefetchMecMetadataAreasQuery = async <TData = Awaited<ReturnType<typeof mecMetadataAreas>>, TError = MecMetadataAreas400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -354,12 +371,16 @@ export const prefetchMecMetadataAreasQuery = async <TData = Awaited<ReturnType<t
  * MEC statistics returned
  * @summary Get MEC statistics
  */
-export type mecMetadataStatsResponse200 = void
+export type mecMetadataStatsResponse200 = MecMetadataStats200
+
+export type mecMetadataStatsResponse400 = MecMetadataStats400
 
 export type mecMetadataStatsResponseSuccess = mecMetadataStatsResponse200
-;
+export type mecMetadataStatsResponseError = (mecMetadataStatsResponse400) & {
+  headers: Headers;
+};
 
-export type mecMetadataStatsResponse = (mecMetadataStatsResponseSuccess)
+export type mecMetadataStatsResponse = (mecMetadataStatsResponseSuccess | mecMetadataStatsResponseError)
 
 export const getMecMetadataStatsUrl = () => {
 
@@ -397,7 +418,7 @@ export const getMecMetadataStatsQueryKey = () => {
     }
 
 
-export const getMecMetadataStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataStats>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecMetadataStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataStats>>>, TError = MecMetadataStats400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -416,14 +437,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecMetadataStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataStats>>>
-export type MecMetadataStatsInfiniteQueryError = unknown
+export type MecMetadataStatsInfiniteQueryError = MecMetadataStats400
 
 
 /**
  * @summary Get MEC statistics
  */
 
-export function createMecMetadataStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataStats>>>, TError = unknown>(
+export function createMecMetadataStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof mecMetadataStats>>>, TError = MecMetadataStats400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -438,7 +459,7 @@ export function createMecMetadataStatsInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary Get MEC statistics
  */
-export const prefetchMecMetadataStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = unknown>(
+export const prefetchMecMetadataStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = MecMetadataStats400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -454,7 +475,7 @@ export const prefetchMecMetadataStatsInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getMecMetadataStatsQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMecMetadataStatsQueryOptions = <TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = MecMetadataStats400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -473,14 +494,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MecMetadataStatsQueryResult = NonNullable<Awaited<ReturnType<typeof mecMetadataStats>>>
-export type MecMetadataStatsQueryError = unknown
+export type MecMetadataStatsQueryError = MecMetadataStats400
 
 
 /**
  * @summary Get MEC statistics
  */
 
-export function createMecMetadataStats<TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = unknown>(
+export function createMecMetadataStats<TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = MecMetadataStats400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -495,7 +516,7 @@ export function createMecMetadataStats<TData = Awaited<ReturnType<typeof mecMeta
 /**
  * @summary Get MEC statistics
  */
-export const prefetchMecMetadataStatsQuery = async <TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = unknown>(
+export const prefetchMecMetadataStatsQuery = async <TData = Awaited<ReturnType<typeof mecMetadataStats>>, TError = MecMetadataStats400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof mecMetadataStats>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

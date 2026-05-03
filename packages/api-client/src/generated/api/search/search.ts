@@ -22,9 +22,17 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SearchGlobal200,
+  SearchGlobal400,
   SearchGlobalParams,
+  SearchList200,
+  SearchList400,
   SearchListParams,
+  SearchSimilar200,
+  SearchSimilar400,
   SearchSimilarParams,
+  SearchSuggestions200,
+  SearchSuggestions400,
   SearchSuggestionsParams
 } from '../../models';
 
@@ -39,12 +47,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Resume Search API
  * @summary Search public resumes
  */
-export type searchListResponse200 = void
+export type searchListResponse200 = SearchList200
+
+export type searchListResponse400 = SearchList400
 
 export type searchListResponseSuccess = searchListResponse200
-;
+export type searchListResponseError = (searchListResponse400) & {
+  headers: Headers;
+};
 
-export type searchListResponse = (searchListResponseSuccess)
+export type searchListResponse = (searchListResponseSuccess | searchListResponseError)
 
 export const getSearchListUrl = (params?: SearchListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -89,7 +101,7 @@ export const getSearchListQueryKey = (params?: SearchListParams,) => {
     }
 
 
-export const getSearchListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchList>>>, TError = unknown>(params?: SearchListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSearchListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchList>>>, TError = SearchList400>(params?: SearchListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -108,14 +120,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof searchList>>>
-export type SearchListInfiniteQueryError = unknown
+export type SearchListInfiniteQueryError = SearchList400
 
 
 /**
  * @summary Search public resumes
  */
 
-export function createSearchListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchList>>>, TError = unknown>(
+export function createSearchListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchList>>>, TError = SearchList400>(
  params?: () =>  SearchListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -130,7 +142,7 @@ export function createSearchListInfinite<TData = InfiniteData<Awaited<ReturnType
 /**
  * @summary Search public resumes
  */
-export const prefetchSearchListInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchList>>, TError = unknown>(
+export const prefetchSearchListInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchList>>, TError = SearchList400>(
  queryClient: QueryClient, params?: SearchListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -146,7 +158,7 @@ export const prefetchSearchListInfiniteQuery = async <TData = Awaited<ReturnType
 
 
 
-export const getSearchListQueryOptions = <TData = Awaited<ReturnType<typeof searchList>>, TError = unknown>(params?: SearchListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSearchListQueryOptions = <TData = Awaited<ReturnType<typeof searchList>>, TError = SearchList400>(params?: SearchListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -165,14 +177,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchListQueryResult = NonNullable<Awaited<ReturnType<typeof searchList>>>
-export type SearchListQueryError = unknown
+export type SearchListQueryError = SearchList400
 
 
 /**
  * @summary Search public resumes
  */
 
-export function createSearchList<TData = Awaited<ReturnType<typeof searchList>>, TError = unknown>(
+export function createSearchList<TData = Awaited<ReturnType<typeof searchList>>, TError = SearchList400>(
  params?: () =>  SearchListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -187,7 +199,7 @@ export function createSearchList<TData = Awaited<ReturnType<typeof searchList>>,
 /**
  * @summary Search public resumes
  */
-export const prefetchSearchListQuery = async <TData = Awaited<ReturnType<typeof searchList>>, TError = unknown>(
+export const prefetchSearchListQuery = async <TData = Awaited<ReturnType<typeof searchList>>, TError = SearchList400>(
  queryClient: QueryClient, params?: SearchListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -207,12 +219,16 @@ export const prefetchSearchListQuery = async <TData = Awaited<ReturnType<typeof 
  * Resume Search API
  * @summary Get search autocomplete suggestions
  */
-export type searchSuggestionsResponse200 = void
+export type searchSuggestionsResponse200 = SearchSuggestions200
+
+export type searchSuggestionsResponse400 = SearchSuggestions400
 
 export type searchSuggestionsResponseSuccess = searchSuggestionsResponse200
-;
+export type searchSuggestionsResponseError = (searchSuggestionsResponse400) & {
+  headers: Headers;
+};
 
-export type searchSuggestionsResponse = (searchSuggestionsResponseSuccess)
+export type searchSuggestionsResponse = (searchSuggestionsResponseSuccess | searchSuggestionsResponseError)
 
 export const getSearchSuggestionsUrl = (params?: SearchSuggestionsParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -257,7 +273,7 @@ export const getSearchSuggestionsQueryKey = (params?: SearchSuggestionsParams,) 
     }
 
 
-export const getSearchSuggestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchSuggestions>>>, TError = unknown>(params?: SearchSuggestionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSearchSuggestionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchSuggestions>>>, TError = SearchSuggestions400>(params?: SearchSuggestionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -276,14 +292,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchSuggestionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof searchSuggestions>>>
-export type SearchSuggestionsInfiniteQueryError = unknown
+export type SearchSuggestionsInfiniteQueryError = SearchSuggestions400
 
 
 /**
  * @summary Get search autocomplete suggestions
  */
 
-export function createSearchSuggestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchSuggestions>>>, TError = unknown>(
+export function createSearchSuggestionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchSuggestions>>>, TError = SearchSuggestions400>(
  params?: () =>  SearchSuggestionsParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -298,7 +314,7 @@ export function createSearchSuggestionsInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Get search autocomplete suggestions
  */
-export const prefetchSearchSuggestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = unknown>(
+export const prefetchSearchSuggestionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = SearchSuggestions400>(
  queryClient: QueryClient, params?: SearchSuggestionsParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -314,7 +330,7 @@ export const prefetchSearchSuggestionsInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getSearchSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = unknown>(params?: SearchSuggestionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSearchSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = SearchSuggestions400>(params?: SearchSuggestionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -333,14 +349,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchSuggestionsQueryResult = NonNullable<Awaited<ReturnType<typeof searchSuggestions>>>
-export type SearchSuggestionsQueryError = unknown
+export type SearchSuggestionsQueryError = SearchSuggestions400
 
 
 /**
  * @summary Get search autocomplete suggestions
  */
 
-export function createSearchSuggestions<TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = unknown>(
+export function createSearchSuggestions<TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = SearchSuggestions400>(
  params?: () =>  SearchSuggestionsParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -355,7 +371,7 @@ export function createSearchSuggestions<TData = Awaited<ReturnType<typeof search
 /**
  * @summary Get search autocomplete suggestions
  */
-export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = unknown>(
+export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = SearchSuggestions400>(
  queryClient: QueryClient, params?: SearchSuggestionsParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -372,15 +388,19 @@ export const prefetchSearchSuggestionsQuery = async <TData = Awaited<ReturnType<
 
 
 /**
- * Returns results grouped by entity type. Each item carries `{id,title,snippet?,href,badge?}` so the frontend can render a generic list. Today only the `resumes` group is populated; `users`, `jobs`, `posts` groups stream in once their dedicated indexes are wired.
+ * Returns results grouped by entity type. Each item carries `{id,title,snippet?,href,badge?}` so the frontend can render a generic list. Groups: `resumes`, `users`, `jobs`, `posts`.
  * @summary Global multi-type search (resumes, users, jobs, posts)
  */
-export type searchGlobalResponse200 = void
+export type searchGlobalResponse200 = SearchGlobal200
+
+export type searchGlobalResponse400 = SearchGlobal400
 
 export type searchGlobalResponseSuccess = searchGlobalResponse200
-;
+export type searchGlobalResponseError = (searchGlobalResponse400) & {
+  headers: Headers;
+};
 
-export type searchGlobalResponse = (searchGlobalResponseSuccess)
+export type searchGlobalResponse = (searchGlobalResponseSuccess | searchGlobalResponseError)
 
 export const getSearchGlobalUrl = (params: SearchGlobalParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -425,7 +445,7 @@ export const getSearchGlobalQueryKey = (params?: SearchGlobalParams,) => {
     }
 
 
-export const getSearchGlobalInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchGlobal>>>, TError = unknown>(params: SearchGlobalParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSearchGlobalInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchGlobal>>>, TError = SearchGlobal400>(params: SearchGlobalParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -444,14 +464,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchGlobalInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof searchGlobal>>>
-export type SearchGlobalInfiniteQueryError = unknown
+export type SearchGlobalInfiniteQueryError = SearchGlobal400
 
 
 /**
  * @summary Global multi-type search (resumes, users, jobs, posts)
  */
 
-export function createSearchGlobalInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchGlobal>>>, TError = unknown>(
+export function createSearchGlobalInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchGlobal>>>, TError = SearchGlobal400>(
  params: () =>  SearchGlobalParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -466,7 +486,7 @@ export function createSearchGlobalInfinite<TData = InfiniteData<Awaited<ReturnTy
 /**
  * @summary Global multi-type search (resumes, users, jobs, posts)
  */
-export const prefetchSearchGlobalInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchGlobal>>, TError = unknown>(
+export const prefetchSearchGlobalInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchGlobal>>, TError = SearchGlobal400>(
  queryClient: QueryClient, params: SearchGlobalParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -482,7 +502,7 @@ export const prefetchSearchGlobalInfiniteQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getSearchGlobalQueryOptions = <TData = Awaited<ReturnType<typeof searchGlobal>>, TError = unknown>(params: SearchGlobalParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSearchGlobalQueryOptions = <TData = Awaited<ReturnType<typeof searchGlobal>>, TError = SearchGlobal400>(params: SearchGlobalParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -501,14 +521,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchGlobalQueryResult = NonNullable<Awaited<ReturnType<typeof searchGlobal>>>
-export type SearchGlobalQueryError = unknown
+export type SearchGlobalQueryError = SearchGlobal400
 
 
 /**
  * @summary Global multi-type search (resumes, users, jobs, posts)
  */
 
-export function createSearchGlobal<TData = Awaited<ReturnType<typeof searchGlobal>>, TError = unknown>(
+export function createSearchGlobal<TData = Awaited<ReturnType<typeof searchGlobal>>, TError = SearchGlobal400>(
  params: () =>  SearchGlobalParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -523,7 +543,7 @@ export function createSearchGlobal<TData = Awaited<ReturnType<typeof searchGloba
 /**
  * @summary Global multi-type search (resumes, users, jobs, posts)
  */
-export const prefetchSearchGlobalQuery = async <TData = Awaited<ReturnType<typeof searchGlobal>>, TError = unknown>(
+export const prefetchSearchGlobalQuery = async <TData = Awaited<ReturnType<typeof searchGlobal>>, TError = SearchGlobal400>(
  queryClient: QueryClient, params: SearchGlobalParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchGlobal>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -543,12 +563,16 @@ export const prefetchSearchGlobalQuery = async <TData = Awaited<ReturnType<typeo
  * Resume Search API
  * @summary Find similar resumes by resume id
  */
-export type searchSimilarResponse200 = void
+export type searchSimilarResponse200 = SearchSimilar200
+
+export type searchSimilarResponse400 = SearchSimilar400
 
 export type searchSimilarResponseSuccess = searchSimilarResponse200
-;
+export type searchSimilarResponseError = (searchSimilarResponse400) & {
+  headers: Headers;
+};
 
-export type searchSimilarResponse = (searchSimilarResponseSuccess)
+export type searchSimilarResponse = (searchSimilarResponseSuccess | searchSimilarResponseError)
 
 export const getSearchSimilarUrl = (id: string,
     params?: SearchSimilarParams,) => {
@@ -597,7 +621,7 @@ export const getSearchSimilarQueryKey = (id: string,
     }
 
 
-export const getSearchSimilarInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchSimilar>>>, TError = unknown>(id: string,
+export const getSearchSimilarInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchSimilar>>>, TError = SearchSimilar400>(id: string,
     params?: SearchSimilarParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -617,14 +641,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchSimilarInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof searchSimilar>>>
-export type SearchSimilarInfiniteQueryError = unknown
+export type SearchSimilarInfiniteQueryError = SearchSimilar400
 
 
 /**
  * @summary Find similar resumes by resume id
  */
 
-export function createSearchSimilarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchSimilar>>>, TError = unknown>(
+export function createSearchSimilarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchSimilar>>>, TError = SearchSimilar400>(
  id: () =>  string,
     params?: () =>  SearchSimilarParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -641,7 +665,7 @@ export function createSearchSimilarInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Find similar resumes by resume id
  */
-export const prefetchSearchSimilarInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = unknown>(
+export const prefetchSearchSimilarInfiniteQuery = async <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = SearchSimilar400>(
  queryClient: QueryClient, id: string,
     params?: SearchSimilarParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -658,7 +682,7 @@ export const prefetchSearchSimilarInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getSearchSimilarQueryOptions = <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = unknown>(id: string,
+export const getSearchSimilarQueryOptions = <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = SearchSimilar400>(id: string,
     params?: SearchSimilarParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -678,14 +702,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SearchSimilarQueryResult = NonNullable<Awaited<ReturnType<typeof searchSimilar>>>
-export type SearchSimilarQueryError = unknown
+export type SearchSimilarQueryError = SearchSimilar400
 
 
 /**
  * @summary Find similar resumes by resume id
  */
 
-export function createSearchSimilar<TData = Awaited<ReturnType<typeof searchSimilar>>, TError = unknown>(
+export function createSearchSimilar<TData = Awaited<ReturnType<typeof searchSimilar>>, TError = SearchSimilar400>(
  id: () =>  string,
     params?: () =>  SearchSimilarParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -702,7 +726,7 @@ export function createSearchSimilar<TData = Awaited<ReturnType<typeof searchSimi
 /**
  * @summary Find similar resumes by resume id
  */
-export const prefetchSearchSimilarQuery = async <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = unknown>(
+export const prefetchSearchSimilarQuery = async <TData = Awaited<ReturnType<typeof searchSimilar>>, TError = SearchSimilar400>(
  queryClient: QueryClient, id: string,
     params?: SearchSimilarParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof searchSimilar>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

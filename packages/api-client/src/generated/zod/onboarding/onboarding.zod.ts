@@ -10,9 +10,251 @@ import * as zod from 'zod';
 
 /**
  * Onboarding API
+ * @summary Get onboarding session with field definitions and navigation
+ */
+export const onboardingSessionResponseProgressMin = 0;
+export const onboardingSessionResponseProgressMax = 100;
+
+export const onboardingSessionResponseStrengthScoreMin = 0;
+export const onboardingSessionResponseStrengthScoreMax = 100;
+
+export const onboardingSessionResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingSessionResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingSessionResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingSessionResponseProgressMin).max(onboardingSessionResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingSessionResponseStrengthScoreMin).max(onboardingSessionResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingSessionResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingSessionResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
+
+/**
+ * Onboarding API
  * @summary Save current step data and advance to next step
  */
 export const OnboardingSessionNextBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const onboardingSessionNextResponseProgressMin = 0;
+export const onboardingSessionNextResponseProgressMax = 100;
+
+export const onboardingSessionNextResponseStrengthScoreMin = 0;
+export const onboardingSessionNextResponseStrengthScoreMax = 100;
+
+export const onboardingSessionNextResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingSessionNextResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingSessionNextResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingSessionNextResponseProgressMin).max(onboardingSessionNextResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingSessionNextResponseStrengthScoreMin).max(onboardingSessionNextResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingSessionNextResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingSessionNextResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
+
+/**
+ * Onboarding API
+ * @summary Go back to previous step
+ */
+export const onboardingSessionPreviousResponseProgressMin = 0;
+export const onboardingSessionPreviousResponseProgressMax = 100;
+
+export const onboardingSessionPreviousResponseStrengthScoreMin = 0;
+export const onboardingSessionPreviousResponseStrengthScoreMax = 100;
+
+export const onboardingSessionPreviousResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingSessionPreviousResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingSessionPreviousResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingSessionPreviousResponseProgressMin).max(onboardingSessionPreviousResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingSessionPreviousResponseStrengthScoreMin).max(onboardingSessionPreviousResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingSessionPreviousResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingSessionPreviousResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
 
 /**
  * Onboarding API
@@ -22,11 +264,339 @@ export const OnboardingSessionGotoBody = zod.object({
   "stepId": zod.string()
 })
 
+export const onboardingSessionGotoResponseProgressMin = 0;
+export const onboardingSessionGotoResponseProgressMax = 100;
+
+export const onboardingSessionGotoResponseStrengthScoreMin = 0;
+export const onboardingSessionGotoResponseStrengthScoreMax = 100;
+
+export const onboardingSessionGotoResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingSessionGotoResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingSessionGotoResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingSessionGotoResponseProgressMin).max(onboardingSessionGotoResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingSessionGotoResponseStrengthScoreMin).max(onboardingSessionGotoResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingSessionGotoResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingSessionGotoResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
+
 /**
  * Onboarding API
  * @summary Save current step data without advancing
  */
 export const OnboardingSessionSaveBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const onboardingSessionSaveResponseProgressMin = 0;
+export const onboardingSessionSaveResponseProgressMax = 100;
+
+export const onboardingSessionSaveResponseStrengthScoreMin = 0;
+export const onboardingSessionSaveResponseStrengthScoreMax = 100;
+
+export const onboardingSessionSaveResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingSessionSaveResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingSessionSaveResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingSessionSaveResponseProgressMin).max(onboardingSessionSaveResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingSessionSaveResponseStrengthScoreMin).max(onboardingSessionSaveResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingSessionSaveResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingSessionSaveResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
+
+/**
+ * Onboarding API
+ * @summary Complete onboarding — backend builds payload from saved progress
+ */
+export const OnboardingSessionCompleteResponse = zod.object({
+  "resumeId": zod.string()
+})
+
+/**
+ * Onboarding API
+ * @summary Restart onboarding with existing profile data
+ */
+export const onboardingSessionRestartResponseProgressMin = 0;
+export const onboardingSessionRestartResponseProgressMax = 100;
+
+export const onboardingSessionRestartResponseStrengthScoreMin = 0;
+export const onboardingSessionRestartResponseStrengthScoreMax = 100;
+
+export const onboardingSessionRestartResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingSessionRestartResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingSessionRestartResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingSessionRestartResponseProgressMin).max(onboardingSessionRestartResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingSessionRestartResponseStrengthScoreMin).max(onboardingSessionRestartResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingSessionRestartResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingSessionRestartResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
+
+/**
+ * Onboarding API
+ * @summary [Legacy] Get onboarding progress
+ */
+export const onboardingProgressGetResponseProgressMin = 0;
+export const onboardingProgressGetResponseProgressMax = 100;
+
+export const onboardingProgressGetResponseStrengthScoreMin = 0;
+export const onboardingProgressGetResponseStrengthScoreMax = 100;
+
+export const onboardingProgressGetResponseStepsItemFieldsItemMinLengthMin = 0;
+
+export const onboardingProgressGetResponseStepsItemFieldsItemMaxLengthExclusiveMin = 0;
+
+
+
+export const OnboardingProgressGetResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string()),
+  "progress": zod.number().min(onboardingProgressGetResponseProgressMin).max(onboardingProgressGetResponseProgressMax),
+  "strength": zod.object({
+  "score": zod.number().min(onboardingProgressGetResponseStrengthScoreMin).max(onboardingProgressGetResponseStrengthScoreMax),
+  "message": zod.string(),
+  "level": zod.enum(['weak', 'growing', 'strong', 'excellent', 'complete'])
+}).optional(),
+  "canProceed": zod.boolean(),
+  "missingRequired": zod.array(zod.string()).optional(),
+  "nextStep": zod.string().nullish(),
+  "previousStep": zod.string().nullish(),
+  "steps": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "description": zod.string(),
+  "required": zod.boolean(),
+  "component": zod.string(),
+  "icon": zod.string().optional(),
+  "fields": zod.array(zod.object({
+  "key": zod.string(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "required": zod.boolean(),
+  "options": zod.array(zod.string()).optional(),
+  "widget": zod.string().optional(),
+  "minLength": zod.number().min(onboardingProgressGetResponseStepsItemFieldsItemMinLengthMin).optional(),
+  "maxLength": zod.number().gt(onboardingProgressGetResponseStepsItemFieldsItemMaxLengthExclusiveMin).optional(),
+  "pattern": zod.string().optional(),
+  "examples": zod.array(zod.string()).optional()
+})).optional(),
+  "noDataLabel": zod.string().optional(),
+  "placeholder": zod.string().optional(),
+  "addLabel": zod.string().optional(),
+  "multipleItems": zod.boolean().optional(),
+  "sectionTypeKey": zod.string().optional()
+})),
+  "username": zod.string().optional(),
+  "personalInfo": zod.object({
+  "fullName": zod.string(),
+  "email": zod.string().email().optional(),
+  "phone": zod.string().optional(),
+  "location": zod.string().optional()
+}).optional(),
+  "professionalProfile": zod.object({
+  "jobTitle": zod.string(),
+  "summary": zod.string().optional(),
+  "linkedin": zod.string().optional(),
+  "github": zod.string().optional(),
+  "website": zod.string().optional()
+}).optional(),
+  "sections": zod.array(zod.object({
+  "sectionTypeKey": zod.string(),
+  "items": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "content": zod.record(zod.string(), zod.unknown().nullable()).optional()
+})).optional(),
+  "noData": zod.boolean().optional()
+})).optional(),
+  "templateSelection": zod.object({
+  "templateId": zod.string().optional(),
+  "colorScheme": zod.string().optional()
+}).optional()
+})
 
 /**
  * Onboarding API
@@ -105,6 +675,20 @@ export const OnboardingProgressPutBody = zod.object({
 }).optional()
 })
 
+export const OnboardingProgressPutResponse = zod.object({
+  "currentStep": zod.string(),
+  "completedSteps": zod.array(zod.string())
+})
+
+/**
+ * Onboarding API
+ * @summary [Legacy] Get onboarding completion status
+ */
+export const OnboardingStatusResponse = zod.object({
+  "hasCompletedOnboarding": zod.boolean(),
+  "onboardingCompletedAt": zod.string().datetime({"offset":true}).nullable()
+})
+
 /**
  * Onboarding API
  * @summary [Legacy] Complete onboarding with explicit payload
@@ -179,5 +763,9 @@ export const OnboardingCreateBody = zod.object({
 })).default(onboardingCreateBodySectionsItemItemsDefault),
   "noData": zod.boolean().default(onboardingCreateBodySectionsItemNoDataDefault)
 })).default(onboardingCreateBodySectionsDefault)
+})
+
+export const OnboardingCreateResponse = zod.object({
+  "resumeId": zod.string()
 })
 

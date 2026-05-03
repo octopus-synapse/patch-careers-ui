@@ -26,7 +26,27 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  PostsCreateBody
+  PostsComposerConfig200,
+  PostsComposerConfig400,
+  PostsComposerConfig401,
+  PostsComposerConfig403,
+  PostsCreate200,
+  PostsCreate400,
+  PostsCreate401,
+  PostsCreate403,
+  PostsCreateBody,
+  PostsDelete200,
+  PostsDelete400,
+  PostsDelete401,
+  PostsDelete403,
+  PostsGetById200,
+  PostsGetById400,
+  PostsGetById401,
+  PostsGetById403,
+  PostsUploadImage200,
+  PostsUploadImage400,
+  PostsUploadImage401,
+  PostsUploadImage403
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +60,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns the server-driven composer config the frontend uses to render the post-creation UI: limits, allowed media types, poll/repost availability, mention cap, post types.
  * @summary Composer configuration (server-driven UI)
  */
-export type postsComposerConfigResponse200 = void
+export type postsComposerConfigResponse200 = PostsComposerConfig200
+
+export type postsComposerConfigResponse400 = PostsComposerConfig400
+
+export type postsComposerConfigResponse401 = PostsComposerConfig401
+
+export type postsComposerConfigResponse403 = PostsComposerConfig403
 
 export type postsComposerConfigResponseSuccess = postsComposerConfigResponse200
-;
+export type postsComposerConfigResponseError = (postsComposerConfigResponse400 | postsComposerConfigResponse401 | postsComposerConfigResponse403) & {
+  headers: Headers;
+};
 
-export type postsComposerConfigResponse = (postsComposerConfigResponseSuccess)
+export type postsComposerConfigResponse = (postsComposerConfigResponseSuccess | postsComposerConfigResponseError)
 
 export const getPostsComposerConfigUrl = () => {
 
@@ -83,7 +111,7 @@ export const getPostsComposerConfigQueryKey = () => {
     }
 
 
-export const getPostsComposerConfigInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof postsComposerConfig>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPostsComposerConfigInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof postsComposerConfig>>>, TError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +130,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PostsComposerConfigInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof postsComposerConfig>>>
-export type PostsComposerConfigInfiniteQueryError = unknown
+export type PostsComposerConfigInfiniteQueryError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403
 
 
 /**
  * @summary Composer configuration (server-driven UI)
  */
 
-export function createPostsComposerConfigInfinite<TData = InfiniteData<Awaited<ReturnType<typeof postsComposerConfig>>>, TError = unknown>(
+export function createPostsComposerConfigInfinite<TData = InfiniteData<Awaited<ReturnType<typeof postsComposerConfig>>>, TError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +152,7 @@ export function createPostsComposerConfigInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Composer configuration (server-driven UI)
  */
-export const prefetchPostsComposerConfigInfiniteQuery = async <TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = unknown>(
+export const prefetchPostsComposerConfigInfiniteQuery = async <TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +168,7 @@ export const prefetchPostsComposerConfigInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getPostsComposerConfigQueryOptions = <TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPostsComposerConfigQueryOptions = <TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +187,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PostsComposerConfigQueryResult = NonNullable<Awaited<ReturnType<typeof postsComposerConfig>>>
-export type PostsComposerConfigQueryError = unknown
+export type PostsComposerConfigQueryError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403
 
 
 /**
  * @summary Composer configuration (server-driven UI)
  */
 
-export function createPostsComposerConfig<TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = unknown>(
+export function createPostsComposerConfig<TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +209,7 @@ export function createPostsComposerConfig<TData = Awaited<ReturnType<typeof post
 /**
  * @summary Composer configuration (server-driven UI)
  */
-export const prefetchPostsComposerConfigQuery = async <TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = unknown>(
+export const prefetchPostsComposerConfigQuery = async <TData = Awaited<ReturnType<typeof postsComposerConfig>>, TError = PostsComposerConfig400 | PostsComposerConfig401 | PostsComposerConfig403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsComposerConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +229,20 @@ export const prefetchPostsComposerConfigQuery = async <TData = Awaited<ReturnTyp
  * Posts API
  * @summary Create a new post
  */
-export type postsCreateResponse200 = void
+export type postsCreateResponse200 = PostsCreate200
+
+export type postsCreateResponse400 = PostsCreate400
+
+export type postsCreateResponse401 = PostsCreate401
+
+export type postsCreateResponse403 = PostsCreate403
 
 export type postsCreateResponseSuccess = postsCreateResponse200
-;
+export type postsCreateResponseError = (postsCreateResponse400 | postsCreateResponse401 | postsCreateResponse403) & {
+  headers: Headers;
+};
 
-export type postsCreateResponse = (postsCreateResponseSuccess)
+export type postsCreateResponse = (postsCreateResponseSuccess | postsCreateResponseError)
 
 export const getPostsCreateUrl = () => {
 
@@ -231,7 +267,7 @@ export const postsCreate = async (postsCreateBody: PostsCreateBody, options?: Re
 
 
 
-export const getPostsCreateMutationOptions = <TError = unknown,
+export const getPostsCreateMutationOptions = <TError = PostsCreate400 | PostsCreate401 | PostsCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,{data: PostsCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,{data: PostsCreateBody}, TContext> => {
 
@@ -260,12 +296,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof postsCreate>>>
     export type PostsCreateMutationBody = PostsCreateBody
-    export type PostsCreateMutationError = unknown
+    export type PostsCreateMutationError = PostsCreate400 | PostsCreate401 | PostsCreate403
 
     /**
  * @summary Create a new post
  */
-export const createPostsCreate = <TError = unknown,
+export const createPostsCreate = <TError = PostsCreate400 | PostsCreate401 | PostsCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsCreate>>, TError,{data: PostsCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsCreate>>,
@@ -279,12 +315,20 @@ export const createPostsCreate = <TError = unknown,
  * Posts API
  * @summary Get a post by ID
  */
-export type postsGetByIdResponse200 = void
+export type postsGetByIdResponse200 = PostsGetById200
+
+export type postsGetByIdResponse400 = PostsGetById400
+
+export type postsGetByIdResponse401 = PostsGetById401
+
+export type postsGetByIdResponse403 = PostsGetById403
 
 export type postsGetByIdResponseSuccess = postsGetByIdResponse200
-;
+export type postsGetByIdResponseError = (postsGetByIdResponse400 | postsGetByIdResponse401 | postsGetByIdResponse403) & {
+  headers: Headers;
+};
 
-export type postsGetByIdResponse = (postsGetByIdResponseSuccess)
+export type postsGetByIdResponse = (postsGetByIdResponseSuccess | postsGetByIdResponseError)
 
 export const getPostsGetByIdUrl = (id: string,) => {
 
@@ -322,7 +366,7 @@ export const getPostsGetByIdQueryKey = (id: string,) => {
     }
 
 
-export const getPostsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof postsGetById>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPostsGetByIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof postsGetById>>>, TError = PostsGetById400 | PostsGetById401 | PostsGetById403>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -341,14 +385,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PostsGetByIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof postsGetById>>>
-export type PostsGetByIdInfiniteQueryError = unknown
+export type PostsGetByIdInfiniteQueryError = PostsGetById400 | PostsGetById401 | PostsGetById403
 
 
 /**
  * @summary Get a post by ID
  */
 
-export function createPostsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof postsGetById>>>, TError = unknown>(
+export function createPostsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof postsGetById>>>, TError = PostsGetById400 | PostsGetById401 | PostsGetById403>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -363,7 +407,7 @@ export function createPostsGetByIdInfinite<TData = InfiniteData<Awaited<ReturnTy
 /**
  * @summary Get a post by ID
  */
-export const prefetchPostsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof postsGetById>>, TError = unknown>(
+export const prefetchPostsGetByIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof postsGetById>>, TError = PostsGetById400 | PostsGetById401 | PostsGetById403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -379,7 +423,7 @@ export const prefetchPostsGetByIdInfiniteQuery = async <TData = Awaited<ReturnTy
 
 
 
-export const getPostsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof postsGetById>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getPostsGetByIdQueryOptions = <TData = Awaited<ReturnType<typeof postsGetById>>, TError = PostsGetById400 | PostsGetById401 | PostsGetById403>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -398,14 +442,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PostsGetByIdQueryResult = NonNullable<Awaited<ReturnType<typeof postsGetById>>>
-export type PostsGetByIdQueryError = unknown
+export type PostsGetByIdQueryError = PostsGetById400 | PostsGetById401 | PostsGetById403
 
 
 /**
  * @summary Get a post by ID
  */
 
-export function createPostsGetById<TData = Awaited<ReturnType<typeof postsGetById>>, TError = unknown>(
+export function createPostsGetById<TData = Awaited<ReturnType<typeof postsGetById>>, TError = PostsGetById400 | PostsGetById401 | PostsGetById403>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -420,7 +464,7 @@ export function createPostsGetById<TData = Awaited<ReturnType<typeof postsGetByI
 /**
  * @summary Get a post by ID
  */
-export const prefetchPostsGetByIdQuery = async <TData = Awaited<ReturnType<typeof postsGetById>>, TError = unknown>(
+export const prefetchPostsGetByIdQuery = async <TData = Awaited<ReturnType<typeof postsGetById>>, TError = PostsGetById400 | PostsGetById401 | PostsGetById403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof postsGetById>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -440,12 +484,20 @@ export const prefetchPostsGetByIdQuery = async <TData = Awaited<ReturnType<typeo
  * Posts API
  * @summary Delete a post
  */
-export type postsDeleteResponse200 = void
+export type postsDeleteResponse200 = PostsDelete200
+
+export type postsDeleteResponse400 = PostsDelete400
+
+export type postsDeleteResponse401 = PostsDelete401
+
+export type postsDeleteResponse403 = PostsDelete403
 
 export type postsDeleteResponseSuccess = postsDeleteResponse200
-;
+export type postsDeleteResponseError = (postsDeleteResponse400 | postsDeleteResponse401 | postsDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type postsDeleteResponse = (postsDeleteResponseSuccess)
+export type postsDeleteResponse = (postsDeleteResponseSuccess | postsDeleteResponseError)
 
 export const getPostsDeleteUrl = (id: string,) => {
 
@@ -469,7 +521,7 @@ export const postsDelete = async (id: string, options?: RequestInit): Promise<po
 
 
 
-export const getPostsDeleteMutationOptions = <TError = unknown,
+export const getPostsDeleteMutationOptions = <TError = PostsDelete400 | PostsDelete401 | PostsDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof postsDelete>>, TError,{id: string}, TContext> => {
 
@@ -498,12 +550,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostsDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof postsDelete>>>
 
-    export type PostsDeleteMutationError = unknown
+    export type PostsDeleteMutationError = PostsDelete400 | PostsDelete401 | PostsDelete403
 
     /**
  * @summary Delete a post
  */
-export const createPostsDelete = <TError = unknown,
+export const createPostsDelete = <TError = PostsDelete400 | PostsDelete401 | PostsDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsDelete>>,
@@ -517,12 +569,20 @@ export const createPostsDelete = <TError = unknown,
  * Posts API
  * @summary Upload post image
  */
-export type postsUploadImageResponse200 = void
+export type postsUploadImageResponse200 = PostsUploadImage200
+
+export type postsUploadImageResponse400 = PostsUploadImage400
+
+export type postsUploadImageResponse401 = PostsUploadImage401
+
+export type postsUploadImageResponse403 = PostsUploadImage403
 
 export type postsUploadImageResponseSuccess = postsUploadImageResponse200
-;
+export type postsUploadImageResponseError = (postsUploadImageResponse400 | postsUploadImageResponse401 | postsUploadImageResponse403) & {
+  headers: Headers;
+};
 
-export type postsUploadImageResponse = (postsUploadImageResponseSuccess)
+export type postsUploadImageResponse = (postsUploadImageResponseSuccess | postsUploadImageResponseError)
 
 export const getPostsUploadImageUrl = () => {
 
@@ -546,7 +606,7 @@ export const postsUploadImage = async ( options?: RequestInit): Promise<postsUpl
 
 
 
-export const getPostsUploadImageMutationOptions = <TError = unknown,
+export const getPostsUploadImageMutationOptions = <TError = PostsUploadImage400 | PostsUploadImage401 | PostsUploadImage403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsUploadImage>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof postsUploadImage>>, TError,void, TContext> => {
 
@@ -575,12 +635,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostsUploadImageMutationResult = NonNullable<Awaited<ReturnType<typeof postsUploadImage>>>
 
-    export type PostsUploadImageMutationError = unknown
+    export type PostsUploadImageMutationError = PostsUploadImage400 | PostsUploadImage401 | PostsUploadImage403
 
     /**
  * @summary Upload post image
  */
-export const createPostsUploadImage = <TError = unknown,
+export const createPostsUploadImage = <TError = PostsUploadImage400 | PostsUploadImage401 | PostsUploadImage403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof postsUploadImage>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof postsUploadImage>>,

@@ -10,6 +10,21 @@ import * as zod from 'zod';
 
 /**
  * User-registered webhook subscriptions.
+ * @summary List webhooks registered by the current user.
+ */
+export const WebhooksListResponse = zod.object({
+  "webhooks": zod.array(zod.object({
+  "id": zod.string(),
+  "url": zod.string(),
+  "events": zod.array(zod.enum(['resume.created', 'resume.published', 'ats.score.updated'])),
+  "enabled": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}).optional()
+}))
+})
+
+/**
+ * User-registered webhook subscriptions.
  * @summary Register a new webhook subscription.
  */
 
@@ -18,6 +33,18 @@ import * as zod from 'zod';
 export const WebhooksCreateBody = zod.object({
   "url": zod.string().url(),
   "events": zod.array(zod.enum(['resume.created', 'resume.published', 'ats.score.updated'])).min(1)
+})
+
+export const WebhooksCreateResponse = zod.object({
+  "webhook": zod.object({
+  "id": zod.string(),
+  "url": zod.string(),
+  "events": zod.array(zod.enum(['resume.created', 'resume.published', 'ats.score.updated'])),
+  "enabled": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}).optional()
+}),
+  "secret": zod.string()
 })
 
 /**
@@ -31,5 +58,40 @@ export const WebhooksUpdateBody = zod.object({
   "url": zod.string().url().optional(),
   "events": zod.array(zod.enum(['resume.created', 'resume.published', 'ats.score.updated'])).min(1).optional(),
   "enabled": zod.boolean().optional()
+})
+
+export const WebhooksUpdateResponse = zod.object({
+  "webhook": zod.object({
+  "id": zod.string(),
+  "url": zod.string(),
+  "events": zod.array(zod.enum(['resume.created', 'resume.published', 'ats.score.updated'])),
+  "enabled": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}).optional()
+})
+})
+
+/**
+ * User-registered webhook subscriptions.
+ * @summary Delete a webhook subscription.
+ */
+export const WebhooksDeleteResponse = zod.object({
+
+})
+
+/**
+ * User-registered webhook subscriptions.
+ * @summary List recent delivery attempts for a webhook.
+ */
+export const WebhooksDeliveriesResponse = zod.object({
+  "deliveries": zod.array(zod.object({
+  "id": zod.string(),
+  "eventType": zod.string(),
+  "attempt": zod.number(),
+  "success": zod.boolean(),
+  "statusCode": zod.number().nullable(),
+  "errorMessage": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true})
+}))
 })
 

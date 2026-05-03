@@ -1,14 +1,12 @@
 <script lang="ts">
-import { createAuthSession } from 'api-client';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { useAuth } from '$lib/state/auth.svelte';
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+const session = useAuth();
 
-const user = $derived(session.data?.user as Record<string, unknown> | null);
+const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated ?? false);
 const needsOnboarding = $derived(user?.needsOnboarding ?? false);
 const needsEmailVerification = $derived(Boolean(user?.needsEmailVerification));

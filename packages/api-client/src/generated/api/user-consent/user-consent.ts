@@ -26,7 +26,16 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  UserConsentAcceptConsentBody
+  UserConsentAcceptConsent200,
+  UserConsentAcceptConsent400,
+  UserConsentAcceptConsent401,
+  UserConsentAcceptConsentBody,
+  UserConsentGetConsentHistory200Item,
+  UserConsentGetConsentHistory400,
+  UserConsentGetConsentHistory401,
+  UserConsentGetConsentStatus200,
+  UserConsentGetConsentStatus400,
+  UserConsentGetConsentStatus401
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -40,12 +49,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Records user acceptance of legal documents with IP and user agent for audit trail. Required before accessing protected API endpoints.
  * @summary Accept Terms of Service or Privacy Policy
  */
-export type userConsentAcceptConsentResponse200 = void
+export type userConsentAcceptConsentResponse200 = UserConsentAcceptConsent200
+
+export type userConsentAcceptConsentResponse400 = UserConsentAcceptConsent400
+
+export type userConsentAcceptConsentResponse401 = UserConsentAcceptConsent401
 
 export type userConsentAcceptConsentResponseSuccess = userConsentAcceptConsentResponse200
-;
+export type userConsentAcceptConsentResponseError = (userConsentAcceptConsentResponse400 | userConsentAcceptConsentResponse401) & {
+  headers: Headers;
+};
 
-export type userConsentAcceptConsentResponse = (userConsentAcceptConsentResponseSuccess)
+export type userConsentAcceptConsentResponse = (userConsentAcceptConsentResponseSuccess | userConsentAcceptConsentResponseError)
 
 export const getUserConsentAcceptConsentUrl = () => {
 
@@ -70,7 +85,7 @@ export const userConsentAcceptConsent = async (userConsentAcceptConsentBody: Use
 
 
 
-export const getUserConsentAcceptConsentMutationOptions = <TError = unknown,
+export const getUserConsentAcceptConsentMutationOptions = <TError = UserConsentAcceptConsent400 | UserConsentAcceptConsent401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof userConsentAcceptConsent>>, TError,{data: UserConsentAcceptConsentBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof userConsentAcceptConsent>>, TError,{data: UserConsentAcceptConsentBody}, TContext> => {
 
@@ -99,12 +114,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UserConsentAcceptConsentMutationResult = NonNullable<Awaited<ReturnType<typeof userConsentAcceptConsent>>>
     export type UserConsentAcceptConsentMutationBody = UserConsentAcceptConsentBody
-    export type UserConsentAcceptConsentMutationError = unknown
+    export type UserConsentAcceptConsentMutationError = UserConsentAcceptConsent400 | UserConsentAcceptConsent401
 
     /**
  * @summary Accept Terms of Service or Privacy Policy
  */
-export const createUserConsentAcceptConsent = <TError = unknown,
+export const createUserConsentAcceptConsent = <TError = UserConsentAcceptConsent400 | UserConsentAcceptConsent401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof userConsentAcceptConsent>>, TError,{data: UserConsentAcceptConsentBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof userConsentAcceptConsent>>,
@@ -118,12 +133,18 @@ export const createUserConsentAcceptConsent = <TError = unknown,
  * Returns which documents the user has accepted for the current versions
  * @summary Check consent acceptance status
  */
-export type userConsentGetConsentStatusResponse200 = void
+export type userConsentGetConsentStatusResponse200 = UserConsentGetConsentStatus200
+
+export type userConsentGetConsentStatusResponse400 = UserConsentGetConsentStatus400
+
+export type userConsentGetConsentStatusResponse401 = UserConsentGetConsentStatus401
 
 export type userConsentGetConsentStatusResponseSuccess = userConsentGetConsentStatusResponse200
-;
+export type userConsentGetConsentStatusResponseError = (userConsentGetConsentStatusResponse400 | userConsentGetConsentStatusResponse401) & {
+  headers: Headers;
+};
 
-export type userConsentGetConsentStatusResponse = (userConsentGetConsentStatusResponseSuccess)
+export type userConsentGetConsentStatusResponse = (userConsentGetConsentStatusResponseSuccess | userConsentGetConsentStatusResponseError)
 
 export const getUserConsentGetConsentStatusUrl = () => {
 
@@ -161,7 +182,7 @@ export const getUserConsentGetConsentStatusQueryKey = () => {
     }
 
 
-export const getUserConsentGetConsentStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentStatus>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUserConsentGetConsentStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentStatus>>>, TError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -180,14 +201,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserConsentGetConsentStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof userConsentGetConsentStatus>>>
-export type UserConsentGetConsentStatusInfiniteQueryError = unknown
+export type UserConsentGetConsentStatusInfiniteQueryError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401
 
 
 /**
  * @summary Check consent acceptance status
  */
 
-export function createUserConsentGetConsentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentStatus>>>, TError = unknown>(
+export function createUserConsentGetConsentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentStatus>>>, TError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -202,7 +223,7 @@ export function createUserConsentGetConsentStatusInfinite<TData = InfiniteData<A
 /**
  * @summary Check consent acceptance status
  */
-export const prefetchUserConsentGetConsentStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = unknown>(
+export const prefetchUserConsentGetConsentStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -218,7 +239,7 @@ export const prefetchUserConsentGetConsentStatusInfiniteQuery = async <TData = A
 
 
 
-export const getUserConsentGetConsentStatusQueryOptions = <TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUserConsentGetConsentStatusQueryOptions = <TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -237,14 +258,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserConsentGetConsentStatusQueryResult = NonNullable<Awaited<ReturnType<typeof userConsentGetConsentStatus>>>
-export type UserConsentGetConsentStatusQueryError = unknown
+export type UserConsentGetConsentStatusQueryError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401
 
 
 /**
  * @summary Check consent acceptance status
  */
 
-export function createUserConsentGetConsentStatus<TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = unknown>(
+export function createUserConsentGetConsentStatus<TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -259,7 +280,7 @@ export function createUserConsentGetConsentStatus<TData = Awaited<ReturnType<typ
 /**
  * @summary Check consent acceptance status
  */
-export const prefetchUserConsentGetConsentStatusQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = unknown>(
+export const prefetchUserConsentGetConsentStatusQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError = UserConsentGetConsentStatus400 | UserConsentGetConsentStatus401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -279,12 +300,18 @@ export const prefetchUserConsentGetConsentStatusQuery = async <TData = Awaited<R
  * Retrieves all consent records for the authenticated user
  * @summary Get consent acceptance history
  */
-export type userConsentGetConsentHistoryResponse200 = void
+export type userConsentGetConsentHistoryResponse200 = UserConsentGetConsentHistory200Item[]
+
+export type userConsentGetConsentHistoryResponse400 = UserConsentGetConsentHistory400
+
+export type userConsentGetConsentHistoryResponse401 = UserConsentGetConsentHistory401
 
 export type userConsentGetConsentHistoryResponseSuccess = userConsentGetConsentHistoryResponse200
-;
+export type userConsentGetConsentHistoryResponseError = (userConsentGetConsentHistoryResponse400 | userConsentGetConsentHistoryResponse401) & {
+  headers: Headers;
+};
 
-export type userConsentGetConsentHistoryResponse = (userConsentGetConsentHistoryResponseSuccess)
+export type userConsentGetConsentHistoryResponse = (userConsentGetConsentHistoryResponseSuccess | userConsentGetConsentHistoryResponseError)
 
 export const getUserConsentGetConsentHistoryUrl = () => {
 
@@ -322,7 +349,7 @@ export const getUserConsentGetConsentHistoryQueryKey = () => {
     }
 
 
-export const getUserConsentGetConsentHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentHistory>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUserConsentGetConsentHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentHistory>>>, TError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -341,14 +368,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserConsentGetConsentHistoryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof userConsentGetConsentHistory>>>
-export type UserConsentGetConsentHistoryInfiniteQueryError = unknown
+export type UserConsentGetConsentHistoryInfiniteQueryError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401
 
 
 /**
  * @summary Get consent acceptance history
  */
 
-export function createUserConsentGetConsentHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentHistory>>>, TError = unknown>(
+export function createUserConsentGetConsentHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof userConsentGetConsentHistory>>>, TError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -363,7 +390,7 @@ export function createUserConsentGetConsentHistoryInfinite<TData = InfiniteData<
 /**
  * @summary Get consent acceptance history
  */
-export const prefetchUserConsentGetConsentHistoryInfiniteQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = unknown>(
+export const prefetchUserConsentGetConsentHistoryInfiniteQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -379,7 +406,7 @@ export const prefetchUserConsentGetConsentHistoryInfiniteQuery = async <TData = 
 
 
 
-export const getUserConsentGetConsentHistoryQueryOptions = <TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUserConsentGetConsentHistoryQueryOptions = <TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -398,14 +425,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserConsentGetConsentHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof userConsentGetConsentHistory>>>
-export type UserConsentGetConsentHistoryQueryError = unknown
+export type UserConsentGetConsentHistoryQueryError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401
 
 
 /**
  * @summary Get consent acceptance history
  */
 
-export function createUserConsentGetConsentHistory<TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = unknown>(
+export function createUserConsentGetConsentHistory<TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -420,7 +447,7 @@ export function createUserConsentGetConsentHistory<TData = Awaited<ReturnType<ty
 /**
  * @summary Get consent acceptance history
  */
-export const prefetchUserConsentGetConsentHistoryQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = unknown>(
+export const prefetchUserConsentGetConsentHistoryQuery = async <TData = Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError = UserConsentGetConsentHistory400 | UserConsentGetConsentHistory401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof userConsentGetConsentHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

@@ -26,9 +26,20 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  DslPreview200,
+  DslPreview400,
   DslPreviewParams,
+  DslRender200,
+  DslRender400,
+  DslRender401,
+  DslRender403,
+  DslRender404,
   DslRenderParams,
-  DslRenderPublicParams
+  DslRenderPublic200,
+  DslRenderPublic400,
+  DslRenderPublicParams,
+  DslValidate200,
+  DslValidate400
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -42,12 +53,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Dsl API
  * @summary Validate DSL schema
  */
-export type dslValidateResponse200 = void
+export type dslValidateResponse200 = DslValidate200
+
+export type dslValidateResponse400 = DslValidate400
 
 export type dslValidateResponseSuccess = dslValidateResponse200
-;
+export type dslValidateResponseError = (dslValidateResponse400) & {
+  headers: Headers;
+};
 
-export type dslValidateResponse = (dslValidateResponseSuccess)
+export type dslValidateResponse = (dslValidateResponseSuccess | dslValidateResponseError)
 
 export const getDslValidateUrl = () => {
 
@@ -71,7 +86,7 @@ export const dslValidate = async ( options?: RequestInit): Promise<dslValidateRe
 
 
 
-export const getDslValidateMutationOptions = <TError = unknown,
+export const getDslValidateMutationOptions = <TError = DslValidate400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof dslValidate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof dslValidate>>, TError,void, TContext> => {
 
@@ -100,12 +115,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type DslValidateMutationResult = NonNullable<Awaited<ReturnType<typeof dslValidate>>>
 
-    export type DslValidateMutationError = unknown
+    export type DslValidateMutationError = DslValidate400
 
     /**
  * @summary Validate DSL schema
  */
-export const createDslValidate = <TError = unknown,
+export const createDslValidate = <TError = DslValidate400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof dslValidate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof dslValidate>>,
@@ -119,12 +134,16 @@ export const createDslValidate = <TError = unknown,
  * Dsl API
  * @summary Compile DSL to AST (preview, no persistence)
  */
-export type dslPreviewResponse200 = void
+export type dslPreviewResponse200 = DslPreview200
+
+export type dslPreviewResponse400 = DslPreview400
 
 export type dslPreviewResponseSuccess = dslPreviewResponse200
-;
+export type dslPreviewResponseError = (dslPreviewResponse400) & {
+  headers: Headers;
+};
 
-export type dslPreviewResponse = (dslPreviewResponseSuccess)
+export type dslPreviewResponse = (dslPreviewResponseSuccess | dslPreviewResponseError)
 
 export const getDslPreviewUrl = (params?: DslPreviewParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -155,7 +174,7 @@ export const dslPreview = async (params?: DslPreviewParams, options?: RequestIni
 
 
 
-export const getDslPreviewMutationOptions = <TError = unknown,
+export const getDslPreviewMutationOptions = <TError = DslPreview400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof dslPreview>>, TError,{params?: DslPreviewParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof dslPreview>>, TError,{params?: DslPreviewParams}, TContext> => {
 
@@ -184,12 +203,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type DslPreviewMutationResult = NonNullable<Awaited<ReturnType<typeof dslPreview>>>
 
-    export type DslPreviewMutationError = unknown
+    export type DslPreviewMutationError = DslPreview400
 
     /**
  * @summary Compile DSL to AST (preview, no persistence)
  */
-export const createDslPreview = <TError = unknown,
+export const createDslPreview = <TError = DslPreview400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof dslPreview>>, TError,{params?: DslPreviewParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof dslPreview>>,
@@ -203,12 +222,22 @@ export const createDslPreview = <TError = unknown,
  * Dsl API
  * @summary Get compiled AST for a resume
  */
-export type dslRenderResponse200 = void
+export type dslRenderResponse200 = DslRender200
+
+export type dslRenderResponse400 = DslRender400
+
+export type dslRenderResponse401 = DslRender401
+
+export type dslRenderResponse403 = DslRender403
+
+export type dslRenderResponse404 = DslRender404
 
 export type dslRenderResponseSuccess = dslRenderResponse200
-;
+export type dslRenderResponseError = (dslRenderResponse400 | dslRenderResponse401 | dslRenderResponse403 | dslRenderResponse404) & {
+  headers: Headers;
+};
 
-export type dslRenderResponse = (dslRenderResponseSuccess)
+export type dslRenderResponse = (dslRenderResponseSuccess | dslRenderResponseError)
 
 export const getDslRenderUrl = (resumeId: string,
     params?: DslRenderParams,) => {
@@ -257,7 +286,7 @@ export const getDslRenderQueryKey = (resumeId: string,
     }
 
 
-export const getDslRenderInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = unknown>(resumeId: string,
+export const getDslRenderInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = DslRender400 | DslRender401 | DslRender403 | DslRender404>(resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -277,14 +306,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type DslRenderInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof dslRender>>>
-export type DslRenderInfiniteQueryError = unknown
+export type DslRenderInfiniteQueryError = DslRender400 | DslRender401 | DslRender403 | DslRender404
 
 
 /**
  * @summary Get compiled AST for a resume
  */
 
-export function createDslRenderInfinite<TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = unknown>(
+export function createDslRenderInfinite<TData = InfiniteData<Awaited<ReturnType<typeof dslRender>>>, TError = DslRender400 | DslRender401 | DslRender403 | DslRender404>(
  resumeId: () =>  string,
     params?: () =>  DslRenderParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -301,7 +330,7 @@ export function createDslRenderInfinite<TData = InfiniteData<Awaited<ReturnType<
 /**
  * @summary Get compiled AST for a resume
  */
-export const prefetchDslRenderInfiniteQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(
+export const prefetchDslRenderInfiniteQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = DslRender400 | DslRender401 | DslRender403 | DslRender404>(
  queryClient: QueryClient, resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -318,7 +347,7 @@ export const prefetchDslRenderInfiniteQuery = async <TData = Awaited<ReturnType<
 
 
 
-export const getDslRenderQueryOptions = <TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(resumeId: string,
+export const getDslRenderQueryOptions = <TData = Awaited<ReturnType<typeof dslRender>>, TError = DslRender400 | DslRender401 | DslRender403 | DslRender404>(resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -338,14 +367,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type DslRenderQueryResult = NonNullable<Awaited<ReturnType<typeof dslRender>>>
-export type DslRenderQueryError = unknown
+export type DslRenderQueryError = DslRender400 | DslRender401 | DslRender403 | DslRender404
 
 
 /**
  * @summary Get compiled AST for a resume
  */
 
-export function createDslRender<TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(
+export function createDslRender<TData = Awaited<ReturnType<typeof dslRender>>, TError = DslRender400 | DslRender401 | DslRender403 | DslRender404>(
  resumeId: () =>  string,
     params?: () =>  DslRenderParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -362,7 +391,7 @@ export function createDslRender<TData = Awaited<ReturnType<typeof dslRender>>, T
 /**
  * @summary Get compiled AST for a resume
  */
-export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = unknown>(
+export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof dslRender>>, TError = DslRender400 | DslRender401 | DslRender403 | DslRender404>(
  queryClient: QueryClient, resumeId: string,
     params?: DslRenderParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRender>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -383,12 +412,16 @@ export const prefetchDslRenderQuery = async <TData = Awaited<ReturnType<typeof d
  * Dsl API
  * @summary Get compiled AST for a public resume
  */
-export type dslRenderPublicResponse200 = void
+export type dslRenderPublicResponse200 = DslRenderPublic200
+
+export type dslRenderPublicResponse400 = DslRenderPublic400
 
 export type dslRenderPublicResponseSuccess = dslRenderPublicResponse200
-;
+export type dslRenderPublicResponseError = (dslRenderPublicResponse400) & {
+  headers: Headers;
+};
 
-export type dslRenderPublicResponse = (dslRenderPublicResponseSuccess)
+export type dslRenderPublicResponse = (dslRenderPublicResponseSuccess | dslRenderPublicResponseError)
 
 export const getDslRenderPublicUrl = (slug: string,
     params?: DslRenderPublicParams,) => {
@@ -437,7 +470,7 @@ export const getDslRenderPublicQueryKey = (slug: string,
     }
 
 
-export const getDslRenderPublicInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof dslRenderPublic>>>, TError = unknown>(slug: string,
+export const getDslRenderPublicInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof dslRenderPublic>>>, TError = DslRenderPublic400>(slug: string,
     params?: DslRenderPublicParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -457,14 +490,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type DslRenderPublicInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof dslRenderPublic>>>
-export type DslRenderPublicInfiniteQueryError = unknown
+export type DslRenderPublicInfiniteQueryError = DslRenderPublic400
 
 
 /**
  * @summary Get compiled AST for a public resume
  */
 
-export function createDslRenderPublicInfinite<TData = InfiniteData<Awaited<ReturnType<typeof dslRenderPublic>>>, TError = unknown>(
+export function createDslRenderPublicInfinite<TData = InfiniteData<Awaited<ReturnType<typeof dslRenderPublic>>>, TError = DslRenderPublic400>(
  slug: () =>  string,
     params?: () =>  DslRenderPublicParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -481,7 +514,7 @@ export function createDslRenderPublicInfinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Get compiled AST for a public resume
  */
-export const prefetchDslRenderPublicInfiniteQuery = async <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = unknown>(
+export const prefetchDslRenderPublicInfiniteQuery = async <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = DslRenderPublic400>(
  queryClient: QueryClient, slug: string,
     params?: DslRenderPublicParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -498,7 +531,7 @@ export const prefetchDslRenderPublicInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getDslRenderPublicQueryOptions = <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = unknown>(slug: string,
+export const getDslRenderPublicQueryOptions = <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = DslRenderPublic400>(slug: string,
     params?: DslRenderPublicParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -518,14 +551,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type DslRenderPublicQueryResult = NonNullable<Awaited<ReturnType<typeof dslRenderPublic>>>
-export type DslRenderPublicQueryError = unknown
+export type DslRenderPublicQueryError = DslRenderPublic400
 
 
 /**
  * @summary Get compiled AST for a public resume
  */
 
-export function createDslRenderPublic<TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = unknown>(
+export function createDslRenderPublic<TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = DslRenderPublic400>(
  slug: () =>  string,
     params?: () =>  DslRenderPublicParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -542,7 +575,7 @@ export function createDslRenderPublic<TData = Awaited<ReturnType<typeof dslRende
 /**
  * @summary Get compiled AST for a public resume
  */
-export const prefetchDslRenderPublicQuery = async <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = unknown>(
+export const prefetchDslRenderPublicQuery = async <TData = Awaited<ReturnType<typeof dslRenderPublic>>, TError = DslRenderPublic400>(
  queryClient: QueryClient, slug: string,
     params?: DslRenderPublicParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof dslRenderPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

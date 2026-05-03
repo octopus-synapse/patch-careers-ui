@@ -15,3 +15,23 @@ export const AdminTestRunnerCreateBody = zod.object({
   "suite": zod.string()
 })
 
+export const AdminTestRunnerCreateResponse = zod.object({
+  "suite": zod.string(),
+  "results": zod.array(zod.object({
+  "name": zod.string(),
+  "pass": zod.boolean(),
+  "detail": zod.string(),
+  "durationMs": zod.number()
+})),
+  "totalMs": zod.number(),
+  "passed": zod.number(),
+  "failed": zod.number()
+})
+
+/**
+ * @summary List available test suites
+ */
+export const AdminTestRunnerSuitesResponse = zod.object({
+  "suites": zod.array(zod.string())
+})
+

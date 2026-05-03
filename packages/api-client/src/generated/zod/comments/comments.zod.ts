@@ -10,10 +10,81 @@ import * as zod from 'zod';
 
 /**
  * Comments API
+ * @summary Get comments for a post
+ */
+export const CommentsPostsCommentsGetResponse = zod.object({
+  "comments": zod.array(zod.object({
+  "id": zod.string(),
+  "postId": zod.string(),
+  "authorId": zod.string(),
+  "content": zod.string(),
+  "parentId": zod.string().nullable(),
+  "isDeleted": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish()
+}),
+  "replies": zod.array(zod.object({
+  "id": zod.string(),
+  "postId": zod.string(),
+  "authorId": zod.string(),
+  "content": zod.string(),
+  "parentId": zod.string().nullable(),
+  "isDeleted": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish()
+})
+}))
+})),
+  "nextCursor": zod.string().nullable()
+})
+
+/**
+ * Comments API
  * @summary Create a comment
  */
 export const CommentsPostsCommentsPostBody = zod.object({
   "content": zod.string(),
   "parentId": zod.string().optional()
+})
+
+export const CommentsPostsCommentsPostResponse = zod.object({
+  "id": zod.string(),
+  "postId": zod.string(),
+  "authorId": zod.string(),
+  "content": zod.string(),
+  "parentId": zod.string().nullable(),
+  "isDeleted": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable(),
+  "bio": zod.string().nullish(),
+  "location": zod.string().nullish()
+})
+})
+
+/**
+ * Comments API
+ * @summary Delete a comment
+ */
+export const CommentsPostsCommentsDeleteResponse = zod.object({
+  "deleted": zod.literal(true)
 })
 

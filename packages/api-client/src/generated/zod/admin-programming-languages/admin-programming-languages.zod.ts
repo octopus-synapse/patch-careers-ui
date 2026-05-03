@@ -10,13 +10,129 @@ import * as zod from 'zod';
 
 /**
  * Admin Programming Languages API
+ * @summary List all programming languages
+ */
+export const adminProgrammingLanguagesListResponseTotalMin = 0;
+
+
+
+export const adminProgrammingLanguagesListResponseTotalPagesMin = 0;
+
+
+
+export const AdminProgrammingLanguagesListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "paradigms": zod.array(zod.string()),
+  "typing": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "fileExtensions": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number().min(adminProgrammingLanguagesListResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(adminProgrammingLanguagesListResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Admin Programming Languages API
  * @summary Create programming language
  */
 export const AdminProgrammingLanguagesCreateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminProgrammingLanguagesCreateResponse = zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "paradigms": zod.array(zod.string()),
+  "typing": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "fileExtensions": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Programming Languages API
+ * @summary Get programming language by slug
+ */
+export const AdminProgrammingLanguagesGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "paradigms": zod.array(zod.string()),
+  "typing": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "fileExtensions": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
 
 /**
  * Admin Programming Languages API
  * @summary Update programming language
  */
 export const AdminProgrammingLanguagesUpdateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminProgrammingLanguagesUpdateResponse = zod.object({
+  "id": zod.string(),
+  "slug": zod.string(),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "paradigms": zod.array(zod.string()),
+  "typing": zod.string().nullable(),
+  "aliases": zod.array(zod.string()),
+  "fileExtensions": zod.array(zod.string()),
+  "popularity": zod.number(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Programming Languages API
+ * @summary Delete programming language
+ */
+export const AdminProgrammingLanguagesDeleteResponse = zod.object({
+
+})
 

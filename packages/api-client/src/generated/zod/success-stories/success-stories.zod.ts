@@ -10,6 +10,28 @@ import * as zod from 'zod';
 
 /**
  * Success stories — public carousel + admin CRUD
+ * @summary Published success stories for the landing carousel.
+ */
+export const SuccessStoriesListResponse = zod.object({
+  "stories": zod.array(zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "headline": zod.string(),
+  "beforeText": zod.string(),
+  "afterText": zod.string(),
+  "quote": zod.string(),
+  "timeframeDays": zod.number().nullable(),
+  "publishedAt": zod.string().datetime({"offset":true}).nullable(),
+  "user": zod.object({
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+})
+}))
+})
+
+/**
+ * Success stories — public carousel + admin CRUD
  * @summary Create a success story (admin).
  */
 
@@ -37,6 +59,10 @@ export const SuccessStoriesCreateBody = zod.object({
   "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED']).optional()
 })
 
+export const SuccessStoriesCreateResponse = zod.object({
+  "id": zod.string()
+})
+
 /**
  * Success stories — public carousel + admin CRUD
  * @summary Update a success story (admin).
@@ -62,5 +88,17 @@ export const SuccessStoriesUpdateBody = zod.object({
   "timeframeDays": zod.number().min(successStoriesUpdateBodyTimeframeDaysMin).max(successStoriesUpdateBodyTimeframeDaysMax).optional(),
   "weight": zod.number().optional(),
   "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED']).optional()
+})
+
+export const SuccessStoriesUpdateResponse = zod.object({
+  "id": zod.string()
+})
+
+/**
+ * Success stories — public carousel + admin CRUD
+ * @summary Delete a success story (admin).
+ */
+export const SuccessStoriesDeleteResponse = zod.object({
+  "id": zod.string()
 })
 

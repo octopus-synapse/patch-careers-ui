@@ -26,10 +26,28 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AuthListSessions200,
+  AuthListSessions400,
+  AuthListSessions401,
+  AuthListSessions403,
+  AuthLogin200,
+  AuthLogin400,
   AuthLoginBody,
+  AuthLogout200,
+  AuthLogout400,
+  AuthLogout401,
   AuthLogoutBody,
+  AuthRefresh200,
+  AuthRefresh400,
   AuthRefreshBody,
+  AuthRevokeSession200,
+  AuthRevokeSession400,
+  AuthRevokeSession401,
+  AuthRevokeSession403,
   AuthSession200,
+  AuthSession400,
+  AuthVerify2fa200,
+  AuthVerify2fa400,
   AuthVerify2faBody
 } from '../../models';
 
@@ -44,12 +62,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Rolls the session cookie. Body `refreshToken` is optional and used only by non-browser clients.
  * @summary Refresh access token
  */
-export type authRefreshResponse200 = void
+export type authRefreshResponse200 = AuthRefresh200
+
+export type authRefreshResponse400 = AuthRefresh400
 
 export type authRefreshResponseSuccess = authRefreshResponse200
-;
+export type authRefreshResponseError = (authRefreshResponse400) & {
+  headers: Headers;
+};
 
-export type authRefreshResponse = (authRefreshResponseSuccess)
+export type authRefreshResponse = (authRefreshResponseSuccess | authRefreshResponseError)
 
 export const getAuthRefreshUrl = () => {
 
@@ -74,7 +96,7 @@ export const authRefresh = async (authRefreshBody: AuthRefreshBody, options?: Re
 
 
 
-export const getAuthRefreshMutationOptions = <TError = unknown,
+export const getAuthRefreshMutationOptions = <TError = AuthRefresh400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRefresh>>, TError,{data: AuthRefreshBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authRefresh>>, TError,{data: AuthRefreshBody}, TContext> => {
 
@@ -103,12 +125,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthRefreshMutationResult = NonNullable<Awaited<ReturnType<typeof authRefresh>>>
     export type AuthRefreshMutationBody = AuthRefreshBody
-    export type AuthRefreshMutationError = unknown
+    export type AuthRefreshMutationError = AuthRefresh400
 
     /**
  * @summary Refresh access token
  */
-export const createAuthRefresh = <TError = unknown,
+export const createAuthRefresh = <TError = AuthRefresh400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRefresh>>, TError,{data: AuthRefreshBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authRefresh>>,
@@ -120,14 +142,18 @@ export const createAuthRefresh = <TError = unknown,
     }
     /**
  * Authenticates user with email and password. Sets the session cookie. Returns `{userId}` or `{userId, twoFactorRequired}` when 2FA is enabled.
- * @summary Login
+ * @summary Authenticate user with email + password
  */
-export type authLoginResponse200 = void
+export type authLoginResponse200 = AuthLogin200
+
+export type authLoginResponse400 = AuthLogin400
 
 export type authLoginResponseSuccess = authLoginResponse200
-;
+export type authLoginResponseError = (authLoginResponse400) & {
+  headers: Headers;
+};
 
-export type authLoginResponse = (authLoginResponseSuccess)
+export type authLoginResponse = (authLoginResponseSuccess | authLoginResponseError)
 
 export const getAuthLoginUrl = () => {
 
@@ -152,7 +178,7 @@ export const authLogin = async (authLoginBody: AuthLoginBody, options?: RequestI
 
 
 
-export const getAuthLoginMutationOptions = <TError = unknown,
+export const getAuthLoginMutationOptions = <TError = AuthLogin400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLogin>>, TError,{data: AuthLoginBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authLogin>>, TError,{data: AuthLoginBody}, TContext> => {
 
@@ -181,12 +207,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthLoginMutationResult = NonNullable<Awaited<ReturnType<typeof authLogin>>>
     export type AuthLoginMutationBody = AuthLoginBody
-    export type AuthLoginMutationError = unknown
+    export type AuthLoginMutationError = AuthLogin400
 
     /**
- * @summary Login
+ * @summary Authenticate user with email + password
  */
-export const createAuthLogin = <TError = unknown,
+export const createAuthLogin = <TError = AuthLogin400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLogin>>, TError,{data: AuthLoginBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authLogin>>,
@@ -200,12 +226,16 @@ export const createAuthLogin = <TError = unknown,
  * Completes login by validating a TOTP or backup code. Sets the session cookie.
  * @summary Verify 2FA code during login
  */
-export type authVerify2faResponse200 = void
+export type authVerify2faResponse200 = AuthVerify2fa200
+
+export type authVerify2faResponse400 = AuthVerify2fa400
 
 export type authVerify2faResponseSuccess = authVerify2faResponse200
-;
+export type authVerify2faResponseError = (authVerify2faResponse400) & {
+  headers: Headers;
+};
 
-export type authVerify2faResponse = (authVerify2faResponseSuccess)
+export type authVerify2faResponse = (authVerify2faResponseSuccess | authVerify2faResponseError)
 
 export const getAuthVerify2faUrl = () => {
 
@@ -230,7 +260,7 @@ export const authVerify2fa = async (authVerify2faBody: AuthVerify2faBody, option
 
 
 
-export const getAuthVerify2faMutationOptions = <TError = unknown,
+export const getAuthVerify2faMutationOptions = <TError = AuthVerify2fa400,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authVerify2fa>>, TError,{data: AuthVerify2faBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authVerify2fa>>, TError,{data: AuthVerify2faBody}, TContext> => {
 
@@ -259,12 +289,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthVerify2faMutationResult = NonNullable<Awaited<ReturnType<typeof authVerify2fa>>>
     export type AuthVerify2faMutationBody = AuthVerify2faBody
-    export type AuthVerify2faMutationError = unknown
+    export type AuthVerify2faMutationError = AuthVerify2fa400
 
     /**
  * @summary Verify 2FA code during login
  */
-export const createAuthVerify2fa = <TError = unknown,
+export const createAuthVerify2fa = <TError = AuthVerify2fa400,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authVerify2fa>>, TError,{data: AuthVerify2faBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authVerify2fa>>,
@@ -276,14 +306,20 @@ export const createAuthVerify2fa = <TError = unknown,
     }
     /**
  * Logs out the user by invalidating refresh token(s) and clearing the session cookie.
- * @summary Logout
+ * @summary Invalidate the current session cookie
  */
-export type authLogoutResponse200 = void
+export type authLogoutResponse200 = AuthLogout200
+
+export type authLogoutResponse400 = AuthLogout400
+
+export type authLogoutResponse401 = AuthLogout401
 
 export type authLogoutResponseSuccess = authLogoutResponse200
-;
+export type authLogoutResponseError = (authLogoutResponse400 | authLogoutResponse401) & {
+  headers: Headers;
+};
 
-export type authLogoutResponse = (authLogoutResponseSuccess)
+export type authLogoutResponse = (authLogoutResponseSuccess | authLogoutResponseError)
 
 export const getAuthLogoutUrl = () => {
 
@@ -308,7 +344,7 @@ export const authLogout = async (authLogoutBody: AuthLogoutBody, options?: Reque
 
 
 
-export const getAuthLogoutMutationOptions = <TError = unknown,
+export const getAuthLogoutMutationOptions = <TError = AuthLogout400 | AuthLogout401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLogout>>, TError,{data: AuthLogoutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authLogout>>, TError,{data: AuthLogoutBody}, TContext> => {
 
@@ -337,12 +373,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof authLogout>>>
     export type AuthLogoutMutationBody = AuthLogoutBody
-    export type AuthLogoutMutationError = unknown
+    export type AuthLogoutMutationError = AuthLogout400 | AuthLogout401
 
     /**
- * @summary Logout
+ * @summary Invalidate the current session cookie
  */
-export const createAuthLogout = <TError = unknown,
+export const createAuthLogout = <TError = AuthLogout400 | AuthLogout401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authLogout>>, TError,{data: AuthLogoutBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authLogout>>,
@@ -358,10 +394,14 @@ export const createAuthLogout = <TError = unknown,
  */
 export type authSessionResponse200 = AuthSession200
 
-export type authSessionResponseSuccess = authSessionResponse200
-;
+export type authSessionResponse400 = AuthSession400
 
-export type authSessionResponse = (authSessionResponseSuccess)
+export type authSessionResponseSuccess = authSessionResponse200
+export type authSessionResponseError = (authSessionResponse400) & {
+  headers: Headers;
+};
+
+export type authSessionResponse = (authSessionResponseSuccess | authSessionResponseError)
 
 export const getAuthSessionUrl = () => {
 
@@ -399,7 +439,7 @@ export const getAuthSessionQueryKey = () => {
     }
 
 
-export const getAuthSessionInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authSession>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAuthSessionInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authSession>>>, TError = AuthSession400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -418,14 +458,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuthSessionInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authSession>>>
-export type AuthSessionInfiniteQueryError = unknown
+export type AuthSessionInfiniteQueryError = AuthSession400
 
 
 /**
  * @summary Get Session
  */
 
-export function createAuthSessionInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authSession>>>, TError = unknown>(
+export function createAuthSessionInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authSession>>>, TError = AuthSession400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -440,7 +480,7 @@ export function createAuthSessionInfinite<TData = InfiniteData<Awaited<ReturnTyp
 /**
  * @summary Get Session
  */
-export const prefetchAuthSessionInfiniteQuery = async <TData = Awaited<ReturnType<typeof authSession>>, TError = unknown>(
+export const prefetchAuthSessionInfiniteQuery = async <TData = Awaited<ReturnType<typeof authSession>>, TError = AuthSession400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -456,7 +496,7 @@ export const prefetchAuthSessionInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getAuthSessionQueryOptions = <TData = Awaited<ReturnType<typeof authSession>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAuthSessionQueryOptions = <TData = Awaited<ReturnType<typeof authSession>>, TError = AuthSession400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -475,14 +515,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuthSessionQueryResult = NonNullable<Awaited<ReturnType<typeof authSession>>>
-export type AuthSessionQueryError = unknown
+export type AuthSessionQueryError = AuthSession400
 
 
 /**
  * @summary Get Session
  */
 
-export function createAuthSession<TData = Awaited<ReturnType<typeof authSession>>, TError = unknown>(
+export function createAuthSession<TData = Awaited<ReturnType<typeof authSession>>, TError = AuthSession400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -497,7 +537,7 @@ export function createAuthSession<TData = Awaited<ReturnType<typeof authSession>
 /**
  * @summary Get Session
  */
-export const prefetchAuthSessionQuery = async <TData = Awaited<ReturnType<typeof authSession>>, TError = unknown>(
+export const prefetchAuthSessionQuery = async <TData = Awaited<ReturnType<typeof authSession>>, TError = AuthSession400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -516,12 +556,20 @@ export const prefetchAuthSessionQuery = async <TData = Awaited<ReturnType<typeof
 /**
  * @summary List active sessions (devices) for the current user.
  */
-export type authListSessionsResponse200 = void
+export type authListSessionsResponse200 = AuthListSessions200
+
+export type authListSessionsResponse400 = AuthListSessions400
+
+export type authListSessionsResponse401 = AuthListSessions401
+
+export type authListSessionsResponse403 = AuthListSessions403
 
 export type authListSessionsResponseSuccess = authListSessionsResponse200
-;
+export type authListSessionsResponseError = (authListSessionsResponse400 | authListSessionsResponse401 | authListSessionsResponse403) & {
+  headers: Headers;
+};
 
-export type authListSessionsResponse = (authListSessionsResponseSuccess)
+export type authListSessionsResponse = (authListSessionsResponseSuccess | authListSessionsResponseError)
 
 export const getAuthListSessionsUrl = () => {
 
@@ -559,7 +607,7 @@ export const getAuthListSessionsQueryKey = () => {
     }
 
 
-export const getAuthListSessionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authListSessions>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAuthListSessionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof authListSessions>>>, TError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -578,14 +626,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuthListSessionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof authListSessions>>>
-export type AuthListSessionsInfiniteQueryError = unknown
+export type AuthListSessionsInfiniteQueryError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403
 
 
 /**
  * @summary List active sessions (devices) for the current user.
  */
 
-export function createAuthListSessionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authListSessions>>>, TError = unknown>(
+export function createAuthListSessionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof authListSessions>>>, TError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -600,7 +648,7 @@ export function createAuthListSessionsInfinite<TData = InfiniteData<Awaited<Retu
 /**
  * @summary List active sessions (devices) for the current user.
  */
-export const prefetchAuthListSessionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof authListSessions>>, TError = unknown>(
+export const prefetchAuthListSessionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof authListSessions>>, TError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -616,7 +664,7 @@ export const prefetchAuthListSessionsInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getAuthListSessionsQueryOptions = <TData = Awaited<ReturnType<typeof authListSessions>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAuthListSessionsQueryOptions = <TData = Awaited<ReturnType<typeof authListSessions>>, TError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -635,14 +683,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuthListSessionsQueryResult = NonNullable<Awaited<ReturnType<typeof authListSessions>>>
-export type AuthListSessionsQueryError = unknown
+export type AuthListSessionsQueryError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403
 
 
 /**
  * @summary List active sessions (devices) for the current user.
  */
 
-export function createAuthListSessions<TData = Awaited<ReturnType<typeof authListSessions>>, TError = unknown>(
+export function createAuthListSessions<TData = Awaited<ReturnType<typeof authListSessions>>, TError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -657,7 +705,7 @@ export function createAuthListSessions<TData = Awaited<ReturnType<typeof authLis
 /**
  * @summary List active sessions (devices) for the current user.
  */
-export const prefetchAuthListSessionsQuery = async <TData = Awaited<ReturnType<typeof authListSessions>>, TError = unknown>(
+export const prefetchAuthListSessionsQuery = async <TData = Awaited<ReturnType<typeof authListSessions>>, TError = AuthListSessions400 | AuthListSessions401 | AuthListSessions403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof authListSessions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -676,12 +724,20 @@ export const prefetchAuthListSessionsQuery = async <TData = Awaited<ReturnType<t
 /**
  * @summary Revoke a specific session (device) by refresh-token id.
  */
-export type authRevokeSessionResponse200 = void
+export type authRevokeSessionResponse200 = AuthRevokeSession200
+
+export type authRevokeSessionResponse400 = AuthRevokeSession400
+
+export type authRevokeSessionResponse401 = AuthRevokeSession401
+
+export type authRevokeSessionResponse403 = AuthRevokeSession403
 
 export type authRevokeSessionResponseSuccess = authRevokeSessionResponse200
-;
+export type authRevokeSessionResponseError = (authRevokeSessionResponse400 | authRevokeSessionResponse401 | authRevokeSessionResponse403) & {
+  headers: Headers;
+};
 
-export type authRevokeSessionResponse = (authRevokeSessionResponseSuccess)
+export type authRevokeSessionResponse = (authRevokeSessionResponseSuccess | authRevokeSessionResponseError)
 
 export const getAuthRevokeSessionUrl = (id: string,) => {
 
@@ -705,7 +761,7 @@ export const authRevokeSession = async (id: string, options?: RequestInit): Prom
 
 
 
-export const getAuthRevokeSessionMutationOptions = <TError = unknown,
+export const getAuthRevokeSessionMutationOptions = <TError = AuthRevokeSession400 | AuthRevokeSession401 | AuthRevokeSession403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRevokeSession>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof authRevokeSession>>, TError,{id: string}, TContext> => {
 
@@ -734,12 +790,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AuthRevokeSessionMutationResult = NonNullable<Awaited<ReturnType<typeof authRevokeSession>>>
 
-    export type AuthRevokeSessionMutationError = unknown
+    export type AuthRevokeSessionMutationError = AuthRevokeSession400 | AuthRevokeSession401 | AuthRevokeSession403
 
     /**
  * @summary Revoke a specific session (device) by refresh-token id.
  */
-export const createAuthRevokeSession = <TError = unknown,
+export const createAuthRevokeSession = <TError = AuthRevokeSession400 | AuthRevokeSession401 | AuthRevokeSession403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof authRevokeSession>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof authRevokeSession>>,

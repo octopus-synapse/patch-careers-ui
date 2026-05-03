@@ -20,12 +20,117 @@ export const CollaborationResumesCollaboratorsPostBody = zod.object({
   "role": zod.enum(['VIEWER', 'EDITOR', 'ADMIN'])
 })
 
+export const CollaborationResumesCollaboratorsPostResponse = zod.object({
+  "collaborator": zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "userId": zod.string(),
+  "role": zod.string(),
+  "invitedBy": zod.string(),
+  "invitedAt": zod.string().datetime({"offset":true}),
+  "joinedAt": zod.string().datetime({"offset":true}).nullable(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "email": zod.string()
+})
+})
+})
+
+/**
+ * Collaboration API
+ * @summary Get collaborators for a resume
+ */
+export const CollaborationResumesCollaboratorsGetResponse = zod.object({
+  "collaborators": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "userId": zod.string(),
+  "role": zod.string(),
+  "invitedBy": zod.string(),
+  "invitedAt": zod.string().datetime({"offset":true}),
+  "joinedAt": zod.string().datetime({"offset":true}).nullable(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "email": zod.string()
+})
+}))
+})
+
 /**
  * Collaboration API
  * @summary Update collaborator role
  */
 export const CollaborationResumesCollaboratorsPatchBody = zod.object({
   "role": zod.enum(['VIEWER', 'EDITOR', 'ADMIN'])
+})
+
+export const CollaborationResumesCollaboratorsPatchResponse = zod.object({
+  "collaborator": zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "userId": zod.string(),
+  "role": zod.string(),
+  "invitedBy": zod.string(),
+  "invitedAt": zod.string().datetime({"offset":true}),
+  "joinedAt": zod.string().datetime({"offset":true}).nullable(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "email": zod.string()
+})
+})
+})
+
+/**
+ * Collaboration API
+ * @summary Remove collaborator from resume
+ */
+export const CollaborationResumesCollaboratorsDeleteResponse = zod.object({
+
+})
+
+/**
+ * Collaboration API
+ * @summary Get resumes shared with current user
+ */
+export const CollaborationResumesSharedWithMeResponse = zod.object({
+  "sharedResumes": zod.array(zod.object({
+  "role": zod.string(),
+  "invitedAt": zod.string().datetime({"offset":true}),
+  "resume": zod.object({
+  "id": zod.string(),
+  "title": zod.string().nullable()
+})
+}))
+})
+
+/**
+ * Collaboration API
+ * @summary List collaboration comments on a resume
+ */
+export const CollaborationResumesCommentsGetResponse = zod.object({
+  "comments": zod.array(zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "authorId": zod.string(),
+  "content": zod.string(),
+  "parentId": zod.string().nullable(),
+  "sectionId": zod.string().nullable(),
+  "itemId": zod.string().nullable(),
+  "resolved": zod.boolean(),
+  "resolvedAt": zod.string().datetime({"offset":true}).nullable(),
+  "resolvedById": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+})
+}))
 })
 
 /**
@@ -41,5 +146,63 @@ export const CollaborationResumesCommentsPostBody = zod.object({
   "parentId": zod.string().optional(),
   "sectionId": zod.string().optional(),
   "itemId": zod.string().optional()
+})
+
+export const CollaborationResumesCommentsPostResponse = zod.object({
+  "comment": zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "authorId": zod.string(),
+  "content": zod.string(),
+  "parentId": zod.string().nullable(),
+  "sectionId": zod.string().nullable(),
+  "itemId": zod.string().nullable(),
+  "resolved": zod.boolean(),
+  "resolvedAt": zod.string().datetime({"offset":true}).nullable(),
+  "resolvedById": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+})
+})
+})
+
+/**
+ * Collaboration API
+ * @summary Mark a comment thread as resolved
+ */
+export const CollaborationResumesCommentsResolveResponse = zod.object({
+  "comment": zod.object({
+  "id": zod.string(),
+  "resumeId": zod.string(),
+  "authorId": zod.string(),
+  "content": zod.string(),
+  "parentId": zod.string().nullable(),
+  "sectionId": zod.string().nullable(),
+  "itemId": zod.string().nullable(),
+  "resolved": zod.boolean(),
+  "resolvedAt": zod.string().datetime({"offset":true}).nullable(),
+  "resolvedById": zod.string().nullable(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true}),
+  "author": zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "username": zod.string().nullable(),
+  "photoURL": zod.string().nullable()
+})
+})
+})
+
+/**
+ * Collaboration API
+ * @summary Delete a comment (author or resume owner)
+ */
+export const CollaborationResumesCommentsDeleteResponse = zod.object({
+
 })
 

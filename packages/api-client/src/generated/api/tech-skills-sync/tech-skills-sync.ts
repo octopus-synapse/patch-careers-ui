@@ -15,6 +15,13 @@ import type {
   QueryClient
 } from '@tanstack/svelte-query';
 
+import type {
+  TechSkillsSyncCreate200,
+  TechSkillsSyncCreate400,
+  TechSkillsSyncCreate401,
+  TechSkillsSyncCreate403
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -26,12 +33,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Tech skills sync execution result
  * @summary Trigger tech skills synchronization
  */
-export type techSkillsSyncCreateResponse200 = void
+export type techSkillsSyncCreateResponse200 = TechSkillsSyncCreate200
+
+export type techSkillsSyncCreateResponse400 = TechSkillsSyncCreate400
+
+export type techSkillsSyncCreateResponse401 = TechSkillsSyncCreate401
+
+export type techSkillsSyncCreateResponse403 = TechSkillsSyncCreate403
 
 export type techSkillsSyncCreateResponseSuccess = techSkillsSyncCreateResponse200
-;
+export type techSkillsSyncCreateResponseError = (techSkillsSyncCreateResponse400 | techSkillsSyncCreateResponse401 | techSkillsSyncCreateResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsSyncCreateResponse = (techSkillsSyncCreateResponseSuccess)
+export type techSkillsSyncCreateResponse = (techSkillsSyncCreateResponseSuccess | techSkillsSyncCreateResponseError)
 
 export const getTechSkillsSyncCreateUrl = () => {
 
@@ -55,7 +70,7 @@ export const techSkillsSyncCreate = async ( options?: RequestInit): Promise<tech
 
 
 
-export const getTechSkillsSyncCreateMutationOptions = <TError = unknown,
+export const getTechSkillsSyncCreateMutationOptions = <TError = TechSkillsSyncCreate400 | TechSkillsSyncCreate401 | TechSkillsSyncCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof techSkillsSyncCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof techSkillsSyncCreate>>, TError,void, TContext> => {
 
@@ -84,12 +99,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TechSkillsSyncCreateMutationResult = NonNullable<Awaited<ReturnType<typeof techSkillsSyncCreate>>>
 
-    export type TechSkillsSyncCreateMutationError = unknown
+    export type TechSkillsSyncCreateMutationError = TechSkillsSyncCreate400 | TechSkillsSyncCreate401 | TechSkillsSyncCreate403
 
     /**
  * @summary Trigger tech skills synchronization
  */
-export const createTechSkillsSyncCreate = <TError = unknown,
+export const createTechSkillsSyncCreate = <TError = TechSkillsSyncCreate400 | TechSkillsSyncCreate401 | TechSkillsSyncCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof techSkillsSyncCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof techSkillsSyncCreate>>,

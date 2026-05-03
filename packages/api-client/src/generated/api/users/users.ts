@@ -26,16 +26,94 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  UsersManageDelete200,
+  UsersManageDelete400,
+  UsersManageDelete401,
+  UsersManageDelete403,
+  UsersManageGet200,
+  UsersManageGet2200,
+  UsersManageGet2400,
+  UsersManageGet2401,
+  UsersManageGet2403,
+  UsersManageGet400,
+  UsersManageGet401,
+  UsersManageGet403,
   UsersManageGetParams,
+  UsersManagePatch200,
+  UsersManagePatch400,
+  UsersManagePatch401,
+  UsersManagePatch403,
   UsersManagePatchBody,
+  UsersManagePost200,
+  UsersManagePost400,
+  UsersManagePost401,
+  UsersManagePost403,
   UsersManagePostBody,
+  UsersManageResetPassword200,
+  UsersManageResetPassword400,
+  UsersManageResetPassword401,
+  UsersManageResetPassword403,
   UsersManageResetPasswordBody,
+  UsersManageRoles200,
+  UsersManageRoles400,
+  UsersManageRoles401,
+  UsersManageRoles403,
   UsersManageRolesBody,
+  UsersMePermissions200,
+  UsersMePermissions400,
+  UsersMePermissions401,
+  UsersMePermissions403,
+  UsersMeUiStateDelete200,
+  UsersMeUiStateDelete400,
+  UsersMeUiStateDelete401,
+  UsersMeUiStateGet200,
+  UsersMeUiStateGet400,
+  UsersMeUiStateGet401,
+  UsersMeUiStatePatch200,
+  UsersMeUiStatePatch400,
+  UsersMeUiStatePatch401,
   UsersMeUiStatePatchBody,
+  UsersPreferencesFullGet200,
+  UsersPreferencesFullGet400,
+  UsersPreferencesFullGet401,
+  UsersPreferencesFullGet403,
+  UsersPreferencesFullPatch200,
+  UsersPreferencesFullPatch400,
+  UsersPreferencesFullPatch401,
+  UsersPreferencesFullPatch403,
   UsersPreferencesFullPatchBody,
+  UsersPreferencesGet200,
+  UsersPreferencesGet400,
+  UsersPreferencesGet401,
+  UsersPreferencesGet403,
+  UsersPreferencesPatch200,
+  UsersPreferencesPatch400,
+  UsersPreferencesPatch401,
+  UsersPreferencesPatch403,
   UsersPreferencesPatchBody,
+  UsersProfileGet200,
+  UsersProfileGet400,
+  UsersProfileGet401,
+  UsersProfileGet403,
+  UsersProfilePatch200,
+  UsersProfilePatch400,
+  UsersProfilePatch401,
+  UsersProfilePatch403,
   UsersProfilePatchBody,
+  UsersProfiles200,
+  UsersProfiles400,
+  UsersPublic200,
+  UsersPublic400,
+  UsersPublicParams,
+  UsersUsername200,
+  UsersUsername400,
+  UsersUsername401,
+  UsersUsername403,
   UsersUsernameBody,
+  UsersUsernameCheck200,
+  UsersUsernameCheck400,
+  UsersUsernameCheck401,
+  UsersUsernameCheck403,
   UsersUsernameCheckParams
 } from '../../models';
 
@@ -50,12 +128,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Per-user UI state
  * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
  */
-export type usersMeUiStateGetResponse200 = void
+export type usersMeUiStateGetResponse200 = UsersMeUiStateGet200
+
+export type usersMeUiStateGetResponse400 = UsersMeUiStateGet400
+
+export type usersMeUiStateGetResponse401 = UsersMeUiStateGet401
 
 export type usersMeUiStateGetResponseSuccess = usersMeUiStateGetResponse200
-;
+export type usersMeUiStateGetResponseError = (usersMeUiStateGetResponse400 | usersMeUiStateGetResponse401) & {
+  headers: Headers;
+};
 
-export type usersMeUiStateGetResponse = (usersMeUiStateGetResponseSuccess)
+export type usersMeUiStateGetResponse = (usersMeUiStateGetResponseSuccess | usersMeUiStateGetResponseError)
 
 export const getUsersMeUiStateGetUrl = () => {
 
@@ -93,7 +177,7 @@ export const getUsersMeUiStateGetQueryKey = () => {
     }
 
 
-export const getUsersMeUiStateGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersMeUiStateGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersMeUiStateGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersMeUiStateGet>>>, TError = UsersMeUiStateGet400 | UsersMeUiStateGet401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -112,14 +196,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersMeUiStateGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersMeUiStateGet>>>
-export type UsersMeUiStateGetInfiniteQueryError = unknown
+export type UsersMeUiStateGetInfiniteQueryError = UsersMeUiStateGet400 | UsersMeUiStateGet401
 
 
 /**
  * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
  */
 
-export function createUsersMeUiStateGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersMeUiStateGet>>>, TError = unknown>(
+export function createUsersMeUiStateGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersMeUiStateGet>>>, TError = UsersMeUiStateGet400 | UsersMeUiStateGet401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -134,7 +218,7 @@ export function createUsersMeUiStateGetInfinite<TData = InfiniteData<Awaited<Ret
 /**
  * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
  */
-export const prefetchUsersMeUiStateGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = unknown>(
+export const prefetchUsersMeUiStateGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = UsersMeUiStateGet400 | UsersMeUiStateGet401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -150,7 +234,7 @@ export const prefetchUsersMeUiStateGetInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getUsersMeUiStateGetQueryOptions = <TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersMeUiStateGetQueryOptions = <TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = UsersMeUiStateGet400 | UsersMeUiStateGet401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -169,14 +253,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersMeUiStateGetQueryResult = NonNullable<Awaited<ReturnType<typeof usersMeUiStateGet>>>
-export type UsersMeUiStateGetQueryError = unknown
+export type UsersMeUiStateGetQueryError = UsersMeUiStateGet400 | UsersMeUiStateGet401
 
 
 /**
  * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
  */
 
-export function createUsersMeUiStateGet<TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = unknown>(
+export function createUsersMeUiStateGet<TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = UsersMeUiStateGet400 | UsersMeUiStateGet401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -191,7 +275,7 @@ export function createUsersMeUiStateGet<TData = Awaited<ReturnType<typeof usersM
 /**
  * @summary Returns every UI-state row for the current user. UI bootstraps once and reads keys locally.
  */
-export const prefetchUsersMeUiStateGetQuery = async <TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = unknown>(
+export const prefetchUsersMeUiStateGetQuery = async <TData = Awaited<ReturnType<typeof usersMeUiStateGet>>, TError = UsersMeUiStateGet400 | UsersMeUiStateGet401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMeUiStateGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -211,12 +295,18 @@ export const prefetchUsersMeUiStateGetQuery = async <TData = Awaited<ReturnType<
  * Per-user UI state
  * @summary Upsert a single UI-state key/value (idempotent).
  */
-export type usersMeUiStatePatchResponse200 = void
+export type usersMeUiStatePatchResponse200 = UsersMeUiStatePatch200
+
+export type usersMeUiStatePatchResponse400 = UsersMeUiStatePatch400
+
+export type usersMeUiStatePatchResponse401 = UsersMeUiStatePatch401
 
 export type usersMeUiStatePatchResponseSuccess = usersMeUiStatePatchResponse200
-;
+export type usersMeUiStatePatchResponseError = (usersMeUiStatePatchResponse400 | usersMeUiStatePatchResponse401) & {
+  headers: Headers;
+};
 
-export type usersMeUiStatePatchResponse = (usersMeUiStatePatchResponseSuccess)
+export type usersMeUiStatePatchResponse = (usersMeUiStatePatchResponseSuccess | usersMeUiStatePatchResponseError)
 
 export const getUsersMeUiStatePatchUrl = (key: string,) => {
 
@@ -242,7 +332,7 @@ export const usersMeUiStatePatch = async (key: string,
 
 
 
-export const getUsersMeUiStatePatchMutationOptions = <TError = unknown,
+export const getUsersMeUiStatePatchMutationOptions = <TError = UsersMeUiStatePatch400 | UsersMeUiStatePatch401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersMeUiStatePatch>>, TError,{key: string;data: UsersMeUiStatePatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersMeUiStatePatch>>, TError,{key: string;data: UsersMeUiStatePatchBody}, TContext> => {
 
@@ -271,12 +361,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersMeUiStatePatchMutationResult = NonNullable<Awaited<ReturnType<typeof usersMeUiStatePatch>>>
     export type UsersMeUiStatePatchMutationBody = UsersMeUiStatePatchBody
-    export type UsersMeUiStatePatchMutationError = unknown
+    export type UsersMeUiStatePatchMutationError = UsersMeUiStatePatch400 | UsersMeUiStatePatch401
 
     /**
  * @summary Upsert a single UI-state key/value (idempotent).
  */
-export const createUsersMeUiStatePatch = <TError = unknown,
+export const createUsersMeUiStatePatch = <TError = UsersMeUiStatePatch400 | UsersMeUiStatePatch401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersMeUiStatePatch>>, TError,{key: string;data: UsersMeUiStatePatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersMeUiStatePatch>>,
@@ -290,12 +380,18 @@ export const createUsersMeUiStatePatch = <TError = unknown,
  * Per-user UI state
  * @summary Remove a UI-state key.
  */
-export type usersMeUiStateDeleteResponse200 = void
+export type usersMeUiStateDeleteResponse200 = UsersMeUiStateDelete200
+
+export type usersMeUiStateDeleteResponse400 = UsersMeUiStateDelete400
+
+export type usersMeUiStateDeleteResponse401 = UsersMeUiStateDelete401
 
 export type usersMeUiStateDeleteResponseSuccess = usersMeUiStateDeleteResponse200
-;
+export type usersMeUiStateDeleteResponseError = (usersMeUiStateDeleteResponse400 | usersMeUiStateDeleteResponse401) & {
+  headers: Headers;
+};
 
-export type usersMeUiStateDeleteResponse = (usersMeUiStateDeleteResponseSuccess)
+export type usersMeUiStateDeleteResponse = (usersMeUiStateDeleteResponseSuccess | usersMeUiStateDeleteResponseError)
 
 export const getUsersMeUiStateDeleteUrl = (key: string,) => {
 
@@ -319,7 +415,7 @@ export const usersMeUiStateDelete = async (key: string, options?: RequestInit): 
 
 
 
-export const getUsersMeUiStateDeleteMutationOptions = <TError = unknown,
+export const getUsersMeUiStateDeleteMutationOptions = <TError = UsersMeUiStateDelete400 | UsersMeUiStateDelete401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersMeUiStateDelete>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersMeUiStateDelete>>, TError,{key: string}, TContext> => {
 
@@ -348,12 +444,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersMeUiStateDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof usersMeUiStateDelete>>>
 
-    export type UsersMeUiStateDeleteMutationError = unknown
+    export type UsersMeUiStateDeleteMutationError = UsersMeUiStateDelete400 | UsersMeUiStateDelete401
 
     /**
  * @summary Remove a UI-state key.
  */
-export const createUsersMeUiStateDelete = <TError = unknown,
+export const createUsersMeUiStateDelete = <TError = UsersMeUiStateDelete400 | UsersMeUiStateDelete401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersMeUiStateDelete>>, TError,{key: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersMeUiStateDelete>>,
@@ -367,12 +463,16 @@ export const createUsersMeUiStateDelete = <TError = unknown,
  * Users API
  * @summary Get a user's public profile by username
  */
-export type usersProfilesResponse200 = void
+export type usersProfilesResponse200 = UsersProfiles200
+
+export type usersProfilesResponse400 = UsersProfiles400
 
 export type usersProfilesResponseSuccess = usersProfilesResponse200
-;
+export type usersProfilesResponseError = (usersProfilesResponse400) & {
+  headers: Headers;
+};
 
-export type usersProfilesResponse = (usersProfilesResponseSuccess)
+export type usersProfilesResponse = (usersProfilesResponseSuccess | usersProfilesResponseError)
 
 export const getUsersProfilesUrl = (username: string,) => {
 
@@ -410,7 +510,7 @@ export const getUsersProfilesQueryKey = (username: string,) => {
     }
 
 
-export const getUsersProfilesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersProfiles>>>, TError = unknown>(username: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersProfilesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersProfiles>>>, TError = UsersProfiles400>(username: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -429,14 +529,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersProfilesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersProfiles>>>
-export type UsersProfilesInfiniteQueryError = unknown
+export type UsersProfilesInfiniteQueryError = UsersProfiles400
 
 
 /**
  * @summary Get a user's public profile by username
  */
 
-export function createUsersProfilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersProfiles>>>, TError = unknown>(
+export function createUsersProfilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersProfiles>>>, TError = UsersProfiles400>(
  username: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -451,7 +551,7 @@ export function createUsersProfilesInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Get a user's public profile by username
  */
-export const prefetchUsersProfilesInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersProfiles>>, TError = unknown>(
+export const prefetchUsersProfilesInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersProfiles>>, TError = UsersProfiles400>(
  queryClient: QueryClient, username: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -467,7 +567,7 @@ export const prefetchUsersProfilesInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getUsersProfilesQueryOptions = <TData = Awaited<ReturnType<typeof usersProfiles>>, TError = unknown>(username: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersProfilesQueryOptions = <TData = Awaited<ReturnType<typeof usersProfiles>>, TError = UsersProfiles400>(username: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -486,14 +586,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersProfilesQueryResult = NonNullable<Awaited<ReturnType<typeof usersProfiles>>>
-export type UsersProfilesQueryError = unknown
+export type UsersProfilesQueryError = UsersProfiles400
 
 
 /**
  * @summary Get a user's public profile by username
  */
 
-export function createUsersProfiles<TData = Awaited<ReturnType<typeof usersProfiles>>, TError = unknown>(
+export function createUsersProfiles<TData = Awaited<ReturnType<typeof usersProfiles>>, TError = UsersProfiles400>(
  username: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -508,7 +608,7 @@ export function createUsersProfiles<TData = Awaited<ReturnType<typeof usersProfi
 /**
  * @summary Get a user's public profile by username
  */
-export const prefetchUsersProfilesQuery = async <TData = Awaited<ReturnType<typeof usersProfiles>>, TError = unknown>(
+export const prefetchUsersProfilesQuery = async <TData = Awaited<ReturnType<typeof usersProfiles>>, TError = UsersProfiles400>(
  queryClient: QueryClient, username: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -528,12 +628,20 @@ export const prefetchUsersProfilesQuery = async <TData = Awaited<ReturnType<type
  * Users API
  * @summary Get current user profile
  */
-export type usersProfileGetResponse200 = void
+export type usersProfileGetResponse200 = UsersProfileGet200
+
+export type usersProfileGetResponse400 = UsersProfileGet400
+
+export type usersProfileGetResponse401 = UsersProfileGet401
+
+export type usersProfileGetResponse403 = UsersProfileGet403
 
 export type usersProfileGetResponseSuccess = usersProfileGetResponse200
-;
+export type usersProfileGetResponseError = (usersProfileGetResponse400 | usersProfileGetResponse401 | usersProfileGetResponse403) & {
+  headers: Headers;
+};
 
-export type usersProfileGetResponse = (usersProfileGetResponseSuccess)
+export type usersProfileGetResponse = (usersProfileGetResponseSuccess | usersProfileGetResponseError)
 
 export const getUsersProfileGetUrl = () => {
 
@@ -571,7 +679,7 @@ export const getUsersProfileGetQueryKey = () => {
     }
 
 
-export const getUsersProfileGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersProfileGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersProfileGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersProfileGet>>>, TError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -590,14 +698,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersProfileGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersProfileGet>>>
-export type UsersProfileGetInfiniteQueryError = unknown
+export type UsersProfileGetInfiniteQueryError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403
 
 
 /**
  * @summary Get current user profile
  */
 
-export function createUsersProfileGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersProfileGet>>>, TError = unknown>(
+export function createUsersProfileGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersProfileGet>>>, TError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -612,7 +720,7 @@ export function createUsersProfileGetInfinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Get current user profile
  */
-export const prefetchUsersProfileGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = unknown>(
+export const prefetchUsersProfileGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -628,7 +736,7 @@ export const prefetchUsersProfileGetInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getUsersProfileGetQueryOptions = <TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersProfileGetQueryOptions = <TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -647,14 +755,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersProfileGetQueryResult = NonNullable<Awaited<ReturnType<typeof usersProfileGet>>>
-export type UsersProfileGetQueryError = unknown
+export type UsersProfileGetQueryError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403
 
 
 /**
  * @summary Get current user profile
  */
 
-export function createUsersProfileGet<TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = unknown>(
+export function createUsersProfileGet<TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -669,7 +777,7 @@ export function createUsersProfileGet<TData = Awaited<ReturnType<typeof usersPro
 /**
  * @summary Get current user profile
  */
-export const prefetchUsersProfileGetQuery = async <TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = unknown>(
+export const prefetchUsersProfileGetQuery = async <TData = Awaited<ReturnType<typeof usersProfileGet>>, TError = UsersProfileGet400 | UsersProfileGet401 | UsersProfileGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersProfileGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -689,12 +797,20 @@ export const prefetchUsersProfileGetQuery = async <TData = Awaited<ReturnType<ty
  * Users API
  * @summary Update current user profile
  */
-export type usersProfilePatchResponse200 = void
+export type usersProfilePatchResponse200 = UsersProfilePatch200
+
+export type usersProfilePatchResponse400 = UsersProfilePatch400
+
+export type usersProfilePatchResponse401 = UsersProfilePatch401
+
+export type usersProfilePatchResponse403 = UsersProfilePatch403
 
 export type usersProfilePatchResponseSuccess = usersProfilePatchResponse200
-;
+export type usersProfilePatchResponseError = (usersProfilePatchResponse400 | usersProfilePatchResponse401 | usersProfilePatchResponse403) & {
+  headers: Headers;
+};
 
-export type usersProfilePatchResponse = (usersProfilePatchResponseSuccess)
+export type usersProfilePatchResponse = (usersProfilePatchResponseSuccess | usersProfilePatchResponseError)
 
 export const getUsersProfilePatchUrl = () => {
 
@@ -719,7 +835,7 @@ export const usersProfilePatch = async (usersProfilePatchBody: UsersProfilePatch
 
 
 
-export const getUsersProfilePatchMutationOptions = <TError = unknown,
+export const getUsersProfilePatchMutationOptions = <TError = UsersProfilePatch400 | UsersProfilePatch401 | UsersProfilePatch403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersProfilePatch>>, TError,{data: UsersProfilePatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersProfilePatch>>, TError,{data: UsersProfilePatchBody}, TContext> => {
 
@@ -748,12 +864,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersProfilePatchMutationResult = NonNullable<Awaited<ReturnType<typeof usersProfilePatch>>>
     export type UsersProfilePatchMutationBody = UsersProfilePatchBody
-    export type UsersProfilePatchMutationError = unknown
+    export type UsersProfilePatchMutationError = UsersProfilePatch400 | UsersProfilePatch401 | UsersProfilePatch403
 
     /**
  * @summary Update current user profile
  */
-export const createUsersProfilePatch = <TError = unknown,
+export const createUsersProfilePatch = <TError = UsersProfilePatch400 | UsersProfilePatch401 | UsersProfilePatch403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersProfilePatch>>, TError,{data: UsersProfilePatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersProfilePatch>>,
@@ -765,14 +881,194 @@ export const createUsersProfilePatch = <TError = unknown,
     }
     /**
  * Users API
+ * @summary List users with a public username (paginated)
+ */
+export type usersPublicResponse200 = UsersPublic200
+
+export type usersPublicResponse400 = UsersPublic400
+
+export type usersPublicResponseSuccess = usersPublicResponse200
+export type usersPublicResponseError = (usersPublicResponse400) & {
+  headers: Headers;
+};
+
+export type usersPublicResponse = (usersPublicResponseSuccess | usersPublicResponseError)
+
+export const getUsersPublicUrl = (params?: UsersPublicParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/users/public?${stringifiedParams}` : `/api/v1/users/public`
+}
+
+export const usersPublic = async (params?: UsersPublicParams, options?: RequestInit): Promise<usersPublicResponse> => {
+
+  return customFetch<usersPublicResponse>(getUsersPublicUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getUsersPublicInfiniteQueryKey = (params?: UsersPublicParams,) => {
+    return [
+    'infinite', `/api/v1/users/public`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+export const getUsersPublicQueryKey = (params?: UsersPublicParams,) => {
+    return [
+    `/api/v1/users/public`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getUsersPublicInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersPublic>>>, TError = UsersPublic400>(params?: UsersPublicParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUsersPublicInfiniteQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersPublic>>> = ({ signal }) => usersPublic(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersPublicInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersPublic>>>
+export type UsersPublicInfiniteQueryError = UsersPublic400
+
+
+/**
+ * @summary List users with a public username (paginated)
+ */
+
+export function createUsersPublicInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersPublic>>>, TError = UsersPublic400>(
+ params?: () =>  UsersPublicParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createInfiniteQuery(() => getUsersPublicInfiniteQueryOptions(params?.(),options?.()), queryClient) as CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List users with a public username (paginated)
+ */
+export const prefetchUsersPublicInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersPublic>>, TError = UsersPublic400>(
+ queryClient: QueryClient, params?: UsersPublicParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getUsersPublicInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+
+
+export const getUsersPublicQueryOptions = <TData = Awaited<ReturnType<typeof usersPublic>>, TError = UsersPublic400>(params?: UsersPublicParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUsersPublicQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof usersPublic>>> = ({ signal }) => usersPublic(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UsersPublicQueryResult = NonNullable<Awaited<ReturnType<typeof usersPublic>>>
+export type UsersPublicQueryError = UsersPublic400
+
+
+/**
+ * @summary List users with a public username (paginated)
+ */
+
+export function createUsersPublic<TData = Awaited<ReturnType<typeof usersPublic>>, TError = UsersPublic400>(
+ params?: () =>  UsersPublicParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: () => QueryClient
+ ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+
+
+  const query = createQuery(() => getUsersPublicQueryOptions(params?.(),options?.()), queryClient) as CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return query
+}
+
+/**
+ * @summary List users with a public username (paginated)
+ */
+export const prefetchUsersPublicQuery = async <TData = Awaited<ReturnType<typeof usersPublic>>, TError = UsersPublic400>(
+ queryClient: QueryClient, params?: UsersPublicParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPublic>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getUsersPublicQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+
+
+/**
+ * Users API
  * @summary Update username (once every 30 days)
  */
-export type usersUsernameResponse200 = void
+export type usersUsernameResponse200 = UsersUsername200
+
+export type usersUsernameResponse400 = UsersUsername400
+
+export type usersUsernameResponse401 = UsersUsername401
+
+export type usersUsernameResponse403 = UsersUsername403
 
 export type usersUsernameResponseSuccess = usersUsernameResponse200
-;
+export type usersUsernameResponseError = (usersUsernameResponse400 | usersUsernameResponse401 | usersUsernameResponse403) & {
+  headers: Headers;
+};
 
-export type usersUsernameResponse = (usersUsernameResponseSuccess)
+export type usersUsernameResponse = (usersUsernameResponseSuccess | usersUsernameResponseError)
 
 export const getUsersUsernameUrl = () => {
 
@@ -797,7 +1093,7 @@ export const usersUsername = async (usersUsernameBody: UsersUsernameBody, option
 
 
 
-export const getUsersUsernameMutationOptions = <TError = unknown,
+export const getUsersUsernameMutationOptions = <TError = UsersUsername400 | UsersUsername401 | UsersUsername403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUsername>>, TError,{data: UsersUsernameBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersUsername>>, TError,{data: UsersUsernameBody}, TContext> => {
 
@@ -826,12 +1122,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersUsernameMutationResult = NonNullable<Awaited<ReturnType<typeof usersUsername>>>
     export type UsersUsernameMutationBody = UsersUsernameBody
-    export type UsersUsernameMutationError = unknown
+    export type UsersUsernameMutationError = UsersUsername400 | UsersUsername401 | UsersUsername403
 
     /**
  * @summary Update username (once every 30 days)
  */
-export const createUsersUsername = <TError = unknown,
+export const createUsersUsername = <TError = UsersUsername400 | UsersUsername401 | UsersUsername403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersUsername>>, TError,{data: UsersUsernameBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersUsername>>,
@@ -845,12 +1141,20 @@ export const createUsersUsername = <TError = unknown,
  * Users API
  * @summary Check if a username is available
  */
-export type usersUsernameCheckResponse200 = void
+export type usersUsernameCheckResponse200 = UsersUsernameCheck200
+
+export type usersUsernameCheckResponse400 = UsersUsernameCheck400
+
+export type usersUsernameCheckResponse401 = UsersUsernameCheck401
+
+export type usersUsernameCheckResponse403 = UsersUsernameCheck403
 
 export type usersUsernameCheckResponseSuccess = usersUsernameCheckResponse200
-;
+export type usersUsernameCheckResponseError = (usersUsernameCheckResponse400 | usersUsernameCheckResponse401 | usersUsernameCheckResponse403) & {
+  headers: Headers;
+};
 
-export type usersUsernameCheckResponse = (usersUsernameCheckResponseSuccess)
+export type usersUsernameCheckResponse = (usersUsernameCheckResponseSuccess | usersUsernameCheckResponseError)
 
 export const getUsersUsernameCheckUrl = (params: UsersUsernameCheckParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -895,7 +1199,7 @@ export const getUsersUsernameCheckQueryKey = (params?: UsersUsernameCheckParams,
     }
 
 
-export const getUsersUsernameCheckInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersUsernameCheck>>>, TError = unknown>(params: UsersUsernameCheckParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersUsernameCheckInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersUsernameCheck>>>, TError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403>(params: UsersUsernameCheckParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -914,14 +1218,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersUsernameCheckInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersUsernameCheck>>>
-export type UsersUsernameCheckInfiniteQueryError = unknown
+export type UsersUsernameCheckInfiniteQueryError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403
 
 
 /**
  * @summary Check if a username is available
  */
 
-export function createUsersUsernameCheckInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersUsernameCheck>>>, TError = unknown>(
+export function createUsersUsernameCheckInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersUsernameCheck>>>, TError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403>(
  params: () =>  UsersUsernameCheckParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -936,7 +1240,7 @@ export function createUsersUsernameCheckInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Check if a username is available
  */
-export const prefetchUsersUsernameCheckInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = unknown>(
+export const prefetchUsersUsernameCheckInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403>(
  queryClient: QueryClient, params: UsersUsernameCheckParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -952,7 +1256,7 @@ export const prefetchUsersUsernameCheckInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getUsersUsernameCheckQueryOptions = <TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = unknown>(params: UsersUsernameCheckParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersUsernameCheckQueryOptions = <TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403>(params: UsersUsernameCheckParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -971,14 +1275,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersUsernameCheckQueryResult = NonNullable<Awaited<ReturnType<typeof usersUsernameCheck>>>
-export type UsersUsernameCheckQueryError = unknown
+export type UsersUsernameCheckQueryError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403
 
 
 /**
  * @summary Check if a username is available
  */
 
-export function createUsersUsernameCheck<TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = unknown>(
+export function createUsersUsernameCheck<TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403>(
  params: () =>  UsersUsernameCheckParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -993,7 +1297,7 @@ export function createUsersUsernameCheck<TData = Awaited<ReturnType<typeof users
 /**
  * @summary Check if a username is available
  */
-export const prefetchUsersUsernameCheckQuery = async <TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = unknown>(
+export const prefetchUsersUsernameCheckQuery = async <TData = Awaited<ReturnType<typeof usersUsernameCheck>>, TError = UsersUsernameCheck400 | UsersUsernameCheck401 | UsersUsernameCheck403>(
  queryClient: QueryClient, params: UsersUsernameCheckParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersUsernameCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1013,12 +1317,20 @@ export const prefetchUsersUsernameCheckQuery = async <TData = Awaited<ReturnType
  * Users API
  * @summary Get user preferences (basic)
  */
-export type usersPreferencesGetResponse200 = void
+export type usersPreferencesGetResponse200 = UsersPreferencesGet200
+
+export type usersPreferencesGetResponse400 = UsersPreferencesGet400
+
+export type usersPreferencesGetResponse401 = UsersPreferencesGet401
+
+export type usersPreferencesGetResponse403 = UsersPreferencesGet403
 
 export type usersPreferencesGetResponseSuccess = usersPreferencesGetResponse200
-;
+export type usersPreferencesGetResponseError = (usersPreferencesGetResponse400 | usersPreferencesGetResponse401 | usersPreferencesGetResponse403) & {
+  headers: Headers;
+};
 
-export type usersPreferencesGetResponse = (usersPreferencesGetResponseSuccess)
+export type usersPreferencesGetResponse = (usersPreferencesGetResponseSuccess | usersPreferencesGetResponseError)
 
 export const getUsersPreferencesGetUrl = () => {
 
@@ -1056,7 +1368,7 @@ export const getUsersPreferencesGetQueryKey = () => {
     }
 
 
-export const getUsersPreferencesGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersPreferencesGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesGet>>>, TError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1075,14 +1387,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersPreferencesGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersPreferencesGet>>>
-export type UsersPreferencesGetInfiniteQueryError = unknown
+export type UsersPreferencesGetInfiniteQueryError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403
 
 
 /**
  * @summary Get user preferences (basic)
  */
 
-export function createUsersPreferencesGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesGet>>>, TError = unknown>(
+export function createUsersPreferencesGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesGet>>>, TError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1097,7 +1409,7 @@ export function createUsersPreferencesGetInfinite<TData = InfiniteData<Awaited<R
 /**
  * @summary Get user preferences (basic)
  */
-export const prefetchUsersPreferencesGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = unknown>(
+export const prefetchUsersPreferencesGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1113,7 +1425,7 @@ export const prefetchUsersPreferencesGetInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getUsersPreferencesGetQueryOptions = <TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersPreferencesGetQueryOptions = <TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1132,14 +1444,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersPreferencesGetQueryResult = NonNullable<Awaited<ReturnType<typeof usersPreferencesGet>>>
-export type UsersPreferencesGetQueryError = unknown
+export type UsersPreferencesGetQueryError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403
 
 
 /**
  * @summary Get user preferences (basic)
  */
 
-export function createUsersPreferencesGet<TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = unknown>(
+export function createUsersPreferencesGet<TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1154,7 +1466,7 @@ export function createUsersPreferencesGet<TData = Awaited<ReturnType<typeof user
 /**
  * @summary Get user preferences (basic)
  */
-export const prefetchUsersPreferencesGetQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = unknown>(
+export const prefetchUsersPreferencesGetQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesGet>>, TError = UsersPreferencesGet400 | UsersPreferencesGet401 | UsersPreferencesGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1174,12 +1486,20 @@ export const prefetchUsersPreferencesGetQuery = async <TData = Awaited<ReturnTyp
  * Users API
  * @summary Update user preferences (basic)
  */
-export type usersPreferencesPatchResponse200 = void
+export type usersPreferencesPatchResponse200 = UsersPreferencesPatch200
+
+export type usersPreferencesPatchResponse400 = UsersPreferencesPatch400
+
+export type usersPreferencesPatchResponse401 = UsersPreferencesPatch401
+
+export type usersPreferencesPatchResponse403 = UsersPreferencesPatch403
 
 export type usersPreferencesPatchResponseSuccess = usersPreferencesPatchResponse200
-;
+export type usersPreferencesPatchResponseError = (usersPreferencesPatchResponse400 | usersPreferencesPatchResponse401 | usersPreferencesPatchResponse403) & {
+  headers: Headers;
+};
 
-export type usersPreferencesPatchResponse = (usersPreferencesPatchResponseSuccess)
+export type usersPreferencesPatchResponse = (usersPreferencesPatchResponseSuccess | usersPreferencesPatchResponseError)
 
 export const getUsersPreferencesPatchUrl = () => {
 
@@ -1204,7 +1524,7 @@ export const usersPreferencesPatch = async (usersPreferencesPatchBody: UsersPref
 
 
 
-export const getUsersPreferencesPatchMutationOptions = <TError = unknown,
+export const getUsersPreferencesPatchMutationOptions = <TError = UsersPreferencesPatch400 | UsersPreferencesPatch401 | UsersPreferencesPatch403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersPreferencesPatch>>, TError,{data: UsersPreferencesPatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersPreferencesPatch>>, TError,{data: UsersPreferencesPatchBody}, TContext> => {
 
@@ -1233,12 +1553,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersPreferencesPatchMutationResult = NonNullable<Awaited<ReturnType<typeof usersPreferencesPatch>>>
     export type UsersPreferencesPatchMutationBody = UsersPreferencesPatchBody
-    export type UsersPreferencesPatchMutationError = unknown
+    export type UsersPreferencesPatchMutationError = UsersPreferencesPatch400 | UsersPreferencesPatch401 | UsersPreferencesPatch403
 
     /**
  * @summary Update user preferences (basic)
  */
-export const createUsersPreferencesPatch = <TError = unknown,
+export const createUsersPreferencesPatch = <TError = UsersPreferencesPatch400 | UsersPreferencesPatch401 | UsersPreferencesPatch403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersPreferencesPatch>>, TError,{data: UsersPreferencesPatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersPreferencesPatch>>,
@@ -1252,12 +1572,20 @@ export const createUsersPreferencesPatch = <TError = unknown,
  * Users API
  * @summary Get all user preferences
  */
-export type usersPreferencesFullGetResponse200 = void
+export type usersPreferencesFullGetResponse200 = UsersPreferencesFullGet200
+
+export type usersPreferencesFullGetResponse400 = UsersPreferencesFullGet400
+
+export type usersPreferencesFullGetResponse401 = UsersPreferencesFullGet401
+
+export type usersPreferencesFullGetResponse403 = UsersPreferencesFullGet403
 
 export type usersPreferencesFullGetResponseSuccess = usersPreferencesFullGetResponse200
-;
+export type usersPreferencesFullGetResponseError = (usersPreferencesFullGetResponse400 | usersPreferencesFullGetResponse401 | usersPreferencesFullGetResponse403) & {
+  headers: Headers;
+};
 
-export type usersPreferencesFullGetResponse = (usersPreferencesFullGetResponseSuccess)
+export type usersPreferencesFullGetResponse = (usersPreferencesFullGetResponseSuccess | usersPreferencesFullGetResponseError)
 
 export const getUsersPreferencesFullGetUrl = () => {
 
@@ -1295,7 +1623,7 @@ export const getUsersPreferencesFullGetQueryKey = () => {
     }
 
 
-export const getUsersPreferencesFullGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesFullGet>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersPreferencesFullGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesFullGet>>>, TError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1314,14 +1642,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersPreferencesFullGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersPreferencesFullGet>>>
-export type UsersPreferencesFullGetInfiniteQueryError = unknown
+export type UsersPreferencesFullGetInfiniteQueryError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403
 
 
 /**
  * @summary Get all user preferences
  */
 
-export function createUsersPreferencesFullGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesFullGet>>>, TError = unknown>(
+export function createUsersPreferencesFullGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersPreferencesFullGet>>>, TError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1336,7 +1664,7 @@ export function createUsersPreferencesFullGetInfinite<TData = InfiniteData<Await
 /**
  * @summary Get all user preferences
  */
-export const prefetchUsersPreferencesFullGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = unknown>(
+export const prefetchUsersPreferencesFullGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1352,7 +1680,7 @@ export const prefetchUsersPreferencesFullGetInfiniteQuery = async <TData = Await
 
 
 
-export const getUsersPreferencesFullGetQueryOptions = <TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersPreferencesFullGetQueryOptions = <TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1371,14 +1699,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersPreferencesFullGetQueryResult = NonNullable<Awaited<ReturnType<typeof usersPreferencesFullGet>>>
-export type UsersPreferencesFullGetQueryError = unknown
+export type UsersPreferencesFullGetQueryError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403
 
 
 /**
  * @summary Get all user preferences
  */
 
-export function createUsersPreferencesFullGet<TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = unknown>(
+export function createUsersPreferencesFullGet<TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1393,7 +1721,7 @@ export function createUsersPreferencesFullGet<TData = Awaited<ReturnType<typeof 
 /**
  * @summary Get all user preferences
  */
-export const prefetchUsersPreferencesFullGetQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = unknown>(
+export const prefetchUsersPreferencesFullGetQuery = async <TData = Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError = UsersPreferencesFullGet400 | UsersPreferencesFullGet401 | UsersPreferencesFullGet403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersPreferencesFullGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1413,12 +1741,20 @@ export const prefetchUsersPreferencesFullGetQuery = async <TData = Awaited<Retur
  * Users API
  * @summary Update all user preferences
  */
-export type usersPreferencesFullPatchResponse200 = void
+export type usersPreferencesFullPatchResponse200 = UsersPreferencesFullPatch200
+
+export type usersPreferencesFullPatchResponse400 = UsersPreferencesFullPatch400
+
+export type usersPreferencesFullPatchResponse401 = UsersPreferencesFullPatch401
+
+export type usersPreferencesFullPatchResponse403 = UsersPreferencesFullPatch403
 
 export type usersPreferencesFullPatchResponseSuccess = usersPreferencesFullPatchResponse200
-;
+export type usersPreferencesFullPatchResponseError = (usersPreferencesFullPatchResponse400 | usersPreferencesFullPatchResponse401 | usersPreferencesFullPatchResponse403) & {
+  headers: Headers;
+};
 
-export type usersPreferencesFullPatchResponse = (usersPreferencesFullPatchResponseSuccess)
+export type usersPreferencesFullPatchResponse = (usersPreferencesFullPatchResponseSuccess | usersPreferencesFullPatchResponseError)
 
 export const getUsersPreferencesFullPatchUrl = () => {
 
@@ -1443,7 +1779,7 @@ export const usersPreferencesFullPatch = async (usersPreferencesFullPatchBody: U
 
 
 
-export const getUsersPreferencesFullPatchMutationOptions = <TError = unknown,
+export const getUsersPreferencesFullPatchMutationOptions = <TError = UsersPreferencesFullPatch400 | UsersPreferencesFullPatch401 | UsersPreferencesFullPatch403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersPreferencesFullPatch>>, TError,{data: UsersPreferencesFullPatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersPreferencesFullPatch>>, TError,{data: UsersPreferencesFullPatchBody}, TContext> => {
 
@@ -1472,12 +1808,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersPreferencesFullPatchMutationResult = NonNullable<Awaited<ReturnType<typeof usersPreferencesFullPatch>>>
     export type UsersPreferencesFullPatchMutationBody = UsersPreferencesFullPatchBody
-    export type UsersPreferencesFullPatchMutationError = unknown
+    export type UsersPreferencesFullPatchMutationError = UsersPreferencesFullPatch400 | UsersPreferencesFullPatch401 | UsersPreferencesFullPatch403
 
     /**
  * @summary Update all user preferences
  */
-export const createUsersPreferencesFullPatch = <TError = unknown,
+export const createUsersPreferencesFullPatch = <TError = UsersPreferencesFullPatch400 | UsersPreferencesFullPatch401 | UsersPreferencesFullPatch403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersPreferencesFullPatch>>, TError,{data: UsersPreferencesFullPatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersPreferencesFullPatch>>,
@@ -1491,12 +1827,20 @@ export const createUsersPreferencesFullPatch = <TError = unknown,
  * User permissions
  * @summary List permission keys granted to the current user (for UI gating)
  */
-export type usersMePermissionsResponse200 = void
+export type usersMePermissionsResponse200 = UsersMePermissions200
+
+export type usersMePermissionsResponse400 = UsersMePermissions400
+
+export type usersMePermissionsResponse401 = UsersMePermissions401
+
+export type usersMePermissionsResponse403 = UsersMePermissions403
 
 export type usersMePermissionsResponseSuccess = usersMePermissionsResponse200
-;
+export type usersMePermissionsResponseError = (usersMePermissionsResponse400 | usersMePermissionsResponse401 | usersMePermissionsResponse403) & {
+  headers: Headers;
+};
 
-export type usersMePermissionsResponse = (usersMePermissionsResponseSuccess)
+export type usersMePermissionsResponse = (usersMePermissionsResponseSuccess | usersMePermissionsResponseError)
 
 export const getUsersMePermissionsUrl = () => {
 
@@ -1534,7 +1878,7 @@ export const getUsersMePermissionsQueryKey = () => {
     }
 
 
-export const getUsersMePermissionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersMePermissions>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersMePermissionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersMePermissions>>>, TError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1553,14 +1897,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersMePermissionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersMePermissions>>>
-export type UsersMePermissionsInfiniteQueryError = unknown
+export type UsersMePermissionsInfiniteQueryError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403
 
 
 /**
  * @summary List permission keys granted to the current user (for UI gating)
  */
 
-export function createUsersMePermissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersMePermissions>>>, TError = unknown>(
+export function createUsersMePermissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersMePermissions>>>, TError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1575,7 +1919,7 @@ export function createUsersMePermissionsInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary List permission keys granted to the current user (for UI gating)
  */
-export const prefetchUsersMePermissionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = unknown>(
+export const prefetchUsersMePermissionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1591,7 +1935,7 @@ export const prefetchUsersMePermissionsInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getUsersMePermissionsQueryOptions = <TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersMePermissionsQueryOptions = <TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1610,14 +1954,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersMePermissionsQueryResult = NonNullable<Awaited<ReturnType<typeof usersMePermissions>>>
-export type UsersMePermissionsQueryError = unknown
+export type UsersMePermissionsQueryError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403
 
 
 /**
  * @summary List permission keys granted to the current user (for UI gating)
  */
 
-export function createUsersMePermissions<TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = unknown>(
+export function createUsersMePermissions<TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1632,7 +1976,7 @@ export function createUsersMePermissions<TData = Awaited<ReturnType<typeof users
 /**
  * @summary List permission keys granted to the current user (for UI gating)
  */
-export const prefetchUsersMePermissionsQuery = async <TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = unknown>(
+export const prefetchUsersMePermissionsQuery = async <TData = Awaited<ReturnType<typeof usersMePermissions>>, TError = UsersMePermissions400 | UsersMePermissions401 | UsersMePermissions403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersMePermissions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1652,12 +1996,20 @@ export const prefetchUsersMePermissionsQuery = async <TData = Awaited<ReturnType
  * Users API
  * @summary List all users with pagination
  */
-export type usersManageGetResponse200 = void
+export type usersManageGetResponse200 = UsersManageGet200
+
+export type usersManageGetResponse400 = UsersManageGet400
+
+export type usersManageGetResponse401 = UsersManageGet401
+
+export type usersManageGetResponse403 = UsersManageGet403
 
 export type usersManageGetResponseSuccess = usersManageGetResponse200
-;
+export type usersManageGetResponseError = (usersManageGetResponse400 | usersManageGetResponse401 | usersManageGetResponse403) & {
+  headers: Headers;
+};
 
-export type usersManageGetResponse = (usersManageGetResponseSuccess)
+export type usersManageGetResponse = (usersManageGetResponseSuccess | usersManageGetResponseError)
 
 export const getUsersManageGetUrl = (params?: UsersManageGetParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -1702,7 +2054,7 @@ export const getUsersManageGetQueryKey = (params?: UsersManageGetParams,) => {
     }
 
 
-export const getUsersManageGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet>>>, TError = unknown>(params?: UsersManageGetParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersManageGetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet>>>, TError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403>(params?: UsersManageGetParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1721,14 +2073,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersManageGetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersManageGet>>>
-export type UsersManageGetInfiniteQueryError = unknown
+export type UsersManageGetInfiniteQueryError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403
 
 
 /**
  * @summary List all users with pagination
  */
 
-export function createUsersManageGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet>>>, TError = unknown>(
+export function createUsersManageGetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet>>>, TError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403>(
  params?: () =>  UsersManageGetParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1743,7 +2095,7 @@ export function createUsersManageGetInfinite<TData = InfiniteData<Awaited<Return
 /**
  * @summary List all users with pagination
  */
-export const prefetchUsersManageGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersManageGet>>, TError = unknown>(
+export const prefetchUsersManageGetInfiniteQuery = async <TData = Awaited<ReturnType<typeof usersManageGet>>, TError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403>(
  queryClient: QueryClient, params?: UsersManageGetParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1759,7 +2111,7 @@ export const prefetchUsersManageGetInfiniteQuery = async <TData = Awaited<Return
 
 
 
-export const getUsersManageGetQueryOptions = <TData = Awaited<ReturnType<typeof usersManageGet>>, TError = unknown>(params?: UsersManageGetParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersManageGetQueryOptions = <TData = Awaited<ReturnType<typeof usersManageGet>>, TError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403>(params?: UsersManageGetParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1778,14 +2130,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersManageGetQueryResult = NonNullable<Awaited<ReturnType<typeof usersManageGet>>>
-export type UsersManageGetQueryError = unknown
+export type UsersManageGetQueryError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403
 
 
 /**
  * @summary List all users with pagination
  */
 
-export function createUsersManageGet<TData = Awaited<ReturnType<typeof usersManageGet>>, TError = unknown>(
+export function createUsersManageGet<TData = Awaited<ReturnType<typeof usersManageGet>>, TError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403>(
  params?: () =>  UsersManageGetParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1800,7 +2152,7 @@ export function createUsersManageGet<TData = Awaited<ReturnType<typeof usersMana
 /**
  * @summary List all users with pagination
  */
-export const prefetchUsersManageGetQuery = async <TData = Awaited<ReturnType<typeof usersManageGet>>, TError = unknown>(
+export const prefetchUsersManageGetQuery = async <TData = Awaited<ReturnType<typeof usersManageGet>>, TError = UsersManageGet400 | UsersManageGet401 | UsersManageGet403>(
  queryClient: QueryClient, params?: UsersManageGetParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1820,12 +2172,20 @@ export const prefetchUsersManageGetQuery = async <TData = Awaited<ReturnType<typ
  * Users API
  * @summary Create a new user
  */
-export type usersManagePostResponse200 = void
+export type usersManagePostResponse200 = UsersManagePost200
+
+export type usersManagePostResponse400 = UsersManagePost400
+
+export type usersManagePostResponse401 = UsersManagePost401
+
+export type usersManagePostResponse403 = UsersManagePost403
 
 export type usersManagePostResponseSuccess = usersManagePostResponse200
-;
+export type usersManagePostResponseError = (usersManagePostResponse400 | usersManagePostResponse401 | usersManagePostResponse403) & {
+  headers: Headers;
+};
 
-export type usersManagePostResponse = (usersManagePostResponseSuccess)
+export type usersManagePostResponse = (usersManagePostResponseSuccess | usersManagePostResponseError)
 
 export const getUsersManagePostUrl = () => {
 
@@ -1850,7 +2210,7 @@ export const usersManagePost = async (usersManagePostBody: UsersManagePostBody, 
 
 
 
-export const getUsersManagePostMutationOptions = <TError = unknown,
+export const getUsersManagePostMutationOptions = <TError = UsersManagePost400 | UsersManagePost401 | UsersManagePost403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManagePost>>, TError,{data: UsersManagePostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersManagePost>>, TError,{data: UsersManagePostBody}, TContext> => {
 
@@ -1879,12 +2239,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersManagePostMutationResult = NonNullable<Awaited<ReturnType<typeof usersManagePost>>>
     export type UsersManagePostMutationBody = UsersManagePostBody
-    export type UsersManagePostMutationError = unknown
+    export type UsersManagePostMutationError = UsersManagePost400 | UsersManagePost401 | UsersManagePost403
 
     /**
  * @summary Create a new user
  */
-export const createUsersManagePost = <TError = unknown,
+export const createUsersManagePost = <TError = UsersManagePost400 | UsersManagePost401 | UsersManagePost403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManagePost>>, TError,{data: UsersManagePostBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersManagePost>>,
@@ -1898,12 +2258,20 @@ export const createUsersManagePost = <TError = unknown,
  * Users API
  * @summary Get user details by ID
  */
-export type usersManageGet2Response200 = void
+export type usersManageGet2Response200 = UsersManageGet2200
+
+export type usersManageGet2Response400 = UsersManageGet2400
+
+export type usersManageGet2Response401 = UsersManageGet2401
+
+export type usersManageGet2Response403 = UsersManageGet2403
 
 export type usersManageGet2ResponseSuccess = usersManageGet2Response200
-;
+export type usersManageGet2ResponseError = (usersManageGet2Response400 | usersManageGet2Response401 | usersManageGet2Response403) & {
+  headers: Headers;
+};
 
-export type usersManageGet2Response = (usersManageGet2ResponseSuccess)
+export type usersManageGet2Response = (usersManageGet2ResponseSuccess | usersManageGet2ResponseError)
 
 export const getUsersManageGet2Url = (id: string,) => {
 
@@ -1941,7 +2309,7 @@ export const getUsersManageGet2QueryKey = (id: string,) => {
     }
 
 
-export const getUsersManageGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet2>>>, TError = unknown>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersManageGet2InfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet2>>>, TError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403>(id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1960,14 +2328,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersManageGet2InfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof usersManageGet2>>>
-export type UsersManageGet2InfiniteQueryError = unknown
+export type UsersManageGet2InfiniteQueryError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403
 
 
 /**
  * @summary Get user details by ID
  */
 
-export function createUsersManageGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet2>>>, TError = unknown>(
+export function createUsersManageGet2Infinite<TData = InfiniteData<Awaited<ReturnType<typeof usersManageGet2>>>, TError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403>(
  id: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1982,7 +2350,7 @@ export function createUsersManageGet2Infinite<TData = InfiniteData<Awaited<Retur
 /**
  * @summary Get user details by ID
  */
-export const prefetchUsersManageGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = unknown>(
+export const prefetchUsersManageGet2InfiniteQuery = async <TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1998,7 +2366,7 @@ export const prefetchUsersManageGet2InfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getUsersManageGet2QueryOptions = <TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = unknown>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUsersManageGet2QueryOptions = <TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403>(id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -2017,14 +2385,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UsersManageGet2QueryResult = NonNullable<Awaited<ReturnType<typeof usersManageGet2>>>
-export type UsersManageGet2QueryError = unknown
+export type UsersManageGet2QueryError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403
 
 
 /**
  * @summary Get user details by ID
  */
 
-export function createUsersManageGet2<TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = unknown>(
+export function createUsersManageGet2<TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403>(
  id: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -2039,7 +2407,7 @@ export function createUsersManageGet2<TData = Awaited<ReturnType<typeof usersMan
 /**
  * @summary Get user details by ID
  */
-export const prefetchUsersManageGet2Query = async <TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = unknown>(
+export const prefetchUsersManageGet2Query = async <TData = Awaited<ReturnType<typeof usersManageGet2>>, TError = UsersManageGet2400 | UsersManageGet2401 | UsersManageGet2403>(
  queryClient: QueryClient, id: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof usersManageGet2>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -2059,12 +2427,20 @@ export const prefetchUsersManageGet2Query = async <TData = Awaited<ReturnType<ty
  * Users API
  * @summary Update user information
  */
-export type usersManagePatchResponse200 = void
+export type usersManagePatchResponse200 = UsersManagePatch200
+
+export type usersManagePatchResponse400 = UsersManagePatch400
+
+export type usersManagePatchResponse401 = UsersManagePatch401
+
+export type usersManagePatchResponse403 = UsersManagePatch403
 
 export type usersManagePatchResponseSuccess = usersManagePatchResponse200
-;
+export type usersManagePatchResponseError = (usersManagePatchResponse400 | usersManagePatchResponse401 | usersManagePatchResponse403) & {
+  headers: Headers;
+};
 
-export type usersManagePatchResponse = (usersManagePatchResponseSuccess)
+export type usersManagePatchResponse = (usersManagePatchResponseSuccess | usersManagePatchResponseError)
 
 export const getUsersManagePatchUrl = (id: string,) => {
 
@@ -2090,7 +2466,7 @@ export const usersManagePatch = async (id: string,
 
 
 
-export const getUsersManagePatchMutationOptions = <TError = unknown,
+export const getUsersManagePatchMutationOptions = <TError = UsersManagePatch400 | UsersManagePatch401 | UsersManagePatch403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManagePatch>>, TError,{id: string;data: UsersManagePatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersManagePatch>>, TError,{id: string;data: UsersManagePatchBody}, TContext> => {
 
@@ -2119,12 +2495,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersManagePatchMutationResult = NonNullable<Awaited<ReturnType<typeof usersManagePatch>>>
     export type UsersManagePatchMutationBody = UsersManagePatchBody
-    export type UsersManagePatchMutationError = unknown
+    export type UsersManagePatchMutationError = UsersManagePatch400 | UsersManagePatch401 | UsersManagePatch403
 
     /**
  * @summary Update user information
  */
-export const createUsersManagePatch = <TError = unknown,
+export const createUsersManagePatch = <TError = UsersManagePatch400 | UsersManagePatch401 | UsersManagePatch403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManagePatch>>, TError,{id: string;data: UsersManagePatchBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersManagePatch>>,
@@ -2138,12 +2514,20 @@ export const createUsersManagePatch = <TError = unknown,
  * GDPR-compliant deletion that removes all user data.
  * @summary Delete a user
  */
-export type usersManageDeleteResponse200 = void
+export type usersManageDeleteResponse200 = UsersManageDelete200
+
+export type usersManageDeleteResponse400 = UsersManageDelete400
+
+export type usersManageDeleteResponse401 = UsersManageDelete401
+
+export type usersManageDeleteResponse403 = UsersManageDelete403
 
 export type usersManageDeleteResponseSuccess = usersManageDeleteResponse200
-;
+export type usersManageDeleteResponseError = (usersManageDeleteResponse400 | usersManageDeleteResponse401 | usersManageDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type usersManageDeleteResponse = (usersManageDeleteResponseSuccess)
+export type usersManageDeleteResponse = (usersManageDeleteResponseSuccess | usersManageDeleteResponseError)
 
 export const getUsersManageDeleteUrl = (id: string,) => {
 
@@ -2167,7 +2551,7 @@ export const usersManageDelete = async (id: string, options?: RequestInit): Prom
 
 
 
-export const getUsersManageDeleteMutationOptions = <TError = unknown,
+export const getUsersManageDeleteMutationOptions = <TError = UsersManageDelete400 | UsersManageDelete401 | UsersManageDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManageDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersManageDelete>>, TError,{id: string}, TContext> => {
 
@@ -2196,12 +2580,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersManageDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof usersManageDelete>>>
 
-    export type UsersManageDeleteMutationError = unknown
+    export type UsersManageDeleteMutationError = UsersManageDelete400 | UsersManageDelete401 | UsersManageDelete403
 
     /**
  * @summary Delete a user
  */
-export const createUsersManageDelete = <TError = unknown,
+export const createUsersManageDelete = <TError = UsersManageDelete400 | UsersManageDelete401 | UsersManageDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManageDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersManageDelete>>,
@@ -2215,12 +2599,20 @@ export const createUsersManageDelete = <TError = unknown,
  * Users API
  * @summary Reset user password
  */
-export type usersManageResetPasswordResponse200 = void
+export type usersManageResetPasswordResponse200 = UsersManageResetPassword200
+
+export type usersManageResetPasswordResponse400 = UsersManageResetPassword400
+
+export type usersManageResetPasswordResponse401 = UsersManageResetPassword401
+
+export type usersManageResetPasswordResponse403 = UsersManageResetPassword403
 
 export type usersManageResetPasswordResponseSuccess = usersManageResetPasswordResponse200
-;
+export type usersManageResetPasswordResponseError = (usersManageResetPasswordResponse400 | usersManageResetPasswordResponse401 | usersManageResetPasswordResponse403) & {
+  headers: Headers;
+};
 
-export type usersManageResetPasswordResponse = (usersManageResetPasswordResponseSuccess)
+export type usersManageResetPasswordResponse = (usersManageResetPasswordResponseSuccess | usersManageResetPasswordResponseError)
 
 export const getUsersManageResetPasswordUrl = (id: string,) => {
 
@@ -2246,7 +2638,7 @@ export const usersManageResetPassword = async (id: string,
 
 
 
-export const getUsersManageResetPasswordMutationOptions = <TError = unknown,
+export const getUsersManageResetPasswordMutationOptions = <TError = UsersManageResetPassword400 | UsersManageResetPassword401 | UsersManageResetPassword403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManageResetPassword>>, TError,{id: string;data: UsersManageResetPasswordBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersManageResetPassword>>, TError,{id: string;data: UsersManageResetPasswordBody}, TContext> => {
 
@@ -2275,12 +2667,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersManageResetPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof usersManageResetPassword>>>
     export type UsersManageResetPasswordMutationBody = UsersManageResetPasswordBody
-    export type UsersManageResetPasswordMutationError = unknown
+    export type UsersManageResetPasswordMutationError = UsersManageResetPassword400 | UsersManageResetPassword401 | UsersManageResetPassword403
 
     /**
  * @summary Reset user password
  */
-export const createUsersManageResetPassword = <TError = unknown,
+export const createUsersManageResetPassword = <TError = UsersManageResetPassword400 | UsersManageResetPassword401 | UsersManageResetPassword403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManageResetPassword>>, TError,{id: string;data: UsersManageResetPasswordBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersManageResetPassword>>,
@@ -2294,12 +2686,20 @@ export const createUsersManageResetPassword = <TError = unknown,
  * Users API
  * @summary Assign roles to a user
  */
-export type usersManageRolesResponse200 = void
+export type usersManageRolesResponse200 = UsersManageRoles200
+
+export type usersManageRolesResponse400 = UsersManageRoles400
+
+export type usersManageRolesResponse401 = UsersManageRoles401
+
+export type usersManageRolesResponse403 = UsersManageRoles403
 
 export type usersManageRolesResponseSuccess = usersManageRolesResponse200
-;
+export type usersManageRolesResponseError = (usersManageRolesResponse400 | usersManageRolesResponse401 | usersManageRolesResponse403) & {
+  headers: Headers;
+};
 
-export type usersManageRolesResponse = (usersManageRolesResponseSuccess)
+export type usersManageRolesResponse = (usersManageRolesResponseSuccess | usersManageRolesResponseError)
 
 export const getUsersManageRolesUrl = (id: string,) => {
 
@@ -2325,7 +2725,7 @@ export const usersManageRoles = async (id: string,
 
 
 
-export const getUsersManageRolesMutationOptions = <TError = unknown,
+export const getUsersManageRolesMutationOptions = <TError = UsersManageRoles400 | UsersManageRoles401 | UsersManageRoles403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManageRoles>>, TError,{id: string;data: UsersManageRolesBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof usersManageRoles>>, TError,{id: string;data: UsersManageRolesBody}, TContext> => {
 
@@ -2354,12 +2754,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type UsersManageRolesMutationResult = NonNullable<Awaited<ReturnType<typeof usersManageRoles>>>
     export type UsersManageRolesMutationBody = UsersManageRolesBody
-    export type UsersManageRolesMutationError = unknown
+    export type UsersManageRolesMutationError = UsersManageRoles400 | UsersManageRoles401 | UsersManageRoles403
 
     /**
  * @summary Assign roles to a user
  */
-export const createUsersManageRoles = <TError = unknown,
+export const createUsersManageRoles = <TError = UsersManageRoles400 | UsersManageRoles401 | UsersManageRoles403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof usersManageRoles>>, TError,{id: string;data: UsersManageRolesBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof usersManageRoles>>,

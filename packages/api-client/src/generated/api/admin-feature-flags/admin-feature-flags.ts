@@ -26,6 +26,22 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AdminFeatureFlagsBroadcastRefresh200,
+  AdminFeatureFlagsBroadcastRefresh400,
+  AdminFeatureFlagsBroadcastRefresh401,
+  AdminFeatureFlagsBroadcastRefresh403,
+  AdminFeatureFlagsImpact200,
+  AdminFeatureFlagsImpact400,
+  AdminFeatureFlagsImpact401,
+  AdminFeatureFlagsImpact403,
+  AdminFeatureFlagsList200,
+  AdminFeatureFlagsList400,
+  AdminFeatureFlagsList401,
+  AdminFeatureFlagsList403,
+  AdminFeatureFlagsUpdate200,
+  AdminFeatureFlagsUpdate400,
+  AdminFeatureFlagsUpdate401,
+  AdminFeatureFlagsUpdate403,
   AdminFeatureFlagsUpdateBody
 } from '../../models';
 
@@ -40,12 +56,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Admin Feature Flags API
  * @summary List all feature flags with metadata and blocking info
  */
-export type adminFeatureFlagsListResponse200 = void
+export type adminFeatureFlagsListResponse200 = AdminFeatureFlagsList200
+
+export type adminFeatureFlagsListResponse400 = AdminFeatureFlagsList400
+
+export type adminFeatureFlagsListResponse401 = AdminFeatureFlagsList401
+
+export type adminFeatureFlagsListResponse403 = AdminFeatureFlagsList403
 
 export type adminFeatureFlagsListResponseSuccess = adminFeatureFlagsListResponse200
-;
+export type adminFeatureFlagsListResponseError = (adminFeatureFlagsListResponse400 | adminFeatureFlagsListResponse401 | adminFeatureFlagsListResponse403) & {
+  headers: Headers;
+};
 
-export type adminFeatureFlagsListResponse = (adminFeatureFlagsListResponseSuccess)
+export type adminFeatureFlagsListResponse = (adminFeatureFlagsListResponseSuccess | adminFeatureFlagsListResponseError)
 
 export const getAdminFeatureFlagsListUrl = () => {
 
@@ -83,7 +107,7 @@ export const getAdminFeatureFlagsListQueryKey = () => {
     }
 
 
-export const getAdminFeatureFlagsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFeatureFlagsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsList>>>, TError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +126,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFeatureFlagsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminFeatureFlagsList>>>
-export type AdminFeatureFlagsListInfiniteQueryError = unknown
+export type AdminFeatureFlagsListInfiniteQueryError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403
 
 
 /**
  * @summary List all feature flags with metadata and blocking info
  */
 
-export function createAdminFeatureFlagsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsList>>>, TError = unknown>(
+export function createAdminFeatureFlagsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsList>>>, TError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +148,7 @@ export function createAdminFeatureFlagsListInfinite<TData = InfiniteData<Awaited
 /**
  * @summary List all feature flags with metadata and blocking info
  */
-export const prefetchAdminFeatureFlagsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = unknown>(
+export const prefetchAdminFeatureFlagsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +164,7 @@ export const prefetchAdminFeatureFlagsListInfiniteQuery = async <TData = Awaited
 
 
 
-export const getAdminFeatureFlagsListQueryOptions = <TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFeatureFlagsListQueryOptions = <TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +183,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFeatureFlagsListQueryResult = NonNullable<Awaited<ReturnType<typeof adminFeatureFlagsList>>>
-export type AdminFeatureFlagsListQueryError = unknown
+export type AdminFeatureFlagsListQueryError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403
 
 
 /**
  * @summary List all feature flags with metadata and blocking info
  */
 
-export function createAdminFeatureFlagsList<TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = unknown>(
+export function createAdminFeatureFlagsList<TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +205,7 @@ export function createAdminFeatureFlagsList<TData = Awaited<ReturnType<typeof ad
 /**
  * @summary List all feature flags with metadata and blocking info
  */
-export const prefetchAdminFeatureFlagsListQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = unknown>(
+export const prefetchAdminFeatureFlagsListQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError = AdminFeatureFlagsList400 | AdminFeatureFlagsList401 | AdminFeatureFlagsList403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +225,20 @@ export const prefetchAdminFeatureFlagsListQuery = async <TData = Awaited<ReturnT
  * Admin Feature Flags API
  * @summary Preview transitive descendants affected when a flag is turned OFF
  */
-export type adminFeatureFlagsImpactResponse200 = void
+export type adminFeatureFlagsImpactResponse200 = AdminFeatureFlagsImpact200
+
+export type adminFeatureFlagsImpactResponse400 = AdminFeatureFlagsImpact400
+
+export type adminFeatureFlagsImpactResponse401 = AdminFeatureFlagsImpact401
+
+export type adminFeatureFlagsImpactResponse403 = AdminFeatureFlagsImpact403
 
 export type adminFeatureFlagsImpactResponseSuccess = adminFeatureFlagsImpactResponse200
-;
+export type adminFeatureFlagsImpactResponseError = (adminFeatureFlagsImpactResponse400 | adminFeatureFlagsImpactResponse401 | adminFeatureFlagsImpactResponse403) & {
+  headers: Headers;
+};
 
-export type adminFeatureFlagsImpactResponse = (adminFeatureFlagsImpactResponseSuccess)
+export type adminFeatureFlagsImpactResponse = (adminFeatureFlagsImpactResponseSuccess | adminFeatureFlagsImpactResponseError)
 
 export const getAdminFeatureFlagsImpactUrl = (key: string,) => {
 
@@ -244,7 +276,7 @@ export const getAdminFeatureFlagsImpactQueryKey = (key: string,) => {
     }
 
 
-export const getAdminFeatureFlagsImpactInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>>, TError = unknown>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFeatureFlagsImpactInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>>, TError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403>(key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -263,14 +295,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFeatureFlagsImpactInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>>
-export type AdminFeatureFlagsImpactInfiniteQueryError = unknown
+export type AdminFeatureFlagsImpactInfiniteQueryError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403
 
 
 /**
  * @summary Preview transitive descendants affected when a flag is turned OFF
  */
 
-export function createAdminFeatureFlagsImpactInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>>, TError = unknown>(
+export function createAdminFeatureFlagsImpactInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>>, TError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403>(
  key: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -285,7 +317,7 @@ export function createAdminFeatureFlagsImpactInfinite<TData = InfiniteData<Await
 /**
  * @summary Preview transitive descendants affected when a flag is turned OFF
  */
-export const prefetchAdminFeatureFlagsImpactInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = unknown>(
+export const prefetchAdminFeatureFlagsImpactInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -301,7 +333,7 @@ export const prefetchAdminFeatureFlagsImpactInfiniteQuery = async <TData = Await
 
 
 
-export const getAdminFeatureFlagsImpactQueryOptions = <TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = unknown>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminFeatureFlagsImpactQueryOptions = <TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403>(key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -320,14 +352,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminFeatureFlagsImpactQueryResult = NonNullable<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>>
-export type AdminFeatureFlagsImpactQueryError = unknown
+export type AdminFeatureFlagsImpactQueryError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403
 
 
 /**
  * @summary Preview transitive descendants affected when a flag is turned OFF
  */
 
-export function createAdminFeatureFlagsImpact<TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = unknown>(
+export function createAdminFeatureFlagsImpact<TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403>(
  key: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -342,7 +374,7 @@ export function createAdminFeatureFlagsImpact<TData = Awaited<ReturnType<typeof 
 /**
  * @summary Preview transitive descendants affected when a flag is turned OFF
  */
-export const prefetchAdminFeatureFlagsImpactQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = unknown>(
+export const prefetchAdminFeatureFlagsImpactQuery = async <TData = Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError = AdminFeatureFlagsImpact400 | AdminFeatureFlagsImpact401 | AdminFeatureFlagsImpact403>(
  queryClient: QueryClient, key: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminFeatureFlagsImpact>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -362,12 +394,20 @@ export const prefetchAdminFeatureFlagsImpactQuery = async <TData = Awaited<Retur
  * Turning ON is rejected with 409 when any ancestor is OFF. Deprecated flags are read-only.
  * @summary Toggle a flag or update its role restriction
  */
-export type adminFeatureFlagsUpdateResponse200 = void
+export type adminFeatureFlagsUpdateResponse200 = AdminFeatureFlagsUpdate200
+
+export type adminFeatureFlagsUpdateResponse400 = AdminFeatureFlagsUpdate400
+
+export type adminFeatureFlagsUpdateResponse401 = AdminFeatureFlagsUpdate401
+
+export type adminFeatureFlagsUpdateResponse403 = AdminFeatureFlagsUpdate403
 
 export type adminFeatureFlagsUpdateResponseSuccess = adminFeatureFlagsUpdateResponse200
-;
+export type adminFeatureFlagsUpdateResponseError = (adminFeatureFlagsUpdateResponse400 | adminFeatureFlagsUpdateResponse401 | adminFeatureFlagsUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type adminFeatureFlagsUpdateResponse = (adminFeatureFlagsUpdateResponseSuccess)
+export type adminFeatureFlagsUpdateResponse = (adminFeatureFlagsUpdateResponseSuccess | adminFeatureFlagsUpdateResponseError)
 
 export const getAdminFeatureFlagsUpdateUrl = (key: string,) => {
 
@@ -393,7 +433,7 @@ export const adminFeatureFlagsUpdate = async (key: string,
 
 
 
-export const getAdminFeatureFlagsUpdateMutationOptions = <TError = unknown,
+export const getAdminFeatureFlagsUpdateMutationOptions = <TError = AdminFeatureFlagsUpdate400 | AdminFeatureFlagsUpdate401 | AdminFeatureFlagsUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFeatureFlagsUpdate>>, TError,{key: string;data: AdminFeatureFlagsUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminFeatureFlagsUpdate>>, TError,{key: string;data: AdminFeatureFlagsUpdateBody}, TContext> => {
 
@@ -422,12 +462,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminFeatureFlagsUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof adminFeatureFlagsUpdate>>>
     export type AdminFeatureFlagsUpdateMutationBody = AdminFeatureFlagsUpdateBody
-    export type AdminFeatureFlagsUpdateMutationError = unknown
+    export type AdminFeatureFlagsUpdateMutationError = AdminFeatureFlagsUpdate400 | AdminFeatureFlagsUpdate401 | AdminFeatureFlagsUpdate403
 
     /**
  * @summary Toggle a flag or update its role restriction
  */
-export const createAdminFeatureFlagsUpdate = <TError = unknown,
+export const createAdminFeatureFlagsUpdate = <TError = AdminFeatureFlagsUpdate400 | AdminFeatureFlagsUpdate401 | AdminFeatureFlagsUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFeatureFlagsUpdate>>, TError,{key: string;data: AdminFeatureFlagsUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminFeatureFlagsUpdate>>,
@@ -441,12 +481,20 @@ export const createAdminFeatureFlagsUpdate = <TError = unknown,
  * Clears server-side caches and pushes an `invalidate` message through the SSE stream so every connected client refetches.
  * @summary Invalidate all client flag snapshots
  */
-export type adminFeatureFlagsBroadcastRefreshResponse200 = void
+export type adminFeatureFlagsBroadcastRefreshResponse200 = AdminFeatureFlagsBroadcastRefresh200
+
+export type adminFeatureFlagsBroadcastRefreshResponse400 = AdminFeatureFlagsBroadcastRefresh400
+
+export type adminFeatureFlagsBroadcastRefreshResponse401 = AdminFeatureFlagsBroadcastRefresh401
+
+export type adminFeatureFlagsBroadcastRefreshResponse403 = AdminFeatureFlagsBroadcastRefresh403
 
 export type adminFeatureFlagsBroadcastRefreshResponseSuccess = adminFeatureFlagsBroadcastRefreshResponse200
-;
+export type adminFeatureFlagsBroadcastRefreshResponseError = (adminFeatureFlagsBroadcastRefreshResponse400 | adminFeatureFlagsBroadcastRefreshResponse401 | adminFeatureFlagsBroadcastRefreshResponse403) & {
+  headers: Headers;
+};
 
-export type adminFeatureFlagsBroadcastRefreshResponse = (adminFeatureFlagsBroadcastRefreshResponseSuccess)
+export type adminFeatureFlagsBroadcastRefreshResponse = (adminFeatureFlagsBroadcastRefreshResponseSuccess | adminFeatureFlagsBroadcastRefreshResponseError)
 
 export const getAdminFeatureFlagsBroadcastRefreshUrl = () => {
 
@@ -470,7 +518,7 @@ export const adminFeatureFlagsBroadcastRefresh = async ( options?: RequestInit):
 
 
 
-export const getAdminFeatureFlagsBroadcastRefreshMutationOptions = <TError = unknown,
+export const getAdminFeatureFlagsBroadcastRefreshMutationOptions = <TError = AdminFeatureFlagsBroadcastRefresh400 | AdminFeatureFlagsBroadcastRefresh401 | AdminFeatureFlagsBroadcastRefresh403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFeatureFlagsBroadcastRefresh>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminFeatureFlagsBroadcastRefresh>>, TError,void, TContext> => {
 
@@ -499,12 +547,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminFeatureFlagsBroadcastRefreshMutationResult = NonNullable<Awaited<ReturnType<typeof adminFeatureFlagsBroadcastRefresh>>>
 
-    export type AdminFeatureFlagsBroadcastRefreshMutationError = unknown
+    export type AdminFeatureFlagsBroadcastRefreshMutationError = AdminFeatureFlagsBroadcastRefresh400 | AdminFeatureFlagsBroadcastRefresh401 | AdminFeatureFlagsBroadcastRefresh403
 
     /**
  * @summary Invalidate all client flag snapshots
  */
-export const createAdminFeatureFlagsBroadcastRefresh = <TError = unknown,
+export const createAdminFeatureFlagsBroadcastRefresh = <TError = AdminFeatureFlagsBroadcastRefresh400 | AdminFeatureFlagsBroadcastRefresh401 | AdminFeatureFlagsBroadcastRefresh403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminFeatureFlagsBroadcastRefresh>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminFeatureFlagsBroadcastRefresh>>,

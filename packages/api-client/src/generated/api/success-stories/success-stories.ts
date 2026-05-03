@@ -26,8 +26,22 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  SuccessStoriesCreate200,
+  SuccessStoriesCreate400,
+  SuccessStoriesCreate401,
+  SuccessStoriesCreate403,
   SuccessStoriesCreateBody,
+  SuccessStoriesDelete200,
+  SuccessStoriesDelete400,
+  SuccessStoriesDelete401,
+  SuccessStoriesDelete403,
+  SuccessStoriesList200,
+  SuccessStoriesList400,
   SuccessStoriesListParams,
+  SuccessStoriesUpdate200,
+  SuccessStoriesUpdate400,
+  SuccessStoriesUpdate401,
+  SuccessStoriesUpdate403,
   SuccessStoriesUpdateBody
 } from '../../models';
 
@@ -42,12 +56,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Success stories — public carousel + admin CRUD
  * @summary Published success stories for the landing carousel.
  */
-export type successStoriesListResponse200 = void
+export type successStoriesListResponse200 = SuccessStoriesList200
+
+export type successStoriesListResponse400 = SuccessStoriesList400
 
 export type successStoriesListResponseSuccess = successStoriesListResponse200
-;
+export type successStoriesListResponseError = (successStoriesListResponse400) & {
+  headers: Headers;
+};
 
-export type successStoriesListResponse = (successStoriesListResponseSuccess)
+export type successStoriesListResponse = (successStoriesListResponseSuccess | successStoriesListResponseError)
 
 export const getSuccessStoriesListUrl = (params?: SuccessStoriesListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -92,7 +110,7 @@ export const getSuccessStoriesListQueryKey = (params?: SuccessStoriesListParams,
     }
 
 
-export const getSuccessStoriesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof successStoriesList>>>, TError = unknown>(params?: SuccessStoriesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSuccessStoriesListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof successStoriesList>>>, TError = SuccessStoriesList400>(params?: SuccessStoriesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -111,14 +129,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SuccessStoriesListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof successStoriesList>>>
-export type SuccessStoriesListInfiniteQueryError = unknown
+export type SuccessStoriesListInfiniteQueryError = SuccessStoriesList400
 
 
 /**
  * @summary Published success stories for the landing carousel.
  */
 
-export function createSuccessStoriesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof successStoriesList>>>, TError = unknown>(
+export function createSuccessStoriesListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof successStoriesList>>>, TError = SuccessStoriesList400>(
  params?: () =>  SuccessStoriesListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -133,7 +151,7 @@ export function createSuccessStoriesListInfinite<TData = InfiniteData<Awaited<Re
 /**
  * @summary Published success stories for the landing carousel.
  */
-export const prefetchSuccessStoriesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof successStoriesList>>, TError = unknown>(
+export const prefetchSuccessStoriesListInfiniteQuery = async <TData = Awaited<ReturnType<typeof successStoriesList>>, TError = SuccessStoriesList400>(
  queryClient: QueryClient, params?: SuccessStoriesListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -149,7 +167,7 @@ export const prefetchSuccessStoriesListInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getSuccessStoriesListQueryOptions = <TData = Awaited<ReturnType<typeof successStoriesList>>, TError = unknown>(params?: SuccessStoriesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSuccessStoriesListQueryOptions = <TData = Awaited<ReturnType<typeof successStoriesList>>, TError = SuccessStoriesList400>(params?: SuccessStoriesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -168,14 +186,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SuccessStoriesListQueryResult = NonNullable<Awaited<ReturnType<typeof successStoriesList>>>
-export type SuccessStoriesListQueryError = unknown
+export type SuccessStoriesListQueryError = SuccessStoriesList400
 
 
 /**
  * @summary Published success stories for the landing carousel.
  */
 
-export function createSuccessStoriesList<TData = Awaited<ReturnType<typeof successStoriesList>>, TError = unknown>(
+export function createSuccessStoriesList<TData = Awaited<ReturnType<typeof successStoriesList>>, TError = SuccessStoriesList400>(
  params?: () =>  SuccessStoriesListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -190,7 +208,7 @@ export function createSuccessStoriesList<TData = Awaited<ReturnType<typeof succe
 /**
  * @summary Published success stories for the landing carousel.
  */
-export const prefetchSuccessStoriesListQuery = async <TData = Awaited<ReturnType<typeof successStoriesList>>, TError = unknown>(
+export const prefetchSuccessStoriesListQuery = async <TData = Awaited<ReturnType<typeof successStoriesList>>, TError = SuccessStoriesList400>(
  queryClient: QueryClient, params?: SuccessStoriesListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof successStoriesList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -210,12 +228,20 @@ export const prefetchSuccessStoriesListQuery = async <TData = Awaited<ReturnType
  * Success stories — public carousel + admin CRUD
  * @summary Create a success story (admin).
  */
-export type successStoriesCreateResponse200 = void
+export type successStoriesCreateResponse200 = SuccessStoriesCreate200
+
+export type successStoriesCreateResponse400 = SuccessStoriesCreate400
+
+export type successStoriesCreateResponse401 = SuccessStoriesCreate401
+
+export type successStoriesCreateResponse403 = SuccessStoriesCreate403
 
 export type successStoriesCreateResponseSuccess = successStoriesCreateResponse200
-;
+export type successStoriesCreateResponseError = (successStoriesCreateResponse400 | successStoriesCreateResponse401 | successStoriesCreateResponse403) & {
+  headers: Headers;
+};
 
-export type successStoriesCreateResponse = (successStoriesCreateResponseSuccess)
+export type successStoriesCreateResponse = (successStoriesCreateResponseSuccess | successStoriesCreateResponseError)
 
 export const getSuccessStoriesCreateUrl = () => {
 
@@ -240,7 +266,7 @@ export const successStoriesCreate = async (successStoriesCreateBody: SuccessStor
 
 
 
-export const getSuccessStoriesCreateMutationOptions = <TError = unknown,
+export const getSuccessStoriesCreateMutationOptions = <TError = SuccessStoriesCreate400 | SuccessStoriesCreate401 | SuccessStoriesCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof successStoriesCreate>>, TError,{data: SuccessStoriesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof successStoriesCreate>>, TError,{data: SuccessStoriesCreateBody}, TContext> => {
 
@@ -269,12 +295,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SuccessStoriesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof successStoriesCreate>>>
     export type SuccessStoriesCreateMutationBody = SuccessStoriesCreateBody
-    export type SuccessStoriesCreateMutationError = unknown
+    export type SuccessStoriesCreateMutationError = SuccessStoriesCreate400 | SuccessStoriesCreate401 | SuccessStoriesCreate403
 
     /**
  * @summary Create a success story (admin).
  */
-export const createSuccessStoriesCreate = <TError = unknown,
+export const createSuccessStoriesCreate = <TError = SuccessStoriesCreate400 | SuccessStoriesCreate401 | SuccessStoriesCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof successStoriesCreate>>, TError,{data: SuccessStoriesCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof successStoriesCreate>>,
@@ -288,12 +314,20 @@ export const createSuccessStoriesCreate = <TError = unknown,
  * Success stories — public carousel + admin CRUD
  * @summary Update a success story (admin).
  */
-export type successStoriesUpdateResponse200 = void
+export type successStoriesUpdateResponse200 = SuccessStoriesUpdate200
+
+export type successStoriesUpdateResponse400 = SuccessStoriesUpdate400
+
+export type successStoriesUpdateResponse401 = SuccessStoriesUpdate401
+
+export type successStoriesUpdateResponse403 = SuccessStoriesUpdate403
 
 export type successStoriesUpdateResponseSuccess = successStoriesUpdateResponse200
-;
+export type successStoriesUpdateResponseError = (successStoriesUpdateResponse400 | successStoriesUpdateResponse401 | successStoriesUpdateResponse403) & {
+  headers: Headers;
+};
 
-export type successStoriesUpdateResponse = (successStoriesUpdateResponseSuccess)
+export type successStoriesUpdateResponse = (successStoriesUpdateResponseSuccess | successStoriesUpdateResponseError)
 
 export const getSuccessStoriesUpdateUrl = (id: string,) => {
 
@@ -319,7 +353,7 @@ export const successStoriesUpdate = async (id: string,
 
 
 
-export const getSuccessStoriesUpdateMutationOptions = <TError = unknown,
+export const getSuccessStoriesUpdateMutationOptions = <TError = SuccessStoriesUpdate400 | SuccessStoriesUpdate401 | SuccessStoriesUpdate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof successStoriesUpdate>>, TError,{id: string;data: SuccessStoriesUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof successStoriesUpdate>>, TError,{id: string;data: SuccessStoriesUpdateBody}, TContext> => {
 
@@ -348,12 +382,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SuccessStoriesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof successStoriesUpdate>>>
     export type SuccessStoriesUpdateMutationBody = SuccessStoriesUpdateBody
-    export type SuccessStoriesUpdateMutationError = unknown
+    export type SuccessStoriesUpdateMutationError = SuccessStoriesUpdate400 | SuccessStoriesUpdate401 | SuccessStoriesUpdate403
 
     /**
  * @summary Update a success story (admin).
  */
-export const createSuccessStoriesUpdate = <TError = unknown,
+export const createSuccessStoriesUpdate = <TError = SuccessStoriesUpdate400 | SuccessStoriesUpdate401 | SuccessStoriesUpdate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof successStoriesUpdate>>, TError,{id: string;data: SuccessStoriesUpdateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof successStoriesUpdate>>,
@@ -367,12 +401,20 @@ export const createSuccessStoriesUpdate = <TError = unknown,
  * Success stories — public carousel + admin CRUD
  * @summary Delete a success story (admin).
  */
-export type successStoriesDeleteResponse200 = void
+export type successStoriesDeleteResponse200 = SuccessStoriesDelete200
+
+export type successStoriesDeleteResponse400 = SuccessStoriesDelete400
+
+export type successStoriesDeleteResponse401 = SuccessStoriesDelete401
+
+export type successStoriesDeleteResponse403 = SuccessStoriesDelete403
 
 export type successStoriesDeleteResponseSuccess = successStoriesDeleteResponse200
-;
+export type successStoriesDeleteResponseError = (successStoriesDeleteResponse400 | successStoriesDeleteResponse401 | successStoriesDeleteResponse403) & {
+  headers: Headers;
+};
 
-export type successStoriesDeleteResponse = (successStoriesDeleteResponseSuccess)
+export type successStoriesDeleteResponse = (successStoriesDeleteResponseSuccess | successStoriesDeleteResponseError)
 
 export const getSuccessStoriesDeleteUrl = (id: string,) => {
 
@@ -396,7 +438,7 @@ export const successStoriesDelete = async (id: string, options?: RequestInit): P
 
 
 
-export const getSuccessStoriesDeleteMutationOptions = <TError = unknown,
+export const getSuccessStoriesDeleteMutationOptions = <TError = SuccessStoriesDelete400 | SuccessStoriesDelete401 | SuccessStoriesDelete403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof successStoriesDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof successStoriesDelete>>, TError,{id: string}, TContext> => {
 
@@ -425,12 +467,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SuccessStoriesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof successStoriesDelete>>>
 
-    export type SuccessStoriesDeleteMutationError = unknown
+    export type SuccessStoriesDeleteMutationError = SuccessStoriesDelete400 | SuccessStoriesDelete401 | SuccessStoriesDelete403
 
     /**
  * @summary Delete a success story (admin).
  */
-export const createSuccessStoriesDelete = <TError = unknown,
+export const createSuccessStoriesDelete = <TError = SuccessStoriesDelete400 | SuccessStoriesDelete401 | SuccessStoriesDelete403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof successStoriesDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof successStoriesDelete>>,

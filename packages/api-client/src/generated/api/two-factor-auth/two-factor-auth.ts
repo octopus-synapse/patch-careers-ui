@@ -26,6 +26,20 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  TwoFactorAuthAuth2fa400,
+  TwoFactorAuthAuth2fa401,
+  TwoFactorAuthAuth2faBackupCodesRegenerate200,
+  TwoFactorAuthAuth2faBackupCodesRegenerate400,
+  TwoFactorAuthAuth2faBackupCodesRegenerate401,
+  TwoFactorAuthAuth2faSetup200,
+  TwoFactorAuthAuth2faSetup400,
+  TwoFactorAuthAuth2faSetup401,
+  TwoFactorAuthAuth2faStatus200,
+  TwoFactorAuthAuth2faStatus400,
+  TwoFactorAuthAuth2faStatus401,
+  TwoFactorAuthAuth2faVerify200,
+  TwoFactorAuthAuth2faVerify400,
+  TwoFactorAuthAuth2faVerify401,
   TwoFactorAuthAuth2faVerifyBody
 } from '../../models';
 
@@ -38,14 +52,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
  * Generates TOTP secret and QR code. 2FA is not enabled until verified.
- * @summary Setup 2FA
+ * @summary Setup two-factor authentication for the current user
  */
-export type twoFactorAuthAuth2faSetupResponse200 = void
+export type twoFactorAuthAuth2faSetupResponse200 = TwoFactorAuthAuth2faSetup200
+
+export type twoFactorAuthAuth2faSetupResponse400 = TwoFactorAuthAuth2faSetup400
+
+export type twoFactorAuthAuth2faSetupResponse401 = TwoFactorAuthAuth2faSetup401
 
 export type twoFactorAuthAuth2faSetupResponseSuccess = twoFactorAuthAuth2faSetupResponse200
-;
+export type twoFactorAuthAuth2faSetupResponseError = (twoFactorAuthAuth2faSetupResponse400 | twoFactorAuthAuth2faSetupResponse401) & {
+  headers: Headers;
+};
 
-export type twoFactorAuthAuth2faSetupResponse = (twoFactorAuthAuth2faSetupResponseSuccess)
+export type twoFactorAuthAuth2faSetupResponse = (twoFactorAuthAuth2faSetupResponseSuccess | twoFactorAuthAuth2faSetupResponseError)
 
 export const getTwoFactorAuthAuth2faSetupUrl = () => {
 
@@ -69,7 +89,7 @@ export const twoFactorAuthAuth2faSetup = async ( options?: RequestInit): Promise
 
 
 
-export const getTwoFactorAuthAuth2faSetupMutationOptions = <TError = unknown,
+export const getTwoFactorAuthAuth2faSetupMutationOptions = <TError = TwoFactorAuthAuth2faSetup400 | TwoFactorAuthAuth2faSetup401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faSetup>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faSetup>>, TError,void, TContext> => {
 
@@ -98,12 +118,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TwoFactorAuthAuth2faSetupMutationResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthAuth2faSetup>>>
 
-    export type TwoFactorAuthAuth2faSetupMutationError = unknown
+    export type TwoFactorAuthAuth2faSetupMutationError = TwoFactorAuthAuth2faSetup400 | TwoFactorAuthAuth2faSetup401
 
     /**
- * @summary Setup 2FA
+ * @summary Setup two-factor authentication for the current user
  */
-export const createTwoFactorAuthAuth2faSetup = <TError = unknown,
+export const createTwoFactorAuthAuth2faSetup = <TError = TwoFactorAuthAuth2faSetup400 | TwoFactorAuthAuth2faSetup401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faSetup>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof twoFactorAuthAuth2faSetup>>,
@@ -117,12 +137,18 @@ export const createTwoFactorAuthAuth2faSetup = <TError = unknown,
  * Verifies TOTP token and enables 2FA. Returns backup codes (shown only once).
  * @summary Verify token and enable 2FA
  */
-export type twoFactorAuthAuth2faVerifyResponse200 = void
+export type twoFactorAuthAuth2faVerifyResponse200 = TwoFactorAuthAuth2faVerify200
+
+export type twoFactorAuthAuth2faVerifyResponse400 = TwoFactorAuthAuth2faVerify400
+
+export type twoFactorAuthAuth2faVerifyResponse401 = TwoFactorAuthAuth2faVerify401
 
 export type twoFactorAuthAuth2faVerifyResponseSuccess = twoFactorAuthAuth2faVerifyResponse200
-;
+export type twoFactorAuthAuth2faVerifyResponseError = (twoFactorAuthAuth2faVerifyResponse400 | twoFactorAuthAuth2faVerifyResponse401) & {
+  headers: Headers;
+};
 
-export type twoFactorAuthAuth2faVerifyResponse = (twoFactorAuthAuth2faVerifyResponseSuccess)
+export type twoFactorAuthAuth2faVerifyResponse = (twoFactorAuthAuth2faVerifyResponseSuccess | twoFactorAuthAuth2faVerifyResponseError)
 
 export const getTwoFactorAuthAuth2faVerifyUrl = () => {
 
@@ -147,7 +173,7 @@ export const twoFactorAuthAuth2faVerify = async (twoFactorAuthAuth2faVerifyBody:
 
 
 
-export const getTwoFactorAuthAuth2faVerifyMutationOptions = <TError = unknown,
+export const getTwoFactorAuthAuth2faVerifyMutationOptions = <TError = TwoFactorAuthAuth2faVerify400 | TwoFactorAuthAuth2faVerify401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faVerify>>, TError,{data: TwoFactorAuthAuth2faVerifyBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faVerify>>, TError,{data: TwoFactorAuthAuth2faVerifyBody}, TContext> => {
 
@@ -176,12 +202,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TwoFactorAuthAuth2faVerifyMutationResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthAuth2faVerify>>>
     export type TwoFactorAuthAuth2faVerifyMutationBody = TwoFactorAuthAuth2faVerifyBody
-    export type TwoFactorAuthAuth2faVerifyMutationError = unknown
+    export type TwoFactorAuthAuth2faVerifyMutationError = TwoFactorAuthAuth2faVerify400 | TwoFactorAuthAuth2faVerify401
 
     /**
  * @summary Verify token and enable 2FA
  */
-export const createTwoFactorAuthAuth2faVerify = <TError = unknown,
+export const createTwoFactorAuthAuth2faVerify = <TError = TwoFactorAuthAuth2faVerify400 | TwoFactorAuthAuth2faVerify401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faVerify>>, TError,{data: TwoFactorAuthAuth2faVerifyBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof twoFactorAuthAuth2faVerify>>,
@@ -195,12 +221,18 @@ export const createTwoFactorAuthAuth2faVerify = <TError = unknown,
  * Returns 2FA status including enabled state and backup codes remaining.
  * @summary Get 2FA status
  */
-export type twoFactorAuthAuth2faStatusResponse200 = void
+export type twoFactorAuthAuth2faStatusResponse200 = TwoFactorAuthAuth2faStatus200
+
+export type twoFactorAuthAuth2faStatusResponse400 = TwoFactorAuthAuth2faStatus400
+
+export type twoFactorAuthAuth2faStatusResponse401 = TwoFactorAuthAuth2faStatus401
 
 export type twoFactorAuthAuth2faStatusResponseSuccess = twoFactorAuthAuth2faStatusResponse200
-;
+export type twoFactorAuthAuth2faStatusResponseError = (twoFactorAuthAuth2faStatusResponse400 | twoFactorAuthAuth2faStatusResponse401) & {
+  headers: Headers;
+};
 
-export type twoFactorAuthAuth2faStatusResponse = (twoFactorAuthAuth2faStatusResponseSuccess)
+export type twoFactorAuthAuth2faStatusResponse = (twoFactorAuthAuth2faStatusResponseSuccess | twoFactorAuthAuth2faStatusResponseError)
 
 export const getTwoFactorAuthAuth2faStatusUrl = () => {
 
@@ -238,7 +270,7 @@ export const getTwoFactorAuthAuth2faStatusQueryKey = () => {
     }
 
 
-export const getTwoFactorAuthAuth2faStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTwoFactorAuthAuth2faStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>>, TError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -257,14 +289,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TwoFactorAuthAuth2faStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>>
-export type TwoFactorAuthAuth2faStatusInfiniteQueryError = unknown
+export type TwoFactorAuthAuth2faStatusInfiniteQueryError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401
 
 
 /**
  * @summary Get 2FA status
  */
 
-export function createTwoFactorAuthAuth2faStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>>, TError = unknown>(
+export function createTwoFactorAuthAuth2faStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>>, TError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -279,7 +311,7 @@ export function createTwoFactorAuthAuth2faStatusInfinite<TData = InfiniteData<Aw
 /**
  * @summary Get 2FA status
  */
-export const prefetchTwoFactorAuthAuth2faStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = unknown>(
+export const prefetchTwoFactorAuthAuth2faStatusInfiniteQuery = async <TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -295,7 +327,7 @@ export const prefetchTwoFactorAuthAuth2faStatusInfiniteQuery = async <TData = Aw
 
 
 
-export const getTwoFactorAuthAuth2faStatusQueryOptions = <TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTwoFactorAuthAuth2faStatusQueryOptions = <TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -314,14 +346,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TwoFactorAuthAuth2faStatusQueryResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>>
-export type TwoFactorAuthAuth2faStatusQueryError = unknown
+export type TwoFactorAuthAuth2faStatusQueryError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401
 
 
 /**
  * @summary Get 2FA status
  */
 
-export function createTwoFactorAuthAuth2faStatus<TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = unknown>(
+export function createTwoFactorAuthAuth2faStatus<TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -336,7 +368,7 @@ export function createTwoFactorAuthAuth2faStatus<TData = Awaited<ReturnType<type
 /**
  * @summary Get 2FA status
  */
-export const prefetchTwoFactorAuthAuth2faStatusQuery = async <TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = unknown>(
+export const prefetchTwoFactorAuthAuth2faStatusQuery = async <TData = Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError = TwoFactorAuthAuth2faStatus400 | TwoFactorAuthAuth2faStatus401>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faStatus>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -356,12 +388,18 @@ export const prefetchTwoFactorAuthAuth2faStatusQuery = async <TData = Awaited<Re
  * Generates new backup codes, replacing existing ones. Shown only once.
  * @summary Regenerate backup codes
  */
-export type twoFactorAuthAuth2faBackupCodesRegenerateResponse200 = void
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponse200 = TwoFactorAuthAuth2faBackupCodesRegenerate200
+
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponse400 = TwoFactorAuthAuth2faBackupCodesRegenerate400
+
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponse401 = TwoFactorAuthAuth2faBackupCodesRegenerate401
 
 export type twoFactorAuthAuth2faBackupCodesRegenerateResponseSuccess = twoFactorAuthAuth2faBackupCodesRegenerateResponse200
-;
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponseError = (twoFactorAuthAuth2faBackupCodesRegenerateResponse400 | twoFactorAuthAuth2faBackupCodesRegenerateResponse401) & {
+  headers: Headers;
+};
 
-export type twoFactorAuthAuth2faBackupCodesRegenerateResponse = (twoFactorAuthAuth2faBackupCodesRegenerateResponseSuccess)
+export type twoFactorAuthAuth2faBackupCodesRegenerateResponse = (twoFactorAuthAuth2faBackupCodesRegenerateResponseSuccess | twoFactorAuthAuth2faBackupCodesRegenerateResponseError)
 
 export const getTwoFactorAuthAuth2faBackupCodesRegenerateUrl = () => {
 
@@ -385,7 +423,7 @@ export const twoFactorAuthAuth2faBackupCodesRegenerate = async ( options?: Reque
 
 
 
-export const getTwoFactorAuthAuth2faBackupCodesRegenerateMutationOptions = <TError = unknown,
+export const getTwoFactorAuthAuth2faBackupCodesRegenerateMutationOptions = <TError = TwoFactorAuthAuth2faBackupCodesRegenerate400 | TwoFactorAuthAuth2faBackupCodesRegenerate401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faBackupCodesRegenerate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faBackupCodesRegenerate>>, TError,void, TContext> => {
 
@@ -414,12 +452,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TwoFactorAuthAuth2faBackupCodesRegenerateMutationResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthAuth2faBackupCodesRegenerate>>>
 
-    export type TwoFactorAuthAuth2faBackupCodesRegenerateMutationError = unknown
+    export type TwoFactorAuthAuth2faBackupCodesRegenerateMutationError = TwoFactorAuthAuth2faBackupCodesRegenerate400 | TwoFactorAuthAuth2faBackupCodesRegenerate401
 
     /**
  * @summary Regenerate backup codes
  */
-export const createTwoFactorAuthAuth2faBackupCodesRegenerate = <TError = unknown,
+export const createTwoFactorAuthAuth2faBackupCodesRegenerate = <TError = TwoFactorAuthAuth2faBackupCodesRegenerate400 | TwoFactorAuthAuth2faBackupCodesRegenerate401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2faBackupCodesRegenerate>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof twoFactorAuthAuth2faBackupCodesRegenerate>>,
@@ -435,10 +473,16 @@ export const createTwoFactorAuthAuth2faBackupCodesRegenerate = <TError = unknown
  */
 export type twoFactorAuthAuth2faResponse200 = void
 
-export type twoFactorAuthAuth2faResponseSuccess = twoFactorAuthAuth2faResponse200
-;
+export type twoFactorAuthAuth2faResponse400 = TwoFactorAuthAuth2fa400
 
-export type twoFactorAuthAuth2faResponse = (twoFactorAuthAuth2faResponseSuccess)
+export type twoFactorAuthAuth2faResponse401 = TwoFactorAuthAuth2fa401
+
+export type twoFactorAuthAuth2faResponseSuccess = twoFactorAuthAuth2faResponse200
+export type twoFactorAuthAuth2faResponseError = (twoFactorAuthAuth2faResponse400 | twoFactorAuthAuth2faResponse401) & {
+  headers: Headers;
+};
+
+export type twoFactorAuthAuth2faResponse = (twoFactorAuthAuth2faResponseSuccess | twoFactorAuthAuth2faResponseError)
 
 export const getTwoFactorAuthAuth2faUrl = () => {
 
@@ -462,7 +506,7 @@ export const twoFactorAuthAuth2fa = async ( options?: RequestInit): Promise<twoF
 
 
 
-export const getTwoFactorAuthAuth2faMutationOptions = <TError = unknown,
+export const getTwoFactorAuthAuth2faMutationOptions = <TError = TwoFactorAuthAuth2fa400 | TwoFactorAuthAuth2fa401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2fa>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2fa>>, TError,void, TContext> => {
 
@@ -491,12 +535,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type TwoFactorAuthAuth2faMutationResult = NonNullable<Awaited<ReturnType<typeof twoFactorAuthAuth2fa>>>
 
-    export type TwoFactorAuthAuth2faMutationError = unknown
+    export type TwoFactorAuthAuth2faMutationError = TwoFactorAuthAuth2fa400 | TwoFactorAuthAuth2fa401
 
     /**
  * @summary Disable 2FA
  */
-export const createTwoFactorAuthAuth2fa = <TError = unknown,
+export const createTwoFactorAuthAuth2fa = <TError = TwoFactorAuthAuth2fa400 | TwoFactorAuthAuth2fa401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof twoFactorAuthAuth2fa>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof twoFactorAuthAuth2fa>>,

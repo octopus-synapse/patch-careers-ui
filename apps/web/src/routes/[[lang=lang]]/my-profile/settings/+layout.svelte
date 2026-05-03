@@ -1,18 +1,16 @@
 <script lang="ts">
 import { Loader } from 'ui';
-import { createAuthSession } from 'api-client';
 
 import type { Snippet } from 'svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import SettingsSidebar from './_components/settings-sidebar.svelte';
+import { useAuth } from '$lib/state/auth.svelte';
 
 let { children }: { children: Snippet } = $props();
 
-const session = createAuthSession(() => ({
-  query: { retry: false, enabled: browser },
-}));
+const session = useAuth();
 
 const authenticated = $derived(session.data?.authenticated ?? false);
 const currentPath = $derived($page.url.pathname);

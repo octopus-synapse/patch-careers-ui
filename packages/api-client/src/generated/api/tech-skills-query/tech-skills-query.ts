@@ -22,9 +22,49 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  TechSkillsQueryAreas200,
+  TechSkillsQueryAreas400,
+  TechSkillsQueryAreas401,
+  TechSkillsQueryAreas403,
+  TechSkillsQueryAreasNiches200,
+  TechSkillsQueryAreasNiches400,
+  TechSkillsQueryAreasNiches401,
+  TechSkillsQueryAreasNiches403,
+  TechSkillsQueryLanguages200,
+  TechSkillsQueryLanguages400,
+  TechSkillsQueryLanguages401,
+  TechSkillsQueryLanguages403,
+  TechSkillsQueryLanguagesSearch200,
+  TechSkillsQueryLanguagesSearch400,
+  TechSkillsQueryLanguagesSearch401,
+  TechSkillsQueryLanguagesSearch403,
   TechSkillsQueryLanguagesSearchParams,
+  TechSkillsQueryNiches200,
+  TechSkillsQueryNiches400,
+  TechSkillsQueryNiches401,
+  TechSkillsQueryNiches403,
+  TechSkillsQueryNichesSkills200,
+  TechSkillsQueryNichesSkills400,
+  TechSkillsQueryNichesSkills401,
+  TechSkillsQueryNichesSkills403,
+  TechSkillsQuerySearch200,
+  TechSkillsQuerySearch400,
+  TechSkillsQuerySearch401,
+  TechSkillsQuerySearch403,
   TechSkillsQuerySearchParams,
+  TechSkillsQuerySkills200,
+  TechSkillsQuerySkills400,
+  TechSkillsQuerySkills401,
+  TechSkillsQuerySkills403,
+  TechSkillsQuerySkillsSearch200,
+  TechSkillsQuerySkillsSearch400,
+  TechSkillsQuerySkillsSearch401,
+  TechSkillsQuerySkillsSearch403,
   TechSkillsQuerySkillsSearchParams,
+  TechSkillsQuerySkillsType200,
+  TechSkillsQuerySkillsType400,
+  TechSkillsQuerySkillsType401,
+  TechSkillsQuerySkillsType403,
   TechSkillsQuerySkillsTypeParams
 } from '../../models';
 
@@ -39,12 +79,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Tech areas returned
  * @summary Get all tech areas
  */
-export type techSkillsQueryAreasResponse200 = void
+export type techSkillsQueryAreasResponse200 = TechSkillsQueryAreas200
+
+export type techSkillsQueryAreasResponse400 = TechSkillsQueryAreas400
+
+export type techSkillsQueryAreasResponse401 = TechSkillsQueryAreas401
+
+export type techSkillsQueryAreasResponse403 = TechSkillsQueryAreas403
 
 export type techSkillsQueryAreasResponseSuccess = techSkillsQueryAreasResponse200
-;
+export type techSkillsQueryAreasResponseError = (techSkillsQueryAreasResponse400 | techSkillsQueryAreasResponse401 | techSkillsQueryAreasResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQueryAreasResponse = (techSkillsQueryAreasResponseSuccess)
+export type techSkillsQueryAreasResponse = (techSkillsQueryAreasResponseSuccess | techSkillsQueryAreasResponseError)
 
 export const getTechSkillsQueryAreasUrl = () => {
 
@@ -82,7 +130,7 @@ export const getTechSkillsQueryAreasQueryKey = () => {
     }
 
 
-export const getTechSkillsQueryAreasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreas>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryAreasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreas>>>, TError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -101,14 +149,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryAreasInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryAreas>>>
-export type TechSkillsQueryAreasInfiniteQueryError = unknown
+export type TechSkillsQueryAreasInfiniteQueryError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403
 
 
 /**
  * @summary Get all tech areas
  */
 
-export function createTechSkillsQueryAreasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreas>>>, TError = unknown>(
+export function createTechSkillsQueryAreasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreas>>>, TError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -123,7 +171,7 @@ export function createTechSkillsQueryAreasInfinite<TData = InfiniteData<Awaited<
 /**
  * @summary Get all tech areas
  */
-export const prefetchTechSkillsQueryAreasInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = unknown>(
+export const prefetchTechSkillsQueryAreasInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -139,7 +187,7 @@ export const prefetchTechSkillsQueryAreasInfiniteQuery = async <TData = Awaited<
 
 
 
-export const getTechSkillsQueryAreasQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryAreasQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -158,14 +206,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryAreasQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryAreas>>>
-export type TechSkillsQueryAreasQueryError = unknown
+export type TechSkillsQueryAreasQueryError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403
 
 
 /**
  * @summary Get all tech areas
  */
 
-export function createTechSkillsQueryAreas<TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = unknown>(
+export function createTechSkillsQueryAreas<TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -180,7 +228,7 @@ export function createTechSkillsQueryAreas<TData = Awaited<ReturnType<typeof tec
 /**
  * @summary Get all tech areas
  */
-export const prefetchTechSkillsQueryAreasQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = unknown>(
+export const prefetchTechSkillsQueryAreasQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError = TechSkillsQueryAreas400 | TechSkillsQueryAreas401 | TechSkillsQueryAreas403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreas>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -200,12 +248,20 @@ export const prefetchTechSkillsQueryAreasQuery = async <TData = Awaited<ReturnTy
  * Tech niches returned
  * @summary Get all tech niches
  */
-export type techSkillsQueryNichesResponse200 = void
+export type techSkillsQueryNichesResponse200 = TechSkillsQueryNiches200
+
+export type techSkillsQueryNichesResponse400 = TechSkillsQueryNiches400
+
+export type techSkillsQueryNichesResponse401 = TechSkillsQueryNiches401
+
+export type techSkillsQueryNichesResponse403 = TechSkillsQueryNiches403
 
 export type techSkillsQueryNichesResponseSuccess = techSkillsQueryNichesResponse200
-;
+export type techSkillsQueryNichesResponseError = (techSkillsQueryNichesResponse400 | techSkillsQueryNichesResponse401 | techSkillsQueryNichesResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQueryNichesResponse = (techSkillsQueryNichesResponseSuccess)
+export type techSkillsQueryNichesResponse = (techSkillsQueryNichesResponseSuccess | techSkillsQueryNichesResponseError)
 
 export const getTechSkillsQueryNichesUrl = () => {
 
@@ -243,7 +299,7 @@ export const getTechSkillsQueryNichesQueryKey = () => {
     }
 
 
-export const getTechSkillsQueryNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNiches>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNiches>>>, TError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -262,14 +318,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryNichesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryNiches>>>
-export type TechSkillsQueryNichesInfiniteQueryError = unknown
+export type TechSkillsQueryNichesInfiniteQueryError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403
 
 
 /**
  * @summary Get all tech niches
  */
 
-export function createTechSkillsQueryNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNiches>>>, TError = unknown>(
+export function createTechSkillsQueryNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNiches>>>, TError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -284,7 +340,7 @@ export function createTechSkillsQueryNichesInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Get all tech niches
  */
-export const prefetchTechSkillsQueryNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = unknown>(
+export const prefetchTechSkillsQueryNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -300,7 +356,7 @@ export const prefetchTechSkillsQueryNichesInfiniteQuery = async <TData = Awaited
 
 
 
-export const getTechSkillsQueryNichesQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryNichesQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -319,14 +375,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryNichesQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryNiches>>>
-export type TechSkillsQueryNichesQueryError = unknown
+export type TechSkillsQueryNichesQueryError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403
 
 
 /**
  * @summary Get all tech niches
  */
 
-export function createTechSkillsQueryNiches<TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = unknown>(
+export function createTechSkillsQueryNiches<TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -341,7 +397,7 @@ export function createTechSkillsQueryNiches<TData = Awaited<ReturnType<typeof te
 /**
  * @summary Get all tech niches
  */
-export const prefetchTechSkillsQueryNichesQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = unknown>(
+export const prefetchTechSkillsQueryNichesQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError = TechSkillsQueryNiches400 | TechSkillsQueryNiches401 | TechSkillsQueryNiches403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -361,12 +417,20 @@ export const prefetchTechSkillsQueryNichesQuery = async <TData = Awaited<ReturnT
  * Niches by area returned
  * @summary Get niches by tech area type
  */
-export type techSkillsQueryAreasNichesResponse200 = void
+export type techSkillsQueryAreasNichesResponse200 = TechSkillsQueryAreasNiches200
+
+export type techSkillsQueryAreasNichesResponse400 = TechSkillsQueryAreasNiches400
+
+export type techSkillsQueryAreasNichesResponse401 = TechSkillsQueryAreasNiches401
+
+export type techSkillsQueryAreasNichesResponse403 = TechSkillsQueryAreasNiches403
 
 export type techSkillsQueryAreasNichesResponseSuccess = techSkillsQueryAreasNichesResponse200
-;
+export type techSkillsQueryAreasNichesResponseError = (techSkillsQueryAreasNichesResponse400 | techSkillsQueryAreasNichesResponse401 | techSkillsQueryAreasNichesResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQueryAreasNichesResponse = (techSkillsQueryAreasNichesResponseSuccess)
+export type techSkillsQueryAreasNichesResponse = (techSkillsQueryAreasNichesResponseSuccess | techSkillsQueryAreasNichesResponseError)
 
 export const getTechSkillsQueryAreasNichesUrl = (areaType: string,) => {
 
@@ -404,7 +468,7 @@ export const getTechSkillsQueryAreasNichesQueryKey = (areaType: string,) => {
     }
 
 
-export const getTechSkillsQueryAreasNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>>, TError = unknown>(areaType: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryAreasNichesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>>, TError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403>(areaType: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -423,14 +487,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryAreasNichesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>>
-export type TechSkillsQueryAreasNichesInfiniteQueryError = unknown
+export type TechSkillsQueryAreasNichesInfiniteQueryError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403
 
 
 /**
  * @summary Get niches by tech area type
  */
 
-export function createTechSkillsQueryAreasNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>>, TError = unknown>(
+export function createTechSkillsQueryAreasNichesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>>, TError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403>(
  areaType: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -445,7 +509,7 @@ export function createTechSkillsQueryAreasNichesInfinite<TData = InfiniteData<Aw
 /**
  * @summary Get niches by tech area type
  */
-export const prefetchTechSkillsQueryAreasNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = unknown>(
+export const prefetchTechSkillsQueryAreasNichesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403>(
  queryClient: QueryClient, areaType: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -461,7 +525,7 @@ export const prefetchTechSkillsQueryAreasNichesInfiniteQuery = async <TData = Aw
 
 
 
-export const getTechSkillsQueryAreasNichesQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = unknown>(areaType: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryAreasNichesQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403>(areaType: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -480,14 +544,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryAreasNichesQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>>
-export type TechSkillsQueryAreasNichesQueryError = unknown
+export type TechSkillsQueryAreasNichesQueryError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403
 
 
 /**
  * @summary Get niches by tech area type
  */
 
-export function createTechSkillsQueryAreasNiches<TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = unknown>(
+export function createTechSkillsQueryAreasNiches<TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403>(
  areaType: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -502,7 +566,7 @@ export function createTechSkillsQueryAreasNiches<TData = Awaited<ReturnType<type
 /**
  * @summary Get niches by tech area type
  */
-export const prefetchTechSkillsQueryAreasNichesQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = unknown>(
+export const prefetchTechSkillsQueryAreasNichesQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError = TechSkillsQueryAreasNiches400 | TechSkillsQueryAreasNiches401 | TechSkillsQueryAreasNiches403>(
  queryClient: QueryClient, areaType: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryAreasNiches>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -522,12 +586,20 @@ export const prefetchTechSkillsQueryAreasNichesQuery = async <TData = Awaited<Re
  * Programming languages returned
  * @summary Get all programming languages
  */
-export type techSkillsQueryLanguagesResponse200 = void
+export type techSkillsQueryLanguagesResponse200 = TechSkillsQueryLanguages200
+
+export type techSkillsQueryLanguagesResponse400 = TechSkillsQueryLanguages400
+
+export type techSkillsQueryLanguagesResponse401 = TechSkillsQueryLanguages401
+
+export type techSkillsQueryLanguagesResponse403 = TechSkillsQueryLanguages403
 
 export type techSkillsQueryLanguagesResponseSuccess = techSkillsQueryLanguagesResponse200
-;
+export type techSkillsQueryLanguagesResponseError = (techSkillsQueryLanguagesResponse400 | techSkillsQueryLanguagesResponse401 | techSkillsQueryLanguagesResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQueryLanguagesResponse = (techSkillsQueryLanguagesResponseSuccess)
+export type techSkillsQueryLanguagesResponse = (techSkillsQueryLanguagesResponseSuccess | techSkillsQueryLanguagesResponseError)
 
 export const getTechSkillsQueryLanguagesUrl = () => {
 
@@ -565,7 +637,7 @@ export const getTechSkillsQueryLanguagesQueryKey = () => {
     }
 
 
-export const getTechSkillsQueryLanguagesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguages>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryLanguagesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguages>>>, TError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -584,14 +656,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryLanguagesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryLanguages>>>
-export type TechSkillsQueryLanguagesInfiniteQueryError = unknown
+export type TechSkillsQueryLanguagesInfiniteQueryError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403
 
 
 /**
  * @summary Get all programming languages
  */
 
-export function createTechSkillsQueryLanguagesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguages>>>, TError = unknown>(
+export function createTechSkillsQueryLanguagesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguages>>>, TError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -606,7 +678,7 @@ export function createTechSkillsQueryLanguagesInfinite<TData = InfiniteData<Awai
 /**
  * @summary Get all programming languages
  */
-export const prefetchTechSkillsQueryLanguagesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = unknown>(
+export const prefetchTechSkillsQueryLanguagesInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -622,7 +694,7 @@ export const prefetchTechSkillsQueryLanguagesInfiniteQuery = async <TData = Awai
 
 
 
-export const getTechSkillsQueryLanguagesQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryLanguagesQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -641,14 +713,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryLanguagesQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryLanguages>>>
-export type TechSkillsQueryLanguagesQueryError = unknown
+export type TechSkillsQueryLanguagesQueryError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403
 
 
 /**
  * @summary Get all programming languages
  */
 
-export function createTechSkillsQueryLanguages<TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = unknown>(
+export function createTechSkillsQueryLanguages<TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -663,7 +735,7 @@ export function createTechSkillsQueryLanguages<TData = Awaited<ReturnType<typeof
 /**
  * @summary Get all programming languages
  */
-export const prefetchTechSkillsQueryLanguagesQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = unknown>(
+export const prefetchTechSkillsQueryLanguagesQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError = TechSkillsQueryLanguages400 | TechSkillsQueryLanguages401 | TechSkillsQueryLanguages403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguages>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -683,12 +755,20 @@ export const prefetchTechSkillsQueryLanguagesQuery = async <TData = Awaited<Retu
  * Programming language search results returned
  * @summary Search programming languages
  */
-export type techSkillsQueryLanguagesSearchResponse200 = void
+export type techSkillsQueryLanguagesSearchResponse200 = TechSkillsQueryLanguagesSearch200
+
+export type techSkillsQueryLanguagesSearchResponse400 = TechSkillsQueryLanguagesSearch400
+
+export type techSkillsQueryLanguagesSearchResponse401 = TechSkillsQueryLanguagesSearch401
+
+export type techSkillsQueryLanguagesSearchResponse403 = TechSkillsQueryLanguagesSearch403
 
 export type techSkillsQueryLanguagesSearchResponseSuccess = techSkillsQueryLanguagesSearchResponse200
-;
+export type techSkillsQueryLanguagesSearchResponseError = (techSkillsQueryLanguagesSearchResponse400 | techSkillsQueryLanguagesSearchResponse401 | techSkillsQueryLanguagesSearchResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQueryLanguagesSearchResponse = (techSkillsQueryLanguagesSearchResponseSuccess)
+export type techSkillsQueryLanguagesSearchResponse = (techSkillsQueryLanguagesSearchResponseSuccess | techSkillsQueryLanguagesSearchResponseError)
 
 export const getTechSkillsQueryLanguagesSearchUrl = (params: TechSkillsQueryLanguagesSearchParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -733,7 +813,7 @@ export const getTechSkillsQueryLanguagesSearchQueryKey = (params?: TechSkillsQue
     }
 
 
-export const getTechSkillsQueryLanguagesSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>>, TError = unknown>(params: TechSkillsQueryLanguagesSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryLanguagesSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>>, TError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403>(params: TechSkillsQueryLanguagesSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -752,14 +832,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryLanguagesSearchInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>>
-export type TechSkillsQueryLanguagesSearchInfiniteQueryError = unknown
+export type TechSkillsQueryLanguagesSearchInfiniteQueryError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403
 
 
 /**
  * @summary Search programming languages
  */
 
-export function createTechSkillsQueryLanguagesSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>>, TError = unknown>(
+export function createTechSkillsQueryLanguagesSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>>, TError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403>(
  params: () =>  TechSkillsQueryLanguagesSearchParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -774,7 +854,7 @@ export function createTechSkillsQueryLanguagesSearchInfinite<TData = InfiniteDat
 /**
  * @summary Search programming languages
  */
-export const prefetchTechSkillsQueryLanguagesSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = unknown>(
+export const prefetchTechSkillsQueryLanguagesSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403>(
  queryClient: QueryClient, params: TechSkillsQueryLanguagesSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -790,7 +870,7 @@ export const prefetchTechSkillsQueryLanguagesSearchInfiniteQuery = async <TData 
 
 
 
-export const getTechSkillsQueryLanguagesSearchQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = unknown>(params: TechSkillsQueryLanguagesSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryLanguagesSearchQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403>(params: TechSkillsQueryLanguagesSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -809,14 +889,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryLanguagesSearchQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>>
-export type TechSkillsQueryLanguagesSearchQueryError = unknown
+export type TechSkillsQueryLanguagesSearchQueryError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403
 
 
 /**
  * @summary Search programming languages
  */
 
-export function createTechSkillsQueryLanguagesSearch<TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = unknown>(
+export function createTechSkillsQueryLanguagesSearch<TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403>(
  params: () =>  TechSkillsQueryLanguagesSearchParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -831,7 +911,7 @@ export function createTechSkillsQueryLanguagesSearch<TData = Awaited<ReturnType<
 /**
  * @summary Search programming languages
  */
-export const prefetchTechSkillsQueryLanguagesSearchQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = unknown>(
+export const prefetchTechSkillsQueryLanguagesSearchQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError = TechSkillsQueryLanguagesSearch400 | TechSkillsQueryLanguagesSearch401 | TechSkillsQueryLanguagesSearch403>(
  queryClient: QueryClient, params: TechSkillsQueryLanguagesSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryLanguagesSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -851,12 +931,20 @@ export const prefetchTechSkillsQueryLanguagesSearchQuery = async <TData = Awaite
  * Tech skills returned
  * @summary Get all tech skills
  */
-export type techSkillsQuerySkillsResponse200 = void
+export type techSkillsQuerySkillsResponse200 = TechSkillsQuerySkills200
+
+export type techSkillsQuerySkillsResponse400 = TechSkillsQuerySkills400
+
+export type techSkillsQuerySkillsResponse401 = TechSkillsQuerySkills401
+
+export type techSkillsQuerySkillsResponse403 = TechSkillsQuerySkills403
 
 export type techSkillsQuerySkillsResponseSuccess = techSkillsQuerySkillsResponse200
-;
+export type techSkillsQuerySkillsResponseError = (techSkillsQuerySkillsResponse400 | techSkillsQuerySkillsResponse401 | techSkillsQuerySkillsResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQuerySkillsResponse = (techSkillsQuerySkillsResponseSuccess)
+export type techSkillsQuerySkillsResponse = (techSkillsQuerySkillsResponseSuccess | techSkillsQuerySkillsResponseError)
 
 export const getTechSkillsQuerySkillsUrl = () => {
 
@@ -894,7 +982,7 @@ export const getTechSkillsQuerySkillsQueryKey = () => {
     }
 
 
-export const getTechSkillsQuerySkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkills>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQuerySkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkills>>>, TError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -913,14 +1001,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySkillsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySkills>>>
-export type TechSkillsQuerySkillsInfiniteQueryError = unknown
+export type TechSkillsQuerySkillsInfiniteQueryError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403
 
 
 /**
  * @summary Get all tech skills
  */
 
-export function createTechSkillsQuerySkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkills>>>, TError = unknown>(
+export function createTechSkillsQuerySkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkills>>>, TError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -935,7 +1023,7 @@ export function createTechSkillsQuerySkillsInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Get all tech skills
  */
-export const prefetchTechSkillsQuerySkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = unknown>(
+export const prefetchTechSkillsQuerySkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -951,7 +1039,7 @@ export const prefetchTechSkillsQuerySkillsInfiniteQuery = async <TData = Awaited
 
 
 
-export const getTechSkillsQuerySkillsQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQuerySkillsQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -970,14 +1058,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySkillsQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySkills>>>
-export type TechSkillsQuerySkillsQueryError = unknown
+export type TechSkillsQuerySkillsQueryError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403
 
 
 /**
  * @summary Get all tech skills
  */
 
-export function createTechSkillsQuerySkills<TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = unknown>(
+export function createTechSkillsQuerySkills<TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -992,7 +1080,7 @@ export function createTechSkillsQuerySkills<TData = Awaited<ReturnType<typeof te
 /**
  * @summary Get all tech skills
  */
-export const prefetchTechSkillsQuerySkillsQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = unknown>(
+export const prefetchTechSkillsQuerySkillsQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError = TechSkillsQuerySkills400 | TechSkillsQuerySkills401 | TechSkillsQuerySkills403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1012,12 +1100,20 @@ export const prefetchTechSkillsQuerySkillsQuery = async <TData = Awaited<ReturnT
  * Tech skill search results returned
  * @summary Search tech skills
  */
-export type techSkillsQuerySkillsSearchResponse200 = void
+export type techSkillsQuerySkillsSearchResponse200 = TechSkillsQuerySkillsSearch200
+
+export type techSkillsQuerySkillsSearchResponse400 = TechSkillsQuerySkillsSearch400
+
+export type techSkillsQuerySkillsSearchResponse401 = TechSkillsQuerySkillsSearch401
+
+export type techSkillsQuerySkillsSearchResponse403 = TechSkillsQuerySkillsSearch403
 
 export type techSkillsQuerySkillsSearchResponseSuccess = techSkillsQuerySkillsSearchResponse200
-;
+export type techSkillsQuerySkillsSearchResponseError = (techSkillsQuerySkillsSearchResponse400 | techSkillsQuerySkillsSearchResponse401 | techSkillsQuerySkillsSearchResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQuerySkillsSearchResponse = (techSkillsQuerySkillsSearchResponseSuccess)
+export type techSkillsQuerySkillsSearchResponse = (techSkillsQuerySkillsSearchResponseSuccess | techSkillsQuerySkillsSearchResponseError)
 
 export const getTechSkillsQuerySkillsSearchUrl = (params: TechSkillsQuerySkillsSearchParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -1062,7 +1158,7 @@ export const getTechSkillsQuerySkillsSearchQueryKey = (params?: TechSkillsQueryS
     }
 
 
-export const getTechSkillsQuerySkillsSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>>, TError = unknown>(params: TechSkillsQuerySkillsSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQuerySkillsSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>>, TError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403>(params: TechSkillsQuerySkillsSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1081,14 +1177,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySkillsSearchInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>>
-export type TechSkillsQuerySkillsSearchInfiniteQueryError = unknown
+export type TechSkillsQuerySkillsSearchInfiniteQueryError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403
 
 
 /**
  * @summary Search tech skills
  */
 
-export function createTechSkillsQuerySkillsSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>>, TError = unknown>(
+export function createTechSkillsQuerySkillsSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>>, TError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403>(
  params: () =>  TechSkillsQuerySkillsSearchParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1103,7 +1199,7 @@ export function createTechSkillsQuerySkillsSearchInfinite<TData = InfiniteData<A
 /**
  * @summary Search tech skills
  */
-export const prefetchTechSkillsQuerySkillsSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = unknown>(
+export const prefetchTechSkillsQuerySkillsSearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403>(
  queryClient: QueryClient, params: TechSkillsQuerySkillsSearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1119,7 +1215,7 @@ export const prefetchTechSkillsQuerySkillsSearchInfiniteQuery = async <TData = A
 
 
 
-export const getTechSkillsQuerySkillsSearchQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = unknown>(params: TechSkillsQuerySkillsSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQuerySkillsSearchQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403>(params: TechSkillsQuerySkillsSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1138,14 +1234,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySkillsSearchQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>>
-export type TechSkillsQuerySkillsSearchQueryError = unknown
+export type TechSkillsQuerySkillsSearchQueryError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403
 
 
 /**
  * @summary Search tech skills
  */
 
-export function createTechSkillsQuerySkillsSearch<TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = unknown>(
+export function createTechSkillsQuerySkillsSearch<TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403>(
  params: () =>  TechSkillsQuerySkillsSearchParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1160,7 +1256,7 @@ export function createTechSkillsQuerySkillsSearch<TData = Awaited<ReturnType<typ
 /**
  * @summary Search tech skills
  */
-export const prefetchTechSkillsQuerySkillsSearchQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = unknown>(
+export const prefetchTechSkillsQuerySkillsSearchQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError = TechSkillsQuerySkillsSearch400 | TechSkillsQuerySkillsSearch401 | TechSkillsQuerySkillsSearch403>(
  queryClient: QueryClient, params: TechSkillsQuerySkillsSearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsSearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1180,12 +1276,20 @@ export const prefetchTechSkillsQuerySkillsSearchQuery = async <TData = Awaited<R
  * Skills by niche returned
  * @summary Get skills by niche
  */
-export type techSkillsQueryNichesSkillsResponse200 = void
+export type techSkillsQueryNichesSkillsResponse200 = TechSkillsQueryNichesSkills200
+
+export type techSkillsQueryNichesSkillsResponse400 = TechSkillsQueryNichesSkills400
+
+export type techSkillsQueryNichesSkillsResponse401 = TechSkillsQueryNichesSkills401
+
+export type techSkillsQueryNichesSkillsResponse403 = TechSkillsQueryNichesSkills403
 
 export type techSkillsQueryNichesSkillsResponseSuccess = techSkillsQueryNichesSkillsResponse200
-;
+export type techSkillsQueryNichesSkillsResponseError = (techSkillsQueryNichesSkillsResponse400 | techSkillsQueryNichesSkillsResponse401 | techSkillsQueryNichesSkillsResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQueryNichesSkillsResponse = (techSkillsQueryNichesSkillsResponseSuccess)
+export type techSkillsQueryNichesSkillsResponse = (techSkillsQueryNichesSkillsResponseSuccess | techSkillsQueryNichesSkillsResponseError)
 
 export const getTechSkillsQueryNichesSkillsUrl = (nicheSlug: string,) => {
 
@@ -1223,7 +1327,7 @@ export const getTechSkillsQueryNichesSkillsQueryKey = (nicheSlug: string,) => {
     }
 
 
-export const getTechSkillsQueryNichesSkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>>, TError = unknown>(nicheSlug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryNichesSkillsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>>, TError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403>(nicheSlug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1242,14 +1346,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryNichesSkillsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>>
-export type TechSkillsQueryNichesSkillsInfiniteQueryError = unknown
+export type TechSkillsQueryNichesSkillsInfiniteQueryError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403
 
 
 /**
  * @summary Get skills by niche
  */
 
-export function createTechSkillsQueryNichesSkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>>, TError = unknown>(
+export function createTechSkillsQueryNichesSkillsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>>, TError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403>(
  nicheSlug: () =>  string, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1264,7 +1368,7 @@ export function createTechSkillsQueryNichesSkillsInfinite<TData = InfiniteData<A
 /**
  * @summary Get skills by niche
  */
-export const prefetchTechSkillsQueryNichesSkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = unknown>(
+export const prefetchTechSkillsQueryNichesSkillsInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403>(
  queryClient: QueryClient, nicheSlug: string, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1280,7 +1384,7 @@ export const prefetchTechSkillsQueryNichesSkillsInfiniteQuery = async <TData = A
 
 
 
-export const getTechSkillsQueryNichesSkillsQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = unknown>(nicheSlug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQueryNichesSkillsQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403>(nicheSlug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1299,14 +1403,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQueryNichesSkillsQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>>
-export type TechSkillsQueryNichesSkillsQueryError = unknown
+export type TechSkillsQueryNichesSkillsQueryError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403
 
 
 /**
  * @summary Get skills by niche
  */
 
-export function createTechSkillsQueryNichesSkills<TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = unknown>(
+export function createTechSkillsQueryNichesSkills<TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403>(
  nicheSlug: () =>  string, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1321,7 +1425,7 @@ export function createTechSkillsQueryNichesSkills<TData = Awaited<ReturnType<typ
 /**
  * @summary Get skills by niche
  */
-export const prefetchTechSkillsQueryNichesSkillsQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = unknown>(
+export const prefetchTechSkillsQueryNichesSkillsQuery = async <TData = Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError = TechSkillsQueryNichesSkills400 | TechSkillsQueryNichesSkills401 | TechSkillsQueryNichesSkills403>(
  queryClient: QueryClient, nicheSlug: string, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQueryNichesSkills>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1341,12 +1445,20 @@ export const prefetchTechSkillsQueryNichesSkillsQuery = async <TData = Awaited<R
  * Skills by type returned
  * @summary Get skills by type
  */
-export type techSkillsQuerySkillsTypeResponse200 = void
+export type techSkillsQuerySkillsTypeResponse200 = TechSkillsQuerySkillsType200
+
+export type techSkillsQuerySkillsTypeResponse400 = TechSkillsQuerySkillsType400
+
+export type techSkillsQuerySkillsTypeResponse401 = TechSkillsQuerySkillsType401
+
+export type techSkillsQuerySkillsTypeResponse403 = TechSkillsQuerySkillsType403
 
 export type techSkillsQuerySkillsTypeResponseSuccess = techSkillsQuerySkillsTypeResponse200
-;
+export type techSkillsQuerySkillsTypeResponseError = (techSkillsQuerySkillsTypeResponse400 | techSkillsQuerySkillsTypeResponse401 | techSkillsQuerySkillsTypeResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQuerySkillsTypeResponse = (techSkillsQuerySkillsTypeResponseSuccess)
+export type techSkillsQuerySkillsTypeResponse = (techSkillsQuerySkillsTypeResponseSuccess | techSkillsQuerySkillsTypeResponseError)
 
 export const getTechSkillsQuerySkillsTypeUrl = (type: string,
     params?: TechSkillsQuerySkillsTypeParams,) => {
@@ -1395,7 +1507,7 @@ export const getTechSkillsQuerySkillsTypeQueryKey = (type: string,
     }
 
 
-export const getTechSkillsQuerySkillsTypeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>>, TError = unknown>(type: string,
+export const getTechSkillsQuerySkillsTypeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>>, TError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403>(type: string,
     params?: TechSkillsQuerySkillsTypeParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -1415,14 +1527,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySkillsTypeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>>
-export type TechSkillsQuerySkillsTypeInfiniteQueryError = unknown
+export type TechSkillsQuerySkillsTypeInfiniteQueryError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403
 
 
 /**
  * @summary Get skills by type
  */
 
-export function createTechSkillsQuerySkillsTypeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>>, TError = unknown>(
+export function createTechSkillsQuerySkillsTypeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>>, TError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403>(
  type: () =>  string,
     params?: () =>  TechSkillsQuerySkillsTypeParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -1439,7 +1551,7 @@ export function createTechSkillsQuerySkillsTypeInfinite<TData = InfiniteData<Awa
 /**
  * @summary Get skills by type
  */
-export const prefetchTechSkillsQuerySkillsTypeInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = unknown>(
+export const prefetchTechSkillsQuerySkillsTypeInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403>(
  queryClient: QueryClient, type: string,
     params?: TechSkillsQuerySkillsTypeParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -1456,7 +1568,7 @@ export const prefetchTechSkillsQuerySkillsTypeInfiniteQuery = async <TData = Awa
 
 
 
-export const getTechSkillsQuerySkillsTypeQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = unknown>(type: string,
+export const getTechSkillsQuerySkillsTypeQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403>(type: string,
     params?: TechSkillsQuerySkillsTypeParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -1476,14 +1588,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySkillsTypeQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>>
-export type TechSkillsQuerySkillsTypeQueryError = unknown
+export type TechSkillsQuerySkillsTypeQueryError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403
 
 
 /**
  * @summary Get skills by type
  */
 
-export function createTechSkillsQuerySkillsType<TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = unknown>(
+export function createTechSkillsQuerySkillsType<TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403>(
  type: () =>  string,
     params?: () =>  TechSkillsQuerySkillsTypeParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -1500,7 +1612,7 @@ export function createTechSkillsQuerySkillsType<TData = Awaited<ReturnType<typeo
 /**
  * @summary Get skills by type
  */
-export const prefetchTechSkillsQuerySkillsTypeQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = unknown>(
+export const prefetchTechSkillsQuerySkillsTypeQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError = TechSkillsQuerySkillsType400 | TechSkillsQuerySkillsType401 | TechSkillsQuerySkillsType403>(
  queryClient: QueryClient, type: string,
     params?: TechSkillsQuerySkillsTypeParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySkillsType>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -1521,12 +1633,20 @@ export const prefetchTechSkillsQuerySkillsTypeQuery = async <TData = Awaited<Ret
  * Combined search results returned
  * @summary Search languages and skills
  */
-export type techSkillsQuerySearchResponse200 = void
+export type techSkillsQuerySearchResponse200 = TechSkillsQuerySearch200
+
+export type techSkillsQuerySearchResponse400 = TechSkillsQuerySearch400
+
+export type techSkillsQuerySearchResponse401 = TechSkillsQuerySearch401
+
+export type techSkillsQuerySearchResponse403 = TechSkillsQuerySearch403
 
 export type techSkillsQuerySearchResponseSuccess = techSkillsQuerySearchResponse200
-;
+export type techSkillsQuerySearchResponseError = (techSkillsQuerySearchResponse400 | techSkillsQuerySearchResponse401 | techSkillsQuerySearchResponse403) & {
+  headers: Headers;
+};
 
-export type techSkillsQuerySearchResponse = (techSkillsQuerySearchResponseSuccess)
+export type techSkillsQuerySearchResponse = (techSkillsQuerySearchResponseSuccess | techSkillsQuerySearchResponseError)
 
 export const getTechSkillsQuerySearchUrl = (params: TechSkillsQuerySearchParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -1571,7 +1691,7 @@ export const getTechSkillsQuerySearchQueryKey = (params?: TechSkillsQuerySearchP
     }
 
 
-export const getTechSkillsQuerySearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySearch>>>, TError = unknown>(params: TechSkillsQuerySearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQuerySearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySearch>>>, TError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403>(params: TechSkillsQuerySearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1590,14 +1710,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySearchInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySearch>>>
-export type TechSkillsQuerySearchInfiniteQueryError = unknown
+export type TechSkillsQuerySearchInfiniteQueryError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403
 
 
 /**
  * @summary Search languages and skills
  */
 
-export function createTechSkillsQuerySearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySearch>>>, TError = unknown>(
+export function createTechSkillsQuerySearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof techSkillsQuerySearch>>>, TError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403>(
  params: () =>  TechSkillsQuerySearchParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1612,7 +1732,7 @@ export function createTechSkillsQuerySearchInfinite<TData = InfiniteData<Awaited
 /**
  * @summary Search languages and skills
  */
-export const prefetchTechSkillsQuerySearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = unknown>(
+export const prefetchTechSkillsQuerySearchInfiniteQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403>(
  queryClient: QueryClient, params: TechSkillsQuerySearchParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -1628,7 +1748,7 @@ export const prefetchTechSkillsQuerySearchInfiniteQuery = async <TData = Awaited
 
 
 
-export const getTechSkillsQuerySearchQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = unknown>(params: TechSkillsQuerySearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getTechSkillsQuerySearchQueryOptions = <TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403>(params: TechSkillsQuerySearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1647,14 +1767,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type TechSkillsQuerySearchQueryResult = NonNullable<Awaited<ReturnType<typeof techSkillsQuerySearch>>>
-export type TechSkillsQuerySearchQueryError = unknown
+export type TechSkillsQuerySearchQueryError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403
 
 
 /**
  * @summary Search languages and skills
  */
 
-export function createTechSkillsQuerySearch<TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = unknown>(
+export function createTechSkillsQuerySearch<TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403>(
  params: () =>  TechSkillsQuerySearchParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -1669,7 +1789,7 @@ export function createTechSkillsQuerySearch<TData = Awaited<ReturnType<typeof te
 /**
  * @summary Search languages and skills
  */
-export const prefetchTechSkillsQuerySearchQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = unknown>(
+export const prefetchTechSkillsQuerySearchQuery = async <TData = Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError = TechSkillsQuerySearch400 | TechSkillsQuerySearch401 | TechSkillsQuerySearch403>(
  queryClient: QueryClient, params: TechSkillsQuerySearchParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof techSkillsQuerySearch>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

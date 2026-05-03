@@ -26,6 +26,14 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  RecruitingJobsFormConfig200,
+  RecruitingJobsFormConfig400,
+  RecruitingJobsFormConfig401,
+  RecruitingJobsFormConfig403,
+  RecruitingMatchCandidates200,
+  RecruitingMatchCandidates400,
+  RecruitingMatchCandidates401,
+  RecruitingMatchCandidates403,
   RecruitingMatchCandidatesBody
 } from '../../models';
 
@@ -40,12 +48,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Returns `{steps:[{id,label,fields:[...]}], options:{...}}`. The frontend iterates `steps[]` and renders inputs from each `field`. Adding a step or field is a backend-only change.
  * @summary Server-driven config for the create/edit-job wizard
  */
-export type recruitingJobsFormConfigResponse200 = void
+export type recruitingJobsFormConfigResponse200 = RecruitingJobsFormConfig200
+
+export type recruitingJobsFormConfigResponse400 = RecruitingJobsFormConfig400
+
+export type recruitingJobsFormConfigResponse401 = RecruitingJobsFormConfig401
+
+export type recruitingJobsFormConfigResponse403 = RecruitingJobsFormConfig403
 
 export type recruitingJobsFormConfigResponseSuccess = recruitingJobsFormConfigResponse200
-;
+export type recruitingJobsFormConfigResponseError = (recruitingJobsFormConfigResponse400 | recruitingJobsFormConfigResponse401 | recruitingJobsFormConfigResponse403) & {
+  headers: Headers;
+};
 
-export type recruitingJobsFormConfigResponse = (recruitingJobsFormConfigResponseSuccess)
+export type recruitingJobsFormConfigResponse = (recruitingJobsFormConfigResponseSuccess | recruitingJobsFormConfigResponseError)
 
 export const getRecruitingJobsFormConfigUrl = () => {
 
@@ -83,7 +99,7 @@ export const getRecruitingJobsFormConfigQueryKey = () => {
     }
 
 
-export const getRecruitingJobsFormConfigInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof recruitingJobsFormConfig>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getRecruitingJobsFormConfigInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof recruitingJobsFormConfig>>>, TError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -102,14 +118,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type RecruitingJobsFormConfigInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof recruitingJobsFormConfig>>>
-export type RecruitingJobsFormConfigInfiniteQueryError = unknown
+export type RecruitingJobsFormConfigInfiniteQueryError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403
 
 
 /**
  * @summary Server-driven config for the create/edit-job wizard
  */
 
-export function createRecruitingJobsFormConfigInfinite<TData = InfiniteData<Awaited<ReturnType<typeof recruitingJobsFormConfig>>>, TError = unknown>(
+export function createRecruitingJobsFormConfigInfinite<TData = InfiniteData<Awaited<ReturnType<typeof recruitingJobsFormConfig>>>, TError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -124,7 +140,7 @@ export function createRecruitingJobsFormConfigInfinite<TData = InfiniteData<Awai
 /**
  * @summary Server-driven config for the create/edit-job wizard
  */
-export const prefetchRecruitingJobsFormConfigInfiniteQuery = async <TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = unknown>(
+export const prefetchRecruitingJobsFormConfigInfiniteQuery = async <TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -140,7 +156,7 @@ export const prefetchRecruitingJobsFormConfigInfiniteQuery = async <TData = Awai
 
 
 
-export const getRecruitingJobsFormConfigQueryOptions = <TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getRecruitingJobsFormConfigQueryOptions = <TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -159,14 +175,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type RecruitingJobsFormConfigQueryResult = NonNullable<Awaited<ReturnType<typeof recruitingJobsFormConfig>>>
-export type RecruitingJobsFormConfigQueryError = unknown
+export type RecruitingJobsFormConfigQueryError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403
 
 
 /**
  * @summary Server-driven config for the create/edit-job wizard
  */
 
-export function createRecruitingJobsFormConfig<TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = unknown>(
+export function createRecruitingJobsFormConfig<TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -181,7 +197,7 @@ export function createRecruitingJobsFormConfig<TData = Awaited<ReturnType<typeof
 /**
  * @summary Server-driven config for the create/edit-job wizard
  */
-export const prefetchRecruitingJobsFormConfigQuery = async <TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = unknown>(
+export const prefetchRecruitingJobsFormConfigQuery = async <TData = Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError = RecruitingJobsFormConfig400 | RecruitingJobsFormConfig401 | RecruitingJobsFormConfig403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof recruitingJobsFormConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -201,12 +217,20 @@ export const prefetchRecruitingJobsFormConfigQuery = async <TData = Awaited<Retu
  * Reverse candidate match API
  * @summary Rank up-to-N opt-in candidates for a job description using the same structured fit-score model used on the candidate side (reverse match).
  */
-export type recruitingMatchCandidatesResponse200 = void
+export type recruitingMatchCandidatesResponse200 = RecruitingMatchCandidates200
+
+export type recruitingMatchCandidatesResponse400 = RecruitingMatchCandidates400
+
+export type recruitingMatchCandidatesResponse401 = RecruitingMatchCandidates401
+
+export type recruitingMatchCandidatesResponse403 = RecruitingMatchCandidates403
 
 export type recruitingMatchCandidatesResponseSuccess = recruitingMatchCandidatesResponse200
-;
+export type recruitingMatchCandidatesResponseError = (recruitingMatchCandidatesResponse400 | recruitingMatchCandidatesResponse401 | recruitingMatchCandidatesResponse403) & {
+  headers: Headers;
+};
 
-export type recruitingMatchCandidatesResponse = (recruitingMatchCandidatesResponseSuccess)
+export type recruitingMatchCandidatesResponse = (recruitingMatchCandidatesResponseSuccess | recruitingMatchCandidatesResponseError)
 
 export const getRecruitingMatchCandidatesUrl = () => {
 
@@ -231,7 +255,7 @@ export const recruitingMatchCandidates = async (recruitingMatchCandidatesBody: R
 
 
 
-export const getRecruitingMatchCandidatesMutationOptions = <TError = unknown,
+export const getRecruitingMatchCandidatesMutationOptions = <TError = RecruitingMatchCandidates400 | RecruitingMatchCandidates401 | RecruitingMatchCandidates403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof recruitingMatchCandidates>>, TError,{data: RecruitingMatchCandidatesBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof recruitingMatchCandidates>>, TError,{data: RecruitingMatchCandidatesBody}, TContext> => {
 
@@ -260,12 +284,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type RecruitingMatchCandidatesMutationResult = NonNullable<Awaited<ReturnType<typeof recruitingMatchCandidates>>>
     export type RecruitingMatchCandidatesMutationBody = RecruitingMatchCandidatesBody
-    export type RecruitingMatchCandidatesMutationError = unknown
+    export type RecruitingMatchCandidatesMutationError = RecruitingMatchCandidates400 | RecruitingMatchCandidates401 | RecruitingMatchCandidates403
 
     /**
  * @summary Rank up-to-N opt-in candidates for a job description using the same structured fit-score model used on the candidate side (reverse match).
  */
-export const createRecruitingMatchCandidates = <TError = unknown,
+export const createRecruitingMatchCandidates = <TError = RecruitingMatchCandidates400 | RecruitingMatchCandidates401 | RecruitingMatchCandidates403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof recruitingMatchCandidates>>, TError,{data: RecruitingMatchCandidatesBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof recruitingMatchCandidates>>,

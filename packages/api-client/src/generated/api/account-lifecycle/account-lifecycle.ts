@@ -16,7 +16,13 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  AccountLifecycleAccounts200,
+  AccountLifecycleAccounts400,
+  AccountLifecycleAccounts401,
   AccountLifecycleAccountsBody,
+  AccountLifecycleAccountsDeactivate200,
+  AccountLifecycleAccountsDeactivate400,
+  AccountLifecycleAccountsDeactivate401,
   AccountLifecycleAccountsDeactivateBody
 } from '../../models';
 
@@ -31,12 +37,18 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT".
  * @summary Delete account permanently
  */
-export type accountLifecycleAccountsResponse200 = void
+export type accountLifecycleAccountsResponse200 = AccountLifecycleAccounts200
+
+export type accountLifecycleAccountsResponse400 = AccountLifecycleAccounts400
+
+export type accountLifecycleAccountsResponse401 = AccountLifecycleAccounts401
 
 export type accountLifecycleAccountsResponseSuccess = accountLifecycleAccountsResponse200
-;
+export type accountLifecycleAccountsResponseError = (accountLifecycleAccountsResponse400 | accountLifecycleAccountsResponse401) & {
+  headers: Headers;
+};
 
-export type accountLifecycleAccountsResponse = (accountLifecycleAccountsResponseSuccess)
+export type accountLifecycleAccountsResponse = (accountLifecycleAccountsResponseSuccess | accountLifecycleAccountsResponseError)
 
 export const getAccountLifecycleAccountsUrl = () => {
 
@@ -61,7 +73,7 @@ export const accountLifecycleAccounts = async (accountLifecycleAccountsBody: Acc
 
 
 
-export const getAccountLifecycleAccountsMutationOptions = <TError = unknown,
+export const getAccountLifecycleAccountsMutationOptions = <TError = AccountLifecycleAccounts400 | AccountLifecycleAccounts401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountLifecycleAccounts>>, TError,{data: AccountLifecycleAccountsBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof accountLifecycleAccounts>>, TError,{data: AccountLifecycleAccountsBody}, TContext> => {
 
@@ -90,12 +102,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AccountLifecycleAccountsMutationResult = NonNullable<Awaited<ReturnType<typeof accountLifecycleAccounts>>>
     export type AccountLifecycleAccountsMutationBody = AccountLifecycleAccountsBody
-    export type AccountLifecycleAccountsMutationError = unknown
+    export type AccountLifecycleAccountsMutationError = AccountLifecycleAccounts400 | AccountLifecycleAccounts401
 
     /**
  * @summary Delete account permanently
  */
-export const createAccountLifecycleAccounts = <TError = unknown,
+export const createAccountLifecycleAccounts = <TError = AccountLifecycleAccounts400 | AccountLifecycleAccounts401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountLifecycleAccounts>>, TError,{data: AccountLifecycleAccountsBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof accountLifecycleAccounts>>,
@@ -109,12 +121,18 @@ export const createAccountLifecycleAccounts = <TError = unknown,
  * Deactivates the authenticated user account (soft delete).
  * @summary Deactivate account
  */
-export type accountLifecycleAccountsDeactivateResponse200 = void
+export type accountLifecycleAccountsDeactivateResponse200 = AccountLifecycleAccountsDeactivate200
+
+export type accountLifecycleAccountsDeactivateResponse400 = AccountLifecycleAccountsDeactivate400
+
+export type accountLifecycleAccountsDeactivateResponse401 = AccountLifecycleAccountsDeactivate401
 
 export type accountLifecycleAccountsDeactivateResponseSuccess = accountLifecycleAccountsDeactivateResponse200
-;
+export type accountLifecycleAccountsDeactivateResponseError = (accountLifecycleAccountsDeactivateResponse400 | accountLifecycleAccountsDeactivateResponse401) & {
+  headers: Headers;
+};
 
-export type accountLifecycleAccountsDeactivateResponse = (accountLifecycleAccountsDeactivateResponseSuccess)
+export type accountLifecycleAccountsDeactivateResponse = (accountLifecycleAccountsDeactivateResponseSuccess | accountLifecycleAccountsDeactivateResponseError)
 
 export const getAccountLifecycleAccountsDeactivateUrl = () => {
 
@@ -139,7 +157,7 @@ export const accountLifecycleAccountsDeactivate = async (accountLifecycleAccount
 
 
 
-export const getAccountLifecycleAccountsDeactivateMutationOptions = <TError = unknown,
+export const getAccountLifecycleAccountsDeactivateMutationOptions = <TError = AccountLifecycleAccountsDeactivate400 | AccountLifecycleAccountsDeactivate401,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountLifecycleAccountsDeactivate>>, TError,{data: AccountLifecycleAccountsDeactivateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof accountLifecycleAccountsDeactivate>>, TError,{data: AccountLifecycleAccountsDeactivateBody}, TContext> => {
 
@@ -168,12 +186,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AccountLifecycleAccountsDeactivateMutationResult = NonNullable<Awaited<ReturnType<typeof accountLifecycleAccountsDeactivate>>>
     export type AccountLifecycleAccountsDeactivateMutationBody = AccountLifecycleAccountsDeactivateBody
-    export type AccountLifecycleAccountsDeactivateMutationError = unknown
+    export type AccountLifecycleAccountsDeactivateMutationError = AccountLifecycleAccountsDeactivate400 | AccountLifecycleAccountsDeactivate401
 
     /**
  * @summary Deactivate account
  */
-export const createAccountLifecycleAccountsDeactivate = <TError = unknown,
+export const createAccountLifecycleAccountsDeactivate = <TError = AccountLifecycleAccountsDeactivate400 | AccountLifecycleAccountsDeactivate401,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof accountLifecycleAccountsDeactivate>>, TError,{data: AccountLifecycleAccountsDeactivateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof accountLifecycleAccountsDeactivate>>,

@@ -35,7 +35,10 @@ async function handleSearch() {
   submitting = true;
   try {
     const payload: CareerGraphViewBody = { stack: skills, maxBuckets: 20 };
-    data = await careerGraphView(payload);
+    const result = await careerGraphView(payload);
+    // customFetch throws on non-2xx, so the response union narrows to the
+    // 200 shape at runtime — guard via a 200-only field.
+    data = 'buckets' in result ? result : null;
     searched = true;
   } catch (err) {
     const message =

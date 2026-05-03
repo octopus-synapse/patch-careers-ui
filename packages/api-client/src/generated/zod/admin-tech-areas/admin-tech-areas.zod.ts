@@ -10,13 +10,105 @@ import * as zod from 'zod';
 
 /**
  * Admin Tech Areas API
+ * @summary List all tech areas
+ */
+export const adminTechAreasListResponseTotalMin = 0;
+
+
+
+export const adminTechAreasListResponseTotalPagesMin = 0;
+
+
+
+export const AdminTechAreasListResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['DEVELOPMENT', 'DEVOPS', 'DATA', 'SECURITY', 'DESIGN', 'PRODUCT', 'QA', 'INFRASTRUCTURE', 'OTHER']),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})),
+  "total": zod.number().min(adminTechAreasListResponseTotalMin),
+  "page": zod.number().min(1),
+  "limit": zod.number().min(1),
+  "totalPages": zod.number().min(adminTechAreasListResponseTotalPagesMin),
+  "hasNext": zod.boolean(),
+  "hasPrev": zod.boolean()
+})
+
+/**
+ * Admin Tech Areas API
  * @summary Create tech area
  */
 export const AdminTechAreasCreateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminTechAreasCreateResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['DEVELOPMENT', 'DEVOPS', 'DATA', 'SECURITY', 'DESIGN', 'PRODUCT', 'QA', 'INFRASTRUCTURE', 'OTHER']),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Tech Areas API
+ * @summary Get tech area by ID
+ */
+export const AdminTechAreasGetByIdResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['DEVELOPMENT', 'DEVOPS', 'DATA', 'SECURITY', 'DESIGN', 'PRODUCT', 'QA', 'INFRASTRUCTURE', 'OTHER']),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
 
 /**
  * Admin Tech Areas API
  * @summary Update tech area
  */
 export const AdminTechAreasUpdateBody = zod.record(zod.string(), zod.unknown().nullable())
+
+export const AdminTechAreasUpdateResponse = zod.object({
+  "id": zod.string(),
+  "type": zod.enum(['DEVELOPMENT', 'DEVOPS', 'DATA', 'SECURITY', 'DESIGN', 'PRODUCT', 'QA', 'INFRASTRUCTURE', 'OTHER']),
+  "nameEn": zod.string(),
+  "namePtBr": zod.string(),
+  "descriptionEn": zod.string().nullable(),
+  "descriptionPtBr": zod.string().nullable(),
+  "icon": zod.string().nullable(),
+  "color": zod.string().nullable(),
+  "order": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.string().datetime({"offset":true}),
+  "updatedAt": zod.string().datetime({"offset":true})
+})
+
+/**
+ * Admin Tech Areas API
+ * @summary Delete tech area
+ */
+export const AdminTechAreasDeleteResponse = zod.object({
+
+})
 

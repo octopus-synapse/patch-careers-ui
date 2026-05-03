@@ -10,6 +10,19 @@ import * as zod from 'zod';
 
 /**
  * Self-declared skill proficiency
+ * @summary List my declared skill proficiencies.
+ */
+export const SkillsMeSkillProficiencyGetResponse = zod.object({
+  "proficiencies": zod.array(zod.object({
+  "skillName": zod.string(),
+  "proficiency": zod.string(),
+  "yearsOfExperience": zod.number().nullable(),
+  "updatedAt": zod.string().datetime({"offset":true})
+}))
+})
+
+/**
+ * Self-declared skill proficiency
  * @summary Set proficiency for a skill (creates if missing).
  */
 export const skillsMeSkillProficiencyPutBodyYearsOfExperienceMin = 0;
@@ -21,4 +34,15 @@ export const SkillsMeSkillProficiencyPutBody = zod.object({
   "proficiency": zod.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT']),
   "yearsOfExperience": zod.number().min(skillsMeSkillProficiencyPutBodyYearsOfExperienceMin).max(skillsMeSkillProficiencyPutBodyYearsOfExperienceMax).optional()
 })
+
+export const SkillsMeSkillProficiencyPutResponse = zod.object({
+  "skillName": zod.string(),
+  "proficiency": zod.string()
+})
+
+/**
+ * Self-declared skill proficiency
+ * @summary Clear proficiency for a skill.
+ */
+export const SkillsMeSkillProficiencyDeleteResponse = zod.unknown().nullable()
 

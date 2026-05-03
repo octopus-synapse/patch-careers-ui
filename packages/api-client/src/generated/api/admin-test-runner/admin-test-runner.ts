@@ -26,7 +26,15 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
-  AdminTestRunnerCreateBody
+  AdminTestRunnerCreate200,
+  AdminTestRunnerCreate400,
+  AdminTestRunnerCreate401,
+  AdminTestRunnerCreate403,
+  AdminTestRunnerCreateBody,
+  AdminTestRunnerSuites200,
+  AdminTestRunnerSuites400,
+  AdminTestRunnerSuites401,
+  AdminTestRunnerSuites403
 } from '../../models';
 
 import { customFetch } from '../../../client/fetcher';
@@ -39,12 +47,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Run a test suite
  */
-export type adminTestRunnerCreateResponse200 = void
+export type adminTestRunnerCreateResponse200 = AdminTestRunnerCreate200
+
+export type adminTestRunnerCreateResponse400 = AdminTestRunnerCreate400
+
+export type adminTestRunnerCreateResponse401 = AdminTestRunnerCreate401
+
+export type adminTestRunnerCreateResponse403 = AdminTestRunnerCreate403
 
 export type adminTestRunnerCreateResponseSuccess = adminTestRunnerCreateResponse200
-;
+export type adminTestRunnerCreateResponseError = (adminTestRunnerCreateResponse400 | adminTestRunnerCreateResponse401 | adminTestRunnerCreateResponse403) & {
+  headers: Headers;
+};
 
-export type adminTestRunnerCreateResponse = (adminTestRunnerCreateResponseSuccess)
+export type adminTestRunnerCreateResponse = (adminTestRunnerCreateResponseSuccess | adminTestRunnerCreateResponseError)
 
 export const getAdminTestRunnerCreateUrl = () => {
 
@@ -69,7 +85,7 @@ export const adminTestRunnerCreate = async (adminTestRunnerCreateBody: AdminTest
 
 
 
-export const getAdminTestRunnerCreateMutationOptions = <TError = unknown,
+export const getAdminTestRunnerCreateMutationOptions = <TError = AdminTestRunnerCreate400 | AdminTestRunnerCreate401 | AdminTestRunnerCreate403,
     TContext = unknown>(options?: { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTestRunnerCreate>>, TError,{data: AdminTestRunnerCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): CreateMutationOptions<Awaited<ReturnType<typeof adminTestRunnerCreate>>, TError,{data: AdminTestRunnerCreateBody}, TContext> => {
 
@@ -98,12 +114,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AdminTestRunnerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof adminTestRunnerCreate>>>
     export type AdminTestRunnerCreateMutationBody = AdminTestRunnerCreateBody
-    export type AdminTestRunnerCreateMutationError = unknown
+    export type AdminTestRunnerCreateMutationError = AdminTestRunnerCreate400 | AdminTestRunnerCreate401 | AdminTestRunnerCreate403
 
     /**
  * @summary Run a test suite
  */
-export const createAdminTestRunnerCreate = <TError = unknown,
+export const createAdminTestRunnerCreate = <TError = AdminTestRunnerCreate400 | AdminTestRunnerCreate401 | AdminTestRunnerCreate403,
     TContext = unknown>(options?: () => { mutation?:CreateMutationOptions<Awaited<ReturnType<typeof adminTestRunnerCreate>>, TError,{data: AdminTestRunnerCreateBody}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient): CreateMutationResult<
         Awaited<ReturnType<typeof adminTestRunnerCreate>>,
@@ -116,12 +132,20 @@ export const createAdminTestRunnerCreate = <TError = unknown,
     /**
  * @summary List available test suites
  */
-export type adminTestRunnerSuitesResponse200 = void
+export type adminTestRunnerSuitesResponse200 = AdminTestRunnerSuites200
+
+export type adminTestRunnerSuitesResponse400 = AdminTestRunnerSuites400
+
+export type adminTestRunnerSuitesResponse401 = AdminTestRunnerSuites401
+
+export type adminTestRunnerSuitesResponse403 = AdminTestRunnerSuites403
 
 export type adminTestRunnerSuitesResponseSuccess = adminTestRunnerSuitesResponse200
-;
+export type adminTestRunnerSuitesResponseError = (adminTestRunnerSuitesResponse400 | adminTestRunnerSuitesResponse401 | adminTestRunnerSuitesResponse403) & {
+  headers: Headers;
+};
 
-export type adminTestRunnerSuitesResponse = (adminTestRunnerSuitesResponseSuccess)
+export type adminTestRunnerSuitesResponse = (adminTestRunnerSuitesResponseSuccess | adminTestRunnerSuitesResponseError)
 
 export const getAdminTestRunnerSuitesUrl = () => {
 
@@ -159,7 +183,7 @@ export const getAdminTestRunnerSuitesQueryKey = () => {
     }
 
 
-export const getAdminTestRunnerSuitesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTestRunnerSuites>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTestRunnerSuitesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof adminTestRunnerSuites>>>, TError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -178,14 +202,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTestRunnerSuitesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof adminTestRunnerSuites>>>
-export type AdminTestRunnerSuitesInfiniteQueryError = unknown
+export type AdminTestRunnerSuitesInfiniteQueryError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403
 
 
 /**
  * @summary List available test suites
  */
 
-export function createAdminTestRunnerSuitesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTestRunnerSuites>>>, TError = unknown>(
+export function createAdminTestRunnerSuitesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof adminTestRunnerSuites>>>, TError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -200,7 +224,7 @@ export function createAdminTestRunnerSuitesInfinite<TData = InfiniteData<Awaited
 /**
  * @summary List available test suites
  */
-export const prefetchAdminTestRunnerSuitesInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = unknown>(
+export const prefetchAdminTestRunnerSuitesInfiniteQuery = async <TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -216,7 +240,7 @@ export const prefetchAdminTestRunnerSuitesInfiniteQuery = async <TData = Awaited
 
 
 
-export const getAdminTestRunnerSuitesQueryOptions = <TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminTestRunnerSuitesQueryOptions = <TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -235,14 +259,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AdminTestRunnerSuitesQueryResult = NonNullable<Awaited<ReturnType<typeof adminTestRunnerSuites>>>
-export type AdminTestRunnerSuitesQueryError = unknown
+export type AdminTestRunnerSuitesQueryError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403
 
 
 /**
  * @summary List available test suites
  */
 
-export function createAdminTestRunnerSuites<TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = unknown>(
+export function createAdminTestRunnerSuites<TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -257,7 +281,7 @@ export function createAdminTestRunnerSuites<TData = Awaited<ReturnType<typeof ad
 /**
  * @summary List available test suites
  */
-export const prefetchAdminTestRunnerSuitesQuery = async <TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = unknown>(
+export const prefetchAdminTestRunnerSuitesQuery = async <TData = Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError = AdminTestRunnerSuites400 | AdminTestRunnerSuites401 | AdminTestRunnerSuites403>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof adminTestRunnerSuites>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

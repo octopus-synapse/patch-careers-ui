@@ -22,8 +22,21 @@ import type {
 } from '@tanstack/svelte-query';
 
 import type {
+  FeedBookmarks200,
+  FeedBookmarks400,
+  FeedBookmarks401,
+  FeedBookmarks403,
   FeedBookmarksParams,
+  FeedList200,
+  FeedList400,
+  FeedList401,
+  FeedList403,
   FeedListParams,
+  FeedUser200,
+  FeedUser400,
+  FeedUser401,
+  FeedUser403,
+  FeedUser404,
   FeedUserParams
 } from '../../models';
 
@@ -38,12 +51,20 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Feed API
  * @summary Get feed timeline
  */
-export type feedListResponse200 = void
+export type feedListResponse200 = FeedList200
+
+export type feedListResponse400 = FeedList400
+
+export type feedListResponse401 = FeedList401
+
+export type feedListResponse403 = FeedList403
 
 export type feedListResponseSuccess = feedListResponse200
-;
+export type feedListResponseError = (feedListResponse400 | feedListResponse401 | feedListResponse403) & {
+  headers: Headers;
+};
 
-export type feedListResponse = (feedListResponseSuccess)
+export type feedListResponse = (feedListResponseSuccess | feedListResponseError)
 
 export const getFeedListUrl = (params?: FeedListParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -88,7 +109,7 @@ export const getFeedListQueryKey = (params?: FeedListParams,) => {
     }
 
 
-export const getFeedListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof feedList>>>, TError = unknown>(params?: FeedListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFeedListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof feedList>>>, TError = FeedList400 | FeedList401 | FeedList403>(params?: FeedListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -107,14 +128,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeedListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof feedList>>>
-export type FeedListInfiniteQueryError = unknown
+export type FeedListInfiniteQueryError = FeedList400 | FeedList401 | FeedList403
 
 
 /**
  * @summary Get feed timeline
  */
 
-export function createFeedListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof feedList>>>, TError = unknown>(
+export function createFeedListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof feedList>>>, TError = FeedList400 | FeedList401 | FeedList403>(
  params?: () =>  FeedListParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -129,7 +150,7 @@ export function createFeedListInfinite<TData = InfiniteData<Awaited<ReturnType<t
 /**
  * @summary Get feed timeline
  */
-export const prefetchFeedListInfiniteQuery = async <TData = Awaited<ReturnType<typeof feedList>>, TError = unknown>(
+export const prefetchFeedListInfiniteQuery = async <TData = Awaited<ReturnType<typeof feedList>>, TError = FeedList400 | FeedList401 | FeedList403>(
  queryClient: QueryClient, params?: FeedListParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -145,7 +166,7 @@ export const prefetchFeedListInfiniteQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export const getFeedListQueryOptions = <TData = Awaited<ReturnType<typeof feedList>>, TError = unknown>(params?: FeedListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFeedListQueryOptions = <TData = Awaited<ReturnType<typeof feedList>>, TError = FeedList400 | FeedList401 | FeedList403>(params?: FeedListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -164,14 +185,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeedListQueryResult = NonNullable<Awaited<ReturnType<typeof feedList>>>
-export type FeedListQueryError = unknown
+export type FeedListQueryError = FeedList400 | FeedList401 | FeedList403
 
 
 /**
  * @summary Get feed timeline
  */
 
-export function createFeedList<TData = Awaited<ReturnType<typeof feedList>>, TError = unknown>(
+export function createFeedList<TData = Awaited<ReturnType<typeof feedList>>, TError = FeedList400 | FeedList401 | FeedList403>(
  params?: () =>  FeedListParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -186,7 +207,7 @@ export function createFeedList<TData = Awaited<ReturnType<typeof feedList>>, TEr
 /**
  * @summary Get feed timeline
  */
-export const prefetchFeedListQuery = async <TData = Awaited<ReturnType<typeof feedList>>, TError = unknown>(
+export const prefetchFeedListQuery = async <TData = Awaited<ReturnType<typeof feedList>>, TError = FeedList400 | FeedList401 | FeedList403>(
  queryClient: QueryClient, params?: FeedListParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -206,12 +227,20 @@ export const prefetchFeedListQuery = async <TData = Awaited<ReturnType<typeof fe
  * Feed API
  * @summary Get bookmarked posts
  */
-export type feedBookmarksResponse200 = void
+export type feedBookmarksResponse200 = FeedBookmarks200
+
+export type feedBookmarksResponse400 = FeedBookmarks400
+
+export type feedBookmarksResponse401 = FeedBookmarks401
+
+export type feedBookmarksResponse403 = FeedBookmarks403
 
 export type feedBookmarksResponseSuccess = feedBookmarksResponse200
-;
+export type feedBookmarksResponseError = (feedBookmarksResponse400 | feedBookmarksResponse401 | feedBookmarksResponse403) & {
+  headers: Headers;
+};
 
-export type feedBookmarksResponse = (feedBookmarksResponseSuccess)
+export type feedBookmarksResponse = (feedBookmarksResponseSuccess | feedBookmarksResponseError)
 
 export const getFeedBookmarksUrl = (params?: FeedBookmarksParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -256,7 +285,7 @@ export const getFeedBookmarksQueryKey = (params?: FeedBookmarksParams,) => {
     }
 
 
-export const getFeedBookmarksInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof feedBookmarks>>>, TError = unknown>(params?: FeedBookmarksParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFeedBookmarksInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof feedBookmarks>>>, TError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403>(params?: FeedBookmarksParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -275,14 +304,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeedBookmarksInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof feedBookmarks>>>
-export type FeedBookmarksInfiniteQueryError = unknown
+export type FeedBookmarksInfiniteQueryError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403
 
 
 /**
  * @summary Get bookmarked posts
  */
 
-export function createFeedBookmarksInfinite<TData = InfiniteData<Awaited<ReturnType<typeof feedBookmarks>>>, TError = unknown>(
+export function createFeedBookmarksInfinite<TData = InfiniteData<Awaited<ReturnType<typeof feedBookmarks>>>, TError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403>(
  params?: () =>  FeedBookmarksParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -297,7 +326,7 @@ export function createFeedBookmarksInfinite<TData = InfiniteData<Awaited<ReturnT
 /**
  * @summary Get bookmarked posts
  */
-export const prefetchFeedBookmarksInfiniteQuery = async <TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = unknown>(
+export const prefetchFeedBookmarksInfiniteQuery = async <TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403>(
  queryClient: QueryClient, params?: FeedBookmarksParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -313,7 +342,7 @@ export const prefetchFeedBookmarksInfiniteQuery = async <TData = Awaited<ReturnT
 
 
 
-export const getFeedBookmarksQueryOptions = <TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = unknown>(params?: FeedBookmarksParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getFeedBookmarksQueryOptions = <TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403>(params?: FeedBookmarksParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -332,14 +361,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeedBookmarksQueryResult = NonNullable<Awaited<ReturnType<typeof feedBookmarks>>>
-export type FeedBookmarksQueryError = unknown
+export type FeedBookmarksQueryError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403
 
 
 /**
  * @summary Get bookmarked posts
  */
 
-export function createFeedBookmarks<TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = unknown>(
+export function createFeedBookmarks<TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403>(
  params?: () =>  FeedBookmarksParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -354,7 +383,7 @@ export function createFeedBookmarks<TData = Awaited<ReturnType<typeof feedBookma
 /**
  * @summary Get bookmarked posts
  */
-export const prefetchFeedBookmarksQuery = async <TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = unknown>(
+export const prefetchFeedBookmarksQuery = async <TData = Awaited<ReturnType<typeof feedBookmarks>>, TError = FeedBookmarks400 | FeedBookmarks401 | FeedBookmarks403>(
  queryClient: QueryClient, params?: FeedBookmarksParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -374,12 +403,22 @@ export const prefetchFeedBookmarksQuery = async <TData = Awaited<ReturnType<type
  * Feed API
  * @summary Get posts by user
  */
-export type feedUserResponse200 = void
+export type feedUserResponse200 = FeedUser200
+
+export type feedUserResponse400 = FeedUser400
+
+export type feedUserResponse401 = FeedUser401
+
+export type feedUserResponse403 = FeedUser403
+
+export type feedUserResponse404 = FeedUser404
 
 export type feedUserResponseSuccess = feedUserResponse200
-;
+export type feedUserResponseError = (feedUserResponse400 | feedUserResponse401 | feedUserResponse403 | feedUserResponse404) & {
+  headers: Headers;
+};
 
-export type feedUserResponse = (feedUserResponseSuccess)
+export type feedUserResponse = (feedUserResponseSuccess | feedUserResponseError)
 
 export const getFeedUserUrl = (userId: string,
     params?: FeedUserParams,) => {
@@ -428,7 +467,7 @@ export const getFeedUserQueryKey = (userId: string,
     }
 
 
-export const getFeedUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof feedUser>>>, TError = unknown>(userId: string,
+export const getFeedUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof feedUser>>>, TError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404>(userId: string,
     params?: FeedUserParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -448,14 +487,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeedUserInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof feedUser>>>
-export type FeedUserInfiniteQueryError = unknown
+export type FeedUserInfiniteQueryError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404
 
 
 /**
  * @summary Get posts by user
  */
 
-export function createFeedUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof feedUser>>>, TError = unknown>(
+export function createFeedUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof feedUser>>>, TError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404>(
  userId: () =>  string,
     params?: () =>  FeedUserParams, options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -472,7 +511,7 @@ export function createFeedUserInfinite<TData = InfiniteData<Awaited<ReturnType<t
 /**
  * @summary Get posts by user
  */
-export const prefetchFeedUserInfiniteQuery = async <TData = Awaited<ReturnType<typeof feedUser>>, TError = unknown>(
+export const prefetchFeedUserInfiniteQuery = async <TData = Awaited<ReturnType<typeof feedUser>>, TError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404>(
  queryClient: QueryClient, userId: string,
     params?: FeedUserParams, options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof feedUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
@@ -489,7 +528,7 @@ export const prefetchFeedUserInfiniteQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export const getFeedUserQueryOptions = <TData = Awaited<ReturnType<typeof feedUser>>, TError = unknown>(userId: string,
+export const getFeedUserQueryOptions = <TData = Awaited<ReturnType<typeof feedUser>>, TError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404>(userId: string,
     params?: FeedUserParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -509,14 +548,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type FeedUserQueryResult = NonNullable<Awaited<ReturnType<typeof feedUser>>>
-export type FeedUserQueryError = unknown
+export type FeedUserQueryError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404
 
 
 /**
  * @summary Get posts by user
  */
 
-export function createFeedUser<TData = Awaited<ReturnType<typeof feedUser>>, TError = unknown>(
+export function createFeedUser<TData = Awaited<ReturnType<typeof feedUser>>, TError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404>(
  userId: () =>  string,
     params?: () =>  FeedUserParams, options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
@@ -533,7 +572,7 @@ export function createFeedUser<TData = Awaited<ReturnType<typeof feedUser>>, TEr
 /**
  * @summary Get posts by user
  */
-export const prefetchFeedUserQuery = async <TData = Awaited<ReturnType<typeof feedUser>>, TError = unknown>(
+export const prefetchFeedUserQuery = async <TData = Awaited<ReturnType<typeof feedUser>>, TError = FeedUser400 | FeedUser401 | FeedUser403 | FeedUser404>(
  queryClient: QueryClient, userId: string,
     params?: FeedUserParams, options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof feedUser>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 

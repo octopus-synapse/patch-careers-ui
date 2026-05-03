@@ -21,6 +21,10 @@ import type {
   QueryKey
 } from '@tanstack/svelte-query';
 
+import type {
+  MetricsList400
+} from '../../models';
+
 import { customFetch } from '../../../client/fetcher';
 
 
@@ -34,10 +38,14 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export type metricsListResponse200 = void
 
-export type metricsListResponseSuccess = metricsListResponse200
-;
+export type metricsListResponse400 = MetricsList400
 
-export type metricsListResponse = (metricsListResponseSuccess)
+export type metricsListResponseSuccess = metricsListResponse200
+export type metricsListResponseError = (metricsListResponse400) & {
+  headers: Headers;
+};
+
+export type metricsListResponse = (metricsListResponseSuccess | metricsListResponseError)
 
 export const getMetricsListUrl = () => {
 
@@ -75,7 +83,7 @@ export const getMetricsListQueryKey = () => {
     }
 
 
-export const getMetricsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof metricsList>>>, TError = unknown>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMetricsListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof metricsList>>>, TError = MetricsList400>( options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -94,14 +102,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MetricsListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof metricsList>>>
-export type MetricsListInfiniteQueryError = unknown
+export type MetricsListInfiniteQueryError = MetricsList400
 
 
 /**
  * @summary Get Prometheus metrics
  */
 
-export function createMetricsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof metricsList>>>, TError = unknown>(
+export function createMetricsListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof metricsList>>>, TError = MetricsList400>(
   options?: () => { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -116,7 +124,7 @@ export function createMetricsListInfinite<TData = InfiniteData<Awaited<ReturnTyp
 /**
  * @summary Get Prometheus metrics
  */
-export const prefetchMetricsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof metricsList>>, TError = unknown>(
+export const prefetchMetricsListInfiniteQuery = async <TData = Awaited<ReturnType<typeof metricsList>>, TError = MetricsList400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateInfiniteQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {
@@ -132,7 +140,7 @@ export const prefetchMetricsListInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getMetricsListQueryOptions = <TData = Awaited<ReturnType<typeof metricsList>>, TError = unknown>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getMetricsListQueryOptions = <TData = Awaited<ReturnType<typeof metricsList>>, TError = MetricsList400>( options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -151,14 +159,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type MetricsListQueryResult = NonNullable<Awaited<ReturnType<typeof metricsList>>>
-export type MetricsListQueryError = unknown
+export type MetricsListQueryError = MetricsList400
 
 
 /**
  * @summary Get Prometheus metrics
  */
 
-export function createMetricsList<TData = Awaited<ReturnType<typeof metricsList>>, TError = unknown>(
+export function createMetricsList<TData = Awaited<ReturnType<typeof metricsList>>, TError = MetricsList400>(
   options?: () => { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: () => QueryClient
  ): CreateQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -173,7 +181,7 @@ export function createMetricsList<TData = Awaited<ReturnType<typeof metricsList>
 /**
  * @summary Get Prometheus metrics
  */
-export const prefetchMetricsListQuery = async <TData = Awaited<ReturnType<typeof metricsList>>, TError = unknown>(
+export const prefetchMetricsListQuery = async <TData = Awaited<ReturnType<typeof metricsList>>, TError = MetricsList400>(
  queryClient: QueryClient,  options?: { query?:Partial<CreateQueryOptions<Awaited<ReturnType<typeof metricsList>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 
   ): Promise<QueryClient> => {

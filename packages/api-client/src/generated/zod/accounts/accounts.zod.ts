@@ -26,3 +26,12 @@ export const AccountsSignupBody = zod.object({
   "acceptedPrivacyVersion": zod.string().min(1)
 })
 
+export const AccountsSignupResponse = zod.object({
+  "userId": zod.string(),
+  "email": zod.string(),
+  "message": zod.string(),
+  "accessToken": zod.string(),
+  "refreshToken": zod.string(),
+  "expiresIn": zod.number()
+})
+
