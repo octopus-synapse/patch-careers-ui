@@ -1,7 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createAuthLogin, getAuthSessionQueryKey } from 'api-client';
-import { isApiError } from 'api-client/client';
+import { createAuthLogin, getAuthSessionQueryKey, isApiError } from 'api-client';
 import { AuthLoginBody } from 'api-client/zod';
 import { Lock } from 'lucide-svelte';
 import { Button, Input, Label, Loader } from 'ui';

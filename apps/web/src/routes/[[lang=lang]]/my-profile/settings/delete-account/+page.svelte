@@ -1,6 +1,5 @@
 <script lang="ts">
-import { accountLifecycleAccounts, authLogout } from 'api-client';
-import { isApiError } from 'api-client/client';
+import { accountLifecycleAccounts, authLogout, isApiError } from 'api-client';
 import { AlertTriangle } from 'lucide-svelte';
 import { Button, Checkbox, Input, Label, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';

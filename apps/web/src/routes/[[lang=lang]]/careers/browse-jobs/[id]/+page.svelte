@@ -10,12 +10,12 @@ import {
   getJobsGetByIdQueryKey,
   getJobsBookmarksQueryKey,
   getJobsApplicationsGetQueryKey,
+  isApiError,
   jobsApplyPost,
   jobsApplyDelete,
   jobsDelete,
   jobsUpdate,
 } from 'api-client';
-import { isApiError } from 'api-client/client';
 import type { JobsApplyPostBody, JobsUpdateBody, JobsUpdateBodyJobType } from 'api-client';
 import { ArrowLeft, Bookmark, Briefcase, Building2, CheckCircle2, DollarSign, ExternalLink, MapPin, Pencil, Send, Sparkles, Trash2 } from 'lucide-svelte';
 import { Badge, Button, ConfirmModal, type FitDimension, FitScoreBreakdown, FormModal, Input, Label, Loader, Textarea, toastState } from 'ui';

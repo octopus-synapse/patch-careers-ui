@@ -1,7 +1,7 @@
 <script lang="ts">
 import '../app.css';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-import { setBaseUrl } from 'api-client/client';
+import { setBaseUrl } from 'api-client';
 import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';

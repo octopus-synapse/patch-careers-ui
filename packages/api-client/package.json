@@ -5,7 +5,6 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client/fetcher.ts",
     "./zod": "./src/generated/zod/index.ts"
   },
   "scripts": {

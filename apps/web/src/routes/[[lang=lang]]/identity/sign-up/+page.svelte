@@ -4,8 +4,8 @@ import {
   createAccountsSignup,
   createEmailVerificationAuthEmailVerificationSend,
   getAuthSessionQueryKey,
+  isApiError,
 } from 'api-client';
-import { isApiError } from 'api-client/client';
 
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';

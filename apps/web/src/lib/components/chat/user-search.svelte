@@ -1,14 +1,7 @@
 <script lang="ts">
-import { customFetch } from 'api-client/client';
+import { type ChatUsersSearch200UsersItem, createChatUsersSearch } from 'api-client';
 import { Search, X } from 'lucide-svelte';
 import { Avatar, Button, Input } from 'ui';
-
-type SearchResult = {
-  id: string;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-};
 
 type Props = {
   onselect: (userId: string) => void;
@@ -17,38 +10,43 @@ type Props = {
 let { onselect }: Props = $props();
 
 let query = $state('');
-let results = $state<SearchResult[]>([]);
+let debouncedQuery = $state('');
 let showDropdown = $state(false);
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 $effect(() => {
-  if (query.length < 2) {
-    results = [];
-    showDropdown = false;
-    return;
-  }
-
+  const next = query;
   if (debounceTimer) clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(async () => {
-    try {
-      const res = await customFetch<{ users: SearchResult[] }>(
-        `/api/chat/users/search?q=${encodeURIComponent(query)}`,
-      );
-      results = res?.users ?? [];
-      showDropdown = results.length > 0;
-    } catch {
-      results = [];
-    }
+  debounceTimer = setTimeout(() => {
+    debouncedQuery = next;
   }, 300);
-
   return () => {
     if (debounceTimer) clearTimeout(debounceTimer);
   };
 });
 
+const search = createChatUsersSearch(
+  () => ({ q: debouncedQuery }),
+  () => ({
+    query: {
+      enabled: debouncedQuery.length >= 2,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  }),
+);
+
+const results: ChatUsersSearch200UsersItem[] = $derived(
+  search.data && 'users' in search.data ? search.data.users : [],
+);
+
+$effect(() => {
+  showDropdown = results.length > 0 && debouncedQuery.length >= 2;
+});
+
 function select(userId: string) {
   query = '';
-  results = [];
+  debouncedQuery = '';
   showDropdown = false;
   onselect(userId);
 }
@@ -63,7 +61,7 @@ function select(userId: string) {
 			placeholder="Search users..."
 		/>
 		{#if query}
-			<Button variant="icon" onclick={() => { query = ''; results = []; showDropdown = false; }} class="opacity-50 hover:opacity-100">
+			<Button variant="icon" onclick={() => { query = ''; debouncedQuery = ''; showDropdown = false; }} class="opacity-50 hover:opacity-100">
 				<X size={12} class="text-gray-400 dark:text-neutral-500" />
 			</Button>
 		{/if}

@@ -6,8 +6,8 @@ import {
   createEmailVerificationVerify,
   getAuthSessionQueryKey,
   getEmailVerificationAuthEmailVerificationResendStatusQueryKey,
+  isApiError,
 } from 'api-client';
-import { isApiError } from 'api-client/client';
 import { CheckCircle2, Mail } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Badge, Button, Loader, OtpInput } from 'ui';
