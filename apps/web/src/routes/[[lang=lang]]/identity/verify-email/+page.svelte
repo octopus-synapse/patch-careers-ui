@@ -17,16 +17,6 @@ import { page } from '$app/stores';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
-// Resend status payload — backend returns `{ secondsUntilResendAllowed: number }`
-// but the route lacks a response schema in swagger so the SDK types it as `void`.
-// TODO(backend): annotate `GET /v1/auth/email-verification/resend-status` and
-// `POST /v1/auth/email-verification/send` with response schemas to drop these casts.
-interface ResendStatusPayload {
-  secondsUntilResendAllowed?: number;
-}
-interface SendVerificationPayload {
-  cooldown?: { secondsUntilResendAllowed?: number };
-}
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
@@ -121,10 +111,9 @@ function startCooldown(seconds: number) {
 
 // Sync the local ticker with the backend whenever resend-status refetches.
 $effect(() => {
-  const data = resendStatus.data as ResendStatusPayload | undefined;
-  const seconds = data?.secondsUntilResendAllowed;
-  if (seconds === undefined) return;
-  startCooldown(seconds);
+  const data = resendStatus.data;
+  if (!data || !('secondsUntilResendAllowed' in data)) return;
+  startCooldown(data.secondsUntilResendAllowed);
 });
 
 onMount(() => {
@@ -181,9 +170,9 @@ function handleResend() {
     onSuccess(response) {
       resentFlash = true;
       setTimeout(() => (resentFlash = false), 4000);
-      const payload = response as SendVerificationPayload | undefined;
-      const seconds = payload?.cooldown?.secondsUntilResendAllowed;
-      if (typeof seconds === 'number') startCooldown(seconds);
+      if (response && 'cooldown' in response) {
+        startCooldown(response.cooldown.secondsUntilResendAllowed);
+      }
       queryClient.invalidateQueries({
         queryKey: getEmailVerificationAuthEmailVerificationResendStatusQueryKey(),
       });

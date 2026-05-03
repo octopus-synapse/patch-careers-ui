@@ -1,22 +1,19 @@
 <script lang="ts">
+import {
+  type AuthListSessions200SessionsItem,
+  createAuthListSessions,
+  createAuthRevokeSession,
+  getAuthListSessionsQueryKey,
+} from 'api-client';
+import { useQueryClient } from '@tanstack/svelte-query';
 import { Monitor, Smartphone, X } from 'lucide-svelte';
-import { onMount } from 'svelte';
 import { Badge, Button, Loader, toastState } from 'ui';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
+import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
 
+const queryClient = useQueryClient();
 const t = $derived(locale.t);
-
-interface SessionRow {
-  id: string;
-  createdAt: string;
-  lastUsedAt: string | null;
-  expiresAt: string;
-  ipAddress: string | null;
-  userAgent: string | null;
-  deviceName: string | null;
-  authMethod: string | null;
-  revoked: boolean;
-}
 
 function formatAuthMethod(method: string | null): string | null {
   if (!method) return null;
@@ -38,38 +35,29 @@ function formatAuthMethod(method: string | null): string | null {
   }
 }
 
-let sessions = $state<SessionRow[]>([]);
-let loading = $state(true);
-let revoking = $state<string | null>(null);
+const sessionsQuery = createAuthListSessions(() => ({
+  query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
+}));
 
-async function load() {
-  loading = true;
-  try {
-    const res = await fetch('/api/v1/auth/sessions', { credentials: 'include' });
-    const body = (await res.json()) as { data?: { sessions?: SessionRow[] } };
-    sessions = body.data?.sessions ?? [];
-  } catch {
-    toastState.show(t('errors.loadSessionsFailed'), 'danger');
-  } finally {
-    loading = false;
-  }
-}
+const sessions: AuthListSessions200SessionsItem[] = $derived(
+  sessionsQuery.data && 'sessions' in sessionsQuery.data ? sessionsQuery.data.sessions : [],
+);
 
-async function revoke(id: string) {
-  revoking = id;
-  try {
-    const res = await fetch(`/api/v1/auth/sessions/${id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
-    sessions = sessions.map((s) => (s.id === id ? { ...s, revoked: true } : s));
-    toastState.show(t('success.sessionRevoked'), 'success');
-  } catch {
-    toastState.show(t('errors.revokeSessionFailed'), 'danger');
-  } finally {
-    revoking = null;
-  }
+const revoke = createAuthRevokeSession(() => ({
+  mutation: {
+    async onSuccess() {
+      toastState.show(t('success.sessionRevoked'), 'success');
+      await queryClient.invalidateQueries({ queryKey: getAuthListSessionsQueryKey() });
+    },
+    onError: handleApiError,
+  },
+}));
+
+let revokingId = $state<string | null>(null);
+
+function handleRevoke(id: string) {
+  revokingId = id;
+  revoke.mutate({ id }, { onSettled: () => (revokingId = null) });
 }
 
 function formatDevice(ua: string | null): string {
@@ -80,8 +68,6 @@ function formatDevice(ua: string | null): string {
   if (/Safari/.test(ua)) return 'Safari';
   return ua.slice(0, 40);
 }
-
-onMount(load);
 </script>
 
 <svelte:head>
@@ -99,7 +85,7 @@ onMount(load);
     </p>
   </header>
 
-  {#if loading}
+  {#if sessionsQuery.isLoading}
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>
@@ -150,10 +136,10 @@ onMount(load);
             <Button
               variant="outline"
               size="sm"
-              onclick={() => revoke(s.id)}
-              disabled={revoking === s.id}
+              onclick={() => handleRevoke(s.id)}
+              disabled={revokingId === s.id}
             >
-              {#if revoking === s.id}
+              {#if revokingId === s.id}
                 <Loader size={14} />
               {:else}
                 <X size={14} />

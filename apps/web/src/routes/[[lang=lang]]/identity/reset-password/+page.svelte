@@ -1,5 +1,5 @@
 <script lang="ts">
-
+import { createPasswordManagementAuthResetPassword, isApiError } from 'api-client';
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -8,11 +8,22 @@ const token = $derived($page.url.searchParams.get('token') ?? '');
 
 let password = $state('');
 let confirm = $state('');
-let submitting = $state(false);
 let error = $state<string | null>(null);
 let success = $state(false);
 
-async function handleSubmit(e: Event) {
+const reset = createPasswordManagementAuthResetPassword(() => ({
+  mutation: {
+    onSuccess() {
+      success = true;
+      setTimeout(() => goto('/identity/sign-in'), 1500);
+    },
+    onError(err: unknown) {
+      if (isApiError(err)) error = err.message;
+    },
+  },
+}));
+
+function handleSubmit(e: Event) {
   e.preventDefault();
   if (!token) {
     error = 'Token ausente. Solicite um novo link de recuperação.';
@@ -26,26 +37,8 @@ async function handleSubmit(e: Event) {
     error = 'As senhas não coincidem.';
     return;
   }
-  submitting = true;
   error = null;
-  try {
-    const res = await fetch('/api/v1/auth/reset-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, password }),
-    });
-    if (!res.ok) {
-      const body = (await res.json().catch(() => null)) as { message?: string } | null;
-      error = body?.message ?? 'Não foi possível redefinir. O link pode ter expirado.';
-      return;
-    }
-    success = true;
-    setTimeout(() => goto('/identity/sign-in'), 1500);
-  } catch {
-    error = 'Erro de rede. Tente novamente.';
-  } finally {
-    submitting = false;
-  }
+  reset.mutate({ data: { token, newPassword: password } });
 }
 </script>
 
@@ -88,8 +81,8 @@ async function handleSubmit(e: Event) {
         {#if error}
           <p class="text-xs font-medium text-red-500/80" role="alert">{error}</p>
         {/if}
-        <Button type="submit" disabled={submitting} variant="solid">
-          {#if submitting}
+        <Button type="submit" disabled={reset.isPending} variant="solid">
+          {#if reset.isPending}
             <Loader size={14} class="mx-auto" />
           {:else}
             Redefinir senha
