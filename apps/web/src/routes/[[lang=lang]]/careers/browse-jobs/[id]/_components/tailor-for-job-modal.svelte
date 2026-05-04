@@ -9,6 +9,7 @@
  * frontend doesn't compute any diff itself.
  */
 import { createResumesList, resumeTailorResumesTailor } from 'api-client';
+import type { ResumeTailorResumesTailor200 } from 'api-client';
 import { Sparkles } from 'lucide-svelte';
 import { Button, Loader, Modal, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -23,22 +24,6 @@ type Props = {
   jobDescription?: string;
 };
 
-// Server-driven payload (T11.2). Backend lacks a response schema today so
-// the SDK types this as `void`; cast through `unknown` until annotated.
-// TODO(backend): annotate `POST /v1/resumes/:id/tailor` response.
-interface TailorChange {
-  path: string;
-  op: 'replace' | 'add' | 'remove';
-  before?: string;
-  after?: string;
-  highlights?: string[];
-}
-interface TailorResult {
-  versionId?: string;
-  label?: string;
-  changes: TailorChange[];
-}
-
 let { open, onClose, jobId, jobTitle, jobCompany, jobDescription }: Props = $props();
 
 const resumesQuery = createResumesList(
@@ -46,17 +31,12 @@ const resumesQuery = createResumesList(
   { query: { enabled: browser && open } },
 );
 
-const resumes = $derived.by(() => {
-  const d = $resumesQuery.data as unknown as
-    | { items?: Array<{ id: string; title: string | null }>; resumes?: Array<{ id: string; title: string | null }> }
-    | undefined;
-  return d?.items ?? d?.resumes ?? [];
-});
+const resumes = $derived($resumesQuery.data?.items);
 
 let selectedResumeId = $state('');
 let jdText = $state('');
 let submitting = $state(false);
-let result = $state<TailorResult | null>(null);
+let result = $state<ResumeTailorResumesTailor200 | null>(null);
 
 // Auto-select first resume + prefill JD when modal opens or props change.
 $effect(() => {
@@ -66,7 +46,7 @@ $effect(() => {
     result = null;
     return;
   }
-  if (!selectedResumeId && resumes.length > 0) selectedResumeId = resumes[0].id;
+  if (!selectedResumeId && resumes && resumes.length > 0) selectedResumeId = resumes[0].id;
   if (!jdText) {
     const parts = [jobTitle, jobCompany, jobDescription].filter(Boolean);
     jdText = parts.join('\n\n');
@@ -77,13 +57,12 @@ async function handleSubmit() {
   if (submitting || !selectedResumeId) return;
   submitting = true;
   try {
-    const res = (await resumeTailorResumesTailor(selectedResumeId, {
+    result = await resumeTailorResumesTailor(selectedResumeId, {
       jobId,
       jobTitle,
       jobCompany,
       jobDescription: jdText || jobDescription,
-    })) as unknown as TailorResult | undefined;
-    result = res ?? { changes: [] };
+    });
   } catch (err) {
     toastState.show(
       err instanceof Error ? err.message : 'Falha ao personalizar o currículo',
@@ -124,7 +103,7 @@ function goToEdit() {
 					<div class="mt-1 flex items-center gap-2 text-xs text-gray-400 dark:text-neutral-500">
 						<Loader size={12} /> carregando…
 					</div>
-				{:else if resumes.length === 0}
+				{:else if !resumes || resumes.length === 0}
 					<p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">
 						Você ainda não tem nenhum CV. Crie um em "Meus currículos".
 					</p>
@@ -185,14 +164,14 @@ function goToEdit() {
 				{#each result.changes as change}
 					<div class="rounded-lg border border-gray-200 p-3 dark:border-neutral-700/50">
 						<p class="mb-1 text-[10px] uppercase tracking-widest text-gray-400 dark:text-neutral-500">
-							{change.op === 'add' ? 'Adicionado' : change.op === 'remove' ? 'Removido' : 'Antes'} · {change.path}
+							{change.op === 'add' ? 'Adicionado' : change.op === 'remove' ? 'Removido' : 'Antes'} · {change.path.join('.')}
 						</p>
-						{#if change.before}
-							<p class="mb-2 text-xs text-gray-600 line-through dark:text-neutral-500">{change.before}</p>
+						{#if change.before != null}
+							<p class="mb-2 text-xs text-gray-600 line-through dark:text-neutral-500">{String(change.before)}</p>
 						{/if}
-						{#if change.after}
+						{#if change.after != null}
 							<p class="mb-1 text-[10px] uppercase tracking-widest text-violet-600 dark:text-violet-400">Depois</p>
-							<p class="text-xs text-gray-800 dark:text-neutral-200">{change.after}</p>
+							<p class="text-xs text-gray-800 dark:text-neutral-200">{String(change.after)}</p>
 						{/if}
 						{#if change.highlights && change.highlights.length > 0}
 							<div class="mt-2 flex flex-wrap gap-1">

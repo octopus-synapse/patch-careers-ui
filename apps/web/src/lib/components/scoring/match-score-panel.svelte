@@ -1,36 +1,17 @@
 <script lang="ts">
   import { createJobMatchMatchPost, isApiError } from 'api-client';
+  import type { JobMatchMatchPost200 } from 'api-client';
 
   import { onMount } from 'svelte';
   import { Loader, ScoreCard } from 'ui';
 
   /**
    * Match Score panel — frontend-burro: every visible string and color comes
-   * from the backend. The hook iterates over `dimensions: [{key, label,
-   * value, target?, color?, hint?, weight?}]` exactly as it lands on the
-   * wire. No local table maps a dimension key to a label or to a tone — if
-   * a new dimension ships, it shows up automatically.
+   * from the backend. The hook iterates over `subScores` (keyword,
+   * requirements, semantic, fit) exactly as it lands on the wire.
    *
-   * Backend endpoint: POST /api/v1/job-match (T11.2 of F1). The response
-   * envelope is `{ overallScore, dimensions, ... }`. Until the swagger ships
-   * a tightened schema we cast the SDK response to the structural shape we
-   * need.
+   * Backend endpoint: POST /api/v1/job-match (T11.2 of F1).
    */
-
-  type Dimension = {
-    key: string;
-    label: string;
-    value: number | null;
-    target?: number | null;
-    color?: string | null;
-    hint?: string | null;
-    weight?: number | null;
-  };
-
-  type MatchBreakdown = {
-    overallScore: number;
-    dimensions: Dimension[];
-  };
 
   type Teaser = {
     title: string;
@@ -47,7 +28,7 @@
 
   const matchMutation = createJobMatchMatchPost({ mutation: {} });
 
-  let breakdown = $state<MatchBreakdown | null>(null);
+  let breakdown = $state<JobMatchMatchPost200 | null>(null);
   let lockoutTeaser = $state<Teaser | null>(null);
   let errorTeaser = $state<Teaser | null>(null);
   let loading = $state(true);
@@ -57,17 +38,9 @@
     errorTeaser = null;
     lockoutTeaser = null;
     try {
-      // Cast: the SDK's typed response is `{ data: void }` because the
-      // swagger spec hasn't shipped a schema yet. Trust the runtime payload.
-      const res = (await $matchMutation.mutateAsync({
+      breakdown = await $matchMutation.mutateAsync({
         data: { resumeId, jobId },
-      })) as unknown as MatchBreakdown | null;
-
-      if (res && typeof res.overallScore === 'number' && Array.isArray(res.dimensions)) {
-        breakdown = res;
-      } else {
-        breakdown = null;
-      }
+      });
     } catch (err) {
       breakdown = null;
       // 409 fit_profile_required → the backend's `suggestedAction` carries
@@ -103,9 +76,16 @@
     if (resumeId && jobId) void runCompute();
   });
 
-  const subScores = $derived(
-    breakdown?.dimensions.map((d) => ({ label: d.label, score: d.value })) ?? [],
-  );
+  const subScores = $derived.by(() => {
+    if (!breakdown) return [];
+    const s = breakdown.subScores;
+    return [
+      { label: 'Keyword', score: s.keyword.score },
+      { label: 'Requirements', score: s.requirements.score },
+      { label: 'Semantic', score: s.semantic.score },
+      { label: 'Fit', score: s.fit.score },
+    ];
+  });
 </script>
 
 {#if loading && !breakdown}

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { searchGlobal } from 'api-client';
+import type { SearchGlobal200 } from 'api-client';
 import {
   Briefcase,
   FileText,
@@ -22,10 +23,6 @@ import { trackCtaClick } from '$lib/utils/analytics/track';
  *
  * The page's static "quick actions" + "navigation" lists stay client-owned
  * because they're pure routing — no domain decision is made here.
- *
- * The swagger declares `searchGlobal` as `Promise<void>` because the
- * response schema isn't shipped yet; we cast to a local interface at the
- * boundary so the rest of the component stays typed.
  */
 type Props = {
   open: boolean;
@@ -43,23 +40,8 @@ type Action = {
   run: () => void;
 };
 
-type GlobalSearchItem = {
-  id: string;
-  title: string;
-  snippet?: string | null;
-  href: string;
-  badge?: string | null;
-};
-
-type GlobalSearchGroup = {
-  type: string;
-  label: string;
-  items: GlobalSearchItem[];
-};
-
-type GlobalSearchResponse = {
-  groups?: GlobalSearchGroup[];
-};
+type GlobalSearchGroup = SearchGlobal200['groups'][number];
+type GlobalSearchItem = GlobalSearchGroup['items'][number];
 
 const quickActions: Action[] = [
   {
@@ -136,13 +118,8 @@ $effect(() => {
   searching = true;
   debounceTimer = setTimeout(async () => {
     try {
-      // `searchGlobal` is typed as `Promise<void>` in the generated SDK
-      // because the swagger response schema isn't shipped yet. The runtime
-      // contract (`{groups:[...]}`) is documented in T11.13.
-      const res = (await searchGlobal({ q: trimmed, limit: 20 })) as unknown as
-        | GlobalSearchResponse
-        | undefined;
-      groups = res?.groups ?? [];
+      const res = await searchGlobal({ q: trimmed, limit: 20 });
+      groups = res.groups;
     } catch {
       groups = [];
     }

@@ -1,9 +1,5 @@
 <script lang="ts">
-import {
-  createAuthOauthAvailable,
-  createResumeImportResumesImportsPdf,
-  getBaseUrl,
-} from 'api-client';
+import { createAuthOauthAvailable, getBaseUrl } from 'api-client';
 import { ArrowRight, Clock, FileUp, Github, Linkedin, PencilLine } from 'lucide-svelte';
 import { Badge, Button, Loader, Modal, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -33,39 +29,40 @@ const linkedinAvailability = createAuthOauthAvailable(
   { query: { enabled: browser } },
 );
 
-const githubAvailable = $derived(
-  Boolean(($githubAvailability.data as { available?: boolean } | undefined)?.available),
-);
-const linkedinAvailable = $derived(
-  Boolean(($linkedinAvailability.data as { available?: boolean } | undefined)?.available),
-);
+const githubAvailable = $derived($githubAvailability.data?.available ?? false);
+const linkedinAvailable = $derived($linkedinAvailability.data?.available ?? false);
 
 type TrackKey = 'linkedin' | 'github' | 'upload' | 'manual';
 
 let soonOpen = $state(false);
 let pdfInput = $state<HTMLInputElement | null>(null);
+let pdfPending = $state(false);
 
-const pdfMutation = createResumeImportResumesImportsPdf({
-  mutation: {
-    onSuccess() {
-      toastState.show('CV imported', 'success');
-      goto('/careers/manage-resumes');
-    },
-    onError() {
-      toastState.show('Could not import the PDF', 'danger');
-    },
-  },
-});
-
-function handlePdfSelected(e: Event) {
-  const file = (e.target as HTMLInputElement).files?.[0];
+// Multipart upload — the SDK's PDF mutation has no body parameter (orval
+// can't model `file` form fields), so we hand-roll the request to the
+// canonical URL helper.
+async function handlePdfSelected(e: Event) {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
   if (!file) return;
-  // Orval models the multipart body as `void` because the OpenAPI spec doesn't
-  // describe File fields. The mutator passes `data` straight through to
-  // `customFetch`, so the cast is safe at runtime.
-  ($pdfMutation.mutate as unknown as (vars: { data: { file: File } }) => void)({
-    data: { file },
-  });
+  pdfPending = true;
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(`${getBaseUrl()}/api/v1/resumes/imports/pdf`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    toastState.show('CV imported', 'success');
+    goto('/careers/manage-resumes');
+  } catch {
+    toastState.show('Could not import the PDF', 'danger');
+  } finally {
+    pdfPending = false;
+    target.value = '';
+  }
 }
 
 function choose(track: TrackKey) {
@@ -186,7 +183,7 @@ function isAvailable(key: TrackKey): boolean {
 						<button
 							type="button"
 							onclick={() => choose(track.key)}
-							disabled={track.key === 'upload' && $pdfMutation.isPending}
+							disabled={track.key === 'upload' && pdfPending}
 							class="group flex h-full w-full flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-700/60 dark:bg-neutral-800/50 dark:hover:border-neutral-600"
 						>
 							<div class="flex items-start justify-between">
@@ -220,7 +217,7 @@ function isAvailable(key: TrackKey): boolean {
 							</div>
 
 							<div class="flex items-center gap-1 text-xs font-semibold text-gray-500 transition-colors group-hover:text-gray-800 dark:text-neutral-500 dark:group-hover:text-neutral-200">
-								{#if track.key === 'upload' && $pdfMutation.isPending}
+								{#if track.key === 'upload' && pdfPending}
 									<Loader size={12} />
 								{:else}
 									<span>{t(available ? 'onboarding.next' : 'onboarding.start.close')}</span>

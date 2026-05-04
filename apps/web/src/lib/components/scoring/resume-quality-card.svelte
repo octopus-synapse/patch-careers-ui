@@ -4,37 +4,12 @@
   import { Badge, ScoreCard, Skeleton } from 'ui';
 
   /**
-   * Resume Quality card — frontend-burro: backend ships a `breakdown`
-   * array of `{key, label, value, hint?, severity?}` and an `issues` list.
-   * Severity-to-tone mapping lives in the backend; this component only
-   * surfaces the count and the high-severity highlight that the backend
-   * already labelled "high".
+   * Resume Quality card — frontend-burro: backend ships an `overallScore`,
+   * sub-scores (`completenessScore`, `contentQualityScore`) and an `issues`
+   * list. Severity highlight uses the backend's `high` label.
    *
-   * Endpoint: GET /api/v1/resume-quality/resumes/:id/quality. The SDK
-   * response is `{ data: void }` until the swagger schema lands; we cast
-   * to the structural shape.
+   * Endpoint: GET /api/v1/resume-quality/resumes/:id/quality.
    */
-
-  type QualityBreakdownEntry = {
-    key: string;
-    label: string;
-    value: number | null;
-    hint?: string | null;
-    severity?: string | null;
-  };
-
-  type QualityIssue = {
-    key?: string;
-    label?: string;
-    severity: string;
-    hint?: string | null;
-  };
-
-  type QualitySnapshot = {
-    overallScore: number;
-    breakdown?: QualityBreakdownEntry[];
-    issues?: QualityIssue[];
-  };
 
   type Props = {
     resumeId: string;
@@ -49,21 +24,24 @@
     { query: { enabled: browser && !!resumeId, refetchOnWindowFocus: false } },
   );
 
-  const snapshot = $derived(
-    ($qualityQuery.data ?? null) as unknown as QualitySnapshot | null,
-  );
-  const issuesCount = $derived(snapshot?.issues?.length ?? 0);
+  const snapshot = $derived($qualityQuery.data);
+  const issuesCount = $derived(snapshot?.issues.length ?? 0);
   const highSeverity = $derived(
-    (snapshot?.issues ?? []).filter((i) => i.severity === 'high').length,
+    snapshot ? snapshot.issues.filter((i) => i.severity === 'high').length : 0,
   );
   const subScores = $derived(
-    snapshot?.breakdown?.map((b) => ({ label: b.label, score: b.value })) ?? [],
+    snapshot
+      ? [
+          { label: 'Completeness', score: snapshot.completenessScore },
+          { label: 'Content', score: snapshot.contentQualityScore },
+        ]
+      : [],
   );
 </script>
 
 {#if $qualityQuery.isPending}
   <Skeleton height="160px" class="rounded-xl" />
-{:else if snapshot === null || $qualityQuery.isError}
+{:else if !snapshot || $qualityQuery.isError}
   <ScoreCard
     score={null}
     label="Resume Quality"

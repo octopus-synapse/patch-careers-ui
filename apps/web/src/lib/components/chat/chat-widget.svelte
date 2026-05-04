@@ -22,54 +22,8 @@ import UserSearch from './user-search.svelte';
 
 /**
  * Floating chat widget — frontend-burro renderer for the conversation
- * inbox. The swagger ships `void` schemas for chat endpoints so we cast to
- * documented runtime shapes at the boundary; backend stays the source of
- * truth for participant/message metadata.
+ * inbox. Backend stays the source of truth for participant/message metadata.
  */
-type ConversationParticipant = {
-  id: string;
-  name: string | null;
-  photoURL: string | null;
-  username: string | null;
-};
-
-type ConversationLastMessage = {
-  content: string;
-  senderId: string;
-  createdAt: string;
-  isRead: boolean;
-};
-
-type Conversation = {
-  id: string;
-  participant: ConversationParticipant;
-  lastMessage: ConversationLastMessage | null;
-  unreadCount?: number;
-};
-
-type Message = {
-  id: string;
-  content: string;
-  senderId: string;
-  createdAt: string;
-  isRead: boolean;
-  sender: { id: string; name: string | null; photoURL: string | null };
-};
-
-type ConversationsResponse = {
-  items?: Conversation[];
-  conversations?: { conversations?: Conversation[] } | Conversation[];
-};
-
-type MessagesResponse = {
-  items?: Message[];
-  messages?: { messages?: Message[] } | Message[];
-};
-
-type StartConversationResponse = {
-  conversationId?: string;
-  id?: string;
-};
 
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
@@ -80,38 +34,20 @@ const canUseApp = $derived(
     !(auth.data?.user?.needsOnboarding ?? false),
 );
 
-function extractConversations(data: ConversationsResponse | undefined): Conversation[] {
-  if (!data) return [];
-  if (Array.isArray(data.items)) return data.items;
-  const inner = data.conversations;
-  if (Array.isArray(inner)) return inner;
-  if (inner && Array.isArray(inner.conversations)) return inner.conversations;
-  return [];
-}
-
-function extractMessages(data: MessagesResponse | undefined): Message[] {
-  if (!data) return [];
-  if (Array.isArray(data.items)) return data.items;
-  const inner = data.messages;
-  if (Array.isArray(inner)) return inner;
-  if (inner && Array.isArray(inner.messages)) return inner.messages;
-  return [];
-}
-
 const conversations = createChatConversationsGet(
   { limit: 50 },
   { query: { enabled: canUseApp && chatState.isOpen } },
 );
 
-const convList = $derived(extractConversations($conversations.data));
+const convList = $derived($conversations.data?.conversations.conversations);
 
 const messages = createChatConversationsMessagesGet(
-  chatState.activeConversationId ?? undefined,
+  chatState.activeConversationId || undefined,
   { limit: 100 },
   { query: { enabled: !!chatState.activeConversationId } },
 );
 
-const msgList = $derived(extractMessages($messages.data));
+const msgList = $derived($messages.data?.messages.messages);
 
 const queryClient = useQueryClient();
 
@@ -143,12 +79,10 @@ async function startNewConversation(recipientId: string) {
   let convId: string | null = null;
   try {
     // POST /api/v1/chat/messages — kicks off (or reuses) a 1:1 conversation
-    // with `recipientId`. Backend returns the conversation id; we cast to a
-    // local shape because the swagger response is `void`.
-    const res = (await chatMessages({ recipientId, content: '👋' })) as unknown as
-      | StartConversationResponse
-      | undefined;
-    convId = res?.conversationId ?? res?.id ?? null;
+    // with `recipientId`. Backend returns the message envelope including the
+    // conversation id.
+    const res = await chatMessages({ recipientId, content: '👋' });
+    convId = res.message.conversationId;
   } catch {
     /* may already exist */
   }
@@ -163,7 +97,7 @@ function handleSend(content: string) {
 }
 
 const activeOther = $derived.by(() => {
-  if (!chatState.activeConversationId) return null;
+  if (!chatState.activeConversationId || !convList) return null;
   const conv = convList.find((c) => c.id === chatState.activeConversationId);
   return conv?.participant ?? null;
 });
@@ -335,12 +269,14 @@ function onDragEnd(e: PointerEvent) {
 						<UserSearch onselect={startNewConversation} />
 					</div>
 					<div class="flex-1 overflow-y-auto scrollbar-thin">
-						<ConversationList
-							conversations={convList}
-							{currentUserId}
-							activeConversationId={chatState.activeConversationId ?? undefined}
-							onselect={selectConversation}
-						/>
+						{#if convList}
+							<ConversationList
+								conversations={convList}
+								{currentUserId}
+								activeConversationId={chatState.activeConversationId || undefined}
+								onselect={selectConversation}
+							/>
+						{/if}
 					</div>
 				</div>
 				<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30">
@@ -372,10 +308,14 @@ function onDragEnd(e: PointerEvent) {
 								{@render headerContent()}
 							</div>
 						{/if}
-						<MessageThread messages={msgList} {currentUserId} />
+						{#if msgList}
+							<MessageThread messages={msgList} {currentUserId} />
+						{/if}
 						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}
-						<MessageThread messages={msgList} {currentUserId} />
+						{#if msgList}
+							<MessageThread messages={msgList} {currentUserId} />
+						{/if}
 						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					{:else}
 						<div class="flex flex-1 items-center justify-center">
@@ -396,7 +336,7 @@ function onDragEnd(e: PointerEvent) {
 							<div class="flex items-center justify-center py-10">
 								<Loader size={14} />
 							</div>
-						{:else}
+						{:else if convList}
 							<ConversationList
 								conversations={convList}
 								{currentUserId}
@@ -407,7 +347,9 @@ function onDragEnd(e: PointerEvent) {
 					</div>
 				{:else}
 					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
-						<MessageThread messages={msgList} {currentUserId} />
+						{#if msgList}
+							<MessageThread messages={msgList} {currentUserId} />
+						{/if}
 						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					</div>
 				{/if}

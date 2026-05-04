@@ -10,6 +10,7 @@ import {
   authSessionQueryKey,
   onboardingSessionQueryKey,
 } from 'api-client';
+import type { OnboardingSession200 } from 'api-client';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { beforeNavigate, goto } from '$app/navigation';
@@ -48,22 +49,8 @@ function invalidateSession() {
   queryClient.invalidateQueries({ queryKey });
 }
 
-type Step = {
-  id: string;
-  label: string;
-  description: string;
-  icon?: string;
-  component: string;
-  fields?: Array<{
-    key: string;
-    type: string;
-    label: string;
-    required: boolean;
-    options?: string[];
-    widget?: string;
-  }>;
-  multipleItems?: boolean;
-  sectionTypeKey?: string;
+// SDK doesn't model the `data` field that ships on template steps — augment.
+type Step = OnboardingSession200['steps'][number] & {
   data?: Array<{
     id: string;
     name: string;
@@ -72,36 +59,19 @@ type Step = {
     thumbnailUrl?: string | null;
   }>;
 };
+type SectionItem = NonNullable<NonNullable<OnboardingSession200['sections']>[number]['items']>[number];
 
-// Backend response shape (T11.x) — typed as `void` in the SDK because the
-// route lacks a response schema. TODO(backend): annotate /v1/onboarding/session.
-type OnboardingSessionData = {
-  steps?: Step[];
-  currentStep?: string;
-  completedSteps?: string[];
-  progress?: number;
-  strength?: { score: number; message: string; level: string };
-  missingRequired?: string[];
-  nextStep?: string | null;
-  previousStep?: string | null;
-  sections?: Array<{ sectionTypeKey?: string; items?: Array<{ id?: string; content?: Record<string, unknown> }> }>;
-  personalInfo?: Record<string, unknown>;
-  professionalProfile?: Record<string, unknown>;
-  templateSelection?: Record<string, unknown>;
-  [key: string]: unknown;
-};
-const onboardingData = $derived($session.data as unknown as OnboardingSessionData | undefined);
-const steps = $derived((onboardingData?.steps ?? []) as Step[]);
+const onboardingData = $derived($session.data);
+const steps = $derived<Step[] | undefined>(onboardingData?.steps);
 const currentStepId = $derived(onboardingData?.currentStep ?? '');
 const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
-const completedSteps = $derived(onboardingData?.completedSteps ?? []);
 const progress = $derived(onboardingData?.progress ?? 0);
 const strength = $derived(onboardingData?.strength);
 const missingRequired = $derived(onboardingData?.missingRequired);
 const isLastStep = $derived(!onboardingData?.nextStep || currentStep?.component === 'review');
 
 let stepData = $state<Record<string, string>>({});
-let multiItems = $state<Array<{ id?: string; content?: Record<string, unknown> }>>([]);
+let multiItems = $state<SectionItem[]>([]);
 
 $effect(() => {
   if (currentStep) {
@@ -110,7 +80,7 @@ $effect(() => {
 
     if (currentStep.multipleItems && onboardingData?.sections) {
       const section = onboardingData.sections.find(
-        (s: Record<string, unknown>) => s.sectionTypeKey === currentStep.sectionTypeKey,
+        (s) => s.sectionTypeKey === currentStep.sectionTypeKey,
       );
       if (section?.items) {
         multiItems = [...section.items];
@@ -127,13 +97,15 @@ function getSavedDataForStep(stepId: string): Record<string, string> | null {
   const step = steps.find((s) => s.id === stepId);
   if (!step?.fields) return null;
 
+  const merged: Record<string, string | number | boolean | null | undefined> = {
+    ...onboardingData.personalInfo,
+    ...onboardingData.professionalProfile,
+    ...onboardingData.templateSelection,
+    username: onboardingData.username,
+  };
   const result: Record<string, string> = {};
-  const pi = onboardingData.personalInfo as Record<string, unknown> | undefined;
-  const pp = onboardingData.professionalProfile as Record<string, unknown> | undefined;
-  const ts = onboardingData.templateSelection as Record<string, unknown> | undefined;
-  const topLevel = onboardingData as unknown as Record<string, unknown>;
   for (const field of step.fields) {
-    const val = pi?.[field.key] ?? pp?.[field.key] ?? ts?.[field.key] ?? topLevel[field.key];
+    const val = merged[field.key];
     if (val != null) result[field.key] = String(val);
   }
   return Object.keys(result).length > 0 ? result : null;
@@ -161,9 +133,8 @@ const complete = createOnboardingSessionComplete({
       // screen auto-redirects after ~2s or on CTA click.
       goto('/onboarding/done');
     },
-    onError(err: unknown) {
-      const msg = (err as Record<string, unknown>)?.message;
-      completeError = typeof msg === 'string' ? msg : 'Failed to complete onboarding';
+    onError(err) {
+      completeError = err instanceof Error ? err.message : 'Failed to complete onboarding';
     },
   },
 });
@@ -322,7 +293,8 @@ const isPending = $derived(
 	<div class="flex min-h-screen items-center justify-center pt-14">
 		<Loader size={24} />
 	</div>
-{:else if t && onboardingData && currentStep}
+{:else if t && onboardingData && currentStep && steps}
+	{@const completedSteps = onboardingData.completedSteps}
 	<div class="font-sans antialiased transition-colors duration-300">
 		<main class="mx-auto max-w-6xl px-3 sm:px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
 			{#if isWelcome}
@@ -379,7 +351,7 @@ const isPending = $derived(
 
 						{#if currentStep.component === 'review'}
 							<StepReview
-								session={onboardingData as unknown as Record<string, unknown>}
+								session={onboardingData as Record<string, unknown>}
 								{steps}
 								{completedSteps}
 								ongoto={handleGoto}
@@ -391,9 +363,9 @@ const isPending = $derived(
 								selectedThemeId={stepData.templateId ?? ''}
 								onselect={(id) => (stepData = { ...stepData, templateId: id, colorScheme: 'light' })}
 							/>
-						{:else if currentStep.multipleItems || currentStep.component === 'generic-section'}
+						{:else if (currentStep.multipleItems || currentStep.component === 'generic-section') && currentStep.fields}
 							<StepMultiItems
-								fields={currentStep.fields ?? []}
+								fields={currentStep.fields}
 								items={multiItems}
 								{t}
 								onupdate={(items) => (multiItems = items)}
@@ -471,7 +443,7 @@ const isPending = $derived(
 					</div>
 				<!-- Desktop preview -->
 				<div class="hidden xl:block flex-shrink-0">
-					<PreviewPanel token={(auth.data as unknown as { accessToken?: string })?.accessToken} />
+					<PreviewPanel token={authenticated ? 'session' : undefined} />
 				</div>
 			</div>
 			{/if}

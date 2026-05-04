@@ -9,7 +9,7 @@ import {
   jobsCreate,
   jobsListQueryKey,
 } from 'api-client';
-import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey } from 'api-client';
+import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey, JobsRecommended200, JobsWithFitScore200 } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Plus, Sparkles, Zap } from 'lucide-svelte';
 import { Badge, Button, FitScoreChip, FormModal, Input, Label, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
@@ -19,45 +19,14 @@ import { DataTable } from 'ui';
 import { Pagination } from 'ui';
 import { SearchFilterBar } from 'ui';
 import NewJobsBadge from '$lib/components/jobs/new-jobs-badge.svelte';
-import { parseApiError } from '$lib/utils/api-error';
 import { isUsdEurJob } from '$lib/utils/is-usd-eur';
 import { locale } from '$lib/state/locale.svelte';
 
-interface FitScoreBreakdown {
-  skillOverlap: number;
-  englishMatch: number;
-  remoteMatch: number;
-  matchedSkills: string[];
-  missingSkills: string[];
-}
-
-interface FitScoreDetail {
-  score: number;
-  breakdown: FitScoreBreakdown;
-}
-
-interface JobItem {
-  id: string;
-  title?: string;
-  company?: string;
-  jobType?: string;
-  skills?: string[];
-  createdAt: string;
-  matchScore?: number;
-  fitScore?: FitScoreDetail;
-  salaryRange?: string;
-  paymentCurrency?: string;
-  location?: string;
-  [key: string]: unknown;
-}
-
-interface JobsResponse {
-  items: JobItem[];
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-}
+type FitScoreItem = JobsWithFitScore200['items'][number];
+type FitScoreDetail = NonNullable<FitScoreItem['fitScore']>;
+type RecommendedJob = JobsRecommended200['data'][number];
+// Display row: a recommended job optionally enriched with the fit-score side-channel.
+type DisplayJob = RecommendedJob & { fitScore?: FitScoreDetail };
 
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
@@ -106,17 +75,8 @@ const recommendedQuery = createJobsRecommended(
   { query: { enabled: browser && activeTab === 'recommended' } },
 );
 
-type RecommendedResponse = {
-  data?: JobItem[];
-  page?: number;
-  totalPages?: number;
-  total?: number;
-};
-
-const jobsData = $derived($jobsQuery.data as unknown as JobsResponse | undefined);
-const recommendedData = $derived(
-  $recommendedQuery.data as unknown as RecommendedResponse | undefined,
-);
+const jobsData = $derived($jobsQuery.data);
+const recommendedData = $derived($recommendedQuery.data);
 
 // Side-channel: pull structured fit scores for the current page of jobs.
 // Backend canonical response merges the breakdown into each item; we mirror it
@@ -131,43 +91,47 @@ const fitScoreQuery = createJobsWithFitScore(
   { query: { enabled: browser && activeTab === 'all' } },
 );
 const fitScoreById = $derived.by(() => {
-  const data = $fitScoreQuery.data as unknown as
-    | { items?: Array<{ id: string; fitScore?: FitScoreDetail }> }
-    | undefined;
   const map: Record<string, FitScoreDetail> = {};
-  for (const item of data?.items ?? []) {
+  if (!$fitScoreQuery.data) return map;
+  for (const item of $fitScoreQuery.data.items) {
     if (item.fitScore) map[item.id] = item.fitScore;
   }
   return map;
 });
 
-const allList = $derived(
-  (jobsData?.items ?? []).map((j) => {
+const allList = $derived<DisplayJob[] | undefined>(
+  jobsData?.items.map((j) => {
     const fit = fitScoreById[j.id];
-    return {
-      ...j,
-      matchScore: fit?.score ?? j.matchScore,
-      fitScore: fit,
-    };
+    return { ...j, matchScore: fit?.score ?? 0, fitScore: fit };
   }),
 );
 const recommendedList = $derived(recommendedData?.data);
-const jobsList = $derived(activeTab === 'recommended' ? recommendedList : allList);
+const jobsList = $derived<DisplayJob[] | undefined>(
+  activeTab === 'recommended' ? recommendedList : allList,
+);
 const filteredJobs = $derived.by(() => {
   let list = jobsList;
   if (!list) return list;
-  if (jobTypeFilter) list = list.filter((j: JobItem) => j.jobType === jobTypeFilter);
+  if (jobTypeFilter) list = list.filter((j) => j.jobType === jobTypeFilter);
   // "all" tab: server already filters via `paymentCurrency`. "recommended"
   // endpoint doesn't accept it yet, so we fall back to a display helper.
   if (usdEurOnly && activeTab === 'recommended') {
-    list = list.filter((j: JobItem) => isUsdEurJob(j));
+    const nullToUndef = (v: string | null) => (v === null ? undefined : v);
+    list = list.filter((j) =>
+      isUsdEurJob({
+        salaryRange: nullToUndef(j.salaryRange),
+        paymentCurrency: nullToUndef(j.paymentCurrency),
+        location: nullToUndef(j.location),
+        jobType: j.jobType,
+      }),
+    );
   }
   return list;
 });
 const pagination = $derived.by(() => {
   if (activeTab === 'recommended') {
     return recommendedData
-      ? { page: recommendedData.page ?? 1, totalPages: recommendedData.totalPages ?? 0 }
+      ? { page: recommendedData.page, totalPages: recommendedData.totalPages }
       : undefined;
   }
   return jobsData ? { page: jobsData.page, totalPages: jobsData.totalPages } : undefined;
@@ -426,12 +390,12 @@ async function runRageApply() {
 								{/if}
 							</div>
 						{:else if key === 'company'}
-							{row.company ?? '---'}
+							{row.company}
 						{:else if key === 'jobType'}
-							{row.jobType ?? '---'}
+							{row.jobType}
 						{:else if key === 'skills'}
 							{@const skills = row.skills}
-							{#if skills}
+							{#if skills.length > 0}
 								<div class="flex flex-wrap gap-1">
 									{#each skills.slice(0, 3) as skill}
 										<Badge intent="neutral" size="md">{skill}</Badge>
@@ -444,7 +408,7 @@ async function runRageApply() {
 						{:else if key === 'createdAt'}
 							<span class="text-xs text-gray-500 dark:text-neutral-500">{timeAgo(row.createdAt)}</span>
 						{:else}
-							{row[key] ?? '---'}
+							---
 						{/if}
 					{/snippet}
 				</DataTable>

@@ -4,18 +4,19 @@
   and PDF upload.
 -->
 <script lang="ts">
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
   getBaseUrl,
   resumeImportResumesImportsGithub,
   resumeImportResumesImportsLinkedin,
 } from 'api-client';
+import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
+import { Button, Loader, toastState } from 'ui';
+import { goto } from '$app/navigation';
 
 // Multipart endpoint — Kubb's customFetch doesn't support FormData, so we
 // hand-roll the request and reuse the SDK's baseUrl helper.
 const PDF_IMPORT_URL = '/api/v1/resume-import/resumes/imports/pdf';
-import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
-import { Button, Loader, toastState } from 'ui';
-import { goto } from '$app/navigation';
 
 let githubLoading = $state(false);
 let linkedinLoading = $state(false);
@@ -25,24 +26,13 @@ let pdfError = $state<string | null>(null);
 async function importGitHub() {
   githubLoading = true;
   try {
-    const res = (await resumeImportResumesImportsGithub()) as unknown as
-      | { data?: { primaryStack?: string[]; buildPostsCreated?: number; profileUpdated?: boolean } }
-      | { primaryStack?: string[]; buildPostsCreated?: number }
-      | undefined;
-    const data =
-      (res as { data?: { primaryStack?: string[]; buildPostsCreated?: number } })?.data ??
-      (res as { primaryStack?: string[]; buildPostsCreated?: number } | undefined);
+    const res = await resumeImportResumesImportsGithub();
     toastState.show(
-      `Importado: ${data?.primaryStack?.length ?? 0} skills, ${data?.buildPostsCreated ?? 0} posts de build.`,
+      `Importado: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts de build.`,
       'success',
     );
   } catch (err) {
-    toastState.show(
-      err instanceof Error
-        ? err.message
-        : 'Falha ao importar do GitHub. Conecte sua conta primeiro.',
-      'danger',
-    );
+    handleApiError(err);
   } finally {
     githubLoading = false;
   }
@@ -82,12 +72,9 @@ async function uploadPdf(e: Event) {
       credentials: 'include',
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const body = (await res.json().catch(() => null)) as
-      | { data?: { importId?: string }; importId?: string }
-      | null;
-    const importId = body?.data?.importId ?? body?.importId;
+    const body: { resumeId?: string } | null = await res.json().catch(() => null);
     toastState.show('PDF enviado. Processando…', 'success');
-    if (importId) goto('/onboarding/review');
+    if (body?.resumeId) goto('/onboarding/review');
   } catch (err) {
     pdfError = err instanceof Error ? err.message : 'Falha ao enviar PDF.';
   } finally {

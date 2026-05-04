@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * /careers/search — burra: pessoas + jobs via SDK.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
 import {
   createJobsList,
@@ -9,6 +8,7 @@ import {
   searchList,
   searchListQueryParamsSortByEnum,
 } from 'api-client';
+import type { SearchList200 } from 'api-client';
 import { Search, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
@@ -22,13 +22,7 @@ import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 
-type Person = {
-  userId: string;
-  fullName: string | null;
-  jobTitle: string | null;
-  slug: string | null;
-  location: string | null;
-};
+type Person = SearchList200['data'][number];
 
 const initialQuery = $derived($page.url.searchParams.get('q') ?? '');
 const initialSkills = $derived($page.url.searchParams.get('skills') ?? '');
@@ -81,27 +75,10 @@ const jobsQuery = createJobsList(
       },
 );
 
-function rowsFrom(items?: Record<string, unknown>[]): Person[] {
-  return (items ?? []).map((r) => ({
-    userId: String(r.userId ?? ''),
-    fullName: (r.fullName as string | null) ?? null,
-    jobTitle: (r.jobTitle as string | null) ?? null,
-    slug: (r.slug as string | null) ?? null,
-    location: (r.location as string | null) ?? null,
-  }));
-}
-
 const firstPage = $derived.by(() => {
-  const data = $query.data as Record<string, unknown> | undefined;
-  const items =
-    (data?.items as Record<string, unknown>[] | undefined) ??
-    (data?.data as Record<string, unknown>[] | undefined) ??
-    [];
-  return {
-    rows: rowsFrom(items),
-    total: Number(data?.total ?? 0),
-    totalPages: Number(data?.totalPages ?? 0),
-  };
+  const data = $query.data;
+  if (!data) return { rows: [] as Person[], total: 0, totalPages: 0 };
+  return { rows: data.data, total: data.total, totalPages: data.totalPages };
 });
 
 let extra = $state<Person[]>([]);
@@ -124,14 +101,11 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await searchList({
+    const res = await searchList({
       ...queryParams,
       page: next,
-    })) as unknown as Record<string, unknown> | undefined;
-    const items = (res?.items as Record<string, unknown>[] | undefined) ??
-      (res?.data as Record<string, unknown>[] | undefined) ??
-      [];
-    extra = [...extra, ...rowsFrom(items)];
+    });
+    extra = [...extra, ...res.data];
     pageNum = next;
   } finally {
     loadingMore = false;
@@ -275,15 +249,15 @@ const tabs = $derived([
 								</div>
 							{/each}
 						</div>
-					{:else if (($jobsQuery.data as Record<string, unknown> | undefined)?.items as unknown[] | undefined)?.length}
+					{:else if $jobsQuery.data?.items.length}
 						<div class="grid grid-cols-1 gap-3">
-							{#each (($jobsQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[]) as job}
+							{#each $jobsQuery.data.items as job}
 								<a
-									href="/careers/browse-jobs/{String(job.id)}"
+									href="/careers/browse-jobs/{job.id}"
 									class="block rounded-xl border p-4 transition-colors hover:border-cyan-500 border-gray-200 dark:border-neutral-800"
 								>
-									<div class="text-sm font-semibold text-gray-900 dark:text-neutral-100">{String(job.title ?? '')}</div>
-									<div class="text-xs text-gray-500 dark:text-neutral-500">{String(job.company ?? '')} · {String(job.location ?? '')}</div>
+									<div class="text-sm font-semibold text-gray-900 dark:text-neutral-100">{job.title}</div>
+									<div class="text-xs text-gray-500 dark:text-neutral-500">{job.company} · {job.location ?? ''}</div>
 								</a>
 							{/each}
 						</div>

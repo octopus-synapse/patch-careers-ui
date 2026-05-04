@@ -11,7 +11,6 @@ import {
   jobsGetByIdQueryKey,
   jobsBookmarksQueryKey,
   jobsApplicationsGetQueryKey,
-  isApiError,
   jobsApplyPost,
   jobsApplyDelete,
   jobsDelete,
@@ -31,24 +30,6 @@ import ApplyModal from '$lib/components/jobs/apply-modal.svelte';
 import SimilarJobsCarousel from '$lib/components/jobs/similar-jobs-carousel.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
-interface Job {
-  id: string;
-  title?: string;
-  company?: string;
-  location?: string;
-  jobType?: string;
-  description?: string;
-  requirements?: string[];
-  skills?: string[];
-  salaryRange?: string;
-  applyUrl?: string;
-  userId?: string;
-  createdBy?: string;
-  createdAt?: string;
-  isBookmarked?: boolean;
-  hasApplied?: boolean;
-}
-
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
@@ -62,9 +43,9 @@ const jobQuery = createJobsGetById(
   { query: { enabled: browser && !!jobId } },
 );
 
-const job = $derived($jobQuery.data as unknown as Job | undefined);
+const job = $derived($jobQuery.data);
 const isOwner = $derived(
-  !!currentUserId && !!job && (job.userId === currentUserId || job.createdBy === currentUserId),
+  !!currentUserId && !!job && job.authorId === currentUserId,
 );
 
 // Fit score — enabled for non-owners with a primary resume. Backend returns
@@ -83,20 +64,11 @@ const myResumesQuery = createResumesList(
   { query: { enabled: browser && !!currentUserId && !isOwner, retry: false } },
 );
 const primaryResumeId = $derived.by<string | null>(() => {
-  const data = $myResumesQuery.data as unknown as
-    | { items?: Array<{ id?: string }>; data?: Array<{ id?: string }> }
-    | undefined;
-  const items = data?.items ?? data?.data ?? [];
-  return items.length > 0 ? (items[0]?.id ?? null) : null;
+  const items = $myResumesQuery.data?.items;
+  return items && items.length > 0 ? items[0].id : null;
 });
 
-type FitResponse = {
-  matchScore?: number;
-  matchedKeywords?: string[];
-  missingKeywords?: string[];
-  dimensions?: { hardSkills?: number; softSkills?: number };
-};
-const fit = $derived($fitQuery.data as unknown as FitResponse | undefined);
+const fit = $derived($fitQuery.data);
 
 // Bookmark state — server-driven via job.isBookmarked, with an optimistic
 // override that wins until the next refetch lands.
@@ -169,12 +141,6 @@ async function submitApplication(coverLetter: string) {
     track('job_apply_submitted', { jobId });
     toastState.show(locale.t('jobs.applySuccess'), 'success');
   } catch (err) {
-    const message =
-      isApiError(err) && err.statusCode === 403
-        ? locale.t('jobs.applyOwnerError')
-        : isApiError(err) && err.statusCode === 409
-          ? locale.t('jobs.applyAlreadyError')
-          : locale.t('jobs.applyError');
     handleApiError(err);
   } finally {
     applying = false;
@@ -190,8 +156,8 @@ async function confirmWithdraw() {
     withdrawConfirm = false;
     invalidateJobQueries();
     track('job_application_withdrawn', { jobId });
-  } catch {
-    toastState.show(locale.t('jobs.applyWithdrawError'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     withdrawing = false;
   }
@@ -291,13 +257,12 @@ const dimensionLabels: Record<string, string> = $derived({
 });
 
 const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
-  if (!fit?.dimensions) return undefined;
-  const out: FitDimension[] = [];
-  for (const [key, value] of Object.entries(fit.dimensions)) {
-    if (typeof value !== 'number') continue;
-    out.push({ key, label: dimensionLabels[key] ?? key, value });
-  }
-  return out.length > 0 ? out : undefined;
+  if (!fit?.dimensions || fit.dimensions.length === 0) return undefined;
+  return fit.dimensions.map((d) => ({
+    key: d.key,
+    label: dimensionLabels[d.key] ?? d.label,
+    value: d.value,
+  }));
 });
 </script>
 
@@ -423,10 +388,10 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 						<MatchScorePanel resumeId={primaryResumeId} {jobId} />
 					{:else}
 						<FitScoreBreakdown
-							score={fit?.matchScore}
+							score={fit?.score}
 							dimensions={fitDimensions}
-							matched={fit?.matchedKeywords ?? []}
-							missing={fit?.missingKeywords ?? []}
+							matched={fit?.matchedKeywords}
+							missing={fit?.missingKeywords}
 							labels={fitLabels}
 							onTeaserCta={() => goto('/careers/manage-resumes')}
 						/>

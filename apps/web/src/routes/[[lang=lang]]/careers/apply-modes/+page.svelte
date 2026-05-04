@@ -39,12 +39,8 @@ const preferencesQuery = createUsersPreferencesFullGet({
 });
 
 type ModeKey = UsersPreferencesFullPatchMutationRequestApplyModeEnumKey;
-type PrefsShape = { preferences?: { applyMode?: ModeKey }; applyMode?: ModeKey };
 
-const currentMode = $derived.by<ModeKey>(() => {
-  const data = $preferencesQuery.data as unknown as PrefsShape | undefined;
-  return data?.preferences?.applyMode ?? data?.applyMode ?? ('ONE_CLICK' as ModeKey);
-});
+const currentMode = $derived<ModeKey>($preferencesQuery.data?.preferences.applyMode ?? 'ONE_CLICK');
 
 const updateMutation = createUsersPreferencesFullPatch({
   mutation: {

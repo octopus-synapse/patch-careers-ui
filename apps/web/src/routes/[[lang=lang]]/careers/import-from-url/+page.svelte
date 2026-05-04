@@ -6,7 +6,7 @@ import {
   jobsCreate,
   jobsImportFromUrl,
 } from 'api-client';
-import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey } from 'api-client';
+import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey, JobsImportFromUrl200 } from 'api-client';
 import { ArrowRight, Globe, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -15,39 +15,19 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-type Preview = {
-  title: string;
-  company: string;
-  location: string;
-  description: string;
-  requirements: string[];
-  skills: string[];
-  salaryRange: string;
-  applyUrl: string;
-  jobType: JobsCreateMutationRequestJobTypeEnumKey | null;
-  remotePolicy: 'REMOTE' | 'HYBRID' | 'ONSITE' | null;
-};
-
-type RawPreview = Partial<Record<keyof Preview, unknown>>;
-
-function normalizePreview(raw: RawPreview): Preview {
-  return {
-    title: typeof raw.title === 'string' ? raw.title : '',
-    company: typeof raw.company === 'string' ? raw.company : '',
-    location: typeof raw.location === 'string' ? raw.location : '',
-    description: typeof raw.description === 'string' ? raw.description : '',
-    requirements: Array.isArray(raw.requirements) ? (raw.requirements as string[]) : [],
-    skills: Array.isArray(raw.skills) ? (raw.skills as string[]) : [],
-    salaryRange: typeof raw.salaryRange === 'string' ? raw.salaryRange : '',
-    applyUrl: typeof raw.applyUrl === 'string' ? raw.applyUrl : '',
-    jobType: (raw.jobType as JobsCreateMutationRequestJobTypeEnumKey | null) ?? null,
-    remotePolicy: (raw.remotePolicy as 'REMOTE' | 'HYBRID' | 'ONSITE' | null) ?? null,
-  };
-}
+type Preview = JobsImportFromUrl200['preview'];
 
 let url = $state('');
 let previewing = $state(false);
 let preview = $state<Preview | null>(null);
+// Editable string buffers — bind:value needs strings, preview keeps the
+// canonical typed shape from the SDK.
+let titleInput = $state('');
+let companyInput = $state('');
+let locationInput = $state('');
+let descriptionInput = $state('');
+let salaryInput = $state('');
+let applyInput = $state('');
 let error = $state('');
 let saving = $state(false);
 
@@ -56,12 +36,18 @@ async function runPreview() {
   previewing = true;
   error = '';
   try {
-    const res = (await jobsImportFromUrl({ url: url.trim() })) as unknown as {
-      source?: string;
-      preview?: RawPreview;
-    };
-    if (res.preview) preview = normalizePreview(res.preview);
-    else error = 'Não conseguimos extrair campos dessa página.';
+    const res = await jobsImportFromUrl({ url: url.trim() });
+    if (res.preview) {
+      preview = res.preview;
+      titleInput = preview.title ?? '';
+      companyInput = preview.company ?? '';
+      locationInput = preview.location ?? '';
+      descriptionInput = preview.description ?? '';
+      salaryInput = preview.salaryRange ?? '';
+      applyInput = preview.applyUrl ?? '';
+    } else {
+      error = 'Não conseguimos extrair campos dessa página.';
+    }
   } catch (err) {
     error =
       err instanceof Error ? err.message : 'Falha ao importar. Verifique a URL e tente de novo.';
@@ -75,14 +61,14 @@ async function confirmCreate() {
   saving = true;
   try {
     const body: JobsCreateMutationRequest = {
-      title: preview.title.trim() || 'Sem título',
-      company: preview.company.trim() || 'Sem empresa',
-      location: preview.location.trim() || undefined,
-      description: preview.description.trim() || 'Sem descrição',
+      title: titleInput.trim() || 'Sem título',
+      company: companyInput.trim() || 'Sem empresa',
+      location: locationInput.trim() || undefined,
+      description: descriptionInput.trim() || 'Sem descrição',
       jobType: (preview.jobType ?? 'FULL_TIME') as JobsCreateMutationRequestJobTypeEnumKey,
-      remotePolicy: preview.remotePolicy ?? undefined,
-      salaryRange: preview.salaryRange.trim() || undefined,
-      applyUrl: preview.applyUrl.trim() || url,
+      remotePolicy: preview.remotePolicy || undefined,
+      salaryRange: salaryInput.trim() || undefined,
+      applyUrl: applyInput.trim() || url,
       skills: preview.skills,
       requirements: preview.requirements,
     };
@@ -150,30 +136,30 @@ async function confirmCreate() {
 			<div class="space-y-4">
 				<div>
 					<Label for="p-title">Título</Label>
-					<Input id="p-title" bind:value={preview.title} />
+					<Input id="p-title" bind:value={titleInput} />
 				</div>
 				<div class="grid gap-3 md:grid-cols-2">
 					<div>
 						<Label for="p-company">Empresa</Label>
-						<Input id="p-company" bind:value={preview.company} />
+						<Input id="p-company" bind:value={companyInput} />
 					</div>
 					<div>
 						<Label for="p-location">Localização</Label>
-						<Input id="p-location" bind:value={preview.location} />
+						<Input id="p-location" bind:value={locationInput} />
 					</div>
 				</div>
 				<div>
 					<Label for="p-description">Descrição</Label>
 					<Textarea
 						id="p-description"
-						bind:value={preview.description}
+						bind:value={descriptionInput}
 						rows={8}
 					/>
 				</div>
 				<div>
 					<Label>Skills extraídas</Label>
 					<div class="flex flex-wrap gap-1.5">
-						{#each preview.skills ?? [] as skill}
+						{#each preview.skills as skill}
 							<Badge intent="accent" size="md">{skill}</Badge>
 						{:else}
 							<span class="text-xs text-gray-500 dark:text-neutral-500">Nenhuma skill detectada.</span>
@@ -183,11 +169,11 @@ async function confirmCreate() {
 				<div class="grid gap-3 md:grid-cols-2">
 					<div>
 						<Label for="p-salary">Salário</Label>
-						<Input id="p-salary" bind:value={preview.salaryRange} />
+						<Input id="p-salary" bind:value={salaryInput} />
 					</div>
 					<div>
 						<Label for="p-apply">Link de inscrição</Label>
-						<Input id="p-apply" type="url" bind:value={preview.applyUrl} />
+						<Input id="p-apply" type="url" bind:value={applyInput} />
 					</div>
 				</div>
 			</div>
