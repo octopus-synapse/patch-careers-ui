@@ -4,31 +4,24 @@
   /resumes/:id/comments endpoints.
 -->
 <script lang="ts">
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  collaborationResumesCommentsGetQueryKey,
+  createCollaborationResumesCommentsDelete,
+  createCollaborationResumesCommentsGet,
+  createCollaborationResumesCommentsPost,
+  createCollaborationResumesCommentsResolve,
+  type CollaborationResumesCommentsGet200,
+} from 'api-client';
 import { CheckCircle2, MessageSquare, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { onMount } from 'svelte';
-import { Button, Checkbox, Loader, Textarea, toastState } from 'ui';
+import { Button, Checkbox, Loader, Textarea } from 'ui';
+import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
-interface CommentAuthor {
-  id: string;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: string;
-  parentId: string | null;
-  resolved: boolean;
-  sectionId: string | null;
-  itemId: string | null;
-  author: CommentAuthor;
-}
+type Comment = CollaborationResumesCommentsGet200['comments'][number];
 
 interface Props {
   resumeId: string;
@@ -38,98 +31,74 @@ interface Props {
 
 let { resumeId, currentUserId, ownerId }: Props = $props();
 
-let comments = $state<Comment[]>([]);
-let loading = $state(true);
+const queryClient = useQueryClient();
+const commentsQuery = createCollaborationResumesCommentsGet(resumeId, {
+  query: { enabled: browser },
+});
+
 let newContent = $state('');
-let submitting = $state(false);
 let showResolved = $state(false);
+let replyToId = $state<string | null>(null);
+let replyContent = $state('');
 
-async function load() {
-  loading = true;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}/comments`, { credentials: 'include' });
-    const body = (await res.json()) as { data?: { comments?: Comment[] } };
-    comments = body.data?.comments ?? [];
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    loading = false;
-  }
-}
+const invalidate = () =>
+  queryClient.invalidateQueries({ queryKey: collaborationResumesCommentsGetQueryKey(resumeId) });
 
-async function create(parentId?: string, contentOverride?: string) {
+const createComment = createCollaborationResumesCommentsPost({
+  mutation: { onSuccess: invalidate, onError: handleApiError },
+});
+const resolveComment = createCollaborationResumesCommentsResolve({
+  mutation: { onSuccess: invalidate, onError: handleApiError },
+});
+const deleteComment = createCollaborationResumesCommentsDelete({
+  mutation: { onSuccess: invalidate, onError: handleApiError },
+});
+
+function create(parentId?: string, contentOverride?: string) {
   const content = (contentOverride ?? newContent).trim();
   if (!content) return;
-  submitting = true;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}/comments`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ content, parentId }),
-    });
-    if (!res.ok) throw new Error();
-    if (!parentId) newContent = '';
-    await load();
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    submitting = false;
-  }
+  $createComment.mutate(
+    { resumeId, data: { content, parentId } },
+    {
+      onSuccess: () => {
+        if (!parentId) newContent = '';
+      },
+    },
+  );
 }
 
-async function resolve(id: string) {
-  try {
-    const res = await fetch(`/api/v1/resumes/comments/${id}/resolve`, {
-      method: 'POST',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
-    comments = comments.map((c) => (c.id === id ? { ...c, resolved: true } : c));
-  } catch (err) {
-    handleApiError(err);
-  }
+function resolve(commentId: string) {
+  $resolveComment.mutate({ commentId });
 }
 
-async function remove(id: string) {
+function remove(commentId: string) {
   if (!confirm('Remover este comentário?')) return;
-  try {
-    const res = await fetch(`/api/v1/resumes/comments/${id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
-    comments = comments.filter((c) => c.id !== id);
-  } catch (err) {
-    handleApiError(err);
-  }
+  $deleteComment.mutate({ commentId });
 }
 
-const topLevel = $derived(comments.filter((c) => !c.parentId && (showResolved || !c.resolved)));
+function submitReply(parentId: string) {
+  if (!replyContent.trim()) return;
+  create(parentId, replyContent);
+  replyContent = '';
+  replyToId = null;
+}
+
+function canDelete(c: Comment): boolean {
+  return c.author.id === currentUserId || ownerId === currentUserId;
+}
+
+const allComments = $derived($commentsQuery.data?.comments);
+const topLevel = $derived(
+  allComments?.filter((c) => !c.parentId && (showResolved || !c.resolved)),
+);
 const repliesByParent = $derived(
-  comments.reduce<Record<string, Comment[]>>((acc, c) => {
+  allComments?.reduce<Record<string, Comment[]>>((acc, c) => {
     if (c.parentId) {
       (acc[c.parentId] ??= []).push(c);
     }
     return acc;
   }, {}),
 );
-
-function canDelete(c: Comment): boolean {
-  return c.author.id === currentUserId || ownerId === currentUserId;
-}
-
-let replyToId = $state<string | null>(null);
-let replyContent = $state('');
-
-async function submitReply(parentId: string) {
-  if (!replyContent.trim()) return;
-  await create(parentId, replyContent);
-  replyContent = '';
-  replyToId = null;
-}
-
-onMount(load);
 </script>
 
 <aside class="flex h-full w-full flex-col border-l border-gray-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
@@ -144,11 +113,11 @@ onMount(load);
   </header>
 
   <div class="flex-1 overflow-y-auto p-4">
-    {#if loading}
+    {#if $commentsQuery.isLoading}
       <div class="flex justify-center py-10">
         <Loader size={16} />
       </div>
-    {:else if topLevel.length === 0}
+    {:else if !topLevel || topLevel.length === 0}
       <p class="text-center text-xs text-gray-500 dark:text-neutral-500">Nenhum comentário.</p>
     {:else}
       <ul class="space-y-4">
@@ -217,7 +186,7 @@ onMount(load);
               </form>
             {/if}
 
-            {#if repliesByParent[c.id]?.length}
+            {#if repliesByParent?.[c.id]?.length}
               <ul class="mt-3 space-y-2 border-l border-gray-200 pl-3 dark:border-neutral-800">
                 {#each repliesByParent[c.id] as r (r.id)}
                   <li class="text-xs">
@@ -258,8 +227,8 @@ onMount(load);
       placeholder="Adicionar comentário…"
     />
     <div class="mt-2 flex justify-end">
-      <Button type="submit" size="sm" variant="solid" disabled={submitting || !newContent.trim()}>
-        {#if submitting}
+      <Button type="submit" size="sm" variant="solid" disabled={$createComment.isPending || !newContent.trim()}>
+        {#if $createComment.isPending}
           <Loader size={14} />
         {:else}
           Comentar

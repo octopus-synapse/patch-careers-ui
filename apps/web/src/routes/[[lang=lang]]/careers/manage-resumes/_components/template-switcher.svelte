@@ -1,6 +1,7 @@
 <!--
-  TemplateSwitcher — dropdown on resume cards that PATCHes the template
-  field. Optimistic UI: updates local state immediately, rolls back on error.
+  TemplateSwitcher — dropdown on resume cards. Backend has no `template`
+  column on Resume yet, so this still PATCHes raw and the value is dropped
+  server-side. Will swap to SDK once profile-services adds the column.
 -->
 <script lang="ts">
 

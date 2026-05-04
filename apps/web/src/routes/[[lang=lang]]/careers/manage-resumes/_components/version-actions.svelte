@@ -2,6 +2,7 @@
   VersionActions — rename + delete controls for a resume version card.
 -->
 <script lang="ts">
+import { createResumesDelete, createResumesUpdate } from 'api-client';
 import { Check, Pencil, Trash2, X } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { untrack } from 'svelte';
@@ -30,8 +31,9 @@ let titleDraft = $state(untrack(() => title ?? ''));
 $effect(() => {
   if (!editing) titleDraft = title ?? '';
 });
-let saving = $state(false);
-let deleting = $state(false);
+
+const renameMutation = createResumesUpdate({ mutation: { onError: handleApiError } });
+const deleteMutation = createResumesDelete({ mutation: { onError: handleApiError } });
 
 function startEdit() {
   titleDraft = title ?? '';
@@ -43,47 +45,35 @@ function cancelEdit() {
   titleDraft = title ?? '';
 }
 
-async function saveRename() {
+function saveRename() {
   const trimmed = titleDraft.trim();
   if (!trimmed || trimmed === title) {
     editing = false;
     return;
   }
-  saving = true;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ title: trimmed }),
-    });
-    if (!res.ok) throw new Error();
-    onRenamed?.(trimmed);
-    editing = false;
-    toastState.show(t('success.versionRenamed'), 'success');
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    saving = false;
-  }
+  $renameMutation.mutate(
+    { resumeId, data: { title: trimmed } },
+    {
+      onSuccess: () => {
+        onRenamed?.(trimmed);
+        editing = false;
+        toastState.show(t('success.versionRenamed'), 'success');
+      },
+    },
+  );
 }
 
-async function remove() {
+function remove() {
   if (!confirm('Remover esta versão permanentemente?')) return;
-  deleting = true;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
-    onDeleted?.();
-    toastState.show(t('success.versionRemoved'), 'success');
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    deleting = false;
-  }
+  $deleteMutation.mutate(
+    { resumeId },
+    {
+      onSuccess: () => {
+        onDeleted?.();
+        toastState.show(t('success.versionRemoved'), 'success');
+      },
+    },
+  );
 }
 </script>
 
@@ -94,8 +84,8 @@ async function remove() {
       placeholder="Nome da versão"
       class="h-7 text-xs"
     />
-    <Button variant="icon" size="xs" onclick={saveRename} disabled={saving} aria-label={t('actions.save')}>
-      {#if saving}
+    <Button variant="icon" size="xs" onclick={saveRename} disabled={$renameMutation.isPending} aria-label={t('actions.save')}>
+      {#if $renameMutation.isPending}
         <Loader size={14} />
       {:else}
         <Check size={14} class="text-emerald-500" />
@@ -109,8 +99,8 @@ async function remove() {
       <Pencil size={14} class="text-gray-400" />
     </Button>
     {#if canDelete}
-      <Button variant="icon" size="xs" onclick={remove} disabled={deleting} aria-label={t('actions.remove')}>
-        {#if deleting}
+      <Button variant="icon" size="xs" onclick={remove} disabled={$deleteMutation.isPending} aria-label={t('actions.remove')}>
+        {#if $deleteMutation.isPending}
           <Loader size={14} />
         {:else}
           <Trash2 size={14} class="text-red-500" />

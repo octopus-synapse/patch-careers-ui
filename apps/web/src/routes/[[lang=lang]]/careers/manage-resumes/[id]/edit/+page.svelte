@@ -1,7 +1,13 @@
 <script lang="ts">
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  createResumesGetById,
+  createResumesUpdate,
+  resumesGetByIdQueryKey,
+  type ResumesUpdateMutationRequest,
+} from 'api-client';
 import { ArrowLeft, Save } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { onMount } from 'svelte';
 import { Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -12,19 +18,11 @@ import { useFormDraft } from '$lib/state/use-form-draft.svelte';
 
 const t = $derived(locale.t);
 const resumeId = $derived($page.params.id);
+const queryClient = useQueryClient();
 
-interface ResumeForm extends Record<string, unknown> {
-  title: string;
-  fullName: string;
-  jobTitle: string;
-  summary: string;
-  location: string;
-  emailContact: string;
-  phone: string;
-  linkedin: string;
-  github: string;
-  website: string;
-}
+type ResumeForm = Required<Pick<ResumesUpdateMutationRequest,
+  'title' | 'fullName' | 'jobTitle' | 'summary' | 'location' | 'phone' | 'linkedin' | 'github' | 'website'
+>>;
 
 const draft = useFormDraft<ResumeForm>(() => `cv-${resumeId}`, {
   title: '',
@@ -32,53 +30,66 @@ const draft = useFormDraft<ResumeForm>(() => `cv-${resumeId}`, {
   jobTitle: '',
   summary: '',
   location: '',
-  emailContact: '',
   phone: '',
   linkedin: '',
   github: '',
   website: '',
 });
 
-let loading = $state(true);
-let loadError = $state<string | null>(null);
-let saving = $state(false);
+const resumeQuery = createResumesGetById(resumeId, { query: { enabled: browser } });
 
 // Auto-save banner state — relative 'há Ns' is updated by timeTicker elsewhere.
 let lastSavedAt = $state<number | null>(null);
 let lastSaveError = $state(false);
 let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
 let dirtyForAutoSave = $state(false);
+let hydrated = $state(false);
+
+const updateMutation = createResumesUpdate({
+  mutation: {
+    onSuccess: () => {
+      lastSavedAt = Date.now();
+      lastSaveError = false;
+      dirtyForAutoSave = false;
+      queryClient.invalidateQueries({ queryKey: resumesGetByIdQueryKey(resumeId) });
+    },
+    onError: (err) => {
+      lastSaveError = true;
+      handleApiError(err);
+    },
+  },
+});
+
+// Hydrate the form once the resume payload arrives.
+$effect(() => {
+  const r = $resumeQuery.data;
+  if (!r || hydrated) return;
+  draft.state = {
+    title: r.title ?? '',
+    fullName: r.fullName ?? '',
+    jobTitle: '',
+    summary: r.summary ?? '',
+    location: r.location ?? '',
+    phone: r.phone ?? '',
+    linkedin: '',
+    github: '',
+    website: '',
+  };
+  hydrated = true;
+});
 
 function scheduleAutoSave() {
   if (autoSaveTimer) clearTimeout(autoSaveTimer);
   dirtyForAutoSave = true;
-  autoSaveTimer = setTimeout(() => autoSave(), 1200);
-}
-
-async function autoSave() {
-  if (saving) return;
-  saving = true;
-  lastSaveError = false;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(draft.state),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    lastSavedAt = Date.now();
-    dirtyForAutoSave = false;
-  } catch {
-    lastSaveError = true;
-  } finally {
-    saving = false;
-  }
+  autoSaveTimer = setTimeout(() => {
+    if (!resumeId) return;
+    $updateMutation.mutate({ resumeId, data: { ...draft.state } });
+  }, 1200);
 }
 
 function relativeSavedAt(): string {
   if (lastSaveError) return 'Falha ao salvar';
-  if (saving && dirtyForAutoSave) return 'Salvando…';
+  if ($updateMutation.isPending && dirtyForAutoSave) return 'Salvando…';
   if (!lastSavedAt) return 'Salvamento automático ativo';
   const diffSec = Math.floor((Date.now() - lastSavedAt) / 1000);
   if (diffSec < 5) return 'Salvo agora';
@@ -90,62 +101,21 @@ function relativeSavedAt(): string {
 $effect(() => {
   // Trigger auto-save on any draft change (the state dependency makes this reactive).
   void draft.state;
-  if (!loading && browser) scheduleAutoSave();
+  if (hydrated && browser) scheduleAutoSave();
 });
 
-async function loadResume() {
-  if (!browser) return;
-  loading = true;
-  loadError = null;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}`, { credentials: 'include' });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
-    const body = (await res.json()) as { data?: { resume?: Partial<ResumeForm> } };
-    const r = body.data?.resume;
-    if (r) {
-      draft.state = {
-        title: r.title ?? '',
-        fullName: r.fullName ?? '',
-        jobTitle: r.jobTitle ?? '',
-        summary: r.summary ?? '',
-        location: r.location ?? '',
-        emailContact: r.emailContact ?? '',
-        phone: r.phone ?? '',
-        linkedin: r.linkedin ?? '',
-        github: r.github ?? '',
-        website: r.website ?? '',
-      };
-    }
-  } catch (err) {
-    loadError = err instanceof Error ? err.message : 'unknown';
-    handleApiError(err);
-  } finally {
-    loading = false;
-  }
-}
-
-onMount(loadResume);
-
-async function save() {
-  saving = true;
-  try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(draft.state),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    draft.clear();
-    toastState.show(t('common.saved'), 'success');
-    goto('/careers/manage-resumes');
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    saving = false;
-  }
+function save() {
+  if (!resumeId) return;
+  $updateMutation.mutate(
+    { resumeId, data: { ...draft.state } },
+    {
+      onSuccess: () => {
+        draft.clear();
+        toastState.show(t('common.saved'), 'success');
+        goto('/careers/manage-resumes');
+      },
+    },
+  );
 }
 </script>
 
@@ -162,12 +132,12 @@ async function save() {
       <ArrowLeft size={16} />
       Voltar
     </a>
-    {#if !loading}
+    {#if !$resumeQuery.isLoading}
       <span
-        class="flex items-center gap-1.5 text-[11px] font-medium {lastSaveError ? 'text-red-500' : saving ? 'text-gray-400 dark:text-neutral-500' : 'text-emerald-600 dark:text-emerald-400'}"
+        class="flex items-center gap-1.5 text-[11px] font-medium {lastSaveError ? 'text-red-500' : $updateMutation.isPending ? 'text-gray-400 dark:text-neutral-500' : 'text-emerald-600 dark:text-emerald-400'}"
         aria-live="polite"
       >
-        {#if saving && dirtyForAutoSave}
+        {#if $updateMutation.isPending && dirtyForAutoSave}
           <Loader size={10} />
         {:else if lastSaveError}
           <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
@@ -179,11 +149,11 @@ async function save() {
     {/if}
   </header>
 
-  {#if loading}
+  {#if $resumeQuery.isLoading}
     <div class="flex justify-center py-12" role="status" aria-label={t('common.loading')}>
       <Loader size={20} />
     </div>
-  {:else if loadError}
+  {:else if $resumeQuery.isError}
     <div
       class="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-900 dark:bg-red-950"
       role="alert"
@@ -191,7 +161,7 @@ async function save() {
       <p class="text-sm text-red-800 dark:text-red-200">
         {t('errors.loadFailed')}
       </p>
-      <Button type="button" variant="solid" class="mt-4" onclick={loadResume}>
+      <Button type="button" variant="solid" class="mt-4" onclick={() => $resumeQuery.refetch()}>
         {t('common.retry')}
       </Button>
     </div>
@@ -238,10 +208,6 @@ async function save() {
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <Label for="emailContact">Email de contato</Label>
-          <Input id="emailContact" type="email" bind:value={draft.state.emailContact} />
-        </div>
-        <div>
           <Label for="phone">Telefone</Label>
           <Input id="phone" bind:value={draft.state.phone} />
         </div>
@@ -265,8 +231,8 @@ async function save() {
 
       <div class="flex items-center justify-end gap-3 pt-4">
         <Button type="button" variant="outline" onclick={() => goto('/careers/manage-resumes')}>Cancelar</Button>
-        <Button type="submit" variant="solid" disabled={saving}>
-          {#if saving}
+        <Button type="submit" variant="solid" disabled={$updateMutation.isPending}>
+          {#if $updateMutation.isPending}
             <Loader size={14} class="mr-2" />
           {:else}
             <Save size={14} class="mr-2" />

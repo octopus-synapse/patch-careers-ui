@@ -1,78 +1,39 @@
 <!--
-  Admin collaboration overview — shows all active ResumeCollaborator rows
-  with filters by role + search. Admins can revoke any collaborator.
+  Admin collaboration overview — paginated /v1/admin/collaborations list with
+  a per-row revoke action.
 -->
 <script lang="ts">
+import { useQueryClient } from '@tanstack/svelte-query';
+import {
+  adminCollaborationsListQueryKey,
+  createAdminCollaborationsDelete,
+  createAdminCollaborationsList,
+} from 'api-client';
 import { Shield, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { onMount } from 'svelte';
-import { Avatar, Button, Input, Loader, Select, toastState } from 'ui';
+import { Avatar, Button, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 
-interface CollabRow {
-  id: string;
-  role: 'VIEWER' | 'EDITOR' | 'ADMIN';
-  invitedAt: string;
-  joinedAt: string | null;
-  resume: { id: string; title: string | null; userId: string; ownerUsername: string | null };
-  user: {
-    id: string;
-    name: string | null;
-    username: string | null;
-    photoURL: string | null;
-  };
+const queryClient = useQueryClient();
+
+const collaborationsQuery = createAdminCollaborationsList(undefined, {
+  query: { enabled: browser },
+});
+
+const revokeMutation = createAdminCollaborationsDelete({
+  mutation: {
+    onSuccess(data) {
+      toastState.show(data.message, 'success');
+      queryClient.invalidateQueries({ queryKey: adminCollaborationsListQueryKey() });
+    },
+    onError: handleApiError,
+  },
+});
+
+function revoke(resumeId: string, userId: string, label: string) {
+  if (!confirm(`Remover ${label} como colaborador?`)) return;
+  $revokeMutation.mutate({ resumeId, userId });
 }
-
-let rows = $state<CollabRow[]>([]);
-let loading = $state(true);
-let search = $state('');
-let roleFilter = $state<'ALL' | 'VIEWER' | 'EDITOR' | 'ADMIN'>('ALL');
-let revoking = $state<string | null>(null);
-
-async function load() {
-  if (!browser) return;
-  loading = true;
-  try {
-    const params = new URLSearchParams();
-    if (search.trim()) params.set('search', search.trim());
-    if (roleFilter !== 'ALL') params.set('role', roleFilter);
-    const res = await fetch(`/api/v1/admin/collaboration?${params}`, {
-      credentials: 'include',
-    });
-    const body = (await res.json()) as { data?: { collaborators?: CollabRow[] } };
-    rows = body.data?.collaborators ?? [];
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    loading = false;
-  }
-}
-
-async function revoke(row: CollabRow) {
-  if (
-    !confirm(
-      `Remover ${row.user.name ?? row.user.username} como colaborador do currículo de @${row.resume.ownerUsername ?? ''}?`,
-    )
-  ) {
-    return;
-  }
-  revoking = row.id;
-  try {
-    const res = await fetch(`/api/v1/admin/collaboration/${row.resume.id}/${row.user.id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
-    rows = rows.filter((r) => r.id !== row.id);
-    toastState.show('Colaborador removido.', 'success');
-  } catch (err) {
-    handleApiError(err);
-  } finally {
-    revoking = null;
-  }
-}
-
-onMount(load);
 </script>
 
 <svelte:head>
@@ -87,32 +48,11 @@ onMount(load);
     </h1>
   </header>
 
-  <form
-    class="mb-4 flex flex-wrap gap-2"
-    onsubmit={(e) => {
-      e.preventDefault();
-      load();
-    }}
-  >
-    <Input
-      bind:value={search}
-      placeholder="Buscar por nome, username ou título do currículo"
-      class="flex-1 min-w-[200px]"
-    />
-    <Select bind:value={roleFilter}>
-      <option value="ALL">Todas as roles</option>
-      <option value="VIEWER">Viewer</option>
-      <option value="EDITOR">Editor</option>
-      <option value="ADMIN">Admin</option>
-    </Select>
-    <Button type="submit" variant="outline">Filtrar</Button>
-  </form>
-
-  {#if loading}
+  {#if $collaborationsQuery.isLoading}
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>
-  {:else if rows.length === 0}
+  {:else if !$collaborationsQuery.data || $collaborationsQuery.data.items.length === 0}
     <p class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500">
       Nenhum colaborador ativo.
     </p>
@@ -129,46 +69,26 @@ onMount(load);
           </tr>
         </thead>
         <tbody>
-          {#each rows as r (r.id)}
+          {#each $collaborationsQuery.data.items as r (r.id)}
+            {@const revoking = $revokeMutation.isPending && $revokeMutation.variables?.resumeId === r.resumeId && $revokeMutation.variables?.userId === r.userId}
             <tr class="border-t border-gray-200 dark:border-neutral-800">
               <td class="px-4 py-2">
                 <div class="flex items-center gap-2">
-                  <Avatar
-                    name={r.user.name ?? r.user.username ?? '?'}
-                    photoURL={r.user.photoURL}
-                    size="sm"
-                  />
+                  <Avatar name={r.user.name ?? r.user.email} photoURL={null} size="sm" />
                   <div>
                     <p class="font-medium text-gray-900 dark:text-neutral-100">
-                      {r.user.name ?? r.user.username}
+                      {r.user.name ?? r.user.email}
                     </p>
-                    {#if r.user.username}
-                      <a
-                        href="/my-profile/public/@{r.user.username}"
-                        class="text-xs text-cyan-500 hover:underline"
-                      >
-                        @{r.user.username}
-                      </a>
-                    {/if}
+                    <span class="text-xs text-gray-500 dark:text-neutral-500">{r.user.email}</span>
                   </div>
                 </div>
               </td>
               <td class="px-4 py-2">
                 <p class="text-gray-800 dark:text-neutral-200">{r.resume.title ?? 'Sem título'}</p>
-                <p class="text-xs text-gray-500 dark:text-neutral-500">
-                  dono: @{r.resume.ownerUsername ?? '—'}
-                </p>
+                <p class="text-xs text-gray-500 dark:text-neutral-500">id: {r.resume.id}</p>
               </td>
               <td class="px-4 py-2">
-                <span
-                  class="rounded-full px-2 py-0.5 text-xs"
-                  class:bg-gray-100={r.role === 'VIEWER'}
-                  class:bg-blue-100={r.role === 'EDITOR'}
-                  class:bg-red-100={r.role === 'ADMIN'}
-                  class:dark:bg-neutral-800={r.role === 'VIEWER'}
-                  class:dark:bg-blue-900={r.role === 'EDITOR'}
-                  class:dark:bg-red-900={r.role === 'ADMIN'}
-                >
+                <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs dark:bg-neutral-800">
                   {r.role}
                 </span>
               </td>
@@ -181,11 +101,11 @@ onMount(load);
                 <Button
                   variant="icon"
                   size="xs"
-                  onclick={() => revoke(r)}
-                  disabled={revoking === r.id}
+                  onclick={() => revoke(r.resumeId, r.userId, r.user.name ?? r.user.email)}
+                  disabled={revoking}
                   aria-label="Revogar acesso"
                 >
-                  {#if revoking === r.id}
+                  {#if revoking}
                     <Loader size={14} />
                   {:else}
                     <Trash2 size={14} class="text-red-500" />
