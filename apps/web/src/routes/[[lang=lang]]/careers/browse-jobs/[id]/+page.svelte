@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
   createJobsBookmarkPost,
   createJobsBookmarkDelete,
@@ -174,7 +175,7 @@ async function submitApplication(coverLetter: string) {
         : isApiError(err) && err.statusCode === 409
           ? locale.t('jobs.applyAlreadyError')
           : locale.t('jobs.applyError');
-    toastState.show(message, 'danger');
+    handleApiError(err);
   } finally {
     applying = false;
   }

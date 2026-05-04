@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
   jobsMineQueryKey,
   jobsCreate,
@@ -90,7 +91,7 @@ async function confirmCreate() {
     toastState.show('Vaga criada a partir da URL.', 'success');
     goto('/recruiting/jobs');
   } catch (err) {
-    toastState.show(err instanceof Error ? err.message : 'Falha ao criar vaga.', 'danger');
+    handleApiError(err);
   } finally {
     saving = false;
   }

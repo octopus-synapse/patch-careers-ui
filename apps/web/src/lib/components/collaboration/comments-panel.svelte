@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 import { CheckCircle2, MessageSquare, Trash2 } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Button, Checkbox, Loader, Textarea, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
@@ -49,8 +50,8 @@ async function load() {
     const res = await fetch(`/api/v1/resumes/${resumeId}/comments`, { credentials: 'include' });
     const body = (await res.json()) as { data?: { comments?: Comment[] } };
     comments = body.data?.comments ?? [];
-  } catch {
-    toastState.show(t('errors.loadCommentsFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = false;
   }
@@ -70,8 +71,8 @@ async function create(parentId?: string, contentOverride?: string) {
     if (!res.ok) throw new Error();
     if (!parentId) newContent = '';
     await load();
-  } catch {
-    toastState.show(t('errors.submitCommentFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     submitting = false;
   }
@@ -85,8 +86,8 @@ async function resolve(id: string) {
     });
     if (!res.ok) throw new Error();
     comments = comments.map((c) => (c.id === id ? { ...c, resolved: true } : c));
-  } catch {
-    toastState.show(t('errors.resolveCommentFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   }
 }
 
@@ -99,8 +100,8 @@ async function remove(id: string) {
     });
     if (!res.ok) throw new Error();
     comments = comments.filter((c) => c.id !== id);
-  } catch {
-    toastState.show(t('errors.removeFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   }
 }
 

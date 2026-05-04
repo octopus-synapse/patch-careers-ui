@@ -12,6 +12,7 @@
   } from 'api-client';
   import { Loader, RefreshCw } from 'lucide-svelte';
   import { Button, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
   type FlagRow = {
@@ -37,8 +38,8 @@
       await adminFeatureFlagsUpdate(flag.key, { enabled: !flag.enabled });
       toastState.show('Flag atualizada', 'success');
       await queryClient.invalidateQueries({ queryKey: adminFeatureFlagsListQueryKey() });
-    } catch {
-      toastState.show('Falha ao atualizar flag', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       toggling = null;
     }
@@ -50,8 +51,8 @@
     try {
       await adminFeatureFlagsBroadcastRefresh();
       toastState.show('Broadcast enviado', 'success');
-    } catch {
-      toastState.show('Falha ao enviar broadcast', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       broadcasting = false;
     }

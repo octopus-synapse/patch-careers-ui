@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
   createJobsList,
   createJobsRecommended,
@@ -310,7 +311,7 @@ async function runRageApply() {
       rageOpen = false;
     }
   } catch (err) {
-    toastState.show(err instanceof Error ? err.message : 'Falha ao rodar rage apply.', 'danger');
+    handleApiError(err);
   } finally {
     rageRunning = false;
   }

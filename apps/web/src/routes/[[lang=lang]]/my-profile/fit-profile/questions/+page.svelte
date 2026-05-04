@@ -11,6 +11,7 @@
   import { useQueryClient } from '@tanstack/svelte-query';
   import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { locale } from '$lib/state/locale.svelte';
@@ -92,7 +93,7 @@
       void goto('/my-profile/scores');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Não foi possível salvar.';
-      toastState.show(message, 'danger');
+      handleApiError(err);
     } finally {
       submitting = false;
     }

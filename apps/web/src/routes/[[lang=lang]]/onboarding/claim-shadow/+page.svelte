@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 import { Check, X } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Button, Card, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -45,8 +46,8 @@ async function load() {
       // Nothing to claim — bounce straight to dashboard.
       goto('/my-profile/dashboard');
     }
-  } catch {
-    toastState.show('Falha ao buscar perfis pré-montados.', 'danger');
+  } catch (err) {
+    handleApiError(err);
     goto('/my-profile/dashboard');
   } finally {
     loading = false;
@@ -63,8 +64,8 @@ async function claim(id: string) {
     if (!res.ok) throw new Error();
     toastState.show('Perfil reivindicado. Adicionamos os dados ao seu currículo.', 'success');
     goto('/my-profile/dashboard');
-  } catch {
-    toastState.show('Falha ao reivindicar perfil.', 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     claiming = null;
   }

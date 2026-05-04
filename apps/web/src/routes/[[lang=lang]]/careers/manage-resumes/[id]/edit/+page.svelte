@@ -1,5 +1,6 @@
 <script lang="ts">
 import { ArrowLeft, Save } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -119,7 +120,7 @@ async function loadResume() {
     }
   } catch (err) {
     loadError = err instanceof Error ? err.message : 'unknown';
-    toastState.show(t('errors.loadFailed'), 'danger');
+    handleApiError(err);
   } finally {
     loading = false;
   }
@@ -140,8 +141,8 @@ async function save() {
     draft.clear();
     toastState.show(t('common.saved'), 'success');
     goto('/careers/manage-resumes');
-  } catch {
-    toastState.show(t('errors.saveFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     saving = false;
   }

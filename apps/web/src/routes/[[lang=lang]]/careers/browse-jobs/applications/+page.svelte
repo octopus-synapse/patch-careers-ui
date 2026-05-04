@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 import { Briefcase, Calendar, CheckCircle2, Eye, MessageSquarePlus, XCircle } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Button, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -59,8 +60,8 @@ async function quickFollowUp(applicationId: string) {
     if (!res.ok) throw new Error();
     await load();
     toastState.show('Follow-up registrado.', 'success');
-  } catch {
-    toastState.show(t('errors.registerFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   }
 }
 
@@ -101,8 +102,8 @@ async function load() {
     });
     const body = (await res.json()) as { data?: { applications?: TrackedApplication[] } };
     applications = body.data?.applications ?? [];
-  } catch {
-    toastState.show(t('errors.loadApplicationsFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = false;
   }
@@ -125,8 +126,8 @@ async function addEvent(appId: string) {
     formNote = '';
     await load();
     toastState.show('Evento registrado.', 'success');
-  } catch {
-    toastState.show(t('errors.registerEventFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     adding = null;
   }

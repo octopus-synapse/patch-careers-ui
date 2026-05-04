@@ -8,10 +8,10 @@ import {
   engagementPostsReport,
   engagementPostsRepost,
   feedListQueryKey,
-  isApiError,
   postsDelete,
 } from 'api-client';
 import { type ReactionType, toastState } from 'ui';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { track } from '$lib/utils/analytics/track';
 import { undoableAction } from '$lib/utils/undoable-action';
@@ -195,11 +195,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
     } catch (err) {
       setPosts(snapshot);
-      const message =
-        isApiError(err) && err.statusCode === 409
-          ? locale.t('feed.quoteRepost.alreadyRepostedError')
-          : locale.t('feed.quoteRepost.genericError');
-      toastState.show(message, 'danger');
+      handleApiError(err);
     }
   }
 
@@ -209,7 +205,6 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
 
   async function handleVote(id: string, optionIndex: number) {
     if (votingPosts.has(id)) return;
-    const t = locale.t;
     const snapshot = getPosts();
     votingPosts = new Set([...votingPosts, id]);
     setPosts(
@@ -236,11 +231,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
     } catch (err) {
       setPosts(snapshot);
-      const message =
-        isApiError(err) && err.statusCode === 409
-          ? t('feed.poll.alreadyVotedError')
-          : t('feed.poll.voteError');
-      toastState.show(message, 'danger');
+      handleApiError(err);
     } finally {
       votingPosts = new Set([...votingPosts].filter((x) => x !== id));
     }

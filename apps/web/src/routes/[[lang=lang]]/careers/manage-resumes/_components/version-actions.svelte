@@ -3,6 +3,7 @@
 -->
 <script lang="ts">
 import { Check, Pencil, Trash2, X } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { untrack } from 'svelte';
 import { Button, Input, Loader, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
@@ -60,8 +61,8 @@ async function saveRename() {
     onRenamed?.(trimmed);
     editing = false;
     toastState.show(t('success.versionRenamed'), 'success');
-  } catch {
-    toastState.show(t('errors.renameFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     saving = false;
   }
@@ -78,8 +79,8 @@ async function remove() {
     if (!res.ok) throw new Error();
     onDeleted?.();
     toastState.show(t('success.versionRemoved'), 'success');
-  } catch {
-    toastState.show(t('errors.removeFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     deleting = false;
   }

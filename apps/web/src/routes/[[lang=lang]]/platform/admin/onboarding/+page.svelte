@@ -12,6 +12,7 @@
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import StatCard from '../_components/stat-card.svelte';
   import { locale } from '$lib/state/locale.svelte';
@@ -51,8 +52,8 @@
       await adminOnboardingStepsDelete(key);
       toastState.show('Step excluído', 'success');
       await queryClient.invalidateQueries({ queryKey: adminOnboardingStepsGetQueryKey() });
-    } catch {
-      toastState.show('Falha ao excluir', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       deletingKey = null;
     }

@@ -11,6 +11,7 @@
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
   type SectionType = {
@@ -47,8 +48,8 @@
       await adminSectionTypesDelete(key);
       toastState.show('Seção excluída', 'success');
       await queryClient.invalidateQueries({ queryKey: adminSectionTypesListQueryKey() });
-    } catch {
-      toastState.show('Falha ao excluir', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       deleting = null;
     }

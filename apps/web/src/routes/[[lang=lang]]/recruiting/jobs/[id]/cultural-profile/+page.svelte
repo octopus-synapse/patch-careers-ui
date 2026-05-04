@@ -11,6 +11,7 @@
   type Sliders = FitProfileJobsFitProfilePostMutationRequest['sliders'];
   import { Save } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
 
@@ -70,8 +71,8 @@
     try {
       await fitProfileJobsFitProfilePost(jobId, { sliders });
       toastState.show('Perfil cultural salvo', 'success');
-    } catch {
-      toastState.show('Falha ao salvar', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       saving = false;
     }

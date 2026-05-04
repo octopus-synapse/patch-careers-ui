@@ -8,6 +8,7 @@ import {
   skillEndorsementsUsersSkillsEndorsers,
 } from 'api-client';
 import { ChevronDown, ChevronUp } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Avatar, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -51,8 +52,8 @@ async function toggleExpand(skill: string) {
         | undefined;
       const list = res?.data?.endorsers ?? res?.endorsers ?? res?.items ?? [];
       endorsersCache = { ...endorsersCache, [skill]: list };
-    } catch {
-      toastState.show('Falha ao carregar endossos.', 'danger');
+    } catch (err) {
+      handleApiError(err);
       endorsersCache = { ...endorsersCache, [skill]: [] };
     }
   }

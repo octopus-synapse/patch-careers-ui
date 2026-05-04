@@ -19,6 +19,7 @@
   } from 'lucide-svelte';
   import type { Component } from 'svelte';
   import { Badge, Button, DangerConfirmModal, EmptyState, Skeleton, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { formatDate } from '$lib/utils/format-date';
   import { locale } from '$lib/state/locale.svelte';
 
@@ -59,8 +60,8 @@
         queryKey: jobsMineQueryKey({ page: '1', limit: '50' }),
       });
       deleteTarget = null;
-    } catch {
-      toastState.show('Falha ao excluir', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       deleting = false;
     }

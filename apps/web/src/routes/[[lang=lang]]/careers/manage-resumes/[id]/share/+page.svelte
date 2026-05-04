@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 import { ChevronDown, ChevronRight, Copy, Download, Link as LinkIcon, Lock, Package, Plus, QrCode, Trash2 } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import QRCode from 'qrcode';
 import { onMount } from 'svelte';
 import { Button, Input, Label, Loader, toastState } from 'ui';
@@ -83,8 +84,8 @@ async function load() {
     // produced by the backend before profile-services PR #213 normalized it.
     const body = (await res.json()) as { data?: { shares?: Share[] }; shares?: Share[] };
     shares = body.data?.shares ?? body.shares ?? [];
-  } catch {
-    toastState.show(t('errors.loadSharesFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = false;
   }
@@ -125,7 +126,7 @@ async function createShare() {
     await load();
     toastState.show(t('success.shareCreated'), 'success');
   } catch (err) {
-    toastState.show(err instanceof Error ? err.message : 'Falha ao criar link.', 'danger');
+    handleApiError(err);
   } finally {
     creating = false;
   }
@@ -142,8 +143,8 @@ async function revoke(id: string) {
     shares = shares.filter((s) => s.id !== id);
     delete aliasesByShare[id];
     delete expandedShare[id];
-  } catch {
-    toastState.show(t('errors.removeFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   }
 }
 
@@ -166,8 +167,8 @@ async function loadAliases(shareId: string) {
     const res = await fetch(`/api/v1/shares/${shareId}/aliases`, { credentials: 'include' });
     const body = (await res.json()) as { data?: { aliases?: Alias[] } };
     aliasesByShare[shareId] = body.data?.aliases ?? [];
-  } catch {
-    toastState.show(t('errors.loadAliasesFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     aliasLoading[shareId] = false;
   }
@@ -198,8 +199,8 @@ async function addAlias(shareId: string) {
     newAliasInput[shareId] = '';
     await loadAliases(shareId);
     toastState.show(t('success.aliasAdded'), 'success');
-  } catch {
-    toastState.show('Falha ao adicionar alias.', 'danger');
+  } catch (err) {
+    handleApiError(err);
   }
 }
 
@@ -212,8 +213,8 @@ async function removeAlias(shareId: string, aliasId: string) {
     });
     if (!res.ok) throw new Error();
     aliasesByShare[shareId] = (aliasesByShare[shareId] ?? []).filter((a) => a.id !== aliasId);
-  } catch {
-    toastState.show('Falha ao remover alias.', 'danger');
+  } catch (err) {
+    handleApiError(err);
   }
 }
 
@@ -260,8 +261,8 @@ async function downloadBundle() {
     a.remove();
     URL.revokeObjectURL(url);
     toastState.show('Bundle baixado.', 'success');
-  } catch {
-    toastState.show('Falha ao baixar bundle.', 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     bundleDownloading = false;
   }

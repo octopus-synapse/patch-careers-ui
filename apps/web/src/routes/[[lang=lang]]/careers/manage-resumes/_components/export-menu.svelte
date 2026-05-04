@@ -11,10 +11,8 @@ import {
   exportUserResumePdf,
 } from 'api-client';
 import { Download, FileCode, FileJson, FileText, FileType } from 'lucide-svelte';
-import { Button, Dropdown, Loader, toastState } from 'ui';
-import { locale } from '$lib/state/locale.svelte';
-
-const t = $derived(locale.t);
+import { Button, Dropdown, Loader } from 'ui';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 
 interface Props {
   /** Required for DOCX (current user only). For per-resume formats, pass resumeId. */
@@ -59,8 +57,8 @@ async function downloadPdf() {
     const url = URL.createObjectURL(blob);
     triggerDownload(url, res.filename || `${filenameHint}.pdf`);
     URL.revokeObjectURL(url);
-  } catch {
-    toastState.show(t('errors.exportPdfFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = null;
     open = false;
@@ -74,8 +72,8 @@ async function downloadDocx() {
       await exportResumeDocx(),
     );
     triggerDownload(res.downloadUrl, res.filename);
-  } catch {
-    toastState.show(t('errors.exportDocxFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = null;
     open = false;
@@ -90,8 +88,8 @@ async function downloadJson() {
       await exportJson(resumeId),
     );
     triggerDownload(res.downloadUrl, res.filename);
-  } catch {
-    toastState.show(t('errors.exportJsonFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = null;
     open = false;
@@ -106,8 +104,8 @@ async function downloadLatex() {
       await exportLatex(resumeId),
     );
     triggerDownload(res.downloadUrl, res.filename);
-  } catch {
-    toastState.show(t('errors.exportLatexFailed'), 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = null;
     open = false;

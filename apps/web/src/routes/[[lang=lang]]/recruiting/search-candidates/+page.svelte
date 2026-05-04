@@ -9,6 +9,7 @@
   } from 'api-client';
   import { Sparkles, Users } from 'lucide-svelte';
   import { Avatar, Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { goto } from '$app/navigation';
 
   type Candidate = {
@@ -71,7 +72,7 @@
         err && typeof err === 'object' && 'message' in err && typeof err.message === 'string'
           ? err.message
           : 'Falha ao buscar candidatos';
-      toastState.show(message, 'danger');
+      handleApiError(err);
     } finally {
       submitting = false;
     }

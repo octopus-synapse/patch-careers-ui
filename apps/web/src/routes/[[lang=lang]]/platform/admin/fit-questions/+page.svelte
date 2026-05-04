@@ -11,6 +11,7 @@
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
   type Question = {
@@ -42,8 +43,8 @@
       await adminFitQuestionsDelete(id);
       toastState.show('Pergunta excluída', 'success');
       await queryClient.invalidateQueries({ queryKey: adminFitQuestionsListQueryKey() });
-    } catch {
-      toastState.show('Falha ao excluir', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       deleting = null;
     }

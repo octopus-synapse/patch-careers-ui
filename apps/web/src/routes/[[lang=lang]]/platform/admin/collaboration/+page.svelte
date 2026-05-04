@@ -4,6 +4,7 @@
 -->
 <script lang="ts">
 import { Shield, Trash2 } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Avatar, Button, Input, Loader, Select, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -40,8 +41,8 @@ async function load() {
     });
     const body = (await res.json()) as { data?: { collaborators?: CollabRow[] } };
     rows = body.data?.collaborators ?? [];
-  } catch {
-    toastState.show('Falha ao carregar colaboradores.', 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     loading = false;
   }
@@ -64,8 +65,8 @@ async function revoke(row: CollabRow) {
     if (!res.ok) throw new Error();
     rows = rows.filter((r) => r.id !== row.id);
     toastState.show('Colaborador removido.', 'success');
-  } catch {
-    toastState.show('Falha ao remover.', 'danger');
+  } catch (err) {
+    handleApiError(err);
   } finally {
     revoking = null;
   }

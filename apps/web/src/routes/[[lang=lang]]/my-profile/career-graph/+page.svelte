@@ -13,6 +13,7 @@ import {
   careerGraphView,
 } from 'api-client';
 import { Sparkles, TrendingUp, Users } from 'lucide-svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Badge, Button, Input, Label, Loader, toastState } from 'ui';
 
 let skillsCsv = $state('');
@@ -45,7 +46,7 @@ async function handleSearch() {
       err && typeof err === 'object' && 'message' in err && typeof err.message === 'string'
         ? err.message
         : 'Falha ao calcular seu career graph';
-    toastState.show(message, 'danger');
+    handleApiError(err);
   } finally {
     submitting = false;
   }

@@ -12,6 +12,7 @@
   import { createUsersProfiles, exportUserResumePdf } from 'api-client';
   import { FileDown, Globe, MapPin } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { page } from '$app/stores';
   import { useAuth } from '$lib/state/auth.svelte';
   import ProfileActivityTabs from './_components/profile-activity-tabs.svelte';
@@ -86,8 +87,8 @@
       await navigator.clipboard.writeText(window.location.href);
       copiedLink = true;
       setTimeout(() => (copiedLink = false), 2000);
-    } catch {
-      toastState.show('Falha ao copiar link.', 'danger');
+    } catch (err) {
+      handleApiError(err);
     }
   }
 

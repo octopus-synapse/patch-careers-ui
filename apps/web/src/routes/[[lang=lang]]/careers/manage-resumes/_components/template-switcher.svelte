@@ -5,6 +5,7 @@
 <script lang="ts">
 
 import { untrack } from 'svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Loader, toastState } from 'ui';
 
 type Template =
@@ -58,9 +59,9 @@ async function handleChange(e: Event) {
     if (!res.ok) throw new Error();
     onchange?.(next);
     toastState.show('Template atualizado.', 'success');
-  } catch {
+  } catch (err) {
     current = prev;
-    toastState.show('Falha ao trocar template.', 'danger');
+    handleApiError(err);
   } finally {
     saving = false;
   }

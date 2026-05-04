@@ -11,6 +11,7 @@
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { locale } from '$lib/state/locale.svelte';
 
@@ -57,8 +58,8 @@
       await usersManageDelete(id);
       toastState.show(t('admin.users.toastDeleted'), 'success');
       await queryClient.invalidateQueries({ queryKey: usersManageGetQueryKey() });
-    } catch {
-      toastState.show('Falha ao excluir', 'danger');
+    } catch (err) {
+      handleApiError(err);
     } finally {
       deleting = null;
     }
