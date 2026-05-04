@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
 import { createSocialActivityUsersFeed, type SocialActivityUsersFeed200 } from 'api-client';
-import { AlarmClock, Award, Briefcase, FileText, Sparkles, TrendingDown, UserPlus, Users } from 'lucide-svelte';
+import { Award, FileText, Palette, Sparkles, UserPlus } from 'lucide-svelte';
 import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -22,29 +22,16 @@ const feed = createSocialActivityUsersFeed(
 
 const activities = $derived($feed.data?.feed.data);
 
-function iconFor(type: string) {
-  if (type === 'SKILL_DECAY') return TrendingDown;
-  if (type === 'APPLICATION_STALE') return AlarmClock;
-  if (type === 'CONNECTION_RECOMMENDATION') return Users;
+function iconFor(type: ActivityItem['type']) {
   if (type.startsWith('RESUME')) return FileText;
-  if (type === 'FOLLOW_NEW' || type === 'CONNECTION_ACCEPTED') return UserPlus;
-  if (type.startsWith('JOB') || type.startsWith('APPLICATION')) return Briefcase;
-  if (type.startsWith('BADGE')) return Award;
+  if (type === 'FOLLOWED_USER' || type === 'CONNECTED_USER') return UserPlus;
+  if (type === 'ACHIEVEMENT_EARNED') return Award;
+  if (type === 'THEME_PUBLISHED') return Palette;
   return Sparkles;
 }
 
-type ActivityMetadata = {
-  skillName?: string;
-  daysSinceTouched?: number;
-  company?: string;
-  daysSilent?: number;
-  sharedSkills?: number;
-  suggestedName?: string;
-};
-
 function summarize(a: ActivityItem): string {
   const name = a.user?.name ?? a.user?.username ?? 'Alguém';
-  const m = (a.metadata ?? {}) as ActivityMetadata;
   switch (a.type) {
     case 'RESUME_CREATED':
       return `${name} criou um novo currículo.`;
@@ -52,22 +39,20 @@ function summarize(a: ActivityItem): string {
       return `${name} atualizou o currículo.`;
     case 'RESUME_PUBLISHED':
       return `${name} publicou o currículo.`;
-    case 'FOLLOW_NEW':
+    case 'RESUME_SHARED':
+      return `${name} compartilhou um currículo.`;
+    case 'THEME_PUBLISHED':
+      return `${name} publicou um tema.`;
+    case 'ACHIEVEMENT_EARNED':
+      return `${name} conquistou uma achievement.`;
+    case 'SKILL_ADDED':
+      return `${name} adicionou uma nova skill.`;
+    case 'PROFILE_UPDATED':
+      return `${name} atualizou o perfil.`;
+    case 'FOLLOWED_USER':
       return `${name} começou a seguir alguém.`;
-    case 'CONNECTION_ACCEPTED':
+    case 'CONNECTED_USER':
       return `${name} conectou com alguém novo.`;
-    case 'JOB_APPLIED':
-      return `${name} aplicou para uma vaga.`;
-    case 'BADGE_EARNED':
-      return `${name} conquistou uma badge.`;
-    case 'SKILL_DECAY':
-      return `Sua skill "${m.skillName ?? '...'}" não recebeu atualizações há ${m.daysSinceTouched ?? 'vários'} dias — vale reativar.`;
-    case 'APPLICATION_STALE':
-      return `Aplicação para ${m.company ?? 'uma vaga'} parada há ${m.daysSilent ?? 'vários'} dias. Que tal um follow-up?`;
-    case 'CONNECTION_RECOMMENDATION':
-      return `Sugestão: você tem ${m.sharedSkills ?? 'várias'} skills em comum com ${m.suggestedName ?? 'alguém'}.`;
-    default:
-      return `${name} — ${a.type.toLowerCase().replace(/_/g, ' ')}`;
   }
 }
 </script>
