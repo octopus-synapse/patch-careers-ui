@@ -1,6 +1,8 @@
 <script lang="ts">
 import '../app.css';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
+import { dev } from '$app/environment';
 import { setBaseUrl } from 'api-client';
 import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
@@ -98,6 +100,7 @@ $effect(() => {
 			<LockoutModal />
 		</div>
 		{#if showCookieBanner}<CookieBanner />{/if}
+		{#if dev}<SvelteQueryDevtools />{/if}
 	</QueryClientProvider>
 {:else}
 	<div class="min-h-screen flex flex-col transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
@@ -116,6 +119,7 @@ $effect(() => {
 			<ChatFab />
 			<Footer />
 			<LockoutModal />
+			{#if dev}<SvelteQueryDevtools />{/if}
 		</QueryClientProvider>
 		{#if showCookieBanner}<CookieBanner />{/if}
 	</div>

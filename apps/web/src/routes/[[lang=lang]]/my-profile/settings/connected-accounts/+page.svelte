@@ -1,26 +1,18 @@
 <script lang="ts">
+import { authOauthAvailable } from 'api-client';
 import { Github, Linkedin } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button } from 'ui';
 
-interface Providers {
-  github: boolean;
-  linkedin: boolean;
-}
-
-let providers = $state<Providers>({ github: false, linkedin: false });
+let providers = $state({ github: false, linkedin: false });
 let loading = $state(true);
 
 onMount(async () => {
   try {
     const [gh, li] = await Promise.all([
-      fetch('/api/v1/auth/oauth/available/github').then((r) => r.json()),
-      fetch('/api/v1/auth/oauth/available/linkedin').then((r) => r.json()),
+      authOauthAvailable('github'),
+      authOauthAvailable('linkedin'),
     ]);
-    providers = {
-      github: Boolean((gh as { data?: { available?: boolean } })?.data?.available),
-      linkedin: Boolean((li as { data?: { available?: boolean } })?.data?.available),
-    };
+    providers = { github: gh.available, linkedin: li.available };
   } finally {
     loading = false;
   }

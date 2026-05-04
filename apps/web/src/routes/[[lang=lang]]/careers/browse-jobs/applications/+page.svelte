@@ -4,60 +4,29 @@
   /v1/jobs/applications/:id/events.
 -->
 <script lang="ts">
+import {
+  type ApplicationTrackerJobsApplicationsEventsMutationRequestTypeEnumKey,
+  type ApplicationTrackerJobsApplicationsTracker200,
+  type EventsTypeEnumKey,
+  applicationTrackerJobsApplicationsEvents,
+  applicationTrackerJobsApplicationsTracker,
+} from 'api-client';
 import { Briefcase, Calendar, CheckCircle2, Eye, MessageSquarePlus, XCircle } from 'lucide-svelte';
-import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { onMount } from 'svelte';
 import { Button, Loader, toastState } from 'ui';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { browser } from '$app/environment';
-import { locale } from '$lib/state/locale.svelte';
 
-const t = $derived(locale.t);
-
-type EventType =
-  | 'SUBMITTED'
-  | 'VIEWED'
-  | 'INTERVIEW_SCHEDULED'
-  | 'INTERVIEW_COMPLETED'
-  | 'OFFER_RECEIVED'
-  | 'REJECTED'
-  | 'WITHDRAWN'
-  | 'FOLLOW_UP_SENT';
-
-interface TimelineEvent {
-  id: string;
-  type: EventType;
-  note: string | null;
-  occurredAt: string;
-}
-
-interface TrackedApplication {
-  id: string;
-  job: {
-    id: string;
-    title: string;
-    company: string;
-  };
-  status: string;
-  appliedAt: string;
-  /** Backend-computed: anti-ghosting threshold has been crossed. */
-  needsFollowUp: boolean;
-  /** Days since last recruiter response (or since SUBMITTED if none). */
-  daysSinceLastResponse: number | null;
-  /** @deprecated kept while backend still emits it. */
-  silent?: boolean;
-  events: TimelineEvent[];
-}
+// Response carries `SUBMITTED` (auto-emitted on apply); the mutation request
+// type excludes it (clients can't submit a "SUBMITTED" event manually).
+type EventType = EventsTypeEnumKey;
+type AddableEventType = ApplicationTrackerJobsApplicationsEventsMutationRequestTypeEnumKey;
+type TrackedApplication = ApplicationTrackerJobsApplicationsTracker200['applications'][number];
 
 async function quickFollowUp(applicationId: string) {
   if (!confirm('Marcar como follow-up enviado? Vai resetar o contador de silêncio.')) return;
   try {
-    const res = await fetch(`/api/v1/jobs/applications/${applicationId}/events`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ type: 'FOLLOW_UP_SENT' }),
-    });
-    if (!res.ok) throw new Error();
+    await applicationTrackerJobsApplicationsEvents(applicationId, { type: 'FOLLOW_UP_SENT' });
     await load();
     toastState.show('Follow-up registrado.', 'success');
   } catch (err) {
@@ -68,7 +37,7 @@ async function quickFollowUp(applicationId: string) {
 let applications = $state<TrackedApplication[]>([]);
 let loading = $state(true);
 let adding = $state<string | null>(null);
-let formType = $state<EventType>('VIEWED');
+let formType = $state<AddableEventType>('VIEWED');
 let formNote = $state('');
 
 const EVENT_ICON: Record<EventType, typeof Eye> = {
@@ -97,11 +66,8 @@ async function load() {
   if (!browser) return;
   loading = true;
   try {
-    const res = await fetch('/api/v1/jobs/applications/tracker', {
-      credentials: 'include',
-    });
-    const body = (await res.json()) as { data?: { applications?: TrackedApplication[] } };
-    applications = body.data?.applications ?? [];
+    const res = await applicationTrackerJobsApplicationsTracker();
+    applications = res.applications;
   } catch (err) {
     handleApiError(err);
   } finally {
@@ -113,16 +79,10 @@ async function addEvent(appId: string) {
   if (adding === appId) return;
   adding = appId;
   try {
-    const res = await fetch(`/api/v1/jobs/applications/${appId}/events`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        type: formType,
-        note: formNote.trim() || undefined,
-      }),
+    await applicationTrackerJobsApplicationsEvents(appId, {
+      type: formType,
+      note: formNote.trim() || undefined,
     });
-    if (!res.ok) throw new Error();
     formNote = '';
     await load();
     toastState.show('Evento registrado.', 'success');

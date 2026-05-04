@@ -1,3 +1,4 @@
+import { skillEndorsementsUsersMeSkills } from 'api-client';
 import { browser } from '$app/environment';
 
 /**
@@ -11,12 +12,9 @@ export function useUserSkills() {
 
   $effect(() => {
     if (!browser) return;
-    fetch('/api/v1/skills', { credentials: 'include' })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((body: unknown) => {
-        if (!body) return;
-        const list = normalize(body);
-        skills = new Set(list.map((s) => s.toLowerCase()));
+    skillEndorsementsUsersMeSkills()
+      .then((res) => {
+        skills = new Set(res.skills.map((s) => s.skill.toLowerCase()));
       })
       .catch(() => {});
   });
@@ -26,24 +24,4 @@ export function useUserSkills() {
       return skills;
     },
   };
-}
-
-function normalize(body: unknown): string[] {
-  const arr = Array.isArray(body)
-    ? body
-    : Array.isArray((body as { skills?: unknown }).skills)
-      ? (body as { skills: unknown[] }).skills
-      : Array.isArray((body as { data?: unknown }).data)
-        ? (body as { data: unknown[] }).data
-        : [];
-  return arr
-    .map((s) => {
-      if (typeof s === 'string') return s;
-      if (s && typeof s === 'object') {
-        const o = s as Record<string, unknown>;
-        return (o.name ?? o.skillName ?? o.skill ?? '') as string;
-      }
-      return '';
-    })
-    .filter((s): s is string => typeof s === 'string' && s.length > 0);
 }

@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createSocialConnectionsUsersConnect,
   createSocialConnectionsUsersMeConnectionsSuggestions,
+  createSocialUsersMeConnectionRecommendations,
   socialConnectionsUsersMeConnectionsSuggestionsQueryKey,
   socialConnectionsUsersMeConnectionsSuggestions,
 } from 'api-client';
@@ -102,28 +103,12 @@ function handleConnect(userId: string) {
 // Skill-overlap recommendations — distinct from the generic "suggestions"
 // endpoint. Pulled in parallel so the page has both a friend-of-friend list
 // AND a "people who share your skills" list, ranked separately.
-interface SkillRec {
-  userId: string;
-  name: string | null;
-  username: string | null;
-  sharedSkills: string[];
-  overlapScore: number;
-}
-
-let skillRecs = $state<SkillRec[]>([]);
-let skillRecsLoading = $state(true);
-
-$effect(() => {
-  if (!browser || !authenticated) return;
-  fetch('/api/v1/users/me/connection-recommendations?limit=10', { credentials: 'include' })
-    .then((r) => r.json())
-    .then(
-      (body: { data?: { recommendations?: SkillRec[] } }) =>
-        (skillRecs = body.data?.recommendations ?? []),
-    )
-    .catch(() => {})
-    .finally(() => (skillRecsLoading = false));
-});
+const skillRecsQuery = createSocialUsersMeConnectionRecommendations(
+  { limit: '10' },
+  { query: { enabled: browser && Boolean(authenticated) } },
+);
+const skillRecs = $derived($skillRecsQuery.data?.recommendations ?? []);
+const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 </script>
 
 <svelte:head>

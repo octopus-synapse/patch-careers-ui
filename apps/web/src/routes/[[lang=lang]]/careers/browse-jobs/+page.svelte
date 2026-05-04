@@ -2,11 +2,12 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
+  automationRageApply,
   createJobsList,
   createJobsRecommended,
   createJobsWithFitScore,
-  jobsListQueryKey,
   jobsCreate,
+  jobsListQueryKey,
 } from 'api-client';
 import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey } from 'api-client';
 import { formatDate } from 'i18n';
@@ -278,34 +279,13 @@ async function runRageApply() {
   rageRunning = true;
   rageFailures = [];
   try {
-    const res = await fetch('/api/v1/automation/rage-apply', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        minFit: Number.parseInt(rageMinFit, 10) || 80,
-        maxApplications: Number.parseInt(rageMax, 10) || 20,
-      }),
+    const res = await automationRageApply({
+      minFit: Number.parseInt(rageMinFit, 10) || 80,
+      maxApplications: Number.parseInt(rageMax, 10) || 20,
     });
-    if (!res.ok) {
-      const parsed = await parseApiError(res, 'Falha ao rodar rage apply.');
-      throw new Error(parsed.message);
-    }
-    const body = (await res.json()) as {
-      data?: {
-        submitted?: number;
-        attempted?: number;
-        skippedExisting?: number;
-        failed?: Array<{ jobId: string; reason: string }>;
-      };
-    };
-    const d = body.data ?? {};
-    rageFailures = d.failed ?? [];
-    const submitted = d.submitted ?? 0;
-    const attempted = d.attempted ?? 0;
-    const skipped = d.skippedExisting ?? 0;
+    rageFailures = res.failed;
     const failedCount = rageFailures.length;
-    const summary = `Rage apply: ${submitted}/${attempted} enviadas, ${skipped} já existiam${failedCount ? `, ${failedCount} falharam` : ''}.`;
+    const summary = `Rage apply: ${res.submitted}/${res.attempted} enviadas, ${res.skippedExisting} já existiam${failedCount ? `, ${failedCount} falharam` : ''}.`;
     toastState.show(summary, failedCount > 0 ? 'info' : 'success');
     if (failedCount === 0) {
       rageOpen = false;

@@ -4,34 +4,32 @@
   and grab the all-formats bundle zip.
 -->
 <script lang="ts">
+import {
+  type SharesAliasesGet200,
+  type SharesResume200,
+  isApiError,
+  sharesAliasesDelete,
+  sharesAliasesGet,
+  sharesAliasesPost,
+  sharesCreate,
+  sharesDelete,
+  sharesResume,
+} from 'api-client';
 import { ChevronDown, ChevronRight, Copy, Download, Link as LinkIcon, Lock, Package, Plus, QrCode, Trash2 } from 'lucide-svelte';
-import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import QRCode from 'qrcode';
 import { onMount } from 'svelte';
 import { Button, Input, Label, Loader, toastState } from 'ui';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { locale } from '$lib/state/locale.svelte';
 
+type Share = SharesResume200['shares'][number];
+type Alias = SharesAliasesGet200['aliases'][number];
+
 const t = $derived(locale.t);
 
 const resumeId = $derived($page.params.id);
-
-interface Share {
-  id: string;
-  slug: string;
-  resumeId: string;
-  isActive: boolean;
-  hasPassword: boolean;
-  expiresAt: string | null;
-  createdAt: string;
-}
-
-interface Alias {
-  id: string;
-  slug: string;
-  shareId: string;
-}
 
 let shares = $state<Share[]>([]);
 let loading = $state(true);
@@ -74,16 +72,11 @@ function validateCreate(): boolean {
 }
 
 async function load() {
-  if (!browser) return;
+  if (!browser || !resumeId) return;
   loading = true;
   try {
-    const res = await fetch(`/api/v1/shares/resume/${resumeId}`, {
-      credentials: 'include',
-    });
-    // `?? body.shares` is a defensive fallback for the legacy duplicated shape
-    // produced by the backend before profile-services PR #213 normalized it.
-    const body = (await res.json()) as { data?: { shares?: Share[] }; shares?: Share[] };
-    shares = body.data?.shares ?? body.shares ?? [];
+    const res = await sharesResume(resumeId);
+    shares = res.shares;
   } catch (err) {
     handleApiError(err);
   } finally {
@@ -92,10 +85,12 @@ async function load() {
 }
 
 async function createShare() {
-  if (!validateCreate()) return;
+  if (!validateCreate() || !resumeId) return;
   creating = true;
   try {
-    const body: Record<string, unknown> = { resumeId };
+    const body: { resumeId: string; slug?: string; password?: string; expiresAt?: string } = {
+      resumeId,
+    };
     if (customSlug.trim()) body.slug = customSlug.trim();
     if (password.trim()) body.password = password.trim();
     if (expiresInDays !== null) {
@@ -103,29 +98,17 @@ async function createShare() {
       exp.setDate(exp.getDate() + expiresInDays);
       body.expiresAt = exp.toISOString();
     }
-    const res = await fetch('/api/v1/shares', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(body),
-    });
-    if (res.status === 409) {
-      createError = { field: 'slug', message: 'Esse slug já está em uso. Escolha outro.' };
-      return;
-    }
-    if (!res.ok) {
-      const errBody = (await res.json().catch(() => null)) as
-        | { error?: { message?: string; userMessage?: string } }
-        | null;
-      const msg = errBody?.error?.userMessage ?? errBody?.error?.message ?? 'Falha ao criar link.';
-      throw new Error(msg);
-    }
+    await sharesCreate(body);
     customSlug = '';
     password = '';
     expiresInDays = 30;
     await load();
     toastState.show(t('success.shareCreated'), 'success');
   } catch (err) {
+    if (isApiError(err) && err.statusCode === 409) {
+      createError = { field: 'slug', message: 'Esse slug já está em uso. Escolha outro.' };
+      return;
+    }
     handleApiError(err);
   } finally {
     creating = false;
@@ -135,11 +118,7 @@ async function createShare() {
 async function revoke(id: string) {
   if (!confirm('Remover este link compartilhado? Os aliases vão junto.')) return;
   try {
-    const res = await fetch(`/api/v1/shares/${id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
+    await sharesDelete(id);
     shares = shares.filter((s) => s.id !== id);
     delete aliasesByShare[id];
     delete expandedShare[id];
@@ -164,9 +143,8 @@ async function loadAliases(shareId: string) {
   if (aliasLoading[shareId]) return;
   aliasLoading[shareId] = true;
   try {
-    const res = await fetch(`/api/v1/shares/${shareId}/aliases`, { credentials: 'include' });
-    const body = (await res.json()) as { data?: { aliases?: Alias[] } };
-    aliasesByShare[shareId] = body.data?.aliases ?? [];
+    const res = await sharesAliasesGet(shareId);
+    aliasesByShare[shareId] = res.aliases;
   } catch (err) {
     handleApiError(err);
   } finally {
@@ -185,17 +163,7 @@ async function addAlias(shareId: string) {
   const slug = (newAliasInput[shareId] ?? '').trim();
   if (!slug) return;
   try {
-    const res = await fetch(`/api/v1/shares/${shareId}/aliases`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ slug }),
-    });
-    if (res.status === 409) {
-      toastState.show('Esse slug já está em uso.', 'danger');
-      return;
-    }
-    if (!res.ok) throw new Error();
+    await sharesAliasesPost(shareId, { slug });
     newAliasInput[shareId] = '';
     await loadAliases(shareId);
     toastState.show(t('success.aliasAdded'), 'success');
@@ -207,11 +175,7 @@ async function addAlias(shareId: string) {
 async function removeAlias(shareId: string, aliasId: string) {
   if (!confirm('Remover este alias?')) return;
   try {
-    const res = await fetch(`/api/v1/shares/aliases/${aliasId}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error();
+    await sharesAliasesDelete(aliasId);
     aliasesByShare[shareId] = (aliasesByShare[shareId] ?? []).filter((a) => a.id !== aliasId);
   } catch (err) {
     handleApiError(err);
