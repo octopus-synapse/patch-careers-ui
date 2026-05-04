@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
-   * Admin fit-questions — burra: lista + delete. Backend retorna `void`
-   * no schema OpenAPI; cast local da resposta.
+   * Admin fit-questions — burra: lista + delete.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -14,27 +13,13 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
-  type Question = {
-    id: string;
-    key: string;
-    dimension: string;
-    textEn: string;
-    textPtBr: string;
-    scaleType: string;
-    weight?: number;
-    isActive?: boolean;
-    reverseScored?: boolean;
-  };
-
   const queryClient = useQueryClient();
 
   const listQuery = createAdminFitQuestionsList({
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
 
-  const questions = $derived(
-    ($listQuery.data as unknown as { items?: Question[] } | undefined)?.items ?? [],
-  );
+  const questions = $derived($listQuery.data?.items);
 
   let deleting = $state<string | null>(null);
   async function handleDelete(id: string) {
@@ -76,27 +61,29 @@
           </tr>
         </thead>
         <tbody>
-          {#each questions as q}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2 font-mono text-xs">{q.key}</td>
-              <td class="px-3 py-2 text-xs">{q.dimension}</td>
-              <td class="px-3 py-2 text-xs max-w-md truncate">{q.textPtBr}</td>
-              <td class="px-3 py-2 text-xs">{q.scaleType}</td>
-              <td class="px-3 py-2 text-xs">{q.isActive ? 'Sim' : 'Não'}</td>
-              <td class="px-3 py-2 text-right">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onclick={() => handleDelete(q.id)}
-                  disabled={deleting === q.id}
-                >
-                  <Trash2 class="size-3" />
-                </Button>
-              </td>
-            </tr>
+          {#if questions && questions.length > 0}
+            {#each questions as q}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2 font-mono text-xs">{q.key}</td>
+                <td class="px-3 py-2 text-xs">{q.dimension}</td>
+                <td class="px-3 py-2 text-xs max-w-md truncate">{q.textPtBr}</td>
+                <td class="px-3 py-2 text-xs">{q.scaleType}</td>
+                <td class="px-3 py-2 text-xs">{q.isActive ? 'Sim' : 'Não'}</td>
+                <td class="px-3 py-2 text-right">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onclick={() => handleDelete(q.id)}
+                    disabled={deleting === q.id}
+                  >
+                    <Trash2 class="size-3" />
+                  </Button>
+                </td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="6" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">Nenhuma pergunta</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

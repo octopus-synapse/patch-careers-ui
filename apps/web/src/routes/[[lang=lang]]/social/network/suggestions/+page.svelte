@@ -24,35 +24,11 @@ const authenticated = $derived(auth.data?.authenticated);
 
 const query = createSocialConnectionsUsersMeConnectionsSuggestions(
   { page: '1', limit: '20' },
-  { query: { enabled: browser && Boolean(authenticated) } },
+  { query: { enabled: browser && !!authenticated } },
 );
 
-type Suggestion = {
-  id: string;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-  reason?: string | null;
-};
-
-type PagedSection = {
-  data: Suggestion[];
-  totalPages: number;
-  total: number;
-};
-
-function extractSuggestions(data: unknown): PagedSection {
-  const outer = data as Record<string, unknown> | undefined;
-  const section = outer?.suggestions as Record<string, unknown> | undefined;
-  return {
-    data: (section?.data as Suggestion[]) ?? [],
-    totalPages: (section?.totalPages as number | undefined) ?? 0,
-    total: (section?.total as number | undefined) ?? 0,
-  };
-}
-
-const firstPage = $derived(extractSuggestions($query.data));
-let extra = $state<Suggestion[]>([]);
+const firstPage = $derived($query.data?.suggestions);
+let extra = $state<NonNullable<typeof firstPage>['data']>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
 
@@ -65,15 +41,14 @@ async function loadMore() {
       page: String(next),
       limit: '20',
     });
-    const section = extractSuggestions(res);
-    extra = [...extra, ...section.data];
+    extra = [...extra, ...res.suggestions.data];
     pageNum = next;
   } finally {
     loadingMore = false;
   }
 }
 
-const all = $derived([...firstPage.data, ...extra]);
+const all = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
 
 const queryClient = useQueryClient();
 
@@ -105,9 +80,9 @@ function handleConnect(userId: string) {
 // AND a "people who share your skills" list, ranked separately.
 const skillRecsQuery = createSocialUsersMeConnectionRecommendations(
   { limit: '10' },
-  { query: { enabled: browser && Boolean(authenticated) } },
+  { query: { enabled: browser && !!authenticated } },
 );
-const skillRecs = $derived($skillRecsQuery.data?.recommendations ?? []);
+const skillRecs = $derived($skillRecsQuery.data?.recommendations);
 const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 </script>
 
@@ -121,7 +96,7 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('network.suggestions')}
 			</h1>
-			{#if firstPage.total > 0}
+			{#if firstPage && firstPage.total > 0}
 				<span class="text-xs text-gray-500 dark:text-neutral-500">
 					{firstPage.total}
 				</span>
@@ -147,23 +122,22 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 		{:else}
 			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
 				{#each all as suggestion (suggestion.id)}
-					{@const userId = String(suggestion.id ?? '')}
 					<UserCard
 						user={{
-							id: userId,
+							id: suggestion.id,
 							name: suggestion.name,
 							username: suggestion.username,
 							photoURL: suggestion.photoURL,
 						}}
-						subtitle={suggestion.reason ?? undefined}
+						subtitle={suggestion.reason}
 					>
 						{#snippet actions()}
-							{#if sentConnections.has(userId)}
+							{#if sentConnections.has(suggestion.id)}
 								<span class="w-full rounded-full border py-1.5 text-center text-[10px] font-semibold opacity-60 border-gray-300 text-gray-700 dark:border-neutral-600 dark:text-neutral-300">
 									{t('network.requestSent')}
 								</span>
 							{:else}
-								<Button variant="solid" size="sm" fullWidth textCase="normal" onclick={() => handleConnect(userId)}>
+								<Button variant="solid" size="sm" fullWidth textCase="normal" onclick={() => handleConnect(suggestion.id)}>
 									<UserPlus size={11} />
 									{t('network.connect')}
 								</Button>
@@ -174,7 +148,7 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 			</div>
 			<InfiniteScrollTrigger
 				onLoadMore={loadMore}
-				hasMore={pageNum < firstPage.totalPages}
+				hasMore={!!firstPage && pageNum < firstPage.totalPages}
 				isLoading={loadingMore}
 			/>
 		{/if}
@@ -188,7 +162,7 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 				</h2>
 				<Skeleton shape="rect" width="100%" height="6rem" />
 			</div>
-		{:else if skillRecs.length > 0}
+		{:else if skillRecs && skillRecs.length > 0}
 			<div class="mt-10">
 				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
 					{t('network.suggestionsSkillsTitle')}

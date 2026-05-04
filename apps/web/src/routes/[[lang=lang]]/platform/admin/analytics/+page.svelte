@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
-   * Admin analytics — burra: query SDK e renderiza cards. Backend devolve
-   * shape ainda não tipado (response: void no OpenAPI), por isso cast local.
+   * Admin analytics — burra: query SDK e renderiza cards.
    */
   import { createAdminAnalyticsOverview, createAdminDashboardMetrics } from 'api-client';
   import { browser } from '$app/environment';
@@ -13,37 +12,6 @@
 
   let period = $state<'day' | 'week' | 'month'>('day');
 
-  type Bucket = { bucket: string; count: number };
-  type Counted = { count: number };
-  type AnalyticsOverview = {
-    atsScoreDistribution?: Bucket[];
-    resumesByLanguage?: { language: string; count: number }[];
-    mostUsedSections?: { title: string; count: number }[];
-    importSources?: { source: string; count: number }[];
-    activeUsers?: { dau: number; mau: number };
-    contentStats?: { posts: number; comments: number; reactions: number };
-    socialStats?: {
-      pendingInvitations: number;
-      acceptedConnections: number;
-      rejectedConnections: number;
-      acceptanceRate: number;
-      blockedUsers: number;
-    };
-    jobStats?: {
-      postedJobs: number;
-      activeJobs: number;
-      applications: number;
-      withdrawn: number;
-      applicationsPerJob: number;
-    };
-  };
-  type DashboardMetrics = {
-    signupsThisWeek?: number;
-    signupsThisMonth?: number;
-    averageAtsScore?: number;
-    onboardingCompletionRate?: number;
-  };
-
   const analyticsQuery = createAdminAnalyticsOverview(
     { period },
     { query: { enabled: browser } },
@@ -53,19 +21,10 @@
       query: { enabled: browser },
     });
 
-  const data = $derived($analyticsQuery.data as unknown as AnalyticsOverview | undefined);
-  const metrics = $derived($metricsQuery.data as unknown as DashboardMetrics | undefined);
+  const data = $derived($analyticsQuery.data);
+  const metrics = $derived($metricsQuery.data);
 
-  const atsDist = $derived(data?.atsScoreDistribution ?? []);
-  const byLang = $derived(data?.resumesByLanguage ?? []);
-  const sections = $derived(data?.mostUsedSections ?? []);
-  const imports = $derived(data?.importSources ?? []);
-  const activeUsers = $derived(data?.activeUsers);
-  const contentStats = $derived(data?.contentStats);
-  const socialStats = $derived(data?.socialStats);
-  const jobStats = $derived(data?.jobStats);
-
-  function maxValue(arr: Counted[]): number {
+  function maxValue(arr: { count: number }[]): number {
     return Math.max(...arr.map((i) => i.count), 1);
   }
 </script>
@@ -98,19 +57,19 @@
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
       <StatCard
         label={t('admin.dashboard.signupsWeek')}
-        value={metrics.signupsThisWeek ?? 0}
+        value={metrics.signupsThisWeek}
       />
       <StatCard
         label={t('admin.dashboard.signupsMonth')}
-        value={metrics.signupsThisMonth ?? 0}
+        value={metrics.signupsThisMonth}
       />
       <StatCard
         label={t('admin.dashboard.avgAtsScore')}
-        value={metrics.averageAtsScore ?? 0}
+        value={metrics.averageAtsScore}
       />
       <StatCard
         label={t('admin.dashboard.onboardingRate')}
-        value={`${metrics.onboardingCompletionRate ?? 0}%`}
+        value={`${metrics.onboardingCompletionRate}%`}
       />
     </div>
   {/if}
@@ -120,56 +79,48 @@
       <Loader size={24} />
     </div>
   {:else if data}
-    {#if activeUsers}
-      <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <StatCard label="DAU" value={activeUsers.dau} />
-        <StatCard label="MAU" value={activeUsers.mau} />
-        <StatCard
-          label="DAU/MAU"
-          value={activeUsers.mau > 0
-            ? `${Math.round((activeUsers.dau / activeUsers.mau) * 100)}%`
-            : '—'}
-        />
-      </div>
-    {/if}
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <StatCard label="DAU" value={data.activeUsers.dau} />
+      <StatCard label="MAU" value={data.activeUsers.mau} />
+      <StatCard
+        label="DAU/MAU"
+        value={data.activeUsers.mau > 0
+          ? `${Math.round((data.activeUsers.dau / data.activeUsers.mau) * 100)}%`
+          : '—'}
+      />
+    </div>
 
-    {#if contentStats}
-      <div class="grid grid-cols-3 gap-3 sm:gap-4">
-        <StatCard label="Posts" value={contentStats.posts} />
-        <StatCard label="Comments" value={contentStats.comments} />
-        <StatCard label="Reactions" value={contentStats.reactions} />
-      </div>
-    {/if}
+    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+      <StatCard label="Posts" value={data.contentStats.posts} />
+      <StatCard label="Comments" value={data.contentStats.comments} />
+      <StatCard label="Reactions" value={data.contentStats.reactions} />
+    </div>
 
-    {#if socialStats}
-      <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
-        <StatCard label="Pending invites" value={socialStats.pendingInvitations} />
-        <StatCard label="Accepted" value={socialStats.acceptedConnections} />
-        <StatCard label="Rejected" value={socialStats.rejectedConnections} />
-        <StatCard label="Acceptance rate" value={`${socialStats.acceptanceRate}%`} />
-        <StatCard label="Blocked" value={socialStats.blockedUsers} />
-      </div>
-    {/if}
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <StatCard label="Pending invites" value={data.socialStats.pendingInvitations} />
+      <StatCard label="Accepted" value={data.socialStats.acceptedConnections} />
+      <StatCard label="Rejected" value={data.socialStats.rejectedConnections} />
+      <StatCard label="Acceptance rate" value={`${data.socialStats.acceptanceRate}%`} />
+      <StatCard label="Blocked" value={data.socialStats.blockedUsers} />
+    </div>
 
-    {#if jobStats}
-      <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
-        <StatCard label="Jobs posted" value={jobStats.postedJobs} />
-        <StatCard label="Active jobs" value={jobStats.activeJobs} />
-        <StatCard label="Applications" value={jobStats.applications} />
-        <StatCard label="Withdrawn" value={jobStats.withdrawn} />
-        <StatCard label="Apps / job" value={jobStats.applicationsPerJob} />
-      </div>
-    {/if}
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <StatCard label="Jobs posted" value={data.jobStats.postedJobs} />
+      <StatCard label="Active jobs" value={data.jobStats.activeJobs} />
+      <StatCard label="Applications" value={data.jobStats.applications} />
+      <StatCard label="Withdrawn" value={data.jobStats.withdrawn} />
+      <StatCard label="Apps / job" value={data.jobStats.applicationsPerJob} />
+    </div>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      {#if atsDist.length}
+      {#if data.atsScoreDistribution.length}
         <Card>
           <h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
             {t('admin.analytics.atsDistribution')}
           </h3>
           <div class="flex items-end gap-1 sm:gap-2" style="height: 100px; min-height: 80px">
-            {#each atsDist as bucket}
-              {@const pct = (bucket.count / maxValue(atsDist)) * 100}
+            {#each data.atsScoreDistribution as bucket}
+              {@const pct = (bucket.count / maxValue(data.atsScoreDistribution)) * 100}
               <div class="flex flex-1 flex-col items-center gap-1">
                 <span class="text-[9px] text-gray-500 dark:text-neutral-500">{bucket.count}</span>
                 <div
@@ -183,14 +134,14 @@
         </Card>
       {/if}
 
-      {#if byLang.length}
+      {#if data.resumesByLanguage.length}
         <Card>
           <h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
             {t('admin.analytics.resumesByLanguage')}
           </h3>
           <div class="space-y-3">
-            {#each byLang as lang}
-              {@const pct = (lang.count / maxValue(byLang)) * 100}
+            {#each data.resumesByLanguage as lang}
+              {@const pct = (lang.count / maxValue(data.resumesByLanguage)) * 100}
               <div>
                 <div class="flex items-center justify-between text-xs text-gray-800 dark:text-neutral-200">
                   <span>{lang.language}</span>
@@ -208,13 +159,13 @@
         </Card>
       {/if}
 
-      {#if sections.length}
+      {#if data.mostUsedSections.length}
         <Card>
           <h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
             {t('admin.analytics.topSections')}
           </h3>
           <div class="space-y-2">
-            {#each sections as section}
+            {#each data.mostUsedSections as section}
               <div class="flex items-center justify-between text-sm">
                 <span class="text-gray-800 dark:text-neutral-200">{section.title}</span>
                 <span class="text-gray-500 dark:text-neutral-500">{section.count}</span>
@@ -224,13 +175,13 @@
         </Card>
       {/if}
 
-      {#if imports.length}
+      {#if data.importSources.length}
         <Card>
           <h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
             {t('admin.analytics.importSources')}
           </h3>
           <div class="space-y-2">
-            {#each imports as src}
+            {#each data.importSources as src}
               <div class="flex items-center justify-between text-sm">
                 <span class="text-gray-800 dark:text-neutral-200">{src.source}</span>
                 <span class="text-gray-500 dark:text-neutral-500">{src.count}</span>

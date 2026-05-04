@@ -12,6 +12,7 @@ import {
   socialConnectionsConnectionsReject,
   socialConnectionsConnectionsWithdraw,
   socialConnectionsUsersMeConnections,
+  type SocialConnectionsUsersMeNetworkSummary200,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -29,76 +30,12 @@ import { InfiniteScrollTrigger } from 'ui';
  * dashboard envelope `{stats, connections, suggestions, pendingRequests}`)
  * and the per-side follow lists. The pending/connection mutations all
  * route through `undoableAction` so a misclick can be reversed within 5s.
- *
- * Hook responses are typed as discriminated unions (200 | 4xx). We narrow
- * once via the 200-only field guard and pull view-models off the result.
  */
-type UserInfo = {
-  id: string;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-};
+type ConnectionRecord = SocialConnectionsUsersMeNetworkSummary200['connections']['data'][number];
+type PendingRecord = SocialConnectionsUsersMeNetworkSummary200['pendingRequests']['data'][number];
 
-type PendingRow = { id: string; user: UserInfo };
-type ConnectionRow = { id: string; user: UserInfo };
-
-type SuggestionItem = {
-  id: string;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-  reason?: string | null;
-  mutualCount?: number;
-  commonSkills?: string[];
-};
-
-type NetworkSummaryStats = {
-  connections?: number;
-  followers?: number;
-  following?: number;
-  pendingInvitations?: number;
-};
-
-type Section<T> = {
-  data?: T[];
-  total?: number;
-  totalPages?: number;
-};
-
-type NetworkSummary = {
-  stats?: NetworkSummaryStats;
-  connections?: Section<Record<string, unknown>>;
-  pendingRequests?: Section<Record<string, unknown>>;
-  suggestions?: Section<SuggestionItem>;
-};
-
-type FollowListResponse = {
-  followers?: Section<{ follower?: UserInfo }>;
-  following?: Section<{ following?: UserInfo }>;
-  items?: UserInfo[];
-};
-
-function extractUser(raw: Record<string, unknown> | null | undefined): UserInfo {
-  const r = raw ?? {};
-  return {
-    id: String((r.id as string | undefined) ?? ''),
-    name: (r.name as string | null | undefined) ?? null,
-    username: (r.username as string | null | undefined) ?? null,
-    photoURL: (r.photoURL as string | null | undefined) ?? null,
-  };
-}
-
-function toPending(raw: Record<string, unknown>): PendingRow {
-  const user = extractUser(
-    (raw.user ?? raw.requester ?? raw) as Record<string, unknown> | undefined,
-  );
-  return { id: String((raw.id as string | undefined) ?? ''), user };
-}
-
-function toConnection(raw: Record<string, unknown>): ConnectionRow {
-  const user = extractUser((raw.user ?? raw) as Record<string, unknown> | undefined);
-  return { id: String((raw.id as string | undefined) ?? ''), user };
+function userOf(r: ConnectionRecord | PendingRecord) {
+  return r.user ?? r.requester ?? r.target;
 }
 
 const t = $derived(locale.t);
@@ -108,7 +45,7 @@ const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 const authenticated = $derived(auth.data?.authenticated);
 
 const summaryQuery = createSocialConnectionsUsersMeNetworkSummary(
-  { query: { enabled: browser && Boolean(authenticated) } },
+  { query: { enabled: browser && !!authenticated } },
 );
 
 const followersQuery = createSocialFollowUsersFollowers(
@@ -122,41 +59,20 @@ const followingQuery = createSocialFollowUsersFollowing(
   { query: { enabled: browser && !!currentUserId } },
 );
 
-const summary = $derived(
-  $summaryQuery.data && 'stats' in $summaryQuery.data
-    ? ($summaryQuery.data as NetworkSummary)
-    : undefined,
-);
+const summary = $derived($summaryQuery.data);
+const stats = $derived(summary?.stats);
+const pendingList = $derived(summary?.pendingRequests.data);
+const suggestionsList = $derived(summary?.suggestions.data);
+const connectionsFirstPage = $derived(summary?.connections.data);
+const connectionsTotal = $derived(summary?.connections.total ?? 0);
+const connectionsTotalPages = $derived(summary?.connections.totalPages ?? 0);
 
-const stats = $derived<NetworkSummaryStats>(summary?.stats ?? {});
-const pendingList = $derived<PendingRow[]>(
-  (summary?.pendingRequests?.data ?? []).map((r) => toPending(r as Record<string, unknown>)),
-);
-const suggestionsList = $derived<SuggestionItem[]>(summary?.suggestions?.data ?? []);
-const connectionsFirstPage = $derived<ConnectionRow[]>(
-  (summary?.connections?.data ?? []).map((r) => toConnection(r as Record<string, unknown>)),
-);
-const connectionsTotal = $derived(summary?.connections?.total ?? 0);
-const connectionsTotalPages = $derived(summary?.connections?.totalPages ?? 0);
-
-const followersList = $derived.by<UserInfo[]>(() => {
-  const data = $followersQuery.data;
-  if (!data || !('followers' in data)) return [];
-  const raw = data as FollowListResponse;
-  if (Array.isArray(raw.items)) return raw.items;
-  return (raw.followers?.data ?? []).map((row) => extractUser(row.follower ?? null));
-});
-const followingList = $derived.by<UserInfo[]>(() => {
-  const data = $followingQuery.data;
-  if (!data || !('following' in data)) return [];
-  const raw = data as FollowListResponse;
-  if (Array.isArray(raw.items)) return raw.items;
-  return (raw.following?.data ?? []).map((row) => extractUser(row.following ?? null));
-});
+const followersList = $derived($followersQuery.data?.followers.data);
+const followingList = $derived($followingQuery.data?.following.data);
 
 // Infinite scroll for connections — extra pages loaded after the first page
 // arrives from the network summary.
-let connectionsExtra = $state<ConnectionRow[]>([]);
+let connectionsExtra = $state<ConnectionRecord[]>([]);
 let connectionsPage = $state(1);
 let connectionsLoading = $state(false);
 
@@ -166,9 +82,13 @@ let hiddenConnectionIds = $state<Set<string>>(new Set());
 let hiddenPendingIds = $state<Set<string>>(new Set());
 
 const connectionsList = $derived(
-  [...connectionsFirstPage, ...connectionsExtra].filter((c) => !hiddenConnectionIds.has(c.id)),
+  (connectionsFirstPage ? [...connectionsFirstPage, ...connectionsExtra] : connectionsExtra).filter(
+    (c) => !hiddenConnectionIds.has(c.id),
+  ),
 );
-const visiblePending = $derived(pendingList.filter((p) => !hiddenPendingIds.has(p.id)));
+const visiblePending = $derived(
+  pendingList ? pendingList.filter((p) => !hiddenPendingIds.has(p.id)) : [],
+);
 
 async function loadMoreConnections() {
   if (connectionsLoading) return;
@@ -179,13 +99,7 @@ async function loadMoreConnections() {
       page: String(next),
       limit: '10',
     });
-    const items =
-      res && 'connections' in res
-        ? ((res as { connections?: { data?: Record<string, unknown>[] } }).connections?.data ?? [])
-        : res && 'items' in res
-          ? ((res as { items?: Record<string, unknown>[] }).items ?? [])
-          : [];
-    connectionsExtra = [...connectionsExtra, ...items.map(toConnection)];
+    connectionsExtra = [...connectionsExtra, ...res.connections.data];
     connectionsPage = next;
   } finally {
     connectionsLoading = false;
@@ -201,7 +115,7 @@ function invalidateNetwork() {
   queryClient.invalidateQueries({ predicate: () => true, refetchType: 'all' });
 }
 
-function handleAccept(row: PendingRow) {
+function handleAccept(row: PendingRecord) {
   undoableAction({
     apply: () => (hiddenPendingIds = new Set([...hiddenPendingIds, row.id])),
     revert: () => {
@@ -220,7 +134,7 @@ function handleAccept(row: PendingRow) {
   });
 }
 
-function handleReject(row: PendingRow) {
+function handleReject(row: PendingRecord) {
   undoableAction({
     apply: () => (hiddenPendingIds = new Set([...hiddenPendingIds, row.id])),
     revert: () => {
@@ -239,7 +153,7 @@ function handleReject(row: PendingRow) {
   });
 }
 
-function handleRemove(row: ConnectionRow) {
+function handleRemove(row: ConnectionRecord) {
   undoableAction({
     apply: () => (hiddenConnectionIds = new Set([...hiddenConnectionIds, row.id])),
     revert: () => {
@@ -265,28 +179,28 @@ type StatIcon = Component<{ size: number; class?: string }>;
 const statItems = $derived<StatItem[]>([
   {
     label: t('network.connections'),
-    value: stats.connections ?? 0,
+    value: stats?.connections ?? 0,
     icon: Users as unknown as StatIcon,
     href: '/social/network/connections',
   },
   {
     label: t('network.followers'),
-    value: stats.followers ?? 0,
+    value: stats?.followers ?? 0,
     icon: Eye as unknown as StatIcon,
     href: '/social/network/followers',
   },
   {
     label: t('network.following'),
-    value: stats.following ?? 0,
+    value: stats?.following ?? 0,
     icon: UserCheck as unknown as StatIcon,
     href: '/social/network/following',
   },
   {
     label: t('network.invitations'),
-    value: stats.pendingInvitations ?? 0,
+    value: stats?.pendingInvitations ?? 0,
     icon: Clock as unknown as StatIcon,
     href: '/social/network/invitation-manager/received',
-    highlight: (stats.pendingInvitations ?? 0) > 0,
+    highlight: (stats?.pendingInvitations ?? 0) > 0,
   },
 ]);
 </script>
@@ -308,19 +222,19 @@ const statItems = $derived<StatItem[]>([
 				<nav class="flex flex-col py-1">
 					<a href="/social/network/connections" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.connections')}</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.connections ?? 0}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats?.connections ?? 0}</span>
 					</a>
 					<a href="/social/network/followers" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.followers')}</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.followers ?? 0}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats?.followers ?? 0}</span>
 					</a>
 					<a href="/social/network/following" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.following')}</span>
-						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats.following ?? 0}</span>
+						<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{stats?.following ?? 0}</span>
 					</a>
 					<a href="/social/network/invitation-manager/received" class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50 dark:text-neutral-300 dark:hover:bg-neutral-700/50">
 						<span>{t('network.invitations')}</span>
-						{#if (stats.pendingInvitations ?? 0) > 0}
+						{#if stats && stats.pendingInvitations > 0}
 							<span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{stats.pendingInvitations}</span>
 						{:else}
 							<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">0</span>
@@ -339,7 +253,7 @@ const statItems = $derived<StatItem[]>([
 			<section id="invitations" class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 				<div class="flex items-center justify-between px-3 py-3 sm:px-5 sm:py-4 border-b border-gray-200 dark:border-neutral-800">
 					<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-						{t('network.invitations')} ({stats.pendingInvitations ?? 0})
+						{t('network.invitations')} ({stats?.pendingInvitations ?? 0})
 					</h2>
 					{#if visiblePending.length > 0}
 						<a href="/social/network/invitation-manager/received" class="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300">
@@ -363,12 +277,15 @@ const statItems = $derived<StatItem[]>([
 				{:else if visiblePending.length > 0}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each visiblePending.slice(0, 2) as request (request.id)}
-							<UserRow user={request.user}>
-								{#snippet actions()}
-									<Button variant="outline" size="sm" textCase="normal" onclick={() => handleReject(request)}>{t('network.ignore')}</Button>
-									<Button variant="outline" intent="accent" size="sm" textCase="normal" onclick={() => handleAccept(request)}>{t('network.accept')}</Button>
-								{/snippet}
-							</UserRow>
+							{@const u = userOf(request)}
+							{#if u}
+								<UserRow user={u}>
+									{#snippet actions()}
+										<Button variant="outline" size="sm" textCase="normal" onclick={() => handleReject(request)}>{t('network.ignore')}</Button>
+										<Button variant="outline" intent="accent" size="sm" textCase="normal" onclick={() => handleAccept(request)}>{t('network.accept')}</Button>
+									{/snippet}
+								</UserRow>
+							{/if}
 						{/each}
 					</div>
 				{:else}
@@ -396,18 +313,10 @@ const statItems = $derived<StatItem[]>([
 						{/each}
 					</div>
 				</section>
-			{:else if suggestionsList.length > 0}
+			{:else if suggestionsList && suggestionsList.length > 0}
 				<div id="suggestions">
 					<SuggestionsCarousel
-						suggestions={suggestionsList.slice(0, 12).map((s) => ({
-							id: s.id,
-							name: s.name ?? null,
-							username: s.username ?? null,
-							photoURL: s.photoURL ?? null,
-							reason: s.reason ?? null,
-							mutualCount: s.mutualCount,
-							commonSkills: s.commonSkills,
-						}))}
+						suggestions={suggestionsList.slice(0, 12)}
 						seeAllHref="/social/network/suggestions"
 						source="mynetwork_carousel"
 					/>
@@ -439,17 +348,18 @@ const statItems = $derived<StatItem[]>([
 				{:else}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each connectionsList as connection (connection.id)}
-							{@const displayName = connection.user.name ?? connection.user.username ?? '?'}
-							<UserRow user={connection.user}>
-								{#snippet actions()}
-									{#if connection.user.id}
-										<QuickMessagePopover recipientId={connection.user.id} recipientName={displayName} />
-									{/if}
-									<Button variant="ghost" intent="danger" size="xs" textCase="normal" onclick={() => handleRemove(connection)}>
-										{t('network.remove')}
-									</Button>
-								{/snippet}
-							</UserRow>
+							{@const u = userOf(connection)}
+							{@const displayName = u?.name ?? u?.username ?? '?'}
+							{#if u}
+								<UserRow user={u}>
+									{#snippet actions()}
+										<QuickMessagePopover recipientId={u.id} recipientName={displayName} />
+										<Button variant="ghost" intent="danger" size="xs" textCase="normal" onclick={() => handleRemove(connection)}>
+											{t('network.remove')}
+										</Button>
+									{/snippet}
+								</UserRow>
+							{/if}
 						{/each}
 						<InfiniteScrollTrigger onLoadMore={loadMoreConnections} hasMore={connectionsPage < connectionsTotalPages} isLoading={connectionsLoading} />
 					</div>
@@ -461,8 +371,8 @@ const statItems = $derived<StatItem[]>([
 				<div class="px-4 pt-2 sm:px-5">
 					<Tabs
 						tabs={[
-							{ value: 'followers', label: t('network.followers'), count: stats.followers ?? 0 },
-							{ value: 'following', label: t('network.following'), count: stats.following ?? 0 },
+							{ value: 'followers', label: t('network.followers'), count: stats?.followers ?? 0 },
+							{ value: 'following', label: t('network.following'), count: stats?.following ?? 0 },
 						]}
 						selected={followersTab}
 						onchange={(v) => (followersTab = v as 'followers' | 'following')}
@@ -478,12 +388,14 @@ const statItems = $derived<StatItem[]>([
 								</div>
 							{/each}
 						</div>
-					{:else if followersList.length === 0}
+					{:else if !followersList || followersList.length === 0}
 						<EmptyState message={t('network.noFollowers')} />
 					{:else}
 						<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-							{#each followersList as user (user.id)}
-								<UserRow {user} />
+							{#each followersList as row (row.id)}
+								{#if row.follower}
+									<UserRow user={row.follower} />
+								{/if}
 							{/each}
 						</div>
 					{/if}
@@ -496,12 +408,14 @@ const statItems = $derived<StatItem[]>([
 							</div>
 						{/each}
 					</div>
-				{:else if followingList.length === 0}
+				{:else if !followingList || followingList.length === 0}
 					<EmptyState message={t('network.noFollowing')} />
 				{:else}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-						{#each followingList as user (user.id)}
-							<UserRow {user} />
+						{#each followingList as row (row.id)}
+							{#if row.following}
+								<UserRow user={row.following} />
+							{/if}
 						{/each}
 					</div>
 				{/if}

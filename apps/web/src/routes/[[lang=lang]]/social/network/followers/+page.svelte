@@ -6,6 +6,7 @@ import {
   createSocialFollowUsersFollowers,
   socialFollowUsersFollowersQueryKey,
   socialFollowUsersFollowers,
+  type SocialFollowUsersFollowers200,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -27,49 +28,10 @@ const query = createSocialFollowUsersFollowers(
   { query: { enabled: browser && !!currentUserId } },
 );
 
-type FollowerRow = {
-  id: string;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-  isFollowedByMe: boolean;
-};
+type FollowerRecord = SocialFollowUsersFollowers200['followers']['data'][number];
 
-// Swagger response is `void`; runtime ships
-// `{followers:{data:[{follower:{...}, isFollowedByMe}],total,totalPages}}`.
-type FollowerRecord = {
-  follower?: { id?: string; name?: string | null; username?: string | null; photoURL?: string | null };
-  isFollowedByMe?: boolean;
-};
-
-function rowsFrom(items?: FollowerRecord[]): FollowerRow[] {
-  return (items ?? []).map((row) => ({
-    id: row.follower?.id ?? '',
-    name: row.follower?.name ?? null,
-    username: row.follower?.username ?? null,
-    photoURL: row.follower?.photoURL ?? null,
-    isFollowedByMe: row.isFollowedByMe ?? false,
-  }));
-}
-
-function pagedSection(data: unknown): {
-  rows: FollowerRow[];
-  totalPages: number;
-  total: number;
-} {
-  const outer = data as Record<string, unknown> | undefined;
-  const section = outer?.followers as
-    | { data?: FollowerRecord[]; totalPages?: number; total?: number }
-    | undefined;
-  return {
-    rows: rowsFrom(section?.data),
-    totalPages: section?.totalPages ?? 0,
-    total: section?.total ?? 0,
-  };
-}
-
-const firstPage = $derived(pagedSection($query.data));
-let extra = $state<FollowerRow[]>([]);
+const firstPage = $derived($query.data?.followers);
+let extra = $state<FollowerRecord[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
 let optimisticOverrides = $state<Record<string, boolean>>({});
@@ -79,19 +41,18 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await socialFollowUsersFollowers(currentUserId, {
+    const res = await socialFollowUsersFollowers(currentUserId, {
       page: String(next),
       limit: '20',
-    })) as unknown as Record<string, unknown> | undefined;
-    const section = res?.followers as { data?: FollowerRecord[] } | undefined;
-    extra = [...extra, ...rowsFrom(section?.data)];
+    });
+    extra = [...extra, ...res.followers.data];
     pageNum = next;
   } finally {
     loadingMore = false;
   }
 }
 
-const all = $derived([...firstPage.rows, ...extra]);
+const all = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
 
 const queryClient = useQueryClient();
 
@@ -121,15 +82,18 @@ const unfollowMutation = createSocialFollowUsersFollowDelete({
   },
 });
 
-function effectiveFollowed(row: FollowerRow): boolean {
-  return optimisticOverrides[row.id] ?? row.isFollowedByMe;
+function effectiveFollowed(row: FollowerRecord): boolean {
+  const id = row.follower?.id ?? '';
+  return optimisticOverrides[id] ?? row.isFollowedByMe ?? false;
 }
 
-function handleToggleFollow(row: FollowerRow) {
+function handleToggleFollow(row: FollowerRecord) {
+  const id = row.follower?.id ?? '';
+  if (!id) return;
   const current = effectiveFollowed(row);
-  optimisticOverrides = { ...optimisticOverrides, [row.id]: !current };
-  if (current) $unfollowMutation.mutate({ userId: row.id });
-  else $followMutation.mutate({ userId: row.id });
+  optimisticOverrides = { ...optimisticOverrides, [id]: !current };
+  if (current) $unfollowMutation.mutate({ userId: id });
+  else $followMutation.mutate({ userId: id });
 }
 </script>
 
@@ -143,7 +107,7 @@ function handleToggleFollow(row: FollowerRow) {
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('network.pageFollowersTitle')}
 			</h1>
-			{#if firstPage.total > 0}
+			{#if firstPage && firstPage.total > 0}
 				<span class="text-xs text-gray-500 dark:text-neutral-500">{firstPage.total}</span>
 			{/if}
 		</header>
@@ -169,32 +133,27 @@ function handleToggleFollow(row: FollowerRow) {
 				/>
 			{:else}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-					{#each all as follower (follower.id)}
-						{@const followed = effectiveFollowed(follower)}
-						<UserRow
-							user={{
-								id: follower.id,
-								name: follower.name,
-								username: follower.username,
-								photoURL: follower.photoURL,
-							}}
-						>
-							{#snippet actions()}
-								<Button
-									variant={followed ? 'outline' : 'solid'}
-									size="sm"
-									textCase="normal"
-									onclick={() => handleToggleFollow(follower)}
-								>
-									{followed ? t('network.unfollow') : t('network.follow')}
-								</Button>
-							{/snippet}
-						</UserRow>
+					{#each all as row (row.follower?.id ?? row.id)}
+						{@const followed = effectiveFollowed(row)}
+						{#if row.follower}
+							<UserRow user={row.follower}>
+								{#snippet actions()}
+									<Button
+										variant={followed ? 'outline' : 'solid'}
+										size="sm"
+										textCase="normal"
+										onclick={() => handleToggleFollow(row)}
+									>
+										{followed ? t('network.unfollow') : t('network.follow')}
+									</Button>
+								{/snippet}
+							</UserRow>
+						{/if}
 					{/each}
 				</div>
 				<InfiniteScrollTrigger
 					onLoadMore={loadMore}
-					hasMore={pageNum < firstPage.totalPages}
+					hasMore={!!firstPage && pageNum < firstPage.totalPages}
 					isLoading={loadingMore}
 				/>
 			{/if}

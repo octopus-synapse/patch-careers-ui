@@ -6,6 +6,7 @@ import {
   createSocialConnectionsUsersMeConnectionsPending,
   socialConnectionsUsersMeConnectionsPendingQueryKey,
   socialConnectionsUsersMeConnectionsPending,
+  type SocialConnectionsUsersMeConnectionsPending200,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
 import { Avatar, Button, Skeleton } from 'ui';
@@ -15,45 +16,16 @@ import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 
-type U = {
-  id: string | null;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-};
-type R = { id: string; createdAt: string; user: U };
+type PendingRecord = SocialConnectionsUsersMeConnectionsPending200['pendingRequests']['data'][number];
 
 const query = createSocialConnectionsUsersMeConnectionsPending(
   { page: '1', limit: '20' },
   { query: { enabled: browser } },
 );
 
-function extractRecord(raw: Record<string, unknown>): R {
-  const rawUser = (raw.user ?? raw.requester ?? raw.target ?? {}) as Record<string, unknown>;
-  return {
-    id: String(raw.id ?? ''),
-    createdAt: String(raw.createdAt ?? ''),
-    user: {
-      id: (rawUser.id as string | null) ?? null,
-      name: (rawUser.name as string | null) ?? null,
-      username: (rawUser.username as string | null) ?? null,
-      photoURL: (rawUser.photoURL as string | null) ?? null,
-    },
-  };
-}
+const firstPage = $derived($query.data?.pendingRequests);
 
-const firstPage = $derived.by(() => {
-  const outer = $query.data as Record<string, unknown> | undefined;
-  const section = outer?.pendingRequests as Record<string, unknown> | undefined;
-  const items = (section?.data ?? []) as Record<string, unknown>[];
-  return {
-    data: items.map(extractRecord),
-    total: (section?.total as number | undefined) ?? 0,
-    totalPages: (section?.totalPages as number | undefined) ?? 0,
-  };
-});
-
-let extra = $state<R[]>([]);
+let extra = $state<PendingRecord[]>([]);
 let page = $state(1);
 let loadingMore = $state(false);
 
@@ -62,23 +34,22 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = page + 1;
-    const res = (await socialConnectionsUsersMeConnectionsPending({
+    const res = await socialConnectionsUsersMeConnectionsPending({
       page: String(next),
       limit: '20',
-    })) as unknown as Record<string, unknown> | undefined;
-    const section = res?.pendingRequests as Record<string, unknown> | undefined;
-    const items =
-      (section?.data as Record<string, unknown>[] | undefined) ??
-      (res?.items as Record<string, unknown>[] | undefined) ??
-      [];
-    extra = [...extra, ...items.map(extractRecord)];
+    });
+    extra = [...extra, ...res.pendingRequests.data];
     page = next;
   } finally {
     loadingMore = false;
   }
 }
 
-const all = $derived([...firstPage.data, ...extra]);
+function userOf(r: PendingRecord) {
+  return r.user ?? r.requester ?? r.target;
+}
+
+const all = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
 
 const queryClient = useQueryClient();
 
@@ -121,7 +92,7 @@ function timeAgo(iso: string): string {
 <div class="px-4 py-3 sm:px-6">
 	<div class="flex flex-wrap items-center gap-2">
 		<span class="rounded-full bg-emerald-600 px-3 py-1 text-[11px] font-semibold text-white">
-			{t?.('network.people')} ({firstPage.total})
+			{t?.('network.people')} ({firstPage?.total ?? 0})
 		</span>
 	</div>
 </div>
@@ -154,20 +125,21 @@ function timeAgo(iso: string): string {
 {:else}
 	<ul class="divide-y divide-gray-200 dark:divide-neutral-800">
 		{#each all as req (req.id)}
-			{@const displayName = req.user.name ?? req.user.username ?? '?'}
+			{@const u = userOf(req)}
+			{@const displayName = u?.name ?? u?.username ?? '?'}
 			<li class="flex items-start gap-3 px-4 py-4 sm:px-6">
-				<a href="/my-profile/public/@{req.user.username ?? ''}" class="flex-shrink-0">
-					<Avatar name={displayName} photoURL={req.user.photoURL} size="lg" />
+				<a href="/my-profile/public/@{u?.username ?? ''}" class="flex-shrink-0">
+					<Avatar name={displayName} photoURL={u?.photoURL} size="lg" />
 				</a>
 				<div class="min-w-0 flex-1">
 					<a
-						href="/my-profile/public/@{req.user.username ?? ''}"
+						href="/my-profile/public/@{u?.username ?? ''}"
 						class="block truncate text-sm font-semibold text-gray-800 hover:underline dark:text-neutral-200"
 					>
 						{displayName}
 					</a>
-					{#if req.user.username}
-						<p class="truncate text-xs text-gray-500 dark:text-neutral-500">@{req.user.username}</p>
+					{#if u?.username}
+						<p class="truncate text-xs text-gray-500 dark:text-neutral-500">@{u.username}</p>
 					{/if}
 					{#if req.createdAt}
 						<p class="mt-0.5 text-[11px] text-gray-400 dark:text-neutral-500">
@@ -188,7 +160,7 @@ function timeAgo(iso: string): string {
 	</ul>
 	<InfiniteScrollTrigger
 		onLoadMore={loadMore}
-		hasMore={page < firstPage.totalPages}
+		hasMore={!!firstPage && page < firstPage.totalPages}
 		isLoading={loadingMore}
 	/>
 {/if}

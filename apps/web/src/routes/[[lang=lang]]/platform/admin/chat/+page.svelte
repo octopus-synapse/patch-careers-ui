@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Admin chat & collaborations — burra: chama SDK e renderiza listas.
-   * Backend ainda devolve `void` no schema OpenAPI; cast local.
    */
   import {
     createAdminChatConversations,
@@ -14,23 +13,6 @@
   import { locale } from '$lib/state/locale.svelte';
 
   const t = $derived(locale.t);
-
-  type ChatStats = { totalConversations?: number; totalMessages?: number; activeUsers?: number };
-  type CollabStats = { totalCollaborations?: number };
-  type Conversation = {
-    id: string;
-    participants?: string[];
-    lastMessage?: string;
-    lastMessageAt?: string;
-  };
-  type Collaboration = {
-    id: string;
-    user?: string;
-    resume?: string;
-    role?: string;
-    createdAt?: string;
-  };
-  type Paged<T> = { items?: T[]; totalPages?: number; page?: number };
 
   let activeTab = $state<'chat' | 'collaborations'>('chat');
   let chatPage = $state(1);
@@ -51,12 +33,10 @@
     { query: { enabled: browser && activeTab === 'collaborations' } },
   );
 
-  const chatStats = $derived($chatStatsQuery.data as unknown as ChatStats | undefined);
-  const chatData = $derived($chatConversationsQuery.data as unknown as Paged<Conversation> | undefined);
-  const conversations = $derived(chatData?.items ?? []);
-  const collabStats = $derived($collabStatsQuery.data as unknown as CollabStats | undefined);
-  const collabData = $derived($collabListQuery.data as unknown as Paged<Collaboration> | undefined);
-  const collaborations = $derived(collabData?.items ?? []);
+  const chatStats = $derived($chatStatsQuery.data);
+  const chatData = $derived($chatConversationsQuery.data);
+  const collabStats = $derived($collabStatsQuery.data);
+  const collabData = $derived($collabListQuery.data);
 </script>
 
 <svelte:head>
@@ -92,9 +72,9 @@
   {#if activeTab === 'chat'}
     {#if chatStats}
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatCard label={t('admin.chat.totalConversations')} value={chatStats.totalConversations ?? 0} />
-        <StatCard label={t('admin.chat.totalMessages')} value={chatStats.totalMessages ?? 0} />
-        <StatCard label={t('admin.chat.activeUsers')} value={chatStats.activeUsers ?? 0} />
+        <StatCard label={t('admin.chat.totalConversations')} value={chatStats.totalConversations} />
+        <StatCard label={t('admin.chat.totalMessages')} value={chatStats.totalMessages} />
+        <StatCard label={t('admin.chat.activeUsers')} value={chatStats.activeChatUsers} />
       </div>
     {/if}
 
@@ -108,15 +88,17 @@
           </tr>
         </thead>
         <tbody>
-          {#each conversations as c}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2">{(c.participants ?? []).join(', ')}</td>
-              <td class="px-3 py-2 truncate max-w-md">{c.lastMessage ?? '—'}</td>
-              <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{c.lastMessageAt ?? ''}</td>
-            </tr>
+          {#if chatData && chatData.items.length > 0}
+            {#each chatData.items as c}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2">{[c.participant1.name ?? c.participant1.email, c.participant2.name ?? c.participant2.email].join(', ')}</td>
+                <td class="px-3 py-2 truncate max-w-md">{c.lastMessageContent ?? '—'}</td>
+                <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{c.lastMessageAt ?? ''}</td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="3" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.chat.noConversations')}</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>
@@ -143,7 +125,7 @@
   {:else}
     {#if collabStats}
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatCard label={t('admin.chat.totalCollaborations')} value={collabStats.totalCollaborations ?? 0} />
+        <StatCard label={t('admin.chat.totalCollaborations')} value={collabStats.totalCollaborations} />
       </div>
     {/if}
 
@@ -158,16 +140,18 @@
           </tr>
         </thead>
         <tbody>
-          {#each collaborations as c}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2">{c.user ?? '—'}</td>
-              <td class="px-3 py-2">{c.resume ?? '—'}</td>
-              <td class="px-3 py-2">{c.role ?? '—'}</td>
-              <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{c.createdAt ?? ''}</td>
-            </tr>
+          {#if collabData && collabData.items.length > 0}
+            {#each collabData.items as c}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2">{c.user.name ?? c.user.email}</td>
+                <td class="px-3 py-2">{c.resume.title ?? '—'}</td>
+                <td class="px-3 py-2">{c.role}</td>
+                <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{c.invitedAt}</td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="4" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.chat.noCollaborations')}</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

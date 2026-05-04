@@ -5,6 +5,7 @@ import {
   createSocialConnectionsUsersMeConnections,
   socialConnectionsUsersMeConnectionsQueryKey,
   socialConnectionsUsersMeConnections,
+  type SocialConnectionsUsersMeConnections200,
 } from 'api-client';
 import { ChevronDown, MessageCircle, MoreHorizontal, Search, Users } from 'lucide-svelte';
 import { Avatar, Button, ConfirmModal, Input, Skeleton } from 'ui';
@@ -15,48 +16,14 @@ import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 
-type ConnectionUser = {
-  id: string | null;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-};
-
-type ConnectionRecord = {
-  id: string;
-  createdAt: string;
-  user: ConnectionUser;
-};
+type ConnectionRecord = SocialConnectionsUsersMeConnections200['connections']['data'][number];
 
 const connectionsQuery = createSocialConnectionsUsersMeConnections(
   { page: '1', limit: '20' },
   { query: { enabled: browser } },
 );
 
-function extractRecord(raw: Record<string, unknown>): ConnectionRecord {
-  const rawUser = (raw.user ?? raw.target ?? raw.requester ?? {}) as Record<string, unknown>;
-  return {
-    id: String(raw.id ?? ''),
-    createdAt: String(raw.createdAt ?? raw.acceptedAt ?? raw.updatedAt ?? ''),
-    user: {
-      id: (rawUser.id as string | null) ?? null,
-      name: (rawUser.name as string | null) ?? null,
-      username: (rawUser.username as string | null) ?? null,
-      photoURL: (rawUser.photoURL as string | null) ?? null,
-    },
-  };
-}
-
-const firstPage = $derived.by(() => {
-  const outer = $connectionsQuery.data as Record<string, unknown> | undefined;
-  const section = outer?.connections as Record<string, unknown> | undefined;
-  const items = (section?.data ?? []) as Record<string, unknown>[];
-  return {
-    data: items.map(extractRecord),
-    total: (section?.total as number | undefined) ?? 0,
-    totalPages: (section?.totalPages as number | undefined) ?? 0,
-  };
-});
+const firstPage = $derived($connectionsQuery.data?.connections);
 
 let extra = $state<ConnectionRecord[]>([]);
 let page = $state(1);
@@ -67,16 +34,11 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = page + 1;
-    const res = (await socialConnectionsUsersMeConnections({
+    const res = await socialConnectionsUsersMeConnections({
       page: String(next),
       limit: '20',
-    })) as unknown as Record<string, unknown> | undefined;
-    const section = res?.connections as Record<string, unknown> | undefined;
-    const items =
-      (section?.data as Record<string, unknown>[] | undefined) ??
-      (res?.items as Record<string, unknown>[] | undefined) ??
-      [];
-    extra = [...extra, ...items.map(extractRecord)];
+    });
+    extra = [...extra, ...res.connections.data];
     page = next;
   } finally {
     loadingMore = false;
@@ -88,27 +50,32 @@ let sortKey = $state<SortKey>('recent');
 let sortOpen = $state(false);
 let query = $state('');
 
-const allConnections = $derived([...firstPage.data, ...extra]);
+function userOf(c: ConnectionRecord) {
+  return c.user ?? c.target ?? c.requester;
+}
+
+const allConnections = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
 
 const filtered = $derived.by(() => {
   const q = query.trim().toLowerCase();
   const list = q
     ? allConnections.filter((c) => {
-        const name = (c.user.name ?? '').toLowerCase();
-        const username = (c.user.username ?? '').toLowerCase();
+        const u = userOf(c);
+        const name = (u?.name ?? '').toLowerCase();
+        const username = (u?.username ?? '').toLowerCase();
         return name.includes(q) || username.includes(q);
       })
     : allConnections;
 
   const sorted = [...list];
   if (sortKey === 'recent') {
-    sorted.sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
+    sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   } else if (sortKey === 'first') {
-    sorted.sort((a, b) => (a.user.name ?? '').localeCompare(b.user.name ?? ''));
+    sorted.sort((a, b) => (userOf(a)?.name ?? '').localeCompare(userOf(b)?.name ?? ''));
   } else if (sortKey === 'last') {
     sorted.sort((a, b) => {
-      const la = (a.user.name ?? '').split(' ').slice(-1)[0] ?? '';
-      const lb = (b.user.name ?? '').split(' ').slice(-1)[0] ?? '';
+      const la = (userOf(a)?.name ?? '').split(' ').slice(-1)[0] ?? '';
+      const lb = (userOf(b)?.name ?? '').split(' ').slice(-1)[0] ?? '';
       return la.localeCompare(lb);
     });
   }
@@ -173,7 +140,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 				<h1 class="text-base font-semibold text-gray-800 dark:text-neutral-200">
 					{(t?.('network.connectionsCount') ?? '{n} connections').replace(
 						'{n}',
-						String(firstPage.total),
+						String(firstPage?.total ?? 0),
 					)}
 				</h1>
 			</div>
@@ -252,21 +219,22 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 			{:else}
 				<ul class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each filtered as conn (conn.id)}
-						{@const displayName = conn.user.name ?? conn.user.username ?? '?'}
+						{@const u = userOf(conn)}
+						{@const displayName = u?.name ?? u?.username ?? '?'}
 						<li class="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4">
-							<a href="/my-profile/public/@{conn.user.username ?? ''}" class="flex-shrink-0">
-								<Avatar name={displayName} photoURL={conn.user.photoURL} size="lg" />
+							<a href="/my-profile/public/@{u?.username ?? ''}" class="flex-shrink-0">
+								<Avatar name={displayName} photoURL={u?.photoURL} size="lg" />
 							</a>
 							<div class="min-w-0 flex-1">
 								<a
-									href="/my-profile/public/@{conn.user.username ?? ''}"
+									href="/my-profile/public/@{u?.username ?? ''}"
 									class="block truncate text-sm font-semibold text-gray-800 hover:underline dark:text-neutral-200"
 								>
 									{displayName}
 								</a>
-								{#if conn.user.username}
+								{#if u?.username}
 									<p class="truncate text-xs text-gray-500 dark:text-neutral-500">
-										@{conn.user.username}
+										@{u.username}
 									</p>
 								{/if}
 								{#if conn.createdAt}
@@ -283,7 +251,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 									variant="outline"
 									size="sm"
 									textCase="normal"
-									onclick={() => chatState.startConversationWith(conn.user.id ?? '')}
+									onclick={() => chatState.startConversationWith(u?.id ?? '')}
 								>
 									<MessageCircle size={12} />
 									{t?.('network.message')}
@@ -320,7 +288,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 				</ul>
 				<InfiniteScrollTrigger
 					onLoadMore={loadMore}
-					hasMore={page < firstPage.totalPages}
+					hasMore={!!firstPage && page < firstPage.totalPages}
 					isLoading={loadingMore}
 				/>
 			{/if}

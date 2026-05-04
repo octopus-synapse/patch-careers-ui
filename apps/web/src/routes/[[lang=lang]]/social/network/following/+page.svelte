@@ -5,6 +5,7 @@ import {
   createSocialFollowUsersFollowing,
   socialFollowUsersFollowingQueryKey,
   socialFollowUsersFollowing,
+  type SocialFollowUsersFollowing200,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -26,46 +27,10 @@ const query = createSocialFollowUsersFollowing(
   { query: { enabled: browser && !!currentUserId } },
 );
 
-type FollowingRow = {
-  id: string;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-};
+type FollowingRecord = SocialFollowUsersFollowing200['following']['data'][number];
 
-// Swagger ships `void` for the response; runtime contract is
-// `{following:{data:[{following:{...}}],total,totalPages}}`.
-type FollowingRecord = {
-  following?: { id?: string; name?: string | null; username?: string | null; photoURL?: string | null };
-};
-
-function rowsFrom(items?: FollowingRecord[]): FollowingRow[] {
-  return (items ?? []).map((row) => ({
-    id: row.following?.id ?? '',
-    name: row.following?.name ?? null,
-    username: row.following?.username ?? null,
-    photoURL: row.following?.photoURL ?? null,
-  }));
-}
-
-function pagedSection(data: unknown): {
-  rows: FollowingRow[];
-  totalPages: number;
-  total: number;
-} {
-  const outer = data as Record<string, unknown> | undefined;
-  const section = outer?.following as
-    | { data?: FollowingRecord[]; totalPages?: number; total?: number }
-    | undefined;
-  return {
-    rows: rowsFrom(section?.data),
-    totalPages: section?.totalPages ?? 0,
-    total: section?.total ?? 0,
-  };
-}
-
-const firstPage = $derived(pagedSection($query.data));
-let extra = $state<FollowingRow[]>([]);
+const firstPage = $derived($query.data?.following);
+let extra = $state<FollowingRecord[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
 let hiddenIds = $state<Set<string>>(new Set());
@@ -75,19 +40,22 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await socialFollowUsersFollowing(currentUserId, {
+    const res = await socialFollowUsersFollowing(currentUserId, {
       page: String(next),
       limit: '20',
-    })) as unknown as Record<string, unknown> | undefined;
-    const section = res?.following as { data?: FollowingRecord[] } | undefined;
-    extra = [...extra, ...rowsFrom(section?.data)];
+    });
+    extra = [...extra, ...res.following.data];
     pageNum = next;
   } finally {
     loadingMore = false;
   }
 }
 
-const all = $derived([...firstPage.rows, ...extra].filter((r) => !hiddenIds.has(r.id)));
+const all = $derived(
+  (firstPage ? [...firstPage.data, ...extra] : extra).filter(
+    (r) => !hiddenIds.has(r.following?.id ?? ''),
+  ),
+);
 
 const queryClient = useQueryClient();
 
@@ -122,7 +90,7 @@ function handleUnfollow(userId: string) {
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('network.pageFollowingTitle')}
 			</h1>
-			{#if firstPage.total > 0}
+			{#if firstPage && firstPage.total > 0}
 				<span class="text-xs text-gray-500 dark:text-neutral-500">{firstPage.total}</span>
 			{/if}
 		</header>
@@ -148,26 +116,21 @@ function handleUnfollow(userId: string) {
 				/>
 			{:else}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-					{#each all as followed (followed.id)}
-						<UserRow
-							user={{
-								id: followed.id,
-								name: followed.name,
-								username: followed.username,
-								photoURL: followed.photoURL,
-							}}
-						>
-							{#snippet actions()}
-								<Button variant="outline" size="sm" textCase="normal" onclick={() => handleUnfollow(followed.id)}>
-									{t('network.unfollow')}
-								</Button>
-							{/snippet}
-						</UserRow>
+					{#each all as row (row.following?.id ?? row.id)}
+						{#if row.following}
+							<UserRow user={row.following}>
+								{#snippet actions()}
+									<Button variant="outline" size="sm" textCase="normal" onclick={() => row.following && handleUnfollow(row.following.id)}>
+										{t('network.unfollow')}
+									</Button>
+								{/snippet}
+							</UserRow>
+						{/if}
 					{/each}
 				</div>
 				<InfiniteScrollTrigger
 					onLoadMore={loadMore}
-					hasMore={pageNum < firstPage.totalPages}
+					hasMore={!!firstPage && pageNum < firstPage.totalPages}
 					isLoading={loadingMore}
 				/>
 			{/if}

@@ -1,9 +1,6 @@
 <script lang="ts">
   /**
    * Admin home — burra: chama SDK e renderiza StatCards.
-   * Backend (T11) ainda retorna `void` no schema OpenAPI; esperamos a forma
-   * documentada e fazemos cast local. Quando o backend tipar a response,
-   * basta remover o cast.
    */
   import { createAdminDashboardMetrics } from 'api-client';
   import {
@@ -23,22 +20,11 @@
 
   const t = $derived(locale.t);
 
-  type DashboardMetrics = {
-    totalUsers?: number;
-    totalResumes?: number;
-    totalViews?: number;
-    activeUsers7d?: number;
-    signupsThisWeek?: number;
-    signupsThisMonth?: number;
-    averageAtsScore?: number;
-    onboardingCompletionRate?: number;
-  };
-
   const metricsQuery = createAdminDashboardMetrics({
       query: { enabled: browser, refetchInterval: 30_000 },
     });
 
-  const metrics = $derived($metricsQuery.data as unknown as DashboardMetrics | undefined);
+  const metrics = $derived($metricsQuery.data);
 </script>
 
 <svelte:head>
@@ -68,36 +54,36 @@
     </div>
   {:else if metrics}
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-      <StatCard label={t('admin.dashboard.totalUsers')} value={metrics.totalUsers ?? 0}>
+      <StatCard label={t('admin.dashboard.totalUsers')} value={metrics.totalUsers}>
         {#snippet icon()}<Users size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
-      <StatCard label={t('admin.dashboard.totalResumes')} value={metrics.totalResumes ?? 0}>
+      <StatCard label={t('admin.dashboard.totalResumes')} value={metrics.totalResumes}>
         {#snippet icon()}<FileText size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
-      <StatCard label={t('admin.dashboard.totalViews')} value={metrics.totalViews ?? 0}>
+      <StatCard label={t('admin.dashboard.totalViews')} value={metrics.totalViews}>
         {#snippet icon()}<Eye size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
-      <StatCard label={t('admin.dashboard.activeWeek')} value={metrics.activeUsers7d ?? 0}>
+      <StatCard label={t('admin.dashboard.activeWeek')} value={metrics.activeUsers7d}>
         {#snippet icon()}
           <UserCheck size={18} class="text-gray-500 dark:text-neutral-500" />
         {/snippet}
       </StatCard>
-      <StatCard label={t('admin.dashboard.signupsWeek')} value={metrics.signupsThisWeek ?? 0}>
+      <StatCard label={t('admin.dashboard.signupsWeek')} value={metrics.signupsThisWeek}>
         {#snippet icon()}
           <CalendarPlus size={18} class="text-gray-500 dark:text-neutral-500" />
         {/snippet}
       </StatCard>
-      <StatCard label={t('admin.dashboard.signupsMonth')} value={metrics.signupsThisMonth ?? 0}>
+      <StatCard label={t('admin.dashboard.signupsMonth')} value={metrics.signupsThisMonth}>
         {#snippet icon()}
           <TrendingUp size={18} class="text-gray-500 dark:text-neutral-500" />
         {/snippet}
       </StatCard>
-      <StatCard label={t('admin.dashboard.avgAtsScore')} value={metrics.averageAtsScore ?? 0}>
+      <StatCard label={t('admin.dashboard.avgAtsScore')} value={metrics.averageAtsScore}>
         {#snippet icon()}<Target size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
       <StatCard
         label={t('admin.dashboard.onboardingRate')}
-        value={`${metrics.onboardingCompletionRate ?? 0}%`}
+        value={`${metrics.onboardingCompletionRate}%`}
       />
     </div>
   {/if}

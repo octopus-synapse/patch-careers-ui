@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
-   * Admin onboarding — burra: lista steps + delete. Backend retorna `void`
-   * no schema OpenAPI; cast local da resposta.
+   * Admin onboarding — burra: lista steps + delete.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -17,19 +16,6 @@
   import StatCard from '../_components/stat-card.svelte';
   import { locale } from '$lib/state/locale.svelte';
 
-  type Step = {
-    key: string;
-    label?: string;
-    order?: number;
-    isActive?: boolean;
-  };
-
-  type Stats = {
-    completionRate?: number;
-    totalStarted?: number;
-    totalCompleted?: number;
-  };
-
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
@@ -40,10 +26,8 @@
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
 
-  const steps = $derived(
-    (($stepsQuery.data as unknown as { items?: Step[] } | undefined)?.items ?? []) as Step[],
-  );
-  const stats = $derived($statsQuery.data as unknown as Stats | undefined);
+  const steps = $derived($stepsQuery.data?.steps);
+  const stats = $derived($statsQuery.data?.stats);
 
   let deletingKey = $state<string | null>(null);
   async function handleDelete(key: string) {
@@ -71,9 +55,9 @@
 
   {#if stats}
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <StatCard label={t('admin.onboarding.completionRate')} value={`${stats.completionRate ?? 0}%`} />
-      <StatCard label={t('admin.onboarding.totalStarted')} value={stats.totalStarted ?? 0} />
-      <StatCard label={t('admin.onboarding.totalCompleted')} value={stats.totalCompleted ?? 0} />
+      <StatCard label={t('admin.onboarding.completionRate')} value={`${stats.completionRate}%`} />
+      <StatCard label={t('admin.onboarding.totalStarted')} value={stats.totalStarted} />
+      <StatCard label={t('admin.onboarding.totalCompleted')} value={stats.totalCompleted} />
     </div>
   {/if}
 
@@ -96,26 +80,28 @@
           </tr>
         </thead>
         <tbody>
-          {#each steps as step}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2 font-mono text-xs">{step.key}</td>
-              <td class="px-3 py-2 text-xs">{step.label ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{step.order ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{step.isActive ? 'Sim' : 'Não'}</td>
-              <td class="px-3 py-2 text-right">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onclick={() => handleDelete(step.key)}
-                  disabled={deletingKey === step.key}
-                >
-                  <Trash2 class="size-3" />
-                </Button>
-              </td>
-            </tr>
+          {#if steps && steps.length > 0}
+            {#each steps as step}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2 font-mono text-xs">{step.key}</td>
+                <td class="px-3 py-2 text-xs">{step.component}</td>
+                <td class="px-3 py-2 text-xs">{step.order}</td>
+                <td class="px-3 py-2 text-xs">{step.isActive ? 'Sim' : 'Não'}</td>
+                <td class="px-3 py-2 text-right">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onclick={() => handleDelete(step.key)}
+                    disabled={deletingKey === step.key}
+                  >
+                    <Trash2 class="size-3" />
+                  </Button>
+                </td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="5" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.onboarding.noSteps')}</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

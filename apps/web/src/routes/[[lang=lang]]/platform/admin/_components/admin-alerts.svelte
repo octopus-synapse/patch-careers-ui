@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Admin alerts widget — burra: chama SDK e renderiza chips/links.
-   * Backend retorna shape ainda não tipado pelo OpenAPI; cast local.
    */
 import { createAdminAlertsList } from 'api-client';
 import { AlertTriangle, Flag, MailCheck, UserPlus } from 'lucide-svelte';
@@ -11,18 +10,11 @@ const alertsQuery = createAdminAlertsList({
   query: { enabled: browser, refetchInterval: 60_000 },
 });
 
-type Alerts = {
-  reportsPending?: number;
-  usersPendingVerification?: number;
-  shadowProfilesStale?: number;
-  total?: number;
-};
-
-const alerts = $derived(($alertsQuery.data as unknown as Alerts | undefined) ?? {});
-const total = $derived(alerts.total ?? 0);
+const alerts = $derived($alertsQuery.data);
+const total = $derived(alerts?.total ?? 0);
 </script>
 
-{#if total > 0}
+{#if total > 0 && alerts}
 	<div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
 		<div class="mb-3 flex items-center gap-2">
 			<AlertTriangle size={14} class="text-amber-500" />
@@ -31,7 +23,7 @@ const total = $derived(alerts.total ?? 0);
 			</h2>
 		</div>
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-			{#if (alerts.reportsPending ?? 0) > 0}
+			{#if alerts.reportsPending > 0}
 				<a
 					href="/platform/admin/collaboration"
 					class="flex items-center justify-between rounded-lg border border-amber-500/20 bg-white/60 px-3 py-2 text-xs transition-colors hover:bg-white dark:bg-neutral-800/50 dark:hover:bg-neutral-800"
@@ -43,7 +35,7 @@ const total = $derived(alerts.total ?? 0);
 					<span class="text-gray-400">→</span>
 				</a>
 			{/if}
-			{#if (alerts.usersPendingVerification ?? 0) > 0}
+			{#if alerts.usersPendingVerification > 0}
 				<a
 					href="/platform/admin/users"
 					class="flex items-center justify-between rounded-lg border border-amber-500/20 bg-white/60 px-3 py-2 text-xs transition-colors hover:bg-white dark:bg-neutral-800/50 dark:hover:bg-neutral-800"
@@ -55,7 +47,7 @@ const total = $derived(alerts.total ?? 0);
 					<span class="text-gray-400">→</span>
 				</a>
 			{/if}
-			{#if (alerts.shadowProfilesStale ?? 0) > 0}
+			{#if alerts.shadowProfilesStale > 0}
 				<div class="flex items-center justify-between rounded-lg border border-amber-500/20 bg-white/60 px-3 py-2 text-xs dark:bg-neutral-800/50">
 					<span class="inline-flex items-center gap-2 text-gray-800 dark:text-neutral-200">
 						<UserPlus size={12} />
