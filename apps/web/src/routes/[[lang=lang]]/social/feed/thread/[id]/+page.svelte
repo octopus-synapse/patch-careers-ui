@@ -9,6 +9,7 @@ import {
   engagementPostsRepost,
   postsDelete,
 } from 'api-client';
+import type { PostsGetById200 } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -17,21 +18,12 @@ import PostCard from '../../_components/post-card.svelte';
 import { useAuth } from '$lib/state/auth.svelte';
 
 /**
- * Thread page — frontend BURRO. Reads `GET /api/v1/posts/:id` (which the
- * backend hydrates with `threadChildren` for thread-style posts) and
- * renders each entry through the shared `PostCard`. Engagement
+ * Thread page — frontend BURRO. Reads `GET /api/v1/posts/:id` and renders
+ * the post through the shared `PostCard`. Engagement
  * (like/bookmark/repost/report/delete) is wired through the canonical
  * engagement endpoints; optimistic state lives in local `Set`s because
  * this view only ever shows one thread at a time.
- *
- * The swagger ships `void` schemas for these endpoints, so we cast to a
- * documented runtime shape at the boundary.
  */
-type ThreadPost = Record<string, unknown>;
-
-type ThreadResponse = {
-  post?: ThreadPost & { threadChildren?: ThreadPost[] };
-} & ThreadPost;
 
 const session = useAuth();
 const user = $derived(session.data?.user);
@@ -48,35 +40,28 @@ const threadId = $derived($page.params.id ?? '');
 
 const postQuery = createPostsGetById(
   threadId,
-  { query: { enabled: Boolean(authenticated) && !!threadId } },
+  { query: { enabled: authenticated && !!threadId } },
 );
 
-const threadPosts = $derived.by<ThreadPost[]>(() => {
-  const raw = $postQuery.data as unknown as ThreadResponse | undefined;
-  if (!raw) return [];
-  // Backend may wrap the post under a `post` field or expose it directly.
-  const root = (raw.post ?? raw) as ThreadPost & { threadChildren?: ThreadPost[] };
-  const children = Array.isArray(root.threadChildren) ? root.threadChildren : [];
-  return [root, ...children];
-});
+const threadPost = $derived($postQuery.data);
 
 let likedPosts = $state<Set<string>>(new Set());
 let unlikedPosts = $state<Set<string>>(new Set());
 let bookmarkedPosts = $state<Set<string>>(new Set());
 let unbookmarkedPosts = $state<Set<string>>(new Set());
 
-function isPostLiked(post: ThreadPost): boolean {
-  const id = String(post.id);
+function isPostLiked(post: PostsGetById200): boolean {
+  const id = post.id;
   if (likedPosts.has(id)) return true;
   if (unlikedPosts.has(id)) return false;
-  return Boolean(post.isLiked ?? post.liked ?? false);
+  return false;
 }
 
-function isPostBookmarked(post: ThreadPost): boolean {
-  const id = String(post.id);
+function isPostBookmarked(post: PostsGetById200): boolean {
+  const id = post.id;
   if (bookmarkedPosts.has(id)) return true;
   if (unbookmarkedPosts.has(id)) return false;
-  return Boolean(post.isBookmarked ?? post.bookmarked ?? false);
+  return false;
 }
 
 async function handleLike(id: string) {
@@ -139,37 +124,28 @@ async function handleReport(id: string) {
 				<div class="flex justify-center py-12">
 					<Loader size={24} />
 				</div>
-			{:else}
+			{:else if threadPost}
 				<div class="space-y-1">
-					{#each threadPosts as post, i (String(post.id))}
-						<div class="relative">
-							{#if i < threadPosts.length - 1}
-								<div class="absolute left-7 top-14 bottom-0 w-0.5 bg-gray-200 dark:bg-neutral-700/50"></div>
-							{/if}
-							<PostCard
-								post={{
-									...post,
-									isLiked: isPostLiked(post),
-									isBookmarked: isPostBookmarked(post),
-								}}
-								{currentUserId}
-								onlike={handleLike}
-								onunlike={handleUnlike}
-								onbookmark={handleBookmark}
-								onunbookmark={handleUnbookmark}
-								ondelete={handleDelete}
-								onrepost={handleRepost}
-								onreport={handleReport}
-							/>
-						</div>
-					{/each}
+					<PostCard
+						post={{
+							...threadPost,
+							isLiked: isPostLiked(threadPost),
+							isBookmarked: isPostBookmarked(threadPost),
+						}}
+						{currentUserId}
+						onlike={handleLike}
+						onunlike={handleUnlike}
+						onbookmark={handleBookmark}
+						onunbookmark={handleUnbookmark}
+						ondelete={handleDelete}
+						onrepost={handleRepost}
+						onreport={handleReport}
+					/>
 				</div>
-
-				{#if threadPosts.length === 0}
-					<div class="py-12 text-center">
-						<p class="text-sm text-gray-400 dark:text-neutral-500">Thread not found.</p>
-					</div>
-				{/if}
+			{:else}
+				<div class="py-12 text-center">
+					<p class="text-sm text-gray-400 dark:text-neutral-500">Thread not found.</p>
+				</div>
 			{/if}
 		</main>
 	</div>

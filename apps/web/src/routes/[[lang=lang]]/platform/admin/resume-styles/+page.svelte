@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
-   * Admin resume-styles — burra: lista estilos + delete. Backend retorna
-   * `void` no schema OpenAPI; cast local da resposta.
+   * Admin resume-styles — burra: lista estilos + delete.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -14,15 +13,6 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
-  type Style = {
-    id: string;
-    name?: string;
-    slug?: string;
-    description?: string;
-    isPremium?: boolean;
-    requiredRank?: number;
-  };
-
   const queryClient = useQueryClient();
 
   const listQuery = createResumeStylesList(
@@ -30,9 +20,7 @@
     { query: { enabled: browser } },
   );
 
-  const styles = $derived(
-    ($listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? [],
-  );
+  const styles = $derived($listQuery.data?.items);
 
   let deleting = $state<string | null>(null);
   async function handleDelete(id: string) {
@@ -68,42 +56,44 @@
         <thead class="bg-muted/40">
           <tr class="text-left text-xs text-gray-500 dark:text-neutral-500">
             <th class="px-3 py-2">Nome</th>
-            <th class="px-3 py-2">Slug</th>
+            <th class="px-3 py-2">Layout</th>
             <th class="px-3 py-2">Descrição</th>
-            <th class="px-3 py-2">Plano</th>
+            <th class="px-3 py-2">Origem</th>
             <th class="px-3 py-2"></th>
           </tr>
         </thead>
         <tbody>
-          {#each styles as s}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2">{s.name ?? '—'}</td>
-              <td class="px-3 py-2 font-mono text-xs">{s.slug ?? '—'}</td>
-              <td class="px-3 py-2 text-xs max-w-md truncate">{s.description ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">
-                {#if s.isPremium}
-                  <span class="inline-flex items-center gap-1 text-amber-600">
-                    <Lock class="size-3" />
-                    Premium
-                  </span>
-                {:else}
-                  Free
-                {/if}
-              </td>
-              <td class="px-3 py-2 text-right">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onclick={() => handleDelete(s.id)}
-                  disabled={deleting === s.id}
-                >
-                  <Trash2 class="size-3" />
-                </Button>
-              </td>
-            </tr>
+          {#if styles && styles.length}
+            {#each styles as s}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2">{s.name}</td>
+                <td class="px-3 py-2 font-mono text-xs">{s.layoutKind}</td>
+                <td class="px-3 py-2 text-xs max-w-md truncate">{s.description ?? '—'}</td>
+                <td class="px-3 py-2 text-xs">
+                  {#if s.isSystem}
+                    <span class="inline-flex items-center gap-1 text-amber-600">
+                      <Lock class="size-3" />
+                      Sistema
+                    </span>
+                  {:else}
+                    Custom
+                  {/if}
+                </td>
+                <td class="px-3 py-2 text-right">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onclick={() => handleDelete(s.id)}
+                    disabled={deleting === s.id}
+                  >
+                    <Trash2 class="size-3" />
+                  </Button>
+                </td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="5" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">Nenhum estilo</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

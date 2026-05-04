@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Admin performance — burra: chama metrics overview e renderiza cards.
-   * Backend devolve `void` no schema OpenAPI; cast local da resposta.
    */
   import { createAdminMetricsOverview } from 'api-client';
   import { Clock, Cpu, HardDrive, RefreshCw, Zap } from 'lucide-svelte';
@@ -9,35 +8,15 @@
   import { Card, Loader } from 'ui';
   import StatCard from '../_components/stat-card.svelte';
 
-  type LatencyRow = { route: string; totalRequests: number; avgLatencyMs: number };
-  type MetricsOverview = {
-    counters?: {
-      resumeCreated?: number;
-      userSignups?: number;
-      exportCompleted?: number;
-    };
-    gauges?: {
-      activeUsers?: number;
-      pendingExports?: number;
-    };
-    process?: {
-      uptimeSeconds?: number;
-      heapUsedMb?: number;
-      heapTotalMb?: number;
-      eventLoopLagMs?: number;
-    };
-    latency?: LatencyRow[];
-  };
-
   const metricsQuery = createAdminMetricsOverview({
       query: { enabled: browser, refetchInterval: 10_000 },
     });
 
-  const data = $derived($metricsQuery.data as unknown as MetricsOverview | undefined);
+  const data = $derived($metricsQuery.data);
   const counters = $derived(data?.counters);
   const gauges = $derived(data?.gauges);
   const proc = $derived(data?.process);
-  const latency = $derived(data?.latency ?? []);
+  const latency = $derived(data?.latency);
 
   function formatUptime(seconds: number): string {
     const days = Math.floor(seconds / 86400);
@@ -55,7 +34,7 @@
   }
 
   const maxRequests = $derived(
-    latency.length ? Math.max(...latency.map((r) => r.totalRequests), 1) : 1,
+    latency && latency.length ? Math.max(...latency.map((r) => r.totalRequests), 1) : 1,
   );
 </script>
 
@@ -107,7 +86,7 @@
         Endpoint Latency
       </h2>
 
-      {#if latency.length}
+      {#if latency && latency.length}
         <div class="rounded-xl border border-border">
           <table class="w-full text-sm">
             <thead class="bg-muted/40">

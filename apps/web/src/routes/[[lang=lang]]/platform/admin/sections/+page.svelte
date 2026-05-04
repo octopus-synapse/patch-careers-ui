@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
-   * Admin sections — burra: lista section types + delete. Backend retorna
-   * `void` no schema OpenAPI; cast local da resposta.
+   * Admin sections — burra: lista section types + delete.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -14,14 +13,6 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
-  type SectionType = {
-    key: string;
-    label?: string;
-    isSystem?: boolean;
-    isActive?: boolean;
-    semantic?: string;
-  };
-
   const queryClient = useQueryClient();
 
   let page = $state(1);
@@ -33,13 +24,8 @@
     { query: { enabled: browser } },
   );
 
-  const items = $derived(
-    ($listQuery.data as unknown as { items?: SectionType[]; totalPages?: number } | undefined)
-      ?.items ?? [],
-  );
-  const totalPages = $derived(
-    ($listQuery.data as unknown as { totalPages?: number } | undefined)?.totalPages ?? 1,
-  );
+  const items = $derived($listQuery.data?.items);
+  const totalPages = $derived($listQuery.data?.totalPages ?? 1);
 
   let deleting = $state<string | null>(null);
   async function handleDelete(key: string) {
@@ -88,29 +74,31 @@
           </tr>
         </thead>
         <tbody>
-          {#each items as s}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2 font-mono text-xs">{s.key}</td>
-              <td class="px-3 py-2">{s.label ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{s.semantic ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{s.isSystem ? 'Sim' : 'Não'}</td>
-              <td class="px-3 py-2 text-xs">{s.isActive ? 'Sim' : 'Não'}</td>
-              <td class="px-3 py-2 text-right">
-                {#if !s.isSystem}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onclick={() => handleDelete(s.key)}
-                    disabled={deleting === s.key}
-                  >
-                    <Trash2 class="size-3" />
-                  </Button>
-                {/if}
-              </td>
-            </tr>
+          {#if items && items.length}
+            {#each items as s}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2 font-mono text-xs">{s.key}</td>
+                <td class="px-3 py-2">{s.title}</td>
+                <td class="px-3 py-2 text-xs">{s.semanticKind}</td>
+                <td class="px-3 py-2 text-xs">{s.isSystem ? 'Sim' : 'Não'}</td>
+                <td class="px-3 py-2 text-xs">{s.isActive ? 'Sim' : 'Não'}</td>
+                <td class="px-3 py-2 text-right">
+                  {#if !s.isSystem}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onclick={() => handleDelete(s.key)}
+                      disabled={deleting === s.key}
+                    >
+                      <Trash2 class="size-3" />
+                    </Button>
+                  {/if}
+                </td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="6" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">Nenhuma seção</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

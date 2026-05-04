@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Recruiting jobs/[id]/applications — burra: lista candidaturas para a vaga.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import { createJobsApplicationsGet2 } from 'api-client';
   import { ArrowLeft } from 'lucide-svelte';
@@ -9,32 +8,17 @@
   import { page } from '$app/stores';
   import { locale } from '$lib/state/locale.svelte';
 
-  type Application = {
-    id: string;
-    status?: string;
-    submittedAt?: string;
-    candidate?: {
-      id?: string;
-      username?: string;
-      name?: string;
-      avatarUrl?: string;
-    };
-  };
-
-  type Page = { items?: Application[]; pagination?: { total?: number } };
-
   const t = $derived(locale.t);
   const jobId = $derived($page.params.id ?? '');
 
   const query = createJobsApplicationsGet2(
     jobId,
     { page: '1', limit: '100' },
-    { query: { enabled: Boolean(jobId) } },
+    { query: { enabled: !!jobId } },
   );
 
-  const data = $derived($query.data as unknown as Page | undefined);
-  const items = $derived(data?.items ?? []);
-  const total = $derived(data?.pagination?.total ?? items.length);
+  const items = $derived($query.data?.items);
+  const total = $derived($query.data?.pagination.total ?? 0);
 
   const STATUS_LABEL: Record<string, string> = {
     SUBMITTED: 'Enviadas',
@@ -70,7 +54,7 @@
 
   {#if $query.isLoading}
     <div class="flex items-center justify-center py-20"><Loader size={20} /></div>
-  {:else if items.length === 0}
+  {:else if !items || items.length === 0}
     <p class="text-sm text-gray-500 dark:text-neutral-400">{t('company.applications.empty')}</p>
   {:else}
     <ul class="grid gap-2">
@@ -80,26 +64,26 @@
         >
           <div class="flex items-center gap-3 min-w-0">
             <Avatar
-              photoURL={a.candidate?.avatarUrl ?? null}
-              name={a.candidate?.name ?? '?'}
+              photoURL={a.user?.photoURL ?? null}
+              name={a.user?.name ?? '?'}
               size="sm"
             />
             <div class="min-w-0">
               <p class="truncate text-sm font-medium text-gray-900 dark:text-neutral-100">
-                {a.candidate?.name ?? t('company.applications.anonymous')}
+                {a.user?.name ?? t('company.applications.anonymous')}
               </p>
               <p class="truncate text-xs text-gray-500 dark:text-neutral-400">
-                {a.submittedAt ?? ''}
+                {a.createdAt}
               </p>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <span class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase">
-              {STATUS_LABEL[a.status ?? ''] ?? a.status ?? '—'}
+              {STATUS_LABEL[a.status] ?? a.status}
             </span>
-            {#if a.candidate?.username}
+            {#if a.user?.username}
               <a
-                href={`/my-profile/public/@${a.candidate.username}`}
+                href={`/my-profile/public/@${a.user.username}`}
                 class="text-xs text-primary hover:underline"
               >
                 {t('company.applications.viewProfile')}

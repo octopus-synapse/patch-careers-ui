@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Feature flags admin — burra: lista flags + toggle ativo/inativo.
-   * Backend ainda devolve `void` no schema OpenAPI; cast local da resposta.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -10,17 +9,13 @@
     createAdminFeatureFlagsList,
     adminFeatureFlagsListQueryKey,
   } from 'api-client';
+  import type { AdminFeatureFlagsList200 } from 'api-client';
   import { Loader, RefreshCw } from 'lucide-svelte';
   import { Button, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
-  type FlagRow = {
-    key: string;
-    description?: string;
-    enabled?: boolean;
-    enabledForRoles?: string[];
-  };
+  type FlagRow = AdminFeatureFlagsList200['flags'][number];
 
   const queryClient = useQueryClient();
 
@@ -28,7 +23,7 @@
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
 
-  const flags = $derived(($listQuery.data as unknown as { items?: FlagRow[] } | undefined)?.items ?? []);
+  const flags = $derived($listQuery.data?.flags);
 
   let toggling = $state<string | null>(null);
 
@@ -88,25 +83,27 @@
           </tr>
         </thead>
         <tbody>
-          {#each flags as f}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2 font-mono text-xs">{f.key}</td>
-              <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{f.description ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{(f.enabledForRoles ?? []).join(', ') || '—'}</td>
-              <td class="px-3 py-2 text-right">
-                <Button
-                  size="sm"
-                  variant={f.enabled ? 'solid' : 'outline'}
-                  onclick={() => toggle(f)}
-                  disabled={toggling === f.key}
-                >
-                  {f.enabled ? 'ON' : 'OFF'}
-                </Button>
-              </td>
-            </tr>
+          {#if flags && flags.length}
+            {#each flags as f}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2 font-mono text-xs">{f.key}</td>
+                <td class="px-3 py-2 text-xs text-gray-500 dark:text-neutral-500">{f.description ?? '—'}</td>
+                <td class="px-3 py-2 text-xs">{f.enabledForRoles.join(', ') || '—'}</td>
+                <td class="px-3 py-2 text-right">
+                  <Button
+                    size="sm"
+                    variant={f.enabled ? 'solid' : 'outline'}
+                    onclick={() => toggle(f)}
+                    disabled={toggling === f.key}
+                  >
+                    {f.enabled ? 'ON' : 'OFF'}
+                  </Button>
+                </td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="4" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">Nenhuma flag</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

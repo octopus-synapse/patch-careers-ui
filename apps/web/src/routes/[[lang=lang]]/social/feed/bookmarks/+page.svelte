@@ -12,19 +12,11 @@ import { useFeedPagination } from '$lib/state/use-feed-pagination.svelte';
 
 /**
  * Bookmarked posts page — frontend BURRO. Backend pagination envelope
- * (`{items, nextCursor}`) is fed straight into `useFeedPagination`. The
- * engagement overlay (likes, bookmarks, repost, report, delete, vote) is
- * the same shared `useFeedEngagement` hook the timeline uses, so optimistic
- * updates and undo behave identically.
- *
- * The swagger response is typed as `void`; the runtime contract is the
- * canonical pagination envelope documented in F1.
+ * (`{posts, nextCursor}`) is fed straight into `useFeedPagination` (which
+ * keys it as `items`). The engagement overlay (likes, bookmarks, repost,
+ * report, delete, vote) is the same shared `useFeedEngagement` hook the
+ * timeline uses, so optimistic updates and undo behave identically.
  */
-type FeedEnvelope = {
-  items?: Record<string, unknown>[];
-  nextCursor?: string | null;
-  hasNew?: boolean;
-};
 
 const session = useAuth();
 const user = $derived(session.data?.user);
@@ -40,7 +32,11 @@ $effect(() => {
 const queryClient = useQueryClient();
 
 const pagination = useFeedPagination({
-  getRawData: () => $bookmarksQuery.data as unknown as FeedEnvelope | undefined,
+  getRawData: () => {
+    const data = $bookmarksQuery.data;
+    if (!data) return undefined;
+    return { items: data.posts, nextCursor: data.nextCursor };
+  },
 });
 
 const engagement = useFeedEngagement({
@@ -52,7 +48,7 @@ const engagement = useFeedEngagement({
 
 const bookmarksQuery = createFeedBookmarks(
   { cursor: pagination.cursor, limit: '20' },
-  { query: { enabled: Boolean(authenticated) } },
+  { query: { enabled: authenticated } },
 );
 
 let sentinelEl: HTMLDivElement | undefined = $state();

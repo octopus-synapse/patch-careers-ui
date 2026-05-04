@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Admin users — burra: lista usuários (search/filter/pagination) + delete.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -14,19 +13,6 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { locale } from '$lib/state/locale.svelte';
-
-  type UserRow = {
-    id: string;
-    email?: string;
-    name?: string;
-    role?: string;
-    status?: string;
-    resumesCount?: number;
-    createdAt?: string;
-    lastLoginAt?: string | null;
-  };
-
-  type Page = { items?: UserRow[]; users?: UserRow[]; total?: number; totalPages?: number };
 
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
@@ -46,9 +32,8 @@
     { query: { enabled: browser } },
   );
 
-  const data = $derived($listQuery.data as unknown as Page | undefined);
-  const users = $derived(data?.items ?? data?.users ?? []);
-  const totalPages = $derived(data?.totalPages ?? 1);
+  const users = $derived($listQuery.data?.users);
+  const totalPages = $derived($listQuery.data?.pagination.totalPages ?? 1);
 
   let deleting = $state<string | null>(null);
   async function handleDelete(id: string) {
@@ -109,27 +94,29 @@
           </tr>
         </thead>
         <tbody>
-          {#each users as u}
-            <tr class="border-t border-border">
-              <td class="px-3 py-2 text-xs">{u.email ?? '—'}</td>
-              <td class="px-3 py-2">{u.name ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{u.role ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{u.status ?? '—'}</td>
-              <td class="px-3 py-2 text-xs">{u.createdAt ?? '—'}</td>
-              <td class="px-3 py-2 text-right">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onclick={() => handleDelete(u.id)}
-                  disabled={deleting === u.id}
-                >
-                  <Trash2 class="size-3" />
-                </Button>
-              </td>
-            </tr>
+          {#if users && users.length}
+            {#each users as u}
+              <tr class="border-t border-border">
+                <td class="px-3 py-2 text-xs">{u.email ?? '—'}</td>
+                <td class="px-3 py-2">{u.name ?? '—'}</td>
+                <td class="px-3 py-2 text-xs">{u.role}</td>
+                <td class="px-3 py-2 text-xs">{u.isActive ? 'active' : 'inactive'}</td>
+                <td class="px-3 py-2 text-xs">{u.createdAt}</td>
+                <td class="px-3 py-2 text-right">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onclick={() => handleDelete(u.id)}
+                    disabled={deleting === u.id}
+                  >
+                    <Trash2 class="size-3" />
+                  </Button>
+                </td>
+              </tr>
+            {/each}
           {:else}
             <tr><td colspan="6" class="px-3 py-6 text-center text-xs text-gray-500 dark:text-neutral-500">{t('admin.users.noUsers')}</td></tr>
-          {/each}
+          {/if}
         </tbody>
       </table>
     </div>

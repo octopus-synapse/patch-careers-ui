@@ -1,36 +1,18 @@
 <script lang="ts">
   /**
    * Recruiting search-candidates — burra: descreve vaga, recebe ranking.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import {
     recruitingMatchCandidates,
     type RecruitingMatchCandidatesMutationRequest,
+    type RecruitingMatchCandidates200,
   } from 'api-client';
   import { Sparkles, Users } from 'lucide-svelte';
-  import { Avatar, Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
+  import { Avatar, Badge, Button, Input, Label, Loader, Textarea } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { goto } from '$app/navigation';
 
-  type Candidate = {
-    userId: string;
-    username?: string | null;
-    name?: string | null;
-    photoURL?: string | null;
-    bio?: string | null;
-    primaryStack?: string[];
-    fit?: {
-      score?: number;
-      breakdown?: {
-        matchedSkills?: string[];
-        missingSkills?: string[];
-        englishMatch?: string;
-        remoteMatch?: string;
-      };
-    };
-  };
-
-  type Response = { candidates?: Candidate[] };
+  type Candidate = RecruitingMatchCandidates200['candidates'][number];
 
   let jobTitle = $state('');
   let jobDescription = $state('');
@@ -64,21 +46,17 @@
         remotePolicy: remotePolicy || undefined,
         limit,
       };
-      const res = (await recruitingMatchCandidates(payload)) as unknown as Response;
-      candidates = res?.candidates ?? [];
+      const res = await recruitingMatchCandidates(payload);
+      candidates = res.candidates;
       searched = true;
     } catch (err) {
-      const message =
-        err && typeof err === 'object' && 'message' in err && typeof err.message === 'string'
-          ? err.message
-          : 'Falha ao buscar candidatos';
       handleApiError(err);
     } finally {
       submitting = false;
     }
   }
 
-  function viewProfile(username: string | null | undefined, userId: string) {
+  function viewProfile(username: string | null, userId: string) {
     if (username) goto(`/my-profile/public/@${username}`);
     else goto(`/users/${userId}`);
   }
@@ -186,7 +164,7 @@
           <article class="flex items-start gap-3 rounded-xl border border-gray-200 p-4 dark:border-neutral-700/60">
             <Avatar
               name={c.name ?? c.username ?? '?'}
-              photoURL={c.photoURL ?? undefined}
+              photoURL={c.photoURL}
               size="lg"
             />
             <div class="min-w-0 flex-1">
@@ -197,16 +175,14 @@
                 {#if c.username}
                   <span class="text-xs text-gray-400 dark:text-neutral-500">@{c.username}</span>
                 {/if}
-                {#if c.fit?.score !== undefined}
-                  <span class="rounded-full bg-violet-500/15 px-2 py-0.5 text-[10px] font-semibold text-violet-600 dark:text-violet-400">
-                    {Math.round((c.fit.score ?? 0) * 100)}% fit
-                  </span>
-                {/if}
+                <span class="rounded-full bg-violet-500/15 px-2 py-0.5 text-[10px] font-semibold text-violet-600 dark:text-violet-400">
+                  {Math.round(c.fit.score * 100)}% fit
+                </span>
               </div>
               {#if c.bio}
                 <p class="mt-1 text-xs text-gray-600 dark:text-neutral-400">{c.bio}</p>
               {/if}
-              {#if c.primaryStack && c.primaryStack.length > 0}
+              {#if c.primaryStack.length > 0}
                 <div class="mt-2 flex flex-wrap gap-1">
                   {#each c.primaryStack.slice(0, 8) as s}
                     <Badge intent="neutral" size="md">{s}</Badge>

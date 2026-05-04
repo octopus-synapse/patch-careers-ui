@@ -5,6 +5,7 @@ import {
   createChatBlockUsersBlockedDelete,
   chatBlockUsersBlockedGetQueryKey,
 } from 'api-client';
+import type { ChatBlockUsersBlockedGet200 } from 'api-client';
 import { ShieldOff } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, ConfirmModal, EmptyState, Skeleton, toastState } from 'ui';
@@ -12,7 +13,10 @@ import { browser } from '$app/environment';
 import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import UserRow from '$lib/components/user/user-row.svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { locale } from '$lib/state/locale.svelte';
+
+type BlockedRow = ChatBlockUsersBlockedGet200['blockedUsers'][number];
 
 const t = $derived(locale.t);
 const auth = useAuth();
@@ -22,34 +26,10 @@ const query = createChatBlockUsersBlockedGet({
   query: { enabled: browser && authenticated },
 });
 
-type Row = {
-  id: string;
-  userId: string;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-};
-
-const blocked = $derived.by<Row[]>(() => {
-  const outer = $query.data as Record<string, unknown> | undefined;
-  const list =
-    (outer?.items as Record<string, unknown>[] | undefined) ??
-    (outer?.blockedUsers as Record<string, unknown>[] | undefined) ??
-    [];
-  return list.map((raw) => {
-    const user = (raw.user ?? {}) as Record<string, string | null>;
-    return {
-      id: String(raw.id ?? ''),
-      userId: String(user.id ?? ''),
-      name: user.name,
-      username: user.username,
-      photoURL: user.photoURL,
-    };
-  });
-});
+const blocked = $derived($query.data?.blockedUsers);
 
 const queryClient = useQueryClient();
-let confirmTarget = $state<Row | null>(null);
+let confirmTarget = $state<BlockedRow | null>(null);
 
 const unblockMutation = createChatBlockUsersBlockedDelete({
   mutation: {
@@ -58,8 +38,8 @@ const unblockMutation = createChatBlockUsersBlockedDelete({
       track('user_unblocked', { targetUserId: vars.userId });
       toastState.show(t('network.unblockSuccess'), 'success');
     },
-    onError() {
-      toastState.show(t('network.unblockError'), 'danger');
+    onError(err) {
+      handleApiError(err);
     },
   },
 });
@@ -67,7 +47,7 @@ const unblockMutation = createChatBlockUsersBlockedDelete({
 function confirmUnblock() {
   const target = confirmTarget;
   confirmTarget = null;
-  if (target) $unblockMutation.mutate({ userId: target.userId });
+  if (target) $unblockMutation.mutate({ userId: target.user.id });
 }
 </script>
 
@@ -80,7 +60,7 @@ function confirmUnblock() {
 	onClose={() => (confirmTarget = null)}
 	onConfirm={confirmUnblock}
 	title={t('network.unblockConfirmTitle', {
-		name: confirmTarget?.name ?? confirmTarget?.username ?? '',
+		name: confirmTarget?.user.name ?? confirmTarget?.user.username ?? '',
 	})}
 	message={t('network.unblockConfirmMessage')}
 	confirmLabel={t('network.unblock')}
@@ -109,7 +89,7 @@ function confirmUnblock() {
 						</div>
 					{/each}
 				</div>
-			{:else if blocked.length === 0}
+			{:else if !blocked || blocked.length === 0}
 				<EmptyState
 					message={t('network.blockedEmpty')}
 					icon={ShieldOff as unknown as Component<{ size: number; class?: string }>}
@@ -119,10 +99,10 @@ function confirmUnblock() {
 					{#each blocked as row (row.id)}
 						<UserRow
 							user={{
-								id: row.userId,
-								name: row.name,
-								username: row.username,
-								photoURL: row.photoURL,
+								id: row.user.id,
+								name: row.user.name,
+								username: row.user.username,
+								photoURL: row.user.photoURL,
 							}}
 						>
 							{#snippet actions()}

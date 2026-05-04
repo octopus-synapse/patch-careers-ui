@@ -31,7 +31,7 @@ const user = $derived(session.data?.user);
 const authenticated = $derived(session.data?.authenticated);
 const currentUserId = $derived(String(user?.id ?? ''));
 const userName = $derived(String(user?.name ?? ''));
-const userPhoto = $derived(((user as Record<string, unknown>)?.photoURL as string | null) ?? null);
+const userPhoto: string | null = null;
 
 $effect(() => {
   if (!session.isLoading && !authenticated) {
@@ -82,32 +82,19 @@ const queryClient = useQueryClient();
 
 const suggestionsQuery = createSocialConnectionsUsersMeConnectionsSuggestions(
   { limit: '20' },
-  { query: { enabled: browser && Boolean(authenticated) } },
+  { query: { enabled: browser && authenticated } },
 );
 
-type SuggestionItem = {
-  id: string;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-  reason?: string | null;
-};
+const feedSuggestions = $derived($suggestionsQuery.data?.suggestions.data ?? []);
 
-const feedSuggestions = $derived.by<SuggestionItem[]>(() => {
-  const outer = $suggestionsQuery.data as Record<string, unknown> | undefined;
-  const section = outer?.suggestions as Record<string, unknown> | undefined;
-  const items = (section?.data as SuggestionItem[] | undefined) ?? [];
-  return items;
-});
-
-// `feedQuery.data` is typed as `void` until the swagger response schema
-// ships; we cast to the canonical pagination envelope (`{items,nextCursor}`)
-// which is the runtime contract documented in F1.
+// SDK envelope is `{posts, nextCursor}`; pagination util keys the array as
+// `items`, so we adapt at the boundary.
 const pagination = useFeedPagination({
-  getRawData: () =>
-    $feedQuery.data as unknown as
-      | { items?: Record<string, unknown>[]; nextCursor?: string | null; hasNew?: boolean }
-      | undefined,
+  getRawData: () => {
+    const data = $feedQuery.data;
+    if (!data) return undefined;
+    return { items: data.posts, nextCursor: data.nextCursor };
+  },
 });
 
 const engagement = useFeedEngagement({
@@ -152,7 +139,7 @@ const feedQuery = createFeedList(
   },
   {
         query: {
-          enabled: Boolean(authenticated),
+          enabled: authenticated,
           // Only poll when the user is at the head of the feed — further
           // pages are stable and shouldn't be refetched in the background.
           refetchInterval: pagination.cursor === undefined ? 60_000 : false,

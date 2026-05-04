@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Skills section — burra: lista skills + endorsements + popover de endorsers.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -11,32 +10,26 @@
     skillEndorsementsUsersSkillsEndorsePost,
     skillEndorsementsUsersSkillsEndorsers,
   } from 'api-client';
+  import type {
+    SkillEndorsementsUsersSkills200,
+    SkillEndorsementsUsersSkillsEndorsers200,
+  } from 'api-client';
   import { Check, Plus } from 'lucide-svelte';
-  import { Avatar, Card, Skeleton, toastState } from 'ui';
+  import { Avatar, Card, Skeleton } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { locale } from '$lib/state/locale.svelte';
 
   type Props = {
     userId: string;
     isOwnProfile: boolean;
-    viewerAuthenticated: boolean;
+    viewerAuthenticated: boolean | undefined;
   };
 
   let { userId, isOwnProfile, viewerAuthenticated }: Props = $props();
 
-  type SkillSummary = {
-    skill: string;
-    endorsementCount: number;
-    endorsedByMe: boolean;
-  };
-
-  type Endorser = {
-    id: string;
-    name: string | null;
-    username: string | null;
-    photoURL: string | null;
-    endorsedAt: string;
-  };
+  type SkillSummary = SkillEndorsementsUsersSkills200['skills'][number];
+  type Endorser = SkillEndorsementsUsersSkillsEndorsers200['data'][number];
 
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
@@ -46,9 +39,7 @@
     { query: { enabled: browser && !!userId } },
   );
 
-  const skills = $derived(
-    (($query.data as unknown as { skills?: SkillSummary[] } | undefined)?.skills ?? []) as SkillSummary[],
-  );
+  const skills = $derived($query.data?.skills);
 
   let optimisticOverrides = $state<Record<string, { endorsedByMe: boolean; delta: number }>>({});
 
@@ -76,11 +67,11 @@
         await queryClient.invalidateQueries({
           queryKey: skillEndorsementsUsersSkillsQueryKey(userId),
         });
-      } catch {
+      } catch (err) {
         const next = { ...optimisticOverrides };
         delete next[s.skill];
         optimisticOverrides = next;
-        toastState.show(t('network.endorseRemoveError'), 'danger');
+        handleApiError(err);
       }
     } else {
       optimisticOverrides = {
@@ -92,11 +83,11 @@
         await queryClient.invalidateQueries({
           queryKey: skillEndorsementsUsersSkillsQueryKey(userId),
         });
-      } catch {
+      } catch (err) {
         const next = { ...optimisticOverrides };
         delete next[s.skill];
         optimisticOverrides = next;
-        toastState.show(t('network.endorseError'), 'danger');
+        handleApiError(err);
       }
     }
   }
@@ -109,13 +100,12 @@
     if (endorserCache[skill] || loadingEndorsers[skill]) return;
     loadingEndorsers = { ...loadingEndorsers, [skill]: true };
     try {
-      const res = (await skillEndorsementsUsersSkillsEndorsers(
+      const res = await skillEndorsementsUsersSkillsEndorsers(
         userId,
         encodeURIComponent(skill),
         { page: '1', limit: '8' },
-      )) as unknown as { items?: Endorser[] } | undefined;
-      const data = res?.items ?? [];
-      endorserCache = { ...endorserCache, [skill]: data };
+      );
+      endorserCache = { ...endorserCache, [skill]: res.data };
     } finally {
       loadingEndorsers = { ...loadingEndorsers, [skill]: false };
     }
@@ -140,7 +130,7 @@
         <Skeleton shape="rect" width="5rem" height="1.75rem" />
       {/each}
     </div>
-  {:else if skills.length === 0}
+  {:else if !skills || skills.length === 0}
     <p class="text-xs text-gray-500 dark:text-neutral-500">{t('network.skillsEmpty')}</p>
   {:else}
     <div class="flex flex-wrap gap-2">

@@ -6,12 +6,10 @@
    * Connect/Follow ficaram fora desta versão (SDK em remodelagem). Quando
    * o slice F4-social estabilizar createSocialFollow* e createSocialConnections*,
    * basta plugar de volta os botões nesta página.
-   *
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import { createUsersProfiles, exportUserResumePdf } from 'api-client';
   import { FileDown, Globe, MapPin } from 'lucide-svelte';
-  import { Button, Loader, toastState } from 'ui';
+  import { Button, Loader } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { page } from '$app/stores';
   import { useAuth } from '$lib/state/auth.svelte';
@@ -20,36 +18,19 @@
   import SkillsSection from './_components/skills-section.svelte';
   import SeoHead from '$lib/components/seo/seo-head.svelte';
 
-  type PublicUser = {
-    id?: string;
-    username?: string;
-    name?: string | null;
-    bio?: string | null;
-    photoURL?: string | null;
-    location?: string | null;
-    website?: string | null;
-    github?: string | null;
-    linkedin?: string | null;
-  };
-
-  type PublicResume = { jobTitle?: string | null };
-
-  type ProfileData = { user?: PublicUser; resume?: PublicResume };
-
   const username = $derived($page.params.username ?? '');
 
   const auth = useAuth();
   const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
-  const authenticated = $derived(Boolean(auth.data?.authenticated));
+  const authenticated = $derived(auth.data?.authenticated);
 
   const profile = createUsersProfiles(
     username,
     { query: { enabled: !!username } },
   );
 
-  const profileData = $derived($profile.data as unknown as ProfileData | undefined);
-  const user = $derived(profileData?.user);
-  const resume = $derived(profileData?.resume);
+  const user = $derived($profile.data?.user);
+  const resume = $derived($profile.data?.resume);
 
   const userId = $derived(user?.id ?? '');
   const isOwnProfile = $derived(!!currentUserId && currentUserId === userId);
@@ -62,16 +43,13 @@
     downloading = true;
     downloadError = null;
     try {
-      const res = (await exportUserResumePdf(userId)) as unknown as
-        | { pdf?: string; filename?: string }
-        | undefined;
-      if (!res?.pdf) throw new Error('No PDF data returned');
+      const res = await exportUserResumePdf(userId);
       const bytes = Uint8Array.from(atob(res.pdf), (c) => c.charCodeAt(0));
       const blob = new Blob([bytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = res.filename ?? `${user?.name ?? username}.pdf`;
+      a.download = res.filename;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -106,7 +84,7 @@
   description={user?.bio
     ? user.bio.slice(0, 180)
     : `${user?.name ?? username ?? ''} — professional profile and resume on Patch Careers.`}
-  image={user?.photoURL ?? undefined}
+  image={user?.photoURL || undefined}
   type="profile"
   jsonLd={user
     ? {
@@ -116,7 +94,7 @@
         alternateName: user.username,
         image: user.photoURL,
         url: $page.url.toString(),
-        jobTitle: resume?.jobTitle ?? undefined,
+        jobTitle: resume?.jobTitle || undefined,
       }
     : undefined}
 />
