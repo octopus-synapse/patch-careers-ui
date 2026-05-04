@@ -8,6 +8,7 @@ export type { AdminAlertsListQueryKey } from "./admin-alertsController/createAdm
 export type { AdminAnalyticsOverviewQueryKey } from "./admin-analyticsController/createAdminAnalyticsOverview";
 export type { AdminChatConversationsQueryKey } from "./admin-chatController/createAdminChatConversations";
 export type { AdminChatStatsQueryKey } from "./admin-chatController/createAdminChatStats";
+export type { AdminCollaborationsDeleteMutationKey } from "./admin-collaborationsController/createAdminCollaborationsDelete";
 export type { AdminCollaborationsListQueryKey } from "./admin-collaborationsController/createAdminCollaborationsList";
 export type { AdminCollaborationsStatsQueryKey } from "./admin-collaborationsController/createAdminCollaborationsStats";
 export type { AdminDashboardMetricsQueryKey } from "./admin-dashboardController/createAdminDashboardMetrics";
@@ -420,6 +421,8 @@ export { createAdminChatConversations } from "./admin-chatController/createAdmin
 export { adminChatStatsQueryKey } from "./admin-chatController/createAdminChatStats";
 export { adminChatStatsQueryOptions } from "./admin-chatController/createAdminChatStats";
 export { createAdminChatStats } from "./admin-chatController/createAdminChatStats";
+export { adminCollaborationsDeleteMutationKey } from "./admin-collaborationsController/createAdminCollaborationsDelete";
+export { createAdminCollaborationsDelete } from "./admin-collaborationsController/createAdminCollaborationsDelete";
 export { adminCollaborationsListQueryKey } from "./admin-collaborationsController/createAdminCollaborationsList";
 export { adminCollaborationsListQueryOptions } from "./admin-collaborationsController/createAdminCollaborationsList";
 export { createAdminCollaborationsList } from "./admin-collaborationsController/createAdminCollaborationsList";

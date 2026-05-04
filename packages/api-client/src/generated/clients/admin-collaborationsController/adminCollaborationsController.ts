@@ -3,9 +3,10 @@
 * Do not edit manually.
 */
 
+import { adminCollaborationsDelete } from "./adminCollaborationsDelete";
 import { adminCollaborationsList } from "./adminCollaborationsList";
 import { adminCollaborationsStats } from "./adminCollaborationsStats";
 
 export function adminCollaborationsController() {
-  return { adminCollaborationsStats, adminCollaborationsList }
+  return { adminCollaborationsStats, adminCollaborationsList, adminCollaborationsDelete }
 }

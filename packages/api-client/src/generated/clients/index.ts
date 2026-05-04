@@ -15,6 +15,7 @@ export { adminChatController } from "./admin-chatController/adminChatController"
 export { adminChatConversations } from "./admin-chatController/adminChatConversations";
 export { adminChatStats } from "./admin-chatController/adminChatStats";
 export { adminCollaborationsController } from "./admin-collaborationsController/adminCollaborationsController";
+export { adminCollaborationsDelete } from "./admin-collaborationsController/adminCollaborationsDelete";
 export { adminCollaborationsList } from "./admin-collaborationsController/adminCollaborationsList";
 export { adminCollaborationsStats } from "./admin-collaborationsController/adminCollaborationsStats";
 export { adminDashboardController } from "./admin-dashboardController/adminDashboardController";

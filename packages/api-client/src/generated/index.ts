@@ -8,6 +8,7 @@ export type { AdminAlertsListQueryKey } from "./hooks/admin-alertsController/cre
 export type { AdminAnalyticsOverviewQueryKey } from "./hooks/admin-analyticsController/createAdminAnalyticsOverview";
 export type { AdminChatConversationsQueryKey } from "./hooks/admin-chatController/createAdminChatConversations";
 export type { AdminChatStatsQueryKey } from "./hooks/admin-chatController/createAdminChatStats";
+export type { AdminCollaborationsDeleteMutationKey } from "./hooks/admin-collaborationsController/createAdminCollaborationsDelete";
 export type { AdminCollaborationsListQueryKey } from "./hooks/admin-collaborationsController/createAdminCollaborationsList";
 export type { AdminCollaborationsStatsQueryKey } from "./hooks/admin-collaborationsController/createAdminCollaborationsStats";
 export type { AdminDashboardMetricsQueryKey } from "./hooks/admin-dashboardController/createAdminDashboardMetrics";
@@ -405,6 +406,7 @@ export type { AdminAlertsList200, AdminAlertsList400, AdminAlertsList400Severity
 export type { AdminAnalyticsOverview200, AdminAnalyticsOverview400, AdminAnalyticsOverview400SeverityEnumKey, AdminAnalyticsOverview401, AdminAnalyticsOverview401SeverityEnumKey, AdminAnalyticsOverview403, AdminAnalyticsOverview403SeverityEnumKey, AdminAnalyticsOverviewQuery, AdminAnalyticsOverviewQueryParams, AdminAnalyticsOverviewQueryParamsPeriodEnumKey, AdminAnalyticsOverviewQueryResponse } from "./models/admin-analyticsController/AdminAnalyticsOverview";
 export type { AdminChatConversations200, AdminChatConversations400, AdminChatConversations400SeverityEnumKey, AdminChatConversations401, AdminChatConversations401SeverityEnumKey, AdminChatConversations403, AdminChatConversations403SeverityEnumKey, AdminChatConversationsQuery, AdminChatConversationsQueryParams, AdminChatConversationsQueryResponse } from "./models/admin-chatController/AdminChatConversations";
 export type { AdminChatStats200, AdminChatStats400, AdminChatStats400SeverityEnumKey, AdminChatStats401, AdminChatStats401SeverityEnumKey, AdminChatStats403, AdminChatStats403SeverityEnumKey, AdminChatStatsQuery, AdminChatStatsQueryResponse } from "./models/admin-chatController/AdminChatStats";
+export type { AdminCollaborationsDelete200, AdminCollaborationsDelete400, AdminCollaborationsDelete400SeverityEnumKey, AdminCollaborationsDelete401, AdminCollaborationsDelete401SeverityEnumKey, AdminCollaborationsDelete403, AdminCollaborationsDelete403SeverityEnumKey, AdminCollaborationsDelete404, AdminCollaborationsDelete404SeverityEnumKey, AdminCollaborationsDeleteMutation, AdminCollaborationsDeleteMutationResponse, AdminCollaborationsDeletePathParams } from "./models/admin-collaborationsController/AdminCollaborationsDelete";
 export type { AdminCollaborationsList200, AdminCollaborationsList400, AdminCollaborationsList400SeverityEnumKey, AdminCollaborationsList401, AdminCollaborationsList401SeverityEnumKey, AdminCollaborationsList403, AdminCollaborationsList403SeverityEnumKey, AdminCollaborationsListQuery, AdminCollaborationsListQueryParams, AdminCollaborationsListQueryResponse } from "./models/admin-collaborationsController/AdminCollaborationsList";
 export type { AdminCollaborationsStats200, AdminCollaborationsStats400, AdminCollaborationsStats400SeverityEnumKey, AdminCollaborationsStats401, AdminCollaborationsStats401SeverityEnumKey, AdminCollaborationsStats403, AdminCollaborationsStats403SeverityEnumKey, AdminCollaborationsStatsQuery, AdminCollaborationsStatsQueryResponse } from "./models/admin-collaborationsController/AdminCollaborationsStats";
 export type { AdminDashboardMetrics200, AdminDashboardMetrics400, AdminDashboardMetrics400SeverityEnumKey, AdminDashboardMetrics401, AdminDashboardMetrics401SeverityEnumKey, AdminDashboardMetrics403, AdminDashboardMetrics403SeverityEnumKey, AdminDashboardMetricsQuery, AdminDashboardMetricsQueryResponse } from "./models/admin-dashboardController/AdminDashboardMetrics";
@@ -809,6 +811,7 @@ export { adminChatController } from "./clients/admin-chatController/adminChatCon
 export { adminChatConversations } from "./clients/admin-chatController/adminChatConversations";
 export { adminChatStats } from "./clients/admin-chatController/adminChatStats";
 export { adminCollaborationsController } from "./clients/admin-collaborationsController/adminCollaborationsController";
+export { adminCollaborationsDelete } from "./clients/admin-collaborationsController/adminCollaborationsDelete";
 export { adminCollaborationsList } from "./clients/admin-collaborationsController/adminCollaborationsList";
 export { adminCollaborationsStats } from "./clients/admin-collaborationsController/adminCollaborationsStats";
 export { adminDashboardController } from "./clients/admin-dashboardController/adminDashboardController";
@@ -1306,6 +1309,8 @@ export { createAdminChatConversations } from "./hooks/admin-chatController/creat
 export { adminChatStatsQueryKey } from "./hooks/admin-chatController/createAdminChatStats";
 export { adminChatStatsQueryOptions } from "./hooks/admin-chatController/createAdminChatStats";
 export { createAdminChatStats } from "./hooks/admin-chatController/createAdminChatStats";
+export { adminCollaborationsDeleteMutationKey } from "./hooks/admin-collaborationsController/createAdminCollaborationsDelete";
+export { createAdminCollaborationsDelete } from "./hooks/admin-collaborationsController/createAdminCollaborationsDelete";
 export { adminCollaborationsListQueryKey } from "./hooks/admin-collaborationsController/createAdminCollaborationsList";
 export { adminCollaborationsListQueryOptions } from "./hooks/admin-collaborationsController/createAdminCollaborationsList";
 export { createAdminCollaborationsList } from "./hooks/admin-collaborationsController/createAdminCollaborationsList";
@@ -2329,6 +2334,10 @@ export { adminChatConversations403SeverityEnum } from "./models/admin-chatContro
 export { adminChatStats400SeverityEnum } from "./models/admin-chatController/AdminChatStats";
 export { adminChatStats401SeverityEnum } from "./models/admin-chatController/AdminChatStats";
 export { adminChatStats403SeverityEnum } from "./models/admin-chatController/AdminChatStats";
+export { adminCollaborationsDelete400SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsDelete";
+export { adminCollaborationsDelete401SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsDelete";
+export { adminCollaborationsDelete403SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsDelete";
+export { adminCollaborationsDelete404SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsDelete";
 export { adminCollaborationsList400SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsList";
 export { adminCollaborationsList401SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsList";
 export { adminCollaborationsList403SeverityEnum } from "./models/admin-collaborationsController/AdminCollaborationsList";
@@ -3724,6 +3733,7 @@ export { adminAlertsList200Schema, adminAlertsList400Schema, adminAlertsList401S
 export { adminAnalyticsOverview200Schema, adminAnalyticsOverview400Schema, adminAnalyticsOverview401Schema, adminAnalyticsOverview403Schema, adminAnalyticsOverviewQueryParamsSchema, adminAnalyticsOverviewQueryResponseSchema } from "./zod/admin-analyticsController/adminAnalyticsOverviewSchema";
 export { adminChatConversations200Schema, adminChatConversations400Schema, adminChatConversations401Schema, adminChatConversations403Schema, adminChatConversationsQueryParamsSchema, adminChatConversationsQueryResponseSchema } from "./zod/admin-chatController/adminChatConversationsSchema";
 export { adminChatStats200Schema, adminChatStats400Schema, adminChatStats401Schema, adminChatStats403Schema, adminChatStatsQueryResponseSchema } from "./zod/admin-chatController/adminChatStatsSchema";
+export { adminCollaborationsDelete200Schema, adminCollaborationsDelete400Schema, adminCollaborationsDelete401Schema, adminCollaborationsDelete403Schema, adminCollaborationsDelete404Schema, adminCollaborationsDeleteMutationResponseSchema, adminCollaborationsDeletePathParamsSchema } from "./zod/admin-collaborationsController/adminCollaborationsDeleteSchema";
 export { adminCollaborationsList200Schema, adminCollaborationsList400Schema, adminCollaborationsList401Schema, adminCollaborationsList403Schema, adminCollaborationsListQueryParamsSchema, adminCollaborationsListQueryResponseSchema } from "./zod/admin-collaborationsController/adminCollaborationsListSchema";
 export { adminCollaborationsStats200Schema, adminCollaborationsStats400Schema, adminCollaborationsStats401Schema, adminCollaborationsStats403Schema, adminCollaborationsStatsQueryResponseSchema } from "./zod/admin-collaborationsController/adminCollaborationsStatsSchema";
 export { adminDashboardMetrics200Schema, adminDashboardMetrics400Schema, adminDashboardMetrics401Schema, adminDashboardMetrics403Schema, adminDashboardMetricsQueryResponseSchema } from "./zod/admin-dashboardController/adminDashboardMetricsSchema";

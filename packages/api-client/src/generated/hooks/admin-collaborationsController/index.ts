@@ -1,5 +1,8 @@
+export type { AdminCollaborationsDeleteMutationKey } from "./createAdminCollaborationsDelete";
 export type { AdminCollaborationsListQueryKey } from "./createAdminCollaborationsList";
 export type { AdminCollaborationsStatsQueryKey } from "./createAdminCollaborationsStats";
+export { adminCollaborationsDeleteMutationKey } from "./createAdminCollaborationsDelete";
+export { createAdminCollaborationsDelete } from "./createAdminCollaborationsDelete";
 export { adminCollaborationsListQueryKey } from "./createAdminCollaborationsList";
 export { adminCollaborationsListQueryOptions } from "./createAdminCollaborationsList";
 export { createAdminCollaborationsList } from "./createAdminCollaborationsList";
