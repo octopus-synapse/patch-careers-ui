@@ -4,7 +4,7 @@ import {
   createSocialConnectionsConnectionsAccept,
   createSocialConnectionsConnectionsReject,
   createSocialConnectionsUsersMeConnectionsPending,
-  getSocialConnectionsUsersMeConnectionsPendingQueryKey,
+  socialConnectionsUsersMeConnectionsPendingQueryKey,
 } from 'api-client';
 import { Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -34,12 +34,12 @@ const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated ?? false);
 
 const pendingQuery = createSocialConnectionsUsersMeConnectionsPending(
-  () => ({ page: '1', limit: '3' }),
-  () => ({ query: { enabled: browser && authenticated } }),
+  { page: '1', limit: '3' },
+  { query: { enabled: browser && authenticated } },
 );
 
 const pending = $derived.by(() => {
-  const outer = pendingQuery.data as
+  const outer = $pendingQuery.data as
     | { items?: PendingRequest[]; total?: number }
     | undefined;
   return {
@@ -49,24 +49,24 @@ const pending = $derived.by(() => {
 });
 
 const queryClient = useQueryClient();
-const acceptMutation = createSocialConnectionsConnectionsAccept(() => ({
+const acceptMutation = createSocialConnectionsConnectionsAccept({
   mutation: {
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey(),
+        queryKey: socialConnectionsUsersMeConnectionsPendingQueryKey(),
       });
     },
   },
-}));
-const rejectMutation = createSocialConnectionsConnectionsReject(() => ({
+});
+const rejectMutation = createSocialConnectionsConnectionsReject({
   mutation: {
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey(),
+        queryKey: socialConnectionsUsersMeConnectionsPendingQueryKey(),
       });
     },
   },
-}));
+});
 
 // Track which row is mid-flight so the spinner attaches to the right button
 // instead of disabling the whole list (#29).
@@ -77,7 +77,7 @@ async function onAccept(id: string) {
   pendingActionId = id;
   pendingActionKind = 'accept';
   try {
-    await acceptMutation.mutateAsync({ id });
+    await $acceptMutation.mutateAsync({ id });
   } finally {
     pendingActionId = null;
     pendingActionKind = null;
@@ -88,7 +88,7 @@ async function onReject(id: string) {
   pendingActionId = id;
   pendingActionKind = 'reject';
   try {
-    await rejectMutation.mutateAsync({ id });
+    await $rejectMutation.mutateAsync({ id });
   } finally {
     pendingActionId = null;
     pendingActionKind = null;
@@ -120,7 +120,7 @@ async function onReject(id: string) {
 		</div>
 	{/snippet}
 
-	{#if pendingQuery.isLoading}
+	{#if $pendingQuery.isLoading}
 		<ul class="space-y-3">
 			{#each Array(2) as _}
 				<li class="flex items-center gap-3">

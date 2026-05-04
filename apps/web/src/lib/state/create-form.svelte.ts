@@ -1,4 +1,6 @@
-import type { ZodError, ZodType } from 'zod';
+import type { Readable } from 'svelte/store';
+import { get } from 'svelte/store';
+import type { ZodError, ZodType, ZodTypeDef } from 'zod';
 
 export type FieldErrors<T> = Partial<Record<keyof T, string>>;
 
@@ -7,16 +9,32 @@ export interface FormMutation<TInput> {
   isPending: boolean;
 }
 
-export interface CreateFormOptions<TInput extends object, TMutation extends FormMutation<TInput>> {
-  schema: ZodType<TInput>;
+/**
+ * createForm accepts either a plain mutation object or a svelte-query v5
+ * `Readable<MutationResult>` (returned by Kubb hooks). The latter is
+ * auto-unwrapped via `get()`, so callers don't need to subscribe manually.
+ */
+export type FormMutationInput<TInput> = FormMutation<TInput> | Readable<FormMutation<TInput>>;
+
+function unwrap<TInput>(m: FormMutationInput<TInput>): FormMutation<TInput> {
+  if ('subscribe' in m && typeof (m as Readable<FormMutation<TInput>>).subscribe === 'function') {
+    return get(m as Readable<FormMutation<TInput>>);
+  }
+  return m as FormMutation<TInput>;
+}
+
+export interface CreateFormOptions<TInput extends object> {
+  // 3-generic ZodType so `_input` can be `unknown` (Kubb generates schemas
+  // with `.passthrough()` whose input shape is loosely typed). Only the
+  // `_output` matters for our submission flow.
+  // biome-ignore lint/suspicious/noExplicitAny: passthrough schemas have any input
+  schema: ZodType<TInput, ZodTypeDef, any>;
   initial: TInput;
-  mutation: TMutation;
+  mutation: FormMutationInput<TInput>;
   transform?: (values: TInput) => TInput;
 }
 
-export function createForm<TInput extends object, TMutation extends FormMutation<TInput>>(
-  opts: CreateFormOptions<TInput, TMutation>,
-) {
+export function createForm<TInput extends object>(opts: CreateFormOptions<TInput>) {
   const values = $state<TInput>({ ...opts.initial });
   let errors = $state<FieldErrors<TInput>>({});
 
@@ -28,7 +46,7 @@ export function createForm<TInput extends object, TMutation extends FormMutation
       errors = flattenZodErrors<TInput>(parsed.error);
       return false;
     }
-    opts.mutation.mutate({ data: parsed.data });
+    unwrap(opts.mutation).mutate({ data: parsed.data });
     return true;
   }
 
@@ -54,7 +72,7 @@ export function createForm<TInput extends object, TMutation extends FormMutation
       return errors;
     },
     get isSubmitting() {
-      return opts.mutation.isPending;
+      return unwrap(opts.mutation).isPending;
     },
     submit,
     reset,

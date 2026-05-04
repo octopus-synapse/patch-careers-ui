@@ -26,16 +26,16 @@
   const queryClient = useQueryClient();
 
   const listQuery = createResumeStylesList(
-    () => ({ page: '1', limit: '20' }),
-    () => ({ query: { enabled: browser, refetchOnWindowFocus: false } }),
+    { page: '1', limit: '20' },
+    { query: { enabled: browser, refetchOnWindowFocus: false } },
   );
 
   const myResumesQuery = createResumesList(
-    () => ({ page: '1', limit: '1' }),
-    () => ({ query: { enabled: browser } }),
+    { page: '1', limit: '1' },
+    { query: { enabled: browser } },
   );
   const primaryResumeId = $derived<string | null>(
-    ((myResumesQuery.data as unknown as { items?: ResumeRow[] } | undefined)?.items?.[0]?.id ??
+    (($myResumesQuery.data as unknown as { items?: ResumeRow[] } | undefined)?.items?.[0]?.id ??
       null) as string | null,
   );
 
@@ -66,7 +66,7 @@
   }
 
   const styles = $derived(
-    ((listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? []) as Style[],
+    (($listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? []) as Style[],
   );
 </script>
 
@@ -81,11 +81,11 @@
     </p>
   </header>
 
-  {#if listQuery.isPending}
+  {#if $listQuery.isPending}
     <div class="flex justify-center py-12">
       <Loader size={24} />
     </div>
-  {:else if listQuery.isError || styles.length === 0}
+  {:else if $listQuery.isError || styles.length === 0}
     <Card class="sm:p-6 text-sm text-neutral-600 dark:text-neutral-400">
       Nenhum estilo disponível no momento.
     </Card>

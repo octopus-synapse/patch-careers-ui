@@ -6,7 +6,7 @@
   import {
     createFitProfileQuestions,
     fitProfileAnswers,
-    getFitProfileMeGetQueryKey,
+    fitProfileMeGetQueryKey,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-svelte';
@@ -35,13 +35,13 @@
     { value: 5, label: 'Concordo fortemente' },
   ] as const;
 
-  const questionsQuery = createFitProfileQuestions(() => ({
-    query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
-  }));
+  const questionsQuery = createFitProfileQuestions({
+      query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
+    });
 
   const queryClient = useQueryClient();
 
-  const questionsData = $derived(questionsQuery.data as unknown as QuestionsResponse | undefined);
+  const questionsData = $derived($questionsQuery.data as unknown as QuestionsResponse | undefined);
   const questionSetId = $derived(questionsData?.questionSetId ?? '');
   const questions = $derived<Question[]>(questionsData?.questions ?? []);
   const total = $derived(questions.length);
@@ -87,7 +87,7 @@
         questionSetId,
         answers: Array.from(answers, ([questionId, rawValue]) => ({ questionId, rawValue })),
       });
-      await queryClient.invalidateQueries({ queryKey: getFitProfileMeGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: fitProfileMeGetQueryKey() });
       toastState.show('Fit Profile salvo. Match Score liberado.', 'success');
       void goto('/my-profile/scores');
     } catch (err) {
@@ -100,11 +100,11 @@
 </script>
 
 <section class="mx-auto flex max-w-xl flex-col px-6 py-10">
-  {#if questionsQuery.isPending}
+  {#if $questionsQuery.isPending}
     <div class="flex items-center justify-center py-16">
       <Loader size={24} />
     </div>
-  {:else if questionsQuery.isError || total === 0}
+  {:else if $questionsQuery.isError || total === 0}
     <div class="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
       Não conseguimos carregar o questionário. Tente recarregar a página.
     </div>

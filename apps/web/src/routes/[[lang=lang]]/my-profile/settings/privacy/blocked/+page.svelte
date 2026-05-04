@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createChatBlockUsersBlockedGet,
   createChatBlockUsersBlockedDelete,
-  getChatBlockUsersBlockedGetQueryKey,
+  chatBlockUsersBlockedGetQueryKey,
 } from 'api-client';
 import { ShieldOff } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -18,9 +18,9 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
-const query = createChatBlockUsersBlockedGet(() => ({
+const query = createChatBlockUsersBlockedGet({
   query: { enabled: browser && authenticated },
-}));
+});
 
 type Row = {
   id: string;
@@ -31,7 +31,7 @@ type Row = {
 };
 
 const blocked = $derived.by<Row[]>(() => {
-  const outer = query.data as Record<string, unknown> | undefined;
+  const outer = $query.data as Record<string, unknown> | undefined;
   const list =
     (outer?.items as Record<string, unknown>[] | undefined) ??
     (outer?.blockedUsers as Record<string, unknown>[] | undefined) ??
@@ -51,10 +51,10 @@ const blocked = $derived.by<Row[]>(() => {
 const queryClient = useQueryClient();
 let confirmTarget = $state<Row | null>(null);
 
-const unblockMutation = createChatBlockUsersBlockedDelete(() => ({
+const unblockMutation = createChatBlockUsersBlockedDelete({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getChatBlockUsersBlockedGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: chatBlockUsersBlockedGetQueryKey() });
       track('user_unblocked', { targetUserId: vars.userId });
       toastState.show(t('network.unblockSuccess'), 'success');
     },
@@ -62,12 +62,12 @@ const unblockMutation = createChatBlockUsersBlockedDelete(() => ({
       toastState.show(t('network.unblockError'), 'danger');
     },
   },
-}));
+});
 
 function confirmUnblock() {
   const target = confirmTarget;
   confirmTarget = null;
-  if (target) unblockMutation.mutate({ userId: target.userId });
+  if (target) $unblockMutation.mutate({ userId: target.userId });
 }
 </script>
 
@@ -96,7 +96,7 @@ function confirmUnblock() {
 		</header>
 
 		<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-			{#if query.isLoading}
+			{#if $query.isLoading}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(4) as _}
 						<div class="flex items-center gap-3 px-4 py-4 sm:px-6">

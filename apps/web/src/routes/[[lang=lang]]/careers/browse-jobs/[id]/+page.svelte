@@ -6,17 +6,17 @@ import {
   createJobsGetById,
   createJobsFit,
   createResumesList,
-  getJobsListQueryKey,
-  getJobsGetByIdQueryKey,
-  getJobsBookmarksQueryKey,
-  getJobsApplicationsGetQueryKey,
+  jobsListQueryKey,
+  jobsGetByIdQueryKey,
+  jobsBookmarksQueryKey,
+  jobsApplicationsGetQueryKey,
   isApiError,
   jobsApplyPost,
   jobsApplyDelete,
   jobsDelete,
   jobsUpdate,
 } from 'api-client';
-import type { JobsApplyPostBody, JobsUpdateBody, JobsUpdateBodyJobType } from 'api-client';
+import type { JobsApplyPostMutationRequest, JobsUpdateMutationRequest, JobsUpdateMutationRequestJobTypeEnumKey } from 'api-client';
 import { ArrowLeft, Bookmark, Briefcase, Building2, CheckCircle2, DollarSign, ExternalLink, MapPin, Pencil, Send, Sparkles, Trash2 } from 'lucide-svelte';
 import { Badge, Button, ConfirmModal, type FitDimension, FitScoreBreakdown, FormModal, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -57,11 +57,11 @@ const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
 const jobQuery = createJobsGetById(
-  () => jobId,
-  () => ({ query: { enabled: browser && !!jobId } }),
+  jobId,
+  { query: { enabled: browser && !!jobId } },
 );
 
-const job = $derived(jobQuery.data as unknown as Job | undefined);
+const job = $derived($jobQuery.data as unknown as Job | undefined);
 const isOwner = $derived(
   !!currentUserId && !!job && (job.userId === currentUserId || job.createdBy === currentUserId),
 );
@@ -70,19 +70,19 @@ const isOwner = $derived(
 // 409 NO_PRIMARY_RESUME when the user has no master CV yet; the component
 // renders the teaser state automatically whenever `score` is undefined.
 const fitQuery = createJobsFit(
-  () => jobId,
-  () => ({ query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } }),
+  jobId,
+  { query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } },
 );
 
 // Primary resume lookup — the Match Score panel needs a resumeId. We take
 // the first resume in the user's list as the "primary-ish" candidate;
 // future iteration may expose a picker when the user has >1 resume.
 const myResumesQuery = createResumesList(
-  () => ({ page: '1', limit: '1' }),
-  () => ({ query: { enabled: browser && !!currentUserId && !isOwner, retry: false } }),
+  { page: '1', limit: '1' },
+  { query: { enabled: browser && !!currentUserId && !isOwner, retry: false } },
 );
 const primaryResumeId = $derived.by<string | null>(() => {
-  const data = myResumesQuery.data as unknown as
+  const data = $myResumesQuery.data as unknown as
     | { items?: Array<{ id?: string }>; data?: Array<{ id?: string }> }
     | undefined;
   const items = data?.items ?? data?.data ?? [];
@@ -95,20 +95,20 @@ type FitResponse = {
   missingKeywords?: string[];
   dimensions?: { hardSkills?: number; softSkills?: number };
 };
-const fit = $derived(fitQuery.data as unknown as FitResponse | undefined);
+const fit = $derived($fitQuery.data as unknown as FitResponse | undefined);
 
 // Bookmark state — server-driven via job.isBookmarked, with an optimistic
 // override that wins until the next refetch lands.
 let optimisticBookmarked = $state<boolean | null>(null);
 const isBookmarked = $derived(optimisticBookmarked ?? Boolean(job?.isBookmarked));
 
-const bookmarkMutation = createJobsBookmarkPost(() => ({
+const bookmarkMutation = createJobsBookmarkPost({
   mutation: {
     onSuccess() {
       optimisticBookmarked = null;
-      queryClient.invalidateQueries({ queryKey: getJobsBookmarksQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
-      queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: jobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
       track('job_bookmarked', { jobId });
     },
     onError() {
@@ -116,15 +116,15 @@ const bookmarkMutation = createJobsBookmarkPost(() => ({
       toastState.show(locale.t('jobs.saveError'), 'danger');
     },
   },
-}));
+});
 
-const unbookmarkMutation = createJobsBookmarkDelete(() => ({
+const unbookmarkMutation = createJobsBookmarkDelete({
   mutation: {
     onSuccess() {
       optimisticBookmarked = null;
-      queryClient.invalidateQueries({ queryKey: getJobsBookmarksQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
-      queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: jobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
       track('job_unbookmarked', { jobId });
     },
     onError() {
@@ -132,13 +132,13 @@ const unbookmarkMutation = createJobsBookmarkDelete(() => ({
       toastState.show(locale.t('jobs.unsaveError'), 'danger');
     },
   },
-}));
+});
 
 function toggleBookmark() {
   const wasBookmarked = isBookmarked;
   optimisticBookmarked = !wasBookmarked;
-  if (wasBookmarked) unbookmarkMutation.mutate({ id: jobId });
-  else bookmarkMutation.mutate({ id: jobId });
+  if (wasBookmarked) $unbookmarkMutation.mutate({ id: jobId });
+  else $bookmarkMutation.mutate({ id: jobId });
 }
 
 // Apply state — server-driven, override otimista.
@@ -151,16 +151,16 @@ let applying = $state(false);
 let withdrawing = $state(false);
 
 function invalidateJobQueries() {
-  queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
-  queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
-  queryClient.invalidateQueries({ queryKey: getJobsApplicationsGetQueryKey() });
+  queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
+  queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: jobsApplicationsGetQueryKey() });
 }
 
 async function submitApplication(coverLetter: string) {
   if (applying) return;
   applying = true;
   try {
-    const payload: JobsApplyPostBody = coverLetter ? { coverLetter } : {};
+    const payload: JobsApplyPostMutationRequest = coverLetter ? { coverLetter } : {};
     await jobsApplyPost(jobId, payload);
     optimisticApplied = true;
     showApplyModal = false;
@@ -232,11 +232,11 @@ function openEdit() {
 async function handleEdit() {
   editLoading = true;
   try {
-    const data: JobsUpdateBody = {
+    const data: JobsUpdateMutationRequest = {
       title: formTitle,
       company: formCompany,
       location: formLocation || undefined,
-      jobType: formJobType as JobsUpdateBodyJobType,
+      jobType: formJobType as JobsUpdateMutationRequestJobTypeEnumKey,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -250,8 +250,8 @@ async function handleEdit() {
       applyUrl: formApplyUrl || undefined,
     };
     await jobsUpdate(jobId, data);
-    queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) });
-    queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
+    queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
+    queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
     editModal = false;
   } finally {
     editLoading = false;
@@ -262,7 +262,7 @@ async function handleDelete() {
   deleteLoading = true;
   try {
     await jobsDelete(jobId);
-    queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
+    queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
     goto('/careers/browse-jobs');
   } finally {
     deleteLoading = false;
@@ -311,7 +311,7 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 			{t('common.back')}
 		</a>
 
-		{#if jobQuery.isLoading}
+		{#if $jobQuery.isLoading}
 			<div class="flex items-center justify-center py-20">
 				<Loader size={20} />
 			</div>
@@ -387,7 +387,7 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 									intent={isBookmarked ? 'accent' : 'neutral'}
 									size="sm"
 									onclick={toggleBookmark}
-									disabled={bookmarkMutation.isPending || unbookmarkMutation.isPending}
+									disabled={$bookmarkMutation.isPending || $unbookmarkMutation.isPending}
 								>
 									<Bookmark size={14} fill={isBookmarked ? 'currentColor' : 'none'} />
 									{isBookmarked ? t('jobs.unsaveJob') : t('jobs.saveJob')}

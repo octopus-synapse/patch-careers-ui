@@ -17,7 +17,7 @@ import UnsupportedWidget from '$lib/components/dashboard/unsupported-widget.svel
 import WidgetErrorBoundary from '$lib/components/errors/widget-error-boundary.svelte';
 import RecommendedJobsWidget from '$lib/components/jobs/recommended-jobs-widget.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import { type DashboardWidget, meDashboard } from '$lib/state/me-dashboard.svelte';
+import { meDashboard } from '$lib/state/me-dashboard.svelte';
 
 const t = $derived(locale.t);
 
@@ -45,7 +45,7 @@ $effect(() => {
 });
 
 const displayName = $derived(String(user?.name ?? user?.email ?? ''));
-const widgets = $derived<DashboardWidget[]>(meDashboard.widgets);
+const widgets = $derived(meDashboard.widgets);
 
 /**
  * Known widget types the frontend can render as of F3. Anything else falls

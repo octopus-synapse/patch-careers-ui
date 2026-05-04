@@ -4,10 +4,10 @@ import {
   createJobsList,
   createJobsRecommended,
   createJobsWithFitScore,
-  getJobsListQueryKey,
+  jobsListQueryKey,
   jobsCreate,
 } from 'api-client';
-import type { JobsCreateBody, JobsCreateBodyJobType } from 'api-client';
+import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Plus, Sparkles, Zap } from 'lucide-svelte';
 import { Badge, Button, FitScoreChip, FormModal, Input, Label, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
@@ -89,19 +89,19 @@ const tabs = $derived([
 ]);
 
 const jobsQuery = createJobsList(
-  () => ({
+  {
     page: String(page),
     limit: '20',
     search: search || '',
     skills: '',
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
-  }),
-  () => ({ query: { enabled: browser && activeTab === 'all' } }),
+  },
+  { query: { enabled: browser && activeTab === 'all' } },
 );
 
 const recommendedQuery = createJobsRecommended(
-  () => ({ page: String(page), limit: '20' }),
-  () => ({ query: { enabled: browser && activeTab === 'recommended' } }),
+  { page: String(page), limit: '20' },
+  { query: { enabled: browser && activeTab === 'recommended' } },
 );
 
 type RecommendedResponse = {
@@ -111,25 +111,25 @@ type RecommendedResponse = {
   total?: number;
 };
 
-const jobsData = $derived(jobsQuery.data as unknown as JobsResponse | undefined);
+const jobsData = $derived($jobsQuery.data as unknown as JobsResponse | undefined);
 const recommendedData = $derived(
-  recommendedQuery.data as unknown as RecommendedResponse | undefined,
+  $recommendedQuery.data as unknown as RecommendedResponse | undefined,
 );
 
 // Side-channel: pull structured fit scores for the current page of jobs.
 // Backend canonical response merges the breakdown into each item; we mirror it
 // so the chip can expand into matched / missing skills on hover.
 const fitScoreQuery = createJobsWithFitScore(
-  () => ({
+  {
     page: String(page),
     limit: '20',
     ...(search ? { search } : {}),
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
-  }),
-  () => ({ query: { enabled: browser && activeTab === 'all' } }),
+  },
+  { query: { enabled: browser && activeTab === 'all' } },
 );
 const fitScoreById = $derived.by(() => {
-  const data = fitScoreQuery.data as unknown as
+  const data = $fitScoreQuery.data as unknown as
     | { items?: Array<{ id: string; fitScore?: FitScoreDetail }> }
     | undefined;
   const map: Record<string, FitScoreDetail> = {};
@@ -206,11 +206,11 @@ function resetForm() {
 async function handleCreate() {
   createLoading = true;
   try {
-    const data: JobsCreateBody = {
+    const data: JobsCreateMutationRequest = {
       title: formTitle,
       company: formCompany,
       location: formLocation || undefined,
-      jobType: formJobType as JobsCreateBodyJobType,
+      jobType: formJobType as JobsCreateMutationRequestJobTypeEnumKey,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -224,7 +224,7 @@ async function handleCreate() {
       applyUrl: formApplyUrl || undefined,
     };
     await jobsCreate(data);
-    queryClient.invalidateQueries({ queryKey: getJobsListQueryKey() });
+    queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
     createModal = false;
     resetForm();
   } finally {
@@ -401,7 +401,7 @@ async function runRageApply() {
 				/>
 			{/if}
 
-			{#if activeTab === 'recommended' && !recommendedQuery.isLoading && (!recommendedList || recommendedList.length === 0)}
+			{#if activeTab === 'recommended' && !$recommendedQuery.isLoading && (!recommendedList || recommendedList.length === 0)}
 				<div class="rounded-xl border p-6 text-center text-sm text-gray-500 dark:text-neutral-500 dark:border-neutral-800">
 					{t('jobs.noRecommended')}
 				</div>
@@ -409,7 +409,7 @@ async function runRageApply() {
 				<DataTable
 					{columns}
 					data={filteredJobs}
-					loading={activeTab === 'recommended' ? recommendedQuery.isLoading : jobsQuery.isLoading}
+					loading={activeTab === 'recommended' ? $recommendedQuery.isLoading : $jobsQuery.isLoading}
 					emptyMessage={t('jobs.noJobs')}
 					onrowclick={(row) => goto(`/careers/browse-jobs/${row.id}`)}
 				>

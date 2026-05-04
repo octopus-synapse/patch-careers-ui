@@ -15,12 +15,12 @@ type Story = {
 };
 
 const query = createSuccessStoriesList(
-  () => ({ limit: '12' }),
-  () => ({ query: { enabled: browser } }),
+  { limit: '12' },
+  { query: { enabled: browser } },
 );
 
 const stories = $derived(
-  ((query.data as { stories?: Story[] } | undefined)?.stories ?? []) as Story[],
+  (($query.data as { stories?: Story[] } | undefined)?.stories ?? []) as Story[],
 );
 </script>
 

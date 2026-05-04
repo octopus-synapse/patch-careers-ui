@@ -7,34 +7,6 @@ import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
-/**
- * Floating chat trigger surfaced on every authenticated page. Stays gated on
- * the same predicate as the navbar (verified email AND completed onboarding)
- * so we never hammer protected endpoints with 403s.
- *
- * Backend ships `void` schemas for the chat endpoints (T11/orval pending), so
- * we cast to local interfaces at the boundary — these match the documented
- * response shapes for `GET /api/v1/chat/unread` and
- * `GET /api/v1/chat/conversations`.
- */
-type UnreadResponse = { count?: number };
-
-type ConversationParticipant = {
-  id: string;
-  name: string | null;
-  photoURL: string | null;
-};
-
-type ConversationItem = {
-  id: string;
-  participant: ConversationParticipant;
-};
-
-type ConversationsResponse = {
-  items?: ConversationItem[];
-  conversations?: { conversations?: ConversationItem[] } | ConversationItem[];
-};
-
 const t = $derived(locale.t);
 
 const session = useAuth();
@@ -44,33 +16,22 @@ const canUseApp = $derived(
     !(session.data?.user?.needsOnboarding ?? false),
 );
 
-const unreadQuery = createChatUnread(() => ({
+const unreadQuery = createChatUnread({
   query: { enabled: browser && canUseApp, refetchInterval: 30_000 },
-}));
-const unread = $derived((unreadQuery.data as unknown as UnreadResponse | undefined)?.count ?? 0);
+});
+const unread = $derived($unreadQuery.data?.totalUnread ?? 0);
 
 const convQuery = createChatConversationsGet(
-  () => ({ limit: 3 }),
-  () => ({ query: { enabled: browser && canUseApp, refetchInterval: 60_000 } }),
+  { limit: 3 },
+  { query: { enabled: browser && canUseApp, refetchInterval: 60_000 } },
 );
 
-function extractConversations(data: ConversationsResponse | undefined): ConversationItem[] {
-  if (!data) return [];
-  if (Array.isArray(data.items)) return data.items;
-  const inner = data.conversations;
-  if (Array.isArray(inner)) return inner;
-  if (inner && Array.isArray(inner.conversations)) return inner.conversations;
-  return [];
-}
-
 const recents = $derived(
-  extractConversations(convQuery.data as unknown as ConversationsResponse | undefined)
-    .slice(0, 3)
-    .map((c) => ({
-      id: c.participant?.id ?? '',
-      name: c.participant?.name ?? null,
-      photoURL: c.participant?.photoURL ?? null,
-    })),
+  ($convQuery.data?.conversations.conversations ?? []).slice(0, 3).map((c) => ({
+    id: c.participant?.id ?? '',
+    name: c.participant?.name ?? null,
+    photoURL: c.participant?.photoURL ?? null,
+  })),
 );
 
 function openChat() {

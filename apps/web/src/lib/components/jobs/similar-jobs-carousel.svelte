@@ -18,9 +18,9 @@ const t = $derived(locale.t);
  * the backend parses to int. Frontend just hands the string through.
  */
 const similarQuery = createJobsSimilar(
-  () => jobId,
-  () => ({ limit: '5' }),
-  () => ({ query: { enabled: browser && !!jobId } }),
+  jobId,
+  { limit: '5' },
+  { query: { enabled: browser && !!jobId } },
 );
 
 type SimilarJob = {
@@ -34,7 +34,7 @@ type SimilarJob = {
 };
 
 const items = $derived(
-  ((similarQuery.data as { items?: SimilarJob[] } | undefined)?.items ?? []) as SimilarJob[],
+  (($similarQuery.data as { items?: SimilarJob[] } | undefined)?.items ?? []) as SimilarJob[],
 );
 </script>
 

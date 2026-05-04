@@ -1,0 +1,12 @@
+export type { SpokenLanguagesGetByIdQueryKey } from "./createSpokenLanguagesGetById";
+export type { SpokenLanguagesListQueryKey } from "./createSpokenLanguagesList";
+export type { SpokenLanguagesSearchQueryKey } from "./createSpokenLanguagesSearch";
+export { createSpokenLanguagesGetById } from "./createSpokenLanguagesGetById";
+export { spokenLanguagesGetByIdQueryKey } from "./createSpokenLanguagesGetById";
+export { spokenLanguagesGetByIdQueryOptions } from "./createSpokenLanguagesGetById";
+export { createSpokenLanguagesList } from "./createSpokenLanguagesList";
+export { spokenLanguagesListQueryKey } from "./createSpokenLanguagesList";
+export { spokenLanguagesListQueryOptions } from "./createSpokenLanguagesList";
+export { createSpokenLanguagesSearch } from "./createSpokenLanguagesSearch";
+export { spokenLanguagesSearchQueryKey } from "./createSpokenLanguagesSearch";
+export { spokenLanguagesSearchQueryOptions } from "./createSpokenLanguagesSearch";

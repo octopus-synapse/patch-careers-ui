@@ -1,0 +1,9 @@
+export { adminOnboardingConfigGet } from "./adminOnboardingConfigGet";
+export { adminOnboardingConfigPut } from "./adminOnboardingConfigPut";
+export { adminOnboardingController } from "./adminOnboardingController";
+export { adminOnboardingStats } from "./adminOnboardingStats";
+export { adminOnboardingStepsDelete } from "./adminOnboardingStepsDelete";
+export { adminOnboardingStepsGet } from "./adminOnboardingStepsGet";
+export { adminOnboardingStepsGet2 } from "./adminOnboardingStepsGet2";
+export { adminOnboardingStepsPost } from "./adminOnboardingStepsPost";
+export { adminOnboardingStepsPut } from "./adminOnboardingStepsPut";

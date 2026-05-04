@@ -6,7 +6,7 @@
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
     createSkillEndorsementsUsersSkills,
-    getSkillEndorsementsUsersSkillsQueryKey,
+    skillEndorsementsUsersSkillsQueryKey,
     skillEndorsementsUsersSkillsEndorseDelete,
     skillEndorsementsUsersSkillsEndorsePost,
     skillEndorsementsUsersSkillsEndorsers,
@@ -42,12 +42,12 @@
   const queryClient = useQueryClient();
 
   const query = createSkillEndorsementsUsersSkills(
-    () => userId,
-    () => ({ query: { enabled: browser && !!userId } }),
+    userId,
+    { query: { enabled: browser && !!userId } },
   );
 
   const skills = $derived(
-    ((query.data as unknown as { skills?: SkillSummary[] } | undefined)?.skills ?? []) as SkillSummary[],
+    (($query.data as unknown as { skills?: SkillSummary[] } | undefined)?.skills ?? []) as SkillSummary[],
   );
 
   let optimisticOverrides = $state<Record<string, { endorsedByMe: boolean; delta: number }>>({});
@@ -74,7 +74,7 @@
       try {
         await skillEndorsementsUsersSkillsEndorseDelete(userId, skillEnc);
         await queryClient.invalidateQueries({
-          queryKey: getSkillEndorsementsUsersSkillsQueryKey(userId),
+          queryKey: skillEndorsementsUsersSkillsQueryKey(userId),
         });
       } catch {
         const next = { ...optimisticOverrides };
@@ -90,7 +90,7 @@
       try {
         await skillEndorsementsUsersSkillsEndorsePost(userId, skillEnc);
         await queryClient.invalidateQueries({
-          queryKey: getSkillEndorsementsUsersSkillsQueryKey(userId),
+          queryKey: skillEndorsementsUsersSkillsQueryKey(userId),
         });
       } catch {
         const next = { ...optimisticOverrides };
@@ -134,7 +134,7 @@
     </h2>
   {/snippet}
 
-  {#if query.isLoading}
+  {#if $query.isLoading}
     <div class="flex flex-wrap gap-2">
       {#each Array(6) as _}
         <Skeleton shape="rect" width="5rem" height="1.75rem" />

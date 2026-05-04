@@ -22,15 +22,15 @@ type JobItem = {
 const t = $derived(locale.t);
 
 const query = createJobsList(
-  () => ({ page: '1', limit: '30', paymentCurrency: 'USD' }),
-  () => ({ query: { enabled: browser } }),
+  { page: '1', limit: '30', paymentCurrency: 'USD' },
+  { query: { enabled: browser } },
 );
 
 const jobs = $derived(
-  (query.data as { items?: JobItem[] } | undefined)?.items ?? ([] as JobItem[]),
+  ($query.data as { items?: JobItem[] } | undefined)?.items ?? ([] as JobItem[]),
 );
 
-const loading = $derived(query.isLoading);
+const loading = $derived($query.isLoading);
 </script>
 
 <svelte:head>

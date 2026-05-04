@@ -3,7 +3,12 @@
    * /careers/search — burra: pessoas + jobs via SDK.
    * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
-import { SearchListSortBy, createJobsList, createSearchList, searchList } from 'api-client';
+import {
+  createJobsList,
+  createSearchList,
+  searchList,
+  searchListQueryParamsSortByEnum,
+} from 'api-client';
 import { Search, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
@@ -59,21 +64,21 @@ const queryParams = $derived({
   maxExp: initialMaxExp,
   page: 1,
   limit: 20,
-  sortBy: SearchListSortBy.relevance,
+  sortBy: searchListQueryParamsSortByEnum.relevance,
 });
 
 const query = createSearchList(
-  () => queryParams,
-  () => ({
-    query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'people' },
-  }),
+  queryParams,
+  {
+        query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'people' },
+      },
 );
 
 const jobsQuery = createJobsList(
-  () => ({ search: initialQuery, page: '1', limit: '20' }),
-  () => ({
-    query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'jobs' },
-  }),
+  { search: initialQuery, page: '1', limit: '20' },
+  {
+        query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'jobs' },
+      },
 );
 
 function rowsFrom(items?: Record<string, unknown>[]): Person[] {
@@ -87,7 +92,7 @@ function rowsFrom(items?: Record<string, unknown>[]): Person[] {
 }
 
 const firstPage = $derived.by(() => {
-  const data = query.data as Record<string, unknown> | undefined;
+  const data = $query.data as Record<string, unknown> | undefined;
   const items =
     (data?.items as Record<string, unknown>[] | undefined) ??
     (data?.data as Record<string, unknown>[] | undefined) ??
@@ -261,7 +266,7 @@ const tabs = $derived([
 							message={t('nav.searchEmptyState')}
 							icon={Search as unknown as Component<{ size: number; class?: string }>}
 						/>
-					{:else if jobsQuery.isLoading}
+					{:else if $jobsQuery.isLoading}
 						<div class="grid grid-cols-1 gap-3">
 							{#each Array(5) as _}
 								<div class="rounded-xl border p-4 border-gray-200 dark:border-neutral-800">
@@ -270,9 +275,9 @@ const tabs = $derived([
 								</div>
 							{/each}
 						</div>
-					{:else if ((jobsQuery.data as Record<string, unknown> | undefined)?.items as unknown[] | undefined)?.length}
+					{:else if (($jobsQuery.data as Record<string, unknown> | undefined)?.items as unknown[] | undefined)?.length}
 						<div class="grid grid-cols-1 gap-3">
-							{#each ((jobsQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[]) as job}
+							{#each (($jobsQuery.data as Record<string, unknown> | undefined)?.items as Record<string, unknown>[]) as job}
 								<a
 									href="/careers/browse-jobs/{String(job.id)}"
 									class="block rounded-xl border p-4 transition-colors hover:border-cyan-500 border-gray-200 dark:border-neutral-800"
@@ -298,7 +303,7 @@ const tabs = $derived([
 						message={t('nav.searchEmptyState')}
 						icon={Search as unknown as Component<{ size: number; class?: string }>}
 					/>
-				{:else if query.isLoading}
+				{:else if $query.isLoading}
 					<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
 						{#each Array(6) as _}
 							<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800">

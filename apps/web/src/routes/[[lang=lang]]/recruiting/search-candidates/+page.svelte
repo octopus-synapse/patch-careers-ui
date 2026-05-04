@@ -5,7 +5,7 @@
    */
   import {
     recruitingMatchCandidates,
-    type RecruitingMatchCandidatesBody,
+    type RecruitingMatchCandidatesMutationRequest,
   } from 'api-client';
   import { Sparkles, Users } from 'lucide-svelte';
   import { Avatar, Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
@@ -55,7 +55,7 @@
     if (!canSubmit || submitting) return;
     submitting = true;
     try {
-      const payload: RecruitingMatchCandidatesBody = {
+      const payload: RecruitingMatchCandidatesMutationRequest = {
         jobTitle: jobTitle || undefined,
         jobDescription: jobDescription || undefined,
         skills: skills.length > 0 ? skills : undefined,

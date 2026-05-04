@@ -1,0 +1,2 @@
+export { techAreasList200Schema, techAreasList400Schema, techAreasList401Schema, techAreasList403Schema, techAreasListQueryResponseSchema } from "./techAreasListSchema";
+export { techAreasNiches200Schema, techAreasNiches400Schema, techAreasNiches401Schema, techAreasNiches403Schema, techAreasNichesPathParamsSchema, techAreasNichesQueryResponseSchema } from "./techAreasNichesSchema";

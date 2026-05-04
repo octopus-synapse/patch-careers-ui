@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createSocialFollowUsersFollowDelete,
   createSocialFollowUsersFollowing,
-  getSocialFollowUsersFollowingQueryKey,
+  socialFollowUsersFollowingQueryKey,
   socialFollowUsersFollowing,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
@@ -21,9 +21,9 @@ const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
 const query = createSocialFollowUsersFollowing(
-  () => currentUserId,
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser && !!currentUserId } }),
+  currentUserId,
+  { page: '1', limit: '20' },
+  { query: { enabled: browser && !!currentUserId } },
 );
 
 type FollowingRow = {
@@ -64,7 +64,7 @@ function pagedSection(data: unknown): {
   };
 }
 
-const firstPage = $derived(pagedSection(query.data));
+const firstPage = $derived(pagedSection($query.data));
 let extra = $state<FollowingRow[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
@@ -91,10 +91,10 @@ const all = $derived([...firstPage.rows, ...extra].filter((r) => !hiddenIds.has(
 
 const queryClient = useQueryClient();
 
-const unfollowMutation = createSocialFollowUsersFollowDelete(() => ({
+const unfollowMutation = createSocialFollowUsersFollowDelete({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getSocialFollowUsersFollowingQueryKey(currentUserId) });
+      queryClient.invalidateQueries({ queryKey: socialFollowUsersFollowingQueryKey(currentUserId) });
       track('user_unfollowed', { targetUserId: vars.userId, source: 'following_page' });
     },
     onError(_err, vars) {
@@ -104,11 +104,11 @@ const unfollowMutation = createSocialFollowUsersFollowDelete(() => ({
       toastState.show(t('network.unfollowError'), 'danger');
     },
   },
-}));
+});
 
 function handleUnfollow(userId: string) {
   hiddenIds = new Set([...hiddenIds, userId]);
-  unfollowMutation.mutate({ userId });
+  $unfollowMutation.mutate({ userId });
 }
 </script>
 
@@ -128,7 +128,7 @@ function handleUnfollow(userId: string) {
 		</header>
 
 		<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-			{#if query.isLoading}
+			{#if $query.isLoading}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(6) as _}
 						<div class="flex items-center gap-3 px-4 py-4 sm:px-6">

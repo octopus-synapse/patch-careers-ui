@@ -29,11 +29,11 @@
     latency?: LatencyRow[];
   };
 
-  const metricsQuery = createAdminMetricsOverview(() => ({
-    query: { enabled: browser, refetchInterval: 10_000 },
-  }));
+  const metricsQuery = createAdminMetricsOverview({
+      query: { enabled: browser, refetchInterval: 10_000 },
+    });
 
-  const data = $derived(metricsQuery.data as unknown as MetricsOverview | undefined);
+  const data = $derived($metricsQuery.data as unknown as MetricsOverview | undefined);
   const counters = $derived(data?.counters);
   const gauges = $derived(data?.gauges);
   const proc = $derived(data?.process);
@@ -74,7 +74,7 @@
     </div>
   </div>
 
-  {#if metricsQuery.isLoading}
+  {#if $metricsQuery.isLoading}
     <div class="flex items-center justify-center py-20">
       <Loader size={24} />
     </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createAuthLogout, getAuthSessionQueryKey } from 'api-client';
+import { createAuthLogout, authSessionQueryKey } from 'api-client';
 import type { Locale } from 'i18n';
 import {
   Briefcase,
@@ -63,7 +63,7 @@ function isActiveRoute(href: string) {
 }
 
 const queryClient = useQueryClient();
-const logout = createAuthLogout(() => ({
+const logout = createAuthLogout({
   mutation: {
     async onSuccess() {
       // Clear *all* cached queries so the next screen can't flash user
@@ -71,8 +71,8 @@ const logout = createAuthLogout(() => ({
       queryClient.clear();
       // Re-query session explicitly and await so the SSR/CSR guards
       // see `authenticated: false` before we navigate.
-      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
-      await queryClient.refetchQueries({ queryKey: getAuthSessionQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
+      await queryClient.refetchQueries({ queryKey: authSessionQueryKey() });
       isDropdownOpen = false;
       goto('/identity/sign-in', { replaceState: true, invalidateAll: true });
     },
@@ -85,7 +85,7 @@ const logout = createAuthLogout(() => ({
       goto('/identity/sign-in', { replaceState: true });
     },
   },
-}));
+});
 
 function handleClickOutside(e: MouseEvent) {
   const target = e.target as HTMLElement;
@@ -110,7 +110,7 @@ function handleLocaleChange(value: string) {
 }
 
 function handleLogout() {
-  logout.mutate({ data: {} });
+  $logout.mutate({ data: {} });
 }
 
 function isTypingTarget(target: EventTarget | null) {

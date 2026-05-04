@@ -42,11 +42,11 @@
   const authenticated = $derived(Boolean(auth.data?.authenticated));
 
   const profile = createUsersProfiles(
-    () => username,
-    () => ({ query: { enabled: !!username } }),
+    username,
+    { query: { enabled: !!username } },
   );
 
-  const profileData = $derived(profile.data as unknown as ProfileData | undefined);
+  const profileData = $derived($profile.data as unknown as ProfileData | undefined);
   const user = $derived(profileData?.user);
   const resume = $derived(profileData?.resume);
 
@@ -120,11 +120,11 @@
     : undefined}
 />
 
-{#if profile.isLoading}
+{#if $profile.isLoading}
   <div class="flex h-screen items-center justify-center">
     <Loader size={20} />
   </div>
-{:else if profile.isError || !user}
+{:else if $profile.isError || !user}
   <div class="flex h-screen flex-col items-center justify-center gap-3">
     <span class="text-4xl font-bold text-gray-800 dark:text-neutral-200">404</span>
     <span class="text-xs text-gray-500 dark:text-neutral-500">profile not found</span>

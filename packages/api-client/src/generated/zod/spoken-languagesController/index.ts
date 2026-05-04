@@ -1,0 +1,3 @@
+export { spokenLanguagesGetById200Schema, spokenLanguagesGetById400Schema, spokenLanguagesGetById401Schema, spokenLanguagesGetById403Schema, spokenLanguagesGetByIdPathParamsSchema, spokenLanguagesGetByIdQueryResponseSchema } from "./spokenLanguagesGetByIdSchema";
+export { spokenLanguagesList200Schema, spokenLanguagesList400Schema, spokenLanguagesList401Schema, spokenLanguagesList403Schema, spokenLanguagesListQueryResponseSchema } from "./spokenLanguagesListSchema";
+export { spokenLanguagesSearch200Schema, spokenLanguagesSearch400Schema, spokenLanguagesSearch401Schema, spokenLanguagesSearch403Schema, spokenLanguagesSearchQueryParamsSchema, spokenLanguagesSearchQueryResponseSchema } from "./spokenLanguagesSearchSchema";

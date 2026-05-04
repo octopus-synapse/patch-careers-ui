@@ -7,7 +7,7 @@
   import {
     adminResumeStylesDelete,
     createResumeStylesList,
-    getResumeStylesListQueryKey,
+    resumeStylesListQueryKey,
   } from 'api-client';
   import { Lock, Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -25,12 +25,12 @@
   const queryClient = useQueryClient();
 
   const listQuery = createResumeStylesList(
-    () => ({ page: '1', limit: '50' }),
-    () => ({ query: { enabled: browser } }),
+    { page: '1', limit: '50' },
+    { query: { enabled: browser } },
   );
 
   const styles = $derived(
-    (listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? [],
+    ($listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? [],
   );
 
   let deleting = $state<string | null>(null);
@@ -40,7 +40,7 @@
       await adminResumeStylesDelete(id);
       toastState.show('Estilo excluído', 'success');
       await queryClient.invalidateQueries({
-        queryKey: getResumeStylesListQueryKey({ page: '1', limit: '50' }),
+        queryKey: resumeStylesListQueryKey({ page: '1', limit: '50' }),
       });
     } catch {
       toastState.show('Falha ao excluir', 'danger');
@@ -59,7 +59,7 @@
     Resume Styles
   </h1>
 
-  {#if listQuery.isLoading}
+  {#if $listQuery.isLoading}
     <div class="flex items-center justify-center py-12"><Loader size={20} /></div>
   {:else}
     <div class="rounded-xl border border-border">

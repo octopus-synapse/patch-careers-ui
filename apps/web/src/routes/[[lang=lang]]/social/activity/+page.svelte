@@ -35,13 +35,13 @@ type ActivityFeedResponse = {
 };
 
 const feed = createSocialActivityUsersFeed(
-  () => viewerId,
-  () => ({}),
-  () => ({ query: { enabled: browser && Boolean(viewerId) } }),
+  viewerId,
+  {},
+  { query: { enabled: browser && Boolean(viewerId) } },
 );
 
 const activities = $derived.by<ActivityItem[]>(() => {
-  const raw = feed.data as unknown as ActivityFeedResponse | undefined;
+  const raw = $feed.data as unknown as ActivityFeedResponse | undefined;
   return raw?.items ?? raw?.activities ?? raw?.feed?.data ?? [];
 });
 
@@ -97,7 +97,7 @@ function summarize(a: ActivityItem): string {
     </p>
   </header>
 
-  {#if feed.isLoading}
+  {#if $feed.isLoading}
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>

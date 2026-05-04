@@ -1,0 +1,17 @@
+export type { AdminTechNichesCreateMutationKey } from "./createAdminTechNichesCreate";
+export type { AdminTechNichesDeleteMutationKey } from "./createAdminTechNichesDelete";
+export type { AdminTechNichesGetByIdQueryKey } from "./createAdminTechNichesGetById";
+export type { AdminTechNichesListQueryKey } from "./createAdminTechNichesList";
+export type { AdminTechNichesUpdateMutationKey } from "./createAdminTechNichesUpdate";
+export { adminTechNichesCreateMutationKey } from "./createAdminTechNichesCreate";
+export { createAdminTechNichesCreate } from "./createAdminTechNichesCreate";
+export { adminTechNichesDeleteMutationKey } from "./createAdminTechNichesDelete";
+export { createAdminTechNichesDelete } from "./createAdminTechNichesDelete";
+export { adminTechNichesGetByIdQueryKey } from "./createAdminTechNichesGetById";
+export { adminTechNichesGetByIdQueryOptions } from "./createAdminTechNichesGetById";
+export { createAdminTechNichesGetById } from "./createAdminTechNichesGetById";
+export { adminTechNichesListQueryKey } from "./createAdminTechNichesList";
+export { adminTechNichesListQueryOptions } from "./createAdminTechNichesList";
+export { createAdminTechNichesList } from "./createAdminTechNichesList";
+export { adminTechNichesUpdateMutationKey } from "./createAdminTechNichesUpdate";
+export { createAdminTechNichesUpdate } from "./createAdminTechNichesUpdate";

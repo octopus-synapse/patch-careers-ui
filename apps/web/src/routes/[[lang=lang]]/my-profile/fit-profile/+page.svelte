@@ -6,7 +6,7 @@
   import {
     createFitProfileMeGet,
     fitProfileMeDelete,
-    getFitProfileMeGetQueryKey,
+    fitProfileMeGetQueryKey,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
@@ -17,13 +17,13 @@
   type MeStatus = { status?: 'responded' | 'expired' | 'never'; expiresAt?: string | null };
 
   const queryClient = useQueryClient();
-  const meQuery = createFitProfileMeGet(() => ({
-    query: { enabled: browser, retry: false },
-  }));
+  const meQuery = createFitProfileMeGet({
+      query: { enabled: browser, retry: false },
+    });
 
-  const me = $derived(meQuery.data as unknown as MeStatus | undefined);
+  const me = $derived($meQuery.data as unknown as MeStatus | undefined);
   const status = $derived<'responded' | 'expired' | 'never' | 'loading'>(
-    meQuery.isPending ? 'loading' : (me?.status ?? 'never'),
+    $meQuery.isPending ? 'loading' : (me?.status ?? 'never'),
   );
   const expiresAt = $derived(me?.expiresAt ?? null);
 
@@ -33,7 +33,7 @@
     deleting = true;
     try {
       await fitProfileMeDelete();
-      await queryClient.invalidateQueries({ queryKey: getFitProfileMeGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: fitProfileMeGetQueryKey() });
       toastState.show('Fit Profile apagado.' , 'success');
     } catch (err) {
       toastState.show(

@@ -4,8 +4,8 @@ import {
   createEmailVerificationAuthEmailVerificationResendStatus,
   createEmailVerificationAuthEmailVerificationSend,
   createEmailVerificationVerify,
-  getAuthSessionQueryKey,
-  getEmailVerificationAuthEmailVerificationResendStatusQueryKey,
+  authSessionQueryKey,
+  emailVerificationAuthEmailVerificationResendStatusQueryKey,
   isApiError,
 } from 'api-client';
 import { CheckCircle2, Mail } from 'lucide-svelte';
@@ -32,9 +32,9 @@ const needsEmailVerification = $derived(Boolean(session.data?.user?.needsEmailVe
 
 // Resend cooldown is owned by the backend — the UI just mirrors it so the
 // countdown survives page reloads.
-const resendStatus = createEmailVerificationAuthEmailVerificationResendStatus(() => ({
+const resendStatus = createEmailVerificationAuthEmailVerificationResendStatus({
   query: { retry: false, enabled: browser && authenticated === true, refetchOnWindowFocus: false },
-}));
+});
 
 let verificationCode = $state('');
 let verifyError = $state('');
@@ -44,7 +44,7 @@ let cooldownRemaining = $state(0);
 let cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
 async function leaveVerifyScreen() {
-  await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+  await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
   goto('/onboarding/start');
 }
 
@@ -57,7 +57,7 @@ function isAlreadyVerified(err: unknown): boolean {
 
 let verifiedOnce = $state(false);
 
-const verifyEmail = createEmailVerificationVerify(() => ({
+const verifyEmail = createEmailVerificationVerify({
   mutation: {
     async onSuccess() {
       verifiedOnce = true;
@@ -78,9 +78,9 @@ const verifyEmail = createEmailVerificationVerify(() => ({
       verificationCode = '';
     },
   },
-}));
+});
 
-const sendVerification = createEmailVerificationAuthEmailVerificationSend(() => ({
+const sendVerification = createEmailVerificationAuthEmailVerificationSend({
   mutation: {
     async onError(err: unknown) {
       if (isAlreadyVerified(err)) {
@@ -91,7 +91,7 @@ const sendVerification = createEmailVerificationAuthEmailVerificationSend(() => 
       if (isApiError(err)) verifyError = err.message;
     },
   },
-}));
+});
 
 function startCooldown(seconds: number) {
   if (cooldownTimer) clearInterval(cooldownTimer);
@@ -111,7 +111,7 @@ function startCooldown(seconds: number) {
 
 // Sync the local ticker with the backend whenever resend-status refetches.
 $effect(() => {
-  const data = resendStatus.data;
+  const data = $resendStatus.data;
   if (!data || !('secondsUntilResendAllowed' in data)) return;
   startCooldown(data.secondsUntilResendAllowed);
 });
@@ -119,7 +119,7 @@ $effect(() => {
 onMount(() => {
   if (tokenFromUrl) {
     autoVerifying = true;
-    verifyEmail.mutate({ data: { token: tokenFromUrl } });
+    $verifyEmail.mutate({ data: { token: tokenFromUrl } });
   }
   return () => {
     if (cooldownTimer) clearInterval(cooldownTimer);
@@ -143,9 +143,9 @@ $effect(() => {
 // server-side and comes back as "Invalid or expired", clobbering the first
 // success and keeping the user stuck on this screen.
 function submitToken(code: string) {
-  if (verifyEmail.isPending || verifyEmail.isSuccess) return;
+  if ($verifyEmail.isPending || $verifyEmail.isSuccess) return;
   verifyError = '';
-  verifyEmail.mutate({ data: { token: code } });
+  $verifyEmail.mutate({ data: { token: code } });
 }
 
 function handleCompleted(code: string) {
@@ -166,7 +166,7 @@ function handleResend() {
   resentFlash = false;
   verifyError = '';
   verificationCode = '';
-  sendVerification.mutate(undefined, {
+  $sendVerification.mutate(undefined, {
     onSuccess(response) {
       resentFlash = true;
       setTimeout(() => (resentFlash = false), 4000);
@@ -174,7 +174,7 @@ function handleResend() {
         startCooldown(response.cooldown.secondsUntilResendAllowed);
       }
       queryClient.invalidateQueries({
-        queryKey: getEmailVerificationAuthEmailVerificationResendStatusQueryKey(),
+        queryKey: emailVerificationAuthEmailVerificationResendStatusQueryKey(),
       });
     },
   });
@@ -189,14 +189,14 @@ function handleResend() {
 	<main class="flex min-h-screen items-center justify-center p-4 pt-20 sm:p-6 bg-gray-50 dark:bg-neutral-950">
 		<div class="w-full max-w-[440px]">
 			<div class="rounded-2xl border bg-white dark:bg-neutral-900 border-gray-200 dark:border-neutral-800 shadow-sm p-6 sm:p-8">
-				{#if autoVerifying || verifyEmail.isPending}
+				{#if autoVerifying || $verifyEmail.isPending}
 					<div class="py-10 text-center" role="status" aria-live="polite">
 						<Loader size={28} class="mx-auto mb-4" />
 						<p class="text-sm text-gray-500 dark:text-neutral-400">
 							{t('identity.verifyEmail.verifying')}
 						</p>
 					</div>
-				{:else if verifyEmail.isSuccess}
+				{:else if $verifyEmail.isSuccess}
 					<div class="py-10 text-center" role="status" aria-live="polite">
 						<CheckCircle2 size={36} class="mx-auto mb-4 text-emerald-500" />
 						<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-100">
@@ -226,7 +226,7 @@ function handleResend() {
 							bind:value={verificationCode}
 							length={CODE_LENGTH}
 							error={Boolean(verifyError)}
-							disabled={verifyEmail.isPending}
+							disabled={$verifyEmail.isPending}
 							autofocus
 							oncomplete={handleCompleted}
 						/>
@@ -235,7 +235,7 @@ function handleResend() {
 							<p role="alert" class="text-center text-xs font-medium text-red-500/80">{verifyError}</p>
 						{/if}
 
-						<Button type="submit" disabled={verifyEmail.isPending || verificationCode.length !== CODE_LENGTH} variant="solid">
+						<Button type="submit" disabled={$verifyEmail.isPending || verificationCode.length !== CODE_LENGTH} variant="solid">
 							{t('identity.verifyEmail.submit')}
 						</Button>
 
@@ -251,10 +251,10 @@ function handleResend() {
 								<button
 									type="button"
 									onclick={handleResend}
-									disabled={sendVerification.isPending}
+									disabled={$sendVerification.isPending}
 									class="text-xs font-bold text-gray-800 dark:text-neutral-200 hover:underline disabled:opacity-50"
 								>
-									{#if sendVerification.isPending}
+									{#if $sendVerification.isPending}
 										{t('identity.verifyEmail.resending')}
 									{:else}
 										{t('identity.verifyEmail.resend')}

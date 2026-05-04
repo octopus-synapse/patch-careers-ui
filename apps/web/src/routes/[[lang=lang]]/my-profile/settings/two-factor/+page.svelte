@@ -7,12 +7,12 @@
 -->
 <script lang="ts">
 import {
-  createTwoFactorAuthAuth2fa,
-  createTwoFactorAuthAuth2faBackupCodesRegenerate,
-  createTwoFactorAuthAuth2faSetup,
-  createTwoFactorAuthAuth2faStatus,
-  createTwoFactorAuthAuth2faVerify,
-  getTwoFactorAuthAuth2faStatusQueryKey,
+  createTwoFactorAuthAuth2Fa,
+  createTwoFactorAuthAuth2FaBackupCodesRegenerate,
+  createTwoFactorAuthAuth2FaSetup,
+  createTwoFactorAuthAuth2FaStatus,
+  createTwoFactorAuthAuth2FaVerify,
+  twoFactorAuthAuth2FaStatusQueryKey,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
 import { Copy, Download, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
@@ -22,59 +22,49 @@ import { browser } from '$app/environment';
 
 const queryClient = useQueryClient();
 
-const statusQuery = createTwoFactorAuthAuth2faStatus(() => ({
+const statusQuery = createTwoFactorAuthAuth2FaStatus({
   query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
-}));
-const status = $derived(
-  statusQuery.data && 'enabled' in statusQuery.data ? statusQuery.data : null,
-);
+});
+const status = $derived($statusQuery.data);
 
-const setup = createTwoFactorAuthAuth2faSetup(() => ({
-  mutation: { onError: handleApiError },
-}));
-const setupData = $derived(
-  setup.data && 'qrCode' in setup.data ? setup.data : null,
-);
+const setup = createTwoFactorAuthAuth2FaSetup({ mutation: { onError: handleApiError } });
+const setupData = $derived($setup.data);
 
 let verifyToken = $state('');
 let backupCodes = $state<string[] | null>(null);
 let disableConfirming = $state(false);
 
-const verify = createTwoFactorAuthAuth2faVerify(() => ({
+const verify = createTwoFactorAuthAuth2FaVerify({
   mutation: {
     async onSuccess(data) {
-      backupCodes = 'backupCodes' in data ? data.backupCodes : [];
-      setup.reset();
+      backupCodes = data.backupCodes;
+      $setup.reset();
       verifyToken = '';
-      await queryClient.invalidateQueries({
-        queryKey: getTwoFactorAuthAuth2faStatusQueryKey(),
-      });
+      await queryClient.invalidateQueries({ queryKey: twoFactorAuthAuth2FaStatusQueryKey() });
     },
     onError: handleApiError,
   },
-}));
+});
 
-const disable = createTwoFactorAuthAuth2fa(() => ({
+const disable = createTwoFactorAuthAuth2Fa({
   mutation: {
     async onSuccess() {
       disableConfirming = false;
       toastState.show('2FA desativado.', 'success');
       await queryClient.invalidateQueries({
-        queryKey: getTwoFactorAuthAuth2faStatusQueryKey(),
+        queryKey: twoFactorAuthAuth2FaStatusQueryKey(),
       });
     },
     onError: handleApiError,
   },
-}));
+});
 
-const regen = createTwoFactorAuthAuth2faBackupCodesRegenerate(() => ({
+const regen = createTwoFactorAuthAuth2FaBackupCodesRegenerate({
   mutation: {
-    onSuccess(data) {
-      backupCodes = 'backupCodes' in data ? data.backupCodes : [];
-    },
+    onSuccess: (data) => (backupCodes = data.backupCodes),
     onError: handleApiError,
   },
-}));
+});
 
 async function copyCodes() {
   if (!backupCodes) return;
@@ -113,7 +103,7 @@ function downloadCodes() {
     </p>
   </header>
 
-  {#if statusQuery.isLoading}
+  {#if $statusQuery.isLoading}
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>
@@ -178,10 +168,10 @@ function downloadCodes() {
         </p>
         <Button
           variant="outline"
-          onclick={() => regen.mutate()}
-          disabled={regen.isPending}
+          onclick={() => $regen.mutate()}
+          disabled={$regen.isPending}
         >
-          {#if regen.isPending}
+          {#if $regen.isPending}
             <Loader size={14} />
           {:else}
             <RefreshCw size={14} class="mr-1" />
@@ -203,10 +193,10 @@ function downloadCodes() {
           <div class="flex gap-2">
             <Button
               variant="solid"
-              onclick={() => disable.mutate()}
-              disabled={disable.isPending}
+              onclick={() => $disable.mutate()}
+              disabled={$disable.isPending}
             >
-              {#if disable.isPending}
+              {#if $disable.isPending}
                 <Loader size={14} />
               {:else}
                 Confirmar
@@ -253,10 +243,10 @@ function downloadCodes() {
       </div>
       <Button
         variant="solid"
-        onclick={() => verify.mutate({ data: { code: verifyToken } })}
-        disabled={verify.isPending || verifyToken.length !== 6}
+        onclick={() => $verify.mutate({ data: { code: verifyToken } })}
+        disabled={$verify.isPending || verifyToken.length !== 6}
       >
-        {#if verify.isPending}
+        {#if $verify.isPending}
           <Loader size={14} />
         {:else}
           Verificar e ativar
@@ -272,8 +262,8 @@ function downloadCodes() {
       <p class="mb-4 text-xs text-gray-500 dark:text-neutral-500">
         Use um app como Google Authenticator, 1Password ou Authy para gerar códigos temporários.
       </p>
-      <Button variant="solid" onclick={() => setup.mutate()} disabled={setup.isPending}>
-        {#if setup.isPending}
+      <Button variant="solid" onclick={() => $setup.mutate()} disabled={$setup.isPending}>
+        {#if $setup.isPending}
           <Loader size={14} />
         {:else}
           Iniciar configuração

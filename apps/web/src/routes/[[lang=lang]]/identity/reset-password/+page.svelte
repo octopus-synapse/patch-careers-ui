@@ -11,7 +11,7 @@ let confirm = $state('');
 let error = $state<string | null>(null);
 let success = $state(false);
 
-const reset = createPasswordManagementAuthResetPassword(() => ({
+const reset = createPasswordManagementAuthResetPassword({
   mutation: {
     onSuccess() {
       success = true;
@@ -21,7 +21,7 @@ const reset = createPasswordManagementAuthResetPassword(() => ({
       if (isApiError(err)) error = err.message;
     },
   },
-}));
+});
 
 function handleSubmit(e: Event) {
   e.preventDefault();
@@ -38,7 +38,7 @@ function handleSubmit(e: Event) {
     return;
   }
   error = null;
-  reset.mutate({ data: { token, newPassword: password } });
+  $reset.mutate({ data: { token, newPassword: password } });
 }
 </script>
 
@@ -81,8 +81,8 @@ function handleSubmit(e: Event) {
         {#if error}
           <p class="text-xs font-medium text-red-500/80" role="alert">{error}</p>
         {/if}
-        <Button type="submit" disabled={reset.isPending} variant="solid">
-          {#if reset.isPending}
+        <Button type="submit" disabled={$reset.isPending} variant="solid">
+          {#if $reset.isPending}
             <Loader size={14} class="mx-auto" />
           {:else}
             Redefinir senha

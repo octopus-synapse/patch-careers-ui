@@ -14,22 +14,22 @@
   type FitMe = { status?: 'responded' | 'expired' | 'never' };
 
   const myResumesQuery = createResumesList(
-    () => ({ page: '1', limit: '1' }),
-    () => ({ query: { enabled: browser, retry: false } }),
+    { page: '1', limit: '1' },
+    { query: { enabled: browser, retry: false } },
   );
   const primaryResumeId = $derived<string | null>(
-    ((myResumesQuery.data as unknown as ResumesPage | undefined)?.items?.[0]?.id ?? null) as
+    (($myResumesQuery.data as unknown as ResumesPage | undefined)?.items?.[0]?.id ?? null) as
       | string
       | null,
   );
 
-  const fitMeQuery = createFitProfileMeGet(() => ({
-    query: { enabled: browser, retry: false },
-  }));
+  const fitMeQuery = createFitProfileMeGet({
+      query: { enabled: browser, retry: false },
+    });
   const fitStatus = $derived<'responded' | 'expired' | 'never' | 'loading'>(
-    fitMeQuery.isPending
+    $fitMeQuery.isPending
       ? 'loading'
-      : (fitMeQuery.data as unknown as FitMe | undefined)?.status ?? 'never',
+      : ($fitMeQuery.data as unknown as FitMe | undefined)?.status ?? 'never',
   );
 </script>
 

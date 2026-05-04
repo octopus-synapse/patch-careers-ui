@@ -15,13 +15,13 @@ type Props = {
 let { userId, showLocked = false }: Props = $props();
 
 const query = createBadgesUser(
-  () => userId,
-  () => ({ query: { enabled: browser && Boolean(userId) } }),
+  userId,
+  { query: { enabled: browser && Boolean(userId) } },
 );
 
 type BadgeRow = { kind: BadgeKind; awardedAt: string };
 const earned = $derived(
-  ((query.data as { badges?: BadgeRow[] } | undefined)?.badges ?? []) as BadgeRow[],
+  (($query.data as { badges?: BadgeRow[] } | undefined)?.badges ?? []) as BadgeRow[],
 );
 
 const ALL_BADGES: Array<{ kind: BadgeKind; name: string; hint: string }> = [

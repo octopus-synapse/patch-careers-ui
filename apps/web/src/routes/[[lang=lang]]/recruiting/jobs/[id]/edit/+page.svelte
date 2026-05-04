@@ -6,10 +6,10 @@
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
     createJobsGetById,
-    getJobsGetByIdQueryKey,
-    getJobsMineQueryKey,
+    jobsGetByIdQueryKey,
+    jobsMineQueryKey,
     jobsUpdate,
-    type JobsUpdateBody,
+    type JobsUpdateMutationRequest,
   } from 'api-client';
   import { Button, Input, Label, Loader, Textarea, toastState } from 'ui';
   import { goto } from '$app/navigation';
@@ -30,8 +30,8 @@
   const queryClient = useQueryClient();
   const jobId = $derived($page.params.id ?? '');
 
-  const jobQuery = createJobsGetById(() => jobId);
-  const job = $derived(jobQuery.data as unknown as JobView | undefined);
+  const jobQuery = createJobsGetById(jobId);
+  const job = $derived($jobQuery.data as unknown as JobView | undefined);
 
   let title = $state('');
   let company = $state('');
@@ -68,7 +68,7 @@
     e.preventDefault();
     serverError = '';
     submitting = true;
-    const body: JobsUpdateBody = {
+    const body: JobsUpdateMutationRequest = {
       title: title.trim() || undefined,
       company: company.trim() || undefined,
       location: location.trim() || undefined,
@@ -81,8 +81,8 @@
       await jobsUpdate(jobId, body);
       toastState.show('Vaga atualizada', 'success');
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: getJobsGetByIdQueryKey(jobId) }),
-        queryClient.invalidateQueries({ queryKey: getJobsMineQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) }),
+        queryClient.invalidateQueries({ queryKey: jobsMineQueryKey() }),
       ]);
       void goto('/recruiting/jobs');
     } catch (err) {
@@ -104,7 +104,7 @@
     </h1>
   </header>
 
-  {#if jobQuery.isLoading}
+  {#if $jobQuery.isLoading}
     <div class="flex items-center justify-center py-20"><Loader size={20} /></div>
   {:else if !job}
     <p class="text-sm text-gray-500 dark:text-neutral-400">{t('company.jobs.edit.notFound')}</p>

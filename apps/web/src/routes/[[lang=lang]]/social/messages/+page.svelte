@@ -12,8 +12,8 @@ import {
   createChatConversationsMessagesGet,
   createChatConversationsMessagesPost,
   createChatConversationsRead,
-  getChatConversationsGetQueryKey,
-  getChatConversationsMessagesGetQueryKey,
+  chatConversationsGetQueryKey,
+  chatConversationsMessagesGetQueryKey,
 } from 'api-client';
 import { Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -88,42 +88,38 @@ $effect(() => {
 const activeId = $derived($page.url.searchParams.get('c'));
 
 const conversations = createChatConversationsGet(
-  () => ({ limit: 50 }),
-  () => ({ query: { enabled: Boolean(authenticated) } }),
+  { limit: 50 },
+  { query: { enabled: Boolean(authenticated) } },
 );
-const convList = $derived(
-  extractConversations(conversations.data as unknown as ConversationsResponse | undefined),
-);
+const convList = $derived(extractConversations($conversations.data));
 
 const messages = createChatConversationsMessagesGet(
-  () => activeId ?? '',
-  () => ({ limit: 100 }),
-  () => ({ query: { enabled: Boolean(activeId) } }),
+  activeId ?? undefined,
+  { limit: 100 },
+  { query: { enabled: Boolean(activeId) } },
 );
-const msgList = $derived(
-  extractMessages(messages.data as unknown as MessagesResponse | undefined),
-);
+const msgList = $derived(extractMessages($messages.data));
 
 const queryClient = useQueryClient();
 
 const markRead = createChatConversationsRead();
-const sendMessage = createChatConversationsMessagesPost(() => ({
+const sendMessage = createChatConversationsMessagesPost({
   mutation: {
     onSuccess() {
       if (activeId) {
         queryClient.invalidateQueries({
-          queryKey: getChatConversationsMessagesGetQueryKey(activeId, { limit: 100 }),
+          queryKey: chatConversationsMessagesGetQueryKey(activeId, { limit: 100 }),
         });
         queryClient.invalidateQueries({
-          queryKey: getChatConversationsGetQueryKey({ limit: 50 }),
+          queryKey: chatConversationsGetQueryKey({ limit: 50 }),
         });
       }
     },
   },
-}));
+});
 
 function select(id: string) {
-  markRead.mutate({ conversationId: id });
+  $markRead.mutate({ conversationId: id });
   const params = new URLSearchParams($page.url.searchParams);
   params.set('c', id);
   goto(`/messages?${params.toString()}`, { replaceState: true, noScroll: true });
@@ -131,7 +127,7 @@ function select(id: string) {
 
 function handleSend(content: string) {
   if (!activeId) return;
-  sendMessage.mutate({ conversationId: activeId, data: { content } });
+  $sendMessage.mutate({ conversationId: activeId, data: { content } });
 }
 
 const activeOther = $derived.by(() => {
@@ -151,7 +147,7 @@ const activeOther = $derived.by(() => {
       <UserSearch onselect={select} />
     </div>
     <div class="flex-1 overflow-y-auto scrollbar-thin">
-      {#if conversations.isLoading}
+      {#if $conversations.isLoading}
         <div class="flex items-center justify-center py-10">
           <Loader size={16} />
         </div>
@@ -186,7 +182,7 @@ const activeOther = $derived.by(() => {
         </header>
       {/if}
       <MessageThread messages={msgList} {currentUserId} />
-      <MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
+      <MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
     {:else}
       <div
         class="flex h-full items-center justify-center text-sm text-gray-500 dark:text-neutral-500"

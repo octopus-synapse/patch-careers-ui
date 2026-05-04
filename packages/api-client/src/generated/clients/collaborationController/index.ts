@@ -1,0 +1,10 @@
+export { collaborationController } from "./collaborationController";
+export { collaborationResumesCollaboratorsDelete } from "./collaborationResumesCollaboratorsDelete";
+export { collaborationResumesCollaboratorsGet } from "./collaborationResumesCollaboratorsGet";
+export { collaborationResumesCollaboratorsPatch } from "./collaborationResumesCollaboratorsPatch";
+export { collaborationResumesCollaboratorsPost } from "./collaborationResumesCollaboratorsPost";
+export { collaborationResumesCommentsDelete } from "./collaborationResumesCommentsDelete";
+export { collaborationResumesCommentsGet } from "./collaborationResumesCommentsGet";
+export { collaborationResumesCommentsPost } from "./collaborationResumesCommentsPost";
+export { collaborationResumesCommentsResolve } from "./collaborationResumesCommentsResolve";
+export { collaborationResumesSharedWithMe } from "./collaborationResumesSharedWithMe";

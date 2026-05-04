@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createFeedBookmarks, getFeedBookmarksQueryKey } from 'api-client';
+import { createFeedBookmarks, feedBookmarksQueryKey } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { browser } from '$app/environment';
@@ -40,7 +40,7 @@ $effect(() => {
 const queryClient = useQueryClient();
 
 const pagination = useFeedPagination({
-  getRawData: () => bookmarksQuery.data as unknown as FeedEnvelope | undefined,
+  getRawData: () => $bookmarksQuery.data as unknown as FeedEnvelope | undefined,
 });
 
 const engagement = useFeedEngagement({
@@ -51,8 +51,8 @@ const engagement = useFeedEngagement({
 });
 
 const bookmarksQuery = createFeedBookmarks(
-  () => ({ cursor: pagination.cursor, limit: '20' }),
-  () => ({ query: { enabled: Boolean(authenticated) } }),
+  { cursor: pagination.cursor, limit: '20' },
+  { query: { enabled: Boolean(authenticated) } },
 );
 
 let sentinelEl: HTMLDivElement | undefined = $state();
@@ -64,7 +64,7 @@ $effect(() => {
       if (
         entries[0].isIntersecting &&
         pagination.hasMore &&
-        !bookmarksQuery.isLoading &&
+        !$bookmarksQuery.isLoading &&
         !pagination.loadingMore
       ) {
         pagination.loadNextPage();
@@ -78,7 +78,7 @@ $effect(() => {
 
 function handleRepost(id: string) {
   void engagement.submitRepost(id, '');
-  queryClient.invalidateQueries({ queryKey: getFeedBookmarksQueryKey() });
+  queryClient.invalidateQueries({ queryKey: feedBookmarksQueryKey() });
 }
 
 function handleReport(id: string) {
@@ -125,11 +125,11 @@ function handleReport(id: string) {
 				{/each}
 			</div>
 
-			{#if bookmarksQuery.isLoading && pagination.allPosts.length === 0}
+			{#if $bookmarksQuery.isLoading && pagination.allPosts.length === 0}
 				<div class="flex justify-center py-12">
 					<Loader size={24} />
 				</div>
-			{:else if pagination.allPosts.length === 0 && !bookmarksQuery.isLoading}
+			{:else if pagination.allPosts.length === 0 && !$bookmarksQuery.isLoading}
 				<div class="py-12 text-center">
 					<p class="text-sm text-gray-400 dark:text-neutral-500">No bookmarks yet.</p>
 				</div>

@@ -26,11 +26,11 @@ type Endorser = {
 };
 
 const skillsQuery = createSkillEndorsementsUsersSkills(
-  () => viewerId,
-  () => ({ query: { enabled: browser && Boolean(viewerId) } }),
+  viewerId,
+  { query: { enabled: browser && Boolean(viewerId) } },
 );
 const skills = $derived.by<Skill[]>(() => {
-  const data = skillsQuery.data as Record<string, unknown> | undefined;
+  const data = $skillsQuery.data as Record<string, unknown> | undefined;
   return (data?.skills as Skill[] | undefined) ?? [];
 });
 
@@ -77,7 +77,7 @@ onMount(() => {
     </p>
   </header>
 
-  {#if skillsQuery.isLoading}
+  {#if $skillsQuery.isLoading}
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>

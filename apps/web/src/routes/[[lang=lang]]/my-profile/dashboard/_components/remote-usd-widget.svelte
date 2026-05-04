@@ -23,15 +23,15 @@ const authenticated = $derived(auth.data?.authenticated ?? false);
 // Show the first 3 USD/EUR remote jobs as mini cards instead of a raw count
 // — gives the user something to act on (per UX feedback #11).
 const query = createJobsList(
-  () => ({ page: '1', limit: '3', search: '', skills: '', paymentCurrency: 'USD,EUR' }),
-  () => ({ query: { enabled: browser && authenticated } }),
+  { page: '1', limit: '3', search: '', skills: '', paymentCurrency: 'USD,EUR' },
+  { query: { enabled: browser && authenticated } },
 );
 
 const items = $derived.by<RemoteJob[]>(() => {
-  const d = query.data as { items?: RemoteJob[] } | undefined;
+  const d = $query.data as { items?: RemoteJob[] } | undefined;
   return d?.items ?? [];
 });
-const total = $derived((query.data as { total?: number } | undefined)?.total ?? items.length);
+const total = $derived(($query.data as { total?: number } | undefined)?.total ?? items.length);
 </script>
 
 <Card>
@@ -58,7 +58,7 @@ const total = $derived((query.data as { total?: number } | undefined)?.total ?? 
 		</div>
 	{/snippet}
 
-	{#if query.isLoading}
+	{#if $query.isLoading}
 		<ul class="space-y-2">
 			{#each Array(3) as _}
 				<li><Skeleton shape="text" width="80%" /></li>

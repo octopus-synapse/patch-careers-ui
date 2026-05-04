@@ -16,11 +16,11 @@
     createAdminTechAreasList,
     createAdminTechNichesList,
     createAdminTechSkillsList,
-    getAdminProgrammingLanguagesListQueryKey,
-    getAdminSpokenLanguagesListQueryKey,
-    getAdminTechAreasListQueryKey,
-    getAdminTechNichesListQueryKey,
-    getAdminTechSkillsListQueryKey,
+    adminProgrammingLanguagesListQueryKey,
+    adminSpokenLanguagesListQueryKey,
+    adminTechAreasListQueryKey,
+    adminTechNichesListQueryKey,
+    adminTechSkillsListQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -47,24 +47,24 @@
   const params = $derived({ page: '1', pageSize: '50', search: search || undefined });
 
   const areasQuery = createAdminTechAreasList(
-    () => params,
-    () => ({ query: { enabled: browser && tab === 'areas' } }),
+    params,
+    { query: { enabled: browser && tab === 'areas' } },
   );
   const nichesQuery = createAdminTechNichesList(
-    () => params,
-    () => ({ query: { enabled: browser && tab === 'niches' } }),
+    params,
+    { query: { enabled: browser && tab === 'niches' } },
   );
   const skillsQuery = createAdminTechSkillsList(
-    () => params,
-    () => ({ query: { enabled: browser && tab === 'skills' } }),
+    params,
+    { query: { enabled: browser && tab === 'skills' } },
   );
   const progQuery = createAdminProgrammingLanguagesList(
-    () => params,
-    () => ({ query: { enabled: browser && tab === 'programming' } }),
+    params,
+    { query: { enabled: browser && tab === 'programming' } },
   );
   const spokenQuery = createAdminSpokenLanguagesList(
-    () => params,
-    () => ({ query: { enabled: browser && tab === 'spoken' } }),
+    params,
+    { query: { enabled: browser && tab === 'spoken' } },
   );
 
   function items(data: unknown): Item[] {
@@ -78,25 +78,25 @@
       switch (tab) {
         case 'areas':
           await adminTechAreasDelete(id);
-          await queryClient.invalidateQueries({ queryKey: getAdminTechAreasListQueryKey() });
+          await queryClient.invalidateQueries({ queryKey: adminTechAreasListQueryKey() });
           break;
         case 'niches':
           await adminTechNichesDelete(id);
-          await queryClient.invalidateQueries({ queryKey: getAdminTechNichesListQueryKey() });
+          await queryClient.invalidateQueries({ queryKey: adminTechNichesListQueryKey() });
           break;
         case 'skills':
           await adminTechSkillsDelete(id);
-          await queryClient.invalidateQueries({ queryKey: getAdminTechSkillsListQueryKey() });
+          await queryClient.invalidateQueries({ queryKey: adminTechSkillsListQueryKey() });
           break;
         case 'programming':
           await adminProgrammingLanguagesDelete(id);
           await queryClient.invalidateQueries({
-            queryKey: getAdminProgrammingLanguagesListQueryKey(),
+            queryKey: adminProgrammingLanguagesListQueryKey(),
           });
           break;
         case 'spoken':
           await adminSpokenLanguagesDelete(id);
-          await queryClient.invalidateQueries({ queryKey: getAdminSpokenLanguagesListQueryKey() });
+          await queryClient.invalidateQueries({ queryKey: adminSpokenLanguagesListQueryKey() });
           break;
       }
       toastState.show('Item excluído', 'success');
@@ -118,28 +118,28 @@
   const currentItems = $derived.by(() => {
     switch (tab) {
       case 'areas':
-        return items(areasQuery.data);
+        return items($areasQuery.data);
       case 'niches':
-        return items(nichesQuery.data);
+        return items($nichesQuery.data);
       case 'skills':
-        return items(skillsQuery.data);
+        return items($skillsQuery.data);
       case 'programming':
-        return items(progQuery.data);
+        return items($progQuery.data);
       case 'spoken':
-        return items(spokenQuery.data);
+        return items($spokenQuery.data);
     }
   });
 
   const isLoading = $derived(
     tab === 'areas'
-      ? areasQuery.isLoading
+      ? $areasQuery.isLoading
       : tab === 'niches'
-        ? nichesQuery.isLoading
+        ? $nichesQuery.isLoading
         : tab === 'skills'
-          ? skillsQuery.isLoading
+          ? $skillsQuery.isLoading
           : tab === 'programming'
-            ? progQuery.isLoading
-            : spokenQuery.isLoading,
+            ? $progQuery.isLoading
+            : $spokenQuery.isLoading,
   );
 
   function getKey(item: Item): string {

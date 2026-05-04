@@ -45,16 +45,16 @@
   };
 
   const analyticsQuery = createAdminAnalyticsOverview(
-    () => ({ period }),
-    () => ({ query: { enabled: browser } }),
+    { period },
+    { query: { enabled: browser } },
   );
 
-  const metricsQuery = createAdminDashboardMetrics(() => ({
-    query: { enabled: browser },
-  }));
+  const metricsQuery = createAdminDashboardMetrics({
+      query: { enabled: browser },
+    });
 
-  const data = $derived(analyticsQuery.data as unknown as AnalyticsOverview | undefined);
-  const metrics = $derived(metricsQuery.data as unknown as DashboardMetrics | undefined);
+  const data = $derived($analyticsQuery.data as unknown as AnalyticsOverview | undefined);
+  const metrics = $derived($metricsQuery.data as unknown as DashboardMetrics | undefined);
 
   const atsDist = $derived(data?.atsScoreDistribution ?? []);
   const byLang = $derived(data?.resumesByLanguage ?? []);
@@ -115,7 +115,7 @@
     </div>
   {/if}
 
-  {#if analyticsQuery.isLoading}
+  {#if $analyticsQuery.isLoading}
     <div class="flex items-center justify-center py-20">
       <Loader size={24} />
     </div>

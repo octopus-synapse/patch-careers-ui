@@ -4,7 +4,7 @@ import {
   createUsersUsernameCheck,
   createUsersProfileGet,
   createUsersUsername,
-  getUsersProfileGetQueryKey,
+  usersProfileGetQueryKey,
 } from 'api-client';
 import { Check, X } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
@@ -17,10 +17,10 @@ const queryClient = useQueryClient();
 const successText = 'text-emerald-500';
 const errorText = 'text-red-500';
 
-const profileQuery = createUsersProfileGet(() => ({
+const profileQuery = createUsersProfileGet({
   query: { enabled: browser },
-}));
-const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
+});
+const profileData = $derived($profileQuery.data as Record<string, string> | undefined);
 const currentUsername = $derived(profileData?.username ?? '');
 
 let newUsername = $state('');
@@ -40,28 +40,28 @@ $effect(() => {
 });
 
 const usernameCheck = createUsersUsernameCheck(
-  () => ({ username: debouncedUsername }),
-  () => ({ query: { enabled: browser && debouncedUsername.length >= 3 } }),
+  { username: debouncedUsername },
+  { query: { enabled: browser && debouncedUsername.length >= 3 } },
 );
 const usernameAvailable = $derived(
-  (usernameCheck.data as Record<string, boolean> | undefined)?.available,
+  ($usernameCheck.data as Record<string, boolean> | undefined)?.available,
 );
 
-const updateUsername = createUsersUsername(() => ({
+const updateUsername = createUsersUsername({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getUsersProfileGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: usersProfileGetQueryKey() });
       newUsername = '';
       debouncedUsername = '';
       usernameSaved = true;
       setTimeout(() => (usernameSaved = false), 3000);
     },
   },
-}));
+});
 
 function handleSaveUsername() {
   if (newUsername && usernameAvailable) {
-    updateUsername.mutate({ data: { username: newUsername } });
+    $updateUsername.mutate({ data: { username: newUsername } });
   }
 }
 </script>
@@ -109,7 +109,7 @@ function handleSaveUsername() {
 						placeholder={t('settings.usernamePlaceholder')}
 						class="pr-10"
 					/>
-					{#if debouncedUsername.length >= 3 && !usernameCheck.isLoading}
+					{#if debouncedUsername.length >= 3 && !$usernameCheck.isLoading}
 						<div class="absolute right-3 top-1/2 -translate-y-1/2">
 							{#if usernameAvailable}
 								<Check size={16} class={successText} />
@@ -118,13 +118,13 @@ function handleSaveUsername() {
 							{/if}
 						</div>
 					{/if}
-					{#if usernameCheck.isLoading}
+					{#if $usernameCheck.isLoading}
 						<div class="absolute right-3 top-1/2 -translate-y-1/2">
 							<Loader size={14} />
 						</div>
 					{/if}
 				</div>
-				{#if debouncedUsername.length >= 3 && !usernameCheck.isLoading}
+				{#if debouncedUsername.length >= 3 && !$usernameCheck.isLoading}
 					<p class="mt-1 text-xs {usernameAvailable ? successText : errorText}">
 						{usernameAvailable ? t('settings.usernameAvailable') : t('settings.usernameTaken')}
 					</p>
@@ -137,9 +137,9 @@ function handleSaveUsername() {
 					size="md"
 					textCase="normal"
 					onclick={handleSaveUsername}
-					disabled={updateUsername.isPending || !usernameAvailable || !newUsername}
+					disabled={$updateUsername.isPending || !usernameAvailable || !newUsername}
 				>
-					{#if updateUsername.isPending}
+					{#if $updateUsername.isPending}
 						<Loader size={13} />
 					{/if}
 					{t('common.save')}

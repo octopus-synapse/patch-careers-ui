@@ -4,7 +4,7 @@ import {
   createSocialConnectionsConnectionsAccept,
   createSocialConnectionsConnectionsReject,
   createSocialConnectionsUsersMeConnectionsPending,
-  getSocialConnectionsUsersMeConnectionsPendingQueryKey,
+  socialConnectionsUsersMeConnectionsPendingQueryKey,
   socialConnectionsUsersMeConnectionsPending,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
@@ -24,8 +24,8 @@ type U = {
 type R = { id: string; createdAt: string; user: U };
 
 const query = createSocialConnectionsUsersMeConnectionsPending(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser } },
 );
 
 function extractRecord(raw: Record<string, unknown>): R {
@@ -43,7 +43,7 @@ function extractRecord(raw: Record<string, unknown>): R {
 }
 
 const firstPage = $derived.by(() => {
-  const outer = query.data as Record<string, unknown> | undefined;
+  const outer = $query.data as Record<string, unknown> | undefined;
   const section = outer?.pendingRequests as Record<string, unknown> | undefined;
   const items = (section?.data ?? []) as Record<string, unknown>[];
   return {
@@ -82,21 +82,21 @@ const all = $derived([...firstPage.data, ...extra]);
 
 const queryClient = useQueryClient();
 
-const acceptMutation = createSocialConnectionsConnectionsAccept(() => ({
+const acceptMutation = createSocialConnectionsConnectionsAccept({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey() });
+      queryClient.invalidateQueries({ queryKey: socialConnectionsUsersMeConnectionsPendingQueryKey() });
     },
   },
-}));
+});
 
-const rejectMutation = createSocialConnectionsConnectionsReject(() => ({
+const rejectMutation = createSocialConnectionsConnectionsReject({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsPendingQueryKey() });
+      queryClient.invalidateQueries({ queryKey: socialConnectionsUsersMeConnectionsPendingQueryKey() });
     },
   },
-}));
+});
 
 function timeAgo(iso: string): string {
   if (!iso) return '';
@@ -126,7 +126,7 @@ function timeAgo(iso: string): string {
 	</div>
 </div>
 
-{#if query.isLoading}
+{#if $query.isLoading}
 	<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 		{#each Array(4) as _}
 			<div class="flex items-center gap-3 px-4 py-4 sm:px-6">
@@ -176,10 +176,10 @@ function timeAgo(iso: string): string {
 					{/if}
 				</div>
 				<div class="flex items-center gap-2">
-					<Button variant="outline" size="sm" textCase="normal" onclick={() => rejectMutation.mutate({ id: req.id })}>
+					<Button variant="outline" size="sm" textCase="normal" onclick={() => $rejectMutation.mutate({ id: req.id })}>
 						{t?.('network.ignore')}
 					</Button>
-					<Button variant="outline" intent="accent" size="sm" textCase="normal" onclick={() => acceptMutation.mutate({ id: req.id })}>
+					<Button variant="outline" intent="accent" size="sm" textCase="normal" onclick={() => $acceptMutation.mutate({ id: req.id })}>
 						{t?.('network.accept')}
 					</Button>
 				</div>

@@ -7,7 +7,7 @@
   import {
     adminSectionTypesDelete,
     createAdminSectionTypesList,
-    getAdminSectionTypesListQueryKey,
+    adminSectionTypesListQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -28,16 +28,16 @@
   let search = $state('');
 
   const listQuery = createAdminSectionTypesList(
-    () => ({ page, pageSize, search: search || undefined }),
-    () => ({ query: { enabled: browser } }),
+    { page, pageSize, search: search || undefined },
+    { query: { enabled: browser } },
   );
 
   const items = $derived(
-    (listQuery.data as unknown as { items?: SectionType[]; totalPages?: number } | undefined)
+    ($listQuery.data as unknown as { items?: SectionType[]; totalPages?: number } | undefined)
       ?.items ?? [],
   );
   const totalPages = $derived(
-    (listQuery.data as unknown as { totalPages?: number } | undefined)?.totalPages ?? 1,
+    ($listQuery.data as unknown as { totalPages?: number } | undefined)?.totalPages ?? 1,
   );
 
   let deleting = $state<string | null>(null);
@@ -46,7 +46,7 @@
     try {
       await adminSectionTypesDelete(key);
       toastState.show('Seção excluída', 'success');
-      await queryClient.invalidateQueries({ queryKey: getAdminSectionTypesListQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: adminSectionTypesListQueryKey() });
     } catch {
       toastState.show('Falha ao excluir', 'danger');
     } finally {
@@ -71,7 +71,7 @@
     class="w-full max-w-sm rounded-md border border-border bg-background px-3 py-1.5 text-sm"
   />
 
-  {#if listQuery.isLoading}
+  {#if $listQuery.isLoading}
     <div class="flex items-center justify-center py-12"><Loader size={20} /></div>
   {:else}
     <div class="rounded-xl border border-border">

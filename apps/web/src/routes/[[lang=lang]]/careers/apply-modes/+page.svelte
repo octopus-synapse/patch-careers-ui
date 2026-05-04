@@ -3,9 +3,9 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createUsersPreferencesFullGet,
   createUsersPreferencesFullPatch,
-  getUsersPreferencesFullGetQueryKey,
+  usersPreferencesFullGetQueryKey,
 } from 'api-client';
-import type { UsersPreferencesFullPatchBodyApplyMode } from 'api-client';
+import type { UsersPreferencesFullPatchMutationRequestApplyModeEnumKey } from 'api-client';
 import {
   ArrowRight,
   CalendarCheck,
@@ -34,31 +34,31 @@ $effect(() => {
 
 const queryClient = useQueryClient();
 
-const preferencesQuery = createUsersPreferencesFullGet(() => ({
+const preferencesQuery = createUsersPreferencesFullGet({
   query: { enabled: browser && authenticated },
-}));
+});
 
-type ModeKey = UsersPreferencesFullPatchBodyApplyMode;
+type ModeKey = UsersPreferencesFullPatchMutationRequestApplyModeEnumKey;
 type PrefsShape = { preferences?: { applyMode?: ModeKey }; applyMode?: ModeKey };
 
 const currentMode = $derived.by<ModeKey>(() => {
-  const data = preferencesQuery.data as unknown as PrefsShape | undefined;
+  const data = $preferencesQuery.data as unknown as PrefsShape | undefined;
   return data?.preferences?.applyMode ?? data?.applyMode ?? ('ONE_CLICK' as ModeKey);
 });
 
-const updateMutation = createUsersPreferencesFullPatch(() => ({
+const updateMutation = createUsersPreferencesFullPatch({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getUsersPreferencesFullGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: usersPreferencesFullGetQueryKey() });
     },
     onError() {
       toastState.show('Failed to update preferences', 'danger');
     },
   },
-}));
+});
 
 function setMode(mode: ModeKey) {
-  updateMutation.mutate({ data: { applyMode: mode } });
+  $updateMutation.mutate({ data: { applyMode: mode } });
 }
 
 function notifyWhenReady() {
@@ -193,7 +193,7 @@ const modes: Array<{
 										size="sm"
 										class="w-full"
 										onclick={() => setMode(mode.key)}
-										disabled={updateMutation.isPending}
+										disabled={$updateMutation.isPending}
 									>
 										{t('applyModes.switchCta')}
 										<ArrowRight size={14} />

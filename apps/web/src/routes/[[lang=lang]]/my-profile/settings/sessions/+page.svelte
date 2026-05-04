@@ -1,9 +1,8 @@
 <script lang="ts">
 import {
-  type AuthListSessions200SessionsItem,
+  authListSessionsQueryKey,
   createAuthListSessions,
   createAuthRevokeSession,
-  getAuthListSessionsQueryKey,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
 import { Monitor, Smartphone, X } from 'lucide-svelte';
@@ -35,29 +34,27 @@ function formatAuthMethod(method: string | null): string | null {
   }
 }
 
-const sessionsQuery = createAuthListSessions(() => ({
+const sessionsQuery = createAuthListSessions({
   query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
-}));
+});
 
-const sessions: AuthListSessions200SessionsItem[] = $derived(
-  sessionsQuery.data && 'sessions' in sessionsQuery.data ? sessionsQuery.data.sessions : [],
-);
+const sessions = $derived($sessionsQuery.data?.sessions ?? []);
 
-const revoke = createAuthRevokeSession(() => ({
+const revoke = createAuthRevokeSession({
   mutation: {
     async onSuccess() {
       toastState.show(t('success.sessionRevoked'), 'success');
-      await queryClient.invalidateQueries({ queryKey: getAuthListSessionsQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: authListSessionsQueryKey() });
     },
     onError: handleApiError,
   },
-}));
+});
 
 let revokingId = $state<string | null>(null);
 
 function handleRevoke(id: string) {
   revokingId = id;
-  revoke.mutate({ id }, { onSettled: () => (revokingId = null) });
+  $revoke.mutate({ id }, { onSettled: () => (revokingId = null) });
 }
 
 function formatDevice(ua: string | null): string {
@@ -85,7 +82,7 @@ function formatDevice(ua: string | null): string {
     </p>
   </header>
 
-  {#if sessionsQuery.isLoading}
+  {#if $sessionsQuery.isLoading}
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>

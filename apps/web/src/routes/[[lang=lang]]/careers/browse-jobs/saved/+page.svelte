@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createJobsBookmarks,
   createJobsBookmarkDelete,
-  getJobsBookmarksQueryKey,
+  jobsBookmarksQueryKey,
   jobsBookmarks,
 } from 'api-client';
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
@@ -31,8 +31,8 @@ type SavedJob = {
 };
 
 const query = createJobsBookmarks(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser && authenticated } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser && authenticated } },
 );
 
 function rowsFrom(items?: Record<string, unknown>[]): SavedJob[] {
@@ -60,7 +60,7 @@ function pagedSection(data: unknown): { rows: SavedJob[]; total: number; totalPa
   };
 }
 
-const firstPage = $derived(pagedSection(query.data));
+const firstPage = $derived(pagedSection($query.data));
 let extra = $state<SavedJob[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
@@ -89,10 +89,10 @@ const all = $derived([...firstPage.rows, ...extra].filter((j) => !removedIds.has
 
 const queryClient = useQueryClient();
 
-const unbookmarkMutation = createJobsBookmarkDelete(() => ({
+const unbookmarkMutation = createJobsBookmarkDelete({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getJobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: jobsBookmarksQueryKey() });
       track('job_unbookmarked', { jobId: vars.id });
     },
     onError(_err, vars) {
@@ -102,11 +102,11 @@ const unbookmarkMutation = createJobsBookmarkDelete(() => ({
       toastState.show(t('jobs.unsaveError'), 'danger');
     },
   },
-}));
+});
 
 function handleRemove(id: string) {
   removedIds = new Set([...removedIds, id]);
-  unbookmarkMutation.mutate({ id });
+  $unbookmarkMutation.mutate({ id });
 }
 </script>
 
@@ -125,7 +125,7 @@ function handleRemove(id: string) {
 			{/if}
 		</header>
 
-		{#if query.isLoading}
+		{#if $query.isLoading}
 			<div class="space-y-3">
 				{#each Array(3) as _}
 					<div class="rounded-xl border p-4 border-gray-200 dark:border-neutral-800">

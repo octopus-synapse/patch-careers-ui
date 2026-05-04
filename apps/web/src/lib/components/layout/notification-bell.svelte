@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createNotificationsList,
   createNotificationsUnreadCount,
-  getNotificationsListQueryKey,
-  getNotificationsUnreadCountQueryKey,
+  notificationsListQueryKey,
+  notificationsUnreadCountQueryKey,
   notificationsMarkRead,
 } from 'api-client';
 import { formatDate } from 'i18n';
@@ -40,26 +40,26 @@ const queryClient = useQueryClient();
 
 let isOpen = $state(false);
 
-const unreadQuery = createNotificationsUnreadCount(() => ({
+const unreadQuery = createNotificationsUnreadCount({
   query: {
     enabled: browser,
     refetchInterval: 30000,
   },
-}));
+});
 
 const unreadCount = $derived(
-  (unreadQuery.data as { count?: number } | undefined)?.count,
+  ($unreadQuery.data as { count?: number } | undefined)?.count,
 );
 
 const notificationsQuery = createNotificationsList(
-  () => ({ cursor: '', limit: '10' }),
-  () => ({
-    query: { enabled: browser && isOpen },
-  }),
+  { cursor: '', limit: '10' },
+  {
+        query: { enabled: browser && isOpen },
+      },
 );
 
 const notifications = $derived(
-  (notificationsQuery.data as { items?: NotificationItem[] } | undefined)?.items,
+  ($notificationsQuery.data as { items?: NotificationItem[] } | undefined)?.items,
 );
 
 function getNotificationMessage(notification: NotificationItem): string {
@@ -86,15 +86,15 @@ async function handleMarkAllRead() {
   // payload is optional and lets a single-row mark-read share the same
   // endpoint when `notificationId` is set.
   await notificationsMarkRead({});
-  queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
-  queryClient.invalidateQueries({ queryKey: getNotificationsListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
+  queryClient.invalidateQueries({ queryKey: notificationsListQueryKey() });
 }
 
 async function handleNotificationClick(notification: NotificationItem) {
   if (!notification.read) {
     await notificationsMarkRead({ notificationId: notification.id });
-    queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
-    queryClient.invalidateQueries({ queryKey: getNotificationsListQueryKey() });
+    queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: notificationsListQueryKey() });
   }
   isOpen = false;
 }

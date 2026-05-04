@@ -1,11 +1,11 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  getJobsMineQueryKey,
+  jobsMineQueryKey,
   jobsCreate,
   jobsImportFromUrl,
 } from 'api-client';
-import type { JobsCreateBody, JobsCreateBodyJobType } from 'api-client';
+import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey } from 'api-client';
 import { ArrowRight, Globe, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -23,7 +23,7 @@ type Preview = {
   skills: string[];
   salaryRange: string;
   applyUrl: string;
-  jobType: JobsCreateBodyJobType | null;
+  jobType: JobsCreateMutationRequestJobTypeEnumKey | null;
   remotePolicy: 'REMOTE' | 'HYBRID' | 'ONSITE' | null;
 };
 
@@ -39,7 +39,7 @@ function normalizePreview(raw: RawPreview): Preview {
     skills: Array.isArray(raw.skills) ? (raw.skills as string[]) : [],
     salaryRange: typeof raw.salaryRange === 'string' ? raw.salaryRange : '',
     applyUrl: typeof raw.applyUrl === 'string' ? raw.applyUrl : '',
-    jobType: (raw.jobType as JobsCreateBodyJobType | null) ?? null,
+    jobType: (raw.jobType as JobsCreateMutationRequestJobTypeEnumKey | null) ?? null,
     remotePolicy: (raw.remotePolicy as 'REMOTE' | 'HYBRID' | 'ONSITE' | null) ?? null,
   };
 }
@@ -73,12 +73,12 @@ async function confirmCreate() {
   if (!preview) return;
   saving = true;
   try {
-    const body: JobsCreateBody = {
+    const body: JobsCreateMutationRequest = {
       title: preview.title.trim() || 'Sem título',
       company: preview.company.trim() || 'Sem empresa',
       location: preview.location.trim() || undefined,
       description: preview.description.trim() || 'Sem descrição',
-      jobType: (preview.jobType ?? 'FULL_TIME') as JobsCreateBodyJobType,
+      jobType: (preview.jobType ?? 'FULL_TIME') as JobsCreateMutationRequestJobTypeEnumKey,
       remotePolicy: preview.remotePolicy ?? undefined,
       salaryRange: preview.salaryRange.trim() || undefined,
       applyUrl: preview.applyUrl.trim() || url,
@@ -86,7 +86,7 @@ async function confirmCreate() {
       requirements: preview.requirements,
     };
     await jobsCreate(body);
-    await queryClient.invalidateQueries({ queryKey: getJobsMineQueryKey() });
+    await queryClient.invalidateQueries({ queryKey: jobsMineQueryKey() });
     toastState.show('Vaga criada a partir da URL.', 'success');
     goto('/recruiting/jobs');
   } catch (err) {

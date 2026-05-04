@@ -7,7 +7,7 @@ let email = $state('');
 let sent = $state(false);
 let error = $state<string | null>(null);
 
-const forgotPassword = createPasswordManagementAuthForgotPassword(() => ({
+const forgotPassword = createPasswordManagementAuthForgotPassword({
   mutation: {
     onSuccess() {
       sent = true;
@@ -16,13 +16,13 @@ const forgotPassword = createPasswordManagementAuthForgotPassword(() => ({
       error = 'Não foi possível enviar o email. Tente novamente.';
     },
   },
-}));
+});
 
 function handleSubmit(e: Event) {
   e.preventDefault();
-  if (!email || forgotPassword.isPending) return;
+  if (!email || $forgotPassword.isPending) return;
   error = null;
-  forgotPassword.mutate({ data: { email } });
+  $forgotPassword.mutate({ data: { email } });
 }
 </script>
 
@@ -64,8 +64,8 @@ function handleSubmit(e: Event) {
         {#if error}
           <p class="text-xs font-medium text-red-500/80" role="alert">{error}</p>
         {/if}
-        <Button type="submit" disabled={forgotPassword.isPending} variant="solid">
-          {#if forgotPassword.isPending}
+        <Button type="submit" disabled={$forgotPassword.isPending} variant="solid">
+          {#if $forgotPassword.isPending}
             <Loader size={14} class="mx-auto" />
           {:else}
             Enviar link de recuperação

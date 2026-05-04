@@ -1,7 +1,7 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createAuthLogin, getAuthSessionQueryKey, isApiError } from 'api-client';
-import { AuthLoginBody } from 'api-client/zod';
+import { createAuthLogin, authSessionQueryKey, isApiError } from 'api-client';
+import { authLoginMutationRequestSchema } from 'api-client/zod';
 import { Lock } from 'lucide-svelte';
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -14,10 +14,10 @@ let serverError = $state('');
 
 const t = $derived(locale.t);
 
-const login = createAuthLogin(() => ({
+const login = createAuthLogin({
   mutation: {
     async onSuccess() {
-      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
       goto('/my-profile/dashboard');
     },
     onError(err: unknown) {
@@ -29,10 +29,10 @@ const login = createAuthLogin(() => ({
       if (isApiError(err)) serverError = err.message;
     },
   },
-}));
+});
 
 const form = createForm({
-  schema: AuthLoginBody,
+  schema: authLoginMutationRequestSchema,
   initial: { email: '', password: '' },
   mutation: login,
 });

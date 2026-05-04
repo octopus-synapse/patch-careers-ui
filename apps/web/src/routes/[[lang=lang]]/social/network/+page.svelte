@@ -30,8 +30,8 @@ import { InfiniteScrollTrigger } from 'ui';
  * and the per-side follow lists. The pending/connection mutations all
  * route through `undoableAction` so a misclick can be reversed within 5s.
  *
- * Swagger response shapes are `void` for these endpoints; we cast at the
- * boundary to documented runtime shapes.
+ * Hook responses are typed as discriminated unions (200 | 4xx). We narrow
+ * once via the 200-only field guard and pull view-models off the result.
  */
 type UserInfo = {
   id: string;
@@ -108,21 +108,25 @@ const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 const authenticated = $derived(auth.data?.authenticated);
 
 const summaryQuery = createSocialConnectionsUsersMeNetworkSummary(
-  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
+  { query: { enabled: browser && Boolean(authenticated) } },
 );
 
 const followersQuery = createSocialFollowUsersFollowers(
-  () => currentUserId,
-  () => ({ page: '1', limit: '10' }),
-  () => ({ query: { enabled: browser && !!currentUserId } }),
+  currentUserId,
+  { page: '1', limit: '10' },
+  { query: { enabled: browser && !!currentUserId } },
 );
 const followingQuery = createSocialFollowUsersFollowing(
-  () => currentUserId,
-  () => ({ page: '1', limit: '10' }),
-  () => ({ query: { enabled: browser && !!currentUserId } }),
+  currentUserId,
+  { page: '1', limit: '10' },
+  { query: { enabled: browser && !!currentUserId } },
 );
 
-const summary = $derived(summaryQuery.data as unknown as NetworkSummary | undefined);
+const summary = $derived(
+  $summaryQuery.data && 'stats' in $summaryQuery.data
+    ? ($summaryQuery.data as NetworkSummary)
+    : undefined,
+);
 
 const stats = $derived<NetworkSummaryStats>(summary?.stats ?? {});
 const pendingList = $derived<PendingRow[]>(
@@ -136,14 +140,18 @@ const connectionsTotal = $derived(summary?.connections?.total ?? 0);
 const connectionsTotalPages = $derived(summary?.connections?.totalPages ?? 0);
 
 const followersList = $derived.by<UserInfo[]>(() => {
-  const raw = followersQuery.data as unknown as FollowListResponse | undefined;
-  if (Array.isArray(raw?.items)) return raw.items;
-  return (raw?.followers?.data ?? []).map((row) => extractUser(row.follower ?? null));
+  const data = $followersQuery.data;
+  if (!data || !('followers' in data)) return [];
+  const raw = data as FollowListResponse;
+  if (Array.isArray(raw.items)) return raw.items;
+  return (raw.followers?.data ?? []).map((row) => extractUser(row.follower ?? null));
 });
 const followingList = $derived.by<UserInfo[]>(() => {
-  const raw = followingQuery.data as unknown as FollowListResponse | undefined;
-  if (Array.isArray(raw?.items)) return raw.items;
-  return (raw?.following?.data ?? []).map((row) => extractUser(row.following ?? null));
+  const data = $followingQuery.data;
+  if (!data || !('following' in data)) return [];
+  const raw = data as FollowListResponse;
+  if (Array.isArray(raw.items)) return raw.items;
+  return (raw.following?.data ?? []).map((row) => extractUser(row.following ?? null));
 });
 
 // Infinite scroll for connections — extra pages loaded after the first page
@@ -167,11 +175,16 @@ async function loadMoreConnections() {
   connectionsLoading = true;
   try {
     const next = connectionsPage + 1;
-    const res = (await socialConnectionsUsersMeConnections({
+    const res = await socialConnectionsUsersMeConnections({
       page: String(next),
       limit: '10',
-    })) as unknown as { connections?: { data?: Record<string, unknown>[] }; items?: Record<string, unknown>[] } | undefined;
-    const items = res?.connections?.data ?? res?.items ?? [];
+    });
+    const items =
+      res && 'connections' in res
+        ? ((res as { connections?: { data?: Record<string, unknown>[] } }).connections?.data ?? [])
+        : res && 'items' in res
+          ? ((res as { items?: Record<string, unknown>[] }).items ?? [])
+          : [];
     connectionsExtra = [...connectionsExtra, ...items.map(toConnection)];
     connectionsPage = next;
   } finally {
@@ -334,7 +347,7 @@ const statItems = $derived<StatItem[]>([
 						</a>
 					{/if}
 				</div>
-				{#if summaryQuery.isLoading}
+				{#if $summaryQuery.isLoading}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(2) as _}
 							<div class="flex items-center gap-3 px-5 py-4">
@@ -367,7 +380,7 @@ const statItems = $derived<StatItem[]>([
 			</section>
 
 			<!-- Suggestions carousel -->
-			{#if summaryQuery.isLoading}
+			{#if $summaryQuery.isLoading}
 				<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
 					<div class="px-5 py-4 border-b border-gray-200 dark:border-neutral-800">
 						<h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('network.suggestions')}</h2>
@@ -408,7 +421,7 @@ const statItems = $derived<StatItem[]>([
 						{t('network.connections')} ({connectionsTotal})
 					</h2>
 				</div>
-				{#if summaryQuery.isLoading}
+				{#if $summaryQuery.isLoading}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(3) as _}
 							<div class="flex items-center gap-3 px-5 py-3.5">
@@ -456,7 +469,7 @@ const statItems = $derived<StatItem[]>([
 					/>
 				</div>
 				{#if followersTab === 'followers'}
-					{#if followersQuery.isLoading}
+					{#if $followersQuery.isLoading}
 						<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 							{#each Array(3) as _}
 								<div class="flex items-center gap-3 px-5 py-3">
@@ -474,7 +487,7 @@ const statItems = $derived<StatItem[]>([
 							{/each}
 						</div>
 					{/if}
-				{:else if followingQuery.isLoading}
+				{:else if $followingQuery.isLoading}
 					<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 						{#each Array(3) as _}
 							<div class="flex items-center gap-3 px-5 py-3">

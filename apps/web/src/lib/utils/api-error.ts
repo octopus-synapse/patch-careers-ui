@@ -45,10 +45,10 @@ export async function parseApiError(
   } catch {
     return { message: fallbackMessage, action: actionFromSeverity(undefined, res.status) };
   }
-  return parseApiErrorBody(body, fallbackMessage, res.status);
+  return parseApiErrorMutationRequest(body, fallbackMessage, res.status);
 }
 
-export function parseApiErrorBody(
+export function parseApiErrorMutationRequest(
   body: unknown,
   fallbackMessage: string,
   status?: number,

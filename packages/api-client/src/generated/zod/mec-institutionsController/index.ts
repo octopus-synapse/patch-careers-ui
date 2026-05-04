@@ -1,0 +1,4 @@
+export { mecInstitutionsCourses200Schema, mecInstitutionsCourses400Schema, mecInstitutionsCoursesPathParamsSchema, mecInstitutionsCoursesQueryResponseSchema } from "./mecInstitutionsCoursesSchema";
+export { mecInstitutionsGetById200Schema, mecInstitutionsGetById400Schema, mecInstitutionsGetByIdPathParamsSchema, mecInstitutionsGetByIdQueryResponseSchema } from "./mecInstitutionsGetByIdSchema";
+export { mecInstitutionsList200Schema, mecInstitutionsList400Schema, mecInstitutionsListQueryParamsSchema, mecInstitutionsListQueryResponseSchema } from "./mecInstitutionsListSchema";
+export { mecInstitutionsSearch200Schema, mecInstitutionsSearch400Schema, mecInstitutionsSearchQueryParamsSchema, mecInstitutionsSearchQueryResponseSchema } from "./mecInstitutionsSearchSchema";

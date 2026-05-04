@@ -8,7 +8,7 @@
     adminOnboardingStepsDelete,
     createAdminOnboardingStepsGet,
     createAdminOnboardingStats,
-    getAdminOnboardingStepsGetQueryKey,
+    adminOnboardingStepsGetQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -32,17 +32,17 @@
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
-  const stepsQuery = createAdminOnboardingStepsGet(() => ({
-    query: { enabled: browser, refetchOnWindowFocus: false },
-  }));
-  const statsQuery = createAdminOnboardingStats(() => ({
-    query: { enabled: browser, refetchOnWindowFocus: false },
-  }));
+  const stepsQuery = createAdminOnboardingStepsGet({
+      query: { enabled: browser, refetchOnWindowFocus: false },
+    });
+  const statsQuery = createAdminOnboardingStats({
+      query: { enabled: browser, refetchOnWindowFocus: false },
+    });
 
   const steps = $derived(
-    ((stepsQuery.data as unknown as { items?: Step[] } | undefined)?.items ?? []) as Step[],
+    (($stepsQuery.data as unknown as { items?: Step[] } | undefined)?.items ?? []) as Step[],
   );
-  const stats = $derived(statsQuery.data as unknown as Stats | undefined);
+  const stats = $derived($statsQuery.data as unknown as Stats | undefined);
 
   let deletingKey = $state<string | null>(null);
   async function handleDelete(key: string) {
@@ -50,7 +50,7 @@
     try {
       await adminOnboardingStepsDelete(key);
       toastState.show('Step excluído', 'success');
-      await queryClient.invalidateQueries({ queryKey: getAdminOnboardingStepsGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: adminOnboardingStepsGetQueryKey() });
     } catch {
       toastState.show('Falha ao excluir', 'danger');
     } finally {
@@ -80,7 +80,7 @@
     {t('admin.onboarding.steps')}
   </h2>
 
-  {#if stepsQuery.isLoading}
+  {#if $stepsQuery.isLoading}
     <div class="flex items-center justify-center py-12"><Loader size={20} /></div>
   {:else}
     <div class="rounded-xl border border-border">

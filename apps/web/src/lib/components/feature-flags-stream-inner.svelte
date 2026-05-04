@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { getFeatureFlagsActiveQueryKey } from 'api-client';
+  import { featureFlagsActiveQueryKey } from 'api-client';
   import { useSseSubscribe } from '$lib/state/use-sse-subscribe.svelte';
 
   const queryClient = useQueryClient();
@@ -10,7 +10,7 @@
   // tears down on unmount.
   useSseSubscribe('/v1/feature-flags/stream', {
     queryClient,
-    invalidateKeys: [getFeatureFlagsActiveQueryKey()],
+    invalidateKeys: [featureFlagsActiveQueryKey()],
     enabled: true,
   });
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createResumeTailorResumesTailor, getResumesListQueryKey } from 'api-client';
+import { createResumeTailorResumesTailor, resumesListQueryKey } from 'api-client';
 import { RotateCw, Sparkles } from 'lucide-svelte';
 import { Button, Modal, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
@@ -28,12 +28,12 @@ let { open, beforeText, resumeId, onClose }: Props = $props();
 const t = $derived(locale.t);
 
 const queryClient = useQueryClient();
-const tailorMutation = createResumeTailorResumesTailor(() => ({
+const tailorMutation = createResumeTailorResumesTailor({
   mutation: {
     onSuccess() {
       // Invalidate the resume list so the freshly minted tailored version
       // appears in /manage-resumes without a manual refresh.
-      queryClient.invalidateQueries({ queryKey: getResumesListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: resumesListQueryKey() });
       toastState.show(t('cv.rerender.saveCta'), 'success');
       onClose();
     },
@@ -41,11 +41,11 @@ const tailorMutation = createResumeTailorResumesTailor(() => ({
       toastState.show('Failed to save tailored version', 'danger');
     },
   },
-}));
+});
 
 function handleSave() {
   if (!resumeId) return;
-  tailorMutation.mutate({
+  $tailorMutation.mutate({
     resumeId,
     data: {
       jobDescription: buildJobDescription(selected),
@@ -267,7 +267,7 @@ $effect(() => {
 					variant="solid"
 					size="sm"
 					onclick={handleSave}
-					disabled={!resumeId || tailorMutation.isPending}
+					disabled={!resumeId || $tailorMutation.isPending}
 				>
 					{t('cv.rerender.saveCta')}
 				</Button>

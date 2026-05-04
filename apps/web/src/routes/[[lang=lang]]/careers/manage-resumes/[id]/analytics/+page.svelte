@@ -12,9 +12,9 @@ import { page } from '$app/stores';
 const resumeId = $derived($page.params.id ?? '');
 
 const stats = createResumeAnalyticsResumesAnalyticsViews(
-  () => resumeId,
-  () => ({ period: 'month' }),
-  () => ({ query: { enabled: browser && Boolean(resumeId) } }),
+  resumeId,
+  { period: 'month' },
+  { query: { enabled: browser && Boolean(resumeId) } },
 );
 
 interface ViewStats {
@@ -34,7 +34,7 @@ interface ViewStats {
 }
 
 const data = $derived.by<ViewStats | null>(() => {
-  const d = stats.data as Record<string, unknown> | undefined;
+  const d = $stats.data as Record<string, unknown> | undefined;
   return (d?.stats as ViewStats | undefined) ?? (d as ViewStats | undefined) ?? null;
 });
 </script>
@@ -51,7 +51,7 @@ const data = $derived.by<ViewStats | null>(() => {
     </p>
   </header>
 
-  {#if stats.isLoading}
+  {#if $stats.isLoading}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
       {#each Array(4) as _}
         <div class="rounded-xl border border-gray-200 p-4 dark:border-neutral-800">

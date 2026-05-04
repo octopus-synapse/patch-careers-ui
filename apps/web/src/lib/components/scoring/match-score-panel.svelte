@@ -45,7 +45,7 @@
 
   let { resumeId, jobId }: Props = $props();
 
-  const matchMutation = createJobMatchMatchPost(() => ({ mutation: {} }));
+  const matchMutation = createJobMatchMatchPost({ mutation: {} });
 
   let breakdown = $state<MatchBreakdown | null>(null);
   let lockoutTeaser = $state<Teaser | null>(null);
@@ -59,7 +59,7 @@
     try {
       // Cast: the SDK's typed response is `{ data: void }` because the
       // swagger spec hasn't shipped a schema yet. Trust the runtime payload.
-      const res = (await matchMutation.mutateAsync({
+      const res = (await $matchMutation.mutateAsync({
         data: { resumeId, jobId },
       })) as unknown as MatchBreakdown | null;
 

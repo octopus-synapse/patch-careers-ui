@@ -2,7 +2,7 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createSocialConnectionsUsersConnect,
-  getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey,
+  socialConnectionsUsersMeConnectionsSuggestionsQueryKey,
 } from 'api-client';
 import { ChevronLeft, ChevronRight, UserPlus } from 'lucide-svelte';
 import { Badge, Button, SliderCarousel, toastState } from 'ui';
@@ -34,11 +34,11 @@ let { suggestions, title, seeAllHref, source = 'suggestions', ondismiss }: Props
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-const connectMutation = createSocialConnectionsUsersConnect(() => ({
+const connectMutation = createSocialConnectionsUsersConnect({
   mutation: {
     onSuccess(_data, variables) {
       queryClient.invalidateQueries({
-        queryKey: getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
+        queryKey: socialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
       });
       track('connection_requested', { targetUserId: variables.userId, source });
     },
@@ -47,11 +47,11 @@ const connectMutation = createSocialConnectionsUsersConnect(() => ({
       toastState.show(t('network.connectError'), 'danger');
     },
   },
-}));
+});
 
 function handleConnect(userId: string) {
   sentConnections.add(userId);
-  connectMutation.mutate({ userId });
+  $connectMutation.mutate({ userId });
   ondismiss?.(userId);
 }
 

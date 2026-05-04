@@ -1,0 +1,3 @@
+export { I18NDictionaryEnums200Schema, I18NDictionaryEnums400Schema, I18NDictionaryEnumsQueryResponseSchema } from "./i18NDictionaryEnumsSchema";
+export { I18NDictionaryErrors200Schema, I18NDictionaryErrors400Schema, I18NDictionaryErrorsQueryResponseSchema } from "./i18NDictionaryErrorsSchema";
+export { I18NDictionaryNotifications200Schema, I18NDictionaryNotifications400Schema, I18NDictionaryNotificationsQueryResponseSchema } from "./i18NDictionaryNotificationsSchema";

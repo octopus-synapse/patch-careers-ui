@@ -7,7 +7,7 @@ import {
   engagementPostsPollVote,
   engagementPostsReport,
   engagementPostsRepost,
-  getFeedListQueryKey,
+  feedListQueryKey,
   isApiError,
   postsDelete,
 } from 'api-client';
@@ -101,7 +101,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
         reactionType: newType,
         previousType,
       });
-      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
@@ -133,7 +133,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     try {
       await engagementPostsLikeDelete(id);
       track('post_unreacted', { postId: id });
-      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
@@ -147,7 +147,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
     setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)));
     await engagementPostsBookmarkPost(id);
-    queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+    queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
   }
 
   async function handleUnbookmark(id: string) {
@@ -155,7 +155,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
     setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)));
     await engagementPostsBookmarkDelete(id);
-    queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+    queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
   }
 
   function handleDelete(id: string) {
@@ -169,7 +169,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       },
       commit: () => postsDelete(id),
       onCommitted: () => {
-        queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+        queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
       },
       message: locale.t('feed.postDeleted'),
       undoLabel: locale.t('feed.undo'),
@@ -192,7 +192,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     try {
       await engagementPostsRepost(id, commentary ? { commentary } : {});
       track('post_reposted', { postId: id, withCommentary: commentary.length > 0 });
-      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
     } catch (err) {
       setPosts(snapshot);
       const message =
@@ -233,7 +233,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     try {
       await engagementPostsPollVote(id, { optionIndex });
       track('poll_voted', { postId: id, optionIndex });
-      queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
     } catch (err) {
       setPosts(snapshot);
       const message =

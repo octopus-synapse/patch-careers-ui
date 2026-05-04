@@ -2,7 +2,7 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createNotificationsPreferencesGet,
-  getNotificationsPreferencesGetQueryKey,
+  notificationsPreferencesGetQueryKey,
   notificationsPreferencesPut,
 } from 'api-client';
 import { Card, Skeleton, toastState } from 'ui';
@@ -37,12 +37,12 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
-const query = createNotificationsPreferencesGet(() => ({
+const query = createNotificationsPreferencesGet({
   query: { enabled: browser && authenticated },
-}));
+});
 
 const remote = $derived.by<Preference[]>(() => {
-  const data = query.data as Record<string, unknown> | undefined;
+  const data = $query.data as Record<string, unknown> | undefined;
   return (data?.preferences as Preference[] | undefined) ?? [];
 });
 
@@ -62,7 +62,7 @@ async function toggle(p: Preference) {
   pending = new Set([...pending, p.type]);
   try {
     await notificationsPreferencesPut(p.type, { enabled: next });
-    queryClient.invalidateQueries({ queryKey: getNotificationsPreferencesGetQueryKey() });
+    queryClient.invalidateQueries({ queryKey: notificationsPreferencesGetQueryKey() });
     track('notification_preference_changed', { type: p.type, enabled: next });
   } catch {
     optimistic = { ...optimistic, [p.type]: wasEnabled };
@@ -79,7 +79,7 @@ async function updateEmailMode(p: Preference, mode: EmailDelivery) {
       emailDelivery: mode,
       emailEnabled: mode !== 'OFF',
     });
-    queryClient.invalidateQueries({ queryKey: getNotificationsPreferencesGetQueryKey() });
+    queryClient.invalidateQueries({ queryKey: notificationsPreferencesGetQueryKey() });
     track('notification_email_mode_changed', { type: p.type, mode });
   } catch {
     toastState.show(t('notifications.preferenceError'), 'danger');
@@ -105,7 +105,7 @@ async function updateEmailMode(p: Preference, mode: EmailDelivery) {
 		</header>
 
 		<Card>
-			{#if query.isLoading}
+			{#if $query.isLoading}
 				<ul class="divide-y divide-gray-100 dark:divide-neutral-700/40">
 					{#each Array(5) as _}
 						<li class="flex items-center justify-between py-3">

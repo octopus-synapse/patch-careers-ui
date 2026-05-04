@@ -1,0 +1,17 @@
+export { resumesController } from "./resumesController";
+export { resumesCreate } from "./resumesCreate";
+export { resumesDelete } from "./resumesDelete";
+export { resumesFull } from "./resumesFull";
+export { resumesGetById } from "./resumesGetById";
+export { resumesList } from "./resumesList";
+export { resumesManageDelete } from "./resumesManageDelete";
+export { resumesManageGet } from "./resumesManageGet";
+export { resumesManageUser } from "./resumesManageUser";
+export { resumesSections } from "./resumesSections";
+export { resumesSectionsItemsDelete } from "./resumesSectionsItemsDelete";
+export { resumesSectionsItemsPatch } from "./resumesSectionsItemsPatch";
+export { resumesSectionsItemsPost } from "./resumesSectionsItemsPost";
+export { resumesSectionsTypes } from "./resumesSectionsTypes";
+export { resumesSlots } from "./resumesSlots";
+export { resumesThumbnailSvg } from "./resumesThumbnailSvg";
+export { resumesUpdate } from "./resumesUpdate";

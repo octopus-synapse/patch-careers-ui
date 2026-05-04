@@ -7,8 +7,8 @@ import {
   createOnboardingSessionNext,
   createOnboardingSessionPrevious,
   createOnboardingSessionSave,
-  getAuthSessionQueryKey,
-  getOnboardingSessionQueryKey,
+  authSessionQueryKey,
+  onboardingSessionQueryKey,
 } from 'api-client';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
@@ -37,12 +37,12 @@ $effect(() => {
 });
 
 const session = createOnboardingSession(
-  () => ({ locale: locale.current }),
-  () => ({ query: { enabled: authenticated } }),
+  { locale: locale.current },
+  { query: { enabled: authenticated } },
 );
 
 const queryClient = useQueryClient();
-const queryKey = $derived(getOnboardingSessionQueryKey({ locale: locale.current }));
+const queryKey = $derived(onboardingSessionQueryKey({ locale: locale.current }));
 
 function invalidateSession() {
   queryClient.invalidateQueries({ queryKey });
@@ -90,7 +90,7 @@ type OnboardingSessionData = {
   templateSelection?: Record<string, unknown>;
   [key: string]: unknown;
 };
-const onboardingData = $derived(session.data as unknown as OnboardingSessionData | undefined);
+const onboardingData = $derived($session.data as unknown as OnboardingSessionData | undefined);
 const steps = $derived((onboardingData?.steps ?? []) as Step[]);
 const currentStepId = $derived(onboardingData?.currentStep ?? '');
 const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
@@ -139,24 +139,24 @@ function getSavedDataForStep(stepId: string): Record<string, string> | null {
   return Object.keys(result).length > 0 ? result : null;
 }
 
-const nextStep = createOnboardingSessionNext(() => ({
+const nextStep = createOnboardingSessionNext({
   mutation: { onSuccess: invalidateSession },
-}));
+});
 
-const prevStep = createOnboardingSessionPrevious(() => ({
+const prevStep = createOnboardingSessionPrevious({
   mutation: { onSuccess: invalidateSession },
-}));
+});
 
-const gotoStep = createOnboardingSessionGoto(() => ({
+const gotoStep = createOnboardingSessionGoto({
   mutation: { onSuccess: invalidateSession },
-}));
+});
 
 let completeError = $state('');
 
-const complete = createOnboardingSessionComplete(() => ({
+const complete = createOnboardingSessionComplete({
   mutation: {
     async onSuccess() {
-      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
       // Celebrate before dropping the user into the dashboard — the done
       // screen auto-redirects after ~2s or on CTA click.
       goto('/onboarding/done');
@@ -166,7 +166,7 @@ const complete = createOnboardingSessionComplete(() => ({
       completeError = typeof msg === 'string' ? msg : 'Failed to complete onboarding';
     },
   },
-}));
+});
 
 const saveStep = createOnboardingSessionSave();
 let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
@@ -184,7 +184,7 @@ function flushSave() {
     return;
   if (currentStep?.multipleItems) return;
   saveStatus = 'saving';
-  saveStep.mutate(
+  $saveStep.mutate(
     { data: JSON.parse(dataJson), params: { locale: locale.current } },
     {
       onSuccess() {
@@ -214,7 +214,7 @@ $effect(() => {
     saveTimer = null;
     if (currentStep?.multipleItems) return;
     saveStatus = 'saving';
-    saveStep.mutate(
+    $saveStep.mutate(
       { data: stepData, params: { locale: locale.current } },
       {
         onSuccess() {
@@ -251,10 +251,10 @@ const isOptionalStep = $derived(
 let navigating = $state(false);
 
 function handleNext() {
-  if (navigating || nextStep.isPending || prevStep.isPending || gotoStep.isPending) return;
+  if (navigating || $nextStep.isPending || $prevStep.isPending || $gotoStep.isPending) return;
   navigating = true;
   const body = currentStep?.multipleItems ? { items: multiItems } : stepData;
-  nextStep.mutate(
+  $nextStep.mutate(
     { data: body, params: { locale: locale.current } },
     {
       onSettled: () => {
@@ -265,9 +265,9 @@ function handleNext() {
 }
 
 function handleSkip() {
-  if (navigating || nextStep.isPending) return;
+  if (navigating || $nextStep.isPending) return;
   navigating = true;
-  nextStep.mutate(
+  $nextStep.mutate(
     { data: { noData: true }, params: { locale: locale.current } },
     {
       onSettled: () => {
@@ -278,9 +278,9 @@ function handleSkip() {
 }
 
 function handleBack() {
-  if (navigating || prevStep.isPending) return;
+  if (navigating || $prevStep.isPending) return;
   navigating = true;
-  prevStep.mutate(
+  $prevStep.mutate(
     { params: { locale: locale.current } },
     {
       onSettled: () => {
@@ -291,9 +291,9 @@ function handleBack() {
 }
 
 function handleGoto(stepId: string) {
-  if (navigating || gotoStep.isPending) return;
+  if (navigating || $gotoStep.isPending) return;
   navigating = true;
-  gotoStep.mutate(
+  $gotoStep.mutate(
     { data: { stepId }, params: { locale: locale.current } },
     {
       onSettled: () => {
@@ -304,13 +304,13 @@ function handleGoto(stepId: string) {
 }
 
 function handleComplete() {
-  complete.mutate();
+  $complete.mutate();
 }
 
 const isWelcome = $derived(currentStep?.component === 'welcome');
 
 const isPending = $derived(
-  navigating || nextStep.isPending || prevStep.isPending || complete.isPending,
+  navigating || $nextStep.isPending || $prevStep.isPending || $complete.isPending,
 );
 </script>
 
@@ -318,7 +318,7 @@ const isPending = $derived(
 	<title>{t('onboarding.pageTitle')}</title>
 </svelte:head>
 
-{#if auth.isLoading || session.isLoading}
+{#if auth.isLoading || $session.isLoading}
 	<div class="flex min-h-screen items-center justify-center pt-14">
 		<Loader size={24} />
 	</div>
@@ -440,7 +440,7 @@ const isPending = $derived(
 										variant="solid"
 										class="max-w-[200px]"
 									>
-										{#if complete.isPending}
+										{#if $complete.isPending}
 											<Loader size={14} class="mx-auto" />
 										{:else}
 											{t('onboarding.complete')}
@@ -457,7 +457,7 @@ const isPending = $derived(
 									variant="solid"
 									class="max-w-[200px]"
 								>
-									{#if nextStep.isPending}
+									{#if $nextStep.isPending}
 										<Loader size={14} class="mx-auto" />
 									{:else}
 										<span class="flex items-center justify-center gap-2">

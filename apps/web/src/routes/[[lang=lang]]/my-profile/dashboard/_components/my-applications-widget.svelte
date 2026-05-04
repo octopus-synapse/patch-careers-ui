@@ -30,12 +30,12 @@ const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated ?? false);
 
 const query = createJobsApplicationsGet(
-  () => ({ page: '1', limit: '5' }),
-  () => ({ query: { enabled: browser && authenticated } }),
+  { page: '1', limit: '5' },
+  { query: { enabled: browser && authenticated } },
 );
 
 const items = $derived.by<ApplicationItem[]>(() => {
-  const d = query.data as { items?: ApplicationItem[] } | undefined;
+  const d = $query.data as { items?: ApplicationItem[] } | undefined;
   return d?.items ?? [];
 });
 
@@ -60,7 +60,7 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 		</div>
 	{/snippet}
 
-	{#if query.isLoading}
+	{#if $query.isLoading}
 		<ul class="space-y-3">
 			{#each Array(3) as _}
 				<li class="flex items-center gap-3">

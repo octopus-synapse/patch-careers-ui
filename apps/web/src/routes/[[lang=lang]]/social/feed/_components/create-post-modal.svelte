@@ -1,8 +1,8 @@
 <script lang="ts">
 import {
-  type PostsCreateBody,
-  type PostsCreateBodyAnonymousCategory,
-  type PostsCreateBodyType,
+  type PostsCreateMutationRequest,
+  type PostsCreateMutationRequestAnonymousCategoryEnumKey,
+  type PostsCreateMutationRequestTypeEnumKey,
   postsCreate,
   postsUploadImage,
 } from 'api-client';
@@ -17,9 +17,9 @@ type Props = {
 
 let { open, oncreate, oncancel }: Props = $props();
 
-// Subset of `PostsCreateBodyType` exposed in this composer — REPOST is
+// Subset of `PostsCreateMutationRequestTypeEnumKey` exposed in this composer — REPOST is
 // surfaced through a separate "quote repost" flow.
-type PostType = Exclude<PostsCreateBodyType, 'REPOST'>;
+type PostType = Exclude<PostsCreateMutationRequestTypeEnumKey, 'REPOST'>;
 const postTypes: readonly PostType[] = [
   'ACHIEVEMENT',
   'OPPORTUNITY',
@@ -105,9 +105,9 @@ let threadPosts = $state<string[]>(['']);
 // Blind Mode — only available in sensitive categories. Category must be
 // selected when `isAnonymous=true` (backend enforces via Zod refinement).
 let isAnonymous = $state(false);
-let anonymousCategory = $state<PostsCreateBodyAnonymousCategory | ''>('');
+let anonymousCategory = $state<PostsCreateMutationRequestAnonymousCategoryEnumKey | ''>('');
 const anonymousCategoryOptions: Array<{
-  value: PostsCreateBodyAnonymousCategory;
+  value: PostsCreateMutationRequestAnonymousCategoryEnumKey;
   label: string;
   icon: typeof Trophy;
 }> = [
@@ -222,13 +222,9 @@ async function handleImageSelect(e: Event) {
   imageFile = file;
   uploadingImage = true;
   try {
-    // The endpoint accepts a multipart/form-data POST. Swagger ships a
-    // `void` response; the runtime contract returns `{url: string}`.
     const formData = new FormData();
     formData.append('file', file);
-    const result = (await postsUploadImage({ method: 'POST', body: formData })) as unknown as
-      | { url?: string }
-      | undefined;
+    const result = await postsUploadImage({ data: formData });
     imageUrl = result?.url ?? '';
   } catch {
     imageFile = null;
@@ -317,11 +313,11 @@ async function handleSubmit() {
       : [];
     const data = buildData();
 
-    const payload: PostsCreateBody = {
+    const payload: PostsCreateMutationRequest = {
       type: selectedType,
       // `data` is loosely typed as `PostsCreateBodyData` (Record<string,
       // unknown>) — backend validates per-type with Zod.
-      data: data as unknown as PostsCreateBody['data'],
+      data: data as unknown as PostsCreateMutationRequest['data'],
       content: content || undefined,
       hardSkills: hardSkills.length > 0 ? hardSkills : undefined,
       softSkills: softSkills.length > 0 ? softSkills : undefined,

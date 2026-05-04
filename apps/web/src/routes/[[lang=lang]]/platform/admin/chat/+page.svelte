@@ -36,26 +36,26 @@
   let chatPage = $state(1);
   let collabPage = $state(1);
 
-  const chatStatsQuery = createAdminChatStats(() => ({
-    query: { enabled: browser },
-  }));
+  const chatStatsQuery = createAdminChatStats({
+      query: { enabled: browser },
+    });
   const chatConversationsQuery = createAdminChatConversations(
-    () => ({ page: String(chatPage), pageSize: '20' }),
-    () => ({ query: { enabled: browser && activeTab === 'chat' } }),
+    { page: String(chatPage), pageSize: '20' },
+    { query: { enabled: browser && activeTab === 'chat' } },
   );
-  const collabStatsQuery = createAdminCollaborationsStats(() => ({
-    query: { enabled: browser },
-  }));
+  const collabStatsQuery = createAdminCollaborationsStats({
+      query: { enabled: browser },
+    });
   const collabListQuery = createAdminCollaborationsList(
-    () => ({ page: String(collabPage), pageSize: '20' }),
-    () => ({ query: { enabled: browser && activeTab === 'collaborations' } }),
+    { page: String(collabPage), pageSize: '20' },
+    { query: { enabled: browser && activeTab === 'collaborations' } },
   );
 
-  const chatStats = $derived(chatStatsQuery.data as unknown as ChatStats | undefined);
-  const chatData = $derived(chatConversationsQuery.data as unknown as Paged<Conversation> | undefined);
+  const chatStats = $derived($chatStatsQuery.data as unknown as ChatStats | undefined);
+  const chatData = $derived($chatConversationsQuery.data as unknown as Paged<Conversation> | undefined);
   const conversations = $derived(chatData?.items ?? []);
-  const collabStats = $derived(collabStatsQuery.data as unknown as CollabStats | undefined);
-  const collabData = $derived(collabListQuery.data as unknown as Paged<Collaboration> | undefined);
+  const collabStats = $derived($collabStatsQuery.data as unknown as CollabStats | undefined);
+  const collabData = $derived($collabListQuery.data as unknown as Paged<Collaboration> | undefined);
   const collaborations = $derived(collabData?.items ?? []);
 </script>
 

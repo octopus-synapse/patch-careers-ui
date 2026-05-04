@@ -1,0 +1,17 @@
+export type { AdminSpokenLanguagesCreateMutationKey } from "./createAdminSpokenLanguagesCreate";
+export type { AdminSpokenLanguagesDeleteMutationKey } from "./createAdminSpokenLanguagesDelete";
+export type { AdminSpokenLanguagesGetByIdQueryKey } from "./createAdminSpokenLanguagesGetById";
+export type { AdminSpokenLanguagesListQueryKey } from "./createAdminSpokenLanguagesList";
+export type { AdminSpokenLanguagesUpdateMutationKey } from "./createAdminSpokenLanguagesUpdate";
+export { adminSpokenLanguagesCreateMutationKey } from "./createAdminSpokenLanguagesCreate";
+export { createAdminSpokenLanguagesCreate } from "./createAdminSpokenLanguagesCreate";
+export { adminSpokenLanguagesDeleteMutationKey } from "./createAdminSpokenLanguagesDelete";
+export { createAdminSpokenLanguagesDelete } from "./createAdminSpokenLanguagesDelete";
+export { adminSpokenLanguagesGetByIdQueryKey } from "./createAdminSpokenLanguagesGetById";
+export { adminSpokenLanguagesGetByIdQueryOptions } from "./createAdminSpokenLanguagesGetById";
+export { createAdminSpokenLanguagesGetById } from "./createAdminSpokenLanguagesGetById";
+export { adminSpokenLanguagesListQueryKey } from "./createAdminSpokenLanguagesList";
+export { adminSpokenLanguagesListQueryOptions } from "./createAdminSpokenLanguagesList";
+export { createAdminSpokenLanguagesList } from "./createAdminSpokenLanguagesList";
+export { adminSpokenLanguagesUpdateMutationKey } from "./createAdminSpokenLanguagesUpdate";
+export { createAdminSpokenLanguagesUpdate } from "./createAdminSpokenLanguagesUpdate";

@@ -45,12 +45,12 @@
   let { resumeId, detailsHref }: Props = $props();
 
   const qualityQuery = createResumeQualityResumesQuality(
-    () => resumeId,
-    () => ({ query: { enabled: browser && !!resumeId, refetchOnWindowFocus: false } }),
+    resumeId,
+    { query: { enabled: browser && !!resumeId, refetchOnWindowFocus: false } },
   );
 
   const snapshot = $derived(
-    (qualityQuery.data ?? null) as unknown as QualitySnapshot | null,
+    ($qualityQuery.data ?? null) as unknown as QualitySnapshot | null,
   );
   const issuesCount = $derived(snapshot?.issues?.length ?? 0);
   const highSeverity = $derived(
@@ -61,9 +61,9 @@
   );
 </script>
 
-{#if qualityQuery.isPending}
+{#if $qualityQuery.isPending}
   <Skeleton height="160px" class="rounded-xl" />
-{:else if snapshot === null || qualityQuery.isError}
+{:else if snapshot === null || $qualityQuery.isError}
   <ScoreCard
     score={null}
     label="Resume Quality"

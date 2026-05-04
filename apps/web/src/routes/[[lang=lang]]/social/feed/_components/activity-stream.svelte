@@ -14,9 +14,9 @@ const authenticated = $derived(auth.data?.authenticated);
 const userId = $derived(String(auth.data?.user?.id ?? ''));
 
 const query = createSocialActivityUsersFeed(
-  () => userId,
-  () => ({}),
-  () => ({ query: { enabled: browser && Boolean(authenticated) && !!userId } }),
+  userId,
+  {},
+  { query: { enabled: browser && Boolean(authenticated) && !!userId } },
 );
 
 type ActivityItem = {
@@ -39,7 +39,7 @@ type ActivityFeedResponse = {
 };
 
 const items = $derived.by<ActivityItem[]>(() => {
-  const raw = query.data as unknown as ActivityFeedResponse | undefined;
+  const raw = $query.data as unknown as ActivityFeedResponse | undefined;
   return raw?.items ?? raw?.feed?.data ?? [];
 });
 
@@ -62,7 +62,7 @@ function activityLabel(type?: string): string {
 }
 </script>
 
-{#if query.isLoading}
+{#if $query.isLoading}
 	<div class="space-y-2">
 		{#each Array(5) as _}
 			<div class="flex items-center gap-3 rounded-md border p-3 border-gray-200 dark:border-neutral-800">

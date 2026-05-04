@@ -1,12 +1,13 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
+  type UsersProfilePatchMutationRequest,
   createUsersProfileGet,
   createUsersProfilePatch,
-  getUsersProfileGetQueryKey,
   onboardingSessionRestart,
+  usersProfileGetQueryKey,
 } from 'api-client';
-import { UsersProfilePatchBody } from 'api-client/zod';
+import { usersProfilePatchMutationRequestSchema } from 'api-client/zod';
 import { Check } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader, Textarea } from 'ui';
 import { browser } from '$app/environment';
@@ -16,25 +17,25 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-const profileQuery = createUsersProfileGet(() => ({
+const profileQuery = createUsersProfileGet({
   query: { enabled: browser },
-}));
-const profileData = $derived(profileQuery.data as Record<string, string> | undefined);
+});
+const profileData = $derived($profileQuery.data);
 
 let profileSaved = $state(false);
 
-const updateProfile = createUsersProfilePatch(() => ({
+const updateProfile = createUsersProfilePatch({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getUsersProfileGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: usersProfileGetQueryKey() });
       profileSaved = true;
       setTimeout(() => (profileSaved = false), 3000);
     },
   },
-}));
+});
 
-const profileForm = createForm({
-  schema: UsersProfilePatchBody,
+const profileForm = createForm<UsersProfilePatchMutationRequest>({
+  schema: usersProfilePatchMutationRequestSchema,
   initial: { name: '', bio: '', location: '', website: '', linkedin: '', github: '' },
   mutation: updateProfile,
   transform: (v) => ({
@@ -154,9 +155,9 @@ function handleSaveProfile() {
 					size="md"
 					textCase="normal"
 					onclick={handleSaveProfile}
-					disabled={updateProfile.isPending}
+					disabled={$updateProfile.isPending}
 				>
-					{#if updateProfile.isPending}
+					{#if $updateProfile.isPending}
 						<Loader size={13} />
 					{/if}
 					{t('common.save')}

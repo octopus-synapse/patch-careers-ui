@@ -9,7 +9,7 @@
  */
 import {
   type CareerGraphView200,
-  type CareerGraphViewBody,
+  type CareerGraphViewMutationRequest,
   careerGraphView,
 } from 'api-client';
 import { Sparkles, TrendingUp, Users } from 'lucide-svelte';
@@ -34,7 +34,7 @@ async function handleSearch() {
   if (skills.length === 0 || submitting) return;
   submitting = true;
   try {
-    const payload: CareerGraphViewBody = { stack: skills, maxBuckets: 20 };
+    const payload: CareerGraphViewMutationRequest = { stack: skills, maxBuckets: 20 };
     const result = await careerGraphView(payload);
     // customFetch throws on non-2xx, so the response union narrows to the
     // 200 shape at runtime — guard via a 200-only field.

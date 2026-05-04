@@ -39,12 +39,12 @@ $effect(() => {
 });
 
 const query = createResumesList(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser && authenticated } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser && authenticated } },
 );
 
 const resumes = $derived.by<Resume[]>(() => {
-  const d = query.data as Record<string, unknown> | undefined;
+  const d = $query.data as Record<string, unknown> | undefined;
   const arr =
     (d?.items as Resume[] | undefined) ??
     (d?.resumes as Resume[] | undefined) ??
@@ -87,7 +87,7 @@ function openRerender(resume: Resume) {
 				</h1>
 			</header>
 
-			{#if query.isLoading}
+			{#if $query.isLoading}
 				<div class="space-y-4">
 					<Skeleton shape="rect" width="100%" height="8rem" />
 					<Skeleton shape="rect" width="100%" height="8rem" />

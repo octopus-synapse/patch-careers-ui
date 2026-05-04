@@ -4,7 +4,7 @@ import {
   commentsPostsCommentsDelete,
   commentsPostsCommentsPost,
   createCommentsPostsCommentsGet,
-  getCommentsPostsCommentsGetQueryKey,
+  commentsPostsCommentsGetQueryKey,
 } from 'api-client';
 import { Send, Trash2 } from 'lucide-svelte';
 import { Avatar, Button, Input, Loader } from 'ui';
@@ -56,13 +56,13 @@ let expandedReplies = $state<Set<string>>(new Set());
 const queryClient = useQueryClient();
 
 const commentsQuery = createCommentsPostsCommentsGet(
-  () => postId,
-  () => ({ limit: '50' }),
-  () => ({ query: { enabled: !!postId } }),
+  postId,
+  { limit: '50' },
+  { query: { enabled: !!postId } },
 );
 
 const comments = $derived.by<CommentNode[]>(() => {
-  const raw = commentsQuery.data as unknown as CommentsResponse | undefined;
+  const raw = $commentsQuery.data as unknown as CommentsResponse | undefined;
   return raw?.comments ?? raw?.items ?? [];
 });
 
@@ -75,7 +75,7 @@ async function handleSubmitComment() {
   commentText = '';
   try {
     await commentsPostsCommentsPost(postId, { content: trimmed });
-    queryClient.invalidateQueries({ queryKey: getCommentsPostsCommentsGetQueryKey(postId) });
+    queryClient.invalidateQueries({ queryKey: commentsPostsCommentsGetQueryKey(postId) });
   } catch (err) {
     commentText = previous;
     throw err;
@@ -91,7 +91,7 @@ async function handleSubmitReply(parentId: string) {
     await commentsPostsCommentsPost(postId, { content: replyText.trim(), parentId });
     replyText = '';
     replyingTo = null;
-    queryClient.invalidateQueries({ queryKey: getCommentsPostsCommentsGetQueryKey(postId) });
+    queryClient.invalidateQueries({ queryKey: commentsPostsCommentsGetQueryKey(postId) });
   } finally {
     submittingReply = false;
   }
@@ -99,7 +99,7 @@ async function handleSubmitReply(parentId: string) {
 
 async function handleDeleteComment(commentId: string) {
   await commentsPostsCommentsDelete(commentId);
-  queryClient.invalidateQueries({ queryKey: getCommentsPostsCommentsGetQueryKey(postId) });
+  queryClient.invalidateQueries({ queryKey: commentsPostsCommentsGetQueryKey(postId) });
 }
 
 function toggleExpandReplies(commentId: string) {
@@ -145,7 +145,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 	</div>
 
 	<!-- Loading -->
-	{#if commentsQuery.isLoading}
+	{#if $commentsQuery.isLoading}
 		<div class="flex justify-center py-4">
 			<Loader size={16} />
 		</div>
@@ -289,7 +289,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 		{/each}
 	{/if}
 
-	{#if !commentsQuery.isLoading && comments.length === 0}
+	{#if !$commentsQuery.isLoading && comments.length === 0}
 		<p class="py-2 text-center text-xs text-gray-400 dark:text-neutral-500">No comments yet</p>
 	{/if}
 </div>

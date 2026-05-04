@@ -1,0 +1,17 @@
+export type { AdminTechAreasCreateMutationKey } from "./createAdminTechAreasCreate";
+export type { AdminTechAreasDeleteMutationKey } from "./createAdminTechAreasDelete";
+export type { AdminTechAreasGetByIdQueryKey } from "./createAdminTechAreasGetById";
+export type { AdminTechAreasListQueryKey } from "./createAdminTechAreasList";
+export type { AdminTechAreasUpdateMutationKey } from "./createAdminTechAreasUpdate";
+export { adminTechAreasCreateMutationKey } from "./createAdminTechAreasCreate";
+export { createAdminTechAreasCreate } from "./createAdminTechAreasCreate";
+export { adminTechAreasDeleteMutationKey } from "./createAdminTechAreasDelete";
+export { createAdminTechAreasDelete } from "./createAdminTechAreasDelete";
+export { adminTechAreasGetByIdQueryKey } from "./createAdminTechAreasGetById";
+export { adminTechAreasGetByIdQueryOptions } from "./createAdminTechAreasGetById";
+export { createAdminTechAreasGetById } from "./createAdminTechAreasGetById";
+export { adminTechAreasListQueryKey } from "./createAdminTechAreasList";
+export { adminTechAreasListQueryOptions } from "./createAdminTechAreasList";
+export { createAdminTechAreasList } from "./createAdminTechAreasList";
+export { adminTechAreasUpdateMutationKey } from "./createAdminTechAreasUpdate";
+export { createAdminTechAreasUpdate } from "./createAdminTechAreasUpdate";

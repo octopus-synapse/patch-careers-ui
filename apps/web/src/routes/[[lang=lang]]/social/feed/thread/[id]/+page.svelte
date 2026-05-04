@@ -47,12 +47,12 @@ $effect(() => {
 const threadId = $derived($page.params.id ?? '');
 
 const postQuery = createPostsGetById(
-  () => threadId,
-  () => ({ query: { enabled: Boolean(authenticated) && !!threadId } }),
+  threadId,
+  { query: { enabled: Boolean(authenticated) && !!threadId } },
 );
 
 const threadPosts = $derived.by<ThreadPost[]>(() => {
-  const raw = postQuery.data as unknown as ThreadResponse | undefined;
+  const raw = $postQuery.data as unknown as ThreadResponse | undefined;
   if (!raw) return [];
   // Backend may wrap the post under a `post` field or expose it directly.
   const root = (raw.post ?? raw) as ThreadPost & { threadChildren?: ThreadPost[] };
@@ -135,7 +135,7 @@ async function handleReport(id: string) {
 				<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">Thread</h1>
 			</div>
 
-			{#if postQuery.isLoading}
+			{#if $postQuery.isLoading}
 				<div class="flex justify-center py-12">
 					<Loader size={24} />
 				</div>

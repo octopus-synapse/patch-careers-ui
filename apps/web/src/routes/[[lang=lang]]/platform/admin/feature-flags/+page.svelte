@@ -8,7 +8,7 @@
     adminFeatureFlagsBroadcastRefresh,
     adminFeatureFlagsUpdate,
     createAdminFeatureFlagsList,
-    getAdminFeatureFlagsListQueryKey,
+    adminFeatureFlagsListQueryKey,
   } from 'api-client';
   import { Loader, RefreshCw } from 'lucide-svelte';
   import { Button, toastState } from 'ui';
@@ -23,11 +23,11 @@
 
   const queryClient = useQueryClient();
 
-  const listQuery = createAdminFeatureFlagsList(() => ({
-    query: { enabled: browser, refetchOnWindowFocus: false },
-  }));
+  const listQuery = createAdminFeatureFlagsList({
+      query: { enabled: browser, refetchOnWindowFocus: false },
+    });
 
-  const flags = $derived((listQuery.data as unknown as { items?: FlagRow[] } | undefined)?.items ?? []);
+  const flags = $derived(($listQuery.data as unknown as { items?: FlagRow[] } | undefined)?.items ?? []);
 
   let toggling = $state<string | null>(null);
 
@@ -36,7 +36,7 @@
     try {
       await adminFeatureFlagsUpdate(flag.key, { enabled: !flag.enabled });
       toastState.show('Flag atualizada', 'success');
-      await queryClient.invalidateQueries({ queryKey: getAdminFeatureFlagsListQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: adminFeatureFlagsListQueryKey() });
     } catch {
       toastState.show('Falha ao atualizar flag', 'danger');
     } finally {
@@ -73,7 +73,7 @@
     </Button>
   </div>
 
-  {#if listQuery.isLoading}
+  {#if $listQuery.isLoading}
     <div class="flex items-center justify-center py-12"><Loader class="size-6 animate-spin" /></div>
   {:else}
     <div class="rounded-xl border border-border">

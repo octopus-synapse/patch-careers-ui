@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createNotificationsList,
   createNotificationsMarkRead,
-  getNotificationsListQueryKey,
-  getNotificationsUnreadCountQueryKey,
+  notificationsListQueryKey,
+  notificationsUnreadCountQueryKey,
   notificationsList,
   notificationsMarkRead,
 } from 'api-client';
@@ -70,8 +70,8 @@ const tabs = $derived([
 const CONNECTION_TYPES = new Set(['CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW']);
 
 const initialQuery = createNotificationsList(
-  () => ({ limit: '20' }),
-  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
+  { limit: '20' },
+  { query: { enabled: browser && Boolean(authenticated) } },
 );
 
 function unwrapNotifications(data: unknown): {
@@ -88,7 +88,7 @@ let extra = $state<NotificationItem[]>([]);
 let cursor = $state<string | null>(null);
 let loadingMore = $state(false);
 
-const firstPage = $derived(unwrapNotifications(initialQuery.data));
+const firstPage = $derived(unwrapNotifications($initialQuery.data));
 const all = $derived([...firstPage.items, ...extra]);
 
 const filtered = $derived.by(() => {
@@ -102,7 +102,7 @@ const queryClient = useQueryClient();
 // svelte-ignore state_referenced_locally
 useSseSubscribe('/v1/notifications/subscribe', {
   queryClient,
-  invalidateKeys: [getNotificationsListQueryKey({ limit: '20' }), getNotificationsUnreadCountQueryKey()],
+  invalidateKeys: [notificationsListQueryKey({ limit: '20' }), notificationsUnreadCountQueryKey()],
   enabled: Boolean(authenticated),
 });
 
@@ -120,11 +120,11 @@ async function loadMore() {
   }
 }
 
-const markReadMutation = createNotificationsMarkRead(() => ({
+const markReadMutation = createNotificationsMarkRead({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getNotificationsListQueryKey({ limit: '20' }) });
-      queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
+      queryClient.invalidateQueries({ queryKey: notificationsListQueryKey({ limit: '20' }) });
+      queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
       extra = extra.map((n) => ({ ...n, read: true }));
       track('notifications_mark_all_read');
     },
@@ -132,16 +132,16 @@ const markReadMutation = createNotificationsMarkRead(() => ({
       toastState.show(t('notifications.errorMarkRead'), 'danger');
     },
   },
-}));
+});
 
 async function markOne(id: string) {
   try {
     await notificationsMarkRead({ notificationId: id });
     extra = extra.map((n) => (n.id === id ? { ...n, read: true } : n));
     queryClient.invalidateQueries({
-      queryKey: getNotificationsListQueryKey({ limit: '20' }),
+      queryKey: notificationsListQueryKey({ limit: '20' }),
     });
-    queryClient.invalidateQueries({ queryKey: getNotificationsUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
   } catch {
     toastState.show(t('notifications.errorMarkRead'), 'danger');
   }
@@ -231,8 +231,8 @@ const grouped = $derived.by(() => {
 				<Button
 					variant="outline"
 					size="sm"
-					onclick={() => markReadMutation.mutate({ data: {} })}
-					disabled={markReadMutation.isPending}
+					onclick={() => $markReadMutation.mutate({ data: {} })}
+					disabled={$markReadMutation.isPending}
 				>
 					{t('notifications.markAllRead')}
 				</Button>
@@ -244,7 +244,7 @@ const grouped = $derived.by(() => {
 		</div>
 
 		<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-			{#if initialQuery.isLoading && all.length === 0}
+			{#if $initialQuery.isLoading && all.length === 0}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(5) as _}
 						<div class="flex items-center gap-3 px-4 py-3 sm:px-6">

@@ -4,7 +4,7 @@
    * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { createJobsMine, getJobsMineQueryKey, jobsDelete } from 'api-client';
+  import { createJobsMine, jobsMineQueryKey, jobsDelete } from 'api-client';
   import {
     Briefcase,
     Building2,
@@ -38,12 +38,12 @@
   const queryClient = useQueryClient();
 
   const jobsQuery = createJobsMine(
-    () => ({ page: '1', limit: '50' }),
-    () => ({ query: { enabled: true } }),
+    { page: '1', limit: '50' },
+    { query: { enabled: true } },
   );
 
   const rows = $derived<JobRow[]>(
-    ((jobsQuery.data as unknown as { items?: JobRow[] } | undefined)?.items ?? []) as JobRow[],
+    (($jobsQuery.data as unknown as { items?: JobRow[] } | undefined)?.items ?? []) as JobRow[],
   );
 
   let deleteTarget = $state<{ id: string; title: string } | null>(null);
@@ -56,7 +56,7 @@
       await jobsDelete(deleteTarget.id);
       toastState.show('Vaga excluída', 'success');
       await queryClient.invalidateQueries({
-        queryKey: getJobsMineQueryKey({ page: '1', limit: '50' }),
+        queryKey: jobsMineQueryKey({ page: '1', limit: '50' }),
       });
       deleteTarget = null;
     } catch {
@@ -108,7 +108,7 @@
     </a>
   </header>
 
-  {#if jobsQuery.isLoading}
+  {#if $jobsQuery.isLoading}
     <div class="grid gap-3">
       {#each Array(4) as _}
         <div

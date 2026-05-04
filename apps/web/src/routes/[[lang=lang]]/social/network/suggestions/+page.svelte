@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createSocialConnectionsUsersConnect,
   createSocialConnectionsUsersMeConnectionsSuggestions,
-  getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey,
+  socialConnectionsUsersMeConnectionsSuggestionsQueryKey,
   socialConnectionsUsersMeConnectionsSuggestions,
 } from 'api-client';
 import { UserPlus, Users } from 'lucide-svelte';
@@ -22,8 +22,8 @@ const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
 const query = createSocialConnectionsUsersMeConnectionsSuggestions(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser && Boolean(authenticated) } },
 );
 
 type Suggestion = {
@@ -50,7 +50,7 @@ function extractSuggestions(data: unknown): PagedSection {
   };
 }
 
-const firstPage = $derived(extractSuggestions(query.data));
+const firstPage = $derived(extractSuggestions($query.data));
 let extra = $state<Suggestion[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
@@ -76,11 +76,11 @@ const all = $derived([...firstPage.data, ...extra]);
 
 const queryClient = useQueryClient();
 
-const connectMutation = createSocialConnectionsUsersConnect(() => ({
+const connectMutation = createSocialConnectionsUsersConnect({
   mutation: {
     onSuccess(_data, variables) {
       queryClient.invalidateQueries({
-        queryKey: getSocialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
+        queryKey: socialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
       });
       track('connection_requested', {
         targetUserId: variables.userId,
@@ -92,11 +92,11 @@ const connectMutation = createSocialConnectionsUsersConnect(() => ({
       toastState.show(t('network.connectError'), 'danger');
     },
   },
-}));
+});
 
 function handleConnect(userId: string) {
   sentConnections.add(userId);
-  connectMutation.mutate({ userId });
+  $connectMutation.mutate({ userId });
 }
 
 // Skill-overlap recommendations — distinct from the generic "suggestions"
@@ -143,7 +143,7 @@ $effect(() => {
 			{/if}
 		</header>
 
-		{#if query.isLoading}
+		{#if $query.isLoading}
 			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
 				{#each Array(8) as _}
 					<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800">

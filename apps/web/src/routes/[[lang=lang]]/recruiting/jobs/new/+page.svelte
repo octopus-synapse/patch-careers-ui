@@ -6,11 +6,11 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    getJobsMineQueryKey,
+    jobsMineQueryKey,
     jobsCreate,
-    type JobsCreateBody,
-    type JobsCreateBodyJobType,
-    type JobsCreateBodyRemotePolicy,
+    type JobsCreateMutationRequest,
+    type JobsCreateMutationRequestJobTypeEnumKey,
+    type JobsCreateMutationRequestRemotePolicyEnumKey,
   } from 'api-client';
   import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
   import { Badge, Button, Input, Label, Loader, Select, Textarea, toastState } from 'ui';
@@ -27,8 +27,8 @@
     company: string;
     location: string;
     description: string;
-    jobType: JobsCreateBodyJobType;
-    remotePolicy: JobsCreateBodyRemotePolicy;
+    jobType: JobsCreateMutationRequestJobTypeEnumKey;
+    remotePolicy: JobsCreateMutationRequestRemotePolicyEnumKey;
     salaryRange: string;
     applyUrl: string;
     skillsCsv: string;
@@ -98,7 +98,7 @@
   async function submitDraft() {
     serverError = '';
     submitting = true;
-    const body: JobsCreateBody = {
+    const body: JobsCreateMutationRequest = {
       title: draft.title.trim(),
       company: draft.company.trim(),
       location: draft.location.trim() || undefined,
@@ -112,7 +112,7 @@
     };
     try {
       await jobsCreate(body);
-      await queryClient.invalidateQueries({ queryKey: getJobsMineQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: jobsMineQueryKey() });
       if (typeof window !== 'undefined') window.localStorage.removeItem(DRAFT_KEY);
       toastState.show('Vaga publicada', 'success');
       void goto('/recruiting/jobs');

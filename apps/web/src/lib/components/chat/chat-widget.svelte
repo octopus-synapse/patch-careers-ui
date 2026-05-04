@@ -6,8 +6,8 @@ import {
   createChatConversationsMessagesGet,
   createChatConversationsMessagesPost,
   createChatConversationsRead,
-  getChatConversationsGetQueryKey,
-  getChatConversationsMessagesGetQueryKey,
+  chatConversationsGetQueryKey,
+  chatConversationsMessagesGetQueryKey,
 } from 'api-client';
 import { ArrowLeft, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
 import { fade, fly } from 'svelte/transition';
@@ -99,48 +99,44 @@ function extractMessages(data: MessagesResponse | undefined): Message[] {
 }
 
 const conversations = createChatConversationsGet(
-  () => ({ limit: 50 }),
-  () => ({ query: { enabled: canUseApp && chatState.isOpen } }),
+  { limit: 50 },
+  { query: { enabled: canUseApp && chatState.isOpen } },
 );
 
-const convList = $derived(
-  extractConversations(conversations.data as unknown as ConversationsResponse | undefined),
-);
+const convList = $derived(extractConversations($conversations.data));
 
 const messages = createChatConversationsMessagesGet(
-  () => chatState.activeConversationId ?? '',
-  () => ({ limit: 100 }),
-  () => ({ query: { enabled: !!chatState.activeConversationId } }),
+  chatState.activeConversationId ?? undefined,
+  { limit: 100 },
+  { query: { enabled: !!chatState.activeConversationId } },
 );
 
-const msgList = $derived(
-  extractMessages(messages.data as unknown as MessagesResponse | undefined),
-);
+const msgList = $derived(extractMessages($messages.data));
 
 const queryClient = useQueryClient();
 
-const sendMessage = createChatConversationsMessagesPost(() => ({
+const sendMessage = createChatConversationsMessagesPost({
   mutation: {
     onSuccess() {
       if (chatState.activeConversationId) {
         queryClient.invalidateQueries({
-          queryKey: getChatConversationsMessagesGetQueryKey(chatState.activeConversationId, {
+          queryKey: chatConversationsMessagesGetQueryKey(chatState.activeConversationId, {
             limit: 100,
           }),
         });
         queryClient.invalidateQueries({
-          queryKey: getChatConversationsGetQueryKey({ limit: 50 }),
+          queryKey: chatConversationsGetQueryKey({ limit: 50 }),
         });
       }
     },
   },
-}));
+});
 
 const markRead = createChatConversationsRead();
 
 function selectConversation(id: string) {
   chatState.setActiveConversation(id);
-  markRead.mutate({ conversationId: id });
+  $markRead.mutate({ conversationId: id });
 }
 
 async function startNewConversation(recipientId: string) {
@@ -158,12 +154,12 @@ async function startNewConversation(recipientId: string) {
   }
 
   if (convId) chatState.setActiveConversation(convId);
-  queryClient.invalidateQueries({ queryKey: getChatConversationsGetQueryKey({ limit: 50 }) });
+  queryClient.invalidateQueries({ queryKey: chatConversationsGetQueryKey({ limit: 50 }) });
 }
 
 function handleSend(content: string) {
   if (!chatState.activeConversationId) return;
-  sendMessage.mutate({ conversationId: chatState.activeConversationId, data: { content } });
+  $sendMessage.mutate({ conversationId: chatState.activeConversationId, data: { content } });
 }
 
 const activeOther = $derived.by(() => {
@@ -377,10 +373,10 @@ function onDragEnd(e: PointerEvent) {
 							</div>
 						{/if}
 						<MessageThread messages={msgList} {currentUserId} />
-						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
+						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}
 						<MessageThread messages={msgList} {currentUserId} />
-						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
+						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					{:else}
 						<div class="flex flex-1 items-center justify-center">
 							<span class="text-xs text-gray-500 dark:text-neutral-500">select a conversation</span>
@@ -396,7 +392,7 @@ function onDragEnd(e: PointerEvent) {
 						<UserSearch onselect={startNewConversation} />
 					</div>
 					<div class="flex-1 overflow-y-auto scrollbar-thin">
-						{#if conversations.isLoading}
+						{#if $conversations.isLoading}
 							<div class="flex items-center justify-center py-10">
 								<Loader size={14} />
 							</div>
@@ -412,7 +408,7 @@ function onDragEnd(e: PointerEvent) {
 				{:else}
 					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
 						<MessageThread messages={msgList} {currentUserId} />
-						<MessageInput disabled={sendMessage.isPending} onsend={handleSend} />
+						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					</div>
 				{/if}
 			</div>

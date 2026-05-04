@@ -7,9 +7,9 @@ import { createAdminAlertsList } from 'api-client';
 import { AlertTriangle, Flag, MailCheck, UserPlus } from 'lucide-svelte';
 import { browser } from '$app/environment';
 
-const alertsQuery = createAdminAlertsList(() => ({
+const alertsQuery = createAdminAlertsList({
   query: { enabled: browser, refetchInterval: 60_000 },
-}));
+});
 
 type Alerts = {
   reportsPending?: number;
@@ -18,7 +18,7 @@ type Alerts = {
   total?: number;
 };
 
-const alerts = $derived((alertsQuery.data as unknown as Alerts | undefined) ?? {});
+const alerts = $derived(($alertsQuery.data as unknown as Alerts | undefined) ?? {});
 const total = $derived(alerts.total ?? 0);
 </script>
 

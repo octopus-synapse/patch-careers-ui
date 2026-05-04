@@ -1,0 +1,17 @@
+export type { AdminProgrammingLanguagesCreateMutationKey } from "./createAdminProgrammingLanguagesCreate";
+export type { AdminProgrammingLanguagesDeleteMutationKey } from "./createAdminProgrammingLanguagesDelete";
+export type { AdminProgrammingLanguagesGetByIdQueryKey } from "./createAdminProgrammingLanguagesGetById";
+export type { AdminProgrammingLanguagesListQueryKey } from "./createAdminProgrammingLanguagesList";
+export type { AdminProgrammingLanguagesUpdateMutationKey } from "./createAdminProgrammingLanguagesUpdate";
+export { adminProgrammingLanguagesCreateMutationKey } from "./createAdminProgrammingLanguagesCreate";
+export { createAdminProgrammingLanguagesCreate } from "./createAdminProgrammingLanguagesCreate";
+export { adminProgrammingLanguagesDeleteMutationKey } from "./createAdminProgrammingLanguagesDelete";
+export { createAdminProgrammingLanguagesDelete } from "./createAdminProgrammingLanguagesDelete";
+export { adminProgrammingLanguagesGetByIdQueryKey } from "./createAdminProgrammingLanguagesGetById";
+export { adminProgrammingLanguagesGetByIdQueryOptions } from "./createAdminProgrammingLanguagesGetById";
+export { createAdminProgrammingLanguagesGetById } from "./createAdminProgrammingLanguagesGetById";
+export { adminProgrammingLanguagesListQueryKey } from "./createAdminProgrammingLanguagesList";
+export { adminProgrammingLanguagesListQueryOptions } from "./createAdminProgrammingLanguagesList";
+export { createAdminProgrammingLanguagesList } from "./createAdminProgrammingLanguagesList";
+export { adminProgrammingLanguagesUpdateMutationKey } from "./createAdminProgrammingLanguagesUpdate";
+export { createAdminProgrammingLanguagesUpdate } from "./createAdminProgrammingLanguagesUpdate";

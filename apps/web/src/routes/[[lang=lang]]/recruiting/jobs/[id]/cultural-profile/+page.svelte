@@ -1,13 +1,14 @@
 <script lang="ts">
   /**
    * Recruiting jobs/[id]/cultural-profile — burra: sliders 0-1 por dimensão.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import {
+    type FitProfileJobsFitProfilePostMutationRequest,
     createFitProfileJobsFitProfileGet,
     fitProfileJobsFitProfilePost,
-    type FitProfileJobsFitProfilePostBodySliders,
   } from 'api-client';
+
+  type Sliders = FitProfileJobsFitProfilePostMutationRequest['sliders'];
   import { Save } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
   import { browser } from '$app/environment';
@@ -40,7 +41,7 @@
     ],
   } as const;
 
-  type SlidersKey = keyof FitProfileJobsFitProfilePostBodySliders;
+  type SlidersKey = keyof Sliders;
 
   const ALL_KEYS = [...DIMENSIONS.bigFive, ...DIMENSIONS.schwartz, ...DIMENSIONS.sdt] as readonly {
     key: SlidersKey;
@@ -50,15 +51,17 @@
   const jobId = $derived(($page.params as Record<string, string>).id ?? '');
 
   const fitQuery = createFitProfileJobsFitProfileGet(
-    () => jobId,
-    () => ({ query: { enabled: browser && Boolean(jobId) } }),
+    jobId,
+    { query: { enabled: browser && Boolean(jobId) } },
   );
 
-  let sliders = $state<FitProfileJobsFitProfilePostBodySliders>({});
+  let sliders = $state<Sliders>({});
 
+  // GET response groups sliders under `vector.{bigFive,schwartz,sdt}`; the
+  // POST mutation expects them flat under `sliders`. Flatten on read.
   $effect(() => {
-    const data = fitQuery.data as unknown as { sliders?: FitProfileJobsFitProfilePostBodySliders } | undefined;
-    if (data?.sliders) sliders = { ...data.sliders };
+    const v = $fitQuery.data?.vector;
+    if (v) sliders = { ...v.bigFive, ...v.schwartz, ...v.sdt };
   });
 
   let saving = $state(false);
@@ -96,7 +99,7 @@
     </p>
   </header>
 
-  {#if fitQuery.isLoading}
+  {#if $fitQuery.isLoading}
     <div class="flex items-center justify-center py-20"><Loader size={20} /></div>
   {:else}
     <div class="space-y-6">

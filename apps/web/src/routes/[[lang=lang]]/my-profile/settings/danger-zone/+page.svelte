@@ -11,13 +11,13 @@ let deleteConfirmation = $state('');
 let showDeleteModal = $state(false);
 let isExporting = $state(false);
 
-const deleteAccount = createAccountLifecycleAccounts(() => ({
+const deleteAccount = createAccountLifecycleAccounts({
   mutation: {
     onSuccess() {
       goto('/identity/sign-in');
     },
   },
-}));
+});
 
 async function handleExportData() {
   isExporting = true;
@@ -38,7 +38,7 @@ async function handleExportData() {
 
 function handleDeleteAccount() {
   if (deleteConfirmation === 'DELETE MY ACCOUNT') {
-    deleteAccount.mutate({ data: { confirmationPhrase: deleteConfirmation } });
+    $deleteAccount.mutate({ data: { confirmationPhrase: deleteConfirmation } });
   }
 }
 </script>
@@ -143,10 +143,10 @@ function handleDeleteAccount() {
 				</button>
 				<button
 					onclick={handleDeleteAccount}
-					disabled={deleteConfirmation !== 'DELETE MY ACCOUNT' || deleteAccount.isPending}
+					disabled={deleteConfirmation !== 'DELETE MY ACCOUNT' || $deleteAccount.isPending}
 					class="flex items-center gap-2 rounded-full bg-red-500 px-5 py-2 text-[11px] font-semibold text-white transition-all hover:bg-red-600 disabled:opacity-50"
 				>
-					{#if deleteAccount.isPending}
+					{#if $deleteAccount.isPending}
 						<Loader size={13} />
 					{/if}
 					{t('settings.deleteButton')}

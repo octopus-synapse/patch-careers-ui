@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createAccountsSignup,
   createEmailVerificationAuthEmailVerificationSend,
-  getAuthSessionQueryKey,
+  authSessionQueryKey,
   isApiError,
 } from 'api-client';
 
@@ -29,18 +29,18 @@ const t = $derived(locale.t);
 
 // Fire verification email right after signup — the guard redirects the fresh
 // session to /identity/verify-email, where the user pastes the code.
-const sendVerification = createEmailVerificationAuthEmailVerificationSend(() => ({
+const sendVerification = createEmailVerificationAuthEmailVerificationSend({
   mutation: {
     // Ignore errors here; the verify-email page has its own resend button.
     onError() {},
   },
-}));
+});
 
-const signup = createAccountsSignup(() => ({
+const signup = createAccountsSignup({
   mutation: {
     async onSuccess() {
-      sendVerification.mutate();
-      await queryClient.invalidateQueries({ queryKey: getAuthSessionQueryKey() });
+      $sendVerification.mutate();
+      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
       goto('/identity/verify-email');
     },
     onError(err: unknown) {
@@ -52,7 +52,7 @@ const signup = createAccountsSignup(() => ({
       if (isApiError(err)) serverError = err.message;
     },
   },
-}));
+});
 
 function validate(): boolean {
   const errors: Record<string, string> = {};
@@ -75,7 +75,7 @@ function handleSubmit(e: Event) {
   if (!t) return;
   serverError = '';
   if (!validate()) return;
-  signup.mutate({
+  $signup.mutate({
     data: {
       name: name.trim() ? name.trim() : undefined,
       email: email.trim(),
@@ -183,10 +183,10 @@ function handleSubmit(e: Event) {
 
 					<Button
 						type="submit"
-						disabled={signup.isPending}
+						disabled={$signup.isPending}
 						variant="solid"
 					>
-						{#if signup.isPending}
+						{#if $signup.isPending}
 							<Loader size={14} class="mx-auto" />
 						{:else}
 							{t('auth.sign-up.submit')}

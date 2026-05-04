@@ -6,7 +6,7 @@
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
     createUsersManageGet,
-    getUsersManageGetQueryKey,
+    usersManageGetQueryKey,
     usersManageDelete,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
@@ -36,16 +36,16 @@
   let roleName = $state('');
 
   const listQuery = createUsersManageGet(
-    () => ({
-      page,
-      limit,
-      search: search || undefined,
-      roleName: roleName || undefined,
-    }),
-    () => ({ query: { enabled: browser } }),
+    {
+        page,
+        limit,
+        search: search || undefined,
+        roleName: roleName || undefined,
+      },
+    { query: { enabled: browser } },
   );
 
-  const data = $derived(listQuery.data as unknown as Page | undefined);
+  const data = $derived($listQuery.data as unknown as Page | undefined);
   const users = $derived(data?.items ?? data?.users ?? []);
   const totalPages = $derived(data?.totalPages ?? 1);
 
@@ -56,7 +56,7 @@
     try {
       await usersManageDelete(id);
       toastState.show(t('admin.users.toastDeleted'), 'success');
-      await queryClient.invalidateQueries({ queryKey: getUsersManageGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: usersManageGetQueryKey() });
     } catch {
       toastState.show('Falha ao excluir', 'danger');
     } finally {
@@ -92,7 +92,7 @@
     </select>
   </div>
 
-  {#if listQuery.isLoading}
+  {#if $listQuery.isLoading}
     <div class="flex items-center justify-center py-12"><Loader size={20} /></div>
   {:else}
     <div class="rounded-xl border border-border">

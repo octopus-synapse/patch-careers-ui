@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createSocialConnectionsConnectionsWithdraw,
   createSocialConnectionsUsersMeConnectionsSent,
-  getSocialConnectionsUsersMeConnectionsSentQueryKey,
+  socialConnectionsUsersMeConnectionsSentQueryKey,
   socialConnectionsUsersMeConnectionsSent,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
@@ -24,8 +24,8 @@ type U = {
 type R = { id: string; createdAt: string; user: U };
 
 const query = createSocialConnectionsUsersMeConnectionsSent(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser } },
 );
 
 function extractRecord(raw: Record<string, unknown>): R {
@@ -43,7 +43,7 @@ function extractRecord(raw: Record<string, unknown>): R {
 }
 
 const firstPage = $derived.by(() => {
-  const outer = query.data as Record<string, unknown> | undefined;
+  const outer = $query.data as Record<string, unknown> | undefined;
   const section = outer?.pendingRequests as Record<string, unknown> | undefined;
   const items = (section?.data ?? []) as Record<string, unknown>[];
   return {
@@ -82,10 +82,10 @@ const all = $derived([...firstPage.data, ...extra]);
 
 const queryClient = useQueryClient();
 
-const withdrawMutation = createSocialConnectionsConnectionsWithdraw(() => ({
+const withdrawMutation = createSocialConnectionsConnectionsWithdraw({
   mutation: {
     onSuccess(_data, variables) {
-      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsSentQueryKey() });
+      queryClient.invalidateQueries({ queryKey: socialConnectionsUsersMeConnectionsSentQueryKey() });
       extra = extra.filter((r) => r.id !== variables.id);
       track('connection_invite_withdrawn', { connectionId: variables.id });
     },
@@ -93,7 +93,7 @@ const withdrawMutation = createSocialConnectionsConnectionsWithdraw(() => ({
       toastState.show(t('network.withdrawError'), 'danger');
     },
   },
-}));
+});
 
 function formatSentAt(iso: string): string {
   if (!iso) return '';
@@ -123,7 +123,7 @@ function formatSentAt(iso: string): string {
 	</div>
 </div>
 
-{#if query.isLoading}
+{#if $query.isLoading}
 	<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 		{#each Array(4) as _}
 			<div class="flex items-center gap-3 px-4 py-4 sm:px-6">
@@ -172,7 +172,7 @@ function formatSentAt(iso: string): string {
 						</p>
 					{/if}
 				</div>
-				<Button variant="outline" size="sm" textCase="normal" onclick={() => withdrawMutation.mutate({ id: req.id })}>
+				<Button variant="outline" size="sm" textCase="normal" onclick={() => $withdrawMutation.mutate({ id: req.id })}>
 					{t?.('network.withdraw')}
 				</Button>
 			</li>

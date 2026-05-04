@@ -1,4 +1,5 @@
 import { type AuthSession200, createAuthSession } from 'api-client';
+import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 
 function isAuthSession200(value: unknown): value is AuthSession200 {
@@ -14,14 +15,14 @@ function isAuthSession200(value: unknown): value is AuthSession200 {
  * a concrete type without local casts.
  */
 export function useAuth() {
-  const query = createAuthSession(() => ({ query: { retry: false, enabled: browser } }));
+  const query = createAuthSession({ query: { retry: false, enabled: browser } });
   return {
     get data(): AuthSession200 | undefined {
-      const d = query.data;
+      const d = get(query).data;
       return isAuthSession200(d) ? d : undefined;
     },
     get isLoading() {
-      return query.isLoading;
+      return get(query).isLoading;
     },
   };
 }

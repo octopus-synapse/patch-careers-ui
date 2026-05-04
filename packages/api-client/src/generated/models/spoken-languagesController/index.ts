@@ -1,0 +1,12 @@
+export type { SpokenLanguagesGetById200, SpokenLanguagesGetById400, SpokenLanguagesGetById400SeverityEnumKey, SpokenLanguagesGetById401, SpokenLanguagesGetById401SeverityEnumKey, SpokenLanguagesGetById403, SpokenLanguagesGetById403SeverityEnumKey, SpokenLanguagesGetByIdPathParams, SpokenLanguagesGetByIdQuery, SpokenLanguagesGetByIdQueryResponse } from "./SpokenLanguagesGetById";
+export type { SpokenLanguagesList200, SpokenLanguagesList400, SpokenLanguagesList400SeverityEnumKey, SpokenLanguagesList401, SpokenLanguagesList401SeverityEnumKey, SpokenLanguagesList403, SpokenLanguagesList403SeverityEnumKey, SpokenLanguagesListQuery, SpokenLanguagesListQueryResponse } from "./SpokenLanguagesList";
+export type { SpokenLanguagesSearch200, SpokenLanguagesSearch400, SpokenLanguagesSearch400SeverityEnumKey, SpokenLanguagesSearch401, SpokenLanguagesSearch401SeverityEnumKey, SpokenLanguagesSearch403, SpokenLanguagesSearch403SeverityEnumKey, SpokenLanguagesSearchQuery, SpokenLanguagesSearchQueryParams, SpokenLanguagesSearchQueryResponse } from "./SpokenLanguagesSearch";
+export { spokenLanguagesGetById400SeverityEnum } from "./SpokenLanguagesGetById";
+export { spokenLanguagesGetById401SeverityEnum } from "./SpokenLanguagesGetById";
+export { spokenLanguagesGetById403SeverityEnum } from "./SpokenLanguagesGetById";
+export { spokenLanguagesList400SeverityEnum } from "./SpokenLanguagesList";
+export { spokenLanguagesList401SeverityEnum } from "./SpokenLanguagesList";
+export { spokenLanguagesList403SeverityEnum } from "./SpokenLanguagesList";
+export { spokenLanguagesSearch400SeverityEnum } from "./SpokenLanguagesSearch";
+export { spokenLanguagesSearch401SeverityEnum } from "./SpokenLanguagesSearch";
+export { spokenLanguagesSearch403SeverityEnum } from "./SpokenLanguagesSearch";

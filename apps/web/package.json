@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@sveltejs/kit": "^2.58.0",
-    "@tanstack/svelte-query": "^6.1.23",
+    "@tanstack/svelte-query": "^5.90.2",
     "api-client": "workspace:*",
     "i18n": "workspace:*",
     "lucide-svelte": "^0.475.0",

@@ -35,27 +35,27 @@ const tabs = $derived([
 ]);
 
 const postsQuery = createFeedUser(
-  () => userId,
-  () => ({ limit: '20' }),
-  () => ({ query: { enabled: browser && !!userId && active === 'posts' } }),
+  userId,
+  { limit: '20' },
+  { query: { enabled: browser && !!userId && active === 'posts' } },
 );
 
 const commentsQuery = createUserEngagementUsersComments(
-  () => userId,
-  () => ({ limit: '20' }),
-  () => ({ query: { enabled: browser && !!userId && active === 'comments' } }),
+  userId,
+  { limit: '20' },
+  { query: { enabled: browser && !!userId && active === 'comments' } },
 );
 
 const reactionsQuery = createUserEngagementUsersReactions(
-  () => userId,
-  () => ({ limit: '20' }),
-  () => ({ query: { enabled: browser && !!userId && active === 'reactions' } }),
+  userId,
+  { limit: '20' },
+  { query: { enabled: browser && !!userId && active === 'reactions' } },
 );
 
 const activitiesQuery = createSocialActivityUsersActivities(
-  () => userId,
-  () => ({ limit: '20' }),
-  () => ({ query: { enabled: browser && !!userId && active === 'activity' } }),
+  userId,
+  { limit: '20' },
+  { query: { enabled: browser && !!userId && active === 'activity' } },
 );
 
 type PostItem = {
@@ -87,22 +87,22 @@ type ActivityItem = {
 };
 
 const posts = $derived.by<PostItem[]>(() => {
-  const data = postsQuery.data as { items?: PostItem[]; posts?: PostItem[] } | undefined;
+  const data = $postsQuery.data as { items?: PostItem[]; posts?: PostItem[] } | undefined;
   return data?.items ?? data?.posts ?? [];
 });
 
 const comments = $derived.by<CommentItem[]>(() => {
-  const data = commentsQuery.data as { items?: CommentItem[]; comments?: CommentItem[] } | undefined;
+  const data = $commentsQuery.data as { items?: CommentItem[]; comments?: CommentItem[] } | undefined;
   return data?.items ?? data?.comments ?? [];
 });
 
 const reactions = $derived.by<ReactionItem[]>(() => {
-  const data = reactionsQuery.data as { items?: ReactionItem[]; reactions?: ReactionItem[] } | undefined;
+  const data = $reactionsQuery.data as { items?: ReactionItem[]; reactions?: ReactionItem[] } | undefined;
   return data?.items ?? data?.reactions ?? [];
 });
 
 const activities = $derived.by<ActivityItem[]>(() => {
-  const data = activitiesQuery.data as { items?: ActivityItem[]; activities?: ActivityItem[] } | undefined;
+  const data = $activitiesQuery.data as { items?: ActivityItem[]; activities?: ActivityItem[] } | undefined;
   return data?.items ?? data?.activities ?? [];
 });
 
@@ -140,7 +140,7 @@ function reactionEmoji(type?: string): string {
 	<Tabs {tabs} selected={active} onchange={(v) => (active = v as TabKey)} />
 
 	{#if active === 'posts'}
-		{#if postsQuery.isLoading}
+		{#if $postsQuery.isLoading}
 			<div class="space-y-3">
 				{#each Array(3) as _}
 					<div class="rounded-xl border p-4 border-gray-200 dark:border-neutral-800">
@@ -177,7 +177,7 @@ function reactionEmoji(type?: string): string {
 			</ul>
 		{/if}
 	{:else if active === 'comments'}
-		{#if commentsQuery.isLoading}
+		{#if $commentsQuery.isLoading}
 			<div class="space-y-2">
 				{#each Array(4) as _}
 					<div class="rounded-md border p-3 border-gray-200 dark:border-neutral-800">
@@ -216,7 +216,7 @@ function reactionEmoji(type?: string): string {
 			</ul>
 		{/if}
 	{:else if active === 'reactions'}
-		{#if reactionsQuery.isLoading}
+		{#if $reactionsQuery.isLoading}
 			<div class="space-y-2">
 				{#each Array(4) as _}
 					<div class="flex items-center gap-3 rounded-md border p-3 border-gray-200 dark:border-neutral-800">
@@ -251,7 +251,7 @@ function reactionEmoji(type?: string): string {
 				{/each}
 			</ul>
 		{/if}
-	{:else if activitiesQuery.isLoading}
+	{:else if $activitiesQuery.isLoading}
 		<div class="space-y-2">
 			{#each Array(4) as _}
 				<div class="flex items-center gap-3 rounded-md border p-3 border-gray-200 dark:border-neutral-800">

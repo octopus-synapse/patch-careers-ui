@@ -7,7 +7,7 @@
   import {
     adminFitQuestionsDelete,
     createAdminFitQuestionsList,
-    getAdminFitQuestionsListQueryKey,
+    adminFitQuestionsListQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -27,12 +27,12 @@
 
   const queryClient = useQueryClient();
 
-  const listQuery = createAdminFitQuestionsList(() => ({
-    query: { enabled: browser, refetchOnWindowFocus: false },
-  }));
+  const listQuery = createAdminFitQuestionsList({
+      query: { enabled: browser, refetchOnWindowFocus: false },
+    });
 
   const questions = $derived(
-    (listQuery.data as unknown as { items?: Question[] } | undefined)?.items ?? [],
+    ($listQuery.data as unknown as { items?: Question[] } | undefined)?.items ?? [],
   );
 
   let deleting = $state<string | null>(null);
@@ -41,7 +41,7 @@
     try {
       await adminFitQuestionsDelete(id);
       toastState.show('Pergunta excluída', 'success');
-      await queryClient.invalidateQueries({ queryKey: getAdminFitQuestionsListQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: adminFitQuestionsListQueryKey() });
     } catch {
       toastState.show('Falha ao excluir', 'danger');
     } finally {
@@ -59,7 +59,7 @@
     Fit Questions
   </h1>
 
-  {#if listQuery.isLoading}
+  {#if $listQuery.isLoading}
     <div class="flex items-center justify-center py-12"><Loader size={20} /></div>
   {:else}
     <div class="rounded-xl border border-border">

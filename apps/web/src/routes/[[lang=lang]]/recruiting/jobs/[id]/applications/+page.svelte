@@ -27,12 +27,12 @@
   const jobId = $derived($page.params.id ?? '');
 
   const query = createJobsApplicationsGet2(
-    () => jobId,
-    () => ({ page: '1', limit: '100' }),
-    () => ({ query: { enabled: Boolean(jobId) } }),
+    jobId,
+    { page: '1', limit: '100' },
+    { query: { enabled: Boolean(jobId) } },
   );
 
-  const data = $derived(query.data as unknown as Page | undefined);
+  const data = $derived($query.data as unknown as Page | undefined);
   const items = $derived(data?.items ?? []);
   const total = $derived(data?.pagination?.total ?? items.length);
 
@@ -68,7 +68,7 @@
     {total} {t('company.applications.received')}
   </p>
 
-  {#if query.isLoading}
+  {#if $query.isLoading}
     <div class="flex items-center justify-center py-20"><Loader size={20} /></div>
   {:else if items.length === 0}
     <p class="text-sm text-gray-500 dark:text-neutral-400">{t('company.applications.empty')}</p>

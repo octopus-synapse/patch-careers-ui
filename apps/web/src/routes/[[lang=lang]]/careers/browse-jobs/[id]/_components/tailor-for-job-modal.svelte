@@ -42,12 +42,12 @@ interface TailorResult {
 let { open, onClose, jobId, jobTitle, jobCompany, jobDescription }: Props = $props();
 
 const resumesQuery = createResumesList(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser && open } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser && open } },
 );
 
 const resumes = $derived.by(() => {
-  const d = resumesQuery.data as unknown as
+  const d = $resumesQuery.data as unknown as
     | { items?: Array<{ id: string; title: string | null }>; resumes?: Array<{ id: string; title: string | null }> }
     | undefined;
   return d?.items ?? d?.resumes ?? [];
@@ -120,7 +120,7 @@ function goToEdit() {
 				<span class="text-[11px] font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-400">
 					CV base
 				</span>
-				{#if resumesQuery.isLoading}
+				{#if $resumesQuery.isLoading}
 					<div class="mt-1 flex items-center gap-2 text-xs text-gray-400 dark:text-neutral-500">
 						<Loader size={12} /> carregando…
 					</div>

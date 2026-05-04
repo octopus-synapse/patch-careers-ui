@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createPasswordManagementMePasswordChange } from 'api-client';
-import { PasswordManagementMePasswordChangeBody } from 'api-client/zod';
+import { passwordManagementMePasswordChangeMutationRequestSchema } from 'api-client/zod';
 import { Eye, EyeOff } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
 import { createForm } from '$lib/state/create-form.svelte';
@@ -16,7 +16,7 @@ let showCurrentPassword = $state(false);
 let showNewPassword = $state(false);
 let passwordMessage = $state<{ type: 'success' | 'error'; text: string } | null>(null);
 
-const changePassword = createPasswordManagementMePasswordChange(() => ({
+const changePassword = createPasswordManagementMePasswordChange({
   mutation: {
     onSuccess() {
       passwordForm.reset();
@@ -29,10 +29,10 @@ const changePassword = createPasswordManagementMePasswordChange(() => ({
       setTimeout(() => (passwordMessage = null), 5000);
     },
   },
-}));
+});
 
 const passwordForm = createForm({
-  schema: PasswordManagementMePasswordChangeBody,
+  schema: passwordManagementMePasswordChangeMutationRequestSchema,
   initial: { currentPassword: '', newPassword: '' },
   mutation: changePassword,
 });
@@ -135,9 +135,9 @@ function handleChangePassword() {
 					size="md"
 					textCase="normal"
 					onclick={handleChangePassword}
-					disabled={changePassword.isPending || !passwordValid}
+					disabled={$changePassword.isPending || !passwordValid}
 				>
-					{#if changePassword.isPending}
+					{#if $changePassword.isPending}
 						<Loader size={13} />
 					{/if}
 					{t('settings.changePassword')}

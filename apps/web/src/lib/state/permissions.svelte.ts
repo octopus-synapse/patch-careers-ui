@@ -1,4 +1,5 @@
 import { createUsersMePermissions } from 'api-client';
+import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 
 type UsePermissionsOptions = {
@@ -12,16 +13,16 @@ type UsePermissionsOptions = {
  * re-implementing the query shape in every component.
  */
 export function usePermissions(opts: () => UsePermissionsOptions) {
-  const query = createUsersMePermissions(() => ({
+  const query = createUsersMePermissions({
     query: { enabled: browser && opts().authenticated, staleTime: 5 * 60 * 1000 },
-  }));
+  });
 
   return {
     get isLoading(): boolean {
-      return query.isLoading;
+      return get(query).isLoading;
     },
     get permissions(): string[] {
-      const data = query.data as { permissions?: string[] } | undefined;
+      const data = get(query).data as { permissions?: string[] } | undefined;
       return data?.permissions ?? [];
     },
     has(key: string): boolean {

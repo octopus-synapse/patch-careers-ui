@@ -4,7 +4,7 @@ import {
   createSocialFollowUsersFollowDelete,
   createSocialFollowUsersFollowPost,
   createSocialFollowUsersFollowers,
-  getSocialFollowUsersFollowersQueryKey,
+  socialFollowUsersFollowersQueryKey,
   socialFollowUsersFollowers,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
@@ -22,9 +22,9 @@ const auth = useAuth();
 const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
 
 const query = createSocialFollowUsersFollowers(
-  () => currentUserId,
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser && !!currentUserId } }),
+  currentUserId,
+  { page: '1', limit: '20' },
+  { query: { enabled: browser && !!currentUserId } },
 );
 
 type FollowerRow = {
@@ -68,7 +68,7 @@ function pagedSection(data: unknown): {
   };
 }
 
-const firstPage = $derived(pagedSection(query.data));
+const firstPage = $derived(pagedSection($query.data));
 let extra = $state<FollowerRow[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
@@ -95,10 +95,10 @@ const all = $derived([...firstPage.rows, ...extra]);
 
 const queryClient = useQueryClient();
 
-const followMutation = createSocialFollowUsersFollowPost(() => ({
+const followMutation = createSocialFollowUsersFollowPost({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getSocialFollowUsersFollowersQueryKey(currentUserId) });
+      queryClient.invalidateQueries({ queryKey: socialFollowUsersFollowersQueryKey(currentUserId) });
       track('user_followed', { targetUserId: vars.userId, source: 'followers_page' });
     },
     onError(_err, vars) {
@@ -106,12 +106,12 @@ const followMutation = createSocialFollowUsersFollowPost(() => ({
       toastState.show(t('network.followError'), 'danger');
     },
   },
-}));
+});
 
-const unfollowMutation = createSocialFollowUsersFollowDelete(() => ({
+const unfollowMutation = createSocialFollowUsersFollowDelete({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: getSocialFollowUsersFollowersQueryKey(currentUserId) });
+      queryClient.invalidateQueries({ queryKey: socialFollowUsersFollowersQueryKey(currentUserId) });
       track('user_unfollowed', { targetUserId: vars.userId, source: 'followers_page' });
     },
     onError(_err, vars) {
@@ -119,7 +119,7 @@ const unfollowMutation = createSocialFollowUsersFollowDelete(() => ({
       toastState.show(t('network.unfollowError'), 'danger');
     },
   },
-}));
+});
 
 function effectiveFollowed(row: FollowerRow): boolean {
   return optimisticOverrides[row.id] ?? row.isFollowedByMe;
@@ -128,8 +128,8 @@ function effectiveFollowed(row: FollowerRow): boolean {
 function handleToggleFollow(row: FollowerRow) {
   const current = effectiveFollowed(row);
   optimisticOverrides = { ...optimisticOverrides, [row.id]: !current };
-  if (current) unfollowMutation.mutate({ userId: row.id });
-  else followMutation.mutate({ userId: row.id });
+  if (current) $unfollowMutation.mutate({ userId: row.id });
+  else $followMutation.mutate({ userId: row.id });
 }
 </script>
 
@@ -149,7 +149,7 @@ function handleToggleFollow(row: FollowerRow) {
 		</header>
 
 		<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-			{#if query.isLoading}
+			{#if $query.isLoading}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(6) as _}
 						<div class="flex items-center gap-3 px-4 py-4 sm:px-6">

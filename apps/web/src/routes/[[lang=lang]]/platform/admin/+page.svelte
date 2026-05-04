@@ -34,11 +34,11 @@
     onboardingCompletionRate?: number;
   };
 
-  const metricsQuery = createAdminDashboardMetrics(() => ({
-    query: { enabled: browser, refetchInterval: 30_000 },
-  }));
+  const metricsQuery = createAdminDashboardMetrics({
+      query: { enabled: browser, refetchInterval: 30_000 },
+    });
 
-  const metrics = $derived(metricsQuery.data as unknown as DashboardMetrics | undefined);
+  const metrics = $derived($metricsQuery.data as unknown as DashboardMetrics | undefined);
 </script>
 
 <svelte:head>
@@ -60,7 +60,7 @@
 
   <AdminAlerts />
 
-  {#if metricsQuery.isLoading}
+  {#if $metricsQuery.isLoading}
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
       {#each Array(8) as _}
         <StatCardSkeleton />

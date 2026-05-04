@@ -25,19 +25,19 @@ $effect(() => {
 // Ask the backend whether each provider is wired (CLIENT_ID/SECRET present).
 // Keeps the cards in a truthful state without us hardcoding flags.
 const githubAvailability = createAuthOauthAvailable(
-  () => 'github',
-  () => ({ query: { enabled: browser } }),
+  'github',
+  { query: { enabled: browser } },
 );
 const linkedinAvailability = createAuthOauthAvailable(
-  () => 'linkedin',
-  () => ({ query: { enabled: browser } }),
+  'linkedin',
+  { query: { enabled: browser } },
 );
 
 const githubAvailable = $derived(
-  Boolean((githubAvailability.data as { available?: boolean } | undefined)?.available),
+  Boolean(($githubAvailability.data as { available?: boolean } | undefined)?.available),
 );
 const linkedinAvailable = $derived(
-  Boolean((linkedinAvailability.data as { available?: boolean } | undefined)?.available),
+  Boolean(($linkedinAvailability.data as { available?: boolean } | undefined)?.available),
 );
 
 type TrackKey = 'linkedin' | 'github' | 'upload' | 'manual';
@@ -45,7 +45,7 @@ type TrackKey = 'linkedin' | 'github' | 'upload' | 'manual';
 let soonOpen = $state(false);
 let pdfInput = $state<HTMLInputElement | null>(null);
 
-const pdfMutation = createResumeImportResumesImportsPdf(() => ({
+const pdfMutation = createResumeImportResumesImportsPdf({
   mutation: {
     onSuccess() {
       toastState.show('CV imported', 'success');
@@ -55,7 +55,7 @@ const pdfMutation = createResumeImportResumesImportsPdf(() => ({
       toastState.show('Could not import the PDF', 'danger');
     },
   },
-}));
+});
 
 function handlePdfSelected(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0];
@@ -63,7 +63,7 @@ function handlePdfSelected(e: Event) {
   // Orval models the multipart body as `void` because the OpenAPI spec doesn't
   // describe File fields. The mutator passes `data` straight through to
   // `customFetch`, so the cast is safe at runtime.
-  (pdfMutation.mutate as unknown as (vars: { data: { file: File } }) => void)({
+  ($pdfMutation.mutate as unknown as (vars: { data: { file: File } }) => void)({
     data: { file },
   });
 }
@@ -186,7 +186,7 @@ function isAvailable(key: TrackKey): boolean {
 						<button
 							type="button"
 							onclick={() => choose(track.key)}
-							disabled={track.key === 'upload' && pdfMutation.isPending}
+							disabled={track.key === 'upload' && $pdfMutation.isPending}
 							class="group flex h-full w-full flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-700/60 dark:bg-neutral-800/50 dark:hover:border-neutral-600"
 						>
 							<div class="flex items-start justify-between">
@@ -220,7 +220,7 @@ function isAvailable(key: TrackKey): boolean {
 							</div>
 
 							<div class="flex items-center gap-1 text-xs font-semibold text-gray-500 transition-colors group-hover:text-gray-800 dark:text-neutral-500 dark:group-hover:text-neutral-200">
-								{#if track.key === 'upload' && pdfMutation.isPending}
+								{#if track.key === 'upload' && $pdfMutation.isPending}
 									<Loader size={12} />
 								{:else}
 									<span>{t(available ? 'onboarding.next' : 'onboarding.start.close')}</span>

@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createSocialConnectionsConnectionsWithdraw,
   createSocialConnectionsUsersMeConnections,
-  getSocialConnectionsUsersMeConnectionsQueryKey,
+  socialConnectionsUsersMeConnectionsQueryKey,
   socialConnectionsUsersMeConnections,
 } from 'api-client';
 import { ChevronDown, MessageCircle, MoreHorizontal, Search, Users } from 'lucide-svelte';
@@ -29,8 +29,8 @@ type ConnectionRecord = {
 };
 
 const connectionsQuery = createSocialConnectionsUsersMeConnections(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser } },
 );
 
 function extractRecord(raw: Record<string, unknown>): ConnectionRecord {
@@ -48,7 +48,7 @@ function extractRecord(raw: Record<string, unknown>): ConnectionRecord {
 }
 
 const firstPage = $derived.by(() => {
-  const outer = connectionsQuery.data as Record<string, unknown> | undefined;
+  const outer = $connectionsQuery.data as Record<string, unknown> | undefined;
   const section = outer?.connections as Record<string, unknown> | undefined;
   const items = (section?.data ?? []) as Record<string, unknown>[];
   return {
@@ -137,15 +137,15 @@ const queryClient = useQueryClient();
 let removeTarget = $state<{ id: string; name: string } | null>(null);
 let menuOpenFor = $state<string | null>(null);
 
-const removeMutation = createSocialConnectionsConnectionsWithdraw(() => ({
+const removeMutation = createSocialConnectionsConnectionsWithdraw({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getSocialConnectionsUsersMeConnectionsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: socialConnectionsUsersMeConnectionsQueryKey() });
       extra = extra.filter((c) => c.id !== removeTarget?.id);
       removeTarget = null;
     },
   },
-}));
+});
 </script>
 
 <svelte:head>
@@ -156,7 +156,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw(() => ({
 	open={removeTarget !== null}
 	onClose={() => (removeTarget = null)}
 	onConfirm={() => {
-		if (removeTarget) removeMutation.mutate({ id: removeTarget.id });
+		if (removeTarget) $removeMutation.mutate({ id: removeTarget.id });
 	}}
 	title={t?.('network.removeConfirmTitle') ?? 'Remove'}
 	message={(t?.('network.removeConfirmMessage') ?? 'Remove {name}?').replace(
@@ -227,7 +227,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw(() => ({
 			</div>
 
 			<!-- List -->
-			{#if connectionsQuery.isLoading}
+			{#if $connectionsQuery.isLoading}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(5) as _}
 						<div class="flex items-center gap-3 px-6 py-4">

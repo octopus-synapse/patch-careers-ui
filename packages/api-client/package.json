@@ -1,6 +1,6 @@
 {
   "name": "api-client",
-  "version": "0.0.0-feature-flags",
+  "version": "0.0.0-kubb",
   "type": "module",
   "private": true,
   "exports": {
@@ -8,7 +8,7 @@
     "./zod": "./src/generated/zod/index.ts"
   },
   "scripts": {
-    "sdk:generate": "orval --config orval.config.ts && bun run scripts/fix-response-types.ts && bun run scripts/generate-barrel.ts",
+    "sdk:generate": "kubb generate --config kubb.config.ts",
     "check": "tsc --noEmit"
   },
   "peerDependencies": {
@@ -18,11 +18,18 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@tanstack/svelte-query": "^6.1.23",
+    "@kubb/cli": "^4.37.5",
+    "@kubb/core": "^4.37.5",
+    "@kubb/plugin-client": "^4.37.5",
+    "@kubb/plugin-oas": "^4.37.5",
+    "@kubb/plugin-svelte-query": "^4.37.5",
+    "@kubb/plugin-ts": "^4.37.5",
+    "@kubb/plugin-zod": "^4.37.5",
+    "@tanstack/svelte-query": "5",
     "@types/bun": "latest",
     "@types/node": "^25.6.0",
-    "orval": "^8.8.1",
     "svelte": "^5.55.5",
+    "ts-morph": "^28.0.0",
     "typescript": "^5.9.3",
     "zod": "^3.25.76"
   }

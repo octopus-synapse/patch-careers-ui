@@ -5,10 +5,14 @@
 -->
 <script lang="ts">
 import {
+  getBaseUrl,
   resumeImportResumesImportsGithub,
   resumeImportResumesImportsLinkedin,
-  getResumeImportResumesImportsPdfUrl,
 } from 'api-client';
+
+// Multipart endpoint — Kubb's customFetch doesn't support FormData, so we
+// hand-roll the request and reuse the SDK's baseUrl helper.
+const PDF_IMPORT_URL = '/api/v1/resume-import/resumes/imports/pdf';
 import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
 import { Button, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -72,7 +76,7 @@ async function uploadPdf(e: Event) {
     // canonical URL helper.
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(getResumeImportResumesImportsPdfUrl(), {
+    const res = await fetch(`${getBaseUrl()}${PDF_IMPORT_URL}`, {
       method: 'POST',
       body: formData,
       credentials: 'include',

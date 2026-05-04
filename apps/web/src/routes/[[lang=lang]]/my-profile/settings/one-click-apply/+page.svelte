@@ -38,11 +38,11 @@ const draft = useFormDraft<Preferences>('settings:one-click-apply', {
 });
 
 const resumesQuery = createResumesList(
-  () => ({ page: '1', limit: '20' }),
-  () => ({ query: { enabled: browser } }),
+  { page: '1', limit: '20' },
+  { query: { enabled: browser } },
 );
 const resumes = $derived.by(() => {
-  const d = resumesQuery.data as Record<string, unknown> | undefined;
+  const d = $resumesQuery.data as Record<string, unknown> | undefined;
   return (
     (d?.items as Array<{ id: string; title: string | null }> | undefined) ??
     (d?.resumes as Array<{ id: string; title: string | null }> | undefined) ??

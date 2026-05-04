@@ -24,12 +24,12 @@ const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated ?? false);
 
 const query = createJobsRecommended(
-  () => ({ page: '1', limit: '5' }),
-  () => ({ query: { enabled: browser && authenticated } }),
+  { page: '1', limit: '5' },
+  { query: { enabled: browser && authenticated } },
 );
 
 const items = $derived.by<RecommendedJob[]>(() => {
-  const data = query.data as { items?: RecommendedJob[] } | undefined;
+  const data = $query.data as { items?: RecommendedJob[] } | undefined;
   return data?.items ?? [];
 });
 </script>
@@ -49,7 +49,7 @@ const items = $derived.by<RecommendedJob[]>(() => {
 		</div>
 	{/snippet}
 
-	{#if query.isLoading}
+	{#if $query.isLoading}
 		<ul class="space-y-2">
 			{#each Array(3) as _}
 				<li class="flex items-center gap-3">

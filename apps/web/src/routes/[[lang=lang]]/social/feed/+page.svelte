@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createFeedList,
   createSocialConnectionsUsersMeConnectionsSuggestions,
-  getFeedListQueryKey,
+  feedListQueryKey,
 } from 'api-client';
 import { Plus } from 'lucide-svelte';
 import { Tabs, ToastContainer } from 'ui';
@@ -68,7 +68,7 @@ function handleTabChange(value: string) {
   if (next === activeTab) return;
   activeTab = next;
   pagination.reset();
-  queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
 }
 
 // Modals
@@ -81,8 +81,8 @@ let repostTargetPost = $state<Record<string, unknown> | null>(null);
 const queryClient = useQueryClient();
 
 const suggestionsQuery = createSocialConnectionsUsersMeConnectionsSuggestions(
-  () => ({ limit: '20' }),
-  () => ({ query: { enabled: browser && Boolean(authenticated) } }),
+  { limit: '20' },
+  { query: { enabled: browser && Boolean(authenticated) } },
 );
 
 type SuggestionItem = {
@@ -94,7 +94,7 @@ type SuggestionItem = {
 };
 
 const feedSuggestions = $derived.by<SuggestionItem[]>(() => {
-  const outer = suggestionsQuery.data as Record<string, unknown> | undefined;
+  const outer = $suggestionsQuery.data as Record<string, unknown> | undefined;
   const section = outer?.suggestions as Record<string, unknown> | undefined;
   const items = (section?.data as SuggestionItem[] | undefined) ?? [];
   return items;
@@ -105,7 +105,7 @@ const feedSuggestions = $derived.by<SuggestionItem[]>(() => {
 // which is the runtime contract documented in F1.
 const pagination = useFeedPagination({
   getRawData: () =>
-    feedQuery.data as unknown as
+    $feedQuery.data as unknown as
       | { items?: Record<string, unknown>[]; nextCursor?: string | null; hasNew?: boolean }
       | undefined,
 });
@@ -145,19 +145,19 @@ const fitScoreByPostId = $derived.by<Record<string, PostFitScore>>(() => {
 });
 
 const feedQuery = createFeedList(
-  () => ({
+  {
     cursor: pagination.cursor,
     limit: '20',
     ...(activeTab === 'bubble' ? { followingOnly: 'true' } : {}),
-  }),
-  () => ({
-    query: {
-      enabled: Boolean(authenticated),
-      // Only poll when the user is at the head of the feed — further
-      // pages are stable and shouldn't be refetched in the background.
-      refetchInterval: pagination.cursor === undefined ? 60_000 : false,
-    },
-  }),
+  },
+  {
+        query: {
+          enabled: Boolean(authenticated),
+          // Only poll when the user is at the head of the feed — further
+          // pages are stable and shouldn't be refetched in the background.
+          refetchInterval: pagination.cursor === undefined ? 60_000 : false,
+        },
+      },
 );
 
 function handleRepost(id: string) {
@@ -191,7 +191,7 @@ async function handleReportSubmit(reason: string) {
 function handlePostCreated() {
   showCreateModal = false;
   pagination.reset();
-  queryClient.invalidateQueries({ queryKey: getFeedListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
 }
 </script>
 
@@ -230,8 +230,8 @@ function handlePostCreated() {
 				posts={pagination.allPosts}
 				{currentUserId}
 				suggestions={feedSuggestions}
-				isLoading={feedQuery.isLoading}
-				isError={feedQuery.isError}
+				isLoading={$feedQuery.isLoading}
+				isError={$feedQuery.isError}
 				hasMore={pagination.hasMore}
 				loadingMore={pagination.loadingMore}
 				{fitScoreByPostId}
@@ -245,7 +245,7 @@ function handlePostCreated() {
 				onrepost={handleRepost}
 				onreport={handleReport}
 				onvote={engagement.handleVote}
-				onretry={() => feedQuery.refetch()}
+				onretry={() => $feedQuery.refetch()}
 				onloadmore={pagination.loadNextPage}
 			/>
 		</main>

@@ -1,0 +1,17 @@
+export type { AdminTechSkillsCreateMutationKey } from "./createAdminTechSkillsCreate";
+export type { AdminTechSkillsDeleteMutationKey } from "./createAdminTechSkillsDelete";
+export type { AdminTechSkillsGetByIdQueryKey } from "./createAdminTechSkillsGetById";
+export type { AdminTechSkillsListQueryKey } from "./createAdminTechSkillsList";
+export type { AdminTechSkillsUpdateMutationKey } from "./createAdminTechSkillsUpdate";
+export { adminTechSkillsCreateMutationKey } from "./createAdminTechSkillsCreate";
+export { createAdminTechSkillsCreate } from "./createAdminTechSkillsCreate";
+export { adminTechSkillsDeleteMutationKey } from "./createAdminTechSkillsDelete";
+export { createAdminTechSkillsDelete } from "./createAdminTechSkillsDelete";
+export { adminTechSkillsGetByIdQueryKey } from "./createAdminTechSkillsGetById";
+export { adminTechSkillsGetByIdQueryOptions } from "./createAdminTechSkillsGetById";
+export { createAdminTechSkillsGetById } from "./createAdminTechSkillsGetById";
+export { adminTechSkillsListQueryKey } from "./createAdminTechSkillsList";
+export { adminTechSkillsListQueryOptions } from "./createAdminTechSkillsList";
+export { createAdminTechSkillsList } from "./createAdminTechSkillsList";
+export { adminTechSkillsUpdateMutationKey } from "./createAdminTechSkillsUpdate";
+export { createAdminTechSkillsUpdate } from "./createAdminTechSkillsUpdate";
