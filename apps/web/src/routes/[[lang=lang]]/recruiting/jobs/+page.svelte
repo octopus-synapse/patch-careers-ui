@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * Recruiting jobs list — burra: minha lista de vagas, com delete.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import { createJobsMine, jobsMineQueryKey, jobsDelete } from 'api-client';
@@ -23,18 +22,6 @@
   import { formatDate } from '$lib/utils/format-date';
   import { locale } from '$lib/state/locale.svelte';
 
-  type JobRow = {
-    id: string;
-    title: string;
-    company: string;
-    location?: string | null;
-    jobType: string;
-    remotePolicy?: string | null;
-    salaryRange?: string | null;
-    isActive: boolean;
-    createdAt: string;
-  };
-
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
@@ -43,9 +30,7 @@
     { query: { enabled: true } },
   );
 
-  const rows = $derived<JobRow[]>(
-    (($jobsQuery.data as unknown as { items?: JobRow[] } | undefined)?.items ?? []) as JobRow[],
-  );
+  const rows = $derived($jobsQuery.data?.items);
 
   let deleteTarget = $state<{ id: string; title: string } | null>(null);
   let deleting = $state(false);
@@ -129,7 +114,7 @@
         </div>
       {/each}
     </div>
-  {:else if rows.length === 0}
+  {:else if !rows || rows.length === 0}
     <EmptyState
       message={t('company.jobs.empty')}
       icon={Briefcase as unknown as Component<{ size: number; class?: string }>}

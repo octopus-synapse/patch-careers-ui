@@ -1,7 +1,7 @@
 <script lang="ts">
   /**
    * /my-profile/styles — burra: catálogo de estilos do backend; aplica no
-   * primeiro currículo. Backend retorna `void` no schema OpenAPI; cast local.
+   * primeiro currículo.
    */
   import {
     createResumesList,
@@ -12,16 +12,8 @@
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Lock } from 'lucide-svelte';
   import { Button, Card, Loader, RankBadge, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
-
-  type Style = {
-    id: string;
-    name?: string;
-    description?: string;
-    isSystem?: boolean;
-    styleScore?: number;
-  };
-  type ResumeRow = { id?: string };
 
   const queryClient = useQueryClient();
 
@@ -35,8 +27,7 @@
     { query: { enabled: browser } },
   );
   const primaryResumeId = $derived<string | null>(
-    (($myResumesQuery.data as unknown as { items?: ResumeRow[] } | undefined)?.items?.[0]?.id ??
-      null) as string | null,
+    $myResumesQuery.data?.items?.[0]?.id ?? null,
   );
 
   let applyingStyleId = $state<string | null>(null);
@@ -51,10 +42,7 @@
       toastState.show('Estilo aplicado ao seu currículo.', 'success');
       await queryClient.invalidateQueries({ queryKey: ['resume'] });
     } catch (err) {
-      toastState.show(
-        err instanceof Error ? err.message : 'Não foi possível aplicar o estilo.',
-        'danger',
-      );
+      handleApiError(err);
     } finally {
       applyingStyleId = null;
     }
@@ -65,9 +53,7 @@
     return `${baseUrl}/v1/resume-styles/${id}/preview.pdf`;
   }
 
-  const styles = $derived(
-    (($listQuery.data as unknown as { items?: Style[] } | undefined)?.items ?? []) as Style[],
-  );
+  const styles = $derived($listQuery.data?.items);
 </script>
 
 <section class="mx-auto max-w-5xl space-y-6 p-6">
@@ -85,7 +71,7 @@
     <div class="flex justify-center py-12">
       <Loader size={24} />
     </div>
-  {:else if $listQuery.isError || styles.length === 0}
+  {:else if $listQuery.isError || !styles || styles.length === 0}
     <Card class="sm:p-6 text-sm text-neutral-600 dark:text-neutral-400">
       Nenhum estilo disponível no momento.
     </Card>

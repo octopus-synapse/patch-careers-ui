@@ -1,7 +1,7 @@
 <script lang="ts">
   /**
    * Recruiting jobs/edit — burra: hidrata via createJobsGetById e patch via
-   * jobsUpdate. Backend retorna `void` no schema OpenAPI; cast local.
+   * jobsUpdate.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
@@ -16,22 +16,12 @@
   import { page } from '$app/stores';
   import { locale } from '$lib/state/locale.svelte';
 
-  type JobView = {
-    title?: string;
-    company?: string;
-    location?: string;
-    description?: string;
-    salaryRange?: string;
-    applyUrl?: string;
-    skills?: string[];
-  };
-
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
   const jobId = $derived($page.params.id ?? '');
 
   const jobQuery = createJobsGetById(jobId);
-  const job = $derived($jobQuery.data as unknown as JobView | undefined);
+  const job = $derived($jobQuery.data);
 
   let title = $state('');
   let company = $state('');
@@ -46,13 +36,13 @@
 
   $effect(() => {
     if (job && !hydrated) {
-      title = job.title ?? '';
-      company = job.company ?? '';
+      title = job.title;
+      company = job.company;
       location = job.location ?? '';
-      description = job.description ?? '';
+      description = job.description;
       salaryRange = job.salaryRange ?? '';
       applyUrl = job.applyUrl ?? '';
-      skillsCsv = Array.isArray(job.skills) ? job.skills.join(', ') : '';
+      skillsCsv = job.skills.join(', ');
       hydrated = true;
     }
   });

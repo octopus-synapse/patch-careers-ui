@@ -1,7 +1,7 @@
 <script lang="ts">
   /**
    * /my-profile/scores — burra: hub que mostra Resume Quality + Match Score
-   * + Style Score. Backend retorna `void` no schema OpenAPI; cast local.
+   * + Style Score.
    */
   import { createFitProfileMeGet, createResumesList } from 'api-client';
   import { ArrowRight } from 'lucide-svelte';
@@ -9,27 +9,19 @@
   import ResumeQualityCard from '$lib/components/scoring/resume-quality-card.svelte';
   import { Card, ScoreCard } from 'ui';
 
-  type ResumeRow = { id?: string };
-  type ResumesPage = { items?: ResumeRow[] };
-  type FitMe = { status?: 'responded' | 'expired' | 'never' };
-
   const myResumesQuery = createResumesList(
     { page: '1', limit: '1' },
     { query: { enabled: browser, retry: false } },
   );
   const primaryResumeId = $derived<string | null>(
-    (($myResumesQuery.data as unknown as ResumesPage | undefined)?.items?.[0]?.id ?? null) as
-      | string
-      | null,
+    $myResumesQuery.data?.items?.[0]?.id ?? null,
   );
 
   const fitMeQuery = createFitProfileMeGet({
       query: { enabled: browser, retry: false },
     });
   const fitStatus = $derived<'responded' | 'expired' | 'never' | 'loading'>(
-    $fitMeQuery.isPending
-      ? 'loading'
-      : ($fitMeQuery.data as unknown as FitMe | undefined)?.status ?? 'never',
+    $fitMeQuery.isPending ? 'loading' : ($fitMeQuery.data?.status ?? 'never'),
   );
 </script>
 

@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * /my-profile/fit-profile — burra: status do fit profile + delete + CTA.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import {
     createFitProfileMeGet,
@@ -11,21 +10,20 @@
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
+  import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
-
-  type MeStatus = { status?: 'responded' | 'expired' | 'never'; expiresAt?: string | null };
 
   const queryClient = useQueryClient();
   const meQuery = createFitProfileMeGet({
       query: { enabled: browser, retry: false },
     });
 
-  const me = $derived($meQuery.data as unknown as MeStatus | undefined);
+  const me = $derived($meQuery.data);
   const status = $derived<'responded' | 'expired' | 'never' | 'loading'>(
     $meQuery.isPending ? 'loading' : (me?.status ?? 'never'),
   );
-  const expiresAt = $derived(me?.expiresAt ?? null);
+  const expiresAt = $derived(me?.expiresAt);
 
   let deleting = $state(false);
   async function handleDelete(): Promise<void> {
@@ -36,10 +34,7 @@
       await queryClient.invalidateQueries({ queryKey: fitProfileMeGetQueryKey() });
       toastState.show('Fit Profile apagado.' , 'success');
     } catch (err) {
-      toastState.show(
-        err instanceof Error ? err.message : 'Não foi possível apagar.',
-        'danger',
-      );
+      handleApiError(err);
     } finally {
       deleting = false;
     }

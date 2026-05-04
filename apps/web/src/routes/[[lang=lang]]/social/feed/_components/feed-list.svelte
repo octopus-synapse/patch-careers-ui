@@ -77,12 +77,12 @@ const visiblePosts = $derived.by(() => {
   if (!term) return posts;
   const tagOnly = term.startsWith('#') ? term.slice(1) : null;
   return posts.filter((p) => {
-    const hashtags = ((p.hashtags as string[] | undefined) ?? []).map((h) =>
-      h.replace(/^#/, '').toLowerCase(),
-    );
+    const rawTags = Array.isArray(p.hashtags) ? (p.hashtags as string[]) : [];
+    const hashtags = rawTags.map((h) => h.replace(/^#/, '').toLowerCase());
     if (tagOnly !== null) return hashtags.some((h) => h.includes(tagOnly));
     const content = String(p.content ?? '').toLowerCase();
-    const author = (p.author as { name?: string } | undefined)?.name?.toLowerCase() ?? '';
+    const authorName = (p.author as { name?: string } | undefined)?.name;
+    const author = authorName ? authorName.toLowerCase() : '';
     return (
       content.includes(term) ||
       author.includes(term) ||

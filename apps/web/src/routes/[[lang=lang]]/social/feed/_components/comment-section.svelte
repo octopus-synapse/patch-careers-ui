@@ -14,31 +14,8 @@ import { relativeFrom } from '$lib/utils/relative';
 /**
  * Frontend-burro comment thread for a single post. Reads `GET
  * /api/v1/posts/:id/comments`, writes via `POST .../comments` and `DELETE
- * .../comments/:id`. The swagger marks the GET response as `void`; we cast
- * to a documented runtime shape (`{comments:[{id,content,author,replies}]}`)
- * at the boundary so the rest of the component stays typed.
+ * .../comments/:id`.
  */
-type CommentAuthor = {
-  id?: string | null;
-  name?: string | null;
-  username?: string | null;
-  photoURL?: string | null;
-};
-
-type CommentNode = {
-  id: string;
-  content: string;
-  createdAt: string;
-  author?: CommentAuthor;
-  authorId?: string;
-  replies?: CommentNode[];
-};
-
-type CommentsResponse = {
-  comments?: CommentNode[];
-  items?: CommentNode[];
-};
-
 type Props = {
   postId: string;
   currentUserId: string;
@@ -58,13 +35,10 @@ const queryClient = useQueryClient();
 const commentsQuery = createCommentsPostsCommentsGet(
   postId,
   { limit: '50' },
-  { query: { enabled: !!postId } },
+  { query: { enabled: postId !== '' } },
 );
 
-const comments = $derived.by<CommentNode[]>(() => {
-  const raw = $commentsQuery.data as unknown as CommentsResponse | undefined;
-  return raw?.comments ?? raw?.items ?? [];
-});
+const comments = $derived($commentsQuery.data?.comments);
 
 async function handleSubmitComment() {
   const trimmed = commentText.trim();
@@ -152,25 +126,24 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 	{/if}
 
 	<!-- Comments list -->
-	{#if comments.length > 0}
+	{#if comments && comments.length > 0}
 		{#each comments as comment (comment.id)}
 			{@const commentAuthor = comment.author}
-			{@const commentId = String(comment.id)}
-			{@const isOwnComment = String(commentAuthor?.id ?? comment.authorId ?? '') === currentUserId}
-			{@const replies = comment.replies ?? []}
-			{@const isExpanded = expandedReplies.has(commentId)}
+			{@const isOwnComment = comment.authorId === currentUserId}
+			{@const replies = comment.replies}
+			{@const isExpanded = expandedReplies.has(comment.id)}
 			{@const visibleReplies = isExpanded ? replies : replies.slice(0, 2)}
 
 			<div class="space-y-2">
 				<div class="flex items-start gap-2">
 					<Avatar
-						name={String(commentAuthor?.name ?? commentAuthor?.username ?? '?')}
-						photoURL={commentAuthor?.photoURL}
+						name={commentAuthor.name ?? commentAuthor.username ?? '?'}
+						photoURL={commentAuthor.photoURL}
 						size="sm"
 					/>
 					<div class="min-w-0 flex-1">
 						<div class="flex items-center gap-1.5">
-							<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{commentAuthor?.name ?? commentAuthor?.username ?? 'Unknown'}</span>
+							<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{commentAuthor.name ?? commentAuthor.username ?? 'Unknown'}</span>
 							<span class="text-[10px] text-gray-400 dark:text-neutral-500">{relativeFrom(comment.createdAt)}</span>
 						</div>
 						<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{comment.content}</p>
@@ -178,7 +151,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 							<Button
 								variant="ghost"
 								size="xs"
-								onclick={() => { replyingTo = replyingTo === commentId ? null : commentId; replyText = ''; }}
+								onclick={() => { replyingTo = replyingTo === comment.id ? null : comment.id; replyText = ''; }}
 							>
 								Reply
 							</Button>
@@ -186,17 +159,17 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 								<Button
 									variant="icon"
 									size="xs"
-									onclick={() => handleDeleteComment(commentId)}
+									onclick={() => handleDeleteComment(comment.id)}
 									class="text-red-400 hover:text-red-500"
 								>
 									<Trash2 size={12} />
 								</Button>
-							{:else if commentAuthor?.id}
+							{:else}
 								<BlockMenuItem
 									variant="ghost"
 									size="xs"
-									targetUserId={String(commentAuthor.id)}
-									targetName={String(commentAuthor.name ?? commentAuthor.username ?? '')}
+									targetUserId={commentAuthor.id}
+									targetName={commentAuthor.name ?? commentAuthor.username ?? ''}
 									source="comment"
 								/>
 							{/if}
@@ -205,14 +178,14 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 				</div>
 
 				<!-- Reply input -->
-				{#if replyingTo === commentId}
+				{#if replyingTo === comment.id}
 					<div class="ml-4 sm:ml-10 flex items-center gap-2">
 						<Input
 							placeholder="Reply..."
 							bind:value={replyText}
-							onkeydown={(e: KeyboardEvent) => handleReplyKeydown(e, commentId)}
+							onkeydown={(e: KeyboardEvent) => handleReplyKeydown(e, comment.id)}
 						/>
-						<Button variant="ghost" size="xs" onclick={() => handleSubmitReply(commentId)} disabled={submittingReply || !replyText.trim()}>
+						<Button variant="ghost" size="xs" onclick={() => handleSubmitReply(comment.id)} disabled={submittingReply || !replyText.trim()}>
 							{#if submittingReply}
 								<Loader size={14} />
 							{:else}
@@ -227,18 +200,17 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 					<div class="ml-4 sm:ml-10 space-y-2 border-l-2 pl-2 sm:pl-3 border-gray-100 dark:border-neutral-700/50">
 						{#each visibleReplies as reply (reply.id)}
 							{@const replyAuthor = reply.author}
-							{@const replyId = String(reply.id)}
-							{@const isOwnReply = String(replyAuthor?.id ?? reply.authorId ?? '') === currentUserId}
+							{@const isOwnReply = reply.authorId === currentUserId}
 
 							<div class="flex items-start gap-2">
 								<Avatar
-									name={String(replyAuthor?.name ?? replyAuthor?.username ?? '?')}
-									photoURL={replyAuthor?.photoURL}
+									name={replyAuthor.name ?? replyAuthor.username ?? '?'}
+									photoURL={replyAuthor.photoURL}
 									size="sm"
 								/>
 								<div class="min-w-0 flex-1">
 									<div class="flex items-center gap-1.5">
-										<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{replyAuthor?.name ?? replyAuthor?.username ?? 'Unknown'}</span>
+										<span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{replyAuthor.name ?? replyAuthor.username ?? 'Unknown'}</span>
 										<span class="text-[10px] text-gray-400 dark:text-neutral-500">{relativeFrom(reply.createdAt)}</span>
 									</div>
 									<p class="mt-0.5 text-sm text-gray-800 dark:text-neutral-200">{reply.content}</p>
@@ -246,18 +218,18 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 										<Button
 											variant="icon"
 											size="xs"
-											onclick={() => handleDeleteComment(replyId)}
+											onclick={() => handleDeleteComment(reply.id)}
 											class="mt-1 text-red-400 hover:text-red-500"
 										>
 											<Trash2 size={12} />
 										</Button>
-									{:else if replyAuthor?.id}
+									{:else}
 										<div class="mt-1">
 											<BlockMenuItem
 												variant="ghost"
 												size="xs"
-												targetUserId={String(replyAuthor.id)}
-												targetName={String(replyAuthor.name ?? replyAuthor.username ?? '')}
+												targetUserId={replyAuthor.id}
+												targetName={replyAuthor.name ?? replyAuthor.username ?? ''}
 												source="comment_reply"
 											/>
 										</div>
@@ -270,7 +242,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 							<Button
 								variant="ghost"
 								size="xs"
-								onclick={() => toggleExpandReplies(commentId)}
+								onclick={() => toggleExpandReplies(comment.id)}
 							>
 								View {replies.length - 2} more {replies.length - 2 === 1 ? 'reply' : 'replies'}
 							</Button>
@@ -278,7 +250,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 							<Button
 								variant="ghost"
 								size="xs"
-								onclick={() => toggleExpandReplies(commentId)}
+								onclick={() => toggleExpandReplies(comment.id)}
 							>
 								Show less
 							</Button>
@@ -289,7 +261,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 		{/each}
 	{/if}
 
-	{#if !$commentsQuery.isLoading && comments.length === 0}
+	{#if !$commentsQuery.isLoading && (!comments || comments.length === 0)}
 		<p class="py-2 text-center text-xs text-gray-400 dark:text-neutral-500">No comments yet</p>
 	{/if}
 </div>

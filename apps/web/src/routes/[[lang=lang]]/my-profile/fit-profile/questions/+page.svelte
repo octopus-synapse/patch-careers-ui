@@ -1,7 +1,6 @@
 <script lang="ts">
   /**
    * /my-profile/fit-profile/questions — burra: 25 perguntas Likert.
-   * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
   import {
     createFitProfileQuestions,
@@ -15,18 +14,6 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { locale } from '$lib/state/locale.svelte';
-
-  type Question = {
-    id: string;
-    key: string;
-    dimension: string;
-    textEn: string;
-    textPtBr: string;
-    scaleType: string;
-    weight: number;
-  };
-
-  type QuestionsResponse = { questionSetId?: string; questions?: Question[] };
 
   const LIKERT_OPTIONS = [
     { value: 1, label: 'Discordo fortemente' },
@@ -42,17 +29,17 @@
 
   const queryClient = useQueryClient();
 
-  const questionsData = $derived($questionsQuery.data as unknown as QuestionsResponse | undefined);
+  const questionsData = $derived($questionsQuery.data);
   const questionSetId = $derived(questionsData?.questionSetId ?? '');
-  const questions = $derived<Question[]>(questionsData?.questions ?? []);
-  const total = $derived(questions.length);
+  const questions = $derived(questionsData?.questions);
+  const total = $derived(questions ? questions.length : 0);
 
   let submitting = $state(false);
 
   let currentIndex = $state(0);
   let answers = $state<Map<string, number>>(new Map());
 
-  const currentQuestion = $derived(questions[currentIndex]);
+  const currentQuestion = $derived(questions?.[currentIndex]);
   const currentAnswer = $derived(
     currentQuestion ? (answers.get(currentQuestion.id) ?? null) : null,
   );
@@ -92,7 +79,6 @@
       toastState.show('Fit Profile salvo. Match Score liberado.', 'success');
       void goto('/my-profile/scores');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Não foi possível salvar.';
       handleApiError(err);
     } finally {
       submitting = false;

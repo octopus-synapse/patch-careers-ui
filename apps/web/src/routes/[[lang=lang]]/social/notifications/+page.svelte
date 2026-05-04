@@ -7,6 +7,7 @@ import {
   notificationsUnreadCountQueryKey,
   notificationsList,
   notificationsMarkRead,
+  type NotificationsList200,
 } from 'api-client';
 import { Bell } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -20,7 +21,7 @@ import { useSseSubscribe } from '$lib/state/use-sse-subscribe.svelte';
 
 /**
  * Notifications inbox page — frontend BURRO. Reads
- * `GET /api/v1/notifications` (canonical pagination envelope `{items,
+ * `GET /api/v1/notifications` (canonical pagination envelope `{data,
  * nextCursor}`) and renders each entry through the locale layer +
  * `notificationVisual` icon mapping. Mark-read actions hit `POST
  * /api/v1/notifications/mark-read`. Backend stays the source of truth for
@@ -28,33 +29,10 @@ import { useSseSubscribe } from '$lib/state/use-sse-subscribe.svelte';
  *
  * Real-time updates come through the platform SSE channel; on every event
  * we invalidate the list + unread-count queries so TanStack Query refetches.
- *
- * Swagger marks the responses as `void` until the DTOs ship; we cast at
- * the boundary to the documented runtime shape.
  */
 type TabKey = 'all' | 'connections' | 'engagement';
 
-type NotificationActor = {
-  id: string;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-};
-
-type NotificationItem = {
-  id: string;
-  type: string;
-  message: string;
-  read: boolean;
-  createdAt: string;
-  actor?: NotificationActor | null;
-};
-
-type NotificationsListResponse = {
-  items?: NotificationItem[];
-  data?: NotificationItem[];
-  nextCursor?: string | null;
-};
+type NotificationItem = NotificationsList200['data'][number];
 
 const t = $derived(locale.t);
 const auth = useAuth();
@@ -71,25 +49,18 @@ const CONNECTION_TYPES = new Set(['CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', '
 
 const initialQuery = createNotificationsList(
   { limit: '20' },
-  { query: { enabled: browser && Boolean(authenticated) } },
+  { query: { enabled: browser && authenticated } },
 );
-
-function unwrapNotifications(data: unknown): {
-  items: NotificationItem[];
-  nextCursor: string | null;
-} {
-  const raw = data as NotificationsListResponse | undefined;
-  const items = raw?.items ?? raw?.data ?? [];
-  const nextCursor = raw?.nextCursor ?? null;
-  return { items, nextCursor };
-}
 
 let extra = $state<NotificationItem[]>([]);
 let cursor = $state<string | null>(null);
 let loadingMore = $state(false);
 
-const firstPage = $derived(unwrapNotifications($initialQuery.data));
-const all = $derived([...firstPage.items, ...extra]);
+const firstPage = $derived($initialQuery.data);
+const all = $derived.by<NotificationItem[]>(() => {
+  const head = firstPage ? firstPage.data : [];
+  return [...head, ...extra];
+});
 
 const filtered = $derived.by(() => {
   if (activeTab === 'all') return all;
@@ -103,18 +74,17 @@ const queryClient = useQueryClient();
 useSseSubscribe('/v1/notifications/subscribe', {
   queryClient,
   invalidateKeys: [notificationsListQueryKey({ limit: '20' }), notificationsUnreadCountQueryKey()],
-  enabled: Boolean(authenticated),
+  enabled: authenticated,
 });
 
 async function loadMore() {
-  const next = extra.length === 0 ? firstPage.nextCursor : cursor;
+  const next = extra.length === 0 ? firstPage?.nextCursor : cursor;
   if (loadingMore || !next) return;
   loadingMore = true;
   try {
-    const res = (await notificationsList({ cursor: next, limit: '20' })) as unknown;
-    const page = unwrapNotifications(res);
-    extra = [...extra, ...page.items];
-    cursor = page.nextCursor;
+    const res = await notificationsList({ cursor: next, limit: '20' });
+    extra = [...extra, ...res.data];
+    cursor = res.nextCursor;
   } finally {
     loadingMore = false;
   }
@@ -174,7 +144,7 @@ $effect(() => {
   return () => observer.disconnect();
 });
 
-const hasMore = $derived(extra.length === 0 ? Boolean(firstPage.nextCursor) : Boolean(cursor));
+const hasMore = $derived(extra.length === 0 ? firstPage?.nextCursor : cursor);
 
 type Bucket = 'today' | 'yesterday' | 'thisWeek' | 'older';
 

@@ -6,34 +6,24 @@
 import {
   createSkillEndorsementsUsersSkills,
   skillEndorsementsUsersSkillsEndorsers,
+  type SkillEndorsementsUsersSkillsEndorsers200,
 } from 'api-client';
 import { ChevronDown, ChevronUp } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { onMount } from 'svelte';
-import { Avatar, Loader, toastState } from 'ui';
+import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
 
 const auth = useAuth();
 const viewerId = $derived(String(auth.data?.user?.id ?? ''));
 
-type Skill = { skill: string; endorsementCount: number; endorsedByMe: boolean };
-type Endorser = {
-  userId: string;
-  name: string | null;
-  username: string | null;
-  photoURL: string | null;
-  endorsedAt: string;
-};
+type Endorser = SkillEndorsementsUsersSkillsEndorsers200['data'][number];
 
 const skillsQuery = createSkillEndorsementsUsersSkills(
   viewerId,
-  { query: { enabled: browser && Boolean(viewerId) } },
+  { query: { enabled: browser && viewerId !== '' } },
 );
-const skills = $derived.by<Skill[]>(() => {
-  const data = $skillsQuery.data as Record<string, unknown> | undefined;
-  return (data?.skills as Skill[] | undefined) ?? [];
-});
+const skills = $derived($skillsQuery.data?.skills);
 
 let expandedSkill = $state<string | null>(null);
 let endorsersCache = $state<Record<string, Endorser[] | 'loading'>>({});
@@ -47,21 +37,14 @@ async function toggleExpand(skill: string) {
   if (!endorsersCache[skill]) {
     endorsersCache = { ...endorsersCache, [skill]: 'loading' };
     try {
-      const res = (await skillEndorsementsUsersSkillsEndorsers(viewerId, skill)) as unknown as
-        | { data?: { endorsers?: Endorser[] }; endorsers?: Endorser[]; items?: Endorser[] }
-        | undefined;
-      const list = res?.data?.endorsers ?? res?.endorsers ?? res?.items ?? [];
-      endorsersCache = { ...endorsersCache, [skill]: list };
+      const res = await skillEndorsementsUsersSkillsEndorsers(viewerId, skill);
+      endorsersCache = { ...endorsersCache, [skill]: res.data };
     } catch (err) {
       handleApiError(err);
       endorsersCache = { ...endorsersCache, [skill]: [] };
     }
   }
 }
-
-onMount(() => {
-  // Nothing — queries run on mount automatically.
-});
 </script>
 
 <svelte:head>
@@ -82,7 +65,7 @@ onMount(() => {
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>
-  {:else if skills.length === 0}
+  {:else if !skills || skills.length === 0}
     <p
       class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500"
     >
@@ -123,7 +106,7 @@ onMount(() => {
                 </p>
               {:else}
                 <ul class="space-y-2">
-                  {#each endorsers as e (e.userId)}
+                  {#each endorsers as e (e.id)}
                     <li class="flex items-center gap-3">
                       <Avatar
                         name={e.name ?? e.username ?? '?'}

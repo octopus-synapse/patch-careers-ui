@@ -5,6 +5,7 @@ import {
   createJobsBookmarkDelete,
   jobsBookmarksQueryKey,
   jobsBookmarks,
+  type JobsBookmarks200,
 } from 'api-client';
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -20,47 +21,14 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.data?.authenticated);
 
-type SavedJob = {
-  id: string;
-  title: string;
-  company: string;
-  location: string | null;
-  jobType: string;
-  salaryRange: string | null;
-  skills: string[];
-};
+type SavedJob = JobsBookmarks200['data'][number];
 
 const query = createJobsBookmarks(
   { page: '1', limit: '20' },
   { query: { enabled: browser && authenticated } },
 );
 
-function rowsFrom(items?: Record<string, unknown>[]): SavedJob[] {
-  return (items ?? []).map((r) => ({
-    id: String(r.id ?? ''),
-    title: String(r.title ?? ''),
-    company: String(r.company ?? ''),
-    location: (r.location as string | null) ?? null,
-    jobType: String(r.jobType ?? ''),
-    salaryRange: (r.salaryRange as string | null) ?? null,
-    skills: Array.isArray(r.skills) ? (r.skills as string[]) : [],
-  }));
-}
-
-function pagedSection(data: unknown): { rows: SavedJob[]; total: number; totalPages: number } {
-  const outer = data as Record<string, unknown> | undefined;
-  const items =
-    (outer?.items as Record<string, unknown>[] | undefined) ??
-    (outer?.data as Record<string, unknown>[] | undefined) ??
-    [];
-  return {
-    rows: rowsFrom(items),
-    total: Number(outer?.total ?? 0),
-    totalPages: Number(outer?.totalPages ?? 0),
-  };
-}
-
-const firstPage = $derived(pagedSection($query.data));
+const firstPage = $derived($query.data);
 let extra = $state<SavedJob[]>([]);
 let pageNum = $state(1);
 let loadingMore = $state(false);
@@ -71,21 +39,18 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = (await jobsBookmarks({ page: String(next), limit: '20' })) as unknown as
-      | Record<string, unknown>
-      | undefined;
-    const items =
-      (res?.items as Record<string, unknown>[] | undefined) ??
-      (res?.data as Record<string, unknown>[] | undefined) ??
-      [];
-    extra = [...extra, ...rowsFrom(items)];
+    const res = await jobsBookmarks({ page: String(next), limit: '20' });
+    extra = [...extra, ...res.data];
     pageNum = next;
   } finally {
     loadingMore = false;
   }
 }
 
-const all = $derived([...firstPage.rows, ...extra].filter((j) => !removedIds.has(j.id)));
+const all = $derived.by<SavedJob[]>(() => {
+  const head = firstPage ? firstPage.data : [];
+  return [...head, ...extra].filter((j) => !removedIds.has(j.id));
+});
 
 const queryClient = useQueryClient();
 
@@ -120,7 +85,7 @@ function handleRemove(id: string) {
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('jobs.savedTitle')}
 			</h1>
-			{#if firstPage.total > 0}
+			{#if firstPage && firstPage.total > 0}
 				<span class="text-xs text-gray-500 dark:text-neutral-500">{firstPage.total}</span>
 			{/if}
 		</header>
@@ -198,7 +163,7 @@ function handleRemove(id: string) {
 			</div>
 			<InfiniteScrollTrigger
 				onLoadMore={loadMore}
-				hasMore={pageNum < firstPage.totalPages}
+				hasMore={firstPage ? pageNum < firstPage.totalPages : false}
 				isLoading={loadingMore}
 			/>
 		{/if}

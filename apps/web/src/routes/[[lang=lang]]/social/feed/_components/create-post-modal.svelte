@@ -225,7 +225,7 @@ async function handleImageSelect(e: Event) {
     const formData = new FormData();
     formData.append('file', file);
     const result = await postsUploadImage({ data: formData });
-    imageUrl = result?.url ?? '';
+    imageUrl = result.url;
   } catch {
     imageFile = null;
     imageUrl = '';
@@ -239,7 +239,7 @@ function clearImage() {
   imageUrl = '';
 }
 
-function buildData(): Record<string, unknown> {
+function buildData(): PostsCreateMutationRequest['data'] {
   switch (selectedType) {
     case 'ACHIEVEMENT':
       return {
@@ -315,9 +315,9 @@ async function handleSubmit() {
 
     const payload: PostsCreateMutationRequest = {
       type: selectedType,
-      // `data` is loosely typed as `PostsCreateBodyData` (Record<string,
-      // unknown>) — backend validates per-type with Zod.
-      data: data as unknown as PostsCreateMutationRequest['data'],
+      // `data` is loosely typed as `object | null` in OpenAPI — backend
+      // validates per-type with Zod.
+      data,
       content: content || undefined,
       hardSkills: hardSkills.length > 0 ? hardSkills : undefined,
       softSkills: softSkills.length > 0 ? softSkills : undefined,

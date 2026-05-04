@@ -16,36 +16,12 @@ const userId = $derived(String(auth.data?.user?.id ?? ''));
 const query = createSocialActivityUsersFeed(
   userId,
   {},
-  { query: { enabled: browser && Boolean(authenticated) && !!userId } },
+  { query: { enabled: browser && authenticated && userId !== '' } },
 );
 
-type ActivityItem = {
-  id: string;
-  type?: string;
-  createdAt?: string | null;
-  user?: {
-    id?: string;
-    name?: string | null;
-    username?: string | null;
-    photoURL?: string | null;
-  } | null;
-};
+const items = $derived($query.data?.feed.data);
 
-// Swagger declares `socialActivityUsersFeed` as `Promise<void>` because the
-// response schema isn't shipped yet. Runtime contract: `{items?, feed?:{data?}}`.
-type ActivityFeedResponse = {
-  items?: ActivityItem[];
-  feed?: { data?: ActivityItem[] };
-};
-
-const items = $derived.by<ActivityItem[]>(() => {
-  const raw = $query.data as unknown as ActivityFeedResponse | undefined;
-  return raw?.items ?? raw?.feed?.data ?? [];
-});
-
-
-function activityLabel(type?: string): string {
-  if (!type) return '';
+function activityLabel(type: string): string {
   const map: Record<string, string> = {
     RESUME_CREATED: 'created a resume',
     RESUME_UPDATED: 'updated a resume',
@@ -71,7 +47,7 @@ function activityLabel(type?: string): string {
 			</div>
 		{/each}
 	</div>
-{:else if items.length === 0}
+{:else if !items || items.length === 0}
 	<EmptyState
 		message={t('feed.noUserActivities')}
 		icon={Activity as unknown as Component<{ size: number; class?: string }>}
@@ -96,9 +72,7 @@ function activityLabel(type?: string): string {
 								<span class="text-gray-700 dark:text-neutral-300">{activityLabel(item.type)}</span>
 							{/if}
 						</div>
-						{#if item.createdAt}
-							<span class="text-[11px] text-gray-400 dark:text-neutral-500">{relativeFrom(item.createdAt)}</span>
-						{/if}
+						<span class="text-[11px] text-gray-400 dark:text-neutral-500">{relativeFrom(item.createdAt)}</span>
 					</div>
 				</Card>
 			</li>

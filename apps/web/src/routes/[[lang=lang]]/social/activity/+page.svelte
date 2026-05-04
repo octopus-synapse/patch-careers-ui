@@ -3,7 +3,7 @@
   current user follows (plus their own). Uses createActivityGetFeed.
 -->
 <script lang="ts">
-import { createSocialActivityUsersFeed } from 'api-client';
+import { createSocialActivityUsersFeed, type SocialActivityUsersFeed200 } from 'api-client';
 import { AlarmClock, Award, Briefcase, FileText, Sparkles, TrendingDown, UserPlus, Users } from 'lucide-svelte';
 import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
@@ -12,38 +12,15 @@ import { useAuth } from '$lib/state/auth.svelte';
 const auth = useAuth();
 const viewerId = $derived(String(auth.data?.user?.id ?? ''));
 
-interface ActivityItem {
-  id: string;
-  type: string;
-  userId: string;
-  createdAt: string;
-  metadata: Record<string, unknown>;
-  user: {
-    id: string;
-    name: string | null;
-    username: string | null;
-    photoURL: string | null;
-  };
-}
-
-// Swagger declares the response as `void`; runtime ships
-// `{items?:[...], activities?:[...]}` (envelope key not yet finalized).
-type ActivityFeedResponse = {
-  items?: ActivityItem[];
-  activities?: ActivityItem[];
-  feed?: { data?: ActivityItem[] };
-};
+type ActivityItem = SocialActivityUsersFeed200['feed']['data'][number];
 
 const feed = createSocialActivityUsersFeed(
   viewerId,
   {},
-  { query: { enabled: browser && Boolean(viewerId) } },
+  { query: { enabled: browser && viewerId !== '' } },
 );
 
-const activities = $derived.by<ActivityItem[]>(() => {
-  const raw = $feed.data as unknown as ActivityFeedResponse | undefined;
-  return raw?.items ?? raw?.activities ?? raw?.feed?.data ?? [];
-});
+const activities = $derived($feed.data?.feed.data);
 
 function iconFor(type: string) {
   if (type === 'SKILL_DECAY') return TrendingDown;
@@ -56,8 +33,18 @@ function iconFor(type: string) {
   return Sparkles;
 }
 
+type ActivityMetadata = {
+  skillName?: string;
+  daysSinceTouched?: number;
+  company?: string;
+  daysSilent?: number;
+  sharedSkills?: number;
+  suggestedName?: string;
+};
+
 function summarize(a: ActivityItem): string {
-  const name = a.user.name ?? a.user.username ?? 'Alguém';
+  const name = a.user?.name ?? a.user?.username ?? 'Alguém';
+  const m = (a.metadata ?? {}) as ActivityMetadata;
   switch (a.type) {
     case 'RESUME_CREATED':
       return `${name} criou um novo currículo.`;
@@ -74,11 +61,11 @@ function summarize(a: ActivityItem): string {
     case 'BADGE_EARNED':
       return `${name} conquistou uma badge.`;
     case 'SKILL_DECAY':
-      return `Sua skill "${(a.metadata?.skillName as string) ?? '...'}" não recebeu atualizações há ${(a.metadata?.daysSinceTouched as number) ?? 'vários'} dias — vale reativar.`;
+      return `Sua skill "${m.skillName ?? '...'}" não recebeu atualizações há ${m.daysSinceTouched ?? 'vários'} dias — vale reativar.`;
     case 'APPLICATION_STALE':
-      return `Aplicação para ${(a.metadata?.company as string) ?? 'uma vaga'} parada há ${(a.metadata?.daysSilent as number) ?? 'vários'} dias. Que tal um follow-up?`;
+      return `Aplicação para ${m.company ?? 'uma vaga'} parada há ${m.daysSilent ?? 'vários'} dias. Que tal um follow-up?`;
     case 'CONNECTION_RECOMMENDATION':
-      return `Sugestão: você tem ${(a.metadata?.sharedSkills as number) ?? 'várias'} skills em comum com ${(a.metadata?.suggestedName as string) ?? 'alguém'}.`;
+      return `Sugestão: você tem ${m.sharedSkills ?? 'várias'} skills em comum com ${m.suggestedName ?? 'alguém'}.`;
     default:
       return `${name} — ${a.type.toLowerCase().replace(/_/g, ' ')}`;
   }
@@ -101,7 +88,7 @@ function summarize(a: ActivityItem): string {
     <div class="flex justify-center py-12">
       <Loader size={20} />
     </div>
-  {:else if activities.length === 0}
+  {:else if !activities || activities.length === 0}
     <p class="rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500 dark:border-neutral-800 dark:text-neutral-500">
       Nada por aqui ainda. Siga perfis para popular sua timeline.
     </p>
@@ -111,8 +98,8 @@ function summarize(a: ActivityItem): string {
         {@const Icon = iconFor(a.type)}
         <li class="flex items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-neutral-800">
           <Avatar
-            name={a.user.name ?? a.user.username ?? '?'}
-            photoURL={a.user.photoURL}
+            name={a.user?.name ?? a.user?.username ?? '?'}
+            photoURL={a.user?.photoURL}
             size="sm"
           />
           <div class="flex-1">
@@ -124,7 +111,7 @@ function summarize(a: ActivityItem): string {
               {new Date(a.createdAt).toLocaleString()}
             </p>
           </div>
-          {#if a.user.username}
+          {#if a.user?.username}
             <a
               href="/my-profile/public/@{a.user.username}"
               class="text-xs text-cyan-500 hover:underline"
