@@ -1,14 +1,16 @@
 <script lang="ts">
 import { createPostV1AuthResetPassword, isApiError } from 'api-client';
+import { postV1AuthResetPasswordMutationRequestSchema } from 'api-client/zod';
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { createForm } from '$lib/state/create-form.svelte';
 
 const token = $derived($page.url.searchParams.get('token') ?? '');
 
-let password = $state('');
 let confirm = $state('');
-let error = $state<string | null>(null);
+let confirmError = $state('');
+let serverError = $state<string | null>(null);
 let success = $state(false);
 
 const reset = createPostV1AuthResetPassword({
@@ -18,27 +20,31 @@ const reset = createPostV1AuthResetPassword({
       setTimeout(() => goto('/identity/sign-in'), 1500);
     },
     onError(err: unknown) {
-      if (isApiError(err)) error = err.message;
+      if (isApiError(err)) serverError = err.message;
     },
   },
 });
 
+const form = createForm({
+  schema: postV1AuthResetPasswordMutationRequestSchema,
+  initial: { token: '', newPassword: '' },
+  mutation: reset,
+  transform: (v) => ({ ...v, token }),
+});
+
 function handleSubmit(e: Event) {
   e.preventDefault();
+  serverError = null;
+  confirmError = '';
   if (!token) {
-    error = 'Token ausente. Solicite um novo link de recuperação.';
+    serverError = 'Token ausente. Solicite um novo link de recuperação.';
     return;
   }
-  if (password.length < 8) {
-    error = 'A senha precisa ter pelo menos 8 caracteres.';
+  if (form.values.newPassword !== confirm) {
+    confirmError = 'As senhas não coincidem.';
     return;
   }
-  if (password !== confirm) {
-    error = 'As senhas não coincidem.';
-    return;
-  }
-  error = null;
-  $reset.mutate({ data: { token, newPassword: password } });
+  form.submit();
 }
 </script>
 
@@ -69,20 +75,26 @@ function handleSubmit(e: Event) {
           <Input
             id="password"
             type="password"
-            bind:value={password}
+            bind:value={form.values.newPassword}
             required
             placeholder="Mínimo 8 caracteres"
           />
+          {#if form.errors.newPassword}
+            <p class="text-xs font-medium text-red-500/80" role="alert">{form.errors.newPassword}</p>
+          {/if}
         </div>
         <div>
           <Label for="confirm">Confirmar senha</Label>
           <Input id="confirm" type="password" bind:value={confirm} required />
+          {#if confirmError}
+            <p class="text-xs font-medium text-red-500/80" role="alert">{confirmError}</p>
+          {/if}
         </div>
-        {#if error}
-          <p class="text-xs font-medium text-red-500/80" role="alert">{error}</p>
+        {#if serverError}
+          <p class="text-xs font-medium text-red-500/80" role="alert">{serverError}</p>
         {/if}
-        <Button type="submit" disabled={$reset.isPending} variant="solid">
-          {#if $reset.isPending}
+        <Button type="submit" disabled={form.isSubmitting} variant="solid">
+          {#if form.isSubmitting}
             <Loader size={14} class="mx-auto" />
           {:else}
             Redefinir senha

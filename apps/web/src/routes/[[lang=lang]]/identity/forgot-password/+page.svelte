@@ -1,11 +1,12 @@
 <script lang="ts">
 import { createPostV1AuthForgotPassword } from 'api-client';
+import { postV1AuthForgotPasswordMutationRequestSchema } from 'api-client/zod';
 
 import { Button, Input, Label, Loader } from 'ui';
+import { createForm } from '$lib/state/create-form.svelte';
 
-let email = $state('');
 let sent = $state(false);
-let error = $state<string | null>(null);
+let serverError = $state<string | null>(null);
 
 const forgotPassword = createPostV1AuthForgotPassword({
   mutation: {
@@ -13,16 +14,21 @@ const forgotPassword = createPostV1AuthForgotPassword({
       sent = true;
     },
     onError() {
-      error = 'Não foi possível enviar o email. Tente novamente.';
+      serverError = 'Não foi possível enviar o email. Tente novamente.';
     },
   },
 });
 
+const form = createForm({
+  schema: postV1AuthForgotPasswordMutationRequestSchema,
+  initial: { email: '' },
+  mutation: forgotPassword,
+});
+
 function handleSubmit(e: Event) {
   e.preventDefault();
-  if (!email || $forgotPassword.isPending) return;
-  error = null;
-  $forgotPassword.mutate({ data: { email } });
+  serverError = null;
+  form.submit();
 }
 </script>
 
@@ -56,16 +62,19 @@ function handleSubmit(e: Event) {
           <Input
             id="email"
             type="email"
-            bind:value={email}
+            bind:value={form.values.email}
             required
             placeholder="voce@exemplo.com"
           />
+          {#if form.errors.email}
+            <p class="text-xs font-medium text-red-500/80" role="alert">{form.errors.email}</p>
+          {/if}
         </div>
-        {#if error}
-          <p class="text-xs font-medium text-red-500/80" role="alert">{error}</p>
+        {#if serverError}
+          <p class="text-xs font-medium text-red-500/80" role="alert">{serverError}</p>
         {/if}
-        <Button type="submit" disabled={$forgotPassword.isPending} variant="solid">
-          {#if $forgotPassword.isPending}
+        <Button type="submit" disabled={form.isSubmitting} variant="solid">
+          {#if form.isSubmitting}
             <Loader size={14} class="mx-auto" />
           {:else}
             Enviar link de recuperação

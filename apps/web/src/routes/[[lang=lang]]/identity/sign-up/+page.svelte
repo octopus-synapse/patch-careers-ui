@@ -6,34 +6,25 @@ import {
   sessionQueryKey,
   isApiError,
 } from 'api-client';
+import { signupMutationRequestSchema } from 'api-client/zod';
 
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
+import { createForm } from '$lib/state/create-form.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { PRIVACY_VERSION, TOS_VERSION } from '$lib/utils/consent-versions';
 import PasswordStrength from '$lib/components/forms/password-strength.svelte';
 
 const queryClient = useQueryClient();
 
-let name = $state('');
-let email = $state('');
-let password = $state('');
-// LGPD permits a single combined consent as long as both linked documents are
-// reachable. Backend still records two separate UserConsent rows on signup
-// (TOS + PRIVACY) — this checkbox just collapses the UI affordance.
 let acceptedConsent = $state(false);
-let fieldErrors = $state<Record<string, string>>({});
+let acceptedConsentError = $state('');
 let serverError = $state('');
 
 const t = $derived(locale.t);
 
-// Fire verification email right after signup — the guard redirects the fresh
-// session to /identity/verify-email, where the user pastes the code.
 const sendVerification = createPostV1AuthEmailVerificationSend({
-  mutation: {
-    // Ignore errors here; the verify-email page has its own resend button.
-    onError() {},
-  },
+  mutation: { onError() {} },
 });
 
 const signup = createSignup({
@@ -44,46 +35,38 @@ const signup = createSignup({
       goto('/identity/verify-email');
     },
     onError(err: unknown) {
-      if (!t) return;
-      if (isApiError(err) && err.statusCode === 409) {
-        serverError = t('auth.shared.errorEmailInUse');
-        return;
-      }
       if (isApiError(err)) serverError = err.message;
     },
   },
 });
 
-function validate(): boolean {
-  const errors: Record<string, string> = {};
-  if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = t?.('auth.shared.errorEmailInvalid') ?? 'Invalid email';
-  }
-  if (password.length < 8) {
-    errors.password = t?.('auth.shared.errorPasswordTooShort') ?? 'Password must have at least 8 characters';
-  }
-  if (!acceptedConsent) {
-    errors.acceptedConsent =
-      t?.('auth.sign-up.consent.errorRequired') ?? 'You must accept the Terms and Privacy Policy';
-  }
-  fieldErrors = errors;
-  return Object.keys(errors).length === 0;
-}
+const form = createForm({
+  schema: signupMutationRequestSchema,
+  initial: {
+    name: '',
+    email: '',
+    password: '',
+    acceptedTosVersion: TOS_VERSION,
+    acceptedPrivacyVersion: PRIVACY_VERSION,
+  },
+  mutation: signup,
+  transform: (v) => ({
+    ...v,
+    name: v.name?.trim() ? v.name.trim() : undefined,
+    email: v.email.trim(),
+  }),
+});
 
 function handleSubmit(e: Event) {
   e.preventDefault();
   if (!t) return;
   serverError = '';
-  if (!validate()) return;
-  $signup.mutate({
-    data: {
-      name: name.trim() ? name.trim() : undefined,
-      email: email.trim(),
-      password,
-      acceptedTosVersion: TOS_VERSION,
-      acceptedPrivacyVersion: PRIVACY_VERSION,
-    },
-  });
+  acceptedConsentError = '';
+  if (!acceptedConsent) {
+    acceptedConsentError = t('auth.sign-up.consent.errorRequired');
+    return;
+  }
+  form.submit();
 }
 </script>
 
@@ -113,7 +96,7 @@ function handleSubmit(e: Event) {
 							<Input
 								id="name"
 								type="text"
-								bind:value={name}
+								bind:value={form.values.name}
 								placeholder={t('auth.shared.fullNamePlaceholder')}
 							/>
 						</div>
@@ -125,12 +108,12 @@ function handleSubmit(e: Event) {
 							<Input
 								id="email"
 								type="email"
-								bind:value={email}
+								bind:value={form.values.email}
 								required
 								placeholder={t('auth.shared.emailPlaceholder')}
 							/>
-							{#if fieldErrors.email}
-								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.email}</p>
+							{#if form.errors.email}
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{form.errors.email}</p>
 							{/if}
 						</div>
 
@@ -141,13 +124,13 @@ function handleSubmit(e: Event) {
 							<Input
 								id="password"
 								type="password"
-								bind:value={password}
+								bind:value={form.values.password}
 								required
 								placeholder={t('auth.shared.passwordPlaceholder')}
 							/>
-							<PasswordStrength {password} />
-							{#if fieldErrors.password}
-								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{fieldErrors.password}</p>
+							<PasswordStrength password={form.values.password} />
+							{#if form.errors.password}
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{form.errors.password}</p>
 							{/if}
 						</div>
 
@@ -170,8 +153,8 @@ function handleSubmit(e: Event) {
 									</a>
 								</span>
 							</label>
-							{#if fieldErrors.acceptedConsent}
-								<p role="alert" class="text-xs font-medium text-red-500/80">{fieldErrors.acceptedConsent}</p>
+							{#if acceptedConsentError}
+								<p role="alert" class="text-xs font-medium text-red-500/80">{acceptedConsentError}</p>
 							{/if}
 
 						</div>
@@ -183,10 +166,10 @@ function handleSubmit(e: Event) {
 
 					<Button
 						type="submit"
-						disabled={$signup.isPending}
+						disabled={form.isSubmitting}
 						variant="solid"
 					>
-						{#if $signup.isPending}
+						{#if form.isSubmitting}
 							<Loader size={14} class="mx-auto" />
 						{:else}
 							{t('auth.sign-up.submit')}
