@@ -1,3 +1,3 @@
+export { getV1MatchResumeIdJobId } from "./getV1MatchResumeIdJobId";
 export { jobMatchController } from "./jobMatchController";
-export { jobMatchMatchGet } from "./jobMatchMatchGet";
-export { jobMatchMatchPost } from "./jobMatchMatchPost";
+export { postV1Match } from "./postV1Match";

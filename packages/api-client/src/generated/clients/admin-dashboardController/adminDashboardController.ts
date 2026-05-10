@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { adminDashboardMetrics } from "./adminDashboardMetrics";
+import { getV1AdminDashboardMetrics } from "./getV1AdminDashboardMetrics";
 
 export function adminDashboardController() {
-  return { adminDashboardMetrics }
+  return { getV1AdminDashboardMetrics }
 }

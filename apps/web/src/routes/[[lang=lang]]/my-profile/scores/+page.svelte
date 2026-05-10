@@ -3,13 +3,13 @@
    * /my-profile/scores — burra: hub que mostra Resume Quality + Match Score
    * + Style Score.
    */
-  import { createFitProfileMeGet, createResumesList } from 'api-client';
+  import { createGetV1FitProfileMe, createGetV1Resumes } from 'api-client';
   import { ArrowRight } from 'lucide-svelte';
   import { browser } from '$app/environment';
   import ResumeQualityCard from '$lib/components/scoring/resume-quality-card.svelte';
   import { Card, ScoreCard } from 'ui';
 
-  const myResumesQuery = createResumesList(
+  const myResumesQuery = createGetV1Resumes(
     { page: '1', limit: '1' },
     { query: { enabled: browser, retry: false } },
   );
@@ -17,7 +17,7 @@
     $myResumesQuery.data?.items?.[0]?.id ?? null,
   );
 
-  const fitMeQuery = createFitProfileMeGet({
+  const fitMeQuery = createGetV1FitProfileMe({
       query: { enabled: browser, retry: false },
     });
   const fitStatus = $derived<'responded' | 'expired' | 'never' | 'loading'>(

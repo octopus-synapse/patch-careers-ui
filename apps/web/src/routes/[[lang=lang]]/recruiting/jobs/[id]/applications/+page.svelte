@@ -2,7 +2,7 @@
   /**
    * Recruiting jobs/[id]/applications — burra: lista candidaturas para a vaga.
    */
-  import { createJobsApplicationsGet2 } from 'api-client';
+  import { createGetV1JobsIdApplications } from 'api-client';
   import { ArrowLeft } from 'lucide-svelte';
   import { Avatar, Loader } from 'ui';
   import { page } from '$app/stores';
@@ -11,14 +11,14 @@
   const t = $derived(locale.t);
   const jobId = $derived($page.params.id ?? '');
 
-  const query = createJobsApplicationsGet2(
+  const query = createGetV1JobsIdApplications(
     jobId,
-    { page: '1', limit: '100' },
+    { page: 1, limit: 100 },
     { query: { enabled: !!jobId } },
   );
 
   const items = $derived($query.data?.items);
-  const total = $derived($query.data?.pagination.total ?? 0);
+  const total = $derived($query.data?.total ?? 0);
 
   const STATUS_LABEL: Record<string, string> = {
     SUBMITTED: 'Enviadas',

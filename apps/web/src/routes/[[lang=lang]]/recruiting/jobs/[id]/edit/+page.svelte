@@ -1,15 +1,15 @@
 <script lang="ts">
   /**
-   * Recruiting jobs/edit — burra: hidrata via createJobsGetById e patch via
-   * jobsUpdate.
+   * Recruiting jobs/edit — burra: hidrata via createGetV1JobsId e patch via
+   * patchV1JobsId.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    createJobsGetById,
-    jobsGetByIdQueryKey,
-    jobsMineQueryKey,
-    jobsUpdate,
-    type JobsUpdateMutationRequest,
+    createGetV1JobsId,
+    getV1JobsIdQueryKey,
+    getV1JobsApplicationsQueryKey,
+    patchV1JobsId,
+    type PatchV1JobsIdMutationRequest,
   } from 'api-client';
   import { Button, Input, Label, Loader, Textarea, toastState } from 'ui';
   import { goto } from '$app/navigation';
@@ -20,7 +20,7 @@
   const queryClient = useQueryClient();
   const jobId = $derived($page.params.id ?? '');
 
-  const jobQuery = createJobsGetById(jobId);
+  const jobQuery = createGetV1JobsId(jobId);
   const job = $derived($jobQuery.data);
 
   let title = $state('');
@@ -58,7 +58,7 @@
     e.preventDefault();
     serverError = '';
     submitting = true;
-    const body: JobsUpdateMutationRequest = {
+    const body: PatchV1JobsIdMutationRequest = {
       title: title.trim() || undefined,
       company: company.trim() || undefined,
       location: location.trim() || undefined,
@@ -68,11 +68,11 @@
       skills: splitCsv(skillsCsv),
     };
     try {
-      await jobsUpdate(jobId, body);
+      await patchV1JobsId(jobId, body);
       toastState.show('Vaga atualizada', 'success');
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) }),
-        queryClient.invalidateQueries({ queryKey: jobsMineQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getV1JobsIdQueryKey(jobId) }),
+        queryClient.invalidateQueries({ queryKey: getV1JobsApplicationsQueryKey() }),
       ]);
       void goto('/recruiting/jobs');
     } catch (err) {

@@ -1,3 +1,3 @@
 export { badgesController } from "./badgesController";
-export { badgesMe } from "./badgesMe";
-export { badgesUser } from "./badgesUser";
+export { getV1BadgesMe } from "./getV1BadgesMe";
+export { getV1BadgesUserUserId } from "./getV1BadgesUserUserId";

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { usersUsernameCheck } from 'api-client';
-import type { UsersUsernameCheck200ReasonEnumKey } from 'api-client';
+import { getV1UsersUsernameCheck } from 'api-client';
+import type { GetV1UsersUsernameCheck200ReasonEnumKey } from 'api-client';
 import { Button, Input, Label, Textarea } from 'ui';
 
 type Field = {
@@ -23,7 +23,7 @@ type Props = {
 let { field, value, onchange, error }: Props = $props();
 
 let usernameAvailable = $state<boolean | null>(null);
-let usernameReason = $state<UsersUsernameCheck200ReasonEnumKey | null>(null);
+let usernameReason = $state<GetV1UsersUsernameCheck200ReasonEnumKey | null>(null);
 let usernameCheckTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function checkUsername(val: string) {
@@ -33,7 +33,7 @@ function checkUsername(val: string) {
   if (!val || val.length < 3) return;
   usernameCheckTimeout = setTimeout(async () => {
     try {
-      const res = await usersUsernameCheck({ username: val });
+      const res = await getV1UsersUsernameCheck({ username: val });
       usernameAvailable = res.available;
       usernameReason = res.reason ?? null;
     } catch {
@@ -43,7 +43,7 @@ function checkUsername(val: string) {
   }, 500);
 }
 
-const unavailableLabel: Record<UsersUsernameCheck200ReasonEnumKey, string> = {
+const unavailableLabel: Record<GetV1UsersUsernameCheck200ReasonEnumKey, string> = {
   taken: '✗ Already taken',
   reserved: '✗ Reserved',
   invalid_format: '✗ Invalid format',

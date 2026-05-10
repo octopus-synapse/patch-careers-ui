@@ -1,1 +1,1 @@
-export { automationRageApply200Schema, automationRageApply400Schema, automationRageApply401Schema, automationRageApply403Schema, automationRageApplyMutationRequestSchema, automationRageApplyMutationResponseSchema } from "./automationRageApplySchema";
+export { postV1AutomationRageApply200Schema, postV1AutomationRageApply400Schema, postV1AutomationRageApply401Schema, postV1AutomationRageApply403Schema, postV1AutomationRageApplyMutationRequestSchema, postV1AutomationRageApplyMutationResponseSchema } from "./postV1AutomationRageApplySchema";

@@ -4,15 +4,16 @@ import type { Component } from 'svelte';
 import { Button, EmptyState, Skeleton, StatGrid, type StatItem, Tabs } from 'ui';
 import { browser } from '$app/environment';
 import {
-  createSocialConnectionsUsersMeConnections,
-  createSocialConnectionsUsersMeNetworkSummary,
-  createSocialFollowUsersFollowers,
-  createSocialFollowUsersFollowing,
-  socialConnectionsConnectionsAccept,
-  socialConnectionsConnectionsReject,
-  socialConnectionsConnectionsWithdraw,
-  socialConnectionsUsersMeConnections,
-  type SocialConnectionsUsersMeNetworkSummary200,
+  createGetV1UsersMeConnections,
+  createGetV1UsersMeNetworkSummary,
+  createGetV1UsersUserIdFollowers,
+  createGetV1UsersUserIdFollowing,
+  putV1ConnectionsIdAccept,
+  putV1ConnectionsIdReject,
+  deleteV1ConnectionsId,
+  getV1UsersMeConnections,
+  getV1UsersMeConnectionsQueryKey,
+  type GetV1UsersMeNetworkSummary200,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -31,8 +32,8 @@ import { InfiniteScrollTrigger } from 'ui';
  * and the per-side follow lists. The pending/connection mutations all
  * route through `undoableAction` so a misclick can be reversed within 5s.
  */
-type ConnectionRecord = SocialConnectionsUsersMeNetworkSummary200['connections']['data'][number];
-type PendingRecord = SocialConnectionsUsersMeNetworkSummary200['pendingRequests']['data'][number];
+type ConnectionRecord = GetV1UsersMeNetworkSummary200['connections']['items'][number];
+type PendingRecord = GetV1UsersMeNetworkSummary200['pendingRequests']['items'][number];
 
 function userOf(r: ConnectionRecord | PendingRecord) {
   return r.user ?? r.requester ?? r.target;
@@ -41,34 +42,34 @@ function userOf(r: ConnectionRecord | PendingRecord) {
 const t = $derived(locale.t);
 
 const auth = useAuth();
-const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
-const authenticated = $derived(auth.data?.authenticated);
+const currentUserId = $derived(String(auth.userId ?? ''));
+const authenticated = $derived(auth.isAuthenticated);
 
-const summaryQuery = createSocialConnectionsUsersMeNetworkSummary(
+const summaryQuery = createGetV1UsersMeNetworkSummary(
   { query: { enabled: browser && !!authenticated } },
 );
 
-const followersQuery = createSocialFollowUsersFollowers(
+const followersQuery = createGetV1UsersUserIdFollowers(
   currentUserId,
-  { page: '1', limit: '10' },
+  { page: 1, limit: 10 },
   { query: { enabled: browser && !!currentUserId } },
 );
-const followingQuery = createSocialFollowUsersFollowing(
+const followingQuery = createGetV1UsersUserIdFollowing(
   currentUserId,
-  { page: '1', limit: '10' },
+  { page: 1, limit: 10 },
   { query: { enabled: browser && !!currentUserId } },
 );
 
 const summary = $derived($summaryQuery.data);
 const stats = $derived(summary?.stats);
-const pendingList = $derived(summary?.pendingRequests.data);
-const suggestionsList = $derived(summary?.suggestions.data);
-const connectionsFirstPage = $derived(summary?.connections.data);
+const pendingList = $derived(summary?.pendingRequests.items);
+const suggestionsList = $derived(summary?.suggestions.items);
+const connectionsFirstPage = $derived(summary?.connections.items);
 const connectionsTotal = $derived(summary?.connections.total ?? 0);
 const connectionsTotalPages = $derived(summary?.connections.totalPages ?? 0);
 
-const followersList = $derived($followersQuery.data?.followers.data);
-const followingList = $derived($followingQuery.data?.following.data);
+const followersList = $derived($followersQuery.data?.items);
+const followingList = $derived($followingQuery.data?.items);
 
 // Infinite scroll for connections — extra pages loaded after the first page
 // arrives from the network summary.
@@ -95,11 +96,11 @@ async function loadMoreConnections() {
   connectionsLoading = true;
   try {
     const next = connectionsPage + 1;
-    const res = await socialConnectionsUsersMeConnections({
-      page: String(next),
-      limit: '10',
+    const res = await getV1UsersMeConnections({
+      page: next,
+      limit: 10,
     });
-    connectionsExtra = [...connectionsExtra, ...res.connections.data];
+    connectionsExtra = [...connectionsExtra, ...res.items];
     connectionsPage = next;
   } finally {
     connectionsLoading = false;
@@ -123,7 +124,7 @@ function handleAccept(row: PendingRecord) {
       next.delete(row.id);
       hiddenPendingIds = next;
     },
-    commit: () => socialConnectionsConnectionsAccept(row.id),
+    commit: () => putV1ConnectionsIdAccept(row.id),
     onCommitted: () => {
       invalidateNetwork();
       track('connection_accepted', { requestId: row.id, source: 'mynetwork_main' });
@@ -142,7 +143,7 @@ function handleReject(row: PendingRecord) {
       next.delete(row.id);
       hiddenPendingIds = next;
     },
-    commit: () => socialConnectionsConnectionsReject(row.id),
+    commit: () => putV1ConnectionsIdReject(row.id),
     onCommitted: () => {
       invalidateNetwork();
       track('connection_rejected', { requestId: row.id, source: 'mynetwork_main' });
@@ -161,7 +162,7 @@ function handleRemove(row: ConnectionRecord) {
       next.delete(row.id);
       hiddenConnectionIds = next;
     },
-    commit: () => socialConnectionsConnectionsWithdraw(row.id),
+    commit: () => deleteV1ConnectionsId(row.id),
     onCommitted: () => {
       invalidateNetwork();
       track('connection_removed', { connectionId: row.id, source: 'mynetwork_main' });

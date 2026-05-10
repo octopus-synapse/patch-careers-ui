@@ -2,11 +2,11 @@
   /**
    * Admin alerts widget — burra: chama SDK e renderiza chips/links.
    */
-import { createAdminAlertsList } from 'api-client';
+import { createGetV1AdminAlerts } from 'api-client';
 import { AlertTriangle, Flag, MailCheck, UserPlus } from 'lucide-svelte';
 import { browser } from '$app/environment';
 
-const alertsQuery = createAdminAlertsList({
+const alertsQuery = createGetV1AdminAlerts({
   query: { enabled: browser, refetchInterval: 60_000 },
 });
 

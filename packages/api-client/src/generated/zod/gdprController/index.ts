@@ -1,1 +1,1 @@
-export { gdprMeGdprExport200Schema, gdprMeGdprExport400Schema, gdprMeGdprExport401Schema, gdprMeGdprExportQueryResponseSchema } from "./gdprMeGdprExportSchema";
+export { getV1MeGdprExport200Schema, getV1MeGdprExport400Schema, getV1MeGdprExport401Schema, getV1MeGdprExportQueryResponseSchema } from "./getV1MeGdprExportSchema";

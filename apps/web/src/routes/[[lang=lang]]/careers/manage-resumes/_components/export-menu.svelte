@@ -5,10 +5,10 @@
 -->
 <script lang="ts">
 import {
-  exportJson,
-  exportLatex,
-  exportResumeDocx,
-  exportUserResumePdf,
+  getV1ExportResumeIdJson,
+  getV1ExportResumeIdLatex,
+  getV1ExportResumeDocx,
+  getV1ExportUserUserIdResumePdf,
 } from 'api-client';
 import { Download, FileCode, FileJson, FileText, FileType } from 'lucide-svelte';
 import { Button, Dropdown, Loader } from 'ui';
@@ -50,7 +50,7 @@ async function downloadPdf() {
   if (!userId) return;
   loading = 'pdf';
   try {
-    const res = await exportUserResumePdf(userId);
+    const res = await getV1ExportUserUserIdResumePdf(userId);
     if (!('pdf' in res)) throw new Error('Backend returned an unexpected response shape');
     const bytes = Uint8Array.from(atob(res.pdf), (c) => c.charCodeAt(0));
     const blob = new Blob([bytes], { type: 'application/pdf' });
@@ -69,7 +69,7 @@ async function downloadDocx() {
   loading = 'docx';
   try {
     const res = ensurePresigned<{ downloadUrl: string; filename: string }>(
-      await exportResumeDocx(),
+      await getV1ExportResumeDocx(),
     );
     triggerDownload(res.downloadUrl, res.filename);
   } catch (err) {
@@ -85,7 +85,7 @@ async function downloadJson() {
   loading = 'json';
   try {
     const res = ensurePresigned<{ downloadUrl: string; filename: string }>(
-      await exportJson(resumeId),
+      await getV1ExportResumeIdJson(resumeId),
     );
     triggerDownload(res.downloadUrl, res.filename);
   } catch (err) {
@@ -101,7 +101,7 @@ async function downloadLatex() {
   loading = 'latex';
   try {
     const res = ensurePresigned<{ downloadUrl: string; filename: string }>(
-      await exportLatex(resumeId),
+      await getV1ExportResumeIdLatex(resumeId),
     );
     triggerDownload(res.downloadUrl, res.filename);
   } catch (err) {

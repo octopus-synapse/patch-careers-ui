@@ -1,15 +1,17 @@
 <script lang="ts">
 import {
-  createPostsGetById,
-  engagementPostsBookmarkDelete,
-  engagementPostsBookmarkPost,
-  engagementPostsLikeDelete,
-  engagementPostsLikePost,
-  engagementPostsReport,
-  engagementPostsRepost,
-  postsDelete,
+  createGetV1PostsId,
+  deleteV1PostsIdBookmarkMutationKey,
+  postV1PostsIdBookmark,
+  deleteV1PostsIdLikeMutationKey,
+  postV1PostsIdLike,
+  postV1PostsIdReport,
+  postV1PostsIdRepost,
+  deleteV1PostsId,
+  deleteV1PostsIdLike,
+  deleteV1PostsIdBookmark,
 } from 'api-client';
-import type { PostsGetById200 } from 'api-client';
+import type { GetV1PostsId200 } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -26,8 +28,8 @@ import { useAuth } from '$lib/state/auth.svelte';
  */
 
 const session = useAuth();
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated);
 const currentUserId = $derived(String(user?.id ?? ''));
 
 $effect(() => {
@@ -38,7 +40,7 @@ $effect(() => {
 
 const threadId = $derived($page.params.id ?? '');
 
-const postQuery = createPostsGetById(
+const postQuery = createGetV1PostsId(
   threadId,
   { query: { enabled: authenticated && !!threadId } },
 );
@@ -50,14 +52,14 @@ let unlikedPosts = $state<Set<string>>(new Set());
 let bookmarkedPosts = $state<Set<string>>(new Set());
 let unbookmarkedPosts = $state<Set<string>>(new Set());
 
-function isPostLiked(post: PostsGetById200): boolean {
+function isPostLiked(post: GetV1PostsId200): boolean {
   const id = post.id;
   if (likedPosts.has(id)) return true;
   if (unlikedPosts.has(id)) return false;
   return false;
 }
 
-function isPostBookmarked(post: PostsGetById200): boolean {
+function isPostBookmarked(post: GetV1PostsId200): boolean {
   const id = post.id;
   if (bookmarkedPosts.has(id)) return true;
   if (unbookmarkedPosts.has(id)) return false;
@@ -67,38 +69,38 @@ function isPostBookmarked(post: PostsGetById200): boolean {
 async function handleLike(id: string) {
   likedPosts = new Set([...likedPosts, id]);
   unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
-  await engagementPostsLikePost(id, { reactionType: 'LIKE' });
+  await postV1PostsIdLike(id, { reactionType: 'LIKE' });
 }
 
 async function handleUnlike(id: string) {
   unlikedPosts = new Set([...unlikedPosts, id]);
   likedPosts = new Set([...likedPosts].filter((x) => x !== id));
-  await engagementPostsLikeDelete(id);
+  await deleteV1PostsIdLike(id);
 }
 
 async function handleBookmark(id: string) {
   bookmarkedPosts = new Set([...bookmarkedPosts, id]);
   unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
-  await engagementPostsBookmarkPost(id);
+  await postV1PostsIdBookmark(id);
 }
 
 async function handleUnbookmark(id: string) {
   unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
   bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
-  await engagementPostsBookmarkDelete(id);
+  await deleteV1PostsIdBookmark(id);
 }
 
 async function handleDelete(id: string) {
-  await postsDelete(id);
+  await deleteV1PostsId(id);
   goto('/social/feed');
 }
 
 async function handleRepost(id: string) {
-  await engagementPostsRepost(id, {});
+  await postV1PostsIdRepost(id, {});
 }
 
 async function handleReport(id: string) {
-  await engagementPostsReport(id, { reason: 'unspecified' });
+  await postV1PostsIdReport(id, { reason: 'unspecified' });
 }
 </script>
 

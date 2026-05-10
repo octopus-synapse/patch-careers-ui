@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { recruitingJobsFormConfig } from "./recruitingJobsFormConfig";
-import { recruitingMatchCandidates } from "./recruitingMatchCandidates";
+import { getV1RecruitingJobsFormConfig } from "./getV1RecruitingJobsFormConfig";
+import { postV1RecruitingMatchCandidates } from "./postV1RecruitingMatchCandidates";
 
 export function recruitingController() {
-  return { recruitingJobsFormConfig, recruitingMatchCandidates }
+  return { getV1RecruitingJobsFormConfig, postV1RecruitingMatchCandidates }
 }

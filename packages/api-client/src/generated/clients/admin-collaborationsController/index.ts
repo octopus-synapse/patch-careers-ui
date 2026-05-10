@@ -1,4 +1,4 @@
 export { adminCollaborationsController } from "./adminCollaborationsController";
-export { adminCollaborationsDelete } from "./adminCollaborationsDelete";
-export { adminCollaborationsList } from "./adminCollaborationsList";
-export { adminCollaborationsStats } from "./adminCollaborationsStats";
+export { deleteV1AdminCollaborationsResumeIdUserId } from "./deleteV1AdminCollaborationsResumeIdUserId";
+export { getV1AdminCollaborations } from "./getV1AdminCollaborations";
+export { getV1AdminCollaborationsStats } from "./getV1AdminCollaborationsStats";

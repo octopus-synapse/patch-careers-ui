@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createJobsList } from 'api-client';
+import { createGetV1Jobs } from 'api-client';
 import { ArrowRight, Globe2 } from 'lucide-svelte';
 import { Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -18,12 +18,12 @@ type RemoteJob = {
 const t = $derived(locale.t);
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated ?? false);
+const authenticated = $derived(auth.isAuthenticated ?? false);
 
 // Show the first 3 USD/EUR remote jobs as mini cards instead of a raw count
 // — gives the user something to act on (per UX feedback #11).
-const query = createJobsList(
-  { page: '1', limit: '3', search: '', skills: '', paymentCurrency: 'USD,EUR' },
+const query = createGetV1Jobs(
+  { page: 1, limit: 3, search: '', skills: '', paymentCurrency: 'USD,EUR' },
   { query: { enabled: browser && authenticated } },
 );
 

@@ -6,8 +6,8 @@ import { useAuth } from '$lib/state/auth.svelte';
 
 const session = useAuth();
 
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated ?? false);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated ?? false);
 const needsOnboarding = $derived(user?.needsOnboarding ?? false);
 const needsEmailVerification = $derived(Boolean(user?.needsEmailVerification));
 const isAdmin = $derived(Boolean(user?.isAdmin));

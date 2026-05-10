@@ -1,2 +1,2 @@
 export { gdprController } from "./gdprController";
-export { gdprMeGdprExport } from "./gdprMeGdprExport";
+export { getV1MeGdprExport } from "./getV1MeGdprExport";

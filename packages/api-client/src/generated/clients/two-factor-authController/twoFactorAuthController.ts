@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { twoFactorAuthAuth2Fa } from "./twoFactorAuthAuth2Fa";
-import { twoFactorAuthAuth2FaBackupCodesRegenerate } from "./twoFactorAuthAuth2FaBackupCodesRegenerate";
-import { twoFactorAuthAuth2FaSetup } from "./twoFactorAuthAuth2FaSetup";
-import { twoFactorAuthAuth2FaStatus } from "./twoFactorAuthAuth2FaStatus";
-import { twoFactorAuthAuth2FaVerify } from "./twoFactorAuthAuth2FaVerify";
+import { deleteV1Auth2Fa } from "./deleteV1Auth2Fa";
+import { getV1Auth2FaStatus } from "./getV1Auth2FaStatus";
+import { postV1Auth2FaBackupCodesRegenerate } from "./postV1Auth2FaBackupCodesRegenerate";
+import { postV1Auth2FaSetup } from "./postV1Auth2FaSetup";
+import { postV1Auth2FaVerify } from "./postV1Auth2FaVerify";
 
 export function twoFactorAuthController() {
-  return { twoFactorAuthAuth2FaSetup, twoFactorAuthAuth2FaVerify, twoFactorAuthAuth2FaStatus, twoFactorAuthAuth2FaBackupCodesRegenerate, twoFactorAuthAuth2Fa }
+  return { deleteV1Auth2Fa, postV1Auth2FaBackupCodesRegenerate, postV1Auth2FaSetup, getV1Auth2FaStatus, postV1Auth2FaVerify }
 }

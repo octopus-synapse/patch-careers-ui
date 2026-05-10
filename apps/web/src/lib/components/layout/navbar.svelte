@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createAuthLogout, authSessionQueryKey } from 'api-client';
+import { createLogout, sessionQueryKey } from 'api-client';
 import type { Locale } from 'i18n';
 import {
   Briefcase,
@@ -43,8 +43,8 @@ let isSearchOpen = $state(false);
 const isMac = $derived(browser && /Mac|iPhone|iPad|iPod/i.test(navigator.platform));
 
 const session = useAuth();
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated);
 // Admins bypass onboarding entirely, so `hasCompletedOnboarding` stays
 // false for them — `!needsOnboarding` is the flag that's true for both
 // admins and regular users past the wizard. `!needsEmailVerification`
@@ -63,7 +63,7 @@ function isActiveRoute(href: string) {
 }
 
 const queryClient = useQueryClient();
-const logout = createAuthLogout({
+const logout = createLogout({
   mutation: {
     async onSuccess() {
       // Clear *all* cached queries so the next screen can't flash user
@@ -71,8 +71,8 @@ const logout = createAuthLogout({
       queryClient.clear();
       // Re-query session explicitly and await so the SSR/CSR guards
       // see `authenticated: false` before we navigate.
-      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
-      await queryClient.refetchQueries({ queryKey: authSessionQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
+      await queryClient.refetchQueries({ queryKey: sessionQueryKey() });
       isDropdownOpen = false;
       goto('/identity/sign-in', { replaceState: true, invalidateAll: true });
     },

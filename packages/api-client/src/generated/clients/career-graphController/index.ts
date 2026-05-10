@@ -1,2 +1,2 @@
 export { careerGraphController } from "./careerGraphController";
-export { careerGraphView } from "./careerGraphView";
+export { postV1CareerGraphView } from "./postV1CareerGraphView";

@@ -12,7 +12,7 @@
   const { flag, children, fallback }: Props = $props();
 
   const auth = useAuth();
-  const authenticated = $derived(auth.data?.authenticated ?? false);
+  const authenticated = $derived(auth.isAuthenticated ?? false);
   const flags = useFeatureFlags(() => ({ authenticated }));
   const visible = $derived(flags.enabled(flag));
 </script>

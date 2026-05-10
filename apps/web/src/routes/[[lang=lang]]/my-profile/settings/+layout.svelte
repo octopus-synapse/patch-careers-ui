@@ -12,7 +12,7 @@ let { children }: { children: Snippet } = $props();
 
 const session = useAuth();
 
-const authenticated = $derived(session.data?.authenticated ?? false);
+const authenticated = $derived(session.isAuthenticated ?? false);
 const currentPath = $derived($page.url.pathname);
 
 $effect(() => {

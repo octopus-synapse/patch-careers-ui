@@ -3,16 +3,16 @@
    * Recruiting search-candidates — burra: descreve vaga, recebe ranking.
    */
   import {
-    recruitingMatchCandidates,
-    type RecruitingMatchCandidatesMutationRequest,
-    type RecruitingMatchCandidates200,
+    postV1RecruitingMatchCandidates,
+    type PostV1RecruitingMatchCandidatesMutationRequest,
+    type PostV1RecruitingMatchCandidates200,
   } from 'api-client';
   import { Sparkles, Users } from 'lucide-svelte';
   import { Avatar, Badge, Button, Input, Label, Loader, Textarea } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { goto } from '$app/navigation';
 
-  type Candidate = RecruitingMatchCandidates200['candidates'][number];
+  type Candidate = PostV1RecruitingMatchCandidates200['candidates'][number];
 
   let jobTitle = $state('');
   let jobDescription = $state('');
@@ -38,7 +38,7 @@
     if (!canSubmit || submitting) return;
     submitting = true;
     try {
-      const payload: RecruitingMatchCandidatesMutationRequest = {
+      const payload: PostV1RecruitingMatchCandidatesMutationRequest = {
         jobTitle: jobTitle || undefined,
         jobDescription: jobDescription || undefined,
         skills: skills.length > 0 ? skills : undefined,
@@ -46,7 +46,7 @@
         remotePolicy: remotePolicy || undefined,
         limit,
       };
-      const res = await recruitingMatchCandidates(payload);
+      const res = await postV1RecruitingMatchCandidates(payload);
       candidates = res.candidates;
       searched = true;
     } catch (err) {

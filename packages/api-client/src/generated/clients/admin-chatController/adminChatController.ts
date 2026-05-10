@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { adminChatConversations } from "./adminChatConversations";
-import { adminChatStats } from "./adminChatStats";
+import { getV1AdminChatConversations } from "./getV1AdminChatConversations";
+import { getV1AdminChatStats } from "./getV1AdminChatStats";
 
 export function adminChatController() {
-  return { adminChatStats, adminChatConversations }
+  return { getV1AdminChatConversations, getV1AdminChatStats }
 }

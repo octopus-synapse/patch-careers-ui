@@ -3,16 +3,16 @@
 * Do not edit manually.
 */
 
-import { collaborationResumesCollaboratorsDelete } from "./collaborationResumesCollaboratorsDelete";
-import { collaborationResumesCollaboratorsGet } from "./collaborationResumesCollaboratorsGet";
-import { collaborationResumesCollaboratorsPatch } from "./collaborationResumesCollaboratorsPatch";
-import { collaborationResumesCollaboratorsPost } from "./collaborationResumesCollaboratorsPost";
-import { collaborationResumesCommentsDelete } from "./collaborationResumesCommentsDelete";
-import { collaborationResumesCommentsGet } from "./collaborationResumesCommentsGet";
-import { collaborationResumesCommentsPost } from "./collaborationResumesCommentsPost";
-import { collaborationResumesCommentsResolve } from "./collaborationResumesCommentsResolve";
-import { collaborationResumesSharedWithMe } from "./collaborationResumesSharedWithMe";
+import { deleteV1ResumesCommentsCommentId } from "./deleteV1ResumesCommentsCommentId";
+import { deleteV1ResumesResumeIdCollaboratorsUserId } from "./deleteV1ResumesResumeIdCollaboratorsUserId";
+import { getV1ResumesResumeIdCollaborators } from "./getV1ResumesResumeIdCollaborators";
+import { getV1ResumesResumeIdComments } from "./getV1ResumesResumeIdComments";
+import { getV1ResumesSharedWithMe } from "./getV1ResumesSharedWithMe";
+import { patchV1ResumesResumeIdCollaboratorsUserId } from "./patchV1ResumesResumeIdCollaboratorsUserId";
+import { postV1ResumesCommentsCommentIdResolve } from "./postV1ResumesCommentsCommentIdResolve";
+import { postV1ResumesResumeIdCollaborators } from "./postV1ResumesResumeIdCollaborators";
+import { postV1ResumesResumeIdComments } from "./postV1ResumesResumeIdComments";
 
 export function collaborationController() {
-  return { collaborationResumesCollaboratorsPost, collaborationResumesCollaboratorsGet, collaborationResumesCollaboratorsPatch, collaborationResumesCollaboratorsDelete, collaborationResumesSharedWithMe, collaborationResumesCommentsGet, collaborationResumesCommentsPost, collaborationResumesCommentsResolve, collaborationResumesCommentsDelete }
+  return { deleteV1ResumesCommentsCommentId, postV1ResumesCommentsCommentIdResolve, getV1ResumesSharedWithMe, getV1ResumesResumeIdCollaborators, postV1ResumesResumeIdCollaborators, deleteV1ResumesResumeIdCollaboratorsUserId, patchV1ResumesResumeIdCollaboratorsUserId, getV1ResumesResumeIdComments, postV1ResumesResumeIdComments }
 }

@@ -1,4 +1,4 @@
-export { searchGlobal200Schema, searchGlobal400Schema, searchGlobalQueryParamsSchema, searchGlobalQueryResponseSchema } from "./searchGlobalSchema";
-export { searchList200Schema, searchList400Schema, searchListQueryParamsSchema, searchListQueryResponseSchema } from "./searchListSchema";
-export { searchSimilar200Schema, searchSimilar400Schema, searchSimilarPathParamsSchema, searchSimilarQueryParamsSchema, searchSimilarQueryResponseSchema } from "./searchSimilarSchema";
-export { searchSuggestions200Schema, searchSuggestions400Schema, searchSuggestionsQueryParamsSchema, searchSuggestionsQueryResponseSchema } from "./searchSuggestionsSchema";
+export { getV1SearchGlobal200Schema, getV1SearchGlobal400Schema, getV1SearchGlobalQueryParamsSchema, getV1SearchGlobalQueryResponseSchema } from "./getV1SearchGlobalSchema";
+export { getV1Search200Schema, getV1Search400Schema, getV1SearchQueryParamsSchema, getV1SearchQueryResponseSchema } from "./getV1SearchSchema";
+export { getV1SearchSimilarId200Schema, getV1SearchSimilarId400Schema, getV1SearchSimilarId404Schema, getV1SearchSimilarIdPathParamsSchema, getV1SearchSimilarIdQueryParamsSchema, getV1SearchSimilarIdQueryResponseSchema } from "./getV1SearchSimilarIdSchema";
+export { getV1SearchSuggestions200Schema, getV1SearchSuggestions400Schema, getV1SearchSuggestionsQueryParamsSchema, getV1SearchSuggestionsQueryResponseSchema } from "./getV1SearchSuggestionsSchema";

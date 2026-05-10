@@ -4,9 +4,10 @@
 -->
 <script lang="ts">
 import {
-  createSkillEndorsementsUsersSkills,
-  skillEndorsementsUsersSkillsEndorsers,
-  type SkillEndorsementsUsersSkillsEndorsers200,
+  createGetV1UsersUserIdSkills,
+  getV1UsersUserIdSkillsSkillEndorsersQueryKey,
+  type GetV1UsersUserIdSkillsSkillEndorsers200,
+  getV1UsersUserIdSkillsSkillEndorsers,
 } from 'api-client';
 import { ChevronDown, ChevronUp } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -15,11 +16,11 @@ import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
 
 const auth = useAuth();
-const viewerId = $derived(String(auth.data?.user?.id ?? ''));
+const viewerId = $derived(String(auth.userId ?? ''));
 
-type Endorser = SkillEndorsementsUsersSkillsEndorsers200['data'][number];
+type Endorser = GetV1UsersUserIdSkillsSkillEndorsers200['items'][number];
 
-const skillsQuery = createSkillEndorsementsUsersSkills(
+const skillsQuery = createGetV1UsersUserIdSkills(
   viewerId,
   { query: { enabled: browser && viewerId !== '' } },
 );
@@ -37,8 +38,8 @@ async function toggleExpand(skill: string) {
   if (!endorsersCache[skill]) {
     endorsersCache = { ...endorsersCache, [skill]: 'loading' };
     try {
-      const res = await skillEndorsementsUsersSkillsEndorsers(viewerId, skill);
-      endorsersCache = { ...endorsersCache, [skill]: res.data };
+      const res = await getV1UsersUserIdSkillsSkillEndorsers(viewerId, skill);
+      endorsersCache = { ...endorsersCache, [skill]: res.items };
     } catch (err) {
       handleApiError(err);
       endorsersCache = { ...endorsersCache, [skill]: [] };

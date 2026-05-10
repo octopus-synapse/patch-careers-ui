@@ -1,8 +1,9 @@
-export type { UiMetadataEnumsGet200, UiMetadataEnumsGet400, UiMetadataEnumsGet400SeverityEnumKey, UiMetadataEnumsGetQuery, UiMetadataEnumsGetQueryResponse } from "./UiMetadataEnumsGet";
-export type { UiMetadataEnumsGet2200, UiMetadataEnumsGet2400, UiMetadataEnumsGet2400SeverityEnumKey, UiMetadataEnumsGet2PathParams, UiMetadataEnumsGet2Query, UiMetadataEnumsGet2QueryResponse, ValuesToneEnumKey } from "./UiMetadataEnumsGet2";
-export type { UiMetadataMeMenu200, UiMetadataMeMenu400, UiMetadataMeMenu400SeverityEnumKey, UiMetadataMeMenu401, UiMetadataMeMenu401SeverityEnumKey, UiMetadataMeMenuQuery, UiMetadataMeMenuQueryResponse } from "./UiMetadataMeMenu";
-export { uiMetadataEnumsGet400SeverityEnum } from "./UiMetadataEnumsGet";
-export { uiMetadataEnumsGet2400SeverityEnum } from "./UiMetadataEnumsGet2";
-export { valuesToneEnum } from "./UiMetadataEnumsGet2";
-export { uiMetadataMeMenu400SeverityEnum } from "./UiMetadataMeMenu";
-export { uiMetadataMeMenu401SeverityEnum } from "./UiMetadataMeMenu";
+export type { GetV1Enums200, GetV1Enums400, GetV1Enums400SeverityEnumKey, GetV1EnumsQuery, GetV1EnumsQueryResponse } from "./GetV1Enums";
+export type { GetV1EnumsKey200, GetV1EnumsKey400, GetV1EnumsKey400SeverityEnumKey, GetV1EnumsKey404, GetV1EnumsKey404SeverityEnumKey, GetV1EnumsKeyPathParams, GetV1EnumsKeyQuery, GetV1EnumsKeyQueryResponse, ValuesToneEnumKey } from "./GetV1EnumsKey";
+export type { GetV1MeMenu200, GetV1MeMenu400, GetV1MeMenu400SeverityEnumKey, GetV1MeMenu401, GetV1MeMenu401SeverityEnumKey, GetV1MeMenuQuery, GetV1MeMenuQueryResponse } from "./GetV1MeMenu";
+export { getV1Enums400SeverityEnum } from "./GetV1Enums";
+export { getV1EnumsKey400SeverityEnum } from "./GetV1EnumsKey";
+export { getV1EnumsKey404SeverityEnum } from "./GetV1EnumsKey";
+export { valuesToneEnum } from "./GetV1EnumsKey";
+export { getV1MeMenu400SeverityEnum } from "./GetV1MeMenu";
+export { getV1MeMenu401SeverityEnum } from "./GetV1MeMenu";

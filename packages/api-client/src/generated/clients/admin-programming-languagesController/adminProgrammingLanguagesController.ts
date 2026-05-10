@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { adminProgrammingLanguagesCreate } from "./adminProgrammingLanguagesCreate";
-import { adminProgrammingLanguagesDelete } from "./adminProgrammingLanguagesDelete";
-import { adminProgrammingLanguagesGetById } from "./adminProgrammingLanguagesGetById";
-import { adminProgrammingLanguagesList } from "./adminProgrammingLanguagesList";
-import { adminProgrammingLanguagesUpdate } from "./adminProgrammingLanguagesUpdate";
+import { deleteV1AdminProgrammingLanguagesSlug } from "./deleteV1AdminProgrammingLanguagesSlug";
+import { getV1AdminProgrammingLanguages } from "./getV1AdminProgrammingLanguages";
+import { getV1AdminProgrammingLanguagesSlug } from "./getV1AdminProgrammingLanguagesSlug";
+import { patchV1AdminProgrammingLanguagesSlug } from "./patchV1AdminProgrammingLanguagesSlug";
+import { postV1AdminProgrammingLanguages } from "./postV1AdminProgrammingLanguages";
 
 export function adminProgrammingLanguagesController() {
-  return { adminProgrammingLanguagesList, adminProgrammingLanguagesCreate, adminProgrammingLanguagesGetById, adminProgrammingLanguagesUpdate, adminProgrammingLanguagesDelete }
+  return { getV1AdminProgrammingLanguages, postV1AdminProgrammingLanguages, deleteV1AdminProgrammingLanguagesSlug, getV1AdminProgrammingLanguagesSlug, patchV1AdminProgrammingLanguagesSlug }
 }

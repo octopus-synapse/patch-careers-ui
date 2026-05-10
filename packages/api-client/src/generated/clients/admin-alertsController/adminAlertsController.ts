@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { adminAlertsList } from "./adminAlertsList";
+import { getV1AdminAlerts } from "./getV1AdminAlerts";
 
 export function adminAlertsController() {
-  return { adminAlertsList }
+  return { getV1AdminAlerts }
 }

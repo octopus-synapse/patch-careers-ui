@@ -3,14 +3,14 @@
 * Do not edit manually.
 */
 
-import { sharesAliasesDelete } from "./sharesAliasesDelete";
-import { sharesAliasesGet } from "./sharesAliasesGet";
-import { sharesAliasesPost } from "./sharesAliasesPost";
-import { sharesCreate } from "./sharesCreate";
-import { sharesDelete } from "./sharesDelete";
-import { sharesQrPng } from "./sharesQrPng";
-import { sharesResume } from "./sharesResume";
+import { deleteV1SharesAliasesAliasId } from "./deleteV1SharesAliasesAliasId";
+import { deleteV1SharesShareId } from "./deleteV1SharesShareId";
+import { getV1SharesResumeResumeId } from "./getV1SharesResumeResumeId";
+import { getV1SharesShareIdAliases } from "./getV1SharesShareIdAliases";
+import { getV1SharesShareIdQrPng } from "./getV1SharesShareIdQrPng";
+import { postV1Shares } from "./postV1Shares";
+import { postV1SharesShareIdAliases } from "./postV1SharesShareIdAliases";
 
 export function sharesController() {
-  return { sharesCreate, sharesResume, sharesDelete, sharesAliasesPost, sharesAliasesGet, sharesAliasesDelete, sharesQrPng }
+  return { postV1Shares, deleteV1SharesAliasesAliasId, getV1SharesResumeResumeId, deleteV1SharesShareId, getV1SharesShareIdAliases, postV1SharesShareIdAliases, getV1SharesShareIdQrPng }
 }

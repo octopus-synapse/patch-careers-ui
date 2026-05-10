@@ -1,9 +1,9 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createAccountsSignup,
-  createEmailVerificationAuthEmailVerificationSend,
-  authSessionQueryKey,
+  createSignup,
+  createPostV1AuthEmailVerificationSend,
+  sessionQueryKey,
   isApiError,
 } from 'api-client';
 
@@ -29,18 +29,18 @@ const t = $derived(locale.t);
 
 // Fire verification email right after signup — the guard redirects the fresh
 // session to /identity/verify-email, where the user pastes the code.
-const sendVerification = createEmailVerificationAuthEmailVerificationSend({
+const sendVerification = createPostV1AuthEmailVerificationSend({
   mutation: {
     // Ignore errors here; the verify-email page has its own resend button.
     onError() {},
   },
 });
 
-const signup = createAccountsSignup({
+const signup = createSignup({
   mutation: {
     async onSuccess() {
       $sendVerification.mutate();
-      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
       goto('/identity/verify-email');
     },
     onError(err: unknown) {

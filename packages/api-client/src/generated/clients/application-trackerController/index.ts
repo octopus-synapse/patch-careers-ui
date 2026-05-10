@@ -1,4 +1,4 @@
 export { applicationTrackerController } from "./applicationTrackerController";
-export { applicationTrackerJobsApplicationsCompaniesResponseStats } from "./applicationTrackerJobsApplicationsCompaniesResponseStats";
-export { applicationTrackerJobsApplicationsEvents } from "./applicationTrackerJobsApplicationsEvents";
-export { applicationTrackerJobsApplicationsTracker } from "./applicationTrackerJobsApplicationsTracker";
+export { getV1JobsApplicationsCompaniesCompanyResponseStats } from "./getV1JobsApplicationsCompaniesCompanyResponseStats";
+export { getV1JobsApplicationsTracker } from "./getV1JobsApplicationsTracker";
+export { postV1JobsApplicationsApplicationIdEvents } from "./postV1JobsApplicationsApplicationIdEvents";

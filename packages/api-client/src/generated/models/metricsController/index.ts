@@ -1,2 +1,2 @@
-export type { MetricsList200, MetricsList400, MetricsList400SeverityEnumKey, MetricsListQuery, MetricsListQueryResponse } from "./MetricsList";
-export { metricsList400SeverityEnum } from "./MetricsList";
+export type { GetMetrics200, GetMetrics400, GetMetrics400SeverityEnumKey, GetMetricsQuery, GetMetricsQueryResponse } from "./GetMetrics";
+export { getMetrics400SeverityEnum } from "./GetMetrics";

@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { publicResumesDownload } from "./publicResumesDownload";
-import { publicResumesGetById } from "./publicResumesGetById";
-import { publicResumesOgPng } from "./publicResumesOgPng";
+import { getV1PublicResumesSlug } from "./getV1PublicResumesSlug";
+import { getV1PublicResumesSlugDownload } from "./getV1PublicResumesSlugDownload";
+import { getV1PublicResumesSlugOgPng } from "./getV1PublicResumesSlugOgPng";
 
 export function publicResumesController() {
-  return { publicResumesGetById, publicResumesDownload, publicResumesOgPng }
+  return { getV1PublicResumesSlug, getV1PublicResumesSlugDownload, getV1PublicResumesSlugOgPng }
 }

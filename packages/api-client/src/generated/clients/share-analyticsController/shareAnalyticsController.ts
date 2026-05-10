@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { shareAnalyticsAnalytics } from "./shareAnalyticsAnalytics";
-import { shareAnalyticsAnalyticsEvents } from "./shareAnalyticsAnalyticsEvents";
-import { shareAnalyticsResumesSharesAnalytics } from "./shareAnalyticsResumesSharesAnalytics";
+import { getV1AnalyticsShareId } from "./getV1AnalyticsShareId";
+import { getV1AnalyticsShareIdEvents } from "./getV1AnalyticsShareIdEvents";
+import { getV1ResumesResumeIdSharesShareIdAnalytics } from "./getV1ResumesResumeIdSharesShareIdAnalytics";
 
 export function shareAnalyticsController() {
-  return { shareAnalyticsResumesSharesAnalytics, shareAnalyticsAnalytics, shareAnalyticsAnalyticsEvents }
+  return { getV1AnalyticsShareId, getV1AnalyticsShareIdEvents, getV1ResumesResumeIdSharesShareIdAnalytics }
 }

@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { gdprMeGdprExport } from "./gdprMeGdprExport";
+import { getV1MeGdprExport } from "./getV1MeGdprExport";
 
 export function gdprController() {
-  return { gdprMeGdprExport }
+  return { getV1MeGdprExport }
 }

@@ -1,4 +1,4 @@
-export type { MetricsListQueryKey } from "./createMetricsList";
-export { createMetricsList } from "./createMetricsList";
-export { metricsListQueryKey } from "./createMetricsList";
-export { metricsListQueryOptions } from "./createMetricsList";
+export type { GetMetricsQueryKey } from "./createGetMetrics";
+export { createGetMetrics } from "./createGetMetrics";
+export { getMetricsQueryKey } from "./createGetMetrics";
+export { getMetricsQueryOptions } from "./createGetMetrics";

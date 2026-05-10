@@ -1,3 +1,3 @@
+export { getV1EventsSchemas } from "./getV1EventsSchemas";
 export { platformEventsController } from "./platformEventsController";
-export { platformEventsEvents } from "./platformEventsEvents";
-export { platformEventsEventsSchemas } from "./platformEventsEventsSchemas";
+export { postV1Events } from "./postV1Events";

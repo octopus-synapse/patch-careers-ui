@@ -1,4 +1,4 @@
-import { createFeatureFlagsActive, featureFlagsActiveQueryKey } from 'api-client';
+import { createGetV1FeatureFlagsActive, getV1FeatureFlagsActiveQueryKey } from 'api-client';
 import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 
@@ -13,7 +13,7 @@ type UseFeatureFlagsOptions = {
  * just need to ask `flags.enabled('resumes.export.pdf')`.
  */
 export function useFeatureFlags(opts: () => UseFeatureFlagsOptions) {
-  const query = createFeatureFlagsActive({
+  const query = createGetV1FeatureFlagsActive({
     query: { enabled: browser && opts().authenticated, staleTime: 5 * 60 * 1000 },
   });
 
@@ -36,4 +36,4 @@ export function useFeatureFlags(opts: () => UseFeatureFlagsOptions) {
   };
 }
 
-export { featureFlagsActiveQueryKey };
+export { getV1FeatureFlagsActiveQueryKey };

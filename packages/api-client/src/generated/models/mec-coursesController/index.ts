@@ -1,4 +1,5 @@
-export type { MecCoursesGetById200, MecCoursesGetById400, MecCoursesGetById400SeverityEnumKey, MecCoursesGetByIdPathParams, MecCoursesGetByIdQuery, MecCoursesGetByIdQueryResponse } from "./MecCoursesGetById";
-export type { MecCoursesSearch200, MecCoursesSearch400, MecCoursesSearch400SeverityEnumKey, MecCoursesSearchQuery, MecCoursesSearchQueryParams, MecCoursesSearchQueryResponse } from "./MecCoursesSearch";
-export { mecCoursesGetById400SeverityEnum } from "./MecCoursesGetById";
-export { mecCoursesSearch400SeverityEnum } from "./MecCoursesSearch";
+export type { GetV1MecCoursesCodigoCurso200, GetV1MecCoursesCodigoCurso400, GetV1MecCoursesCodigoCurso400SeverityEnumKey, GetV1MecCoursesCodigoCurso404, GetV1MecCoursesCodigoCurso404SeverityEnumKey, GetV1MecCoursesCodigoCursoPathParams, GetV1MecCoursesCodigoCursoQuery, GetV1MecCoursesCodigoCursoQueryResponse } from "./GetV1MecCoursesCodigoCurso";
+export type { GetV1MecCoursesSearch200, GetV1MecCoursesSearch400, GetV1MecCoursesSearch400SeverityEnumKey, GetV1MecCoursesSearchQuery, GetV1MecCoursesSearchQueryParams, GetV1MecCoursesSearchQueryResponse } from "./GetV1MecCoursesSearch";
+export { getV1MecCoursesCodigoCurso400SeverityEnum } from "./GetV1MecCoursesCodigoCurso";
+export { getV1MecCoursesCodigoCurso404SeverityEnum } from "./GetV1MecCoursesCodigoCurso";
+export { getV1MecCoursesSearch400SeverityEnum } from "./GetV1MecCoursesSearch";

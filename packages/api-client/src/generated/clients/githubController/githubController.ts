@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { githubIntegrationsGithubSummary } from "./githubIntegrationsGithubSummary";
-import { githubIntegrationsGithubSync } from "./githubIntegrationsGithubSync";
-import { githubIntegrationsGithubSyncAuto } from "./githubIntegrationsGithubSyncAuto";
-import { githubIntegrationsGithubSyncStatus } from "./githubIntegrationsGithubSyncStatus";
+import { getV1IntegrationsGithubSummaryUsername } from "./getV1IntegrationsGithubSummaryUsername";
+import { getV1IntegrationsGithubSyncStatusResumeId } from "./getV1IntegrationsGithubSyncStatusResumeId";
+import { postV1IntegrationsGithubSync } from "./postV1IntegrationsGithubSync";
+import { postV1IntegrationsGithubSyncResumeIdAuto } from "./postV1IntegrationsGithubSyncResumeIdAuto";
 
 export function githubController() {
-  return { githubIntegrationsGithubSummary, githubIntegrationsGithubSync, githubIntegrationsGithubSyncAuto, githubIntegrationsGithubSyncStatus }
+  return { getV1IntegrationsGithubSummaryUsername, postV1IntegrationsGithubSync, getV1IntegrationsGithubSyncStatusResumeId, postV1IntegrationsGithubSyncResumeIdAuto }
 }

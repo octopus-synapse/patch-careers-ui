@@ -1,0 +1,1 @@
+{"type":"string","maxLength":500,"format":"uri","pattern":"^https?:\\/\\/(www\\.)?linkedin\\.com\\/(in|company)\\/","description":"LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).","example":"https://www.linkedin.com/in/fixture-user","x-readme-ref-name":"LinkedInUrl"}

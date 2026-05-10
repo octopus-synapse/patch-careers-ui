@@ -1,6 +1,6 @@
-export { twoFactorAuthAuth2Fa } from "./twoFactorAuthAuth2Fa";
-export { twoFactorAuthAuth2FaBackupCodesRegenerate } from "./twoFactorAuthAuth2FaBackupCodesRegenerate";
-export { twoFactorAuthAuth2FaSetup } from "./twoFactorAuthAuth2FaSetup";
-export { twoFactorAuthAuth2FaStatus } from "./twoFactorAuthAuth2FaStatus";
-export { twoFactorAuthAuth2FaVerify } from "./twoFactorAuthAuth2FaVerify";
+export { deleteV1Auth2Fa } from "./deleteV1Auth2Fa";
+export { getV1Auth2FaStatus } from "./getV1Auth2FaStatus";
+export { postV1Auth2FaBackupCodesRegenerate } from "./postV1Auth2FaBackupCodesRegenerate";
+export { postV1Auth2FaSetup } from "./postV1Auth2FaSetup";
+export { postV1Auth2FaVerify } from "./postV1Auth2FaVerify";
 export { twoFactorAuthController } from "./twoFactorAuthController";

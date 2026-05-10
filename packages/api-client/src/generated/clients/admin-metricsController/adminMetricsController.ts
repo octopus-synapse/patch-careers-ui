@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { adminMetricsOverview } from "./adminMetricsOverview";
+import { getV1AdminMetricsOverview } from "./getV1AdminMetricsOverview";
 
 export function adminMetricsController() {
-  return { adminMetricsOverview }
+  return { getV1AdminMetricsOverview }
 }

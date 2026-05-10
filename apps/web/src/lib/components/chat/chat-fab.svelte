@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createChatConversationsGet, createChatUnread } from 'api-client';
+import { createGetV1ChatConversations, createGetV1ChatUnread } from 'api-client';
 import { MessageCircle } from 'lucide-svelte';
 import { Avatar } from 'ui';
 import { browser } from '$app/environment';
@@ -11,23 +11,23 @@ const t = $derived(locale.t);
 
 const session = useAuth();
 const canUseApp = $derived(
-  Boolean(session.data?.authenticated) &&
-    !(session.data?.user?.needsEmailVerification ?? false) &&
-    !(session.data?.user?.needsOnboarding ?? false),
+  Boolean(session.isAuthenticated) &&
+    !(session.needsEmailVerification ?? false) &&
+    !(session.needsOnboarding ?? false),
 );
 
-const unreadQuery = createChatUnread({
+const unreadQuery = createGetV1ChatUnread({
   query: { enabled: browser && canUseApp, refetchInterval: 30_000 },
 });
 const unread = $derived($unreadQuery.data?.totalUnread ?? 0);
 
-const convQuery = createChatConversationsGet(
+const convQuery = createGetV1ChatConversations(
   { limit: 3 },
   { query: { enabled: browser && canUseApp, refetchInterval: 60_000 } },
 );
 
 const recents = $derived(
-  ($convQuery.data?.conversations.conversations ?? []).slice(0, 3).map((c) => ({
+  ($convQuery.data?.items ?? []).slice(0, 3).map((c) => ({
     id: c.participant?.id ?? '',
     name: c.participant?.name ?? null,
     photoURL: c.participant?.photoURL ?? null,

@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { accountsSignup } from "./accountsSignup";
+import { signup } from "./signup";
 
 export function accountsController() {
-  return { accountsSignup }
+  return { signup }
 }

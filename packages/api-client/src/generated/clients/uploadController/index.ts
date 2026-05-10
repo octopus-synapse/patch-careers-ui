@@ -1,4 +1,4 @@
-export { uploadCompanyLogo } from "./uploadCompanyLogo";
+export { deleteV1UploadFileKey } from "./deleteV1UploadFileKey";
+export { postV1UploadCompanyLogoResumeId } from "./postV1UploadCompanyLogoResumeId";
+export { postV1UploadProfileImage } from "./postV1UploadProfileImage";
 export { uploadController } from "./uploadController";
-export { uploadFile } from "./uploadFile";
-export { uploadProfileImage } from "./uploadProfileImage";

@@ -1,10 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createSocialConnectionsConnectionsAccept,
-  createSocialConnectionsConnectionsReject,
-  createSocialConnectionsUsersMeConnectionsPending,
-  socialConnectionsUsersMeConnectionsPendingQueryKey,
+  createPutV1ConnectionsIdAccept,
+  createPutV1ConnectionsIdReject,
+  createGetV1UsersMeConnectionsPending,
+  getV1UsersMeConnectionsPendingQueryKey,
 } from 'api-client';
 import { Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -31,10 +31,10 @@ type PendingRequest = {
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated ?? false);
+const authenticated = $derived(auth.isAuthenticated ?? false);
 
-const pendingQuery = createSocialConnectionsUsersMeConnectionsPending(
-  { page: '1', limit: '3' },
+const pendingQuery = createGetV1UsersMeConnectionsPending(
+  { page: 1, limit: 3 },
   { query: { enabled: browser && authenticated } },
 );
 
@@ -49,20 +49,20 @@ const pending = $derived.by(() => {
 });
 
 const queryClient = useQueryClient();
-const acceptMutation = createSocialConnectionsConnectionsAccept({
+const acceptMutation = createPutV1ConnectionsIdAccept({
   mutation: {
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: socialConnectionsUsersMeConnectionsPendingQueryKey(),
+        queryKey: getV1UsersMeConnectionsPendingQueryKey(),
       });
     },
   },
 });
-const rejectMutation = createSocialConnectionsConnectionsReject({
+const rejectMutation = createPutV1ConnectionsIdReject({
   mutation: {
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: socialConnectionsUsersMeConnectionsPendingQueryKey(),
+        queryKey: getV1UsersMeConnectionsPendingQueryKey(),
       });
     },
   },

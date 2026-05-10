@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { accountLifecycleAccounts } from "./accountLifecycleAccounts";
-import { accountLifecycleAccountsDeactivate } from "./accountLifecycleAccountsDeactivate";
+import { deleteV1Accounts } from "./deleteV1Accounts";
+import { deleteV1AccountsDeactivate } from "./deleteV1AccountsDeactivate";
 
 export function accountLifecycleController() {
-  return { accountLifecycleAccounts, accountLifecycleAccountsDeactivate }
+  return { deleteV1Accounts, deleteV1AccountsDeactivate }
 }

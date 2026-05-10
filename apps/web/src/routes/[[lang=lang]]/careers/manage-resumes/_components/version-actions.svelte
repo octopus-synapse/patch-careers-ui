@@ -2,7 +2,7 @@
   VersionActions — rename + delete controls for a resume version card.
 -->
 <script lang="ts">
-import { createResumesDelete, createResumesUpdate } from 'api-client';
+import { createDeleteV1ResumesResumeId, createPatchV1ResumesResumeId } from 'api-client';
 import { Check, Pencil, Trash2, X } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { untrack } from 'svelte';
@@ -32,8 +32,8 @@ $effect(() => {
   if (!editing) titleDraft = title ?? '';
 });
 
-const renameMutation = createResumesUpdate({ mutation: { onError: handleApiError } });
-const deleteMutation = createResumesDelete({ mutation: { onError: handleApiError } });
+const renameMutation = createPatchV1ResumesResumeId({ mutation: { onError: handleApiError } });
+const deleteMutation = createDeleteV1ResumesResumeId({ mutation: { onError: handleApiError } });
 
 function startEdit() {
   titleDraft = title ?? '';

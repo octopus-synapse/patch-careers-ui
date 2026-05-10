@@ -6,21 +6,21 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    adminProgrammingLanguagesDelete,
-    adminSpokenLanguagesDelete,
-    adminTechAreasDelete,
-    adminTechNichesDelete,
-    adminTechSkillsDelete,
-    createAdminProgrammingLanguagesList,
-    createAdminSpokenLanguagesList,
-    createAdminTechAreasList,
-    createAdminTechNichesList,
-    createAdminTechSkillsList,
-    adminProgrammingLanguagesListQueryKey,
-    adminSpokenLanguagesListQueryKey,
-    adminTechAreasListQueryKey,
-    adminTechNichesListQueryKey,
-    adminTechSkillsListQueryKey,
+    deleteV1AdminProgrammingLanguagesSlug,
+    deleteV1AdminSpokenLanguagesCode,
+    deleteV1AdminTechAreasId,
+    deleteV1AdminTechNichesId,
+    deleteV1AdminTechSkillsId,
+    createGetV1AdminProgrammingLanguages,
+    createGetV1AdminSpokenLanguages,
+    createGetV1AdminTechAreas,
+    createGetV1AdminTechNiches,
+    createGetV1AdminTechSkills,
+    getV1AdminProgrammingLanguagesQueryKey,
+    getV1AdminSpokenLanguagesQueryKey,
+    getV1AdminTechAreasQueryKey,
+    getV1AdminTechNichesQueryKey,
+    getV1AdminTechSkillsQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -47,23 +47,23 @@
 
   const params = $derived({ page: '1', pageSize: '50', search: search || undefined });
 
-  const areasQuery = createAdminTechAreasList(
+  const areasQuery = createGetV1AdminTechAreas(
     params,
     { query: { enabled: browser && tab === 'areas' } },
   );
-  const nichesQuery = createAdminTechNichesList(
+  const nichesQuery = createGetV1AdminTechNiches(
     params,
     { query: { enabled: browser && tab === 'niches' } },
   );
-  const skillsQuery = createAdminTechSkillsList(
+  const skillsQuery = createGetV1AdminTechSkills(
     params,
     { query: { enabled: browser && tab === 'skills' } },
   );
-  const progQuery = createAdminProgrammingLanguagesList(
+  const progQuery = createGetV1AdminProgrammingLanguages(
     params,
     { query: { enabled: browser && tab === 'programming' } },
   );
-  const spokenQuery = createAdminSpokenLanguagesList(
+  const spokenQuery = createGetV1AdminSpokenLanguages(
     params,
     { query: { enabled: browser && tab === 'spoken' } },
   );
@@ -78,26 +78,26 @@
     try {
       switch (tab) {
         case 'areas':
-          await adminTechAreasDelete(id);
-          await queryClient.invalidateQueries({ queryKey: adminTechAreasListQueryKey() });
+          await deleteV1AdminTechAreasId(id);
+          await queryClient.invalidateQueries({ queryKey: getV1AdminTechAreasQueryKey() });
           break;
         case 'niches':
-          await adminTechNichesDelete(id);
-          await queryClient.invalidateQueries({ queryKey: adminTechNichesListQueryKey() });
+          await deleteV1AdminTechNichesId(id);
+          await queryClient.invalidateQueries({ queryKey: getV1AdminTechNichesQueryKey() });
           break;
         case 'skills':
-          await adminTechSkillsDelete(id);
-          await queryClient.invalidateQueries({ queryKey: adminTechSkillsListQueryKey() });
+          await deleteV1AdminTechSkillsId(id);
+          await queryClient.invalidateQueries({ queryKey: getV1AdminTechSkillsQueryKey() });
           break;
         case 'programming':
-          await adminProgrammingLanguagesDelete(id);
+          await deleteV1AdminProgrammingLanguagesSlug(id);
           await queryClient.invalidateQueries({
-            queryKey: adminProgrammingLanguagesListQueryKey(),
+            queryKey: getV1AdminProgrammingLanguagesQueryKey(),
           });
           break;
         case 'spoken':
-          await adminSpokenLanguagesDelete(id);
-          await queryClient.invalidateQueries({ queryKey: adminSpokenLanguagesListQueryKey() });
+          await deleteV1AdminSpokenLanguagesCode(id);
+          await queryClient.invalidateQueries({ queryKey: getV1AdminSpokenLanguagesQueryKey() });
           break;
       }
       toastState.show('Item excluído', 'success');

@@ -1,4 +1,4 @@
-export type { AdminMetricsOverview200, AdminMetricsOverview400, AdminMetricsOverview400SeverityEnumKey, AdminMetricsOverview401, AdminMetricsOverview401SeverityEnumKey, AdminMetricsOverview403, AdminMetricsOverview403SeverityEnumKey, AdminMetricsOverviewQuery, AdminMetricsOverviewQueryResponse } from "./AdminMetricsOverview";
-export { adminMetricsOverview400SeverityEnum } from "./AdminMetricsOverview";
-export { adminMetricsOverview401SeverityEnum } from "./AdminMetricsOverview";
-export { adminMetricsOverview403SeverityEnum } from "./AdminMetricsOverview";
+export type { GetV1AdminMetricsOverview200, GetV1AdminMetricsOverview400, GetV1AdminMetricsOverview400SeverityEnumKey, GetV1AdminMetricsOverview401, GetV1AdminMetricsOverview401SeverityEnumKey, GetV1AdminMetricsOverview403, GetV1AdminMetricsOverview403SeverityEnumKey, GetV1AdminMetricsOverviewQuery, GetV1AdminMetricsOverviewQueryResponse } from "./GetV1AdminMetricsOverview";
+export { getV1AdminMetricsOverview400SeverityEnum } from "./GetV1AdminMetricsOverview";
+export { getV1AdminMetricsOverview401SeverityEnum } from "./GetV1AdminMetricsOverview";
+export { getV1AdminMetricsOverview403SeverityEnum } from "./GetV1AdminMetricsOverview";

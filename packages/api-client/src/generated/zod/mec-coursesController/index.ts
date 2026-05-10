@@ -1,2 +1,2 @@
-export { mecCoursesGetById200Schema, mecCoursesGetById400Schema, mecCoursesGetByIdPathParamsSchema, mecCoursesGetByIdQueryResponseSchema } from "./mecCoursesGetByIdSchema";
-export { mecCoursesSearch200Schema, mecCoursesSearch400Schema, mecCoursesSearchQueryParamsSchema, mecCoursesSearchQueryResponseSchema } from "./mecCoursesSearchSchema";
+export { getV1MecCoursesCodigoCurso200Schema, getV1MecCoursesCodigoCurso400Schema, getV1MecCoursesCodigoCurso404Schema, getV1MecCoursesCodigoCursoPathParamsSchema, getV1MecCoursesCodigoCursoQueryResponseSchema } from "./getV1MecCoursesCodigoCursoSchema";
+export { getV1MecCoursesSearch200Schema, getV1MecCoursesSearch400Schema, getV1MecCoursesSearchQueryParamsSchema, getV1MecCoursesSearchQueryResponseSchema } from "./getV1MecCoursesSearchSchema";

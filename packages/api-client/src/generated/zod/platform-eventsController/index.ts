@@ -1,2 +1,2 @@
-export { platformEventsEvents200Schema, platformEventsEvents400Schema, platformEventsEvents401Schema, platformEventsEventsMutationRequestSchema, platformEventsEventsMutationResponseSchema } from "./platformEventsEventsSchema";
-export { platformEventsEventsSchemas200Schema, platformEventsEventsSchemas400Schema, platformEventsEventsSchemas401Schema, platformEventsEventsSchemasQueryResponseSchema } from "./platformEventsEventsSchemasSchema";
+export { getV1EventsSchemas200Schema, getV1EventsSchemas400Schema, getV1EventsSchemas401Schema, getV1EventsSchemasQueryResponseSchema } from "./getV1EventsSchemasSchema";
+export { postV1Events201Schema, postV1Events400Schema, postV1Events401Schema, postV1EventsMutationRequestSchema, postV1EventsMutationResponseSchema } from "./postV1EventsSchema";

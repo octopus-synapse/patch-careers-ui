@@ -1,6 +1,6 @@
 <script lang="ts">
-import { createPasswordManagementMePasswordChange } from 'api-client';
-import { passwordManagementMePasswordChangeMutationRequestSchema } from 'api-client/zod';
+import { createPostV1MePasswordChange } from 'api-client';
+import { postV1MePasswordChangeMutationRequestSchema } from 'api-client/zod';
 import { Eye, EyeOff } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
 import { createForm } from '$lib/state/create-form.svelte';
@@ -16,7 +16,7 @@ let showCurrentPassword = $state(false);
 let showNewPassword = $state(false);
 let passwordMessage = $state<{ type: 'success' | 'error'; text: string } | null>(null);
 
-const changePassword = createPasswordManagementMePasswordChange({
+const changePassword = createPostV1MePasswordChange({
   mutation: {
     onSuccess() {
       passwordForm.reset();
@@ -32,7 +32,7 @@ const changePassword = createPasswordManagementMePasswordChange({
 });
 
 const passwordForm = createForm({
-  schema: passwordManagementMePasswordChangeMutationRequestSchema,
+  schema: postV1MePasswordChangeMutationRequestSchema,
   initial: { currentPassword: '', newPassword: '' },
   mutation: changePassword,
 });

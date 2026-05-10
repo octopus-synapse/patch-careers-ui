@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { applicationTrackerJobsApplicationsCompaniesResponseStats } from "./applicationTrackerJobsApplicationsCompaniesResponseStats";
-import { applicationTrackerJobsApplicationsEvents } from "./applicationTrackerJobsApplicationsEvents";
-import { applicationTrackerJobsApplicationsTracker } from "./applicationTrackerJobsApplicationsTracker";
+import { getV1JobsApplicationsCompaniesCompanyResponseStats } from "./getV1JobsApplicationsCompaniesCompanyResponseStats";
+import { getV1JobsApplicationsTracker } from "./getV1JobsApplicationsTracker";
+import { postV1JobsApplicationsApplicationIdEvents } from "./postV1JobsApplicationsApplicationIdEvents";
 
 export function applicationTrackerController() {
-  return { applicationTrackerJobsApplicationsTracker, applicationTrackerJobsApplicationsEvents, applicationTrackerJobsApplicationsCompaniesResponseStats }
+  return { getV1JobsApplicationsCompaniesCompanyResponseStats, getV1JobsApplicationsTracker, postV1JobsApplicationsApplicationIdEvents }
 }

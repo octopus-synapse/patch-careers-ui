@@ -3,18 +3,18 @@
 * Do not edit manually.
 */
 
-import { onboardingCreate } from "./onboardingCreate";
-import { onboardingProgressGet } from "./onboardingProgressGet";
-import { onboardingProgressPut } from "./onboardingProgressPut";
-import { onboardingSession } from "./onboardingSession";
-import { onboardingSessionComplete } from "./onboardingSessionComplete";
-import { onboardingSessionGoto } from "./onboardingSessionGoto";
-import { onboardingSessionNext } from "./onboardingSessionNext";
-import { onboardingSessionPrevious } from "./onboardingSessionPrevious";
-import { onboardingSessionRestart } from "./onboardingSessionRestart";
-import { onboardingSessionSave } from "./onboardingSessionSave";
-import { onboardingStatus } from "./onboardingStatus";
+import { getV1OnboardingProgress } from "./getV1OnboardingProgress";
+import { getV1OnboardingSession } from "./getV1OnboardingSession";
+import { getV1OnboardingStatus } from "./getV1OnboardingStatus";
+import { postV1Onboarding } from "./postV1Onboarding";
+import { postV1OnboardingSessionComplete } from "./postV1OnboardingSessionComplete";
+import { postV1OnboardingSessionGoto } from "./postV1OnboardingSessionGoto";
+import { postV1OnboardingSessionNext } from "./postV1OnboardingSessionNext";
+import { postV1OnboardingSessionPrevious } from "./postV1OnboardingSessionPrevious";
+import { postV1OnboardingSessionRestart } from "./postV1OnboardingSessionRestart";
+import { postV1OnboardingSessionSave } from "./postV1OnboardingSessionSave";
+import { putV1OnboardingProgress } from "./putV1OnboardingProgress";
 
 export function onboardingController() {
-  return { onboardingSession, onboardingSessionNext, onboardingSessionPrevious, onboardingSessionGoto, onboardingSessionSave, onboardingSessionComplete, onboardingSessionRestart, onboardingProgressGet, onboardingProgressPut, onboardingStatus, onboardingCreate }
+  return { postV1Onboarding, getV1OnboardingProgress, putV1OnboardingProgress, getV1OnboardingSession, postV1OnboardingSessionComplete, postV1OnboardingSessionGoto, postV1OnboardingSessionNext, postV1OnboardingSessionPrevious, postV1OnboardingSessionRestart, postV1OnboardingSessionSave, getV1OnboardingStatus }
 }

@@ -1,2 +1,2 @@
 export { accountsController } from "./accountsController";
-export { accountsSignup } from "./accountsSignup";
+export { signup } from "./signup";

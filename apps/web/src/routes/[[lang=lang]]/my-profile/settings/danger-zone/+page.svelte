@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createAccountLifecycleAccounts } from 'api-client';
+import { createDeleteV1Accounts } from 'api-client';
 import { Download, Trash2 } from 'lucide-svelte';
 import { Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -11,7 +11,7 @@ let deleteConfirmation = $state('');
 let showDeleteModal = $state(false);
 let isExporting = $state(false);
 
-const deleteAccount = createAccountLifecycleAccounts({
+const deleteAccount = createDeleteV1Accounts({
   mutation: {
     onSuccess() {
       goto('/identity/sign-in');
@@ -22,8 +22,8 @@ const deleteAccount = createAccountLifecycleAccounts({
 async function handleExportData() {
   isExporting = true;
   try {
-    const { gdprMeGdprExport } = await import('api-client');
-    const response = await gdprMeGdprExport();
+    const { getV1MeGdprExport } = await import('api-client');
+    const response = await getV1MeGdprExport();
     const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

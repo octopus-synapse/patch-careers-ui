@@ -1,3 +1,3 @@
-export type { CareerGraphView200, CareerGraphView400, CareerGraphView400SeverityEnumKey, CareerGraphView401, CareerGraphView401SeverityEnumKey, CareerGraphViewMutation, CareerGraphViewMutationRequest, CareerGraphViewMutationResponse } from "./CareerGraphView";
-export { careerGraphView400SeverityEnum } from "./CareerGraphView";
-export { careerGraphView401SeverityEnum } from "./CareerGraphView";
+export type { PostV1CareerGraphView200, PostV1CareerGraphView400, PostV1CareerGraphView400SeverityEnumKey, PostV1CareerGraphView401, PostV1CareerGraphView401SeverityEnumKey, PostV1CareerGraphViewMutation, PostV1CareerGraphViewMutationRequest, PostV1CareerGraphViewMutationResponse } from "./PostV1CareerGraphView";
+export { postV1CareerGraphView400SeverityEnum } from "./PostV1CareerGraphView";
+export { postV1CareerGraphView401SeverityEnum } from "./PostV1CareerGraphView";

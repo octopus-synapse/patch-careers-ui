@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { userEngagementUsersComments } from "./userEngagementUsersComments";
-import { userEngagementUsersReactions } from "./userEngagementUsersReactions";
+import { getV1UsersUserIdComments } from "./getV1UsersUserIdComments";
+import { getV1UsersUserIdReactions } from "./getV1UsersUserIdReactions";
 
 export function userEngagementController() {
-  return { userEngagementUsersComments, userEngagementUsersReactions }
+  return { getV1UsersUserIdComments, getV1UsersUserIdReactions }
 }

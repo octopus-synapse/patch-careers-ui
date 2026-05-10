@@ -1,3 +1,3 @@
-export { uiMetadataEnumsGet2200Schema, uiMetadataEnumsGet2400Schema, uiMetadataEnumsGet2PathParamsSchema, uiMetadataEnumsGet2QueryResponseSchema } from "./uiMetadataEnumsGet2Schema";
-export { uiMetadataEnumsGet200Schema, uiMetadataEnumsGet400Schema, uiMetadataEnumsGetQueryResponseSchema } from "./uiMetadataEnumsGetSchema";
-export { uiMetadataMeMenu200Schema, uiMetadataMeMenu400Schema, uiMetadataMeMenu401Schema, uiMetadataMeMenuQueryResponseSchema } from "./uiMetadataMeMenuSchema";
+export { getV1EnumsKey200Schema, getV1EnumsKey400Schema, getV1EnumsKey404Schema, getV1EnumsKeyPathParamsSchema, getV1EnumsKeyQueryResponseSchema } from "./getV1EnumsKeySchema";
+export { getV1Enums200Schema, getV1Enums400Schema, getV1EnumsQueryResponseSchema } from "./getV1EnumsSchema";
+export { getV1MeMenu200Schema, getV1MeMenu400Schema, getV1MeMenu401Schema, getV1MeMenuQueryResponseSchema } from "./getV1MeMenuSchema";

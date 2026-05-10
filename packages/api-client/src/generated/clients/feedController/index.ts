@@ -1,4 +1,4 @@
-export { feedBookmarks } from "./feedBookmarks";
 export { feedController } from "./feedController";
-export { feedList } from "./feedList";
-export { feedUser } from "./feedUser";
+export { getV1Feed } from "./getV1Feed";
+export { getV1FeedBookmarks } from "./getV1FeedBookmarks";
+export { getV1FeedUserUserId } from "./getV1FeedUserUserId";

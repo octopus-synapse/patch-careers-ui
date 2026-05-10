@@ -1,1 +1,1 @@
-export { adminMetricsOverview200Schema, adminMetricsOverview400Schema, adminMetricsOverview401Schema, adminMetricsOverview403Schema, adminMetricsOverviewQueryResponseSchema } from "./adminMetricsOverviewSchema";
+export { getV1AdminMetricsOverview200Schema, getV1AdminMetricsOverview400Schema, getV1AdminMetricsOverview401Schema, getV1AdminMetricsOverview403Schema, getV1AdminMetricsOverviewQueryResponseSchema } from "./getV1AdminMetricsOverviewSchema";

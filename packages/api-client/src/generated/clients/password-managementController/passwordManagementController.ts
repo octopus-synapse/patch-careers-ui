@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { passwordManagementAuthForgotPassword } from "./passwordManagementAuthForgotPassword";
-import { passwordManagementAuthResetPassword } from "./passwordManagementAuthResetPassword";
-import { passwordManagementMePasswordChange } from "./passwordManagementMePasswordChange";
+import { postV1AuthForgotPassword } from "./postV1AuthForgotPassword";
+import { postV1AuthResetPassword } from "./postV1AuthResetPassword";
+import { postV1MePasswordChange } from "./postV1MePasswordChange";
 
 export function passwordManagementController() {
-  return { passwordManagementAuthForgotPassword, passwordManagementMePasswordChange, passwordManagementAuthResetPassword }
+  return { postV1AuthForgotPassword, postV1AuthResetPassword, postV1MePasswordChange }
 }

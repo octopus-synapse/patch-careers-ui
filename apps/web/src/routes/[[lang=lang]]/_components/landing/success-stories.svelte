@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createSuccessStoriesList } from 'api-client';
+import { createGetV1SuccessStories } from 'api-client';
 import { Quote } from 'lucide-svelte';
 import { browser } from '$app/environment';
 
@@ -14,7 +14,7 @@ type Story = {
   user: { name: string | null; username: string | null; photoURL: string | null };
 };
 
-const query = createSuccessStoriesList(
+const query = createGetV1SuccessStories(
   { limit: '12' },
   { query: { enabled: browser } },
 );

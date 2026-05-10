@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { commentsPostsCommentsDelete } from "./commentsPostsCommentsDelete";
-import { commentsPostsCommentsGet } from "./commentsPostsCommentsGet";
-import { commentsPostsCommentsPost } from "./commentsPostsCommentsPost";
+import { deleteV1PostsCommentsId } from "./deleteV1PostsCommentsId";
+import { getV1PostsIdComments } from "./getV1PostsIdComments";
+import { postV1PostsIdComments } from "./postV1PostsIdComments";
 
 export function commentsController() {
-  return { commentsPostsCommentsGet, commentsPostsCommentsPost, commentsPostsCommentsDelete }
+  return { deleteV1PostsCommentsId, getV1PostsIdComments, postV1PostsIdComments }
 }

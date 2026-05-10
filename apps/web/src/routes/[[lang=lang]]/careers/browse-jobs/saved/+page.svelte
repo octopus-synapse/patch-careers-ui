@@ -1,11 +1,11 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createJobsBookmarks,
-  createJobsBookmarkDelete,
-  jobsBookmarksQueryKey,
-  jobsBookmarks,
-  type JobsBookmarks200,
+  createGetV1JobsBookmarks,
+  createDeleteV1JobsIdBookmark,
+  getV1JobsBookmarks,
+  getV1JobsBookmarksQueryKey,
+  type GetV1JobsBookmarks200,
 } from 'api-client';
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -19,12 +19,12 @@ import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.isAuthenticated);
 
-type SavedJob = JobsBookmarks200['data'][number];
+type SavedJob = GetV1JobsBookmarks200['items'][number];
 
-const query = createJobsBookmarks(
-  { page: '1', limit: '20' },
+const query = createGetV1JobsBookmarks(
+  { page: 1, limit: 20 },
   { query: { enabled: browser && authenticated } },
 );
 
@@ -39,8 +39,8 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = await jobsBookmarks({ page: String(next), limit: '20' });
-    extra = [...extra, ...res.data];
+    const res = await getV1JobsBookmarks({ page: next, limit: 20 });
+    extra = [...extra, ...res.items];
     pageNum = next;
   } finally {
     loadingMore = false;
@@ -48,16 +48,16 @@ async function loadMore() {
 }
 
 const all = $derived.by<SavedJob[]>(() => {
-  const head = firstPage ? firstPage.data : [];
+  const head = firstPage ? firstPage.items : [];
   return [...head, ...extra].filter((j) => !removedIds.has(j.id));
 });
 
 const queryClient = useQueryClient();
 
-const unbookmarkMutation = createJobsBookmarkDelete({
+const unbookmarkMutation = createDeleteV1JobsIdBookmark({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: jobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1JobsBookmarksQueryKey() });
       track('job_unbookmarked', { jobId: vars.id });
     },
     onError(_err, vars) {

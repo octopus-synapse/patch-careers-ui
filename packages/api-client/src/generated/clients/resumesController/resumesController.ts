@@ -3,23 +3,23 @@
 * Do not edit manually.
 */
 
-import { resumesCreate } from "./resumesCreate";
-import { resumesDelete } from "./resumesDelete";
-import { resumesFull } from "./resumesFull";
-import { resumesGetById } from "./resumesGetById";
-import { resumesList } from "./resumesList";
-import { resumesManageDelete } from "./resumesManageDelete";
-import { resumesManageGet } from "./resumesManageGet";
-import { resumesManageUser } from "./resumesManageUser";
-import { resumesSections } from "./resumesSections";
-import { resumesSectionsItemsDelete } from "./resumesSectionsItemsDelete";
-import { resumesSectionsItemsPatch } from "./resumesSectionsItemsPatch";
-import { resumesSectionsItemsPost } from "./resumesSectionsItemsPost";
-import { resumesSectionsTypes } from "./resumesSectionsTypes";
-import { resumesSlots } from "./resumesSlots";
-import { resumesThumbnailSvg } from "./resumesThumbnailSvg";
-import { resumesUpdate } from "./resumesUpdate";
+import { deleteV1ResumesManageResumeId } from "./deleteV1ResumesManageResumeId";
+import { deleteV1ResumesResumeId } from "./deleteV1ResumesResumeId";
+import { deleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId } from "./deleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId";
+import { getV1Resumes } from "./getV1Resumes";
+import { getV1ResumesManageResumeId } from "./getV1ResumesManageResumeId";
+import { getV1ResumesManageUserUserId } from "./getV1ResumesManageUserUserId";
+import { getV1ResumesResumeId } from "./getV1ResumesResumeId";
+import { getV1ResumesResumeIdFull } from "./getV1ResumesResumeIdFull";
+import { getV1ResumesResumeIdSections } from "./getV1ResumesResumeIdSections";
+import { getV1ResumesResumeIdSectionsTypes } from "./getV1ResumesResumeIdSectionsTypes";
+import { getV1ResumesResumeIdThumbnailSvg } from "./getV1ResumesResumeIdThumbnailSvg";
+import { getV1ResumesSlots } from "./getV1ResumesSlots";
+import { patchV1ResumesResumeId } from "./patchV1ResumesResumeId";
+import { patchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId } from "./patchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId";
+import { postV1Resumes } from "./postV1Resumes";
+import { postV1ResumesResumeIdSectionsSectionTypeKeyItems } from "./postV1ResumesResumeIdSectionsSectionTypeKeyItems";
 
 export function resumesController() {
-  return { resumesSectionsTypes, resumesSections, resumesSectionsItemsPost, resumesSectionsItemsPatch, resumesSectionsItemsDelete, resumesManageUser, resumesManageGet, resumesManageDelete, resumesList, resumesCreate, resumesSlots, resumesFull, resumesGetById, resumesUpdate, resumesDelete, resumesThumbnailSvg }
+  return { getV1Resumes, postV1Resumes, getV1ResumesManageUserUserId, deleteV1ResumesManageResumeId, getV1ResumesManageResumeId, getV1ResumesSlots, deleteV1ResumesResumeId, getV1ResumesResumeId, patchV1ResumesResumeId, getV1ResumesResumeIdFull, getV1ResumesResumeIdSections, getV1ResumesResumeIdSectionsTypes, postV1ResumesResumeIdSectionsSectionTypeKeyItems, deleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId, patchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId, getV1ResumesResumeIdThumbnailSvg }
 }

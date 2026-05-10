@@ -1,10 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  commentsPostsCommentsDelete,
-  commentsPostsCommentsPost,
-  createCommentsPostsCommentsGet,
-  commentsPostsCommentsGetQueryKey,
+  deleteV1PostsCommentsId,
+  postV1PostsIdComments,
+  createGetV1PostsIdComments,
+  getV1PostsIdCommentsQueryKey,
 } from 'api-client';
 import { Send, Trash2 } from 'lucide-svelte';
 import { Avatar, Button, Input, Loader } from 'ui';
@@ -32,13 +32,13 @@ let expandedReplies = $state<Set<string>>(new Set());
 
 const queryClient = useQueryClient();
 
-const commentsQuery = createCommentsPostsCommentsGet(
+const commentsQuery = createGetV1PostsIdComments(
   postId,
   { limit: '50' },
   { query: { enabled: postId !== '' } },
 );
 
-const comments = $derived($commentsQuery.data?.comments);
+const comments = $derived($commentsQuery.data?.items);
 
 async function handleSubmitComment() {
   const trimmed = commentText.trim();
@@ -48,8 +48,8 @@ async function handleSubmitComment() {
   const previous = commentText;
   commentText = '';
   try {
-    await commentsPostsCommentsPost(postId, { content: trimmed });
-    queryClient.invalidateQueries({ queryKey: commentsPostsCommentsGetQueryKey(postId) });
+    await postV1PostsIdComments(postId, { content: trimmed });
+    queryClient.invalidateQueries({ queryKey: getV1PostsIdCommentsQueryKey(postId) });
   } catch (err) {
     commentText = previous;
     throw err;
@@ -62,18 +62,18 @@ async function handleSubmitReply(parentId: string) {
   if (!replyText.trim() || submittingReply) return;
   submittingReply = true;
   try {
-    await commentsPostsCommentsPost(postId, { content: replyText.trim(), parentId });
+    await postV1PostsIdComments(postId, { content: replyText.trim(), parentId });
     replyText = '';
     replyingTo = null;
-    queryClient.invalidateQueries({ queryKey: commentsPostsCommentsGetQueryKey(postId) });
+    queryClient.invalidateQueries({ queryKey: getV1PostsIdCommentsQueryKey(postId) });
   } finally {
     submittingReply = false;
   }
 }
 
 async function handleDeleteComment(commentId: string) {
-  await commentsPostsCommentsDelete(commentId);
-  queryClient.invalidateQueries({ queryKey: commentsPostsCommentsGetQueryKey(postId) });
+  await deleteV1PostsCommentsId(commentId);
+  queryClient.invalidateQueries({ queryKey: getV1PostsIdCommentsQueryKey(postId) });
 }
 
 function toggleExpandReplies(commentId: string) {

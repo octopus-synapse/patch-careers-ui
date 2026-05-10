@@ -1,6 +1,6 @@
 export { adminTechNichesController } from "./adminTechNichesController";
-export { adminTechNichesCreate } from "./adminTechNichesCreate";
-export { adminTechNichesDelete } from "./adminTechNichesDelete";
-export { adminTechNichesGetById } from "./adminTechNichesGetById";
-export { adminTechNichesList } from "./adminTechNichesList";
-export { adminTechNichesUpdate } from "./adminTechNichesUpdate";
+export { deleteV1AdminTechNichesId } from "./deleteV1AdminTechNichesId";
+export { getV1AdminTechNiches } from "./getV1AdminTechNiches";
+export { getV1AdminTechNichesId } from "./getV1AdminTechNichesId";
+export { patchV1AdminTechNichesId } from "./patchV1AdminTechNichesId";
+export { postV1AdminTechNiches } from "./postV1AdminTechNiches";

@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { spokenLanguagesGetById } from "./spokenLanguagesGetById";
-import { spokenLanguagesList } from "./spokenLanguagesList";
-import { spokenLanguagesSearch } from "./spokenLanguagesSearch";
+import { getV1SpokenLanguages } from "./getV1SpokenLanguages";
+import { getV1SpokenLanguagesCode } from "./getV1SpokenLanguagesCode";
+import { getV1SpokenLanguagesSearch } from "./getV1SpokenLanguagesSearch";
 
 export function spokenLanguagesController() {
-  return { spokenLanguagesList, spokenLanguagesSearch, spokenLanguagesGetById }
+  return { getV1SpokenLanguages, getV1SpokenLanguagesSearch, getV1SpokenLanguagesCode }
 }

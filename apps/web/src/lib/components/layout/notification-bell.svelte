@@ -1,11 +1,11 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createNotificationsList,
-  createNotificationsUnreadCount,
-  notificationsListQueryKey,
-  notificationsUnreadCountQueryKey,
-  notificationsMarkRead,
+  createGetV1Notifications,
+  createGetV1NotificationsUnreadCount,
+  getV1NotificationsQueryKey,
+  getV1NotificationsUnreadCountQueryKey,
+  postV1NotificationsMarkRead,
 } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bell } from 'lucide-svelte';
@@ -40,7 +40,7 @@ const queryClient = useQueryClient();
 
 let isOpen = $state(false);
 
-const unreadQuery = createNotificationsUnreadCount({
+const unreadQuery = createGetV1NotificationsUnreadCount({
   query: {
     enabled: browser,
     refetchInterval: 30000,
@@ -51,7 +51,7 @@ const unreadCount = $derived(
   ($unreadQuery.data as { count?: number } | undefined)?.count,
 );
 
-const notificationsQuery = createNotificationsList(
+const notificationsQuery = createGetV1Notifications(
   { cursor: '', limit: '10' },
   {
         query: { enabled: browser && isOpen },
@@ -85,16 +85,16 @@ async function handleMarkAllRead() {
   // The backend treats an empty body as "mark everything as read" — the
   // payload is optional and lets a single-row mark-read share the same
   // endpoint when `notificationId` is set.
-  await notificationsMarkRead({});
-  queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
-  queryClient.invalidateQueries({ queryKey: notificationsListQueryKey() });
+  await postV1NotificationsMarkRead({});
+  queryClient.invalidateQueries({ queryKey: getV1NotificationsUnreadCountQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getV1NotificationsQueryKey() });
 }
 
 async function handleNotificationClick(notification: NotificationItem) {
   if (!notification.read) {
-    await notificationsMarkRead({ notificationId: notification.id });
-    queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
-    queryClient.invalidateQueries({ queryKey: notificationsListQueryKey() });
+    await postV1NotificationsMarkRead({ notificationId: notification.id });
+    queryClient.invalidateQueries({ queryKey: getV1NotificationsUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getV1NotificationsQueryKey() });
   }
   isOpen = false;
 }

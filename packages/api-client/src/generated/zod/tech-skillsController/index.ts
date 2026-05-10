@@ -1,2 +1,2 @@
-export { techSkillsList200Schema, techSkillsList400Schema, techSkillsList401Schema, techSkillsList403Schema, techSkillsListQueryResponseSchema } from "./techSkillsListSchema";
-export { techSkillsType200Schema, techSkillsType400Schema, techSkillsType401Schema, techSkillsType403Schema, techSkillsTypePathParamsSchema, techSkillsTypeQueryParamsSchema, techSkillsTypeQueryResponseSchema } from "./techSkillsTypeSchema";
+export { getV1TechSkills200Schema, getV1TechSkills400Schema, getV1TechSkills401Schema, getV1TechSkills403Schema, getV1TechSkillsQueryResponseSchema } from "./getV1TechSkillsSchema";
+export { getV1TechSkillsTypeType200Schema, getV1TechSkillsTypeType400Schema, getV1TechSkillsTypeType401Schema, getV1TechSkillsTypeType403Schema, getV1TechSkillsTypeType404Schema, getV1TechSkillsTypeTypePathParamsSchema, getV1TechSkillsTypeTypeQueryParamsSchema, getV1TechSkillsTypeTypeQueryResponseSchema } from "./getV1TechSkillsTypeTypeSchema";

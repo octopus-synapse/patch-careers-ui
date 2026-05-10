@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { webhooksCreate } from "./webhooksCreate";
-import { webhooksDelete } from "./webhooksDelete";
-import { webhooksDeliveries } from "./webhooksDeliveries";
-import { webhooksList } from "./webhooksList";
-import { webhooksUpdate } from "./webhooksUpdate";
+import { deleteV1WebhooksId } from "./deleteV1WebhooksId";
+import { getV1Webhooks } from "./getV1Webhooks";
+import { getV1WebhooksIdDeliveries } from "./getV1WebhooksIdDeliveries";
+import { patchV1WebhooksId } from "./patchV1WebhooksId";
+import { postV1Webhooks } from "./postV1Webhooks";
 
 export function webhooksController() {
-  return { webhooksList, webhooksCreate, webhooksUpdate, webhooksDelete, webhooksDeliveries }
+  return { getV1Webhooks, postV1Webhooks, deleteV1WebhooksId, patchV1WebhooksId, getV1WebhooksIdDeliveries }
 }

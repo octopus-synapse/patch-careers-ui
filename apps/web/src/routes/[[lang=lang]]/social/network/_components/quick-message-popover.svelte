@@ -1,5 +1,5 @@
 <script lang="ts">
-import { chatMessages } from 'api-client';
+import { postV1ChatMessages } from 'api-client';
 import { MessageCircle, X } from 'lucide-svelte';
 import { Button, Popover, Textarea, toastState } from 'ui';
 import { track } from '$lib/utils/analytics/track';
@@ -34,7 +34,7 @@ async function send() {
   try {
     // POST /api/v1/chat/messages — kicks off (or reuses) a 1:1 conversation
     // and posts the first message in one round-trip.
-    await chatMessages({ recipientId, content: trimmed });
+    await postV1ChatMessages({ recipientId, content: trimmed });
     track('quick_message_sent', { recipientId, source: 'mynetwork_main' });
     toastState.show(t('network.quickMessageSent'), 'success');
     open = false;

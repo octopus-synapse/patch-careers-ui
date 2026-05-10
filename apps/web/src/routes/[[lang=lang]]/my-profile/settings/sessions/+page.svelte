@@ -1,8 +1,8 @@
 <script lang="ts">
 import {
-  authListSessionsQueryKey,
-  createAuthListSessions,
-  createAuthRevokeSession,
+  listSessionsQueryKey,
+  createListSessions,
+  createRevokeSession,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
 import { Monitor, Smartphone, X } from 'lucide-svelte';
@@ -34,17 +34,17 @@ function formatAuthMethod(method: string | null): string | null {
   }
 }
 
-const sessionsQuery = createAuthListSessions({
+const sessionsQuery = createListSessions({
   query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
 });
 
 const sessions = $derived($sessionsQuery.data?.sessions ?? []);
 
-const revoke = createAuthRevokeSession({
+const revoke = createRevokeSession({
   mutation: {
     async onSuccess() {
       toastState.show(t('success.sessionRevoked'), 'success');
-      await queryClient.invalidateQueries({ queryKey: authListSessionsQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: listSessionsQueryKey() });
     },
     onError: handleApiError,
   },

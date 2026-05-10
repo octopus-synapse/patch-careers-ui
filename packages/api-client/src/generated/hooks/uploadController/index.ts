@@ -1,9 +1,9 @@
-export type { UploadCompanyLogoMutationKey } from "./createUploadCompanyLogo";
-export type { UploadFileMutationKey } from "./createUploadFile";
-export type { UploadProfileImageMutationKey } from "./createUploadProfileImage";
-export { createUploadCompanyLogo } from "./createUploadCompanyLogo";
-export { uploadCompanyLogoMutationKey } from "./createUploadCompanyLogo";
-export { createUploadFile } from "./createUploadFile";
-export { uploadFileMutationKey } from "./createUploadFile";
-export { createUploadProfileImage } from "./createUploadProfileImage";
-export { uploadProfileImageMutationKey } from "./createUploadProfileImage";
+export type { DeleteV1UploadFileKeyMutationKey } from "./createDeleteV1UploadFileKey";
+export type { PostV1UploadCompanyLogoResumeIdMutationKey } from "./createPostV1UploadCompanyLogoResumeId";
+export type { PostV1UploadProfileImageMutationKey } from "./createPostV1UploadProfileImage";
+export { createDeleteV1UploadFileKey } from "./createDeleteV1UploadFileKey";
+export { deleteV1UploadFileKeyMutationKey } from "./createDeleteV1UploadFileKey";
+export { createPostV1UploadCompanyLogoResumeId } from "./createPostV1UploadCompanyLogoResumeId";
+export { postV1UploadCompanyLogoResumeIdMutationKey } from "./createPostV1UploadCompanyLogoResumeId";
+export { createPostV1UploadProfileImage } from "./createPostV1UploadProfileImage";
+export { postV1UploadProfileImageMutationKey } from "./createPostV1UploadProfileImage";

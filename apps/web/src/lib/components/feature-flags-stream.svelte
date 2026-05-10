@@ -4,7 +4,7 @@
   import Inner from './feature-flags-stream-inner.svelte';
 
   const auth = useAuth();
-  const authenticated = $derived(auth.data?.authenticated ?? false);
+  const authenticated = $derived(auth.isAuthenticated ?? false);
 </script>
 
 {#if authenticated}

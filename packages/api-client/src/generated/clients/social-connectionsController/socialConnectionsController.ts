@@ -3,19 +3,19 @@
 * Do not edit manually.
 */
 
-import { socialConnectionsConnections } from "./socialConnectionsConnections";
-import { socialConnectionsConnectionsAccept } from "./socialConnectionsConnectionsAccept";
-import { socialConnectionsConnectionsReject } from "./socialConnectionsConnectionsReject";
-import { socialConnectionsConnectionsWithdraw } from "./socialConnectionsConnectionsWithdraw";
-import { socialConnectionsUsersConnect } from "./socialConnectionsUsersConnect";
-import { socialConnectionsUsersConnectionStats } from "./socialConnectionsUsersConnectionStats";
-import { socialConnectionsUsersIsConnected } from "./socialConnectionsUsersIsConnected";
-import { socialConnectionsUsersMeConnections } from "./socialConnectionsUsersMeConnections";
-import { socialConnectionsUsersMeConnectionsPending } from "./socialConnectionsUsersMeConnectionsPending";
-import { socialConnectionsUsersMeConnectionsSent } from "./socialConnectionsUsersMeConnectionsSent";
-import { socialConnectionsUsersMeConnectionsSuggestions } from "./socialConnectionsUsersMeConnectionsSuggestions";
-import { socialConnectionsUsersMeNetworkSummary } from "./socialConnectionsUsersMeNetworkSummary";
+import { deleteV1ConnectionsId } from "./deleteV1ConnectionsId";
+import { deleteV1ConnectionsIdWithdraw } from "./deleteV1ConnectionsIdWithdraw";
+import { getV1UsersMeConnections } from "./getV1UsersMeConnections";
+import { getV1UsersMeConnectionsPending } from "./getV1UsersMeConnectionsPending";
+import { getV1UsersMeConnectionsSent } from "./getV1UsersMeConnectionsSent";
+import { getV1UsersMeConnectionsSuggestions } from "./getV1UsersMeConnectionsSuggestions";
+import { getV1UsersMeNetworkSummary } from "./getV1UsersMeNetworkSummary";
+import { getV1UsersUserIdConnectionStats } from "./getV1UsersUserIdConnectionStats";
+import { getV1UsersUserIdIsConnected } from "./getV1UsersUserIdIsConnected";
+import { postV1UsersUserIdConnect } from "./postV1UsersUserIdConnect";
+import { putV1ConnectionsIdAccept } from "./putV1ConnectionsIdAccept";
+import { putV1ConnectionsIdReject } from "./putV1ConnectionsIdReject";
 
 export function socialConnectionsController() {
-  return { socialConnectionsUsersMeNetworkSummary, socialConnectionsUsersConnect, socialConnectionsConnectionsAccept, socialConnectionsConnectionsReject, socialConnectionsConnectionsWithdraw, socialConnectionsConnections, socialConnectionsUsersMeConnections, socialConnectionsUsersMeConnectionsPending, socialConnectionsUsersMeConnectionsSent, socialConnectionsUsersMeConnectionsSuggestions, socialConnectionsUsersConnectionStats, socialConnectionsUsersIsConnected }
+  return { deleteV1ConnectionsId, putV1ConnectionsIdAccept, putV1ConnectionsIdReject, deleteV1ConnectionsIdWithdraw, getV1UsersMeConnections, getV1UsersMeConnectionsPending, getV1UsersMeConnectionsSent, getV1UsersMeConnectionsSuggestions, getV1UsersMeNetworkSummary, postV1UsersUserIdConnect, getV1UsersUserIdConnectionStats, getV1UsersUserIdIsConnected }
 }

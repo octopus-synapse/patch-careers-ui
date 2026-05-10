@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { adminTechNichesCreate } from "./adminTechNichesCreate";
-import { adminTechNichesDelete } from "./adminTechNichesDelete";
-import { adminTechNichesGetById } from "./adminTechNichesGetById";
-import { adminTechNichesList } from "./adminTechNichesList";
-import { adminTechNichesUpdate } from "./adminTechNichesUpdate";
+import { deleteV1AdminTechNichesId } from "./deleteV1AdminTechNichesId";
+import { getV1AdminTechNiches } from "./getV1AdminTechNiches";
+import { getV1AdminTechNichesId } from "./getV1AdminTechNichesId";
+import { patchV1AdminTechNichesId } from "./patchV1AdminTechNichesId";
+import { postV1AdminTechNiches } from "./postV1AdminTechNiches";
 
 export function adminTechNichesController() {
-  return { adminTechNichesList, adminTechNichesCreate, adminTechNichesGetById, adminTechNichesUpdate, adminTechNichesDelete }
+  return { getV1AdminTechNiches, postV1AdminTechNiches, deleteV1AdminTechNichesId, getV1AdminTechNichesId, patchV1AdminTechNichesId }
 }

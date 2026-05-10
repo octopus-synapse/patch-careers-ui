@@ -1,6 +1,6 @@
-export type { BadgesMe200, BadgesMe400, BadgesMe400SeverityEnumKey, BadgesMe401, BadgesMe401SeverityEnumKey, BadgesMeQuery, BadgesMeQueryResponse } from "./BadgesMe";
-export type { BadgesUser200, BadgesUser400, BadgesUser400SeverityEnumKey, BadgesUser404, BadgesUser404SeverityEnumKey, BadgesUserPathParams, BadgesUserQuery, BadgesUserQueryResponse } from "./BadgesUser";
-export { badgesMe400SeverityEnum } from "./BadgesMe";
-export { badgesMe401SeverityEnum } from "./BadgesMe";
-export { badgesUser400SeverityEnum } from "./BadgesUser";
-export { badgesUser404SeverityEnum } from "./BadgesUser";
+export type { GetV1BadgesMe200, GetV1BadgesMe400, GetV1BadgesMe400SeverityEnumKey, GetV1BadgesMe401, GetV1BadgesMe401SeverityEnumKey, GetV1BadgesMeQuery, GetV1BadgesMeQueryResponse } from "./GetV1BadgesMe";
+export type { GetV1BadgesUserUserId200, GetV1BadgesUserUserId400, GetV1BadgesUserUserId400SeverityEnumKey, GetV1BadgesUserUserId404, GetV1BadgesUserUserId404SeverityEnumKey, GetV1BadgesUserUserIdPathParams, GetV1BadgesUserUserIdQuery, GetV1BadgesUserUserIdQueryResponse } from "./GetV1BadgesUserUserId";
+export { getV1BadgesMe400SeverityEnum } from "./GetV1BadgesMe";
+export { getV1BadgesMe401SeverityEnum } from "./GetV1BadgesMe";
+export { getV1BadgesUserUserId400SeverityEnum } from "./GetV1BadgesUserUserId";
+export { getV1BadgesUserUserId404SeverityEnum } from "./GetV1BadgesUserUserId";

@@ -3,7 +3,7 @@
   resumeAnalyticsGetViewStats from the generated client.
 -->
 <script lang="ts">
-import { createResumeAnalyticsResumesAnalyticsViews } from 'api-client';
+import { createGetV1ResumesResumeIdAnalyticsViews } from 'api-client';
 import { Eye, TrendingUp, Users } from 'lucide-svelte';
 import { Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -11,7 +11,7 @@ import { page } from '$app/stores';
 
 const resumeId = $derived($page.params.id ?? '');
 
-const stats = createResumeAnalyticsResumesAnalyticsViews(
+const stats = createGetV1ResumesResumeIdAnalyticsViews(
   resumeId,
   { period: 'month' },
   { query: { enabled: browser && Boolean(resumeId) } },

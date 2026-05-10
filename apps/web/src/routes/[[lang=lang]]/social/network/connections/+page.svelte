@@ -1,11 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createSocialConnectionsConnectionsWithdraw,
-  createSocialConnectionsUsersMeConnections,
-  socialConnectionsUsersMeConnectionsQueryKey,
-  socialConnectionsUsersMeConnections,
-  type SocialConnectionsUsersMeConnections200,
+  createDeleteV1ConnectionsIdWithdraw,
+  createGetV1UsersMeConnections,
+  getV1UsersMeConnections,
+  getV1UsersMeConnectionsQueryKey,
 } from 'api-client';
 import { ChevronDown, MessageCircle, MoreHorizontal, Search, Users } from 'lucide-svelte';
 import { Avatar, Button, ConfirmModal, Input, Skeleton } from 'ui';
@@ -13,61 +12,38 @@ import { browser } from '$app/environment';
 import { chatState } from '$lib/state/chat-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { InfiniteScrollTrigger } from 'ui';
+import { useInfiniteList } from '$lib/state/use-infinite-list.svelte';
+import type { Connection } from '$lib/types/social';
 
 const t = $derived(locale.t);
 
-type ConnectionRecord = SocialConnectionsUsersMeConnections200['connections']['data'][number];
-
-const connectionsQuery = createSocialConnectionsUsersMeConnections(
-  { page: '1', limit: '20' },
-  { query: { enabled: browser } },
-);
-
-const firstPage = $derived($connectionsQuery.data?.connections);
-
-let extra = $state<ConnectionRecord[]>([]);
-let page = $state(1);
-let loadingMore = $state(false);
-
-async function loadMore() {
-  if (loadingMore) return;
-  loadingMore = true;
-  try {
-    const next = page + 1;
-    const res = await socialConnectionsUsersMeConnections({
-      page: String(next),
-      limit: '20',
-    });
-    extra = [...extra, ...res.connections.data];
-    page = next;
-  } finally {
-    loadingMore = false;
-  }
-}
+const list = useInfiniteList<Connection>({
+  createQuery: (p) => createGetV1UsersMeConnections(p, { query: { enabled: browser } }),
+  fetcher: (p) => getV1UsersMeConnections(p),
+});
 
 type SortKey = 'recent' | 'first' | 'last';
 let sortKey = $state<SortKey>('recent');
 let sortOpen = $state(false);
 let query = $state('');
 
-function userOf(c: ConnectionRecord) {
+function userOf(c: Connection) {
   return c.user ?? c.target ?? c.requester;
 }
 
-const allConnections = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
-
 const filtered = $derived.by(() => {
   const q = query.trim().toLowerCase();
-  const list = q
-    ? allConnections.filter((c) => {
+  const items = list.items;
+  const head = q
+    ? items.filter((c) => {
         const u = userOf(c);
         const name = (u?.name ?? '').toLowerCase();
         const username = (u?.username ?? '').toLowerCase();
         return name.includes(q) || username.includes(q);
       })
-    : allConnections;
+    : items;
 
-  const sorted = [...list];
+  const sorted = [...head];
   if (sortKey === 'recent') {
     sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   } else if (sortKey === 'first') {
@@ -104,11 +80,11 @@ const queryClient = useQueryClient();
 let removeTarget = $state<{ id: string; name: string } | null>(null);
 let menuOpenFor = $state<string | null>(null);
 
-const removeMutation = createSocialConnectionsConnectionsWithdraw({
+const removeMutation = createDeleteV1ConnectionsIdWithdraw({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: socialConnectionsUsersMeConnectionsQueryKey() });
-      extra = extra.filter((c) => c.id !== removeTarget?.id);
+      queryClient.invalidateQueries({ queryKey: getV1UsersMeConnectionsQueryKey() });
+      list.reset();
       removeTarget = null;
     },
   },
@@ -140,7 +116,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 				<h1 class="text-base font-semibold text-gray-800 dark:text-neutral-200">
 					{(t?.('network.connectionsCount') ?? '{n} connections').replace(
 						'{n}',
-						String(firstPage?.total ?? 0),
+						String(list.total),
 					)}
 				</h1>
 			</div>
@@ -194,7 +170,7 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 			</div>
 
 			<!-- List -->
-			{#if $connectionsQuery.isLoading}
+			{#if list.isLoading}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(5) as _}
 						<div class="flex items-center gap-3 px-6 py-4">
@@ -287,9 +263,9 @@ const removeMutation = createSocialConnectionsConnectionsWithdraw({
 					{/each}
 				</ul>
 				<InfiniteScrollTrigger
-					onLoadMore={loadMore}
-					hasMore={!!firstPage && page < firstPage.totalPages}
-					isLoading={loadingMore}
+					onLoadMore={list.loadMore}
+					hasMore={list.hasMore}
+					isLoading={list.loadingMore}
 				/>
 			{/if}
 		</section>

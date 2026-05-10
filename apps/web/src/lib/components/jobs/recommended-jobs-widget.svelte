@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createJobsRecommended } from 'api-client';
+import { createGetV1JobsRecommended } from 'api-client';
 import { Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -21,10 +21,10 @@ type RecommendedJob = {
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated ?? false);
+const authenticated = $derived(auth.isAuthenticated ?? false);
 
-const query = createJobsRecommended(
-  { page: '1', limit: '5' },
+const query = createGetV1JobsRecommended(
+  { page: 1, limit: 5 },
   { query: { enabled: browser && authenticated } },
 );
 

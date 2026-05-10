@@ -1,3 +1,3 @@
-export { enumsExportFormats200Schema, enumsExportFormats400Schema, enumsExportFormatsQueryResponseSchema } from "./enumsExportFormatsSchema";
-export { enumsSectionTypes200Schema, enumsSectionTypes400Schema, enumsSectionTypesQueryResponseSchema } from "./enumsSectionTypesSchema";
-export { enumsUserRoles200Schema, enumsUserRoles400Schema, enumsUserRolesQueryResponseSchema } from "./enumsUserRolesSchema";
+export { getV1EnumsExportFormats200Schema, getV1EnumsExportFormats400Schema, getV1EnumsExportFormatsQueryResponseSchema } from "./getV1EnumsExportFormatsSchema";
+export { getV1EnumsSectionTypes200Schema, getV1EnumsSectionTypes400Schema, getV1EnumsSectionTypesQueryResponseSchema } from "./getV1EnumsSectionTypesSchema";
+export { getV1EnumsUserRoles200Schema, getV1EnumsUserRoles400Schema, getV1EnumsUserRolesQueryResponseSchema } from "./getV1EnumsUserRolesSchema";

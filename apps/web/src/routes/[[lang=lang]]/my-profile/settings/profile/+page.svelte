@@ -1,13 +1,13 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  type UsersProfilePatchMutationRequest,
-  createUsersProfileGet,
-  createUsersProfilePatch,
-  onboardingSessionRestart,
-  usersProfileGetQueryKey,
+  type PatchV1UsersProfileMutationRequest,
+  createGetV1UsersProfile,
+  createPatchV1UsersProfile,
+  postV1OnboardingSessionRestart,
+  getV1UsersProfileQueryKey,
 } from 'api-client';
-import { usersProfilePatchMutationRequestSchema } from 'api-client/zod';
+import { patchV1UsersProfileMutationRequestSchema } from 'api-client/zod';
 import { Check } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader, Textarea } from 'ui';
 import { browser } from '$app/environment';
@@ -17,25 +17,25 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-const profileQuery = createUsersProfileGet({
+const profileQuery = createGetV1UsersProfile({
   query: { enabled: browser },
 });
 const profileData = $derived($profileQuery.data);
 
 let profileSaved = $state(false);
 
-const updateProfile = createUsersProfilePatch({
+const updateProfile = createPatchV1UsersProfile({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: usersProfileGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1UsersProfileQueryKey() });
       profileSaved = true;
       setTimeout(() => (profileSaved = false), 3000);
     },
   },
 });
 
-const profileForm = createForm<UsersProfilePatchMutationRequest>({
-  schema: usersProfilePatchMutationRequestSchema,
+const profileForm = createForm<PatchV1UsersProfileMutationRequest>({
+  schema: patchV1UsersProfileMutationRequestSchema,
   initial: { name: '', bio: '', location: '', website: '', linkedin: '', github: '' },
   mutation: updateProfile,
   transform: (v) => ({
@@ -168,7 +168,7 @@ function handleSaveProfile() {
 					variant="ghost"
 					size="xs"
 					onclick={async () => {
-						await onboardingSessionRestart();
+						await postV1OnboardingSessionRestart();
 						window.location.href = '/onboarding';
 					}}
 				>

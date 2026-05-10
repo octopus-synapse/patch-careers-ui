@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { createResumeQualityResumesQuality } from 'api-client';
+  import { createGetV1ResumesResumeIdQuality } from 'api-client';
   import { Badge, ScoreCard, Skeleton } from 'ui';
 
   /**
@@ -19,7 +19,7 @@
 
   let { resumeId, detailsHref }: Props = $props();
 
-  const qualityQuery = createResumeQualityResumesQuality(
+  const qualityQuery = createGetV1ResumesResumeIdQuality(
     resumeId,
     { query: { enabled: browser && !!resumeId, refetchOnWindowFocus: false } },
   );

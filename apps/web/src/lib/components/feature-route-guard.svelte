@@ -27,7 +27,7 @@
   const { flag, children, redirectTo = '/my-profile/dashboard' }: Props = $props();
 
   const auth = useAuth();
-  const authenticated = $derived(auth.data?.authenticated ?? false);
+  const authenticated = $derived(auth.isAuthenticated ?? false);
   const flags = useFeatureFlags(() => ({ authenticated }));
 
   // Only decide once the flag snapshot has loaded — otherwise we'd

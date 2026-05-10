@@ -3,14 +3,14 @@
 * Do not edit manually.
 */
 
-import { socialFollowUsersFollowDelete } from "./socialFollowUsersFollowDelete";
-import { socialFollowUsersFollowPost } from "./socialFollowUsersFollowPost";
-import { socialFollowUsersFollowers } from "./socialFollowUsersFollowers";
-import { socialFollowUsersFollowing } from "./socialFollowUsersFollowing";
-import { socialFollowUsersIsFollowing } from "./socialFollowUsersIsFollowing";
-import { socialFollowUsersMeSocialStats } from "./socialFollowUsersMeSocialStats";
-import { socialFollowUsersSocialStats } from "./socialFollowUsersSocialStats";
+import { deleteV1UsersUserIdFollow } from "./deleteV1UsersUserIdFollow";
+import { getV1UsersMeSocialStats } from "./getV1UsersMeSocialStats";
+import { getV1UsersUserIdFollowers } from "./getV1UsersUserIdFollowers";
+import { getV1UsersUserIdFollowing } from "./getV1UsersUserIdFollowing";
+import { getV1UsersUserIdIsFollowing } from "./getV1UsersUserIdIsFollowing";
+import { getV1UsersUserIdSocialStats } from "./getV1UsersUserIdSocialStats";
+import { postV1UsersUserIdFollow } from "./postV1UsersUserIdFollow";
 
 export function socialFollowController() {
-  return { socialFollowUsersFollowPost, socialFollowUsersFollowDelete, socialFollowUsersFollowers, socialFollowUsersFollowing, socialFollowUsersIsFollowing, socialFollowUsersMeSocialStats, socialFollowUsersSocialStats }
+  return { getV1UsersMeSocialStats, deleteV1UsersUserIdFollow, postV1UsersUserIdFollow, getV1UsersUserIdFollowers, getV1UsersUserIdFollowing, getV1UsersUserIdIsFollowing, getV1UsersUserIdSocialStats }
 }

@@ -1,4 +1,4 @@
+export { getV1I18NDictionaryEnums } from "./getV1I18NDictionaryEnums";
+export { getV1I18NDictionaryErrors } from "./getV1I18NDictionaryErrors";
+export { getV1I18NDictionaryNotifications } from "./getV1I18NDictionaryNotifications";
 export { i18NController } from "./i18NController";
-export { i18NDictionaryEnums } from "./i18NDictionaryEnums";
-export { i18NDictionaryErrors } from "./i18NDictionaryErrors";
-export { i18NDictionaryNotifications } from "./i18NDictionaryNotifications";

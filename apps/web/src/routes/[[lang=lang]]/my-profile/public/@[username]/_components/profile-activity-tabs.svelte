@@ -3,10 +3,10 @@
    * Profile activity tabs — burra: 4 tabs (posts/comments/reactions/activity).
    */
 import {
-  createFeedUser,
-  createSocialActivityUsersActivities,
-  createUserEngagementUsersComments,
-  createUserEngagementUsersReactions,
+  createGetV1FeedUserUserId,
+  createGetV1UsersUserIdActivities,
+  createGetV1UsersUserIdComments,
+  createGetV1UsersUserIdReactions,
 } from 'api-client';
 import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -33,34 +33,34 @@ const tabs = $derived([
   { value: 'activity', label: t('feed.tabsActivity') },
 ]);
 
-const postsQuery = createFeedUser(
+const postsQuery = createGetV1FeedUserUserId(
   userId,
   { limit: '20' },
   { query: { enabled: browser && !!userId && active === 'posts' } },
 );
 
-const commentsQuery = createUserEngagementUsersComments(
+const commentsQuery = createGetV1UsersUserIdComments(
   userId,
   { limit: '20' },
   { query: { enabled: browser && !!userId && active === 'comments' } },
 );
 
-const reactionsQuery = createUserEngagementUsersReactions(
+const reactionsQuery = createGetV1UsersUserIdReactions(
   userId,
   { limit: '20' },
   { query: { enabled: browser && !!userId && active === 'reactions' } },
 );
 
-const activitiesQuery = createSocialActivityUsersActivities(
+const activitiesQuery = createGetV1UsersUserIdActivities(
   userId,
-  { limit: '20' },
+  { limit: 20 },
   { query: { enabled: browser && !!userId && active === 'activity' } },
 );
 
-const posts = $derived($postsQuery.data?.posts);
-const comments = $derived($commentsQuery.data?.comments);
-const reactions = $derived($reactionsQuery.data?.reactions);
-const activities = $derived($activitiesQuery.data?.activities.data);
+const posts = $derived($postsQuery.data?.items);
+const comments = $derived($commentsQuery.data?.items);
+const reactions = $derived($reactionsQuery.data?.items);
+const activities = $derived($activitiesQuery.data?.items);
 
 
 function activityLabel(type: string): string {

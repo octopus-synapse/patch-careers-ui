@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { feedBookmarks } from "./feedBookmarks";
-import { feedList } from "./feedList";
-import { feedUser } from "./feedUser";
+import { getV1Feed } from "./getV1Feed";
+import { getV1FeedBookmarks } from "./getV1FeedBookmarks";
+import { getV1FeedUserUserId } from "./getV1FeedUserUserId";
 
 export function feedController() {
-  return { feedList, feedBookmarks, feedUser }
+  return { getV1Feed, getV1FeedBookmarks, getV1FeedUserUserId }
 }

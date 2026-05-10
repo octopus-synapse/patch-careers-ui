@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { dslPreview } from "./dslPreview";
-import { dslRender } from "./dslRender";
-import { dslRenderPublic } from "./dslRenderPublic";
-import { dslValidate } from "./dslValidate";
+import { getV1DslRenderPublicSlug } from "./getV1DslRenderPublicSlug";
+import { getV1DslRenderResumeId } from "./getV1DslRenderResumeId";
+import { postV1DslPreview } from "./postV1DslPreview";
+import { postV1DslValidate } from "./postV1DslValidate";
 
 export function dslController() {
-  return { dslValidate, dslPreview, dslRender, dslRenderPublic }
+  return { postV1DslPreview, getV1DslRenderPublicSlug, getV1DslRenderResumeId, postV1DslValidate }
 }

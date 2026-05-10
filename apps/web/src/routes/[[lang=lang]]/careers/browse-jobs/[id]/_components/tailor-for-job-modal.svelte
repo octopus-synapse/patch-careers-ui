@@ -8,8 +8,8 @@
  * server-supplied `changes[]` (path/op/before/after/highlights) — the
  * frontend doesn't compute any diff itself.
  */
-import { createResumesList, resumeTailorResumesTailor } from 'api-client';
-import type { ResumeTailorResumesTailor200 } from 'api-client';
+import { createGetV1Resumes, postV1ResumesResumeIdTailor } from 'api-client';
+import type { PostV1ResumesResumeIdTailorMutationResponse } from 'api-client';
 import { Sparkles } from 'lucide-svelte';
 import { Button, Loader, Modal, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -26,7 +26,7 @@ type Props = {
 
 let { open, onClose, jobId, jobTitle, jobCompany, jobDescription }: Props = $props();
 
-const resumesQuery = createResumesList(
+const resumesQuery = createGetV1Resumes(
   { page: '1', limit: '20' },
   { query: { enabled: browser && open } },
 );
@@ -36,7 +36,7 @@ const resumes = $derived($resumesQuery.data?.items);
 let selectedResumeId = $state('');
 let jdText = $state('');
 let submitting = $state(false);
-let result = $state<ResumeTailorResumesTailor200 | null>(null);
+let result = $state<PostV1ResumesResumeIdTailorMutationResponse | null>(null);
 
 // Auto-select first resume + prefill JD when modal opens or props change.
 $effect(() => {
@@ -57,7 +57,7 @@ async function handleSubmit() {
   if (submitting || !selectedResumeId) return;
   submitting = true;
   try {
-    result = await resumeTailorResumesTailor(selectedResumeId, {
+    result = await postV1ResumesResumeIdTailor(selectedResumeId, {
       jobId,
       jobTitle,
       jobCompany,

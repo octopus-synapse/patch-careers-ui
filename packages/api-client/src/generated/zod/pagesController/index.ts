@@ -1,2 +1,2 @@
-export { pagesMeDashboard200Schema, pagesMeDashboard400Schema, pagesMeDashboard401Schema, pagesMeDashboardQueryResponseSchema } from "./pagesMeDashboardSchema";
-export { pagesSettings200Schema, pagesSettings400Schema, pagesSettings401Schema, pagesSettingsPathParamsSchema, pagesSettingsQueryResponseSchema } from "./pagesSettingsSchema";
+export { getV1PagesMeDashboard200Schema, getV1PagesMeDashboard400Schema, getV1PagesMeDashboard401Schema, getV1PagesMeDashboardQueryResponseSchema } from "./getV1PagesMeDashboardSchema";
+export { getV1PagesSettingsSection200Schema, getV1PagesSettingsSection400Schema, getV1PagesSettingsSection401Schema, getV1PagesSettingsSection404Schema, getV1PagesSettingsSectionPathParamsSchema, getV1PagesSettingsSectionQueryResponseSchema } from "./getV1PagesSettingsSectionSchema";

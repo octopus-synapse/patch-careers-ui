@@ -1,2 +1,2 @@
 export { adminMetricsController } from "./adminMetricsController";
-export { adminMetricsOverview } from "./adminMetricsOverview";
+export { getV1AdminMetricsOverview } from "./getV1AdminMetricsOverview";

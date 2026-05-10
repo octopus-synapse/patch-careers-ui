@@ -3,17 +3,17 @@
 * Do not edit manually.
 */
 
-import { techSkillsQueryAreas } from "./techSkillsQueryAreas";
-import { techSkillsQueryAreasNiches } from "./techSkillsQueryAreasNiches";
-import { techSkillsQueryLanguages } from "./techSkillsQueryLanguages";
-import { techSkillsQueryLanguagesSearch } from "./techSkillsQueryLanguagesSearch";
-import { techSkillsQueryNiches } from "./techSkillsQueryNiches";
-import { techSkillsQueryNichesSkills } from "./techSkillsQueryNichesSkills";
-import { techSkillsQuerySearch } from "./techSkillsQuerySearch";
-import { techSkillsQuerySkills } from "./techSkillsQuerySkills";
-import { techSkillsQuerySkillsSearch } from "./techSkillsQuerySkillsSearch";
-import { techSkillsQuerySkillsType } from "./techSkillsQuerySkillsType";
+import { getV1TechSkillsAreas } from "./getV1TechSkillsAreas";
+import { getV1TechSkillsAreasAreaTypeNiches } from "./getV1TechSkillsAreasAreaTypeNiches";
+import { getV1TechSkillsLanguages } from "./getV1TechSkillsLanguages";
+import { getV1TechSkillsLanguagesSearch } from "./getV1TechSkillsLanguagesSearch";
+import { getV1TechSkillsNiches } from "./getV1TechSkillsNiches";
+import { getV1TechSkillsNichesNicheSlugSkills } from "./getV1TechSkillsNichesNicheSlugSkills";
+import { getV1TechSkillsSearch } from "./getV1TechSkillsSearch";
+import { getV1TechSkillsSkills } from "./getV1TechSkillsSkills";
+import { getV1TechSkillsSkillsSearch } from "./getV1TechSkillsSkillsSearch";
+import { getV1TechSkillsSkillsTypeType } from "./getV1TechSkillsSkillsTypeType";
 
 export function techSkillsQueryController() {
-  return { techSkillsQueryAreas, techSkillsQueryNiches, techSkillsQueryAreasNiches, techSkillsQueryLanguages, techSkillsQueryLanguagesSearch, techSkillsQuerySkills, techSkillsQuerySkillsSearch, techSkillsQueryNichesSkills, techSkillsQuerySkillsType, techSkillsQuerySearch }
+  return { getV1TechSkillsAreas, getV1TechSkillsAreasAreaTypeNiches, getV1TechSkillsLanguages, getV1TechSkillsLanguagesSearch, getV1TechSkillsNiches, getV1TechSkillsNichesNicheSlugSkills, getV1TechSkillsSearch, getV1TechSkillsSkills, getV1TechSkillsSkillsSearch, getV1TechSkillsSkillsTypeType }
 }

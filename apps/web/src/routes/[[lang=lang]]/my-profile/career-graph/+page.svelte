@@ -8,9 +8,9 @@
  * identities — the backend returns aggregated histograms only.
  */
 import {
-  type CareerGraphView200,
-  type CareerGraphViewMutationRequest,
-  careerGraphView,
+  type PostV1CareerGraphView200,
+  type PostV1CareerGraphViewMutationRequest,
+  postV1CareerGraphView,
 } from 'api-client';
 import { Sparkles, TrendingUp, Users } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -18,7 +18,7 @@ import { Badge, Button, Input, Label, Loader, toastState } from 'ui';
 
 let skillsCsv = $state('');
 let submitting = $state(false);
-let data = $state<CareerGraphView200 | null>(null);
+let data = $state<PostV1CareerGraphView200 | null>(null);
 let searched = $state(false);
 
 const skills = $derived(
@@ -35,8 +35,8 @@ async function handleSearch() {
   if (skills.length === 0 || submitting) return;
   submitting = true;
   try {
-    const payload: CareerGraphViewMutationRequest = { stack: skills, maxBuckets: 20 };
-    const result = await careerGraphView(payload);
+    const payload: PostV1CareerGraphViewMutationRequest = { stack: skills, maxBuckets: 20 };
+    const result = await postV1CareerGraphView(payload);
     // customFetch throws on non-2xx, so the response union narrows to the
     // 200 shape at runtime — guard via a 200-only field.
     data = 'buckets' in result ? result : null;

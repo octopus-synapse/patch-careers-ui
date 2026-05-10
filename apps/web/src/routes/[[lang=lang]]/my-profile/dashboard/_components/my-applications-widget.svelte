@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createJobsApplicationsGet } from 'api-client';
+import { createGetV1JobsApplications } from 'api-client';
 import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
@@ -27,10 +27,10 @@ type ApplicationItem = {
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated ?? false);
+const authenticated = $derived(auth.isAuthenticated ?? false);
 
-const query = createJobsApplicationsGet(
-  { page: '1', limit: '5' },
+const query = createGetV1JobsApplications(
+  { page: 1, limit: 5 },
   { query: { enabled: browser && authenticated } },
 );
 

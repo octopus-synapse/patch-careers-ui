@@ -1,9 +1,9 @@
-export { adminOnboardingConfigGet } from "./adminOnboardingConfigGet";
-export { adminOnboardingConfigPut } from "./adminOnboardingConfigPut";
 export { adminOnboardingController } from "./adminOnboardingController";
-export { adminOnboardingStats } from "./adminOnboardingStats";
-export { adminOnboardingStepsDelete } from "./adminOnboardingStepsDelete";
-export { adminOnboardingStepsGet } from "./adminOnboardingStepsGet";
-export { adminOnboardingStepsGet2 } from "./adminOnboardingStepsGet2";
-export { adminOnboardingStepsPost } from "./adminOnboardingStepsPost";
-export { adminOnboardingStepsPut } from "./adminOnboardingStepsPut";
+export { deleteV1AdminOnboardingStepsKey } from "./deleteV1AdminOnboardingStepsKey";
+export { getV1AdminOnboardingConfig } from "./getV1AdminOnboardingConfig";
+export { getV1AdminOnboardingStats } from "./getV1AdminOnboardingStats";
+export { getV1AdminOnboardingSteps } from "./getV1AdminOnboardingSteps";
+export { getV1AdminOnboardingStepsKey } from "./getV1AdminOnboardingStepsKey";
+export { postV1AdminOnboardingSteps } from "./postV1AdminOnboardingSteps";
+export { putV1AdminOnboardingConfig } from "./putV1AdminOnboardingConfig";
+export { putV1AdminOnboardingStepsKey } from "./putV1AdminOnboardingStepsKey";

@@ -1,3 +1,3 @@
-export { I18NDictionaryEnums200Schema, I18NDictionaryEnums400Schema, I18NDictionaryEnumsQueryResponseSchema } from "./i18NDictionaryEnumsSchema";
-export { I18NDictionaryErrors200Schema, I18NDictionaryErrors400Schema, I18NDictionaryErrorsQueryResponseSchema } from "./i18NDictionaryErrorsSchema";
-export { I18NDictionaryNotifications200Schema, I18NDictionaryNotifications400Schema, I18NDictionaryNotificationsQueryResponseSchema } from "./i18NDictionaryNotificationsSchema";
+export { getV1I18NDictionaryEnums200Schema, getV1I18NDictionaryEnums400Schema, getV1I18NDictionaryEnumsQueryResponseSchema } from "./getV1I18NDictionaryEnumsSchema";
+export { getV1I18NDictionaryErrors200Schema, getV1I18NDictionaryErrors400Schema, getV1I18NDictionaryErrorsQueryResponseSchema } from "./getV1I18NDictionaryErrorsSchema";
+export { getV1I18NDictionaryNotifications200Schema, getV1I18NDictionaryNotifications400Schema, getV1I18NDictionaryNotificationsQueryResponseSchema } from "./getV1I18NDictionaryNotificationsSchema";

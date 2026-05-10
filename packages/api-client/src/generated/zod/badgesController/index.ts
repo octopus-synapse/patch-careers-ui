@@ -1,2 +1,2 @@
-export { badgesMe200Schema, badgesMe400Schema, badgesMe401Schema, badgesMeQueryResponseSchema } from "./badgesMeSchema";
-export { badgesUser200Schema, badgesUser400Schema, badgesUser404Schema, badgesUserPathParamsSchema, badgesUserQueryResponseSchema } from "./badgesUserSchema";
+export { getV1BadgesMe200Schema, getV1BadgesMe400Schema, getV1BadgesMe401Schema, getV1BadgesMeQueryResponseSchema } from "./getV1BadgesMeSchema";
+export { getV1BadgesUserUserId200Schema, getV1BadgesUserUserId400Schema, getV1BadgesUserUserId404Schema, getV1BadgesUserUserIdPathParamsSchema, getV1BadgesUserUserIdQueryResponseSchema } from "./getV1BadgesUserUserIdSchema";

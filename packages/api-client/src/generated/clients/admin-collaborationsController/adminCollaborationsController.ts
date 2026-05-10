@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { adminCollaborationsDelete } from "./adminCollaborationsDelete";
-import { adminCollaborationsList } from "./adminCollaborationsList";
-import { adminCollaborationsStats } from "./adminCollaborationsStats";
+import { deleteV1AdminCollaborationsResumeIdUserId } from "./deleteV1AdminCollaborationsResumeIdUserId";
+import { getV1AdminCollaborations } from "./getV1AdminCollaborations";
+import { getV1AdminCollaborationsStats } from "./getV1AdminCollaborationsStats";
 
 export function adminCollaborationsController() {
-  return { adminCollaborationsStats, adminCollaborationsList, adminCollaborationsDelete }
+  return { getV1AdminCollaborations, getV1AdminCollaborationsStats, deleteV1AdminCollaborationsResumeIdUserId }
 }

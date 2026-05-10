@@ -1,1 +1,1 @@
-export { techSkillsSyncCreate200Schema, techSkillsSyncCreate400Schema, techSkillsSyncCreate401Schema, techSkillsSyncCreate403Schema, techSkillsSyncCreateMutationResponseSchema } from "./techSkillsSyncCreateSchema";
+export { postV1TechSkillsSync201Schema, postV1TechSkillsSync400Schema, postV1TechSkillsSync401Schema, postV1TechSkillsSync403Schema, postV1TechSkillsSyncMutationResponseSchema } from "./postV1TechSkillsSyncSchema";

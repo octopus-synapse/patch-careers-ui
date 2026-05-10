@@ -3,9 +3,9 @@
    * /my-profile/fit-profile/questions — burra: 25 perguntas Likert.
    */
   import {
-    createFitProfileQuestions,
-    fitProfileAnswers,
-    fitProfileMeGetQueryKey,
+    createGetV1FitProfileQuestions,
+    getV1FitProfileMeQueryKey,
+    postV1FitProfileAnswers,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-svelte';
@@ -23,7 +23,7 @@
     { value: 5, label: 'Concordo fortemente' },
   ] as const;
 
-  const questionsQuery = createFitProfileQuestions({
+  const questionsQuery = createGetV1FitProfileQuestions({
       query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
     });
 
@@ -71,11 +71,11 @@
   async function commit(): Promise<void> {
     submitting = true;
     try {
-      await fitProfileAnswers({
+      await postV1FitProfileAnswers({
         questionSetId,
         answers: Array.from(answers, ([questionId, rawValue]) => ({ questionId, rawValue })),
       });
-      await queryClient.invalidateQueries({ queryKey: fitProfileMeGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1FitProfileMeQueryKey() });
       toastState.show('Fit Profile salvo. Match Score liberado.', 'success');
       void goto('/my-profile/scores');
     } catch (err) {

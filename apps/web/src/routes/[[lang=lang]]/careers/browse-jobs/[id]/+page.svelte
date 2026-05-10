@@ -2,21 +2,21 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
-  createJobsBookmarkPost,
-  createJobsBookmarkDelete,
-  createJobsGetById,
-  createJobsFit,
-  createResumesList,
-  jobsListQueryKey,
-  jobsGetByIdQueryKey,
-  jobsBookmarksQueryKey,
-  jobsApplicationsGetQueryKey,
-  jobsApplyPost,
-  jobsApplyDelete,
-  jobsDelete,
-  jobsUpdate,
+  createPostV1JobsIdBookmark,
+  createDeleteV1JobsIdBookmark,
+  createGetV1JobsId,
+  createGetV1JobsIdFitProfile,
+  createGetV1Resumes,
+  getV1JobsQueryKey,
+  getV1JobsIdQueryKey,
+  getV1JobsBookmarksQueryKey,
+  getV1JobsApplicationsQueryKey,
+  postV1JobsIdApply,
+  deleteV1JobsIdApply,
+  deleteV1JobsId,
+  patchV1JobsId,
 } from 'api-client';
-import type { JobsApplyPostMutationRequest, JobsUpdateMutationRequest, JobsUpdateMutationRequestJobTypeEnumKey } from 'api-client';
+import type { PostV1JobsIdApplyMutationRequest, PatchV1JobsIdMutationRequest, UpdateJobRequestJobTypeEnumKey } from 'api-client';
 import { ArrowLeft, Bookmark, Briefcase, Building2, CheckCircle2, DollarSign, ExternalLink, MapPin, Pencil, Send, Sparkles, Trash2 } from 'lucide-svelte';
 import { Badge, Button, ConfirmModal, type FitDimension, FitScoreBreakdown, FormModal, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -36,9 +36,9 @@ const queryClient = useQueryClient();
 const jobId = $derived(($page.params as Record<string, string>).id);
 
 const auth = useAuth();
-const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+const currentUserId = $derived(String(auth.userId ?? ''));
 
-const jobQuery = createJobsGetById(
+const jobQuery = createGetV1JobsId(
   jobId,
   { query: { enabled: browser && !!jobId } },
 );
@@ -51,7 +51,7 @@ const isOwner = $derived(
 // Fit score — enabled for non-owners with a primary resume. Backend returns
 // 409 NO_PRIMARY_RESUME when the user has no master CV yet; the component
 // renders the teaser state automatically whenever `score` is undefined.
-const fitQuery = createJobsFit(
+const fitQuery = createGetV1JobsIdFitProfile(
   jobId,
   { query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } },
 );
@@ -59,8 +59,8 @@ const fitQuery = createJobsFit(
 // Primary resume lookup — the Match Score panel needs a resumeId. We take
 // the first resume in the user's list as the "primary-ish" candidate;
 // future iteration may expose a picker when the user has >1 resume.
-const myResumesQuery = createResumesList(
-  { page: '1', limit: '1' },
+const myResumesQuery = createGetV1Resumes(
+  { page: "1", limit: "1" },
   { query: { enabled: browser && !!currentUserId && !isOwner, retry: false } },
 );
 const primaryResumeId = $derived.by<string | null>(() => {
@@ -75,13 +75,13 @@ const fit = $derived($fitQuery.data);
 let optimisticBookmarked = $state<boolean | null>(null);
 const isBookmarked = $derived(optimisticBookmarked ?? Boolean(job?.isBookmarked));
 
-const bookmarkMutation = createJobsBookmarkPost({
+const bookmarkMutation = createPostV1JobsIdBookmark({
   mutation: {
     onSuccess() {
       optimisticBookmarked = null;
-      queryClient.invalidateQueries({ queryKey: jobsBookmarksQueryKey() });
-      queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
-      queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1JobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1JobsIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: getV1JobsQueryKey() });
       track('job_bookmarked', { jobId });
     },
     onError() {
@@ -91,13 +91,13 @@ const bookmarkMutation = createJobsBookmarkPost({
   },
 });
 
-const unbookmarkMutation = createJobsBookmarkDelete({
+const unbookmarkMutation = createDeleteV1JobsIdBookmark({
   mutation: {
     onSuccess() {
       optimisticBookmarked = null;
-      queryClient.invalidateQueries({ queryKey: jobsBookmarksQueryKey() });
-      queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
-      queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1JobsBookmarksQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1JobsIdQueryKey(jobId) });
+      queryClient.invalidateQueries({ queryKey: getV1JobsQueryKey() });
       track('job_unbookmarked', { jobId });
     },
     onError() {
@@ -124,17 +124,17 @@ let applying = $state(false);
 let withdrawing = $state(false);
 
 function invalidateJobQueries() {
-  queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
-  queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
-  queryClient.invalidateQueries({ queryKey: jobsApplicationsGetQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getV1JobsIdQueryKey(jobId) });
+  queryClient.invalidateQueries({ queryKey: getV1JobsQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getV1JobsApplicationsQueryKey() });
 }
 
 async function submitApplication(coverLetter: string) {
   if (applying) return;
   applying = true;
   try {
-    const payload: JobsApplyPostMutationRequest = coverLetter ? { coverLetter } : {};
-    await jobsApplyPost(jobId, payload);
+    const payload: PostV1JobsIdApplyMutationRequest = coverLetter ? { coverLetter } : {};
+    await postV1JobsIdApply(jobId, payload);
     optimisticApplied = true;
     showApplyModal = false;
     invalidateJobQueries();
@@ -151,7 +151,7 @@ async function confirmWithdraw() {
   if (withdrawing) return;
   withdrawing = true;
   try {
-    await jobsApplyDelete(jobId);
+    await deleteV1JobsIdApply(jobId);
     optimisticApplied = false;
     withdrawConfirm = false;
     invalidateJobQueries();
@@ -199,11 +199,11 @@ function openEdit() {
 async function handleEdit() {
   editLoading = true;
   try {
-    const data: JobsUpdateMutationRequest = {
+    const data: PatchV1JobsIdMutationRequest = {
       title: formTitle,
       company: formCompany,
       location: formLocation || undefined,
-      jobType: formJobType as JobsUpdateMutationRequestJobTypeEnumKey,
+      jobType: formJobType as UpdateJobRequestJobTypeEnumKey,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -216,9 +216,9 @@ async function handleEdit() {
       salaryRange: formSalaryRange || undefined,
       applyUrl: formApplyUrl || undefined,
     };
-    await jobsUpdate(jobId, data);
-    queryClient.invalidateQueries({ queryKey: jobsGetByIdQueryKey(jobId) });
-    queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
+    await patchV1JobsId(jobId, data);
+    queryClient.invalidateQueries({ queryKey: getV1JobsIdQueryKey(jobId) });
+    queryClient.invalidateQueries({ queryKey: getV1JobsQueryKey() });
     editModal = false;
   } finally {
     editLoading = false;
@@ -228,8 +228,8 @@ async function handleEdit() {
 async function handleDelete() {
   deleteLoading = true;
   try {
-    await jobsDelete(jobId);
-    queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
+    await deleteV1JobsId(jobId);
+    queryClient.invalidateQueries({ queryKey: getV1JobsQueryKey() });
     goto('/careers/browse-jobs');
   } finally {
     deleteLoading = false;
@@ -256,9 +256,26 @@ const dimensionLabels: Record<string, string> = $derived({
   location: t('jobs.fit.dimLocation'),
 });
 
+// TODO (PD-007): backend GetV1JobsIdFitProfile200 was reshaped — old summary
+// fields (score, dimensions, matchedKeywords, missingKeywords) are gone, the
+// new payload exposes a structured `vector` instead. Casting to any here so
+// the page compiles; the FitScoreBreakdown component will receive undefined
+// from these accessors until the breakdown is rebuilt against the new shape.
+const fitLegacy = $derived(
+  fit as unknown as
+    | {
+        score?: number;
+        dimensions?: { key: string; label: string; value: number }[];
+        matchedKeywords?: string[];
+        missingKeywords?: string[];
+      }
+    | undefined,
+);
+
 const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
-  if (!fit?.dimensions || fit.dimensions.length === 0) return undefined;
-  return fit.dimensions.map((d) => ({
+  const dims = fitLegacy?.dimensions;
+  if (!dims || dims.length === 0) return undefined;
+  return dims.map((d) => ({
     key: d.key,
     label: dimensionLabels[d.key] ?? d.label,
     value: d.value,
@@ -388,10 +405,10 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 						<MatchScorePanel resumeId={primaryResumeId} {jobId} />
 					{:else}
 						<FitScoreBreakdown
-							score={fit?.score}
+							score={fitLegacy?.score}
 							dimensions={fitDimensions}
-							matched={fit?.matchedKeywords}
-							missing={fit?.missingKeywords}
+							matched={fitLegacy?.matchedKeywords}
+							missing={fitLegacy?.missingKeywords}
 							labels={fitLabels}
 							onTeaserCta={() => goto('/careers/manage-resumes')}
 						/>

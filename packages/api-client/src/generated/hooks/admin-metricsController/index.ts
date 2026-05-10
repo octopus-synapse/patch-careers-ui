@@ -1,4 +1,4 @@
-export type { AdminMetricsOverviewQueryKey } from "./createAdminMetricsOverview";
-export { adminMetricsOverviewQueryKey } from "./createAdminMetricsOverview";
-export { adminMetricsOverviewQueryOptions } from "./createAdminMetricsOverview";
-export { createAdminMetricsOverview } from "./createAdminMetricsOverview";
+export type { GetV1AdminMetricsOverviewQueryKey } from "./createGetV1AdminMetricsOverview";
+export { createGetV1AdminMetricsOverview } from "./createGetV1AdminMetricsOverview";
+export { getV1AdminMetricsOverviewQueryKey } from "./createGetV1AdminMetricsOverview";
+export { getV1AdminMetricsOverviewQueryOptions } from "./createGetV1AdminMetricsOverview";

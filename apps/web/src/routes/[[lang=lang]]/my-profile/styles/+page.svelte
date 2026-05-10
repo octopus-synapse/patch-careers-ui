@@ -4,10 +4,11 @@
    * primeiro currículo.
    */
   import {
-    createResumesList,
-    createResumeStylesList,
+    createGetV1Resumes,
+    createGetV1ResumeStyles,
     getBaseUrl,
-    resumeStylesStyle,
+    getV1ResumeStylesQueryKey,
+    postV1ResumesResumeIdStyle,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Lock } from 'lucide-svelte';
@@ -17,12 +18,12 @@
 
   const queryClient = useQueryClient();
 
-  const listQuery = createResumeStylesList(
+  const listQuery = createGetV1ResumeStyles(
     { page: '1', limit: '20' },
     { query: { enabled: browser, refetchOnWindowFocus: false } },
   );
 
-  const myResumesQuery = createResumesList(
+  const myResumesQuery = createGetV1Resumes(
     { page: '1', limit: '1' },
     { query: { enabled: browser } },
   );
@@ -38,7 +39,7 @@
     }
     applyingStyleId = styleId;
     try {
-      await resumeStylesStyle(primaryResumeId, { styleId });
+      await postV1ResumesResumeIdStyle(primaryResumeId, { styleId });
       toastState.show('Estilo aplicado ao seu currículo.', 'success');
       await queryClient.invalidateQueries({ queryKey: ['resume'] });
     } catch (err) {

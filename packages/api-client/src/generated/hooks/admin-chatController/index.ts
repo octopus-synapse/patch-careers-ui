@@ -1,8 +1,8 @@
-export type { AdminChatConversationsQueryKey } from "./createAdminChatConversations";
-export type { AdminChatStatsQueryKey } from "./createAdminChatStats";
-export { adminChatConversationsQueryKey } from "./createAdminChatConversations";
-export { adminChatConversationsQueryOptions } from "./createAdminChatConversations";
-export { createAdminChatConversations } from "./createAdminChatConversations";
-export { adminChatStatsQueryKey } from "./createAdminChatStats";
-export { adminChatStatsQueryOptions } from "./createAdminChatStats";
-export { createAdminChatStats } from "./createAdminChatStats";
+export type { GetV1AdminChatConversationsQueryKey } from "./createGetV1AdminChatConversations";
+export type { GetV1AdminChatStatsQueryKey } from "./createGetV1AdminChatStats";
+export { createGetV1AdminChatConversations } from "./createGetV1AdminChatConversations";
+export { getV1AdminChatConversationsQueryKey } from "./createGetV1AdminChatConversations";
+export { getV1AdminChatConversationsQueryOptions } from "./createGetV1AdminChatConversations";
+export { createGetV1AdminChatStats } from "./createGetV1AdminChatStats";
+export { getV1AdminChatStatsQueryKey } from "./createGetV1AdminChatStats";
+export { getV1AdminChatStatsQueryOptions } from "./createGetV1AdminChatStats";

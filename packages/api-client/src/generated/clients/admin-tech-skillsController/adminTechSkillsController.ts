@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { adminTechSkillsCreate } from "./adminTechSkillsCreate";
-import { adminTechSkillsDelete } from "./adminTechSkillsDelete";
-import { adminTechSkillsGetById } from "./adminTechSkillsGetById";
-import { adminTechSkillsList } from "./adminTechSkillsList";
-import { adminTechSkillsUpdate } from "./adminTechSkillsUpdate";
+import { deleteV1AdminTechSkillsId } from "./deleteV1AdminTechSkillsId";
+import { getV1AdminTechSkills } from "./getV1AdminTechSkills";
+import { getV1AdminTechSkillsId } from "./getV1AdminTechSkillsId";
+import { patchV1AdminTechSkillsId } from "./patchV1AdminTechSkillsId";
+import { postV1AdminTechSkills } from "./postV1AdminTechSkills";
 
 export function adminTechSkillsController() {
-  return { adminTechSkillsList, adminTechSkillsCreate, adminTechSkillsGetById, adminTechSkillsUpdate, adminTechSkillsDelete }
+  return { getV1AdminTechSkills, postV1AdminTechSkills, deleteV1AdminTechSkillsId, getV1AdminTechSkillsId, patchV1AdminTechSkillsId }
 }

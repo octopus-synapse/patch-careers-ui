@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { adminTestRunnerCreate } from "./adminTestRunnerCreate";
-import { adminTestRunnerSuites } from "./adminTestRunnerSuites";
+import { getV1AdminTestSuites } from "./getV1AdminTestSuites";
+import { postV1AdminTestRun } from "./postV1AdminTestRun";
 
 export function adminTestRunnerController() {
-  return { adminTestRunnerCreate, adminTestRunnerSuites }
+  return { postV1AdminTestRun, getV1AdminTestSuites }
 }

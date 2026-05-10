@@ -1,3 +1,3 @@
+export { getV1ResumesResumeIdQuality } from "./getV1ResumesResumeIdQuality";
+export { postV1ResumesResumeIdQualityRecompute } from "./postV1ResumesResumeIdQualityRecompute";
 export { resumeQualityController } from "./resumeQualityController";
-export { resumeQualityResumesQuality } from "./resumeQualityResumesQuality";
-export { resumeQualityResumesQualityRecompute } from "./resumeQualityResumesQualityRecompute";

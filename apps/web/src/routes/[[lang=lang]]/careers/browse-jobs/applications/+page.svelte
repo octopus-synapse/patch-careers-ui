@@ -5,11 +5,12 @@
 -->
 <script lang="ts">
 import {
-  type ApplicationTrackerJobsApplicationsEventsMutationRequestTypeEnumKey,
-  type ApplicationTrackerJobsApplicationsTracker200,
+  type PostV1JobsApplicationsApplicationIdEventsMutationRequestTypeEnumKey,
+  type GetV1JobsApplicationsTracker200,
   type EventsTypeEnumKey,
-  applicationTrackerJobsApplicationsEvents,
-  applicationTrackerJobsApplicationsTracker,
+  postV1JobsApplicationsApplicationIdEvents,
+  getV1JobsApplicationsTracker,
+  getV1JobsApplicationsTrackerQueryKey,
 } from 'api-client';
 import { Briefcase, Calendar, CheckCircle2, Eye, MessageSquarePlus, XCircle } from 'lucide-svelte';
 import { onMount } from 'svelte';
@@ -20,13 +21,13 @@ import { browser } from '$app/environment';
 // Response carries `SUBMITTED` (auto-emitted on apply); the mutation request
 // type excludes it (clients can't submit a "SUBMITTED" event manually).
 type EventType = EventsTypeEnumKey;
-type AddableEventType = ApplicationTrackerJobsApplicationsEventsMutationRequestTypeEnumKey;
-type TrackedApplication = ApplicationTrackerJobsApplicationsTracker200['applications'][number];
+type AddableEventType = PostV1JobsApplicationsApplicationIdEventsMutationRequestTypeEnumKey;
+type TrackedApplication = GetV1JobsApplicationsTracker200['applications'][number];
 
 async function quickFollowUp(applicationId: string) {
   if (!confirm('Marcar como follow-up enviado? Vai resetar o contador de silêncio.')) return;
   try {
-    await applicationTrackerJobsApplicationsEvents(applicationId, { type: 'FOLLOW_UP_SENT' });
+    await postV1JobsApplicationsApplicationIdEvents(applicationId, { type: 'FOLLOW_UP_SENT' });
     await load();
     toastState.show('Follow-up registrado.', 'success');
   } catch (err) {
@@ -66,7 +67,7 @@ async function load() {
   if (!browser) return;
   loading = true;
   try {
-    const res = await applicationTrackerJobsApplicationsTracker();
+    const res = await getV1JobsApplicationsTracker();
     applications = res.applications;
   } catch (err) {
     handleApiError(err);
@@ -79,7 +80,7 @@ async function addEvent(appId: string) {
   if (adding === appId) return;
   adding = appId;
   try {
-    await applicationTrackerJobsApplicationsEvents(appId, {
+    await postV1JobsApplicationsApplicationIdEvents(appId, {
       type: formType,
       note: formNote.trim() || undefined,
     });

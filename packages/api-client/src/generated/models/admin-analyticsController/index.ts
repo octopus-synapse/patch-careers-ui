@@ -1,5 +1,5 @@
-export type { AdminAnalyticsOverview200, AdminAnalyticsOverview400, AdminAnalyticsOverview400SeverityEnumKey, AdminAnalyticsOverview401, AdminAnalyticsOverview401SeverityEnumKey, AdminAnalyticsOverview403, AdminAnalyticsOverview403SeverityEnumKey, AdminAnalyticsOverviewQuery, AdminAnalyticsOverviewQueryParams, AdminAnalyticsOverviewQueryParamsPeriodEnumKey, AdminAnalyticsOverviewQueryResponse } from "./AdminAnalyticsOverview";
-export { adminAnalyticsOverview400SeverityEnum } from "./AdminAnalyticsOverview";
-export { adminAnalyticsOverview401SeverityEnum } from "./AdminAnalyticsOverview";
-export { adminAnalyticsOverview403SeverityEnum } from "./AdminAnalyticsOverview";
-export { adminAnalyticsOverviewQueryParamsPeriodEnum } from "./AdminAnalyticsOverview";
+export type { GetV1AdminAnalyticsOverview200, GetV1AdminAnalyticsOverview400, GetV1AdminAnalyticsOverview400SeverityEnumKey, GetV1AdminAnalyticsOverview401, GetV1AdminAnalyticsOverview401SeverityEnumKey, GetV1AdminAnalyticsOverview403, GetV1AdminAnalyticsOverview403SeverityEnumKey, GetV1AdminAnalyticsOverviewQuery, GetV1AdminAnalyticsOverviewQueryParams, GetV1AdminAnalyticsOverviewQueryParamsPeriodEnumKey, GetV1AdminAnalyticsOverviewQueryResponse } from "./GetV1AdminAnalyticsOverview";
+export { getV1AdminAnalyticsOverview400SeverityEnum } from "./GetV1AdminAnalyticsOverview";
+export { getV1AdminAnalyticsOverview401SeverityEnum } from "./GetV1AdminAnalyticsOverview";
+export { getV1AdminAnalyticsOverview403SeverityEnum } from "./GetV1AdminAnalyticsOverview";
+export { getV1AdminAnalyticsOverviewQueryParamsPeriodEnum } from "./GetV1AdminAnalyticsOverview";

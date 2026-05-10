@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { platformStats } from "./platformStats";
+import { getV1PlatformStats } from "./getV1PlatformStats";
 
 export function platformController() {
-  return { platformStats }
+  return { getV1PlatformStats }
 }

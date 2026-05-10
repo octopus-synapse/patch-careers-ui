@@ -3,28 +3,29 @@
 * Do not edit manually.
 */
 
-import { usersManageDelete } from "./usersManageDelete";
-import { usersManageGet } from "./usersManageGet";
-import { usersManageGet2 } from "./usersManageGet2";
-import { usersManagePatch } from "./usersManagePatch";
-import { usersManagePost } from "./usersManagePost";
-import { usersManageResetPassword } from "./usersManageResetPassword";
-import { usersManageRoles } from "./usersManageRoles";
-import { usersMePermissions } from "./usersMePermissions";
-import { usersMeUiStateDelete } from "./usersMeUiStateDelete";
-import { usersMeUiStateGet } from "./usersMeUiStateGet";
-import { usersMeUiStatePatch } from "./usersMeUiStatePatch";
-import { usersPreferencesFullGet } from "./usersPreferencesFullGet";
-import { usersPreferencesFullPatch } from "./usersPreferencesFullPatch";
-import { usersPreferencesGet } from "./usersPreferencesGet";
-import { usersPreferencesPatch } from "./usersPreferencesPatch";
-import { usersProfileGet } from "./usersProfileGet";
-import { usersProfilePatch } from "./usersProfilePatch";
-import { usersProfiles } from "./usersProfiles";
-import { usersPublic } from "./usersPublic";
-import { usersUsername } from "./usersUsername";
-import { usersUsernameCheck } from "./usersUsernameCheck";
+import { deleteV1MeUiStateKey } from "./deleteV1MeUiStateKey";
+import { deleteV1UsersManageId } from "./deleteV1UsersManageId";
+import { getV1MeUiState } from "./getV1MeUiState";
+import { getV1ProfilesUsername } from "./getV1ProfilesUsername";
+import { getV1UsersManage } from "./getV1UsersManage";
+import { getV1UsersManageId } from "./getV1UsersManageId";
+import { getV1UsersMePermissions } from "./getV1UsersMePermissions";
+import { getV1UsersPreferences } from "./getV1UsersPreferences";
+import { getV1UsersPreferencesFull } from "./getV1UsersPreferencesFull";
+import { getV1UsersProfile } from "./getV1UsersProfile";
+import { getV1UsersPublic } from "./getV1UsersPublic";
+import { getV1UsersUsernameCheck } from "./getV1UsersUsernameCheck";
+import { patchV1MeUiStateKey } from "./patchV1MeUiStateKey";
+import { patchV1UsersManageId } from "./patchV1UsersManageId";
+import { patchV1UsersManageIdRoles } from "./patchV1UsersManageIdRoles";
+import { patchV1UsersPreferences } from "./patchV1UsersPreferences";
+import { patchV1UsersPreferencesFull } from "./patchV1UsersPreferencesFull";
+import { patchV1UsersProfile } from "./patchV1UsersProfile";
+import { patchV1UsersUsername } from "./patchV1UsersUsername";
+import { postV1UsersManage } from "./postV1UsersManage";
+import { postV1UsersManageIdResetPassword } from "./postV1UsersManageIdResetPassword";
+import { postV1UsersUsernameValidate } from "./postV1UsersUsernameValidate";
 
 export function usersController() {
-  return { usersMeUiStateGet, usersMeUiStatePatch, usersMeUiStateDelete, usersProfiles, usersProfileGet, usersProfilePatch, usersPublic, usersUsername, usersUsernameCheck, usersPreferencesGet, usersPreferencesPatch, usersPreferencesFullGet, usersPreferencesFullPatch, usersMePermissions, usersManageGet, usersManagePost, usersManageGet2, usersManagePatch, usersManageDelete, usersManageResetPassword, usersManageRoles }
+  return { getV1MeUiState, deleteV1MeUiStateKey, patchV1MeUiStateKey, getV1ProfilesUsername, getV1UsersManage, postV1UsersManage, deleteV1UsersManageId, getV1UsersManageId, patchV1UsersManageId, postV1UsersManageIdResetPassword, patchV1UsersManageIdRoles, getV1UsersMePermissions, getV1UsersPreferences, patchV1UsersPreferences, getV1UsersPreferencesFull, patchV1UsersPreferencesFull, getV1UsersProfile, patchV1UsersProfile, getV1UsersPublic, patchV1UsersUsername, getV1UsersUsernameCheck, postV1UsersUsernameValidate }
 }

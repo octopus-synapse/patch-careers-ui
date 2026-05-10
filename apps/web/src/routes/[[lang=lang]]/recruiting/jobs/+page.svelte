@@ -3,7 +3,7 @@
    * Recruiting jobs list — burra: minha lista de vagas, com delete.
    */
   import { useQueryClient } from '@tanstack/svelte-query';
-  import { createJobsMine, jobsMineQueryKey, jobsDelete } from 'api-client';
+  import { createGetV1JobsMine, getV1JobsApplicationsQueryKey, deleteV1JobsId } from 'api-client';
   import {
     Briefcase,
     Building2,
@@ -25,8 +25,8 @@
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
-  const jobsQuery = createJobsMine(
-    { page: '1', limit: '50' },
+  const jobsQuery = createGetV1JobsMine(
+    { page: 1, limit: 50 },
     { query: { enabled: true } },
   );
 
@@ -39,10 +39,10 @@
     if (!deleteTarget) return;
     deleting = true;
     try {
-      await jobsDelete(deleteTarget.id);
+      await deleteV1JobsId(deleteTarget.id);
       toastState.show('Vaga excluída', 'success');
       await queryClient.invalidateQueries({
-        queryKey: jobsMineQueryKey({ page: '1', limit: '50' }),
+        queryKey: getV1JobsApplicationsQueryKey({ page: 1, limit: 50 }),
       });
       deleteTarget = null;
     } catch (err) {

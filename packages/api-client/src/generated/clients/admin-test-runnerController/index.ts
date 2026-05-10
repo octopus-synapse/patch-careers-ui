@@ -1,3 +1,3 @@
 export { adminTestRunnerController } from "./adminTestRunnerController";
-export { adminTestRunnerCreate } from "./adminTestRunnerCreate";
-export { adminTestRunnerSuites } from "./adminTestRunnerSuites";
+export { getV1AdminTestSuites } from "./getV1AdminTestSuites";
+export { postV1AdminTestRun } from "./postV1AdminTestRun";

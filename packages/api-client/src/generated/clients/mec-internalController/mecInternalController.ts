@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { mecInternalSync } from "./mecInternalSync";
-import { mecInternalSyncHistory } from "./mecInternalSyncHistory";
-import { mecInternalSyncStatus } from "./mecInternalSyncStatus";
+import { getV1MecInternalSyncHistory } from "./getV1MecInternalSyncHistory";
+import { getV1MecInternalSyncStatus } from "./getV1MecInternalSyncStatus";
+import { postV1MecInternalSync } from "./postV1MecInternalSync";
 
 export function mecInternalController() {
-  return { mecInternalSync, mecInternalSyncStatus, mecInternalSyncHistory }
+  return { postV1MecInternalSync, getV1MecInternalSyncHistory, getV1MecInternalSyncStatus }
 }

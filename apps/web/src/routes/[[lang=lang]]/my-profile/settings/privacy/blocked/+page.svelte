@@ -1,11 +1,11 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createChatBlockUsersBlockedGet,
-  createChatBlockUsersBlockedDelete,
-  chatBlockUsersBlockedGetQueryKey,
+  createGetV1ChatBlocked,
+  createDeleteV1ChatBlockedUserId,
+  getV1ChatBlockedQueryKey,
 } from 'api-client';
-import type { ChatBlockUsersBlockedGet200 } from 'api-client';
+import type { GetV1ChatBlocked200 } from 'api-client';
 import { ShieldOff } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, ConfirmModal, EmptyState, Skeleton, toastState } from 'ui';
@@ -16,13 +16,13 @@ import UserRow from '$lib/components/user/user-row.svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
-type BlockedRow = ChatBlockUsersBlockedGet200['blockedUsers'][number];
+type BlockedRow = GetV1ChatBlocked200['blockedUsers'][number];
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.isAuthenticated);
 
-const query = createChatBlockUsersBlockedGet({
+const query = createGetV1ChatBlocked({
   query: { enabled: browser && authenticated },
 });
 
@@ -31,10 +31,10 @@ const blocked = $derived($query.data?.blockedUsers);
 const queryClient = useQueryClient();
 let confirmTarget = $state<BlockedRow | null>(null);
 
-const unblockMutation = createChatBlockUsersBlockedDelete({
+const unblockMutation = createDeleteV1ChatBlockedUserId({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: chatBlockUsersBlockedGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1ChatBlockedQueryKey() });
       track('user_unblocked', { targetUserId: vars.userId });
       toastState.show(t('network.unblockSuccess'), 'success');
     },

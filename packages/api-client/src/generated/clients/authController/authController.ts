@@ -3,14 +3,14 @@
 * Do not edit manually.
 */
 
-import { authListSessions } from "./authListSessions";
-import { authLogin } from "./authLogin";
-import { authLogout } from "./authLogout";
-import { authRefresh } from "./authRefresh";
-import { authRevokeSession } from "./authRevokeSession";
-import { authSession } from "./authSession";
-import { authVerify2Fa } from "./authVerify2Fa";
+import { listSessions } from "./listSessions";
+import { login } from "./login";
+import { logout } from "./logout";
+import { refresh } from "./refresh";
+import { revokeSession } from "./revokeSession";
+import { session } from "./session";
+import { verify2Fa } from "./verify2Fa";
 
 export function authController() {
-  return { authRefresh, authLogin, authVerify2Fa, authLogout, authSession, authListSessions, authRevokeSession }
+  return { login, verify2Fa, logout, refresh, session, listSessions, revokeSession }
 }

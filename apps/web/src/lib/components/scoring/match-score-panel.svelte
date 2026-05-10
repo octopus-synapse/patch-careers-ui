@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createJobMatchMatchPost, isApiError } from 'api-client';
-  import type { JobMatchMatchPost200 } from 'api-client';
+  import { createPostV1Match, isApiError } from 'api-client';
+  import type { PostV1Match201 } from 'api-client';
 
   import { onMount } from 'svelte';
   import { Loader, ScoreCard } from 'ui';
@@ -26,9 +26,9 @@
 
   let { resumeId, jobId }: Props = $props();
 
-  const matchMutation = createJobMatchMatchPost({ mutation: {} });
+  const matchMutation = createPostV1Match({ mutation: {} });
 
-  let breakdown = $state<JobMatchMatchPost200 | null>(null);
+  let breakdown = $state<PostV1Match201 | null>(null);
   let lockoutTeaser = $state<Teaser | null>(null);
   let errorTeaser = $state<Teaser | null>(null);
   let loading = $state(true);

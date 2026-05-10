@@ -1,8 +1,8 @@
-export type { TechNichesListQueryKey } from "./createTechNichesList";
-export type { TechNichesSkillsQueryKey } from "./createTechNichesSkills";
-export { createTechNichesList } from "./createTechNichesList";
-export { techNichesListQueryKey } from "./createTechNichesList";
-export { techNichesListQueryOptions } from "./createTechNichesList";
-export { createTechNichesSkills } from "./createTechNichesSkills";
-export { techNichesSkillsQueryKey } from "./createTechNichesSkills";
-export { techNichesSkillsQueryOptions } from "./createTechNichesSkills";
+export type { GetV1TechNichesQueryKey } from "./createGetV1TechNiches";
+export type { GetV1TechNichesNicheSlugSkillsQueryKey } from "./createGetV1TechNichesNicheSlugSkills";
+export { createGetV1TechNiches } from "./createGetV1TechNiches";
+export { getV1TechNichesQueryKey } from "./createGetV1TechNiches";
+export { getV1TechNichesQueryOptions } from "./createGetV1TechNiches";
+export { createGetV1TechNichesNicheSlugSkills } from "./createGetV1TechNichesNicheSlugSkills";
+export { getV1TechNichesNicheSlugSkillsQueryKey } from "./createGetV1TechNichesNicheSlugSkills";
+export { getV1TechNichesNicheSlugSkillsQueryOptions } from "./createGetV1TechNichesNicheSlugSkills";

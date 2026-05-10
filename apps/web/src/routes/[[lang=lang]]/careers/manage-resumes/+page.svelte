@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createResumesList } from 'api-client';
+import { createGetV1Resumes } from 'api-client';
 import { FileText, PenSquare, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -30,7 +30,7 @@ type Resume = {
 const t = $derived(locale.t);
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.isAuthenticated);
 
 $effect(() => {
   if (!auth.isLoading && !authenticated) {
@@ -38,7 +38,7 @@ $effect(() => {
   }
 });
 
-const query = createResumesList(
+const query = createGetV1Resumes(
   { page: '1', limit: '20' },
   { query: { enabled: browser && authenticated } },
 );

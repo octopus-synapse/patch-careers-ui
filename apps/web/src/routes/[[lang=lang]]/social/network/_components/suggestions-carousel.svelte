@@ -1,8 +1,8 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createSocialConnectionsUsersConnect,
-  socialConnectionsUsersMeConnectionsSuggestionsQueryKey,
+  createPostV1UsersUserIdConnect,
+  getV1UsersMeConnectionsSuggestionsQueryKey,
 } from 'api-client';
 import { ChevronLeft, ChevronRight, UserPlus } from 'lucide-svelte';
 import { Badge, Button, SliderCarousel, toastState } from 'ui';
@@ -34,11 +34,11 @@ let { suggestions, title, seeAllHref, source = 'suggestions', ondismiss }: Props
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-const connectMutation = createSocialConnectionsUsersConnect({
+const connectMutation = createPostV1UsersUserIdConnect({
   mutation: {
     onSuccess(_data, variables) {
       queryClient.invalidateQueries({
-        queryKey: socialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
+        queryKey: getV1UsersMeConnectionsSuggestionsQueryKey(),
       });
       track('connection_requested', { targetUserId: variables.userId, source });
     },

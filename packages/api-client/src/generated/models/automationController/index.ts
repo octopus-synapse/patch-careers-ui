@@ -1,4 +1,4 @@
-export type { AutomationRageApply200, AutomationRageApply400, AutomationRageApply400SeverityEnumKey, AutomationRageApply401, AutomationRageApply401SeverityEnumKey, AutomationRageApply403, AutomationRageApply403SeverityEnumKey, AutomationRageApplyMutation, AutomationRageApplyMutationRequest, AutomationRageApplyMutationResponse } from "./AutomationRageApply";
-export { automationRageApply400SeverityEnum } from "./AutomationRageApply";
-export { automationRageApply401SeverityEnum } from "./AutomationRageApply";
-export { automationRageApply403SeverityEnum } from "./AutomationRageApply";
+export type { PostV1AutomationRageApply200, PostV1AutomationRageApply400, PostV1AutomationRageApply400SeverityEnumKey, PostV1AutomationRageApply401, PostV1AutomationRageApply401SeverityEnumKey, PostV1AutomationRageApply403, PostV1AutomationRageApply403SeverityEnumKey, PostV1AutomationRageApplyMutation, PostV1AutomationRageApplyMutationRequest, PostV1AutomationRageApplyMutationResponse } from "./PostV1AutomationRageApply";
+export { postV1AutomationRageApply400SeverityEnum } from "./PostV1AutomationRageApply";
+export { postV1AutomationRageApply401SeverityEnum } from "./PostV1AutomationRageApply";
+export { postV1AutomationRageApply403SeverityEnum } from "./PostV1AutomationRageApply";

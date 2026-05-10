@@ -3,12 +3,12 @@
    * Recruiting jobs/[id]/cultural-profile — burra: sliders 0-1 por dimensão.
    */
   import {
-    type FitProfileJobsFitProfilePostMutationRequest,
-    createFitProfileJobsFitProfileGet,
-    fitProfileJobsFitProfilePost,
+    type PostV1JobsIdFitProfileMutationRequest,
+    createGetV1JobsIdFitProfile,
+    postV1JobsIdFitProfile,
   } from 'api-client';
 
-  type Sliders = FitProfileJobsFitProfilePostMutationRequest['sliders'];
+  type Sliders = PostV1JobsIdFitProfileMutationRequest['sliders'];
   import { Save } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -51,7 +51,7 @@
 
   const jobId = $derived(($page.params as Record<string, string>).id ?? '');
 
-  const fitQuery = createFitProfileJobsFitProfileGet(
+  const fitQuery = createGetV1JobsIdFitProfile(
     jobId,
     { query: { enabled: browser && Boolean(jobId) } },
   );
@@ -69,7 +69,7 @@
   async function save() {
     saving = true;
     try {
-      await fitProfileJobsFitProfilePost(jobId, { sliders });
+      await postV1JobsIdFitProfile(jobId, { sliders });
       toastState.show('Perfil cultural salvo', 'success');
     } catch (err) {
       handleApiError(err);

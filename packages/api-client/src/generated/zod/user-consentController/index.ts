@@ -1,3 +1,3 @@
-export { userConsentAcceptConsent200Schema, userConsentAcceptConsent400Schema, userConsentAcceptConsent401Schema, userConsentAcceptConsentMutationRequestSchema, userConsentAcceptConsentMutationResponseSchema } from "./userConsentAcceptConsentSchema";
-export { userConsentGetConsentHistory200Schema, userConsentGetConsentHistory400Schema, userConsentGetConsentHistory401Schema, userConsentGetConsentHistoryQueryResponseSchema } from "./userConsentGetConsentHistorySchema";
-export { userConsentGetConsentStatus200Schema, userConsentGetConsentStatus400Schema, userConsentGetConsentStatus401Schema, userConsentGetConsentStatusQueryResponseSchema } from "./userConsentGetConsentStatusSchema";
+export { acceptConsent201Schema, acceptConsent400Schema, acceptConsent401Schema, acceptConsentMutationRequestSchema, acceptConsentMutationResponseSchema } from "./acceptConsentSchema";
+export { getConsentHistory200Schema, getConsentHistory400Schema, getConsentHistory401Schema, getConsentHistoryQueryResponseSchema } from "./getConsentHistorySchema";
+export { getConsentStatus200Schema, getConsentStatus400Schema, getConsentStatus401Schema, getConsentStatusQueryResponseSchema } from "./getConsentStatusSchema";

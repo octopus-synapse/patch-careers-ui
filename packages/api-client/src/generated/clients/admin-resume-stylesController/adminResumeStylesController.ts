@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { adminResumeStylesCreate } from "./adminResumeStylesCreate";
-import { adminResumeStylesDelete } from "./adminResumeStylesDelete";
-import { adminResumeStylesUpdate } from "./adminResumeStylesUpdate";
+import { deleteV1AdminResumeStylesId } from "./deleteV1AdminResumeStylesId";
+import { patchV1AdminResumeStylesId } from "./patchV1AdminResumeStylesId";
+import { postV1AdminResumeStyles } from "./postV1AdminResumeStyles";
 
 export function adminResumeStylesController() {
-  return { adminResumeStylesCreate, adminResumeStylesUpdate, adminResumeStylesDelete }
+  return { postV1AdminResumeStyles, deleteV1AdminResumeStylesId, patchV1AdminResumeStylesId }
 }

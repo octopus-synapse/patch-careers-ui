@@ -3,10 +3,10 @@
    * Admin chat & collaborations — burra: chama SDK e renderiza listas.
    */
   import {
-    createAdminChatConversations,
-    createAdminChatStats,
-    createAdminCollaborationsList,
-    createAdminCollaborationsStats,
+    createGetV1AdminChatConversations,
+    createGetV1AdminChatStats,
+    createGetV1AdminCollaborations,
+    createGetV1AdminCollaborationsStats,
   } from 'api-client';
   import { browser } from '$app/environment';
   import StatCard from '../_components/stat-card.svelte';
@@ -18,17 +18,17 @@
   let chatPage = $state(1);
   let collabPage = $state(1);
 
-  const chatStatsQuery = createAdminChatStats({
+  const chatStatsQuery = createGetV1AdminChatStats({
       query: { enabled: browser },
     });
-  const chatConversationsQuery = createAdminChatConversations(
+  const chatConversationsQuery = createGetV1AdminChatConversations(
     { page: String(chatPage), pageSize: '20' },
     { query: { enabled: browser && activeTab === 'chat' } },
   );
-  const collabStatsQuery = createAdminCollaborationsStats({
+  const collabStatsQuery = createGetV1AdminCollaborationsStats({
       query: { enabled: browser },
     });
-  const collabListQuery = createAdminCollaborationsList(
+  const collabListQuery = createGetV1AdminCollaborations(
     { page: String(collabPage), pageSize: '20' },
     { query: { enabled: browser && activeTab === 'collaborations' } },
   );

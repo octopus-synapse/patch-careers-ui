@@ -3,13 +3,14 @@
 * Do not edit manually.
 */
 
-import { notificationsList } from "./notificationsList";
-import { notificationsMarkRead } from "./notificationsMarkRead";
-import { notificationsPreferencesGet } from "./notificationsPreferencesGet";
-import { notificationsPreferencesPut } from "./notificationsPreferencesPut";
-import { notificationsTypes } from "./notificationsTypes";
-import { notificationsUnreadCount } from "./notificationsUnreadCount";
+import { getV1Notifications } from "./getV1Notifications";
+import { getV1NotificationsPreferences } from "./getV1NotificationsPreferences";
+import { getV1NotificationsSubscribe } from "./getV1NotificationsSubscribe";
+import { getV1NotificationsTypes } from "./getV1NotificationsTypes";
+import { getV1NotificationsUnreadCount } from "./getV1NotificationsUnreadCount";
+import { postV1NotificationsMarkRead } from "./postV1NotificationsMarkRead";
+import { putV1NotificationsPreferencesType } from "./putV1NotificationsPreferencesType";
 
 export function notificationsController() {
-  return { notificationsList, notificationsUnreadCount, notificationsMarkRead, notificationsTypes, notificationsPreferencesGet, notificationsPreferencesPut }
+  return { getV1Notifications, postV1NotificationsMarkRead, getV1NotificationsPreferences, putV1NotificationsPreferencesType, getV1NotificationsSubscribe, getV1NotificationsTypes, getV1NotificationsUnreadCount }
 }

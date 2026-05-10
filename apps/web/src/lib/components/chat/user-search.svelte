@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createChatUsersSearch } from 'api-client';
+import { createGetV1ChatUsersSearch } from 'api-client';
 import { Search, X } from 'lucide-svelte';
 import { Avatar, Button, Input } from 'ui';
 
@@ -19,7 +19,7 @@ $effect(() => {
   };
 });
 
-const search = createChatUsersSearch(
+const search = createGetV1ChatUsersSearch(
   { q: debouncedQuery },
   { query: { enabled: debouncedQuery.length >= 2, retry: false, refetchOnWindowFocus: false } },
 );

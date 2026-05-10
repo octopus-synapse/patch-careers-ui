@@ -2,14 +2,14 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
-  automationRageApply,
-  createJobsList,
-  createJobsRecommended,
-  createJobsWithFitScore,
-  jobsCreate,
-  jobsListQueryKey,
+  postV1AutomationRageApply,
+  createGetV1Jobs,
+  createGetV1JobsRecommended,
+  createGetV1JobsWithFitScore,
+  postV1Jobs,
+  getV1JobsQueryKey,
 } from 'api-client';
-import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey, JobsRecommended200, JobsWithFitScore200 } from 'api-client';
+import type { CreateJobRequest, CreateJobRequestJobTypeEnumKey, GetV1JobsRecommended200, GetV1JobsWithFitScore200 } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Plus, Sparkles, Zap } from 'lucide-svelte';
 import { Badge, Button, FitScoreChip, FormModal, Input, Label, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
@@ -22,9 +22,9 @@ import NewJobsBadge from '$lib/components/jobs/new-jobs-badge.svelte';
 import { isUsdEurJob } from '$lib/utils/is-usd-eur';
 import { locale } from '$lib/state/locale.svelte';
 
-type FitScoreItem = JobsWithFitScore200['items'][number];
+type FitScoreItem = GetV1JobsWithFitScore200['items'][number];
 type FitScoreDetail = NonNullable<FitScoreItem['fitScore']>;
-type RecommendedJob = JobsRecommended200['data'][number];
+type RecommendedJob = GetV1JobsRecommended200['items'][number];
 // Display row: a recommended job optionally enriched with the fit-score side-channel.
 type DisplayJob = RecommendedJob & { fitScore?: FitScoreDetail };
 
@@ -59,10 +59,10 @@ const tabs = $derived([
   { value: 'all', label: t('jobs.tabAll') },
 ]);
 
-const jobsQuery = createJobsList(
+const jobsQuery = createGetV1Jobs(
   {
-    page: String(page),
-    limit: '20',
+    page,
+    limit: 20,
     search: search || '',
     skills: '',
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
@@ -70,8 +70,8 @@ const jobsQuery = createJobsList(
   { query: { enabled: browser && activeTab === 'all' } },
 );
 
-const recommendedQuery = createJobsRecommended(
-  { page: String(page), limit: '20' },
+const recommendedQuery = createGetV1JobsRecommended(
+  { page, limit: 20 },
   { query: { enabled: browser && activeTab === 'recommended' } },
 );
 
@@ -81,10 +81,10 @@ const recommendedData = $derived($recommendedQuery.data);
 // Side-channel: pull structured fit scores for the current page of jobs.
 // Backend canonical response merges the breakdown into each item; we mirror it
 // so the chip can expand into matched / missing skills on hover.
-const fitScoreQuery = createJobsWithFitScore(
+const fitScoreQuery = createGetV1JobsWithFitScore(
   {
-    page: String(page),
-    limit: '20',
+    page,
+    limit: 20,
     ...(search ? { search } : {}),
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
   },
@@ -105,7 +105,7 @@ const allList = $derived<DisplayJob[] | undefined>(
     return { ...j, matchScore: fit?.score ?? 0, fitScore: fit };
   }),
 );
-const recommendedList = $derived(recommendedData?.data);
+const recommendedList = $derived(recommendedData?.items);
 const jobsList = $derived<DisplayJob[] | undefined>(
   activeTab === 'recommended' ? recommendedList : allList,
 );
@@ -172,11 +172,11 @@ function resetForm() {
 async function handleCreate() {
   createLoading = true;
   try {
-    const data: JobsCreateMutationRequest = {
+    const data: CreateJobRequest = {
       title: formTitle,
       company: formCompany,
       location: formLocation || undefined,
-      jobType: formJobType as JobsCreateMutationRequestJobTypeEnumKey,
+      jobType: formJobType as CreateJobRequestJobTypeEnumKey,
       description: formDescription,
       requirements: formRequirements
         .split(',')
@@ -189,8 +189,8 @@ async function handleCreate() {
       salaryRange: formSalaryRange || undefined,
       applyUrl: formApplyUrl || undefined,
     };
-    await jobsCreate(data);
-    queryClient.invalidateQueries({ queryKey: jobsListQueryKey() });
+    await postV1Jobs(data);
+    queryClient.invalidateQueries({ queryKey: getV1JobsQueryKey() });
     createModal = false;
     resetForm();
   } finally {
@@ -243,7 +243,7 @@ async function runRageApply() {
   rageRunning = true;
   rageFailures = [];
   try {
-    const res = await automationRageApply({
+    const res = await postV1AutomationRageApply({
       minFit: Number.parseInt(rageMinFit, 10) || 80,
       maxApplications: Number.parseInt(rageMax, 10) || 20,
     });

@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { mecInstitutionsCourses } from "./mecInstitutionsCourses";
-import { mecInstitutionsGetById } from "./mecInstitutionsGetById";
-import { mecInstitutionsList } from "./mecInstitutionsList";
-import { mecInstitutionsSearch } from "./mecInstitutionsSearch";
+import { getV1MecInstitutions } from "./getV1MecInstitutions";
+import { getV1MecInstitutionsCodigoIes } from "./getV1MecInstitutionsCodigoIes";
+import { getV1MecInstitutionsCodigoIesCourses } from "./getV1MecInstitutionsCodigoIesCourses";
+import { getV1MecInstitutionsSearch } from "./getV1MecInstitutionsSearch";
 
 export function mecInstitutionsController() {
-  return { mecInstitutionsList, mecInstitutionsSearch, mecInstitutionsGetById, mecInstitutionsCourses }
+  return { getV1MecInstitutions, getV1MecInstitutionsSearch, getV1MecInstitutionsCodigoIes, getV1MecInstitutionsCodigoIesCourses }
 }

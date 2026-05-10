@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { resumeStylesGetById } from "./resumeStylesGetById";
-import { resumeStylesList } from "./resumeStylesList";
-import { resumeStylesPreviewPdf } from "./resumeStylesPreviewPdf";
-import { resumeStylesStyle } from "./resumeStylesStyle";
+import { getV1ResumeStyles } from "./getV1ResumeStyles";
+import { getV1ResumeStylesId } from "./getV1ResumeStylesId";
+import { getV1ResumeStylesIdPreviewPdf } from "./getV1ResumeStylesIdPreviewPdf";
+import { postV1ResumesResumeIdStyle } from "./postV1ResumesResumeIdStyle";
 
 export function resumeStylesController() {
-  return { resumeStylesList, resumeStylesGetById, resumeStylesStyle, resumeStylesPreviewPdf }
+  return { getV1ResumeStyles, getV1ResumeStylesId, getV1ResumeStylesIdPreviewPdf, postV1ResumesResumeIdStyle }
 }

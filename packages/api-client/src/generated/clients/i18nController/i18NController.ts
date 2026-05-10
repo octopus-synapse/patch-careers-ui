@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { i18NDictionaryEnums } from "./i18NDictionaryEnums";
-import { i18NDictionaryErrors } from "./i18NDictionaryErrors";
-import { i18NDictionaryNotifications } from "./i18NDictionaryNotifications";
+import { getV1I18NDictionaryEnums } from "./getV1I18NDictionaryEnums";
+import { getV1I18NDictionaryErrors } from "./getV1I18NDictionaryErrors";
+import { getV1I18NDictionaryNotifications } from "./getV1I18NDictionaryNotifications";
 
 export function i18NController() {
-  return { i18NDictionaryErrors, i18NDictionaryEnums, i18NDictionaryNotifications }
+  return { getV1I18NDictionaryEnums, getV1I18NDictionaryErrors, getV1I18NDictionaryNotifications }
 }

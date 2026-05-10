@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { enumsExportFormats } from "./enumsExportFormats";
-import { enumsSectionTypes } from "./enumsSectionTypes";
-import { enumsUserRoles } from "./enumsUserRoles";
+import { getV1EnumsExportFormats } from "./getV1EnumsExportFormats";
+import { getV1EnumsSectionTypes } from "./getV1EnumsSectionTypes";
+import { getV1EnumsUserRoles } from "./getV1EnumsUserRoles";
 
 export function enumsController() {
-  return { enumsExportFormats, enumsUserRoles, enumsSectionTypes }
+  return { getV1EnumsExportFormats, getV1EnumsSectionTypes, getV1EnumsUserRoles }
 }

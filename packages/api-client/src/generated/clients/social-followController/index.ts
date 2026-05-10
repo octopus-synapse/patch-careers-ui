@@ -1,8 +1,8 @@
+export { deleteV1UsersUserIdFollow } from "./deleteV1UsersUserIdFollow";
+export { getV1UsersMeSocialStats } from "./getV1UsersMeSocialStats";
+export { getV1UsersUserIdFollowers } from "./getV1UsersUserIdFollowers";
+export { getV1UsersUserIdFollowing } from "./getV1UsersUserIdFollowing";
+export { getV1UsersUserIdIsFollowing } from "./getV1UsersUserIdIsFollowing";
+export { getV1UsersUserIdSocialStats } from "./getV1UsersUserIdSocialStats";
+export { postV1UsersUserIdFollow } from "./postV1UsersUserIdFollow";
 export { socialFollowController } from "./socialFollowController";
-export { socialFollowUsersFollowDelete } from "./socialFollowUsersFollowDelete";
-export { socialFollowUsersFollowPost } from "./socialFollowUsersFollowPost";
-export { socialFollowUsersFollowers } from "./socialFollowUsersFollowers";
-export { socialFollowUsersFollowing } from "./socialFollowUsersFollowing";
-export { socialFollowUsersIsFollowing } from "./socialFollowUsersIsFollowing";
-export { socialFollowUsersMeSocialStats } from "./socialFollowUsersMeSocialStats";
-export { socialFollowUsersSocialStats } from "./socialFollowUsersSocialStats";

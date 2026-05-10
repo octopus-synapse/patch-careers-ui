@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { platformEventsEvents } from "./platformEventsEvents";
-import { platformEventsEventsSchemas } from "./platformEventsEventsSchemas";
+import { getV1EventsSchemas } from "./getV1EventsSchemas";
+import { postV1Events } from "./postV1Events";
 
 export function platformEventsController() {
-  return { platformEventsEventsSchemas, platformEventsEvents }
+  return { postV1Events, getV1EventsSchemas }
 }

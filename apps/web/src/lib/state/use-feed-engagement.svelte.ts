@@ -1,14 +1,14 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  engagementPostsBookmarkDelete,
-  engagementPostsBookmarkPost,
-  engagementPostsLikeDelete,
-  engagementPostsLikePost,
-  engagementPostsPollVote,
-  engagementPostsReport,
-  engagementPostsRepost,
-  feedListQueryKey,
-  postsDelete,
+  deleteV1PostsId,
+  deleteV1PostsIdBookmark,
+  deleteV1PostsIdLike,
+  getV1FeedQueryKey,
+  postV1PostsIdBookmark,
+  postV1PostsIdLike,
+  postV1PostsIdPollVote,
+  postV1PostsIdReport,
+  postV1PostsIdRepost,
 } from 'api-client';
 import { type ReactionType, toastState } from 'ui';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -95,13 +95,13 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     );
 
     try {
-      await engagementPostsLikePost(id, { reactionType: newType });
+      await postV1PostsIdLike(id, { reactionType: newType });
       track(wasLiked ? 'post_reaction_changed' : 'post_reacted', {
         postId: id,
         reactionType: newType,
         previousType,
       });
-      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
@@ -131,9 +131,9 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     );
 
     try {
-      await engagementPostsLikeDelete(id);
+      await deleteV1PostsIdLike(id);
       track('post_unreacted', { postId: id });
-      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
@@ -146,16 +146,16 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     bookmarkedPosts = new Set([...bookmarkedPosts, id]);
     unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
     setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)));
-    await engagementPostsBookmarkPost(id);
-    queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+    await postV1PostsIdBookmark(id);
+    queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
   }
 
   async function handleUnbookmark(id: string) {
     unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
     bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
     setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)));
-    await engagementPostsBookmarkDelete(id);
-    queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+    await deleteV1PostsIdBookmark(id);
+    queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
   }
 
   function handleDelete(id: string) {
@@ -167,9 +167,9 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       revert: () => {
         setPosts(snapshot);
       },
-      commit: () => postsDelete(id),
+      commit: () => deleteV1PostsId(id),
       onCommitted: () => {
-        queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
       },
       message: locale.t('feed.postDeleted'),
       undoLabel: locale.t('feed.undo'),
@@ -190,9 +190,9 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       }),
     );
     try {
-      await engagementPostsRepost(id, commentary ? { commentary } : {});
+      await postV1PostsIdRepost(id, commentary ? { commentary } : {});
       track('post_reposted', { postId: id, withCommentary: commentary.length > 0 });
-      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
     } catch (err) {
       setPosts(snapshot);
       handleApiError(err);
@@ -200,7 +200,7 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
   }
 
   async function submitReport(id: string, reason: string) {
-    await engagementPostsReport(id, { reason });
+    await postV1PostsIdReport(id, { reason });
   }
 
   async function handleVote(id: string, optionIndex: number) {
@@ -226,9 +226,9 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
       }),
     );
     try {
-      await engagementPostsPollVote(id, { optionIndex });
+      await postV1PostsIdPollVote(id, { optionIndex });
       track('poll_voted', { postId: id, optionIndex });
-      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
     } catch (err) {
       setPosts(snapshot);
       handleApiError(err);

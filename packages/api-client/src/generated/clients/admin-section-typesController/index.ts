@@ -1,7 +1,7 @@
 export { adminSectionTypesController } from "./adminSectionTypesController";
-export { adminSectionTypesCreate } from "./adminSectionTypesCreate";
-export { adminSectionTypesDelete } from "./adminSectionTypesDelete";
-export { adminSectionTypesGetById } from "./adminSectionTypesGetById";
-export { adminSectionTypesList } from "./adminSectionTypesList";
-export { adminSectionTypesSemanticKinds } from "./adminSectionTypesSemanticKinds";
-export { adminSectionTypesUpdate } from "./adminSectionTypesUpdate";
+export { deleteV1AdminSectionTypesKey } from "./deleteV1AdminSectionTypesKey";
+export { getV1AdminSectionTypes } from "./getV1AdminSectionTypes";
+export { getV1AdminSectionTypesKey } from "./getV1AdminSectionTypesKey";
+export { getV1AdminSectionTypesSemanticKinds } from "./getV1AdminSectionTypesSemanticKinds";
+export { patchV1AdminSectionTypesKey } from "./patchV1AdminSectionTypesKey";
+export { postV1AdminSectionTypes } from "./postV1AdminSectionTypes";

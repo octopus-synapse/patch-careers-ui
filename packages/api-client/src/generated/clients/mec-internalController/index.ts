@@ -1,4 +1,4 @@
+export { getV1MecInternalSyncHistory } from "./getV1MecInternalSyncHistory";
+export { getV1MecInternalSyncStatus } from "./getV1MecInternalSyncStatus";
 export { mecInternalController } from "./mecInternalController";
-export { mecInternalSync } from "./mecInternalSync";
-export { mecInternalSyncHistory } from "./mecInternalSyncHistory";
-export { mecInternalSyncStatus } from "./mecInternalSyncStatus";
+export { postV1MecInternalSync } from "./postV1MecInternalSync";

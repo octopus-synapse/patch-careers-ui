@@ -3,9 +3,9 @@
    * /my-profile/fit-profile — burra: status do fit profile + delete + CTA.
    */
   import {
-    createFitProfileMeGet,
-    fitProfileMeDelete,
-    fitProfileMeGetQueryKey,
+    createGetV1FitProfileMe,
+    deleteV1FitProfileMe,
+    getV1FitProfileMeQueryKey,
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
@@ -15,7 +15,7 @@
   import { goto } from '$app/navigation';
 
   const queryClient = useQueryClient();
-  const meQuery = createFitProfileMeGet({
+  const meQuery = createGetV1FitProfileMe({
       query: { enabled: browser, retry: false },
     });
 
@@ -30,8 +30,8 @@
     if (!confirm('Apagar seu Fit Profile? As respostas serão anonimizadas.')) return;
     deleting = true;
     try {
-      await fitProfileMeDelete();
-      await queryClient.invalidateQueries({ queryKey: fitProfileMeGetQueryKey() });
+      await deleteV1FitProfileMe();
+      await queryClient.invalidateQueries({ queryKey: getV1FitProfileMeQueryKey() });
       toastState.show('Fit Profile apagado.' , 'success');
     } catch (err) {
       handleApiError(err);

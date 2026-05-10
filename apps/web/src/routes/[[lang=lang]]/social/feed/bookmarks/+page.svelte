@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
-import { createFeedBookmarks, feedBookmarksQueryKey } from 'api-client';
+import { createGetV1FeedBookmarks, getV1FeedBookmarksQueryKey } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { browser } from '$app/environment';
@@ -19,8 +19,8 @@ import { useFeedPagination } from '$lib/state/use-feed-pagination.svelte';
  */
 
 const session = useAuth();
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated);
 const currentUserId = $derived(String(user?.id ?? ''));
 
 $effect(() => {
@@ -35,7 +35,7 @@ const pagination = useFeedPagination({
   getRawData: () => {
     const data = $bookmarksQuery.data;
     if (!data) return undefined;
-    return { items: data.posts, nextCursor: data.nextCursor };
+    return { items: data.items, nextCursor: data.nextCursor };
   },
 });
 
@@ -46,7 +46,7 @@ const engagement = useFeedEngagement({
   },
 });
 
-const bookmarksQuery = createFeedBookmarks(
+const bookmarksQuery = createGetV1FeedBookmarks(
   { cursor: pagination.cursor, limit: '20' },
   { query: { enabled: authenticated } },
 );
@@ -74,7 +74,7 @@ $effect(() => {
 
 function handleRepost(id: string) {
   void engagement.submitRepost(id, '');
-  queryClient.invalidateQueries({ queryKey: feedBookmarksQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getV1FeedBookmarksQueryKey() });
 }
 
 function handleReport(id: string) {

@@ -1,1 +1,1 @@
-export { metricsList200Schema, metricsList400Schema, metricsListQueryResponseSchema } from "./metricsListSchema";
+export { getMetrics200Schema, getMetrics400Schema, getMetricsQueryResponseSchema } from "./getMetricsSchema";

@@ -1,12 +1,12 @@
 <script lang="ts">
-import { accountLifecycleAccounts, authLogout, isApiError } from 'api-client';
+import { deleteV1Accounts, logout, isApiError } from 'api-client';
 import { AlertTriangle } from 'lucide-svelte';
 import { Button, Checkbox, Input, Label, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 
 const auth = useAuth();
-const userEmail = $derived(auth.data?.user?.email ?? '');
+const userEmail = $derived(auth.user?.email ?? '');
 
 let password = $state('');
 let confirmText = $state('');
@@ -23,10 +23,10 @@ async function submit(e: Event) {
   submitting = true;
   serverError = null;
   try {
-    await accountLifecycleAccounts({ confirmationPhrase: confirmPhrase });
+    await deleteV1Accounts({ confirmationPhrase: confirmPhrase });
     toastState.show('Conta removida. Até mais.', 'success');
     // Clear local session and send to landing.
-    await authLogout({}).catch(() => {});
+    await logout({}).catch(() => {});
     goto('/');
   } catch (err) {
     if (isApiError(err) && err.message) {

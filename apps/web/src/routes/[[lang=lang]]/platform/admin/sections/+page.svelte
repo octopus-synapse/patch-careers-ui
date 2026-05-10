@@ -4,9 +4,9 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    adminSectionTypesDelete,
-    createAdminSectionTypesList,
-    adminSectionTypesListQueryKey,
+    deleteV1AdminSectionTypesKey,
+    createGetV1AdminSectionTypes,
+    getV1AdminSectionTypesQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -19,8 +19,8 @@
   let pageSize = $state(20);
   let search = $state('');
 
-  const listQuery = createAdminSectionTypesList(
-    { page, pageSize, search: search || undefined },
+  const listQuery = createGetV1AdminSectionTypes(
+    { page, limit: pageSize, search: search || undefined },
     { query: { enabled: browser } },
   );
 
@@ -31,9 +31,9 @@
   async function handleDelete(key: string) {
     deleting = key;
     try {
-      await adminSectionTypesDelete(key);
+      await deleteV1AdminSectionTypesKey(key);
       toastState.show('Seção excluída', 'success');
-      await queryClient.invalidateQueries({ queryKey: adminSectionTypesListQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1AdminSectionTypesQueryKey() });
     } catch (err) {
       handleApiError(err);
     } finally {

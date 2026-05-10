@@ -3,8 +3,10 @@
 * Do not edit manually.
 */
 
-import { featureFlagsActive } from "./featureFlagsActive";
+import { getV1FeatureFlagsActive } from "./getV1FeatureFlagsActive";
+import { getV1FeatureFlagsEvaluate } from "./getV1FeatureFlagsEvaluate";
+import { getV1FeatureFlagsStream } from "./getV1FeatureFlagsStream";
 
 export function featureFlagsController() {
-  return { featureFlagsActive }
+  return { getV1FeatureFlagsActive, getV1FeatureFlagsEvaluate, getV1FeatureFlagsStream }
 }

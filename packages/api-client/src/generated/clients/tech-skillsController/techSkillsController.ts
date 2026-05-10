@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { techSkillsList } from "./techSkillsList";
-import { techSkillsType } from "./techSkillsType";
+import { getV1TechSkills } from "./getV1TechSkills";
+import { getV1TechSkillsTypeType } from "./getV1TechSkillsTypeType";
 
 export function techSkillsController() {
-  return { techSkillsList, techSkillsType }
+  return { getV1TechSkills, getV1TechSkillsTypeType }
 }

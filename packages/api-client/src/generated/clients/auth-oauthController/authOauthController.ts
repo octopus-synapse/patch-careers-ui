@@ -3,9 +3,13 @@
 * Do not edit manually.
 */
 
-import { authOauthAvailable } from "./authOauthAvailable";
-import { authOauthProviders } from "./authOauthProviders";
+import { getV1AuthOauthAvailableProvider } from "./getV1AuthOauthAvailableProvider";
+import { getV1AuthOauthGithubCallback } from "./getV1AuthOauthGithubCallback";
+import { getV1AuthOauthGithubStart } from "./getV1AuthOauthGithubStart";
+import { getV1AuthOauthLinkedinCallback } from "./getV1AuthOauthLinkedinCallback";
+import { getV1AuthOauthLinkedinStart } from "./getV1AuthOauthLinkedinStart";
+import { getV1AuthOauthProviders } from "./getV1AuthOauthProviders";
 
 export function authOauthController() {
-  return { authOauthAvailable, authOauthProviders }
+  return { getV1AuthOauthAvailableProvider, getV1AuthOauthGithubCallback, getV1AuthOauthGithubStart, getV1AuthOauthLinkedinCallback, getV1AuthOauthLinkedinStart, getV1AuthOauthProviders }
 }

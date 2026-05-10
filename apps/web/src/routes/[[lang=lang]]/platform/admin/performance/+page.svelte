@@ -2,13 +2,13 @@
   /**
    * Admin performance — burra: chama metrics overview e renderiza cards.
    */
-  import { createAdminMetricsOverview } from 'api-client';
+  import { createGetV1AdminMetricsOverview } from 'api-client';
   import { Clock, Cpu, HardDrive, RefreshCw, Zap } from 'lucide-svelte';
   import { browser } from '$app/environment';
   import { Card, Loader } from 'ui';
   import StatCard from '../_components/stat-card.svelte';
 
-  const metricsQuery = createAdminMetricsOverview({
+  const metricsQuery = createGetV1AdminMetricsOverview({
       query: { enabled: browser, refetchInterval: 10_000 },
     });
 

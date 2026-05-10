@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { postsComposerConfig } from "./postsComposerConfig";
-import { postsCreate } from "./postsCreate";
-import { postsDelete } from "./postsDelete";
-import { postsGetById } from "./postsGetById";
-import { postsUploadImage } from "./postsUploadImage";
+import { deleteV1PostsId } from "./deleteV1PostsId";
+import { getV1PostsComposerConfig } from "./getV1PostsComposerConfig";
+import { getV1PostsId } from "./getV1PostsId";
+import { postV1Posts } from "./postV1Posts";
+import { postV1PostsUploadImage } from "./postV1PostsUploadImage";
 
 export function postsController() {
-  return { postsComposerConfig, postsCreate, postsGetById, postsDelete, postsUploadImage }
+  return { postV1Posts, getV1PostsComposerConfig, postV1PostsUploadImage, deleteV1PostsId, getV1PostsId }
 }

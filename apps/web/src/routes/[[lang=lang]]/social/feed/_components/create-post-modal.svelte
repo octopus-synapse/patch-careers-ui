@@ -1,10 +1,10 @@
 <script lang="ts">
 import {
-  type PostsCreateMutationRequest,
-  type PostsCreateMutationRequestAnonymousCategoryEnumKey,
-  type PostsCreateMutationRequestTypeEnumKey,
-  postsCreate,
-  postsUploadImage,
+  type PostV1PostsMutationRequest,
+  type PostV1PostsMutationRequestAnonymousCategoryEnumKey,
+  type PostV1PostsMutationRequestTypeEnumKey,
+  postV1Posts,
+  postV1PostsUploadImage,
 } from 'api-client';
 import { AlertTriangle, Banknote, BookOpen, Briefcase, Calendar, ChevronRight, Code, Eye, EyeOff, Hammer, HelpCircle, Image, Link, LogOut, MessageSquare, Plus, ShieldAlert, Trophy, Upload, Users, X, Zap } from 'lucide-svelte';
 import { Badge, Button, Input, Loader, Modal, Textarea } from 'ui';
@@ -17,9 +17,9 @@ type Props = {
 
 let { open, oncreate, oncancel }: Props = $props();
 
-// Subset of `PostsCreateMutationRequestTypeEnumKey` exposed in this composer — REPOST is
+// Subset of `PostV1PostsMutationRequestTypeEnumKey` exposed in this composer — REPOST is
 // surfaced through a separate "quote repost" flow.
-type PostType = Exclude<PostsCreateMutationRequestTypeEnumKey, 'REPOST'>;
+type PostType = Exclude<PostV1PostsMutationRequestTypeEnumKey, 'REPOST'>;
 const postTypes: readonly PostType[] = [
   'ACHIEVEMENT',
   'OPPORTUNITY',
@@ -105,9 +105,9 @@ let threadPosts = $state<string[]>(['']);
 // Blind Mode — only available in sensitive categories. Category must be
 // selected when `isAnonymous=true` (backend enforces via Zod refinement).
 let isAnonymous = $state(false);
-let anonymousCategory = $state<PostsCreateMutationRequestAnonymousCategoryEnumKey | ''>('');
+let anonymousCategory = $state<PostV1PostsMutationRequestAnonymousCategoryEnumKey | ''>('');
 const anonymousCategoryOptions: Array<{
-  value: PostsCreateMutationRequestAnonymousCategoryEnumKey;
+  value: PostV1PostsMutationRequestAnonymousCategoryEnumKey;
   label: string;
   icon: typeof Trophy;
 }> = [
@@ -224,7 +224,7 @@ async function handleImageSelect(e: Event) {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const result = await postsUploadImage({ data: formData });
+    const result = await postV1PostsUploadImage({ data: formData });
     imageUrl = result.url;
   } catch {
     imageFile = null;
@@ -239,7 +239,7 @@ function clearImage() {
   imageUrl = '';
 }
 
-function buildData(): PostsCreateMutationRequest['data'] {
+function buildData(): PostV1PostsMutationRequest['data'] {
   switch (selectedType) {
     case 'ACHIEVEMENT':
       return {
@@ -313,7 +313,7 @@ async function handleSubmit() {
       : [];
     const data = buildData();
 
-    const payload: PostsCreateMutationRequest = {
+    const payload: PostV1PostsMutationRequest = {
       type: selectedType,
       // `data` is loosely typed as `object | null` in OpenAPI — backend
       // validates per-type with Zod.
@@ -332,7 +332,7 @@ async function handleSubmit() {
       anonymousCategory: isAnonymous && anonymousCategory ? anonymousCategory : undefined,
     };
 
-    await postsCreate(payload);
+    await postV1Posts(payload);
     resetForm();
     oncreate();
   } finally {

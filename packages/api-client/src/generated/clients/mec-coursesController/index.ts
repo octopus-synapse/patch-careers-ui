@@ -1,3 +1,3 @@
+export { getV1MecCoursesCodigoCurso } from "./getV1MecCoursesCodigoCurso";
+export { getV1MecCoursesSearch } from "./getV1MecCoursesSearch";
 export { mecCoursesController } from "./mecCoursesController";
-export { mecCoursesGetById } from "./mecCoursesGetById";
-export { mecCoursesSearch } from "./mecCoursesSearch";

@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { skillsMeSkillProficiencyDelete } from "./skillsMeSkillProficiencyDelete";
-import { skillsMeSkillProficiencyGet } from "./skillsMeSkillProficiencyGet";
-import { skillsMeSkillProficiencyPut } from "./skillsMeSkillProficiencyPut";
+import { deleteV1MeSkillProficiencySkillName } from "./deleteV1MeSkillProficiencySkillName";
+import { getV1MeSkillProficiency } from "./getV1MeSkillProficiency";
+import { putV1MeSkillProficiencySkillName } from "./putV1MeSkillProficiencySkillName";
 
 export function skillsController() {
-  return { skillsMeSkillProficiencyGet, skillsMeSkillProficiencyPut, skillsMeSkillProficiencyDelete }
+  return { getV1MeSkillProficiency, deleteV1MeSkillProficiencySkillName, putV1MeSkillProficiencySkillName }
 }

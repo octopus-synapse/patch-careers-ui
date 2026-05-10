@@ -1,3 +1,3 @@
-export type { ImportGithubParseMutationKey } from "./createImportGithubParse";
-export { createImportGithubParse } from "./createImportGithubParse";
-export { importGithubParseMutationKey } from "./createImportGithubParse";
+export type { PostV1ImportGithubParseMutationKey } from "./createPostV1ImportGithubParse";
+export { createPostV1ImportGithubParse } from "./createPostV1ImportGithubParse";
+export { postV1ImportGithubParseMutationKey } from "./createPostV1ImportGithubParse";

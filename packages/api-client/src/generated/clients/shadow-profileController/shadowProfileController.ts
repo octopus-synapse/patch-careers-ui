@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { shadowProfileCandidates } from "./shadowProfileCandidates";
-import { shadowProfileClaim } from "./shadowProfileClaim";
-import { shadowProfileGithub } from "./shadowProfileGithub";
+import { getV1ShadowProfilesCandidates } from "./getV1ShadowProfilesCandidates";
+import { postV1ShadowProfilesGithub } from "./postV1ShadowProfilesGithub";
+import { postV1ShadowProfilesIdClaim } from "./postV1ShadowProfilesIdClaim";
 
 export function shadowProfileController() {
-  return { shadowProfileGithub, shadowProfileCandidates, shadowProfileClaim }
+  return { getV1ShadowProfilesCandidates, postV1ShadowProfilesGithub, postV1ShadowProfilesIdClaim }
 }

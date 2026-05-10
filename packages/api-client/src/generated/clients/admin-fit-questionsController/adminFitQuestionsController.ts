@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { adminFitQuestionsCreate } from "./adminFitQuestionsCreate";
-import { adminFitQuestionsDelete } from "./adminFitQuestionsDelete";
-import { adminFitQuestionsGetById } from "./adminFitQuestionsGetById";
-import { adminFitQuestionsList } from "./adminFitQuestionsList";
-import { adminFitQuestionsUpdate } from "./adminFitQuestionsUpdate";
+import { deleteV1AdminFitQuestionsId } from "./deleteV1AdminFitQuestionsId";
+import { getV1AdminFitQuestions } from "./getV1AdminFitQuestions";
+import { getV1AdminFitQuestionsId } from "./getV1AdminFitQuestionsId";
+import { patchV1AdminFitQuestionsId } from "./patchV1AdminFitQuestionsId";
+import { postV1AdminFitQuestions } from "./postV1AdminFitQuestions";
 
 export function adminFitQuestionsController() {
-  return { adminFitQuestionsList, adminFitQuestionsCreate, adminFitQuestionsGetById, adminFitQuestionsUpdate, adminFitQuestionsDelete }
+  return { getV1AdminFitQuestions, postV1AdminFitQuestions, deleteV1AdminFitQuestionsId, getV1AdminFitQuestionsId, patchV1AdminFitQuestionsId }
 }

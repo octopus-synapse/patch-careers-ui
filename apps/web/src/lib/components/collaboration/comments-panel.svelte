@@ -6,12 +6,12 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  collaborationResumesCommentsGetQueryKey,
-  createCollaborationResumesCommentsDelete,
-  createCollaborationResumesCommentsGet,
-  createCollaborationResumesCommentsPost,
-  createCollaborationResumesCommentsResolve,
-  type CollaborationResumesCommentsGet200,
+  getV1ResumesResumeIdCommentsQueryKey,
+  createDeleteV1ResumesCommentsCommentId,
+  createGetV1ResumesResumeIdComments,
+  createPostV1ResumesResumeIdComments,
+  createPostV1ResumesCommentsCommentIdResolve,
+  type GetV1ResumesResumeIdComments200,
 } from 'api-client';
 import { CheckCircle2, MessageSquare, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -21,7 +21,7 @@ import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
-type Comment = CollaborationResumesCommentsGet200['comments'][number];
+type Comment = GetV1ResumesResumeIdComments200['comments'][number];
 
 interface Props {
   resumeId: string;
@@ -32,7 +32,7 @@ interface Props {
 let { resumeId, currentUserId, ownerId }: Props = $props();
 
 const queryClient = useQueryClient();
-const commentsQuery = createCollaborationResumesCommentsGet(resumeId, {
+const commentsQuery = createGetV1ResumesResumeIdComments(resumeId, {
   query: { enabled: browser },
 });
 
@@ -42,15 +42,15 @@ let replyToId = $state<string | null>(null);
 let replyContent = $state('');
 
 const invalidate = () =>
-  queryClient.invalidateQueries({ queryKey: collaborationResumesCommentsGetQueryKey(resumeId) });
+  queryClient.invalidateQueries({ queryKey: getV1ResumesResumeIdCommentsQueryKey(resumeId) });
 
-const createComment = createCollaborationResumesCommentsPost({
+const createComment = createPostV1ResumesResumeIdComments({
   mutation: { onSuccess: invalidate, onError: handleApiError },
 });
-const resolveComment = createCollaborationResumesCommentsResolve({
+const resolveComment = createPostV1ResumesCommentsCommentIdResolve({
   mutation: { onSuccess: invalidate, onError: handleApiError },
 });
-const deleteComment = createCollaborationResumesCommentsDelete({
+const deleteComment = createDeleteV1ResumesCommentsCommentId({
   mutation: { onSuccess: invalidate, onError: handleApiError },
 });
 

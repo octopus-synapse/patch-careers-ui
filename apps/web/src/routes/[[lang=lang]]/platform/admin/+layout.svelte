@@ -13,8 +13,8 @@ let { children }: { children: Snippet } = $props();
 
 const session = useAuth();
 
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated);
 const isAdmin = $derived(user?.isAdmin);
 
 const t = $derived(locale.t);

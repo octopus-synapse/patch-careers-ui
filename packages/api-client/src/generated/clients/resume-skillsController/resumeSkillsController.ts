@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { resumeSkillsSkillsDelete } from "./resumeSkillsSkillsDelete";
-import { resumeSkillsSkillsGet } from "./resumeSkillsSkillsGet";
-import { resumeSkillsSkillsPatch } from "./resumeSkillsSkillsPatch";
-import { resumeSkillsSkillsPost } from "./resumeSkillsSkillsPost";
+import { deleteV1ResumesResumeIdSkillsSkillId } from "./deleteV1ResumesResumeIdSkillsSkillId";
+import { getV1ResumesResumeIdSkills } from "./getV1ResumesResumeIdSkills";
+import { patchV1ResumesResumeIdSkillsSkillId } from "./patchV1ResumesResumeIdSkillsSkillId";
+import { postV1ResumesResumeIdSkills } from "./postV1ResumesResumeIdSkills";
 
 export function resumeSkillsController() {
-  return { resumeSkillsSkillsPost, resumeSkillsSkillsGet, resumeSkillsSkillsPatch, resumeSkillsSkillsDelete }
+  return { getV1ResumesResumeIdSkills, postV1ResumesResumeIdSkills, deleteV1ResumesResumeIdSkillsSkillId, patchV1ResumesResumeIdSkillsSkillId }
 }

@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { adminTechAreasCreate } from "./adminTechAreasCreate";
-import { adminTechAreasDelete } from "./adminTechAreasDelete";
-import { adminTechAreasGetById } from "./adminTechAreasGetById";
-import { adminTechAreasList } from "./adminTechAreasList";
-import { adminTechAreasUpdate } from "./adminTechAreasUpdate";
+import { deleteV1AdminTechAreasId } from "./deleteV1AdminTechAreasId";
+import { getV1AdminTechAreas } from "./getV1AdminTechAreas";
+import { getV1AdminTechAreasId } from "./getV1AdminTechAreasId";
+import { patchV1AdminTechAreasId } from "./patchV1AdminTechAreasId";
+import { postV1AdminTechAreas } from "./postV1AdminTechAreas";
 
 export function adminTechAreasController() {
-  return { adminTechAreasList, adminTechAreasCreate, adminTechAreasGetById, adminTechAreasUpdate, adminTechAreasDelete }
+  return { getV1AdminTechAreas, postV1AdminTechAreas, deleteV1AdminTechAreasId, getV1AdminTechAreasId, patchV1AdminTechAreasId }
 }

@@ -1,4 +1,4 @@
 export { commentsController } from "./commentsController";
-export { commentsPostsCommentsDelete } from "./commentsPostsCommentsDelete";
-export { commentsPostsCommentsGet } from "./commentsPostsCommentsGet";
-export { commentsPostsCommentsPost } from "./commentsPostsCommentsPost";
+export { deleteV1PostsCommentsId } from "./deleteV1PostsCommentsId";
+export { getV1PostsIdComments } from "./getV1PostsIdComments";
+export { postV1PostsIdComments } from "./postV1PostsIdComments";

@@ -2,11 +2,11 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
-  jobsMineQueryKey,
-  jobsCreate,
-  jobsImportFromUrl,
+  getV1JobsApplicationsQueryKey,
+  postV1Jobs,
+  postV1JobsImportFromUrl,
 } from 'api-client';
-import type { JobsCreateMutationRequest, JobsCreateMutationRequestJobTypeEnumKey, JobsImportFromUrl200 } from 'api-client';
+import type { CreateJobRequest, CreateJobRequestJobTypeEnumKey, PostV1JobsImportFromUrl200 } from 'api-client';
 import { ArrowRight, Globe, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Input, Label, Loader, Textarea, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -15,7 +15,7 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 const queryClient = useQueryClient();
 
-type Preview = JobsImportFromUrl200['preview'];
+type Preview = PostV1JobsImportFromUrl200['preview'];
 
 let url = $state('');
 let previewing = $state(false);
@@ -36,7 +36,7 @@ async function runPreview() {
   previewing = true;
   error = '';
   try {
-    const res = await jobsImportFromUrl({ url: url.trim() });
+    const res = await postV1JobsImportFromUrl({ url: url.trim() });
     if (res.preview) {
       preview = res.preview;
       titleInput = preview.title ?? '';
@@ -60,20 +60,20 @@ async function confirmCreate() {
   if (!preview) return;
   saving = true;
   try {
-    const body: JobsCreateMutationRequest = {
+    const body: CreateJobRequest = {
       title: titleInput.trim() || 'Sem título',
       company: companyInput.trim() || 'Sem empresa',
       location: locationInput.trim() || undefined,
       description: descriptionInput.trim() || 'Sem descrição',
-      jobType: (preview.jobType ?? 'FULL_TIME') as JobsCreateMutationRequestJobTypeEnumKey,
+      jobType: (preview.jobType ?? 'FULL_TIME') as CreateJobRequestJobTypeEnumKey,
       remotePolicy: preview.remotePolicy || undefined,
       salaryRange: salaryInput.trim() || undefined,
       applyUrl: applyInput.trim() || url,
       skills: preview.skills,
       requirements: preview.requirements,
     };
-    await jobsCreate(body);
-    await queryClient.invalidateQueries({ queryKey: jobsMineQueryKey() });
+    await postV1Jobs(body);
+    await queryClient.invalidateQueries({ queryKey: getV1JobsApplicationsQueryKey() });
     toastState.show('Vaga criada a partir da URL.', 'success');
     goto('/recruiting/jobs');
   } catch (err) {

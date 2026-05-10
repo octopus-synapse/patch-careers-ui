@@ -3,7 +3,7 @@
    * /careers/remote-usd-jobs — burra: lista vagas com paymentCurrency=USD.
    * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
-import { createJobsList } from 'api-client';
+import { createGetV1Jobs } from 'api-client';
 import { ArrowRight, Briefcase, Globe2, Sparkles } from 'lucide-svelte';
 import { Badge, Button, Card, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
@@ -21,8 +21,8 @@ type JobItem = {
 
 const t = $derived(locale.t);
 
-const query = createJobsList(
-  { page: '1', limit: '30', paymentCurrency: 'USD' },
+const query = createGetV1Jobs(
+  { page: 1, limit: 30, paymentCurrency: 'USD' },
   { query: { enabled: browser } },
 );
 

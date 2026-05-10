@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { socialActivityUsersActivities } from "./socialActivityUsersActivities";
-import { socialActivityUsersActivitiesByType } from "./socialActivityUsersActivitiesByType";
-import { socialActivityUsersFeed } from "./socialActivityUsersFeed";
+import { getV1UsersUserIdActivities } from "./getV1UsersUserIdActivities";
+import { getV1UsersUserIdActivitiesByTypeType } from "./getV1UsersUserIdActivitiesByTypeType";
+import { getV1UsersUserIdFeed } from "./getV1UsersUserIdFeed";
 
 export function socialActivityController() {
-  return { socialActivityUsersFeed, socialActivityUsersActivities, socialActivityUsersActivitiesByType }
+  return { getV1UsersUserIdActivities, getV1UsersUserIdActivitiesByTypeType, getV1UsersUserIdFeed }
 }

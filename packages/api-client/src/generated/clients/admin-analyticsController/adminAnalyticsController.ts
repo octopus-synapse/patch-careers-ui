@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { adminAnalyticsOverview } from "./adminAnalyticsOverview";
+import { getV1AdminAnalyticsOverview } from "./getV1AdminAnalyticsOverview";
 
 export function adminAnalyticsController() {
-  return { adminAnalyticsOverview }
+  return { getV1AdminAnalyticsOverview }
 }

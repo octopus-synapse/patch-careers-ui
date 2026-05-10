@@ -7,12 +7,11 @@
 -->
 <script lang="ts">
 import {
-  createTwoFactorAuthAuth2Fa,
-  createTwoFactorAuthAuth2FaBackupCodesRegenerate,
-  createTwoFactorAuthAuth2FaSetup,
-  createTwoFactorAuthAuth2FaStatus,
-  createTwoFactorAuthAuth2FaVerify,
-  twoFactorAuthAuth2FaStatusQueryKey,
+  createPostV1Auth2FaSetup,
+  createPostV1Auth2FaBackupCodesRegenerate,
+  createGetV1Auth2FaStatus,
+  createPostV1Auth2FaVerify,
+  getV1Auth2FaStatusQueryKey,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
 import { Copy, Download, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
@@ -22,44 +21,44 @@ import { browser } from '$app/environment';
 
 const queryClient = useQueryClient();
 
-const statusQuery = createTwoFactorAuthAuth2FaStatus({
+const statusQuery = createGetV1Auth2FaStatus({
   query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
 });
 const status = $derived($statusQuery.data);
 
-const setup = createTwoFactorAuthAuth2FaSetup({ mutation: { onError: handleApiError } });
+const setup = createPostV1Auth2FaSetup({ mutation: { onError: handleApiError } });
 const setupData = $derived($setup.data);
 
 let verifyToken = $state('');
 let backupCodes = $state<string[] | null>(null);
 let disableConfirming = $state(false);
 
-const verify = createTwoFactorAuthAuth2FaVerify({
+const verify = createPostV1Auth2FaVerify({
   mutation: {
     async onSuccess(data) {
       backupCodes = data.backupCodes;
       $setup.reset();
       verifyToken = '';
-      await queryClient.invalidateQueries({ queryKey: twoFactorAuthAuth2FaStatusQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1Auth2FaStatusQueryKey() });
     },
     onError: handleApiError,
   },
 });
 
-const disable = createTwoFactorAuthAuth2Fa({
+const disable = createPostV1Auth2FaSetup({
   mutation: {
     async onSuccess() {
       disableConfirming = false;
       toastState.show('2FA desativado.', 'success');
       await queryClient.invalidateQueries({
-        queryKey: twoFactorAuthAuth2FaStatusQueryKey(),
+        queryKey: getV1Auth2FaStatusQueryKey(),
       });
     },
     onError: handleApiError,
   },
 });
 
-const regen = createTwoFactorAuthAuth2FaBackupCodesRegenerate({
+const regen = createPostV1Auth2FaBackupCodesRegenerate({
   mutation: {
     onSuccess: (data) => (backupCodes = data.backupCodes),
     onError: handleApiError,

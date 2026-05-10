@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { applyModeWeeklyCuratedApprove } from "./applyModeWeeklyCuratedApprove";
-import { applyModeWeeklyCuratedCurrent } from "./applyModeWeeklyCuratedCurrent";
-import { applyModeWeeklyCuratedReject } from "./applyModeWeeklyCuratedReject";
+import { getV1ApplyModeWeeklyCuratedCurrent } from "./getV1ApplyModeWeeklyCuratedCurrent";
+import { postV1ApplyModeWeeklyCuratedItemIdApprove } from "./postV1ApplyModeWeeklyCuratedItemIdApprove";
+import { postV1ApplyModeWeeklyCuratedItemIdReject } from "./postV1ApplyModeWeeklyCuratedItemIdReject";
 
 export function applyModeController() {
-  return { applyModeWeeklyCuratedCurrent, applyModeWeeklyCuratedReject, applyModeWeeklyCuratedApprove }
+  return { getV1ApplyModeWeeklyCuratedCurrent, postV1ApplyModeWeeklyCuratedItemIdApprove, postV1ApplyModeWeeklyCuratedItemIdReject }
 }

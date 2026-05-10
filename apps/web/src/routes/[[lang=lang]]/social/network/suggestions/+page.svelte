@@ -1,11 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createSocialConnectionsUsersConnect,
-  createSocialConnectionsUsersMeConnectionsSuggestions,
-  createSocialUsersMeConnectionRecommendations,
-  socialConnectionsUsersMeConnectionsSuggestionsQueryKey,
-  socialConnectionsUsersMeConnectionsSuggestions,
+  createPostV1UsersUserIdConnect,
+  createGetV1UsersMeConnectionsSuggestions,
+  getV1UsersMeConnectionsSuggestions,
+  getV1UsersMeConnectionsSuggestionsQueryKey,
 } from 'api-client';
 import { UserPlus, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -17,46 +16,27 @@ import UserCard from '$lib/components/user/user-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { sentConnections } from '$lib/state/sent-connections.svelte';
 import { InfiniteScrollTrigger } from 'ui';
+import { useInfiniteList } from '$lib/state/use-infinite-list.svelte';
+import type { ConnectionSuggestion } from '$lib/types/social';
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
 
-const query = createSocialConnectionsUsersMeConnectionsSuggestions(
-  { page: '1', limit: '20' },
-  { query: { enabled: browser && !!authenticated } },
-);
-
-const firstPage = $derived($query.data?.suggestions);
-let extra = $state<NonNullable<typeof firstPage>['data']>([]);
-let pageNum = $state(1);
-let loadingMore = $state(false);
-
-async function loadMore() {
-  if (loadingMore) return;
-  loadingMore = true;
-  try {
-    const next = pageNum + 1;
-    const res = await socialConnectionsUsersMeConnectionsSuggestions({
-      page: String(next),
-      limit: '20',
-    });
-    extra = [...extra, ...res.suggestions.data];
-    pageNum = next;
-  } finally {
-    loadingMore = false;
-  }
-}
-
-const all = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
+const list = useInfiniteList<ConnectionSuggestion>({
+  createQuery: (p) =>
+    createGetV1UsersMeConnectionsSuggestions(p, {
+      query: { enabled: browser && auth.isAuthenticated },
+    }),
+  fetcher: (p) => getV1UsersMeConnectionsSuggestions(p),
+});
 
 const queryClient = useQueryClient();
 
-const connectMutation = createSocialConnectionsUsersConnect({
+const connectMutation = createPostV1UsersUserIdConnect({
   mutation: {
     onSuccess(_data, variables) {
       queryClient.invalidateQueries({
-        queryKey: socialConnectionsUsersMeConnectionsSuggestionsQueryKey(),
+        queryKey: getV1UsersMeConnectionsSuggestionsQueryKey(),
       });
       track('connection_requested', {
         targetUserId: variables.userId,
@@ -74,16 +54,6 @@ function handleConnect(userId: string) {
   sentConnections.add(userId);
   $connectMutation.mutate({ userId });
 }
-
-// Skill-overlap recommendations — distinct from the generic "suggestions"
-// endpoint. Pulled in parallel so the page has both a friend-of-friend list
-// AND a "people who share your skills" list, ranked separately.
-const skillRecsQuery = createSocialUsersMeConnectionRecommendations(
-  { limit: '10' },
-  { query: { enabled: browser && !!authenticated } },
-);
-const skillRecs = $derived($skillRecsQuery.data?.recommendations);
-const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 </script>
 
 <svelte:head>
@@ -96,14 +66,14 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('network.suggestions')}
 			</h1>
-			{#if firstPage && firstPage.total > 0}
+			{#if list.total > 0}
 				<span class="text-xs text-gray-500 dark:text-neutral-500">
-					{firstPage.total}
+					{list.total}
 				</span>
 			{/if}
 		</header>
 
-		{#if $query.isLoading}
+		{#if list.isLoading}
 			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
 				{#each Array(8) as _}
 					<div class="flex flex-col items-center gap-2 rounded-xl border p-4 border-gray-200 dark:border-neutral-800">
@@ -114,14 +84,14 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 					</div>
 				{/each}
 			</div>
-		{:else if all.length === 0}
+		{:else if list.items.length === 0}
 			<EmptyState
 				message={t('network.suggestionsEmpty')}
 				icon={Users as unknown as Component<{ size: number; class?: string }>}
 			/>
 		{:else}
 			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
-				{#each all as suggestion (suggestion.id)}
+				{#each list.items as suggestion (suggestion.id)}
 					<UserCard
 						user={{
 							id: suggestion.id,
@@ -147,55 +117,10 @@ const skillRecsLoading = $derived($skillRecsQuery.isLoading);
 				{/each}
 			</div>
 			<InfiniteScrollTrigger
-				onLoadMore={loadMore}
-				hasMore={!!firstPage && pageNum < firstPage.totalPages}
-				isLoading={loadingMore}
+				onLoadMore={list.loadMore}
+				hasMore={list.hasMore}
+				isLoading={list.loadingMore}
 			/>
-		{/if}
-
-		<!-- Skill-overlap recommendations: ranked by # of shared skills with the
-				viewer. Distinct from the generic suggestions above. -->
-		{#if skillRecsLoading}
-			<div class="mt-10">
-				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-					{t('network.suggestionsSkillsTitle')}
-				</h2>
-				<Skeleton shape="rect" width="100%" height="6rem" />
-			</div>
-		{:else if skillRecs && skillRecs.length > 0}
-			<div class="mt-10">
-				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">
-					{t('network.suggestionsSkillsTitle')}
-				</h2>
-				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
-					{#each skillRecs as r (r.userId)}
-						<UserCard
-							user={{
-								id: r.userId,
-								name: r.name,
-								username: r.username,
-								photoURL: null,
-							}}
-							subtitle={t('network.suggestionsSkillsInCommon', {
-								count: r.sharedSkills.length,
-							})}
-						>
-							{#snippet actions()}
-								{#if sentConnections.has(r.userId)}
-									<span class="w-full rounded-full border py-1.5 text-center text-[10px] font-semibold opacity-60 border-gray-300 text-gray-700 dark:border-neutral-600 dark:text-neutral-300">
-										{t('network.requestSent')}
-									</span>
-								{:else}
-									<Button variant="solid" size="sm" fullWidth textCase="normal" onclick={() => handleConnect(r.userId)}>
-										<UserPlus size={11} />
-										{t('network.connect')}
-									</Button>
-								{/if}
-							{/snippet}
-						</UserCard>
-					{/each}
-				</div>
-			</div>
 		{/if}
 	</div>
 </div>

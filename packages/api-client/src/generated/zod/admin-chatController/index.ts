@@ -1,2 +1,2 @@
-export { adminChatConversations200Schema, adminChatConversations400Schema, adminChatConversations401Schema, adminChatConversations403Schema, adminChatConversationsQueryParamsSchema, adminChatConversationsQueryResponseSchema } from "./adminChatConversationsSchema";
-export { adminChatStats200Schema, adminChatStats400Schema, adminChatStats401Schema, adminChatStats403Schema, adminChatStatsQueryResponseSchema } from "./adminChatStatsSchema";
+export { getV1AdminChatConversations200Schema, getV1AdminChatConversations400Schema, getV1AdminChatConversations401Schema, getV1AdminChatConversations403Schema, getV1AdminChatConversationsQueryParamsSchema, getV1AdminChatConversationsQueryResponseSchema } from "./getV1AdminChatConversationsSchema";
+export { getV1AdminChatStats200Schema, getV1AdminChatStats400Schema, getV1AdminChatStats401Schema, getV1AdminChatStats403Schema, getV1AdminChatStatsQueryResponseSchema } from "./getV1AdminChatStatsSchema";

@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { adminFeatureFlagsBroadcastRefresh } from "./adminFeatureFlagsBroadcastRefresh";
-import { adminFeatureFlagsImpact } from "./adminFeatureFlagsImpact";
-import { adminFeatureFlagsList } from "./adminFeatureFlagsList";
-import { adminFeatureFlagsUpdate } from "./adminFeatureFlagsUpdate";
+import { getV1AdminFeatureFlags } from "./getV1AdminFeatureFlags";
+import { getV1AdminFeatureFlagsKeyImpact } from "./getV1AdminFeatureFlagsKeyImpact";
+import { patchV1AdminFeatureFlagsKey } from "./patchV1AdminFeatureFlagsKey";
+import { postV1AdminFeatureFlagsBroadcastRefresh } from "./postV1AdminFeatureFlagsBroadcastRefresh";
 
 export function adminFeatureFlagsController() {
-  return { adminFeatureFlagsList, adminFeatureFlagsImpact, adminFeatureFlagsUpdate, adminFeatureFlagsBroadcastRefresh }
+  return { getV1AdminFeatureFlags, postV1AdminFeatureFlagsBroadcastRefresh, patchV1AdminFeatureFlagsKey, getV1AdminFeatureFlagsKeyImpact }
 }

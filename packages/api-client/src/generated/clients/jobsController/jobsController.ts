@@ -3,26 +3,26 @@
 * Do not edit manually.
 */
 
-import { jobsApplicationsGet } from "./jobsApplicationsGet";
-import { jobsApplicationsGet2 } from "./jobsApplicationsGet2";
-import { jobsApplyContext } from "./jobsApplyContext";
-import { jobsApplyDelete } from "./jobsApplyDelete";
-import { jobsApplyPost } from "./jobsApplyPost";
-import { jobsBookmarkDelete } from "./jobsBookmarkDelete";
-import { jobsBookmarkPost } from "./jobsBookmarkPost";
-import { jobsBookmarks } from "./jobsBookmarks";
-import { jobsCreate } from "./jobsCreate";
-import { jobsDelete } from "./jobsDelete";
-import { jobsFit } from "./jobsFit";
-import { jobsGetById } from "./jobsGetById";
-import { jobsImportFromUrl } from "./jobsImportFromUrl";
-import { jobsList } from "./jobsList";
-import { jobsMine } from "./jobsMine";
-import { jobsRecommended } from "./jobsRecommended";
-import { jobsSimilar } from "./jobsSimilar";
-import { jobsUpdate } from "./jobsUpdate";
-import { jobsWithFitScore } from "./jobsWithFitScore";
+import { deleteV1JobsId } from "./deleteV1JobsId";
+import { deleteV1JobsIdApply } from "./deleteV1JobsIdApply";
+import { deleteV1JobsIdBookmark } from "./deleteV1JobsIdBookmark";
+import { getV1Jobs } from "./getV1Jobs";
+import { getV1JobsApplications } from "./getV1JobsApplications";
+import { getV1JobsBookmarks } from "./getV1JobsBookmarks";
+import { getV1JobsId } from "./getV1JobsId";
+import { getV1JobsIdApplications } from "./getV1JobsIdApplications";
+import { getV1JobsIdApplyContext } from "./getV1JobsIdApplyContext";
+import { getV1JobsIdFit } from "./getV1JobsIdFit";
+import { getV1JobsIdSimilar } from "./getV1JobsIdSimilar";
+import { getV1JobsMine } from "./getV1JobsMine";
+import { getV1JobsRecommended } from "./getV1JobsRecommended";
+import { getV1JobsWithFitScore } from "./getV1JobsWithFitScore";
+import { patchV1JobsId } from "./patchV1JobsId";
+import { postV1Jobs } from "./postV1Jobs";
+import { postV1JobsIdApply } from "./postV1JobsIdApply";
+import { postV1JobsIdBookmark } from "./postV1JobsIdBookmark";
+import { postV1JobsImportFromUrl } from "./postV1JobsImportFromUrl";
 
 export function jobsController() {
-  return { jobsList, jobsCreate, jobsWithFitScore, jobsMine, jobsBookmarks, jobsRecommended, jobsApplicationsGet, jobsApplicationsGet2, jobsSimilar, jobsGetById, jobsUpdate, jobsDelete, jobsFit, jobsApplyContext, jobsBookmarkPost, jobsBookmarkDelete, jobsApplyPost, jobsApplyDelete, jobsImportFromUrl }
+  return { getV1Jobs, postV1Jobs, getV1JobsApplications, getV1JobsBookmarks, postV1JobsImportFromUrl, getV1JobsMine, getV1JobsRecommended, getV1JobsWithFitScore, deleteV1JobsId, getV1JobsId, patchV1JobsId, getV1JobsIdApplications, deleteV1JobsIdApply, postV1JobsIdApply, getV1JobsIdApplyContext, deleteV1JobsIdBookmark, postV1JobsIdBookmark, getV1JobsIdFit, getV1JobsIdSimilar }
 }

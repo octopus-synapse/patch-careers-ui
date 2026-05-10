@@ -1,1 +1,1 @@
-export { careerGraphView200Schema, careerGraphView400Schema, careerGraphView401Schema, careerGraphViewMutationRequestSchema, careerGraphViewMutationResponseSchema } from "./careerGraphViewSchema";
+export { postV1CareerGraphView200Schema, postV1CareerGraphView400Schema, postV1CareerGraphView401Schema, postV1CareerGraphViewMutationRequestSchema, postV1CareerGraphViewMutationResponseSchema } from "./postV1CareerGraphViewSchema";

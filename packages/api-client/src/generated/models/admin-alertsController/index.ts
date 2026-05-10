@@ -1,4 +1,4 @@
-export type { AdminAlertsList200, AdminAlertsList400, AdminAlertsList400SeverityEnumKey, AdminAlertsList401, AdminAlertsList401SeverityEnumKey, AdminAlertsList403, AdminAlertsList403SeverityEnumKey, AdminAlertsListQuery, AdminAlertsListQueryResponse } from "./AdminAlertsList";
-export { adminAlertsList400SeverityEnum } from "./AdminAlertsList";
-export { adminAlertsList401SeverityEnum } from "./AdminAlertsList";
-export { adminAlertsList403SeverityEnum } from "./AdminAlertsList";
+export type { GetV1AdminAlerts200, GetV1AdminAlerts400, GetV1AdminAlerts400SeverityEnumKey, GetV1AdminAlerts401, GetV1AdminAlerts401SeverityEnumKey, GetV1AdminAlerts403, GetV1AdminAlerts403SeverityEnumKey, GetV1AdminAlertsQuery, GetV1AdminAlertsQueryResponse } from "./GetV1AdminAlerts";
+export { getV1AdminAlerts400SeverityEnum } from "./GetV1AdminAlerts";
+export { getV1AdminAlerts401SeverityEnum } from "./GetV1AdminAlerts";
+export { getV1AdminAlerts403SeverityEnum } from "./GetV1AdminAlerts";

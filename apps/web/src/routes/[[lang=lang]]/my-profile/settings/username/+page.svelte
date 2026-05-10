@@ -1,10 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createUsersUsernameCheck,
-  createUsersProfileGet,
-  createUsersUsername,
-  usersProfileGetQueryKey,
+  createGetV1UsersUsernameCheck,
+  createGetV1UsersProfile,
+  createPatchV1UsersUsername,
+  getV1UsersProfileQueryKey,
 } from 'api-client';
 import { Check, X } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
@@ -17,7 +17,7 @@ const queryClient = useQueryClient();
 const successText = 'text-emerald-500';
 const errorText = 'text-red-500';
 
-const profileQuery = createUsersProfileGet({
+const profileQuery = createGetV1UsersProfile({
   query: { enabled: browser },
 });
 const profileData = $derived($profileQuery.data as Record<string, string> | undefined);
@@ -39,7 +39,7 @@ $effect(() => {
   }
 });
 
-const usernameCheck = createUsersUsernameCheck(
+const usernameCheck = createGetV1UsersUsernameCheck(
   { username: debouncedUsername },
   { query: { enabled: browser && debouncedUsername.length >= 3 } },
 );
@@ -47,10 +47,10 @@ const usernameAvailable = $derived(
   ($usernameCheck.data as Record<string, boolean> | undefined)?.available,
 );
 
-const updateUsername = createUsersUsername({
+const updateUsername = createPatchV1UsersUsername({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: usersProfileGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1UsersProfileQueryKey() });
       newUsername = '';
       debouncedUsername = '';
       usernameSaved = true;

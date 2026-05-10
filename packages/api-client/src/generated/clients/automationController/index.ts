@@ -1,2 +1,2 @@
 export { automationController } from "./automationController";
-export { automationRageApply } from "./automationRageApply";
+export { postV1AutomationRageApply } from "./postV1AutomationRageApply";

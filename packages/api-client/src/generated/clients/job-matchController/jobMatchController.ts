@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { jobMatchMatchGet } from "./jobMatchMatchGet";
-import { jobMatchMatchPost } from "./jobMatchMatchPost";
+import { getV1MatchResumeIdJobId } from "./getV1MatchResumeIdJobId";
+import { postV1Match } from "./postV1Match";
 
 export function jobMatchController() {
-  return { jobMatchMatchPost, jobMatchMatchGet }
+  return { postV1Match, getV1MatchResumeIdJobId }
 }

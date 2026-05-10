@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { uploadCompanyLogo } from "./uploadCompanyLogo";
-import { uploadFile } from "./uploadFile";
-import { uploadProfileImage } from "./uploadProfileImage";
+import { deleteV1UploadFileKey } from "./deleteV1UploadFileKey";
+import { postV1UploadCompanyLogoResumeId } from "./postV1UploadCompanyLogoResumeId";
+import { postV1UploadProfileImage } from "./postV1UploadProfileImage";
 
 export function uploadController() {
-  return { uploadProfileImage, uploadCompanyLogo, uploadFile }
+  return { postV1UploadCompanyLogoResumeId, deleteV1UploadFileKey, postV1UploadProfileImage }
 }

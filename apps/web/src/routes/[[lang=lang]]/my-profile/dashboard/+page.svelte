@@ -22,8 +22,8 @@ import { meDashboard } from '$lib/state/me-dashboard.svelte';
 const t = $derived(locale.t);
 
 const session = useAuth();
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated);
 
 $effect(() => {
   if (!session.isLoading && !authenticated) {

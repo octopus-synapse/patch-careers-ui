@@ -1,9 +1,9 @@
 <script lang="ts">
   /**
-   * Profile badges — burra: chama createBadgesUser e renderiza grid.
+   * Profile badges — burra: chama createGetV1BadgesUserUserId e renderiza grid.
    * Backend retorna `void` no schema OpenAPI; cast local da resposta.
    */
-import { createBadgesUser } from 'api-client';
+import { createGetV1BadgesUserUserId } from 'api-client';
 import { BadgeIcon, type BadgeKind, Tooltip } from 'ui';
 import { browser } from '$app/environment';
 
@@ -14,7 +14,7 @@ type Props = {
 };
 let { userId, showLocked = false }: Props = $props();
 
-const query = createBadgesUser(
+const query = createGetV1BadgesUserUserId(
   userId,
   { query: { enabled: browser && Boolean(userId) } },
 );

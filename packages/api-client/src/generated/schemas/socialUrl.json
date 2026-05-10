@@ -1,0 +1,1 @@
+{"type":"string","maxLength":500,"format":"uri","pattern":"^https?:\\/\\/","description":"Public HTTP(S) URL (max 500 chars). Trimmed on submit.","example":"https://fixture.profile.local","x-readme-ref-name":"SocialUrl"}

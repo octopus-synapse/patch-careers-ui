@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { exportBanner } from "./exportBanner";
-import { exportJson } from "./exportJson";
-import { exportLatex } from "./exportLatex";
-import { exportResumeDocx } from "./exportResumeDocx";
-import { exportResumePdf } from "./exportResumePdf";
-import { exportUserResumePdf } from "./exportUserResumePdf";
+import { getV1ExportBanner } from "./getV1ExportBanner";
+import { getV1ExportResumeDocx } from "./getV1ExportResumeDocx";
+import { getV1ExportResumeIdJson } from "./getV1ExportResumeIdJson";
+import { getV1ExportResumeIdLatex } from "./getV1ExportResumeIdLatex";
+import { getV1ExportResumePdf } from "./getV1ExportResumePdf";
+import { getV1ExportUserUserIdResumePdf } from "./getV1ExportUserUserIdResumePdf";
 
 export function exportController() {
-  return { exportBanner, exportResumePdf, exportUserResumePdf, exportResumeDocx, exportJson, exportLatex }
+  return { getV1ExportBanner, getV1ExportResumeDocx, getV1ExportResumePdf, getV1ExportUserUserIdResumePdf, getV1ExportResumeIdJson, getV1ExportResumeIdLatex }
 }

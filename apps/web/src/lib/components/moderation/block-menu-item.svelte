@@ -1,10 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createChatBlockUsersBlockedPost,
-  chatBlockUsersBlockedGetQueryKey,
-  chatBlockUsersBlockedStatusQueryKey,
-  feedListQueryKey,
+  createPostV1ChatBlocked,
+  getV1ChatBlockedQueryKey,
+  getV1ChatBlockedUserIdStatusQueryKey,
+  getV1FeedQueryKey,
 } from 'api-client';
 import { Shield } from 'lucide-svelte';
 import { Button, ConfirmModal, toastState } from 'ui';
@@ -49,14 +49,14 @@ const t = $derived(locale.t);
 const queryClient = useQueryClient();
 let showConfirm = $state(false);
 
-const blockMutation = createChatBlockUsersBlockedPost({
+const blockMutation = createPostV1ChatBlocked({
   mutation: {
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: chatBlockUsersBlockedStatusQueryKey(targetUserId),
+        queryKey: getV1ChatBlockedUserIdStatusQueryKey(targetUserId),
       });
-      queryClient.invalidateQueries({ queryKey: chatBlockUsersBlockedGetQueryKey() });
-      queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1ChatBlockedQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
       track('user_blocked', { targetUserId, source });
       toastState.show(t('network.blockSuccess'), 'success');
       onblocked?.();

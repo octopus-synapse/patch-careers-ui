@@ -1,2 +1,6 @@
-export { authOauthAvailable200Schema, authOauthAvailable400Schema, authOauthAvailablePathParamsSchema, authOauthAvailableQueryResponseSchema } from "./authOauthAvailableSchema";
-export { authOauthProviders200Schema, authOauthProviders400Schema, authOauthProvidersQueryResponseSchema } from "./authOauthProvidersSchema";
+export { getV1AuthOauthAvailableProvider200Schema, getV1AuthOauthAvailableProvider400Schema, getV1AuthOauthAvailableProvider404Schema, getV1AuthOauthAvailableProviderPathParamsSchema, getV1AuthOauthAvailableProviderQueryResponseSchema } from "./getV1AuthOauthAvailableProviderSchema";
+export { getV1AuthOauthGithubCallback200Schema, getV1AuthOauthGithubCallback400Schema, getV1AuthOauthGithubCallbackQueryResponseSchema } from "./getV1AuthOauthGithubCallbackSchema";
+export { getV1AuthOauthGithubStart200Schema, getV1AuthOauthGithubStart400Schema, getV1AuthOauthGithubStartQueryResponseSchema } from "./getV1AuthOauthGithubStartSchema";
+export { getV1AuthOauthLinkedinCallback200Schema, getV1AuthOauthLinkedinCallback400Schema, getV1AuthOauthLinkedinCallbackQueryResponseSchema } from "./getV1AuthOauthLinkedinCallbackSchema";
+export { getV1AuthOauthLinkedinStart200Schema, getV1AuthOauthLinkedinStart400Schema, getV1AuthOauthLinkedinStartQueryResponseSchema } from "./getV1AuthOauthLinkedinStartSchema";
+export { getV1AuthOauthProviders200Schema, getV1AuthOauthProviders400Schema, getV1AuthOauthProvidersQueryResponseSchema } from "./getV1AuthOauthProvidersSchema";

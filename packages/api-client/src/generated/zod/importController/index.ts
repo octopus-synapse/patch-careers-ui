@@ -1,1 +1,1 @@
-export { importGithubParse200Schema, importGithubParse400Schema, importGithubParse401Schema, importGithubParse403Schema, importGithubParseMutationRequestSchema, importGithubParseMutationResponseSchema } from "./importGithubParseSchema";
+export { postV1ImportGithubParse201Schema, postV1ImportGithubParse400Schema, postV1ImportGithubParse401Schema, postV1ImportGithubParse403Schema, postV1ImportGithubParseMutationRequestSchema, postV1ImportGithubParseMutationResponseSchema } from "./postV1ImportGithubParseSchema";

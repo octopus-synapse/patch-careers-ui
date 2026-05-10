@@ -1,1 +1,1 @@
-export { adminAnalyticsOverview200Schema, adminAnalyticsOverview400Schema, adminAnalyticsOverview401Schema, adminAnalyticsOverview403Schema, adminAnalyticsOverviewQueryParamsSchema, adminAnalyticsOverviewQueryResponseSchema } from "./adminAnalyticsOverviewSchema";
+export { getV1AdminAnalyticsOverview200Schema, getV1AdminAnalyticsOverview400Schema, getV1AdminAnalyticsOverview401Schema, getV1AdminAnalyticsOverview403Schema, getV1AdminAnalyticsOverviewQueryParamsSchema, getV1AdminAnalyticsOverviewQueryResponseSchema } from "./getV1AdminAnalyticsOverviewSchema";

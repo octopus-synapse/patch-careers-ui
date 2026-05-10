@@ -1,2 +1,2 @@
-export { techAreasList200Schema, techAreasList400Schema, techAreasList401Schema, techAreasList403Schema, techAreasListQueryResponseSchema } from "./techAreasListSchema";
-export { techAreasNiches200Schema, techAreasNiches400Schema, techAreasNiches401Schema, techAreasNiches403Schema, techAreasNichesPathParamsSchema, techAreasNichesQueryResponseSchema } from "./techAreasNichesSchema";
+export { getV1TechAreasAreaTypeNiches200Schema, getV1TechAreasAreaTypeNiches400Schema, getV1TechAreasAreaTypeNiches401Schema, getV1TechAreasAreaTypeNiches403Schema, getV1TechAreasAreaTypeNiches404Schema, getV1TechAreasAreaTypeNichesPathParamsSchema, getV1TechAreasAreaTypeNichesQueryResponseSchema } from "./getV1TechAreasAreaTypeNichesSchema";
+export { getV1TechAreas200Schema, getV1TechAreas400Schema, getV1TechAreas401Schema, getV1TechAreas403Schema, getV1TechAreasQueryResponseSchema } from "./getV1TechAreasSchema";

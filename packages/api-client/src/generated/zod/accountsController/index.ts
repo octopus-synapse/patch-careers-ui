@@ -1,1 +1,1 @@
-export { accountsSignup200Schema, accountsSignup400Schema, accountsSignupMutationRequestSchema, accountsSignupMutationResponseSchema } from "./accountsSignupSchema";
+export { signup201Schema, signup400Schema, signupMutationRequestSchema, signupMutationResponseSchema } from "./signupSchema";

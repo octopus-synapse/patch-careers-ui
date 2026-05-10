@@ -1,11 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createSocialFollowUsersFollowDelete,
-  createSocialFollowUsersFollowing,
-  socialFollowUsersFollowingQueryKey,
-  socialFollowUsersFollowing,
-  type SocialFollowUsersFollowing200,
+  createDeleteV1UsersUserIdFollow,
+  createGetV1UsersUserIdFollowing,
+  getV1UsersUserIdFollowing,
+  getV1UsersUserIdFollowingQueryKey,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
@@ -16,53 +15,30 @@ import { useAuth } from '$lib/state/auth.svelte';
 import UserRow from '$lib/components/user/user-row.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { InfiniteScrollTrigger } from 'ui';
+import { useInfiniteList } from '$lib/state/use-infinite-list.svelte';
+import type { Following } from '$lib/types/social';
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+const currentUserId = $derived(String(auth.userId ?? ''));
 
-const query = createSocialFollowUsersFollowing(
-  currentUserId,
-  { page: '1', limit: '20' },
-  { query: { enabled: browser && !!currentUserId } },
-);
-
-type FollowingRecord = SocialFollowUsersFollowing200['following']['data'][number];
-
-const firstPage = $derived($query.data?.following);
-let extra = $state<FollowingRecord[]>([]);
-let pageNum = $state(1);
-let loadingMore = $state(false);
 let hiddenIds = $state<Set<string>>(new Set());
 
-async function loadMore() {
-  if (loadingMore || !currentUserId) return;
-  loadingMore = true;
-  try {
-    const next = pageNum + 1;
-    const res = await socialFollowUsersFollowing(currentUserId, {
-      page: String(next),
-      limit: '20',
-    });
-    extra = [...extra, ...res.following.data];
-    pageNum = next;
-  } finally {
-    loadingMore = false;
-  }
-}
-
-const all = $derived(
-  (firstPage ? [...firstPage.data, ...extra] : extra).filter(
-    (r) => !hiddenIds.has(r.following?.id ?? ''),
-  ),
-);
+const list = useInfiniteList<Following>({
+  createQuery: (p) =>
+    createGetV1UsersUserIdFollowing(currentUserId, p, {
+      query: { enabled: browser && !!currentUserId },
+    }),
+  fetcher: (p) => getV1UsersUserIdFollowing(currentUserId, p),
+  filter: (row) => !hiddenIds.has(row.following?.id ?? ''),
+});
 
 const queryClient = useQueryClient();
 
-const unfollowMutation = createSocialFollowUsersFollowDelete({
+const unfollowMutation = createDeleteV1UsersUserIdFollow({
   mutation: {
     onSuccess(_data, vars) {
-      queryClient.invalidateQueries({ queryKey: socialFollowUsersFollowingQueryKey(currentUserId) });
+      queryClient.invalidateQueries({ queryKey: getV1UsersUserIdFollowingQueryKey(currentUserId) });
       track('user_unfollowed', { targetUserId: vars.userId, source: 'following_page' });
     },
     onError(_err, vars) {
@@ -90,13 +66,13 @@ function handleUnfollow(userId: string) {
 			<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
 				{t('network.pageFollowingTitle')}
 			</h1>
-			{#if firstPage && firstPage.total > 0}
-				<span class="text-xs text-gray-500 dark:text-neutral-500">{firstPage.total}</span>
+			{#if list.total > 0}
+				<span class="text-xs text-gray-500 dark:text-neutral-500">{list.total}</span>
 			{/if}
 		</header>
 
 		<section class="rounded-xl border overflow-hidden border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/50">
-			{#if $query.isLoading}
+			{#if list.isLoading}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 					{#each Array(6) as _}
 						<div class="flex items-center gap-3 px-4 py-4 sm:px-6">
@@ -109,14 +85,14 @@ function handleUnfollow(userId: string) {
 						</div>
 					{/each}
 				</div>
-			{:else if all.length === 0}
+			{:else if list.items.length === 0}
 				<EmptyState
 					message={t('network.followingEmpty')}
 					icon={Users as unknown as Component<{ size: number; class?: string }>}
 				/>
 			{:else}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">
-					{#each all as row (row.following?.id ?? row.id)}
+					{#each list.items as row (row.following?.id ?? row.id)}
 						{#if row.following}
 							<UserRow user={row.following}>
 								{#snippet actions()}
@@ -129,9 +105,9 @@ function handleUnfollow(userId: string) {
 					{/each}
 				</div>
 				<InfiniteScrollTrigger
-					onLoadMore={loadMore}
-					hasMore={!!firstPage && pageNum < firstPage.totalPages}
-					isLoading={loadingMore}
+					onLoadMore={list.loadMore}
+					hasMore={list.hasMore}
+					isLoading={list.loadingMore}
 				/>
 			{/if}
 		</section>

@@ -1,13 +1,13 @@
 <script lang="ts">
   /**
-   * Public profile (@username) — burra: chama createUsersProfiles e renderiza
+   * Public profile (@username) — burra: chama createGetV1UsersProfile e renderiza
    * o perfil público do usuário com seções de skills, badges, atividades.
    *
    * Connect/Follow ficaram fora desta versão (SDK em remodelagem). Quando
    * o slice F4-social estabilizar createSocialFollow* e createSocialConnections*,
    * basta plugar de volta os botões nesta página.
    */
-  import { createUsersProfiles, exportUserResumePdf } from 'api-client';
+  import { createGetV1ProfilesUsername, getV1ExportUserUserIdResumePdf } from 'api-client';
   import { FileDown, Globe, MapPin } from 'lucide-svelte';
   import { Button, Loader } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -21,10 +21,10 @@
   const username = $derived($page.params.username ?? '');
 
   const auth = useAuth();
-  const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
-  const authenticated = $derived(auth.data?.authenticated);
+  const currentUserId = $derived(String(auth.userId ?? ''));
+  const authenticated = $derived(auth.isAuthenticated);
 
-  const profile = createUsersProfiles(
+  const profile = createGetV1ProfilesUsername(
     username,
     { query: { enabled: !!username } },
   );
@@ -43,7 +43,7 @@
     downloading = true;
     downloadError = null;
     try {
-      const res = await exportUserResumePdf(userId);
+      const res = await getV1ExportUserUserIdResumePdf(userId);
       const bytes = Uint8Array.from(atob(res.pdf), (c) => c.charCodeAt(0));
       const blob = new Blob([bytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);

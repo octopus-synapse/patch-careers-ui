@@ -10,7 +10,7 @@ let { children }: { children: Snippet } = $props();
 
 const session = useAuth();
 
-const authenticated = $derived(session.data?.authenticated);
+const authenticated = $derived(session.isAuthenticated);
 
 $effect(() => {
   if (!browser || session.isLoading) return;

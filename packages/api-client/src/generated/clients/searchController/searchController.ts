@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { searchGlobal } from "./searchGlobal";
-import { searchList } from "./searchList";
-import { searchSimilar } from "./searchSimilar";
-import { searchSuggestions } from "./searchSuggestions";
+import { getV1Search } from "./getV1Search";
+import { getV1SearchGlobal } from "./getV1SearchGlobal";
+import { getV1SearchSimilarId } from "./getV1SearchSimilarId";
+import { getV1SearchSuggestions } from "./getV1SearchSuggestions";
 
 export function searchController() {
-  return { searchList, searchSuggestions, searchGlobal, searchSimilar }
+  return { getV1Search, getV1SearchGlobal, getV1SearchSimilarId, getV1SearchSuggestions }
 }

@@ -4,7 +4,7 @@
   their fresh account in one click instead of redoing onboarding.
 -->
 <script lang="ts">
-import { createShadowProfileCandidates, createShadowProfileClaim } from 'api-client';
+import { createGetV1ShadowProfilesCandidates, createPostV1ShadowProfilesIdClaim } from 'api-client';
 import { Check, X } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Button, Card, Loader, toastState } from 'ui';
@@ -21,7 +21,7 @@ const queryParams = $derived.by(() => {
   return params;
 });
 
-const candidatesQuery = createShadowProfileCandidates(queryParams, {
+const candidatesQuery = createGetV1ShadowProfilesCandidates(queryParams, {
   query: { enabled: browser },
 });
 
@@ -38,7 +38,7 @@ $effect(() => {
   }
 });
 
-const claimMutation = createShadowProfileClaim({
+const claimMutation = createPostV1ShadowProfilesIdClaim({
   mutation: {
     onSuccess: () => {
       toastState.show('Perfil reivindicado. Adicionamos os dados ao seu currículo.', 'success');

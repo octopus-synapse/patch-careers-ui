@@ -1,4 +1,4 @@
-import { createUsersMePermissions } from 'api-client';
+import { createGetV1UsersMePermissions } from 'api-client';
 import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 
@@ -13,7 +13,7 @@ type UsePermissionsOptions = {
  * re-implementing the query shape in every component.
  */
 export function usePermissions(opts: () => UsePermissionsOptions) {
-  const query = createUsersMePermissions({
+  const query = createGetV1UsersMePermissions({
     query: { enabled: browser && opts().authenticated, staleTime: 5 * 60 * 1000 },
   });
 

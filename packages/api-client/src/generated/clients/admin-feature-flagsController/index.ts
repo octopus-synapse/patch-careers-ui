@@ -1,5 +1,5 @@
-export { adminFeatureFlagsBroadcastRefresh } from "./adminFeatureFlagsBroadcastRefresh";
 export { adminFeatureFlagsController } from "./adminFeatureFlagsController";
-export { adminFeatureFlagsImpact } from "./adminFeatureFlagsImpact";
-export { adminFeatureFlagsList } from "./adminFeatureFlagsList";
-export { adminFeatureFlagsUpdate } from "./adminFeatureFlagsUpdate";
+export { getV1AdminFeatureFlags } from "./getV1AdminFeatureFlags";
+export { getV1AdminFeatureFlagsKeyImpact } from "./getV1AdminFeatureFlagsKeyImpact";
+export { patchV1AdminFeatureFlagsKey } from "./patchV1AdminFeatureFlagsKey";
+export { postV1AdminFeatureFlagsBroadcastRefresh } from "./postV1AdminFeatureFlagsBroadcastRefresh";

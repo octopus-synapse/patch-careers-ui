@@ -5,9 +5,9 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  adminCollaborationsListQueryKey,
-  createAdminCollaborationsDelete,
-  createAdminCollaborationsList,
+  getV1AdminCollaborationsQueryKey,
+  createDeleteV1AdminCollaborationsResumeIdUserId,
+  createGetV1AdminCollaborations,
 } from 'api-client';
 import { Shield, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -16,15 +16,15 @@ import { browser } from '$app/environment';
 
 const queryClient = useQueryClient();
 
-const collaborationsQuery = createAdminCollaborationsList(undefined, {
+const collaborationsQuery = createGetV1AdminCollaborations(undefined, {
   query: { enabled: browser },
 });
 
-const revokeMutation = createAdminCollaborationsDelete({
+const revokeMutation = createDeleteV1AdminCollaborationsResumeIdUserId({
   mutation: {
     onSuccess(data) {
       toastState.show(data.message, 'success');
-      queryClient.invalidateQueries({ queryKey: adminCollaborationsListQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1AdminCollaborationsQueryKey() });
     },
     onError: handleApiError,
   },

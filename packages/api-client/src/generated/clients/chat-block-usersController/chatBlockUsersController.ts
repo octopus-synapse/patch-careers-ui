@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { chatBlockUsersBlockedDelete } from "./chatBlockUsersBlockedDelete";
-import { chatBlockUsersBlockedGet } from "./chatBlockUsersBlockedGet";
-import { chatBlockUsersBlockedPost } from "./chatBlockUsersBlockedPost";
-import { chatBlockUsersBlockedStatus } from "./chatBlockUsersBlockedStatus";
+import { deleteV1ChatBlockedUserId } from "./deleteV1ChatBlockedUserId";
+import { getV1ChatBlocked } from "./getV1ChatBlocked";
+import { getV1ChatBlockedUserIdStatus } from "./getV1ChatBlockedUserIdStatus";
+import { postV1ChatBlocked } from "./postV1ChatBlocked";
 
 export function chatBlockUsersController() {
-  return { chatBlockUsersBlockedPost, chatBlockUsersBlockedGet, chatBlockUsersBlockedDelete, chatBlockUsersBlockedStatus }
+  return { getV1ChatBlocked, postV1ChatBlocked, deleteV1ChatBlockedUserId, getV1ChatBlockedUserIdStatus }
 }

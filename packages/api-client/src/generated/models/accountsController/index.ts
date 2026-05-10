@@ -1,2 +1,2 @@
-export type { AccountsSignup200, AccountsSignup400, AccountsSignup400SeverityEnumKey, AccountsSignupMutation, AccountsSignupMutationRequest, AccountsSignupMutationResponse } from "./AccountsSignup";
-export { accountsSignup400SeverityEnum } from "./AccountsSignup";
+export type { Signup201, Signup400, Signup400SeverityEnumKey, SignupMutation, SignupMutationRequest, SignupMutationResponse } from "./Signup";
+export { signup400SeverityEnum } from "./Signup";

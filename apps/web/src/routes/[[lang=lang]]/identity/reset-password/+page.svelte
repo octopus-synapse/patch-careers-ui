@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createPasswordManagementAuthResetPassword, isApiError } from 'api-client';
+import { createPostV1AuthResetPassword, isApiError } from 'api-client';
 import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -11,7 +11,7 @@ let confirm = $state('');
 let error = $state<string | null>(null);
 let success = $state(false);
 
-const reset = createPasswordManagementAuthResetPassword({
+const reset = createPostV1AuthResetPassword({
   mutation: {
     onSuccess() {
       success = true;

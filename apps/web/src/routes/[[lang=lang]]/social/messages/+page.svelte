@@ -8,12 +8,12 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createChatConversationsGet,
-  createChatConversationsMessagesGet,
-  createChatConversationsMessagesPost,
-  createChatConversationsRead,
-  chatConversationsGetQueryKey,
-  chatConversationsMessagesGetQueryKey,
+  createGetV1ChatConversations,
+  createGetV1ChatConversationsConversationIdMessages,
+  createPostV1ChatConversationsConversationIdMessages,
+  createPostV1ChatConversationsConversationIdRead,
+  getV1ChatConversationsQueryKey,
+  getV1ChatConversationsConversationIdMessagesQueryKey,
 } from 'api-client';
 import { Loader } from 'ui';
 import { goto } from '$app/navigation';
@@ -76,8 +76,8 @@ function extractMessages(data: MessagesResponse | undefined): Message[] {
 }
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
-const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+const authenticated = $derived(auth.isAuthenticated);
+const currentUserId = $derived(String(auth.userId ?? ''));
 
 $effect(() => {
   if (!auth.isLoading && !authenticated) {
@@ -87,13 +87,13 @@ $effect(() => {
 
 const activeId = $derived($page.url.searchParams.get('c'));
 
-const conversations = createChatConversationsGet(
+const conversations = createGetV1ChatConversations(
   { limit: 50 },
   { query: { enabled: Boolean(authenticated) } },
 );
 const convList = $derived(extractConversations($conversations.data));
 
-const messages = createChatConversationsMessagesGet(
+const messages = createGetV1ChatConversationsConversationIdMessages(
   activeId ?? undefined,
   { limit: 100 },
   { query: { enabled: Boolean(activeId) } },
@@ -102,16 +102,16 @@ const msgList = $derived(extractMessages($messages.data));
 
 const queryClient = useQueryClient();
 
-const markRead = createChatConversationsRead();
-const sendMessage = createChatConversationsMessagesPost({
+const markRead = createPostV1ChatConversationsConversationIdRead();
+const sendMessage = createPostV1ChatConversationsConversationIdMessages({
   mutation: {
     onSuccess() {
       if (activeId) {
         queryClient.invalidateQueries({
-          queryKey: chatConversationsMessagesGetQueryKey(activeId, { limit: 100 }),
+          queryKey: getV1ChatConversationsConversationIdMessagesQueryKey(activeId, { limit: 100 }),
         });
         queryClient.invalidateQueries({
-          queryKey: chatConversationsGetQueryKey({ limit: 50 }),
+          queryKey: getV1ChatConversationsQueryKey({ limit: 50 }),
         });
       }
     },

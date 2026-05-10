@@ -1,17 +1,17 @@
-import { isApiError, type PagesMeDashboard200, pagesMeDashboard } from 'api-client';
+import { type GetV1PagesMeDashboard200, getV1PagesMeDashboard, isApiError } from 'api-client';
 import { browser } from '$app/environment';
 
-let cached = $state<PagesMeDashboard200 | null>(null);
+let cached = $state<GetV1PagesMeDashboard200 | null>(null);
 let loading = $state(false);
 let error = $state<string | null>(null);
 let fetchedAt = $state<number | null>(null);
 
-async function fetchMeDashboard(): Promise<PagesMeDashboard200 | null> {
+async function fetchMeDashboard(): Promise<GetV1PagesMeDashboard200 | null> {
   if (!browser) return null;
   loading = true;
   error = null;
   try {
-    cached = await pagesMeDashboard();
+    cached = await getV1PagesMeDashboard();
     fetchedAt = Date.now();
     return cached;
   } catch (err) {
@@ -46,7 +46,7 @@ export const meDashboard = {
    * Trigger a fetch. Idempotent within the staleness window — repeated
    * calls within 30s reuse the cached payload instead of round-tripping.
    */
-  async load(force = false): Promise<PagesMeDashboard200 | null> {
+  async load(force = false): Promise<GetV1PagesMeDashboard200 | null> {
     const STALE_MS = 30_000;
     if (!force && cached && fetchedAt && Date.now() - fetchedAt < STALE_MS) {
       return cached;

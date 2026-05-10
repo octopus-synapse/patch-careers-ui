@@ -3,11 +3,11 @@
 * Do not edit manually.
 */
 
-import { successStoriesCreate } from "./successStoriesCreate";
-import { successStoriesDelete } from "./successStoriesDelete";
-import { successStoriesList } from "./successStoriesList";
-import { successStoriesUpdate } from "./successStoriesUpdate";
+import { deleteV1SuccessStoriesId } from "./deleteV1SuccessStoriesId";
+import { getV1SuccessStories } from "./getV1SuccessStories";
+import { patchV1SuccessStoriesId } from "./patchV1SuccessStoriesId";
+import { postV1SuccessStories } from "./postV1SuccessStories";
 
 export function successStoriesController() {
-  return { successStoriesList, successStoriesCreate, successStoriesUpdate, successStoriesDelete }
+  return { getV1SuccessStories, postV1SuccessStories, deleteV1SuccessStoriesId, patchV1SuccessStoriesId }
 }

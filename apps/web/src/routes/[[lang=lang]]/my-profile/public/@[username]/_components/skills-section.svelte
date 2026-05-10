@@ -4,15 +4,16 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    createSkillEndorsementsUsersSkills,
-    skillEndorsementsUsersSkillsQueryKey,
-    skillEndorsementsUsersSkillsEndorseDelete,
-    skillEndorsementsUsersSkillsEndorsePost,
-    skillEndorsementsUsersSkillsEndorsers,
+    createGetV1UsersUserIdSkills,
+    getV1UsersUserIdSkillsQueryKey,
+    deleteV1UsersUserIdSkillsSkillEndorse,
+    postV1UsersUserIdSkillsSkillEndorse,
+    getV1UsersUserIdSkillsSkillEndorsersQueryKey,
+  getV1UsersUserIdSkillsSkillEndorsers,
   } from 'api-client';
   import type {
-    SkillEndorsementsUsersSkills200,
-    SkillEndorsementsUsersSkillsEndorsers200,
+    GetV1UsersUserIdSkills200,
+    GetV1UsersUserIdSkillsSkillEndorsers200,
   } from 'api-client';
   import { Check, Plus } from 'lucide-svelte';
   import { Avatar, Card, Skeleton } from 'ui';
@@ -28,18 +29,18 @@
 
   let { userId, isOwnProfile, viewerAuthenticated }: Props = $props();
 
-  type SkillSummary = SkillEndorsementsUsersSkills200['skills'][number];
-  type Endorser = SkillEndorsementsUsersSkillsEndorsers200['data'][number];
+  type SkillSummary = GetV1UsersUserIdSkills200['skills'][number];
+  type Endorser = GetV1UsersUserIdSkillsSkillEndorsers200['items'][number];
 
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
-  const query = createSkillEndorsementsUsersSkills(
+  const query = createGetV1UsersUserIdSkills(
     userId,
     { query: { enabled: browser && !!userId } },
   );
 
-  const skills = $derived($query.data?.skills);
+  const skills = $derived($query.data?.skills ?? []);
 
   let optimisticOverrides = $state<Record<string, { endorsedByMe: boolean; delta: number }>>({});
 
@@ -63,9 +64,9 @@
         [s.skill]: { endorsedByMe: false, delta: (optimisticOverrides[s.skill]?.delta ?? 0) - 1 },
       };
       try {
-        await skillEndorsementsUsersSkillsEndorseDelete(userId, skillEnc);
+        await deleteV1UsersUserIdSkillsSkillEndorse(userId, skillEnc);
         await queryClient.invalidateQueries({
-          queryKey: skillEndorsementsUsersSkillsQueryKey(userId),
+          queryKey: getV1UsersUserIdSkillsQueryKey(userId),
         });
       } catch (err) {
         const next = { ...optimisticOverrides };
@@ -79,9 +80,9 @@
         [s.skill]: { endorsedByMe: true, delta: (optimisticOverrides[s.skill]?.delta ?? 0) + 1 },
       };
       try {
-        await skillEndorsementsUsersSkillsEndorsePost(userId, skillEnc);
+        await postV1UsersUserIdSkillsSkillEndorse(userId, skillEnc);
         await queryClient.invalidateQueries({
-          queryKey: skillEndorsementsUsersSkillsQueryKey(userId),
+          queryKey: getV1UsersUserIdSkillsQueryKey(userId),
         });
       } catch (err) {
         const next = { ...optimisticOverrides };
@@ -100,12 +101,12 @@
     if (endorserCache[skill] || loadingEndorsers[skill]) return;
     loadingEndorsers = { ...loadingEndorsers, [skill]: true };
     try {
-      const res = await skillEndorsementsUsersSkillsEndorsers(
+      const res = await getV1UsersUserIdSkillsSkillEndorsers(
         userId,
         encodeURIComponent(skill),
-        { page: '1', limit: '8' },
+        { page: 1, limit: 8 },
       );
-      endorserCache = { ...endorserCache, [skill]: res.data };
+      endorserCache = { ...endorserCache, [skill]: res.items };
     } finally {
       loadingEndorsers = { ...loadingEndorsers, [skill]: false };
     }
@@ -130,7 +131,7 @@
         <Skeleton shape="rect" width="5rem" height="1.75rem" />
       {/each}
     </div>
-  {:else if !skills || skills.length === 0}
+  {:else if skills.length === 0}
     <p class="text-xs text-gray-500 dark:text-neutral-500">{t('network.skillsEmpty')}</p>
   {:else}
     <div class="flex flex-wrap gap-2">

@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { careerGraphView } from "./careerGraphView";
+import { postV1CareerGraphView } from "./postV1CareerGraphView";
 
 export function careerGraphController() {
-  return { careerGraphView }
+  return { postV1CareerGraphView }
 }

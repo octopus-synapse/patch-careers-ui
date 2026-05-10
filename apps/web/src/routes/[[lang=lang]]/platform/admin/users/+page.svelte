@@ -4,9 +4,10 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    createUsersManageGet,
-    usersManageGetQueryKey,
-    usersManageDelete,
+    createGetV1UsersManage,
+    getV1UsersManageQueryKey,
+    deleteV1UsersManageIdMutationKey,
+  deleteV1UsersManageId,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -22,7 +23,7 @@
   let search = $state('');
   let roleName = $state('');
 
-  const listQuery = createUsersManageGet(
+  const listQuery = createGetV1UsersManage(
     {
         page,
         limit,
@@ -32,17 +33,17 @@
     { query: { enabled: browser } },
   );
 
-  const users = $derived($listQuery.data?.users);
-  const totalPages = $derived($listQuery.data?.pagination.totalPages ?? 1);
+  const users = $derived($listQuery.data?.items);
+  const totalPages = $derived($listQuery.data?.totalPages ?? 1);
 
   let deleting = $state<string | null>(null);
   async function handleDelete(id: string) {
     if (!confirm(t('admin.users.confirmDelete'))) return;
     deleting = id;
     try {
-      await usersManageDelete(id);
+      await deleteV1UsersManageId(id);
       toastState.show(t('admin.users.toastDeleted'), 'success');
-      await queryClient.invalidateQueries({ queryKey: usersManageGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1UsersManageQueryKey() });
     } catch (err) {
       handleApiError(err);
     } finally {

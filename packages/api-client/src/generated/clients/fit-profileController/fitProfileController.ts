@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { fitProfileAnswers } from "./fitProfileAnswers";
-import { fitProfileJobsFitProfileGet } from "./fitProfileJobsFitProfileGet";
-import { fitProfileJobsFitProfilePost } from "./fitProfileJobsFitProfilePost";
-import { fitProfileMeDelete } from "./fitProfileMeDelete";
-import { fitProfileMeGet } from "./fitProfileMeGet";
-import { fitProfileQuestions } from "./fitProfileQuestions";
+import { deleteV1FitProfileMe } from "./deleteV1FitProfileMe";
+import { getV1FitProfileMe } from "./getV1FitProfileMe";
+import { getV1FitProfileQuestions } from "./getV1FitProfileQuestions";
+import { getV1JobsIdFitProfile } from "./getV1JobsIdFitProfile";
+import { postV1FitProfileAnswers } from "./postV1FitProfileAnswers";
+import { postV1JobsIdFitProfile } from "./postV1JobsIdFitProfile";
 
 export function fitProfileController() {
-  return { fitProfileMeGet, fitProfileMeDelete, fitProfileQuestions, fitProfileAnswers, fitProfileJobsFitProfileGet, fitProfileJobsFitProfilePost }
+  return { postV1FitProfileAnswers, deleteV1FitProfileMe, getV1FitProfileMe, getV1FitProfileQuestions, getV1JobsIdFitProfile, postV1JobsIdFitProfile }
 }

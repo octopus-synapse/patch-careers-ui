@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { userConsentAcceptConsent } from "./userConsentAcceptConsent";
-import { userConsentGetConsentHistory } from "./userConsentGetConsentHistory";
-import { userConsentGetConsentStatus } from "./userConsentGetConsentStatus";
+import { acceptConsent } from "./acceptConsent";
+import { getConsentHistory } from "./getConsentHistory";
+import { getConsentStatus } from "./getConsentStatus";
 
 export function userConsentController() {
-  return { userConsentAcceptConsent, userConsentGetConsentStatus, userConsentGetConsentHistory }
+  return { acceptConsent, getConsentHistory, getConsentStatus }
 }

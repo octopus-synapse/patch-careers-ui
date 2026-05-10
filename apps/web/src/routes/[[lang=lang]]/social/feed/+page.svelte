@@ -1,9 +1,9 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createFeedList,
-  createSocialConnectionsUsersMeConnectionsSuggestions,
-  feedListQueryKey,
+  createGetV1Feed,
+  createGetV1UsersMeConnectionsSuggestions,
+  getV1FeedQueryKey,
 } from 'api-client';
 import { Plus } from 'lucide-svelte';
 import { Tabs, ToastContainer } from 'ui';
@@ -27,8 +27,8 @@ const t = $derived(locale.t);
 
 // Auth
 const session = useAuth();
-const user = $derived(session.data?.user);
-const authenticated = $derived(session.data?.authenticated);
+const user = $derived(session.user);
+const authenticated = $derived(session.isAuthenticated);
 const currentUserId = $derived(String(user?.id ?? ''));
 const userName = $derived(String(user?.name ?? ''));
 const userPhoto: string | null = null;
@@ -68,7 +68,7 @@ function handleTabChange(value: string) {
   if (next === activeTab) return;
   activeTab = next;
   pagination.reset();
-  queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
 }
 
 // Modals
@@ -80,12 +80,12 @@ let repostTargetPost = $state<Record<string, unknown> | null>(null);
 
 const queryClient = useQueryClient();
 
-const suggestionsQuery = createSocialConnectionsUsersMeConnectionsSuggestions(
-  { limit: '20' },
+const suggestionsQuery = createGetV1UsersMeConnectionsSuggestions(
+  { limit: 20 },
   { query: { enabled: browser && authenticated } },
 );
 
-const feedSuggestions = $derived($suggestionsQuery.data?.suggestions.data ?? []);
+const feedSuggestions = $derived($suggestionsQuery.data?.items ?? []);
 
 // SDK envelope is `{posts, nextCursor}`; pagination util keys the array as
 // `items`, so we adapt at the boundary.
@@ -93,7 +93,7 @@ const pagination = useFeedPagination({
   getRawData: () => {
     const data = $feedQuery.data;
     if (!data) return undefined;
-    return { items: data.posts, nextCursor: data.nextCursor };
+    return { items: data.items, nextCursor: data.nextCursor };
   },
 });
 
@@ -131,7 +131,7 @@ const fitScoreByPostId = $derived.by<Record<string, PostFitScore>>(() => {
   return map;
 });
 
-const feedQuery = createFeedList(
+const feedQuery = createGetV1Feed(
   {
     cursor: pagination.cursor,
     limit: '20',
@@ -178,7 +178,7 @@ async function handleReportSubmit(reason: string) {
 function handlePostCreated() {
   showCreateModal = false;
   pagination.reset();
-  queryClient.invalidateQueries({ queryKey: feedListQueryKey() });
+  queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
 }
 </script>
 

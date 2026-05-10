@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { adminSpokenLanguagesCreate } from "./adminSpokenLanguagesCreate";
-import { adminSpokenLanguagesDelete } from "./adminSpokenLanguagesDelete";
-import { adminSpokenLanguagesGetById } from "./adminSpokenLanguagesGetById";
-import { adminSpokenLanguagesList } from "./adminSpokenLanguagesList";
-import { adminSpokenLanguagesUpdate } from "./adminSpokenLanguagesUpdate";
+import { deleteV1AdminSpokenLanguagesCode } from "./deleteV1AdminSpokenLanguagesCode";
+import { getV1AdminSpokenLanguages } from "./getV1AdminSpokenLanguages";
+import { getV1AdminSpokenLanguagesCode } from "./getV1AdminSpokenLanguagesCode";
+import { patchV1AdminSpokenLanguagesCode } from "./patchV1AdminSpokenLanguagesCode";
+import { postV1AdminSpokenLanguages } from "./postV1AdminSpokenLanguages";
 
 export function adminSpokenLanguagesController() {
-  return { adminSpokenLanguagesList, adminSpokenLanguagesCreate, adminSpokenLanguagesGetById, adminSpokenLanguagesUpdate, adminSpokenLanguagesDelete }
+  return { getV1AdminSpokenLanguages, postV1AdminSpokenLanguages, deleteV1AdminSpokenLanguagesCode, getV1AdminSpokenLanguagesCode, patchV1AdminSpokenLanguagesCode }
 }

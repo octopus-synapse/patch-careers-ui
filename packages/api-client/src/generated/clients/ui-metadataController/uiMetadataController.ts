@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { uiMetadataEnumsGet } from "./uiMetadataEnumsGet";
-import { uiMetadataEnumsGet2 } from "./uiMetadataEnumsGet2";
-import { uiMetadataMeMenu } from "./uiMetadataMeMenu";
+import { getV1Enums } from "./getV1Enums";
+import { getV1EnumsKey } from "./getV1EnumsKey";
+import { getV1MeMenu } from "./getV1MeMenu";
 
 export function uiMetadataController() {
-  return { uiMetadataEnumsGet, uiMetadataEnumsGet2, uiMetadataMeMenu }
+  return { getV1Enums, getV1EnumsKey, getV1MeMenu }
 }

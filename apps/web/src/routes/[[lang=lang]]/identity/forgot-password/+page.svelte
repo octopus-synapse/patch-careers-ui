@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createPasswordManagementAuthForgotPassword } from 'api-client';
+import { createPostV1AuthForgotPassword } from 'api-client';
 
 import { Button, Input, Label, Loader } from 'ui';
 
@@ -7,7 +7,7 @@ let email = $state('');
 let sent = $state(false);
 let error = $state<string | null>(null);
 
-const forgotPassword = createPasswordManagementAuthForgotPassword({
+const forgotPassword = createPostV1AuthForgotPassword({
   mutation: {
     onSuccess() {
       sent = true;

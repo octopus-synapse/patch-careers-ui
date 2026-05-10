@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { automationRageApply } from "./automationRageApply";
+import { postV1AutomationRageApply } from "./postV1AutomationRageApply";
 
 export function automationController() {
-  return { automationRageApply }
+  return { postV1AutomationRageApply }
 }

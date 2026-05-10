@@ -1,2 +1,2 @@
-export { adminTestRunnerCreate200Schema, adminTestRunnerCreate400Schema, adminTestRunnerCreate401Schema, adminTestRunnerCreate403Schema, adminTestRunnerCreateMutationRequestSchema, adminTestRunnerCreateMutationResponseSchema } from "./adminTestRunnerCreateSchema";
-export { adminTestRunnerSuites200Schema, adminTestRunnerSuites400Schema, adminTestRunnerSuites401Schema, adminTestRunnerSuites403Schema, adminTestRunnerSuitesQueryResponseSchema } from "./adminTestRunnerSuitesSchema";
+export { getV1AdminTestSuites200Schema, getV1AdminTestSuites400Schema, getV1AdminTestSuites401Schema, getV1AdminTestSuites403Schema, getV1AdminTestSuitesQueryResponseSchema } from "./getV1AdminTestSuitesSchema";
+export { postV1AdminTestRun201Schema, postV1AdminTestRun400Schema, postV1AdminTestRun401Schema, postV1AdminTestRun403Schema, postV1AdminTestRunMutationRequestSchema, postV1AdminTestRunMutationResponseSchema } from "./postV1AdminTestRunSchema";

@@ -1,3 +1,3 @@
-export type { AutomationRageApplyMutationKey } from "./createAutomationRageApply";
-export { automationRageApplyMutationKey } from "./createAutomationRageApply";
-export { createAutomationRageApply } from "./createAutomationRageApply";
+export type { PostV1AutomationRageApplyMutationKey } from "./createPostV1AutomationRageApply";
+export { createPostV1AutomationRageApply } from "./createPostV1AutomationRageApply";
+export { postV1AutomationRageApplyMutationKey } from "./createPostV1AutomationRageApply";

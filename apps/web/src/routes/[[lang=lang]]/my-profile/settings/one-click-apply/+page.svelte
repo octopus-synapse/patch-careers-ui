@@ -9,7 +9,7 @@
 // TODO(backend): expose `/v1/users/me/one-click-apply` GET/PUT in swagger so we
 // can drop the hand-rolled fetch below and consume the generated SDK. Until
 // then, this page stays on raw fetch with the canonical envelope shape.
-import { createResumesList } from 'api-client';
+import { createGetV1Resumes } from 'api-client';
 import { FileText, Zap } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Checkbox, Label, Loader, Radio, Select, Textarea, toastState } from 'ui';
@@ -37,7 +37,7 @@ const draft = useFormDraft<Preferences>('settings:one-click-apply', {
   alsoAttach: { githubUrl: true, linkedinUrl: true },
 });
 
-const resumesQuery = createResumesList(
+const resumesQuery = createGetV1Resumes(
   { page: '1', limit: '20' },
   { query: { enabled: browser } },
 );

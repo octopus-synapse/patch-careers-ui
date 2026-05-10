@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { metricsList } from "./metricsList";
+import { getMetrics } from "./getMetrics";
 
 export function metricsController() {
-  return { metricsList }
+  return { getMetrics }
 }

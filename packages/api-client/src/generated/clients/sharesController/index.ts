@@ -1,8 +1,8 @@
-export { sharesAliasesDelete } from "./sharesAliasesDelete";
-export { sharesAliasesGet } from "./sharesAliasesGet";
-export { sharesAliasesPost } from "./sharesAliasesPost";
+export { deleteV1SharesAliasesAliasId } from "./deleteV1SharesAliasesAliasId";
+export { deleteV1SharesShareId } from "./deleteV1SharesShareId";
+export { getV1SharesResumeResumeId } from "./getV1SharesResumeResumeId";
+export { getV1SharesShareIdAliases } from "./getV1SharesShareIdAliases";
+export { getV1SharesShareIdQrPng } from "./getV1SharesShareIdQrPng";
+export { postV1Shares } from "./postV1Shares";
+export { postV1SharesShareIdAliases } from "./postV1SharesShareIdAliases";
 export { sharesController } from "./sharesController";
-export { sharesCreate } from "./sharesCreate";
-export { sharesDelete } from "./sharesDelete";
-export { sharesQrPng } from "./sharesQrPng";
-export { sharesResume } from "./sharesResume";

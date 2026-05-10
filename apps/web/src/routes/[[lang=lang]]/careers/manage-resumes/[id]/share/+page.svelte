@@ -5,15 +5,16 @@
 -->
 <script lang="ts">
 import {
-  type SharesAliasesGet200,
-  type SharesResume200,
+  type GetV1SharesShareIdAliases200,
+  type GetV1SharesResumeResumeId200,
   isApiError,
-  sharesAliasesDelete,
-  sharesAliasesGet,
-  sharesAliasesPost,
-  sharesCreate,
-  sharesDelete,
-  sharesResume,
+  deleteV1SharesAliasesAliasId,
+  getV1SharesShareIdAliases,
+  getV1SharesShareIdAliasesQueryKey,
+  getV1SharesResumeResumeId,
+  postV1Shares,
+  postV1SharesShareIdAliases,
+  deleteV1SharesShareId,
 } from 'api-client';
 import { ChevronDown, ChevronRight, Copy, Download, Link as LinkIcon, Lock, Package, Plus, QrCode, Trash2 } from 'lucide-svelte';
 import QRCode from 'qrcode';
@@ -24,8 +25,8 @@ import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { locale } from '$lib/state/locale.svelte';
 
-type Share = SharesResume200['shares'][number];
-type Alias = SharesAliasesGet200['aliases'][number];
+type Share = GetV1SharesResumeResumeId200['shares'][number];
+type Alias = GetV1SharesShareIdAliases200['aliases'][number];
 
 const t = $derived(locale.t);
 
@@ -75,7 +76,7 @@ async function load() {
   if (!browser || !resumeId) return;
   loading = true;
   try {
-    const res = await sharesResume(resumeId);
+    const res = await getV1SharesResumeResumeId(resumeId);
     shares = res.shares;
   } catch (err) {
     handleApiError(err);
@@ -98,7 +99,7 @@ async function createShare() {
       exp.setDate(exp.getDate() + expiresInDays);
       body.expiresAt = exp.toISOString();
     }
-    await sharesCreate(body);
+    await postV1Shares(body);
     customSlug = '';
     password = '';
     expiresInDays = 30;
@@ -118,7 +119,7 @@ async function createShare() {
 async function revoke(id: string) {
   if (!confirm('Remover este link compartilhado? Os aliases vão junto.')) return;
   try {
-    await sharesDelete(id);
+    await deleteV1SharesShareId(id);
     shares = shares.filter((s) => s.id !== id);
     delete aliasesByShare[id];
     delete expandedShare[id];
@@ -143,7 +144,7 @@ async function loadAliases(shareId: string) {
   if (aliasLoading[shareId]) return;
   aliasLoading[shareId] = true;
   try {
-    const res = await sharesAliasesGet(shareId);
+    const res = await getV1SharesShareIdAliases(shareId);
     aliasesByShare[shareId] = res.aliases;
   } catch (err) {
     handleApiError(err);
@@ -163,7 +164,7 @@ async function addAlias(shareId: string) {
   const slug = (newAliasInput[shareId] ?? '').trim();
   if (!slug) return;
   try {
-    await sharesAliasesPost(shareId, { slug });
+    await postV1SharesShareIdAliases(shareId, { slug });
     newAliasInput[shareId] = '';
     await loadAliases(shareId);
     toastState.show(t('success.aliasAdded'), 'success');
@@ -175,7 +176,7 @@ async function addAlias(shareId: string) {
 async function removeAlias(shareId: string, aliasId: string) {
   if (!confirm('Remover este alias?')) return;
   try {
-    await sharesAliasesDelete(aliasId);
+    await deleteV1SharesAliasesAliasId(aliasId);
     aliasesByShare[shareId] = (aliasesByShare[shareId] ?? []).filter((a) => a.id !== aliasId);
   } catch (err) {
     handleApiError(err);

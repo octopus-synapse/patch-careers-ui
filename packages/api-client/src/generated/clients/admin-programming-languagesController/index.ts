@@ -1,6 +1,6 @@
 export { adminProgrammingLanguagesController } from "./adminProgrammingLanguagesController";
-export { adminProgrammingLanguagesCreate } from "./adminProgrammingLanguagesCreate";
-export { adminProgrammingLanguagesDelete } from "./adminProgrammingLanguagesDelete";
-export { adminProgrammingLanguagesGetById } from "./adminProgrammingLanguagesGetById";
-export { adminProgrammingLanguagesList } from "./adminProgrammingLanguagesList";
-export { adminProgrammingLanguagesUpdate } from "./adminProgrammingLanguagesUpdate";
+export { deleteV1AdminProgrammingLanguagesSlug } from "./deleteV1AdminProgrammingLanguagesSlug";
+export { getV1AdminProgrammingLanguages } from "./getV1AdminProgrammingLanguages";
+export { getV1AdminProgrammingLanguagesSlug } from "./getV1AdminProgrammingLanguagesSlug";
+export { patchV1AdminProgrammingLanguagesSlug } from "./patchV1AdminProgrammingLanguagesSlug";
+export { postV1AdminProgrammingLanguages } from "./postV1AdminProgrammingLanguages";

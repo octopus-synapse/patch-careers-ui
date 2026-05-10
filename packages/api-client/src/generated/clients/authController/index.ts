@@ -1,8 +1,8 @@
 export { authController } from "./authController";
-export { authListSessions } from "./authListSessions";
-export { authLogin } from "./authLogin";
-export { authLogout } from "./authLogout";
-export { authRefresh } from "./authRefresh";
-export { authRevokeSession } from "./authRevokeSession";
-export { authSession } from "./authSession";
-export { authVerify2Fa } from "./authVerify2Fa";
+export { listSessions } from "./listSessions";
+export { login } from "./login";
+export { logout } from "./logout";
+export { refresh } from "./refresh";
+export { revokeSession } from "./revokeSession";
+export { session } from "./session";
+export { verify2Fa } from "./verify2Fa";

@@ -1,1 +1,1 @@
-export { adminAlertsList200Schema, adminAlertsList400Schema, adminAlertsList401Schema, adminAlertsList403Schema, adminAlertsListQueryResponseSchema } from "./adminAlertsListSchema";
+export { getV1AdminAlerts200Schema, getV1AdminAlerts400Schema, getV1AdminAlerts401Schema, getV1AdminAlerts403Schema, getV1AdminAlertsQueryResponseSchema } from "./getV1AdminAlertsSchema";

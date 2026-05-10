@@ -4,10 +4,10 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    adminOnboardingStepsDelete,
-    createAdminOnboardingStepsGet,
-    createAdminOnboardingStats,
-    adminOnboardingStepsGetQueryKey,
+    deleteV1AdminOnboardingStepsKey,
+    createGetV1AdminOnboardingSteps,
+    createGetV1AdminOnboardingStats,
+    getV1AdminOnboardingStepsQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -19,10 +19,10 @@
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
-  const stepsQuery = createAdminOnboardingStepsGet({
+  const stepsQuery = createGetV1AdminOnboardingSteps({
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
-  const statsQuery = createAdminOnboardingStats({
+  const statsQuery = createGetV1AdminOnboardingStats({
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
 
@@ -33,9 +33,9 @@
   async function handleDelete(key: string) {
     deletingKey = key;
     try {
-      await adminOnboardingStepsDelete(key);
+      await deleteV1AdminOnboardingStepsKey(key);
       toastState.show('Step excluído', 'success');
-      await queryClient.invalidateQueries({ queryKey: adminOnboardingStepsGetQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1AdminOnboardingStepsQueryKey() });
     } catch (err) {
       handleApiError(err);
     } finally {

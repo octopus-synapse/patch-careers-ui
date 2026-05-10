@@ -1,4 +1,4 @@
-export type { ImportGithubParse200, ImportGithubParse400, ImportGithubParse400SeverityEnumKey, ImportGithubParse401, ImportGithubParse401SeverityEnumKey, ImportGithubParse403, ImportGithubParse403SeverityEnumKey, ImportGithubParseMutation, ImportGithubParseMutationRequest, ImportGithubParseMutationResponse } from "./ImportGithubParse";
-export { importGithubParse400SeverityEnum } from "./ImportGithubParse";
-export { importGithubParse401SeverityEnum } from "./ImportGithubParse";
-export { importGithubParse403SeverityEnum } from "./ImportGithubParse";
+export type { PostV1ImportGithubParse201, PostV1ImportGithubParse400, PostV1ImportGithubParse400SeverityEnumKey, PostV1ImportGithubParse401, PostV1ImportGithubParse401SeverityEnumKey, PostV1ImportGithubParse403, PostV1ImportGithubParse403SeverityEnumKey, PostV1ImportGithubParseMutation, PostV1ImportGithubParseMutationRequest, PostV1ImportGithubParseMutationResponse } from "./PostV1ImportGithubParse";
+export { postV1ImportGithubParse400SeverityEnum } from "./PostV1ImportGithubParse";
+export { postV1ImportGithubParse401SeverityEnum } from "./PostV1ImportGithubParse";
+export { postV1ImportGithubParse403SeverityEnum } from "./PostV1ImportGithubParse";

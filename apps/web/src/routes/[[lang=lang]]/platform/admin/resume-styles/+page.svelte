@@ -4,9 +4,9 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    adminResumeStylesDelete,
-    createResumeStylesList,
-    resumeStylesListQueryKey,
+    deleteV1AdminResumeStylesId,
+    createGetV1ResumeStyles,
+    getV1ResumeStylesQueryKey,
   } from 'api-client';
   import { Lock, Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -15,7 +15,7 @@
 
   const queryClient = useQueryClient();
 
-  const listQuery = createResumeStylesList(
+  const listQuery = createGetV1ResumeStyles(
     { page: '1', limit: '50' },
     { query: { enabled: browser } },
   );
@@ -26,10 +26,10 @@
   async function handleDelete(id: string) {
     deleting = id;
     try {
-      await adminResumeStylesDelete(id);
+      await deleteV1AdminResumeStylesId(id);
       toastState.show('Estilo excluído', 'success');
       await queryClient.invalidateQueries({
-        queryKey: resumeStylesListQueryKey({ page: '1', limit: '50' }),
+        queryKey: getV1ResumeStylesQueryKey({ page: '1', limit: '50' }),
       });
     } catch (err) {
       handleApiError(err);

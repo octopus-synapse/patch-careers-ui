@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { adminSectionTypesCreate } from "./adminSectionTypesCreate";
-import { adminSectionTypesDelete } from "./adminSectionTypesDelete";
-import { adminSectionTypesGetById } from "./adminSectionTypesGetById";
-import { adminSectionTypesList } from "./adminSectionTypesList";
-import { adminSectionTypesSemanticKinds } from "./adminSectionTypesSemanticKinds";
-import { adminSectionTypesUpdate } from "./adminSectionTypesUpdate";
+import { deleteV1AdminSectionTypesKey } from "./deleteV1AdminSectionTypesKey";
+import { getV1AdminSectionTypes } from "./getV1AdminSectionTypes";
+import { getV1AdminSectionTypesKey } from "./getV1AdminSectionTypesKey";
+import { getV1AdminSectionTypesSemanticKinds } from "./getV1AdminSectionTypesSemanticKinds";
+import { patchV1AdminSectionTypesKey } from "./patchV1AdminSectionTypesKey";
+import { postV1AdminSectionTypes } from "./postV1AdminSectionTypes";
 
 export function adminSectionTypesController() {
-  return { adminSectionTypesList, adminSectionTypesCreate, adminSectionTypesSemanticKinds, adminSectionTypesGetById, adminSectionTypesUpdate, adminSectionTypesDelete }
+  return { getV1AdminSectionTypes, postV1AdminSectionTypes, getV1AdminSectionTypesSemanticKinds, deleteV1AdminSectionTypesKey, getV1AdminSectionTypesKey, patchV1AdminSectionTypesKey }
 }

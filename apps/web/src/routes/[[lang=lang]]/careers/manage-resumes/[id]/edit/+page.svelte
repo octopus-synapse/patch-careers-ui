@@ -1,10 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createResumesGetById,
-  createResumesUpdate,
-  resumesGetByIdQueryKey,
-  type ResumesUpdateMutationRequest,
+  createGetV1ResumesResumeId,
+  createPatchV1ResumesResumeId,
+  getV1ResumesResumeIdQueryKey,
+  type PatchV1ResumesResumeIdMutationRequest,
 } from 'api-client';
 import { ArrowLeft, Save } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
@@ -20,7 +20,7 @@ const t = $derived(locale.t);
 const resumeId = $derived($page.params.id);
 const queryClient = useQueryClient();
 
-type ResumeForm = Required<Pick<ResumesUpdateMutationRequest,
+type ResumeForm = Required<Pick<PatchV1ResumesResumeIdMutationRequest,
   'title' | 'fullName' | 'jobTitle' | 'summary' | 'location' | 'phone' | 'linkedin' | 'github' | 'website'
 >>;
 
@@ -36,7 +36,7 @@ const draft = useFormDraft<ResumeForm>(() => `cv-${resumeId}`, {
   website: '',
 });
 
-const resumeQuery = createResumesGetById(resumeId, { query: { enabled: browser } });
+const resumeQuery = createGetV1ResumesResumeId(resumeId, { query: { enabled: browser } });
 
 // Auto-save banner state — relative 'há Ns' is updated by timeTicker elsewhere.
 let lastSavedAt = $state<number | null>(null);
@@ -45,13 +45,13 @@ let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
 let dirtyForAutoSave = $state(false);
 let hydrated = $state(false);
 
-const updateMutation = createResumesUpdate({
+const updateMutation = createPatchV1ResumesResumeId({
   mutation: {
     onSuccess: () => {
       lastSavedAt = Date.now();
       lastSaveError = false;
       dirtyForAutoSave = false;
-      queryClient.invalidateQueries({ queryKey: resumesGetByIdQueryKey(resumeId) });
+      queryClient.invalidateQueries({ queryKey: getV1ResumesResumeIdQueryKey(resumeId) });
     },
     onError: (err) => {
       lastSaveError = true;

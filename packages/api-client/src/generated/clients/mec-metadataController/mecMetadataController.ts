@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { mecMetadataAreas } from "./mecMetadataAreas";
-import { mecMetadataStats } from "./mecMetadataStats";
-import { mecMetadataUfs } from "./mecMetadataUfs";
+import { getV1MecAreas } from "./getV1MecAreas";
+import { getV1MecStats } from "./getV1MecStats";
+import { getV1MecUfs } from "./getV1MecUfs";
 
 export function mecMetadataController() {
-  return { mecMetadataUfs, mecMetadataAreas, mecMetadataStats }
+  return { getV1MecAreas, getV1MecStats, getV1MecUfs }
 }

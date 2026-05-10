@@ -1,4 +1,4 @@
-export { userConsentAcceptConsent } from "./userConsentAcceptConsent";
+export { acceptConsent } from "./acceptConsent";
+export { getConsentHistory } from "./getConsentHistory";
+export { getConsentStatus } from "./getConsentStatus";
 export { userConsentController } from "./userConsentController";
-export { userConsentGetConsentHistory } from "./userConsentGetConsentHistory";
-export { userConsentGetConsentStatus } from "./userConsentGetConsentStatus";

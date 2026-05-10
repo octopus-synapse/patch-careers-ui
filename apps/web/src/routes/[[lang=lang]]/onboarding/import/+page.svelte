@@ -7,8 +7,8 @@
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
   getBaseUrl,
-  resumeImportResumesImportsGithub,
-  resumeImportResumesImportsLinkedin,
+  postV1ResumesImportsGithub,
+  postV1ResumesImportsLinkedin,
 } from 'api-client';
 import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
 import { Button, Loader, toastState } from 'ui';
@@ -26,7 +26,7 @@ let pdfError = $state<string | null>(null);
 async function importGitHub() {
   githubLoading = true;
   try {
-    const res = await resumeImportResumesImportsGithub();
+    const res = await postV1ResumesImportsGithub();
     toastState.show(
       `Importado: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts de build.`,
       'success',
@@ -41,7 +41,7 @@ async function importGitHub() {
 async function importLinkedIn() {
   linkedinLoading = true;
   try {
-    await resumeImportResumesImportsLinkedin();
+    await postV1ResumesImportsLinkedin();
     toastState.show('LinkedIn importado.', 'success');
   } catch {
     // Endpoint returns 503 "not implemented yet".

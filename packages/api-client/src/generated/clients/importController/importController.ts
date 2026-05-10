@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { importGithubParse } from "./importGithubParse";
+import { postV1ImportGithubParse } from "./postV1ImportGithubParse";
 
 export function importController() {
-  return { importGithubParse }
+  return { postV1ImportGithubParse }
 }

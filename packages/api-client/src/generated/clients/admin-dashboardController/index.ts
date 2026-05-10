@@ -1,2 +1,2 @@
 export { adminDashboardController } from "./adminDashboardController";
-export { adminDashboardMetrics } from "./adminDashboardMetrics";
+export { getV1AdminDashboardMetrics } from "./getV1AdminDashboardMetrics";

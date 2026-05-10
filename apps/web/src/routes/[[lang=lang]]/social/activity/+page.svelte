@@ -3,24 +3,24 @@
   current user follows (plus their own). Uses createActivityGetFeed.
 -->
 <script lang="ts">
-import { createSocialActivityUsersFeed, type SocialActivityUsersFeed200 } from 'api-client';
+import { createGetV1UsersUserIdActivities, type GetV1UsersUserIdActivities200 } from 'api-client';
 import { Award, FileText, Palette, Sparkles, UserPlus } from 'lucide-svelte';
 import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
 
 const auth = useAuth();
-const viewerId = $derived(String(auth.data?.user?.id ?? ''));
+const viewerId = $derived(String(auth.userId ?? ''));
 
-type ActivityItem = SocialActivityUsersFeed200['feed']['data'][number];
+type ActivityItem = GetV1UsersUserIdActivities200['items'][number];
 
-const feed = createSocialActivityUsersFeed(
+const feed = createGetV1UsersUserIdActivities(
   viewerId,
   {},
   { query: { enabled: browser && viewerId !== '' } },
 );
 
-const activities = $derived($feed.data?.feed.data);
+const activities = $derived($feed.data?.items);
 
 function iconFor(type: ActivityItem['type']) {
   if (type.startsWith('RESUME')) return FileText;

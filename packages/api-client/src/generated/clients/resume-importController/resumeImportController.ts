@@ -3,16 +3,16 @@
 * Do not edit manually.
 */
 
-import { resumeImportResumesImportsDelete } from "./resumeImportResumesImportsDelete";
-import { resumeImportResumesImportsGet } from "./resumeImportResumesImportsGet";
-import { resumeImportResumesImportsGet2 } from "./resumeImportResumesImportsGet2";
-import { resumeImportResumesImportsGithub } from "./resumeImportResumesImportsGithub";
-import { resumeImportResumesImportsJson } from "./resumeImportResumesImportsJson";
-import { resumeImportResumesImportsLinkedin } from "./resumeImportResumesImportsLinkedin";
-import { resumeImportResumesImportsParse } from "./resumeImportResumesImportsParse";
-import { resumeImportResumesImportsPdf } from "./resumeImportResumesImportsPdf";
-import { resumeImportResumesImportsRetry } from "./resumeImportResumesImportsRetry";
+import { deleteV1ResumesImportsImportId } from "./deleteV1ResumesImportsImportId";
+import { getV1ResumesImports } from "./getV1ResumesImports";
+import { getV1ResumesImportsImportId } from "./getV1ResumesImportsImportId";
+import { postV1ResumesImportsGithub } from "./postV1ResumesImportsGithub";
+import { postV1ResumesImportsImportIdRetry } from "./postV1ResumesImportsImportIdRetry";
+import { postV1ResumesImportsJson } from "./postV1ResumesImportsJson";
+import { postV1ResumesImportsLinkedin } from "./postV1ResumesImportsLinkedin";
+import { postV1ResumesImportsParse } from "./postV1ResumesImportsParse";
+import { postV1ResumesImportsPdf } from "./postV1ResumesImportsPdf";
 
 export function resumeImportController() {
-  return { resumeImportResumesImportsLinkedin, resumeImportResumesImportsJson, resumeImportResumesImportsParse, resumeImportResumesImportsGet, resumeImportResumesImportsDelete, resumeImportResumesImportsGet2, resumeImportResumesImportsRetry, resumeImportResumesImportsPdf, resumeImportResumesImportsGithub }
+  return { getV1ResumesImports, postV1ResumesImportsGithub, postV1ResumesImportsJson, postV1ResumesImportsLinkedin, postV1ResumesImportsParse, postV1ResumesImportsPdf, deleteV1ResumesImportsImportId, getV1ResumesImportsImportId, postV1ResumesImportsImportIdRetry }
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { searchGlobal } from 'api-client';
-import type { SearchGlobal200 } from 'api-client';
+import { getV1SearchGlobal } from 'api-client';
+import type { GetV1SearchGlobal200 } from 'api-client';
 import {
   Briefcase,
   FileText,
@@ -40,7 +40,7 @@ type Action = {
   run: () => void;
 };
 
-type GlobalSearchGroup = SearchGlobal200['groups'][number];
+type GlobalSearchGroup = GetV1SearchGlobal200['groups'][number];
 type GlobalSearchItem = GlobalSearchGroup['items'][number];
 
 const quickActions: Action[] = [
@@ -118,7 +118,7 @@ $effect(() => {
   searching = true;
   debounceTimer = setTimeout(async () => {
     try {
-      const res = await searchGlobal({ q: trimmed, limit: 20 });
+      const res = await getV1SearchGlobal({ q: trimmed, limit: 20 });
       groups = res.groups;
     } catch {
       groups = [];

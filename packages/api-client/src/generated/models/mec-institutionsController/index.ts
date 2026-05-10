@@ -1,8 +1,10 @@
-export type { MecInstitutionsCourses200, MecInstitutionsCourses400, MecInstitutionsCourses400SeverityEnumKey, MecInstitutionsCoursesPathParams, MecInstitutionsCoursesQuery, MecInstitutionsCoursesQueryResponse } from "./MecInstitutionsCourses";
-export type { MecInstitutionsGetById200, MecInstitutionsGetById400, MecInstitutionsGetById400SeverityEnumKey, MecInstitutionsGetByIdPathParams, MecInstitutionsGetByIdQuery, MecInstitutionsGetByIdQueryResponse } from "./MecInstitutionsGetById";
-export type { MecInstitutionsList200, MecInstitutionsList400, MecInstitutionsList400SeverityEnumKey, MecInstitutionsListQuery, MecInstitutionsListQueryParams, MecInstitutionsListQueryResponse } from "./MecInstitutionsList";
-export type { MecInstitutionsSearch200, MecInstitutionsSearch400, MecInstitutionsSearch400SeverityEnumKey, MecInstitutionsSearchQuery, MecInstitutionsSearchQueryParams, MecInstitutionsSearchQueryResponse } from "./MecInstitutionsSearch";
-export { mecInstitutionsCourses400SeverityEnum } from "./MecInstitutionsCourses";
-export { mecInstitutionsGetById400SeverityEnum } from "./MecInstitutionsGetById";
-export { mecInstitutionsList400SeverityEnum } from "./MecInstitutionsList";
-export { mecInstitutionsSearch400SeverityEnum } from "./MecInstitutionsSearch";
+export type { GetV1MecInstitutions200, GetV1MecInstitutions400, GetV1MecInstitutions400SeverityEnumKey, GetV1MecInstitutionsQuery, GetV1MecInstitutionsQueryParams, GetV1MecInstitutionsQueryResponse } from "./GetV1MecInstitutions";
+export type { GetV1MecInstitutionsCodigoIes200, GetV1MecInstitutionsCodigoIes400, GetV1MecInstitutionsCodigoIes400SeverityEnumKey, GetV1MecInstitutionsCodigoIes404, GetV1MecInstitutionsCodigoIes404SeverityEnumKey, GetV1MecInstitutionsCodigoIesPathParams, GetV1MecInstitutionsCodigoIesQuery, GetV1MecInstitutionsCodigoIesQueryResponse } from "./GetV1MecInstitutionsCodigoIes";
+export type { GetV1MecInstitutionsCodigoIesCourses200, GetV1MecInstitutionsCodigoIesCourses400, GetV1MecInstitutionsCodigoIesCourses400SeverityEnumKey, GetV1MecInstitutionsCodigoIesCourses404, GetV1MecInstitutionsCodigoIesCourses404SeverityEnumKey, GetV1MecInstitutionsCodigoIesCoursesPathParams, GetV1MecInstitutionsCodigoIesCoursesQuery, GetV1MecInstitutionsCodigoIesCoursesQueryResponse } from "./GetV1MecInstitutionsCodigoIesCourses";
+export type { GetV1MecInstitutionsSearch200, GetV1MecInstitutionsSearch400, GetV1MecInstitutionsSearch400SeverityEnumKey, GetV1MecInstitutionsSearchQuery, GetV1MecInstitutionsSearchQueryParams, GetV1MecInstitutionsSearchQueryResponse } from "./GetV1MecInstitutionsSearch";
+export { getV1MecInstitutions400SeverityEnum } from "./GetV1MecInstitutions";
+export { getV1MecInstitutionsCodigoIes400SeverityEnum } from "./GetV1MecInstitutionsCodigoIes";
+export { getV1MecInstitutionsCodigoIes404SeverityEnum } from "./GetV1MecInstitutionsCodigoIes";
+export { getV1MecInstitutionsCodigoIesCourses400SeverityEnum } from "./GetV1MecInstitutionsCodigoIesCourses";
+export { getV1MecInstitutionsCodigoIesCourses404SeverityEnum } from "./GetV1MecInstitutionsCodigoIesCourses";
+export { getV1MecInstitutionsSearch400SeverityEnum } from "./GetV1MecInstitutionsSearch";

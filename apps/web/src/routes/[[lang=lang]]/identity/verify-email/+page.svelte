@@ -1,11 +1,11 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createEmailVerificationAuthEmailVerificationResendStatus,
-  createEmailVerificationAuthEmailVerificationSend,
-  createEmailVerificationVerify,
-  authSessionQueryKey,
-  emailVerificationAuthEmailVerificationResendStatusQueryKey,
+  createGetV1AuthEmailVerificationResendStatus,
+  createPostV1AuthEmailVerificationSend,
+  createVerify,
+  sessionQueryKey,
+  postV1AuthEmailVerificationSendMutationKey,
   isApiError,
 } from 'api-client';
 import { CheckCircle2, Mail } from 'lucide-svelte';
@@ -26,13 +26,13 @@ const CODE_LENGTH = 6;
 const tokenFromUrl = $derived($page.url.searchParams.get('token') ?? '');
 
 const session = useAuth();
-const authenticated = $derived(session.data?.authenticated);
-const email = $derived(session.data?.user?.email ?? '');
-const needsEmailVerification = $derived(Boolean(session.data?.user?.needsEmailVerification));
+const authenticated = $derived(session.isAuthenticated);
+const email = $derived(session.user?.email ?? '');
+const needsEmailVerification = $derived(Boolean(session.needsEmailVerification));
 
 // Resend cooldown is owned by the backend — the UI just mirrors it so the
 // countdown survives page reloads.
-const resendStatus = createEmailVerificationAuthEmailVerificationResendStatus({
+const resendStatus = createGetV1AuthEmailVerificationResendStatus({
   query: { retry: false, enabled: browser && authenticated === true, refetchOnWindowFocus: false },
 });
 
@@ -44,7 +44,7 @@ let cooldownRemaining = $state(0);
 let cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
 async function leaveVerifyScreen() {
-  await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
+  await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
   goto('/onboarding/start');
 }
 
@@ -57,7 +57,7 @@ function isAlreadyVerified(err: unknown): boolean {
 
 let verifiedOnce = $state(false);
 
-const verifyEmail = createEmailVerificationVerify({
+const verifyEmail = createVerify({
   mutation: {
     async onSuccess() {
       verifiedOnce = true;
@@ -80,7 +80,7 @@ const verifyEmail = createEmailVerificationVerify({
   },
 });
 
-const sendVerification = createEmailVerificationAuthEmailVerificationSend({
+const sendVerification = createPostV1AuthEmailVerificationSend({
   mutation: {
     async onError(err: unknown) {
       if (isAlreadyVerified(err)) {
@@ -174,7 +174,7 @@ function handleResend() {
         startCooldown(response.cooldown.secondsUntilResendAllowed);
       }
       queryClient.invalidateQueries({
-        queryKey: emailVerificationAuthEmailVerificationResendStatusQueryKey(),
+        queryKey: postV1AuthEmailVerificationSendMutationKey(),
       });
     },
   });

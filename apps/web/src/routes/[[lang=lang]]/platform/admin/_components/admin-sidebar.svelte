@@ -13,7 +13,7 @@ let { currentPath }: Props = $props();
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated ?? false);
+const authenticated = $derived(auth.isAuthenticated ?? false);
 const flags = useFeatureFlags(() => ({ authenticated }));
 
 const items = $derived(

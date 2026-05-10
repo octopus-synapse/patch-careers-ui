@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { resumeTailorResumesDiff } from "./resumeTailorResumesDiff";
-import { resumeTailorResumesTailor } from "./resumeTailorResumesTailor";
-import { resumeTailorResumesTailoredVersions } from "./resumeTailorResumesTailoredVersions";
+import { getV1ResumesResumeIdDiff } from "./getV1ResumesResumeIdDiff";
+import { getV1ResumesResumeIdTailoredVersions } from "./getV1ResumesResumeIdTailoredVersions";
+import { postV1ResumesResumeIdTailor } from "./postV1ResumesResumeIdTailor";
 
 export function resumeTailorController() {
-  return { resumeTailorResumesTailoredVersions, resumeTailorResumesDiff, resumeTailorResumesTailor }
+  return { getV1ResumesResumeIdDiff, postV1ResumesResumeIdTailor, getV1ResumesResumeIdTailoredVersions }
 }

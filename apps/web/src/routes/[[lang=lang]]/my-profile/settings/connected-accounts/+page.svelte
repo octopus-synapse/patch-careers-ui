@@ -1,5 +1,5 @@
 <script lang="ts">
-import { authOauthAvailable } from 'api-client';
+import { getV1AuthOauthAvailableProvider } from 'api-client';
 import { Github, Linkedin } from 'lucide-svelte';
 import { onMount } from 'svelte';
 
@@ -9,8 +9,8 @@ let loading = $state(true);
 onMount(async () => {
   try {
     const [gh, li] = await Promise.all([
-      authOauthAvailable('github'),
-      authOauthAvailable('linkedin'),
+      getV1AuthOauthAvailableProvider('github'),
+      getV1AuthOauthAvailableProvider('linkedin'),
     ]);
     providers = { github: gh.available, linkedin: li.available };
   } finally {

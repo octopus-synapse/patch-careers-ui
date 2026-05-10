@@ -1,0 +1,1 @@
+{"type":"string","minLength":2,"maxLength":100,"description":"Full name (2-100 characters). Trimmed on submit.","example":"Fixture User","x-readme-ref-name":"FullName"}

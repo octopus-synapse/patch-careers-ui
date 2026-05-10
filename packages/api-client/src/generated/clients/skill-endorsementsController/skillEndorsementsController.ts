@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { skillEndorsementsUsersMeSkills } from "./skillEndorsementsUsersMeSkills";
-import { skillEndorsementsUsersSkills } from "./skillEndorsementsUsersSkills";
-import { skillEndorsementsUsersSkillsEndorseDelete } from "./skillEndorsementsUsersSkillsEndorseDelete";
-import { skillEndorsementsUsersSkillsEndorsePost } from "./skillEndorsementsUsersSkillsEndorsePost";
-import { skillEndorsementsUsersSkillsEndorsers } from "./skillEndorsementsUsersSkillsEndorsers";
+import { deleteV1UsersUserIdSkillsSkillEndorse } from "./deleteV1UsersUserIdSkillsSkillEndorse";
+import { getV1UsersMeSkills } from "./getV1UsersMeSkills";
+import { getV1UsersUserIdSkills } from "./getV1UsersUserIdSkills";
+import { getV1UsersUserIdSkillsSkillEndorsers } from "./getV1UsersUserIdSkillsSkillEndorsers";
+import { postV1UsersUserIdSkillsSkillEndorse } from "./postV1UsersUserIdSkillsSkillEndorse";
 
 export function skillEndorsementsController() {
-  return { skillEndorsementsUsersMeSkills, skillEndorsementsUsersSkills, skillEndorsementsUsersSkillsEndorsePost, skillEndorsementsUsersSkillsEndorseDelete, skillEndorsementsUsersSkillsEndorsers }
+  return { getV1UsersMeSkills, getV1UsersUserIdSkills, deleteV1UsersUserIdSkillsSkillEndorse, postV1UsersUserIdSkillsSkillEndorse, getV1UsersUserIdSkillsSkillEndorsers }
 }

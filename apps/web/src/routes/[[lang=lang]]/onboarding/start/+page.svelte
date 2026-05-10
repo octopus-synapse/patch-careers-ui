@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createAuthOauthAvailable, getBaseUrl } from 'api-client';
+import { createGetV1AuthOauthAvailableProvider, getBaseUrl } from 'api-client';
 import { ArrowRight, Clock, FileUp, Github, Linkedin, PencilLine } from 'lucide-svelte';
 import { Badge, Button, Loader, Modal, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -10,7 +10,7 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 
 const session = useAuth();
-const authenticated = $derived(session.data?.authenticated);
+const authenticated = $derived(session.isAuthenticated);
 
 $effect(() => {
   if (!session.isLoading && !authenticated) {
@@ -20,11 +20,11 @@ $effect(() => {
 
 // Ask the backend whether each provider is wired (CLIENT_ID/SECRET present).
 // Keeps the cards in a truthful state without us hardcoding flags.
-const githubAvailability = createAuthOauthAvailable(
+const githubAvailability = createGetV1AuthOauthAvailableProvider(
   'github',
   { query: { enabled: browser } },
 );
-const linkedinAvailability = createAuthOauthAvailable(
+const linkedinAvailability = createGetV1AuthOauthAvailableProvider(
   'linkedin',
   { query: { enabled: browser } },
 );

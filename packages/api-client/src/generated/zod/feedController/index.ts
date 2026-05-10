@@ -1,3 +1,3 @@
-export { feedBookmarks200Schema, feedBookmarks400Schema, feedBookmarks401Schema, feedBookmarks403Schema, feedBookmarksQueryParamsSchema, feedBookmarksQueryResponseSchema } from "./feedBookmarksSchema";
-export { feedList200Schema, feedList400Schema, feedList401Schema, feedList403Schema, feedListQueryParamsSchema, feedListQueryResponseSchema } from "./feedListSchema";
-export { feedUser200Schema, feedUser400Schema, feedUser401Schema, feedUser403Schema, feedUser404Schema, feedUserPathParamsSchema, feedUserQueryParamsSchema, feedUserQueryResponseSchema } from "./feedUserSchema";
+export { getV1FeedBookmarks200Schema, getV1FeedBookmarks400Schema, getV1FeedBookmarks401Schema, getV1FeedBookmarks403Schema, getV1FeedBookmarksQueryParamsSchema, getV1FeedBookmarksQueryResponseSchema } from "./getV1FeedBookmarksSchema";
+export { getV1Feed200Schema, getV1Feed400Schema, getV1Feed401Schema, getV1Feed403Schema, getV1FeedQueryParamsSchema, getV1FeedQueryResponseSchema } from "./getV1FeedSchema";
+export { getV1FeedUserUserId200Schema, getV1FeedUserUserId400Schema, getV1FeedUserUserId401Schema, getV1FeedUserUserId403Schema, getV1FeedUserUserId404Schema, getV1FeedUserUserIdPathParamsSchema, getV1FeedUserUserIdQueryParamsSchema, getV1FeedUserUserIdQueryResponseSchema } from "./getV1FeedUserUserIdSchema";

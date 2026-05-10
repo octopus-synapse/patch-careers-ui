@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { badgesMe } from "./badgesMe";
-import { badgesUser } from "./badgesUser";
+import { getV1BadgesMe } from "./getV1BadgesMe";
+import { getV1BadgesUserUserId } from "./getV1BadgesUserUserId";
 
 export function badgesController() {
-  return { badgesMe, badgesUser }
+  return { getV1BadgesMe, getV1BadgesUserUserId }
 }

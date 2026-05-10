@@ -2,7 +2,7 @@
   /**
    * Admin home — burra: chama SDK e renderiza StatCards.
    */
-  import { createAdminDashboardMetrics } from 'api-client';
+  import { createGetV1AdminDashboardMetrics } from 'api-client';
   import {
     CalendarPlus,
     Eye,
@@ -20,7 +20,7 @@
 
   const t = $derived(locale.t);
 
-  const metricsQuery = createAdminDashboardMetrics({
+  const metricsQuery = createGetV1AdminDashboardMetrics({
       query: { enabled: browser, refetchInterval: 30_000 },
     });
 

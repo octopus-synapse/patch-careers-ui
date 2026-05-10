@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { adminAccessModifiersUsersAccessModifiersDelete } from "./adminAccessModifiersUsersAccessModifiersDelete";
-import { adminAccessModifiersUsersAccessModifiersGet } from "./adminAccessModifiersUsersAccessModifiersGet";
-import { adminAccessModifiersUsersAccessModifiersPost } from "./adminAccessModifiersUsersAccessModifiersPost";
+import { deleteV1AdminUsersUserIdAccessModifiersModifierId } from "./deleteV1AdminUsersUserIdAccessModifiersModifierId";
+import { getV1AdminUsersUserIdAccessModifiers } from "./getV1AdminUsersUserIdAccessModifiers";
+import { postV1AdminUsersUserIdAccessModifiers } from "./postV1AdminUsersUserIdAccessModifiers";
 
 export function adminAccessModifiersController() {
-  return { adminAccessModifiersUsersAccessModifiersPost, adminAccessModifiersUsersAccessModifiersGet, adminAccessModifiersUsersAccessModifiersDelete }
+  return { getV1AdminUsersUserIdAccessModifiers, postV1AdminUsersUserIdAccessModifiers, deleteV1AdminUsersUserIdAccessModifiersModifierId }
 }

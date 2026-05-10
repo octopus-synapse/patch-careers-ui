@@ -1,11 +1,11 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createUsersPreferencesFullGet,
-  createUsersPreferencesFullPatch,
-  usersPreferencesFullGetQueryKey,
+  createGetV1UsersPreferencesFull,
+  createPatchV1UsersPreferencesFull,
+  getV1UsersPreferencesFullQueryKey,
 } from 'api-client';
-import type { UsersPreferencesFullPatchMutationRequestApplyModeEnumKey } from 'api-client';
+import type { PatchV1UsersPreferencesFullMutationRequestApplyModeEnumKey } from 'api-client';
 import {
   ArrowRight,
   CalendarCheck,
@@ -24,7 +24,7 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.isAuthenticated);
 
 $effect(() => {
   if (!auth.isLoading && !authenticated) {
@@ -34,18 +34,18 @@ $effect(() => {
 
 const queryClient = useQueryClient();
 
-const preferencesQuery = createUsersPreferencesFullGet({
+const preferencesQuery = createGetV1UsersPreferencesFull({
   query: { enabled: browser && authenticated },
 });
 
-type ModeKey = UsersPreferencesFullPatchMutationRequestApplyModeEnumKey;
+type ModeKey = PatchV1UsersPreferencesFullMutationRequestApplyModeEnumKey;
 
 const currentMode = $derived<ModeKey>($preferencesQuery.data?.preferences.applyMode ?? 'ONE_CLICK');
 
-const updateMutation = createUsersPreferencesFullPatch({
+const updateMutation = createPatchV1UsersPreferencesFull({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: usersPreferencesFullGetQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1UsersPreferencesFullQueryKey() });
     },
     onError() {
       toastState.show('Failed to update preferences', 'danger');

@@ -1,14 +1,14 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createNotificationsList,
-  createNotificationsMarkRead,
-  notificationsListQueryKey,
-  notificationsUnreadCountQueryKey,
-  notificationsList,
-  notificationsMarkRead,
-  type NotificationsList200,
+  createGetV1Notifications,
+  createPostV1NotificationsMarkRead,
+  getV1NotificationsQueryKey,
+  getV1NotificationsUnreadCountQueryKey,
+  postV1NotificationsMarkRead,
+  getV1Notifications,
 } from 'api-client';
+import type { GetV1Notifications200 } from 'api-client';
 import { Bell } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Avatar, Button, EmptyState, Skeleton, Tabs, toastState } from 'ui';
@@ -32,11 +32,11 @@ import { useSseSubscribe } from '$lib/state/use-sse-subscribe.svelte';
  */
 type TabKey = 'all' | 'connections' | 'engagement';
 
-type NotificationItem = NotificationsList200['data'][number];
+type NotificationItem = GetV1Notifications200['items'][number];
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.isAuthenticated);
 
 let activeTab = $state<TabKey>('all');
 const tabs = $derived([
@@ -47,7 +47,7 @@ const tabs = $derived([
 
 const CONNECTION_TYPES = new Set(['CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW']);
 
-const initialQuery = createNotificationsList(
+const initialQuery = createGetV1Notifications(
   { limit: '20' },
   { query: { enabled: browser && authenticated } },
 );
@@ -58,7 +58,7 @@ let loadingMore = $state(false);
 
 const firstPage = $derived($initialQuery.data);
 const all = $derived.by<NotificationItem[]>(() => {
-  const head = firstPage ? firstPage.data : [];
+  const head = firstPage ? firstPage.items : [];
   return [...head, ...extra];
 });
 
@@ -73,7 +73,7 @@ const queryClient = useQueryClient();
 // svelte-ignore state_referenced_locally
 useSseSubscribe('/v1/notifications/subscribe', {
   queryClient,
-  invalidateKeys: [notificationsListQueryKey({ limit: '20' }), notificationsUnreadCountQueryKey()],
+  invalidateKeys: [getV1NotificationsQueryKey({ limit: '20' }), getV1NotificationsUnreadCountQueryKey()],
   enabled: authenticated,
 });
 
@@ -82,19 +82,19 @@ async function loadMore() {
   if (loadingMore || !next) return;
   loadingMore = true;
   try {
-    const res = await notificationsList({ cursor: next, limit: '20' });
-    extra = [...extra, ...res.data];
+    const res = await getV1Notifications({ cursor: next, limit: '20' });
+    extra = [...extra, ...res.items];
     cursor = res.nextCursor;
   } finally {
     loadingMore = false;
   }
 }
 
-const markReadMutation = createNotificationsMarkRead({
+const markReadMutation = createPostV1NotificationsMarkRead({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: notificationsListQueryKey({ limit: '20' }) });
-      queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getV1NotificationsQueryKey({ limit: '20' }) });
+      queryClient.invalidateQueries({ queryKey: getV1NotificationsUnreadCountQueryKey() });
       extra = extra.map((n) => ({ ...n, read: true }));
       track('notifications_mark_all_read');
     },
@@ -106,12 +106,12 @@ const markReadMutation = createNotificationsMarkRead({
 
 async function markOne(id: string) {
   try {
-    await notificationsMarkRead({ notificationId: id });
+    await postV1NotificationsMarkRead({ notificationId: id });
     extra = extra.map((n) => (n.id === id ? { ...n, read: true } : n));
     queryClient.invalidateQueries({
-      queryKey: notificationsListQueryKey({ limit: '20' }),
+      queryKey: getV1NotificationsQueryKey({ limit: '20' }),
     });
-    queryClient.invalidateQueries({ queryKey: notificationsUnreadCountQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getV1NotificationsUnreadCountQueryKey() });
   } catch {
     toastState.show(t('notifications.errorMarkRead'), 'danger');
   }

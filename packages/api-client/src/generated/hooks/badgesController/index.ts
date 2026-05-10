@@ -1,8 +1,8 @@
-export type { BadgesMeQueryKey } from "./createBadgesMe";
-export type { BadgesUserQueryKey } from "./createBadgesUser";
-export { badgesMeQueryKey } from "./createBadgesMe";
-export { badgesMeQueryOptions } from "./createBadgesMe";
-export { createBadgesMe } from "./createBadgesMe";
-export { badgesUserQueryKey } from "./createBadgesUser";
-export { badgesUserQueryOptions } from "./createBadgesUser";
-export { createBadgesUser } from "./createBadgesUser";
+export type { GetV1BadgesMeQueryKey } from "./createGetV1BadgesMe";
+export type { GetV1BadgesUserUserIdQueryKey } from "./createGetV1BadgesUserUserId";
+export { createGetV1BadgesMe } from "./createGetV1BadgesMe";
+export { getV1BadgesMeQueryKey } from "./createGetV1BadgesMe";
+export { getV1BadgesMeQueryOptions } from "./createGetV1BadgesMe";
+export { createGetV1BadgesUserUserId } from "./createGetV1BadgesUserUserId";
+export { getV1BadgesUserUserIdQueryKey } from "./createGetV1BadgesUserUserId";
+export { getV1BadgesUserUserIdQueryOptions } from "./createGetV1BadgesUserUserId";

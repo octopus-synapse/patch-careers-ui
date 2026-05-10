@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import { resumeVersionsResumesVersions } from "./resumeVersionsResumesVersions";
-import { resumeVersionsResumesVersionsRestore } from "./resumeVersionsResumesVersionsRestore";
-import { resumeVersionsVersionsGet } from "./resumeVersionsVersionsGet";
-import { resumeVersionsVersionsGet2 } from "./resumeVersionsVersionsGet2";
-import { resumeVersionsVersionsRestore } from "./resumeVersionsVersionsRestore";
+import { getV1ResumesResumeIdVersions } from "./getV1ResumesResumeIdVersions";
+import { getV1VersionsResumeId } from "./getV1VersionsResumeId";
+import { getV1VersionsResumeIdVersionId } from "./getV1VersionsResumeIdVersionId";
+import { postV1ResumesResumeIdVersionsVersionIdRestore } from "./postV1ResumesResumeIdVersionsVersionIdRestore";
+import { postV1VersionsResumeIdRestoreVersionId } from "./postV1VersionsResumeIdRestoreVersionId";
 
 export function resumeVersionsController() {
-  return { resumeVersionsResumesVersions, resumeVersionsResumesVersionsRestore, resumeVersionsVersionsGet, resumeVersionsVersionsGet2, resumeVersionsVersionsRestore }
+  return { getV1ResumesResumeIdVersions, postV1ResumesResumeIdVersionsVersionIdRestore, getV1VersionsResumeId, postV1VersionsResumeIdRestoreVersionId, getV1VersionsResumeIdVersionId }
 }

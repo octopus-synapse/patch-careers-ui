@@ -1,3 +1,3 @@
-export { mecInternalSyncHistory200Schema, mecInternalSyncHistory400Schema, mecInternalSyncHistoryQueryParamsSchema, mecInternalSyncHistoryQueryResponseSchema } from "./mecInternalSyncHistorySchema";
-export { mecInternalSync200Schema, mecInternalSync400Schema, mecInternalSyncMutationResponseSchema } from "./mecInternalSyncSchema";
-export { mecInternalSyncStatus200Schema, mecInternalSyncStatus400Schema, mecInternalSyncStatusQueryResponseSchema } from "./mecInternalSyncStatusSchema";
+export { getV1MecInternalSyncHistory200Schema, getV1MecInternalSyncHistory400Schema, getV1MecInternalSyncHistoryQueryParamsSchema, getV1MecInternalSyncHistoryQueryResponseSchema } from "./getV1MecInternalSyncHistorySchema";
+export { getV1MecInternalSyncStatus200Schema, getV1MecInternalSyncStatus400Schema, getV1MecInternalSyncStatusQueryResponseSchema } from "./getV1MecInternalSyncStatusSchema";
+export { postV1MecInternalSync200Schema, postV1MecInternalSync400Schema, postV1MecInternalSyncMutationResponseSchema } from "./postV1MecInternalSyncSchema";

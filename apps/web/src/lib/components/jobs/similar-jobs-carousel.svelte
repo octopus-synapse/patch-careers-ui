@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createJobsSimilar } from 'api-client';
+import { createGetV1JobsIdSimilar } from 'api-client';
 import { Briefcase, MapPin } from 'lucide-svelte';
 import { Card } from 'ui';
 import { browser } from '$app/environment';
@@ -17,7 +17,7 @@ const t = $derived(locale.t);
  * `JobsSimilarParams.limit` is a string in the swagger (it's a query param);
  * the backend parses to int. Frontend just hands the string through.
  */
-const similarQuery = createJobsSimilar(
+const similarQuery = createGetV1JobsIdSimilar(
   jobId,
   { limit: '5' },
   { query: { enabled: browser && !!jobId } },

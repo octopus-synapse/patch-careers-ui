@@ -1,4 +1,4 @@
-import { skillEndorsementsUsersMeSkills } from 'api-client';
+import { getV1UsersMeSkills } from 'api-client';
 import { browser } from '$app/environment';
 
 /**
@@ -12,7 +12,7 @@ export function useUserSkills() {
 
   $effect(() => {
     if (!browser) return;
-    skillEndorsementsUsersMeSkills()
+    getV1UsersMeSkills()
       .then((res) => {
         skills = new Set(res.skills.map((s) => s.skill.toLowerCase()));
       })

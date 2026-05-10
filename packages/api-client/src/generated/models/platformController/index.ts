@@ -1,4 +1,4 @@
-export type { PlatformStats200, PlatformStats400, PlatformStats400SeverityEnumKey, PlatformStats401, PlatformStats401SeverityEnumKey, PlatformStats403, PlatformStats403SeverityEnumKey, PlatformStatsQuery, PlatformStatsQueryResponse } from "./PlatformStats";
-export { platformStats400SeverityEnum } from "./PlatformStats";
-export { platformStats401SeverityEnum } from "./PlatformStats";
-export { platformStats403SeverityEnum } from "./PlatformStats";
+export type { GetV1PlatformStats200, GetV1PlatformStats400, GetV1PlatformStats400SeverityEnumKey, GetV1PlatformStats401, GetV1PlatformStats401SeverityEnumKey, GetV1PlatformStats403, GetV1PlatformStats403SeverityEnumKey, GetV1PlatformStatsQuery, GetV1PlatformStatsQueryResponse } from "./GetV1PlatformStats";
+export { getV1PlatformStats400SeverityEnum } from "./GetV1PlatformStats";
+export { getV1PlatformStats401SeverityEnum } from "./GetV1PlatformStats";
+export { getV1PlatformStats403SeverityEnum } from "./GetV1PlatformStats";

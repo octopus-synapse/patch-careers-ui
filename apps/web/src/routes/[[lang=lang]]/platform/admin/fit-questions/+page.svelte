@@ -4,9 +4,9 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    adminFitQuestionsDelete,
-    createAdminFitQuestionsList,
-    adminFitQuestionsListQueryKey,
+    deleteV1AdminFitQuestionsId,
+    createGetV1AdminFitQuestions,
+    getV1AdminFitQuestionsQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -15,7 +15,7 @@
 
   const queryClient = useQueryClient();
 
-  const listQuery = createAdminFitQuestionsList({
+  const listQuery = createGetV1AdminFitQuestions({
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
 
@@ -25,9 +25,9 @@
   async function handleDelete(id: string) {
     deleting = id;
     try {
-      await adminFitQuestionsDelete(id);
+      await deleteV1AdminFitQuestionsId(id);
       toastState.show('Pergunta excluída', 'success');
-      await queryClient.invalidateQueries({ queryKey: adminFitQuestionsListQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1AdminFitQuestionsQueryKey() });
     } catch (err) {
       handleApiError(err);
     } finally {

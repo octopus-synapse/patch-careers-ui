@@ -1,4 +1,4 @@
-export { dslPreview200Schema, dslPreview400Schema, dslPreviewMutationResponseSchema, dslPreviewQueryParamsSchema } from "./dslPreviewSchema";
-export { dslRenderPublic200Schema, dslRenderPublic400Schema, dslRenderPublicPathParamsSchema, dslRenderPublicQueryParamsSchema, dslRenderPublicQueryResponseSchema } from "./dslRenderPublicSchema";
-export { dslRender200Schema, dslRender400Schema, dslRender401Schema, dslRender403Schema, dslRender404Schema, dslRenderPathParamsSchema, dslRenderQueryParamsSchema, dslRenderQueryResponseSchema } from "./dslRenderSchema";
-export { dslValidate200Schema, dslValidate400Schema, dslValidateMutationResponseSchema } from "./dslValidateSchema";
+export { getV1DslRenderPublicSlug200Schema, getV1DslRenderPublicSlug400Schema, getV1DslRenderPublicSlug404Schema, getV1DslRenderPublicSlugPathParamsSchema, getV1DslRenderPublicSlugQueryParamsSchema, getV1DslRenderPublicSlugQueryResponseSchema } from "./getV1DslRenderPublicSlugSchema";
+export { getV1DslRenderResumeId200Schema, getV1DslRenderResumeId400Schema, getV1DslRenderResumeId401Schema, getV1DslRenderResumeId403Schema, getV1DslRenderResumeId404Schema, getV1DslRenderResumeIdPathParamsSchema, getV1DslRenderResumeIdQueryParamsSchema, getV1DslRenderResumeIdQueryResponseSchema } from "./getV1DslRenderResumeIdSchema";
+export { postV1DslPreview201Schema, postV1DslPreview400Schema, postV1DslPreviewMutationResponseSchema, postV1DslPreviewQueryParamsSchema } from "./postV1DslPreviewSchema";
+export { postV1DslValidate201Schema, postV1DslValidate400Schema, postV1DslValidateMutationResponseSchema } from "./postV1DslValidateSchema";

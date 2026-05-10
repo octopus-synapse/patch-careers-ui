@@ -1,16 +1,16 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createOnboardingSession,
-  createOnboardingSessionComplete,
-  createOnboardingSessionGoto,
-  createOnboardingSessionNext,
-  createOnboardingSessionPrevious,
-  createOnboardingSessionSave,
-  authSessionQueryKey,
-  onboardingSessionQueryKey,
+  createGetV1OnboardingSession,
+  createPostV1OnboardingSessionComplete,
+  createPostV1OnboardingSessionGoto,
+  createPostV1OnboardingSessionNext,
+  createPostV1OnboardingSessionPrevious,
+  createPostV1OnboardingSessionSave,
+  sessionQueryKey,
+  getV1OnboardingSessionQueryKey,
 } from 'api-client';
-import type { OnboardingSession200 } from 'api-client';
+import type { GetV1OnboardingSession200 } from 'api-client';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { beforeNavigate, goto } from '$app/navigation';
@@ -29,7 +29,7 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
+const authenticated = $derived(auth.isAuthenticated);
 
 $effect(() => {
   if (!auth.isLoading && !authenticated) {
@@ -37,20 +37,20 @@ $effect(() => {
   }
 });
 
-const session = createOnboardingSession(
+const session = createGetV1OnboardingSession(
   { locale: locale.current },
   { query: { enabled: authenticated } },
 );
 
 const queryClient = useQueryClient();
-const queryKey = $derived(onboardingSessionQueryKey({ locale: locale.current }));
+const queryKey = $derived(getV1OnboardingSessionQueryKey({ locale: locale.current }));
 
 function invalidateSession() {
   queryClient.invalidateQueries({ queryKey });
 }
 
 // SDK doesn't model the `data` field that ships on template steps — augment.
-type Step = OnboardingSession200['steps'][number] & {
+type Step = GetV1OnboardingSession200['steps'][number] & {
   data?: Array<{
     id: string;
     name: string;
@@ -59,7 +59,7 @@ type Step = OnboardingSession200['steps'][number] & {
     thumbnailUrl?: string | null;
   }>;
 };
-type SectionItem = NonNullable<NonNullable<OnboardingSession200['sections']>[number]['items']>[number];
+type SectionItem = NonNullable<NonNullable<GetV1OnboardingSession200['sections']>[number]['items']>[number];
 
 const onboardingData = $derived($session.data);
 const steps = $derived<Step[] | undefined>(onboardingData?.steps);
@@ -111,24 +111,24 @@ function getSavedDataForStep(stepId: string): Record<string, string> | null {
   return Object.keys(result).length > 0 ? result : null;
 }
 
-const nextStep = createOnboardingSessionNext({
+const nextStep = createPostV1OnboardingSessionNext({
   mutation: { onSuccess: invalidateSession },
 });
 
-const prevStep = createOnboardingSessionPrevious({
+const prevStep = createPostV1OnboardingSessionPrevious({
   mutation: { onSuccess: invalidateSession },
 });
 
-const gotoStep = createOnboardingSessionGoto({
+const gotoStep = createPostV1OnboardingSessionGoto({
   mutation: { onSuccess: invalidateSession },
 });
 
 let completeError = $state('');
 
-const complete = createOnboardingSessionComplete({
+const complete = createPostV1OnboardingSessionComplete({
   mutation: {
     async onSuccess() {
-      await queryClient.invalidateQueries({ queryKey: authSessionQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
       // Celebrate before dropping the user into the dashboard — the done
       // screen auto-redirects after ~2s or on CTA click.
       goto('/onboarding/done');
@@ -139,7 +139,7 @@ const complete = createOnboardingSessionComplete({
   },
 });
 
-const saveStep = createOnboardingSessionSave();
+const saveStep = createPostV1OnboardingSessionSave();
 let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 let lastSavedJson = '';

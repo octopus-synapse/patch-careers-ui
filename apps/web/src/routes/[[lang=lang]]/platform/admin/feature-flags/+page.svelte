@@ -4,22 +4,22 @@
    */
   import { useQueryClient } from '@tanstack/svelte-query';
   import {
-    adminFeatureFlagsBroadcastRefresh,
-    adminFeatureFlagsUpdate,
-    createAdminFeatureFlagsList,
-    adminFeatureFlagsListQueryKey,
+    postV1AdminFeatureFlagsBroadcastRefresh,
+    patchV1AdminFeatureFlagsKey,
+    createGetV1AdminFeatureFlags,
+    getV1AdminFeatureFlagsQueryKey,
   } from 'api-client';
-  import type { AdminFeatureFlagsList200 } from 'api-client';
+  import type { GetV1AdminFeatureFlags200 } from 'api-client';
   import { Loader, RefreshCw } from 'lucide-svelte';
   import { Button, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
-  type FlagRow = AdminFeatureFlagsList200['flags'][number];
+  type FlagRow = GetV1AdminFeatureFlags200['flags'][number];
 
   const queryClient = useQueryClient();
 
-  const listQuery = createAdminFeatureFlagsList({
+  const listQuery = createGetV1AdminFeatureFlags({
       query: { enabled: browser, refetchOnWindowFocus: false },
     });
 
@@ -30,9 +30,9 @@
   async function toggle(flag: FlagRow) {
     toggling = flag.key;
     try {
-      await adminFeatureFlagsUpdate(flag.key, { enabled: !flag.enabled });
+      await patchV1AdminFeatureFlagsKey(flag.key, { enabled: !flag.enabled });
       toastState.show('Flag atualizada', 'success');
-      await queryClient.invalidateQueries({ queryKey: adminFeatureFlagsListQueryKey() });
+      await queryClient.invalidateQueries({ queryKey: getV1AdminFeatureFlagsQueryKey() });
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -44,7 +44,7 @@
   async function broadcast() {
     broadcasting = true;
     try {
-      await adminFeatureFlagsBroadcastRefresh();
+      await postV1AdminFeatureFlagsBroadcastRefresh();
       toastState.show('Broadcast enviado', 'success');
     } catch (err) {
       handleApiError(err);

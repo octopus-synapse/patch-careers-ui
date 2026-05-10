@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { resumeQualityResumesQuality } from "./resumeQualityResumesQuality";
-import { resumeQualityResumesQualityRecompute } from "./resumeQualityResumesQualityRecompute";
+import { getV1ResumesResumeIdQuality } from "./getV1ResumesResumeIdQuality";
+import { postV1ResumesResumeIdQualityRecompute } from "./postV1ResumesResumeIdQualityRecompute";
 
 export function resumeQualityController() {
-  return { resumeQualityResumesQuality, resumeQualityResumesQualityRecompute }
+  return { getV1ResumesResumeIdQuality, postV1ResumesResumeIdQualityRecompute }
 }

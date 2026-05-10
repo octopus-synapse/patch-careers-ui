@@ -1,4 +1,4 @@
-export { shareAnalyticsAnalytics } from "./shareAnalyticsAnalytics";
-export { shareAnalyticsAnalyticsEvents } from "./shareAnalyticsAnalyticsEvents";
+export { getV1AnalyticsShareId } from "./getV1AnalyticsShareId";
+export { getV1AnalyticsShareIdEvents } from "./getV1AnalyticsShareIdEvents";
+export { getV1ResumesResumeIdSharesShareIdAnalytics } from "./getV1ResumesResumeIdSharesShareIdAnalytics";
 export { shareAnalyticsController } from "./shareAnalyticsController";
-export { shareAnalyticsResumesSharesAnalytics } from "./shareAnalyticsResumesSharesAnalytics";

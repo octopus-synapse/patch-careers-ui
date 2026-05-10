@@ -1,1 +1,1 @@
-export { platformStats200Schema, platformStats400Schema, platformStats401Schema, platformStats403Schema, platformStatsQueryResponseSchema } from "./platformStatsSchema";
+export { getV1PlatformStats200Schema, getV1PlatformStats400Schema, getV1PlatformStats401Schema, getV1PlatformStats403Schema, getV1PlatformStatsQueryResponseSchema } from "./getV1PlatformStatsSchema";

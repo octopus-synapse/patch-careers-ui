@@ -3,10 +3,10 @@
 * Do not edit manually.
 */
 
-import { emailVerificationAuthEmailVerificationResendStatus } from "./emailVerificationAuthEmailVerificationResendStatus";
-import { emailVerificationAuthEmailVerificationSend } from "./emailVerificationAuthEmailVerificationSend";
-import { emailVerificationVerify } from "./emailVerificationVerify";
+import { getV1AuthEmailVerificationResendStatus } from "./getV1AuthEmailVerificationResendStatus";
+import { postV1AuthEmailVerificationSend } from "./postV1AuthEmailVerificationSend";
+import { verify } from "./verify";
 
 export function emailVerificationController() {
-  return { emailVerificationVerify, emailVerificationAuthEmailVerificationSend, emailVerificationAuthEmailVerificationResendStatus }
+  return { getV1AuthEmailVerificationResendStatus, postV1AuthEmailVerificationSend, verify }
 }

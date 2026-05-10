@@ -1,2 +1,2 @@
 export { adminAlertsController } from "./adminAlertsController";
-export { adminAlertsList } from "./adminAlertsList";
+export { getV1AdminAlerts } from "./getV1AdminAlerts";

@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { mecCoursesGetById } from "./mecCoursesGetById";
-import { mecCoursesSearch } from "./mecCoursesSearch";
+import { getV1MecCoursesCodigoCurso } from "./getV1MecCoursesCodigoCurso";
+import { getV1MecCoursesSearch } from "./getV1MecCoursesSearch";
 
 export function mecCoursesController() {
-  return { mecCoursesSearch, mecCoursesGetById }
+  return { getV1MecCoursesSearch, getV1MecCoursesCodigoCurso }
 }

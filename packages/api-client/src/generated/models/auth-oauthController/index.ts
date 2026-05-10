@@ -1,4 +1,14 @@
-export type { AuthOauthAvailable200, AuthOauthAvailable400, AuthOauthAvailable400SeverityEnumKey, AuthOauthAvailablePathParams, AuthOauthAvailableQuery, AuthOauthAvailableQueryResponse } from "./AuthOauthAvailable";
-export type { AuthOauthProviders200, AuthOauthProviders400, AuthOauthProviders400SeverityEnumKey, AuthOauthProvidersQuery, AuthOauthProvidersQueryResponse } from "./AuthOauthProviders";
-export { authOauthAvailable400SeverityEnum } from "./AuthOauthAvailable";
-export { authOauthProviders400SeverityEnum } from "./AuthOauthProviders";
+export type { GetV1AuthOauthAvailableProvider200, GetV1AuthOauthAvailableProvider400, GetV1AuthOauthAvailableProvider400SeverityEnumKey, GetV1AuthOauthAvailableProvider404, GetV1AuthOauthAvailableProvider404SeverityEnumKey, GetV1AuthOauthAvailableProviderPathParams, GetV1AuthOauthAvailableProviderPathParamsProviderEnumKey, GetV1AuthOauthAvailableProviderQuery, GetV1AuthOauthAvailableProviderQueryResponse } from "./GetV1AuthOauthAvailableProvider";
+export type { GetV1AuthOauthGithubCallback200, GetV1AuthOauthGithubCallback400, GetV1AuthOauthGithubCallback400SeverityEnumKey, GetV1AuthOauthGithubCallbackQuery, GetV1AuthOauthGithubCallbackQueryResponse } from "./GetV1AuthOauthGithubCallback";
+export type { GetV1AuthOauthGithubStart200, GetV1AuthOauthGithubStart400, GetV1AuthOauthGithubStart400SeverityEnumKey, GetV1AuthOauthGithubStartQuery, GetV1AuthOauthGithubStartQueryResponse } from "./GetV1AuthOauthGithubStart";
+export type { GetV1AuthOauthLinkedinCallback200, GetV1AuthOauthLinkedinCallback400, GetV1AuthOauthLinkedinCallback400SeverityEnumKey, GetV1AuthOauthLinkedinCallbackQuery, GetV1AuthOauthLinkedinCallbackQueryResponse } from "./GetV1AuthOauthLinkedinCallback";
+export type { GetV1AuthOauthLinkedinStart200, GetV1AuthOauthLinkedinStart400, GetV1AuthOauthLinkedinStart400SeverityEnumKey, GetV1AuthOauthLinkedinStartQuery, GetV1AuthOauthLinkedinStartQueryResponse } from "./GetV1AuthOauthLinkedinStart";
+export type { GetV1AuthOauthProviders200, GetV1AuthOauthProviders400, GetV1AuthOauthProviders400SeverityEnumKey, GetV1AuthOauthProvidersQuery, GetV1AuthOauthProvidersQueryResponse } from "./GetV1AuthOauthProviders";
+export { getV1AuthOauthAvailableProvider400SeverityEnum } from "./GetV1AuthOauthAvailableProvider";
+export { getV1AuthOauthAvailableProvider404SeverityEnum } from "./GetV1AuthOauthAvailableProvider";
+export { getV1AuthOauthAvailableProviderPathParamsProviderEnum } from "./GetV1AuthOauthAvailableProvider";
+export { getV1AuthOauthGithubCallback400SeverityEnum } from "./GetV1AuthOauthGithubCallback";
+export { getV1AuthOauthGithubStart400SeverityEnum } from "./GetV1AuthOauthGithubStart";
+export { getV1AuthOauthLinkedinCallback400SeverityEnum } from "./GetV1AuthOauthLinkedinCallback";
+export { getV1AuthOauthLinkedinStart400SeverityEnum } from "./GetV1AuthOauthLinkedinStart";
+export { getV1AuthOauthProviders400SeverityEnum } from "./GetV1AuthOauthProviders";

@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { techNichesList } from "./techNichesList";
-import { techNichesSkills } from "./techNichesSkills";
+import { getV1TechNiches } from "./getV1TechNiches";
+import { getV1TechNichesNicheSlugSkills } from "./getV1TechNichesNicheSlugSkills";
 
 export function techNichesController() {
-  return { techNichesList, techNichesSkills }
+  return { getV1TechNiches, getV1TechNichesNicheSlugSkills }
 }

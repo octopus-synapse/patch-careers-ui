@@ -1,5 +1,5 @@
 <script lang="ts">
-import { createSocialActivityUsersFeed } from 'api-client';
+import { createGetV1UsersUserIdActivities } from 'api-client';
 import { Activity } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Card, EmptyState, Skeleton } from 'ui';
@@ -10,16 +10,16 @@ import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
-const userId = $derived(String(auth.data?.user?.id ?? ''));
+const authenticated = $derived(auth.isAuthenticated);
+const userId = $derived(String(auth.userId ?? ''));
 
-const query = createSocialActivityUsersFeed(
+const query = createGetV1UsersUserIdActivities(
   userId,
   {},
   { query: { enabled: browser && authenticated && userId !== '' } },
 );
 
-const items = $derived($query.data?.feed.data);
+const items = $derived($query.data?.items);
 
 function activityLabel(type: string): string {
   const map: Record<string, string> = {

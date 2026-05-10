@@ -2,7 +2,7 @@
   /**
    * Admin analytics — burra: query SDK e renderiza cards.
    */
-  import { createAdminAnalyticsOverview, createAdminDashboardMetrics } from 'api-client';
+  import { createGetV1AdminAnalyticsOverview, createGetV1AdminDashboardMetrics } from 'api-client';
   import { browser } from '$app/environment';
   import { Card, Loader } from 'ui';
   import StatCard from '../_components/stat-card.svelte';
@@ -12,12 +12,12 @@
 
   let period = $state<'day' | 'week' | 'month'>('day');
 
-  const analyticsQuery = createAdminAnalyticsOverview(
+  const analyticsQuery = createGetV1AdminAnalyticsOverview(
     { period },
     { query: { enabled: browser } },
   );
 
-  const metricsQuery = createAdminDashboardMetrics({
+  const metricsQuery = createGetV1AdminDashboardMetrics({
       query: { enabled: browser },
     });
 

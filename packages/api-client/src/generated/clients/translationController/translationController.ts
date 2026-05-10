@@ -3,13 +3,13 @@
 * Do not edit manually.
 */
 
-import { translationBatch } from "./translationBatch";
-import { translationDetect } from "./translationDetect";
-import { translationEnToPt } from "./translationEnToPt";
-import { translationHealth } from "./translationHealth";
-import { translationPtToEn } from "./translationPtToEn";
-import { translationText } from "./translationText";
+import { getV1TranslationHealth } from "./getV1TranslationHealth";
+import { postV1TranslationBatch } from "./postV1TranslationBatch";
+import { postV1TranslationDetect } from "./postV1TranslationDetect";
+import { postV1TranslationEnToPt } from "./postV1TranslationEnToPt";
+import { postV1TranslationPtToEn } from "./postV1TranslationPtToEn";
+import { postV1TranslationText } from "./postV1TranslationText";
 
 export function translationController() {
-  return { translationHealth, translationText, translationDetect, translationBatch, translationPtToEn, translationEnToPt }
+  return { postV1TranslationBatch, postV1TranslationDetect, postV1TranslationEnToPt, getV1TranslationHealth, postV1TranslationPtToEn, postV1TranslationText }
 }

@@ -1,13 +1,13 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  chatMessages,
-  createChatConversationsGet,
-  createChatConversationsMessagesGet,
-  createChatConversationsMessagesPost,
-  createChatConversationsRead,
-  chatConversationsGetQueryKey,
-  chatConversationsMessagesGetQueryKey,
+  postV1ChatMessages,
+  createGetV1ChatConversations,
+  createGetV1ChatConversationsConversationIdMessages,
+  createPostV1ChatConversationsConversationIdMessages,
+  createPostV1ChatConversationsConversationIdRead,
+  getV1ChatConversationsQueryKey,
+  getV1ChatConversationsConversationIdMessagesQueryKey,
 } from 'api-client';
 import { ArrowLeft, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
 import { fade, fly } from 'svelte/transition';
@@ -26,49 +26,49 @@ import UserSearch from './user-search.svelte';
  */
 
 const auth = useAuth();
-const authenticated = $derived(auth.data?.authenticated);
-const currentUserId = $derived(String(auth.data?.user?.id ?? ''));
+const authenticated = $derived(auth.isAuthenticated);
+const currentUserId = $derived(String(auth.userId ?? ''));
 const canUseApp = $derived(
   Boolean(authenticated) &&
-    !(auth.data?.user?.needsEmailVerification ?? false) &&
-    !(auth.data?.user?.needsOnboarding ?? false),
+    !(auth.needsEmailVerification ?? false) &&
+    !(auth.needsOnboarding ?? false),
 );
 
-const conversations = createChatConversationsGet(
+const conversations = createGetV1ChatConversations(
   { limit: 50 },
   { query: { enabled: canUseApp && chatState.isOpen } },
 );
 
-const convList = $derived($conversations.data?.conversations.conversations);
+const convList = $derived($conversations.data?.items);
 
-const messages = createChatConversationsMessagesGet(
+const messages = createGetV1ChatConversationsConversationIdMessages(
   chatState.activeConversationId || undefined,
   { limit: 100 },
   { query: { enabled: !!chatState.activeConversationId } },
 );
 
-const msgList = $derived($messages.data?.messages.messages);
+const msgList = $derived($messages.data?.items);
 
 const queryClient = useQueryClient();
 
-const sendMessage = createChatConversationsMessagesPost({
+const sendMessage = createPostV1ChatConversationsConversationIdMessages({
   mutation: {
     onSuccess() {
       if (chatState.activeConversationId) {
         queryClient.invalidateQueries({
-          queryKey: chatConversationsMessagesGetQueryKey(chatState.activeConversationId, {
+          queryKey: getV1ChatConversationsConversationIdMessagesQueryKey(chatState.activeConversationId, {
             limit: 100,
           }),
         });
         queryClient.invalidateQueries({
-          queryKey: chatConversationsGetQueryKey({ limit: 50 }),
+          queryKey: getV1ChatConversationsQueryKey({ limit: 50 }),
         });
       }
     },
   },
 });
 
-const markRead = createChatConversationsRead();
+const markRead = createPostV1ChatConversationsConversationIdRead();
 
 function selectConversation(id: string) {
   chatState.setActiveConversation(id);
@@ -81,14 +81,14 @@ async function startNewConversation(recipientId: string) {
     // POST /api/v1/chat/messages — kicks off (or reuses) a 1:1 conversation
     // with `recipientId`. Backend returns the message envelope including the
     // conversation id.
-    const res = await chatMessages({ recipientId, content: '👋' });
+    const res = await postV1ChatMessages({ recipientId, content: '👋' });
     convId = res.message.conversationId;
   } catch {
     /* may already exist */
   }
 
   if (convId) chatState.setActiveConversation(convId);
-  queryClient.invalidateQueries({ queryKey: chatConversationsGetQueryKey({ limit: 50 }) });
+  queryClient.invalidateQueries({ queryKey: getV1ChatConversationsQueryKey({ limit: 50 }) });
 }
 
 function handleSend(content: string) {

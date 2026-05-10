@@ -3,18 +3,18 @@
 * Do not edit manually.
 */
 
-import { chatConversationWith } from "./chatConversationWith";
-import { chatConversationsGet } from "./chatConversationsGet";
-import { chatConversationsGet2 } from "./chatConversationsGet2";
-import { chatConversationsMessagesGet } from "./chatConversationsMessagesGet";
-import { chatConversationsMessagesPost } from "./chatConversationsMessagesPost";
-import { chatConversationsPreferencesMute } from "./chatConversationsPreferencesMute";
-import { chatConversationsPreferencesPin } from "./chatConversationsPreferencesPin";
-import { chatConversationsRead } from "./chatConversationsRead";
-import { chatMessages } from "./chatMessages";
-import { chatUnread } from "./chatUnread";
-import { chatUsersSearch } from "./chatUsersSearch";
+import { getV1ChatConversationWithUserId } from "./getV1ChatConversationWithUserId";
+import { getV1ChatConversations } from "./getV1ChatConversations";
+import { getV1ChatConversationsConversationId } from "./getV1ChatConversationsConversationId";
+import { getV1ChatConversationsConversationIdMessages } from "./getV1ChatConversationsConversationIdMessages";
+import { getV1ChatUnread } from "./getV1ChatUnread";
+import { getV1ChatUsersSearch } from "./getV1ChatUsersSearch";
+import { postV1ChatConversationsConversationIdMessages } from "./postV1ChatConversationsConversationIdMessages";
+import { postV1ChatConversationsConversationIdPreferencesMute } from "./postV1ChatConversationsConversationIdPreferencesMute";
+import { postV1ChatConversationsConversationIdPreferencesPin } from "./postV1ChatConversationsConversationIdPreferencesPin";
+import { postV1ChatConversationsConversationIdRead } from "./postV1ChatConversationsConversationIdRead";
+import { postV1ChatMessages } from "./postV1ChatMessages";
 
 export function chatController() {
-  return { chatMessages, chatConversationsMessagesPost, chatConversationsMessagesGet, chatConversationsGet, chatConversationsGet2, chatConversationsRead, chatUnread, chatConversationWith, chatUsersSearch, chatConversationsPreferencesPin, chatConversationsPreferencesMute }
+  return { getV1ChatConversationWithUserId, getV1ChatConversations, getV1ChatConversationsConversationId, getV1ChatConversationsConversationIdMessages, postV1ChatConversationsConversationIdMessages, postV1ChatConversationsConversationIdPreferencesMute, postV1ChatConversationsConversationIdPreferencesPin, postV1ChatConversationsConversationIdRead, postV1ChatMessages, getV1ChatUnread, getV1ChatUsersSearch }
 }

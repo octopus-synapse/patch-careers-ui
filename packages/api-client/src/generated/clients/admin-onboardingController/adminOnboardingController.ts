@@ -3,15 +3,15 @@
 * Do not edit manually.
 */
 
-import { adminOnboardingConfigGet } from "./adminOnboardingConfigGet";
-import { adminOnboardingConfigPut } from "./adminOnboardingConfigPut";
-import { adminOnboardingStats } from "./adminOnboardingStats";
-import { adminOnboardingStepsDelete } from "./adminOnboardingStepsDelete";
-import { adminOnboardingStepsGet } from "./adminOnboardingStepsGet";
-import { adminOnboardingStepsGet2 } from "./adminOnboardingStepsGet2";
-import { adminOnboardingStepsPost } from "./adminOnboardingStepsPost";
-import { adminOnboardingStepsPut } from "./adminOnboardingStepsPut";
+import { deleteV1AdminOnboardingStepsKey } from "./deleteV1AdminOnboardingStepsKey";
+import { getV1AdminOnboardingConfig } from "./getV1AdminOnboardingConfig";
+import { getV1AdminOnboardingStats } from "./getV1AdminOnboardingStats";
+import { getV1AdminOnboardingSteps } from "./getV1AdminOnboardingSteps";
+import { getV1AdminOnboardingStepsKey } from "./getV1AdminOnboardingStepsKey";
+import { postV1AdminOnboardingSteps } from "./postV1AdminOnboardingSteps";
+import { putV1AdminOnboardingConfig } from "./putV1AdminOnboardingConfig";
+import { putV1AdminOnboardingStepsKey } from "./putV1AdminOnboardingStepsKey";
 
 export function adminOnboardingController() {
-  return { adminOnboardingStepsGet, adminOnboardingStepsPost, adminOnboardingStats, adminOnboardingStepsGet2, adminOnboardingStepsPut, adminOnboardingStepsDelete, adminOnboardingConfigGet, adminOnboardingConfigPut }
+  return { getV1AdminOnboardingConfig, putV1AdminOnboardingConfig, getV1AdminOnboardingStats, getV1AdminOnboardingSteps, postV1AdminOnboardingSteps, deleteV1AdminOnboardingStepsKey, getV1AdminOnboardingStepsKey, putV1AdminOnboardingStepsKey }
 }

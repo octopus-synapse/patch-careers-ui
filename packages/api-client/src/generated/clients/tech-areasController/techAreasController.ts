@@ -3,9 +3,9 @@
 * Do not edit manually.
 */
 
-import { techAreasList } from "./techAreasList";
-import { techAreasNiches } from "./techAreasNiches";
+import { getV1TechAreas } from "./getV1TechAreas";
+import { getV1TechAreasAreaTypeNiches } from "./getV1TechAreasAreaTypeNiches";
 
 export function techAreasController() {
-  return { techAreasList, techAreasNiches }
+  return { getV1TechAreas, getV1TechAreasAreaTypeNiches }
 }

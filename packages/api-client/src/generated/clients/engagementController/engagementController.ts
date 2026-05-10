@@ -3,14 +3,14 @@
 * Do not edit manually.
 */
 
-import { engagementPostsBookmarkDelete } from "./engagementPostsBookmarkDelete";
-import { engagementPostsBookmarkPost } from "./engagementPostsBookmarkPost";
-import { engagementPostsLikeDelete } from "./engagementPostsLikeDelete";
-import { engagementPostsLikePost } from "./engagementPostsLikePost";
-import { engagementPostsPollVote } from "./engagementPostsPollVote";
-import { engagementPostsReport } from "./engagementPostsReport";
-import { engagementPostsRepost } from "./engagementPostsRepost";
+import { deleteV1PostsIdBookmark } from "./deleteV1PostsIdBookmark";
+import { deleteV1PostsIdLike } from "./deleteV1PostsIdLike";
+import { postV1PostsIdBookmark } from "./postV1PostsIdBookmark";
+import { postV1PostsIdLike } from "./postV1PostsIdLike";
+import { postV1PostsIdPollVote } from "./postV1PostsIdPollVote";
+import { postV1PostsIdReport } from "./postV1PostsIdReport";
+import { postV1PostsIdRepost } from "./postV1PostsIdRepost";
 
 export function engagementController() {
-  return { engagementPostsLikePost, engagementPostsLikeDelete, engagementPostsBookmarkPost, engagementPostsBookmarkDelete, engagementPostsRepost, engagementPostsReport, engagementPostsPollVote }
+  return { deleteV1PostsIdBookmark, postV1PostsIdBookmark, deleteV1PostsIdLike, postV1PostsIdLike, postV1PostsIdPollVote, postV1PostsIdReport, postV1PostsIdRepost }
 }

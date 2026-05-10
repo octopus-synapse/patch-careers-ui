@@ -1,3 +1,3 @@
 export { adminChatController } from "./adminChatController";
-export { adminChatConversations } from "./adminChatConversations";
-export { adminChatStats } from "./adminChatStats";
+export { getV1AdminChatConversations } from "./getV1AdminChatConversations";
+export { getV1AdminChatStats } from "./getV1AdminChatStats";

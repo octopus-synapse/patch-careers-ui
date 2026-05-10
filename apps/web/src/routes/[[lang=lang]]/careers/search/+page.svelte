@@ -3,12 +3,13 @@
    * /careers/search — burra: pessoas + jobs via SDK.
    */
 import {
-  createJobsList,
-  createSearchList,
-  searchList,
-  searchListQueryParamsSortByEnum,
+  createGetV1Jobs,
+  createGetV1Search,
+  getV1Search,
+  getV1SearchQueryKey,
+  getV1SearchQueryParamsSortByEnum,
 } from 'api-client';
-import type { SearchList200 } from 'api-client';
+import type { GetV1Search200 } from 'api-client';
 import { Search, Users } from 'lucide-svelte';
 import type { Component } from 'svelte';
 import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
@@ -22,7 +23,7 @@ import { InfiniteScrollTrigger } from 'ui';
 
 const t = $derived(locale.t);
 
-type Person = SearchList200['data'][number];
+type Person = GetV1Search200['items'][number];
 
 const initialQuery = $derived($page.url.searchParams.get('q') ?? '');
 const initialSkills = $derived($page.url.searchParams.get('skills') ?? '');
@@ -58,18 +59,18 @@ const queryParams = $derived({
   maxExp: initialMaxExp,
   page: 1,
   limit: 20,
-  sortBy: searchListQueryParamsSortByEnum.relevance,
+  sortBy: getV1SearchQueryParamsSortByEnum.relevance,
 });
 
-const query = createSearchList(
+const query = createGetV1Search(
   queryParams,
   {
         query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'people' },
       },
 );
 
-const jobsQuery = createJobsList(
-  { search: initialQuery, page: '1', limit: '20' },
+const jobsQuery = createGetV1Jobs(
+  { search: initialQuery, page: 1, limit: 20 },
   {
         query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'jobs' },
       },
@@ -78,7 +79,7 @@ const jobsQuery = createJobsList(
 const firstPage = $derived.by(() => {
   const data = $query.data;
   if (!data) return { rows: [] as Person[], total: 0, totalPages: 0 };
-  return { rows: data.data, total: data.total, totalPages: data.totalPages };
+  return { rows: data.items, total: data.total, totalPages: data.totalPages };
 });
 
 let extra = $state<Person[]>([]);
@@ -101,11 +102,11 @@ async function loadMore() {
   loadingMore = true;
   try {
     const next = pageNum + 1;
-    const res = await searchList({
+    const res = await getV1Search({
       ...queryParams,
       page: next,
     });
-    extra = [...extra, ...res.data];
+    extra = [...extra, ...res.items];
     pageNum = next;
   } finally {
     loadingMore = false;

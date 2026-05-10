@@ -1,11 +1,10 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
 import {
-  createSocialConnectionsConnectionsWithdraw,
-  createSocialConnectionsUsersMeConnectionsSent,
-  socialConnectionsUsersMeConnectionsSentQueryKey,
-  socialConnectionsUsersMeConnectionsSent,
-  type SocialConnectionsUsersMeConnectionsSent200,
+  createDeleteV1ConnectionsIdWithdraw,
+  createGetV1UsersMeConnectionsSent,
+  getV1UsersMeConnectionsSent,
+  getV1UsersMeConnectionsSentQueryKey,
 } from 'api-client';
 import { UserCheck } from 'lucide-svelte';
 import { Avatar, Button, Skeleton, toastState } from 'ui';
@@ -13,51 +12,27 @@ import { browser } from '$app/environment';
 import { track } from '$lib/utils/analytics/track';
 import { locale } from '$lib/state/locale.svelte';
 import { InfiniteScrollTrigger } from 'ui';
+import { useInfiniteList } from '$lib/state/use-infinite-list.svelte';
+import type { SentConnection } from '$lib/types/social';
 
 const t = $derived(locale.t);
 
-type SentRecord = SocialConnectionsUsersMeConnectionsSent200['pendingRequests']['data'][number];
+const list = useInfiniteList<SentConnection>({
+  createQuery: (p) => createGetV1UsersMeConnectionsSent(p, { query: { enabled: browser } }),
+  fetcher: (p) => getV1UsersMeConnectionsSent(p),
+});
 
-const query = createSocialConnectionsUsersMeConnectionsSent(
-  { page: '1', limit: '20' },
-  { query: { enabled: browser } },
-);
-
-const firstPage = $derived($query.data?.pendingRequests);
-
-let extra = $state<SentRecord[]>([]);
-let page = $state(1);
-let loadingMore = $state(false);
-
-async function loadMore() {
-  if (loadingMore) return;
-  loadingMore = true;
-  try {
-    const next = page + 1;
-    const res = await socialConnectionsUsersMeConnectionsSent({
-      page: String(next),
-      limit: '20',
-    });
-    extra = [...extra, ...res.pendingRequests.data];
-    page = next;
-  } finally {
-    loadingMore = false;
-  }
-}
-
-function userOf(r: SentRecord) {
+function userOf(r: SentConnection) {
   return r.user ?? r.target ?? r.requester;
 }
 
-const all = $derived(firstPage ? [...firstPage.data, ...extra] : extra);
-
 const queryClient = useQueryClient();
 
-const withdrawMutation = createSocialConnectionsConnectionsWithdraw({
+const withdrawMutation = createDeleteV1ConnectionsIdWithdraw({
   mutation: {
     onSuccess(_data, variables) {
-      queryClient.invalidateQueries({ queryKey: socialConnectionsUsersMeConnectionsSentQueryKey() });
-      extra = extra.filter((r) => r.id !== variables.id);
+      queryClient.invalidateQueries({ queryKey: getV1UsersMeConnectionsSentQueryKey() });
+      list.reset();
       track('connection_invite_withdrawn', { connectionId: variables.id });
     },
     onError() {
@@ -89,12 +64,12 @@ function formatSentAt(iso: string): string {
 <div class="px-4 py-3 sm:px-6">
 	<div class="flex flex-wrap items-center gap-2">
 		<span class="rounded-full bg-emerald-600 px-3 py-1 text-[11px] font-semibold text-white">
-			{t?.('network.people')} ({firstPage?.total ?? 0})
+			{t?.('network.people')} ({list.total})
 		</span>
 	</div>
 </div>
 
-{#if $query.isLoading}
+{#if list.isLoading}
 	<div class="divide-y divide-gray-200 dark:divide-neutral-800">
 		{#each Array(4) as _}
 			<div class="flex items-center gap-3 px-4 py-4 sm:px-6">
@@ -107,7 +82,7 @@ function formatSentAt(iso: string): string {
 			</div>
 		{/each}
 	</div>
-{:else if all.length === 0}
+{:else if list.items.length === 0}
 	<div class="flex flex-col items-center gap-2 px-6 py-16 text-center">
 		<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800">
 			<UserCheck size={18} class="text-gray-400 dark:text-neutral-500" />
@@ -121,7 +96,7 @@ function formatSentAt(iso: string): string {
 	</div>
 {:else}
 	<ul class="divide-y divide-gray-200 dark:divide-neutral-800">
-		{#each all as req (req.id)}
+		{#each list.items as req (req.id)}
 			{@const u = userOf(req)}
 			{@const displayName = u?.name ?? u?.username ?? '?'}
 			<li class="flex items-start gap-3 px-4 py-4 sm:px-6">
@@ -151,8 +126,8 @@ function formatSentAt(iso: string): string {
 		{/each}
 	</ul>
 	<InfiniteScrollTrigger
-		onLoadMore={loadMore}
-		hasMore={!!firstPage && page < firstPage.totalPages}
-		isLoading={loadingMore}
+		onLoadMore={list.loadMore}
+		hasMore={list.hasMore}
+		isLoading={list.loadingMore}
 	/>
 {/if}

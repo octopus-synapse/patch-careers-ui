@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { techSkillsSyncCreate } from "./techSkillsSyncCreate";
+import { postV1TechSkillsSync } from "./postV1TechSkillsSync";
 
 export function techSkillsSyncController() {
-  return { techSkillsSyncCreate }
+  return { postV1TechSkillsSync }
 }

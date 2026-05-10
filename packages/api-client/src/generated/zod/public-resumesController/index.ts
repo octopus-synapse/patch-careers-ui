@@ -1,3 +1,3 @@
-export { publicResumesDownload200Schema, publicResumesDownload400Schema, publicResumesDownloadPathParamsSchema, publicResumesDownloadQueryResponseSchema } from "./publicResumesDownloadSchema";
-export { publicResumesGetById200Schema, publicResumesGetById400Schema, publicResumesGetByIdPathParamsSchema, publicResumesGetByIdQueryResponseSchema } from "./publicResumesGetByIdSchema";
-export { publicResumesOgPng200Schema, publicResumesOgPng400Schema, publicResumesOgPngPathParamsSchema, publicResumesOgPngQueryResponseSchema } from "./publicResumesOgPngSchema";
+export { getV1PublicResumesSlugDownload200Schema, getV1PublicResumesSlugDownload400Schema, getV1PublicResumesSlugDownload404Schema, getV1PublicResumesSlugDownloadPathParamsSchema, getV1PublicResumesSlugDownloadQueryResponseSchema } from "./getV1PublicResumesSlugDownloadSchema";
+export { getV1PublicResumesSlugOgPng200Schema, getV1PublicResumesSlugOgPng400Schema, getV1PublicResumesSlugOgPng404Schema, getV1PublicResumesSlugOgPngPathParamsSchema, getV1PublicResumesSlugOgPngQueryResponseSchema } from "./getV1PublicResumesSlugOgPngSchema";
+export { getV1PublicResumesSlug200Schema, getV1PublicResumesSlug400Schema, getV1PublicResumesSlug404Schema, getV1PublicResumesSlugPathParamsSchema, getV1PublicResumesSlugQueryResponseSchema } from "./getV1PublicResumesSlugSchema";

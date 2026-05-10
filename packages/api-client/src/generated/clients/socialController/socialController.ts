@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import { socialUsersMeConnectionRecommendations } from "./socialUsersMeConnectionRecommendations";
+import { getV1UsersMeConnectionRecommendations } from "./getV1UsersMeConnectionRecommendations";
 
 export function socialController() {
-  return { socialUsersMeConnectionRecommendations }
+  return { getV1UsersMeConnectionRecommendations }
 }
