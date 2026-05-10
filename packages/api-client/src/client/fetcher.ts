@@ -17,6 +17,37 @@ export function getBaseUrl(): string {
   return baseUrl;
 }
 
+// Locale resolution for `Accept-Language`. Without this every request
+// hits the backend's i18n fallback (`en` per CLAUDE.md Q8) regardless of
+// the user's choice. The SDK is package-level so it can't import from
+// `apps/web`; we read the `locale` cookie that
+// `apps/web/src/lib/state/locale.svelte.ts` writes whenever the user picks
+// a locale (or initial detection runs). The same file accepts cookie /
+// localStorage / `navigator.language` and writes the canonical value
+// back, so this lookup is the single point of truth on the wire.
+const SUPPORTED_LOCALES = ['pt-BR', 'en'] as const;
+
+function resolveAcceptLanguage(): string {
+  if (typeof document !== 'undefined') {
+    const match = document.cookie.match(/(?:^|;\s*)locale=([^;]+)/);
+    if (match?.[1]) {
+      const decoded = decodeURIComponent(match[1]);
+      if ((SUPPORTED_LOCALES as readonly string[]).includes(decoded)) return decoded;
+    }
+  }
+  if (typeof navigator !== 'undefined') {
+    const tags = navigator.languages?.length ? navigator.languages : [navigator.language];
+    for (const tag of tags) {
+      if (!tag) continue;
+      if ((SUPPORTED_LOCALES as readonly string[]).includes(tag)) return tag;
+      const base = tag.split('-')[0];
+      const match = SUPPORTED_LOCALES.find((l) => l.split('-')[0] === base);
+      if (match) return match;
+    }
+  }
+  return 'pt-BR';
+}
+
 export interface ApiError {
   code: string;
   message: string;
@@ -90,9 +121,14 @@ export default async function client<TData, _TError = unknown, TVariables = unkn
   // override and don't JSON.stringify. Lets multipart endpoints (image
   // upload, PDF import) flow through the SDK without a fetch escape hatch.
   const isFormData = typeof FormData !== 'undefined' && config.data instanceof FormData;
+  const acceptLanguage = resolveAcceptLanguage();
   const baseHeaders: Record<string, string> = isFormData
-    ? { Accept: 'application/json' }
-    : { 'Content-Type': 'application/json', Accept: 'application/json' };
+    ? { Accept: 'application/json', 'Accept-Language': acceptLanguage }
+    : {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Accept-Language': acceptLanguage,
+      };
 
   const response = await fetch(url, {
     method: config.method ?? 'GET',
