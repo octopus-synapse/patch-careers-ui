@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1AdminChatConversations200, GetV1AdminChatConversations400, GetV1AdminChatConversations401, GetV1AdminChatConversations403, GetV1AdminChatConversationsQueryParams, GetV1AdminChatConversationsQueryResponse } from "../../models/admin-chatController/GetV1AdminChatConversations";
 
 export const getV1AdminChatConversationsQueryParamsSchema = z.object({
-    "page": z.optional(z.string()),
-"pageSize": z.optional(z.string())
+    "page": z.optional(z.coerce.number().int().min(1)),
+"pageSize": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1AdminChatConversationsQueryParams>
 
 /**

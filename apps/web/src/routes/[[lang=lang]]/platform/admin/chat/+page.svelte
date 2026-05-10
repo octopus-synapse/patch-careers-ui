@@ -22,14 +22,14 @@
       query: { enabled: browser },
     });
   const chatConversationsQuery = createGetV1AdminChatConversations(
-    { page: String(chatPage), pageSize: '20' },
+    { page: chatPage, pageSize: 20 },
     { query: { enabled: browser && activeTab === 'chat' } },
   );
   const collabStatsQuery = createGetV1AdminCollaborationsStats({
       query: { enabled: browser },
     });
   const collabListQuery = createGetV1AdminCollaborations(
-    { page: String(collabPage), pageSize: '20' },
+    { page: collabPage, pageSize: 20 },
     { query: { enabled: browser && activeTab === 'collaborations' } },
   );
 

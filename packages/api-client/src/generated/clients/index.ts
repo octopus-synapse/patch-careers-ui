@@ -147,6 +147,8 @@ export { commentsController } from "./commentsController/commentsController";
 export { deleteV1PostsCommentsId } from "./commentsController/deleteV1PostsCommentsId";
 export { getV1PostsIdComments } from "./commentsController/getV1PostsIdComments";
 export { postV1PostsIdComments } from "./commentsController/postV1PostsIdComments";
+export { configController } from "./configController/configController";
+export { getV1ConfigPasswordPolicy } from "./configController/getV1ConfigPasswordPolicy";
 export { dslController } from "./dslController/dslController";
 export { getV1DslRenderPublicSlug } from "./dslController/getV1DslRenderPublicSlug";
 export { getV1DslRenderResumeId } from "./dslController/getV1DslRenderResumeId";

@@ -134,7 +134,7 @@ const fitScoreByPostId = $derived.by<Record<string, PostFitScore>>(() => {
 const feedQuery = createGetV1Feed(
   {
     cursor: pagination.cursor,
-    limit: '20',
+    limit: 20,
     ...(activeTab === 'bubble' ? { followingOnly: 'true' } : {}),
   },
   {

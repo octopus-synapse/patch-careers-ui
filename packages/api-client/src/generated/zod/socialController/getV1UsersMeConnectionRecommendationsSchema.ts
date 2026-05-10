@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersMeConnectionRecommendations200, GetV1UsersMeConnectionRecommendations400, GetV1UsersMeConnectionRecommendations401, GetV1UsersMeConnectionRecommendations403, GetV1UsersMeConnectionRecommendationsQueryParams, GetV1UsersMeConnectionRecommendationsQueryResponse } from "../../models/socialController/GetV1UsersMeConnectionRecommendations";
 
 export const getV1UsersMeConnectionRecommendationsQueryParamsSchema = z.object({
-    "limit": z.optional(z.string())
+    "limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1UsersMeConnectionRecommendationsQueryParams>
 
 /**

@@ -35,19 +35,19 @@ const tabs = $derived([
 
 const postsQuery = createGetV1FeedUserUserId(
   userId,
-  { limit: '20' },
+  { limit: 20 },
   { query: { enabled: browser && !!userId && active === 'posts' } },
 );
 
 const commentsQuery = createGetV1UsersUserIdComments(
   userId,
-  { limit: '20' },
+  { limit: 20 },
   { query: { enabled: browser && !!userId && active === 'comments' } },
 );
 
 const reactionsQuery = createGetV1UsersUserIdReactions(
   userId,
-  { limit: '20' },
+  { limit: 20 },
   { query: { enabled: browser && !!userId && active === 'reactions' } },
 );
 

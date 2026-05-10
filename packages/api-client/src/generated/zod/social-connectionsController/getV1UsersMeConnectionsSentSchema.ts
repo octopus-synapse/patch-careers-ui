@@ -6,10 +6,12 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersMeConnectionsSent200, GetV1UsersMeConnectionsSent400, GetV1UsersMeConnectionsSent401, GetV1UsersMeConnectionsSent403, GetV1UsersMeConnectionsSentQueryParams, GetV1UsersMeConnectionsSentQueryResponse } from "../../models/social-connectionsController/GetV1UsersMeConnectionsSent";
+import { limitSchema } from "../limitSchema";
+import { pageSchema } from "../pageSchema";
 
 export const getV1UsersMeConnectionsSentQueryParamsSchema = z.object({
-    "page": z.coerce.number().int().min(1).default(1),
-"limit": z.coerce.number().int().min(1).max(100).default(20),
+    "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
+"limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
 "sortBy": z.optional(z.string()),
 "sortOrder": z.enum(["asc", "desc"]).default("desc")
     }) as unknown as ToZod<GetV1UsersMeConnectionsSentQueryParams>

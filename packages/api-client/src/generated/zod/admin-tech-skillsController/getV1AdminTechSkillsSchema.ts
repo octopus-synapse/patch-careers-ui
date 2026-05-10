@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1AdminTechSkills200, GetV1AdminTechSkills400, GetV1AdminTechSkills401, GetV1AdminTechSkills403, GetV1AdminTechSkillsQueryParams, GetV1AdminTechSkillsQueryResponse } from "../../models/admin-tech-skillsController/GetV1AdminTechSkills";
 
 export const getV1AdminTechSkillsQueryParamsSchema = z.object({
-    "page": z.optional(z.string()),
-"pageSize": z.optional(z.string()),
+    "page": z.optional(z.coerce.number().int().min(1)),
+"pageSize": z.optional(z.coerce.number().int().min(1)),
 "search": z.optional(z.string()),
 "isActive": z.optional(z.string()),
 "nicheId": z.optional(z.string()),

@@ -6,10 +6,12 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1Jobs200, GetV1Jobs400, GetV1Jobs401, GetV1Jobs403, GetV1JobsQueryParams, GetV1JobsQueryResponse } from "../../models/jobsController/GetV1Jobs";
+import { limitSchema } from "../limitSchema";
+import { pageSchema } from "../pageSchema";
 
 export const getV1JobsQueryParamsSchema = z.object({
-    "page": z.coerce.number().int().min(1).default(1),
-"limit": z.coerce.number().int().min(1).max(100).default(20),
+    "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
+"limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
 "sortBy": z.optional(z.string()),
 "sortOrder": z.enum(["asc", "desc"]).default("desc"),
 "search": z.optional(z.string().max(500)),

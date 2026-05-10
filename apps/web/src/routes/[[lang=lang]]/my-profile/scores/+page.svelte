@@ -10,7 +10,7 @@
   import { Card, ScoreCard } from 'ui';
 
   const myResumesQuery = createGetV1Resumes(
-    { page: '1', limit: '1' },
+    { page: 1, limit: 1 },
     { query: { enabled: browser, retry: false } },
   );
   const primaryResumeId = $derived<string | null>(

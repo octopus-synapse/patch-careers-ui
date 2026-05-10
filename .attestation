@@ -1,21 +1,25 @@
 {
   "version": "3",
-  "tree_hash": "5d4eb086830e2c5a8ab8679de41a411348c85dfc",
+  "tree_hash": "dbe0e96a71373803f6d5ac1ff5629ad586d146b1",
   "checks": "typecheck lint",
   "metrics": {
     "typecheck": {
       "status": "ok",
-      "time_ms": 20782
+      "time_ms": 25752
     },
     "lint": {
       "status": "ok",
-      "time_ms": 146
+      "time_ms": 158
     },
     "no-any": {
       "status": "ok",
-      "time_ms": 12
+      "time_ms": 11
+    },
+    "sdk-drift": {
+      "status": "ok",
+      "time_ms": 9
     }
   },
-  "timestamp": "2026-05-10T15:47:27Z",
+  "timestamp": "2026-05-10T20:59:35Z",
   "git_user": "enzo.patti@aluno.senai.br"
 }

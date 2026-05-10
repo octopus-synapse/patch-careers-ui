@@ -3,6 +3,8 @@
 * Do not edit manually.
 */
 
+import type { Limit } from "../Limit";
+import type { Page } from "../Page";
 
 export const getV1JobsWithFitScoreQueryParamsSortOrderEnum = {
     asc: "asc",
@@ -13,18 +15,17 @@ export type GetV1JobsWithFitScoreQueryParamsSortOrderEnumKey = (typeof getV1Jobs
 
 export type GetV1JobsWithFitScoreQueryParams = {
     /**
-     * @minLength 1
+     * @description 1-indexed page number for offset pagination.
      * @default 1
      * @type integer | undefined
     */
-    page?: number;
+    page?: Page;
     /**
-     * @minLength 1
-     * @maxLength 100
+     * @description Items per page (max 100).
      * @default 20
      * @type integer | undefined
     */
-    limit?: number;
+    limit?: Limit;
     /**
      * @type string | undefined
     */

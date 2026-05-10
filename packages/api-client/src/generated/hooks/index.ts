@@ -116,6 +116,7 @@ export type { PostV1ResumesResumeIdCommentsMutationKey } from "./collaborationCo
 export type { DeleteV1PostsCommentsIdMutationKey } from "./commentsController/createDeleteV1PostsCommentsId";
 export type { GetV1PostsIdCommentsQueryKey } from "./commentsController/createGetV1PostsIdComments";
 export type { PostV1PostsIdCommentsMutationKey } from "./commentsController/createPostV1PostsIdComments";
+export type { GetV1ConfigPasswordPolicyQueryKey } from "./configController/createGetV1ConfigPasswordPolicy";
 export type { GetV1DslRenderPublicSlugQueryKey } from "./dslController/createGetV1DslRenderPublicSlug";
 export type { GetV1DslRenderResumeIdQueryKey } from "./dslController/createGetV1DslRenderResumeId";
 export type { PostV1DslPreviewMutationKey } from "./dslController/createPostV1DslPreview";
@@ -706,6 +707,9 @@ export { getV1PostsIdCommentsQueryKey } from "./commentsController/createGetV1Po
 export { getV1PostsIdCommentsQueryOptions } from "./commentsController/createGetV1PostsIdComments";
 export { createPostV1PostsIdComments } from "./commentsController/createPostV1PostsIdComments";
 export { postV1PostsIdCommentsMutationKey } from "./commentsController/createPostV1PostsIdComments";
+export { createGetV1ConfigPasswordPolicy } from "./configController/createGetV1ConfigPasswordPolicy";
+export { getV1ConfigPasswordPolicyQueryKey } from "./configController/createGetV1ConfigPasswordPolicy";
+export { getV1ConfigPasswordPolicyQueryOptions } from "./configController/createGetV1ConfigPasswordPolicy";
 export { createGetV1DslRenderPublicSlug } from "./dslController/createGetV1DslRenderPublicSlug";
 export { getV1DslRenderPublicSlugQueryKey } from "./dslController/createGetV1DslRenderPublicSlug";
 export { getV1DslRenderPublicSlugQueryOptions } from "./dslController/createGetV1DslRenderPublicSlug";

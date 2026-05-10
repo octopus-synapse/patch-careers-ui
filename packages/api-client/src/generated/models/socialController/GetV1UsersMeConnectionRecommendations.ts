@@ -6,9 +6,10 @@
 
 export type GetV1UsersMeConnectionRecommendationsQueryParams = {
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    limit?: string;
+    limit?: number;
 };
 
 /**

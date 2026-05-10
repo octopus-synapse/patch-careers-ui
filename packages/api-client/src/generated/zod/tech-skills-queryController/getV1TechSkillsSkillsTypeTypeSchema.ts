@@ -12,7 +12,7 @@ export const getV1TechSkillsSkillsTypeTypePathParamsSchema = z.object({
     }) as unknown as ToZod<GetV1TechSkillsSkillsTypeTypePathParams>
 
 export const getV1TechSkillsSkillsTypeTypeQueryParamsSchema = z.object({
-    "limit": z.optional(z.string())
+    "limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1TechSkillsSkillsTypeTypeQueryParams>
 
 /**

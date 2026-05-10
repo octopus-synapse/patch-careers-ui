@@ -116,6 +116,7 @@ export type { PostV1ResumesResumeIdCommentsMutationKey } from "./hooks/collabora
 export type { DeleteV1PostsCommentsIdMutationKey } from "./hooks/commentsController/createDeleteV1PostsCommentsId";
 export type { GetV1PostsIdCommentsQueryKey } from "./hooks/commentsController/createGetV1PostsIdComments";
 export type { PostV1PostsIdCommentsMutationKey } from "./hooks/commentsController/createPostV1PostsIdComments";
+export type { GetV1ConfigPasswordPolicyQueryKey } from "./hooks/configController/createGetV1ConfigPasswordPolicy";
 export type { GetV1DslRenderPublicSlugQueryKey } from "./hooks/dslController/createGetV1DslRenderPublicSlug";
 export type { GetV1DslRenderResumeIdQueryKey } from "./hooks/dslController/createGetV1DslRenderResumeId";
 export type { PostV1DslPreviewMutationKey } from "./hooks/dslController/createPostV1DslPreview";
@@ -425,11 +426,14 @@ export type { Email } from "./models/Email";
 export type { ForgotPasswordRequest } from "./models/ForgotPasswordRequest";
 export type { FullName } from "./models/FullName";
 export type { GitHubUrl } from "./models/GitHubUrl";
+export type { Limit } from "./models/Limit";
 export type { LinkedInUrl } from "./models/LinkedInUrl";
 export type { LoginRequest } from "./models/LoginRequest";
+export type { Page } from "./models/Page";
 export type { Password } from "./models/Password";
 export type { PasswordInput } from "./models/PasswordInput";
 export type { PasswordMessageResponse } from "./models/PasswordMessageResponse";
+export type { PasswordPolicy } from "./models/PasswordPolicy";
 export type { Phone } from "./models/Phone";
 export type { ResetPasswordRequest } from "./models/ResetPasswordRequest";
 export type { ShortDescription } from "./models/ShortDescription";
@@ -557,6 +561,7 @@ export type { PostV1ResumesResumeIdComments201, PostV1ResumesResumeIdComments400
 export type { DeleteV1PostsCommentsId200, DeleteV1PostsCommentsId200DeletedEnumKey, DeleteV1PostsCommentsId400, DeleteV1PostsCommentsId400SeverityEnumKey, DeleteV1PostsCommentsId401, DeleteV1PostsCommentsId401SeverityEnumKey, DeleteV1PostsCommentsId403, DeleteV1PostsCommentsId403SeverityEnumKey, DeleteV1PostsCommentsId404, DeleteV1PostsCommentsId404SeverityEnumKey, DeleteV1PostsCommentsIdMutation, DeleteV1PostsCommentsIdMutationResponse, DeleteV1PostsCommentsIdPathParams } from "./models/commentsController/DeleteV1PostsCommentsId";
 export type { GetV1PostsIdComments200, GetV1PostsIdComments400, GetV1PostsIdComments400SeverityEnumKey, GetV1PostsIdComments401, GetV1PostsIdComments401SeverityEnumKey, GetV1PostsIdComments403, GetV1PostsIdComments403SeverityEnumKey, GetV1PostsIdComments404, GetV1PostsIdComments404SeverityEnumKey, GetV1PostsIdCommentsPathParams, GetV1PostsIdCommentsQuery, GetV1PostsIdCommentsQueryParams, GetV1PostsIdCommentsQueryResponse } from "./models/commentsController/GetV1PostsIdComments";
 export type { PostV1PostsIdComments201, PostV1PostsIdComments400, PostV1PostsIdComments400SeverityEnumKey, PostV1PostsIdComments401, PostV1PostsIdComments401SeverityEnumKey, PostV1PostsIdComments403, PostV1PostsIdComments403SeverityEnumKey, PostV1PostsIdComments404, PostV1PostsIdComments404SeverityEnumKey, PostV1PostsIdCommentsMutation, PostV1PostsIdCommentsMutationRequest, PostV1PostsIdCommentsMutationResponse, PostV1PostsIdCommentsPathParams } from "./models/commentsController/PostV1PostsIdComments";
+export type { GetV1ConfigPasswordPolicy200, GetV1ConfigPasswordPolicy400, GetV1ConfigPasswordPolicy400SeverityEnumKey, GetV1ConfigPasswordPolicyQuery, GetV1ConfigPasswordPolicyQueryResponse } from "./models/configController/GetV1ConfigPasswordPolicy";
 export type { ContentTextDecorationEnum2Key, ContentTextTransformEnum2Key, GetV1DslRenderPublicSlug200, GetV1DslRenderPublicSlug400, GetV1DslRenderPublicSlug400SeverityEnumKey, GetV1DslRenderPublicSlug404, GetV1DslRenderPublicSlug404SeverityEnumKey, GetV1DslRenderPublicSlugPathParams, GetV1DslRenderPublicSlugQuery, GetV1DslRenderPublicSlugQueryParams, GetV1DslRenderPublicSlugQueryParamsTargetEnumKey, GetV1DslRenderPublicSlugQueryResponse, TitleTextDecorationEnum2Key, TitleTextTransformEnum2Key } from "./models/dslController/GetV1DslRenderPublicSlug";
 export type { ContentTextDecorationEnum3Key, ContentTextTransformEnum3Key, GetV1DslRenderResumeId200, GetV1DslRenderResumeId400, GetV1DslRenderResumeId400SeverityEnumKey, GetV1DslRenderResumeId401, GetV1DslRenderResumeId401SeverityEnumKey, GetV1DslRenderResumeId403, GetV1DslRenderResumeId403SeverityEnumKey, GetV1DslRenderResumeId404, GetV1DslRenderResumeId404SeverityEnumKey, GetV1DslRenderResumeIdPathParams, GetV1DslRenderResumeIdQuery, GetV1DslRenderResumeIdQueryParams, GetV1DslRenderResumeIdQueryParamsTargetEnumKey, GetV1DslRenderResumeIdQueryResponse, TitleTextDecorationEnum3Key, TitleTextTransformEnum3Key } from "./models/dslController/GetV1DslRenderResumeId";
 export type { ContentTextDecorationEnumKey, ContentTextTransformEnumKey, PostV1DslPreview201, PostV1DslPreview400, PostV1DslPreview400SeverityEnumKey, PostV1DslPreviewMutation, PostV1DslPreviewMutationResponse, PostV1DslPreviewQueryParams, PostV1DslPreviewQueryParamsTargetEnumKey, TitleTextDecorationEnumKey, TitleTextTransformEnumKey } from "./models/dslController/PostV1DslPreview";
@@ -1004,6 +1009,8 @@ export { commentsController } from "./clients/commentsController/commentsControl
 export { deleteV1PostsCommentsId } from "./clients/commentsController/deleteV1PostsCommentsId";
 export { getV1PostsIdComments } from "./clients/commentsController/getV1PostsIdComments";
 export { postV1PostsIdComments } from "./clients/commentsController/postV1PostsIdComments";
+export { configController } from "./clients/configController/configController";
+export { getV1ConfigPasswordPolicy } from "./clients/configController/getV1ConfigPasswordPolicy";
 export { dslController } from "./clients/dslController/dslController";
 export { getV1DslRenderPublicSlug } from "./clients/dslController/getV1DslRenderPublicSlug";
 export { getV1DslRenderResumeId } from "./clients/dslController/getV1DslRenderResumeId";
@@ -1659,6 +1666,9 @@ export { getV1PostsIdCommentsQueryKey } from "./hooks/commentsController/createG
 export { getV1PostsIdCommentsQueryOptions } from "./hooks/commentsController/createGetV1PostsIdComments";
 export { createPostV1PostsIdComments } from "./hooks/commentsController/createPostV1PostsIdComments";
 export { postV1PostsIdCommentsMutationKey } from "./hooks/commentsController/createPostV1PostsIdComments";
+export { createGetV1ConfigPasswordPolicy } from "./hooks/configController/createGetV1ConfigPasswordPolicy";
+export { getV1ConfigPasswordPolicyQueryKey } from "./hooks/configController/createGetV1ConfigPasswordPolicy";
+export { getV1ConfigPasswordPolicyQueryOptions } from "./hooks/configController/createGetV1ConfigPasswordPolicy";
 export { createGetV1DslRenderPublicSlug } from "./hooks/dslController/createGetV1DslRenderPublicSlug";
 export { getV1DslRenderPublicSlugQueryKey } from "./hooks/dslController/createGetV1DslRenderPublicSlug";
 export { getV1DslRenderPublicSlugQueryOptions } from "./hooks/dslController/createGetV1DslRenderPublicSlug";
@@ -2880,6 +2890,7 @@ export { postV1PostsIdComments400SeverityEnum } from "./models/commentsControlle
 export { postV1PostsIdComments401SeverityEnum } from "./models/commentsController/PostV1PostsIdComments";
 export { postV1PostsIdComments403SeverityEnum } from "./models/commentsController/PostV1PostsIdComments";
 export { postV1PostsIdComments404SeverityEnum } from "./models/commentsController/PostV1PostsIdComments";
+export { getV1ConfigPasswordPolicy400SeverityEnum } from "./models/configController/GetV1ConfigPasswordPolicy";
 export { contentTextDecorationEnum2 } from "./models/dslController/GetV1DslRenderPublicSlug";
 export { contentTextTransformEnum2 } from "./models/dslController/GetV1DslRenderPublicSlug";
 export { getV1DslRenderPublicSlug400SeverityEnum } from "./models/dslController/GetV1DslRenderPublicSlug";
@@ -4148,6 +4159,7 @@ export { postV1ResumesResumeIdComments201Schema, postV1ResumesResumeIdComments40
 export { deleteV1PostsCommentsId200Schema, deleteV1PostsCommentsId400Schema, deleteV1PostsCommentsId401Schema, deleteV1PostsCommentsId403Schema, deleteV1PostsCommentsId404Schema, deleteV1PostsCommentsIdMutationResponseSchema, deleteV1PostsCommentsIdPathParamsSchema } from "./zod/commentsController/deleteV1PostsCommentsIdSchema";
 export { getV1PostsIdComments200Schema, getV1PostsIdComments400Schema, getV1PostsIdComments401Schema, getV1PostsIdComments403Schema, getV1PostsIdComments404Schema, getV1PostsIdCommentsPathParamsSchema, getV1PostsIdCommentsQueryParamsSchema, getV1PostsIdCommentsQueryResponseSchema } from "./zod/commentsController/getV1PostsIdCommentsSchema";
 export { postV1PostsIdComments201Schema, postV1PostsIdComments400Schema, postV1PostsIdComments401Schema, postV1PostsIdComments403Schema, postV1PostsIdComments404Schema, postV1PostsIdCommentsMutationRequestSchema, postV1PostsIdCommentsMutationResponseSchema, postV1PostsIdCommentsPathParamsSchema } from "./zod/commentsController/postV1PostsIdCommentsSchema";
+export { getV1ConfigPasswordPolicy200Schema, getV1ConfigPasswordPolicy400Schema, getV1ConfigPasswordPolicyQueryResponseSchema } from "./zod/configController/getV1ConfigPasswordPolicySchema";
 export { createAccountRequestSchema } from "./zod/createAccountRequestSchema";
 export { createJobRequestSchema } from "./zod/createJobRequestSchema";
 export { createResumeRequestSchema } from "./zod/createResumeRequestSchema";
@@ -4224,6 +4236,7 @@ export { postV1JobsIdApply201Schema, postV1JobsIdApply400Schema, postV1JobsIdApp
 export { postV1JobsIdBookmark201Schema, postV1JobsIdBookmark400Schema, postV1JobsIdBookmark401Schema, postV1JobsIdBookmark403Schema, postV1JobsIdBookmark404Schema, postV1JobsIdBookmarkMutationResponseSchema, postV1JobsIdBookmarkPathParamsSchema } from "./zod/jobsController/postV1JobsIdBookmarkSchema";
 export { postV1JobsImportFromUrl200Schema, postV1JobsImportFromUrl400Schema, postV1JobsImportFromUrl401Schema, postV1JobsImportFromUrl403Schema, postV1JobsImportFromUrlMutationRequestSchema, postV1JobsImportFromUrlMutationResponseSchema } from "./zod/jobsController/postV1JobsImportFromUrlSchema";
 export { postV1Jobs201Schema, postV1Jobs400Schema, postV1Jobs401Schema, postV1Jobs403Schema, postV1JobsMutationRequestSchema, postV1JobsMutationResponseSchema } from "./zod/jobsController/postV1JobsSchema";
+export { limitSchema } from "./zod/limitSchema";
 export { linkedInUrlSchema } from "./zod/linkedInUrlSchema";
 export { loginRequestSchema } from "./zod/loginRequestSchema";
 export { getV1MecCoursesCodigoCurso200Schema, getV1MecCoursesCodigoCurso400Schema, getV1MecCoursesCodigoCurso404Schema, getV1MecCoursesCodigoCursoPathParamsSchema, getV1MecCoursesCodigoCursoQueryResponseSchema } from "./zod/mec-coursesController/getV1MecCoursesCodigoCursoSchema";
@@ -4258,6 +4271,7 @@ export { postV1OnboardingSessionPrevious201Schema, postV1OnboardingSessionPrevio
 export { postV1OnboardingSessionRestart201Schema, postV1OnboardingSessionRestart400Schema, postV1OnboardingSessionRestart401Schema, postV1OnboardingSessionRestartMutationResponseSchema, postV1OnboardingSessionRestartQueryParamsSchema } from "./zod/onboardingController/postV1OnboardingSessionRestartSchema";
 export { postV1OnboardingSessionSave201Schema, postV1OnboardingSessionSave400Schema, postV1OnboardingSessionSave401Schema, postV1OnboardingSessionSaveMutationRequestSchema, postV1OnboardingSessionSaveMutationResponseSchema, postV1OnboardingSessionSaveQueryParamsSchema } from "./zod/onboardingController/postV1OnboardingSessionSaveSchema";
 export { putV1OnboardingProgress200Schema, putV1OnboardingProgress400Schema, putV1OnboardingProgress401Schema, putV1OnboardingProgressMutationRequestSchema, putV1OnboardingProgressMutationResponseSchema } from "./zod/onboardingController/putV1OnboardingProgressSchema";
+export { pageSchema } from "./zod/pageSchema";
 export { getV1PagesMeDashboard200Schema, getV1PagesMeDashboard400Schema, getV1PagesMeDashboard401Schema, getV1PagesMeDashboardQueryResponseSchema } from "./zod/pagesController/getV1PagesMeDashboardSchema";
 export { getV1PagesSettingsSection200Schema, getV1PagesSettingsSection400Schema, getV1PagesSettingsSection401Schema, getV1PagesSettingsSection404Schema, getV1PagesSettingsSectionPathParamsSchema, getV1PagesSettingsSectionQueryResponseSchema } from "./zod/pagesController/getV1PagesSettingsSectionSchema";
 export { postV1AuthForgotPassword200Schema, postV1AuthForgotPassword400Schema, postV1AuthForgotPasswordMutationRequestSchema, postV1AuthForgotPasswordMutationResponseSchema } from "./zod/password-managementController/postV1AuthForgotPasswordSchema";
@@ -4265,6 +4279,7 @@ export { postV1AuthResetPassword201Schema, postV1AuthResetPassword400Schema, pos
 export { postV1MePasswordChange201Schema, postV1MePasswordChange400Schema, postV1MePasswordChange401Schema, postV1MePasswordChangeMutationRequestSchema, postV1MePasswordChangeMutationResponseSchema } from "./zod/password-managementController/postV1MePasswordChangeSchema";
 export { passwordInputSchema } from "./zod/passwordInputSchema";
 export { passwordMessageResponseSchema } from "./zod/passwordMessageResponseSchema";
+export { passwordPolicySchema } from "./zod/passwordPolicySchema";
 export { passwordSchema } from "./zod/passwordSchema";
 export { phoneSchema } from "./zod/phoneSchema";
 export { getV1EventsSchemas200Schema, getV1EventsSchemas400Schema, getV1EventsSchemas401Schema, getV1EventsSchemasQueryResponseSchema } from "./zod/platform-eventsController/getV1EventsSchemasSchema";

@@ -15,12 +15,18 @@ export const getV1ChatUsersSearchQueryParamsSchema = z.object({
  * @description Successful response
  */
 export const getV1ChatUsersSearch200Schema = z.object({
-    "users": z.array(z.object({
+    "items": z.array(z.object({
     "id": z.string(),
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string())
-    }))
+    })),
+"total": z.number().int().min(0),
+"page": z.number().int().min(1),
+"limit": z.number().int().min(1),
+"totalPages": z.number().int().min(0),
+"hasNext": z.boolean(),
+"hasPrev": z.boolean()
     }) as unknown as ToZod<GetV1ChatUsersSearch200>
 
 /**

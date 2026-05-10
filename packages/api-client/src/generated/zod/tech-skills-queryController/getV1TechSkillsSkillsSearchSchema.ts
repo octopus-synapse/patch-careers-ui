@@ -9,7 +9,7 @@ import type { GetV1TechSkillsSkillsSearch200, GetV1TechSkillsSkillsSearch400, Ge
 
 export const getV1TechSkillsSkillsSearchQueryParamsSchema = z.object({
     "q": z.string(),
-"limit": z.optional(z.string())
+"limit": z.optional(z.coerce.number().int().min(1))
     }) as unknown as ToZod<GetV1TechSkillsSkillsSearchQueryParams>
 
 /**

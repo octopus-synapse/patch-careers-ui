@@ -34,7 +34,7 @@ const queryClient = useQueryClient();
 
 const commentsQuery = createGetV1PostsIdComments(
   postId,
-  { limit: '50' },
+  { limit: 50 },
   { query: { enabled: postId !== '' } },
 );
 

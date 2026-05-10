@@ -9,7 +9,7 @@ import type { GetV1MecInstitutionsSearch200, GetV1MecInstitutionsSearch400, GetV
 
 export const getV1MecInstitutionsSearchQueryParamsSchema = z.object({
     "q": z.string(),
-"limit": z.optional(z.string())
+"limit": z.optional(z.coerce.number().int().min(1))
     }) as unknown as ToZod<GetV1MecInstitutionsSearchQueryParams>
 
 /**

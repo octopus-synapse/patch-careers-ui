@@ -9,7 +9,7 @@ import type { GetV1Feed200, GetV1Feed400, GetV1Feed401, GetV1Feed403, GetV1FeedQ
 
 export const getV1FeedQueryParamsSchema = z.object({
     "cursor": z.optional(z.string()),
-"limit": z.optional(z.string()),
+"limit": z.optional(z.coerce.number().int().min(1)),
 "type": z.optional(z.enum(["ACHIEVEMENT", "OPPORTUNITY", "LEARNING", "BUILD", "QUESTION", "REPOST", "CHALLENGE"])),
 "followingOnly": z.optional(z.string())
     }).optional() as unknown as ToZod<GetV1FeedQueryParams>

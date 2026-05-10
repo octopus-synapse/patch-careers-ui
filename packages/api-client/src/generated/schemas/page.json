@@ -1,0 +1,1 @@
+{"type":"integer","minimum":1,"default":1,"description":"1-indexed page number for offset pagination.","example":1,"x-readme-ref-name":"Page"}

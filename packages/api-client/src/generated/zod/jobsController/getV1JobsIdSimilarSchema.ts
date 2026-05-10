@@ -12,7 +12,7 @@ export const getV1JobsIdSimilarPathParamsSchema = z.object({
     }) as unknown as ToZod<GetV1JobsIdSimilarPathParams>
 
 export const getV1JobsIdSimilarQueryParamsSchema = z.object({
-    "limit": z.optional(z.string())
+    "limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1JobsIdSimilarQueryParams>
 
 /**

@@ -21,7 +21,7 @@ import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
-type Comment = GetV1ResumesResumeIdComments200['comments'][number];
+type Comment = GetV1ResumesResumeIdComments200['items'][number];
 
 interface Props {
   resumeId: string;
@@ -87,7 +87,7 @@ function canDelete(c: Comment): boolean {
   return c.author.id === currentUserId || ownerId === currentUserId;
 }
 
-const allComments = $derived($commentsQuery.data?.comments);
+const allComments = $derived($commentsQuery.data?.items);
 const topLevel = $derived(
   allComments?.filter((c) => !c.parentId && (showResolved || !c.resolved)),
 );

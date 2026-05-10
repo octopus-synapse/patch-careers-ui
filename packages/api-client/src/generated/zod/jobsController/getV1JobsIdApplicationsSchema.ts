@@ -6,14 +6,16 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1JobsIdApplications200, GetV1JobsIdApplications400, GetV1JobsIdApplications401, GetV1JobsIdApplications403, GetV1JobsIdApplications404, GetV1JobsIdApplicationsPathParams, GetV1JobsIdApplicationsQueryParams, GetV1JobsIdApplicationsQueryResponse } from "../../models/jobsController/GetV1JobsIdApplications";
+import { limitSchema } from "../limitSchema";
+import { pageSchema } from "../pageSchema";
 
 export const getV1JobsIdApplicationsPathParamsSchema = z.object({
     "id": z.string().uuid().describe("Resource UUID (path parameter).")
     }) as unknown as ToZod<GetV1JobsIdApplicationsPathParams>
 
 export const getV1JobsIdApplicationsQueryParamsSchema = z.object({
-    "page": z.coerce.number().int().min(1).default(1),
-"limit": z.coerce.number().int().min(1).max(100).default(20),
+    "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
+"limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
 "sortBy": z.optional(z.string()),
 "sortOrder": z.enum(["asc", "desc"]).default("desc")
     }) as unknown as ToZod<GetV1JobsIdApplicationsQueryParams>

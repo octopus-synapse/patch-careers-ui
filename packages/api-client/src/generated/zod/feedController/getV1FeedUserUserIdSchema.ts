@@ -13,7 +13,7 @@ export const getV1FeedUserUserIdPathParamsSchema = z.object({
 
 export const getV1FeedUserUserIdQueryParamsSchema = z.object({
     "cursor": z.optional(z.string()),
-"limit": z.optional(z.string())
+"limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1FeedUserUserIdQueryParams>
 
 /**

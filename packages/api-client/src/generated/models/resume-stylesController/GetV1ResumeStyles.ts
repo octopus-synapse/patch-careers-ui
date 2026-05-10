@@ -6,13 +6,15 @@
 
 export type GetV1ResumeStylesQueryParams = {
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    page?: string;
+    page?: number;
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    limit?: string;
+    limit?: number;
 };
 
 export const itemsLayoutKindEnum = {

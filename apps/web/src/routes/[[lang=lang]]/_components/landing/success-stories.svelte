@@ -15,7 +15,7 @@ type Story = {
 };
 
 const query = createGetV1SuccessStories(
-  { limit: '12' },
+  { limit: 12 },
   { query: { enabled: browser } },
 );
 

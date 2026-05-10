@@ -39,7 +39,7 @@ $effect(() => {
 });
 
 const query = createGetV1Resumes(
-  { page: '1', limit: '20' },
+  { page: 1, limit: 20 },
   { query: { enabled: browser && authenticated } },
 );
 

@@ -14,7 +14,7 @@ export function useUserSkills() {
     if (!browser) return;
     getV1UsersMeSkills()
       .then((res) => {
-        skills = new Set(res.skills.map((s) => s.skill.toLowerCase()));
+        skills = new Set(res.items.map((s) => s.skill.toLowerCase()));
       })
       .catch(() => {});
   });

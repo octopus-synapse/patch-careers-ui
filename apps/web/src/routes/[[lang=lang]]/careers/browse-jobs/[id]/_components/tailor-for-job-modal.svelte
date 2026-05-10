@@ -27,7 +27,7 @@ type Props = {
 let { open, onClose, jobId, jobTitle, jobCompany, jobDescription }: Props = $props();
 
 const resumesQuery = createGetV1Resumes(
-  { page: '1', limit: '20' },
+  { page: 1, limit: 20 },
   { query: { enabled: browser && open } },
 );
 

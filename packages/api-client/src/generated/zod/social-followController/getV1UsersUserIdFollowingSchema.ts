@@ -6,14 +6,16 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersUserIdFollowing200, GetV1UsersUserIdFollowing400, GetV1UsersUserIdFollowing401, GetV1UsersUserIdFollowing403, GetV1UsersUserIdFollowing404, GetV1UsersUserIdFollowingPathParams, GetV1UsersUserIdFollowingQueryParams, GetV1UsersUserIdFollowingQueryResponse } from "../../models/social-followController/GetV1UsersUserIdFollowing";
+import { limitSchema } from "../limitSchema";
+import { pageSchema } from "../pageSchema";
 
 export const getV1UsersUserIdFollowingPathParamsSchema = z.object({
     "userId": z.string().uuid().describe("Target user UUID (path parameter).")
     }) as unknown as ToZod<GetV1UsersUserIdFollowingPathParams>
 
 export const getV1UsersUserIdFollowingQueryParamsSchema = z.object({
-    "page": z.coerce.number().int().min(1).default(1),
-"limit": z.coerce.number().int().min(1).max(100).default(20),
+    "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
+"limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
 "sortBy": z.optional(z.string()),
 "sortOrder": z.enum(["asc", "desc"]).default("desc")
     }) as unknown as ToZod<GetV1UsersUserIdFollowingQueryParams>

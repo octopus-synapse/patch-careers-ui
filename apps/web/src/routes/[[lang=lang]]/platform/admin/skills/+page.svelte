@@ -45,7 +45,7 @@
   let tab = $state<Tab>('areas');
   let search = $state('');
 
-  const params = $derived({ page: '1', pageSize: '50', search: search || undefined });
+  const params = $derived({ page: 1, pageSize: 50, search: search || undefined });
 
   const areasQuery = createGetV1AdminTechAreas(
     params,

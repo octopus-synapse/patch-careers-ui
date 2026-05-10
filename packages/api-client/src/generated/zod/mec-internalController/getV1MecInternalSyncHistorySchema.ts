@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1MecInternalSyncHistory200, GetV1MecInternalSyncHistory400, GetV1MecInternalSyncHistoryQueryParams, GetV1MecInternalSyncHistoryQueryResponse } from "../../models/mec-internalController/GetV1MecInternalSyncHistory";
 
 export const getV1MecInternalSyncHistoryQueryParamsSchema = z.object({
-    "limit": z.optional(z.string())
+    "limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1MecInternalSyncHistoryQueryParams>
 
 /**

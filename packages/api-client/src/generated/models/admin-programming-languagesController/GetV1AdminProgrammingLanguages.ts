@@ -6,13 +6,15 @@
 
 export type GetV1AdminProgrammingLanguagesQueryParams = {
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    page?: string;
+    page?: number;
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    pageSize?: string;
+    pageSize?: number;
     /**
      * @type string | undefined
     */

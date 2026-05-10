@@ -10,9 +10,10 @@ export type GetV1TechSkillsSearchQueryParams = {
     */
     q: string;
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    limit?: string;
+    limit?: number;
 };
 
 export const skillsTypeEnum4 = {

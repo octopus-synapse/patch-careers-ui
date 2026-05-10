@@ -48,7 +48,7 @@ const tabs = $derived([
 const CONNECTION_TYPES = new Set(['CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', 'FOLLOW_NEW']);
 
 const initialQuery = createGetV1Notifications(
-  { limit: '20' },
+  { limit: 20 },
   { query: { enabled: browser && authenticated } },
 );
 
@@ -73,7 +73,7 @@ const queryClient = useQueryClient();
 // svelte-ignore state_referenced_locally
 useSseSubscribe('/v1/notifications/subscribe', {
   queryClient,
-  invalidateKeys: [getV1NotificationsQueryKey({ limit: '20' }), getV1NotificationsUnreadCountQueryKey()],
+  invalidateKeys: [getV1NotificationsQueryKey({ limit: 20 }), getV1NotificationsUnreadCountQueryKey()],
   enabled: authenticated,
 });
 
@@ -82,7 +82,7 @@ async function loadMore() {
   if (loadingMore || !next) return;
   loadingMore = true;
   try {
-    const res = await getV1Notifications({ cursor: next, limit: '20' });
+    const res = await getV1Notifications({ cursor: next, limit: 20 });
     extra = [...extra, ...res.items];
     cursor = res.nextCursor;
   } finally {
@@ -93,7 +93,7 @@ async function loadMore() {
 const markReadMutation = createPostV1NotificationsMarkRead({
   mutation: {
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: getV1NotificationsQueryKey({ limit: '20' }) });
+      queryClient.invalidateQueries({ queryKey: getV1NotificationsQueryKey({ limit: 20 }) });
       queryClient.invalidateQueries({ queryKey: getV1NotificationsUnreadCountQueryKey() });
       extra = extra.map((n) => ({ ...n, read: true }));
       track('notifications_mark_all_read');
@@ -109,7 +109,7 @@ async function markOne(id: string) {
     await postV1NotificationsMarkRead({ notificationId: id });
     extra = extra.map((n) => (n.id === id ? { ...n, read: true } : n));
     queryClient.invalidateQueries({
-      queryKey: getV1NotificationsQueryKey({ limit: '20' }),
+      queryKey: getV1NotificationsQueryKey({ limit: 20 }),
     });
     queryClient.invalidateQueries({ queryKey: getV1NotificationsUnreadCountQueryKey() });
   } catch {

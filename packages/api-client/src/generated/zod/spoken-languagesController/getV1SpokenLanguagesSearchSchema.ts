@@ -9,7 +9,7 @@ import type { GetV1SpokenLanguagesSearch200, GetV1SpokenLanguagesSearch400, GetV
 
 export const getV1SpokenLanguagesSearchQueryParamsSchema = z.object({
     "q": z.optional(z.string()),
-"limit": z.optional(z.string())
+"limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1SpokenLanguagesSearchQueryParams>
 
 /**

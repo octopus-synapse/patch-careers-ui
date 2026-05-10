@@ -24,7 +24,7 @@ const search = createGetV1ChatUsersSearch(
   { query: { enabled: debouncedQuery.length >= 2, retry: false, refetchOnWindowFocus: false } },
 );
 
-const results = $derived($search.data?.users ?? []);
+const results = $derived($search.data?.items ?? []);
 
 $effect(() => {
   showDropdown = results.length > 0 && debouncedQuery.length >= 2;

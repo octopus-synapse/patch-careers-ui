@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1SuccessStories200, GetV1SuccessStories400, GetV1SuccessStoriesQueryParams, GetV1SuccessStoriesQueryResponse } from "../../models/success-storiesController/GetV1SuccessStories";
 
 export const getV1SuccessStoriesQueryParamsSchema = z.object({
-    "limit": z.optional(z.string())
+    "limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1SuccessStoriesQueryParams>
 
 /**

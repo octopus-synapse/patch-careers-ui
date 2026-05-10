@@ -9,7 +9,7 @@ import type { GetV1Notifications200, GetV1Notifications400, GetV1Notifications40
 
 export const getV1NotificationsQueryParamsSchema = z.object({
     "cursor": z.optional(z.string()),
-"limit": z.optional(z.string())
+"limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1NotificationsQueryParams>
 
 /**

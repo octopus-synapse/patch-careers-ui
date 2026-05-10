@@ -13,9 +13,10 @@ export type GetV1TechSkillsTypeTypePathParams = {
 
 export type GetV1TechSkillsTypeTypeQueryParams = {
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    limit?: string;
+    limit?: number;
 };
 
 export const skillsTypeEnum8 = {

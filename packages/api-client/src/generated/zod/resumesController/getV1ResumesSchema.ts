@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1Resumes200, GetV1Resumes400, GetV1Resumes401, GetV1Resumes403, GetV1ResumesQueryParams, GetV1ResumesQueryResponse } from "../../models/resumesController/GetV1Resumes";
 
 export const getV1ResumesQueryParamsSchema = z.object({
-    "page": z.optional(z.string()),
-"limit": z.optional(z.string())
+    "page": z.optional(z.coerce.number().int().min(1)),
+"limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1ResumesQueryParams>
 
 /**

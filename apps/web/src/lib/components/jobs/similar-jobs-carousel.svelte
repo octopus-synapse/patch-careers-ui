@@ -19,7 +19,7 @@ const t = $derived(locale.t);
  */
 const similarQuery = createGetV1JobsIdSimilar(
   jobId,
-  { limit: '5' },
+  { limit: 5 },
   { query: { enabled: browser && !!jobId } },
 );
 

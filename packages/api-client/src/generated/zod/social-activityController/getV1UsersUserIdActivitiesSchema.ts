@@ -6,14 +6,16 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersUserIdActivities200, GetV1UsersUserIdActivities400, GetV1UsersUserIdActivities401, GetV1UsersUserIdActivities404, GetV1UsersUserIdActivitiesPathParams, GetV1UsersUserIdActivitiesQueryParams, GetV1UsersUserIdActivitiesQueryResponse } from "../../models/social-activityController/GetV1UsersUserIdActivities";
+import { limitSchema } from "../limitSchema";
+import { pageSchema } from "../pageSchema";
 
 export const getV1UsersUserIdActivitiesPathParamsSchema = z.object({
     "userId": z.string().uuid().describe("Target user UUID (path parameter).")
     }) as unknown as ToZod<GetV1UsersUserIdActivitiesPathParams>
 
 export const getV1UsersUserIdActivitiesQueryParamsSchema = z.object({
-    "page": z.coerce.number().int().min(1).default(1),
-"limit": z.coerce.number().int().min(1).max(100).default(20),
+    "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
+"limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
 "sortBy": z.optional(z.string()),
 "sortOrder": z.enum(["asc", "desc"]).default("desc")
     }) as unknown as ToZod<GetV1UsersUserIdActivitiesQueryParams>

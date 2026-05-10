@@ -14,9 +14,10 @@ export type GetV1JobsIdSimilarPathParams = {
 
 export type GetV1JobsIdSimilarQueryParams = {
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    limit?: string;
+    limit?: number;
 };
 
 export const itemsJobTypeEnum6 = {

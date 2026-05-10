@@ -15,7 +15,7 @@ export const getV1ResumesResumeIdCommentsPathParamsSchema = z.object({
  * @description Successful response
  */
 export const getV1ResumesResumeIdComments200Schema = z.object({
-    "comments": z.array(z.object({
+    "items": z.array(z.object({
     "id": z.string(),
 "resumeId": z.string(),
 "authorId": z.string(),
@@ -34,7 +34,13 @@ export const getV1ResumesResumeIdComments200Schema = z.object({
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string())
     })
-    }))
+    })),
+"total": z.number().int().min(0),
+"page": z.number().int().min(1),
+"limit": z.number().int().min(1),
+"totalPages": z.number().int().min(0),
+"hasNext": z.boolean(),
+"hasPrev": z.boolean()
     }) as unknown as ToZod<GetV1ResumesResumeIdComments200>
 
 /**

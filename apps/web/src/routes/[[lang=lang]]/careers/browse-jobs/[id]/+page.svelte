@@ -60,7 +60,7 @@ const fitQuery = createGetV1JobsIdFitProfile(
 // the first resume in the user's list as the "primary-ish" candidate;
 // future iteration may expose a picker when the user has >1 resume.
 const myResumesQuery = createGetV1Resumes(
-  { page: "1", limit: "1" },
+  { page: 1, limit: 1 },
   { query: { enabled: browser && !!currentUserId && !isOwner, retry: false } },
 );
 const primaryResumeId = $derived.by<string | null>(() => {

@@ -6,6 +6,8 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersUserIdActivitiesByTypeType200, GetV1UsersUserIdActivitiesByTypeType400, GetV1UsersUserIdActivitiesByTypeType401, GetV1UsersUserIdActivitiesByTypeType404, GetV1UsersUserIdActivitiesByTypeTypePathParams, GetV1UsersUserIdActivitiesByTypeTypeQueryParams, GetV1UsersUserIdActivitiesByTypeTypeQueryResponse } from "../../models/social-activityController/GetV1UsersUserIdActivitiesByTypeType";
+import { limitSchema } from "../limitSchema";
+import { pageSchema } from "../pageSchema";
 
 export const getV1UsersUserIdActivitiesByTypeTypePathParamsSchema = z.object({
     "userId": z.string().uuid().describe("Target user UUID (path parameter)."),
@@ -13,8 +15,8 @@ export const getV1UsersUserIdActivitiesByTypeTypePathParamsSchema = z.object({
     }) as unknown as ToZod<GetV1UsersUserIdActivitiesByTypeTypePathParams>
 
 export const getV1UsersUserIdActivitiesByTypeTypeQueryParamsSchema = z.object({
-    "page": z.coerce.number().int().min(1).default(1),
-"limit": z.coerce.number().int().min(1).max(100).default(20),
+    "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
+"limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
 "sortBy": z.optional(z.string()),
 "sortOrder": z.enum(["asc", "desc"]).default("desc")
     }) as unknown as ToZod<GetV1UsersUserIdActivitiesByTypeTypeQueryParams>

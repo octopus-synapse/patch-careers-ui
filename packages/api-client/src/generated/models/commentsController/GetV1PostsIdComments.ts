@@ -18,9 +18,10 @@ export type GetV1PostsIdCommentsQueryParams = {
     */
     cursor?: string;
     /**
-     * @type string | undefined
+     * @minLength 1
+     * @type integer | undefined
     */
-    limit?: string;
+    limit?: number;
 };
 
 /**

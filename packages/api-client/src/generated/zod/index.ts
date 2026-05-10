@@ -119,6 +119,7 @@ export { postV1ResumesResumeIdComments201Schema, postV1ResumesResumeIdComments40
 export { deleteV1PostsCommentsId200Schema, deleteV1PostsCommentsId400Schema, deleteV1PostsCommentsId401Schema, deleteV1PostsCommentsId403Schema, deleteV1PostsCommentsId404Schema, deleteV1PostsCommentsIdMutationResponseSchema, deleteV1PostsCommentsIdPathParamsSchema } from "./commentsController/deleteV1PostsCommentsIdSchema";
 export { getV1PostsIdComments200Schema, getV1PostsIdComments400Schema, getV1PostsIdComments401Schema, getV1PostsIdComments403Schema, getV1PostsIdComments404Schema, getV1PostsIdCommentsPathParamsSchema, getV1PostsIdCommentsQueryParamsSchema, getV1PostsIdCommentsQueryResponseSchema } from "./commentsController/getV1PostsIdCommentsSchema";
 export { postV1PostsIdComments201Schema, postV1PostsIdComments400Schema, postV1PostsIdComments401Schema, postV1PostsIdComments403Schema, postV1PostsIdComments404Schema, postV1PostsIdCommentsMutationRequestSchema, postV1PostsIdCommentsMutationResponseSchema, postV1PostsIdCommentsPathParamsSchema } from "./commentsController/postV1PostsIdCommentsSchema";
+export { getV1ConfigPasswordPolicy200Schema, getV1ConfigPasswordPolicy400Schema, getV1ConfigPasswordPolicyQueryResponseSchema } from "./configController/getV1ConfigPasswordPolicySchema";
 export { createAccountRequestSchema } from "./createAccountRequestSchema";
 export { createJobRequestSchema } from "./createJobRequestSchema";
 export { createResumeRequestSchema } from "./createResumeRequestSchema";
@@ -195,6 +196,7 @@ export { postV1JobsIdApply201Schema, postV1JobsIdApply400Schema, postV1JobsIdApp
 export { postV1JobsIdBookmark201Schema, postV1JobsIdBookmark400Schema, postV1JobsIdBookmark401Schema, postV1JobsIdBookmark403Schema, postV1JobsIdBookmark404Schema, postV1JobsIdBookmarkMutationResponseSchema, postV1JobsIdBookmarkPathParamsSchema } from "./jobsController/postV1JobsIdBookmarkSchema";
 export { postV1JobsImportFromUrl200Schema, postV1JobsImportFromUrl400Schema, postV1JobsImportFromUrl401Schema, postV1JobsImportFromUrl403Schema, postV1JobsImportFromUrlMutationRequestSchema, postV1JobsImportFromUrlMutationResponseSchema } from "./jobsController/postV1JobsImportFromUrlSchema";
 export { postV1Jobs201Schema, postV1Jobs400Schema, postV1Jobs401Schema, postV1Jobs403Schema, postV1JobsMutationRequestSchema, postV1JobsMutationResponseSchema } from "./jobsController/postV1JobsSchema";
+export { limitSchema } from "./limitSchema";
 export { linkedInUrlSchema } from "./linkedInUrlSchema";
 export { loginRequestSchema } from "./loginRequestSchema";
 export { getV1MecCoursesCodigoCurso200Schema, getV1MecCoursesCodigoCurso400Schema, getV1MecCoursesCodigoCurso404Schema, getV1MecCoursesCodigoCursoPathParamsSchema, getV1MecCoursesCodigoCursoQueryResponseSchema } from "./mec-coursesController/getV1MecCoursesCodigoCursoSchema";
@@ -229,6 +231,7 @@ export { postV1OnboardingSessionPrevious201Schema, postV1OnboardingSessionPrevio
 export { postV1OnboardingSessionRestart201Schema, postV1OnboardingSessionRestart400Schema, postV1OnboardingSessionRestart401Schema, postV1OnboardingSessionRestartMutationResponseSchema, postV1OnboardingSessionRestartQueryParamsSchema } from "./onboardingController/postV1OnboardingSessionRestartSchema";
 export { postV1OnboardingSessionSave201Schema, postV1OnboardingSessionSave400Schema, postV1OnboardingSessionSave401Schema, postV1OnboardingSessionSaveMutationRequestSchema, postV1OnboardingSessionSaveMutationResponseSchema, postV1OnboardingSessionSaveQueryParamsSchema } from "./onboardingController/postV1OnboardingSessionSaveSchema";
 export { putV1OnboardingProgress200Schema, putV1OnboardingProgress400Schema, putV1OnboardingProgress401Schema, putV1OnboardingProgressMutationRequestSchema, putV1OnboardingProgressMutationResponseSchema } from "./onboardingController/putV1OnboardingProgressSchema";
+export { pageSchema } from "./pageSchema";
 export { getV1PagesMeDashboard200Schema, getV1PagesMeDashboard400Schema, getV1PagesMeDashboard401Schema, getV1PagesMeDashboardQueryResponseSchema } from "./pagesController/getV1PagesMeDashboardSchema";
 export { getV1PagesSettingsSection200Schema, getV1PagesSettingsSection400Schema, getV1PagesSettingsSection401Schema, getV1PagesSettingsSection404Schema, getV1PagesSettingsSectionPathParamsSchema, getV1PagesSettingsSectionQueryResponseSchema } from "./pagesController/getV1PagesSettingsSectionSchema";
 export { postV1AuthForgotPassword200Schema, postV1AuthForgotPassword400Schema, postV1AuthForgotPasswordMutationRequestSchema, postV1AuthForgotPasswordMutationResponseSchema } from "./password-managementController/postV1AuthForgotPasswordSchema";
@@ -236,6 +239,7 @@ export { postV1AuthResetPassword201Schema, postV1AuthResetPassword400Schema, pos
 export { postV1MePasswordChange201Schema, postV1MePasswordChange400Schema, postV1MePasswordChange401Schema, postV1MePasswordChangeMutationRequestSchema, postV1MePasswordChangeMutationResponseSchema } from "./password-managementController/postV1MePasswordChangeSchema";
 export { passwordInputSchema } from "./passwordInputSchema";
 export { passwordMessageResponseSchema } from "./passwordMessageResponseSchema";
+export { passwordPolicySchema } from "./passwordPolicySchema";
 export { passwordSchema } from "./passwordSchema";
 export { phoneSchema } from "./phoneSchema";
 export { getV1EventsSchemas200Schema, getV1EventsSchemas400Schema, getV1EventsSchemas401Schema, getV1EventsSchemasQueryResponseSchema } from "./platform-eventsController/getV1EventsSchemasSchema";

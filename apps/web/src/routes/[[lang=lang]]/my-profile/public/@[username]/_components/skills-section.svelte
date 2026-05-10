@@ -29,7 +29,7 @@
 
   let { userId, isOwnProfile, viewerAuthenticated }: Props = $props();
 
-  type SkillSummary = GetV1UsersUserIdSkills200['skills'][number];
+  type SkillSummary = GetV1UsersUserIdSkills200['items'][number];
   type Endorser = GetV1UsersUserIdSkillsSkillEndorsers200['items'][number];
 
   const t = $derived(locale.t);
@@ -40,7 +40,7 @@
     { query: { enabled: browser && !!userId } },
   );
 
-  const skills = $derived($query.data?.skills ?? []);
+  const skills = $derived($query.data?.items ?? []);
 
   let optimisticOverrides = $state<Record<string, { endorsedByMe: boolean; delta: number }>>({});
 

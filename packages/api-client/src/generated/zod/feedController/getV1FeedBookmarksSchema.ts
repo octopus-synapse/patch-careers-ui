@@ -9,7 +9,7 @@ import type { GetV1FeedBookmarks200, GetV1FeedBookmarks400, GetV1FeedBookmarks40
 
 export const getV1FeedBookmarksQueryParamsSchema = z.object({
     "cursor": z.optional(z.string()),
-"limit": z.optional(z.string())
+"limit": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1FeedBookmarksQueryParams>
 
 /**

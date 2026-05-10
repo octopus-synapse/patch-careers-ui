@@ -52,7 +52,7 @@ const unreadCount = $derived(
 );
 
 const notificationsQuery = createGetV1Notifications(
-  { cursor: '', limit: '10' },
+  { cursor: '', limit: 10 },
   {
         query: { enabled: browser && isOpen },
       },

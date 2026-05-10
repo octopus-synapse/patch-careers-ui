@@ -10,3 +10,5 @@ checks:
     cmd: bunx biome check .
   - name: no-any
     cmd: bash scripts/check-no-any.sh
+  - name: sdk-drift
+    cmd: bash scripts/check-sdk-drift.sh

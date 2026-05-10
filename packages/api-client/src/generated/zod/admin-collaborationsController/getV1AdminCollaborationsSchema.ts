@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1AdminCollaborations200, GetV1AdminCollaborations400, GetV1AdminCollaborations401, GetV1AdminCollaborations403, GetV1AdminCollaborationsQueryParams, GetV1AdminCollaborationsQueryResponse } from "../../models/admin-collaborationsController/GetV1AdminCollaborations";
 
 export const getV1AdminCollaborationsQueryParamsSchema = z.object({
-    "page": z.optional(z.string()),
-"pageSize": z.optional(z.string())
+    "page": z.optional(z.coerce.number().int().min(1)),
+"pageSize": z.optional(z.coerce.number().int().min(1))
     }).optional() as unknown as ToZod<GetV1AdminCollaborationsQueryParams>
 
 /**

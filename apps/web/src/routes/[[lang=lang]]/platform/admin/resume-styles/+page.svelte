@@ -16,7 +16,7 @@
   const queryClient = useQueryClient();
 
   const listQuery = createGetV1ResumeStyles(
-    { page: '1', limit: '50' },
+    { page: 1, limit: 50 },
     { query: { enabled: browser } },
   );
 
@@ -29,7 +29,7 @@
       await deleteV1AdminResumeStylesId(id);
       toastState.show('Estilo excluído', 'success');
       await queryClient.invalidateQueries({
-        queryKey: getV1ResumeStylesQueryKey({ page: '1', limit: '50' }),
+        queryKey: getV1ResumeStylesQueryKey({ page: 1, limit: 50 }),
       });
     } catch (err) {
       handleApiError(err);

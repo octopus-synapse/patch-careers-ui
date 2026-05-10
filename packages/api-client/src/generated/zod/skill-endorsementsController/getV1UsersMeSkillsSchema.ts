@@ -11,11 +11,17 @@ import type { GetV1UsersMeSkills200, GetV1UsersMeSkills400, GetV1UsersMeSkills40
  * @description Successful response
  */
 export const getV1UsersMeSkills200Schema = z.object({
-    "skills": z.array(z.object({
+    "items": z.array(z.object({
     "skill": z.string(),
 "endorsementCount": z.number().int().min(0),
 "endorsedByMe": z.boolean()
-    }))
+    })),
+"total": z.number().int().min(0),
+"page": z.number().int().min(1),
+"limit": z.number().int().min(1),
+"totalPages": z.number().int().min(0),
+"hasNext": z.boolean(),
+"hasPrev": z.boolean()
     }) as unknown as ToZod<GetV1UsersMeSkills200>
 
 /**

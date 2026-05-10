@@ -8,7 +8,7 @@
     "./zod": "./src/generated/zod/index.ts"
   },
   "scripts": {
-    "sdk:generate": "kubb generate --config kubb.config.ts",
+    "sdk:generate": "kubb generate --config kubb.config.ts && sha256sum ../../../profile-services/client-swagger.json | cut -d' ' -f1 > src/generated/.swagger-hash",
     "check": "tsc --noEmit"
   },
   "peerDependencies": {

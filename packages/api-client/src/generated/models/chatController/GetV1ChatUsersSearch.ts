@@ -18,7 +18,7 @@ export type GetV1ChatUsersSearch200 = {
     /**
      * @type array
     */
-    users: {
+    items: {
         /**
          * @type string
         */
@@ -36,6 +36,34 @@ export type GetV1ChatUsersSearch200 = {
         */
         photoURL: string | null;
     }[];
+    /**
+     * @minLength 0
+     * @type integer
+    */
+    total: number;
+    /**
+     * @minLength 1
+     * @type integer
+    */
+    page: number;
+    /**
+     * @minLength 1
+     * @type integer
+    */
+    limit: number;
+    /**
+     * @minLength 0
+     * @type integer
+    */
+    totalPages: number;
+    /**
+     * @type boolean
+    */
+    hasNext: boolean;
+    /**
+     * @type boolean
+    */
+    hasPrev: boolean;
 };
 
 export const getV1ChatUsersSearch400SeverityEnum = {

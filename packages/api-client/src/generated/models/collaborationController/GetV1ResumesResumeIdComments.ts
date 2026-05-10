@@ -18,7 +18,7 @@ export type GetV1ResumesResumeIdComments200 = {
     /**
      * @type array
     */
-    comments: {
+    items: {
         /**
          * @type string
         */
@@ -92,6 +92,34 @@ export type GetV1ResumesResumeIdComments200 = {
             photoURL: string | null;
         };
     }[];
+    /**
+     * @minLength 0
+     * @type integer
+    */
+    total: number;
+    /**
+     * @minLength 1
+     * @type integer
+    */
+    page: number;
+    /**
+     * @minLength 1
+     * @type integer
+    */
+    limit: number;
+    /**
+     * @minLength 0
+     * @type integer
+    */
+    totalPages: number;
+    /**
+     * @type boolean
+    */
+    hasNext: boolean;
+    /**
+     * @type boolean
+    */
+    hasPrev: boolean;
 };
 
 export const getV1ResumesResumeIdComments400SeverityEnum = {

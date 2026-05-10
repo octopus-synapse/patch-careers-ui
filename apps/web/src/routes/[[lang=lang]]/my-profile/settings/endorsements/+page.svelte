@@ -24,7 +24,7 @@ const skillsQuery = createGetV1UsersUserIdSkills(
   viewerId,
   { query: { enabled: browser && viewerId !== '' } },
 );
-const skills = $derived($skillsQuery.data?.skills);
+const skills = $derived($skillsQuery.data?.items);
 
 let expandedSkill = $state<string | null>(null);
 let endorsersCache = $state<Record<string, Endorser[] | 'loading'>>({});

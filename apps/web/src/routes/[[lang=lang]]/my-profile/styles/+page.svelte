@@ -19,12 +19,12 @@
   const queryClient = useQueryClient();
 
   const listQuery = createGetV1ResumeStyles(
-    { page: '1', limit: '20' },
+    { page: 1, limit: 20 },
     { query: { enabled: browser, refetchOnWindowFocus: false } },
   );
 
   const myResumesQuery = createGetV1Resumes(
-    { page: '1', limit: '1' },
+    { page: 1, limit: 1 },
     { query: { enabled: browser } },
   );
   const primaryResumeId = $derived<string | null>(

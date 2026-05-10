@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1AdminSpokenLanguages200, GetV1AdminSpokenLanguages400, GetV1AdminSpokenLanguages401, GetV1AdminSpokenLanguages403, GetV1AdminSpokenLanguagesQueryParams, GetV1AdminSpokenLanguagesQueryResponse } from "../../models/admin-spoken-languagesController/GetV1AdminSpokenLanguages";
 
 export const getV1AdminSpokenLanguagesQueryParamsSchema = z.object({
-    "page": z.optional(z.string()),
-"pageSize": z.optional(z.string()),
+    "page": z.optional(z.coerce.number().int().min(1)),
+"pageSize": z.optional(z.coerce.number().int().min(1)),
 "search": z.optional(z.string()),
 "isActive": z.optional(z.string())
     }).optional() as unknown as ToZod<GetV1AdminSpokenLanguagesQueryParams>
