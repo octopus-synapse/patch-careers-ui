@@ -145,7 +145,11 @@ export type PostV1UsersManageMutationRequestRoleEnumKey = (typeof postV1UsersMan
  * @example [object Object]
 */
 export type PostV1UsersManageMutationRequest = {
-    email: (Email & any);
+    /**
+     * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+     * @type string, email
+    */
+    email: Email;
     password: (Password & string & string);
     /**
      * @type string | undefined

@@ -14,3 +14,5 @@ checks:
     cmd: bash scripts/check-sdk-drift.sh
   - name: i18n-keys
     cmd: bun scripts/check-i18n-keys.ts
+  - name: i18n-orphans
+    cmd: bun scripts/lint-unused-i18n.ts

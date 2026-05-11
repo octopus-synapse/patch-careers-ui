@@ -324,7 +324,12 @@ export type PatchV1UsersPreferencesFullMutationRequest = {
      * @type string | undefined
     */
     name?: string;
-    photoURL?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    photoURL?: SocialUrl;
     /**
      * @maxLength 10
      * @type string | undefined

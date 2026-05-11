@@ -20,7 +20,7 @@ export const createJobRequestSchema = z.object({
 "requirements": z.optional(z.array(z.string().max(200)).max(40).describe("List of required qualifications (max 40 entries, 200 chars each).")),
 "skills": z.optional(z.array(z.string().max(60)).max(40).describe("List of relevant skills (max 40 entries, 60 chars each).")),
 "salaryRange": z.optional(z.string().max(100).describe("Free-form salary range label (e.g. \"USD 80k-120k\"). Optional.")),
-"applyUrl": z.optional(z.lazy(() => socialUrlSchema).describe("External URL recruiters share with candidates to apply. Optional.")),
+"applyUrl": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "expiresAt": z.optional(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "paymentCurrency": z.optional(z.enum(["BRL", "USD", "EUR", "GBP"]).describe("ISO 4217 currency code for the salary range. Optional.")),
 "remotePolicy": z.optional(z.enum(["REMOTE", "HYBRID", "ONSITE"]).describe("Remote / hybrid / on-site policy. Optional.")),

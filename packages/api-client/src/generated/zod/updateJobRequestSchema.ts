@@ -20,7 +20,7 @@ export const updateJobRequestSchema = z.object({
 "requirements": z.optional(z.array(z.string().max(200)).max(40).describe("Updated list of required qualifications.")),
 "skills": z.optional(z.array(z.string().max(60)).max(40).describe("Updated list of relevant skills.")),
 "salaryRange": z.optional(z.string().max(100).describe("Updated free-form salary range label.")),
-"applyUrl": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"applyUrl": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "isActive": z.optional(z.boolean().describe("Whether the job is currently active and visible.")),
 "expiresAt": z.optional(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "paymentCurrency": z.enum(["BRL", "USD", "EUR", "GBP"]).describe("Updated ISO 4217 currency code. Null clears the previous value.").nullish(),

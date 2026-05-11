@@ -11,9 +11,13 @@ import type { PasswordInput } from "./PasswordInput";
  * @example [object Object]
 */
 export type LoginRequest = {
-    email: (Email & any);
     /**
-     * @description Account password. Lenient validation here to support legacy accounts.
+     * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+     * @type string, email
+    */
+    email: Email;
+    /**
+     * @description Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy.
      * @type string
     */
     password: PasswordInput;

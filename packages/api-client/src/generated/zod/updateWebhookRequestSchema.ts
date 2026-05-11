@@ -12,7 +12,7 @@ import { socialUrlSchema } from "./socialUrlSchema";
  * @description Partial update of a webhook (rotate URL, change event subscriptions, toggle enabled).
  */
 export const updateWebhookRequestSchema = z.object({
-    "url": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+    "url": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "events": z.optional(z.array(z.enum(["resume.created", "resume.published", "ats.score.updated"])).min(1).describe("Updated event subscriptions. Omit to leave unchanged.")),
 "enabled": z.optional(z.boolean().describe("Whether the webhook is currently active."))
     }).describe("Partial update of a webhook (rotate URL, change event subscriptions, toggle enabled).") as unknown as ToZod<UpdateWebhookRequest>

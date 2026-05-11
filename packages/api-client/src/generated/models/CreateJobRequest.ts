@@ -95,7 +95,7 @@ export type CreateJobRequest = {
     */
     salaryRange?: string;
     /**
-     * @description External URL recruiters share with candidates to apply. Optional.
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
      * @pattern ^https?:\/\/
      * @type string | undefined, uri
     */

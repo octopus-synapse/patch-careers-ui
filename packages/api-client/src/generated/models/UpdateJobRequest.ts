@@ -94,7 +94,12 @@ export type UpdateJobRequest = {
      * @type string | undefined
     */
     salaryRange?: string;
-    applyUrl?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    applyUrl?: SocialUrl;
     /**
      * @description Whether the job is currently active and visible.
      * @type boolean | undefined

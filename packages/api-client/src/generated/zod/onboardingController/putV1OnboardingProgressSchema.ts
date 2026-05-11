@@ -48,7 +48,7 @@ export const putV1OnboardingProgressMutationRequestSchema = z.object({
 "username": z.optional(z.lazy(() => usernameSchema).describe("Public handle (3-30 chars). Lowercase letters, digits, and single underscores only. Cannot start/end with `_`, contain `__`, or use a reserved name.")),
 "personalInfo": z.optional(z.object({
     "fullName": z.optional(z.string().min(2).max(100)),
-"email": z.optional(z.lazy(() => emailSchema).and(z.any())),
+"email": z.optional(z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit.")),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters)."))
     })),
@@ -58,7 +58,7 @@ export const putV1OnboardingProgressMutationRequestSchema = z.object({
 "summary": z.optional(z.string().min(10).max(500)),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
-"website": z.optional(z.lazy(() => socialUrlSchema).and(z.any()))
+"website": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit."))
     })),
 "sections": z.optional(z.array(z.object({
     "sectionTypeKey": z.string(),

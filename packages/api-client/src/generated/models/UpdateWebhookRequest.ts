@@ -18,7 +18,12 @@ export type UpdateWebhookRequestEventsEnumKey = (typeof updateWebhookRequestEven
  * @example [object Object]
 */
 export type UpdateWebhookRequest = {
-    url?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    url?: SocialUrl;
     /**
      * @description Updated event subscriptions. Omit to leave unchanged.
      * @type array | undefined

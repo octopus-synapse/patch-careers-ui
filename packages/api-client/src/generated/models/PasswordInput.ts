@@ -5,7 +5,7 @@
 
 
 /**
- * @description Account password. Lenient validation here to support legacy accounts.
+ * @description Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy.
  * @minLength 1
  * @maxLength 128
  * @example Fixture_Password_123!

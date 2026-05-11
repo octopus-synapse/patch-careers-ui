@@ -84,7 +84,7 @@ export const patchV1UsersPreferencesFullMutationRequestSchema = z.object({
 "palette": z.optional(z.string()),
 "bannerColor": z.optional(z.string()),
 "name": z.optional(z.string().max(100)),
-"photoURL": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"photoURL": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "language": z.optional(z.string().max(10)),
 "dateFormat": z.optional(z.string()),
 "timezone": z.optional(z.string().max(50)),

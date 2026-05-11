@@ -192,7 +192,11 @@ export type PatchV1UsersManageIdMutationRequestRoleEnumKey = (typeof patchV1User
  * @example [object Object]
 */
 export type PatchV1UsersManageIdMutationRequest = {
-    email?: (Email & any);
+    /**
+     * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+     * @type string | undefined, email
+    */
+    email?: Email;
     /**
      * @type string | undefined
     */

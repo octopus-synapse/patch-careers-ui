@@ -68,7 +68,7 @@ export const patchV1UsersManageId404Schema = z.object({
     }) as unknown as ToZod<PatchV1UsersManageId404>
 
 export const patchV1UsersManageIdMutationRequestSchema = z.object({
-    "email": z.optional(z.lazy(() => emailSchema).and(z.any())),
+    "email": z.optional(z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit.")),
 "name": z.optional(z.string()),
 "role": z.optional(z.enum(["USER", "ADMIN"])),
 "isActive": z.optional(z.boolean()),

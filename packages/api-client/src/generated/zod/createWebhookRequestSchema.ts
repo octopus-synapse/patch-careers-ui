@@ -12,6 +12,6 @@ import { socialUrlSchema } from "./socialUrlSchema";
  * @description Register an outbound webhook. URL is fetched through the SafeFetchPort allowlist on delivery (SSRF defense).
  */
 export const createWebhookRequestSchema = z.object({
-    "url": z.lazy(() => socialUrlSchema).and(z.any()),
+    "url": z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit."),
 "events": z.array(z.enum(["resume.created", "resume.published", "ats.score.updated"])).min(1).describe("Event types this webhook subscribes to. At least one required.")
     }).describe("Register an outbound webhook. URL is fetched through the SafeFetchPort allowlist on delivery (SSRF defense).") as unknown as ToZod<CreateWebhookRequest>

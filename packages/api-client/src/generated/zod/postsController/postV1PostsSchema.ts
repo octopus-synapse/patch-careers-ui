@@ -102,8 +102,8 @@ export const postV1PostsMutationRequestSchema = z.object({
 "data": z.optional(z.object({
     
     })),
-"imageUrl": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
-"linkUrl": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"imageUrl": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
+"linkUrl": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "originalPostId": z.optional(z.string().uuid()),
 "coAuthors": z.optional(z.array(z.string().uuid()).max(8)),
 "scheduledAt": z.optional(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),

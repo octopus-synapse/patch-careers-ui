@@ -49,7 +49,7 @@ export const patchV1UsersPreferencesMutationRequestSchema = z.object({
     "palette": z.optional(z.string()),
 "bannerColor": z.optional(z.string()),
 "name": z.optional(z.string().max(100)),
-"photoURL": z.optional(z.lazy(() => socialUrlSchema).and(z.any()))
+"photoURL": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit."))
     }) as unknown as ToZod<PatchV1UsersPreferencesMutationRequest>
 
 export const patchV1UsersPreferencesMutationResponseSchema = z.lazy(() => patchV1UsersPreferences200Schema) as unknown as ToZod<PatchV1UsersPreferencesMutationResponse>

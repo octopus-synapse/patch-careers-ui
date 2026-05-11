@@ -18,7 +18,12 @@ export type CreateWebhookRequestEventsEnumKey = (typeof createWebhookRequestEven
  * @example [object Object]
 */
 export type CreateWebhookRequest = {
-    url: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string, uri
+    */
+    url: SocialUrl;
     /**
      * @description Event types this webhook subscribes to. At least one required.
      * @type array

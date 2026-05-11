@@ -5,7 +5,7 @@
 
 
 /**
- * @description Plaintext password. Hashed server-side; never logged.
+ * @description Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).
  * @minLength 8
  * @maxLength 128
  * @pattern ^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@\$!%\*\?&]).{8,128}$

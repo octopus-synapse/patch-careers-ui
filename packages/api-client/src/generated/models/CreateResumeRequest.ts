@@ -78,7 +78,12 @@ export type CreateResumeRequest = {
      * @type string | undefined, uri
     */
     github?: GitHubUrl;
-    website?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    website?: SocialUrl;
     /**
      * @description Visual template the resume should render with.
      * @type string | undefined

@@ -128,7 +128,12 @@ export type PatchV1UsersPreferencesMutationRequest = {
      * @type string | undefined
     */
     name?: string;
-    photoURL?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    photoURL?: SocialUrl;
 };
 
 export type PatchV1UsersPreferencesMutationResponse = PatchV1UsersPreferences200;

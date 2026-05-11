@@ -17,12 +17,12 @@ export type CreateAccountRequest = {
     */
     name?: string;
     /**
-     * @description Email address. Used to log in.
+     * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
      * @type string, email
     */
     email: Email;
     /**
-     * @description Plaintext password. Hashed server-side; never logged.
+     * @description Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).
      * @pattern ^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@\$!%\*\?&]).{8,128}$
      * @type string
     */

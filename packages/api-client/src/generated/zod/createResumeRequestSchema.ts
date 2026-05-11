@@ -26,7 +26,7 @@ export const createResumeRequestSchema = z.object({
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters).")),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
-"website": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"website": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "template": z.optional(z.enum(["PROFESSIONAL", "CREATIVE", "TECHNICAL", "MINIMAL", "MODERN", "EXECUTIVE", "ACADEMIC"]).describe("Visual template the resume should render with.")),
 "sections": z.optional(z.array(z.object({
     

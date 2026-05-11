@@ -138,7 +138,11 @@ export type PutV1OnboardingProgressMutationRequest = {
          * @type string | undefined
         */
         fullName?: string;
-        email?: (Email & any);
+        /**
+         * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+         * @type string | undefined, email
+        */
+        email?: Email;
         /**
          * @description Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).
          * @type string | undefined
@@ -184,7 +188,12 @@ export type PutV1OnboardingProgressMutationRequest = {
          * @type string | undefined, uri
         */
         github?: GitHubUrl;
-        website?: (SocialUrl & string & any);
+        /**
+         * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+         * @pattern ^https?:\/\/
+         * @type string | undefined, uri
+        */
+        website?: SocialUrl;
     };
     /**
      * @type array | undefined

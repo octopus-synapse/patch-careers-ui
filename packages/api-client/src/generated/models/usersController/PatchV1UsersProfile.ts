@@ -260,7 +260,12 @@ export type PatchV1UsersProfileMutationRequest = {
      * @type string | undefined
     */
     location?: UserLocation;
-    website?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    website?: SocialUrl;
     /**
      * @maxLength 100
      * @type string | undefined
@@ -288,8 +293,18 @@ export type PatchV1UsersProfileMutationRequest = {
      * @type string | undefined, uri
     */
     github?: GitHubUrl;
-    twitter?: (SocialUrl & string & any);
-    image?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    twitter?: SocialUrl;
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    image?: SocialUrl;
 };
 
 export type PatchV1UsersProfileMutationResponse = PatchV1UsersProfile200;

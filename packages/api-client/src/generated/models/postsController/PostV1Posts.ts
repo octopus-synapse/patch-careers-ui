@@ -365,8 +365,18 @@ export type PostV1PostsMutationRequest = {
      * @type object | undefined
     */
     data?: object;
-    imageUrl?: (SocialUrl & string & any);
-    linkUrl?: (SocialUrl & string & any);
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    imageUrl?: SocialUrl;
+    /**
+     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @pattern ^https?:\/\/
+     * @type string | undefined, uri
+    */
+    linkUrl?: SocialUrl;
     /**
      * @type string | undefined, uuid
     */

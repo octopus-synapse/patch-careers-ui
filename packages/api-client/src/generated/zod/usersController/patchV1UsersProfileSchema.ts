@@ -86,14 +86,14 @@ export const patchV1UsersProfileMutationRequestSchema = z.object({
 "username": z.optional(z.lazy(() => usernameSchema).describe("Public handle (3-30 chars). Lowercase letters, digits, and single underscores only. Cannot start/end with `_`, contain `__`, or use a reserved name.")),
 "bio": z.optional(z.lazy(() => shortDescriptionSchema).describe("Short free-text description (1-500 characters).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters).")),
-"website": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"website": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
 "company": z.optional(z.string().max(100)),
 "title": z.optional(z.string().max(100)),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
-"twitter": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
-"image": z.optional(z.lazy(() => socialUrlSchema).and(z.any()))
+"twitter": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
+"image": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit."))
     }) as unknown as ToZod<PatchV1UsersProfileMutationRequest>
 
 export const patchV1UsersProfileMutationResponseSchema = z.lazy(() => patchV1UsersProfile200Schema) as unknown as ToZod<PatchV1UsersProfileMutationResponse>

@@ -185,7 +185,11 @@ export type PostV1OnboardingSessionPrevious201 = {
          * @type string
         */
         fullName: string;
-        email?: (Email & any);
+        /**
+         * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+         * @type string | undefined, email
+        */
+        email?: Email;
         /**
          * @description Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).
          * @type string | undefined
