@@ -114,7 +114,7 @@
       await postV1Jobs(body);
       await queryClient.invalidateQueries({ queryKey: getV1JobsApplicationsQueryKey() });
       if (typeof window !== 'undefined') window.localStorage.removeItem(DRAFT_KEY);
-      toastState.show('Vaga publicada', 'success');
+      toastState.show(t('jobs.publishedSuccess'), 'success');
       void goto('/recruiting/jobs');
     } catch (err) {
       serverError = err instanceof Error ? err.message : t('errors.network');

@@ -921,6 +921,8 @@
   "jobs": {
     "pageTitle": "Jobs",
     "postJob": "Post a Job",
+    "publishedSuccess": "Job published",
+    "updatedSuccess": "Job updated",
     "search": "Search jobs...",
     "title": "Title",
     "company": "Company",

@@ -921,6 +921,8 @@
   "jobs": {
     "pageTitle": "Vagas",
     "postJob": "Publicar Vaga",
+    "publishedSuccess": "Vaga publicada",
+    "updatedSuccess": "Vaga atualizada",
     "search": "Buscar vagas...",
     "title": "Título",
     "company": "Empresa",

@@ -69,7 +69,7 @@
     };
     try {
       await patchV1JobsId(jobId, body);
-      toastState.show('Vaga atualizada', 'success');
+      toastState.show(t('jobs.updatedSuccess'), 'success');
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getV1JobsIdQueryKey(jobId) }),
         queryClient.invalidateQueries({ queryKey: getV1JobsApplicationsQueryKey() }),
