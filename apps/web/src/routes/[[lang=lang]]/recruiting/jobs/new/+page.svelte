@@ -12,6 +12,7 @@
     type CreateJobRequestJobTypeEnumKey,
     type CreateJobRequestRemotePolicyEnumKey,
   } from 'api-client';
+  import { postV1JobsMutationRequestSchema } from 'api-client/zod';
   import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
   import { Badge, Button, Input, Label, Loader, Select, Textarea, toastState } from 'ui';
   import { goto } from '$app/navigation';
@@ -110,8 +111,17 @@
       skills: splitCsv(draft.skillsCsv),
       requirements: splitCsv(draft.requirementsCsv),
     };
+    // PD-008: defensive client-side validation via the generated zod
+    // before the POST. Wizard flow stays intact; this just surfaces
+    // schema errors inline before the server round-trip.
+    const parsed = postV1JobsMutationRequestSchema.safeParse(body);
+    if (!parsed.success) {
+      serverError = parsed.error.errors[0]?.message ?? t('errors.network');
+      submitting = false;
+      return;
+    }
     try {
-      await postV1Jobs(body);
+      await postV1Jobs(parsed.data);
       await queryClient.invalidateQueries({ queryKey: getV1JobsApplicationsQueryKey() });
       if (typeof window !== 'undefined') window.localStorage.removeItem(DRAFT_KEY);
       toastState.show(t('jobs.publishedSuccess'), 'success');
