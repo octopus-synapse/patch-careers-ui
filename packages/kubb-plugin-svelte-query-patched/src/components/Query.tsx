@@ -40,8 +40,9 @@ type GetParamsProps = {
 /** Build the `override` callback handed to `getPathParams`. When
  *  `pathParamsAsGetters` is on, the emitted type widens to
  *  `T | (() => T) | undefined` so callers can pass a Svelte-reactive
- *  getter (`() => jobId`) without tripping `state_referenced_locally`. */
-function buildPathParamTypeOverride(pathParamsAsGetters: boolean) {
+ *  getter (`() => jobId`) without tripping `state_referenced_locally`.
+ *  Exported for unit tests; internal API otherwise. */
+export function buildPathParamTypeOverride(pathParamsAsGetters: boolean) {
   return (item: { type: string; [k: string]: unknown }) => ({
     ...item,
     type: pathParamsAsGetters
