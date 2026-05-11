@@ -1,0 +1,78 @@
+name: CI - SDK Drift
+
+# F5-11 / PD-012 — server-side SDK drift gate.
+#
+# The local pre-commit (`.precommit.yaml`) and pre-push (`.husky/pre-push`)
+# hooks already run `scripts/check-sdk-drift.sh`, but `git commit --no-verify`
+# / `git push --no-verify` / a force-push to `main` can bypass them. This
+# workflow runs the equivalent check on every PR so the gate is enforced
+# server-side and the bypass is closed.
+#
+# Caveat — cross-repo dependency:
+#   `profile-services` is a sibling repository, NOT a subdirectory of
+#   `patch-careers-ui`. Locally the drift check resolves
+#   `../profile-services/client-swagger.json`. In CI we explicitly check out
+#   `profile-services` to a sibling path so the same relative resolution works.
+#   This means a swagger change pushed to `profile-services` does NOT trigger
+#   this workflow on its own — it only fires on PRs in *this* repo touching
+#   `packages/api-client/**`. Cross-repo drift detection (regenerating here
+#   when the backend swagger lands) is a separate concern (out of scope for
+#   PD-012).
+
+on:
+  pull_request:
+    branches: [main, homolog, dev]
+    paths:
+      - "packages/api-client/**"
+      - ".github/workflows/ci.sdk-drift.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-sdk-drift-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  sdk-drift:
+    name: SDK drift gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout patch-careers-ui
+        uses: actions/checkout@v4
+        with:
+          path: patch-careers-ui
+
+      # Sibling checkout of `profile-services` — kubb.config.ts resolves the
+      # swagger via `../../../profile-services/client-swagger.json` from
+      # `packages/api-client/`. Mirroring the local layout keeps the regen
+      # command identical to the one developers run.
+      - name: Checkout profile-services (sibling)
+        uses: actions/checkout@v4
+        with:
+          repository: octopus-synapse/profile-services
+          ref: ${{ github.base_ref || 'main' }}
+          path: profile-services
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Install api-client dependencies
+        working-directory: patch-careers-ui/packages/api-client
+        run: bun install --frozen-lockfile
+
+      - name: Regenerate SDK
+        working-directory: patch-careers-ui/packages/api-client
+        run: bun run sdk:generate
+
+      - name: Verify SDK is in sync with committed sources
+        working-directory: patch-careers-ui
+        run: |
+          if ! git diff --exit-code -- packages/api-client; then
+            echo ""
+            echo "::error::SDK is stale. Run 'cd packages/api-client && bun run sdk:generate' and commit the changes."
+            exit 1
+          fi
