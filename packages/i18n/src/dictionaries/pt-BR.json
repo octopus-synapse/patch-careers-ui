@@ -199,7 +199,19 @@
     "cancel": "Cancelar",
     "copyLink": "Copiar link",
     "linkCopied": "Link copiado",
-    "downloadQr": "Baixar QR"
+    "downloadQr": "Baixar QR",
+    "deletedItem": "Item excluído",
+    "deletedJob": "Vaga excluída",
+    "deletedSection": "Seção excluída",
+    "deletedQuestion": "Pergunta excluída",
+    "deletedStep": "Step excluído",
+    "deletedStyle": "Estilo excluído",
+    "deletedVersionConfirm": "Remover esta versão permanentemente?",
+    "deletedShareConfirm": "Remover este link compartilhado? Os aliases vão junto.",
+    "followUpConfirm": "Marcar como follow-up enviado? Vai resetar o contador de silêncio.",
+    "savedPreferences": "Preferências salvas.",
+    "accountRemoved": "Conta removida. Até mais.",
+    "claimedProfile": "Perfil reivindicado. Adicionamos os dados ao seu currículo."
   },
   "applyFlow": {
     "applying": "Enviando candidatura...",
@@ -917,20 +929,6 @@
       "filterTitle": "Nenhum post desse tipo",
       "filterSubtitle": "Experimente outro filtro ou limpe a busca."
     }
-  },
-  "actions": {
-    "deletedItem": "Item excluído",
-    "deletedJob": "Vaga excluída",
-    "deletedSection": "Seção excluída",
-    "deletedQuestion": "Pergunta excluída",
-    "deletedStep": "Step excluído",
-    "deletedStyle": "Estilo excluído",
-    "deletedVersionConfirm": "Remover esta versão permanentemente?",
-    "deletedShareConfirm": "Remover este link compartilhado? Os aliases vão junto.",
-    "followUpConfirm": "Marcar como follow-up enviado? Vai resetar o contador de silêncio.",
-    "savedPreferences": "Preferências salvas.",
-    "accountRemoved": "Conta removida. Até mais.",
-    "claimedProfile": "Perfil reivindicado. Adicionamos os dados ao seu currículo."
   },
   "twoFactor": {
     "disabledSuccess": "2FA desativado.",
