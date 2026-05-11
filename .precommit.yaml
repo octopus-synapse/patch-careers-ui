@@ -12,3 +12,5 @@ checks:
     cmd: bash scripts/check-no-any.sh
   - name: sdk-drift
     cmd: bash scripts/check-sdk-drift.sh
+  - name: i18n-keys
+    cmd: bun scripts/check-i18n-keys.ts

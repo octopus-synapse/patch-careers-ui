@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
   "extends": ["@octopus-synapse/biome-config/biome.json"],
   "files": {
     "includes": [
@@ -23,11 +23,51 @@
           "level": "error",
           "options": {
             "paths": {
-              "api-client/client": "Hand-rolled requests are banned. Consume the generated `createXxx` hooks / `xxx()` functions from `api-client/generated/api/*` instead."
+              "api-client/client": "Hand-rolled requests are banned. Consume the generated `createXxx` hooks / `xxx()` functions from `api-client/generated/api/*` instead.",
+              "zod": "F3-PD-016c — apps/web should consume the generated zod schemas from `api-client/zod`. Allowed only in lib/state/create-form.svelte.ts and lib/utils/build-zod-from-fields.ts."
+            }
+          }
+        },
+        "noRestrictedGlobals": {
+          "level": "error",
+          "options": {
+            "deniedGlobals": {
+              "fetch": "F3-PD-016a — use the SDK from `api-client` instead. Exceptions (sitemap.xml, admin dev-tools, SDK internals) must add `// biome-ignore lint/style/noRestrictedGlobals`."
             }
           }
         }
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "apps/web/src/lib/utils/build-zod-from-fields.ts",
+        "apps/web/src/lib/state/create-form.svelte.ts",
+        "apps/web/src/lib/state/create-form.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/web/src/routes/**/+server.ts",
+        "apps/web/src/routes/**/dev-tools/**",
+        "apps/web/test/**",
+        "packages/api-client/src/client/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedGlobals": "off"
+          }
+        }
+      }
+    }
+  ]
 }

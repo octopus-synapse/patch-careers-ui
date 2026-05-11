@@ -16,6 +16,7 @@ const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 function writeLocaleCookie(value: Locale): void {
   if (typeof document === 'undefined') return;
+  // biome-ignore lint/suspicious/noDocumentCookie: locale cookie must be readable by SSR via the Cookie header; Cookie Store API would isolate it from the SSR pipeline.
   document.cookie = `${LOCALE_COOKIE}=${encodeURIComponent(value)}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
 }
 
