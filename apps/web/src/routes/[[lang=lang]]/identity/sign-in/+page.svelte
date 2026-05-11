@@ -21,11 +21,6 @@ const login = createLogin({
       goto('/my-profile/dashboard');
     },
     onError(err: unknown) {
-      if (!t) return;
-      if (isApiError(err) && err.statusCode === 401) {
-        serverError = t('auth.shared.errorInvalidCredentials');
-        return;
-      }
       if (isApiError(err)) serverError = err.message;
     },
   },

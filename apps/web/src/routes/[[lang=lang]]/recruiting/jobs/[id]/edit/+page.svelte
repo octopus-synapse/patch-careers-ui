@@ -76,7 +76,7 @@
       ]);
       void goto('/recruiting/jobs');
     } catch (err) {
-      serverError = err instanceof Error ? err.message : t('auth.shared.errorGeneric');
+      serverError = err instanceof Error ? err.message : t('errors.network');
     } finally {
       submitting = false;
     }

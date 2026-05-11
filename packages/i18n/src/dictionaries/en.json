@@ -144,19 +144,7 @@
     "goHomeAria": "Back to home"
   },
   "errors": {
-    "generic": "Something went wrong.",
     "network": "No connection to the server. Check your internet.",
-    "unauthorized": "You need to sign in to continue.",
-    "forbidden": "You don't have permission for this action.",
-    "notFound": "Content not found.",
-    "conflict": "This resource already exists.",
-    "validation": "Invalid form data.",
-    "rateLimited": "Too many attempts. Try again in a few minutes.",
-    "consentRequired": "Accept our Terms and Privacy Policy to continue.",
-    "noPrimaryResume": "You need a primary résumé first.",
-    "emailInUse": "This email is already in use.",
-    "weakPassword": "Password too weak. Try one with upper case, digits, and symbols.",
-    "consentVersionMismatch": "Our terms have changed. Please re-read and accept.",
     "loadFailed": "Failed to load",
     "loadCommentsFailed": "Failed to load comments.",
     "loadSharesFailed": "Failed to load links.",
@@ -1025,17 +1013,11 @@
   "auth": {
     "shared": {
       "email": "Email Address",
-      "errorInvalidCredentials": "Invalid email or password.",
       "emailPlaceholder": "jane@example.com",
       "password": "Password",
       "passwordPlaceholder": "••••••••",
       "fullName": "Full Name",
       "fullNamePlaceholder": "Jane Doe",
-      "errorGeneric": "Something went wrong.",
-      "errorRateLimited": "Too many attempts. Try again in a few minutes.",
-      "errorEmailInUse": "This email is already registered.",
-      "errorEmailInvalid": "Invalid email.",
-      "errorPasswordTooShort": "Password must be at least 8 characters.",
       "secureConnection": "Encrypted connection"
     },
     "sign-up": {
