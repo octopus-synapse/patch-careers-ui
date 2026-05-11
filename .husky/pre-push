@@ -1,0 +1,6 @@
+#!/bin/sh
+# F3-PD-013 — pre-push gate. Runs the same suite as pre-commit so that
+# `git push --no-verify` or force-pushes can't bypass the local quality
+# gate. CI also runs these in PR builds, but this catches the obvious
+# cases before they hit GitHub.
+bunx octopus-run-parallel --config .precommit.yaml
