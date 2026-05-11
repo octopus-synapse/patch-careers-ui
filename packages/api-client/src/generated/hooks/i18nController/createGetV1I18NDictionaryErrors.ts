@@ -38,6 +38,7 @@ export function createGetV1I18NDictionaryErrors<TData = GetV1I18NDictionaryError
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1I18NDictionaryErrorsQueryKey()

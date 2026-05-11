@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdSectionsTypesQueryOptions(resumeId: GetV1Res
  * @summary List active dynamic section types with resolved translations
  * {@link /api/v1/resumes/:resumeId/sections/types}
  */
-export function createGetV1ResumesResumeIdSectionsTypes<TData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSectionsTypesQueryKey>(resumeId: GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"] | undefined, params?: GetV1ResumesResumeIdSectionsTypesQueryParams, options: 
+export function createGetV1ResumesResumeIdSectionsTypes<TData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSectionsTypesQueryKey>(resumeId: GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"] | (() => GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"]) | undefined, params?: GetV1ResumesResumeIdSectionsTypesQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdSectionsTypesQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdSectionsTypes400 | GetV1ResumesResumeIdSectionsTypes401 | GetV1ResumesResumeIdSectionsTypes403 | GetV1ResumesResumeIdSectionsTypes404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdSectionsTypesQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdSectionsTypesQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdSectionsTypesQueryOptions(resumeId, params, config),
+          ...getV1ResumesResumeIdSectionsTypesQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdSectionsTypes400 | GetV1ResumesResumeIdSectionsTypes401 | GetV1ResumesResumeIdSectionsTypes403 | GetV1ResumesResumeIdSectionsTypes404>> & { queryKey: TQueryKey }

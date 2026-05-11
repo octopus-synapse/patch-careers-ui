@@ -31,19 +31,20 @@ export function getV1MecInstitutionsCodigoIesCoursesQueryOptions(codigoIes: GetV
  * @summary Get courses by institution
  * {@link /api/v1/mec/institutions/:codigoIes/courses}
  */
-export function createGetV1MecInstitutionsCodigoIesCourses<TData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesCoursesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"] | undefined, options: 
+export function createGetV1MecInstitutionsCodigoIesCourses<TData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesCoursesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"] | (() => GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MecInstitutionsCodigoIesCoursesQueryResponse, ResponseErrorConfig<GetV1MecInstitutionsCodigoIesCourses400 | GetV1MecInstitutionsCodigoIesCourses404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const codigoIes_ = typeof codigoIes === 'function' ? codigoIes() : codigoIes;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1MecInstitutionsCodigoIesCoursesQueryKey(codigoIes)
+         const queryKey = resolvedOptions?.queryKey ?? getV1MecInstitutionsCodigoIesCoursesQueryKey(codigoIes_)
 
          const query = createQuery({
-          ...getV1MecInstitutionsCodigoIesCoursesQueryOptions(codigoIes, config),
+          ...getV1MecInstitutionsCodigoIesCoursesQueryOptions(codigoIes_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1MecInstitutionsCodigoIesCourses400 | GetV1MecInstitutionsCodigoIesCourses404>> & { queryKey: TQueryKey }

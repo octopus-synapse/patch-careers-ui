@@ -31,19 +31,20 @@ export function getV1UsersUserIdCommentsQueryOptions(userId: GetV1UsersUserIdCom
  * @summary List comments authored by a user
  * {@link /api/v1/users/:userId/comments}
  */
-export function createGetV1UsersUserIdComments<TData = GetV1UsersUserIdCommentsQueryResponse, TQueryData = GetV1UsersUserIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdCommentsQueryKey>(userId: GetV1UsersUserIdCommentsPathParams["userId"] | undefined, params?: GetV1UsersUserIdCommentsQueryParams, options: 
+export function createGetV1UsersUserIdComments<TData = GetV1UsersUserIdCommentsQueryResponse, TQueryData = GetV1UsersUserIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdCommentsQueryKey>(userId: GetV1UsersUserIdCommentsPathParams["userId"] | (() => GetV1UsersUserIdCommentsPathParams["userId"]) | undefined, params?: GetV1UsersUserIdCommentsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdCommentsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdComments400 | GetV1UsersUserIdComments401 | GetV1UsersUserIdComments403 | GetV1UsersUserIdComments404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdCommentsQueryKey(userId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdCommentsQueryKey(userId_, params)
 
          const query = createQuery({
-          ...getV1UsersUserIdCommentsQueryOptions(userId, params, config),
+          ...getV1UsersUserIdCommentsQueryOptions(userId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdComments400 | GetV1UsersUserIdComments401 | GetV1UsersUserIdComments403 | GetV1UsersUserIdComments404>> & { queryKey: TQueryKey }

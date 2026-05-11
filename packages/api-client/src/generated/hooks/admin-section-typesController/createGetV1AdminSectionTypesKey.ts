@@ -31,19 +31,20 @@ export function getV1AdminSectionTypesKeyQueryOptions(key: GetV1AdminSectionType
  * @summary Get a section type by key
  * {@link /api/v1/admin/section-types/:key}
  */
-export function createGetV1AdminSectionTypesKey<TData = GetV1AdminSectionTypesKeyQueryResponse, TQueryData = GetV1AdminSectionTypesKeyQueryResponse, TQueryKey extends QueryKey = GetV1AdminSectionTypesKeyQueryKey>(key: GetV1AdminSectionTypesKeyPathParams["key"] | undefined, options: 
+export function createGetV1AdminSectionTypesKey<TData = GetV1AdminSectionTypesKeyQueryResponse, TQueryData = GetV1AdminSectionTypesKeyQueryResponse, TQueryKey extends QueryKey = GetV1AdminSectionTypesKeyQueryKey>(key: GetV1AdminSectionTypesKeyPathParams["key"] | (() => GetV1AdminSectionTypesKeyPathParams["key"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminSectionTypesKeyQueryResponse, ResponseErrorConfig<GetV1AdminSectionTypesKey400 | GetV1AdminSectionTypesKey401 | GetV1AdminSectionTypesKey403 | GetV1AdminSectionTypesKey404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const key_ = typeof key === 'function' ? key() : key;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AdminSectionTypesKeyQueryKey(key)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AdminSectionTypesKeyQueryKey(key_)
 
          const query = createQuery({
-          ...getV1AdminSectionTypesKeyQueryOptions(key, config),
+          ...getV1AdminSectionTypesKeyQueryOptions(key_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AdminSectionTypesKey400 | GetV1AdminSectionTypesKey401 | GetV1AdminSectionTypesKey403 | GetV1AdminSectionTypesKey404>> & { queryKey: TQueryKey }

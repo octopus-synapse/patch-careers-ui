@@ -38,6 +38,7 @@ export function createGetV1MecAreas<TData = GetV1MecAreasQueryResponse, TQueryDa
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1MecAreasQueryKey()

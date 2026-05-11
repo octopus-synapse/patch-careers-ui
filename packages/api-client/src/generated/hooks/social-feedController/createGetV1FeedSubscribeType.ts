@@ -31,19 +31,20 @@ export function getV1FeedSubscribeTypeQueryOptions(type: GetV1FeedSubscribeTypeP
  * @summary Subscribe to activity type stream
  * {@link /api/v1/feed/subscribe/:type}
  */
-export function createGetV1FeedSubscribeType<TData = GetV1FeedSubscribeTypeQueryResponse, TQueryData = GetV1FeedSubscribeTypeQueryResponse, TQueryKey extends QueryKey = GetV1FeedSubscribeTypeQueryKey>(type: GetV1FeedSubscribeTypePathParams["type"] | undefined, options: 
+export function createGetV1FeedSubscribeType<TData = GetV1FeedSubscribeTypeQueryResponse, TQueryData = GetV1FeedSubscribeTypeQueryResponse, TQueryKey extends QueryKey = GetV1FeedSubscribeTypeQueryKey>(type: GetV1FeedSubscribeTypePathParams["type"] | (() => GetV1FeedSubscribeTypePathParams["type"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1FeedSubscribeTypeQueryResponse, ResponseErrorConfig<GetV1FeedSubscribeType400 | GetV1FeedSubscribeType401 | GetV1FeedSubscribeType403 | GetV1FeedSubscribeType404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const type_ = typeof type === 'function' ? type() : type;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1FeedSubscribeTypeQueryKey(type)
+         const queryKey = resolvedOptions?.queryKey ?? getV1FeedSubscribeTypeQueryKey(type_)
 
          const query = createQuery({
-          ...getV1FeedSubscribeTypeQueryOptions(type, config),
+          ...getV1FeedSubscribeTypeQueryOptions(type_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1FeedSubscribeType400 | GetV1FeedSubscribeType401 | GetV1FeedSubscribeType403 | GetV1FeedSubscribeType404>> & { queryKey: TQueryKey }

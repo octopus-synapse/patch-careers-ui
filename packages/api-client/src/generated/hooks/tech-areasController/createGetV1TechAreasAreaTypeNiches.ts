@@ -31,19 +31,20 @@ export function getV1TechAreasAreaTypeNichesQueryOptions(areaType: GetV1TechArea
  * @summary Get niches by area type
  * {@link /api/v1/tech-areas/:areaType/niches}
  */
-export function createGetV1TechAreasAreaTypeNiches<TData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryKey extends QueryKey = GetV1TechAreasAreaTypeNichesQueryKey>(areaType: GetV1TechAreasAreaTypeNichesPathParams["areaType"] | undefined, options: 
+export function createGetV1TechAreasAreaTypeNiches<TData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryKey extends QueryKey = GetV1TechAreasAreaTypeNichesQueryKey>(areaType: GetV1TechAreasAreaTypeNichesPathParams["areaType"] | (() => GetV1TechAreasAreaTypeNichesPathParams["areaType"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechAreasAreaTypeNichesQueryResponse, ResponseErrorConfig<GetV1TechAreasAreaTypeNiches400 | GetV1TechAreasAreaTypeNiches401 | GetV1TechAreasAreaTypeNiches403 | GetV1TechAreasAreaTypeNiches404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const areaType_ = typeof areaType === 'function' ? areaType() : areaType;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1TechAreasAreaTypeNichesQueryKey(areaType)
+         const queryKey = resolvedOptions?.queryKey ?? getV1TechAreasAreaTypeNichesQueryKey(areaType_)
 
          const query = createQuery({
-          ...getV1TechAreasAreaTypeNichesQueryOptions(areaType, config),
+          ...getV1TechAreasAreaTypeNichesQueryOptions(areaType_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1TechAreasAreaTypeNiches400 | GetV1TechAreasAreaTypeNiches401 | GetV1TechAreasAreaTypeNiches403 | GetV1TechAreasAreaTypeNiches404>> & { queryKey: TQueryKey }

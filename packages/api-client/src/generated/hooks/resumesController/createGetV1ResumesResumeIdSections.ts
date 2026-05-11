@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdSectionsQueryOptions(resumeId: GetV1ResumesR
  * @summary List sections and items for a resume
  * {@link /api/v1/resumes/:resumeId/sections}
  */
-export function createGetV1ResumesResumeIdSections<TData = GetV1ResumesResumeIdSectionsQueryResponse, TQueryData = GetV1ResumesResumeIdSectionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSectionsQueryKey>(resumeId: GetV1ResumesResumeIdSectionsPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdSections<TData = GetV1ResumesResumeIdSectionsQueryResponse, TQueryData = GetV1ResumesResumeIdSectionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSectionsQueryKey>(resumeId: GetV1ResumesResumeIdSectionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdSectionsPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdSectionsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdSections400 | GetV1ResumesResumeIdSections401 | GetV1ResumesResumeIdSections404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdSectionsQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdSectionsQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdSectionsQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdSectionsQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdSections400 | GetV1ResumesResumeIdSections401 | GetV1ResumesResumeIdSections404>> & { queryKey: TQueryKey }

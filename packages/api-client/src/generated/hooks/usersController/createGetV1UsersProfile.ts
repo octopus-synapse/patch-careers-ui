@@ -38,6 +38,7 @@ export function createGetV1UsersProfile<TData = GetV1UsersProfileQueryResponse, 
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1UsersProfileQueryKey()

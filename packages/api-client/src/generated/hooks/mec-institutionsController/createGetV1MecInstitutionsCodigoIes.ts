@@ -31,19 +31,20 @@ export function getV1MecInstitutionsCodigoIesQueryOptions(codigoIes: GetV1MecIns
  * @summary Get institution by MEC code
  * {@link /api/v1/mec/institutions/:codigoIes}
  */
-export function createGetV1MecInstitutionsCodigoIes<TData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesPathParams["codigoIes"] | undefined, options: 
+export function createGetV1MecInstitutionsCodigoIes<TData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesPathParams["codigoIes"] | (() => GetV1MecInstitutionsCodigoIesPathParams["codigoIes"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MecInstitutionsCodigoIesQueryResponse, ResponseErrorConfig<GetV1MecInstitutionsCodigoIes400 | GetV1MecInstitutionsCodigoIes404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const codigoIes_ = typeof codigoIes === 'function' ? codigoIes() : codigoIes;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1MecInstitutionsCodigoIesQueryKey(codigoIes)
+         const queryKey = resolvedOptions?.queryKey ?? getV1MecInstitutionsCodigoIesQueryKey(codigoIes_)
 
          const query = createQuery({
-          ...getV1MecInstitutionsCodigoIesQueryOptions(codigoIes, config),
+          ...getV1MecInstitutionsCodigoIesQueryOptions(codigoIes_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1MecInstitutionsCodigoIes400 | GetV1MecInstitutionsCodigoIes404>> & { queryKey: TQueryKey }

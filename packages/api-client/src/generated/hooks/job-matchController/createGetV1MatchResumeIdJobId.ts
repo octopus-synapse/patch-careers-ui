@@ -31,19 +31,21 @@ export function getV1MatchResumeIdJobIdQueryOptions(resumeId: GetV1MatchResumeId
  * @summary Read the Match Score for a (resume, job) pair (cached)
  * {@link /api/v1/match/:resumeId/:jobId}
  */
-export function createGetV1MatchResumeIdJobId<TData = GetV1MatchResumeIdJobIdQueryResponse, TQueryData = GetV1MatchResumeIdJobIdQueryResponse, TQueryKey extends QueryKey = GetV1MatchResumeIdJobIdQueryKey>(resumeId: GetV1MatchResumeIdJobIdPathParams["resumeId"] | undefined, jobId: GetV1MatchResumeIdJobIdPathParams["jobId"] | undefined, options: 
+export function createGetV1MatchResumeIdJobId<TData = GetV1MatchResumeIdJobIdQueryResponse, TQueryData = GetV1MatchResumeIdJobIdQueryResponse, TQueryKey extends QueryKey = GetV1MatchResumeIdJobIdQueryKey>(resumeId: GetV1MatchResumeIdJobIdPathParams["resumeId"] | (() => GetV1MatchResumeIdJobIdPathParams["resumeId"]) | undefined, jobId: GetV1MatchResumeIdJobIdPathParams["jobId"] | (() => GetV1MatchResumeIdJobIdPathParams["jobId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MatchResumeIdJobIdQueryResponse, ResponseErrorConfig<GetV1MatchResumeIdJobId400 | GetV1MatchResumeIdJobId401 | GetV1MatchResumeIdJobId403 | GetV1MatchResumeIdJobId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
+  const jobId_ = typeof jobId === 'function' ? jobId() : jobId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1MatchResumeIdJobIdQueryKey(resumeId, jobId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1MatchResumeIdJobIdQueryKey(resumeId_, jobId_)
 
          const query = createQuery({
-          ...getV1MatchResumeIdJobIdQueryOptions(resumeId, jobId, config),
+          ...getV1MatchResumeIdJobIdQueryOptions(resumeId_, jobId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1MatchResumeIdJobId400 | GetV1MatchResumeIdJobId401 | GetV1MatchResumeIdJobId403 | GetV1MatchResumeIdJobId404>> & { queryKey: TQueryKey }

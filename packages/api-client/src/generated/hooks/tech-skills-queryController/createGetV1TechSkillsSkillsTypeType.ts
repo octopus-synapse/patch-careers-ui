@@ -31,19 +31,20 @@ export function getV1TechSkillsSkillsTypeTypeQueryOptions(type: GetV1TechSkillsS
  * @summary Get skills by type
  * {@link /api/v1/tech-skills/skills/type/:type}
  */
-export function createGetV1TechSkillsSkillsTypeType<TData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsSkillsTypeTypeQueryKey>(type: GetV1TechSkillsSkillsTypeTypePathParams["type"] | undefined, params?: GetV1TechSkillsSkillsTypeTypeQueryParams, options: 
+export function createGetV1TechSkillsSkillsTypeType<TData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsSkillsTypeTypeQueryKey>(type: GetV1TechSkillsSkillsTypeTypePathParams["type"] | (() => GetV1TechSkillsSkillsTypeTypePathParams["type"]) | undefined, params?: GetV1TechSkillsSkillsTypeTypeQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechSkillsSkillsTypeTypeQueryResponse, ResponseErrorConfig<GetV1TechSkillsSkillsTypeType400 | GetV1TechSkillsSkillsTypeType401 | GetV1TechSkillsSkillsTypeType403 | GetV1TechSkillsSkillsTypeType404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const type_ = typeof type === 'function' ? type() : type;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1TechSkillsSkillsTypeTypeQueryKey(type, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1TechSkillsSkillsTypeTypeQueryKey(type_, params)
 
          const query = createQuery({
-          ...getV1TechSkillsSkillsTypeTypeQueryOptions(type, params, config),
+          ...getV1TechSkillsSkillsTypeTypeQueryOptions(type_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1TechSkillsSkillsTypeType400 | GetV1TechSkillsSkillsTypeType401 | GetV1TechSkillsSkillsTypeType403 | GetV1TechSkillsSkillsTypeType404>> & { queryKey: TQueryKey }

@@ -31,19 +31,20 @@ export function getV1IntegrationsGithubSyncStatusResumeIdQueryOptions(resumeId: 
  * @summary Get GitHub sync status for a resume
  * {@link /api/v1/integrations/github/sync-status/:resumeId}
  */
-export function createGetV1IntegrationsGithubSyncStatusResumeId<TData = GetV1IntegrationsGithubSyncStatusResumeIdQueryResponse, TQueryData = GetV1IntegrationsGithubSyncStatusResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1IntegrationsGithubSyncStatusResumeIdQueryKey>(resumeId: GetV1IntegrationsGithubSyncStatusResumeIdPathParams["resumeId"] | undefined, options: 
+export function createGetV1IntegrationsGithubSyncStatusResumeId<TData = GetV1IntegrationsGithubSyncStatusResumeIdQueryResponse, TQueryData = GetV1IntegrationsGithubSyncStatusResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1IntegrationsGithubSyncStatusResumeIdQueryKey>(resumeId: GetV1IntegrationsGithubSyncStatusResumeIdPathParams["resumeId"] | (() => GetV1IntegrationsGithubSyncStatusResumeIdPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1IntegrationsGithubSyncStatusResumeIdQueryResponse, ResponseErrorConfig<GetV1IntegrationsGithubSyncStatusResumeId400 | GetV1IntegrationsGithubSyncStatusResumeId401 | GetV1IntegrationsGithubSyncStatusResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1IntegrationsGithubSyncStatusResumeIdQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1IntegrationsGithubSyncStatusResumeIdQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1IntegrationsGithubSyncStatusResumeIdQueryOptions(resumeId, config),
+          ...getV1IntegrationsGithubSyncStatusResumeIdQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1IntegrationsGithubSyncStatusResumeId400 | GetV1IntegrationsGithubSyncStatusResumeId401 | GetV1IntegrationsGithubSyncStatusResumeId404>> & { queryKey: TQueryKey }

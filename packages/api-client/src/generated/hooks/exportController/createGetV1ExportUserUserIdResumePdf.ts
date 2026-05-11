@@ -31,19 +31,20 @@ export function getV1ExportUserUserIdResumePdfQueryOptions(userId: GetV1ExportUs
  * @summary Generate the authenticated user's resume as PDF (base64)
  * {@link /api/v1/export/user/:userId/resume/pdf}
  */
-export function createGetV1ExportUserUserIdResumePdf<TData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryKey extends QueryKey = GetV1ExportUserUserIdResumePdfQueryKey>(userId: GetV1ExportUserUserIdResumePdfPathParams["userId"] | undefined, options: 
+export function createGetV1ExportUserUserIdResumePdf<TData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryKey extends QueryKey = GetV1ExportUserUserIdResumePdfQueryKey>(userId: GetV1ExportUserUserIdResumePdfPathParams["userId"] | (() => GetV1ExportUserUserIdResumePdfPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ExportUserUserIdResumePdfQueryResponse, ResponseErrorConfig<GetV1ExportUserUserIdResumePdf400 | GetV1ExportUserUserIdResumePdf401 | GetV1ExportUserUserIdResumePdf404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ExportUserUserIdResumePdfQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ExportUserUserIdResumePdfQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1ExportUserUserIdResumePdfQueryOptions(userId, config),
+          ...getV1ExportUserUserIdResumePdfQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ExportUserUserIdResumePdf400 | GetV1ExportUserUserIdResumePdf401 | GetV1ExportUserUserIdResumePdf404>> & { queryKey: TQueryKey }

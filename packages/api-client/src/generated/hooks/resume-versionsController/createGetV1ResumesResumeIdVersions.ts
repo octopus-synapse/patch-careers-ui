@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdVersionsQueryOptions(resumeId: GetV1ResumesR
  * @summary List resume versions (nested route)
  * {@link /api/v1/resumes/:resumeId/versions}
  */
-export function createGetV1ResumesResumeIdVersions<TData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdVersionsQueryKey>(resumeId: GetV1ResumesResumeIdVersionsPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdVersions<TData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdVersionsQueryKey>(resumeId: GetV1ResumesResumeIdVersionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdVersionsPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdVersionsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdVersions400 | GetV1ResumesResumeIdVersions401 | GetV1ResumesResumeIdVersions404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdVersionsQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdVersionsQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdVersionsQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdVersionsQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdVersions400 | GetV1ResumesResumeIdVersions401 | GetV1ResumesResumeIdVersions404>> & { queryKey: TQueryKey }

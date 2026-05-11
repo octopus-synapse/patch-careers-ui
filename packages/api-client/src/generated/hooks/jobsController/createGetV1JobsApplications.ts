@@ -38,6 +38,7 @@ export function createGetV1JobsApplications<TData = GetV1JobsApplicationsQueryRe
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1JobsApplicationsQueryKey(params)

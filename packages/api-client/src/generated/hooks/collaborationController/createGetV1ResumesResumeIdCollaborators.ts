@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdCollaboratorsQueryOptions(resumeId: GetV1Res
  * @summary Get collaborators for a resume
  * {@link /api/v1/resumes/:resumeId/collaborators}
  */
-export function createGetV1ResumesResumeIdCollaborators<TData = GetV1ResumesResumeIdCollaboratorsQueryResponse, TQueryData = GetV1ResumesResumeIdCollaboratorsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdCollaboratorsQueryKey>(resumeId: GetV1ResumesResumeIdCollaboratorsPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdCollaborators<TData = GetV1ResumesResumeIdCollaboratorsQueryResponse, TQueryData = GetV1ResumesResumeIdCollaboratorsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdCollaboratorsQueryKey>(resumeId: GetV1ResumesResumeIdCollaboratorsPathParams["resumeId"] | (() => GetV1ResumesResumeIdCollaboratorsPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdCollaboratorsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdCollaborators400 | GetV1ResumesResumeIdCollaborators401 | GetV1ResumesResumeIdCollaborators403 | GetV1ResumesResumeIdCollaborators404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdCollaboratorsQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdCollaboratorsQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdCollaboratorsQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdCollaboratorsQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdCollaborators400 | GetV1ResumesResumeIdCollaborators401 | GetV1ResumesResumeIdCollaborators403 | GetV1ResumesResumeIdCollaborators404>> & { queryKey: TQueryKey }

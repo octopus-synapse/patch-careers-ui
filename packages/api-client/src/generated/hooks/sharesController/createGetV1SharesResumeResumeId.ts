@@ -31,19 +31,20 @@ export function getV1SharesResumeResumeIdQueryOptions(resumeId: GetV1SharesResum
  * @summary List share links for a resume
  * {@link /api/v1/shares/resume/:resumeId}
  */
-export function createGetV1SharesResumeResumeId<TData = GetV1SharesResumeResumeIdQueryResponse, TQueryData = GetV1SharesResumeResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1SharesResumeResumeIdQueryKey>(resumeId: GetV1SharesResumeResumeIdPathParams["resumeId"] | undefined, options: 
+export function createGetV1SharesResumeResumeId<TData = GetV1SharesResumeResumeIdQueryResponse, TQueryData = GetV1SharesResumeResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1SharesResumeResumeIdQueryKey>(resumeId: GetV1SharesResumeResumeIdPathParams["resumeId"] | (() => GetV1SharesResumeResumeIdPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SharesResumeResumeIdQueryResponse, ResponseErrorConfig<GetV1SharesResumeResumeId400 | GetV1SharesResumeResumeId401 | GetV1SharesResumeResumeId403 | GetV1SharesResumeResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1SharesResumeResumeIdQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1SharesResumeResumeIdQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1SharesResumeResumeIdQueryOptions(resumeId, config),
+          ...getV1SharesResumeResumeIdQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1SharesResumeResumeId400 | GetV1SharesResumeResumeId401 | GetV1SharesResumeResumeId403 | GetV1SharesResumeResumeId404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createGetV1AdminCollaborations<TData = GetV1AdminCollaborationsQ
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1AdminCollaborationsQueryKey(params)

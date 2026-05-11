@@ -31,19 +31,20 @@ export function getV1PublicResumesSlugOgPngQueryOptions(slug: GetV1PublicResumes
  * @summary OpenGraph preview image for a public share slug
  * {@link /api/v1/public/resumes/:slug/og.png}
  */
-export function createGetV1PublicResumesSlugOgPng<TData = GetV1PublicResumesSlugOgPngQueryResponse, TQueryData = GetV1PublicResumesSlugOgPngQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugOgPngQueryKey>(slug: GetV1PublicResumesSlugOgPngPathParams["slug"] | undefined, options: 
+export function createGetV1PublicResumesSlugOgPng<TData = GetV1PublicResumesSlugOgPngQueryResponse, TQueryData = GetV1PublicResumesSlugOgPngQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugOgPngQueryKey>(slug: GetV1PublicResumesSlugOgPngPathParams["slug"] | (() => GetV1PublicResumesSlugOgPngPathParams["slug"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PublicResumesSlugOgPngQueryResponse, ResponseErrorConfig<GetV1PublicResumesSlugOgPng400 | GetV1PublicResumesSlugOgPng404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const slug_ = typeof slug === 'function' ? slug() : slug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1PublicResumesSlugOgPngQueryKey(slug)
+         const queryKey = resolvedOptions?.queryKey ?? getV1PublicResumesSlugOgPngQueryKey(slug_)
 
          const query = createQuery({
-          ...getV1PublicResumesSlugOgPngQueryOptions(slug, config),
+          ...getV1PublicResumesSlugOgPngQueryOptions(slug_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1PublicResumesSlugOgPng400 | GetV1PublicResumesSlugOgPng404>> & { queryKey: TQueryKey }

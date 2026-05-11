@@ -38,6 +38,7 @@ export function createGetV1OnboardingSession<TData = GetV1OnboardingSessionQuery
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1OnboardingSessionQueryKey(params)

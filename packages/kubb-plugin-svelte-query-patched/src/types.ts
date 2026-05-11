@@ -174,8 +174,12 @@ type ResolvedOptions = {
   paramsCasing: Options['paramsCasing'];
   paramsType: NonNullable<Options['paramsType']>;
   pathParamsType: NonNullable<Options['pathParamsType']>;
-  /** See `Options.pathParamsAsGetters`. Default: `false`. */
-  pathParamsAsGetters: boolean;
+  /** See `Options.pathParamsAsGetters`. Plugin.ts assigns a `false`
+   *  default at runtime, so it is always defined when read by the
+   *  generator; declared optional here only to keep the structural
+   *  type assignable to upstream's `ResolvedOptions` (variance fix for
+   *  consumers that mix this fork's plugin with upstream-typed pieces). */
+  pathParamsAsGetters?: boolean;
   queryKey: QueryKey | undefined;
   query: NonNullable<Required<Query>> | false;
   mutationKey: MutationKey | undefined;

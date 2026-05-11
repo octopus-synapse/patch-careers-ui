@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdAnalyticsProgressionQueryOptions(resumeId: G
  * @summary Get score progression over time
  * {@link /api/v1/resumes/:resumeId/analytics/progression}
  */
-export function createGetV1ResumesResumeIdAnalyticsProgression<TData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsProgressionQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdAnalyticsProgression<TData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsProgressionQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsProgression400 | GetV1ResumesResumeIdAnalyticsProgression401 | GetV1ResumesResumeIdAnalyticsProgression403 | GetV1ResumesResumeIdAnalyticsProgression404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsProgressionQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsProgressionQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdAnalyticsProgressionQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdAnalyticsProgressionQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsProgression400 | GetV1ResumesResumeIdAnalyticsProgression401 | GetV1ResumesResumeIdAnalyticsProgression403 | GetV1ResumesResumeIdAnalyticsProgression404>> & { queryKey: TQueryKey }

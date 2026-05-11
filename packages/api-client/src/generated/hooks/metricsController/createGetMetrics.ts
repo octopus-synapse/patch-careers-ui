@@ -38,6 +38,7 @@ export function createGetMetrics<TData = GetMetricsQueryResponse, TQueryData = G
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getMetricsQueryKey()

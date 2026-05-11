@@ -37,6 +37,7 @@ export function createGetV1UsersMeConnectionsPending<TData = GetV1UsersMeConnect
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1UsersMeConnectionsPendingQueryKey(params)

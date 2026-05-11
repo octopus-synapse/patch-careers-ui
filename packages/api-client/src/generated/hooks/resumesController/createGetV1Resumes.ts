@@ -38,6 +38,7 @@ export function createGetV1Resumes<TData = GetV1ResumesQueryResponse, TQueryData
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1ResumesQueryKey(params)

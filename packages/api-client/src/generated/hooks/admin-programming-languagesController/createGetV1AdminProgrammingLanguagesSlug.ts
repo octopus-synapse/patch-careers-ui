@@ -31,19 +31,20 @@ export function getV1AdminProgrammingLanguagesSlugQueryOptions(slug: GetV1AdminP
  * @summary Get programming language by slug
  * {@link /api/v1/admin/programming-languages/:slug}
  */
-export function createGetV1AdminProgrammingLanguagesSlug<TData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryKey extends QueryKey = GetV1AdminProgrammingLanguagesSlugQueryKey>(slug: GetV1AdminProgrammingLanguagesSlugPathParams["slug"] | undefined, options: 
+export function createGetV1AdminProgrammingLanguagesSlug<TData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryKey extends QueryKey = GetV1AdminProgrammingLanguagesSlugQueryKey>(slug: GetV1AdminProgrammingLanguagesSlugPathParams["slug"] | (() => GetV1AdminProgrammingLanguagesSlugPathParams["slug"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminProgrammingLanguagesSlugQueryResponse, ResponseErrorConfig<GetV1AdminProgrammingLanguagesSlug400 | GetV1AdminProgrammingLanguagesSlug401 | GetV1AdminProgrammingLanguagesSlug403 | GetV1AdminProgrammingLanguagesSlug404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const slug_ = typeof slug === 'function' ? slug() : slug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AdminProgrammingLanguagesSlugQueryKey(slug)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AdminProgrammingLanguagesSlugQueryKey(slug_)
 
          const query = createQuery({
-          ...getV1AdminProgrammingLanguagesSlugQueryOptions(slug, config),
+          ...getV1AdminProgrammingLanguagesSlugQueryOptions(slug_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AdminProgrammingLanguagesSlug400 | GetV1AdminProgrammingLanguagesSlug401 | GetV1AdminProgrammingLanguagesSlug403 | GetV1AdminProgrammingLanguagesSlug404>> & { queryKey: TQueryKey }

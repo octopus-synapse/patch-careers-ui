@@ -31,19 +31,20 @@ export function getV1AtsSimulateResumeIdQueryOptions(resumeId: GetV1AtsSimulateR
  * @summary Simulate how a generic ATS parser extracts the resume
  * {@link /api/v1/ats/simulate/:resumeId}
  */
-export function createGetV1AtsSimulateResumeId<TData = GetV1AtsSimulateResumeIdQueryResponse, TQueryData = GetV1AtsSimulateResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1AtsSimulateResumeIdQueryKey>(resumeId: GetV1AtsSimulateResumeIdPathParams["resumeId"] | undefined, options: 
+export function createGetV1AtsSimulateResumeId<TData = GetV1AtsSimulateResumeIdQueryResponse, TQueryData = GetV1AtsSimulateResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1AtsSimulateResumeIdQueryKey>(resumeId: GetV1AtsSimulateResumeIdPathParams["resumeId"] | (() => GetV1AtsSimulateResumeIdPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AtsSimulateResumeIdQueryResponse, ResponseErrorConfig<GetV1AtsSimulateResumeId400 | GetV1AtsSimulateResumeId401 | GetV1AtsSimulateResumeId403 | GetV1AtsSimulateResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AtsSimulateResumeIdQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AtsSimulateResumeIdQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1AtsSimulateResumeIdQueryOptions(resumeId, config),
+          ...getV1AtsSimulateResumeIdQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AtsSimulateResumeId400 | GetV1AtsSimulateResumeId401 | GetV1AtsSimulateResumeId403 | GetV1AtsSimulateResumeId404>> & { queryKey: TQueryKey }

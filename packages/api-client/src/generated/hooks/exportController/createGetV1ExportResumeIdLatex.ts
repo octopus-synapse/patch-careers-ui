@@ -31,19 +31,20 @@ export function getV1ExportResumeIdLatexQueryOptions(resumeId: GetV1ExportResume
  * @summary Generate resume LaTeX (returns signed download URL)
  * {@link /api/v1/export/:resumeId/latex}
  */
-export function createGetV1ExportResumeIdLatex<TData = GetV1ExportResumeIdLatexQueryResponse, TQueryData = GetV1ExportResumeIdLatexQueryResponse, TQueryKey extends QueryKey = GetV1ExportResumeIdLatexQueryKey>(resumeId: GetV1ExportResumeIdLatexPathParams["resumeId"] | undefined, params?: GetV1ExportResumeIdLatexQueryParams, options: 
+export function createGetV1ExportResumeIdLatex<TData = GetV1ExportResumeIdLatexQueryResponse, TQueryData = GetV1ExportResumeIdLatexQueryResponse, TQueryKey extends QueryKey = GetV1ExportResumeIdLatexQueryKey>(resumeId: GetV1ExportResumeIdLatexPathParams["resumeId"] | (() => GetV1ExportResumeIdLatexPathParams["resumeId"]) | undefined, params?: GetV1ExportResumeIdLatexQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ExportResumeIdLatexQueryResponse, ResponseErrorConfig<GetV1ExportResumeIdLatex400 | GetV1ExportResumeIdLatex401 | GetV1ExportResumeIdLatex403 | GetV1ExportResumeIdLatex404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ExportResumeIdLatexQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ExportResumeIdLatexQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1ExportResumeIdLatexQueryOptions(resumeId, params, config),
+          ...getV1ExportResumeIdLatexQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ExportResumeIdLatex400 | GetV1ExportResumeIdLatex401 | GetV1ExportResumeIdLatex403 | GetV1ExportResumeIdLatex404>> & { queryKey: TQueryKey }

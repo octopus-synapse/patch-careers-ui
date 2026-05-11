@@ -31,19 +31,20 @@ export function getV1JobsIdFitQueryOptions(id: GetV1JobsIdFitPathParams["id"] | 
  * @summary Fit score breakdown for this job against the viewer's primary resume
  * {@link /api/v1/jobs/:id/fit}
  */
-export function createGetV1JobsIdFit<TData = GetV1JobsIdFitQueryResponse, TQueryData = GetV1JobsIdFitQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdFitQueryKey>(id: GetV1JobsIdFitPathParams["id"] | undefined, options: 
+export function createGetV1JobsIdFit<TData = GetV1JobsIdFitQueryResponse, TQueryData = GetV1JobsIdFitQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdFitQueryKey>(id: GetV1JobsIdFitPathParams["id"] | (() => GetV1JobsIdFitPathParams["id"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdFitQueryResponse, ResponseErrorConfig<GetV1JobsIdFit400 | GetV1JobsIdFit401 | GetV1JobsIdFit403 | GetV1JobsIdFit404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdFitQueryKey(id)
+         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdFitQueryKey(id_)
 
          const query = createQuery({
-          ...getV1JobsIdFitQueryOptions(id, config),
+          ...getV1JobsIdFitQueryOptions(id_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1JobsIdFit400 | GetV1JobsIdFit401 | GetV1JobsIdFit403 | GetV1JobsIdFit404>> & { queryKey: TQueryKey }

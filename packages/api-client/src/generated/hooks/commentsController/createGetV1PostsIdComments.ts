@@ -31,19 +31,20 @@ export function getV1PostsIdCommentsQueryOptions(id: GetV1PostsIdCommentsPathPar
  * @summary Get comments for a post
  * {@link /api/v1/posts/:id/comments}
  */
-export function createGetV1PostsIdComments<TData = GetV1PostsIdCommentsQueryResponse, TQueryData = GetV1PostsIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1PostsIdCommentsQueryKey>(id: GetV1PostsIdCommentsPathParams["id"] | undefined, params?: GetV1PostsIdCommentsQueryParams, options: 
+export function createGetV1PostsIdComments<TData = GetV1PostsIdCommentsQueryResponse, TQueryData = GetV1PostsIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1PostsIdCommentsQueryKey>(id: GetV1PostsIdCommentsPathParams["id"] | (() => GetV1PostsIdCommentsPathParams["id"]) | undefined, params?: GetV1PostsIdCommentsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PostsIdCommentsQueryResponse, ResponseErrorConfig<GetV1PostsIdComments400 | GetV1PostsIdComments401 | GetV1PostsIdComments403 | GetV1PostsIdComments404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1PostsIdCommentsQueryKey(id, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1PostsIdCommentsQueryKey(id_, params)
 
          const query = createQuery({
-          ...getV1PostsIdCommentsQueryOptions(id, params, config),
+          ...getV1PostsIdCommentsQueryOptions(id_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1PostsIdComments400 | GetV1PostsIdComments401 | GetV1PostsIdComments403 | GetV1PostsIdComments404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createGetV1NotificationsUnreadCount<TData = GetV1NotificationsUn
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1NotificationsUnreadCountQueryKey()

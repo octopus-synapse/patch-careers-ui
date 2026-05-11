@@ -31,19 +31,20 @@ export function getV1PublicResumesSlugDownloadQueryOptions(slug: GetV1PublicResu
  * @summary Download public resume by share slug
  * {@link /api/v1/public/resumes/:slug/download}
  */
-export function createGetV1PublicResumesSlugDownload<TData = GetV1PublicResumesSlugDownloadQueryResponse, TQueryData = GetV1PublicResumesSlugDownloadQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugDownloadQueryKey>(slug: GetV1PublicResumesSlugDownloadPathParams["slug"] | undefined, options: 
+export function createGetV1PublicResumesSlugDownload<TData = GetV1PublicResumesSlugDownloadQueryResponse, TQueryData = GetV1PublicResumesSlugDownloadQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugDownloadQueryKey>(slug: GetV1PublicResumesSlugDownloadPathParams["slug"] | (() => GetV1PublicResumesSlugDownloadPathParams["slug"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PublicResumesSlugDownloadQueryResponse, ResponseErrorConfig<GetV1PublicResumesSlugDownload400 | GetV1PublicResumesSlugDownload404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const slug_ = typeof slug === 'function' ? slug() : slug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1PublicResumesSlugDownloadQueryKey(slug)
+         const queryKey = resolvedOptions?.queryKey ?? getV1PublicResumesSlugDownloadQueryKey(slug_)
 
          const query = createQuery({
-          ...getV1PublicResumesSlugDownloadQueryOptions(slug, config),
+          ...getV1PublicResumesSlugDownloadQueryOptions(slug_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1PublicResumesSlugDownload400 | GetV1PublicResumesSlugDownload404>> & { queryKey: TQueryKey }

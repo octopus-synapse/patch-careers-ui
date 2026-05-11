@@ -31,19 +31,20 @@ export function getV1DslRenderPublicSlugQueryOptions(slug: GetV1DslRenderPublicS
  * @summary Get compiled AST for a public resume
  * {@link /api/v1/dsl/render/public/:slug}
  */
-export function createGetV1DslRenderPublicSlug<TData = GetV1DslRenderPublicSlugQueryResponse, TQueryData = GetV1DslRenderPublicSlugQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderPublicSlugQueryKey>(slug: GetV1DslRenderPublicSlugPathParams["slug"] | undefined, params?: GetV1DslRenderPublicSlugQueryParams, options: 
+export function createGetV1DslRenderPublicSlug<TData = GetV1DslRenderPublicSlugQueryResponse, TQueryData = GetV1DslRenderPublicSlugQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderPublicSlugQueryKey>(slug: GetV1DslRenderPublicSlugPathParams["slug"] | (() => GetV1DslRenderPublicSlugPathParams["slug"]) | undefined, params?: GetV1DslRenderPublicSlugQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1DslRenderPublicSlugQueryResponse, ResponseErrorConfig<GetV1DslRenderPublicSlug400 | GetV1DslRenderPublicSlug404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const slug_ = typeof slug === 'function' ? slug() : slug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1DslRenderPublicSlugQueryKey(slug, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1DslRenderPublicSlugQueryKey(slug_, params)
 
          const query = createQuery({
-          ...getV1DslRenderPublicSlugQueryOptions(slug, params, config),
+          ...getV1DslRenderPublicSlugQueryOptions(slug_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1DslRenderPublicSlug400 | GetV1DslRenderPublicSlug404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createGetV1SearchGlobal<TData = GetV1SearchGlobalQueryResponse, 
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1SearchGlobalQueryKey(params)

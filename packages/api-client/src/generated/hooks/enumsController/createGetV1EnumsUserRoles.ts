@@ -38,6 +38,7 @@ export function createGetV1EnumsUserRoles<TData = GetV1EnumsUserRolesQueryRespon
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1EnumsUserRolesQueryKey()

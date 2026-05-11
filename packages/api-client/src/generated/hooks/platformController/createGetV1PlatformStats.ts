@@ -38,6 +38,7 @@ export function createGetV1PlatformStats<TData = GetV1PlatformStatsQueryResponse
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1PlatformStatsQueryKey()

@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdFullQueryOptions(resumeId: GetV1ResumesResum
  * @summary Get a resume with all sections
  * {@link /api/v1/resumes/:resumeId/full}
  */
-export function createGetV1ResumesResumeIdFull<TData = GetV1ResumesResumeIdFullQueryResponse, TQueryData = GetV1ResumesResumeIdFullQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdFullQueryKey>(resumeId: GetV1ResumesResumeIdFullPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdFull<TData = GetV1ResumesResumeIdFullQueryResponse, TQueryData = GetV1ResumesResumeIdFullQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdFullQueryKey>(resumeId: GetV1ResumesResumeIdFullPathParams["resumeId"] | (() => GetV1ResumesResumeIdFullPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdFullQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdFull400 | GetV1ResumesResumeIdFull401 | GetV1ResumesResumeIdFull403 | GetV1ResumesResumeIdFull404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdFullQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdFullQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdFullQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdFullQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdFull400 | GetV1ResumesResumeIdFull401 | GetV1ResumesResumeIdFull403 | GetV1ResumesResumeIdFull404>> & { queryKey: TQueryKey }

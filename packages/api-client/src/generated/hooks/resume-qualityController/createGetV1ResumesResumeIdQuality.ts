@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdQualityQueryOptions(resumeId: GetV1ResumesRe
  * @summary Get the latest Resume Quality Score snapshot
  * {@link /api/v1/resumes/:resumeId/quality}
  */
-export function createGetV1ResumesResumeIdQuality<TData = GetV1ResumesResumeIdQualityQueryResponse, TQueryData = GetV1ResumesResumeIdQualityQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQualityQueryKey>(resumeId: GetV1ResumesResumeIdQualityPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdQuality<TData = GetV1ResumesResumeIdQualityQueryResponse, TQueryData = GetV1ResumesResumeIdQualityQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQualityQueryKey>(resumeId: GetV1ResumesResumeIdQualityPathParams["resumeId"] | (() => GetV1ResumesResumeIdQualityPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdQualityQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdQuality400 | GetV1ResumesResumeIdQuality401 | GetV1ResumesResumeIdQuality403 | GetV1ResumesResumeIdQuality404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdQualityQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdQualityQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdQualityQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdQualityQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdQuality400 | GetV1ResumesResumeIdQuality401 | GetV1ResumesResumeIdQuality403 | GetV1ResumesResumeIdQuality404>> & { queryKey: TQueryKey }

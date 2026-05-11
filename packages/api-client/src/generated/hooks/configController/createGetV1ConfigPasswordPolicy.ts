@@ -38,6 +38,7 @@ export function createGetV1ConfigPasswordPolicy<TData = GetV1ConfigPasswordPolic
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1ConfigPasswordPolicyQueryKey()

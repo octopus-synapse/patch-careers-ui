@@ -37,6 +37,7 @@ export function createGetV1UsersMeNetworkSummary<TData = GetV1UsersMeNetworkSumm
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1UsersMeNetworkSummaryQueryKey()

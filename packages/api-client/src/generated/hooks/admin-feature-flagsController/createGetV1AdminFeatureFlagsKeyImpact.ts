@@ -31,19 +31,20 @@ export function getV1AdminFeatureFlagsKeyImpactQueryOptions(key: GetV1AdminFeatu
  * @summary Preview transitive descendants affected when a flag is turned OFF
  * {@link /api/v1/admin/feature-flags/:key/impact}
  */
-export function createGetV1AdminFeatureFlagsKeyImpact<TData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryKey extends QueryKey = GetV1AdminFeatureFlagsKeyImpactQueryKey>(key: GetV1AdminFeatureFlagsKeyImpactPathParams["key"] | undefined, options: 
+export function createGetV1AdminFeatureFlagsKeyImpact<TData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryKey extends QueryKey = GetV1AdminFeatureFlagsKeyImpactQueryKey>(key: GetV1AdminFeatureFlagsKeyImpactPathParams["key"] | (() => GetV1AdminFeatureFlagsKeyImpactPathParams["key"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminFeatureFlagsKeyImpactQueryResponse, ResponseErrorConfig<GetV1AdminFeatureFlagsKeyImpact400 | GetV1AdminFeatureFlagsKeyImpact401 | GetV1AdminFeatureFlagsKeyImpact403 | GetV1AdminFeatureFlagsKeyImpact404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const key_ = typeof key === 'function' ? key() : key;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AdminFeatureFlagsKeyImpactQueryKey(key)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AdminFeatureFlagsKeyImpactQueryKey(key_)
 
          const query = createQuery({
-          ...getV1AdminFeatureFlagsKeyImpactQueryOptions(key, config),
+          ...getV1AdminFeatureFlagsKeyImpactQueryOptions(key_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AdminFeatureFlagsKeyImpact400 | GetV1AdminFeatureFlagsKeyImpact401 | GetV1AdminFeatureFlagsKeyImpact403 | GetV1AdminFeatureFlagsKeyImpact404>> & { queryKey: TQueryKey }

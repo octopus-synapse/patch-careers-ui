@@ -38,6 +38,7 @@ export function createGetV1FitProfileMe<TData = GetV1FitProfileMeQueryResponse, 
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1FitProfileMeQueryKey()

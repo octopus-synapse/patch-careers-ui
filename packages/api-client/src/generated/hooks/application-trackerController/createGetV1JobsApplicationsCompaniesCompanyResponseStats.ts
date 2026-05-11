@@ -31,19 +31,20 @@ export function getV1JobsApplicationsCompaniesCompanyResponseStatsQueryOptions(c
  * @summary Per-company response percentiles (p50/p90 days to first response).
  * {@link /api/v1/jobs/applications/companies/:company/response-stats}
  */
-export function createGetV1JobsApplicationsCompaniesCompanyResponseStats<TData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryKey extends QueryKey = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey>(company: GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"] | undefined, options: 
+export function createGetV1JobsApplicationsCompaniesCompanyResponseStats<TData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryKey extends QueryKey = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey>(company: GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"] | (() => GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, ResponseErrorConfig<GetV1JobsApplicationsCompaniesCompanyResponseStats400 | GetV1JobsApplicationsCompaniesCompanyResponseStats401 | GetV1JobsApplicationsCompaniesCompanyResponseStats403 | GetV1JobsApplicationsCompaniesCompanyResponseStats404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const company_ = typeof company === 'function' ? company() : company;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey(company)
+         const queryKey = resolvedOptions?.queryKey ?? getV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey(company_)
 
          const query = createQuery({
-          ...getV1JobsApplicationsCompaniesCompanyResponseStatsQueryOptions(company, config),
+          ...getV1JobsApplicationsCompaniesCompanyResponseStatsQueryOptions(company_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1JobsApplicationsCompaniesCompanyResponseStats400 | GetV1JobsApplicationsCompaniesCompanyResponseStats401 | GetV1JobsApplicationsCompaniesCompanyResponseStats403 | GetV1JobsApplicationsCompaniesCompanyResponseStats404>> & { queryKey: TQueryKey }

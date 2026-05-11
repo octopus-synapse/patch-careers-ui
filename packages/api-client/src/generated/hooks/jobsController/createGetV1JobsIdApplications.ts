@@ -31,19 +31,20 @@ export function getV1JobsIdApplicationsQueryOptions(id: GetV1JobsIdApplicationsP
  * @summary List applications received for a job (job owner only)
  * {@link /api/v1/jobs/:id/applications}
  */
-export function createGetV1JobsIdApplications<TData = GetV1JobsIdApplicationsQueryResponse, TQueryData = GetV1JobsIdApplicationsQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdApplicationsQueryKey>(id: GetV1JobsIdApplicationsPathParams["id"] | undefined, params?: GetV1JobsIdApplicationsQueryParams, options: 
+export function createGetV1JobsIdApplications<TData = GetV1JobsIdApplicationsQueryResponse, TQueryData = GetV1JobsIdApplicationsQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdApplicationsQueryKey>(id: GetV1JobsIdApplicationsPathParams["id"] | (() => GetV1JobsIdApplicationsPathParams["id"]) | undefined, params?: GetV1JobsIdApplicationsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdApplicationsQueryResponse, ResponseErrorConfig<GetV1JobsIdApplications400 | GetV1JobsIdApplications401 | GetV1JobsIdApplications403 | GetV1JobsIdApplications404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdApplicationsQueryKey(id, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdApplicationsQueryKey(id_, params)
 
          const query = createQuery({
-          ...getV1JobsIdApplicationsQueryOptions(id, params, config),
+          ...getV1JobsIdApplicationsQueryOptions(id_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1JobsIdApplications400 | GetV1JobsIdApplications401 | GetV1JobsIdApplications403 | GetV1JobsIdApplications404>> & { queryKey: TQueryKey }

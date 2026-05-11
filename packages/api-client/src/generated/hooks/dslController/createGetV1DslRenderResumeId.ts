@@ -31,19 +31,20 @@ export function getV1DslRenderResumeIdQueryOptions(resumeId: GetV1DslRenderResum
  * @summary Get compiled AST for a resume
  * {@link /api/v1/dsl/render/:resumeId}
  */
-export function createGetV1DslRenderResumeId<TData = GetV1DslRenderResumeIdQueryResponse, TQueryData = GetV1DslRenderResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderResumeIdQueryKey>(resumeId: GetV1DslRenderResumeIdPathParams["resumeId"] | undefined, params?: GetV1DslRenderResumeIdQueryParams, options: 
+export function createGetV1DslRenderResumeId<TData = GetV1DslRenderResumeIdQueryResponse, TQueryData = GetV1DslRenderResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderResumeIdQueryKey>(resumeId: GetV1DslRenderResumeIdPathParams["resumeId"] | (() => GetV1DslRenderResumeIdPathParams["resumeId"]) | undefined, params?: GetV1DslRenderResumeIdQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1DslRenderResumeIdQueryResponse, ResponseErrorConfig<GetV1DslRenderResumeId400 | GetV1DslRenderResumeId401 | GetV1DslRenderResumeId403 | GetV1DslRenderResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1DslRenderResumeIdQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1DslRenderResumeIdQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1DslRenderResumeIdQueryOptions(resumeId, params, config),
+          ...getV1DslRenderResumeIdQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1DslRenderResumeId400 | GetV1DslRenderResumeId401 | GetV1DslRenderResumeId403 | GetV1DslRenderResumeId404>> & { queryKey: TQueryKey }

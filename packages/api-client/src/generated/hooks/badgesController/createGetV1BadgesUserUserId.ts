@@ -31,19 +31,20 @@ export function getV1BadgesUserUserIdQueryOptions(userId: GetV1BadgesUserUserIdP
  * @summary Public list of badges for a given user.
  * {@link /api/v1/badges/user/:userId}
  */
-export function createGetV1BadgesUserUserId<TData = GetV1BadgesUserUserIdQueryResponse, TQueryData = GetV1BadgesUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1BadgesUserUserIdQueryKey>(userId: GetV1BadgesUserUserIdPathParams["userId"] | undefined, options: 
+export function createGetV1BadgesUserUserId<TData = GetV1BadgesUserUserIdQueryResponse, TQueryData = GetV1BadgesUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1BadgesUserUserIdQueryKey>(userId: GetV1BadgesUserUserIdPathParams["userId"] | (() => GetV1BadgesUserUserIdPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1BadgesUserUserIdQueryResponse, ResponseErrorConfig<GetV1BadgesUserUserId400 | GetV1BadgesUserUserId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1BadgesUserUserIdQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1BadgesUserUserIdQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1BadgesUserUserIdQueryOptions(userId, config),
+          ...getV1BadgesUserUserIdQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1BadgesUserUserId400 | GetV1BadgesUserUserId404>> & { queryKey: TQueryKey }

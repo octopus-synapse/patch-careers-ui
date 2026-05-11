@@ -38,6 +38,7 @@ export function createGetV1UsersManage<TData = GetV1UsersManageQueryResponse, TQ
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1UsersManageQueryKey(params)

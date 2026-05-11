@@ -38,6 +38,7 @@ export function createGetV1ChatBlocked<TData = GetV1ChatBlockedQueryResponse, TQ
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1ChatBlockedQueryKey()

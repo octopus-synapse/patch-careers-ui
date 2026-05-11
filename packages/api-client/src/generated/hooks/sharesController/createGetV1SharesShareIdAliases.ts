@@ -31,19 +31,20 @@ export function getV1SharesShareIdAliasesQueryOptions(shareId: GetV1SharesShareI
  * @summary List slug aliases for a share
  * {@link /api/v1/shares/:shareId/aliases}
  */
-export function createGetV1SharesShareIdAliases<TData = GetV1SharesShareIdAliasesQueryResponse, TQueryData = GetV1SharesShareIdAliasesQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdAliasesQueryKey>(shareId: GetV1SharesShareIdAliasesPathParams["shareId"] | undefined, options: 
+export function createGetV1SharesShareIdAliases<TData = GetV1SharesShareIdAliasesQueryResponse, TQueryData = GetV1SharesShareIdAliasesQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdAliasesQueryKey>(shareId: GetV1SharesShareIdAliasesPathParams["shareId"] | (() => GetV1SharesShareIdAliasesPathParams["shareId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SharesShareIdAliasesQueryResponse, ResponseErrorConfig<GetV1SharesShareIdAliases400 | GetV1SharesShareIdAliases401 | GetV1SharesShareIdAliases403 | GetV1SharesShareIdAliases404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const shareId_ = typeof shareId === 'function' ? shareId() : shareId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1SharesShareIdAliasesQueryKey(shareId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1SharesShareIdAliasesQueryKey(shareId_)
 
          const query = createQuery({
-          ...getV1SharesShareIdAliasesQueryOptions(shareId, config),
+          ...getV1SharesShareIdAliasesQueryOptions(shareId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1SharesShareIdAliases400 | GetV1SharesShareIdAliases401 | GetV1SharesShareIdAliases403 | GetV1SharesShareIdAliases404>> & { queryKey: TQueryKey }

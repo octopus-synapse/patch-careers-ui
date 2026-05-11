@@ -2,33 +2,52 @@ import path from 'node:path';
 import { definePlugin, type Group, getBarrelFiles, getMode } from '@kubb/core';
 
 // Fork delta: upstream imports `camelCase` / `pascalCase` from
-// `@internals/utils` (workspace-private). Behaviorally these are simple
-// segment-based converters; inlined here to mirror the upstream output
-// byte-for-byte without taking a dependency on internals.
-type CaseOptions = { isFile?: boolean };
-function splitSegments(input: string): string[] {
-  return input
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/[_\-./\s]+/g, ' ')
+// `@internals/utils` (workspace-private). Port the exact upstream
+// implementation here so generated SDK names are byte-identical
+// (e.g. `2faStatus`, `urlV1` retain upstream casing rules).
+type CaseOptions = { isFile?: boolean; prefix?: string; suffix?: string };
+
+function toCamelOrPascal(text: string, pascal: boolean): string {
+  return text
     .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-}
-function camelCase(input: string, options: CaseOptions = {}): string {
-  const parts = splitSegments(input);
-  if (parts.length === 0) return '';
-  const joined = parts
-    .map((part, i) => {
-      const lower = part.toLowerCase();
-      if (i === 0) return lower;
-      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/(\d)([a-z])/g, '$1 $2')
+    .split(/[\s\-_./\\:]+/)
+    .filter(Boolean)
+    .map((word, i) => {
+      if (word.length > 1 && word === word.toUpperCase()) return word;
+      if (i === 0 && !pascal) return word.charAt(0).toLowerCase() + word.slice(1);
+      return word.charAt(0).toUpperCase() + word.slice(1);
     })
-    .join('');
-  return options.isFile ? joined : joined;
+    .join('')
+    .replace(/[^a-zA-Z0-9]/g, '');
 }
-function pascalCase(input: string): string {
-  const parts = splitSegments(input);
-  return parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join('');
+
+function applyToFileParts(
+  text: string,
+  transform: (part: string, isLast: boolean) => string,
+): string {
+  const parts = text.split('.');
+  return parts.map((part, i) => transform(part, i === parts.length - 1)).join('/');
+}
+
+function camelCase(text: string, { isFile, prefix = '', suffix = '' }: CaseOptions = {}): string {
+  if (isFile) {
+    return applyToFileParts(text, (part, isLast) =>
+      camelCase(part, isLast ? { prefix, suffix } : {}),
+    );
+  }
+  return toCamelOrPascal(`${prefix} ${text} ${suffix}`, false);
+}
+
+function pascalCase(text: string, { isFile, prefix = '', suffix = '' }: CaseOptions = {}): string {
+  if (isFile) {
+    return applyToFileParts(text, (part, isLast) =>
+      isLast ? pascalCase(part, { prefix, suffix }) : camelCase(part),
+    );
+  }
+  return toCamelOrPascal(`${prefix} ${text} ${suffix}`, true);
 }
 
 import { pluginClientName } from '@kubb/plugin-client';
@@ -111,7 +130,7 @@ export const pluginSvelteQuery = definePlugin<PluginSvelteQuery>((options) => {
       group,
     },
     pre: [pluginOasName, pluginTsName, parser === 'zod' ? pluginZodName : undefined].filter(
-      Boolean,
+      (name): name is string => Boolean(name),
     ),
     resolvePath(baseName, pathMode, options) {
       const root = path.resolve(this.config.root, this.config.output.path);

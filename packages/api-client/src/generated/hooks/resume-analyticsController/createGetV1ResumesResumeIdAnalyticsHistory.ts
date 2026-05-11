@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdAnalyticsHistoryQueryOptions(resumeId: GetV1
  * @summary Get analytics history
  * {@link /api/v1/resumes/:resumeId/analytics/history}
  */
-export function createGetV1ResumesResumeIdAnalyticsHistory<TData = GetV1ResumesResumeIdAnalyticsHistoryQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsHistoryQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsHistoryQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsHistoryPathParams["resumeId"] | undefined, params?: GetV1ResumesResumeIdAnalyticsHistoryQueryParams, options: 
+export function createGetV1ResumesResumeIdAnalyticsHistory<TData = GetV1ResumesResumeIdAnalyticsHistoryQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsHistoryQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsHistoryQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsHistoryPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsHistoryPathParams["resumeId"]) | undefined, params?: GetV1ResumesResumeIdAnalyticsHistoryQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsHistoryQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsHistory400 | GetV1ResumesResumeIdAnalyticsHistory401 | GetV1ResumesResumeIdAnalyticsHistory403 | GetV1ResumesResumeIdAnalyticsHistory404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsHistoryQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsHistoryQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdAnalyticsHistoryQueryOptions(resumeId, params, config),
+          ...getV1ResumesResumeIdAnalyticsHistoryQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsHistory400 | GetV1ResumesResumeIdAnalyticsHistory401 | GetV1ResumesResumeIdAnalyticsHistory403 | GetV1ResumesResumeIdAnalyticsHistory404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createGetV1TechSkillsSearch<TData = GetV1TechSkillsSearchQueryRe
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1TechSkillsSearchQueryKey(params)

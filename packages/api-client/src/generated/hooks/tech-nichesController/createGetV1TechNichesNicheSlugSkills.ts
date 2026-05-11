@@ -31,19 +31,20 @@ export function getV1TechNichesNicheSlugSkillsQueryOptions(nicheSlug: GetV1TechN
  * @summary Get skills by niche slug
  * {@link /api/v1/tech-niches/:nicheSlug/skills}
  */
-export function createGetV1TechNichesNicheSlugSkills<TData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryKey extends QueryKey = GetV1TechNichesNicheSlugSkillsQueryKey>(nicheSlug: GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"] | undefined, options: 
+export function createGetV1TechNichesNicheSlugSkills<TData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryKey extends QueryKey = GetV1TechNichesNicheSlugSkillsQueryKey>(nicheSlug: GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"] | (() => GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechNichesNicheSlugSkillsQueryResponse, ResponseErrorConfig<GetV1TechNichesNicheSlugSkills400 | GetV1TechNichesNicheSlugSkills401 | GetV1TechNichesNicheSlugSkills403 | GetV1TechNichesNicheSlugSkills404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const nicheSlug_ = typeof nicheSlug === 'function' ? nicheSlug() : nicheSlug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1TechNichesNicheSlugSkillsQueryKey(nicheSlug)
+         const queryKey = resolvedOptions?.queryKey ?? getV1TechNichesNicheSlugSkillsQueryKey(nicheSlug_)
 
          const query = createQuery({
-          ...getV1TechNichesNicheSlugSkillsQueryOptions(nicheSlug, config),
+          ...getV1TechNichesNicheSlugSkillsQueryOptions(nicheSlug_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1TechNichesNicheSlugSkills400 | GetV1TechNichesNicheSlugSkills401 | GetV1TechNichesNicheSlugSkills403 | GetV1TechNichesNicheSlugSkills404>> & { queryKey: TQueryKey }

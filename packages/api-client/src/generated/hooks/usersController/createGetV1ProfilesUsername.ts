@@ -31,19 +31,20 @@ export function getV1ProfilesUsernameQueryOptions(username: GetV1ProfilesUsernam
  * @summary Get a user's public profile by username
  * {@link /api/v1/profiles/:username}
  */
-export function createGetV1ProfilesUsername<TData = GetV1ProfilesUsernameQueryResponse, TQueryData = GetV1ProfilesUsernameQueryResponse, TQueryKey extends QueryKey = GetV1ProfilesUsernameQueryKey>(username: GetV1ProfilesUsernamePathParams["username"] | undefined, options: 
+export function createGetV1ProfilesUsername<TData = GetV1ProfilesUsernameQueryResponse, TQueryData = GetV1ProfilesUsernameQueryResponse, TQueryKey extends QueryKey = GetV1ProfilesUsernameQueryKey>(username: GetV1ProfilesUsernamePathParams["username"] | (() => GetV1ProfilesUsernamePathParams["username"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ProfilesUsernameQueryResponse, ResponseErrorConfig<GetV1ProfilesUsername400 | GetV1ProfilesUsername404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const username_ = typeof username === 'function' ? username() : username;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ProfilesUsernameQueryKey(username)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ProfilesUsernameQueryKey(username_)
 
          const query = createQuery({
-          ...getV1ProfilesUsernameQueryOptions(username, config),
+          ...getV1ProfilesUsernameQueryOptions(username_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ProfilesUsername400 | GetV1ProfilesUsername404>> & { queryKey: TQueryKey }

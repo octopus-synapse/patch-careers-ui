@@ -31,19 +31,20 @@ export function getV1MecCoursesCodigoCursoQueryOptions(codigoCurso: GetV1MecCour
  * @summary Get course by MEC code
  * {@link /api/v1/mec/courses/:codigoCurso}
  */
-export function createGetV1MecCoursesCodigoCurso<TData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryKey extends QueryKey = GetV1MecCoursesCodigoCursoQueryKey>(codigoCurso: GetV1MecCoursesCodigoCursoPathParams["codigoCurso"] | undefined, options: 
+export function createGetV1MecCoursesCodigoCurso<TData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryKey extends QueryKey = GetV1MecCoursesCodigoCursoQueryKey>(codigoCurso: GetV1MecCoursesCodigoCursoPathParams["codigoCurso"] | (() => GetV1MecCoursesCodigoCursoPathParams["codigoCurso"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MecCoursesCodigoCursoQueryResponse, ResponseErrorConfig<GetV1MecCoursesCodigoCurso400 | GetV1MecCoursesCodigoCurso404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const codigoCurso_ = typeof codigoCurso === 'function' ? codigoCurso() : codigoCurso;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1MecCoursesCodigoCursoQueryKey(codigoCurso)
+         const queryKey = resolvedOptions?.queryKey ?? getV1MecCoursesCodigoCursoQueryKey(codigoCurso_)
 
          const query = createQuery({
-          ...getV1MecCoursesCodigoCursoQueryOptions(codigoCurso, config),
+          ...getV1MecCoursesCodigoCursoQueryOptions(codigoCurso_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1MecCoursesCodigoCurso400 | GetV1MecCoursesCodigoCurso404>> & { queryKey: TQueryKey }

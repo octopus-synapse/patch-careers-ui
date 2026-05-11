@@ -31,19 +31,21 @@ export function getV1ResumesResumeIdSharesShareIdAnalyticsQueryOptions(resumeId:
  * @summary Get analytics for a shared resume (nested route)
  * {@link /api/v1/resumes/:resumeId/shares/:shareId/analytics}
  */
-export function createGetV1ResumesResumeIdSharesShareIdAnalytics<TData = GetV1ResumesResumeIdSharesShareIdAnalyticsQueryResponse, TQueryData = GetV1ResumesResumeIdSharesShareIdAnalyticsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSharesShareIdAnalyticsQueryKey>(resumeId: GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams["resumeId"] | undefined, shareId: GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams["shareId"] | undefined, options: 
+export function createGetV1ResumesResumeIdSharesShareIdAnalytics<TData = GetV1ResumesResumeIdSharesShareIdAnalyticsQueryResponse, TQueryData = GetV1ResumesResumeIdSharesShareIdAnalyticsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSharesShareIdAnalyticsQueryKey>(resumeId: GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams["resumeId"] | (() => GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams["resumeId"]) | undefined, shareId: GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams["shareId"] | (() => GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams["shareId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdSharesShareIdAnalyticsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdSharesShareIdAnalytics400 | GetV1ResumesResumeIdSharesShareIdAnalytics401 | GetV1ResumesResumeIdSharesShareIdAnalytics403 | GetV1ResumesResumeIdSharesShareIdAnalytics404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
+  const shareId_ = typeof shareId === 'function' ? shareId() : shareId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdSharesShareIdAnalyticsQueryKey(resumeId, shareId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdSharesShareIdAnalyticsQueryKey(resumeId_, shareId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdSharesShareIdAnalyticsQueryOptions(resumeId, shareId, config),
+          ...getV1ResumesResumeIdSharesShareIdAnalyticsQueryOptions(resumeId_, shareId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdSharesShareIdAnalytics400 | GetV1ResumesResumeIdSharesShareIdAnalytics401 | GetV1ResumesResumeIdSharesShareIdAnalytics403 | GetV1ResumesResumeIdSharesShareIdAnalytics404>> & { queryKey: TQueryKey }

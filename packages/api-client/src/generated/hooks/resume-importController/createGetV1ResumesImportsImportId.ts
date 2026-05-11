@@ -31,19 +31,20 @@ export function getV1ResumesImportsImportIdQueryOptions(importId: GetV1ResumesIm
  * @summary Get import job status
  * {@link /api/v1/resumes/imports/:importId}
  */
-export function createGetV1ResumesImportsImportId<TData = GetV1ResumesImportsImportIdQueryResponse, TQueryData = GetV1ResumesImportsImportIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesImportsImportIdQueryKey>(importId: GetV1ResumesImportsImportIdPathParams["importId"] | undefined, options: 
+export function createGetV1ResumesImportsImportId<TData = GetV1ResumesImportsImportIdQueryResponse, TQueryData = GetV1ResumesImportsImportIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesImportsImportIdQueryKey>(importId: GetV1ResumesImportsImportIdPathParams["importId"] | (() => GetV1ResumesImportsImportIdPathParams["importId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesImportsImportIdQueryResponse, ResponseErrorConfig<GetV1ResumesImportsImportId400 | GetV1ResumesImportsImportId401 | GetV1ResumesImportsImportId403 | GetV1ResumesImportsImportId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const importId_ = typeof importId === 'function' ? importId() : importId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesImportsImportIdQueryKey(importId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesImportsImportIdQueryKey(importId_)
 
          const query = createQuery({
-          ...getV1ResumesImportsImportIdQueryOptions(importId, config),
+          ...getV1ResumesImportsImportIdQueryOptions(importId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesImportsImportId400 | GetV1ResumesImportsImportId401 | GetV1ResumesImportsImportId403 | GetV1ResumesImportsImportId404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createSession<TData = SessionQueryResponse, TQueryData = Session
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? sessionQueryKey()

@@ -38,6 +38,7 @@ export function createGetV1MeMenu<TData = GetV1MeMenuQueryResponse, TQueryData =
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1MeMenuQueryKey()

@@ -31,19 +31,20 @@ export function getV1PagesSettingsSectionQueryOptions(section: GetV1PagesSetting
  * @summary Server-driven settings section (fields + actions + info)
  * {@link /api/v1/pages/settings/:section}
  */
-export function createGetV1PagesSettingsSection<TData = GetV1PagesSettingsSectionQueryResponse, TQueryData = GetV1PagesSettingsSectionQueryResponse, TQueryKey extends QueryKey = GetV1PagesSettingsSectionQueryKey>(section: GetV1PagesSettingsSectionPathParams["section"] | undefined, options: 
+export function createGetV1PagesSettingsSection<TData = GetV1PagesSettingsSectionQueryResponse, TQueryData = GetV1PagesSettingsSectionQueryResponse, TQueryKey extends QueryKey = GetV1PagesSettingsSectionQueryKey>(section: GetV1PagesSettingsSectionPathParams["section"] | (() => GetV1PagesSettingsSectionPathParams["section"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PagesSettingsSectionQueryResponse, ResponseErrorConfig<GetV1PagesSettingsSection400 | GetV1PagesSettingsSection401 | GetV1PagesSettingsSection404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const section_ = typeof section === 'function' ? section() : section;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1PagesSettingsSectionQueryKey(section)
+         const queryKey = resolvedOptions?.queryKey ?? getV1PagesSettingsSectionQueryKey(section_)
 
          const query = createQuery({
-          ...getV1PagesSettingsSectionQueryOptions(section, config),
+          ...getV1PagesSettingsSectionQueryOptions(section_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1PagesSettingsSection400 | GetV1PagesSettingsSection401 | GetV1PagesSettingsSection404>> & { queryKey: TQueryKey }

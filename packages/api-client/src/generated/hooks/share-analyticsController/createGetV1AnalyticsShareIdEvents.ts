@@ -31,19 +31,20 @@ export function getV1AnalyticsShareIdEventsQueryOptions(shareId: GetV1AnalyticsS
  * @summary Get analytics events for a share id
  * {@link /api/v1/analytics/:shareId/events}
  */
-export function createGetV1AnalyticsShareIdEvents<TData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsShareIdEventsQueryKey>(shareId: GetV1AnalyticsShareIdEventsPathParams["shareId"] | undefined, params?: GetV1AnalyticsShareIdEventsQueryParams, options: 
+export function createGetV1AnalyticsShareIdEvents<TData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsShareIdEventsQueryKey>(shareId: GetV1AnalyticsShareIdEventsPathParams["shareId"] | (() => GetV1AnalyticsShareIdEventsPathParams["shareId"]) | undefined, params?: GetV1AnalyticsShareIdEventsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsShareIdEventsQueryResponse, ResponseErrorConfig<GetV1AnalyticsShareIdEvents400 | GetV1AnalyticsShareIdEvents401 | GetV1AnalyticsShareIdEvents403 | GetV1AnalyticsShareIdEvents404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const shareId_ = typeof shareId === 'function' ? shareId() : shareId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsShareIdEventsQueryKey(shareId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsShareIdEventsQueryKey(shareId_, params)
 
          const query = createQuery({
-          ...getV1AnalyticsShareIdEventsQueryOptions(shareId, params, config),
+          ...getV1AnalyticsShareIdEventsQueryOptions(shareId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AnalyticsShareIdEvents400 | GetV1AnalyticsShareIdEvents401 | GetV1AnalyticsShareIdEvents403 | GetV1AnalyticsShareIdEvents404>> & { queryKey: TQueryKey }

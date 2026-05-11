@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdAnalyticsKeywordsQueryOptions(resumeId: GetV
  * @summary Get keyword optimization suggestions
  * {@link /api/v1/resumes/:resumeId/analytics/keywords}
  */
-export function createGetV1ResumesResumeIdAnalyticsKeywords<TData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsKeywordsQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"] | undefined, params: GetV1ResumesResumeIdAnalyticsKeywordsQueryParams, options: 
+export function createGetV1ResumesResumeIdAnalyticsKeywords<TData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsKeywordsQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"]) | undefined, params: GetV1ResumesResumeIdAnalyticsKeywordsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsKeywords400 | GetV1ResumesResumeIdAnalyticsKeywords401 | GetV1ResumesResumeIdAnalyticsKeywords403 | GetV1ResumesResumeIdAnalyticsKeywords404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsKeywordsQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsKeywordsQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdAnalyticsKeywordsQueryOptions(resumeId, params, config),
+          ...getV1ResumesResumeIdAnalyticsKeywordsQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsKeywords400 | GetV1ResumesResumeIdAnalyticsKeywords401 | GetV1ResumesResumeIdAnalyticsKeywords403 | GetV1ResumesResumeIdAnalyticsKeywords404>> & { queryKey: TQueryKey }

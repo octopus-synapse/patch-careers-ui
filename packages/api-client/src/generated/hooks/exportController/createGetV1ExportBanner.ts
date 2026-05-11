@@ -38,6 +38,7 @@ export function createGetV1ExportBanner<TData = GetV1ExportBannerQueryResponse, 
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1ExportBannerQueryKey(params)

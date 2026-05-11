@@ -38,6 +38,7 @@ export function createGetV1I18NDictionaryNotifications<TData = GetV1I18NDictiona
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1I18NDictionaryNotificationsQueryKey()

@@ -38,6 +38,7 @@ export function createGetV1MecInstitutionsSearch<TData = GetV1MecInstitutionsSea
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1MecInstitutionsSearchQueryKey(params)

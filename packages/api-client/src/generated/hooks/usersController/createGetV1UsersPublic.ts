@@ -38,6 +38,7 @@ export function createGetV1UsersPublic<TData = GetV1UsersPublicQueryResponse, TQ
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1UsersPublicQueryKey(params)

@@ -31,19 +31,20 @@ export function getV1AnalyticsShareIdQueryOptions(shareId: GetV1AnalyticsShareId
  * @summary Get analytics for a share id
  * {@link /api/v1/analytics/:shareId}
  */
-export function createGetV1AnalyticsShareId<TData = GetV1AnalyticsShareIdQueryResponse, TQueryData = GetV1AnalyticsShareIdQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsShareIdQueryKey>(shareId: GetV1AnalyticsShareIdPathParams["shareId"] | undefined, options: 
+export function createGetV1AnalyticsShareId<TData = GetV1AnalyticsShareIdQueryResponse, TQueryData = GetV1AnalyticsShareIdQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsShareIdQueryKey>(shareId: GetV1AnalyticsShareIdPathParams["shareId"] | (() => GetV1AnalyticsShareIdPathParams["shareId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsShareIdQueryResponse, ResponseErrorConfig<GetV1AnalyticsShareId400 | GetV1AnalyticsShareId401 | GetV1AnalyticsShareId403 | GetV1AnalyticsShareId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const shareId_ = typeof shareId === 'function' ? shareId() : shareId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsShareIdQueryKey(shareId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsShareIdQueryKey(shareId_)
 
          const query = createQuery({
-          ...getV1AnalyticsShareIdQueryOptions(shareId, config),
+          ...getV1AnalyticsShareIdQueryOptions(shareId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AnalyticsShareId400 | GetV1AnalyticsShareId401 | GetV1AnalyticsShareId403 | GetV1AnalyticsShareId404>> & { queryKey: TQueryKey }

@@ -31,19 +31,20 @@ export function getV1AdminTechNichesIdQueryOptions(id: GetV1AdminTechNichesIdPat
  * @summary Get tech niche by ID
  * {@link /api/v1/admin/tech-niches/:id}
  */
-export function createGetV1AdminTechNichesId<TData = GetV1AdminTechNichesIdQueryResponse, TQueryData = GetV1AdminTechNichesIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechNichesIdQueryKey>(id: GetV1AdminTechNichesIdPathParams["id"] | undefined, options: 
+export function createGetV1AdminTechNichesId<TData = GetV1AdminTechNichesIdQueryResponse, TQueryData = GetV1AdminTechNichesIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechNichesIdQueryKey>(id: GetV1AdminTechNichesIdPathParams["id"] | (() => GetV1AdminTechNichesIdPathParams["id"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminTechNichesIdQueryResponse, ResponseErrorConfig<GetV1AdminTechNichesId400 | GetV1AdminTechNichesId401 | GetV1AdminTechNichesId403 | GetV1AdminTechNichesId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AdminTechNichesIdQueryKey(id)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AdminTechNichesIdQueryKey(id_)
 
          const query = createQuery({
-          ...getV1AdminTechNichesIdQueryOptions(id, config),
+          ...getV1AdminTechNichesIdQueryOptions(id_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AdminTechNichesId400 | GetV1AdminTechNichesId401 | GetV1AdminTechNichesId403 | GetV1AdminTechNichesId404>> & { queryKey: TQueryKey }

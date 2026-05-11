@@ -31,19 +31,20 @@ export function getV1AnalyticsResumeIdLiveQueryOptions(resumeId: GetV1AnalyticsR
  * @summary Subscribe to live analytics stream
  * {@link /api/v1/analytics/:resumeId/live}
  */
-export function createGetV1AnalyticsResumeIdLive<TData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdLiveQueryKey>(resumeId: GetV1AnalyticsResumeIdLivePathParams["resumeId"] | undefined, options: 
+export function createGetV1AnalyticsResumeIdLive<TData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdLiveQueryKey>(resumeId: GetV1AnalyticsResumeIdLivePathParams["resumeId"] | (() => GetV1AnalyticsResumeIdLivePathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsResumeIdLiveQueryResponse, ResponseErrorConfig<GetV1AnalyticsResumeIdLive400 | GetV1AnalyticsResumeIdLive401 | GetV1AnalyticsResumeIdLive403 | GetV1AnalyticsResumeIdLive404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsResumeIdLiveQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsResumeIdLiveQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1AnalyticsResumeIdLiveQueryOptions(resumeId, config),
+          ...getV1AnalyticsResumeIdLiveQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AnalyticsResumeIdLive400 | GetV1AnalyticsResumeIdLive401 | GetV1AnalyticsResumeIdLive403 | GetV1AnalyticsResumeIdLive404>> & { queryKey: TQueryKey }

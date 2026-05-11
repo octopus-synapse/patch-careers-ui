@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdThumbnailSvgQueryOptions(resumeId: GetV1Resu
  * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
  * {@link /api/v1/resumes/:resumeId/thumbnail.svg}
  */
-export function createGetV1ResumesResumeIdThumbnailSvg<TData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdThumbnailSvgQueryKey>(resumeId: GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdThumbnailSvg<TData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdThumbnailSvgQueryKey>(resumeId: GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"] | (() => GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdThumbnailSvgQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdThumbnailSvg400 | GetV1ResumesResumeIdThumbnailSvg401 | GetV1ResumesResumeIdThumbnailSvg403 | GetV1ResumesResumeIdThumbnailSvg404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdThumbnailSvgQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdThumbnailSvgQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdThumbnailSvgQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdThumbnailSvgQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdThumbnailSvg400 | GetV1ResumesResumeIdThumbnailSvg401 | GetV1ResumesResumeIdThumbnailSvg403 | GetV1ResumesResumeIdThumbnailSvg404>> & { queryKey: TQueryKey }

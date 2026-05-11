@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdAnalyticsAtsScoreQueryOptions(resumeId: GetV
  * @summary Calculate ATS compatibility score
  * {@link /api/v1/resumes/:resumeId/analytics/ats-score}
  */
-export function createGetV1ResumesResumeIdAnalyticsAtsScore<TData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsAtsScoreQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdAnalyticsAtsScore<TData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsAtsScoreQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsAtsScore400 | GetV1ResumesResumeIdAnalyticsAtsScore401 | GetV1ResumesResumeIdAnalyticsAtsScore403 | GetV1ResumesResumeIdAnalyticsAtsScore404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsAtsScoreQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsAtsScoreQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdAnalyticsAtsScoreQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdAnalyticsAtsScoreQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsAtsScore400 | GetV1ResumesResumeIdAnalyticsAtsScore401 | GetV1ResumesResumeIdAnalyticsAtsScore403 | GetV1ResumesResumeIdAnalyticsAtsScore404>> & { queryKey: TQueryKey }

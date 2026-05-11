@@ -31,19 +31,20 @@ export function getV1AnalyticsResumeIdViewsQueryOptions(resumeId: GetV1Analytics
  * @summary Subscribe to live views stream
  * {@link /api/v1/analytics/:resumeId/views}
  */
-export function createGetV1AnalyticsResumeIdViews<TData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdViewsQueryKey>(resumeId: GetV1AnalyticsResumeIdViewsPathParams["resumeId"] | undefined, options: 
+export function createGetV1AnalyticsResumeIdViews<TData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdViewsQueryKey>(resumeId: GetV1AnalyticsResumeIdViewsPathParams["resumeId"] | (() => GetV1AnalyticsResumeIdViewsPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsResumeIdViewsQueryResponse, ResponseErrorConfig<GetV1AnalyticsResumeIdViews400 | GetV1AnalyticsResumeIdViews401 | GetV1AnalyticsResumeIdViews403 | GetV1AnalyticsResumeIdViews404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsResumeIdViewsQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsResumeIdViewsQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1AnalyticsResumeIdViewsQueryOptions(resumeId, config),
+          ...getV1AnalyticsResumeIdViewsQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AnalyticsResumeIdViews400 | GetV1AnalyticsResumeIdViews401 | GetV1AnalyticsResumeIdViews403 | GetV1AnalyticsResumeIdViews404>> & { queryKey: TQueryKey }

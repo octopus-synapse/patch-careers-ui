@@ -38,6 +38,7 @@ export function createGetV1FeedBookmarks<TData = GetV1FeedBookmarksQueryResponse
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1FeedBookmarksQueryKey(params)

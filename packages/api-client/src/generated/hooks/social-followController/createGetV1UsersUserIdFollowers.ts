@@ -30,19 +30,20 @@ export function getV1UsersUserIdFollowersQueryOptions(userId: GetV1UsersUserIdFo
  * @summary Get followers for a user
  * {@link /api/v1/users/:userId/followers}
  */
-export function createGetV1UsersUserIdFollowers<TData = GetV1UsersUserIdFollowersQueryResponse, TQueryData = GetV1UsersUserIdFollowersQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFollowersQueryKey>(userId: GetV1UsersUserIdFollowersPathParams["userId"] | undefined, params?: GetV1UsersUserIdFollowersQueryParams, options: 
+export function createGetV1UsersUserIdFollowers<TData = GetV1UsersUserIdFollowersQueryResponse, TQueryData = GetV1UsersUserIdFollowersQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFollowersQueryKey>(userId: GetV1UsersUserIdFollowersPathParams["userId"] | (() => GetV1UsersUserIdFollowersPathParams["userId"]) | undefined, params?: GetV1UsersUserIdFollowersQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdFollowersQueryResponse, ResponseErrorConfig<GetV1UsersUserIdFollowers400 | GetV1UsersUserIdFollowers401 | GetV1UsersUserIdFollowers403 | GetV1UsersUserIdFollowers404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdFollowersQueryKey(userId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdFollowersQueryKey(userId_, params)
 
          const query = createQuery({
-          ...getV1UsersUserIdFollowersQueryOptions(userId, params, config),
+          ...getV1UsersUserIdFollowersQueryOptions(userId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdFollowers400 | GetV1UsersUserIdFollowers401 | GetV1UsersUserIdFollowers403 | GetV1UsersUserIdFollowers404>> & { queryKey: TQueryKey }

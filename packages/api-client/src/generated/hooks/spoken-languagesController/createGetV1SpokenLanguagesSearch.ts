@@ -38,6 +38,7 @@ export function createGetV1SpokenLanguagesSearch<TData = GetV1SpokenLanguagesSea
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1SpokenLanguagesSearchQueryKey(params)

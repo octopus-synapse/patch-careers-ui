@@ -30,19 +30,20 @@ export function getV1UsersUserIdIsFollowingQueryOptions(userId: GetV1UsersUserId
  * @summary Check following relationship
  * {@link /api/v1/users/:userId/is-following}
  */
-export function createGetV1UsersUserIdIsFollowing<TData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsFollowingQueryKey>(userId: GetV1UsersUserIdIsFollowingPathParams["userId"] | undefined, options: 
+export function createGetV1UsersUserIdIsFollowing<TData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsFollowingQueryKey>(userId: GetV1UsersUserIdIsFollowingPathParams["userId"] | (() => GetV1UsersUserIdIsFollowingPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdIsFollowingQueryResponse, ResponseErrorConfig<GetV1UsersUserIdIsFollowing400 | GetV1UsersUserIdIsFollowing401 | GetV1UsersUserIdIsFollowing403 | GetV1UsersUserIdIsFollowing404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdIsFollowingQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdIsFollowingQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1UsersUserIdIsFollowingQueryOptions(userId, config),
+          ...getV1UsersUserIdIsFollowingQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdIsFollowing400 | GetV1UsersUserIdIsFollowing401 | GetV1UsersUserIdIsFollowing403 | GetV1UsersUserIdIsFollowing404>> & { queryKey: TQueryKey }

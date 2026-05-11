@@ -31,19 +31,20 @@ export function getV1WebhooksIdDeliveriesQueryOptions(id: GetV1WebhooksIdDeliver
  * @summary List recent delivery attempts for a webhook.
  * {@link /api/v1/webhooks/:id/deliveries}
  */
-export function createGetV1WebhooksIdDeliveries<TData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryKey extends QueryKey = GetV1WebhooksIdDeliveriesQueryKey>(id: GetV1WebhooksIdDeliveriesPathParams["id"] | undefined, options: 
+export function createGetV1WebhooksIdDeliveries<TData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryKey extends QueryKey = GetV1WebhooksIdDeliveriesQueryKey>(id: GetV1WebhooksIdDeliveriesPathParams["id"] | (() => GetV1WebhooksIdDeliveriesPathParams["id"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1WebhooksIdDeliveriesQueryResponse, ResponseErrorConfig<GetV1WebhooksIdDeliveries400 | GetV1WebhooksIdDeliveries401 | GetV1WebhooksIdDeliveries403 | GetV1WebhooksIdDeliveries404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1WebhooksIdDeliveriesQueryKey(id)
+         const queryKey = resolvedOptions?.queryKey ?? getV1WebhooksIdDeliveriesQueryKey(id_)
 
          const query = createQuery({
-          ...getV1WebhooksIdDeliveriesQueryOptions(id, config),
+          ...getV1WebhooksIdDeliveriesQueryOptions(id_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1WebhooksIdDeliveries400 | GetV1WebhooksIdDeliveries401 | GetV1WebhooksIdDeliveries403 | GetV1WebhooksIdDeliveries404>> & { queryKey: TQueryKey }

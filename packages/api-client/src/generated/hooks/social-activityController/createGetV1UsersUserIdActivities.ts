@@ -30,19 +30,20 @@ export function getV1UsersUserIdActivitiesQueryOptions(userId: GetV1UsersUserIdA
  * @summary Get public activities for a user
  * {@link /api/v1/users/:userId/activities}
  */
-export function createGetV1UsersUserIdActivities<TData = GetV1UsersUserIdActivitiesQueryResponse, TQueryData = GetV1UsersUserIdActivitiesQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdActivitiesQueryKey>(userId: GetV1UsersUserIdActivitiesPathParams["userId"] | undefined, params?: GetV1UsersUserIdActivitiesQueryParams, options: 
+export function createGetV1UsersUserIdActivities<TData = GetV1UsersUserIdActivitiesQueryResponse, TQueryData = GetV1UsersUserIdActivitiesQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdActivitiesQueryKey>(userId: GetV1UsersUserIdActivitiesPathParams["userId"] | (() => GetV1UsersUserIdActivitiesPathParams["userId"]) | undefined, params?: GetV1UsersUserIdActivitiesQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdActivitiesQueryResponse, ResponseErrorConfig<GetV1UsersUserIdActivities400 | GetV1UsersUserIdActivities401 | GetV1UsersUserIdActivities404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdActivitiesQueryKey(userId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdActivitiesQueryKey(userId_, params)
 
          const query = createQuery({
-          ...getV1UsersUserIdActivitiesQueryOptions(userId, params, config),
+          ...getV1UsersUserIdActivitiesQueryOptions(userId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdActivities400 | GetV1UsersUserIdActivities401 | GetV1UsersUserIdActivities404>> & { queryKey: TQueryKey }

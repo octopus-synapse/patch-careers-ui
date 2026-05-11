@@ -37,6 +37,7 @@ export function createGetV1UsersMeConnectionsSuggestions<TData = GetV1UsersMeCon
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1UsersMeConnectionsSuggestionsQueryKey(params)

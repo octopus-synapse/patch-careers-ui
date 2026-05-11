@@ -31,19 +31,20 @@ export function getV1ResumesManageUserUserIdQueryOptions(userId: GetV1ResumesMan
  * @summary List all resumes for a specific user
  * {@link /api/v1/resumes/manage/user/:userId}
  */
-export function createGetV1ResumesManageUserUserId<TData = GetV1ResumesManageUserUserIdQueryResponse, TQueryData = GetV1ResumesManageUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesManageUserUserIdQueryKey>(userId: GetV1ResumesManageUserUserIdPathParams["userId"] | undefined, options: 
+export function createGetV1ResumesManageUserUserId<TData = GetV1ResumesManageUserUserIdQueryResponse, TQueryData = GetV1ResumesManageUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesManageUserUserIdQueryKey>(userId: GetV1ResumesManageUserUserIdPathParams["userId"] | (() => GetV1ResumesManageUserUserIdPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesManageUserUserIdQueryResponse, ResponseErrorConfig<GetV1ResumesManageUserUserId400 | GetV1ResumesManageUserUserId401 | GetV1ResumesManageUserUserId403 | GetV1ResumesManageUserUserId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesManageUserUserIdQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesManageUserUserIdQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1ResumesManageUserUserIdQueryOptions(userId, config),
+          ...getV1ResumesManageUserUserIdQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesManageUserUserId400 | GetV1ResumesManageUserUserId401 | GetV1ResumesManageUserUserId403 | GetV1ResumesManageUserUserId404>> & { queryKey: TQueryKey }

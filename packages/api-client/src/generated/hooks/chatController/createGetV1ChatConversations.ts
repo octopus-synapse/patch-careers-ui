@@ -38,6 +38,7 @@ export function createGetV1ChatConversations<TData = GetV1ChatConversationsQuery
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1ChatConversationsQueryKey(params)

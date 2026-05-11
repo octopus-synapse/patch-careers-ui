@@ -38,6 +38,7 @@ export function createGetV1AdminSectionTypes<TData = GetV1AdminSectionTypesQuery
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1AdminSectionTypesQueryKey(params)

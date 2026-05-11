@@ -38,6 +38,7 @@ export function createGetV1AdminAlerts<TData = GetV1AdminAlertsQueryResponse, TQ
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1AdminAlertsQueryKey()

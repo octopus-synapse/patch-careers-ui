@@ -31,19 +31,20 @@ export function getV1VersionsResumeIdQueryOptions(resumeId: GetV1VersionsResumeI
  * @summary List resume versions
  * {@link /api/v1/versions/:resumeId}
  */
-export function createGetV1VersionsResumeId<TData = GetV1VersionsResumeIdQueryResponse, TQueryData = GetV1VersionsResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1VersionsResumeIdQueryKey>(resumeId: GetV1VersionsResumeIdPathParams["resumeId"] | undefined, options: 
+export function createGetV1VersionsResumeId<TData = GetV1VersionsResumeIdQueryResponse, TQueryData = GetV1VersionsResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1VersionsResumeIdQueryKey>(resumeId: GetV1VersionsResumeIdPathParams["resumeId"] | (() => GetV1VersionsResumeIdPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1VersionsResumeIdQueryResponse, ResponseErrorConfig<GetV1VersionsResumeId400 | GetV1VersionsResumeId401 | GetV1VersionsResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1VersionsResumeIdQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1VersionsResumeIdQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1VersionsResumeIdQueryOptions(resumeId, config),
+          ...getV1VersionsResumeIdQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1VersionsResumeId400 | GetV1VersionsResumeId401 | GetV1VersionsResumeId404>> & { queryKey: TQueryKey }

@@ -31,19 +31,20 @@ export function getV1AnalyticsResumeIdAtsScoreQueryOptions(resumeId: GetV1Analyt
  * @summary Subscribe to live ATS stream
  * {@link /api/v1/analytics/:resumeId/ats-score}
  */
-export function createGetV1AnalyticsResumeIdAtsScore<TData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdAtsScoreQueryKey>(resumeId: GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"] | undefined, options: 
+export function createGetV1AnalyticsResumeIdAtsScore<TData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdAtsScoreQueryKey>(resumeId: GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"] | (() => GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsResumeIdAtsScoreQueryResponse, ResponseErrorConfig<GetV1AnalyticsResumeIdAtsScore400 | GetV1AnalyticsResumeIdAtsScore401 | GetV1AnalyticsResumeIdAtsScore403 | GetV1AnalyticsResumeIdAtsScore404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsResumeIdAtsScoreQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AnalyticsResumeIdAtsScoreQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1AnalyticsResumeIdAtsScoreQueryOptions(resumeId, config),
+          ...getV1AnalyticsResumeIdAtsScoreQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AnalyticsResumeIdAtsScore400 | GetV1AnalyticsResumeIdAtsScore401 | GetV1AnalyticsResumeIdAtsScore403 | GetV1AnalyticsResumeIdAtsScore404>> & { queryKey: TQueryKey }

@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdAnalyticsBenchmarkQueryOptions(resumeId: Get
  * @summary Get industry benchmark comparison
  * {@link /api/v1/resumes/:resumeId/analytics/benchmark}
  */
-export function createGetV1ResumesResumeIdAnalyticsBenchmark<TData = GetV1ResumesResumeIdAnalyticsBenchmarkQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsBenchmarkQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsBenchmarkQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsBenchmarkPathParams["resumeId"] | undefined, params: GetV1ResumesResumeIdAnalyticsBenchmarkQueryParams, options: 
+export function createGetV1ResumesResumeIdAnalyticsBenchmark<TData = GetV1ResumesResumeIdAnalyticsBenchmarkQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsBenchmarkQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsBenchmarkQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsBenchmarkPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsBenchmarkPathParams["resumeId"]) | undefined, params: GetV1ResumesResumeIdAnalyticsBenchmarkQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsBenchmarkQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsBenchmark400 | GetV1ResumesResumeIdAnalyticsBenchmark401 | GetV1ResumesResumeIdAnalyticsBenchmark403 | GetV1ResumesResumeIdAnalyticsBenchmark404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsBenchmarkQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsBenchmarkQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdAnalyticsBenchmarkQueryOptions(resumeId, params, config),
+          ...getV1ResumesResumeIdAnalyticsBenchmarkQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsBenchmark400 | GetV1ResumesResumeIdAnalyticsBenchmark401 | GetV1ResumesResumeIdAnalyticsBenchmark403 | GetV1ResumesResumeIdAnalyticsBenchmark404>> & { queryKey: TQueryKey }

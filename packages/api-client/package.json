@@ -24,6 +24,7 @@
     "@kubb/plugin-oas": "^4.37.5",
     "@kubb/plugin-svelte-query": "^4.37.5",
     "@kubb/plugin-ts": "^4.37.5",
+    "kubb-plugin-svelte-query-patched": "workspace:*",
     "@kubb/plugin-zod": "^4.37.5",
     "@tanstack/svelte-query": "5",
     "@types/bun": "latest",

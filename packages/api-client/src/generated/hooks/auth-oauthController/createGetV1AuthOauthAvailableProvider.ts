@@ -31,19 +31,20 @@ export function getV1AuthOauthAvailableProviderQueryOptions(provider: GetV1AuthO
  * @summary Whether a given OAuth provider is configured.
  * {@link /api/v1/auth/oauth/available/:provider}
  */
-export function createGetV1AuthOauthAvailableProvider<TData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryKey extends QueryKey = GetV1AuthOauthAvailableProviderQueryKey>(provider: GetV1AuthOauthAvailableProviderPathParams["provider"] | undefined, options: 
+export function createGetV1AuthOauthAvailableProvider<TData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryKey extends QueryKey = GetV1AuthOauthAvailableProviderQueryKey>(provider: GetV1AuthOauthAvailableProviderPathParams["provider"] | (() => GetV1AuthOauthAvailableProviderPathParams["provider"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AuthOauthAvailableProviderQueryResponse, ResponseErrorConfig<GetV1AuthOauthAvailableProvider400 | GetV1AuthOauthAvailableProvider404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const provider_ = typeof provider === 'function' ? provider() : provider;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AuthOauthAvailableProviderQueryKey(provider)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AuthOauthAvailableProviderQueryKey(provider_)
 
          const query = createQuery({
-          ...getV1AuthOauthAvailableProviderQueryOptions(provider, config),
+          ...getV1AuthOauthAvailableProviderQueryOptions(provider_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AuthOauthAvailableProvider400 | GetV1AuthOauthAvailableProvider404>> & { queryKey: TQueryKey }

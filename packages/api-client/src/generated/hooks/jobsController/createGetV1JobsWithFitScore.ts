@@ -38,6 +38,7 @@ export function createGetV1JobsWithFitScore<TData = GetV1JobsWithFitScoreQueryRe
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1JobsWithFitScoreQueryKey(params)

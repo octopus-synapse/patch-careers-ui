@@ -31,19 +31,20 @@ export function getV1SharesShareIdQrPngQueryOptions(shareId: GetV1SharesShareIdQ
  * @summary Render a QR code PNG pointing to the share public URL
  * {@link /api/v1/shares/:shareId/qr.png}
  */
-export function createGetV1SharesShareIdQrPng<TData = GetV1SharesShareIdQrPngQueryResponse, TQueryData = GetV1SharesShareIdQrPngQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdQrPngQueryKey>(shareId: GetV1SharesShareIdQrPngPathParams["shareId"] | undefined, params?: GetV1SharesShareIdQrPngQueryParams, options: 
+export function createGetV1SharesShareIdQrPng<TData = GetV1SharesShareIdQrPngQueryResponse, TQueryData = GetV1SharesShareIdQrPngQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdQrPngQueryKey>(shareId: GetV1SharesShareIdQrPngPathParams["shareId"] | (() => GetV1SharesShareIdQrPngPathParams["shareId"]) | undefined, params?: GetV1SharesShareIdQrPngQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SharesShareIdQrPngQueryResponse, ResponseErrorConfig<GetV1SharesShareIdQrPng400 | GetV1SharesShareIdQrPng401 | GetV1SharesShareIdQrPng403 | GetV1SharesShareIdQrPng404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const shareId_ = typeof shareId === 'function' ? shareId() : shareId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1SharesShareIdQrPngQueryKey(shareId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1SharesShareIdQrPngQueryKey(shareId_, params)
 
          const query = createQuery({
-          ...getV1SharesShareIdQrPngQueryOptions(shareId, params, config),
+          ...getV1SharesShareIdQrPngQueryOptions(shareId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1SharesShareIdQrPng400 | GetV1SharesShareIdQrPng401 | GetV1SharesShareIdQrPng403 | GetV1SharesShareIdQrPng404>> & { queryKey: TQueryKey }

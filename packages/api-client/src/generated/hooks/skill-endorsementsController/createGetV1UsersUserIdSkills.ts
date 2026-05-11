@@ -31,19 +31,20 @@ export function getV1UsersUserIdSkillsQueryOptions(userId: GetV1UsersUserIdSkill
  * @summary List a user’s skills with endorsement counts
  * {@link /api/v1/users/:userId/skills}
  */
-export function createGetV1UsersUserIdSkills<TData = GetV1UsersUserIdSkillsQueryResponse, TQueryData = GetV1UsersUserIdSkillsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSkillsQueryKey>(userId: GetV1UsersUserIdSkillsPathParams["userId"] | undefined, options: 
+export function createGetV1UsersUserIdSkills<TData = GetV1UsersUserIdSkillsQueryResponse, TQueryData = GetV1UsersUserIdSkillsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSkillsQueryKey>(userId: GetV1UsersUserIdSkillsPathParams["userId"] | (() => GetV1UsersUserIdSkillsPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdSkillsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdSkills400 | GetV1UsersUserIdSkills401 | GetV1UsersUserIdSkills403 | GetV1UsersUserIdSkills404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdSkillsQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdSkillsQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1UsersUserIdSkillsQueryOptions(userId, config),
+          ...getV1UsersUserIdSkillsQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdSkills400 | GetV1UsersUserIdSkills401 | GetV1UsersUserIdSkills403 | GetV1UsersUserIdSkills404>> & { queryKey: TQueryKey }

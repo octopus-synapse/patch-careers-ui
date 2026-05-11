@@ -31,19 +31,20 @@ export function getV1TechSkillsNichesNicheSlugSkillsQueryOptions(nicheSlug: GetV
  * @summary Get skills by niche
  * {@link /api/v1/tech-skills/niches/:nicheSlug/skills}
  */
-export function createGetV1TechSkillsNichesNicheSlugSkills<TData = GetV1TechSkillsNichesNicheSlugSkillsQueryResponse, TQueryData = GetV1TechSkillsNichesNicheSlugSkillsQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsNichesNicheSlugSkillsQueryKey>(nicheSlug: GetV1TechSkillsNichesNicheSlugSkillsPathParams["nicheSlug"] | undefined, options: 
+export function createGetV1TechSkillsNichesNicheSlugSkills<TData = GetV1TechSkillsNichesNicheSlugSkillsQueryResponse, TQueryData = GetV1TechSkillsNichesNicheSlugSkillsQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsNichesNicheSlugSkillsQueryKey>(nicheSlug: GetV1TechSkillsNichesNicheSlugSkillsPathParams["nicheSlug"] | (() => GetV1TechSkillsNichesNicheSlugSkillsPathParams["nicheSlug"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechSkillsNichesNicheSlugSkillsQueryResponse, ResponseErrorConfig<GetV1TechSkillsNichesNicheSlugSkills400 | GetV1TechSkillsNichesNicheSlugSkills401 | GetV1TechSkillsNichesNicheSlugSkills403 | GetV1TechSkillsNichesNicheSlugSkills404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const nicheSlug_ = typeof nicheSlug === 'function' ? nicheSlug() : nicheSlug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1TechSkillsNichesNicheSlugSkillsQueryKey(nicheSlug)
+         const queryKey = resolvedOptions?.queryKey ?? getV1TechSkillsNichesNicheSlugSkillsQueryKey(nicheSlug_)
 
          const query = createQuery({
-          ...getV1TechSkillsNichesNicheSlugSkillsQueryOptions(nicheSlug, config),
+          ...getV1TechSkillsNichesNicheSlugSkillsQueryOptions(nicheSlug_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1TechSkillsNichesNicheSlugSkills400 | GetV1TechSkillsNichesNicheSlugSkills401 | GetV1TechSkillsNichesNicheSlugSkills403 | GetV1TechSkillsNichesNicheSlugSkills404>> & { queryKey: TQueryKey }

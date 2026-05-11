@@ -30,19 +30,20 @@ export function getV1UsersUserIdConnectionStatsQueryOptions(userId: GetV1UsersUs
  * @summary Get connection stats for a user
  * {@link /api/v1/users/:userId/connection-stats}
  */
-export function createGetV1UsersUserIdConnectionStats<TData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdConnectionStatsQueryKey>(userId: GetV1UsersUserIdConnectionStatsPathParams["userId"] | undefined, options: 
+export function createGetV1UsersUserIdConnectionStats<TData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdConnectionStatsQueryKey>(userId: GetV1UsersUserIdConnectionStatsPathParams["userId"] | (() => GetV1UsersUserIdConnectionStatsPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdConnectionStatsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdConnectionStats400 | GetV1UsersUserIdConnectionStats404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdConnectionStatsQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdConnectionStatsQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1UsersUserIdConnectionStatsQueryOptions(userId, config),
+          ...getV1UsersUserIdConnectionStatsQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdConnectionStats400 | GetV1UsersUserIdConnectionStats404>> & { queryKey: TQueryKey }

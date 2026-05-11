@@ -38,6 +38,7 @@ export function createGetV1MecCoursesSearch<TData = GetV1MecCoursesSearchQueryRe
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1MecCoursesSearchQueryKey(params)

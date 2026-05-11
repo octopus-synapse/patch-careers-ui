@@ -31,19 +31,20 @@ export function getV1ChatBlockedUserIdStatusQueryOptions(userId: GetV1ChatBlocke
  * @summary Check if a user is blocked
  * {@link /api/v1/chat/blocked/:userId/status}
  */
-export function createGetV1ChatBlockedUserIdStatus<TData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryKey extends QueryKey = GetV1ChatBlockedUserIdStatusQueryKey>(userId: GetV1ChatBlockedUserIdStatusPathParams["userId"] | undefined, options: 
+export function createGetV1ChatBlockedUserIdStatus<TData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryKey extends QueryKey = GetV1ChatBlockedUserIdStatusQueryKey>(userId: GetV1ChatBlockedUserIdStatusPathParams["userId"] | (() => GetV1ChatBlockedUserIdStatusPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ChatBlockedUserIdStatusQueryResponse, ResponseErrorConfig<GetV1ChatBlockedUserIdStatus400 | GetV1ChatBlockedUserIdStatus401 | GetV1ChatBlockedUserIdStatus403 | GetV1ChatBlockedUserIdStatus404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ChatBlockedUserIdStatusQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ChatBlockedUserIdStatusQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1ChatBlockedUserIdStatusQueryOptions(userId, config),
+          ...getV1ChatBlockedUserIdStatusQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ChatBlockedUserIdStatus400 | GetV1ChatBlockedUserIdStatus401 | GetV1ChatBlockedUserIdStatus403 | GetV1ChatBlockedUserIdStatus404>> & { queryKey: TQueryKey }

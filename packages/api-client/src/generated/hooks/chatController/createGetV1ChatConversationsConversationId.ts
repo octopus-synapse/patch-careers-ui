@@ -31,19 +31,20 @@ export function getV1ChatConversationsConversationIdQueryOptions(conversationId:
  * @summary Get a single conversation
  * {@link /api/v1/chat/conversations/:conversationId}
  */
-export function createGetV1ChatConversationsConversationId<TData = GetV1ChatConversationsConversationIdQueryResponse, TQueryData = GetV1ChatConversationsConversationIdQueryResponse, TQueryKey extends QueryKey = GetV1ChatConversationsConversationIdQueryKey>(conversationId: GetV1ChatConversationsConversationIdPathParams["conversationId"] | undefined, options: 
+export function createGetV1ChatConversationsConversationId<TData = GetV1ChatConversationsConversationIdQueryResponse, TQueryData = GetV1ChatConversationsConversationIdQueryResponse, TQueryKey extends QueryKey = GetV1ChatConversationsConversationIdQueryKey>(conversationId: GetV1ChatConversationsConversationIdPathParams["conversationId"] | (() => GetV1ChatConversationsConversationIdPathParams["conversationId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ChatConversationsConversationIdQueryResponse, ResponseErrorConfig<GetV1ChatConversationsConversationId400 | GetV1ChatConversationsConversationId401 | GetV1ChatConversationsConversationId403 | GetV1ChatConversationsConversationId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const conversationId_ = typeof conversationId === 'function' ? conversationId() : conversationId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ChatConversationsConversationIdQueryKey(conversationId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ChatConversationsConversationIdQueryKey(conversationId_)
 
          const query = createQuery({
-          ...getV1ChatConversationsConversationIdQueryOptions(conversationId, config),
+          ...getV1ChatConversationsConversationIdQueryOptions(conversationId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ChatConversationsConversationId400 | GetV1ChatConversationsConversationId401 | GetV1ChatConversationsConversationId403 | GetV1ChatConversationsConversationId404>> & { queryKey: TQueryKey }

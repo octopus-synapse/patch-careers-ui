@@ -30,19 +30,21 @@ export function getV1UsersUserIdActivitiesByTypeTypeQueryOptions(userId: GetV1Us
  * @summary Get user activities filtered by type
  * {@link /api/v1/users/:userId/activities/by-type/:type}
  */
-export function createGetV1UsersUserIdActivitiesByTypeType<TData = GetV1UsersUserIdActivitiesByTypeTypeQueryResponse, TQueryData = GetV1UsersUserIdActivitiesByTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdActivitiesByTypeTypeQueryKey>(userId: GetV1UsersUserIdActivitiesByTypeTypePathParams["userId"] | undefined, type: GetV1UsersUserIdActivitiesByTypeTypePathParams["type"] | undefined, params?: GetV1UsersUserIdActivitiesByTypeTypeQueryParams, options: 
+export function createGetV1UsersUserIdActivitiesByTypeType<TData = GetV1UsersUserIdActivitiesByTypeTypeQueryResponse, TQueryData = GetV1UsersUserIdActivitiesByTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdActivitiesByTypeTypeQueryKey>(userId: GetV1UsersUserIdActivitiesByTypeTypePathParams["userId"] | (() => GetV1UsersUserIdActivitiesByTypeTypePathParams["userId"]) | undefined, type: GetV1UsersUserIdActivitiesByTypeTypePathParams["type"] | (() => GetV1UsersUserIdActivitiesByTypeTypePathParams["type"]) | undefined, params?: GetV1UsersUserIdActivitiesByTypeTypeQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdActivitiesByTypeTypeQueryResponse, ResponseErrorConfig<GetV1UsersUserIdActivitiesByTypeType400 | GetV1UsersUserIdActivitiesByTypeType401 | GetV1UsersUserIdActivitiesByTypeType404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
+  const type_ = typeof type === 'function' ? type() : type;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdActivitiesByTypeTypeQueryKey(userId, type, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdActivitiesByTypeTypeQueryKey(userId_, type_, params)
 
          const query = createQuery({
-          ...getV1UsersUserIdActivitiesByTypeTypeQueryOptions(userId, type, params, config),
+          ...getV1UsersUserIdActivitiesByTypeTypeQueryOptions(userId_, type_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdActivitiesByTypeType400 | GetV1UsersUserIdActivitiesByTypeType401 | GetV1UsersUserIdActivitiesByTypeType404>> & { queryKey: TQueryKey }

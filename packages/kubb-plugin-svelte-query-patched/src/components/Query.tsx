@@ -41,14 +41,18 @@ type GetParamsProps = {
  *  `pathParamsAsGetters` is on, the emitted type widens to
  *  `T | (() => T) | undefined` so callers can pass a Svelte-reactive
  *  getter (`() => jobId`) without tripping `state_referenced_locally`.
- *  Exported for unit tests; internal API otherwise. */
+ *  Exported for unit tests; internal API otherwise.
+ *  The input shape matches kubb's `FunctionParamsAST` — at this point
+ *  upstream's `getPathParams` has already attached a concrete `type`. */
 export function buildPathParamTypeOverride(pathParamsAsGetters: boolean) {
-  return (item: { type: string; [k: string]: unknown }) => ({
-    ...item,
-    type: pathParamsAsGetters
-      ? `${item.type} | (() => ${item.type}) | undefined`
-      : `${item.type} | undefined`,
-  });
+  return <T extends { type?: string }>(item: T): T => {
+    const t = item.type;
+    if (!t) return item;
+    return {
+      ...item,
+      type: pathParamsAsGetters ? `${t} | (() => ${t}) | undefined` : `${t} | undefined`,
+    };
+  };
 }
 
 function getParams({
@@ -64,7 +68,10 @@ function getParams({
       ? typeSchemas.response.name
       : `ResponseConfig<${typeSchemas.response.name}>`;
   const TError = `ResponseErrorConfig<${typeSchemas.errors?.map((item) => item.name).join(' | ') || 'Error'}>`;
-  const override = buildPathParamTypeOverride(pathParamsAsGetters);
+  // `pathParamsAsGetters` is declared optional on ResolvedOptions for
+  // variance reasons (see types.ts); plugin.ts guarantees a default.
+  const asGetters = pathParamsAsGetters ?? false;
+  const override = buildPathParamTypeOverride(asGetters);
 
   if (paramsType === 'object') {
     const pathParams = getPathParams(typeSchemas.pathParams, {
@@ -178,11 +185,12 @@ function buildPathParamUnwrap(
   });
   const names = Object.keys(pathParamMap);
   if (names.length === 0) return { prelude: '', rename: (expr) => expr };
+  // TypeScript narrows `typeof x === 'function'` to the function member
+  // of the union; the else branch keeps the original `T | undefined`.
+  // No casts needed — the resulting `${n}_` has the narrow type the
+  // downstream QueryKey/QueryOptions calls expect.
   const prelude = names
-    .map(
-      (n) =>
-        `const ${n}_ = typeof ${n} === 'function' ? (${n} as () => unknown)() as typeof ${n} : ${n};`,
-    )
+    .map((n) => `const ${n}_ = typeof ${n} === 'function' ? ${n}() : ${n};`)
     .join('\n');
   const rename = (expr: string) =>
     names.reduce((acc, n) => acc.replace(new RegExp(`\\b${n}\\b`, 'g'), `${n}_`), expr);
@@ -225,16 +233,19 @@ export function Query({
     pathParamsType,
     typeSchemas,
   });
+  // See helper comment on the inner-scoped `asGetters` — ResolvedOptions
+  // declares `pathParamsAsGetters` optional for variance, so we coerce.
+  const asGetters = pathParamsAsGetters ?? false;
   const params = getParams({
     paramsType,
     paramsCasing,
     pathParamsType,
-    pathParamsAsGetters,
+    pathParamsAsGetters: asGetters,
     dataReturnType,
     typeSchemas,
   });
 
-  const { prelude, rename } = pathParamsAsGetters
+  const { prelude, rename } = asGetters
     ? buildPathParamUnwrap(typeSchemas, paramsCasing)
     : { prelude: '', rename: (expr: string) => expr };
 

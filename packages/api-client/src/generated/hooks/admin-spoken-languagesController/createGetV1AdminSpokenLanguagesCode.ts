@@ -31,19 +31,20 @@ export function getV1AdminSpokenLanguagesCodeQueryOptions(code: GetV1AdminSpoken
  * @summary Get spoken language by code
  * {@link /api/v1/admin/spoken-languages/:code}
  */
-export function createGetV1AdminSpokenLanguagesCode<TData = GetV1AdminSpokenLanguagesCodeQueryResponse, TQueryData = GetV1AdminSpokenLanguagesCodeQueryResponse, TQueryKey extends QueryKey = GetV1AdminSpokenLanguagesCodeQueryKey>(code: GetV1AdminSpokenLanguagesCodePathParams["code"] | undefined, options: 
+export function createGetV1AdminSpokenLanguagesCode<TData = GetV1AdminSpokenLanguagesCodeQueryResponse, TQueryData = GetV1AdminSpokenLanguagesCodeQueryResponse, TQueryKey extends QueryKey = GetV1AdminSpokenLanguagesCodeQueryKey>(code: GetV1AdminSpokenLanguagesCodePathParams["code"] | (() => GetV1AdminSpokenLanguagesCodePathParams["code"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminSpokenLanguagesCodeQueryResponse, ResponseErrorConfig<GetV1AdminSpokenLanguagesCode400 | GetV1AdminSpokenLanguagesCode401 | GetV1AdminSpokenLanguagesCode403 | GetV1AdminSpokenLanguagesCode404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const code_ = typeof code === 'function' ? code() : code;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1AdminSpokenLanguagesCodeQueryKey(code)
+         const queryKey = resolvedOptions?.queryKey ?? getV1AdminSpokenLanguagesCodeQueryKey(code_)
 
          const query = createQuery({
-          ...getV1AdminSpokenLanguagesCodeQueryOptions(code, config),
+          ...getV1AdminSpokenLanguagesCodeQueryOptions(code_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1AdminSpokenLanguagesCode400 | GetV1AdminSpokenLanguagesCode401 | GetV1AdminSpokenLanguagesCode403 | GetV1AdminSpokenLanguagesCode404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createGetV1ResumeStyles<TData = GetV1ResumeStylesQueryResponse, 
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1ResumeStylesQueryKey(params)

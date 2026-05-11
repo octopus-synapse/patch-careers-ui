@@ -38,6 +38,7 @@ export function createGetV1JobsRecommended<TData = GetV1JobsRecommendedQueryResp
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1JobsRecommendedQueryKey(params)

@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdDiffQueryOptions(resumeId: GetV1ResumesResum
  * @summary Structured diff between the master resume and a tailored version.
  * {@link /api/v1/resumes/:resumeId/diff}
  */
-export function createGetV1ResumesResumeIdDiff<TData = GetV1ResumesResumeIdDiffQueryResponse, TQueryData = GetV1ResumesResumeIdDiffQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdDiffQueryKey>(resumeId: GetV1ResumesResumeIdDiffPathParams["resumeId"] | undefined, params: GetV1ResumesResumeIdDiffQueryParams, options: 
+export function createGetV1ResumesResumeIdDiff<TData = GetV1ResumesResumeIdDiffQueryResponse, TQueryData = GetV1ResumesResumeIdDiffQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdDiffQueryKey>(resumeId: GetV1ResumesResumeIdDiffPathParams["resumeId"] | (() => GetV1ResumesResumeIdDiffPathParams["resumeId"]) | undefined, params: GetV1ResumesResumeIdDiffQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdDiffQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdDiff400 | GetV1ResumesResumeIdDiff401 | GetV1ResumesResumeIdDiff404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdDiffQueryKey(resumeId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdDiffQueryKey(resumeId_, params)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdDiffQueryOptions(resumeId, params, config),
+          ...getV1ResumesResumeIdDiffQueryOptions(resumeId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdDiff400 | GetV1ResumesResumeIdDiff401 | GetV1ResumesResumeIdDiff404>> & { queryKey: TQueryKey }

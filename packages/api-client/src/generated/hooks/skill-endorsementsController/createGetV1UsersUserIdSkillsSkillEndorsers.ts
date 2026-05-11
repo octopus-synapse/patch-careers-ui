@@ -31,19 +31,21 @@ export function getV1UsersUserIdSkillsSkillEndorsersQueryOptions(userId: GetV1Us
  * @summary List endorsers for a specific skill
  * {@link /api/v1/users/:userId/skills/:skill/endorsers}
  */
-export function createGetV1UsersUserIdSkillsSkillEndorsers<TData = GetV1UsersUserIdSkillsSkillEndorsersQueryResponse, TQueryData = GetV1UsersUserIdSkillsSkillEndorsersQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSkillsSkillEndorsersQueryKey>(userId: GetV1UsersUserIdSkillsSkillEndorsersPathParams["userId"] | undefined, skill: GetV1UsersUserIdSkillsSkillEndorsersPathParams["skill"] | undefined, params?: GetV1UsersUserIdSkillsSkillEndorsersQueryParams, options: 
+export function createGetV1UsersUserIdSkillsSkillEndorsers<TData = GetV1UsersUserIdSkillsSkillEndorsersQueryResponse, TQueryData = GetV1UsersUserIdSkillsSkillEndorsersQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSkillsSkillEndorsersQueryKey>(userId: GetV1UsersUserIdSkillsSkillEndorsersPathParams["userId"] | (() => GetV1UsersUserIdSkillsSkillEndorsersPathParams["userId"]) | undefined, skill: GetV1UsersUserIdSkillsSkillEndorsersPathParams["skill"] | (() => GetV1UsersUserIdSkillsSkillEndorsersPathParams["skill"]) | undefined, params?: GetV1UsersUserIdSkillsSkillEndorsersQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdSkillsSkillEndorsersQueryResponse, ResponseErrorConfig<GetV1UsersUserIdSkillsSkillEndorsers400 | GetV1UsersUserIdSkillsSkillEndorsers401 | GetV1UsersUserIdSkillsSkillEndorsers403 | GetV1UsersUserIdSkillsSkillEndorsers404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
+  const skill_ = typeof skill === 'function' ? skill() : skill;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdSkillsSkillEndorsersQueryKey(userId, skill, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdSkillsSkillEndorsersQueryKey(userId_, skill_, params)
 
          const query = createQuery({
-          ...getV1UsersUserIdSkillsSkillEndorsersQueryOptions(userId, skill, params, config),
+          ...getV1UsersUserIdSkillsSkillEndorsersQueryOptions(userId_, skill_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdSkillsSkillEndorsers400 | GetV1UsersUserIdSkillsSkillEndorsers401 | GetV1UsersUserIdSkillsSkillEndorsers403 | GetV1UsersUserIdSkillsSkillEndorsers404>> & { queryKey: TQueryKey }

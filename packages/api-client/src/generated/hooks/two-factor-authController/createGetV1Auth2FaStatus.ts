@@ -38,6 +38,7 @@ export function createGetV1Auth2FaStatus<TData = GetV1Auth2FaStatusQueryResponse
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1Auth2FaStatusQueryKey()

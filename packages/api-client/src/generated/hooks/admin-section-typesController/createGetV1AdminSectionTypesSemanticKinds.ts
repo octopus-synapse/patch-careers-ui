@@ -38,6 +38,7 @@ export function createGetV1AdminSectionTypesSemanticKinds<TData = GetV1AdminSect
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1AdminSectionTypesSemanticKindsQueryKey()

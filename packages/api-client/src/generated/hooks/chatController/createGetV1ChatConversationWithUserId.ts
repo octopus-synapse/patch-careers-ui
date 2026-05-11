@@ -31,19 +31,20 @@ export function getV1ChatConversationWithUserIdQueryOptions(userId: GetV1ChatCon
  * @summary Get or create conversation with a user
  * {@link /api/v1/chat/conversation-with/:userId}
  */
-export function createGetV1ChatConversationWithUserId<TData = GetV1ChatConversationWithUserIdQueryResponse, TQueryData = GetV1ChatConversationWithUserIdQueryResponse, TQueryKey extends QueryKey = GetV1ChatConversationWithUserIdQueryKey>(userId: GetV1ChatConversationWithUserIdPathParams["userId"] | undefined, options: 
+export function createGetV1ChatConversationWithUserId<TData = GetV1ChatConversationWithUserIdQueryResponse, TQueryData = GetV1ChatConversationWithUserIdQueryResponse, TQueryKey extends QueryKey = GetV1ChatConversationWithUserIdQueryKey>(userId: GetV1ChatConversationWithUserIdPathParams["userId"] | (() => GetV1ChatConversationWithUserIdPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ChatConversationWithUserIdQueryResponse, ResponseErrorConfig<GetV1ChatConversationWithUserId400 | GetV1ChatConversationWithUserId401 | GetV1ChatConversationWithUserId403 | GetV1ChatConversationWithUserId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ChatConversationWithUserIdQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ChatConversationWithUserIdQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1ChatConversationWithUserIdQueryOptions(userId, config),
+          ...getV1ChatConversationWithUserIdQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ChatConversationWithUserId400 | GetV1ChatConversationWithUserId401 | GetV1ChatConversationWithUserId403 | GetV1ChatConversationWithUserId404>> & { queryKey: TQueryKey }

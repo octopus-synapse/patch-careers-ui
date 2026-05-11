@@ -38,6 +38,7 @@ export function createGetV1JobsMine<TData = GetV1JobsMineQueryResponse, TQueryDa
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1JobsMineQueryKey(params)

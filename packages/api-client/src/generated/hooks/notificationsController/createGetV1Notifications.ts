@@ -38,6 +38,7 @@ export function createGetV1Notifications<TData = GetV1NotificationsQueryResponse
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1NotificationsQueryKey(params)

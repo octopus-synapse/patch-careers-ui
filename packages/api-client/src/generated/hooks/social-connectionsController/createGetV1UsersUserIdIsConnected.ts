@@ -30,19 +30,20 @@ export function getV1UsersUserIdIsConnectedQueryOptions(userId: GetV1UsersUserId
  * @summary Check connection status
  * {@link /api/v1/users/:userId/is-connected}
  */
-export function createGetV1UsersUserIdIsConnected<TData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsConnectedQueryKey>(userId: GetV1UsersUserIdIsConnectedPathParams["userId"] | undefined, options: 
+export function createGetV1UsersUserIdIsConnected<TData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsConnectedQueryKey>(userId: GetV1UsersUserIdIsConnectedPathParams["userId"] | (() => GetV1UsersUserIdIsConnectedPathParams["userId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdIsConnectedQueryResponse, ResponseErrorConfig<GetV1UsersUserIdIsConnected400 | GetV1UsersUserIdIsConnected401 | GetV1UsersUserIdIsConnected403 | GetV1UsersUserIdIsConnected404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdIsConnectedQueryKey(userId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdIsConnectedQueryKey(userId_)
 
          const query = createQuery({
-          ...getV1UsersUserIdIsConnectedQueryOptions(userId, config),
+          ...getV1UsersUserIdIsConnectedQueryOptions(userId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdIsConnected400 | GetV1UsersUserIdIsConnected401 | GetV1UsersUserIdIsConnected403 | GetV1UsersUserIdIsConnected404>> & { queryKey: TQueryKey }

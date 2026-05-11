@@ -31,19 +31,20 @@ export function getV1JobsIdApplyContextQueryOptions(id: GetV1JobsIdApplyContextP
  * @summary Apply-context: defaults + requirements + blockers for the apply modal
  * {@link /api/v1/jobs/:id/apply-context}
  */
-export function createGetV1JobsIdApplyContext<TData = GetV1JobsIdApplyContextQueryResponse, TQueryData = GetV1JobsIdApplyContextQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdApplyContextQueryKey>(id: GetV1JobsIdApplyContextPathParams["id"] | undefined, options: 
+export function createGetV1JobsIdApplyContext<TData = GetV1JobsIdApplyContextQueryResponse, TQueryData = GetV1JobsIdApplyContextQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdApplyContextQueryKey>(id: GetV1JobsIdApplyContextPathParams["id"] | (() => GetV1JobsIdApplyContextPathParams["id"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdApplyContextQueryResponse, ResponseErrorConfig<GetV1JobsIdApplyContext400 | GetV1JobsIdApplyContext401 | GetV1JobsIdApplyContext403 | GetV1JobsIdApplyContext404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdApplyContextQueryKey(id)
+         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdApplyContextQueryKey(id_)
 
          const query = createQuery({
-          ...getV1JobsIdApplyContextQueryOptions(id, config),
+          ...getV1JobsIdApplyContextQueryOptions(id_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1JobsIdApplyContext400 | GetV1JobsIdApplyContext401 | GetV1JobsIdApplyContext403 | GetV1JobsIdApplyContext404>> & { queryKey: TQueryKey }

@@ -38,6 +38,7 @@ export function createGetV1JobsBookmarks<TData = GetV1JobsBookmarksQueryResponse
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1JobsBookmarksQueryKey(params)

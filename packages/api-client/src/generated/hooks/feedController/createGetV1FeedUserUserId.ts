@@ -31,19 +31,20 @@ export function getV1FeedUserUserIdQueryOptions(userId: GetV1FeedUserUserIdPathP
  * @summary Get posts by user
  * {@link /api/v1/feed/user/:userId}
  */
-export function createGetV1FeedUserUserId<TData = GetV1FeedUserUserIdQueryResponse, TQueryData = GetV1FeedUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1FeedUserUserIdQueryKey>(userId: GetV1FeedUserUserIdPathParams["userId"] | undefined, params?: GetV1FeedUserUserIdQueryParams, options: 
+export function createGetV1FeedUserUserId<TData = GetV1FeedUserUserIdQueryResponse, TQueryData = GetV1FeedUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1FeedUserUserIdQueryKey>(userId: GetV1FeedUserUserIdPathParams["userId"] | (() => GetV1FeedUserUserIdPathParams["userId"]) | undefined, params?: GetV1FeedUserUserIdQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1FeedUserUserIdQueryResponse, ResponseErrorConfig<GetV1FeedUserUserId400 | GetV1FeedUserUserId401 | GetV1FeedUserUserId403 | GetV1FeedUserUserId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1FeedUserUserIdQueryKey(userId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1FeedUserUserIdQueryKey(userId_, params)
 
          const query = createQuery({
-          ...getV1FeedUserUserIdQueryOptions(userId, params, config),
+          ...getV1FeedUserUserIdQueryOptions(userId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1FeedUserUserId400 | GetV1FeedUserUserId401 | GetV1FeedUserUserId403 | GetV1FeedUserUserId404>> & { queryKey: TQueryKey }

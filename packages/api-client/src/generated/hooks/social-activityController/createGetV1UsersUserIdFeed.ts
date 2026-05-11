@@ -30,19 +30,20 @@ export function getV1UsersUserIdFeedQueryOptions(userId: GetV1UsersUserIdFeedPat
  * @summary Get authenticated user activity feed
  * {@link /api/v1/users/:userId/feed}
  */
-export function createGetV1UsersUserIdFeed<TData = GetV1UsersUserIdFeedQueryResponse, TQueryData = GetV1UsersUserIdFeedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFeedQueryKey>(userId: GetV1UsersUserIdFeedPathParams["userId"] | undefined, params?: GetV1UsersUserIdFeedQueryParams, options: 
+export function createGetV1UsersUserIdFeed<TData = GetV1UsersUserIdFeedQueryResponse, TQueryData = GetV1UsersUserIdFeedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFeedQueryKey>(userId: GetV1UsersUserIdFeedPathParams["userId"] | (() => GetV1UsersUserIdFeedPathParams["userId"]) | undefined, params?: GetV1UsersUserIdFeedQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdFeedQueryResponse, ResponseErrorConfig<GetV1UsersUserIdFeed400 | GetV1UsersUserIdFeed401 | GetV1UsersUserIdFeed403 | GetV1UsersUserIdFeed404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const userId_ = typeof userId === 'function' ? userId() : userId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdFeedQueryKey(userId, params)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersUserIdFeedQueryKey(userId_, params)
 
          const query = createQuery({
-          ...getV1UsersUserIdFeedQueryOptions(userId, params, config),
+          ...getV1UsersUserIdFeedQueryOptions(userId_, params, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersUserIdFeed400 | GetV1UsersUserIdFeed401 | GetV1UsersUserIdFeed403 | GetV1UsersUserIdFeed404>> & { queryKey: TQueryKey }

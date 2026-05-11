@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdTailoredVersionsQueryOptions(resumeId: GetV1
  * @summary List tailored resume variants produced by the AI.
  * {@link /api/v1/resumes/:resumeId/tailored-versions}
  */
-export function createGetV1ResumesResumeIdTailoredVersions<TData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdTailoredVersionsQueryKey>(resumeId: GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdTailoredVersions<TData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdTailoredVersionsQueryKey>(resumeId: GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdTailoredVersionsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdTailoredVersions400 | GetV1ResumesResumeIdTailoredVersions401 | GetV1ResumesResumeIdTailoredVersions404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdTailoredVersionsQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdTailoredVersionsQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdTailoredVersionsQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdTailoredVersionsQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdTailoredVersions400 | GetV1ResumesResumeIdTailoredVersions401 | GetV1ResumesResumeIdTailoredVersions404>> & { queryKey: TQueryKey }

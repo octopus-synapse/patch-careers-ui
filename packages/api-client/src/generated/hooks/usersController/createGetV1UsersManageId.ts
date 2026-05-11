@@ -31,19 +31,20 @@ export function getV1UsersManageIdQueryOptions(id: GetV1UsersManageIdPathParams[
  * @summary Get user details by ID
  * {@link /api/v1/users/manage/:id}
  */
-export function createGetV1UsersManageId<TData = GetV1UsersManageIdQueryResponse, TQueryData = GetV1UsersManageIdQueryResponse, TQueryKey extends QueryKey = GetV1UsersManageIdQueryKey>(id: GetV1UsersManageIdPathParams["id"] | undefined, options: 
+export function createGetV1UsersManageId<TData = GetV1UsersManageIdQueryResponse, TQueryData = GetV1UsersManageIdQueryResponse, TQueryKey extends QueryKey = GetV1UsersManageIdQueryKey>(id: GetV1UsersManageIdPathParams["id"] | (() => GetV1UsersManageIdPathParams["id"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersManageIdQueryResponse, ResponseErrorConfig<GetV1UsersManageId400 | GetV1UsersManageId401 | GetV1UsersManageId403 | GetV1UsersManageId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1UsersManageIdQueryKey(id)
+         const queryKey = resolvedOptions?.queryKey ?? getV1UsersManageIdQueryKey(id_)
 
          const query = createQuery({
-          ...getV1UsersManageIdQueryOptions(id, config),
+          ...getV1UsersManageIdQueryOptions(id_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1UsersManageId400 | GetV1UsersManageId401 | GetV1UsersManageId403 | GetV1UsersManageId404>> & { queryKey: TQueryKey }

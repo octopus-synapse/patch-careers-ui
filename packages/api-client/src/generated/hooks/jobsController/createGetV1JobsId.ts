@@ -31,19 +31,20 @@ export function getV1JobsIdQueryOptions(id: GetV1JobsIdPathParams["id"] | undefi
  * @summary Fetch a single job by id
  * {@link /api/v1/jobs/:id}
  */
-export function createGetV1JobsId<TData = GetV1JobsIdQueryResponse, TQueryData = GetV1JobsIdQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdQueryKey>(id: GetV1JobsIdPathParams["id"] | undefined, options: 
+export function createGetV1JobsId<TData = GetV1JobsIdQueryResponse, TQueryData = GetV1JobsIdQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdQueryKey>(id: GetV1JobsIdPathParams["id"] | (() => GetV1JobsIdPathParams["id"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdQueryResponse, ResponseErrorConfig<GetV1JobsId400 | GetV1JobsId401 | GetV1JobsId403 | GetV1JobsId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const id_ = typeof id === 'function' ? id() : id;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdQueryKey(id)
+         const queryKey = resolvedOptions?.queryKey ?? getV1JobsIdQueryKey(id_)
 
          const query = createQuery({
-          ...getV1JobsIdQueryOptions(id, config),
+          ...getV1JobsIdQueryOptions(id_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1JobsId400 | GetV1JobsId401 | GetV1JobsId403 | GetV1JobsId404>> & { queryKey: TQueryKey }

@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdAnalyticsDashboardQueryOptions(resumeId: Get
  * @summary Get complete analytics dashboard
  * {@link /api/v1/resumes/:resumeId/analytics/dashboard}
  */
-export function createGetV1ResumesResumeIdAnalyticsDashboard<TData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsDashboardQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeIdAnalyticsDashboard<TData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsDashboardQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsDashboard400 | GetV1ResumesResumeIdAnalyticsDashboard401 | GetV1ResumesResumeIdAnalyticsDashboard403 | GetV1ResumesResumeIdAnalyticsDashboard404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsDashboardQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdAnalyticsDashboardQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdAnalyticsDashboardQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdAnalyticsDashboardQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsDashboard400 | GetV1ResumesResumeIdAnalyticsDashboard401 | GetV1ResumesResumeIdAnalyticsDashboard403 | GetV1ResumesResumeIdAnalyticsDashboard404>> & { queryKey: TQueryKey }

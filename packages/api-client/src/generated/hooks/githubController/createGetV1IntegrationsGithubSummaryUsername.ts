@@ -31,19 +31,20 @@ export function getV1IntegrationsGithubSummaryUsernameQueryOptions(username: Get
  * @summary Get GitHub profile summary for a username
  * {@link /api/v1/integrations/github/summary/:username}
  */
-export function createGetV1IntegrationsGithubSummaryUsername<TData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryKey extends QueryKey = GetV1IntegrationsGithubSummaryUsernameQueryKey>(username: GetV1IntegrationsGithubSummaryUsernamePathParams["username"] | undefined, options: 
+export function createGetV1IntegrationsGithubSummaryUsername<TData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryKey extends QueryKey = GetV1IntegrationsGithubSummaryUsernameQueryKey>(username: GetV1IntegrationsGithubSummaryUsernamePathParams["username"] | (() => GetV1IntegrationsGithubSummaryUsernamePathParams["username"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1IntegrationsGithubSummaryUsernameQueryResponse, ResponseErrorConfig<GetV1IntegrationsGithubSummaryUsername400 | GetV1IntegrationsGithubSummaryUsername404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const username_ = typeof username === 'function' ? username() : username;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1IntegrationsGithubSummaryUsernameQueryKey(username)
+         const queryKey = resolvedOptions?.queryKey ?? getV1IntegrationsGithubSummaryUsernameQueryKey(username_)
 
          const query = createQuery({
-          ...getV1IntegrationsGithubSummaryUsernameQueryOptions(username, config),
+          ...getV1IntegrationsGithubSummaryUsernameQueryOptions(username_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1IntegrationsGithubSummaryUsername400 | GetV1IntegrationsGithubSummaryUsername404>> & { queryKey: TQueryKey }

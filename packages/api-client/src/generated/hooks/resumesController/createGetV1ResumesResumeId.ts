@@ -31,19 +31,20 @@ export function getV1ResumesResumeIdQueryOptions(resumeId: GetV1ResumesResumeIdP
  * @summary Get a specific resume
  * {@link /api/v1/resumes/:resumeId}
  */
-export function createGetV1ResumesResumeId<TData = GetV1ResumesResumeIdQueryResponse, TQueryData = GetV1ResumesResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQueryKey>(resumeId: GetV1ResumesResumeIdPathParams["resumeId"] | undefined, options: 
+export function createGetV1ResumesResumeId<TData = GetV1ResumesResumeIdQueryResponse, TQueryData = GetV1ResumesResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQueryKey>(resumeId: GetV1ResumesResumeIdPathParams["resumeId"] | (() => GetV1ResumesResumeIdPathParams["resumeId"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdQueryResponse, ResponseErrorConfig<GetV1ResumesResumeId400 | GetV1ResumesResumeId401 | GetV1ResumesResumeId403 | GetV1ResumesResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const resumeId_ = typeof resumeId === 'function' ? resumeId() : resumeId;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdQueryKey(resumeId)
+         const queryKey = resolvedOptions?.queryKey ?? getV1ResumesResumeIdQueryKey(resumeId_)
 
          const query = createQuery({
-          ...getV1ResumesResumeIdQueryOptions(resumeId, config),
+          ...getV1ResumesResumeIdQueryOptions(resumeId_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1ResumesResumeId400 | GetV1ResumesResumeId401 | GetV1ResumesResumeId403 | GetV1ResumesResumeId404>> & { queryKey: TQueryKey }

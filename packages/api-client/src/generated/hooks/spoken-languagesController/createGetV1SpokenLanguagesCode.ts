@@ -31,19 +31,20 @@ export function getV1SpokenLanguagesCodeQueryOptions(code: GetV1SpokenLanguagesC
  * @summary Get spoken language by code
  * {@link /api/v1/spoken-languages/:code}
  */
-export function createGetV1SpokenLanguagesCode<TData = GetV1SpokenLanguagesCodeQueryResponse, TQueryData = GetV1SpokenLanguagesCodeQueryResponse, TQueryKey extends QueryKey = GetV1SpokenLanguagesCodeQueryKey>(code: GetV1SpokenLanguagesCodePathParams["code"] | undefined, options: 
+export function createGetV1SpokenLanguagesCode<TData = GetV1SpokenLanguagesCodeQueryResponse, TQueryData = GetV1SpokenLanguagesCodeQueryResponse, TQueryKey extends QueryKey = GetV1SpokenLanguagesCodeQueryKey>(code: GetV1SpokenLanguagesCodePathParams["code"] | (() => GetV1SpokenLanguagesCodePathParams["code"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SpokenLanguagesCodeQueryResponse, ResponseErrorConfig<GetV1SpokenLanguagesCode400 | GetV1SpokenLanguagesCode401 | GetV1SpokenLanguagesCode403 | GetV1SpokenLanguagesCode404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const code_ = typeof code === 'function' ? code() : code;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1SpokenLanguagesCodeQueryKey(code)
+         const queryKey = resolvedOptions?.queryKey ?? getV1SpokenLanguagesCodeQueryKey(code_)
 
          const query = createQuery({
-          ...getV1SpokenLanguagesCodeQueryOptions(code, config),
+          ...getV1SpokenLanguagesCodeQueryOptions(code_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1SpokenLanguagesCode400 | GetV1SpokenLanguagesCode401 | GetV1SpokenLanguagesCode403 | GetV1SpokenLanguagesCode404>> & { queryKey: TQueryKey }

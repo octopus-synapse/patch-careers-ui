@@ -38,6 +38,7 @@ export function createGetV1TechNiches<TData = GetV1TechNichesQueryResponse, TQue
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getV1TechNichesQueryKey()

@@ -37,6 +37,7 @@ export function createGetHealth<TData = GetHealthQueryResponse, TQueryData = Get
 }
  = {}) {
 
+         
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
          const queryKey = resolvedOptions?.queryKey ?? getHealthQueryKey()

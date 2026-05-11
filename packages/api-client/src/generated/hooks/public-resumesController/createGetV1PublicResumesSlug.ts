@@ -31,19 +31,20 @@ export function getV1PublicResumesSlugQueryOptions(slug: GetV1PublicResumesSlugP
  * @summary Get public resume by share slug
  * {@link /api/v1/public/resumes/:slug}
  */
-export function createGetV1PublicResumesSlug<TData = GetV1PublicResumesSlugQueryResponse, TQueryData = GetV1PublicResumesSlugQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugQueryKey>(slug: GetV1PublicResumesSlugPathParams["slug"] | undefined, options: 
+export function createGetV1PublicResumesSlug<TData = GetV1PublicResumesSlugQueryResponse, TQueryData = GetV1PublicResumesSlugQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugQueryKey>(slug: GetV1PublicResumesSlugPathParams["slug"] | (() => GetV1PublicResumesSlugPathParams["slug"]) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PublicResumesSlugQueryResponse, ResponseErrorConfig<GetV1PublicResumesSlug400 | GetV1PublicResumesSlug404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }
 }
  = {}) {
 
+         const slug_ = typeof slug === 'function' ? slug() : slug;
          const { query: queryConfig = {}, client: config = {} } = options ?? {}
          const { client: queryClient, ...resolvedOptions } = queryConfig
-         const queryKey = resolvedOptions?.queryKey ?? getV1PublicResumesSlugQueryKey(slug)
+         const queryKey = resolvedOptions?.queryKey ?? getV1PublicResumesSlugQueryKey(slug_)
 
          const query = createQuery({
-          ...getV1PublicResumesSlugQueryOptions(slug, config),
+          ...getV1PublicResumesSlugQueryOptions(slug_, config),
           ...resolvedOptions,
           queryKey,
          } as unknown as CreateBaseQueryOptions, queryClient) as CreateQueryResult<TData, ResponseErrorConfig<GetV1PublicResumesSlug400 | GetV1PublicResumesSlug404>> & { queryKey: TQueryKey }
