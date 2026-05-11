@@ -55,7 +55,7 @@ export const postV1OnboardingMutationRequestSchema = z.object({
 "summary": z.string().min(10).max(500),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
-"website": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit."))
+"website": z.optional(z.lazy(() => socialUrlSchema).and(z.any()))
     }),
 "templateSelection": z.object({
     "templateId": z.optional(z.string()),

@@ -58,7 +58,7 @@ export const putV1OnboardingProgressMutationRequestSchema = z.object({
 "summary": z.optional(z.string().min(10).max(500)),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
-"website": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit."))
+"website": z.optional(z.lazy(() => socialUrlSchema).and(z.any()))
     })),
 "sections": z.optional(z.array(z.object({
     "sectionTypeKey": z.string(),

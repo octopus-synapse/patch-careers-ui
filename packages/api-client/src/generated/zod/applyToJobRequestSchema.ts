@@ -11,6 +11,6 @@ import type { ApplyToJobRequest } from "../models/ApplyToJobRequest";
  * @description Submit a job application. `resumeId` references the resume the candidate wants to apply with; if omitted, the primary resume is used.
  */
 export const applyToJobRequestSchema = z.object({
-    "coverLetter": z.optional(z.string().max(5000)),
-"resumeId": z.optional(z.string().uuid())
+    "coverLetter": z.optional(z.string().max(5000).describe("Optional cover letter (max 5000 chars).")),
+"resumeId": z.optional(z.string().uuid().describe("Resume id to apply with. Defaults to the primary resume."))
     }).describe("Submit a job application. `resumeId` references the resume the candidate wants to apply with; if omitted, the primary resume is used.") as unknown as ToZod<ApplyToJobRequest>

@@ -1,1 +1,1 @@
-{"type":"string","minLength":1,"maxLength":2000,"description":"Long free-text bio or summary (1-2000 characters).","example":"Engineer interested in building robust systems.","x-readme-ref-name":"Bio"}
+{"type":"string","minLength":1,"maxLength":2000,"description":"Optional long-form summary shown at the top of the resume.","example":"Engineer interested in building robust systems.","x-readme-ref-name":"Bio"}

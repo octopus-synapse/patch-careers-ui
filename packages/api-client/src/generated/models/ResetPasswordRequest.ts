@@ -11,6 +11,7 @@ import type { Password } from "./Password";
 */
 export type ResetPasswordRequest = {
     /**
+     * @description Single-use password-reset token sent via email.
      * @minLength 1
      * @type string
     */

@@ -14,5 +14,5 @@ import { passwordInputSchema } from "./passwordInputSchema";
  */
 export const loginRequestSchema = z.object({
     "email": z.lazy(() => emailSchema).and(z.any()),
-"password": z.lazy(() => passwordInputSchema).describe("Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy.")
+"password": z.lazy(() => passwordInputSchema).describe("Account password. Lenient validation here to support legacy accounts.")
     }).describe("Login payload. Password validation is lenient here (legacy accounts) — the strict policy applies on registration / change.") as unknown as ToZod<LoginRequest>

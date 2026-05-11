@@ -10,11 +10,13 @@
 */
 export type ApplyToJobRequest = {
     /**
+     * @description Optional cover letter (max 5000 chars).
      * @maxLength 5000
      * @type string | undefined
     */
     coverLetter?: string;
     /**
+     * @description Resume id to apply with. Defaults to the primary resume.
      * @type string | undefined, uuid
     */
     resumeId?: string;

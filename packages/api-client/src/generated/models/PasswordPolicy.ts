@@ -10,32 +10,39 @@
 */
 export type PasswordPolicy = {
     /**
+     * @description Minimum password length enforced by the server.
      * @minLength 1
      * @type integer
     */
     minLength: number;
     /**
+     * @description Maximum password length enforced by the server.
      * @minLength 1
      * @type integer
     */
     maxLength: number;
     /**
+     * @description Whether at least one uppercase letter is required.
      * @type boolean
     */
     requireUppercase: boolean;
     /**
+     * @description Whether at least one lowercase letter is required.
      * @type boolean
     */
     requireLowercase: boolean;
     /**
+     * @description Whether at least one digit is required.
      * @type boolean
     */
     requireNumber: boolean;
     /**
+     * @description Whether at least one special character is required.
      * @type boolean
     */
     requireSpecialChar: boolean;
     /**
+     * @description Allowed special characters for password validation.
      * @type string
     */
     specialChars: string;

@@ -8,6 +8,6 @@ import type { ToZod } from "../.kubb/ToZod";
 import type { Bio } from "../models/Bio";
 
 /**
- * @description Long free-text bio or summary (1-2000 characters).
+ * @description Optional long-form summary shown at the top of the resume.
  */
-export const bioSchema = z.string().min(1).max(2000).describe("Long free-text bio or summary (1-2000 characters).") as unknown as ToZod<Bio>
+export const bioSchema = z.string().min(1).max(2000).describe("Optional long-form summary shown at the top of the resume.") as unknown as ToZod<Bio>

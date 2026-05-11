@@ -11,10 +11,6 @@ import type { PasswordInput } from "./PasswordInput";
  * @example [object Object]
 */
 export type ChangePasswordRequest = {
-    /**
-     * @description Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy.
-     * @type string
-    */
-    currentPassword: PasswordInput;
+    currentPassword: (PasswordInput & any);
     newPassword: (Password & string & string);
 };

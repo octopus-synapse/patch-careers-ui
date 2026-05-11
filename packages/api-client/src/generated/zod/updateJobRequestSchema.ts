@@ -12,18 +12,18 @@ import { socialUrlSchema } from "./socialUrlSchema";
  * @description Partial update of a job. Nullable enums let users clear an existing selection.
  */
 export const updateJobRequestSchema = z.object({
-    "title": z.optional(z.string().min(1).max(200)),
-"company": z.optional(z.string().min(1).max(200)),
-"location": z.optional(z.string().max(200)),
-"jobType": z.optional(z.enum(["INTERNSHIP", "CONTRACT", "FULL_TIME", "PART_TIME", "VOLUNTEER", "FREELANCE"])),
-"description": z.optional(z.string().min(1)),
-"requirements": z.optional(z.array(z.string().max(200)).max(40)),
-"skills": z.optional(z.array(z.string().max(60)).max(40)),
-"salaryRange": z.optional(z.string().max(100)),
-"applyUrl": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
-"isActive": z.optional(z.boolean()),
+    "title": z.optional(z.string().min(1).max(200).describe("Updated job title (max 200 chars).")),
+"company": z.optional(z.string().min(1).max(200).describe("Updated hiring company name (max 200 chars).")),
+"location": z.optional(z.string().max(200).describe("Updated location label. Optional.")),
+"jobType": z.optional(z.enum(["INTERNSHIP", "CONTRACT", "FULL_TIME", "PART_TIME", "VOLUNTEER", "FREELANCE"]).describe("Updated employment type.")),
+"description": z.optional(z.string().min(1).describe("Updated long-form job description.")),
+"requirements": z.optional(z.array(z.string().max(200)).max(40).describe("Updated list of required qualifications.")),
+"skills": z.optional(z.array(z.string().max(60)).max(40).describe("Updated list of relevant skills.")),
+"salaryRange": z.optional(z.string().max(100).describe("Updated free-form salary range label.")),
+"applyUrl": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"isActive": z.optional(z.boolean().describe("Whether the job is currently active and visible.")),
 "expiresAt": z.optional(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"paymentCurrency": z.enum(["BRL", "USD", "EUR", "GBP"]).nullish(),
-"remotePolicy": z.enum(["REMOTE", "HYBRID", "ONSITE"]).nullish(),
-"minEnglishLevel": z.enum(["BASIC", "INTERMEDIATE", "ADVANCED", "FLUENT"]).nullish()
+"paymentCurrency": z.enum(["BRL", "USD", "EUR", "GBP"]).describe("Updated ISO 4217 currency code. Null clears the previous value.").nullish(),
+"remotePolicy": z.enum(["REMOTE", "HYBRID", "ONSITE"]).describe("Updated remote / hybrid / on-site policy. Null clears the previous value.").nullish(),
+"minEnglishLevel": z.enum(["BASIC", "INTERMEDIATE", "ADVANCED", "FLUENT"]).describe("Updated minimum English level. Null clears the previous value.").nullish()
     }).describe("Partial update of a job. Nullable enums let users clear an existing selection.") as unknown as ToZod<UpdateJobRequest>

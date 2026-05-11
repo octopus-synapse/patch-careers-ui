@@ -28,26 +28,30 @@ export type UpdateResumeRequestTemplateEnumKey = (typeof updateResumeRequestTemp
 */
 export type UpdateResumeRequest = {
     /**
+     * @description Resume title shown in the user dashboard (max 100 chars).
      * @minLength 1
      * @maxLength 100
      * @type string | undefined
     */
     title?: string;
     /**
-     * @description Long free-text bio or summary (1-2000 characters).
+     * @description Optional long-form summary shown at the top of the resume.
      * @type string | undefined
     */
     summary?: Bio;
     /**
+     * @description Whether the resume is publicly viewable via its slug.
      * @type boolean | undefined
     */
     isPublic?: boolean;
     /**
+     * @description Full name to render on the resume. Optional.
      * @maxLength 100
      * @type string | undefined
     */
     fullName?: string;
     /**
+     * @description Target job title or current role shown under the name.
      * @maxLength 100
      * @type string | undefined
     */
@@ -74,17 +78,14 @@ export type UpdateResumeRequest = {
      * @type string | undefined, uri
     */
     github?: GitHubUrl;
+    website?: (SocialUrl & string & any);
     /**
-     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
-     * @pattern ^https?:\/\/
-     * @type string | undefined, uri
-    */
-    website?: SocialUrl;
-    /**
+     * @description Visual template the resume should render with.
      * @type string | undefined
     */
     template?: UpdateResumeRequestTemplateEnumKey;
     /**
+     * @description Generic resume sections. Each item references a SectionType by key.
      * @type array | undefined
     */
     sections?: {

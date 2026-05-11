@@ -11,5 +11,5 @@ import type { PasswordMessageResponse } from "../models/PasswordMessageResponse"
  * @description Generic success envelope for password-management endpoints.
  */
 export const passwordMessageResponseSchema = z.object({
-    "message": z.string()
+    "message": z.string().describe("Localized success message for the operation.")
     }).describe("Generic success envelope for password-management endpoints.") as unknown as ToZod<PasswordMessageResponse>

@@ -17,18 +17,18 @@ import { userLocationSchema } from "./userLocationSchema";
  * @description Create-resume payload. `sections` are generic — each item references a SectionType by key with content validated server-side against the SectionType definition.
  */
 export const createResumeRequestSchema = z.object({
-    "title": z.string().min(1).max(100),
-"summary": z.optional(z.lazy(() => bioSchema).describe("Long free-text bio or summary (1-2000 characters).")),
-"isPublic": z.optional(z.boolean()),
-"fullName": z.optional(z.string().max(100)),
-"jobTitle": z.optional(z.string().max(100)),
+    "title": z.string().min(1).max(100).describe("Resume title shown in the user dashboard (max 100 chars)."),
+"summary": z.optional(z.lazy(() => bioSchema).describe("Optional long-form summary shown at the top of the resume.")),
+"isPublic": z.optional(z.boolean().describe("Whether the resume is publicly viewable via its slug.")),
+"fullName": z.optional(z.string().max(100).describe("Full name to render on the resume. Optional.")),
+"jobTitle": z.optional(z.string().max(100).describe("Target job title or current role shown under the name.")),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters).")),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
-"website": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
-"template": z.optional(z.enum(["PROFESSIONAL", "CREATIVE", "TECHNICAL", "MINIMAL", "MODERN", "EXECUTIVE", "ACADEMIC"])),
+"website": z.optional(z.lazy(() => socialUrlSchema).and(z.any())),
+"template": z.optional(z.enum(["PROFESSIONAL", "CREATIVE", "TECHNICAL", "MINIMAL", "MODERN", "EXECUTIVE", "ACADEMIC"]).describe("Visual template the resume should render with.")),
 "sections": z.optional(z.array(z.object({
     
-    }).catchall(z.any().nullable())))
+    }).catchall(z.any().nullable())).describe("Generic resume sections. Each item references a SectionType by key."))
     }).describe("Create-resume payload. `sections` are generic — each item references a SectionType by key with content validated server-side against the SectionType definition.") as unknown as ToZod<CreateResumeRequest>

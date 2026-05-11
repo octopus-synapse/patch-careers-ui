@@ -48,46 +48,54 @@ export type CreateJobRequestMinEnglishLevelEnumKey = (typeof createJobRequestMin
 */
 export type CreateJobRequest = {
     /**
+     * @description Job posting title (max 200 chars).
      * @minLength 1
      * @maxLength 200
      * @type string
     */
     title: string;
     /**
+     * @description Hiring company name (max 200 chars).
      * @minLength 1
      * @maxLength 200
      * @type string
     */
     company: string;
     /**
+     * @description Location label (e.g. \"Remote\", \"São Paulo, BR\"). Optional.
      * @maxLength 200
      * @type string | undefined
     */
     location?: string;
     /**
+     * @description Employment type (full-time, part-time, contract, etc).
      * @type string
     */
     jobType: CreateJobRequestJobTypeEnumKey;
     /**
+     * @description Long-form job description. Plaintext or markdown.
      * @minLength 1
      * @type string
     */
     description: string;
     /**
+     * @description List of required qualifications (max 40 entries, 200 chars each).
      * @type array | undefined
     */
     requirements?: string[];
     /**
+     * @description List of relevant skills (max 40 entries, 60 chars each).
      * @type array | undefined
     */
     skills?: string[];
     /**
+     * @description Free-form salary range label (e.g. \"USD 80k-120k\"). Optional.
      * @maxLength 100
      * @type string | undefined
     */
     salaryRange?: string;
     /**
-     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+     * @description External URL recruiters share with candidates to apply. Optional.
      * @pattern ^https?:\/\/
      * @type string | undefined, uri
     */
@@ -98,14 +106,17 @@ export type CreateJobRequest = {
     */
     expiresAt?: string;
     /**
+     * @description ISO 4217 currency code for the salary range. Optional.
      * @type string | undefined
     */
     paymentCurrency?: CreateJobRequestPaymentCurrencyEnumKey;
     /**
+     * @description Remote / hybrid / on-site policy. Optional.
      * @type string | undefined
     */
     remotePolicy?: CreateJobRequestRemotePolicyEnumKey;
     /**
+     * @description Minimum English proficiency level expected from candidates. Optional.
      * @type string | undefined
     */
     minEnglishLevel?: CreateJobRequestMinEnglishLevelEnumKey;

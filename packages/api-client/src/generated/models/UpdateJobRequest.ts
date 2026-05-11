@@ -48,51 +48,55 @@ export type UpdateJobRequestMinEnglishLevelEnumKey = (typeof updateJobRequestMin
 */
 export type UpdateJobRequest = {
     /**
+     * @description Updated job title (max 200 chars).
      * @minLength 1
      * @maxLength 200
      * @type string | undefined
     */
     title?: string;
     /**
+     * @description Updated hiring company name (max 200 chars).
      * @minLength 1
      * @maxLength 200
      * @type string | undefined
     */
     company?: string;
     /**
+     * @description Updated location label. Optional.
      * @maxLength 200
      * @type string | undefined
     */
     location?: string;
     /**
+     * @description Updated employment type.
      * @type string | undefined
     */
     jobType?: UpdateJobRequestJobTypeEnumKey;
     /**
+     * @description Updated long-form job description.
      * @minLength 1
      * @type string | undefined
     */
     description?: string;
     /**
+     * @description Updated list of required qualifications.
      * @type array | undefined
     */
     requirements?: string[];
     /**
+     * @description Updated list of relevant skills.
      * @type array | undefined
     */
     skills?: string[];
     /**
+     * @description Updated free-form salary range label.
      * @maxLength 100
      * @type string | undefined
     */
     salaryRange?: string;
+    applyUrl?: (SocialUrl & string & any);
     /**
-     * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
-     * @pattern ^https?:\/\/
-     * @type string | undefined, uri
-    */
-    applyUrl?: SocialUrl;
-    /**
+     * @description Whether the job is currently active and visible.
      * @type boolean | undefined
     */
     isActive?: boolean;
@@ -102,14 +106,17 @@ export type UpdateJobRequest = {
     */
     expiresAt?: string;
     /**
+     * @description Updated ISO 4217 currency code. Null clears the previous value.
      * @type string
     */
     paymentCurrency?: UpdateJobRequestPaymentCurrencyEnumKey | null;
     /**
+     * @description Updated remote / hybrid / on-site policy. Null clears the previous value.
      * @type string
     */
     remotePolicy?: UpdateJobRequestRemotePolicyEnumKey | null;
     /**
+     * @description Updated minimum English level. Null clears the previous value.
      * @type string
     */
     minEnglishLevel?: UpdateJobRequestMinEnglishLevelEnumKey | null;

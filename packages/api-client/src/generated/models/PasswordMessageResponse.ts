@@ -9,6 +9,7 @@
 */
 export type PasswordMessageResponse = {
     /**
+     * @description Localized success message for the operation.
      * @type string
     */
     message: string;

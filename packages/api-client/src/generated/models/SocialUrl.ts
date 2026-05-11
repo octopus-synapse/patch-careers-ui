@@ -5,7 +5,7 @@
 
 
 /**
- * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+ * @description External URL recruiters share with candidates to apply. Optional.
  * @maxLength 500
  * @pattern ^https?:\/\/
  * @example https://fixture.profile.local

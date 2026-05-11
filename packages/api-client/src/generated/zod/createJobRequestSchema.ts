@@ -12,17 +12,17 @@ import { socialUrlSchema } from "./socialUrlSchema";
  * @description Create-job payload. `applyUrl` is the public link recruiters share with candidates.
  */
 export const createJobRequestSchema = z.object({
-    "title": z.string().min(1).max(200),
-"company": z.string().min(1).max(200),
-"location": z.optional(z.string().max(200)),
-"jobType": z.enum(["INTERNSHIP", "CONTRACT", "FULL_TIME", "PART_TIME", "VOLUNTEER", "FREELANCE"]),
-"description": z.string().min(1),
-"requirements": z.optional(z.array(z.string().max(200)).max(40)),
-"skills": z.optional(z.array(z.string().max(60)).max(40)),
-"salaryRange": z.optional(z.string().max(100)),
-"applyUrl": z.optional(z.lazy(() => socialUrlSchema).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.")),
+    "title": z.string().min(1).max(200).describe("Job posting title (max 200 chars)."),
+"company": z.string().min(1).max(200).describe("Hiring company name (max 200 chars)."),
+"location": z.optional(z.string().max(200).describe("Location label (e.g. \"Remote\", \"São Paulo, BR\"). Optional.")),
+"jobType": z.enum(["INTERNSHIP", "CONTRACT", "FULL_TIME", "PART_TIME", "VOLUNTEER", "FREELANCE"]).describe("Employment type (full-time, part-time, contract, etc)."),
+"description": z.string().min(1).describe("Long-form job description. Plaintext or markdown."),
+"requirements": z.optional(z.array(z.string().max(200)).max(40).describe("List of required qualifications (max 40 entries, 200 chars each).")),
+"skills": z.optional(z.array(z.string().max(60)).max(40).describe("List of relevant skills (max 40 entries, 60 chars each).")),
+"salaryRange": z.optional(z.string().max(100).describe("Free-form salary range label (e.g. \"USD 80k-120k\"). Optional.")),
+"applyUrl": z.optional(z.lazy(() => socialUrlSchema).describe("External URL recruiters share with candidates to apply. Optional.")),
 "expiresAt": z.optional(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"paymentCurrency": z.optional(z.enum(["BRL", "USD", "EUR", "GBP"])),
-"remotePolicy": z.optional(z.enum(["REMOTE", "HYBRID", "ONSITE"])),
-"minEnglishLevel": z.optional(z.enum(["BASIC", "INTERMEDIATE", "ADVANCED", "FLUENT"]))
+"paymentCurrency": z.optional(z.enum(["BRL", "USD", "EUR", "GBP"]).describe("ISO 4217 currency code for the salary range. Optional.")),
+"remotePolicy": z.optional(z.enum(["REMOTE", "HYBRID", "ONSITE"]).describe("Remote / hybrid / on-site policy. Optional.")),
+"minEnglishLevel": z.optional(z.enum(["BASIC", "INTERMEDIATE", "ADVANCED", "FLUENT"]).describe("Minimum English proficiency level expected from candidates. Optional."))
     }).describe("Create-job payload. `applyUrl` is the public link recruiters share with candidates.") as unknown as ToZod<CreateJobRequest>

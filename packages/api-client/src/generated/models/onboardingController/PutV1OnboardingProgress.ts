@@ -184,12 +184,7 @@ export type PutV1OnboardingProgressMutationRequest = {
          * @type string | undefined, uri
         */
         github?: GitHubUrl;
-        /**
-         * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
-         * @pattern ^https?:\/\/
-         * @type string | undefined, uri
-        */
-        website?: SocialUrl;
+        website?: (SocialUrl & string & any);
     };
     /**
      * @type array | undefined

@@ -8,6 +8,6 @@ import type { ToZod } from "../.kubb/ToZod";
 import type { SocialUrl } from "../models/SocialUrl";
 
 /**
- * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
+ * @description External URL recruiters share with candidates to apply. Optional.
  */
-export const socialUrlSchema = z.string().url().max(500).describe("Public HTTP(S) URL (max 500 chars). Trimmed on submit.") as unknown as ToZod<SocialUrl>
+export const socialUrlSchema = z.string().url().max(500).describe("External URL recruiters share with candidates to apply. Optional.") as unknown as ToZod<SocialUrl>

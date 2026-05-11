@@ -11,11 +11,11 @@ import type { PasswordPolicy } from "../models/PasswordPolicy";
  * @description Password validation rules enforced by the server. Frontend forms (sign-up, password change, password-strength meter) consume this so the rules live in one place.
  */
 export const passwordPolicySchema = z.object({
-    "minLength": z.number().int().min(1),
-"maxLength": z.number().int().min(1),
-"requireUppercase": z.boolean(),
-"requireLowercase": z.boolean(),
-"requireNumber": z.boolean(),
-"requireSpecialChar": z.boolean(),
-"specialChars": z.string()
+    "minLength": z.number().int().min(1).describe("Minimum password length enforced by the server."),
+"maxLength": z.number().int().min(1).describe("Maximum password length enforced by the server."),
+"requireUppercase": z.boolean().describe("Whether at least one uppercase letter is required."),
+"requireLowercase": z.boolean().describe("Whether at least one lowercase letter is required."),
+"requireNumber": z.boolean().describe("Whether at least one digit is required."),
+"requireSpecialChar": z.boolean().describe("Whether at least one special character is required."),
+"specialChars": z.string().describe("Allowed special characters for password validation.")
     }).describe("Password validation rules enforced by the server. Frontend forms (sign-up, password change, password-strength meter) consume this so the rules live in one place.") as unknown as ToZod<PasswordPolicy>

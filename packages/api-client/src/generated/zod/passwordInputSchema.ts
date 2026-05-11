@@ -8,6 +8,6 @@ import type { ToZod } from "../.kubb/ToZod";
 import type { PasswordInput } from "../models/PasswordInput";
 
 /**
- * @description Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy.
+ * @description Account password. Lenient validation here to support legacy accounts.
  */
-export const passwordInputSchema = z.string().min(1).max(128).describe("Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy.") as unknown as ToZod<PasswordInput>
+export const passwordInputSchema = z.string().min(1).max(128).describe("Account password. Lenient validation here to support legacy accounts.") as unknown as ToZod<PasswordInput>

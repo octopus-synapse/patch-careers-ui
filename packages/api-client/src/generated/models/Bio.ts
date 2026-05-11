@@ -5,7 +5,7 @@
 
 
 /**
- * @description Long free-text bio or summary (1-2000 characters).
+ * @description Optional long-form summary shown at the top of the resume.
  * @minLength 1
  * @maxLength 2000
  * @example Engineer interested in building robust systems.
