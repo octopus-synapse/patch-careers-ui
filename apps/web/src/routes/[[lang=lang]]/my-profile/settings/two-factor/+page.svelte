@@ -77,7 +77,10 @@ function downloadCodes() {
   if (!backupCodes) return;
   const blob = new Blob(
     [
-      `Patch Careers — códigos de backup 2FA\nGerados em ${new Date().toISOString()}\n\n${backupCodes.join('\n')}\n\nGuarde em local seguro. Cada código só pode ser usado uma vez.`,
+      t('twoFactor.downloadContent', {
+        date: new Date().toISOString(),
+        codes: backupCodes.join('\n'),
+      }),
     ],
     { type: 'text/plain' },
   );
@@ -162,7 +165,7 @@ function downloadCodes() {
 
       <section class="rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
         <h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-          Regenerar códigos de backup
+          {t('twoFactor.regenerateHeading')}
         </h3>
         <p class="mb-3 text-xs text-gray-500 dark:text-neutral-500">
           Invalida os códigos atuais e gera novos. Sua sessão atual é a autorização suficiente.

@@ -135,7 +135,8 @@
   },
   "errors": {
     "network": "Sem conexão com o servidor. Verifique sua internet.",
-    "loadFailed": "Falha ao carregar"
+    "loadFailed": "Falha ao carregar",
+    "slugInUse": "Esse slug já está em uso. Escolha outro."
   },
   "success": {
     "shareCreated": "Link criado.",
@@ -618,7 +619,9 @@
   },
   "twoFactor": {
     "disabledSuccess": "2FA desativado.",
-    "codesCopied": "Códigos copiados."
+    "codesCopied": "Códigos copiados.",
+    "downloadContent": "Patch Careers — códigos de backup 2FA\nGerados em {{date}}\n\n{{codes}}\n\nGuarde em local seguro. Cada código só pode ser usado uma vez.",
+    "regenerateHeading": "Regenerar códigos de backup"
   },
   "fitProfileMine": {
     "deleteConfirm": "Apagar seu Fit Profile? As respostas serão anonimizadas."

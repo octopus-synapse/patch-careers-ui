@@ -108,7 +108,7 @@ async function createShare() {
     toastState.show(t('success.shareCreated'), 'success');
   } catch (err) {
     if (isApiError(err) && err.statusCode === 409) {
-      createError = { field: 'slug', message: 'Esse slug já está em uso. Escolha outro.' };
+      createError = { field: 'slug', message: t('errors.slugInUse') };
       return;
     }
     handleApiError(err);

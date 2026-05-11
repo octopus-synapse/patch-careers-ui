@@ -135,7 +135,8 @@
   },
   "errors": {
     "network": "No connection to the server. Check your internet.",
-    "loadFailed": "Failed to load"
+    "loadFailed": "Failed to load",
+    "slugInUse": "That slug is already taken. Choose another."
   },
   "success": {
     "shareCreated": "Link created.",
@@ -618,7 +619,9 @@
   },
   "twoFactor": {
     "disabledSuccess": "2FA disabled.",
-    "codesCopied": "Codes copied."
+    "codesCopied": "Codes copied.",
+    "downloadContent": "Patch Careers — 2FA backup codes\nGenerated at {{date}}\n\n{{codes}}\n\nKeep in a safe place. Each code can be used only once.",
+    "regenerateHeading": "Regenerate backup codes"
   },
   "fitProfileMine": {
     "deleteConfirm": "Delete your Fit Profile? Your answers will be anonymized."
