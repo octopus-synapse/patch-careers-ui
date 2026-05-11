@@ -101,3 +101,22 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+
+---
+
+# Monorepo workflow
+
+- **Backend muda primeiro.** Mudou rota / shape / validação em
+  `profile-services`? Rode `bun run swagger:generate` lá, depois
+  `bun run sdk:generate` em `packages/api-client`. Frontend só adapta
+  ao SDK regenerado — não criar adapters/casts.
+- **Drift detection**: o pre-commit hook (`scripts/check-sdk-drift.sh`)
+  falha se `client-swagger.json` mudou sem `bun run sdk:generate`. Se
+  bater, rode o regen e re-stage.
+- **Spectral ruleset** (`profile-services/.spectral.yaml`) roda em CI;
+  PRs com violations falham. Lint local: `bun run lint:spec`.
+- **Convenções por app** vivem em CLAUDE.md de cada subdir
+  (`apps/web/CLAUDE.md`, `profile-services/CLAUDE.md`). Esse arquivo
+  raiz é só Bun + monorepo wiring.
+- **Pendências de produto** vivem em `/FASE3-PENDENCIAS.md` na raiz
+  do monorepo (uma pasta acima). Não implemente especulativamente.
