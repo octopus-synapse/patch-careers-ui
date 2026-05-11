@@ -30,7 +30,7 @@ export function getV1UsersUserIdFeedQueryOptions(userId: GetV1UsersUserIdFeedPat
  * @summary Get authenticated user activity feed
  * {@link /api/v1/users/:userId/feed}
  */
-export function createGetV1UsersUserIdFeed<TData = GetV1UsersUserIdFeedQueryResponse, TQueryData = GetV1UsersUserIdFeedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFeedQueryKey>(userId: GetV1UsersUserIdFeedPathParams["userId"] | (() => GetV1UsersUserIdFeedPathParams["userId"]) | undefined, params?: GetV1UsersUserIdFeedQueryParams, options: 
+export function createGetV1UsersUserIdFeed<TData = GetV1UsersUserIdFeedQueryResponse, TQueryData = GetV1UsersUserIdFeedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFeedQueryKey>(userId: GetV1UsersUserIdFeedPathParams["userId"] | (() => GetV1UsersUserIdFeedPathParams["userId"] | undefined) | undefined, params?: GetV1UsersUserIdFeedQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdFeedQueryResponse, ResponseErrorConfig<GetV1UsersUserIdFeed400 | GetV1UsersUserIdFeed401 | GetV1UsersUserIdFeed403 | GetV1UsersUserIdFeed404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

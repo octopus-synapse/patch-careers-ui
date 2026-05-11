@@ -33,28 +33,24 @@ const tabs = $derived([
   { value: 'activity', label: t('feed.tabsActivity') },
 ]);
 
-const postsQuery = createGetV1FeedUserUserId(
-  userId,
+const postsQuery = createGetV1FeedUserUserId(() => userId,
   { limit: 20 },
-  { query: { enabled: browser && !!userId && active === 'posts' } },
+  { query: { enabled: () => browser && !!userId && active === 'posts'} },
 );
 
-const commentsQuery = createGetV1UsersUserIdComments(
-  userId,
+const commentsQuery = createGetV1UsersUserIdComments(() => userId,
   { limit: 20 },
-  { query: { enabled: browser && !!userId && active === 'comments' } },
+  { query: { enabled: () => browser && !!userId && active === 'comments'} },
 );
 
-const reactionsQuery = createGetV1UsersUserIdReactions(
-  userId,
+const reactionsQuery = createGetV1UsersUserIdReactions(() => userId,
   { limit: 20 },
-  { query: { enabled: browser && !!userId && active === 'reactions' } },
+  { query: { enabled: () => browser && !!userId && active === 'reactions'} },
 );
 
-const activitiesQuery = createGetV1UsersUserIdActivities(
-  userId,
+const activitiesQuery = createGetV1UsersUserIdActivities(() => userId,
   { limit: 20 },
-  { query: { enabled: browser && !!userId && active === 'activity' } },
+  { query: { enabled: () => browser && !!userId && active === 'activity'} },
 );
 
 const posts = $derived($postsQuery.data?.items);

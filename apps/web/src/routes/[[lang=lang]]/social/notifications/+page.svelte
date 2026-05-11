@@ -49,7 +49,7 @@ const CONNECTION_TYPES = new Set(['CONNECTION_REQUEST', 'CONNECTION_ACCEPTED', '
 
 const initialQuery = createGetV1Notifications(
   { limit: 20 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 let extra = $state<NotificationItem[]>([]);

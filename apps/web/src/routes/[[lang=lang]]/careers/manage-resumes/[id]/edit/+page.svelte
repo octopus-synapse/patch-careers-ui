@@ -36,7 +36,7 @@ const draft = useFormDraft<ResumeForm>(() => `cv-${resumeId}`, {
   website: '',
 });
 
-const resumeQuery = createGetV1ResumesResumeId(resumeId, { query: { enabled: browser } });
+const resumeQuery = createGetV1ResumesResumeId(() => resumeId, { query: { enabled: () => browser} });
 
 // Auto-save banner state — relative 'há Ns' is updated by timeTicker elsewhere.
 let lastSavedAt = $state<number | null>(null);

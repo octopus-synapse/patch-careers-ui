@@ -31,7 +31,7 @@ export function getV1UsersManageIdQueryOptions(id: GetV1UsersManageIdPathParams[
  * @summary Get user details by ID
  * {@link /api/v1/users/manage/:id}
  */
-export function createGetV1UsersManageId<TData = GetV1UsersManageIdQueryResponse, TQueryData = GetV1UsersManageIdQueryResponse, TQueryKey extends QueryKey = GetV1UsersManageIdQueryKey>(id: GetV1UsersManageIdPathParams["id"] | (() => GetV1UsersManageIdPathParams["id"]) | undefined, options: 
+export function createGetV1UsersManageId<TData = GetV1UsersManageIdQueryResponse, TQueryData = GetV1UsersManageIdQueryResponse, TQueryKey extends QueryKey = GetV1UsersManageIdQueryKey>(id: GetV1UsersManageIdPathParams["id"] | (() => GetV1UsersManageIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersManageIdQueryResponse, ResponseErrorConfig<GetV1UsersManageId400 | GetV1UsersManageId401 | GetV1UsersManageId403 | GetV1UsersManageId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

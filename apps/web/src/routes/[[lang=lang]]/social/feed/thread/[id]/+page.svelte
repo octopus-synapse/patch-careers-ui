@@ -40,8 +40,7 @@ $effect(() => {
 
 const threadId = $derived($page.params.id ?? '');
 
-const postQuery = createGetV1PostsId(
-  threadId,
+const postQuery = createGetV1PostsId(() => threadId,
   { query: { enabled: () => authenticated && !!threadId } },
 );
 

@@ -50,15 +50,13 @@ const summaryQuery = createGetV1UsersMeNetworkSummary(
   { query: { enabled: browser && !!authenticated } },
 );
 
-const followersQuery = createGetV1UsersUserIdFollowers(
-  currentUserId,
+const followersQuery = createGetV1UsersUserIdFollowers(() => currentUserId,
   { page: 1, limit: 10 },
-  { query: { enabled: browser && !!currentUserId } },
+  { query: { enabled: () => browser && !!currentUserId} },
 );
-const followingQuery = createGetV1UsersUserIdFollowing(
-  currentUserId,
+const followingQuery = createGetV1UsersUserIdFollowing(() => currentUserId,
   { page: 1, limit: 10 },
-  { query: { enabled: browser && !!currentUserId } },
+  { query: { enabled: () => browser && !!currentUserId} },
 );
 
 const summary = $derived($summaryQuery.data);

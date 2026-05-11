@@ -19,7 +19,7 @@
 
   const listQuery = createGetV1ResumeStyles(
     { page: 1, limit: 50 },
-    { query: { enabled: browser } },
+    { query: { enabled: () => browser} },
   );
 
   const styles = $derived($listQuery.data?.items);

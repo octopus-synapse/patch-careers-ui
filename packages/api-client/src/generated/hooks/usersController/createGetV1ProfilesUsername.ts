@@ -31,7 +31,7 @@ export function getV1ProfilesUsernameQueryOptions(username: GetV1ProfilesUsernam
  * @summary Get a user's public profile by username
  * {@link /api/v1/profiles/:username}
  */
-export function createGetV1ProfilesUsername<TData = GetV1ProfilesUsernameQueryResponse, TQueryData = GetV1ProfilesUsernameQueryResponse, TQueryKey extends QueryKey = GetV1ProfilesUsernameQueryKey>(username: GetV1ProfilesUsernamePathParams["username"] | (() => GetV1ProfilesUsernamePathParams["username"]) | undefined, options: 
+export function createGetV1ProfilesUsername<TData = GetV1ProfilesUsernameQueryResponse, TQueryData = GetV1ProfilesUsernameQueryResponse, TQueryKey extends QueryKey = GetV1ProfilesUsernameQueryKey>(username: GetV1ProfilesUsernamePathParams["username"] | (() => GetV1ProfilesUsernamePathParams["username"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ProfilesUsernameQueryResponse, ResponseErrorConfig<GetV1ProfilesUsername400 | GetV1ProfilesUsername404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

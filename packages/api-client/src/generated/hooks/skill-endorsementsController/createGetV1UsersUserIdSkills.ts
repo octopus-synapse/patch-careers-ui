@@ -31,7 +31,7 @@ export function getV1UsersUserIdSkillsQueryOptions(userId: GetV1UsersUserIdSkill
  * @summary List a user’s skills with endorsement counts
  * {@link /api/v1/users/:userId/skills}
  */
-export function createGetV1UsersUserIdSkills<TData = GetV1UsersUserIdSkillsQueryResponse, TQueryData = GetV1UsersUserIdSkillsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSkillsQueryKey>(userId: GetV1UsersUserIdSkillsPathParams["userId"] | (() => GetV1UsersUserIdSkillsPathParams["userId"]) | undefined, options: 
+export function createGetV1UsersUserIdSkills<TData = GetV1UsersUserIdSkillsQueryResponse, TQueryData = GetV1UsersUserIdSkillsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSkillsQueryKey>(userId: GetV1UsersUserIdSkillsPathParams["userId"] | (() => GetV1UsersUserIdSkillsPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdSkillsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdSkills400 | GetV1UsersUserIdSkills401 | GetV1UsersUserIdSkills403 | GetV1UsersUserIdSkills404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -18,7 +18,7 @@ import type { SentConnection } from '$lib/types/social';
 const t = $derived(locale.t);
 
 const list = useInfiniteList<SentConnection>({
-  createQuery: (p) => createGetV1UsersMeConnectionsSent(p, { query: { enabled: browser } }),
+  createQuery: (p) => createGetV1UsersMeConnectionsSent(p, { query: { enabled: () => browser} }),
   fetcher: (p) => getV1UsersMeConnectionsSent(p),
 });
 

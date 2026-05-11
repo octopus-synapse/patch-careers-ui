@@ -31,7 +31,7 @@ export function getV1VersionsResumeIdVersionIdQueryOptions(resumeId: GetV1Versio
  * @summary Get a specific resume version
  * {@link /api/v1/versions/:resumeId/:versionId}
  */
-export function createGetV1VersionsResumeIdVersionId<TData = GetV1VersionsResumeIdVersionIdQueryResponse, TQueryData = GetV1VersionsResumeIdVersionIdQueryResponse, TQueryKey extends QueryKey = GetV1VersionsResumeIdVersionIdQueryKey>(resumeId: GetV1VersionsResumeIdVersionIdPathParams["resumeId"] | (() => GetV1VersionsResumeIdVersionIdPathParams["resumeId"]) | undefined, versionId: GetV1VersionsResumeIdVersionIdPathParams["versionId"] | (() => GetV1VersionsResumeIdVersionIdPathParams["versionId"]) | undefined, options: 
+export function createGetV1VersionsResumeIdVersionId<TData = GetV1VersionsResumeIdVersionIdQueryResponse, TQueryData = GetV1VersionsResumeIdVersionIdQueryResponse, TQueryKey extends QueryKey = GetV1VersionsResumeIdVersionIdQueryKey>(resumeId: GetV1VersionsResumeIdVersionIdPathParams["resumeId"] | (() => GetV1VersionsResumeIdVersionIdPathParams["resumeId"] | undefined) | undefined, versionId: GetV1VersionsResumeIdVersionIdPathParams["versionId"] | (() => GetV1VersionsResumeIdVersionIdPathParams["versionId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1VersionsResumeIdVersionIdQueryResponse, ResponseErrorConfig<GetV1VersionsResumeIdVersionId400 | GetV1VersionsResumeIdVersionId401 | GetV1VersionsResumeIdVersionId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

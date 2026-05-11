@@ -31,7 +31,7 @@ export function getV1PostsIdCommentsQueryOptions(id: GetV1PostsIdCommentsPathPar
  * @summary Get comments for a post
  * {@link /api/v1/posts/:id/comments}
  */
-export function createGetV1PostsIdComments<TData = GetV1PostsIdCommentsQueryResponse, TQueryData = GetV1PostsIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1PostsIdCommentsQueryKey>(id: GetV1PostsIdCommentsPathParams["id"] | (() => GetV1PostsIdCommentsPathParams["id"]) | undefined, params?: GetV1PostsIdCommentsQueryParams, options: 
+export function createGetV1PostsIdComments<TData = GetV1PostsIdCommentsQueryResponse, TQueryData = GetV1PostsIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1PostsIdCommentsQueryKey>(id: GetV1PostsIdCommentsPathParams["id"] | (() => GetV1PostsIdCommentsPathParams["id"] | undefined) | undefined, params?: GetV1PostsIdCommentsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PostsIdCommentsQueryResponse, ResponseErrorConfig<GetV1PostsIdComments400 | GetV1PostsIdComments401 | GetV1PostsIdComments403 | GetV1PostsIdComments404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

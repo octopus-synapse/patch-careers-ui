@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdSectionsTypesQueryOptions(resumeId: GetV1Res
  * @summary List active dynamic section types with resolved translations
  * {@link /api/v1/resumes/:resumeId/sections/types}
  */
-export function createGetV1ResumesResumeIdSectionsTypes<TData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSectionsTypesQueryKey>(resumeId: GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"] | (() => GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"]) | undefined, params?: GetV1ResumesResumeIdSectionsTypesQueryParams, options: 
+export function createGetV1ResumesResumeIdSectionsTypes<TData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryData = GetV1ResumesResumeIdSectionsTypesQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSectionsTypesQueryKey>(resumeId: GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"] | (() => GetV1ResumesResumeIdSectionsTypesPathParams["resumeId"] | undefined) | undefined, params?: GetV1ResumesResumeIdSectionsTypesQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdSectionsTypesQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdSectionsTypes400 | GetV1ResumesResumeIdSectionsTypes401 | GetV1ResumesResumeIdSectionsTypes403 | GetV1ResumesResumeIdSectionsTypes404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

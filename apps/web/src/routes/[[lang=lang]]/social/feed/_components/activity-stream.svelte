@@ -13,10 +13,9 @@ const auth = useAuth();
 const authenticated = $derived(auth.isAuthenticated);
 const userId = $derived(String(auth.userId ?? ''));
 
-const query = createGetV1UsersUserIdActivities(
-  userId,
+const query = createGetV1UsersUserIdActivities(() => userId,
   {},
-  { query: { enabled: browser && authenticated && userId !== '' } },
+  { query: { enabled: () => browser && authenticated && userId !== ''} },
 );
 
 const items = $derived($query.data?.items);

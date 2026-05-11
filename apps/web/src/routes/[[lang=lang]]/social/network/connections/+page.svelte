@@ -18,7 +18,7 @@ import type { Connection } from '$lib/types/social';
 const t = $derived(locale.t);
 
 const list = useInfiniteList<Connection>({
-  createQuery: (p) => createGetV1UsersMeConnections(p, { query: { enabled: browser } }),
+  createQuery: (p) => createGetV1UsersMeConnections(p, { query: { enabled: () => browser} }),
   fetcher: (p) => getV1UsersMeConnections(p),
 });
 

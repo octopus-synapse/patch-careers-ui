@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdAnalyticsKeywordsQueryOptions(resumeId: GetV
  * @summary Get keyword optimization suggestions
  * {@link /api/v1/resumes/:resumeId/analytics/keywords}
  */
-export function createGetV1ResumesResumeIdAnalyticsKeywords<TData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsKeywordsQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"]) | undefined, params: GetV1ResumesResumeIdAnalyticsKeywordsQueryParams, options: 
+export function createGetV1ResumesResumeIdAnalyticsKeywords<TData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsKeywordsQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsKeywordsPathParams["resumeId"] | undefined) | undefined, params: GetV1ResumesResumeIdAnalyticsKeywordsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsKeywordsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsKeywords400 | GetV1ResumesResumeIdAnalyticsKeywords401 | GetV1ResumesResumeIdAnalyticsKeywords403 | GetV1ResumesResumeIdAnalyticsKeywords404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

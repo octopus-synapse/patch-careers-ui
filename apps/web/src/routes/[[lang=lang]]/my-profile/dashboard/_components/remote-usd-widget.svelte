@@ -24,7 +24,7 @@ const authenticated = $derived(auth.isAuthenticated ?? false);
 // — gives the user something to act on (per UX feedback #11).
 const query = createGetV1Jobs(
   { page: 1, limit: 3, search: '', skills: '', paymentCurrency: 'USD,EUR' },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const items = $derived.by<RemoteJob[]>(() => {

@@ -31,7 +31,7 @@ export function getV1SharesResumeResumeIdQueryOptions(resumeId: GetV1SharesResum
  * @summary List share links for a resume
  * {@link /api/v1/shares/resume/:resumeId}
  */
-export function createGetV1SharesResumeResumeId<TData = GetV1SharesResumeResumeIdQueryResponse, TQueryData = GetV1SharesResumeResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1SharesResumeResumeIdQueryKey>(resumeId: GetV1SharesResumeResumeIdPathParams["resumeId"] | (() => GetV1SharesResumeResumeIdPathParams["resumeId"]) | undefined, options: 
+export function createGetV1SharesResumeResumeId<TData = GetV1SharesResumeResumeIdQueryResponse, TQueryData = GetV1SharesResumeResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1SharesResumeResumeIdQueryKey>(resumeId: GetV1SharesResumeResumeIdPathParams["resumeId"] | (() => GetV1SharesResumeResumeIdPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SharesResumeResumeIdQueryResponse, ResponseErrorConfig<GetV1SharesResumeResumeId400 | GetV1SharesResumeResumeId401 | GetV1SharesResumeResumeId403 | GetV1SharesResumeResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

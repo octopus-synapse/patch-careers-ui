@@ -30,7 +30,7 @@ export function getV1UsersUserIdIsFollowingQueryOptions(userId: GetV1UsersUserId
  * @summary Check following relationship
  * {@link /api/v1/users/:userId/is-following}
  */
-export function createGetV1UsersUserIdIsFollowing<TData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsFollowingQueryKey>(userId: GetV1UsersUserIdIsFollowingPathParams["userId"] | (() => GetV1UsersUserIdIsFollowingPathParams["userId"]) | undefined, options: 
+export function createGetV1UsersUserIdIsFollowing<TData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryData = GetV1UsersUserIdIsFollowingQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsFollowingQueryKey>(userId: GetV1UsersUserIdIsFollowingPathParams["userId"] | (() => GetV1UsersUserIdIsFollowingPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdIsFollowingQueryResponse, ResponseErrorConfig<GetV1UsersUserIdIsFollowing400 | GetV1UsersUserIdIsFollowing401 | GetV1UsersUserIdIsFollowing403 | GetV1UsersUserIdIsFollowing404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

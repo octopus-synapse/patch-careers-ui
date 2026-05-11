@@ -31,7 +31,7 @@ export function getV1ResumeStylesIdPreviewPdfQueryOptions(id: GetV1ResumeStylesI
  * @summary Render a generic preview PDF for the style
  * {@link /api/v1/resume-styles/:id/preview.pdf}
  */
-export function createGetV1ResumeStylesIdPreviewPdf<TData = GetV1ResumeStylesIdPreviewPdfQueryResponse, TQueryData = GetV1ResumeStylesIdPreviewPdfQueryResponse, TQueryKey extends QueryKey = GetV1ResumeStylesIdPreviewPdfQueryKey>(id: GetV1ResumeStylesIdPreviewPdfPathParams["id"] | (() => GetV1ResumeStylesIdPreviewPdfPathParams["id"]) | undefined, options: 
+export function createGetV1ResumeStylesIdPreviewPdf<TData = GetV1ResumeStylesIdPreviewPdfQueryResponse, TQueryData = GetV1ResumeStylesIdPreviewPdfQueryResponse, TQueryKey extends QueryKey = GetV1ResumeStylesIdPreviewPdfQueryKey>(id: GetV1ResumeStylesIdPreviewPdfPathParams["id"] | (() => GetV1ResumeStylesIdPreviewPdfPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumeStylesIdPreviewPdfQueryResponse, ResponseErrorConfig<GetV1ResumeStylesIdPreviewPdf400 | GetV1ResumeStylesIdPreviewPdf401 | GetV1ResumeStylesIdPreviewPdf404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

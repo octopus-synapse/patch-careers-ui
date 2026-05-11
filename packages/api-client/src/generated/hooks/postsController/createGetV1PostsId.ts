@@ -31,7 +31,7 @@ export function getV1PostsIdQueryOptions(id: GetV1PostsIdPathParams["id"] | unde
  * @summary Get a post by ID
  * {@link /api/v1/posts/:id}
  */
-export function createGetV1PostsId<TData = GetV1PostsIdQueryResponse, TQueryData = GetV1PostsIdQueryResponse, TQueryKey extends QueryKey = GetV1PostsIdQueryKey>(id: GetV1PostsIdPathParams["id"] | (() => GetV1PostsIdPathParams["id"]) | undefined, options: 
+export function createGetV1PostsId<TData = GetV1PostsIdQueryResponse, TQueryData = GetV1PostsIdQueryResponse, TQueryKey extends QueryKey = GetV1PostsIdQueryKey>(id: GetV1PostsIdPathParams["id"] | (() => GetV1PostsIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PostsIdQueryResponse, ResponseErrorConfig<GetV1PostsId400 | GetV1PostsId401 | GetV1PostsId403 | GetV1PostsId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

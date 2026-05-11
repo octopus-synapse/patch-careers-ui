@@ -67,12 +67,12 @@ const jobsQuery = createGetV1Jobs(
     skills: '',
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
   },
-  { query: { enabled: browser && activeTab === 'all' } },
+  { query: { enabled: () => browser && activeTab === 'all'} },
 );
 
 const recommendedQuery = createGetV1JobsRecommended(
   { page, limit: 20 },
-  { query: { enabled: browser && activeTab === 'recommended' } },
+  { query: { enabled: () => browser && activeTab === 'recommended'} },
 );
 
 const jobsData = $derived($jobsQuery.data);
@@ -88,7 +88,7 @@ const fitScoreQuery = createGetV1JobsWithFitScore(
     ...(search ? { search } : {}),
     ...(usdEurOnly ? { paymentCurrency: 'USD,EUR' } : {}),
   },
-  { query: { enabled: browser && activeTab === 'all' } },
+  { query: { enabled: () => browser && activeTab === 'all'} },
 );
 const fitScoreById = $derived.by(() => {
   const map: Record<string, FitScoreDetail> = {};

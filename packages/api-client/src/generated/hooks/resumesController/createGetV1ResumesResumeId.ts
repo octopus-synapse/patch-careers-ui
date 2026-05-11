@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdQueryOptions(resumeId: GetV1ResumesResumeIdP
  * @summary Get a specific resume
  * {@link /api/v1/resumes/:resumeId}
  */
-export function createGetV1ResumesResumeId<TData = GetV1ResumesResumeIdQueryResponse, TQueryData = GetV1ResumesResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQueryKey>(resumeId: GetV1ResumesResumeIdPathParams["resumeId"] | (() => GetV1ResumesResumeIdPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeId<TData = GetV1ResumesResumeIdQueryResponse, TQueryData = GetV1ResumesResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQueryKey>(resumeId: GetV1ResumesResumeIdPathParams["resumeId"] | (() => GetV1ResumesResumeIdPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdQueryResponse, ResponseErrorConfig<GetV1ResumesResumeId400 | GetV1ResumesResumeId401 | GetV1ResumesResumeId403 | GetV1ResumesResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

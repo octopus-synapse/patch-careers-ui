@@ -31,7 +31,7 @@ export function getV1VersionsResumeIdQueryOptions(resumeId: GetV1VersionsResumeI
  * @summary List resume versions
  * {@link /api/v1/versions/:resumeId}
  */
-export function createGetV1VersionsResumeId<TData = GetV1VersionsResumeIdQueryResponse, TQueryData = GetV1VersionsResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1VersionsResumeIdQueryKey>(resumeId: GetV1VersionsResumeIdPathParams["resumeId"] | (() => GetV1VersionsResumeIdPathParams["resumeId"]) | undefined, options: 
+export function createGetV1VersionsResumeId<TData = GetV1VersionsResumeIdQueryResponse, TQueryData = GetV1VersionsResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1VersionsResumeIdQueryKey>(resumeId: GetV1VersionsResumeIdPathParams["resumeId"] | (() => GetV1VersionsResumeIdPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1VersionsResumeIdQueryResponse, ResponseErrorConfig<GetV1VersionsResumeId400 | GetV1VersionsResumeId401 | GetV1VersionsResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

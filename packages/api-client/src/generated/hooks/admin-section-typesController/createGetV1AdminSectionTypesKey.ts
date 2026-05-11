@@ -31,7 +31,7 @@ export function getV1AdminSectionTypesKeyQueryOptions(key: GetV1AdminSectionType
  * @summary Get a section type by key
  * {@link /api/v1/admin/section-types/:key}
  */
-export function createGetV1AdminSectionTypesKey<TData = GetV1AdminSectionTypesKeyQueryResponse, TQueryData = GetV1AdminSectionTypesKeyQueryResponse, TQueryKey extends QueryKey = GetV1AdminSectionTypesKeyQueryKey>(key: GetV1AdminSectionTypesKeyPathParams["key"] | (() => GetV1AdminSectionTypesKeyPathParams["key"]) | undefined, options: 
+export function createGetV1AdminSectionTypesKey<TData = GetV1AdminSectionTypesKeyQueryResponse, TQueryData = GetV1AdminSectionTypesKeyQueryResponse, TQueryKey extends QueryKey = GetV1AdminSectionTypesKeyQueryKey>(key: GetV1AdminSectionTypesKeyPathParams["key"] | (() => GetV1AdminSectionTypesKeyPathParams["key"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminSectionTypesKeyQueryResponse, ResponseErrorConfig<GetV1AdminSectionTypesKey400 | GetV1AdminSectionTypesKey401 | GetV1AdminSectionTypesKey403 | GetV1AdminSectionTypesKey404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1TechAreasAreaTypeNichesQueryOptions(areaType: GetV1TechArea
  * @summary Get niches by area type
  * {@link /api/v1/tech-areas/:areaType/niches}
  */
-export function createGetV1TechAreasAreaTypeNiches<TData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryKey extends QueryKey = GetV1TechAreasAreaTypeNichesQueryKey>(areaType: GetV1TechAreasAreaTypeNichesPathParams["areaType"] | (() => GetV1TechAreasAreaTypeNichesPathParams["areaType"]) | undefined, options: 
+export function createGetV1TechAreasAreaTypeNiches<TData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryData = GetV1TechAreasAreaTypeNichesQueryResponse, TQueryKey extends QueryKey = GetV1TechAreasAreaTypeNichesQueryKey>(areaType: GetV1TechAreasAreaTypeNichesPathParams["areaType"] | (() => GetV1TechAreasAreaTypeNichesPathParams["areaType"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechAreasAreaTypeNichesQueryResponse, ResponseErrorConfig<GetV1TechAreasAreaTypeNiches400 | GetV1TechAreasAreaTypeNiches401 | GetV1TechAreasAreaTypeNiches403 | GetV1TechAreasAreaTypeNiches404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

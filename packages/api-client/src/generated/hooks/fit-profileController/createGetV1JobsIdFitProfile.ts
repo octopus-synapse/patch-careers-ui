@@ -31,7 +31,7 @@ export function getV1JobsIdFitProfileQueryOptions(id: GetV1JobsIdFitProfilePathP
  * @summary Get the recruiter-authored Fit Profile for a job
  * {@link /api/v1/jobs/:id/fit-profile}
  */
-export function createGetV1JobsIdFitProfile<TData = GetV1JobsIdFitProfileQueryResponse, TQueryData = GetV1JobsIdFitProfileQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdFitProfileQueryKey>(id: GetV1JobsIdFitProfilePathParams["id"] | (() => GetV1JobsIdFitProfilePathParams["id"]) | undefined, options: 
+export function createGetV1JobsIdFitProfile<TData = GetV1JobsIdFitProfileQueryResponse, TQueryData = GetV1JobsIdFitProfileQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdFitProfileQueryKey>(id: GetV1JobsIdFitProfilePathParams["id"] | (() => GetV1JobsIdFitProfilePathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdFitProfileQueryResponse, ResponseErrorConfig<GetV1JobsIdFitProfile400 | GetV1JobsIdFitProfile401 | GetV1JobsIdFitProfile403 | GetV1JobsIdFitProfile404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

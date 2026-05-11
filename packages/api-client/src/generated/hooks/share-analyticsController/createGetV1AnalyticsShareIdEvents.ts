@@ -31,7 +31,7 @@ export function getV1AnalyticsShareIdEventsQueryOptions(shareId: GetV1AnalyticsS
  * @summary Get analytics events for a share id
  * {@link /api/v1/analytics/:shareId/events}
  */
-export function createGetV1AnalyticsShareIdEvents<TData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsShareIdEventsQueryKey>(shareId: GetV1AnalyticsShareIdEventsPathParams["shareId"] | (() => GetV1AnalyticsShareIdEventsPathParams["shareId"]) | undefined, params?: GetV1AnalyticsShareIdEventsQueryParams, options: 
+export function createGetV1AnalyticsShareIdEvents<TData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryData = GetV1AnalyticsShareIdEventsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsShareIdEventsQueryKey>(shareId: GetV1AnalyticsShareIdEventsPathParams["shareId"] | (() => GetV1AnalyticsShareIdEventsPathParams["shareId"] | undefined) | undefined, params?: GetV1AnalyticsShareIdEventsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsShareIdEventsQueryResponse, ResponseErrorConfig<GetV1AnalyticsShareIdEvents400 | GetV1AnalyticsShareIdEvents401 | GetV1AnalyticsShareIdEvents403 | GetV1AnalyticsShareIdEvents404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

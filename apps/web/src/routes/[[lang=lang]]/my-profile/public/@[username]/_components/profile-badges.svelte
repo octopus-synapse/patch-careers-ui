@@ -14,9 +14,8 @@ type Props = {
 };
 let { userId, showLocked = false }: Props = $props();
 
-const query = createGetV1BadgesUserUserId(
-  userId,
-  { query: { enabled: browser && Boolean(userId) } },
+const query = createGetV1BadgesUserUserId(() => userId,
+  { query: { enabled: () => browser && Boolean(userId)} },
 );
 
 type BadgeRow = { kind: BadgeKind; awardedAt: string };

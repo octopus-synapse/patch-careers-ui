@@ -31,7 +31,7 @@ export function getV1TechSkillsTypeTypeQueryOptions(type: GetV1TechSkillsTypeTyp
  * @summary Get skills by type
  * {@link /api/v1/tech-skills/type/:type}
  */
-export function createGetV1TechSkillsTypeType<TData = GetV1TechSkillsTypeTypeQueryResponse, TQueryData = GetV1TechSkillsTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsTypeTypeQueryKey>(type: GetV1TechSkillsTypeTypePathParams["type"] | (() => GetV1TechSkillsTypeTypePathParams["type"]) | undefined, params?: GetV1TechSkillsTypeTypeQueryParams, options: 
+export function createGetV1TechSkillsTypeType<TData = GetV1TechSkillsTypeTypeQueryResponse, TQueryData = GetV1TechSkillsTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsTypeTypeQueryKey>(type: GetV1TechSkillsTypeTypePathParams["type"] | (() => GetV1TechSkillsTypeTypePathParams["type"] | undefined) | undefined, params?: GetV1TechSkillsTypeTypeQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechSkillsTypeTypeQueryResponse, ResponseErrorConfig<GetV1TechSkillsTypeType400 | GetV1TechSkillsTypeType401 | GetV1TechSkillsTypeType403 | GetV1TechSkillsTypeType404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

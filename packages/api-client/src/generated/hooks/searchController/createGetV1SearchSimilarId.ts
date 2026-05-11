@@ -31,7 +31,7 @@ export function getV1SearchSimilarIdQueryOptions(id: GetV1SearchSimilarIdPathPar
  * @summary Find similar resumes by resume id
  * {@link /api/v1/search/similar/:id}
  */
-export function createGetV1SearchSimilarId<TData = GetV1SearchSimilarIdQueryResponse, TQueryData = GetV1SearchSimilarIdQueryResponse, TQueryKey extends QueryKey = GetV1SearchSimilarIdQueryKey>(id: GetV1SearchSimilarIdPathParams["id"] | (() => GetV1SearchSimilarIdPathParams["id"]) | undefined, params?: GetV1SearchSimilarIdQueryParams, options: 
+export function createGetV1SearchSimilarId<TData = GetV1SearchSimilarIdQueryResponse, TQueryData = GetV1SearchSimilarIdQueryResponse, TQueryKey extends QueryKey = GetV1SearchSimilarIdQueryKey>(id: GetV1SearchSimilarIdPathParams["id"] | (() => GetV1SearchSimilarIdPathParams["id"] | undefined) | undefined, params?: GetV1SearchSimilarIdQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SearchSimilarIdQueryResponse, ResponseErrorConfig<GetV1SearchSimilarId400 | GetV1SearchSimilarId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

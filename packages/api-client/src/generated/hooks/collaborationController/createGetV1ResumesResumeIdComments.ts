@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdCommentsQueryOptions(resumeId: GetV1ResumesR
  * @summary List collaboration comments on a resume
  * {@link /api/v1/resumes/:resumeId/comments}
  */
-export function createGetV1ResumesResumeIdComments<TData = GetV1ResumesResumeIdCommentsQueryResponse, TQueryData = GetV1ResumesResumeIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdCommentsQueryKey>(resumeId: GetV1ResumesResumeIdCommentsPathParams["resumeId"] | (() => GetV1ResumesResumeIdCommentsPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdComments<TData = GetV1ResumesResumeIdCommentsQueryResponse, TQueryData = GetV1ResumesResumeIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdCommentsQueryKey>(resumeId: GetV1ResumesResumeIdCommentsPathParams["resumeId"] | (() => GetV1ResumesResumeIdCommentsPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdCommentsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdComments400 | GetV1ResumesResumeIdComments401 | GetV1ResumesResumeIdComments403 | GetV1ResumesResumeIdComments404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

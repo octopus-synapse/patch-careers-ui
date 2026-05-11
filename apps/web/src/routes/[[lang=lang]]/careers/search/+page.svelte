@@ -65,14 +65,14 @@ const queryParams = $derived({
 const query = createGetV1Search(
   queryParams,
   {
-        query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'people' },
+        query: { enabled: () => browser && initialQuery.trim().length >= 2 && activeTab === 'people'},
       },
 );
 
 const jobsQuery = createGetV1Jobs(
   { search: initialQuery, page: 1, limit: 20 },
   {
-        query: { enabled: browser && initialQuery.trim().length >= 2 && activeTab === 'jobs' },
+        query: { enabled: () => browser && initialQuery.trim().length >= 2 && activeTab === 'jobs'},
       },
 );
 

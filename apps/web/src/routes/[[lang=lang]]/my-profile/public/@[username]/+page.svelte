@@ -24,8 +24,7 @@
   const currentUserId = $derived(String(auth.userId ?? ''));
   const authenticated = $derived(auth.isAuthenticated);
 
-  const profile = createGetV1ProfilesUsername(
-    username,
+  const profile = createGetV1ProfilesUsername(() => username,
     { query: { enabled: () => !!username } },
   );
 

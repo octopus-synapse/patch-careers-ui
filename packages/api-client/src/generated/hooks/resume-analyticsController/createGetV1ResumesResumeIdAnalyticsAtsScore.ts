@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdAnalyticsAtsScoreQueryOptions(resumeId: GetV
  * @summary Calculate ATS compatibility score
  * {@link /api/v1/resumes/:resumeId/analytics/ats-score}
  */
-export function createGetV1ResumesResumeIdAnalyticsAtsScore<TData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsAtsScoreQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdAnalyticsAtsScore<TData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsAtsScoreQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsAtsScorePathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsAtsScoreQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsAtsScore400 | GetV1ResumesResumeIdAnalyticsAtsScore401 | GetV1ResumesResumeIdAnalyticsAtsScore403 | GetV1ResumesResumeIdAnalyticsAtsScore404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1UsersUserIdCommentsQueryOptions(userId: GetV1UsersUserIdCom
  * @summary List comments authored by a user
  * {@link /api/v1/users/:userId/comments}
  */
-export function createGetV1UsersUserIdComments<TData = GetV1UsersUserIdCommentsQueryResponse, TQueryData = GetV1UsersUserIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdCommentsQueryKey>(userId: GetV1UsersUserIdCommentsPathParams["userId"] | (() => GetV1UsersUserIdCommentsPathParams["userId"]) | undefined, params?: GetV1UsersUserIdCommentsQueryParams, options: 
+export function createGetV1UsersUserIdComments<TData = GetV1UsersUserIdCommentsQueryResponse, TQueryData = GetV1UsersUserIdCommentsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdCommentsQueryKey>(userId: GetV1UsersUserIdCommentsPathParams["userId"] | (() => GetV1UsersUserIdCommentsPathParams["userId"] | undefined) | undefined, params?: GetV1UsersUserIdCommentsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdCommentsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdComments400 | GetV1UsersUserIdComments401 | GetV1UsersUserIdComments403 | GetV1UsersUserIdComments404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

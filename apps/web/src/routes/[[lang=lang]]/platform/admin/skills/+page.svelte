@@ -49,23 +49,23 @@
 
   const areasQuery = createGetV1AdminTechAreas(
     params,
-    { query: { enabled: browser && tab === 'areas' } },
+    { query: { enabled: () => browser && tab === 'areas'} },
   );
   const nichesQuery = createGetV1AdminTechNiches(
     params,
-    { query: { enabled: browser && tab === 'niches' } },
+    { query: { enabled: () => browser && tab === 'niches'} },
   );
   const skillsQuery = createGetV1AdminTechSkills(
     params,
-    { query: { enabled: browser && tab === 'skills' } },
+    { query: { enabled: () => browser && tab === 'skills'} },
   );
   const progQuery = createGetV1AdminProgrammingLanguages(
     params,
-    { query: { enabled: browser && tab === 'programming' } },
+    { query: { enabled: () => browser && tab === 'programming'} },
   );
   const spokenQuery = createGetV1AdminSpokenLanguages(
     params,
-    { query: { enabled: browser && tab === 'spoken' } },
+    { query: { enabled: () => browser && tab === 'spoken'} },
   );
 
   function items(data: unknown): Item[] {

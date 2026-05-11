@@ -38,9 +38,8 @@ const jobId = $derived(($page.params as Record<string, string>).id);
 const auth = useAuth();
 const currentUserId = $derived(String(auth.userId ?? ''));
 
-const jobQuery = createGetV1JobsId(
-  jobId,
-  { query: { enabled: browser && !!jobId } },
+const jobQuery = createGetV1JobsId(() => jobId,
+  { query: { enabled: () => browser && !!jobId} },
 );
 
 const job = $derived($jobQuery.data);
@@ -51,9 +50,8 @@ const isOwner = $derived(
 // Fit score — enabled for non-owners with a primary resume. Backend returns
 // 409 NO_PRIMARY_RESUME when the user has no master CV yet; the component
 // renders the teaser state automatically whenever `score` is undefined.
-const fitQuery = createGetV1JobsIdFitProfile(
-  jobId,
-  { query: { enabled: browser && !!jobId && !!currentUserId && !isOwner, retry: false } },
+const fitQuery = createGetV1JobsIdFitProfile(() => jobId,
+  { query: { enabled: () => browser && !!jobId && !!currentUserId && !isOwner, retry: false } },
 );
 
 // Primary resume lookup — the Match Score panel needs a resumeId. We take
@@ -61,7 +59,7 @@ const fitQuery = createGetV1JobsIdFitProfile(
 // future iteration may expose a picker when the user has >1 resume.
 const myResumesQuery = createGetV1Resumes(
   { page: 1, limit: 1 },
-  { query: { enabled: browser && !!currentUserId && !isOwner, retry: false } },
+  { query: { enabled: () => browser && !!currentUserId && !isOwner, retry: false } },
 );
 const primaryResumeId = $derived.by<string | null>(() => {
   const items = $myResumesQuery.data?.items;

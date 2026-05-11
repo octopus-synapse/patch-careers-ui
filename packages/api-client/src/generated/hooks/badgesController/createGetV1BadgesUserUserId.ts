@@ -31,7 +31,7 @@ export function getV1BadgesUserUserIdQueryOptions(userId: GetV1BadgesUserUserIdP
  * @summary Public list of badges for a given user.
  * {@link /api/v1/badges/user/:userId}
  */
-export function createGetV1BadgesUserUserId<TData = GetV1BadgesUserUserIdQueryResponse, TQueryData = GetV1BadgesUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1BadgesUserUserIdQueryKey>(userId: GetV1BadgesUserUserIdPathParams["userId"] | (() => GetV1BadgesUserUserIdPathParams["userId"]) | undefined, options: 
+export function createGetV1BadgesUserUserId<TData = GetV1BadgesUserUserIdQueryResponse, TQueryData = GetV1BadgesUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1BadgesUserUserIdQueryKey>(userId: GetV1BadgesUserUserIdPathParams["userId"] | (() => GetV1BadgesUserUserIdPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1BadgesUserUserIdQueryResponse, ResponseErrorConfig<GetV1BadgesUserUserId400 | GetV1BadgesUserUserId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

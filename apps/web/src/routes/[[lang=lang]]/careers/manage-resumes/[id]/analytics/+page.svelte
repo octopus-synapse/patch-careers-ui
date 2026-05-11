@@ -11,10 +11,9 @@ import { page } from '$app/stores';
 
 const resumeId = $derived($page.params.id ?? '');
 
-const stats = createGetV1ResumesResumeIdAnalyticsViews(
-  resumeId,
+const stats = createGetV1ResumesResumeIdAnalyticsViews(() => resumeId,
   { period: 'month' },
-  { query: { enabled: browser && Boolean(resumeId) } },
+  { query: { enabled: () => browser && Boolean(resumeId)} },
 );
 
 interface ViewStats {

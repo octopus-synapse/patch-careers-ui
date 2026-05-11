@@ -31,7 +31,7 @@ const authenticated = $derived(auth.isAuthenticated ?? false);
 
 const query = createGetV1JobsApplications(
   { page: 1, limit: 5 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const items = $derived.by<ApplicationItem[]>(() => {

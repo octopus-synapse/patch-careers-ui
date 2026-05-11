@@ -31,7 +31,7 @@ export function getV1WebhooksIdDeliveriesQueryOptions(id: GetV1WebhooksIdDeliver
  * @summary List recent delivery attempts for a webhook.
  * {@link /api/v1/webhooks/:id/deliveries}
  */
-export function createGetV1WebhooksIdDeliveries<TData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryKey extends QueryKey = GetV1WebhooksIdDeliveriesQueryKey>(id: GetV1WebhooksIdDeliveriesPathParams["id"] | (() => GetV1WebhooksIdDeliveriesPathParams["id"]) | undefined, options: 
+export function createGetV1WebhooksIdDeliveries<TData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryData = GetV1WebhooksIdDeliveriesQueryResponse, TQueryKey extends QueryKey = GetV1WebhooksIdDeliveriesQueryKey>(id: GetV1WebhooksIdDeliveriesPathParams["id"] | (() => GetV1WebhooksIdDeliveriesPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1WebhooksIdDeliveriesQueryResponse, ResponseErrorConfig<GetV1WebhooksIdDeliveries400 | GetV1WebhooksIdDeliveries401 | GetV1WebhooksIdDeliveries403 | GetV1WebhooksIdDeliveries404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

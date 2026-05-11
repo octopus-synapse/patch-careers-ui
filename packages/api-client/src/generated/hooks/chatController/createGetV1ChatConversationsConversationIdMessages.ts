@@ -31,7 +31,7 @@ export function getV1ChatConversationsConversationIdMessagesQueryOptions(convers
  * @summary Get messages for a conversation
  * {@link /api/v1/chat/conversations/:conversationId/messages}
  */
-export function createGetV1ChatConversationsConversationIdMessages<TData = GetV1ChatConversationsConversationIdMessagesQueryResponse, TQueryData = GetV1ChatConversationsConversationIdMessagesQueryResponse, TQueryKey extends QueryKey = GetV1ChatConversationsConversationIdMessagesQueryKey>(conversationId: GetV1ChatConversationsConversationIdMessagesPathParams["conversationId"] | (() => GetV1ChatConversationsConversationIdMessagesPathParams["conversationId"]) | undefined, params?: GetV1ChatConversationsConversationIdMessagesQueryParams, options: 
+export function createGetV1ChatConversationsConversationIdMessages<TData = GetV1ChatConversationsConversationIdMessagesQueryResponse, TQueryData = GetV1ChatConversationsConversationIdMessagesQueryResponse, TQueryKey extends QueryKey = GetV1ChatConversationsConversationIdMessagesQueryKey>(conversationId: GetV1ChatConversationsConversationIdMessagesPathParams["conversationId"] | (() => GetV1ChatConversationsConversationIdMessagesPathParams["conversationId"] | undefined) | undefined, params?: GetV1ChatConversationsConversationIdMessagesQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ChatConversationsConversationIdMessagesQueryResponse, ResponseErrorConfig<GetV1ChatConversationsConversationIdMessages400 | GetV1ChatConversationsConversationIdMessages401 | GetV1ChatConversationsConversationIdMessages403 | GetV1ChatConversationsConversationIdMessages404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

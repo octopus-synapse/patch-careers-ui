@@ -31,7 +31,7 @@ export function getV1AnalyticsResumeIdLiveQueryOptions(resumeId: GetV1AnalyticsR
  * @summary Subscribe to live analytics stream
  * {@link /api/v1/analytics/:resumeId/live}
  */
-export function createGetV1AnalyticsResumeIdLive<TData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdLiveQueryKey>(resumeId: GetV1AnalyticsResumeIdLivePathParams["resumeId"] | (() => GetV1AnalyticsResumeIdLivePathParams["resumeId"]) | undefined, options: 
+export function createGetV1AnalyticsResumeIdLive<TData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryData = GetV1AnalyticsResumeIdLiveQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdLiveQueryKey>(resumeId: GetV1AnalyticsResumeIdLivePathParams["resumeId"] | (() => GetV1AnalyticsResumeIdLivePathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsResumeIdLiveQueryResponse, ResponseErrorConfig<GetV1AnalyticsResumeIdLive400 | GetV1AnalyticsResumeIdLive401 | GetV1AnalyticsResumeIdLive403 | GetV1AnalyticsResumeIdLive404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

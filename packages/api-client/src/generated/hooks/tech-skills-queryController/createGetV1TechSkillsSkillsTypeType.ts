@@ -31,7 +31,7 @@ export function getV1TechSkillsSkillsTypeTypeQueryOptions(type: GetV1TechSkillsS
  * @summary Get skills by type
  * {@link /api/v1/tech-skills/skills/type/:type}
  */
-export function createGetV1TechSkillsSkillsTypeType<TData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsSkillsTypeTypeQueryKey>(type: GetV1TechSkillsSkillsTypeTypePathParams["type"] | (() => GetV1TechSkillsSkillsTypeTypePathParams["type"]) | undefined, params?: GetV1TechSkillsSkillsTypeTypeQueryParams, options: 
+export function createGetV1TechSkillsSkillsTypeType<TData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryData = GetV1TechSkillsSkillsTypeTypeQueryResponse, TQueryKey extends QueryKey = GetV1TechSkillsSkillsTypeTypeQueryKey>(type: GetV1TechSkillsSkillsTypeTypePathParams["type"] | (() => GetV1TechSkillsSkillsTypeTypePathParams["type"] | undefined) | undefined, params?: GetV1TechSkillsSkillsTypeTypeQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechSkillsSkillsTypeTypeQueryResponse, ResponseErrorConfig<GetV1TechSkillsSkillsTypeType400 | GetV1TechSkillsSkillsTypeType401 | GetV1TechSkillsSkillsTypeType403 | GetV1TechSkillsSkillsTypeType404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

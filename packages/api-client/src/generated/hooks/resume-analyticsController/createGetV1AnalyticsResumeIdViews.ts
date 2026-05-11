@@ -31,7 +31,7 @@ export function getV1AnalyticsResumeIdViewsQueryOptions(resumeId: GetV1Analytics
  * @summary Subscribe to live views stream
  * {@link /api/v1/analytics/:resumeId/views}
  */
-export function createGetV1AnalyticsResumeIdViews<TData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdViewsQueryKey>(resumeId: GetV1AnalyticsResumeIdViewsPathParams["resumeId"] | (() => GetV1AnalyticsResumeIdViewsPathParams["resumeId"]) | undefined, options: 
+export function createGetV1AnalyticsResumeIdViews<TData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryData = GetV1AnalyticsResumeIdViewsQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdViewsQueryKey>(resumeId: GetV1AnalyticsResumeIdViewsPathParams["resumeId"] | (() => GetV1AnalyticsResumeIdViewsPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsResumeIdViewsQueryResponse, ResponseErrorConfig<GetV1AnalyticsResumeIdViews400 | GetV1AnalyticsResumeIdViews401 | GetV1AnalyticsResumeIdViews403 | GetV1AnalyticsResumeIdViews404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

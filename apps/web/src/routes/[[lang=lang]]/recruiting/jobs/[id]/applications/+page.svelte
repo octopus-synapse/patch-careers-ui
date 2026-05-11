@@ -11,8 +11,7 @@
   const t = $derived(locale.t);
   const jobId = $derived($page.params.id ?? '');
 
-  const query = createGetV1JobsIdApplications(
-    jobId,
+  const query = createGetV1JobsIdApplications(() => jobId,
     { page: 1, limit: 100 },
     { query: { enabled: () => !!jobId } },
   );

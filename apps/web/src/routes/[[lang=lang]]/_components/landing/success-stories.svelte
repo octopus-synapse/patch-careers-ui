@@ -16,7 +16,7 @@ type Story = {
 
 const query = createGetV1SuccessStories(
   { limit: 12 },
-  { query: { enabled: browser } },
+  { query: { enabled: () => browser} },
 );
 
 const stories = $derived(

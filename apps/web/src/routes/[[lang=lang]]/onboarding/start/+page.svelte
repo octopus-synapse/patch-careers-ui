@@ -26,11 +26,11 @@ $effect(() => {
 // Keeps the cards in a truthful state without us hardcoding flags.
 const githubAvailability = createGetV1AuthOauthAvailableProvider(
   'github',
-  { query: { enabled: browser } },
+  { query: { enabled: () => browser} },
 );
 const linkedinAvailability = createGetV1AuthOauthAvailableProvider(
   'linkedin',
-  { query: { enabled: browser } },
+  { query: { enabled: () => browser} },
 );
 
 const githubAvailable = $derived($githubAvailability.data?.available ?? false);

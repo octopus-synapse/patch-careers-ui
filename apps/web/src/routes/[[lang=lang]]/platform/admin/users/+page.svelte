@@ -30,7 +30,7 @@
         search: search || undefined,
         roleName: roleName || undefined,
       },
-    { query: { enabled: browser } },
+    { query: { enabled: () => browser} },
   );
 
   const users = $derived($listQuery.data?.items);

@@ -31,7 +31,7 @@ export function getV1ResumesManageUserUserIdQueryOptions(userId: GetV1ResumesMan
  * @summary List all resumes for a specific user
  * {@link /api/v1/resumes/manage/user/:userId}
  */
-export function createGetV1ResumesManageUserUserId<TData = GetV1ResumesManageUserUserIdQueryResponse, TQueryData = GetV1ResumesManageUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesManageUserUserIdQueryKey>(userId: GetV1ResumesManageUserUserIdPathParams["userId"] | (() => GetV1ResumesManageUserUserIdPathParams["userId"]) | undefined, options: 
+export function createGetV1ResumesManageUserUserId<TData = GetV1ResumesManageUserUserIdQueryResponse, TQueryData = GetV1ResumesManageUserUserIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesManageUserUserIdQueryKey>(userId: GetV1ResumesManageUserUserIdPathParams["userId"] | (() => GetV1ResumesManageUserUserIdPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesManageUserUserIdQueryResponse, ResponseErrorConfig<GetV1ResumesManageUserUserId400 | GetV1ResumesManageUserUserId401 | GetV1ResumesManageUserUserId403 | GetV1ResumesManageUserUserId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

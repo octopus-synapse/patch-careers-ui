@@ -14,10 +14,9 @@ const viewerId = $derived(String(auth.userId ?? ''));
 
 type ActivityItem = GetV1UsersUserIdActivities200['items'][number];
 
-const feed = createGetV1UsersUserIdActivities(
-  viewerId,
+const feed = createGetV1UsersUserIdActivities(() => viewerId,
   {},
-  { query: { enabled: browser && viewerId !== '' } },
+  { query: { enabled: () => browser && viewerId !== ''} },
 );
 
 const activities = $derived($feed.data?.items);

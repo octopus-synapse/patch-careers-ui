@@ -17,7 +17,7 @@ import { browser } from '$app/environment';
 const queryClient = useQueryClient();
 
 const collaborationsQuery = createGetV1AdminCollaborations(undefined, {
-  query: { enabled: browser },
+  query: { enabled: () => browser},
 });
 
 const revokeMutation = createDeleteV1AdminCollaborationsResumeIdUserId({

@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdSkillsQueryOptions(resumeId: GetV1ResumesRes
  * @summary List skills for a resume
  * {@link /api/v1/resumes/:resumeId/skills}
  */
-export function createGetV1ResumesResumeIdSkills<TData = GetV1ResumesResumeIdSkillsQueryResponse, TQueryData = GetV1ResumesResumeIdSkillsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSkillsQueryKey>(resumeId: GetV1ResumesResumeIdSkillsPathParams["resumeId"] | (() => GetV1ResumesResumeIdSkillsPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdSkills<TData = GetV1ResumesResumeIdSkillsQueryResponse, TQueryData = GetV1ResumesResumeIdSkillsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdSkillsQueryKey>(resumeId: GetV1ResumesResumeIdSkillsPathParams["resumeId"] | (() => GetV1ResumesResumeIdSkillsPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdSkillsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdSkills400 | GetV1ResumesResumeIdSkills401 | GetV1ResumesResumeIdSkills403 | GetV1ResumesResumeIdSkills404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

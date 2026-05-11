@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdQualityQueryOptions(resumeId: GetV1ResumesRe
  * @summary Get the latest Resume Quality Score snapshot
  * {@link /api/v1/resumes/:resumeId/quality}
  */
-export function createGetV1ResumesResumeIdQuality<TData = GetV1ResumesResumeIdQualityQueryResponse, TQueryData = GetV1ResumesResumeIdQualityQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQualityQueryKey>(resumeId: GetV1ResumesResumeIdQualityPathParams["resumeId"] | (() => GetV1ResumesResumeIdQualityPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdQuality<TData = GetV1ResumesResumeIdQualityQueryResponse, TQueryData = GetV1ResumesResumeIdQualityQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdQualityQueryKey>(resumeId: GetV1ResumesResumeIdQualityPathParams["resumeId"] | (() => GetV1ResumesResumeIdQualityPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdQualityQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdQuality400 | GetV1ResumesResumeIdQuality401 | GetV1ResumesResumeIdQuality403 | GetV1ResumesResumeIdQuality404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

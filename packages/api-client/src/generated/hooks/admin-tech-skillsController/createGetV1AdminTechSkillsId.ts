@@ -31,7 +31,7 @@ export function getV1AdminTechSkillsIdQueryOptions(id: GetV1AdminTechSkillsIdPat
  * @summary Get tech skill by ID
  * {@link /api/v1/admin/tech-skills/:id}
  */
-export function createGetV1AdminTechSkillsId<TData = GetV1AdminTechSkillsIdQueryResponse, TQueryData = GetV1AdminTechSkillsIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechSkillsIdQueryKey>(id: GetV1AdminTechSkillsIdPathParams["id"] | (() => GetV1AdminTechSkillsIdPathParams["id"]) | undefined, options: 
+export function createGetV1AdminTechSkillsId<TData = GetV1AdminTechSkillsIdQueryResponse, TQueryData = GetV1AdminTechSkillsIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechSkillsIdQueryKey>(id: GetV1AdminTechSkillsIdPathParams["id"] | (() => GetV1AdminTechSkillsIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminTechSkillsIdQueryResponse, ResponseErrorConfig<GetV1AdminTechSkillsId400 | GetV1AdminTechSkillsId401 | GetV1AdminTechSkillsId403 | GetV1AdminTechSkillsId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1AdminProgrammingLanguagesSlugQueryOptions(slug: GetV1AdminP
  * @summary Get programming language by slug
  * {@link /api/v1/admin/programming-languages/:slug}
  */
-export function createGetV1AdminProgrammingLanguagesSlug<TData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryKey extends QueryKey = GetV1AdminProgrammingLanguagesSlugQueryKey>(slug: GetV1AdminProgrammingLanguagesSlugPathParams["slug"] | (() => GetV1AdminProgrammingLanguagesSlugPathParams["slug"]) | undefined, options: 
+export function createGetV1AdminProgrammingLanguagesSlug<TData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryData = GetV1AdminProgrammingLanguagesSlugQueryResponse, TQueryKey extends QueryKey = GetV1AdminProgrammingLanguagesSlugQueryKey>(slug: GetV1AdminProgrammingLanguagesSlugPathParams["slug"] | (() => GetV1AdminProgrammingLanguagesSlugPathParams["slug"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminProgrammingLanguagesSlugQueryResponse, ResponseErrorConfig<GetV1AdminProgrammingLanguagesSlug400 | GetV1AdminProgrammingLanguagesSlug401 | GetV1AdminProgrammingLanguagesSlug403 | GetV1AdminProgrammingLanguagesSlug404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

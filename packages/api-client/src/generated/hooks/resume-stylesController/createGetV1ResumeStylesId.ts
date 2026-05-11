@@ -31,7 +31,7 @@ export function getV1ResumeStylesIdQueryOptions(id: GetV1ResumeStylesIdPathParam
  * @summary Get one ResumeStyle by id
  * {@link /api/v1/resume-styles/:id}
  */
-export function createGetV1ResumeStylesId<TData = GetV1ResumeStylesIdQueryResponse, TQueryData = GetV1ResumeStylesIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumeStylesIdQueryKey>(id: GetV1ResumeStylesIdPathParams["id"] | (() => GetV1ResumeStylesIdPathParams["id"]) | undefined, options: 
+export function createGetV1ResumeStylesId<TData = GetV1ResumeStylesIdQueryResponse, TQueryData = GetV1ResumeStylesIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumeStylesIdQueryKey>(id: GetV1ResumeStylesIdPathParams["id"] | (() => GetV1ResumeStylesIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumeStylesIdQueryResponse, ResponseErrorConfig<GetV1ResumeStylesId400 | GetV1ResumeStylesId401 | GetV1ResumeStylesId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

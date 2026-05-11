@@ -31,7 +31,7 @@ export function getV1JobsApplicationsCompaniesCompanyResponseStatsQueryOptions(c
  * @summary Per-company response percentiles (p50/p90 days to first response).
  * {@link /api/v1/jobs/applications/companies/:company/response-stats}
  */
-export function createGetV1JobsApplicationsCompaniesCompanyResponseStats<TData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryKey extends QueryKey = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey>(company: GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"] | (() => GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"]) | undefined, options: 
+export function createGetV1JobsApplicationsCompaniesCompanyResponseStats<TData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryData = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, TQueryKey extends QueryKey = GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryKey>(company: GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"] | (() => GetV1JobsApplicationsCompaniesCompanyResponseStatsPathParams["company"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsApplicationsCompaniesCompanyResponseStatsQueryResponse, ResponseErrorConfig<GetV1JobsApplicationsCompaniesCompanyResponseStats400 | GetV1JobsApplicationsCompaniesCompanyResponseStats401 | GetV1JobsApplicationsCompaniesCompanyResponseStats403 | GetV1JobsApplicationsCompaniesCompanyResponseStats404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

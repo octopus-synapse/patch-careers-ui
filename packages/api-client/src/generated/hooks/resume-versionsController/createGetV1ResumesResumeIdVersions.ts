@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdVersionsQueryOptions(resumeId: GetV1ResumesR
  * @summary List resume versions (nested route)
  * {@link /api/v1/resumes/:resumeId/versions}
  */
-export function createGetV1ResumesResumeIdVersions<TData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdVersionsQueryKey>(resumeId: GetV1ResumesResumeIdVersionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdVersionsPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdVersions<TData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdVersionsQueryKey>(resumeId: GetV1ResumesResumeIdVersionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdVersionsPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdVersionsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdVersions400 | GetV1ResumesResumeIdVersions401 | GetV1ResumesResumeIdVersions404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

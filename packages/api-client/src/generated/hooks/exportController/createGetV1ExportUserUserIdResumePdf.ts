@@ -31,7 +31,7 @@ export function getV1ExportUserUserIdResumePdfQueryOptions(userId: GetV1ExportUs
  * @summary Generate the authenticated user's resume as PDF (base64)
  * {@link /api/v1/export/user/:userId/resume/pdf}
  */
-export function createGetV1ExportUserUserIdResumePdf<TData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryKey extends QueryKey = GetV1ExportUserUserIdResumePdfQueryKey>(userId: GetV1ExportUserUserIdResumePdfPathParams["userId"] | (() => GetV1ExportUserUserIdResumePdfPathParams["userId"]) | undefined, options: 
+export function createGetV1ExportUserUserIdResumePdf<TData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryData = GetV1ExportUserUserIdResumePdfQueryResponse, TQueryKey extends QueryKey = GetV1ExportUserUserIdResumePdfQueryKey>(userId: GetV1ExportUserUserIdResumePdfPathParams["userId"] | (() => GetV1ExportUserUserIdResumePdfPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ExportUserUserIdResumePdfQueryResponse, ResponseErrorConfig<GetV1ExportUserUserIdResumePdf400 | GetV1ExportUserUserIdResumePdf401 | GetV1ExportUserUserIdResumePdf404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1TechNichesNicheSlugSkillsQueryOptions(nicheSlug: GetV1TechN
  * @summary Get skills by niche slug
  * {@link /api/v1/tech-niches/:nicheSlug/skills}
  */
-export function createGetV1TechNichesNicheSlugSkills<TData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryKey extends QueryKey = GetV1TechNichesNicheSlugSkillsQueryKey>(nicheSlug: GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"] | (() => GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"]) | undefined, options: 
+export function createGetV1TechNichesNicheSlugSkills<TData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryData = GetV1TechNichesNicheSlugSkillsQueryResponse, TQueryKey extends QueryKey = GetV1TechNichesNicheSlugSkillsQueryKey>(nicheSlug: GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"] | (() => GetV1TechNichesNicheSlugSkillsPathParams["nicheSlug"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1TechNichesNicheSlugSkillsQueryResponse, ResponseErrorConfig<GetV1TechNichesNicheSlugSkills400 | GetV1TechNichesNicheSlugSkills401 | GetV1TechNichesNicheSlugSkills403 | GetV1TechNichesNicheSlugSkills404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

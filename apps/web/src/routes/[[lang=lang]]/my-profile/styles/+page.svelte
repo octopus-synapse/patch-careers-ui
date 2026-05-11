@@ -22,12 +22,12 @@
 
   const listQuery = createGetV1ResumeStyles(
     { page: 1, limit: 20 },
-    { query: { enabled: browser, refetchOnWindowFocus: false } },
+    { query: { enabled: () => browser, refetchOnWindowFocus: false } },
   );
 
   const myResumesQuery = createGetV1Resumes(
     { page: 1, limit: 1 },
-    { query: { enabled: browser } },
+    { query: { enabled: () => browser} },
   );
   const primaryResumeId = $derived<string | null>(
     $myResumesQuery.data?.items?.[0]?.id ?? null,

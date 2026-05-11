@@ -35,7 +35,7 @@ const authenticated = $derived(auth.isAuthenticated ?? false);
 
 const pendingQuery = createGetV1UsersMeConnectionsPending(
   { page: 1, limit: 3 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const pending = $derived.by(() => {

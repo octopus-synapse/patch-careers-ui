@@ -31,7 +31,7 @@ export function getV1SpokenLanguagesCodeQueryOptions(code: GetV1SpokenLanguagesC
  * @summary Get spoken language by code
  * {@link /api/v1/spoken-languages/:code}
  */
-export function createGetV1SpokenLanguagesCode<TData = GetV1SpokenLanguagesCodeQueryResponse, TQueryData = GetV1SpokenLanguagesCodeQueryResponse, TQueryKey extends QueryKey = GetV1SpokenLanguagesCodeQueryKey>(code: GetV1SpokenLanguagesCodePathParams["code"] | (() => GetV1SpokenLanguagesCodePathParams["code"]) | undefined, options: 
+export function createGetV1SpokenLanguagesCode<TData = GetV1SpokenLanguagesCodeQueryResponse, TQueryData = GetV1SpokenLanguagesCodeQueryResponse, TQueryKey extends QueryKey = GetV1SpokenLanguagesCodeQueryKey>(code: GetV1SpokenLanguagesCodePathParams["code"] | (() => GetV1SpokenLanguagesCodePathParams["code"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SpokenLanguagesCodeQueryResponse, ResponseErrorConfig<GetV1SpokenLanguagesCode400 | GetV1SpokenLanguagesCode401 | GetV1SpokenLanguagesCode403 | GetV1SpokenLanguagesCode404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1AdminTechAreasIdQueryOptions(id: GetV1AdminTechAreasIdPathP
  * @summary Get tech area by ID
  * {@link /api/v1/admin/tech-areas/:id}
  */
-export function createGetV1AdminTechAreasId<TData = GetV1AdminTechAreasIdQueryResponse, TQueryData = GetV1AdminTechAreasIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechAreasIdQueryKey>(id: GetV1AdminTechAreasIdPathParams["id"] | (() => GetV1AdminTechAreasIdPathParams["id"]) | undefined, options: 
+export function createGetV1AdminTechAreasId<TData = GetV1AdminTechAreasIdQueryResponse, TQueryData = GetV1AdminTechAreasIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechAreasIdQueryKey>(id: GetV1AdminTechAreasIdPathParams["id"] | (() => GetV1AdminTechAreasIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminTechAreasIdQueryResponse, ResponseErrorConfig<GetV1AdminTechAreasId400 | GetV1AdminTechAreasId401 | GetV1AdminTechAreasId403 | GetV1AdminTechAreasId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

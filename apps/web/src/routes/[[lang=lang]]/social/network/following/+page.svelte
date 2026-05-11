@@ -26,8 +26,8 @@ let hiddenIds = $state<Set<string>>(new Set());
 
 const list = useInfiniteList<Following>({
   createQuery: (p) =>
-    createGetV1UsersUserIdFollowing(currentUserId, p, {
-      query: { enabled: browser && !!currentUserId },
+    createGetV1UsersUserIdFollowing(() => currentUserId, p, {
+      query: { enabled: () => browser && !!currentUserId},
     }),
   fetcher: (p) => getV1UsersUserIdFollowing(currentUserId, p),
   filter: (row) => !hiddenIds.has(row.following?.id ?? ''),

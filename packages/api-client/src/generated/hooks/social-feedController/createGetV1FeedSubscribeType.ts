@@ -31,7 +31,7 @@ export function getV1FeedSubscribeTypeQueryOptions(type: GetV1FeedSubscribeTypeP
  * @summary Subscribe to activity type stream
  * {@link /api/v1/feed/subscribe/:type}
  */
-export function createGetV1FeedSubscribeType<TData = GetV1FeedSubscribeTypeQueryResponse, TQueryData = GetV1FeedSubscribeTypeQueryResponse, TQueryKey extends QueryKey = GetV1FeedSubscribeTypeQueryKey>(type: GetV1FeedSubscribeTypePathParams["type"] | (() => GetV1FeedSubscribeTypePathParams["type"]) | undefined, options: 
+export function createGetV1FeedSubscribeType<TData = GetV1FeedSubscribeTypeQueryResponse, TQueryData = GetV1FeedSubscribeTypeQueryResponse, TQueryKey extends QueryKey = GetV1FeedSubscribeTypeQueryKey>(type: GetV1FeedSubscribeTypePathParams["type"] | (() => GetV1FeedSubscribeTypePathParams["type"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1FeedSubscribeTypeQueryResponse, ResponseErrorConfig<GetV1FeedSubscribeType400 | GetV1FeedSubscribeType401 | GetV1FeedSubscribeType403 | GetV1FeedSubscribeType404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

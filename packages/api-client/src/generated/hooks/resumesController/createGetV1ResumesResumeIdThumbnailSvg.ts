@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdThumbnailSvgQueryOptions(resumeId: GetV1Resu
  * @summary Lightweight SVG thumbnail of the resume (name + title + summary preview)
  * {@link /api/v1/resumes/:resumeId/thumbnail.svg}
  */
-export function createGetV1ResumesResumeIdThumbnailSvg<TData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdThumbnailSvgQueryKey>(resumeId: GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"] | (() => GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdThumbnailSvg<TData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryData = GetV1ResumesResumeIdThumbnailSvgQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdThumbnailSvgQueryKey>(resumeId: GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"] | (() => GetV1ResumesResumeIdThumbnailSvgPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdThumbnailSvgQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdThumbnailSvg400 | GetV1ResumesResumeIdThumbnailSvg401 | GetV1ResumesResumeIdThumbnailSvg403 | GetV1ResumesResumeIdThumbnailSvg404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

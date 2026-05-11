@@ -32,8 +32,8 @@ interface Props {
 let { resumeId, currentUserId, ownerId }: Props = $props();
 
 const queryClient = useQueryClient();
-const commentsQuery = createGetV1ResumesResumeIdComments(resumeId, {
-  query: { enabled: browser },
+const commentsQuery = createGetV1ResumesResumeIdComments(() => resumeId, {
+  query: { enabled: () => browser},
 });
 
 let newContent = $state('');

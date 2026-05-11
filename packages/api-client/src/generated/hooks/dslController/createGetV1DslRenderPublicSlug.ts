@@ -31,7 +31,7 @@ export function getV1DslRenderPublicSlugQueryOptions(slug: GetV1DslRenderPublicS
  * @summary Get compiled AST for a public resume
  * {@link /api/v1/dsl/render/public/:slug}
  */
-export function createGetV1DslRenderPublicSlug<TData = GetV1DslRenderPublicSlugQueryResponse, TQueryData = GetV1DslRenderPublicSlugQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderPublicSlugQueryKey>(slug: GetV1DslRenderPublicSlugPathParams["slug"] | (() => GetV1DslRenderPublicSlugPathParams["slug"]) | undefined, params?: GetV1DslRenderPublicSlugQueryParams, options: 
+export function createGetV1DslRenderPublicSlug<TData = GetV1DslRenderPublicSlugQueryResponse, TQueryData = GetV1DslRenderPublicSlugQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderPublicSlugQueryKey>(slug: GetV1DslRenderPublicSlugPathParams["slug"] | (() => GetV1DslRenderPublicSlugPathParams["slug"] | undefined) | undefined, params?: GetV1DslRenderPublicSlugQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1DslRenderPublicSlugQueryResponse, ResponseErrorConfig<GetV1DslRenderPublicSlug400 | GetV1DslRenderPublicSlug404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -23,7 +23,7 @@ const t = $derived(locale.t);
 
 const query = createGetV1Jobs(
   { page: 1, limit: 30, paymentCurrency: 'USD' },
-  { query: { enabled: browser } },
+  { query: { enabled: () => browser} },
 );
 
 const jobs = $derived(

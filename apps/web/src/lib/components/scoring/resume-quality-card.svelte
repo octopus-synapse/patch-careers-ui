@@ -19,9 +19,8 @@
 
   let { resumeId, detailsHref }: Props = $props();
 
-  const qualityQuery = createGetV1ResumesResumeIdQuality(
-    resumeId,
-    { query: { enabled: browser && !!resumeId, refetchOnWindowFocus: false } },
+  const qualityQuery = createGetV1ResumesResumeIdQuality(() => resumeId,
+    { query: { enabled: () => browser && !!resumeId, refetchOnWindowFocus: false } },
   );
 
   const snapshot = $derived($qualityQuery.data);

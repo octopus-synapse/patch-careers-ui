@@ -31,7 +31,7 @@ export function getV1MecInstitutionsCodigoIesCoursesQueryOptions(codigoIes: GetV
  * @summary Get courses by institution
  * {@link /api/v1/mec/institutions/:codigoIes/courses}
  */
-export function createGetV1MecInstitutionsCodigoIesCourses<TData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesCoursesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"] | (() => GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"]) | undefined, options: 
+export function createGetV1MecInstitutionsCodigoIesCourses<TData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesCoursesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesCoursesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"] | (() => GetV1MecInstitutionsCodigoIesCoursesPathParams["codigoIes"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MecInstitutionsCodigoIesCoursesQueryResponse, ResponseErrorConfig<GetV1MecInstitutionsCodigoIesCourses400 | GetV1MecInstitutionsCodigoIesCourses404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1AdminFitQuestionsIdQueryOptions(id: GetV1AdminFitQuestionsI
  * @summary Get one FitQuestion by id
  * {@link /api/v1/admin/fit-questions/:id}
  */
-export function createGetV1AdminFitQuestionsId<TData = GetV1AdminFitQuestionsIdQueryResponse, TQueryData = GetV1AdminFitQuestionsIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminFitQuestionsIdQueryKey>(id: GetV1AdminFitQuestionsIdPathParams["id"] | (() => GetV1AdminFitQuestionsIdPathParams["id"]) | undefined, options: 
+export function createGetV1AdminFitQuestionsId<TData = GetV1AdminFitQuestionsIdQueryResponse, TQueryData = GetV1AdminFitQuestionsIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminFitQuestionsIdQueryKey>(id: GetV1AdminFitQuestionsIdPathParams["id"] | (() => GetV1AdminFitQuestionsIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminFitQuestionsIdQueryResponse, ResponseErrorConfig<GetV1AdminFitQuestionsId400 | GetV1AdminFitQuestionsId401 | GetV1AdminFitQuestionsId403 | GetV1AdminFitQuestionsId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdAnalyticsProgressionQueryOptions(resumeId: G
  * @summary Get score progression over time
  * {@link /api/v1/resumes/:resumeId/analytics/progression}
  */
-export function createGetV1ResumesResumeIdAnalyticsProgression<TData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsProgressionQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdAnalyticsProgression<TData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsProgressionQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsProgressionPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsProgressionQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsProgression400 | GetV1ResumesResumeIdAnalyticsProgression401 | GetV1ResumesResumeIdAnalyticsProgression403 | GetV1ResumesResumeIdAnalyticsProgression404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

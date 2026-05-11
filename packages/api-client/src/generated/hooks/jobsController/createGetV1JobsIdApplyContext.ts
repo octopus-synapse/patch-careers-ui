@@ -31,7 +31,7 @@ export function getV1JobsIdApplyContextQueryOptions(id: GetV1JobsIdApplyContextP
  * @summary Apply-context: defaults + requirements + blockers for the apply modal
  * {@link /api/v1/jobs/:id/apply-context}
  */
-export function createGetV1JobsIdApplyContext<TData = GetV1JobsIdApplyContextQueryResponse, TQueryData = GetV1JobsIdApplyContextQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdApplyContextQueryKey>(id: GetV1JobsIdApplyContextPathParams["id"] | (() => GetV1JobsIdApplyContextPathParams["id"]) | undefined, options: 
+export function createGetV1JobsIdApplyContext<TData = GetV1JobsIdApplyContextQueryResponse, TQueryData = GetV1JobsIdApplyContextQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdApplyContextQueryKey>(id: GetV1JobsIdApplyContextPathParams["id"] | (() => GetV1JobsIdApplyContextPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdApplyContextQueryResponse, ResponseErrorConfig<GetV1JobsIdApplyContext400 | GetV1JobsIdApplyContext401 | GetV1JobsIdApplyContext403 | GetV1JobsIdApplyContext404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

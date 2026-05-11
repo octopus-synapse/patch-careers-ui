@@ -31,7 +31,7 @@ export function getV1SharesShareIdAliasesQueryOptions(shareId: GetV1SharesShareI
  * @summary List slug aliases for a share
  * {@link /api/v1/shares/:shareId/aliases}
  */
-export function createGetV1SharesShareIdAliases<TData = GetV1SharesShareIdAliasesQueryResponse, TQueryData = GetV1SharesShareIdAliasesQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdAliasesQueryKey>(shareId: GetV1SharesShareIdAliasesPathParams["shareId"] | (() => GetV1SharesShareIdAliasesPathParams["shareId"]) | undefined, options: 
+export function createGetV1SharesShareIdAliases<TData = GetV1SharesShareIdAliasesQueryResponse, TQueryData = GetV1SharesShareIdAliasesQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdAliasesQueryKey>(shareId: GetV1SharesShareIdAliasesPathParams["shareId"] | (() => GetV1SharesShareIdAliasesPathParams["shareId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SharesShareIdAliasesQueryResponse, ResponseErrorConfig<GetV1SharesShareIdAliases400 | GetV1SharesShareIdAliases401 | GetV1SharesShareIdAliases403 | GetV1SharesShareIdAliases404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

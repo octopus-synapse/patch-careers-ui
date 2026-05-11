@@ -30,7 +30,7 @@ export function getV1UsersUserIdIsConnectedQueryOptions(userId: GetV1UsersUserId
  * @summary Check connection status
  * {@link /api/v1/users/:userId/is-connected}
  */
-export function createGetV1UsersUserIdIsConnected<TData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsConnectedQueryKey>(userId: GetV1UsersUserIdIsConnectedPathParams["userId"] | (() => GetV1UsersUserIdIsConnectedPathParams["userId"]) | undefined, options: 
+export function createGetV1UsersUserIdIsConnected<TData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryData = GetV1UsersUserIdIsConnectedQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdIsConnectedQueryKey>(userId: GetV1UsersUserIdIsConnectedPathParams["userId"] | (() => GetV1UsersUserIdIsConnectedPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdIsConnectedQueryResponse, ResponseErrorConfig<GetV1UsersUserIdIsConnected400 | GetV1UsersUserIdIsConnected401 | GetV1UsersUserIdIsConnected403 | GetV1UsersUserIdIsConnected404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

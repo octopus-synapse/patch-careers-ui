@@ -31,7 +31,7 @@ export function getV1AuthOauthAvailableProviderQueryOptions(provider: GetV1AuthO
  * @summary Whether a given OAuth provider is configured.
  * {@link /api/v1/auth/oauth/available/:provider}
  */
-export function createGetV1AuthOauthAvailableProvider<TData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryKey extends QueryKey = GetV1AuthOauthAvailableProviderQueryKey>(provider: GetV1AuthOauthAvailableProviderPathParams["provider"] | (() => GetV1AuthOauthAvailableProviderPathParams["provider"]) | undefined, options: 
+export function createGetV1AuthOauthAvailableProvider<TData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryData = GetV1AuthOauthAvailableProviderQueryResponse, TQueryKey extends QueryKey = GetV1AuthOauthAvailableProviderQueryKey>(provider: GetV1AuthOauthAvailableProviderPathParams["provider"] | (() => GetV1AuthOauthAvailableProviderPathParams["provider"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AuthOauthAvailableProviderQueryResponse, ResponseErrorConfig<GetV1AuthOauthAvailableProvider400 | GetV1AuthOauthAvailableProvider404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

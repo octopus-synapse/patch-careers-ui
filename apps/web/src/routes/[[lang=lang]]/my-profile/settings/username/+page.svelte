@@ -41,7 +41,7 @@ $effect(() => {
 
 const usernameCheck = createGetV1UsersUsernameCheck(
   { username: debouncedUsername },
-  { query: { enabled: browser && debouncedUsername.length >= 3 } },
+  { query: { enabled: () => browser && debouncedUsername.length >= 3} },
 );
 const usernameAvailable = $derived(
   ($usernameCheck.data as Record<string, boolean> | undefined)?.available,

@@ -31,7 +31,7 @@ export function getV1AdminTechNichesIdQueryOptions(id: GetV1AdminTechNichesIdPat
  * @summary Get tech niche by ID
  * {@link /api/v1/admin/tech-niches/:id}
  */
-export function createGetV1AdminTechNichesId<TData = GetV1AdminTechNichesIdQueryResponse, TQueryData = GetV1AdminTechNichesIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechNichesIdQueryKey>(id: GetV1AdminTechNichesIdPathParams["id"] | (() => GetV1AdminTechNichesIdPathParams["id"]) | undefined, options: 
+export function createGetV1AdminTechNichesId<TData = GetV1AdminTechNichesIdQueryResponse, TQueryData = GetV1AdminTechNichesIdQueryResponse, TQueryKey extends QueryKey = GetV1AdminTechNichesIdQueryKey>(id: GetV1AdminTechNichesIdPathParams["id"] | (() => GetV1AdminTechNichesIdPathParams["id"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminTechNichesIdQueryResponse, ResponseErrorConfig<GetV1AdminTechNichesId400 | GetV1AdminTechNichesId401 | GetV1AdminTechNichesId403 | GetV1AdminTechNichesId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1IntegrationsGithubSummaryUsernameQueryOptions(username: Get
  * @summary Get GitHub profile summary for a username
  * {@link /api/v1/integrations/github/summary/:username}
  */
-export function createGetV1IntegrationsGithubSummaryUsername<TData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryKey extends QueryKey = GetV1IntegrationsGithubSummaryUsernameQueryKey>(username: GetV1IntegrationsGithubSummaryUsernamePathParams["username"] | (() => GetV1IntegrationsGithubSummaryUsernamePathParams["username"]) | undefined, options: 
+export function createGetV1IntegrationsGithubSummaryUsername<TData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryData = GetV1IntegrationsGithubSummaryUsernameQueryResponse, TQueryKey extends QueryKey = GetV1IntegrationsGithubSummaryUsernameQueryKey>(username: GetV1IntegrationsGithubSummaryUsernamePathParams["username"] | (() => GetV1IntegrationsGithubSummaryUsernamePathParams["username"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1IntegrationsGithubSummaryUsernameQueryResponse, ResponseErrorConfig<GetV1IntegrationsGithubSummaryUsername400 | GetV1IntegrationsGithubSummaryUsername404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

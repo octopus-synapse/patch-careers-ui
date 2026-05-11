@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdDiffQueryOptions(resumeId: GetV1ResumesResum
  * @summary Structured diff between the master resume and a tailored version.
  * {@link /api/v1/resumes/:resumeId/diff}
  */
-export function createGetV1ResumesResumeIdDiff<TData = GetV1ResumesResumeIdDiffQueryResponse, TQueryData = GetV1ResumesResumeIdDiffQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdDiffQueryKey>(resumeId: GetV1ResumesResumeIdDiffPathParams["resumeId"] | (() => GetV1ResumesResumeIdDiffPathParams["resumeId"]) | undefined, params: GetV1ResumesResumeIdDiffQueryParams, options: 
+export function createGetV1ResumesResumeIdDiff<TData = GetV1ResumesResumeIdDiffQueryResponse, TQueryData = GetV1ResumesResumeIdDiffQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdDiffQueryKey>(resumeId: GetV1ResumesResumeIdDiffPathParams["resumeId"] | (() => GetV1ResumesResumeIdDiffPathParams["resumeId"] | undefined) | undefined, params: GetV1ResumesResumeIdDiffQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdDiffQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdDiff400 | GetV1ResumesResumeIdDiff401 | GetV1ResumesResumeIdDiff404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

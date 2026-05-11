@@ -32,8 +32,7 @@ let expandedReplies = $state<Set<string>>(new Set());
 
 const queryClient = useQueryClient();
 
-const commentsQuery = createGetV1PostsIdComments(
-  postId,
+const commentsQuery = createGetV1PostsIdComments(() => postId,
   { limit: 50 },
   { query: { enabled: () => postId !== '' } },
 );

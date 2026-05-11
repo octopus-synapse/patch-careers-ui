@@ -35,9 +35,8 @@
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
-  const query = createGetV1UsersUserIdSkills(
-    userId,
-    { query: { enabled: browser && !!userId } },
+  const query = createGetV1UsersUserIdSkills(() => userId,
+    { query: { enabled: () => browser && !!userId} },
   );
 
   const skills = $derived($query.data?.items ?? []);

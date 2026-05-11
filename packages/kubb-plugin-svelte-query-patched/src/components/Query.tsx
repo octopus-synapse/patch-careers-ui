@@ -48,9 +48,15 @@ export function buildPathParamTypeOverride(pathParamsAsGetters: boolean) {
   return <T extends { type?: string }>(item: T): T => {
     const t = item.type;
     if (!t) return item;
+    // The value form already permits `T | undefined`, so the getter form
+    // mirrors that and accepts `() => T | undefined` too. This matches
+    // SvelteKit route params like `$page.params.id` (typed `string | undefined`)
+    // which would otherwise be rejected by a stricter `() => T`.
     return {
       ...item,
-      type: pathParamsAsGetters ? `${t} | (() => ${t}) | undefined` : `${t} | undefined`,
+      type: pathParamsAsGetters
+        ? `${t} | (() => ${t} | undefined) | undefined`
+        : `${t} | undefined`,
     };
   };
 }

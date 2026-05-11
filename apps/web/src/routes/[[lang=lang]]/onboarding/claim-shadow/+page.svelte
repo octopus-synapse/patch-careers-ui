@@ -24,7 +24,7 @@ const queryParams = $derived.by(() => {
 });
 
 const candidatesQuery = createGetV1ShadowProfilesCandidates(queryParams, {
-  query: { enabled: browser },
+  query: { enabled: () => browser},
 });
 
 // Bounce straight to dashboard if there's nothing to claim.

@@ -20,7 +20,7 @@
   const queryClient = useQueryClient();
   const jobId = $derived($page.params.id ?? '');
 
-  const jobQuery = createGetV1JobsId(jobId);
+  const jobQuery = createGetV1JobsId(() => jobId);
   const job = $derived($jobQuery.data);
 
   let title = $state('');

@@ -82,7 +82,7 @@ const queryClient = useQueryClient();
 
 const suggestionsQuery = createGetV1UsersMeConnectionsSuggestions(
   { limit: 20 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const feedSuggestions = $derived($suggestionsQuery.data?.items ?? []);

@@ -31,7 +31,7 @@ export function getV1ChatBlockedUserIdStatusQueryOptions(userId: GetV1ChatBlocke
  * @summary Check if a user is blocked
  * {@link /api/v1/chat/blocked/:userId/status}
  */
-export function createGetV1ChatBlockedUserIdStatus<TData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryKey extends QueryKey = GetV1ChatBlockedUserIdStatusQueryKey>(userId: GetV1ChatBlockedUserIdStatusPathParams["userId"] | (() => GetV1ChatBlockedUserIdStatusPathParams["userId"]) | undefined, options: 
+export function createGetV1ChatBlockedUserIdStatus<TData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryData = GetV1ChatBlockedUserIdStatusQueryResponse, TQueryKey extends QueryKey = GetV1ChatBlockedUserIdStatusQueryKey>(userId: GetV1ChatBlockedUserIdStatusPathParams["userId"] | (() => GetV1ChatBlockedUserIdStatusPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ChatBlockedUserIdStatusQueryResponse, ResponseErrorConfig<GetV1ChatBlockedUserIdStatus400 | GetV1ChatBlockedUserIdStatus401 | GetV1ChatBlockedUserIdStatus403 | GetV1ChatBlockedUserIdStatus404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

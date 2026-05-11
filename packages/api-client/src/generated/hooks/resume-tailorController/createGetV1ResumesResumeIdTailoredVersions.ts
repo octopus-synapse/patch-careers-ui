@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdTailoredVersionsQueryOptions(resumeId: GetV1
  * @summary List tailored resume variants produced by the AI.
  * {@link /api/v1/resumes/:resumeId/tailored-versions}
  */
-export function createGetV1ResumesResumeIdTailoredVersions<TData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdTailoredVersionsQueryKey>(resumeId: GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdTailoredVersions<TData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryData = GetV1ResumesResumeIdTailoredVersionsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdTailoredVersionsQueryKey>(resumeId: GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"] | (() => GetV1ResumesResumeIdTailoredVersionsPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdTailoredVersionsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdTailoredVersions400 | GetV1ResumesResumeIdTailoredVersions401 | GetV1ResumesResumeIdTailoredVersions404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

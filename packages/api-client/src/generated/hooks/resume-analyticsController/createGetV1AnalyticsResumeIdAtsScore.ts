@@ -31,7 +31,7 @@ export function getV1AnalyticsResumeIdAtsScoreQueryOptions(resumeId: GetV1Analyt
  * @summary Subscribe to live ATS stream
  * {@link /api/v1/analytics/:resumeId/ats-score}
  */
-export function createGetV1AnalyticsResumeIdAtsScore<TData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdAtsScoreQueryKey>(resumeId: GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"] | (() => GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"]) | undefined, options: 
+export function createGetV1AnalyticsResumeIdAtsScore<TData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryData = GetV1AnalyticsResumeIdAtsScoreQueryResponse, TQueryKey extends QueryKey = GetV1AnalyticsResumeIdAtsScoreQueryKey>(resumeId: GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"] | (() => GetV1AnalyticsResumeIdAtsScorePathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AnalyticsResumeIdAtsScoreQueryResponse, ResponseErrorConfig<GetV1AnalyticsResumeIdAtsScore400 | GetV1AnalyticsResumeIdAtsScore401 | GetV1AnalyticsResumeIdAtsScore403 | GetV1AnalyticsResumeIdAtsScore404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

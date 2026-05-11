@@ -14,7 +14,7 @@
 
   const analyticsQuery = createGetV1AdminAnalyticsOverview(
     { period },
-    { query: { enabled: browser } },
+    { query: { enabled: () => browser} },
   );
 
   const metricsQuery = createGetV1AdminDashboardMetrics({

@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdAnalyticsDashboardQueryOptions(resumeId: Get
  * @summary Get complete analytics dashboard
  * {@link /api/v1/resumes/:resumeId/analytics/dashboard}
  */
-export function createGetV1ResumesResumeIdAnalyticsDashboard<TData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsDashboardQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"]) | undefined, options: 
+export function createGetV1ResumesResumeIdAnalyticsDashboard<TData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsDashboardQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsDashboardPathParams["resumeId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsDashboardQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsDashboard400 | GetV1ResumesResumeIdAnalyticsDashboard401 | GetV1ResumesResumeIdAnalyticsDashboard403 | GetV1ResumesResumeIdAnalyticsDashboard404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

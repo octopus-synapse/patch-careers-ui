@@ -31,7 +31,7 @@ export function getV1MecCoursesCodigoCursoQueryOptions(codigoCurso: GetV1MecCour
  * @summary Get course by MEC code
  * {@link /api/v1/mec/courses/:codigoCurso}
  */
-export function createGetV1MecCoursesCodigoCurso<TData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryKey extends QueryKey = GetV1MecCoursesCodigoCursoQueryKey>(codigoCurso: GetV1MecCoursesCodigoCursoPathParams["codigoCurso"] | (() => GetV1MecCoursesCodigoCursoPathParams["codigoCurso"]) | undefined, options: 
+export function createGetV1MecCoursesCodigoCurso<TData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryData = GetV1MecCoursesCodigoCursoQueryResponse, TQueryKey extends QueryKey = GetV1MecCoursesCodigoCursoQueryKey>(codigoCurso: GetV1MecCoursesCodigoCursoPathParams["codigoCurso"] | (() => GetV1MecCoursesCodigoCursoPathParams["codigoCurso"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MecCoursesCodigoCursoQueryResponse, ResponseErrorConfig<GetV1MecCoursesCodigoCurso400 | GetV1MecCoursesCodigoCurso404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

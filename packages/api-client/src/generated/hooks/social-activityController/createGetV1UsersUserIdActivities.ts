@@ -30,7 +30,7 @@ export function getV1UsersUserIdActivitiesQueryOptions(userId: GetV1UsersUserIdA
  * @summary Get public activities for a user
  * {@link /api/v1/users/:userId/activities}
  */
-export function createGetV1UsersUserIdActivities<TData = GetV1UsersUserIdActivitiesQueryResponse, TQueryData = GetV1UsersUserIdActivitiesQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdActivitiesQueryKey>(userId: GetV1UsersUserIdActivitiesPathParams["userId"] | (() => GetV1UsersUserIdActivitiesPathParams["userId"]) | undefined, params?: GetV1UsersUserIdActivitiesQueryParams, options: 
+export function createGetV1UsersUserIdActivities<TData = GetV1UsersUserIdActivitiesQueryResponse, TQueryData = GetV1UsersUserIdActivitiesQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdActivitiesQueryKey>(userId: GetV1UsersUserIdActivitiesPathParams["userId"] | (() => GetV1UsersUserIdActivitiesPathParams["userId"] | undefined) | undefined, params?: GetV1UsersUserIdActivitiesQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdActivitiesQueryResponse, ResponseErrorConfig<GetV1UsersUserIdActivities400 | GetV1UsersUserIdActivities401 | GetV1UsersUserIdActivities404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

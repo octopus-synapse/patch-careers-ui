@@ -30,7 +30,7 @@ export function getV1UsersUserIdFollowingQueryOptions(userId: GetV1UsersUserIdFo
  * @summary Get users followed by a user
  * {@link /api/v1/users/:userId/following}
  */
-export function createGetV1UsersUserIdFollowing<TData = GetV1UsersUserIdFollowingQueryResponse, TQueryData = GetV1UsersUserIdFollowingQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFollowingQueryKey>(userId: GetV1UsersUserIdFollowingPathParams["userId"] | (() => GetV1UsersUserIdFollowingPathParams["userId"]) | undefined, params?: GetV1UsersUserIdFollowingQueryParams, options: 
+export function createGetV1UsersUserIdFollowing<TData = GetV1UsersUserIdFollowingQueryResponse, TQueryData = GetV1UsersUserIdFollowingQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdFollowingQueryKey>(userId: GetV1UsersUserIdFollowingPathParams["userId"] | (() => GetV1UsersUserIdFollowingPathParams["userId"] | undefined) | undefined, params?: GetV1UsersUserIdFollowingQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdFollowingQueryResponse, ResponseErrorConfig<GetV1UsersUserIdFollowing400 | GetV1UsersUserIdFollowing401 | GetV1UsersUserIdFollowing403 | GetV1UsersUserIdFollowing404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1EnumsKeyQueryOptions(key: GetV1EnumsKeyPathParams["key"] | 
  * @summary Full descriptor for a UI enum (notification-types, job-application-event-types, etc.) with localized labels + icon hints.
  * {@link /api/v1/enums/:key}
  */
-export function createGetV1EnumsKey<TData = GetV1EnumsKeyQueryResponse, TQueryData = GetV1EnumsKeyQueryResponse, TQueryKey extends QueryKey = GetV1EnumsKeyQueryKey>(key: GetV1EnumsKeyPathParams["key"] | (() => GetV1EnumsKeyPathParams["key"]) | undefined, options: 
+export function createGetV1EnumsKey<TData = GetV1EnumsKeyQueryResponse, TQueryData = GetV1EnumsKeyQueryResponse, TQueryKey extends QueryKey = GetV1EnumsKeyQueryKey>(key: GetV1EnumsKeyPathParams["key"] | (() => GetV1EnumsKeyPathParams["key"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1EnumsKeyQueryResponse, ResponseErrorConfig<GetV1EnumsKey400 | GetV1EnumsKey404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

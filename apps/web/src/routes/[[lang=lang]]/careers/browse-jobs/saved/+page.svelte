@@ -25,7 +25,7 @@ type SavedJob = GetV1JobsBookmarks200['items'][number];
 
 const query = createGetV1JobsBookmarks(
   { page: 1, limit: 20 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const firstPage = $derived($query.data);

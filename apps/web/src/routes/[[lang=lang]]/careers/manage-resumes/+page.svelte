@@ -40,7 +40,7 @@ $effect(() => {
 
 const query = createGetV1Resumes(
   { page: 1, limit: 20 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const resumes = $derived.by<Resume[]>(() => {

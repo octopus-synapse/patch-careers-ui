@@ -31,7 +31,7 @@ export function getV1JobsIdSimilarQueryOptions(id: GetV1JobsIdSimilarPathParams[
  * @summary Jobs similar to the given one (by skill overlap)
  * {@link /api/v1/jobs/:id/similar}
  */
-export function createGetV1JobsIdSimilar<TData = GetV1JobsIdSimilarQueryResponse, TQueryData = GetV1JobsIdSimilarQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdSimilarQueryKey>(id: GetV1JobsIdSimilarPathParams["id"] | (() => GetV1JobsIdSimilarPathParams["id"]) | undefined, params?: GetV1JobsIdSimilarQueryParams, options: 
+export function createGetV1JobsIdSimilar<TData = GetV1JobsIdSimilarQueryResponse, TQueryData = GetV1JobsIdSimilarQueryResponse, TQueryKey extends QueryKey = GetV1JobsIdSimilarQueryKey>(id: GetV1JobsIdSimilarPathParams["id"] | (() => GetV1JobsIdSimilarPathParams["id"] | undefined) | undefined, params?: GetV1JobsIdSimilarQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1JobsIdSimilarQueryResponse, ResponseErrorConfig<GetV1JobsIdSimilar400 | GetV1JobsIdSimilar401 | GetV1JobsIdSimilar403 | GetV1JobsIdSimilar404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1PagesSettingsSectionQueryOptions(section: GetV1PagesSetting
  * @summary Server-driven settings section (fields + actions + info)
  * {@link /api/v1/pages/settings/:section}
  */
-export function createGetV1PagesSettingsSection<TData = GetV1PagesSettingsSectionQueryResponse, TQueryData = GetV1PagesSettingsSectionQueryResponse, TQueryKey extends QueryKey = GetV1PagesSettingsSectionQueryKey>(section: GetV1PagesSettingsSectionPathParams["section"] | (() => GetV1PagesSettingsSectionPathParams["section"]) | undefined, options: 
+export function createGetV1PagesSettingsSection<TData = GetV1PagesSettingsSectionQueryResponse, TQueryData = GetV1PagesSettingsSectionQueryResponse, TQueryKey extends QueryKey = GetV1PagesSettingsSectionQueryKey>(section: GetV1PagesSettingsSectionPathParams["section"] | (() => GetV1PagesSettingsSectionPathParams["section"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PagesSettingsSectionQueryResponse, ResponseErrorConfig<GetV1PagesSettingsSection400 | GetV1PagesSettingsSection401 | GetV1PagesSettingsSection404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

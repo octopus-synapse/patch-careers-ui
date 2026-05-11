@@ -20,9 +20,8 @@ const viewerId = $derived(String(auth.userId ?? ''));
 
 type Endorser = GetV1UsersUserIdSkillsSkillEndorsers200['items'][number];
 
-const skillsQuery = createGetV1UsersUserIdSkills(
-  viewerId,
-  { query: { enabled: browser && viewerId !== '' } },
+const skillsQuery = createGetV1UsersUserIdSkills(() => viewerId,
+  { query: { enabled: () => browser && viewerId !== ''} },
 );
 const skills = $derived($skillsQuery.data?.items);
 

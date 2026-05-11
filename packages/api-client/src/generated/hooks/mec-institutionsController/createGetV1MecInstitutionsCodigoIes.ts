@@ -31,7 +31,7 @@ export function getV1MecInstitutionsCodigoIesQueryOptions(codigoIes: GetV1MecIns
  * @summary Get institution by MEC code
  * {@link /api/v1/mec/institutions/:codigoIes}
  */
-export function createGetV1MecInstitutionsCodigoIes<TData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesPathParams["codigoIes"] | (() => GetV1MecInstitutionsCodigoIesPathParams["codigoIes"]) | undefined, options: 
+export function createGetV1MecInstitutionsCodigoIes<TData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryData = GetV1MecInstitutionsCodigoIesQueryResponse, TQueryKey extends QueryKey = GetV1MecInstitutionsCodigoIesQueryKey>(codigoIes: GetV1MecInstitutionsCodigoIesPathParams["codigoIes"] | (() => GetV1MecInstitutionsCodigoIesPathParams["codigoIes"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MecInstitutionsCodigoIesQueryResponse, ResponseErrorConfig<GetV1MecInstitutionsCodigoIes400 | GetV1MecInstitutionsCodigoIes404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

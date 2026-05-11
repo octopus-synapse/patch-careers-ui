@@ -31,7 +31,7 @@ export function getV1UsersUserIdReactionsQueryOptions(userId: GetV1UsersUserIdRe
  * @summary List reactions given by a user
  * {@link /api/v1/users/:userId/reactions}
  */
-export function createGetV1UsersUserIdReactions<TData = GetV1UsersUserIdReactionsQueryResponse, TQueryData = GetV1UsersUserIdReactionsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdReactionsQueryKey>(userId: GetV1UsersUserIdReactionsPathParams["userId"] | (() => GetV1UsersUserIdReactionsPathParams["userId"]) | undefined, params?: GetV1UsersUserIdReactionsQueryParams, options: 
+export function createGetV1UsersUserIdReactions<TData = GetV1UsersUserIdReactionsQueryResponse, TQueryData = GetV1UsersUserIdReactionsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdReactionsQueryKey>(userId: GetV1UsersUserIdReactionsPathParams["userId"] | (() => GetV1UsersUserIdReactionsPathParams["userId"] | undefined) | undefined, params?: GetV1UsersUserIdReactionsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdReactionsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdReactions400 | GetV1UsersUserIdReactions401 | GetV1UsersUserIdReactions403 | GetV1UsersUserIdReactions404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

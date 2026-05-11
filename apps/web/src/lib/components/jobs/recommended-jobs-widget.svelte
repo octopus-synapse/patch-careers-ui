@@ -25,7 +25,7 @@ const authenticated = $derived(auth.isAuthenticated ?? false);
 
 const query = createGetV1JobsRecommended(
   { page: 1, limit: 5 },
-  { query: { enabled: browser && authenticated } },
+  { query: { enabled: () => browser && authenticated} },
 );
 
 const items = $derived.by<RecommendedJob[]>(() => {

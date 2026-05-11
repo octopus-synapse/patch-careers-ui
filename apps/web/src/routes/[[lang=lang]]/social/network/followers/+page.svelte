@@ -25,8 +25,8 @@ const currentUserId = $derived(String(auth.userId ?? ''));
 
 const list = useInfiniteList<Follower>({
   createQuery: (p) =>
-    createGetV1UsersUserIdFollowers(currentUserId, p, {
-      query: { enabled: browser && !!currentUserId },
+    createGetV1UsersUserIdFollowers(() => currentUserId, p, {
+      query: { enabled: () => browser && !!currentUserId},
     }),
   fetcher: (p) => getV1UsersUserIdFollowers(currentUserId, p),
 });

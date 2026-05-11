@@ -30,7 +30,7 @@ export function getV1UsersUserIdConnectionStatsQueryOptions(userId: GetV1UsersUs
  * @summary Get connection stats for a user
  * {@link /api/v1/users/:userId/connection-stats}
  */
-export function createGetV1UsersUserIdConnectionStats<TData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdConnectionStatsQueryKey>(userId: GetV1UsersUserIdConnectionStatsPathParams["userId"] | (() => GetV1UsersUserIdConnectionStatsPathParams["userId"]) | undefined, options: 
+export function createGetV1UsersUserIdConnectionStats<TData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryData = GetV1UsersUserIdConnectionStatsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdConnectionStatsQueryKey>(userId: GetV1UsersUserIdConnectionStatsPathParams["userId"] | (() => GetV1UsersUserIdConnectionStatsPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdConnectionStatsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdConnectionStats400 | GetV1UsersUserIdConnectionStats404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -31,7 +31,7 @@ export function getV1PublicResumesSlugQueryOptions(slug: GetV1PublicResumesSlugP
  * @summary Get public resume by share slug
  * {@link /api/v1/public/resumes/:slug}
  */
-export function createGetV1PublicResumesSlug<TData = GetV1PublicResumesSlugQueryResponse, TQueryData = GetV1PublicResumesSlugQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugQueryKey>(slug: GetV1PublicResumesSlugPathParams["slug"] | (() => GetV1PublicResumesSlugPathParams["slug"]) | undefined, options: 
+export function createGetV1PublicResumesSlug<TData = GetV1PublicResumesSlugQueryResponse, TQueryData = GetV1PublicResumesSlugQueryResponse, TQueryKey extends QueryKey = GetV1PublicResumesSlugQueryKey>(slug: GetV1PublicResumesSlugPathParams["slug"] | (() => GetV1PublicResumesSlugPathParams["slug"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1PublicResumesSlugQueryResponse, ResponseErrorConfig<GetV1PublicResumesSlug400 | GetV1PublicResumesSlug404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

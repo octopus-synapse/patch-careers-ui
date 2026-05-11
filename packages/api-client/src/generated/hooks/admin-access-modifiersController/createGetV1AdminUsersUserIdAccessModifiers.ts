@@ -31,7 +31,7 @@ export function getV1AdminUsersUserIdAccessModifiersQueryOptions(userId: GetV1Ad
  * @summary List currently active access modifiers for a user
  * {@link /api/v1/admin/users/:userId/access-modifiers}
  */
-export function createGetV1AdminUsersUserIdAccessModifiers<TData = GetV1AdminUsersUserIdAccessModifiersQueryResponse, TQueryData = GetV1AdminUsersUserIdAccessModifiersQueryResponse, TQueryKey extends QueryKey = GetV1AdminUsersUserIdAccessModifiersQueryKey>(userId: GetV1AdminUsersUserIdAccessModifiersPathParams["userId"] | (() => GetV1AdminUsersUserIdAccessModifiersPathParams["userId"]) | undefined, options: 
+export function createGetV1AdminUsersUserIdAccessModifiers<TData = GetV1AdminUsersUserIdAccessModifiersQueryResponse, TQueryData = GetV1AdminUsersUserIdAccessModifiersQueryResponse, TQueryKey extends QueryKey = GetV1AdminUsersUserIdAccessModifiersQueryKey>(userId: GetV1AdminUsersUserIdAccessModifiersPathParams["userId"] | (() => GetV1AdminUsersUserIdAccessModifiersPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminUsersUserIdAccessModifiersQueryResponse, ResponseErrorConfig<GetV1AdminUsersUserIdAccessModifiers400 | GetV1AdminUsersUserIdAccessModifiers401 | GetV1AdminUsersUserIdAccessModifiers403 | GetV1AdminUsersUserIdAccessModifiers404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

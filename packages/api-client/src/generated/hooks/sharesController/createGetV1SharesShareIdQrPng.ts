@@ -31,7 +31,7 @@ export function getV1SharesShareIdQrPngQueryOptions(shareId: GetV1SharesShareIdQ
  * @summary Render a QR code PNG pointing to the share public URL
  * {@link /api/v1/shares/:shareId/qr.png}
  */
-export function createGetV1SharesShareIdQrPng<TData = GetV1SharesShareIdQrPngQueryResponse, TQueryData = GetV1SharesShareIdQrPngQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdQrPngQueryKey>(shareId: GetV1SharesShareIdQrPngPathParams["shareId"] | (() => GetV1SharesShareIdQrPngPathParams["shareId"]) | undefined, params?: GetV1SharesShareIdQrPngQueryParams, options: 
+export function createGetV1SharesShareIdQrPng<TData = GetV1SharesShareIdQrPngQueryResponse, TQueryData = GetV1SharesShareIdQrPngQueryResponse, TQueryKey extends QueryKey = GetV1SharesShareIdQrPngQueryKey>(shareId: GetV1SharesShareIdQrPngPathParams["shareId"] | (() => GetV1SharesShareIdQrPngPathParams["shareId"] | undefined) | undefined, params?: GetV1SharesShareIdQrPngQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1SharesShareIdQrPngQueryResponse, ResponseErrorConfig<GetV1SharesShareIdQrPng400 | GetV1SharesShareIdQrPng401 | GetV1SharesShareIdQrPng403 | GetV1SharesShareIdQrPng404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

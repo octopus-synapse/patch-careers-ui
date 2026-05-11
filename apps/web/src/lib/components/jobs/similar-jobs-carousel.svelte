@@ -17,10 +17,9 @@ const t = $derived(locale.t);
  * `JobsSimilarParams.limit` is a string in the swagger (it's a query param);
  * the backend parses to int. Frontend just hands the string through.
  */
-const similarQuery = createGetV1JobsIdSimilar(
-  jobId,
+const similarQuery = createGetV1JobsIdSimilar(() => jobId,
   { limit: 5 },
-  { query: { enabled: browser && !!jobId } },
+  { query: { enabled: () => browser && !!jobId} },
 );
 
 type SimilarJob = {

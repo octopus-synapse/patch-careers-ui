@@ -31,7 +31,7 @@ export function getV1AdminOnboardingStepsKeyQueryOptions(key: GetV1AdminOnboardi
  * @summary Get onboarding step by key
  * {@link /api/v1/admin/onboarding/steps/:key}
  */
-export function createGetV1AdminOnboardingStepsKey<TData = GetV1AdminOnboardingStepsKeyQueryResponse, TQueryData = GetV1AdminOnboardingStepsKeyQueryResponse, TQueryKey extends QueryKey = GetV1AdminOnboardingStepsKeyQueryKey>(key: GetV1AdminOnboardingStepsKeyPathParams["key"] | (() => GetV1AdminOnboardingStepsKeyPathParams["key"]) | undefined, options: 
+export function createGetV1AdminOnboardingStepsKey<TData = GetV1AdminOnboardingStepsKeyQueryResponse, TQueryData = GetV1AdminOnboardingStepsKeyQueryResponse, TQueryKey extends QueryKey = GetV1AdminOnboardingStepsKeyQueryKey>(key: GetV1AdminOnboardingStepsKeyPathParams["key"] | (() => GetV1AdminOnboardingStepsKeyPathParams["key"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminOnboardingStepsKeyQueryResponse, ResponseErrorConfig<GetV1AdminOnboardingStepsKey400 | GetV1AdminOnboardingStepsKey401 | GetV1AdminOnboardingStepsKey403 | GetV1AdminOnboardingStepsKey404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

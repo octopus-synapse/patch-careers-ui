@@ -31,7 +31,7 @@ export function getV1DslRenderResumeIdQueryOptions(resumeId: GetV1DslRenderResum
  * @summary Get compiled AST for a resume
  * {@link /api/v1/dsl/render/:resumeId}
  */
-export function createGetV1DslRenderResumeId<TData = GetV1DslRenderResumeIdQueryResponse, TQueryData = GetV1DslRenderResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderResumeIdQueryKey>(resumeId: GetV1DslRenderResumeIdPathParams["resumeId"] | (() => GetV1DslRenderResumeIdPathParams["resumeId"]) | undefined, params?: GetV1DslRenderResumeIdQueryParams, options: 
+export function createGetV1DslRenderResumeId<TData = GetV1DslRenderResumeIdQueryResponse, TQueryData = GetV1DslRenderResumeIdQueryResponse, TQueryKey extends QueryKey = GetV1DslRenderResumeIdQueryKey>(resumeId: GetV1DslRenderResumeIdPathParams["resumeId"] | (() => GetV1DslRenderResumeIdPathParams["resumeId"] | undefined) | undefined, params?: GetV1DslRenderResumeIdQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1DslRenderResumeIdQueryResponse, ResponseErrorConfig<GetV1DslRenderResumeId400 | GetV1DslRenderResumeId401 | GetV1DslRenderResumeId403 | GetV1DslRenderResumeId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

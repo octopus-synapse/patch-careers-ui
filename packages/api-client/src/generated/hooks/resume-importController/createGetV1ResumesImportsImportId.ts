@@ -31,7 +31,7 @@ export function getV1ResumesImportsImportIdQueryOptions(importId: GetV1ResumesIm
  * @summary Get import job status
  * {@link /api/v1/resumes/imports/:importId}
  */
-export function createGetV1ResumesImportsImportId<TData = GetV1ResumesImportsImportIdQueryResponse, TQueryData = GetV1ResumesImportsImportIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesImportsImportIdQueryKey>(importId: GetV1ResumesImportsImportIdPathParams["importId"] | (() => GetV1ResumesImportsImportIdPathParams["importId"]) | undefined, options: 
+export function createGetV1ResumesImportsImportId<TData = GetV1ResumesImportsImportIdQueryResponse, TQueryData = GetV1ResumesImportsImportIdQueryResponse, TQueryKey extends QueryKey = GetV1ResumesImportsImportIdQueryKey>(importId: GetV1ResumesImportsImportIdPathParams["importId"] | (() => GetV1ResumesImportsImportIdPathParams["importId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesImportsImportIdQueryResponse, ResponseErrorConfig<GetV1ResumesImportsImportId400 | GetV1ResumesImportsImportId401 | GetV1ResumesImportsImportId403 | GetV1ResumesImportsImportId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

@@ -51,9 +51,8 @@
 
   const jobId = $derived(($page.params as Record<string, string>).id ?? '');
 
-  const fitQuery = createGetV1JobsIdFitProfile(
-    jobId,
-    { query: { enabled: browser && Boolean(jobId) } },
+  const fitQuery = createGetV1JobsIdFitProfile(() => jobId,
+    { query: { enabled: () => browser && Boolean(jobId)} },
   );
 
   let sliders = $state<Sliders>({});

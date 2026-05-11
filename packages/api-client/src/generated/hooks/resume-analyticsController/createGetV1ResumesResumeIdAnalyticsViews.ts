@@ -31,7 +31,7 @@ export function getV1ResumesResumeIdAnalyticsViewsQueryOptions(resumeId: GetV1Re
  * @summary Get view statistics
  * {@link /api/v1/resumes/:resumeId/analytics/views}
  */
-export function createGetV1ResumesResumeIdAnalyticsViews<TData = GetV1ResumesResumeIdAnalyticsViewsQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsViewsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsViewsQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsViewsPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsViewsPathParams["resumeId"]) | undefined, params: GetV1ResumesResumeIdAnalyticsViewsQueryParams, options: 
+export function createGetV1ResumesResumeIdAnalyticsViews<TData = GetV1ResumesResumeIdAnalyticsViewsQueryResponse, TQueryData = GetV1ResumesResumeIdAnalyticsViewsQueryResponse, TQueryKey extends QueryKey = GetV1ResumesResumeIdAnalyticsViewsQueryKey>(resumeId: GetV1ResumesResumeIdAnalyticsViewsPathParams["resumeId"] | (() => GetV1ResumesResumeIdAnalyticsViewsPathParams["resumeId"] | undefined) | undefined, params: GetV1ResumesResumeIdAnalyticsViewsQueryParams, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1ResumesResumeIdAnalyticsViewsQueryResponse, ResponseErrorConfig<GetV1ResumesResumeIdAnalyticsViews400 | GetV1ResumesResumeIdAnalyticsViews401 | GetV1ResumesResumeIdAnalyticsViews403 | GetV1ResumesResumeIdAnalyticsViews404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

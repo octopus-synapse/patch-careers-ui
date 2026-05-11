@@ -30,7 +30,7 @@ export function getV1UsersUserIdSocialStatsQueryOptions(userId: GetV1UsersUserId
  * @summary Get social stats for a user
  * {@link /api/v1/users/:userId/social-stats}
  */
-export function createGetV1UsersUserIdSocialStats<TData = GetV1UsersUserIdSocialStatsQueryResponse, TQueryData = GetV1UsersUserIdSocialStatsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSocialStatsQueryKey>(userId: GetV1UsersUserIdSocialStatsPathParams["userId"] | (() => GetV1UsersUserIdSocialStatsPathParams["userId"]) | undefined, options: 
+export function createGetV1UsersUserIdSocialStats<TData = GetV1UsersUserIdSocialStatsQueryResponse, TQueryData = GetV1UsersUserIdSocialStatsQueryResponse, TQueryKey extends QueryKey = GetV1UsersUserIdSocialStatsQueryKey>(userId: GetV1UsersUserIdSocialStatsPathParams["userId"] | (() => GetV1UsersUserIdSocialStatsPathParams["userId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1UsersUserIdSocialStatsQueryResponse, ResponseErrorConfig<GetV1UsersUserIdSocialStats400 | GetV1UsersUserIdSocialStats404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

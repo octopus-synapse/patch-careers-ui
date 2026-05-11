@@ -23,7 +23,7 @@
 
   const listQuery = createGetV1AdminSectionTypes(
     { page, limit: pageSize, search: search || undefined },
-    { query: { enabled: browser } },
+    { query: { enabled: () => browser} },
   );
 
   const items = $derived($listQuery.data?.items);

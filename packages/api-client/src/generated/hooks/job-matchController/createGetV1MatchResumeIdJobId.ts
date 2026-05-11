@@ -31,7 +31,7 @@ export function getV1MatchResumeIdJobIdQueryOptions(resumeId: GetV1MatchResumeId
  * @summary Read the Match Score for a (resume, job) pair (cached)
  * {@link /api/v1/match/:resumeId/:jobId}
  */
-export function createGetV1MatchResumeIdJobId<TData = GetV1MatchResumeIdJobIdQueryResponse, TQueryData = GetV1MatchResumeIdJobIdQueryResponse, TQueryKey extends QueryKey = GetV1MatchResumeIdJobIdQueryKey>(resumeId: GetV1MatchResumeIdJobIdPathParams["resumeId"] | (() => GetV1MatchResumeIdJobIdPathParams["resumeId"]) | undefined, jobId: GetV1MatchResumeIdJobIdPathParams["jobId"] | (() => GetV1MatchResumeIdJobIdPathParams["jobId"]) | undefined, options: 
+export function createGetV1MatchResumeIdJobId<TData = GetV1MatchResumeIdJobIdQueryResponse, TQueryData = GetV1MatchResumeIdJobIdQueryResponse, TQueryKey extends QueryKey = GetV1MatchResumeIdJobIdQueryKey>(resumeId: GetV1MatchResumeIdJobIdPathParams["resumeId"] | (() => GetV1MatchResumeIdJobIdPathParams["resumeId"] | undefined) | undefined, jobId: GetV1MatchResumeIdJobIdPathParams["jobId"] | (() => GetV1MatchResumeIdJobIdPathParams["jobId"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1MatchResumeIdJobIdQueryResponse, ResponseErrorConfig<GetV1MatchResumeIdJobId400 | GetV1MatchResumeIdJobId401 | GetV1MatchResumeIdJobId403 | GetV1MatchResumeIdJobId404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

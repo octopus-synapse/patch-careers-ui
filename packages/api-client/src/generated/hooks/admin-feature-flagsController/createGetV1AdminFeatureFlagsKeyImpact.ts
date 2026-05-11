@@ -31,7 +31,7 @@ export function getV1AdminFeatureFlagsKeyImpactQueryOptions(key: GetV1AdminFeatu
  * @summary Preview transitive descendants affected when a flag is turned OFF
  * {@link /api/v1/admin/feature-flags/:key/impact}
  */
-export function createGetV1AdminFeatureFlagsKeyImpact<TData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryKey extends QueryKey = GetV1AdminFeatureFlagsKeyImpactQueryKey>(key: GetV1AdminFeatureFlagsKeyImpactPathParams["key"] | (() => GetV1AdminFeatureFlagsKeyImpactPathParams["key"]) | undefined, options: 
+export function createGetV1AdminFeatureFlagsKeyImpact<TData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryData = GetV1AdminFeatureFlagsKeyImpactQueryResponse, TQueryKey extends QueryKey = GetV1AdminFeatureFlagsKeyImpactQueryKey>(key: GetV1AdminFeatureFlagsKeyImpactPathParams["key"] | (() => GetV1AdminFeatureFlagsKeyImpactPathParams["key"] | undefined) | undefined, options: 
 {
   query?: Partial<CreateBaseQueryOptions<GetV1AdminFeatureFlagsKeyImpactQueryResponse, ResponseErrorConfig<GetV1AdminFeatureFlagsKeyImpact400 | GetV1AdminFeatureFlagsKeyImpact401 | GetV1AdminFeatureFlagsKeyImpact403 | GetV1AdminFeatureFlagsKeyImpact404>, TData, TQueryData, TQueryKey>> & { client?: QueryClient },
   client?: Partial<RequestConfig> & { client?: Client }

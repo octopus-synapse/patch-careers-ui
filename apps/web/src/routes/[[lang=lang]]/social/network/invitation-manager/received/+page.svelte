@@ -18,7 +18,7 @@ import type { PendingConnection } from '$lib/types/social';
 const t = $derived(locale.t);
 
 const list = useInfiniteList<PendingConnection>({
-  createQuery: (p) => createGetV1UsersMeConnectionsPending(p, { query: { enabled: browser } }),
+  createQuery: (p) => createGetV1UsersMeConnectionsPending(p, { query: { enabled: () => browser} }),
   fetcher: (p) => getV1UsersMeConnectionsPending(p),
 });
 

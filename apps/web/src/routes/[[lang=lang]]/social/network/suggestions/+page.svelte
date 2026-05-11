@@ -25,7 +25,7 @@ const auth = useAuth();
 const list = useInfiniteList<ConnectionSuggestion>({
   createQuery: (p) =>
     createGetV1UsersMeConnectionsSuggestions(p, {
-      query: { enabled: browser && auth.isAuthenticated },
+      query: { enabled: () => browser && auth.isAuthenticated},
     }),
   fetcher: (p) => getV1UsersMeConnectionsSuggestions(p),
 });

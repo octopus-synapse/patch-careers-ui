@@ -41,7 +41,7 @@ const draft = useFormDraft<Preferences>('settings:one-click-apply', {
 
 const resumesQuery = createGetV1Resumes(
   { page: 1, limit: 20 },
-  { query: { enabled: browser } },
+  { query: { enabled: () => browser} },
 );
 const resumes = $derived.by(() => {
   const d = $resumesQuery.data as Record<string, unknown> | undefined;
