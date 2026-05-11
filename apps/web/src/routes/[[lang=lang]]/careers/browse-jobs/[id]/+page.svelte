@@ -23,7 +23,6 @@ import { Badge, Button, ConfirmModal, type FitDimension, FitScoreBreakdown, Form
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import MatchScorePanel from '$lib/components/scoring/match-score-panel.svelte';
 import { useAuth } from '$lib/state/auth.svelte';
 import { track } from '$lib/utils/analytics/track';
 import TailorForJobModal from './_components/tailor-for-job-modal.svelte';
@@ -414,18 +413,14 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 				</div>
 
 				{#if currentUserId && !isOwner}
-					{#if primaryResumeId}
-						<MatchScorePanel resumeId={primaryResumeId} {jobId} />
-					{:else}
-						<FitScoreBreakdown
-							score={fitLegacy?.score}
-							dimensions={fitDimensions}
-							matched={fitLegacy?.matchedKeywords}
-							missing={fitLegacy?.missingKeywords}
-							labels={fitLabels}
-							onTeaserCta={() => goto('/careers/manage-resumes')}
-						/>
-					{/if}
+					<FitScoreBreakdown
+						score={fitLegacy?.score}
+						dimensions={fitDimensions}
+						matched={fitLegacy?.matchedKeywords}
+						missing={fitLegacy?.missingKeywords}
+						labels={fitLabels}
+						onTeaserCta={() => goto('/careers/manage-resumes')}
+					/>
 				{/if}
 
 				<!-- Description -->
