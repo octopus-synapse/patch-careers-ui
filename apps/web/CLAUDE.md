@@ -55,6 +55,22 @@ migration path.
   passe strings (`"1"`, `"20"`).
 - Para infinite-scroll, use `useInfiniteList` em
   `lib/state/use-infinite-list.svelte.ts`.
+- Para extrair `page`/`limit` de uma `URL` (paginação acompanhada na
+  URL), use `pageParams(url)` em `lib/utils/page-params.ts`. Retorna
+  `{page, limit}` com defaults clamped 1..100.
+
+## Domain alias files
+
+Tipos de domínio compartilhados pelas páginas estão re-exportados via
+arquivos curados em `lib/types/`:
+
+- `lib/types/social.ts` — feed posts, comments, network connections.
+- `lib/types/jobs.ts` — job postings, applications, fit-profile.
+- `lib/types/resumes.ts` — resumes, versions, shares.
+- `lib/types/feed.ts` — feed-specific composite types.
+
+Importe do alias em vez de `GetV1XxxYyy200['items'][number]` direto.
+O alias absorve mudanças do SDK regen sem espalhar `as any`.
 
 ## Locale
 
@@ -70,6 +86,21 @@ migration path.
    `.swagger-hash`).
 3. `bun run check` em `apps/web` para validar.
 4. Commit. Pre-commit `sdk-drift` hook impede commit com SDK desatualizado.
+
+## Drift gate
+
+- `packages/api-client/src/generated/.swagger-hash` armazena o sha256
+  do `profile-services/client-swagger.json` no momento do último
+  `sdk:generate`.
+- `scripts/check-sdk-drift.sh` (rodado pelo pre-commit como check
+  `sdk-drift`) compara o hash atual com o stored e falha o commit
+  quando o swagger mudou mas o SDK não foi regenerado.
+- O comando para destravar é sempre `cd packages/api-client && bun run
+  sdk:generate` — o script já reescreve o hash junto com os arquivos
+  gerados, então um único re-run resolve.
+- Para empurrar mudanças locais sem que o pre-push silencie isso, o
+  hook `.husky/pre-push` repete os mesmos checks. `--no-verify` é
+  considerado erro de processo, não atalho.
 
 ## Auth
 

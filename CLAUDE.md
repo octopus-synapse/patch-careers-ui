@@ -120,3 +120,8 @@ For more information, read the Bun API docs in `node_modules/bun-types/docs/**.m
   raiz é só Bun + monorepo wiring.
 - **Pendências de produto** vivem em `/FASE3-PENDENCIAS.md` na raiz
   do monorepo (uma pasta acima). Não implemente especulativamente.
+- **Pre-push hook**: `.husky/pre-push` roda os mesmos checks do
+  pre-commit (typecheck + lint + no-any + sdk-drift + i18n-keys).
+  Mesma política em `profile-services/.husky/pre-push`. `--no-verify`
+  / force-push são proibidos por política — bypassar os gates é
+  considerado erro de processo.
