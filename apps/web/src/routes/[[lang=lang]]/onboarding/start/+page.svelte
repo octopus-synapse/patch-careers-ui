@@ -1,5 +1,9 @@
 <script lang="ts">
-import { createGetV1AuthOauthAvailableProvider, getBaseUrl } from 'api-client';
+import {
+  createGetV1AuthOauthAvailableProvider,
+  getBaseUrl,
+  postV1ResumesImportsPdf,
+} from 'api-client';
 import { ArrowRight, Clock, FileUp, Github, Linkedin, PencilLine } from 'lucide-svelte';
 import { Badge, Button, Loader, Modal, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -38,9 +42,6 @@ let soonOpen = $state(false);
 let pdfInput = $state<HTMLInputElement | null>(null);
 let pdfPending = $state(false);
 
-// Multipart upload — the SDK's PDF mutation has no body parameter (orval
-// can't model `file` form fields), so we hand-roll the request to the
-// canonical URL helper.
 async function handlePdfSelected(e: Event) {
   const target = e.target as HTMLInputElement;
   const file = target.files?.[0];
@@ -49,12 +50,7 @@ async function handlePdfSelected(e: Event) {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(`${getBaseUrl()}/api/v1/resumes/imports/pdf`, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    await postV1ResumesImportsPdf({ data: formData });
     toastState.show('CV imported', 'success');
     goto('/careers/manage-resumes');
   } catch {

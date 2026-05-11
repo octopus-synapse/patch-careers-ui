@@ -6,17 +6,13 @@
 <script lang="ts">
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import {
-  getBaseUrl,
   postV1ResumesImportsGithub,
   postV1ResumesImportsLinkedin,
+  postV1ResumesImportsPdf,
 } from 'api-client';
 import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
 import { Button, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
-
-// Multipart endpoint — Kubb's customFetch doesn't support FormData, so we
-// hand-roll the request and reuse the SDK's baseUrl helper.
-const PDF_IMPORT_URL = '/api/v1/resume-import/resumes/imports/pdf';
 
 let githubLoading = $state(false);
 let linkedinLoading = $state(false);
@@ -61,18 +57,9 @@ async function uploadPdf(e: Event) {
   pdfError = null;
   pdfLoading = true;
   try {
-    // Multipart upload: the SDK's PDF mutation has no body parameter (orval
-    // can't model `file` form fields), so we hand-roll the request to the
-    // canonical URL helper.
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(`${getBaseUrl()}${PDF_IMPORT_URL}`, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include',
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const body: { resumeId?: string } | null = await res.json().catch(() => null);
+    const body = await postV1ResumesImportsPdf({ data: formData });
     toastState.show('PDF enviado. Processando…', 'success');
     if (body?.resumeId) goto('/onboarding/review');
   } catch (err) {

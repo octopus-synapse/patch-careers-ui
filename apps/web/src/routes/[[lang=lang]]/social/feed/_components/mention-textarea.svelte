@@ -11,6 +11,7 @@
     transparent to the user, which is enough for a first pass.
 -->
 <script lang="ts">
+import { getV1Search } from 'api-client';
 import { AtSign } from 'lucide-svelte';
 
 interface MentionCandidate {
@@ -46,19 +47,8 @@ async function fetchCandidates(query: string) {
     return;
   }
   try {
-    const url = new URL('/api/v1/search', window.location.origin);
-    url.searchParams.set('q', query);
-    url.searchParams.set('limit', '6');
-    url.searchParams.set('sortBy', 'relevance');
-    const res = await fetch(url.toString(), { credentials: 'include' });
-    const body = (await res.json()) as {
-      data?: Array<{
-        userId: string;
-        fullName: string | null;
-        slug: string | null;
-      }>;
-    };
-    candidates = (body.data ?? []).map((r) => ({
+    const body = await getV1Search({ q: query, limit: 6, sortBy: 'relevance' });
+    candidates = body.items.map((r) => ({
       userId: r.userId,
       username: r.slug,
       name: r.fullName,

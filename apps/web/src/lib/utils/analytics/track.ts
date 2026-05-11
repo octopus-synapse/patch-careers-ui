@@ -1,4 +1,4 @@
-import { getBaseUrl } from 'api-client';
+import { getBaseUrl, postV1Events } from 'api-client';
 import { consentStore } from '$lib/state/consent-store.svelte';
 
 type EventProps = Record<string, unknown>;
@@ -28,19 +28,11 @@ async function flush(): Promise<void> {
   queue = [];
 
   try {
-    const response = await fetch(`${getBaseUrl()}/v1/events`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ events: batch }),
-      keepalive: true,
-    });
-
-    if (response.status === 404 || response.status === 501) {
-      disabled = true;
-    }
-  } catch {
-    /* drop on network error — analytics must never break the UI */
+    await postV1Events({ events: batch });
+  } catch (err) {
+    const status = (err as { statusCode?: number })?.statusCode;
+    if (status === 404 || status === 501) disabled = true;
+    /* drop other errors — analytics must never break the UI */
   }
 }
 
