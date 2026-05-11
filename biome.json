@@ -68,6 +68,19 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/kubb-plugin-svelte-query-patched/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noShadowRestrictedNames": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
     }
   ]
 }
