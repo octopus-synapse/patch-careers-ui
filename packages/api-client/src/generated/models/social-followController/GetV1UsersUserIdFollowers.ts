@@ -58,11 +58,11 @@ export type GetV1UsersUserIdFollowers200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         followerId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         followingId: string;
         /**

@@ -9,7 +9,7 @@
 */
 export type PostV1FitProfileAnswers201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     profileId: string;
     /**
@@ -98,7 +98,7 @@ export type PostV1FitProfileAnswers401 = {
 */
 export type PostV1FitProfileAnswersMutationRequest = {
     /**
-     * @type string
+     * @type string, uuid
     */
     questionSetId: string;
     /**
@@ -106,7 +106,7 @@ export type PostV1FitProfileAnswersMutationRequest = {
     */
     answers: {
         /**
-         * @type string
+         * @type string, uuid
         */
         questionId: string;
         /**

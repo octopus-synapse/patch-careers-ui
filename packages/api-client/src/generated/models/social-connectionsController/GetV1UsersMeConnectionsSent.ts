@@ -58,11 +58,11 @@ export type GetV1UsersMeConnectionsSent200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         requesterId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         targetId: string;
         /**

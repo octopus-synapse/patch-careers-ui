@@ -16,7 +16,7 @@ import type { Username } from "../Username";
 */
 export type PostV1Onboarding201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

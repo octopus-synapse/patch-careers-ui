@@ -51,7 +51,7 @@ export type PostV1Jobs201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
     /**

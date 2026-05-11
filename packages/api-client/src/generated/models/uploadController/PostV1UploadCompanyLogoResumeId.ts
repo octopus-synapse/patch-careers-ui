@@ -6,7 +6,7 @@
 
 export type PostV1UploadCompanyLogoResumeIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

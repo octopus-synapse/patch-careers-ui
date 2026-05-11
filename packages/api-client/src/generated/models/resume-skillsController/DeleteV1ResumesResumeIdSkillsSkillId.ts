@@ -6,11 +6,11 @@
 
 export type DeleteV1ResumesResumeIdSkillsSkillIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     skillId: string;
 };

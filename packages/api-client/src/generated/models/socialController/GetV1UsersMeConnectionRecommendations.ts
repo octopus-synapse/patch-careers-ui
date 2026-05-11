@@ -21,7 +21,7 @@ export type GetV1UsersMeConnectionRecommendations200 = {
     */
     recommendations: {
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

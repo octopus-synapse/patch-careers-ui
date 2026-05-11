@@ -338,7 +338,7 @@ export type PostV1OnboardingSessionGoto401 = {
 */
 export type PostV1OnboardingSessionGotoMutationRequest = {
     /**
-     * @type string
+     * @type string, uuid
     */
     stepId: string;
 };

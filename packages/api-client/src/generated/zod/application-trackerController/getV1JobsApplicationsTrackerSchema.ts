@@ -17,7 +17,7 @@ export const getV1JobsApplicationsTrackerQueryParamsSchema = z.object({
 export const getV1JobsApplicationsTracker200Schema = z.object({
     "applications": z.array(z.object({
     "id": z.string(),
-"jobId": z.string(),
+"jobId": z.string().uuid(),
 "status": z.string(),
 "appliedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "job": z.object({

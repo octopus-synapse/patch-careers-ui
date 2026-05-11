@@ -6,6 +6,7 @@
 import { getV1AnalyticsResumeIdAtsScore } from "./getV1AnalyticsResumeIdAtsScore";
 import { getV1AnalyticsResumeIdLive } from "./getV1AnalyticsResumeIdLive";
 import { getV1AnalyticsResumeIdViews } from "./getV1AnalyticsResumeIdViews";
+import { getV1AtsSimulateResumeId } from "./getV1AtsSimulateResumeId";
 import { getV1ResumesResumeIdAnalyticsAtsScore } from "./getV1ResumesResumeIdAnalyticsAtsScore";
 import { getV1ResumesResumeIdAnalyticsBenchmark } from "./getV1ResumesResumeIdAnalyticsBenchmark";
 import { getV1ResumesResumeIdAnalyticsDashboard } from "./getV1ResumesResumeIdAnalyticsDashboard";
@@ -18,5 +19,5 @@ import { postV1ResumesResumeIdAnalyticsSnapshot } from "./postV1ResumesResumeIdA
 import { postV1ResumesResumeIdAnalyticsTrackView } from "./postV1ResumesResumeIdAnalyticsTrackView";
 
 export function resumeAnalyticsController() {
-  return { getV1AnalyticsResumeIdAtsScore, getV1AnalyticsResumeIdLive, getV1AnalyticsResumeIdViews, getV1ResumesResumeIdAnalyticsAtsScore, getV1ResumesResumeIdAnalyticsBenchmark, getV1ResumesResumeIdAnalyticsDashboard, getV1ResumesResumeIdAnalyticsHistory, getV1ResumesResumeIdAnalyticsKeywords, postV1ResumesResumeIdAnalyticsMatchJob, getV1ResumesResumeIdAnalyticsProgression, postV1ResumesResumeIdAnalyticsSnapshot, postV1ResumesResumeIdAnalyticsTrackView, getV1ResumesResumeIdAnalyticsViews }
+  return { getV1AnalyticsResumeIdAtsScore, getV1AnalyticsResumeIdLive, getV1AnalyticsResumeIdViews, getV1AtsSimulateResumeId, getV1ResumesResumeIdAnalyticsAtsScore, getV1ResumesResumeIdAnalyticsBenchmark, getV1ResumesResumeIdAnalyticsDashboard, getV1ResumesResumeIdAnalyticsHistory, getV1ResumesResumeIdAnalyticsKeywords, postV1ResumesResumeIdAnalyticsMatchJob, getV1ResumesResumeIdAnalyticsProgression, postV1ResumesResumeIdAnalyticsSnapshot, postV1ResumesResumeIdAnalyticsTrackView, getV1ResumesResumeIdAnalyticsViews }
 }

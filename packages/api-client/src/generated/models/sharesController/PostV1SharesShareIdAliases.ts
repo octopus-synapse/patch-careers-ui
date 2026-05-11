@@ -6,7 +6,7 @@
 
 export type PostV1SharesShareIdAliasesPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     shareId: string;
 };
@@ -28,7 +28,7 @@ export type PostV1SharesShareIdAliases201 = {
         */
         slug: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         shareId: string;
     };

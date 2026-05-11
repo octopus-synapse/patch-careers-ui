@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1SharesShareIdQrPng200, GetV1SharesShareIdQrPng400, GetV1SharesShareIdQrPng401, GetV1SharesShareIdQrPng403, GetV1SharesShareIdQrPng404, GetV1SharesShareIdQrPngPathParams, GetV1SharesShareIdQrPngQueryParams, GetV1SharesShareIdQrPngQueryResponse } from "../../models/sharesController/GetV1SharesShareIdQrPng";
 
 export const getV1SharesShareIdQrPngPathParamsSchema = z.object({
-    "shareId": z.string()
+    "shareId": z.string().uuid()
     }) as unknown as ToZod<GetV1SharesShareIdQrPngPathParams>
 
 export const getV1SharesShareIdQrPngQueryParamsSchema = z.object({

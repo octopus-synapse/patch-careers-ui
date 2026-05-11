@@ -11,7 +11,7 @@ import type { PostV1FitProfileAnswers201, PostV1FitProfileAnswers400, PostV1FitP
  * @description Successful response
  */
 export const postV1FitProfileAnswers201Schema = z.object({
-    "profileId": z.string(),
+    "profileId": z.string().uuid(),
 "version": z.number().int().min(1),
 "computedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "expiresAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")
@@ -38,9 +38,9 @@ export const postV1FitProfileAnswers401Schema = z.object({
     }) as unknown as ToZod<PostV1FitProfileAnswers401>
 
 export const postV1FitProfileAnswersMutationRequestSchema = z.object({
-    "questionSetId": z.string(),
+    "questionSetId": z.string().uuid(),
 "answers": z.array(z.object({
-    "questionId": z.string(),
+    "questionId": z.string().uuid(),
 "rawValue": z.number().int().min(0).max(5)
     }))
     }) as unknown as ToZod<PostV1FitProfileAnswersMutationRequest>

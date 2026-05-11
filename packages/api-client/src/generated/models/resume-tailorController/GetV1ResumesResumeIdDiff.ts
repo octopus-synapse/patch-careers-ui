@@ -6,14 +6,14 @@
 
 export type GetV1ResumesResumeIdDiffPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
 
 export type GetV1ResumesResumeIdDiffQueryParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     versionId: string;
 };
@@ -23,7 +23,7 @@ export type GetV1ResumesResumeIdDiffQueryParams = {
 */
 export type GetV1ResumesResumeIdDiff200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     versionId: string;
     /**

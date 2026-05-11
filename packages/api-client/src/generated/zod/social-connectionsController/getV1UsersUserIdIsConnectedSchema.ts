@@ -16,7 +16,7 @@ export const getV1UsersUserIdIsConnectedPathParamsSchema = z.object({
  */
 export const getV1UsersUserIdIsConnected200Schema = z.object({
     "isConnected": z.boolean(),
-"pendingSentConnectionId": z.nullable(z.string())
+"pendingSentConnectionId": z.nullable(z.string().uuid())
     }) as unknown as ToZod<GetV1UsersUserIdIsConnected200>
 
 /**

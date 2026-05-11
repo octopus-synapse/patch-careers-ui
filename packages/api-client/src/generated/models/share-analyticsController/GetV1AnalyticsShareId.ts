@@ -6,7 +6,7 @@
 
 export type GetV1AnalyticsShareIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     shareId: string;
 };
@@ -27,7 +27,7 @@ export type GetV1AnalyticsShareId200 = {
     */
     analytics: {
         /**
-         * @type string
+         * @type string, uuid
         */
         shareId: string;
         /**

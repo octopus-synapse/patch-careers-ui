@@ -25,7 +25,7 @@ export type GetV1JobsIdApplyContext200 = {
         */
         coverLetter: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string | null;
     };

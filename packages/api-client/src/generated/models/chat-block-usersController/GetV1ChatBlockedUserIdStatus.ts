@@ -6,7 +6,7 @@
 
 export type GetV1ChatBlockedUserIdStatusPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };

@@ -6,7 +6,7 @@
 
 export type GetV1AnalyticsResumeIdLivePathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

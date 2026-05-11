@@ -10,6 +10,18 @@ import type { Phone } from "./Phone";
 import type { SocialUrl } from "./SocialUrl";
 import type { UserLocation } from "./UserLocation";
 
+export const createResumeRequestTemplateEnum = {
+    PROFESSIONAL: "PROFESSIONAL",
+    CREATIVE: "CREATIVE",
+    TECHNICAL: "TECHNICAL",
+    MINIMAL: "MINIMAL",
+    MODERN: "MODERN",
+    EXECUTIVE: "EXECUTIVE",
+    ACADEMIC: "ACADEMIC"
+} as const;
+
+export type CreateResumeRequestTemplateEnumKey = (typeof createResumeRequestTemplateEnum)[keyof typeof createResumeRequestTemplateEnum];
+
 /**
  * @description Create-resume payload. `sections` are generic — each item references a SectionType by key with content validated server-side against the SectionType definition.
  * @example [object Object]
@@ -68,6 +80,10 @@ export type CreateResumeRequest = {
      * @type string | undefined, uri
     */
     website?: SocialUrl;
+    /**
+     * @type string | undefined
+    */
+    template?: CreateResumeRequestTemplateEnumKey;
     /**
      * @type array | undefined
     */

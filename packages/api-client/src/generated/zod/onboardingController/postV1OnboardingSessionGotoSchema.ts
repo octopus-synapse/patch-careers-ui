@@ -107,7 +107,7 @@ export const postV1OnboardingSessionGoto401Schema = z.object({
     }) as unknown as ToZod<PostV1OnboardingSessionGoto401>
 
 export const postV1OnboardingSessionGotoMutationRequestSchema = z.object({
-    "stepId": z.string()
+    "stepId": z.string().uuid()
     }) as unknown as ToZod<PostV1OnboardingSessionGotoMutationRequest>
 
 export const postV1OnboardingSessionGotoMutationResponseSchema = z.lazy(() => postV1OnboardingSessionGoto201Schema) as unknown as ToZod<PostV1OnboardingSessionGotoMutationResponse>

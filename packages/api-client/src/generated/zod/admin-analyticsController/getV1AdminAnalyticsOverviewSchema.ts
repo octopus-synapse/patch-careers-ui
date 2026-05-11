@@ -28,7 +28,7 @@ export const getV1AdminAnalyticsOverview200Schema = z.object({
 "count": z.number().int().min(0)
     })),
 "mostUsedSections": z.array(z.object({
-    "sectionTypeId": z.string(),
+    "sectionTypeId": z.string().uuid(),
 "title": z.string(),
 "key": z.string(),
 "count": z.number().int().min(0)

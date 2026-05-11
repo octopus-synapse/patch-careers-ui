@@ -15,7 +15,7 @@ export type DeleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParams =
     */
     sectionTypeKey: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     itemId: string;
 };

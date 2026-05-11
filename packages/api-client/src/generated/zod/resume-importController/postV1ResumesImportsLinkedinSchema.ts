@@ -11,9 +11,9 @@ import type { PostV1ResumesImportsLinkedin201, PostV1ResumesImportsLinkedin400, 
  * @description Successful response
  */
 export const postV1ResumesImportsLinkedin201Schema = z.object({
-    "importId": z.string(),
+    "importId": z.string().uuid(),
 "status": z.enum(["PENDING", "PROCESSING", "MAPPING", "VALIDATING", "IMPORTING", "COMPLETED", "FAILED", "PARTIAL"]),
-"resumeId": z.optional(z.string()),
+"resumeId": z.optional(z.string().uuid()),
 "errors": z.optional(z.array(z.string()))
     }) as unknown as ToZod<PostV1ResumesImportsLinkedin201>
 

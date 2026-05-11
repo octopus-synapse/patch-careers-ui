@@ -11,9 +11,9 @@ import type { PostV1ResumesImportsJson201, PostV1ResumesImportsJson400, PostV1Re
  * @description Successful response
  */
 export const postV1ResumesImportsJson201Schema = z.object({
-    "importId": z.string(),
+    "importId": z.string().uuid(),
 "status": z.enum(["PENDING", "PROCESSING", "MAPPING", "VALIDATING", "IMPORTING", "COMPLETED", "FAILED", "PARTIAL"]),
-"resumeId": z.optional(z.string()),
+"resumeId": z.optional(z.string().uuid()),
 "errors": z.optional(z.array(z.string()))
     }) as unknown as ToZod<PostV1ResumesImportsJson201>
 

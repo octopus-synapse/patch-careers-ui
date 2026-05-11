@@ -6,7 +6,7 @@
 
 export type PostV1ChatConversationsConversationIdPreferencesPinPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     conversationId: string;
 };

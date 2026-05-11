@@ -25,7 +25,7 @@ export type GetV1SuccessStories200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

@@ -64,7 +64,7 @@ export type PostV1AdminTechSkills201 = {
     */
     website: string | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     nicheId: string | null;
     /**

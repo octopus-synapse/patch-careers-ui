@@ -10,7 +10,7 @@ import type { CreateAccountRequest } from "../CreateAccountRequest";
 */
 export type Signup201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

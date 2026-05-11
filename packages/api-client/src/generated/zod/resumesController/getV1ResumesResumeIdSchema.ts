@@ -42,7 +42,7 @@ export const getV1ResumesResumeId200Schema = z.object({
     }).catchall(z.any().nullable()))
     }))
     })),
-"styleId": z.optional(z.string()),
+"styleId": z.optional(z.string().uuid()),
 "style": z.optional(z.object({
     "id": z.string(),
 "name": z.string(),

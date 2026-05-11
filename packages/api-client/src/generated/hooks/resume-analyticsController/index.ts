@@ -1,6 +1,7 @@
 export type { GetV1AnalyticsResumeIdAtsScoreQueryKey } from "./createGetV1AnalyticsResumeIdAtsScore";
 export type { GetV1AnalyticsResumeIdLiveQueryKey } from "./createGetV1AnalyticsResumeIdLive";
 export type { GetV1AnalyticsResumeIdViewsQueryKey } from "./createGetV1AnalyticsResumeIdViews";
+export type { GetV1AtsSimulateResumeIdQueryKey } from "./createGetV1AtsSimulateResumeId";
 export type { GetV1ResumesResumeIdAnalyticsAtsScoreQueryKey } from "./createGetV1ResumesResumeIdAnalyticsAtsScore";
 export type { GetV1ResumesResumeIdAnalyticsBenchmarkQueryKey } from "./createGetV1ResumesResumeIdAnalyticsBenchmark";
 export type { GetV1ResumesResumeIdAnalyticsDashboardQueryKey } from "./createGetV1ResumesResumeIdAnalyticsDashboard";
@@ -20,6 +21,9 @@ export { getV1AnalyticsResumeIdLiveQueryOptions } from "./createGetV1AnalyticsRe
 export { createGetV1AnalyticsResumeIdViews } from "./createGetV1AnalyticsResumeIdViews";
 export { getV1AnalyticsResumeIdViewsQueryKey } from "./createGetV1AnalyticsResumeIdViews";
 export { getV1AnalyticsResumeIdViewsQueryOptions } from "./createGetV1AnalyticsResumeIdViews";
+export { createGetV1AtsSimulateResumeId } from "./createGetV1AtsSimulateResumeId";
+export { getV1AtsSimulateResumeIdQueryKey } from "./createGetV1AtsSimulateResumeId";
+export { getV1AtsSimulateResumeIdQueryOptions } from "./createGetV1AtsSimulateResumeId";
 export { createGetV1ResumesResumeIdAnalyticsAtsScore } from "./createGetV1ResumesResumeIdAnalyticsAtsScore";
 export { getV1ResumesResumeIdAnalyticsAtsScoreQueryKey } from "./createGetV1ResumesResumeIdAnalyticsAtsScore";
 export { getV1ResumesResumeIdAnalyticsAtsScoreQueryOptions } from "./createGetV1ResumesResumeIdAnalyticsAtsScore";

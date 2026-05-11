@@ -6,7 +6,7 @@
 
 export type GetV1SharesShareIdAliasesPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     shareId: string;
 };
@@ -28,7 +28,7 @@ export type GetV1SharesShareIdAliases200 = {
         */
         slug: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         shareId: string;
     }[];

@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1JobsApplicationsApplicationIdEvents201, PostV1JobsApplicationsApplicationIdEvents400, PostV1JobsApplicationsApplicationIdEvents401, PostV1JobsApplicationsApplicationIdEvents403, PostV1JobsApplicationsApplicationIdEvents404, PostV1JobsApplicationsApplicationIdEventsMutationRequest, PostV1JobsApplicationsApplicationIdEventsMutationResponse, PostV1JobsApplicationsApplicationIdEventsPathParams } from "../../models/application-trackerController/PostV1JobsApplicationsApplicationIdEvents";
 
 export const postV1JobsApplicationsApplicationIdEventsPathParamsSchema = z.object({
-    "applicationId": z.string()
+    "applicationId": z.string().uuid()
     }) as unknown as ToZod<PostV1JobsApplicationsApplicationIdEventsPathParams>
 
 /**

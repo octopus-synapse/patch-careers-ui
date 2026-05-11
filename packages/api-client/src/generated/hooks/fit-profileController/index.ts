@@ -1,4 +1,5 @@
 export type { DeleteV1FitProfileMeMutationKey } from "./createDeleteV1FitProfileMe";
+export type { GetV1FitProfileAnswersQueryKey } from "./createGetV1FitProfileAnswers";
 export type { GetV1FitProfileMeQueryKey } from "./createGetV1FitProfileMe";
 export type { GetV1FitProfileQuestionsQueryKey } from "./createGetV1FitProfileQuestions";
 export type { GetV1JobsIdFitProfileQueryKey } from "./createGetV1JobsIdFitProfile";
@@ -6,6 +7,9 @@ export type { PostV1FitProfileAnswersMutationKey } from "./createPostV1FitProfil
 export type { PostV1JobsIdFitProfileMutationKey } from "./createPostV1JobsIdFitProfile";
 export { createDeleteV1FitProfileMe } from "./createDeleteV1FitProfileMe";
 export { deleteV1FitProfileMeMutationKey } from "./createDeleteV1FitProfileMe";
+export { createGetV1FitProfileAnswers } from "./createGetV1FitProfileAnswers";
+export { getV1FitProfileAnswersQueryKey } from "./createGetV1FitProfileAnswers";
+export { getV1FitProfileAnswersQueryOptions } from "./createGetV1FitProfileAnswers";
 export { createGetV1FitProfileMe } from "./createGetV1FitProfileMe";
 export { getV1FitProfileMeQueryKey } from "./createGetV1FitProfileMe";
 export { getV1FitProfileMeQueryOptions } from "./createGetV1FitProfileMe";

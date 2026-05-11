@@ -8,14 +8,14 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesResumeIdTailor200, PostV1ResumesResumeIdTailor400, PostV1ResumesResumeIdTailor401, PostV1ResumesResumeIdTailor404, PostV1ResumesResumeIdTailorMutationRequest, PostV1ResumesResumeIdTailorMutationResponse, PostV1ResumesResumeIdTailorPathParams } from "../../models/resume-tailorController/PostV1ResumesResumeIdTailor";
 
 export const postV1ResumesResumeIdTailorPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesResumeIdTailorPathParams>
 
 /**
  * @description Successful response
  */
 export const postV1ResumesResumeIdTailor200Schema = z.object({
-    "versionId": z.string(),
+    "versionId": z.string().uuid(),
 "versionNumber": z.number().int(),
 "label": z.string(),
 "summary": z.nullable(z.string()),
@@ -66,7 +66,7 @@ export const postV1ResumesResumeIdTailor404Schema = z.object({
     }) as unknown as ToZod<PostV1ResumesResumeIdTailor404>
 
 export const postV1ResumesResumeIdTailorMutationRequestSchema = z.object({
-    "jobId": z.optional(z.string().min(1)),
+    "jobId": z.optional(z.string().uuid().min(1)),
 "jobDescription": z.optional(z.string().min(10)),
 "jobTitle": z.optional(z.string().max(200)),
 "jobCompany": z.optional(z.string().max(200))

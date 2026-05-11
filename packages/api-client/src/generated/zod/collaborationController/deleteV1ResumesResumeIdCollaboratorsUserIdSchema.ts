@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { DeleteV1ResumesResumeIdCollaboratorsUserId200, DeleteV1ResumesResumeIdCollaboratorsUserId400, DeleteV1ResumesResumeIdCollaboratorsUserId401, DeleteV1ResumesResumeIdCollaboratorsUserId403, DeleteV1ResumesResumeIdCollaboratorsUserId404, DeleteV1ResumesResumeIdCollaboratorsUserIdMutationResponse, DeleteV1ResumesResumeIdCollaboratorsUserIdPathParams } from "../../models/collaborationController/DeleteV1ResumesResumeIdCollaboratorsUserId";
 
 export const deleteV1ResumesResumeIdCollaboratorsUserIdPathParamsSchema = z.object({
-    "resumeId": z.string(),
-"userId": z.string()
+    "resumeId": z.string().uuid(),
+"userId": z.string().uuid()
     }) as unknown as ToZod<DeleteV1ResumesResumeIdCollaboratorsUserIdPathParams>
 
 /**

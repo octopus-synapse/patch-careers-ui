@@ -15,8 +15,8 @@ export const deleteV1JobsIdApplyPathParamsSchema = z.object({
  * @description Successful response
  */
 export const deleteV1JobsIdApply200Schema = z.object({
-    "jobId": z.string(),
-"userId": z.string(),
+    "jobId": z.string().uuid(),
+"userId": z.string().uuid(),
 "withdrawn": z.literal(true)
     }) as unknown as ToZod<DeleteV1JobsIdApply200>
 

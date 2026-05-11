@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ChatConversationsConversationIdMessages200, GetV1ChatConversationsConversationIdMessages400, GetV1ChatConversationsConversationIdMessages401, GetV1ChatConversationsConversationIdMessages403, GetV1ChatConversationsConversationIdMessages404, GetV1ChatConversationsConversationIdMessagesPathParams, GetV1ChatConversationsConversationIdMessagesQueryParams, GetV1ChatConversationsConversationIdMessagesQueryResponse } from "../../models/chatController/GetV1ChatConversationsConversationIdMessages";
 
 export const getV1ChatConversationsConversationIdMessagesPathParamsSchema = z.object({
-    "conversationId": z.string()
+    "conversationId": z.string().uuid()
     }) as unknown as ToZod<GetV1ChatConversationsConversationIdMessagesPathParams>
 
 export const getV1ChatConversationsConversationIdMessagesQueryParamsSchema = z.object({

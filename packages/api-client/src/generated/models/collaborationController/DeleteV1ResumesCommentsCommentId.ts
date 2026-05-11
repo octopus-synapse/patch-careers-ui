@@ -6,7 +6,7 @@
 
 export type DeleteV1ResumesCommentsCommentIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     commentId: string;
 };

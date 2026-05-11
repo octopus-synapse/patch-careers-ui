@@ -16,7 +16,7 @@ export const getV1JobsIdPathParamsSchema = z.object({
  */
 export const getV1JobsId200Schema = z.object({
     "id": z.string(),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "title": z.string(),
 "company": z.string(),
 "location": z.nullable(z.string()),

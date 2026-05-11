@@ -34,7 +34,7 @@ export const getV1AdminChatConversations200Schema = z.object({
     }),
 "lastMessageContent": z.nullable(z.string()),
 "lastMessageAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"lastMessageSenderId": z.nullable(z.string())
+"lastMessageSenderId": z.nullable(z.string().uuid())
     })),
 "total": z.number().int().min(0),
 "page": z.number().int().min(1),

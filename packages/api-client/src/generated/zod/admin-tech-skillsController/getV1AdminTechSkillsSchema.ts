@@ -12,7 +12,7 @@ export const getV1AdminTechSkillsQueryParamsSchema = z.object({
 "pageSize": z.optional(z.coerce.number().int().min(1)),
 "search": z.optional(z.string()),
 "isActive": z.optional(z.string()),
-"nicheId": z.optional(z.string()),
+"nicheId": z.optional(z.string().uuid()),
 "type": z.optional(z.string())
     }).optional() as unknown as ToZod<GetV1AdminTechSkillsQueryParams>
 
@@ -31,7 +31,7 @@ export const getV1AdminTechSkills200Schema = z.object({
 "icon": z.nullable(z.string()),
 "color": z.nullable(z.string()),
 "website": z.nullable(z.string()),
-"nicheId": z.nullable(z.string()),
+"nicheId": z.nullable(z.string().uuid()),
 "aliases": z.array(z.string()),
 "keywords": z.array(z.string()),
 "popularity": z.number().int(),

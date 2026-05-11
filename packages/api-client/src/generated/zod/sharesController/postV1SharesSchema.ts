@@ -14,7 +14,7 @@ export const postV1Shares201Schema = z.object({
     "share": z.object({
     "id": z.string(),
 "slug": z.string(),
-"resumeId": z.string(),
+"resumeId": z.string().uuid(),
 "isActive": z.boolean(),
 "hasPassword": z.boolean(),
 "expiresAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
@@ -54,7 +54,7 @@ export const postV1Shares403Schema = z.object({
     }) as unknown as ToZod<PostV1Shares403>
 
 export const postV1SharesMutationRequestSchema = z.object({
-    "resumeId": z.string().min(1),
+    "resumeId": z.string().uuid().min(1),
 "slug": z.optional(z.string().min(3).max(80).regex(/^[a-zA-Z0-9-]+$/)),
 "password": z.optional(z.string().min(4).max(200).describe("Optional share-link access password (4-200 chars). Distinct from user account password — applies only to viewers of this share link.")),
 "expiresAt": z.string().nullish()

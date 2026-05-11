@@ -22,10 +22,10 @@ export const getV1PostsIdCommentsQueryParamsSchema = z.object({
 export const getV1PostsIdComments200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"postId": z.string(),
-"authorId": z.string(),
+"postId": z.string().uuid(),
+"authorId": z.string().uuid(),
 "content": z.string(),
-"parentId": z.nullable(z.string()),
+"parentId": z.nullable(z.string().uuid()),
 "isDeleted": z.boolean(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
@@ -39,10 +39,10 @@ export const getV1PostsIdComments200Schema = z.object({
     }),
 "replies": z.array(z.object({
     "id": z.string(),
-"postId": z.string(),
-"authorId": z.string(),
+"postId": z.string().uuid(),
+"authorId": z.string().uuid(),
 "content": z.string(),
-"parentId": z.nullable(z.string()),
+"parentId": z.nullable(z.string().uuid()),
 "isDeleted": z.boolean(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

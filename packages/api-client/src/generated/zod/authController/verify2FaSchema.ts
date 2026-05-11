@@ -11,7 +11,7 @@ import type { Verify2Fa200, Verify2Fa400, Verify2FaMutationRequest, Verify2FaMut
  * @description Successful response
  */
 export const verify2Fa200Schema = z.object({
-    "userId": z.string()
+    "userId": z.string().uuid()
     }) as unknown as ToZod<Verify2Fa200>
 
 /**

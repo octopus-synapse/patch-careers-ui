@@ -112,7 +112,7 @@ export type GetV1ResumesResumeId200 = {
         }[];
     }[];
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     styleId?: string;
     /**

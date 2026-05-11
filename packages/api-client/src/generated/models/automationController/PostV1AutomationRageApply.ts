@@ -28,7 +28,7 @@ export type PostV1AutomationRageApply200 = {
     */
     failed: {
         /**
-         * @type string
+         * @type string, uuid
         */
         jobId: string;
         /**

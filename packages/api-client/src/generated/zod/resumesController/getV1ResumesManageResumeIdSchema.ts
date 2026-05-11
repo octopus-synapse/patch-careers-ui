@@ -17,7 +17,7 @@ export const getV1ResumesManageResumeIdPathParamsSchema = z.object({
 export const getV1ResumesManageResumeId200Schema = z.object({
     "resume": z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "title": z.nullable(z.string()),
 "language": z.string(),
 "isPublic": z.boolean(),
@@ -47,7 +47,7 @@ export const getV1ResumesManageResumeId200Schema = z.object({
 "leetcode": z.nullable(z.string()),
 "accentColor": z.nullable(z.string()),
 "customTheme": z.any().nullish(),
-"styleId": z.nullable(z.string()),
+"styleId": z.nullable(z.string().uuid()),
 "profileViews": z.number().int(),
 "totalStars": z.number().int(),
 "totalCommits": z.number().int(),
@@ -61,8 +61,8 @@ export const getV1ResumesManageResumeId200Schema = z.object({
     }),
 "resumeSections": z.array(z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"sectionTypeId": z.string(),
+"resumeId": z.string().uuid(),
+"sectionTypeId": z.string().uuid(),
 "titleOverride": z.nullable(z.string()),
 "isVisible": z.boolean(),
 "order": z.number().int(),
@@ -106,7 +106,7 @@ export const getV1ResumesManageResumeId200Schema = z.object({
     }),
 "items": z.array(z.object({
     "id": z.string(),
-"resumeSectionId": z.string(),
+"resumeSectionId": z.string().uuid(),
 "content": z.nullable(z.object({
     
     }).catchall(z.any().nullable())),

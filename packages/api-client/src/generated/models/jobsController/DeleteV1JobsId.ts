@@ -58,7 +58,7 @@ export type DeleteV1JobsId200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
     /**

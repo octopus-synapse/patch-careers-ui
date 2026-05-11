@@ -6,7 +6,7 @@
 
 export type PostV1ResumesResumeIdAnalyticsTrackViewPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

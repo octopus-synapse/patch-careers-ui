@@ -6,7 +6,7 @@
 
 export type PostV1ApplyModeWeeklyCuratedItemIdRejectPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     itemId: string;
 };
@@ -16,7 +16,7 @@ export type PostV1ApplyModeWeeklyCuratedItemIdRejectPathParams = {
 */
 export type PostV1ApplyModeWeeklyCuratedItemIdReject201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     itemId: string;
 };

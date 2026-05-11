@@ -59,7 +59,7 @@ export type PatchV1JobsId200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
     /**

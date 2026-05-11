@@ -116,7 +116,7 @@ export type PostV1NotificationsMarkRead403 = {
 */
 export type PostV1NotificationsMarkReadMutationRequest = {
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     notificationId?: string;
 };

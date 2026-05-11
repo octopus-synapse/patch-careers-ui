@@ -21,7 +21,7 @@ export const getV1SearchSimilarIdQueryParamsSchema = z.object({
 export const getV1SearchSimilarId200Schema = z.object({
     "resumes": z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "fullName": z.nullable(z.string()),
 "jobTitle": z.nullable(z.string()),
 "summary": z.nullable(z.string()),

@@ -57,7 +57,7 @@ export type GetV1AdminTechNichesId200 = {
     */
     isActive: boolean;
     /**
-     * @type string
+     * @type string, uuid
     */
     areaId: string;
     /**

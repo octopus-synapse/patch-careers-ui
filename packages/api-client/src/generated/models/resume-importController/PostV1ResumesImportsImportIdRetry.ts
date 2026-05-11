@@ -6,7 +6,7 @@
 
 export type PostV1ResumesImportsImportIdRetryPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     importId: string;
 };
@@ -29,7 +29,7 @@ export type PostV1ResumesImportsImportIdRetry201StatusEnumKey = (typeof postV1Re
 */
 export type PostV1ResumesImportsImportIdRetry201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     importId: string;
     /**
@@ -37,7 +37,7 @@ export type PostV1ResumesImportsImportIdRetry201 = {
     */
     status: PostV1ResumesImportsImportIdRetry201StatusEnumKey;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     resumeId?: string;
     /**

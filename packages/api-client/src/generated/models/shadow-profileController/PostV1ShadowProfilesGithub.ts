@@ -29,7 +29,7 @@ export type PostV1ShadowProfilesGithub201 = {
     */
     payload: object | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     claimedByUserId: string | null;
 };

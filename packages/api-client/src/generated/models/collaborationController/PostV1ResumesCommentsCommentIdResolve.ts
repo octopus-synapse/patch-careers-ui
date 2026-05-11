@@ -6,7 +6,7 @@
 
 export type PostV1ResumesCommentsCommentIdResolvePathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     commentId: string;
 };
@@ -24,11 +24,11 @@ export type PostV1ResumesCommentsCommentIdResolve201 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**
@@ -36,15 +36,15 @@ export type PostV1ResumesCommentsCommentIdResolve201 = {
         */
         content: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         parentId: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         sectionId: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         itemId: string | null;
         /**
@@ -57,7 +57,7 @@ export type PostV1ResumesCommentsCommentIdResolve201 = {
         */
         resolvedAt: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         resolvedById: string | null;
         /**

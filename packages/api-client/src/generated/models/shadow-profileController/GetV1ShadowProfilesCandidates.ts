@@ -44,7 +44,7 @@ export type GetV1ShadowProfilesCandidates200 = {
         */
         payload: object | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         claimedByUserId: string | null;
     }[];

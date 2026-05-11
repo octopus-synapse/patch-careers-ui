@@ -13,7 +13,7 @@ import { createJobRequestSchema } from "../createJobRequestSchema";
  */
 export const postV1Jobs201Schema = z.object({
     "id": z.string(),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "title": z.string(),
 "company": z.string(),
 "location": z.nullable(z.string()),

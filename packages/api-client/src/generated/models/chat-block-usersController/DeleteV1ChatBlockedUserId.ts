@@ -6,7 +6,7 @@
 
 export type DeleteV1ChatBlockedUserIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };

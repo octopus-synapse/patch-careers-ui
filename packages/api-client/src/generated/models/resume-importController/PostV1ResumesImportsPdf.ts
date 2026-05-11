@@ -9,7 +9,7 @@
 */
 export type PostV1ResumesImportsPdf201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

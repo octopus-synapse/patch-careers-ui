@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesResumeIdStyle201, PostV1ResumesResumeIdStyle400, PostV1ResumesResumeIdStyle401, PostV1ResumesResumeIdStyle404, PostV1ResumesResumeIdStyleMutationRequest, PostV1ResumesResumeIdStyleMutationResponse, PostV1ResumesResumeIdStylePathParams } from "../../models/resume-stylesController/PostV1ResumesResumeIdStyle";
 
 export const postV1ResumesResumeIdStylePathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesResumeIdStylePathParams>
 
 /**
@@ -47,7 +47,7 @@ export const postV1ResumesResumeIdStyle404Schema = z.object({
     }) as unknown as ToZod<PostV1ResumesResumeIdStyle404>
 
 export const postV1ResumesResumeIdStyleMutationRequestSchema = z.object({
-    "styleId": z.string()
+    "styleId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesResumeIdStyleMutationRequest>
 
 export const postV1ResumesResumeIdStyleMutationResponseSchema = z.lazy(() => postV1ResumesResumeIdStyle201Schema) as unknown as ToZod<PostV1ResumesResumeIdStyleMutationResponse>

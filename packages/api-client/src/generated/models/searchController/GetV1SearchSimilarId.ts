@@ -35,7 +35,7 @@ export type GetV1SearchSimilarId200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

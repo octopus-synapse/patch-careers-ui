@@ -115,7 +115,7 @@ export type GetV1Jobs200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**

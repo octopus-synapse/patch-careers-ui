@@ -9,7 +9,7 @@
 */
 export type Verify2Fa200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };

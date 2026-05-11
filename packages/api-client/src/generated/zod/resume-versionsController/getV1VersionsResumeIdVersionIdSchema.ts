@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1VersionsResumeIdVersionId200, GetV1VersionsResumeIdVersionId400, GetV1VersionsResumeIdVersionId401, GetV1VersionsResumeIdVersionId404, GetV1VersionsResumeIdVersionIdPathParams, GetV1VersionsResumeIdVersionIdQueryResponse } from "../../models/resume-versionsController/GetV1VersionsResumeIdVersionId";
 
 export const getV1VersionsResumeIdVersionIdPathParamsSchema = z.object({
-    "resumeId": z.string(),
-"versionId": z.string()
+    "resumeId": z.string().uuid(),
+"versionId": z.string().uuid()
     }) as unknown as ToZod<GetV1VersionsResumeIdVersionIdPathParams>
 
 /**
@@ -21,7 +21,7 @@ export const getV1VersionsResumeIdVersionId200Schema = z.object({
 "versionNumber": z.number().int(),
 "label": z.nullable(z.string()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
-"resumeId": z.optional(z.string())
+"resumeId": z.optional(z.string().uuid())
     })
     }) as unknown as ToZod<GetV1VersionsResumeIdVersionId200>
 

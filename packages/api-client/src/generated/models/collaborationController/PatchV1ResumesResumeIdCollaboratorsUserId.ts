@@ -6,11 +6,11 @@
 
 export type PatchV1ResumesResumeIdCollaboratorsUserIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };
@@ -28,11 +28,11 @@ export type PatchV1ResumesResumeIdCollaboratorsUserId200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

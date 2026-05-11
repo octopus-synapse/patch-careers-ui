@@ -16,8 +16,8 @@ export const postV1JobsIdFitProfilePathParamsSchema = z.object({
  */
 export const postV1JobsIdFitProfile201Schema = z.object({
     "id": z.string(),
-"jobId": z.string(),
-"editedByUserId": z.string(),
+"jobId": z.string().uuid(),
+"editedByUserId": z.string().uuid(),
 "computedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "vector": z.object({
     "bigFive": z.object({

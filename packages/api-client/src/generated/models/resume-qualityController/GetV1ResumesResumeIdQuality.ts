@@ -29,7 +29,7 @@ export type GetV1ResumesResumeIdQuality200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**

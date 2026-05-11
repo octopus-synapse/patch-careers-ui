@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdSkillsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -24,7 +24,7 @@ export type GetV1ResumesResumeIdSkills200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**

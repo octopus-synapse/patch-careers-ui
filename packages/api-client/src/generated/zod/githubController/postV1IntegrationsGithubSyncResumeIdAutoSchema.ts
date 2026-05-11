@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1IntegrationsGithubSyncResumeIdAuto201, PostV1IntegrationsGithubSyncResumeIdAuto400, PostV1IntegrationsGithubSyncResumeIdAuto401, PostV1IntegrationsGithubSyncResumeIdAuto404, PostV1IntegrationsGithubSyncResumeIdAutoMutationResponse, PostV1IntegrationsGithubSyncResumeIdAutoPathParams } from "../../models/githubController/PostV1IntegrationsGithubSyncResumeIdAuto";
 
 export const postV1IntegrationsGithubSyncResumeIdAutoPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1IntegrationsGithubSyncResumeIdAutoPathParams>
 
 /**

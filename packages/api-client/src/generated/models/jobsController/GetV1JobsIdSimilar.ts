@@ -70,7 +70,7 @@ export type GetV1JobsIdSimilar200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**

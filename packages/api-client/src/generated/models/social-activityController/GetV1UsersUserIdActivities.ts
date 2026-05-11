@@ -73,7 +73,7 @@ export type GetV1UsersUserIdActivities200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -87,7 +87,7 @@ export type GetV1UsersUserIdActivities200 = {
             [key: string]: any | null;
         } | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         entityId: string | null;
         /**

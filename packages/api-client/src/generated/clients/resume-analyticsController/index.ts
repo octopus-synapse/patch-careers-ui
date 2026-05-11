@@ -1,6 +1,7 @@
 export { getV1AnalyticsResumeIdAtsScore } from "./getV1AnalyticsResumeIdAtsScore";
 export { getV1AnalyticsResumeIdLive } from "./getV1AnalyticsResumeIdLive";
 export { getV1AnalyticsResumeIdViews } from "./getV1AnalyticsResumeIdViews";
+export { getV1AtsSimulateResumeId } from "./getV1AtsSimulateResumeId";
 export { getV1ResumesResumeIdAnalyticsAtsScore } from "./getV1ResumesResumeIdAnalyticsAtsScore";
 export { getV1ResumesResumeIdAnalyticsBenchmark } from "./getV1ResumesResumeIdAnalyticsBenchmark";
 export { getV1ResumesResumeIdAnalyticsDashboard } from "./getV1ResumesResumeIdAnalyticsDashboard";

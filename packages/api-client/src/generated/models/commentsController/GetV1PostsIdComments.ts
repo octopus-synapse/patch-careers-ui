@@ -37,11 +37,11 @@ export type GetV1PostsIdComments200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         postId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**
@@ -49,7 +49,7 @@ export type GetV1PostsIdComments200 = {
         */
         content: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         parentId: string | null;
         /**
@@ -104,11 +104,11 @@ export type GetV1PostsIdComments200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             postId: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             authorId: string;
             /**
@@ -116,7 +116,7 @@ export type GetV1PostsIdComments200 = {
             */
             content: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             parentId: string | null;
             /**

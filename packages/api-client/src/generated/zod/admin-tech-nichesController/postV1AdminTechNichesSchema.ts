@@ -21,7 +21,7 @@ export const postV1AdminTechNiches201Schema = z.object({
 "color": z.nullable(z.string()),
 "order": z.number().int(),
 "isActive": z.boolean(),
-"areaId": z.string(),
+"areaId": z.string().uuid(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")
     }) as unknown as ToZod<PostV1AdminTechNiches201>

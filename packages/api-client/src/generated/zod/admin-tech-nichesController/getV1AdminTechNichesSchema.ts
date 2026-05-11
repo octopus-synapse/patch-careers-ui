@@ -12,7 +12,7 @@ export const getV1AdminTechNichesQueryParamsSchema = z.object({
 "pageSize": z.optional(z.coerce.number().int().min(1)),
 "search": z.optional(z.string()),
 "isActive": z.optional(z.string()),
-"areaId": z.optional(z.string())
+"areaId": z.optional(z.string().uuid())
     }).optional() as unknown as ToZod<GetV1AdminTechNichesQueryParams>
 
 /**
@@ -30,7 +30,7 @@ export const getV1AdminTechNiches200Schema = z.object({
 "color": z.nullable(z.string()),
 "order": z.number().int(),
 "isActive": z.boolean(),
-"areaId": z.string(),
+"areaId": z.string().uuid(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")
     })),

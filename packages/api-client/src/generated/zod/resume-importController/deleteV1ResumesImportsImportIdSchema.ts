@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { DeleteV1ResumesImportsImportId200, DeleteV1ResumesImportsImportId400, DeleteV1ResumesImportsImportId401, DeleteV1ResumesImportsImportId403, DeleteV1ResumesImportsImportId404, DeleteV1ResumesImportsImportIdMutationResponse, DeleteV1ResumesImportsImportIdPathParams } from "../../models/resume-importController/DeleteV1ResumesImportsImportId";
 
 export const deleteV1ResumesImportsImportIdPathParamsSchema = z.object({
-    "importId": z.string()
+    "importId": z.string().uuid()
     }) as unknown as ToZod<DeleteV1ResumesImportsImportIdPathParams>
 
 /**

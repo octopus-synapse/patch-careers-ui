@@ -18,7 +18,7 @@ import { usernameSchema } from "../usernameSchema";
  * @description Successful response
  */
 export const postV1Onboarding201Schema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1Onboarding201>
 
 /**

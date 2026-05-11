@@ -17,8 +17,8 @@ export const getV1ResumesResumeIdSectionsPathParamsSchema = z.object({
 export const getV1ResumesResumeIdSections200Schema = z.object({
     "sections": z.array(z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"sectionTypeId": z.string(),
+"resumeId": z.string().uuid(),
+"sectionTypeId": z.string().uuid(),
 "titleOverride": z.nullable(z.string()),
 "isVisible": z.boolean(),
 "order": z.number().int(),
@@ -62,7 +62,7 @@ export const getV1ResumesResumeIdSections200Schema = z.object({
     })),
 "items": z.array(z.object({
     "id": z.string(),
-"resumeSectionId": z.string(),
+"resumeSectionId": z.string().uuid(),
 "content": z.nullable(z.object({
     
     }).catchall(z.any().nullable())),

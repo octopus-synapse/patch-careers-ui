@@ -91,7 +91,7 @@ export type PostV1IntegrationsGithubSyncMutationRequest = {
     */
     githubUsername: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

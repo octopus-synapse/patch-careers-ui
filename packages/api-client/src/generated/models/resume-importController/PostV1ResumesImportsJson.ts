@@ -22,7 +22,7 @@ export type PostV1ResumesImportsJson201StatusEnumKey = (typeof postV1ResumesImpo
 */
 export type PostV1ResumesImportsJson201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     importId: string;
     /**
@@ -30,7 +30,7 @@ export type PostV1ResumesImportsJson201 = {
     */
     status: PostV1ResumesImportsJson201StatusEnumKey;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     resumeId?: string;
     /**

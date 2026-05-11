@@ -6,7 +6,7 @@
 
 export type PostV1ResumesResumeIdSkillsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -24,7 +24,7 @@ export type PostV1ResumesResumeIdSkills201 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**

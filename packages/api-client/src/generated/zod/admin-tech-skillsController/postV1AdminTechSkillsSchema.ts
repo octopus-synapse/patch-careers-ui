@@ -21,7 +21,7 @@ export const postV1AdminTechSkills201Schema = z.object({
 "icon": z.nullable(z.string()),
 "color": z.nullable(z.string()),
 "website": z.nullable(z.string()),
-"nicheId": z.nullable(z.string()),
+"nicheId": z.nullable(z.string().uuid()),
 "aliases": z.array(z.string()),
 "keywords": z.array(z.string()),
 "popularity": z.number().int(),

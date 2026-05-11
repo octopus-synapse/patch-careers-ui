@@ -6,7 +6,7 @@
 
 export type PostV1ApplyModeWeeklyCuratedItemIdApprovePathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     itemId: string;
 };
@@ -16,7 +16,7 @@ export type PostV1ApplyModeWeeklyCuratedItemIdApprovePathParams = {
 */
 export type PostV1ApplyModeWeeklyCuratedItemIdApprove200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     applicationId: string;
     /**

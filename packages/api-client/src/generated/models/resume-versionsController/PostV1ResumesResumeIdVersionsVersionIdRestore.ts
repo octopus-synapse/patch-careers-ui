@@ -6,11 +6,11 @@
 
 export type PostV1ResumesResumeIdVersionsVersionIdRestorePathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     versionId: string;
 };

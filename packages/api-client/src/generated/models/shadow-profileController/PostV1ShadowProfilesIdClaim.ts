@@ -37,7 +37,7 @@ export type PostV1ShadowProfilesIdClaim201 = {
     */
     payload: object | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     claimedByUserId: string | null;
 };

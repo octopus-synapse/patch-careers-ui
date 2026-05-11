@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1UploadCompanyLogoResumeId200, PostV1UploadCompanyLogoResumeId400, PostV1UploadCompanyLogoResumeId401, PostV1UploadCompanyLogoResumeId403, PostV1UploadCompanyLogoResumeId404, PostV1UploadCompanyLogoResumeIdMutationResponse, PostV1UploadCompanyLogoResumeIdPathParams } from "../../models/uploadController/PostV1UploadCompanyLogoResumeId";
 
 export const postV1UploadCompanyLogoResumeIdPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1UploadCompanyLogoResumeIdPathParams>
 
 /**

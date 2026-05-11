@@ -30,11 +30,11 @@ export type GetV1AdminCollaborations200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

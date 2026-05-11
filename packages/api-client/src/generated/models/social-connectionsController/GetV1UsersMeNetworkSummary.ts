@@ -50,11 +50,11 @@ export type GetV1UsersMeNetworkSummary200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             requesterId: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             targetId: string;
             /**
@@ -177,11 +177,11 @@ export type GetV1UsersMeNetworkSummary200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             requesterId: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             targetId: string;
             /**

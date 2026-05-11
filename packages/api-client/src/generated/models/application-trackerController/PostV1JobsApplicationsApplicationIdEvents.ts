@@ -6,7 +6,7 @@
 
 export type PostV1JobsApplicationsApplicationIdEventsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     applicationId: string;
 };

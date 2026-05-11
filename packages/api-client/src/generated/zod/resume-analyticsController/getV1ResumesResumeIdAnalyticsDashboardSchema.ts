@@ -8,14 +8,14 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdAnalyticsDashboard200, GetV1ResumesResumeIdAnalyticsDashboard400, GetV1ResumesResumeIdAnalyticsDashboard401, GetV1ResumesResumeIdAnalyticsDashboard403, GetV1ResumesResumeIdAnalyticsDashboard404, GetV1ResumesResumeIdAnalyticsDashboardPathParams, GetV1ResumesResumeIdAnalyticsDashboardQueryResponse } from "../../models/resume-analyticsController/GetV1ResumesResumeIdAnalyticsDashboard";
 
 export const getV1ResumesResumeIdAnalyticsDashboardPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdAnalyticsDashboardPathParams>
 
 /**
  * @description Successful response
  */
 export const getV1ResumesResumeIdAnalyticsDashboard200Schema = z.object({
-    "resumeId": z.string(),
+    "resumeId": z.string().uuid(),
 "overview": z.object({
     "totalViews": z.number().int().min(0),
 "uniqueVisitors": z.number().int().min(0),

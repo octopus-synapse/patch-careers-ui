@@ -12,7 +12,7 @@ import type { PostV1RecruitingMatchCandidates200, PostV1RecruitingMatchCandidate
  */
 export const postV1RecruitingMatchCandidates200Schema = z.object({
     "candidates": z.array(z.object({
-    "userId": z.string(),
+    "userId": z.string().uuid(),
 "username": z.nullable(z.string()),
 "name": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),

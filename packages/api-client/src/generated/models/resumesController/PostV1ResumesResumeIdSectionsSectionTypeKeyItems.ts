@@ -29,7 +29,7 @@ export type PostV1ResumesResumeIdSectionsSectionTypeKeyItems201 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeSectionId: string;
         /**

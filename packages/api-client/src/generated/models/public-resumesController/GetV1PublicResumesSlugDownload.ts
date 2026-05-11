@@ -24,7 +24,7 @@ export type GetV1PublicResumesSlugDownload200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -135,7 +135,7 @@ export type GetV1PublicResumesSlugDownload200 = {
         accentColor: string | null;
         customTheme?: any | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         styleId: string | null;
         /**

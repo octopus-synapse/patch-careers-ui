@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1FeedUserUserId200, GetV1FeedUserUserId400, GetV1FeedUserUserId401, GetV1FeedUserUserId403, GetV1FeedUserUserId404, GetV1FeedUserUserIdPathParams, GetV1FeedUserUserIdQueryParams, GetV1FeedUserUserIdQueryResponse } from "../../models/feedController/GetV1FeedUserUserId";
 
 export const getV1FeedUserUserIdPathParamsSchema = z.object({
-    "userId": z.string()
+    "userId": z.string().uuid()
     }) as unknown as ToZod<GetV1FeedUserUserIdPathParams>
 
 export const getV1FeedUserUserIdQueryParamsSchema = z.object({
@@ -22,7 +22,7 @@ export const getV1FeedUserUserIdQueryParamsSchema = z.object({
 export const getV1FeedUserUserId200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "type": z.enum(["ACHIEVEMENT", "OPPORTUNITY", "LEARNING", "BUILD", "QUESTION", "REPOST", "CHALLENGE"]),
 "subtype": z.nullable(z.string()),
 "content": z.nullable(z.string()),
@@ -40,11 +40,11 @@ export const getV1FeedUserUserId200Schema = z.object({
 "image": z.nullable(z.string()),
 "domain": z.string()
     })),
-"originalPostId": z.nullable(z.string()),
+"originalPostId": z.nullable(z.string().uuid()),
 "coAuthors": z.array(z.string()),
 "scheduledAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "isPublished": z.boolean(),
-"threadId": z.nullable(z.string()),
+"threadId": z.nullable(z.string().uuid()),
 "pollDeadline": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "votesCount": z.number().int(),
 "codeSnippet": z.nullable(z.object({
@@ -72,7 +72,7 @@ export const getV1FeedUserUserId200Schema = z.object({
     }),
 "originalPost": z.object({
     "id": z.string(),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "type": z.enum(["ACHIEVEMENT", "OPPORTUNITY", "LEARNING", "BUILD", "QUESTION", "REPOST", "CHALLENGE"]),
 "subtype": z.nullable(z.string()),
 "content": z.nullable(z.string()),
@@ -90,11 +90,11 @@ export const getV1FeedUserUserId200Schema = z.object({
 "image": z.nullable(z.string()),
 "domain": z.string()
     })),
-"originalPostId": z.nullable(z.string()),
+"originalPostId": z.nullable(z.string().uuid()),
 "coAuthors": z.array(z.string()),
 "scheduledAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "isPublished": z.boolean(),
-"threadId": z.nullable(z.string()),
+"threadId": z.nullable(z.string().uuid()),
 "pollDeadline": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "votesCount": z.number().int(),
 "codeSnippet": z.nullable(z.object({

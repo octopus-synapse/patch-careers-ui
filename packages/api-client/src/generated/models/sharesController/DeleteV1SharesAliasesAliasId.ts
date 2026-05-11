@@ -6,7 +6,7 @@
 
 export type DeleteV1SharesAliasesAliasIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     aliasId: string;
 };

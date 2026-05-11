@@ -7,6 +7,7 @@ import {
   createGetV1JobsId,
   createGetV1JobsIdFitProfile,
   createGetV1Resumes,
+  postV1JobsIdMatch,
   getV1JobsQueryKey,
   getV1JobsIdQueryKey,
   getV1JobsBookmarksQueryKey,
@@ -69,6 +70,31 @@ const primaryResumeId = $derived.by<string | null>(() => {
 });
 
 const fit = $derived($fitQuery.data);
+
+// F3-PD-007: candidate-side match (score + keywords + dimensions).
+// Fires when the user has a primary resume and isn't viewing their own job.
+let matchData = $state<
+  | {
+      score: number;
+      matchedKeywords: string[];
+      missingKeywords: string[];
+      dimensions: { key: string; label: string; value: number }[];
+    }
+  | null
+>(null);
+
+$effect(() => {
+  const rid = primaryResumeId;
+  const enabled = browser && !!jobId && !!currentUserId && !isOwner && !!rid;
+  if (!enabled || !rid) return;
+  postV1JobsIdMatch(jobId, { resumeId: rid })
+    .then((res) => {
+      matchData = res;
+    })
+    .catch(() => {
+      matchData = null;
+    });
+});
 
 // Bookmark state — server-driven via job.isBookmarked, with an optimistic
 // override that wins until the next refetch lands.
@@ -256,21 +282,8 @@ const dimensionLabels: Record<string, string> = $derived({
   location: t('jobs.fit.dimLocation'),
 });
 
-// TODO (PD-007): backend GetV1JobsIdFitProfile200 was reshaped — old summary
-// fields (score, dimensions, matchedKeywords, missingKeywords) are gone, the
-// new payload exposes a structured `vector` instead. Casting to any here so
-// the page compiles; the FitScoreBreakdown component will receive undefined
-// from these accessors until the breakdown is rebuilt against the new shape.
-const fitLegacy = $derived(
-  fit as unknown as
-    | {
-        score?: number;
-        dimensions?: { key: string; label: string; value: number }[];
-        matchedKeywords?: string[];
-        missingKeywords?: string[];
-      }
-    | undefined,
-);
+// F3-PD-007 closed: matchData hydrates from POST /v1/jobs/:id/match.
+const fitLegacy = $derived(matchData);
 
 const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
   const dims = fitLegacy?.dimensions;

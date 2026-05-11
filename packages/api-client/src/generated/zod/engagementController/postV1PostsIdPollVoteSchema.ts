@@ -16,8 +16,8 @@ export const postV1PostsIdPollVotePathParamsSchema = z.object({
  */
 export const postV1PostsIdPollVote201Schema = z.object({
     "id": z.string(),
-"postId": z.string(),
-"userId": z.string(),
+"postId": z.string().uuid(),
+"userId": z.string().uuid(),
 "optionIndex": z.number().int(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")
     }) as unknown as ToZod<PostV1PostsIdPollVote201>

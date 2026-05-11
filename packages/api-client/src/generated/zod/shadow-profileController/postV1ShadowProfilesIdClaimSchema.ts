@@ -22,7 +22,7 @@ export const postV1ShadowProfilesIdClaim201Schema = z.object({
 "payload": z.nullable(z.object({
     
     })),
-"claimedByUserId": z.nullable(z.string())
+"claimedByUserId": z.nullable(z.string().uuid())
     }) as unknown as ToZod<PostV1ShadowProfilesIdClaim201>
 
 /**

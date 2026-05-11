@@ -5,12 +5,12 @@
   unknown-section warnings.
 -->
 <script lang="ts">
+import { getV1AtsSimulateResumeId, isApiError } from 'api-client';
 import { AlertTriangle, Eye, ScanText } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Card, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
-import { parseApiError } from '$lib/utils/api-error';
 
 const resumeId = $derived($page.params.id);
 
@@ -39,22 +39,16 @@ let result = $state<SimulationResult | null>(null);
  * shape that the DSL renderer already produces server-side.
  */
 async function simulate() {
-  if (!browser) return;
+  if (!browser || !resumeId) return;
   running = true;
   try {
-    // Single-shot endpoint: backend loads the resume, maps it to the
-    // simulator input, and runs the simulation in one call. SDK is stale
-    // for ats/simulate so we keep direct fetch but route errors through
-    // the shared envelope parser.
-    const res = await fetch(`/api/v1/ats/simulate/${resumeId}`, { credentials: 'include' });
-    if (!res.ok) {
-      const parsed = await parseApiError(res, 'Falha na simulação.');
-      throw new Error(parsed.message);
-    }
-    const body = (await res.json()) as { data?: SimulationResult };
-    result = body.data ?? null;
+    const body = await getV1AtsSimulateResumeId(resumeId);
+    result = (body.data as SimulationResult | undefined) ?? null;
   } catch (err) {
-    toastState.show((err as Error).message ?? 'Falha na simulação.', 'danger');
+    toastState.show(
+      isApiError(err) ? err.message : 'Falha na simulação.',
+      'danger',
+    );
   } finally {
     running = false;
     loading = false;

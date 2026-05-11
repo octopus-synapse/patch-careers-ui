@@ -6,7 +6,7 @@
 
 export type GetV1SharesResumeResumeIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -28,7 +28,7 @@ export type GetV1SharesResumeResumeId200 = {
         */
         slug: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**

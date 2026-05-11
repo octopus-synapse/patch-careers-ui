@@ -5,3 +5,4 @@ export { getV1ExportResumeIdJson } from "./getV1ExportResumeIdJson";
 export { getV1ExportResumeIdLatex } from "./getV1ExportResumeIdLatex";
 export { getV1ExportResumePdf } from "./getV1ExportResumePdf";
 export { getV1ExportUserUserIdResumePdf } from "./getV1ExportUserUserIdResumePdf";
+export { postV1ExportResumeBundle } from "./postV1ExportResumeBundle";

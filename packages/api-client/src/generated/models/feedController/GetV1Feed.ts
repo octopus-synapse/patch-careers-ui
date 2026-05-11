@@ -125,7 +125,7 @@ export type GetV1Feed200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**
@@ -186,7 +186,7 @@ export type GetV1Feed200 = {
             domain: string;
         } | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         originalPostId: string | null;
         /**
@@ -203,7 +203,7 @@ export type GetV1Feed200 = {
         */
         isPublished: boolean;
         /**
-         * @type string
+         * @type string, uuid
         */
         threadId: string | null;
         /**
@@ -313,7 +313,7 @@ export type GetV1Feed200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             authorId: string;
             /**
@@ -374,7 +374,7 @@ export type GetV1Feed200 = {
                 domain: string;
             } | null;
             /**
-             * @type string
+             * @type string, uuid
             */
             originalPostId: string | null;
             /**
@@ -391,7 +391,7 @@ export type GetV1Feed200 = {
             */
             isPublished: boolean;
             /**
-             * @type string
+             * @type string, uuid
             */
             threadId: string | null;
             /**
@@ -526,7 +526,7 @@ export type GetV1Feed200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             authorId: string;
             /**
@@ -587,7 +587,7 @@ export type GetV1Feed200 = {
                 domain: string;
             } | null;
             /**
-             * @type string
+             * @type string, uuid
             */
             originalPostId: string | null;
             /**
@@ -604,7 +604,7 @@ export type GetV1Feed200 = {
             */
             isPublished: boolean;
             /**
-             * @type string
+             * @type string, uuid
             */
             threadId: string | null;
             /**
@@ -714,7 +714,7 @@ export type GetV1Feed200 = {
                 */
                 id: string;
                 /**
-                 * @type string
+                 * @type string, uuid
                 */
                 authorId: string;
                 /**
@@ -775,7 +775,7 @@ export type GetV1Feed200 = {
                     domain: string;
                 } | null;
                 /**
-                 * @type string
+                 * @type string, uuid
                 */
                 originalPostId: string | null;
                 /**
@@ -792,7 +792,7 @@ export type GetV1Feed200 = {
                 */
                 isPublished: boolean;
                 /**
-                 * @type string
+                 * @type string, uuid
                 */
                 threadId: string | null;
                 /**

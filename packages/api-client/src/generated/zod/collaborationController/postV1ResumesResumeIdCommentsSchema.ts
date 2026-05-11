@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesResumeIdComments201, PostV1ResumesResumeIdComments400, PostV1ResumesResumeIdComments401, PostV1ResumesResumeIdComments403, PostV1ResumesResumeIdComments404, PostV1ResumesResumeIdCommentsMutationRequest, PostV1ResumesResumeIdCommentsMutationResponse, PostV1ResumesResumeIdCommentsPathParams } from "../../models/collaborationController/PostV1ResumesResumeIdComments";
 
 export const postV1ResumesResumeIdCommentsPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesResumeIdCommentsPathParams>
 
 /**
@@ -17,15 +17,15 @@ export const postV1ResumesResumeIdCommentsPathParamsSchema = z.object({
 export const postV1ResumesResumeIdComments201Schema = z.object({
     "comment": z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"authorId": z.string(),
+"resumeId": z.string().uuid(),
+"authorId": z.string().uuid(),
 "content": z.string(),
-"parentId": z.nullable(z.string()),
-"sectionId": z.nullable(z.string()),
-"itemId": z.nullable(z.string()),
+"parentId": z.nullable(z.string().uuid()),
+"sectionId": z.nullable(z.string().uuid()),
+"itemId": z.nullable(z.string().uuid()),
 "resolved": z.boolean(),
 "resolvedAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"resolvedById": z.nullable(z.string()),
+"resolvedById": z.nullable(z.string().uuid()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "author": z.object({
@@ -79,9 +79,9 @@ export const postV1ResumesResumeIdComments404Schema = z.object({
 
 export const postV1ResumesResumeIdCommentsMutationRequestSchema = z.object({
     "content": z.string().min(1).max(4000),
-"parentId": z.optional(z.string()),
-"sectionId": z.optional(z.string()),
-"itemId": z.optional(z.string())
+"parentId": z.optional(z.string().uuid()),
+"sectionId": z.optional(z.string().uuid()),
+"itemId": z.optional(z.string().uuid())
     }) as unknown as ToZod<PostV1ResumesResumeIdCommentsMutationRequest>
 
 export const postV1ResumesResumeIdCommentsMutationResponseSchema = z.lazy(() => postV1ResumesResumeIdComments201Schema) as unknown as ToZod<PostV1ResumesResumeIdCommentsMutationResponse>

@@ -9,7 +9,7 @@
 */
 export type PostV1OnboardingSessionComplete201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

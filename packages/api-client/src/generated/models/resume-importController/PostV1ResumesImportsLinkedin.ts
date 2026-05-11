@@ -22,7 +22,7 @@ export type PostV1ResumesImportsLinkedin201StatusEnumKey = (typeof postV1Resumes
 */
 export type PostV1ResumesImportsLinkedin201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     importId: string;
     /**
@@ -30,7 +30,7 @@ export type PostV1ResumesImportsLinkedin201 = {
     */
     status: PostV1ResumesImportsLinkedin201StatusEnumKey;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     resumeId?: string;
     /**

@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesResumeIdSkills201, PostV1ResumesResumeIdSkills400, PostV1ResumesResumeIdSkills401, PostV1ResumesResumeIdSkills403, PostV1ResumesResumeIdSkills404, PostV1ResumesResumeIdSkillsMutationRequest, PostV1ResumesResumeIdSkillsMutationResponse, PostV1ResumesResumeIdSkillsPathParams } from "../../models/resume-skillsController/PostV1ResumesResumeIdSkills";
 
 export const postV1ResumesResumeIdSkillsPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesResumeIdSkillsPathParams>
 
 /**
@@ -17,7 +17,7 @@ export const postV1ResumesResumeIdSkillsPathParamsSchema = z.object({
 export const postV1ResumesResumeIdSkills201Schema = z.object({
     "skill": z.object({
     "id": z.string(),
-"resumeId": z.string(),
+"resumeId": z.string().uuid(),
 "name": z.string(),
 "category": z.string(),
 "level": z.optional(z.number().int()),

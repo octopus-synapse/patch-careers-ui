@@ -17,7 +17,7 @@ export const getV1SuccessStoriesQueryParamsSchema = z.object({
 export const getV1SuccessStories200Schema = z.object({
     "stories": z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "headline": z.string(),
 "beforeText": z.string(),
 "afterText": z.string(),

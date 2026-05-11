@@ -6,7 +6,7 @@
 
 export type PostV1ResumesResumeIdStylePathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -117,7 +117,7 @@ export type PostV1ResumesResumeIdStyle404 = {
 */
 export type PostV1ResumesResumeIdStyleMutationRequest = {
     /**
-     * @type string
+     * @type string, uuid
     */
     styleId: string;
 };

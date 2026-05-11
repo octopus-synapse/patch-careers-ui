@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesCommentsCommentIdResolve201, PostV1ResumesCommentsCommentIdResolve400, PostV1ResumesCommentsCommentIdResolve401, PostV1ResumesCommentsCommentIdResolve403, PostV1ResumesCommentsCommentIdResolve404, PostV1ResumesCommentsCommentIdResolveMutationResponse, PostV1ResumesCommentsCommentIdResolvePathParams } from "../../models/collaborationController/PostV1ResumesCommentsCommentIdResolve";
 
 export const postV1ResumesCommentsCommentIdResolvePathParamsSchema = z.object({
-    "commentId": z.string()
+    "commentId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesCommentsCommentIdResolvePathParams>
 
 /**
@@ -17,15 +17,15 @@ export const postV1ResumesCommentsCommentIdResolvePathParamsSchema = z.object({
 export const postV1ResumesCommentsCommentIdResolve201Schema = z.object({
     "comment": z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"authorId": z.string(),
+"resumeId": z.string().uuid(),
+"authorId": z.string().uuid(),
 "content": z.string(),
-"parentId": z.nullable(z.string()),
-"sectionId": z.nullable(z.string()),
-"itemId": z.nullable(z.string()),
+"parentId": z.nullable(z.string().uuid()),
+"sectionId": z.nullable(z.string().uuid()),
+"itemId": z.nullable(z.string().uuid()),
 "resolved": z.boolean(),
 "resolvedAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"resolvedById": z.nullable(z.string()),
+"resolvedById": z.nullable(z.string().uuid()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "author": z.object({

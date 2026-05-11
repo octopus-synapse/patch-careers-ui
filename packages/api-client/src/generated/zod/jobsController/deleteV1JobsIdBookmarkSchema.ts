@@ -15,8 +15,8 @@ export const deleteV1JobsIdBookmarkPathParamsSchema = z.object({
  * @description Successful response
  */
 export const deleteV1JobsIdBookmark200Schema = z.object({
-    "jobId": z.string(),
-"userId": z.string(),
+    "jobId": z.string().uuid(),
+"userId": z.string().uuid(),
 "removed": z.literal(true)
     }) as unknown as ToZod<DeleteV1JobsIdBookmark200>
 

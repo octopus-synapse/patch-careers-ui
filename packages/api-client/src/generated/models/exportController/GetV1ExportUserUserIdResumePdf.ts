@@ -6,7 +6,7 @@
 
 export type GetV1ExportUserUserIdResumePdfPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };

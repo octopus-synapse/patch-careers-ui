@@ -6,11 +6,11 @@
 
 export type GetV1VersionsResumeIdVersionIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     versionId: string;
 };
@@ -41,7 +41,7 @@ export type GetV1VersionsResumeIdVersionId200 = {
         */
         createdAt: string;
         /**
-         * @type string | undefined
+         * @type string | undefined, uuid
         */
         resumeId?: string;
     };

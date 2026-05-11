@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PatchV1ResumesResumeIdSkillsSkillId200, PatchV1ResumesResumeIdSkillsSkillId400, PatchV1ResumesResumeIdSkillsSkillId401, PatchV1ResumesResumeIdSkillsSkillId403, PatchV1ResumesResumeIdSkillsSkillId404, PatchV1ResumesResumeIdSkillsSkillIdMutationRequest, PatchV1ResumesResumeIdSkillsSkillIdMutationResponse, PatchV1ResumesResumeIdSkillsSkillIdPathParams } from "../../models/resume-skillsController/PatchV1ResumesResumeIdSkillsSkillId";
 
 export const patchV1ResumesResumeIdSkillsSkillIdPathParamsSchema = z.object({
-    "resumeId": z.string(),
-"skillId": z.string()
+    "resumeId": z.string().uuid(),
+"skillId": z.string().uuid()
     }) as unknown as ToZod<PatchV1ResumesResumeIdSkillsSkillIdPathParams>
 
 /**
@@ -18,7 +18,7 @@ export const patchV1ResumesResumeIdSkillsSkillIdPathParamsSchema = z.object({
 export const patchV1ResumesResumeIdSkillsSkillId200Schema = z.object({
     "skill": z.object({
     "id": z.string(),
-"resumeId": z.string(),
+"resumeId": z.string().uuid(),
 "name": z.string(),
 "category": z.string(),
 "level": z.optional(z.number().int()),

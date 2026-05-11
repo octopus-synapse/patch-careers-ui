@@ -50,7 +50,7 @@ export type GetV1Notifications200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -58,7 +58,7 @@ export type GetV1Notifications200 = {
         */
         type: ItemsTypeEnum6Key;
         /**
-         * @type string
+         * @type string, uuid
         */
         actorId: string | null;
         /**
@@ -66,7 +66,7 @@ export type GetV1Notifications200 = {
         */
         entityType: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         entityId: string | null;
         /**

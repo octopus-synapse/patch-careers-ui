@@ -14,7 +14,7 @@ export const acceptConsent201Schema = z.object({
     "message": z.string(),
 "consent": z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "documentType": z.enum(["TERMS_OF_SERVICE", "PRIVACY_POLICY", "MARKETING_CONSENT"]),
 "version": z.string(),
 "acceptedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

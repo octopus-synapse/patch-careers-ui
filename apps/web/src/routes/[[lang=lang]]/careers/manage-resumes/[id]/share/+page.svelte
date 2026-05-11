@@ -12,6 +12,7 @@ import {
   getV1SharesShareIdAliases,
   getV1SharesShareIdAliasesQueryKey,
   getV1SharesResumeResumeId,
+  postV1ExportResumeBundle,
   postV1Shares,
   postV1SharesShareIdAliases,
   deleteV1SharesShareId,
@@ -212,19 +213,16 @@ function downloadQr(shareId: string, slug: string) {
 }
 
 async function downloadBundle() {
+  if (!resumeId) return;
   bundleDownloading = true;
   try {
-    const res = await fetch('/api/v1/export/resume/bundle', { credentials: 'include' });
-    if (!res.ok) throw new Error();
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+    const signed = await postV1ExportResumeBundle({ resumeId });
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'resume-bundle.zip';
+    a.href = signed.downloadUrl;
+    a.download = signed.filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
     toastState.show('Bundle baixado.', 'success');
   } catch (err) {
     handleApiError(err);

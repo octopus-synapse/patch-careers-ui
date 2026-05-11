@@ -15,7 +15,7 @@ export type PatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParams = 
     */
     sectionTypeKey: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     itemId: string;
 };
@@ -33,7 +33,7 @@ export type PatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeSectionId: string;
         /**

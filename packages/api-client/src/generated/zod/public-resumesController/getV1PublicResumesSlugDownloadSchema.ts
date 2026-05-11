@@ -17,7 +17,7 @@ export const getV1PublicResumesSlugDownloadPathParamsSchema = z.object({
 export const getV1PublicResumesSlugDownload200Schema = z.object({
     "resume": z.nullable(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "title": z.nullable(z.string()),
 "language": z.string(),
 "isPublic": z.boolean(),
@@ -47,7 +47,7 @@ export const getV1PublicResumesSlugDownload200Schema = z.object({
 "leetcode": z.nullable(z.string()),
 "accentColor": z.nullable(z.string()),
 "customTheme": z.any().nullish(),
-"styleId": z.nullable(z.string()),
+"styleId": z.nullable(z.string().uuid()),
 "profileViews": z.number().int(),
 "totalStars": z.number().int(),
 "totalCommits": z.number().int(),

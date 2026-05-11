@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1MatchResumeIdJobId200, GetV1MatchResumeIdJobId400, GetV1MatchResumeIdJobId401, GetV1MatchResumeIdJobId403, GetV1MatchResumeIdJobId404, GetV1MatchResumeIdJobIdPathParams, GetV1MatchResumeIdJobIdQueryResponse } from "../../models/job-matchController/GetV1MatchResumeIdJobId";
 
 export const getV1MatchResumeIdJobIdPathParamsSchema = z.object({
-    "resumeId": z.string(),
-"jobId": z.string()
+    "resumeId": z.string().uuid(),
+"jobId": z.string().uuid()
     }) as unknown as ToZod<GetV1MatchResumeIdJobIdPathParams>
 
 /**

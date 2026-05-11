@@ -243,13 +243,11 @@ export type PostV1Match403 = {
 */
 export type PostV1MatchMutationRequest = {
     /**
-     * @minLength 1
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @minLength 1
-     * @type string
+     * @type string, uuid
     */
     jobId: string;
 };

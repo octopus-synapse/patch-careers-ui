@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdAnalyticsDashboardPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -41,7 +41,7 @@ export type RecommendationsPriorityEnum2Key = (typeof recommendationsPriorityEnu
 */
 export type GetV1ResumesResumeIdAnalyticsDashboard200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**

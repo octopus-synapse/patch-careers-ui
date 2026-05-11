@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { DeleteV1SharesShareId200, DeleteV1SharesShareId400, DeleteV1SharesShareId401, DeleteV1SharesShareId403, DeleteV1SharesShareId404, DeleteV1SharesShareIdMutationResponse, DeleteV1SharesShareIdPathParams } from "../../models/sharesController/DeleteV1SharesShareId";
 
 export const deleteV1SharesShareIdPathParamsSchema = z.object({
-    "shareId": z.string()
+    "shareId": z.string().uuid()
     }) as unknown as ToZod<DeleteV1SharesShareIdPathParams>
 
 /**

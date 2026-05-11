@@ -6,7 +6,7 @@
 
 export type GetV1AnalyticsShareIdEventsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     shareId: string;
 };

@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdAnalyticsHistory200, GetV1ResumesResumeIdAnalyticsHistory400, GetV1ResumesResumeIdAnalyticsHistory401, GetV1ResumesResumeIdAnalyticsHistory403, GetV1ResumesResumeIdAnalyticsHistory404, GetV1ResumesResumeIdAnalyticsHistoryPathParams, GetV1ResumesResumeIdAnalyticsHistoryQueryParams, GetV1ResumesResumeIdAnalyticsHistoryQueryResponse } from "../../models/resume-analyticsController/GetV1ResumesResumeIdAnalyticsHistory";
 
 export const getV1ResumesResumeIdAnalyticsHistoryPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdAnalyticsHistoryPathParams>
 
 export const getV1ResumesResumeIdAnalyticsHistoryQueryParamsSchema = z.object({
@@ -20,7 +20,7 @@ export const getV1ResumesResumeIdAnalyticsHistoryQueryParamsSchema = z.object({
  */
 export const getV1ResumesResumeIdAnalyticsHistory200Schema = z.array(z.object({
     "id": z.string(),
-"resumeId": z.string(),
+"resumeId": z.string().uuid(),
 "atsScore": z.number().int(),
 "keywordScore": z.number().int(),
 "completenessScore": z.number().int(),

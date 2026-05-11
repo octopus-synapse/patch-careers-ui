@@ -8,16 +8,16 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesImportsImportIdRetry201, PostV1ResumesImportsImportIdRetry400, PostV1ResumesImportsImportIdRetry401, PostV1ResumesImportsImportIdRetry403, PostV1ResumesImportsImportIdRetry404, PostV1ResumesImportsImportIdRetryMutationResponse, PostV1ResumesImportsImportIdRetryPathParams } from "../../models/resume-importController/PostV1ResumesImportsImportIdRetry";
 
 export const postV1ResumesImportsImportIdRetryPathParamsSchema = z.object({
-    "importId": z.string()
+    "importId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesImportsImportIdRetryPathParams>
 
 /**
  * @description Successful response
  */
 export const postV1ResumesImportsImportIdRetry201Schema = z.object({
-    "importId": z.string(),
+    "importId": z.string().uuid(),
 "status": z.enum(["PENDING", "PROCESSING", "MAPPING", "VALIDATING", "IMPORTING", "COMPLETED", "FAILED", "PARTIAL"]),
-"resumeId": z.optional(z.string()),
+"resumeId": z.optional(z.string().uuid()),
 "errors": z.optional(z.array(z.string()))
     }) as unknown as ToZod<PostV1ResumesImportsImportIdRetry201>
 

@@ -6,7 +6,7 @@
 
 export type GetV1ResumesImportsImportIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     importId: string;
 };
@@ -43,7 +43,7 @@ export type GetV1ResumesImportsImportId200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**
@@ -146,7 +146,7 @@ export type GetV1ResumesImportsImportId200 = {
         }[];
     };
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     resumeId?: string;
     /**

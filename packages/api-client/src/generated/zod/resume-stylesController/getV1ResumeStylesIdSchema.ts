@@ -36,7 +36,7 @@ export const getV1ResumeStylesId200Schema = z.object({
     
     }).catchall(z.number()),
 "previewImages": z.array(z.string()),
-"authorId": z.string()
+"authorId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumeStylesId200>
 
 /**

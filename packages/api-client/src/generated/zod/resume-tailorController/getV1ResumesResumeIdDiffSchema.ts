@@ -8,18 +8,18 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdDiff200, GetV1ResumesResumeIdDiff400, GetV1ResumesResumeIdDiff401, GetV1ResumesResumeIdDiff404, GetV1ResumesResumeIdDiffPathParams, GetV1ResumesResumeIdDiffQueryParams, GetV1ResumesResumeIdDiffQueryResponse } from "../../models/resume-tailorController/GetV1ResumesResumeIdDiff";
 
 export const getV1ResumesResumeIdDiffPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdDiffPathParams>
 
 export const getV1ResumesResumeIdDiffQueryParamsSchema = z.object({
-    "versionId": z.string()
+    "versionId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdDiffQueryParams>
 
 /**
  * @description Successful response
  */
 export const getV1ResumesResumeIdDiff200Schema = z.object({
-    "versionId": z.string(),
+    "versionId": z.string().uuid(),
 "summary": z.nullable(z.object({
     "before": z.nullable(z.string()),
 "after": z.nullable(z.string())

@@ -1,5 +1,6 @@
 export { deleteV1FitProfileMe } from "./deleteV1FitProfileMe";
 export { fitProfileController } from "./fitProfileController";
+export { getV1FitProfileAnswers } from "./getV1FitProfileAnswers";
 export { getV1FitProfileMe } from "./getV1FitProfileMe";
 export { getV1FitProfileQuestions } from "./getV1FitProfileQuestions";
 export { getV1JobsIdFitProfile } from "./getV1JobsIdFitProfile";

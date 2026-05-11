@@ -70,7 +70,7 @@ export type GetV1AdminAnalyticsOverview200 = {
     */
     mostUsedSections: {
         /**
-         * @type string
+         * @type string, uuid
         */
         sectionTypeId: string;
         /**

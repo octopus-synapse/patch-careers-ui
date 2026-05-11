@@ -16,10 +16,10 @@ export const postV1PostsIdCommentsPathParamsSchema = z.object({
  */
 export const postV1PostsIdComments201Schema = z.object({
     "id": z.string(),
-"postId": z.string(),
-"authorId": z.string(),
+"postId": z.string().uuid(),
+"authorId": z.string().uuid(),
 "content": z.string(),
-"parentId": z.nullable(z.string()),
+"parentId": z.nullable(z.string().uuid()),
 "isDeleted": z.boolean(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
@@ -75,7 +75,7 @@ export const postV1PostsIdComments404Schema = z.object({
 
 export const postV1PostsIdCommentsMutationRequestSchema = z.object({
     "content": z.string(),
-"parentId": z.optional(z.string())
+"parentId": z.optional(z.string().uuid())
     }) as unknown as ToZod<PostV1PostsIdCommentsMutationRequest>
 
 export const postV1PostsIdCommentsMutationResponseSchema = z.lazy(() => postV1PostsIdComments201Schema) as unknown as ToZod<PostV1PostsIdCommentsMutationResponse>

@@ -21,11 +21,11 @@ export type PostV1PostsIdReport201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     postId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

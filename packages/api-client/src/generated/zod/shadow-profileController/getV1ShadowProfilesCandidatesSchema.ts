@@ -24,7 +24,7 @@ export const getV1ShadowProfilesCandidates200Schema = z.object({
 "payload": z.nullable(z.object({
     
     })),
-"claimedByUserId": z.nullable(z.string())
+"claimedByUserId": z.nullable(z.string().uuid())
     }))
     }) as unknown as ToZod<GetV1ShadowProfilesCandidates200>
 

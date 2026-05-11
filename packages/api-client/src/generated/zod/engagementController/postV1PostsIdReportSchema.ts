@@ -16,8 +16,8 @@ export const postV1PostsIdReportPathParamsSchema = z.object({
  */
 export const postV1PostsIdReport201Schema = z.object({
     "id": z.string(),
-"postId": z.string(),
-"userId": z.string(),
+"postId": z.string().uuid(),
+"userId": z.string().uuid(),
 "reason": z.string(),
 "status": z.string(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")

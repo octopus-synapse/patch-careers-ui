@@ -29,7 +29,7 @@ export type AcceptConsent201 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

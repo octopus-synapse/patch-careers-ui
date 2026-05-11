@@ -81,11 +81,11 @@ export type GetV1JobsIdApplications200 = {
         */
         coverLetter: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         tailoredVersionId: string | null;
         /**

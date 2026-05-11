@@ -49,7 +49,7 @@ export type PostV1AdminTechNiches201 = {
     */
     isActive: boolean;
     /**
-     * @type string
+     * @type string, uuid
     */
     areaId: string;
     /**

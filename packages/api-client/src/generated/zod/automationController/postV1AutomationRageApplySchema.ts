@@ -15,7 +15,7 @@ export const postV1AutomationRageApply200Schema = z.object({
 "submitted": z.number().int().min(0),
 "skippedExisting": z.number().int().min(0),
 "failed": z.array(z.object({
-    "jobId": z.string(),
+    "jobId": z.string().uuid(),
 "reason": z.string()
     }))
     }) as unknown as ToZod<PostV1AutomationRageApply200>

@@ -11,7 +11,7 @@ import type { PostV1OnboardingSessionComplete201, PostV1OnboardingSessionComplet
  * @description Successful response
  */
 export const postV1OnboardingSessionComplete201Schema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1OnboardingSessionComplete201>
 
 /**

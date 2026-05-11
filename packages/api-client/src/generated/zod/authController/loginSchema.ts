@@ -12,10 +12,10 @@ import { loginRequestSchema } from "../loginRequestSchema";
  * @description Successful response
  */
 export const login200Schema = z.union([z.object({
-    "userId": z.string(),
+    "userId": z.string().uuid(),
 "twoFactorRequired": z.literal(true)
     }), z.object({
-    "userId": z.string(),
+    "userId": z.string().uuid(),
 "twoFactorRequired": z.literal(false)
     })]) as unknown as ToZod<Login200>
 

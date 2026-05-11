@@ -6,15 +6,15 @@
   - preferred tailoring mode (keep verbatim vs AI-tailor)
 -->
 <script lang="ts">
-// TODO(backend): expose `/v1/users/me/one-click-apply` GET/PUT in swagger so we
-// can drop the hand-rolled fetch below and consume the generated SDK. Until
-// then, this page stays on raw fetch with the canonical envelope shape.
-import { createGetV1Resumes } from 'api-client';
+import {
+  createGetV1Resumes,
+  createGetV1UsersMeOneClickApply,
+  isApiError,
+  putV1UsersMeOneClickApply,
+} from 'api-client';
 import { FileText, Zap } from 'lucide-svelte';
-import { onMount } from 'svelte';
 import { Button, Checkbox, Label, Loader, Radio, Select, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { parseApiError } from '$lib/utils/api-error';
 import { useFormDraft } from '$lib/state/use-form-draft.svelte';
 
 interface Preferences extends Record<string, unknown> {
@@ -50,40 +50,27 @@ const resumes = $derived.by(() => {
   );
 });
 
-let loading = $state(true);
 let saving = $state(false);
 
-onMount(async () => {
-  try {
-    const res = await fetch('/api/v1/users/me/one-click-apply', { credentials: 'include' });
-    if (res.ok) {
-      const body = (await res.json()) as { data?: Preferences };
-      if (body.data) draft.state = body.data;
-    }
-  } catch {
-    // endpoint might not exist yet — we fall back to draft defaults.
-  } finally {
-    loading = false;
-  }
+const configQuery = createGetV1UsersMeOneClickApply({
+  query: { enabled: () => browser },
+});
+
+const loading = $derived($configQuery.isLoading);
+
+$effect(() => {
+  const data = $configQuery.data?.data;
+  if (data) draft.state = data as Preferences;
 });
 
 async function save() {
   saving = true;
   try {
-    const res = await fetch('/api/v1/users/me/one-click-apply', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(draft.state),
-    });
-    if (!res.ok) {
-      const parsed = await parseApiError(res, 'Falha ao salvar. Rascunho local preservado.');
-      throw new Error(parsed.message);
-    }
+    await putV1UsersMeOneClickApply(draft.state);
     toastState.show('Preferências salvas.', 'success');
   } catch (err) {
     toastState.show(
-      err instanceof Error ? err.message : 'Falha ao salvar. Rascunho local preservado.',
+      isApiError(err) ? err.message : 'Falha ao salvar. Rascunho local preservado.',
       'danger',
     );
   } finally {

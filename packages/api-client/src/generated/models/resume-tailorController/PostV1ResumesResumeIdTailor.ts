@@ -6,7 +6,7 @@
 
 export type PostV1ResumesResumeIdTailorPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -24,7 +24,7 @@ export type ChangesOpEnumKey = (typeof changesOpEnum)[keyof typeof changesOpEnum
 */
 export type PostV1ResumesResumeIdTailor200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     versionId: string;
     /**
@@ -187,7 +187,7 @@ export type PostV1ResumesResumeIdTailor404 = {
 export type PostV1ResumesResumeIdTailorMutationRequest = {
     /**
      * @minLength 1
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     jobId?: string;
     /**

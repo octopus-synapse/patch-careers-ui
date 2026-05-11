@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersUserIdReactions200, GetV1UsersUserIdReactions400, GetV1UsersUserIdReactions401, GetV1UsersUserIdReactions403, GetV1UsersUserIdReactions404, GetV1UsersUserIdReactionsPathParams, GetV1UsersUserIdReactionsQueryParams, GetV1UsersUserIdReactionsQueryResponse } from "../../models/user-engagementController/GetV1UsersUserIdReactions";
 
 export const getV1UsersUserIdReactionsPathParamsSchema = z.object({
-    "userId": z.string()
+    "userId": z.string().uuid()
     }) as unknown as ToZod<GetV1UsersUserIdReactionsPathParams>
 
 export const getV1UsersUserIdReactionsQueryParamsSchema = z.object({
@@ -21,15 +21,15 @@ export const getV1UsersUserIdReactionsQueryParamsSchema = z.object({
  */
 export const getV1UsersUserIdReactions200Schema = z.object({
     "items": z.array(z.object({
-    "postId": z.string(),
-"userId": z.string(),
+    "postId": z.string().uuid(),
+"userId": z.string().uuid(),
 "reactionType": z.enum(["LIKE", "CELEBRATE", "LOVE", "INSIGHTFUL", "CURIOUS"]),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "post": z.object({
     "id": z.string(),
 "type": z.string(),
 "content": z.nullable(z.string()),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "author": z.object({
     "id": z.string(),
 "name": z.nullable(z.string()),

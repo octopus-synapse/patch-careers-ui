@@ -39,7 +39,7 @@ export type PostV1AdminUsersUserIdAccessModifiers201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**
@@ -51,7 +51,7 @@ export type PostV1AdminUsersUserIdAccessModifiers201 = {
     */
     effect: PostV1AdminUsersUserIdAccessModifiers201EffectEnumKey;
     /**
-     * @type string
+     * @type string, uuid
     */
     permissionId: string | null;
     /**

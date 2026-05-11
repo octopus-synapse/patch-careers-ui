@@ -24,7 +24,7 @@ export type GetV1AdminTechNichesQueryParams = {
     */
     isActive?: string;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     areaId?: string;
 };
@@ -78,7 +78,7 @@ export type GetV1AdminTechNiches200 = {
         */
         isActive: boolean;
         /**
-         * @type string
+         * @type string, uuid
         */
         areaId: string;
         /**

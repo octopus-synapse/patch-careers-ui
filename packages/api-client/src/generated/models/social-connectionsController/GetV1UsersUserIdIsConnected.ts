@@ -21,7 +21,7 @@ export type GetV1UsersUserIdIsConnected200 = {
     */
     isConnected: boolean;
     /**
-     * @type string
+     * @type string, uuid
     */
     pendingSentConnectionId: string | null;
 };

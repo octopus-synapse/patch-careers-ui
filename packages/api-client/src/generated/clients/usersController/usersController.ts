@@ -9,6 +9,7 @@ import { getV1MeUiState } from "./getV1MeUiState";
 import { getV1ProfilesUsername } from "./getV1ProfilesUsername";
 import { getV1UsersManage } from "./getV1UsersManage";
 import { getV1UsersManageId } from "./getV1UsersManageId";
+import { getV1UsersMeOneClickApply } from "./getV1UsersMeOneClickApply";
 import { getV1UsersMePermissions } from "./getV1UsersMePermissions";
 import { getV1UsersPreferences } from "./getV1UsersPreferences";
 import { getV1UsersPreferencesFull } from "./getV1UsersPreferencesFull";
@@ -25,7 +26,8 @@ import { patchV1UsersUsername } from "./patchV1UsersUsername";
 import { postV1UsersManage } from "./postV1UsersManage";
 import { postV1UsersManageIdResetPassword } from "./postV1UsersManageIdResetPassword";
 import { postV1UsersUsernameValidate } from "./postV1UsersUsernameValidate";
+import { putV1UsersMeOneClickApply } from "./putV1UsersMeOneClickApply";
 
 export function usersController() {
-  return { getV1MeUiState, deleteV1MeUiStateKey, patchV1MeUiStateKey, getV1ProfilesUsername, getV1UsersManage, postV1UsersManage, deleteV1UsersManageId, getV1UsersManageId, patchV1UsersManageId, postV1UsersManageIdResetPassword, patchV1UsersManageIdRoles, getV1UsersMePermissions, getV1UsersPreferences, patchV1UsersPreferences, getV1UsersPreferencesFull, patchV1UsersPreferencesFull, getV1UsersProfile, patchV1UsersProfile, getV1UsersPublic, patchV1UsersUsername, getV1UsersUsernameCheck, postV1UsersUsernameValidate }
+  return { getV1MeUiState, deleteV1MeUiStateKey, patchV1MeUiStateKey, getV1ProfilesUsername, getV1UsersManage, postV1UsersManage, deleteV1UsersManageId, getV1UsersManageId, patchV1UsersManageId, postV1UsersManageIdResetPassword, patchV1UsersManageIdRoles, getV1UsersMeOneClickApply, putV1UsersMeOneClickApply, getV1UsersMePermissions, getV1UsersPreferences, patchV1UsersPreferences, getV1UsersPreferencesFull, patchV1UsersPreferencesFull, getV1UsersProfile, patchV1UsersProfile, getV1UsersPublic, patchV1UsersUsername, getV1UsersUsernameCheck, postV1UsersUsernameValidate }
 }

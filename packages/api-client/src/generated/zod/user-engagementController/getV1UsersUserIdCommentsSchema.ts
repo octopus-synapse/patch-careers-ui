@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1UsersUserIdComments200, GetV1UsersUserIdComments400, GetV1UsersUserIdComments401, GetV1UsersUserIdComments403, GetV1UsersUserIdComments404, GetV1UsersUserIdCommentsPathParams, GetV1UsersUserIdCommentsQueryParams, GetV1UsersUserIdCommentsQueryResponse } from "../../models/user-engagementController/GetV1UsersUserIdComments";
 
 export const getV1UsersUserIdCommentsPathParamsSchema = z.object({
-    "userId": z.string()
+    "userId": z.string().uuid()
     }) as unknown as ToZod<GetV1UsersUserIdCommentsPathParams>
 
 export const getV1UsersUserIdCommentsQueryParamsSchema = z.object({
@@ -22,10 +22,10 @@ export const getV1UsersUserIdCommentsQueryParamsSchema = z.object({
 export const getV1UsersUserIdComments200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"postId": z.string(),
-"authorId": z.string(),
+"postId": z.string().uuid(),
+"authorId": z.string().uuid(),
 "content": z.string(),
-"parentId": z.nullable(z.string()),
+"parentId": z.nullable(z.string().uuid()),
 "isDeleted": z.boolean(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
@@ -41,7 +41,7 @@ export const getV1UsersUserIdComments200Schema = z.object({
     "id": z.string(),
 "type": z.string(),
 "content": z.nullable(z.string()),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "author": z.object({
     "id": z.string(),
 "name": z.nullable(z.string()),

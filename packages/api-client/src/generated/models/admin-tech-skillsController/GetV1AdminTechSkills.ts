@@ -24,7 +24,7 @@ export type GetV1AdminTechSkillsQueryParams = {
     */
     isActive?: string;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     nicheId?: string;
     /**
@@ -97,7 +97,7 @@ export type GetV1AdminTechSkills200 = {
         */
         website: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         nicheId: string | null;
         /**

@@ -11,7 +11,7 @@ import type { PostV1ResumesImportsPdf201, PostV1ResumesImportsPdf400, PostV1Resu
  * @description Successful response
  */
 export const postV1ResumesImportsPdf201Schema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesImportsPdf201>
 
 /**

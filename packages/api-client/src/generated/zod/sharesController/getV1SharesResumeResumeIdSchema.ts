@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1SharesResumeResumeId200, GetV1SharesResumeResumeId400, GetV1SharesResumeResumeId401, GetV1SharesResumeResumeId403, GetV1SharesResumeResumeId404, GetV1SharesResumeResumeIdPathParams, GetV1SharesResumeResumeIdQueryResponse } from "../../models/sharesController/GetV1SharesResumeResumeId";
 
 export const getV1SharesResumeResumeIdPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1SharesResumeResumeIdPathParams>
 
 /**
@@ -18,7 +18,7 @@ export const getV1SharesResumeResumeId200Schema = z.object({
     "shares": z.array(z.object({
     "id": z.string(),
 "slug": z.string(),
-"resumeId": z.string(),
+"resumeId": z.string().uuid(),
 "isActive": z.boolean(),
 "hasPassword": z.boolean(),
 "expiresAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),

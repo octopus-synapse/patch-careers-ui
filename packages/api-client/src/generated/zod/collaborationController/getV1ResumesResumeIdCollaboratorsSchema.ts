@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdCollaborators200, GetV1ResumesResumeIdCollaborators400, GetV1ResumesResumeIdCollaborators401, GetV1ResumesResumeIdCollaborators403, GetV1ResumesResumeIdCollaborators404, GetV1ResumesResumeIdCollaboratorsPathParams, GetV1ResumesResumeIdCollaboratorsQueryResponse } from "../../models/collaborationController/GetV1ResumesResumeIdCollaborators";
 
 export const getV1ResumesResumeIdCollaboratorsPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdCollaboratorsPathParams>
 
 /**
@@ -17,8 +17,8 @@ export const getV1ResumesResumeIdCollaboratorsPathParamsSchema = z.object({
 export const getV1ResumesResumeIdCollaborators200Schema = z.object({
     "collaborators": z.array(z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"userId": z.string(),
+"resumeId": z.string().uuid(),
+"userId": z.string().uuid(),
 "role": z.string(),
 "invitedBy": z.string(),
 "invitedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

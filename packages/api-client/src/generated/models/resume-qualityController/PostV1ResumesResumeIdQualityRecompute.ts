@@ -29,7 +29,7 @@ export type PostV1ResumesResumeIdQualityRecompute201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**

@@ -10,7 +10,7 @@ import type { PatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId200, PatchV
 export const patchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParamsSchema = z.object({
     "resumeId": z.string().uuid().describe("Resume UUID (path parameter)."),
 "sectionTypeKey": z.string(),
-"itemId": z.string()
+"itemId": z.string().uuid()
     }) as unknown as ToZod<PatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParams>
 
 /**
@@ -19,7 +19,7 @@ export const patchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParamsSc
 export const patchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId200Schema = z.object({
     "item": z.object({
     "id": z.string(),
-"resumeSectionId": z.string(),
+"resumeSectionId": z.string().uuid(),
 "content": z.nullable(z.object({
     
     }).catchall(z.any().nullable())),

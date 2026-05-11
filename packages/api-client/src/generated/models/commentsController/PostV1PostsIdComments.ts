@@ -21,11 +21,11 @@ export type PostV1PostsIdComments201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     postId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
     /**
@@ -33,7 +33,7 @@ export type PostV1PostsIdComments201 = {
     */
     content: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     parentId: string | null;
     /**
@@ -218,7 +218,7 @@ export type PostV1PostsIdCommentsMutationRequest = {
     */
     content: string;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     parentId?: string;
 };

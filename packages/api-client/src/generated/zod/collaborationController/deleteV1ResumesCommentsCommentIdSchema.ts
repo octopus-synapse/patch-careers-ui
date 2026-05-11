@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { DeleteV1ResumesCommentsCommentId200, DeleteV1ResumesCommentsCommentId400, DeleteV1ResumesCommentsCommentId401, DeleteV1ResumesCommentsCommentId403, DeleteV1ResumesCommentsCommentId404, DeleteV1ResumesCommentsCommentIdMutationResponse, DeleteV1ResumesCommentsCommentIdPathParams } from "../../models/collaborationController/DeleteV1ResumesCommentsCommentId";
 
 export const deleteV1ResumesCommentsCommentIdPathParamsSchema = z.object({
-    "commentId": z.string()
+    "commentId": z.string().uuid()
     }) as unknown as ToZod<DeleteV1ResumesCommentsCommentIdPathParams>
 
 /**

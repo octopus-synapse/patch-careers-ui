@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1AnalyticsShareId200, GetV1AnalyticsShareId400, GetV1AnalyticsShareId401, GetV1AnalyticsShareId403, GetV1AnalyticsShareId404, GetV1AnalyticsShareIdPathParams, GetV1AnalyticsShareIdQueryResponse } from "../../models/share-analyticsController/GetV1AnalyticsShareId";
 
 export const getV1AnalyticsShareIdPathParamsSchema = z.object({
-    "shareId": z.string()
+    "shareId": z.string().uuid()
     }) as unknown as ToZod<GetV1AnalyticsShareIdPathParams>
 
 /**
@@ -16,7 +16,7 @@ export const getV1AnalyticsShareIdPathParamsSchema = z.object({
  */
 export const getV1AnalyticsShareId200Schema = z.object({
     "analytics": z.object({
-    "shareId": z.string(),
+    "shareId": z.string().uuid(),
 "totalViews": z.number().int().min(0),
 "totalDownloads": z.number().int().min(0),
 "uniqueVisitors": z.number().int().min(0),

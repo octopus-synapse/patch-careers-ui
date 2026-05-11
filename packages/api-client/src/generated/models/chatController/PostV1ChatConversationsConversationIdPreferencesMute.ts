@@ -6,7 +6,7 @@
 
 export type PostV1ChatConversationsConversationIdPreferencesMutePathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     conversationId: string;
 };

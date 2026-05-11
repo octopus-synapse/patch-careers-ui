@@ -37,7 +37,7 @@ export const postV1IntegrationsGithubSync401Schema = z.object({
 
 export const postV1IntegrationsGithubSyncMutationRequestSchema = z.object({
     "githubUsername": z.string(),
-"resumeId": z.string()
+"resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1IntegrationsGithubSyncMutationRequest>
 
 export const postV1IntegrationsGithubSyncMutationResponseSchema = z.lazy(() => postV1IntegrationsGithubSync201Schema) as unknown as ToZod<PostV1IntegrationsGithubSyncMutationResponse>

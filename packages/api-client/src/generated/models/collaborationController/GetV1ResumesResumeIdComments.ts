@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdCommentsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -24,11 +24,11 @@ export type GetV1ResumesResumeIdComments200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**
@@ -36,15 +36,15 @@ export type GetV1ResumesResumeIdComments200 = {
         */
         content: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         parentId: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         sectionId: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         itemId: string | null;
         /**
@@ -57,7 +57,7 @@ export type GetV1ResumesResumeIdComments200 = {
         */
         resolvedAt: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         resolvedById: string | null;
         /**

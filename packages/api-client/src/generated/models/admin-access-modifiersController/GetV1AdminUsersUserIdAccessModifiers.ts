@@ -42,7 +42,7 @@ export type GetV1AdminUsersUserIdAccessModifiers200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -54,7 +54,7 @@ export type GetV1AdminUsersUserIdAccessModifiers200 = {
         */
         effect: ModifiersEffectEnumKey;
         /**
-         * @type string
+         * @type string, uuid
         */
         permissionId: string | null;
         /**

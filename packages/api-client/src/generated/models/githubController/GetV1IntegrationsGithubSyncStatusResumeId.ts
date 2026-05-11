@@ -6,7 +6,7 @@
 
 export type GetV1IntegrationsGithubSyncStatusResumeIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

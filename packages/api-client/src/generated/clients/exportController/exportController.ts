@@ -9,7 +9,8 @@ import { getV1ExportResumeIdJson } from "./getV1ExportResumeIdJson";
 import { getV1ExportResumeIdLatex } from "./getV1ExportResumeIdLatex";
 import { getV1ExportResumePdf } from "./getV1ExportResumePdf";
 import { getV1ExportUserUserIdResumePdf } from "./getV1ExportUserUserIdResumePdf";
+import { postV1ExportResumeBundle } from "./postV1ExportResumeBundle";
 
 export function exportController() {
-  return { getV1ExportBanner, getV1ExportResumeDocx, getV1ExportResumePdf, getV1ExportUserUserIdResumePdf, getV1ExportResumeIdJson, getV1ExportResumeIdLatex }
+  return { getV1ExportBanner, postV1ExportResumeBundle, getV1ExportResumeDocx, getV1ExportResumePdf, getV1ExportUserUserIdResumePdf, getV1ExportResumeIdJson, getV1ExportResumeIdLatex }
 }

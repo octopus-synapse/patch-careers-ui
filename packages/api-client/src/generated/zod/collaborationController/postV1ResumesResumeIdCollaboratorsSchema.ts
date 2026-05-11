@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ResumesResumeIdCollaborators201, PostV1ResumesResumeIdCollaborators400, PostV1ResumesResumeIdCollaborators401, PostV1ResumesResumeIdCollaborators403, PostV1ResumesResumeIdCollaborators404, PostV1ResumesResumeIdCollaboratorsMutationRequest, PostV1ResumesResumeIdCollaboratorsMutationResponse, PostV1ResumesResumeIdCollaboratorsPathParams } from "../../models/collaborationController/PostV1ResumesResumeIdCollaborators";
 
 export const postV1ResumesResumeIdCollaboratorsPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<PostV1ResumesResumeIdCollaboratorsPathParams>
 
 /**
@@ -17,8 +17,8 @@ export const postV1ResumesResumeIdCollaboratorsPathParamsSchema = z.object({
 export const postV1ResumesResumeIdCollaborators201Schema = z.object({
     "collaborator": z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"userId": z.string(),
+"resumeId": z.string().uuid(),
+"userId": z.string().uuid(),
 "role": z.string(),
 "invitedBy": z.string(),
 "invitedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
@@ -72,7 +72,7 @@ export const postV1ResumesResumeIdCollaborators404Schema = z.object({
     }) as unknown as ToZod<PostV1ResumesResumeIdCollaborators404>
 
 export const postV1ResumesResumeIdCollaboratorsMutationRequestSchema = z.object({
-    "userId": z.string().min(1),
+    "userId": z.string().uuid().min(1),
 "role": z.enum(["VIEWER", "EDITOR", "ADMIN"])
     }) as unknown as ToZod<PostV1ResumesResumeIdCollaboratorsMutationRequest>
 

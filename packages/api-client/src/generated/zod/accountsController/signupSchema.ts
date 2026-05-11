@@ -12,7 +12,7 @@ import { createAccountRequestSchema } from "../createAccountRequestSchema";
  * @description Successful response
  */
 export const signup201Schema = z.object({
-    "userId": z.string(),
+    "userId": z.string().uuid(),
 "email": z.string(),
 "message": z.string(),
 "accessToken": z.string(),

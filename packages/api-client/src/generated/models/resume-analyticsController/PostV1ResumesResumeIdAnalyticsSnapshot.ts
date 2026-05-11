@@ -6,7 +6,7 @@
 
 export type PostV1ResumesResumeIdAnalyticsSnapshotPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -20,7 +20,7 @@ export type PostV1ResumesResumeIdAnalyticsSnapshot201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**

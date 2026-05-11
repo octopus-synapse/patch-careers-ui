@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ChatConversationsConversationIdPreferencesMute201, PostV1ChatConversationsConversationIdPreferencesMute400, PostV1ChatConversationsConversationIdPreferencesMute401, PostV1ChatConversationsConversationIdPreferencesMute403, PostV1ChatConversationsConversationIdPreferencesMute404, PostV1ChatConversationsConversationIdPreferencesMuteMutationRequest, PostV1ChatConversationsConversationIdPreferencesMuteMutationResponse, PostV1ChatConversationsConversationIdPreferencesMutePathParams } from "../../models/chatController/PostV1ChatConversationsConversationIdPreferencesMute";
 
 export const postV1ChatConversationsConversationIdPreferencesMutePathParamsSchema = z.object({
-    "conversationId": z.string()
+    "conversationId": z.string().uuid()
     }) as unknown as ToZod<PostV1ChatConversationsConversationIdPreferencesMutePathParams>
 
 /**

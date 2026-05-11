@@ -198,7 +198,7 @@ export type GetV1MeGdprExport200 = {
         */
         entityType: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         entityId: string;
         /**

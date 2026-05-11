@@ -18,11 +18,11 @@ export const getV1NotificationsQueryParamsSchema = z.object({
 export const getV1Notifications200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "type": z.enum(["POST_LIKED", "POST_COMMENTED", "POST_REPOSTED", "POST_BOOKMARKED", "COMMENT_REPLIED", "CONNECTION_REQUEST", "CONNECTION_ACCEPTED", "FOLLOW_NEW", "CONNECTION_RECOMMENDATION", "SKILL_DECAY", "APPLICATION_STALE", "FIT_PROFILE_EXPIRED", "FIT_PROFILE_EXPIRY_REMINDER", "MATCH_RECOMMENDATIONS_READY", "RESUME_QUALITY_IMPROVED", "RESUME_QUALITY_REGRESSED"]),
-"actorId": z.nullable(z.string()),
+"actorId": z.nullable(z.string().uuid()),
 "entityType": z.nullable(z.string()),
-"entityId": z.nullable(z.string()),
+"entityId": z.nullable(z.string().uuid()),
 "message": z.string(),
 "read": z.boolean(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

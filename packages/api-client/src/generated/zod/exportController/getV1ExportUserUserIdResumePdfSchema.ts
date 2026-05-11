@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ExportUserUserIdResumePdf200, GetV1ExportUserUserIdResumePdf400, GetV1ExportUserUserIdResumePdf401, GetV1ExportUserUserIdResumePdf404, GetV1ExportUserUserIdResumePdfPathParams, GetV1ExportUserUserIdResumePdfQueryResponse } from "../../models/exportController/GetV1ExportUserUserIdResumePdf";
 
 export const getV1ExportUserUserIdResumePdfPathParamsSchema = z.object({
-    "userId": z.string()
+    "userId": z.string().uuid()
     }) as unknown as ToZod<GetV1ExportUserUserIdResumePdfPathParams>
 
 /**

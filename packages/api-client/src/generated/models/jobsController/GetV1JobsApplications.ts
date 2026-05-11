@@ -97,11 +97,11 @@ export type GetV1JobsApplications200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         jobId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -113,11 +113,11 @@ export type GetV1JobsApplications200 = {
         */
         coverLetter: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         tailoredVersionId: string | null;
         /**
@@ -139,7 +139,7 @@ export type GetV1JobsApplications200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             authorId: string;
             /**

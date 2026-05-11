@@ -17,12 +17,12 @@ export const postV1JobsIdApplyPathParamsSchema = z.object({
  */
 export const postV1JobsIdApply201Schema = z.object({
     "id": z.string(),
-"jobId": z.string(),
-"userId": z.string(),
+"jobId": z.string().uuid(),
+"userId": z.string().uuid(),
 "status": z.enum(["SUBMITTED", "VIEWED", "REJECTED", "ACCEPTED", "WITHDRAWN"]),
 "coverLetter": z.nullable(z.string()),
-"resumeId": z.nullable(z.string()),
-"tailoredVersionId": z.nullable(z.string()),
+"resumeId": z.nullable(z.string().uuid()),
+"tailoredVersionId": z.nullable(z.string().uuid()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "alreadyApplied": z.boolean()

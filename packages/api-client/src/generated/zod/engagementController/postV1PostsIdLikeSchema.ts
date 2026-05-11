@@ -15,10 +15,10 @@ export const postV1PostsIdLikePathParamsSchema = z.object({
  * @description Successful response
  */
 export const postV1PostsIdLike201Schema = z.object({
-    "postId": z.string(),
-"userId": z.string(),
+    "postId": z.string().uuid(),
+"userId": z.string().uuid(),
 "reactionType": z.enum(["LIKE", "CELEBRATE", "LOVE", "INSIGHTFUL", "CURIOUS"]),
-"postAuthorId": z.optional(z.string()),
+"postAuthorId": z.optional(z.string().uuid()),
 "alreadyLiked": z.boolean(),
 "updated": z.optional(z.boolean())
     }) as unknown as ToZod<PostV1PostsIdLike201>

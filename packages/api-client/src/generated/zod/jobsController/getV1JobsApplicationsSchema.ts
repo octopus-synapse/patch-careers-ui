@@ -22,17 +22,17 @@ export const getV1JobsApplicationsQueryParamsSchema = z.object({
 export const getV1JobsApplications200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"jobId": z.string(),
-"userId": z.string(),
+"jobId": z.string().uuid(),
+"userId": z.string().uuid(),
 "status": z.enum(["SUBMITTED", "VIEWED", "REJECTED", "ACCEPTED", "WITHDRAWN"]),
 "coverLetter": z.nullable(z.string()),
-"resumeId": z.nullable(z.string()),
-"tailoredVersionId": z.nullable(z.string()),
+"resumeId": z.nullable(z.string().uuid()),
+"tailoredVersionId": z.nullable(z.string().uuid()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "job": z.object({
     "id": z.string(),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "title": z.string(),
 "company": z.string(),
 "location": z.nullable(z.string()),

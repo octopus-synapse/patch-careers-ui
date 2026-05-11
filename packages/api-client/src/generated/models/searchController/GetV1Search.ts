@@ -73,7 +73,7 @@ export type GetV1Search200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

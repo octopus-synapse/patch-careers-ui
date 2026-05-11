@@ -6,7 +6,7 @@
 
 export type GetV1ChatConversationsConversationIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     conversationId: string;
 };

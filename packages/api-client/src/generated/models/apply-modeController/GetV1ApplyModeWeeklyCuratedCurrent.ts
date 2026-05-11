@@ -39,7 +39,7 @@ export type GetV1ApplyModeWeeklyCuratedCurrent200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             jobId: string;
             /**

@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdTailoredVersionsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -37,7 +37,7 @@ export type GetV1ResumesResumeIdTailoredVersions200 = {
         */
         createdAt: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         tailoredJobId: string | null;
     }[];

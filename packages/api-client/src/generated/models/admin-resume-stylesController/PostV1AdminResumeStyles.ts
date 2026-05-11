@@ -86,7 +86,7 @@ export type PostV1AdminResumeStyles201 = {
     */
     previewImages: string[];
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
 };

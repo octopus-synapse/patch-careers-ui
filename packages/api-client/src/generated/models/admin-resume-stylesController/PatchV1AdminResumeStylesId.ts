@@ -94,7 +94,7 @@ export type PatchV1AdminResumeStylesId200 = {
     */
     previewImages: string[];
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
 };

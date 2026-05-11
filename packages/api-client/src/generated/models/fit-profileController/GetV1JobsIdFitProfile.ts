@@ -21,11 +21,11 @@ export type GetV1JobsIdFitProfile200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     jobId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     editedByUserId: string;
     /**

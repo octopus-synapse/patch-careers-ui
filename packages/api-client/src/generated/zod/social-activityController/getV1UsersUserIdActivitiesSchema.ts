@@ -26,12 +26,12 @@ export const getV1UsersUserIdActivitiesQueryParamsSchema = z.object({
 export const getV1UsersUserIdActivities200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "type": z.enum(["RESUME_CREATED", "RESUME_UPDATED", "RESUME_SHARED", "RESUME_PUBLISHED", "THEME_PUBLISHED", "ACHIEVEMENT_EARNED", "SKILL_ADDED", "PROFILE_UPDATED", "FOLLOWED_USER", "CONNECTED_USER"]),
 "metadata": z.nullable(z.object({
     
     }).catchall(z.any().nullable())),
-"entityId": z.nullable(z.string()),
+"entityId": z.nullable(z.string().uuid()),
 "entityType": z.nullable(z.string()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "user": z.optional(z.object({

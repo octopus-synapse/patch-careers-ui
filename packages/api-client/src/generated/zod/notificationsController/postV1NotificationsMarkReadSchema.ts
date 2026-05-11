@@ -45,7 +45,7 @@ export const postV1NotificationsMarkRead403Schema = z.object({
     }) as unknown as ToZod<PostV1NotificationsMarkRead403>
 
 export const postV1NotificationsMarkReadMutationRequestSchema = z.object({
-    "notificationId": z.optional(z.string())
+    "notificationId": z.optional(z.string().uuid())
     }) as unknown as ToZod<PostV1NotificationsMarkReadMutationRequest>
 
 export const postV1NotificationsMarkReadMutationResponseSchema = z.lazy(() => postV1NotificationsMarkRead201Schema) as unknown as ToZod<PostV1NotificationsMarkReadMutationResponse>

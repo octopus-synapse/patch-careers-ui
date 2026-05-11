@@ -1,4 +1,5 @@
 export { deleteV1FitProfileMe200Schema, deleteV1FitProfileMe400Schema, deleteV1FitProfileMe401Schema, deleteV1FitProfileMeMutationResponseSchema } from "./deleteV1FitProfileMeSchema";
+export { getV1FitProfileAnswers200Schema, getV1FitProfileAnswers400Schema, getV1FitProfileAnswers401Schema, getV1FitProfileAnswersQueryResponseSchema } from "./getV1FitProfileAnswersSchema";
 export { getV1FitProfileMe200Schema, getV1FitProfileMe400Schema, getV1FitProfileMe401Schema, getV1FitProfileMeQueryResponseSchema } from "./getV1FitProfileMeSchema";
 export { getV1FitProfileQuestions200Schema, getV1FitProfileQuestions400Schema, getV1FitProfileQuestions401Schema, getV1FitProfileQuestionsQueryResponseSchema } from "./getV1FitProfileQuestionsSchema";
 export { getV1JobsIdFitProfile200Schema, getV1JobsIdFitProfile400Schema, getV1JobsIdFitProfile401Schema, getV1JobsIdFitProfile403Schema, getV1JobsIdFitProfile404Schema, getV1JobsIdFitProfilePathParamsSchema, getV1JobsIdFitProfileQueryResponseSchema } from "./getV1JobsIdFitProfileSchema";

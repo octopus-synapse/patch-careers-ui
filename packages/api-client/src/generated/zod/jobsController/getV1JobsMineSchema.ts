@@ -22,7 +22,7 @@ export const getV1JobsMineQueryParamsSchema = z.object({
 export const getV1JobsMine200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"authorId": z.string(),
+"authorId": z.string().uuid(),
 "title": z.string(),
 "company": z.string(),
 "location": z.nullable(z.string()),

@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdSharesShareIdAnalytics200, GetV1ResumesResumeIdSharesShareIdAnalytics400, GetV1ResumesResumeIdSharesShareIdAnalytics401, GetV1ResumesResumeIdSharesShareIdAnalytics403, GetV1ResumesResumeIdSharesShareIdAnalytics404, GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams, GetV1ResumesResumeIdSharesShareIdAnalyticsQueryResponse } from "../../models/share-analyticsController/GetV1ResumesResumeIdSharesShareIdAnalytics";
 
 export const getV1ResumesResumeIdSharesShareIdAnalyticsPathParamsSchema = z.object({
-    "resumeId": z.string(),
-"shareId": z.string()
+    "resumeId": z.string().uuid(),
+"shareId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams>
 
 /**
@@ -17,7 +17,7 @@ export const getV1ResumesResumeIdSharesShareIdAnalyticsPathParamsSchema = z.obje
  */
 export const getV1ResumesResumeIdSharesShareIdAnalytics200Schema = z.object({
     "analytics": z.object({
-    "shareId": z.string(),
+    "shareId": z.string().uuid(),
 "totalViews": z.number().int().min(0),
 "totalDownloads": z.number().int().min(0),
 "uniqueVisitors": z.number().int().min(0),

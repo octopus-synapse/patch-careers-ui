@@ -31,11 +31,11 @@ export type PostV1JobsIdApply201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     jobId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**
@@ -47,11 +47,11 @@ export type PostV1JobsIdApply201 = {
     */
     coverLetter: string | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     tailoredVersionId: string | null;
     /**

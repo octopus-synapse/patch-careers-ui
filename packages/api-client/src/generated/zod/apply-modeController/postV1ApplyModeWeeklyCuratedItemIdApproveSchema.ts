@@ -8,14 +8,14 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1ApplyModeWeeklyCuratedItemIdApprove200, PostV1ApplyModeWeeklyCuratedItemIdApprove400, PostV1ApplyModeWeeklyCuratedItemIdApprove401, PostV1ApplyModeWeeklyCuratedItemIdApprove404, PostV1ApplyModeWeeklyCuratedItemIdApproveMutationResponse, PostV1ApplyModeWeeklyCuratedItemIdApprovePathParams } from "../../models/apply-modeController/PostV1ApplyModeWeeklyCuratedItemIdApprove";
 
 export const postV1ApplyModeWeeklyCuratedItemIdApprovePathParamsSchema = z.object({
-    "itemId": z.string()
+    "itemId": z.string().uuid()
     }) as unknown as ToZod<PostV1ApplyModeWeeklyCuratedItemIdApprovePathParams>
 
 /**
  * @description Successful response
  */
 export const postV1ApplyModeWeeklyCuratedItemIdApprove200Schema = z.object({
-    "applicationId": z.string(),
+    "applicationId": z.string().uuid(),
 "alreadyApplied": z.boolean()
     }) as unknown as ToZod<PostV1ApplyModeWeeklyCuratedItemIdApprove200>
 

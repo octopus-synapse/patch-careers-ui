@@ -17,10 +17,10 @@ export const getV1AdminUsersUserIdAccessModifiersPathParamsSchema = z.object({
 export const getV1AdminUsersUserIdAccessModifiers200Schema = z.object({
     "modifiers": z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "modifierType": z.enum(["SUSPEND_EMAIL_VERIFIED", "SUSPEND_ONBOARDING", "SUSPEND_ROLE_USER", "SUSPEND_ROLE_ADMIN", "GRANT_PERMISSION"]),
 "effect": z.enum(["DENY", "GRANT"]),
-"permissionId": z.nullable(z.string()),
+"permissionId": z.nullable(z.string().uuid()),
 "reason": z.string(),
 "startsAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "endsAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),

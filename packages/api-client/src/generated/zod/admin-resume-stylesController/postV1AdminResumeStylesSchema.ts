@@ -32,7 +32,7 @@ export const postV1AdminResumeStyles201Schema = z.object({
     
     }).catchall(z.number()),
 "previewImages": z.array(z.string()),
-"authorId": z.string()
+"authorId": z.string().uuid()
     }) as unknown as ToZod<PostV1AdminResumeStyles201>
 
 /**

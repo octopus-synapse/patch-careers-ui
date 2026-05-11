@@ -6,7 +6,7 @@
 
 export type PostV1ChatConversationsConversationIdReadPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     conversationId: string;
 };

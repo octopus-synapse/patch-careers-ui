@@ -16,7 +16,7 @@ export const getV1ResumesResumeIdQualityPathParamsSchema = z.object({
  */
 export const getV1ResumesResumeIdQuality200Schema = z.object({
     "id": z.string(),
-"resumeId": z.string(),
+"resumeId": z.string().uuid(),
 "overallScore": z.number().int().min(0).max(100),
 "completenessScore": z.number().int().min(0).max(100),
 "contentQualityScore": z.nullable(z.number().int().min(0).max(100)),

@@ -18,7 +18,7 @@ export const postV1ResumesResumeIdSectionsSectionTypeKeyItemsPathParamsSchema = 
 export const postV1ResumesResumeIdSectionsSectionTypeKeyItems201Schema = z.object({
     "item": z.object({
     "id": z.string(),
-"resumeSectionId": z.string(),
+"resumeSectionId": z.string().uuid(),
 "content": z.nullable(z.object({
     
     }).catchall(z.any().nullable())),

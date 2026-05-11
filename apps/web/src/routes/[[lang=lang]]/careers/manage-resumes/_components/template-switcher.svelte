@@ -1,10 +1,10 @@
 <!--
-  TemplateSwitcher — dropdown on resume cards. Backend has no `template`
-  column on Resume yet, so this still PATCHes raw and the value is dropped
-  server-side. Will swap to SDK once profile-services adds the column.
+  TemplateSwitcher — dropdown on resume cards. Uses the SDK PATCH now
+  that `template` is a real column on Resume (F3-PD-009d).
 -->
 <script lang="ts">
 
+import { patchV1ResumesResumeId } from 'api-client';
 import { untrack } from 'svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Loader, toastState } from 'ui';
@@ -51,13 +51,7 @@ async function handleChange(e: Event) {
   current = next;
   saving = true;
   try {
-    const res = await fetch(`/api/v1/resumes/${resumeId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ template: next }),
-    });
-    if (!res.ok) throw new Error();
+    await patchV1ResumesResumeId(resumeId, { template: next });
     onchange?.(next);
     toastState.show('Template atualizado.', 'success');
   } catch (err) {

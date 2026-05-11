@@ -10,6 +10,18 @@ import type { Phone } from "./Phone";
 import type { SocialUrl } from "./SocialUrl";
 import type { UserLocation } from "./UserLocation";
 
+export const updateResumeRequestTemplateEnum = {
+    PROFESSIONAL: "PROFESSIONAL",
+    CREATIVE: "CREATIVE",
+    TECHNICAL: "TECHNICAL",
+    MINIMAL: "MINIMAL",
+    MODERN: "MODERN",
+    EXECUTIVE: "EXECUTIVE",
+    ACADEMIC: "ACADEMIC"
+} as const;
+
+export type UpdateResumeRequestTemplateEnumKey = (typeof updateResumeRequestTemplateEnum)[keyof typeof updateResumeRequestTemplateEnum];
+
 /**
  * @description Partial update of a resume. Same shape as CreateResumeRequest with all fields optional.
  * @example [object Object]
@@ -68,6 +80,10 @@ export type UpdateResumeRequest = {
      * @type string | undefined, uri
     */
     website?: SocialUrl;
+    /**
+     * @type string | undefined
+    */
+    template?: UpdateResumeRequestTemplateEnumKey;
     /**
      * @type array | undefined
     */

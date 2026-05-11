@@ -6,7 +6,7 @@
 
 export type GetV1UsersUserIdCommentsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };
@@ -36,11 +36,11 @@ export type GetV1UsersUserIdComments200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         postId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**
@@ -48,7 +48,7 @@ export type GetV1UsersUserIdComments200 = {
         */
         content: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         parentId: string | null;
         /**
@@ -111,7 +111,7 @@ export type GetV1UsersUserIdComments200 = {
             */
             content: string | null;
             /**
-             * @type string
+             * @type string, uuid
             */
             authorId: string;
             /**

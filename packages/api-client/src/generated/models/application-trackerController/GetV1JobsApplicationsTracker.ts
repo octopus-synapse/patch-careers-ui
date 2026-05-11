@@ -37,7 +37,7 @@ export type GetV1JobsApplicationsTracker200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         jobId: string;
         /**

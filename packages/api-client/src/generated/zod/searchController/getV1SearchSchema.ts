@@ -24,7 +24,7 @@ export const getV1SearchQueryParamsSchema = z.object({
 export const getV1Search200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "fullName": z.nullable(z.string()),
 "jobTitle": z.nullable(z.string()),
 "summary": z.nullable(z.string()),

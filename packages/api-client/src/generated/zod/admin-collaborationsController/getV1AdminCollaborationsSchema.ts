@@ -18,8 +18,8 @@ export const getV1AdminCollaborationsQueryParamsSchema = z.object({
 export const getV1AdminCollaborations200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"userId": z.string(),
+"resumeId": z.string().uuid(),
+"userId": z.string().uuid(),
 "role": z.string(),
 "invitedBy": z.string(),
 "invitedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

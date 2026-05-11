@@ -87,7 +87,7 @@ export type GetV1JobsMine200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         authorId: string;
         /**

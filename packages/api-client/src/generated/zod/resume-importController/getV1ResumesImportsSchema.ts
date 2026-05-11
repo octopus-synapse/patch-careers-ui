@@ -12,7 +12,7 @@ import type { GetV1ResumesImports200, GetV1ResumesImports400, GetV1ResumesImport
  */
 export const getV1ResumesImports200Schema = z.array(z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "source": z.enum(["LINKEDIN", "PDF", "DOCX", "JSON", "GITHUB"]),
 "status": z.enum(["PENDING", "PROCESSING", "MAPPING", "VALIDATING", "IMPORTING", "COMPLETED", "FAILED", "PARTIAL"]),
 "data": z.optional(z.object({
@@ -64,7 +64,7 @@ export const getV1ResumesImports200Schema = z.array(z.object({
     }).catchall(z.union([z.boolean(), z.any(), z.array(z.union([z.boolean(), z.any(), z.any(), z.string(), z.number()])), z.any(), z.string(), z.number()]))]))])))
     }))
     })),
-"resumeId": z.optional(z.string()),
+"resumeId": z.optional(z.string().uuid()),
 "errors": z.optional(z.array(z.string())),
 "createdAt": z.string(),
 "updatedAt": z.optional(z.string())

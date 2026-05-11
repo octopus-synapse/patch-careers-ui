@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ChatBlockedUserIdStatus200, GetV1ChatBlockedUserIdStatus400, GetV1ChatBlockedUserIdStatus401, GetV1ChatBlockedUserIdStatus403, GetV1ChatBlockedUserIdStatus404, GetV1ChatBlockedUserIdStatusPathParams, GetV1ChatBlockedUserIdStatusQueryResponse } from "../../models/chat-block-usersController/GetV1ChatBlockedUserIdStatus";
 
 export const getV1ChatBlockedUserIdStatusPathParamsSchema = z.object({
-    "userId": z.string()
+    "userId": z.string().uuid()
     }) as unknown as ToZod<GetV1ChatBlockedUserIdStatusPathParams>
 
 /**

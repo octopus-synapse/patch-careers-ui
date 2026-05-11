@@ -13,7 +13,7 @@ export type PostV1RecruitingMatchCandidates200 = {
     */
     candidates: {
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**

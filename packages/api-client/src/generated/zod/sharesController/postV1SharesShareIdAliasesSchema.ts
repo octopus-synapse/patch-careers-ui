@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1SharesShareIdAliases201, PostV1SharesShareIdAliases400, PostV1SharesShareIdAliases401, PostV1SharesShareIdAliases403, PostV1SharesShareIdAliases404, PostV1SharesShareIdAliasesMutationRequest, PostV1SharesShareIdAliasesMutationResponse, PostV1SharesShareIdAliasesPathParams } from "../../models/sharesController/PostV1SharesShareIdAliases";
 
 export const postV1SharesShareIdAliasesPathParamsSchema = z.object({
-    "shareId": z.string()
+    "shareId": z.string().uuid()
     }) as unknown as ToZod<PostV1SharesShareIdAliasesPathParams>
 
 /**
@@ -18,7 +18,7 @@ export const postV1SharesShareIdAliases201Schema = z.object({
     "alias": z.object({
     "id": z.string(),
 "slug": z.string(),
-"shareId": z.string()
+"shareId": z.string().uuid()
     })
     }) as unknown as ToZod<PostV1SharesShareIdAliases201>
 

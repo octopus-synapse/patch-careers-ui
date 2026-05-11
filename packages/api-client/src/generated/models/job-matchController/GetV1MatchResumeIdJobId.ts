@@ -6,11 +6,11 @@
 
 export type GetV1MatchResumeIdJobIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     jobId: string;
 };

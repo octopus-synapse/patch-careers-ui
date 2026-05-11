@@ -55,7 +55,7 @@ export type PostV1PostsIdRepost201 = ({
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
     /**
@@ -116,7 +116,7 @@ export type PostV1PostsIdRepost201 = ({
         domain: string;
     } | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     originalPostId: string | null;
     /**
@@ -133,7 +133,7 @@ export type PostV1PostsIdRepost201 = ({
     */
     isPublished: boolean;
     /**
-     * @type string
+     * @type string, uuid
     */
     threadId: string | null;
     /**
@@ -244,11 +244,11 @@ export type PostV1PostsIdRepost201 = ({
     */
     kind: PostV1PostsIdRepost201KindEnum2Key;
     /**
-     * @type string
+     * @type string, uuid
     */
     postId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

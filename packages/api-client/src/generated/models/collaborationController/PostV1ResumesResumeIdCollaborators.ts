@@ -6,7 +6,7 @@
 
 export type PostV1ResumesResumeIdCollaboratorsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -24,11 +24,11 @@ export type PostV1ResumesResumeIdCollaborators201 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -211,7 +211,7 @@ export type PostV1ResumesResumeIdCollaboratorsMutationRequestRoleEnumKey = (type
 export type PostV1ResumesResumeIdCollaboratorsMutationRequest = {
     /**
      * @minLength 1
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

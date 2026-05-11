@@ -6,7 +6,7 @@
 
 export type GetV1UsersUserIdReactionsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };
@@ -42,11 +42,11 @@ export type GetV1UsersUserIdReactions200 = {
     */
     items: {
         /**
-         * @type string
+         * @type string, uuid
         */
         postId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -75,7 +75,7 @@ export type GetV1UsersUserIdReactions200 = {
             */
             content: string | null;
             /**
-             * @type string
+             * @type string, uuid
             */
             authorId: string;
             /**

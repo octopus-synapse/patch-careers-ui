@@ -29,8 +29,8 @@ export const getV1JobsIdApplications200Schema = z.object({
 "status": z.enum(["SUBMITTED", "VIEWED", "REJECTED", "ACCEPTED", "WITHDRAWN"]),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "coverLetter": z.nullable(z.string()),
-"resumeId": z.nullable(z.string()),
-"tailoredVersionId": z.nullable(z.string()),
+"resumeId": z.nullable(z.string().uuid()),
+"tailoredVersionId": z.nullable(z.string().uuid()),
 "user": z.nullable(z.object({
     "id": z.string(),
 "name": z.nullable(z.string()),

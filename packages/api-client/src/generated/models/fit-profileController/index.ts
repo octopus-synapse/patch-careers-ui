@@ -1,4 +1,5 @@
 export type { DeleteV1FitProfileMe200, DeleteV1FitProfileMe400, DeleteV1FitProfileMe400SeverityEnumKey, DeleteV1FitProfileMe401, DeleteV1FitProfileMe401SeverityEnumKey, DeleteV1FitProfileMeMutation, DeleteV1FitProfileMeMutationResponse } from "./DeleteV1FitProfileMe";
+export type { GetV1FitProfileAnswers200, GetV1FitProfileAnswers400, GetV1FitProfileAnswers400SeverityEnumKey, GetV1FitProfileAnswers401, GetV1FitProfileAnswers401SeverityEnumKey, GetV1FitProfileAnswersQuery, GetV1FitProfileAnswersQueryResponse } from "./GetV1FitProfileAnswers";
 export type { GetV1FitProfileMe200, GetV1FitProfileMe200RemainingQuestionsEnum2Key, GetV1FitProfileMe200RemainingQuestionsEnumKey, GetV1FitProfileMe200StatusEnumKey, GetV1FitProfileMe400, GetV1FitProfileMe400SeverityEnumKey, GetV1FitProfileMe401, GetV1FitProfileMe401SeverityEnumKey, GetV1FitProfileMeQuery, GetV1FitProfileMeQueryResponse } from "./GetV1FitProfileMe";
 export type { GetV1FitProfileQuestions200, GetV1FitProfileQuestions400, GetV1FitProfileQuestions400SeverityEnumKey, GetV1FitProfileQuestions401, GetV1FitProfileQuestions401SeverityEnumKey, GetV1FitProfileQuestionsQuery, GetV1FitProfileQuestionsQueryResponse, QuestionsDimensionEnumKey, QuestionsScaleTypeEnumKey } from "./GetV1FitProfileQuestions";
 export type { GetV1JobsIdFitProfile200, GetV1JobsIdFitProfile400, GetV1JobsIdFitProfile400SeverityEnumKey, GetV1JobsIdFitProfile401, GetV1JobsIdFitProfile401SeverityEnumKey, GetV1JobsIdFitProfile403, GetV1JobsIdFitProfile403SeverityEnumKey, GetV1JobsIdFitProfile404, GetV1JobsIdFitProfile404SeverityEnumKey, GetV1JobsIdFitProfilePathParams, GetV1JobsIdFitProfileQuery, GetV1JobsIdFitProfileQueryResponse } from "./GetV1JobsIdFitProfile";
@@ -6,6 +7,8 @@ export type { PostV1FitProfileAnswers201, PostV1FitProfileAnswers400, PostV1FitP
 export type { PostV1JobsIdFitProfile201, PostV1JobsIdFitProfile400, PostV1JobsIdFitProfile400SeverityEnumKey, PostV1JobsIdFitProfile401, PostV1JobsIdFitProfile401SeverityEnumKey, PostV1JobsIdFitProfile403, PostV1JobsIdFitProfile403SeverityEnumKey, PostV1JobsIdFitProfile404, PostV1JobsIdFitProfile404SeverityEnumKey, PostV1JobsIdFitProfileMutation, PostV1JobsIdFitProfileMutationRequest, PostV1JobsIdFitProfileMutationResponse, PostV1JobsIdFitProfilePathParams } from "./PostV1JobsIdFitProfile";
 export { deleteV1FitProfileMe400SeverityEnum } from "./DeleteV1FitProfileMe";
 export { deleteV1FitProfileMe401SeverityEnum } from "./DeleteV1FitProfileMe";
+export { getV1FitProfileAnswers400SeverityEnum } from "./GetV1FitProfileAnswers";
+export { getV1FitProfileAnswers401SeverityEnum } from "./GetV1FitProfileAnswers";
 export { getV1FitProfileMe200RemainingQuestionsEnum } from "./GetV1FitProfileMe";
 export { getV1FitProfileMe200RemainingQuestionsEnum2 } from "./GetV1FitProfileMe";
 export { getV1FitProfileMe200StatusEnum } from "./GetV1FitProfileMe";

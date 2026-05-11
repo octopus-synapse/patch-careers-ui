@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdVersions200, GetV1ResumesResumeIdVersions400, GetV1ResumesResumeIdVersions401, GetV1ResumesResumeIdVersions404, GetV1ResumesResumeIdVersionsPathParams, GetV1ResumesResumeIdVersionsQueryResponse } from "../../models/resume-versionsController/GetV1ResumesResumeIdVersions";
 
 export const getV1ResumesResumeIdVersionsPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdVersionsPathParams>
 
 /**

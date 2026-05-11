@@ -140,6 +140,7 @@ export type { GetV1ExportResumeIdJsonQueryKey } from "./exportController/createG
 export type { GetV1ExportResumeIdLatexQueryKey } from "./exportController/createGetV1ExportResumeIdLatex";
 export type { GetV1ExportResumePdfQueryKey } from "./exportController/createGetV1ExportResumePdf";
 export type { GetV1ExportUserUserIdResumePdfQueryKey } from "./exportController/createGetV1ExportUserUserIdResumePdf";
+export type { PostV1ExportResumeBundleMutationKey } from "./exportController/createPostV1ExportResumeBundle";
 export type { GetV1FeatureFlagsActiveQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsActive";
 export type { GetV1FeatureFlagsEvaluateQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsEvaluate";
 export type { GetV1FeatureFlagsStreamQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsStream";
@@ -147,6 +148,7 @@ export type { GetV1FeedQueryKey } from "./feedController/createGetV1Feed";
 export type { GetV1FeedBookmarksQueryKey } from "./feedController/createGetV1FeedBookmarks";
 export type { GetV1FeedUserUserIdQueryKey } from "./feedController/createGetV1FeedUserUserId";
 export type { DeleteV1FitProfileMeMutationKey } from "./fit-profileController/createDeleteV1FitProfileMe";
+export type { GetV1FitProfileAnswersQueryKey } from "./fit-profileController/createGetV1FitProfileAnswers";
 export type { GetV1FitProfileMeQueryKey } from "./fit-profileController/createGetV1FitProfileMe";
 export type { GetV1FitProfileQuestionsQueryKey } from "./fit-profileController/createGetV1FitProfileQuestions";
 export type { GetV1JobsIdFitProfileQueryKey } from "./fit-profileController/createGetV1JobsIdFitProfile";
@@ -165,6 +167,7 @@ export type { GetV1I18NDictionaryErrorsQueryKey } from "./i18nController/createG
 export type { GetV1I18NDictionaryNotificationsQueryKey } from "./i18nController/createGetV1I18NDictionaryNotifications";
 export type { PostV1ImportGithubParseMutationKey } from "./importController/createPostV1ImportGithubParse";
 export type { GetV1MatchResumeIdJobIdQueryKey } from "./job-matchController/createGetV1MatchResumeIdJobId";
+export type { PostV1JobsIdMatchMutationKey } from "./job-matchController/createPostV1JobsIdMatch";
 export type { PostV1MatchMutationKey } from "./job-matchController/createPostV1Match";
 export type { DeleteV1JobsIdMutationKey } from "./jobsController/createDeleteV1JobsId";
 export type { DeleteV1JobsIdApplyMutationKey } from "./jobsController/createDeleteV1JobsIdApply";
@@ -239,6 +242,7 @@ export type { PostV1RecruitingMatchCandidatesMutationKey } from "./recruitingCon
 export type { GetV1AnalyticsResumeIdAtsScoreQueryKey } from "./resume-analyticsController/createGetV1AnalyticsResumeIdAtsScore";
 export type { GetV1AnalyticsResumeIdLiveQueryKey } from "./resume-analyticsController/createGetV1AnalyticsResumeIdLive";
 export type { GetV1AnalyticsResumeIdViewsQueryKey } from "./resume-analyticsController/createGetV1AnalyticsResumeIdViews";
+export type { GetV1AtsSimulateResumeIdQueryKey } from "./resume-analyticsController/createGetV1AtsSimulateResumeId";
 export type { GetV1ResumesResumeIdAnalyticsAtsScoreQueryKey } from "./resume-analyticsController/createGetV1ResumesResumeIdAnalyticsAtsScore";
 export type { GetV1ResumesResumeIdAnalyticsBenchmarkQueryKey } from "./resume-analyticsController/createGetV1ResumesResumeIdAnalyticsBenchmark";
 export type { GetV1ResumesResumeIdAnalyticsDashboardQueryKey } from "./resume-analyticsController/createGetV1ResumesResumeIdAnalyticsDashboard";
@@ -394,6 +398,7 @@ export type { GetV1MeUiStateQueryKey } from "./usersController/createGetV1MeUiSt
 export type { GetV1ProfilesUsernameQueryKey } from "./usersController/createGetV1ProfilesUsername";
 export type { GetV1UsersManageQueryKey } from "./usersController/createGetV1UsersManage";
 export type { GetV1UsersManageIdQueryKey } from "./usersController/createGetV1UsersManageId";
+export type { GetV1UsersMeOneClickApplyQueryKey } from "./usersController/createGetV1UsersMeOneClickApply";
 export type { GetV1UsersMePermissionsQueryKey } from "./usersController/createGetV1UsersMePermissions";
 export type { GetV1UsersPreferencesQueryKey } from "./usersController/createGetV1UsersPreferences";
 export type { GetV1UsersPreferencesFullQueryKey } from "./usersController/createGetV1UsersPreferencesFull";
@@ -410,6 +415,7 @@ export type { PatchV1UsersUsernameMutationKey } from "./usersController/createPa
 export type { PostV1UsersManageMutationKey } from "./usersController/createPostV1UsersManage";
 export type { PostV1UsersManageIdResetPasswordMutationKey } from "./usersController/createPostV1UsersManageIdResetPassword";
 export type { PostV1UsersUsernameValidateMutationKey } from "./usersController/createPostV1UsersUsernameValidate";
+export type { PutV1UsersMeOneClickApplyMutationKey } from "./usersController/createPutV1UsersMeOneClickApply";
 export type { DeleteV1WebhooksIdMutationKey } from "./webhooksController/createDeleteV1WebhooksId";
 export type { GetV1WebhooksQueryKey } from "./webhooksController/createGetV1Webhooks";
 export type { GetV1WebhooksIdDeliveriesQueryKey } from "./webhooksController/createGetV1WebhooksIdDeliveries";
@@ -768,6 +774,8 @@ export { getV1ExportResumePdfQueryOptions } from "./exportController/createGetV1
 export { createGetV1ExportUserUserIdResumePdf } from "./exportController/createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryKey } from "./exportController/createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryOptions } from "./exportController/createGetV1ExportUserUserIdResumePdf";
+export { createPostV1ExportResumeBundle } from "./exportController/createPostV1ExportResumeBundle";
+export { postV1ExportResumeBundleMutationKey } from "./exportController/createPostV1ExportResumeBundle";
 export { createGetV1FeatureFlagsActive } from "./feature-flagsController/createGetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActiveQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActiveQueryOptions } from "./feature-flagsController/createGetV1FeatureFlagsActive";
@@ -788,6 +796,9 @@ export { getV1FeedUserUserIdQueryKey } from "./feedController/createGetV1FeedUse
 export { getV1FeedUserUserIdQueryOptions } from "./feedController/createGetV1FeedUserUserId";
 export { createDeleteV1FitProfileMe } from "./fit-profileController/createDeleteV1FitProfileMe";
 export { deleteV1FitProfileMeMutationKey } from "./fit-profileController/createDeleteV1FitProfileMe";
+export { createGetV1FitProfileAnswers } from "./fit-profileController/createGetV1FitProfileAnswers";
+export { getV1FitProfileAnswersQueryKey } from "./fit-profileController/createGetV1FitProfileAnswers";
+export { getV1FitProfileAnswersQueryOptions } from "./fit-profileController/createGetV1FitProfileAnswers";
 export { createGetV1FitProfileMe } from "./fit-profileController/createGetV1FitProfileMe";
 export { getV1FitProfileMeQueryKey } from "./fit-profileController/createGetV1FitProfileMe";
 export { getV1FitProfileMeQueryOptions } from "./fit-profileController/createGetV1FitProfileMe";
@@ -837,6 +848,8 @@ export { postV1ImportGithubParseMutationKey } from "./importController/createPos
 export { createGetV1MatchResumeIdJobId } from "./job-matchController/createGetV1MatchResumeIdJobId";
 export { getV1MatchResumeIdJobIdQueryKey } from "./job-matchController/createGetV1MatchResumeIdJobId";
 export { getV1MatchResumeIdJobIdQueryOptions } from "./job-matchController/createGetV1MatchResumeIdJobId";
+export { createPostV1JobsIdMatch } from "./job-matchController/createPostV1JobsIdMatch";
+export { postV1JobsIdMatchMutationKey } from "./job-matchController/createPostV1JobsIdMatch";
 export { createPostV1Match } from "./job-matchController/createPostV1Match";
 export { postV1MatchMutationKey } from "./job-matchController/createPostV1Match";
 export { createDeleteV1JobsId } from "./jobsController/createDeleteV1JobsId";
@@ -1031,6 +1044,9 @@ export { getV1AnalyticsResumeIdLiveQueryOptions } from "./resume-analyticsContro
 export { createGetV1AnalyticsResumeIdViews } from "./resume-analyticsController/createGetV1AnalyticsResumeIdViews";
 export { getV1AnalyticsResumeIdViewsQueryKey } from "./resume-analyticsController/createGetV1AnalyticsResumeIdViews";
 export { getV1AnalyticsResumeIdViewsQueryOptions } from "./resume-analyticsController/createGetV1AnalyticsResumeIdViews";
+export { createGetV1AtsSimulateResumeId } from "./resume-analyticsController/createGetV1AtsSimulateResumeId";
+export { getV1AtsSimulateResumeIdQueryKey } from "./resume-analyticsController/createGetV1AtsSimulateResumeId";
+export { getV1AtsSimulateResumeIdQueryOptions } from "./resume-analyticsController/createGetV1AtsSimulateResumeId";
 export { createGetV1ResumesResumeIdAnalyticsAtsScore } from "./resume-analyticsController/createGetV1ResumesResumeIdAnalyticsAtsScore";
 export { getV1ResumesResumeIdAnalyticsAtsScoreQueryKey } from "./resume-analyticsController/createGetV1ResumesResumeIdAnalyticsAtsScore";
 export { getV1ResumesResumeIdAnalyticsAtsScoreQueryOptions } from "./resume-analyticsController/createGetV1ResumesResumeIdAnalyticsAtsScore";
@@ -1435,6 +1451,9 @@ export { getV1UsersManageQueryOptions } from "./usersController/createGetV1Users
 export { createGetV1UsersManageId } from "./usersController/createGetV1UsersManageId";
 export { getV1UsersManageIdQueryKey } from "./usersController/createGetV1UsersManageId";
 export { getV1UsersManageIdQueryOptions } from "./usersController/createGetV1UsersManageId";
+export { createGetV1UsersMeOneClickApply } from "./usersController/createGetV1UsersMeOneClickApply";
+export { getV1UsersMeOneClickApplyQueryKey } from "./usersController/createGetV1UsersMeOneClickApply";
+export { getV1UsersMeOneClickApplyQueryOptions } from "./usersController/createGetV1UsersMeOneClickApply";
 export { createGetV1UsersMePermissions } from "./usersController/createGetV1UsersMePermissions";
 export { getV1UsersMePermissionsQueryKey } from "./usersController/createGetV1UsersMePermissions";
 export { getV1UsersMePermissionsQueryOptions } from "./usersController/createGetV1UsersMePermissions";
@@ -1473,6 +1492,8 @@ export { createPostV1UsersManageIdResetPassword } from "./usersController/create
 export { postV1UsersManageIdResetPasswordMutationKey } from "./usersController/createPostV1UsersManageIdResetPassword";
 export { createPostV1UsersUsernameValidate } from "./usersController/createPostV1UsersUsernameValidate";
 export { postV1UsersUsernameValidateMutationKey } from "./usersController/createPostV1UsersUsernameValidate";
+export { createPutV1UsersMeOneClickApply } from "./usersController/createPutV1UsersMeOneClickApply";
+export { putV1UsersMeOneClickApplyMutationKey } from "./usersController/createPutV1UsersMeOneClickApply";
 export { createDeleteV1WebhooksId } from "./webhooksController/createDeleteV1WebhooksId";
 export { deleteV1WebhooksIdMutationKey } from "./webhooksController/createDeleteV1WebhooksId";
 export { createGetV1Webhooks } from "./webhooksController/createGetV1Webhooks";

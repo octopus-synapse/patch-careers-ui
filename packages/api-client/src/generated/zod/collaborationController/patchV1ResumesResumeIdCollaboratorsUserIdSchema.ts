@@ -8,8 +8,8 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { PatchV1ResumesResumeIdCollaboratorsUserId200, PatchV1ResumesResumeIdCollaboratorsUserId400, PatchV1ResumesResumeIdCollaboratorsUserId401, PatchV1ResumesResumeIdCollaboratorsUserId403, PatchV1ResumesResumeIdCollaboratorsUserId404, PatchV1ResumesResumeIdCollaboratorsUserIdMutationRequest, PatchV1ResumesResumeIdCollaboratorsUserIdMutationResponse, PatchV1ResumesResumeIdCollaboratorsUserIdPathParams } from "../../models/collaborationController/PatchV1ResumesResumeIdCollaboratorsUserId";
 
 export const patchV1ResumesResumeIdCollaboratorsUserIdPathParamsSchema = z.object({
-    "resumeId": z.string(),
-"userId": z.string()
+    "resumeId": z.string().uuid(),
+"userId": z.string().uuid()
     }) as unknown as ToZod<PatchV1ResumesResumeIdCollaboratorsUserIdPathParams>
 
 /**
@@ -18,8 +18,8 @@ export const patchV1ResumesResumeIdCollaboratorsUserIdPathParamsSchema = z.objec
 export const patchV1ResumesResumeIdCollaboratorsUserId200Schema = z.object({
     "collaborator": z.object({
     "id": z.string(),
-"resumeId": z.string(),
-"userId": z.string(),
+"resumeId": z.string().uuid(),
+"userId": z.string().uuid(),
 "role": z.string(),
 "invitedBy": z.string(),
 "invitedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

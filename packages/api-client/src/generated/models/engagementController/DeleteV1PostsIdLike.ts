@@ -17,11 +17,11 @@ export type DeleteV1PostsIdLikePathParams = {
 */
 export type DeleteV1PostsIdLike200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     postId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };

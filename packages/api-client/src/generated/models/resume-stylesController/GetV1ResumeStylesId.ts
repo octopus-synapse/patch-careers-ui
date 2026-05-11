@@ -94,7 +94,7 @@ export type GetV1ResumeStylesId200 = {
     */
     previewImages: string[];
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
 };

@@ -18,7 +18,7 @@ export const getV1ApplyModeWeeklyCuratedCurrent200Schema = z.object({
 "status": z.string(),
 "items": z.array(z.object({
     "id": z.string(),
-"jobId": z.string(),
+"jobId": z.string().uuid(),
 "matchScore": z.number(),
 "status": z.string(),
 "decidedAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."))

@@ -15,8 +15,8 @@ export const postV1JobsIdBookmarkPathParamsSchema = z.object({
  * @description Successful response
  */
 export const postV1JobsIdBookmark201Schema = z.object({
-    "jobId": z.string(),
-"userId": z.string(),
+    "jobId": z.string().uuid(),
+"userId": z.string().uuid(),
 "alreadyBookmarked": z.boolean()
     }) as unknown as ToZod<PostV1JobsIdBookmark201>
 

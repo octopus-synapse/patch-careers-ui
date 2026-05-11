@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdAnalyticsBenchmarkPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

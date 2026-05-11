@@ -6,7 +6,7 @@
 
 export type DeleteV1SharesShareIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     shareId: string;
 };

@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ExportResumeIdJson200, GetV1ExportResumeIdJson400, GetV1ExportResumeIdJson401, GetV1ExportResumeIdJson403, GetV1ExportResumeIdJson404, GetV1ExportResumeIdJsonPathParams, GetV1ExportResumeIdJsonQueryParams, GetV1ExportResumeIdJsonQueryResponse } from "../../models/exportController/GetV1ExportResumeIdJson";
 
 export const getV1ExportResumeIdJsonPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ExportResumeIdJsonPathParams>
 
 export const getV1ExportResumeIdJsonQueryParamsSchema = z.object({

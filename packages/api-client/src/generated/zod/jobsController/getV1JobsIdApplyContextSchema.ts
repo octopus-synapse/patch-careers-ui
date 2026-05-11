@@ -17,7 +17,7 @@ export const getV1JobsIdApplyContextPathParamsSchema = z.object({
 export const getV1JobsIdApplyContext200Schema = z.object({
     "defaults": z.object({
     "coverLetter": z.string(),
-"resumeId": z.nullable(z.string())
+"resumeId": z.nullable(z.string().uuid())
     }),
 "requirements": z.array(z.object({
     "type": z.string(),

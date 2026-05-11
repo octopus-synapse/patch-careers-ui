@@ -25,11 +25,11 @@ export type GetV1ResumesResumeIdSections200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         sectionTypeId: string;
         /**
@@ -170,7 +170,7 @@ export type GetV1ResumesResumeIdSections200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             resumeSectionId: string;
             /**

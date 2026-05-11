@@ -6,11 +6,11 @@
 
 export type DeleteV1AdminCollaborationsResumeIdUserIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
 };

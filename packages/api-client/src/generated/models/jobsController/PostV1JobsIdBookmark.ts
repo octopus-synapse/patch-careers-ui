@@ -17,11 +17,11 @@ export type PostV1JobsIdBookmarkPathParams = {
 */
 export type PostV1JobsIdBookmark201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     jobId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

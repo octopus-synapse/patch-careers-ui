@@ -22,7 +22,7 @@ export type Login200TwoFactorRequiredEnum2Key = (typeof login200TwoFactorRequire
 */
 export type Login200 = ({
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**
@@ -31,7 +31,7 @@ export type Login200 = ({
     twoFactorRequired: Login200TwoFactorRequiredEnumKey;
 } | {
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

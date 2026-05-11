@@ -26,8 +26,8 @@ export const getV1UsersUserIdFollowersQueryParamsSchema = z.object({
 export const getV1UsersUserIdFollowers200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"followerId": z.string(),
-"followingId": z.string(),
+"followerId": z.string().uuid(),
+"followingId": z.string().uuid(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "follower": z.optional(z.object({
     "id": z.string(),

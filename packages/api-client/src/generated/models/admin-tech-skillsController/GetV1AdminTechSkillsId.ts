@@ -72,7 +72,7 @@ export type GetV1AdminTechSkillsId200 = {
     */
     website: string | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     nicheId: string | null;
     /**

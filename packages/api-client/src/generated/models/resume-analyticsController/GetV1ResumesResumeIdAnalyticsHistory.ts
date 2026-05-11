@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdAnalyticsHistoryPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };
@@ -30,7 +30,7 @@ export type GetV1ResumesResumeIdAnalyticsHistory200 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**

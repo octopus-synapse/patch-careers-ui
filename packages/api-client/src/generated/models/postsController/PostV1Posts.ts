@@ -36,7 +36,7 @@ export type PostV1Posts201 = {
     */
     id: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     authorId: string;
     /**
@@ -97,7 +97,7 @@ export type PostV1Posts201 = {
         domain: string;
     } | null;
     /**
-     * @type string
+     * @type string, uuid
     */
     originalPostId: string | null;
     /**
@@ -114,7 +114,7 @@ export type PostV1Posts201 = {
     */
     isPublished: boolean;
     /**
-     * @type string
+     * @type string, uuid
     */
     threadId: string | null;
     /**

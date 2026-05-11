@@ -63,7 +63,7 @@ export const getV1MeGdprExport200Schema = z.object({
 "auditLogs": z.array(z.object({
     "action": z.string(),
 "entityType": z.string(),
-"entityId": z.string(),
+"entityId": z.string().uuid(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "ipAddress": z.nullable(z.string())
     }))

@@ -21,7 +21,7 @@ export type PostV1Shares201 = {
         */
         slug: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         resumeId: string;
         /**
@@ -151,7 +151,7 @@ export type PostV1Shares403 = {
 export type PostV1SharesMutationRequest = {
     /**
      * @minLength 1
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**

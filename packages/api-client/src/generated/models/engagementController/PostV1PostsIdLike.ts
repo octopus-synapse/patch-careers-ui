@@ -27,11 +27,11 @@ export type PostV1PostsIdLike201ReactionTypeEnumKey = (typeof postV1PostsIdLike2
 */
 export type PostV1PostsIdLike201 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     postId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**
@@ -39,7 +39,7 @@ export type PostV1PostsIdLike201 = {
     */
     reactionType: PostV1PostsIdLike201ReactionTypeEnumKey;
     /**
-     * @type string | undefined
+     * @type string | undefined, uuid
     */
     postAuthorId?: string;
     /**

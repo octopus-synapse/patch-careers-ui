@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesImportsImportId200, GetV1ResumesImportsImportId400, GetV1ResumesImportsImportId401, GetV1ResumesImportsImportId403, GetV1ResumesImportsImportId404, GetV1ResumesImportsImportIdPathParams, GetV1ResumesImportsImportIdQueryResponse } from "../../models/resume-importController/GetV1ResumesImportsImportId";
 
 export const getV1ResumesImportsImportIdPathParamsSchema = z.object({
-    "importId": z.string()
+    "importId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesImportsImportIdPathParams>
 
 /**
@@ -16,7 +16,7 @@ export const getV1ResumesImportsImportIdPathParamsSchema = z.object({
  */
 export const getV1ResumesImportsImportId200Schema = z.object({
     "id": z.string(),
-"userId": z.string(),
+"userId": z.string().uuid(),
 "source": z.enum(["LINKEDIN", "PDF", "DOCX", "JSON", "GITHUB"]),
 "status": z.enum(["PENDING", "PROCESSING", "MAPPING", "VALIDATING", "IMPORTING", "COMPLETED", "FAILED", "PARTIAL"]),
 "data": z.optional(z.object({
@@ -68,7 +68,7 @@ export const getV1ResumesImportsImportId200Schema = z.object({
     }).catchall(z.union([z.boolean(), z.any(), z.array(z.union([z.boolean(), z.any(), z.any(), z.string(), z.number()])), z.any(), z.string(), z.number()]))]))])))
     }))
     })),
-"resumeId": z.optional(z.string()),
+"resumeId": z.optional(z.string().uuid()),
 "errors": z.optional(z.array(z.string())),
 "createdAt": z.string(),
 "updatedAt": z.optional(z.string())

@@ -15,8 +15,8 @@ export const deleteV1PostsIdLikePathParamsSchema = z.object({
  * @description Successful response
  */
 export const deleteV1PostsIdLike200Schema = z.object({
-    "postId": z.string(),
-"userId": z.string()
+    "postId": z.string().uuid(),
+"userId": z.string().uuid()
     }) as unknown as ToZod<DeleteV1PostsIdLike200>
 
 /**

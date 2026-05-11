@@ -39,7 +39,7 @@ export type QuestionsScaleTypeEnumKey = (typeof questionsScaleTypeEnum)[keyof ty
 */
 export type GetV1FitProfileQuestions200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     questionSetId: string;
     /**

@@ -6,11 +6,11 @@
 
 export type GetV1ResumesResumeIdSharesShareIdAnalyticsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     shareId: string;
 };
@@ -31,7 +31,7 @@ export type GetV1ResumesResumeIdSharesShareIdAnalytics200 = {
     */
     analytics: {
         /**
-         * @type string
+         * @type string, uuid
         */
         shareId: string;
         /**

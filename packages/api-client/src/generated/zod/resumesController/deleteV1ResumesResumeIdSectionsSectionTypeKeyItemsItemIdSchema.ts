@@ -10,7 +10,7 @@ import type { DeleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId200, Delet
 export const deleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParamsSchema = z.object({
     "resumeId": z.string().uuid().describe("Resume UUID (path parameter)."),
 "sectionTypeKey": z.string(),
-"itemId": z.string()
+"itemId": z.string().uuid()
     }) as unknown as ToZod<DeleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemIdPathParams>
 
 /**

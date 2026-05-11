@@ -23,11 +23,11 @@ export type DeleteV1JobsIdApply200WithdrawnEnumKey = (typeof deleteV1JobsIdApply
 */
 export type DeleteV1JobsIdApply200 = {
     /**
-     * @type string
+     * @type string, uuid
     */
     jobId: string;
     /**
-     * @type string
+     * @type string, uuid
     */
     userId: string;
     /**

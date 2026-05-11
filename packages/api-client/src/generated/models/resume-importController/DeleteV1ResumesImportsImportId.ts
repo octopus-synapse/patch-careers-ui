@@ -6,7 +6,7 @@
 
 export type DeleteV1ResumesImportsImportIdPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     importId: string;
 };

@@ -6,7 +6,7 @@
 
 export type GetV1ResumesResumeIdVersionsPathParams = {
     /**
-     * @type string
+     * @type string, uuid
     */
     resumeId: string;
 };

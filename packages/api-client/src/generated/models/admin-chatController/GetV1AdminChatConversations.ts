@@ -91,7 +91,7 @@ export type GetV1AdminChatConversations200 = {
         */
         lastMessageAt: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         lastMessageSenderId: string | null;
     }[];

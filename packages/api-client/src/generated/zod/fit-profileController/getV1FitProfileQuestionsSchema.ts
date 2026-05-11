@@ -11,7 +11,7 @@ import type { GetV1FitProfileQuestions200, GetV1FitProfileQuestions400, GetV1Fit
  * @description Successful response
  */
 export const getV1FitProfileQuestions200Schema = z.object({
-    "questionSetId": z.string(),
+    "questionSetId": z.string().uuid(),
 "seed": z.string(),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "questions": z.array(z.object({

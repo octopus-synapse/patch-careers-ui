@@ -8,7 +8,7 @@ import type { ToZod } from "../../.kubb/ToZod";
 import type { GetV1ResumesResumeIdTailoredVersions200, GetV1ResumesResumeIdTailoredVersions400, GetV1ResumesResumeIdTailoredVersions401, GetV1ResumesResumeIdTailoredVersions404, GetV1ResumesResumeIdTailoredVersionsPathParams, GetV1ResumesResumeIdTailoredVersionsQueryResponse } from "../../models/resume-tailorController/GetV1ResumesResumeIdTailoredVersions";
 
 export const getV1ResumesResumeIdTailoredVersionsPathParamsSchema = z.object({
-    "resumeId": z.string()
+    "resumeId": z.string().uuid()
     }) as unknown as ToZod<GetV1ResumesResumeIdTailoredVersionsPathParams>
 
 /**
@@ -20,7 +20,7 @@ export const getV1ResumesResumeIdTailoredVersions200Schema = z.object({
 "versionNumber": z.number().int(),
 "label": z.nullable(z.string()),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
-"tailoredJobId": z.nullable(z.string())
+"tailoredJobId": z.nullable(z.string().uuid())
     }))
     }) as unknown as ToZod<GetV1ResumesResumeIdTailoredVersions200>
 

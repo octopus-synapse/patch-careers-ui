@@ -16,7 +16,7 @@ export const getV1UsersMeConnectionRecommendationsQueryParamsSchema = z.object({
  */
 export const getV1UsersMeConnectionRecommendations200Schema = z.object({
     "recommendations": z.array(z.object({
-    "userId": z.string(),
+    "userId": z.string().uuid(),
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "sharedSkills": z.array(z.string()),

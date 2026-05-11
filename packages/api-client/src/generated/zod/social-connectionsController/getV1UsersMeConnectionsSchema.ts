@@ -22,8 +22,8 @@ export const getV1UsersMeConnectionsQueryParamsSchema = z.object({
 export const getV1UsersMeConnections200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
-"requesterId": z.string(),
-"targetId": z.string(),
+"requesterId": z.string().uuid(),
+"targetId": z.string().uuid(),
 "status": z.enum(["PENDING", "ACCEPTED", "REJECTED"]),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),

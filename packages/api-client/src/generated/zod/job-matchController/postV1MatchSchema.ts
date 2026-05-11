@@ -79,8 +79,8 @@ export const postV1Match403Schema = z.object({
     }) as unknown as ToZod<PostV1Match403>
 
 export const postV1MatchMutationRequestSchema = z.object({
-    "resumeId": z.string().min(1),
-"jobId": z.string().min(1)
+    "resumeId": z.string().uuid(),
+"jobId": z.string().uuid()
     }) as unknown as ToZod<PostV1MatchMutationRequest>
 
 export const postV1MatchMutationResponseSchema = z.lazy(() => postV1Match201Schema) as unknown as ToZod<PostV1MatchMutationResponse>

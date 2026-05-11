@@ -25,7 +25,7 @@ export type GetV1ResumesManageUserUserId200 = {
         */
         id: string;
         /**
-         * @type string
+         * @type string, uuid
         */
         userId: string;
         /**
@@ -61,7 +61,7 @@ export type GetV1ResumesManageUserUserId200 = {
         */
         accentColor: string | null;
         /**
-         * @type string
+         * @type string, uuid
         */
         styleId: string | null;
         /**
@@ -83,11 +83,11 @@ export type GetV1ResumesManageUserUserId200 = {
             */
             id: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             resumeId: string;
             /**
-             * @type string
+             * @type string, uuid
             */
             sectionTypeId: string;
             /**
@@ -228,7 +228,7 @@ export type GetV1ResumesManageUserUserId200 = {
                 */
                 id: string;
                 /**
-                 * @type string
+                 * @type string, uuid
                 */
                 resumeSectionId: string;
                 /**
