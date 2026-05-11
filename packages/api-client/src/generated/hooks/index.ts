@@ -140,7 +140,7 @@ export type { GetV1ExportResumeIdJsonQueryKey } from "./exportController/createG
 export type { GetV1ExportResumeIdLatexQueryKey } from "./exportController/createGetV1ExportResumeIdLatex";
 export type { GetV1ExportResumePdfQueryKey } from "./exportController/createGetV1ExportResumePdf";
 export type { GetV1ExportUserUserIdResumePdfQueryKey } from "./exportController/createGetV1ExportUserUserIdResumePdf";
-export type { PostV1ExportResumeBundleMutationKey } from "./exportController/createPostV1ExportResumeBundle";
+export type { PostV1ExportResumeIdBundleMutationKey } from "./exportController/createPostV1ExportResumeIdBundle";
 export type { GetV1FeatureFlagsActiveQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsActive";
 export type { GetV1FeatureFlagsEvaluateQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsEvaluate";
 export type { GetV1FeatureFlagsStreamQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsStream";
@@ -774,8 +774,8 @@ export { getV1ExportResumePdfQueryOptions } from "./exportController/createGetV1
 export { createGetV1ExportUserUserIdResumePdf } from "./exportController/createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryKey } from "./exportController/createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryOptions } from "./exportController/createGetV1ExportUserUserIdResumePdf";
-export { createPostV1ExportResumeBundle } from "./exportController/createPostV1ExportResumeBundle";
-export { postV1ExportResumeBundleMutationKey } from "./exportController/createPostV1ExportResumeBundle";
+export { createPostV1ExportResumeIdBundle } from "./exportController/createPostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundleMutationKey } from "./exportController/createPostV1ExportResumeIdBundle";
 export { createGetV1FeatureFlagsActive } from "./feature-flagsController/createGetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActiveQueryKey } from "./feature-flagsController/createGetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActiveQueryOptions } from "./feature-flagsController/createGetV1FeatureFlagsActive";

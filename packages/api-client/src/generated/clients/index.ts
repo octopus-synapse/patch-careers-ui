@@ -177,7 +177,7 @@ export { getV1ExportResumeIdJson } from "./exportController/getV1ExportResumeIdJ
 export { getV1ExportResumeIdLatex } from "./exportController/getV1ExportResumeIdLatex";
 export { getV1ExportResumePdf } from "./exportController/getV1ExportResumePdf";
 export { getV1ExportUserUserIdResumePdf } from "./exportController/getV1ExportUserUserIdResumePdf";
-export { postV1ExportResumeBundle } from "./exportController/postV1ExportResumeBundle";
+export { postV1ExportResumeIdBundle } from "./exportController/postV1ExportResumeIdBundle";
 export { featureFlagsController } from "./feature-flagsController/featureFlagsController";
 export { getV1FeatureFlagsActive } from "./feature-flagsController/getV1FeatureFlagsActive";
 export { getV1FeatureFlagsEvaluate } from "./feature-flagsController/getV1FeatureFlagsEvaluate";

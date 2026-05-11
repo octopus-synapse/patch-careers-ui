@@ -140,7 +140,7 @@ export type { GetV1ExportResumeIdJsonQueryKey } from "./hooks/exportController/c
 export type { GetV1ExportResumeIdLatexQueryKey } from "./hooks/exportController/createGetV1ExportResumeIdLatex";
 export type { GetV1ExportResumePdfQueryKey } from "./hooks/exportController/createGetV1ExportResumePdf";
 export type { GetV1ExportUserUserIdResumePdfQueryKey } from "./hooks/exportController/createGetV1ExportUserUserIdResumePdf";
-export type { PostV1ExportResumeBundleMutationKey } from "./hooks/exportController/createPostV1ExportResumeBundle";
+export type { PostV1ExportResumeIdBundleMutationKey } from "./hooks/exportController/createPostV1ExportResumeIdBundle";
 export type { GetV1FeatureFlagsActiveQueryKey } from "./hooks/feature-flagsController/createGetV1FeatureFlagsActive";
 export type { GetV1FeatureFlagsEvaluateQueryKey } from "./hooks/feature-flagsController/createGetV1FeatureFlagsEvaluate";
 export type { GetV1FeatureFlagsStreamQueryKey } from "./hooks/feature-flagsController/createGetV1FeatureFlagsStream";
@@ -591,7 +591,7 @@ export type { GetV1ExportResumeIdJson200, GetV1ExportResumeIdJson400, GetV1Expor
 export type { GetV1ExportResumeIdLatex200, GetV1ExportResumeIdLatex400, GetV1ExportResumeIdLatex400SeverityEnumKey, GetV1ExportResumeIdLatex401, GetV1ExportResumeIdLatex401SeverityEnumKey, GetV1ExportResumeIdLatex403, GetV1ExportResumeIdLatex403SeverityEnumKey, GetV1ExportResumeIdLatex404, GetV1ExportResumeIdLatex404SeverityEnumKey, GetV1ExportResumeIdLatexPathParams, GetV1ExportResumeIdLatexQuery, GetV1ExportResumeIdLatexQueryParams, GetV1ExportResumeIdLatexQueryResponse } from "./models/exportController/GetV1ExportResumeIdLatex";
 export type { GetV1ExportResumePdf200, GetV1ExportResumePdf400, GetV1ExportResumePdf400SeverityEnumKey, GetV1ExportResumePdf401, GetV1ExportResumePdf401SeverityEnumKey, GetV1ExportResumePdf403, GetV1ExportResumePdf403SeverityEnumKey, GetV1ExportResumePdfQuery, GetV1ExportResumePdfQueryParams, GetV1ExportResumePdfQueryResponse } from "./models/exportController/GetV1ExportResumePdf";
 export type { GetV1ExportUserUserIdResumePdf200, GetV1ExportUserUserIdResumePdf400, GetV1ExportUserUserIdResumePdf400SeverityEnumKey, GetV1ExportUserUserIdResumePdf401, GetV1ExportUserUserIdResumePdf401SeverityEnumKey, GetV1ExportUserUserIdResumePdf404, GetV1ExportUserUserIdResumePdf404SeverityEnumKey, GetV1ExportUserUserIdResumePdfPathParams, GetV1ExportUserUserIdResumePdfQuery, GetV1ExportUserUserIdResumePdfQueryResponse } from "./models/exportController/GetV1ExportUserUserIdResumePdf";
-export type { PostV1ExportResumeBundle201, PostV1ExportResumeBundle400, PostV1ExportResumeBundle400SeverityEnumKey, PostV1ExportResumeBundle401, PostV1ExportResumeBundle401SeverityEnumKey, PostV1ExportResumeBundle403, PostV1ExportResumeBundle403SeverityEnumKey, PostV1ExportResumeBundleMutation, PostV1ExportResumeBundleMutationRequest, PostV1ExportResumeBundleMutationRequestFormatsEnumKey, PostV1ExportResumeBundleMutationRequestLanguageEnumKey, PostV1ExportResumeBundleMutationResponse } from "./models/exportController/PostV1ExportResumeBundle";
+export type { PostV1ExportResumeIdBundle201, PostV1ExportResumeIdBundle400, PostV1ExportResumeIdBundle400SeverityEnumKey, PostV1ExportResumeIdBundle401, PostV1ExportResumeIdBundle401SeverityEnumKey, PostV1ExportResumeIdBundle403, PostV1ExportResumeIdBundle403SeverityEnumKey, PostV1ExportResumeIdBundle404, PostV1ExportResumeIdBundle404SeverityEnumKey, PostV1ExportResumeIdBundleMutation, PostV1ExportResumeIdBundleMutationRequest, PostV1ExportResumeIdBundleMutationRequestFormatsEnumKey, PostV1ExportResumeIdBundleMutationRequestLanguageEnumKey, PostV1ExportResumeIdBundleMutationResponse, PostV1ExportResumeIdBundlePathParams } from "./models/exportController/PostV1ExportResumeIdBundle";
 export type { GetV1FeatureFlagsActive200, GetV1FeatureFlagsActive400, GetV1FeatureFlagsActive400SeverityEnumKey, GetV1FeatureFlagsActive401, GetV1FeatureFlagsActive401SeverityEnumKey, GetV1FeatureFlagsActiveQuery, GetV1FeatureFlagsActiveQueryResponse } from "./models/feature-flagsController/GetV1FeatureFlagsActive";
 export type { GetV1FeatureFlagsEvaluate200, GetV1FeatureFlagsEvaluate400, GetV1FeatureFlagsEvaluate400SeverityEnumKey, GetV1FeatureFlagsEvaluate401, GetV1FeatureFlagsEvaluate401SeverityEnumKey, GetV1FeatureFlagsEvaluateQuery, GetV1FeatureFlagsEvaluateQueryResponse } from "./models/feature-flagsController/GetV1FeatureFlagsEvaluate";
 export type { GetV1FeatureFlagsStream200, GetV1FeatureFlagsStream400, GetV1FeatureFlagsStream400SeverityEnumKey, GetV1FeatureFlagsStream401, GetV1FeatureFlagsStream401SeverityEnumKey, GetV1FeatureFlagsStreamQuery, GetV1FeatureFlagsStreamQueryResponse } from "./models/feature-flagsController/GetV1FeatureFlagsStream";
@@ -1051,7 +1051,7 @@ export { getV1ExportResumeIdJson } from "./clients/exportController/getV1ExportR
 export { getV1ExportResumeIdLatex } from "./clients/exportController/getV1ExportResumeIdLatex";
 export { getV1ExportResumePdf } from "./clients/exportController/getV1ExportResumePdf";
 export { getV1ExportUserUserIdResumePdf } from "./clients/exportController/getV1ExportUserUserIdResumePdf";
-export { postV1ExportResumeBundle } from "./clients/exportController/postV1ExportResumeBundle";
+export { postV1ExportResumeIdBundle } from "./clients/exportController/postV1ExportResumeIdBundle";
 export { featureFlagsController } from "./clients/feature-flagsController/featureFlagsController";
 export { getV1FeatureFlagsActive } from "./clients/feature-flagsController/getV1FeatureFlagsActive";
 export { getV1FeatureFlagsEvaluate } from "./clients/feature-flagsController/getV1FeatureFlagsEvaluate";
@@ -1745,8 +1745,8 @@ export { getV1ExportResumePdfQueryOptions } from "./hooks/exportController/creat
 export { createGetV1ExportUserUserIdResumePdf } from "./hooks/exportController/createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryKey } from "./hooks/exportController/createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryOptions } from "./hooks/exportController/createGetV1ExportUserUserIdResumePdf";
-export { createPostV1ExportResumeBundle } from "./hooks/exportController/createPostV1ExportResumeBundle";
-export { postV1ExportResumeBundleMutationKey } from "./hooks/exportController/createPostV1ExportResumeBundle";
+export { createPostV1ExportResumeIdBundle } from "./hooks/exportController/createPostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundleMutationKey } from "./hooks/exportController/createPostV1ExportResumeIdBundle";
 export { createGetV1FeatureFlagsActive } from "./hooks/feature-flagsController/createGetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActiveQueryKey } from "./hooks/feature-flagsController/createGetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActiveQueryOptions } from "./hooks/feature-flagsController/createGetV1FeatureFlagsActive";
@@ -3013,11 +3013,12 @@ export { getV1ExportResumePdf403SeverityEnum } from "./models/exportController/G
 export { getV1ExportUserUserIdResumePdf400SeverityEnum } from "./models/exportController/GetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdf401SeverityEnum } from "./models/exportController/GetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdf404SeverityEnum } from "./models/exportController/GetV1ExportUserUserIdResumePdf";
-export { postV1ExportResumeBundle400SeverityEnum } from "./models/exportController/PostV1ExportResumeBundle";
-export { postV1ExportResumeBundle401SeverityEnum } from "./models/exportController/PostV1ExportResumeBundle";
-export { postV1ExportResumeBundle403SeverityEnum } from "./models/exportController/PostV1ExportResumeBundle";
-export { postV1ExportResumeBundleMutationRequestFormatsEnum } from "./models/exportController/PostV1ExportResumeBundle";
-export { postV1ExportResumeBundleMutationRequestLanguageEnum } from "./models/exportController/PostV1ExportResumeBundle";
+export { postV1ExportResumeIdBundle400SeverityEnum } from "./models/exportController/PostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundle401SeverityEnum } from "./models/exportController/PostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundle403SeverityEnum } from "./models/exportController/PostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundle404SeverityEnum } from "./models/exportController/PostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundleMutationRequestFormatsEnum } from "./models/exportController/PostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundleMutationRequestLanguageEnum } from "./models/exportController/PostV1ExportResumeIdBundle";
 export { getV1FeatureFlagsActive400SeverityEnum } from "./models/feature-flagsController/GetV1FeatureFlagsActive";
 export { getV1FeatureFlagsActive401SeverityEnum } from "./models/feature-flagsController/GetV1FeatureFlagsActive";
 export { getV1FeatureFlagsEvaluate400SeverityEnum } from "./models/feature-flagsController/GetV1FeatureFlagsEvaluate";
@@ -4248,7 +4249,7 @@ export { getV1ExportResumeIdJson200Schema, getV1ExportResumeIdJson400Schema, get
 export { getV1ExportResumeIdLatex200Schema, getV1ExportResumeIdLatex400Schema, getV1ExportResumeIdLatex401Schema, getV1ExportResumeIdLatex403Schema, getV1ExportResumeIdLatex404Schema, getV1ExportResumeIdLatexPathParamsSchema, getV1ExportResumeIdLatexQueryParamsSchema, getV1ExportResumeIdLatexQueryResponseSchema } from "./zod/exportController/getV1ExportResumeIdLatexSchema";
 export { getV1ExportResumePdf200Schema, getV1ExportResumePdf400Schema, getV1ExportResumePdf401Schema, getV1ExportResumePdf403Schema, getV1ExportResumePdfQueryParamsSchema, getV1ExportResumePdfQueryResponseSchema } from "./zod/exportController/getV1ExportResumePdfSchema";
 export { getV1ExportUserUserIdResumePdf200Schema, getV1ExportUserUserIdResumePdf400Schema, getV1ExportUserUserIdResumePdf401Schema, getV1ExportUserUserIdResumePdf404Schema, getV1ExportUserUserIdResumePdfPathParamsSchema, getV1ExportUserUserIdResumePdfQueryResponseSchema } from "./zod/exportController/getV1ExportUserUserIdResumePdfSchema";
-export { postV1ExportResumeBundle201Schema, postV1ExportResumeBundle400Schema, postV1ExportResumeBundle401Schema, postV1ExportResumeBundle403Schema, postV1ExportResumeBundleMutationRequestSchema, postV1ExportResumeBundleMutationResponseSchema } from "./zod/exportController/postV1ExportResumeBundleSchema";
+export { postV1ExportResumeIdBundle201Schema, postV1ExportResumeIdBundle400Schema, postV1ExportResumeIdBundle401Schema, postV1ExportResumeIdBundle403Schema, postV1ExportResumeIdBundle404Schema, postV1ExportResumeIdBundleMutationRequestSchema, postV1ExportResumeIdBundleMutationResponseSchema, postV1ExportResumeIdBundlePathParamsSchema } from "./zod/exportController/postV1ExportResumeIdBundleSchema";
 export { getV1FeatureFlagsActive200Schema, getV1FeatureFlagsActive400Schema, getV1FeatureFlagsActive401Schema, getV1FeatureFlagsActiveQueryResponseSchema } from "./zod/feature-flagsController/getV1FeatureFlagsActiveSchema";
 export { getV1FeatureFlagsEvaluate200Schema, getV1FeatureFlagsEvaluate400Schema, getV1FeatureFlagsEvaluate401Schema, getV1FeatureFlagsEvaluateQueryResponseSchema } from "./zod/feature-flagsController/getV1FeatureFlagsEvaluateSchema";
 export { getV1FeatureFlagsStream200Schema, getV1FeatureFlagsStream400Schema, getV1FeatureFlagsStream401Schema, getV1FeatureFlagsStreamQueryResponseSchema } from "./zod/feature-flagsController/getV1FeatureFlagsStreamSchema";

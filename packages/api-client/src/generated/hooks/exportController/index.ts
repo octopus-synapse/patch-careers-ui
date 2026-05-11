@@ -4,7 +4,7 @@ export type { GetV1ExportResumeIdJsonQueryKey } from "./createGetV1ExportResumeI
 export type { GetV1ExportResumeIdLatexQueryKey } from "./createGetV1ExportResumeIdLatex";
 export type { GetV1ExportResumePdfQueryKey } from "./createGetV1ExportResumePdf";
 export type { GetV1ExportUserUserIdResumePdfQueryKey } from "./createGetV1ExportUserUserIdResumePdf";
-export type { PostV1ExportResumeBundleMutationKey } from "./createPostV1ExportResumeBundle";
+export type { PostV1ExportResumeIdBundleMutationKey } from "./createPostV1ExportResumeIdBundle";
 export { createGetV1ExportBanner } from "./createGetV1ExportBanner";
 export { getV1ExportBannerQueryKey } from "./createGetV1ExportBanner";
 export { getV1ExportBannerQueryOptions } from "./createGetV1ExportBanner";
@@ -23,5 +23,5 @@ export { getV1ExportResumePdfQueryOptions } from "./createGetV1ExportResumePdf";
 export { createGetV1ExportUserUserIdResumePdf } from "./createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryKey } from "./createGetV1ExportUserUserIdResumePdf";
 export { getV1ExportUserUserIdResumePdfQueryOptions } from "./createGetV1ExportUserUserIdResumePdf";
-export { createPostV1ExportResumeBundle } from "./createPostV1ExportResumeBundle";
-export { postV1ExportResumeBundleMutationKey } from "./createPostV1ExportResumeBundle";
+export { createPostV1ExportResumeIdBundle } from "./createPostV1ExportResumeIdBundle";
+export { postV1ExportResumeIdBundleMutationKey } from "./createPostV1ExportResumeIdBundle";

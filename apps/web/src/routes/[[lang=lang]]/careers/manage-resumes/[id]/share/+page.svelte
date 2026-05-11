@@ -12,7 +12,7 @@ import {
   getV1SharesShareIdAliases,
   getV1SharesShareIdAliasesQueryKey,
   getV1SharesResumeResumeId,
-  postV1ExportResumeBundle,
+  postV1ExportResumeIdBundle,
   postV1Shares,
   postV1SharesShareIdAliases,
   deleteV1SharesShareId,
@@ -216,7 +216,7 @@ async function downloadBundle() {
   if (!resumeId) return;
   bundleDownloading = true;
   try {
-    const signed = await postV1ExportResumeBundle({ resumeId });
+    const signed = await postV1ExportResumeIdBundle(resumeId);
     const a = document.createElement('a');
     a.href = signed.downloadUrl;
     a.download = signed.filename;
