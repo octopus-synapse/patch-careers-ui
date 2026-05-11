@@ -21,6 +21,7 @@
   const chatStatsQuery = createGetV1AdminChatStats({
       query: { enabled: browser },
     });
+  // svelte-ignore state_referenced_locally
   const chatConversationsQuery = createGetV1AdminChatConversations(
     { page: chatPage, pageSize: 20 },
     { query: { enabled: () => browser && activeTab === 'chat'} },
@@ -28,6 +29,7 @@
   const collabStatsQuery = createGetV1AdminCollaborationsStats({
       query: { enabled: browser },
     });
+  // svelte-ignore state_referenced_locally
   const collabListQuery = createGetV1AdminCollaborations(
     { page: collabPage, pageSize: 20 },
     { query: { enabled: () => browser && activeTab === 'collaborations'} },

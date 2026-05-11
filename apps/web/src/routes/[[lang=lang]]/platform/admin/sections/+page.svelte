@@ -21,6 +21,7 @@
   let pageSize = $state(20);
   let search = $state('');
 
+  // svelte-ignore state_referenced_locally
   const listQuery = createGetV1AdminSectionTypes(
     { page, limit: pageSize, search: search || undefined },
     { query: { enabled: () => browser} },

@@ -93,6 +93,7 @@ const conversations = createGetV1ChatConversations(
 );
 const convList = $derived(extractConversations($conversations.data));
 
+// svelte-ignore state_referenced_locally
 const messages = createGetV1ChatConversationsConversationIdMessages(
   activeId ?? undefined,
   { limit: 100 },

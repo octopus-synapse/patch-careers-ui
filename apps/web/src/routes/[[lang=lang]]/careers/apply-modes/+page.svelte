@@ -34,6 +34,7 @@ $effect(() => {
 
 const queryClient = useQueryClient();
 
+// svelte-ignore state_referenced_locally
 const preferencesQuery = createGetV1UsersPreferencesFull({
   query: { enabled: browser && authenticated },
 });

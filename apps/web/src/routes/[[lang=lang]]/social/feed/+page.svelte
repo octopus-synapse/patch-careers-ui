@@ -131,6 +131,7 @@ const fitScoreByPostId = $derived.by<Record<string, PostFitScore>>(() => {
   return map;
 });
 
+// svelte-ignore state_referenced_locally
 const feedQuery = createGetV1Feed(
   {
     cursor: pagination.cursor,

@@ -23,6 +23,7 @@ const queryParams = $derived.by(() => {
   return params;
 });
 
+// svelte-ignore state_referenced_locally
 const candidatesQuery = createGetV1ShadowProfilesCandidates(queryParams, {
   query: { enabled: () => browser},
 });

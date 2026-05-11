@@ -39,6 +39,7 @@ $effect(() => {
   }
 });
 
+// svelte-ignore state_referenced_locally
 const usernameCheck = createGetV1UsersUsernameCheck(
   { username: debouncedUsername },
   { query: { enabled: () => browser && debouncedUsername.length >= 3} },

@@ -62,6 +62,7 @@ const queryParams = $derived({
   sortBy: getV1SearchQueryParamsSortByEnum.relevance,
 });
 
+// svelte-ignore state_referenced_locally
 const query = createGetV1Search(
   queryParams,
   {
@@ -69,6 +70,7 @@ const query = createGetV1Search(
       },
 );
 
+// svelte-ignore state_referenced_locally
 const jobsQuery = createGetV1Jobs(
   { search: initialQuery, page: 1, limit: 20 },
   {

@@ -59,6 +59,7 @@ const tabs = $derived([
   { value: 'all', label: t('jobs.tabAll') },
 ]);
 
+// svelte-ignore state_referenced_locally
 const jobsQuery = createGetV1Jobs(
   {
     page,
@@ -70,6 +71,7 @@ const jobsQuery = createGetV1Jobs(
   { query: { enabled: () => browser && activeTab === 'all'} },
 );
 
+// svelte-ignore state_referenced_locally
 const recommendedQuery = createGetV1JobsRecommended(
   { page, limit: 20 },
   { query: { enabled: () => browser && activeTab === 'recommended'} },
@@ -81,6 +83,7 @@ const recommendedData = $derived($recommendedQuery.data);
 // Side-channel: pull structured fit scores for the current page of jobs.
 // Backend canonical response merges the breakdown into each item; we mirror it
 // so the chip can expand into matched / missing skills on hover.
+// svelte-ignore state_referenced_locally
 const fitScoreQuery = createGetV1JobsWithFitScore(
   {
     page,

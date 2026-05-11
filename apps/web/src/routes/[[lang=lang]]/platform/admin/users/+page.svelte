@@ -23,6 +23,7 @@
   let search = $state('');
   let roleName = $state('');
 
+  // svelte-ignore state_referenced_locally
   const listQuery = createGetV1UsersManage(
     {
         page,

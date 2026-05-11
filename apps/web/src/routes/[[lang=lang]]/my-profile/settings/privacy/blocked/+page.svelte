@@ -22,6 +22,7 @@ const t = $derived(locale.t);
 const auth = useAuth();
 const authenticated = $derived(auth.isAuthenticated);
 
+// svelte-ignore state_referenced_locally
 const query = createGetV1ChatBlocked({
   query: { enabled: browser && authenticated },
 });

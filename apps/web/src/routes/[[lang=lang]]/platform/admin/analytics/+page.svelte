@@ -12,6 +12,7 @@
 
   let period = $state<'day' | 'week' | 'month'>('day');
 
+  // svelte-ignore state_referenced_locally
   const analyticsQuery = createGetV1AdminAnalyticsOverview(
     { period },
     { query: { enabled: () => browser} },

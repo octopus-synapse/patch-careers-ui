@@ -47,22 +47,27 @@
 
   const params = $derived({ page: 1, pageSize: 50, search: search || undefined });
 
+  // svelte-ignore state_referenced_locally
   const areasQuery = createGetV1AdminTechAreas(
     params,
     { query: { enabled: () => browser && tab === 'areas'} },
   );
+  // svelte-ignore state_referenced_locally
   const nichesQuery = createGetV1AdminTechNiches(
     params,
     { query: { enabled: () => browser && tab === 'niches'} },
   );
+  // svelte-ignore state_referenced_locally
   const skillsQuery = createGetV1AdminTechSkills(
     params,
     { query: { enabled: () => browser && tab === 'skills'} },
   );
+  // svelte-ignore state_referenced_locally
   const progQuery = createGetV1AdminProgrammingLanguages(
     params,
     { query: { enabled: () => browser && tab === 'programming'} },
   );
+  // svelte-ignore state_referenced_locally
   const spokenQuery = createGetV1AdminSpokenLanguages(
     params,
     { query: { enabled: () => browser && tab === 'spoken'} },

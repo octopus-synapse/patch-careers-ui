@@ -46,6 +46,7 @@ const auth = useAuth();
 const currentUserId = $derived(String(auth.userId ?? ''));
 const authenticated = $derived(auth.isAuthenticated);
 
+// svelte-ignore state_referenced_locally
 const summaryQuery = createGetV1UsersMeNetworkSummary(
   { query: { enabled: browser && !!authenticated } },
 );

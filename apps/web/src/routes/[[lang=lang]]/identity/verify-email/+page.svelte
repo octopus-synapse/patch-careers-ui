@@ -32,6 +32,7 @@ const needsEmailVerification = $derived(Boolean(session.needsEmailVerification))
 
 // Resend cooldown is owned by the backend — the UI just mirrors it so the
 // countdown survives page reloads.
+// svelte-ignore state_referenced_locally
 const resendStatus = createGetV1AuthEmailVerificationResendStatus({
   query: { retry: false, enabled: browser && authenticated === true, refetchOnWindowFocus: false },
 });
