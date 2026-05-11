@@ -1,9 +1,9 @@
 <script lang="ts">
 import { createGetV1UsersUserIdActivities } from 'api-client';
 import { Activity } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { Card, EmptyState, Skeleton } from 'ui';
 import { browser } from '$app/environment';
+import { asIcon } from '$lib/types/icons';
 import { useAuth } from '$lib/state/auth.svelte';
 import { relativeFrom } from '$lib/utils/relative';
 import { locale } from '$lib/state/locale.svelte';
@@ -50,7 +50,7 @@ function activityLabel(type: string): string {
 {:else if !items || items.length === 0}
 	<EmptyState
 		message={t('feed.noUserActivities')}
-		icon={Activity as unknown as Component<{ size: number; class?: string }>}
+		icon={asIcon(Activity)}
 	/>
 {:else}
 	<ul class="space-y-2">

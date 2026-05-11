@@ -16,6 +16,7 @@ import {
   type GetV1UsersMeNetworkSummary200,
 } from 'api-client';
 import { useQueryClient } from '@tanstack/svelte-query';
+import { asIcon } from '$lib/types/icons';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { undoableAction } from '$lib/utils/undoable-action';
@@ -292,7 +293,7 @@ const statItems = $derived<StatItem[]>([
 				{:else}
 					<EmptyState
 						message={t('network.invitationsEmptyTitle')}
-						icon={UserCheck as unknown as Component<{ size: number; class?: string }>}
+						icon={asIcon(UserCheck)}
 					/>
 				{/if}
 			</section>

@@ -16,11 +16,11 @@
     Users,
     Wifi,
   } from 'lucide-svelte';
-  import type { Component } from 'svelte';
   import { Badge, Button, DangerConfirmModal, EmptyState, Skeleton, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { formatDate } from '$lib/utils/format-date';
   import { locale } from '$lib/state/locale.svelte';
+  import { asIcon } from '$lib/types/icons';
 
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
@@ -117,7 +117,7 @@
   {:else if !rows || rows.length === 0}
     <EmptyState
       message={t('company.jobs.empty')}
-      icon={Briefcase as unknown as Component<{ size: number; class?: string }>}
+      icon={asIcon(Briefcase)}
     />
   {:else}
     <div class="grid gap-3">

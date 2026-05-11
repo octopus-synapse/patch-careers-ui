@@ -9,9 +9,9 @@ import {
   createGetV1UsersUserIdReactions,
 } from 'api-client';
 import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { Badge, EmptyState, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
+import { asIcon } from '$lib/types/icons';
 import { relativeFrom } from '$lib/utils/relative';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -107,7 +107,7 @@ function reactionEmoji(type: string): string {
 		{:else if !posts || posts.length === 0}
 			<EmptyState
 				message={t('feed.noUserPosts')}
-				icon={FileText as unknown as Component<{ size: number; class?: string }>}
+				icon={asIcon(FileText)}
 			/>
 		{:else}
 			<ul class="space-y-3">
@@ -137,7 +137,7 @@ function reactionEmoji(type: string): string {
 		{:else if !comments || comments.length === 0}
 			<EmptyState
 				message={t('feed.noUserComments')}
-				icon={MessageCircle as unknown as Component<{ size: number; class?: string }>}
+				icon={asIcon(MessageCircle)}
 			/>
 		{:else}
 			<ul class="space-y-2">
@@ -172,7 +172,7 @@ function reactionEmoji(type: string): string {
 		{:else if !reactions || reactions.length === 0}
 			<EmptyState
 				message={t('feed.noUserReactions')}
-				icon={Heart as unknown as Component<{ size: number; class?: string }>}
+				icon={asIcon(Heart)}
 			/>
 		{:else}
 			<ul class="space-y-2">
@@ -205,7 +205,7 @@ function reactionEmoji(type: string): string {
 	{:else if !activities || activities.length === 0}
 		<EmptyState
 			message={t('feed.noUserActivities')}
-			icon={Activity as unknown as Component<{ size: number; class?: string }>}
+			icon={asIcon(Activity)}
 		/>
 	{:else}
 		<ul class="space-y-2">

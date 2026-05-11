@@ -10,9 +10,9 @@ import {
 } from 'api-client';
 import type { GetV1Notifications200 } from 'api-client';
 import { Bell } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { Avatar, Button, EmptyState, Skeleton, Tabs, toastState } from 'ui';
 import { browser } from '$app/environment';
+import { asIcon } from '$lib/types/icons';
 import { track } from '$lib/utils/analytics/track';
 import { notificationVisual } from '$lib/utils/notification-icon';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -229,7 +229,7 @@ const grouped = $derived.by(() => {
 			{:else if filtered.length === 0}
 				<EmptyState
 					message={t('notifications.empty')}
-					icon={Bell as unknown as Component<{ size: number; class?: string }>}
+					icon={asIcon(Bell)}
 				/>
 			{:else}
 				{#each grouped as group (group.key)}

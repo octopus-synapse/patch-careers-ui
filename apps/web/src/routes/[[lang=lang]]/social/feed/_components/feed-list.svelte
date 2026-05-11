@@ -1,10 +1,10 @@
 <script lang="ts">
 import { AlertCircle, PenSquare, SearchX } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { cubicOut } from 'svelte/easing';
 import { fly } from 'svelte/transition';
 import { Button, EmptyState, type ReactionType } from 'ui';
 import { browser } from '$app/environment';
+import { asIcon } from '$lib/types/icons';
 import { locale } from '$lib/state/locale.svelte';
 import PostCard, { type PostFitScore } from './post-card.svelte';
 import PostSkeleton from './post-skeleton.svelte';
@@ -186,7 +186,7 @@ $effect(() => {
 		<div class="py-12">
 			<EmptyState
 				message={t('feed.noPost')}
-				icon={PenSquare as unknown as Component<{ size: number; class?: string }>}
+				icon={asIcon(PenSquare)}
 			/>
 		</div>
 	{/if}

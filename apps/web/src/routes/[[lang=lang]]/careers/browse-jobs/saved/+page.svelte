@@ -8,10 +8,10 @@ import {
   type GetV1JobsBookmarks200,
 } from 'api-client';
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { Badge, Button, Card, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
+import { asIcon } from '$lib/types/icons';
 import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
@@ -104,7 +104,7 @@ function handleRemove(id: string) {
 		{:else if all.length === 0}
 			<EmptyState
 				message={t('jobs.savedEmpty')}
-				icon={Bookmark as unknown as Component<{ size: number; class?: string }>}
+				icon={asIcon(Bookmark)}
 			/>
 		{:else}
 			<div class="space-y-3">

@@ -7,9 +7,9 @@ import {
   getV1UsersUserIdFollowingQueryKey,
 } from 'api-client';
 import { Users } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { Button, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
+import { asIcon } from '$lib/types/icons';
 import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
 import UserRow from '$lib/components/user/user-row.svelte';
@@ -88,7 +88,7 @@ function handleUnfollow(userId: string) {
 			{:else if list.items.length === 0}
 				<EmptyState
 					message={t('network.followingEmpty')}
-					icon={Users as unknown as Component<{ size: number; class?: string }>}
+					icon={asIcon(Users)}
 				/>
 			{:else}
 				<div class="divide-y divide-gray-200 dark:divide-neutral-800">

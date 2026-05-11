@@ -11,11 +11,11 @@ import {
 } from 'api-client';
 import type { GetV1Search200 } from 'api-client';
 import { Search, Users } from 'lucide-svelte';
-import type { Component } from 'svelte';
 import { Button, EmptyState, Input, Skeleton, Tabs } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { asIcon } from '$lib/types/icons';
 import { track } from '$lib/utils/analytics/track';
 import UserCard from '$lib/components/user/user-card.svelte';
 import { locale } from '$lib/state/locale.svelte';
@@ -233,13 +233,13 @@ const tabs = $derived([
 				{#if activeTab === 'posts'}
 					<EmptyState
 						message={t('nav.searchSoonPosts')}
-						icon={Search as unknown as Component<{ size: number; class?: string }>}
+						icon={asIcon(Search)}
 					/>
 				{:else if activeTab === 'jobs'}
 					{#if !initialQuery}
 						<EmptyState
 							message={t('nav.searchEmptyState')}
-							icon={Search as unknown as Component<{ size: number; class?: string }>}
+							icon={asIcon(Search)}
 						/>
 					{:else if $jobsQuery.isLoading}
 						<div class="grid grid-cols-1 gap-3">
@@ -265,18 +265,18 @@ const tabs = $derived([
 					{:else}
 						<EmptyState
 							message={t('nav.searchNoUsers')}
-							icon={Search as unknown as Component<{ size: number; class?: string }>}
+							icon={asIcon(Search)}
 						/>
 					{/if}
 				{:else if activeTab === 'companies'}
 					<EmptyState
 						message={t('nav.searchSoonCompanies')}
-						icon={Search as unknown as Component<{ size: number; class?: string }>}
+						icon={asIcon(Search)}
 					/>
 				{:else if !initialQuery}
 					<EmptyState
 						message={t('nav.searchEmptyState')}
-						icon={Search as unknown as Component<{ size: number; class?: string }>}
+						icon={asIcon(Search)}
 					/>
 				{:else if $query.isLoading}
 					<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -291,7 +291,7 @@ const tabs = $derived([
 				{:else if all.length === 0}
 					<EmptyState
 						message={t('nav.searchNoUsers')}
-						icon={Users as unknown as Component<{ size: number; class?: string }>}
+						icon={asIcon(Users)}
 					/>
 				{:else}
 					<div class="mb-3 text-xs text-gray-500 dark:text-neutral-500">
