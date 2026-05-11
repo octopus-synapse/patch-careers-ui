@@ -42,7 +42,7 @@ const threadId = $derived($page.params.id ?? '');
 
 const postQuery = createGetV1PostsId(
   threadId,
-  { query: { enabled: authenticated && !!threadId } },
+  { query: { enabled: () => authenticated && !!threadId } },
 );
 
 const threadPost = $derived($postQuery.data);

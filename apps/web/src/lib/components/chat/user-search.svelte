@@ -21,7 +21,7 @@ $effect(() => {
 
 const search = createGetV1ChatUsersSearch(
   { q: debouncedQuery },
-  { query: { enabled: debouncedQuery.length >= 2, retry: false, refetchOnWindowFocus: false } },
+  { query: { enabled: () => debouncedQuery.length >= 2, retry: false, refetchOnWindowFocus: false } },
 );
 
 const results = $derived($search.data?.items ?? []);

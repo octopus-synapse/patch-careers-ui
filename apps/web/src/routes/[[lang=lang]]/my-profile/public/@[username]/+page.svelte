@@ -26,7 +26,7 @@
 
   const profile = createGetV1ProfilesUsername(
     username,
-    { query: { enabled: !!username } },
+    { query: { enabled: () => !!username } },
   );
 
   const user = $derived($profile.data?.user);

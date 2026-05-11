@@ -36,7 +36,7 @@ const canUseApp = $derived(
 
 const conversations = createGetV1ChatConversations(
   { limit: 50 },
-  { query: { enabled: canUseApp && chatState.isOpen } },
+  { query: { enabled: () => canUseApp && chatState.isOpen } },
 );
 
 const convList = $derived($conversations.data?.items);
@@ -44,7 +44,7 @@ const convList = $derived($conversations.data?.items);
 const messages = createGetV1ChatConversationsConversationIdMessages(
   chatState.activeConversationId || undefined,
   { limit: 100 },
-  { query: { enabled: !!chatState.activeConversationId } },
+  { query: { enabled: () => !!chatState.activeConversationId } },
 );
 
 const msgList = $derived($messages.data?.items);

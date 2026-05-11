@@ -89,14 +89,14 @@ const activeId = $derived($page.url.searchParams.get('c'));
 
 const conversations = createGetV1ChatConversations(
   { limit: 50 },
-  { query: { enabled: Boolean(authenticated) } },
+  { query: { enabled: () => Boolean(authenticated) } },
 );
 const convList = $derived(extractConversations($conversations.data));
 
 const messages = createGetV1ChatConversationsConversationIdMessages(
   activeId ?? undefined,
   { limit: 100 },
-  { query: { enabled: Boolean(activeId) } },
+  { query: { enabled: () => Boolean(activeId) } },
 );
 const msgList = $derived(extractMessages($messages.data));
 

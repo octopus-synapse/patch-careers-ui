@@ -14,7 +14,7 @@
   const query = createGetV1JobsIdApplications(
     jobId,
     { page: 1, limit: 100 },
-    { query: { enabled: !!jobId } },
+    { query: { enabled: () => !!jobId } },
   );
 
   const items = $derived($query.data?.items);

@@ -17,13 +17,13 @@ const canUseApp = $derived(
 );
 
 const unreadQuery = createGetV1ChatUnread({
-  query: { enabled: browser && canUseApp, refetchInterval: 30_000 },
+  query: { enabled: () => browser && canUseApp, refetchInterval: 30_000 },
 });
 const unread = $derived($unreadQuery.data?.totalUnread ?? 0);
 
 const convQuery = createGetV1ChatConversations(
   { limit: 3 },
-  { query: { enabled: browser && canUseApp, refetchInterval: 60_000 } },
+  { query: { enabled: () => browser && canUseApp, refetchInterval: 60_000 } },
 );
 
 const recents = $derived(

@@ -139,7 +139,7 @@ const feedQuery = createGetV1Feed(
   },
   {
         query: {
-          enabled: authenticated,
+          enabled: () => authenticated,
           // Only poll when the user is at the head of the feed — further
           // pages are stable and shouldn't be refetched in the background.
           refetchInterval: pagination.cursor === undefined ? 60_000 : false,

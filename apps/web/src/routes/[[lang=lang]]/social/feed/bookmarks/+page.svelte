@@ -48,7 +48,7 @@ const engagement = useFeedEngagement({
 
 const bookmarksQuery = createGetV1FeedBookmarks(
   { cursor: pagination.cursor, limit: 20 },
-  { query: { enabled: authenticated } },
+  { query: { enabled: () => authenticated } },
 );
 
 let sentinelEl: HTMLDivElement | undefined = $state();

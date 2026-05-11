@@ -39,7 +39,7 @@ $effect(() => {
 
 const session = createGetV1OnboardingSession(
   { locale: locale.current },
-  { query: { enabled: authenticated } },
+  { query: { enabled: () => authenticated } },
 );
 
 const queryClient = useQueryClient();
