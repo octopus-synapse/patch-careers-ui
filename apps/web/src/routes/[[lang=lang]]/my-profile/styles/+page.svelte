@@ -12,10 +12,12 @@
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Lock } from 'lucide-svelte';
+  import { locale } from '$lib/state/locale.svelte';
   import { Button, Card, Loader, RankBadge, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
 
+  const t = $derived(locale.t);
   const queryClient = useQueryClient();
 
   const listQuery = createGetV1ResumeStyles(
@@ -34,13 +36,13 @@
   let applyingStyleId = $state<string | null>(null);
   async function applyStyle(styleId: string): Promise<void> {
     if (!primaryResumeId) {
-      toastState.show('Você precisa ter um currículo pra aplicar um estilo.', 'danger');
+      toastState.show(t('styles.applyRequiresResume'), 'danger');
       return;
     }
     applyingStyleId = styleId;
     try {
       await postV1ResumesResumeIdStyle(primaryResumeId, { styleId });
-      toastState.show('Estilo aplicado ao seu currículo.', 'success');
+      toastState.show(t('styles.applySuccess'), 'success');
       await queryClient.invalidateQueries({ queryKey: ['resume'] });
     } catch (err) {
       handleApiError(err);

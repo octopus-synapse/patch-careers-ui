@@ -1,5 +1,7 @@
 <script lang="ts">
 import { deleteV1Accounts, logout, isApiError } from 'api-client';
+import { locale } from '$lib/state/locale.svelte';
+const t = $derived(locale.t);
 import { AlertTriangle } from 'lucide-svelte';
 import { Button, Checkbox, Input, Label, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
@@ -24,7 +26,7 @@ async function submit(e: Event) {
   serverError = null;
   try {
     await deleteV1Accounts({ confirmationPhrase: confirmPhrase });
-    toastState.show('Conta removida. Até mais.', 'success');
+    toastState.show(t('actions.accountRemoved'), 'success');
     // Clear local session and send to landing.
     await logout({}).catch(() => {});
     goto('/');

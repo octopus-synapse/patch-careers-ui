@@ -5,6 +5,8 @@
 -->
 <script lang="ts">
 import { createGetV1ShadowProfilesCandidates, createPostV1ShadowProfilesIdClaim } from 'api-client';
+import { locale } from '$lib/state/locale.svelte';
+const t = $derived(locale.t);
 import { Check, X } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Button, Card, Loader, toastState } from 'ui';
@@ -41,7 +43,7 @@ $effect(() => {
 const claimMutation = createPostV1ShadowProfilesIdClaim({
   mutation: {
     onSuccess: () => {
-      toastState.show('Perfil reivindicado. Adicionamos os dados ao seu currículo.', 'success');
+      toastState.show(t('actions.claimedProfile'), 'success');
       goto('/my-profile/dashboard');
     },
     onError: handleApiError,

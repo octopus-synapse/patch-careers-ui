@@ -23,10 +23,10 @@
     getV1AdminTechSkillsQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
+  import { locale } from '$lib/state/locale.svelte';
   import { Button, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
-  import { locale } from '$lib/state/locale.svelte';
 
   type Item = {
     id?: string;
@@ -100,7 +100,7 @@
           await queryClient.invalidateQueries({ queryKey: getV1AdminSpokenLanguagesQueryKey() });
           break;
       }
-      toastState.show('Item excluído', 'success');
+      toastState.show(t('actions.deletedItem'), 'success');
     } catch (err) {
       handleApiError(err);
     } finally {

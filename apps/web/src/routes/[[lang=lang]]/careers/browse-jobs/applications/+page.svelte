@@ -12,6 +12,8 @@ import {
   getV1JobsApplicationsTracker,
   getV1JobsApplicationsTrackerQueryKey,
 } from 'api-client';
+import { locale } from '$lib/state/locale.svelte';
+const t = $derived(locale.t);
 import { Briefcase, Calendar, CheckCircle2, Eye, MessageSquarePlus, XCircle } from 'lucide-svelte';
 import { onMount } from 'svelte';
 import { Button, Loader, toastState } from 'ui';
@@ -25,7 +27,7 @@ type AddableEventType = PostV1JobsApplicationsApplicationIdEventsMutationRequest
 type TrackedApplication = GetV1JobsApplicationsTracker200['applications'][number];
 
 async function quickFollowUp(applicationId: string) {
-  if (!confirm('Marcar como follow-up enviado? Vai resetar o contador de silêncio.')) return;
+  if (!confirm(t('actions.followUpConfirm'))) return;
   try {
     await postV1JobsApplicationsApplicationIdEvents(applicationId, { type: 'FOLLOW_UP_SENT' });
     await load();

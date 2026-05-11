@@ -10,11 +10,11 @@
     getV1AdminOnboardingStepsQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
+  import { locale } from '$lib/state/locale.svelte';
   import { Button, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import StatCard from '../_components/stat-card.svelte';
-  import { locale } from '$lib/state/locale.svelte';
 
   const t = $derived(locale.t);
   const queryClient = useQueryClient();
@@ -34,7 +34,7 @@
     deletingKey = key;
     try {
       await deleteV1AdminOnboardingStepsKey(key);
-      toastState.show('Step excluído', 'success');
+      toastState.show(t('actions.deletedStep'), 'success');
       await queryClient.invalidateQueries({ queryKey: getV1AdminOnboardingStepsQueryKey() });
     } catch (err) {
       handleApiError(err);

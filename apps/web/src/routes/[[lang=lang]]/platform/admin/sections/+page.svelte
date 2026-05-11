@@ -9,6 +9,8 @@
     getV1AdminSectionTypesQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
+  import { locale } from '$lib/state/locale.svelte';
+  const t = $derived(locale.t);
   import { Button, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
@@ -32,7 +34,7 @@
     deleting = key;
     try {
       await deleteV1AdminSectionTypesKey(key);
-      toastState.show('Seção excluída', 'success');
+      toastState.show(t('actions.deletedSection'), 'success');
       await queryClient.invalidateQueries({ queryKey: getV1AdminSectionTypesQueryKey() });
     } catch (err) {
       handleApiError(err);

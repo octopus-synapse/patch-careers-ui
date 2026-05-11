@@ -40,7 +40,7 @@
     deleting = true;
     try {
       await deleteV1JobsId(deleteTarget.id);
-      toastState.show('Vaga excluída', 'success');
+      toastState.show(t('actions.deletedJob'), 'success');
       await queryClient.invalidateQueries({
         queryKey: getV1JobsApplicationsQueryKey({ page: 1, limit: 50 }),
       });

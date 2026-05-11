@@ -64,7 +64,7 @@ function saveRename() {
 }
 
 function remove() {
-  if (!confirm('Remover esta versão permanentemente?')) return;
+  if (!confirm(t('actions.deletedVersionConfirm'))) return;
   $deleteMutation.mutate(
     { resumeId },
     {

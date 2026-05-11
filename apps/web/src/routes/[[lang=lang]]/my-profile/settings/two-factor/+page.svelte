@@ -13,6 +13,8 @@ import {
   createPostV1Auth2FaVerify,
   getV1Auth2FaStatusQueryKey,
 } from 'api-client';
+import { locale } from '$lib/state/locale.svelte';
+const t = $derived(locale.t);
 import { useQueryClient } from '@tanstack/svelte-query';
 import { Copy, Download, RefreshCw, Shield, ShieldOff } from 'lucide-svelte';
 import { Button, Input, Label, Loader, toastState } from 'ui';
@@ -49,7 +51,7 @@ const disable = createPostV1Auth2FaSetup({
   mutation: {
     async onSuccess() {
       disableConfirming = false;
-      toastState.show('2FA desativado.', 'success');
+      toastState.show(t('twoFactor.disabledSuccess'), 'success');
       await queryClient.invalidateQueries({
         queryKey: getV1Auth2FaStatusQueryKey(),
       });
@@ -68,7 +70,7 @@ const regen = createPostV1Auth2FaBackupCodesRegenerate({
 async function copyCodes() {
   if (!backupCodes) return;
   await navigator.clipboard.writeText(backupCodes.join('\n'));
-  toastState.show('Códigos copiados.', 'success');
+  toastState.show(t('twoFactor.codesCopied'), 'success');
 }
 
 function downloadCodes() {

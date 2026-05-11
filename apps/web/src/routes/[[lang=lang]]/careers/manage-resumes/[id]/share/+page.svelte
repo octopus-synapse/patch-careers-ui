@@ -118,7 +118,7 @@ async function createShare() {
 }
 
 async function revoke(id: string) {
-  if (!confirm('Remover este link compartilhado? Os aliases vão junto.')) return;
+  if (!confirm(t('actions.deletedShareConfirm'))) return;
   try {
     await deleteV1SharesShareId(id);
     shares = shares.filter((s) => s.id !== id);

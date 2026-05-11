@@ -918,6 +918,31 @@
       "filterSubtitle": "Experimente outro filtro ou limpe a busca."
     }
   },
+  "actions": {
+    "deletedItem": "Item excluído",
+    "deletedJob": "Vaga excluída",
+    "deletedSection": "Seção excluída",
+    "deletedQuestion": "Pergunta excluída",
+    "deletedStep": "Step excluído",
+    "deletedStyle": "Estilo excluído",
+    "deletedVersionConfirm": "Remover esta versão permanentemente?",
+    "deletedShareConfirm": "Remover este link compartilhado? Os aliases vão junto.",
+    "followUpConfirm": "Marcar como follow-up enviado? Vai resetar o contador de silêncio.",
+    "savedPreferences": "Preferências salvas.",
+    "accountRemoved": "Conta removida. Até mais.",
+    "claimedProfile": "Perfil reivindicado. Adicionamos os dados ao seu currículo."
+  },
+  "twoFactor": {
+    "disabledSuccess": "2FA desativado.",
+    "codesCopied": "Códigos copiados."
+  },
+  "fitProfileMine": {
+    "deleteConfirm": "Apagar seu Fit Profile? As respostas serão anonimizadas."
+  },
+  "styles": {
+    "applyRequiresResume": "Você precisa ter um currículo pra aplicar um estilo.",
+    "applySuccess": "Estilo aplicado ao seu currículo."
+  },
   "jobs": {
     "pageTitle": "Vagas",
     "postJob": "Publicar Vaga",

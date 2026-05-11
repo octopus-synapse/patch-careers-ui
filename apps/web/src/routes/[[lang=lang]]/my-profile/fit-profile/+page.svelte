@@ -13,7 +13,9 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
+  import { locale } from '$lib/state/locale.svelte';
 
+  const t = $derived(locale.t);
   const queryClient = useQueryClient();
   const meQuery = createGetV1FitProfileMe({
       query: { enabled: browser, retry: false },
@@ -27,7 +29,7 @@
 
   let deleting = $state(false);
   async function handleDelete(): Promise<void> {
-    if (!confirm('Apagar seu Fit Profile? As respostas serão anonimizadas.')) return;
+    if (!confirm(t('fitProfileMine.deleteConfirm'))) return;
     deleting = true;
     try {
       await deleteV1FitProfileMe();

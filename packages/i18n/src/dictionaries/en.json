@@ -918,6 +918,31 @@
       "filterSubtitle": "Try a different filter or clear the search."
     }
   },
+  "actions": {
+    "deletedItem": "Item deleted",
+    "deletedJob": "Job deleted",
+    "deletedSection": "Section deleted",
+    "deletedQuestion": "Question deleted",
+    "deletedStep": "Step deleted",
+    "deletedStyle": "Style deleted",
+    "deletedVersionConfirm": "Delete this version permanently?",
+    "deletedShareConfirm": "Remove this shared link? Aliases will go with it.",
+    "followUpConfirm": "Mark as follow-up sent? This resets the silence counter.",
+    "savedPreferences": "Preferences saved.",
+    "accountRemoved": "Account removed. See you later.",
+    "claimedProfile": "Profile claimed. We added the data to your resume."
+  },
+  "twoFactor": {
+    "disabledSuccess": "2FA disabled.",
+    "codesCopied": "Codes copied."
+  },
+  "fitProfileMine": {
+    "deleteConfirm": "Delete your Fit Profile? Your answers will be anonymized."
+  },
+  "styles": {
+    "applyRequiresResume": "You need a resume to apply a style.",
+    "applySuccess": "Style applied to your resume."
+  },
   "jobs": {
     "pageTitle": "Jobs",
     "postJob": "Post a Job",

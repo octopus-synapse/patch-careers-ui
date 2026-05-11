@@ -12,6 +12,8 @@ import {
   isApiError,
   putV1UsersMeOneClickApply,
 } from 'api-client';
+import { locale } from '$lib/state/locale.svelte';
+const t = $derived(locale.t);
 import { FileText, Zap } from 'lucide-svelte';
 import { Button, Checkbox, Label, Loader, Radio, Select, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
@@ -67,7 +69,7 @@ async function save() {
   saving = true;
   try {
     await putV1UsersMeOneClickApply(draft.state);
-    toastState.show('Preferências salvas.', 'success');
+    toastState.show(t('actions.savedPreferences'), 'success');
   } catch (err) {
     toastState.show(
       isApiError(err) ? err.message : 'Falha ao salvar. Rascunho local preservado.',

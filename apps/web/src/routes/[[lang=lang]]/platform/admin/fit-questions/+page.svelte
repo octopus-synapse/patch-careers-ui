@@ -9,6 +9,8 @@
     getV1AdminFitQuestionsQueryKey,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
+  import { locale } from '$lib/state/locale.svelte';
+  const t = $derived(locale.t);
   import { Button, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
@@ -26,7 +28,7 @@
     deleting = id;
     try {
       await deleteV1AdminFitQuestionsId(id);
-      toastState.show('Pergunta excluída', 'success');
+      toastState.show(t('actions.deletedQuestion'), 'success');
       await queryClient.invalidateQueries({ queryKey: getV1AdminFitQuestionsQueryKey() });
     } catch (err) {
       handleApiError(err);

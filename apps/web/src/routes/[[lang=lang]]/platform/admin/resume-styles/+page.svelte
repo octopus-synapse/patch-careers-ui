@@ -9,6 +9,8 @@
     getV1ResumeStylesQueryKey,
   } from 'api-client';
   import { Lock, Trash2 } from 'lucide-svelte';
+  import { locale } from '$lib/state/locale.svelte';
+  const t = $derived(locale.t);
   import { Button, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
@@ -27,7 +29,7 @@
     deleting = id;
     try {
       await deleteV1AdminResumeStylesId(id);
-      toastState.show('Estilo excluído', 'success');
+      toastState.show(t('actions.deletedStyle'), 'success');
       await queryClient.invalidateQueries({
         queryKey: getV1ResumeStylesQueryKey({ page: 1, limit: 50 }),
       });
