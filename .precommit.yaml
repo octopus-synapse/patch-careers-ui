@@ -16,3 +16,5 @@ checks:
     cmd: bun scripts/check-i18n-keys.ts
   - name: i18n-orphans
     cmd: bun scripts/lint-unused-i18n.ts
+  - name: no-hardcoded-pt
+    cmd: bun scripts/check-no-hardcoded-pt.ts

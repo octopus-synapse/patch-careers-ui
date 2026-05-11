@@ -163,7 +163,8 @@
     "followUpConfirm": "Mark as follow-up sent? This resets the silence counter.",
     "savedPreferences": "Preferences saved.",
     "accountRemoved": "Account removed. See you later.",
-    "claimedProfile": "Profile claimed. We added the data to your resume."
+    "claimedProfile": "Profile claimed. We added the data to your resume.",
+    "deleteCommentConfirm": "Remove this comment?"
   },
   "nav": {
     "dashboard": "Dashboard",

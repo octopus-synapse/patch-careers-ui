@@ -13,5 +13,5 @@ import { passwordSchema } from "./passwordSchema";
  */
 export const resetPasswordRequestSchema = z.object({
     "token": z.string().min(1).describe("Single-use password-reset token sent via email."),
-"newPassword": z.lazy(() => passwordSchema).and(z.string())
+"newPassword": z.lazy(() => passwordSchema).and(z.string()).describe("Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).")
     }).describe("Token-based password reset. The token is single-use and was previously emailed via the forgot-password flow.") as unknown as ToZod<ResetPasswordRequest>

@@ -14,5 +14,5 @@ import { passwordSchema } from "./passwordSchema";
  */
 export const changePasswordRequestSchema = z.object({
     "currentPassword": z.lazy(() => passwordInputSchema).describe("Account password for authentication. Lenient validation (1-128 chars) to support legacy accounts; new passwords must satisfy the stricter PasswordSchema policy."),
-"newPassword": z.lazy(() => passwordSchema).and(z.string())
+"newPassword": z.lazy(() => passwordSchema).and(z.string()).describe("Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).")
     }).describe("Self-service password change. Requires the current password (lenient validation) and a new password meeting the strict policy.") as unknown as ToZod<ChangePasswordRequest>

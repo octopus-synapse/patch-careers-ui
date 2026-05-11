@@ -16,5 +16,8 @@ export type ResetPasswordRequest = {
      * @type string
     */
     token: string;
+    /**
+     * @description Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).
+    */
     newPassword: (Password & string & string);
 };

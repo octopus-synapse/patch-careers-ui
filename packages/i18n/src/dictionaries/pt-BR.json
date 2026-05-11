@@ -163,7 +163,8 @@
     "followUpConfirm": "Marcar como follow-up enviado? Vai resetar o contador de silêncio.",
     "savedPreferences": "Preferências salvas.",
     "accountRemoved": "Conta removida. Até mais.",
-    "claimedProfile": "Perfil reivindicado. Adicionamos os dados ao seu currículo."
+    "claimedProfile": "Perfil reivindicado. Adicionamos os dados ao seu currículo.",
+    "deleteCommentConfirm": "Remover este comentário?"
   },
   "nav": {
     "dashboard": "Painel",

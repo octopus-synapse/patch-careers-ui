@@ -72,7 +72,7 @@ function resolve(commentId: string) {
 }
 
 function remove(commentId: string) {
-  if (!confirm('Remover este comentário?')) return;
+  if (!confirm(t('actions.deleteCommentConfirm'))) return;
   $deleteComment.mutate({ commentId });
 }
 

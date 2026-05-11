@@ -16,5 +16,8 @@ export type ChangePasswordRequest = {
      * @type string
     */
     currentPassword: PasswordInput;
+    /**
+     * @description Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).
+    */
     newPassword: (Password & string & string);
 };
