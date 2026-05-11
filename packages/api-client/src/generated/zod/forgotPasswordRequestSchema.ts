@@ -12,5 +12,5 @@ import { emailSchema } from "./emailSchema";
  * @description Forgot-password trigger. Always returns the same generic success message regardless of whether the email exists, to avoid account enumeration.
  */
 export const forgotPasswordRequestSchema = z.object({
-    "email": z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit.")
+    "email": z.lazy(() => emailSchema).and(z.any())
     }).describe("Forgot-password trigger. Always returns the same generic success message regardless of whether the email exists, to avoid account enumeration.") as unknown as ToZod<ForgotPasswordRequest>

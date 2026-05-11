@@ -5,7 +5,7 @@
 
 
 /**
- * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+ * @description Email address. Used to log in.
  * @minLength 5
  * @maxLength 255
  * @example fixture@profile.local

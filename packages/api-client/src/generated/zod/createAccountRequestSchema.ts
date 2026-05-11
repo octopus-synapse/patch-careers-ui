@@ -13,9 +13,9 @@ import { passwordSchema } from "./passwordSchema";
  * @description Sign-up payload. LGPD requires explicit `acceptedTosVersion` / `acceptedPrivacyVersion` matching the current published versions.
  */
 export const createAccountRequestSchema = z.object({
-    "name": z.optional(z.string()),
-"email": z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit."),
-"password": z.lazy(() => passwordSchema).describe("Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."),
-"acceptedTosVersion": z.string().min(1),
-"acceptedPrivacyVersion": z.string().min(1)
+    "name": z.optional(z.string().describe("Display name (optional). Defaults to email handle.")),
+"email": z.lazy(() => emailSchema).describe("Email address. Used to log in."),
+"password": z.lazy(() => passwordSchema).describe("Plaintext password. Hashed server-side; never logged."),
+"acceptedTosVersion": z.string().min(1).describe("Current TOS version the user has accepted (LGPD consent)."),
+"acceptedPrivacyVersion": z.string().min(1).describe("Current privacy policy version the user has accepted (LGPD consent).")
     }).describe("Sign-up payload. LGPD requires explicit `acceptedTosVersion` / `acceptedPrivacyVersion` matching the current published versions.") as unknown as ToZod<CreateAccountRequest>

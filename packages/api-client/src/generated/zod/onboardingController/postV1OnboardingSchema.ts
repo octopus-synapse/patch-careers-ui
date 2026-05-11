@@ -45,7 +45,7 @@ export const postV1OnboardingMutationRequestSchema = z.object({
     "username": z.lazy(() => usernameSchema).describe("Public handle (3-30 chars). Lowercase letters, digits, and single underscores only. Cannot start/end with `_`, contain `__`, or use a reserved name."),
 "personalInfo": z.object({
     "fullName": z.string().min(2).max(100),
-"email": z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit."),
+"email": z.lazy(() => emailSchema).and(z.any()),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters)."))
     }),

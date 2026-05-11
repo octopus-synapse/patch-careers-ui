@@ -59,7 +59,7 @@ export const getV1OnboardingSession200Schema = z.object({
 "username": z.optional(z.string()),
 "personalInfo": z.optional(z.object({
     "fullName": z.string(),
-"email": z.optional(z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit.")),
+"email": z.optional(z.lazy(() => emailSchema).and(z.any())),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters)."))
     })),

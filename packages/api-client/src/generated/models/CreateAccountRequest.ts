@@ -12,26 +12,29 @@ import type { Password } from "./Password";
 */
 export type CreateAccountRequest = {
     /**
+     * @description Display name (optional). Defaults to email handle.
      * @type string | undefined
     */
     name?: string;
     /**
-     * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+     * @description Email address. Used to log in.
      * @type string, email
     */
     email: Email;
     /**
-     * @description Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).
+     * @description Plaintext password. Hashed server-side; never logged.
      * @pattern ^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@\$!%\*\?&]).{8,128}$
      * @type string
     */
     password: Password;
     /**
+     * @description Current TOS version the user has accepted (LGPD consent).
      * @minLength 1
      * @type string
     */
     acceptedTosVersion: string;
     /**
+     * @description Current privacy policy version the user has accepted (LGPD consent).
      * @minLength 1
      * @type string
     */

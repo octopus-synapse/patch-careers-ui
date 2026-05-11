@@ -10,9 +10,5 @@ import type { Email } from "./Email";
  * @example [object Object]
 */
 export type ForgotPasswordRequest = {
-    /**
-     * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
-     * @type string, email
-    */
-    email: Email;
+    email: (Email & any);
 };

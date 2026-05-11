@@ -8,6 +8,6 @@ import type { ToZod } from "../.kubb/ToZod";
 import type { Password } from "../models/Password";
 
 /**
- * @description Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).
+ * @description Plaintext password. Hashed server-side; never logged.
  */
-export const passwordSchema = z.string().min(8).max(128).regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@\$!%\*\?&]).{8,128}$/).describe("Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).") as unknown as ToZod<Password>
+export const passwordSchema = z.string().min(8).max(128).regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@\$!%\*\?&]).{8,128}$/).describe("Plaintext password. Hashed server-side; never logged.") as unknown as ToZod<Password>

@@ -105,11 +105,7 @@ export type PostV1OnboardingMutationRequest = {
          * @type string
         */
         fullName: string;
-        /**
-         * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
-         * @type string, email
-        */
-        email: Email;
+        email: (Email & any);
         /**
          * @description Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).
          * @type string | undefined

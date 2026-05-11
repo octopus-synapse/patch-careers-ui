@@ -53,7 +53,7 @@ export const postV1UsersManage403Schema = z.object({
     }) as unknown as ToZod<PostV1UsersManage403>
 
 export const postV1UsersManageMutationRequestSchema = z.object({
-    "email": z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit."),
+    "email": z.lazy(() => emailSchema).and(z.any()),
 "password": z.lazy(() => passwordSchema).and(z.string()),
 "name": z.optional(z.string()),
 "role": z.optional(z.enum(["USER", "ADMIN"]).default("USER"))

@@ -45,3 +45,4 @@ playwright/.cache
 
 # pre-commit attestation metrics (temporary, per-run)
 .attestation-metrics.json
+.claude/worktrees/

@@ -8,6 +8,6 @@ import type { ToZod } from "../.kubb/ToZod";
 import type { Email } from "../models/Email";
 
 /**
- * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
+ * @description Email address. Used to log in.
  */
-export const emailSchema = z.string().email().min(5).max(255).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit.") as unknown as ToZod<Email>
+export const emailSchema = z.string().email().min(5).max(255).describe("Email address. Used to log in.") as unknown as ToZod<Email>
