@@ -18,3 +18,5 @@ checks:
     cmd: bun scripts/lint-unused-i18n.ts
   - name: no-hardcoded-pt
     cmd: bun scripts/check-no-hardcoded-pt.ts
+  - name: no-api-client-deep-imports
+    cmd: bun scripts/lint-no-api-client-deep-imports.ts
