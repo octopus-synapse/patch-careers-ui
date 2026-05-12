@@ -1,8 +1,10 @@
+import type { QueryClient } from '@tanstack/svelte-query';
 import type { Locale, Translator } from 'i18n';
 import { createTranslator, DEFAULT_LOCALE, LOCALES, loadDictionary, NOOP_TRANSLATOR } from 'i18n';
 
 let current = $state<Locale>(DEFAULT_LOCALE);
 let translator = $state<Translator>(NOOP_TRANSLATOR);
+let boundQueryClient: QueryClient | undefined;
 
 const LOCALE_LABELS: Record<Locale, string> = {
   'pt-BR': 'Português',
@@ -63,6 +65,18 @@ export const locale = {
       writeLocaleCookie(value);
       document.documentElement.lang = value;
     }
+    // Locale switches change `Accept-Language` on subsequent requests, so
+    // cached responses are effectively stale. Invalidating forces refetch
+    // and the UI re-renders with the new locale immediately instead of
+    // waiting up to `staleTime` (60s default).
+    boundQueryClient?.invalidateQueries();
+  },
+
+  /** Wire the QueryClient created in the root layout so `set` can invalidate
+   *  cached responses on locale switch. Called once at boot; later calls
+   *  override the binding (last writer wins). */
+  setQueryClient(client: QueryClient) {
+    boundQueryClient = client;
   },
 
   async init(preferred?: Locale) {

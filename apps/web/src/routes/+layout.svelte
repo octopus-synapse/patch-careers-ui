@@ -60,6 +60,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+locale.setQueryClient(queryClient);
 
 const isLanding = $derived($page.url.pathname === '/');
 const textDir = $derived(getTextDirection(locale.current ?? 'pt-BR'));
