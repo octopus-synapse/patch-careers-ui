@@ -36,6 +36,7 @@ export const getV1ResumesManageResumeId200Schema = z.object({
 "linkedin": z.nullable(z.string()),
 "github": z.nullable(z.string()),
 "website": z.nullable(z.string()),
+"template": z.nullable(z.string()),
 "summary": z.nullable(z.string()),
 "currentCompanyLogo": z.nullable(z.string()),
 "twitter": z.nullable(z.string()),

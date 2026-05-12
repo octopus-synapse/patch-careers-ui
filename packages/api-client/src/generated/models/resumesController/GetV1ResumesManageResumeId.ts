@@ -97,6 +97,10 @@ export type GetV1ResumesManageResumeId200 = {
         /**
          * @type string
         */
+        template: string | null;
+        /**
+         * @type string
+        */
         summary: string | null;
         /**
          * @type string

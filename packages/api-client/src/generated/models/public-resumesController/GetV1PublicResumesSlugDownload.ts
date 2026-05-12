@@ -96,6 +96,10 @@ export type GetV1PublicResumesSlugDownload200 = {
         /**
          * @type string
         */
+        template: string | null;
+        /**
+         * @type string
+        */
         summary: string | null;
         /**
          * @type string
