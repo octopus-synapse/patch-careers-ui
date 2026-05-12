@@ -22,3 +22,5 @@ checks:
     cmd: bun scripts/lint-no-api-client-deep-imports.ts
   - name: form-schema-from-sdk
     cmd: bun scripts/lint-form-schema-from-sdk.ts
+  - name: file-size
+    cmd: bun scripts/lint-file-size.ts
