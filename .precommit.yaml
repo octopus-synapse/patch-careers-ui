@@ -20,3 +20,5 @@ checks:
     cmd: bun scripts/check-no-hardcoded-pt.ts
   - name: no-api-client-deep-imports
     cmd: bun scripts/lint-no-api-client-deep-imports.ts
+  - name: form-schema-from-sdk
+    cmd: bun scripts/lint-form-schema-from-sdk.ts
