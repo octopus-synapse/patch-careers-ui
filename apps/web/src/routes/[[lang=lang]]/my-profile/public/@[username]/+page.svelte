@@ -17,6 +17,9 @@
   import ProfileBadges from './_components/profile-badges.svelte';
   import SkillsSection from './_components/skills-section.svelte';
   import SeoHead from '$lib/components/seo/seo-head.svelte';
+  import type { PageData } from './$types';
+
+  let { data }: { data: PageData } = $props();
 
   const username = $derived($page.params.username ?? '');
 
@@ -24,9 +27,18 @@
   const currentUserId = $derived(String(auth.userId ?? ''));
   const authenticated = $derived(auth.isAuthenticated);
 
-  const profile = createGetV1ProfilesUsername(() => username,
-    { query: { enabled: () => !!username } },
-  );
+  // `+page.server.ts` already fetched the profile so the SSR'd HTML
+  // carries real content (name, bio, photo, JSON-LD). Seeding the
+  // TanStack hook with `initialData` keeps that content on screen
+  // until the first client-side refetch picks up any drift. `data`
+  // is a $props rune — wrap the read in a getter so Svelte's
+  // `state_referenced_locally` lint is satisfied.
+  const profile = createGetV1ProfilesUsername(() => username, {
+    query: {
+      enabled: () => !!username,
+      initialData: () => data.profile,
+    },
+  });
 
   const user = $derived($profile.data?.user);
   const resume = $derived($profile.data?.resume);
