@@ -24,6 +24,23 @@ const SOURCES = ['apps/web/src/**/*.{ts,svelte}', 'packages/ui/src/**/*.{ts,svel
 const ALLOW: ReadonlySet<string> = new Set([
   // Single retained network fallback.
   'errors.network',
+  // Admin sidebar labels are looked up via the dynamic
+  // `t(link.labelKey)` indirection in `admin-nav-links.ts`; the
+  // literal-text scanner can't follow that, so allowlist them
+  // explicitly. The link table is the single source of truth — keep
+  // these in sync with `ADMIN_NAV_LINKS`.
+  'admin.nav.dashboard',
+  'admin.nav.users',
+  'admin.nav.analytics',
+  'admin.nav.skills',
+  'admin.nav.sections',
+  'admin.nav.onboarding',
+  'admin.nav.health',
+  'admin.nav.performance',
+  'admin.nav.chat',
+  'admin.nav.audit',
+  'admin.nav.featureFlags',
+  'admin.nav.devTools',
 ]);
 
 function flatten(obj: Record<string, unknown>, prefix = ''): Map<string, unknown> {

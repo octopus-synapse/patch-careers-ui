@@ -465,6 +465,20 @@
       "collaboratorRole": "Role",
       "noConversations": "No conversations",
       "noCollaborations": "No collaborations"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "analytics": "Analytics",
+      "skills": "Skills",
+      "sections": "Sections",
+      "onboarding": "Onboarding",
+      "health": "Health",
+      "performance": "Performance",
+      "chat": "Chat",
+      "audit": "Audit",
+      "featureFlags": "Feature Flags",
+      "devTools": "Dev Tools"
     }
   },
   "settings": {
