@@ -159,6 +159,8 @@
     "deletedQuestion": "Pergunta excluída",
     "deletedStep": "Step excluído",
     "deletedStyle": "Estilo excluído",
+    "createdQuestion": "Pergunta criada",
+    "createdStyle": "Estilo criado",
     "deletedVersionConfirm": "Remover esta versão permanentemente?",
     "deletedShareConfirm": "Remover este link compartilhado? Os aliases vão junto.",
     "followUpConfirm": "Marcar como follow-up enviado? Vai resetar o contador de silêncio.",

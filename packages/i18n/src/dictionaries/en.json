@@ -159,6 +159,8 @@
     "deletedQuestion": "Question deleted",
     "deletedStep": "Step deleted",
     "deletedStyle": "Style deleted",
+    "createdQuestion": "Question created",
+    "createdStyle": "Style created",
     "deletedVersionConfirm": "Delete this version permanently?",
     "deletedShareConfirm": "Remove this shared link? Aliases will go with it.",
     "followUpConfirm": "Mark as follow-up sent? This resets the silence counter.",
