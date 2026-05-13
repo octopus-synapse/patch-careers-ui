@@ -26,8 +26,16 @@ let {
 }: Props = $props();
 </script>
 
-<Modal {open} {onClose}>
-	{#snippet title()}{title}{/snippet}
+<!--
+  Declare the title snippet at the template top-level (not inside <Modal>):
+  a `{#snippet title()}` declared as a child of <Modal> would also bind a
+  local `title` identifier that shadows the `title: string` prop above,
+  yielding `invalid_snippet_arguments` at runtime. Pass the snippet by
+  reference under a distinct name instead.
+-->
+{#snippet titleContent()}{title}{/snippet}
+
+<Modal {open} {onClose} title={title ? titleContent : undefined}>
 	<form
 		onsubmit={(e) => {
 			e.preventDefault();
