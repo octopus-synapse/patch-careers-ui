@@ -13,7 +13,7 @@ const testUser = {
 let authContext: BrowserContext;
 
 async function createAuthenticatedContext(browser: import('@playwright/test').Browser) {
-  const signupRes = await fetch(`${API_URL}/api/accounts`, {
+  const signupRes = await fetch(`${API_URL}/api/v1/accounts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(testUser),
@@ -23,19 +23,19 @@ async function createAuthenticatedContext(browser: import('@playwright/test').Br
     throw new Error(`Signup failed: ${signupRes.status} ${body}`);
   }
 
-  const loginRes = await fetch(`${API_URL}/api/auth/login`, {
+  const loginRes = await fetch(`${API_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: testUser.email, password: testUser.password }),
   });
   const setCookie = loginRes.headers.get('set-cookie') ?? '';
-  const sessionMatch = setCookie.match(/session=([^;]+)/);
-  if (!sessionMatch) throw new Error('No session cookie returned');
+  const sessionMatch = setCookie.match(/access_token=([^;]+)/);
+  if (!sessionMatch) throw new Error('No access_token cookie returned');
 
   const ctx = await browser.newContext();
   await ctx.addCookies([
     {
-      name: 'session',
+      name: 'access_token',
       value: sessionMatch[1],
       domain: 'localhost',
       path: '/',

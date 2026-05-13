@@ -24,7 +24,7 @@ async function signupAndVerify(): Promise<{ session: string; accountEmail: strin
 
   await deleteMessagesFor(email).catch(() => {});
 
-  const signup = await fetch(`${API_URL}/api/accounts`, {
+  const signup = await fetch(`${API_URL}/api/v1/accounts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -37,23 +37,23 @@ async function signupAndVerify(): Promise<{ session: string; accountEmail: strin
   });
   if (!signup.ok) throw new Error(`signup ${signup.status} ${await signup.text()}`);
 
-  const loginRes = await fetch(`${API_URL}/api/auth/login`, {
+  const loginRes = await fetch(`${API_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   });
   const setCookie = loginRes.headers.get('set-cookie') ?? '';
-  const session = setCookie.match(/session=([^;]+)/)?.[1];
-  if (!session) throw new Error('no session cookie');
+  const session = setCookie.match(/access_token=([^;]+)/)?.[1];
+  if (!session) throw new Error('no access_token cookie');
 
-  const sendRes = await fetch(`${API_URL}/api/email-verification/send`, {
+  const sendRes = await fetch(`${API_URL}/api/v1/auth/email-verification/send`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', cookie: `session=${session}` },
+    headers: { 'Content-Type': 'application/json', cookie: `access_token=${session}` },
   });
   if (!sendRes.ok) throw new Error(`send ${sendRes.status} ${await sendRes.text()}`);
 
   const code = await getLatestVerificationCode(email, { timeoutMs: 15_000 });
-  const verifyRes = await fetch(`${API_URL}/api/email-verification/verify`, {
+  const verifyRes = await fetch(`${API_URL}/api/v1/auth/email-verification/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token: code }),
@@ -72,7 +72,7 @@ test('completing onboarding with no personal-info contact email returns 200 AND 
   // what the "Dados Pessoais" UI step captures (it doesn't ask for one).
   const res = await fetch(`${API_URL}/api/v1/onboarding`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', cookie: `session=${session}` },
+    headers: { 'Content-Type': 'application/json', cookie: `access_token=${session}` },
     body: JSON.stringify({
       username: `e2e_user_${randomUUID().slice(0, 6).replace(/-/g, '')}`,
       personalInfo: {
@@ -99,7 +99,7 @@ test('completing onboarding with no personal-info contact email returns 200 AND 
 
   const resumes = await fetch(`${API_URL}/api/v1/resumes`, {
     method: 'GET',
-    headers: { cookie: `session=${session}` },
+    headers: { cookie: `access_token=${session}` },
   });
   expect(resumes.status).toBe(200);
   // Backend envelope: { success, data: { data: Resume[], meta: {...} } }.
@@ -118,7 +118,7 @@ test('completing onboarding with no personal-info contact email returns 200 AND 
   // drift (because the onboarding flow never writes emailContact now).
   const fullRes = await fetch(`${API_URL}/api/v1/resumes/${body.resumeId}`, {
     method: 'GET',
-    headers: { cookie: `session=${session}` },
+    headers: { cookie: `access_token=${session}` },
   });
   expect(fullRes.status).toBe(200);
   const full = (await fullRes.json()) as { data: { email?: string } };

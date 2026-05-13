@@ -6,17 +6,17 @@ import { ADMIN_CREDENTIALS, API_URL, loginAs } from '../_helpers/auth';
  *  gated so we authenticate first and forward the cookie. */
 async function firstJobId(): Promise<string | null> {
   try {
-    const login = await fetch(`${API_URL}/api/auth/login`, {
+    const login = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(ADMIN_CREDENTIALS),
     });
     if (!login.ok) return null;
     const cookie = login.headers.get('set-cookie') ?? '';
-    const match = cookie.match(/session=([^;]+)/);
+    const match = cookie.match(/access_token=([^;]+)/);
     if (!match) return null;
     const res = await fetch(`${API_URL}/api/v1/jobs?page=1&limit=1`, {
-      headers: { cookie: `session=${match[1]}` },
+      headers: { cookie: `access_token=${match[1]}` },
     });
     if (!res.ok) return null;
     const body = (await res.json()) as {

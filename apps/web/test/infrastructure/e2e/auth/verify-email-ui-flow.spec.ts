@@ -59,10 +59,12 @@ for (const run of [1, 2, 3]) {
     await page.waitForURL(/\/onboarding/, { timeout: 15_000 });
 
     // Backend must have flipped emailVerified in the session response.
-    const session = await page.request.get('http://localhost:3001/api/auth/session');
-    const body = await session.json();
-    expect(body.data.user.emailVerified).toBe(true);
-    expect(body.data.user.needsEmailVerification).toBe(false);
+    const session = await page.request.get('http://localhost:3001/api/v1/auth/session');
+    const body = (await session.json()) as {
+      user: { emailVerified: boolean; needsEmailVerification: boolean };
+    };
+    expect(body.user.emailVerified).toBe(true);
+    expect(body.user.needsEmailVerification).toBe(false);
 
     // No "Invalid or expired" banner after a successful verify.
     await expect(page.getByText(/invalid.*(expired|token)|inválid/i)).toHaveCount(0);

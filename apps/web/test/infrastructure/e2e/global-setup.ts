@@ -14,7 +14,7 @@ export default async function globalSetup() {
 
   // 2. Seed user 'enzoferracini' present? (required by resume-download.spec.ts)
   try {
-    const res = await fetch(`${API_URL}/api/v1/users/enzoferracini/profile`);
+    const res = await fetch(`${API_URL}/api/v1/profiles/enzoferracini`);
     if (res.status === 404) {
       console.warn(
         `[e2e] Seed user 'enzoferracini' is missing in the backend DB. ` +

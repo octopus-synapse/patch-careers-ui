@@ -16,14 +16,21 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Login Flow', () => {
   test.beforeAll(async () => {
-    const res = await fetch(`${API_URL}/api/accounts`, {
+    const res = await fetch(`${API_URL}/api/v1/accounts`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(testUser),
     });
-    const body = await res.json();
-    if (!body.success && !body.message?.includes('already')) {
-      throw new Error(`Setup failed: ${JSON.stringify(body)}`);
+    // Backend returns the bare user payload on success (no `success: true`
+    // envelope) or a domain error with `statusCode >= 400` on failure.
+    // 409 / duplicate email is fine — the user might already exist from a
+    // previous run inside the same DB.
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}) as Record<string, unknown>);
+      const message = String((body as { message?: unknown }).message ?? '');
+      if (!/already|exists|duplicate/i.test(message)) {
+        throw new Error(`Setup failed: ${res.status} ${JSON.stringify(body)}`);
+      }
     }
   });
 

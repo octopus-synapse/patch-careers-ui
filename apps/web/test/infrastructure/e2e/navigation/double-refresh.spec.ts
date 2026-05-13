@@ -13,18 +13,18 @@ const ADMIN_TEST_PATH = '/platform/admin/dev-tools/test-404';
 let adminContext: BrowserContext;
 
 async function loginAdminContext(browser: import('@playwright/test').Browser) {
-  const res = await fetch(`${API_URL}/api/auth/login`, {
+  const res = await fetch(`${API_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
   });
   if (!res.ok) throw new Error(`Admin login failed: ${res.status} ${await res.text()}`);
-  const match = (res.headers.get('set-cookie') ?? '').match(/session=([^;]+)/);
-  if (!match) throw new Error('No session cookie from admin login');
+  const match = (res.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/);
+  if (!match) throw new Error('No access_token cookie from admin login');
   const ctx = await browser.newContext();
   await ctx.addCookies([
     {
-      name: 'session',
+      name: 'access_token',
       value: match[1],
       domain: 'localhost',
       path: '/',

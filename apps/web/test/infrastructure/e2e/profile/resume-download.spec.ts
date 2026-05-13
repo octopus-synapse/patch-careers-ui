@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { signupTestUser } from '../_helpers/auth';
 
 const API_URL = 'http://localhost:3001';
 
@@ -18,29 +19,23 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Resume PDF Download', () => {
   test.beforeAll(async () => {
-    // Create test user
-    const signupRes = await fetch(`${API_URL}/api/accounts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user),
-    });
-    const signupData = await signupRes.json();
-    accessToken = signupData.data?.accessToken;
+    const signupData = await signupTestUser(user);
+    accessToken = signupData.accessToken;
 
     // Login to get session cookie
-    const loginRes = await fetch(`${API_URL}/api/auth/login`, {
+    const loginRes = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: user.email, password: user.password }),
     });
     const setCookie = loginRes.headers.get('set-cookie') ?? '';
-    const match = setCookie.match(/session=([^;]+)/);
+    const match = setCookie.match(/access_token=([^;]+)/);
     sessionCookie = match?.[1] ?? '';
 
     // Get enzoferracini's userId from public profile
-    const profileRes = await fetch(`${API_URL}/api/v1/users/enzoferracini/profile`);
+    const profileRes = await fetch(`${API_URL}/api/v1/profiles/enzoferracini`);
     const profileData = await profileRes.json();
-    targetUserId = profileData.data?.user?.id;
+    targetUserId = profileData?.user?.id ?? profileData?.id;
   });
 
   test('public profile endpoint returns user data with id', async () => {
@@ -87,7 +82,7 @@ test.describe('Resume PDF Download', () => {
 
   test('download endpoint returns PDF data with session cookie', async () => {
     const res = await fetch(`${API_URL}/api/v1/export/user/${targetUserId}/resume/pdf`, {
-      headers: { Cookie: `session=${sessionCookie}` },
+      headers: { Cookie: `access_token=${sessionCookie}` },
     });
     console.log('Cookie response status:', res.status);
     const body = await res.json();
@@ -103,19 +98,19 @@ test.describe('Resume PDF Download', () => {
     // authenticated session to have completed onboarding (OnboardingGuard redirects
     // otherwise). Log in as the seeded `enzoferracini` user (hasCompletedOnboarding=true)
     // instead of the freshly-created dl-* user.
-    const enzoLogin = await fetch(`${API_URL}/api/auth/login`, {
+    const enzoLogin = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'enzo@patchcareers.local', password: 'Enzo_Test_123!' }),
     });
     const enzoCookie =
-      (enzoLogin.headers.get('set-cookie') ?? '').match(/session=([^;]+)/)?.[1] ?? '';
+      (enzoLogin.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/)?.[1] ?? '';
     expect(enzoCookie).toBeTruthy();
 
     const ctx = await browser.newContext();
     await ctx.addCookies([
       {
-        name: 'session',
+        name: 'access_token',
         value: enzoCookie,
         domain: 'localhost',
         path: '/',

@@ -20,7 +20,7 @@ const user2 = {
 let ctx1: BrowserContext;
 
 async function createUser(user: typeof user1) {
-  const res = await fetch(`${API_URL}/api/accounts`, {
+  const res = await fetch(`${API_URL}/api/v1/accounts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user),
@@ -29,17 +29,17 @@ async function createUser(user: typeof user1) {
 }
 
 async function loginContext(browser: import('@playwright/test').Browser, user: typeof user1) {
-  const loginRes = await fetch(`${API_URL}/api/auth/login`, {
+  const loginRes = await fetch(`${API_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: user.email, password: user.password }),
   });
-  const match = (loginRes.headers.get('set-cookie') ?? '').match(/session=([^;]+)/);
-  if (!match) throw new Error('No session cookie');
+  const match = (loginRes.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/);
+  if (!match) throw new Error('No access_token cookie');
   const ctx = await browser.newContext({ viewport: { width: 375, height: 667 } });
   await ctx.addCookies([
     {
-      name: 'session',
+      name: 'access_token',
       value: match[1],
       domain: 'localhost',
       path: '/',
@@ -69,7 +69,7 @@ async function loginContext(browser: import('@playwright/test').Browser, user: t
 }
 
 async function openChatWidget(page: Page) {
-  await page.goto('/dashboard');
+  await page.goto('/my-profile/dashboard');
   await page.waitForLoadState('networkidle');
 
   // Mobile viewport: open hamburger, then click chat-toggle from the mobile menu.

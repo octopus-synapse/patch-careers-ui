@@ -10,18 +10,18 @@ import { expect, test } from '@playwright/test';
 
 test.describe('RankBadge + ScoreCard primitives', () => {
   test('admin resume-styles table renders rank letters S/A/B/C/D/F', async ({ browser }) => {
-    const res = await fetch('http://localhost:3001/api/auth/login', {
+    const res = await fetch('http://localhost:3001/api/v1/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'admin@example.com', password: 'Admin123!@#' }),
     });
     if (!res.ok) test.skip(true, 'admin seed unavailable');
-    const match = (res.headers.get('set-cookie') ?? '').match(/session=([^;]+)/);
+    const match = (res.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/);
     const ctx = await browser.newContext();
     if (match) {
       await ctx.addCookies([
         {
-          name: 'session',
+          name: 'access_token',
           value: match[1],
           domain: 'localhost',
           path: '/',
@@ -45,18 +45,18 @@ test.describe('RankBadge + ScoreCard primitives', () => {
   });
 
   test('scores hub renders either a numeric score or a teaser state', async ({ browser }) => {
-    const res = await fetch('http://localhost:3001/api/auth/login', {
+    const res = await fetch('http://localhost:3001/api/v1/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'admin@example.com', password: 'Admin123!@#' }),
     });
     if (!res.ok) test.skip(true, 'admin seed unavailable');
-    const match = (res.headers.get('set-cookie') ?? '').match(/session=([^;]+)/);
+    const match = (res.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/);
     const ctx = await browser.newContext();
     if (match) {
       await ctx.addCookies([
         {
-          name: 'session',
+          name: 'access_token',
           value: match[1],
           domain: 'localhost',
           path: '/',

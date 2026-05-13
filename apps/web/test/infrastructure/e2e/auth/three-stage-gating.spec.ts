@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { type BrowserContext, expect, test } from '@playwright/test';
+import { seedLocaleCookie, signupTestUser } from '../_helpers/auth';
 import { deleteMessagesFor, getLatestVerificationCode } from '../_helpers/mailpit';
 
 /**
@@ -25,32 +26,21 @@ async function signup(): Promise<User> {
     password: 'T3stP@ssw0rd!',
     name: `E2E 3-stage ${id}`,
   };
-  const res = await fetch(`${API_URL}/api/accounts`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: user.name,
-      email: user.email,
-      password: user.password,
-      acceptedTosVersion: '1.0.0',
-      acceptedPrivacyVersion: '1.0.0',
-    }),
-  });
-  if (!res.ok) throw new Error(`signup failed: ${res.status} ${await res.text()}`);
-  const body = (await res.json()) as { data: { userId: string } };
-  user.userId = body.data.userId;
+  const body = await signupTestUser(user);
+  user.userId = body.userId;
   return user;
 }
 
 async function loginCookie(user: User): Promise<string> {
-  const res = await fetch(`${API_URL}/api/auth/login`, {
+  const res = await fetch(`${API_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: user.email, password: user.password }),
   });
   const setCookie = res.headers.get('set-cookie') ?? '';
-  const match = setCookie.match(/session=([^;]+)/);
-  if (!match) throw new Error(`no session cookie: status=${res.status} body=${await res.text()}`);
+  const match = setCookie.match(/access_token=([^;]+)/);
+  if (!match)
+    throw new Error(`no access_token cookie: status=${res.status} body=${await res.text()}`);
   return match[1];
 }
 
@@ -62,7 +52,7 @@ async function ctxFor(
   const ctx = await browser.newContext();
   await ctx.addCookies([
     {
-      name: 'session',
+      name: 'access_token',
       value: session,
       domain: 'localhost',
       path: '/',
@@ -70,6 +60,13 @@ async function ctxFor(
       sameSite: 'Lax',
     },
   ]);
+  // Navbar labels asserted below ('Feed', 'Vagas', 'Painel', 'Minha Rede',
+  // 'Mensagens') come from the pt-BR dictionary. Without seeding the
+  // cookie, `locale.svelte.ts` falls back to `navigator.language` and
+  // Playwright Chromium reports `en-US`, so the navbar would render the
+  // English copy and every name-match assertion would miss for the wrong
+  // reason.
+  await seedLocaleCookie(ctx);
   return ctx;
 }
 
@@ -114,14 +111,14 @@ test.describe('3-stage gating — signup → verify → onboarding → app', () 
 
     // Kick off the verification email so Mailpit has something to serve.
     const sessionCookie = await loginCookie(user);
-    const sendRes = await fetch(`${API_URL}/api/email-verification/send`, {
+    const sendRes = await fetch(`${API_URL}/api/v1/auth/email-verification/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', cookie: `session=${sessionCookie}` },
+      headers: { 'Content-Type': 'application/json', cookie: `access_token=${sessionCookie}` },
     });
     expect(sendRes.status, `send-verification failed: ${await sendRes.text()}`).toBe(200);
 
     const code = await getLatestVerificationCode(user.email);
-    const verifyRes = await fetch(`${API_URL}/api/email-verification/verify`, {
+    const verifyRes = await fetch(`${API_URL}/api/v1/auth/email-verification/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: code }),
