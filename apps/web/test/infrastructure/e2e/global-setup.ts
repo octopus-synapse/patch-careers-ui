@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3001';
+import { API_URL } from './_helpers/auth';
 
 export default async function globalSetup() {
   // 1. Backend reachable? A 4xx/5xx still means the server is up; only connection

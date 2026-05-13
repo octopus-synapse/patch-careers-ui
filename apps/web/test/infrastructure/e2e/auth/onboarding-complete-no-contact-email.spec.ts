@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { expect, test } from '@playwright/test';
+import { API_URL } from '../_helpers/auth';
 import { deleteMessagesFor, getLatestVerificationCode } from '../_helpers/mailpit';
 
 /**
@@ -13,8 +14,6 @@ import { deleteMessagesFor, getLatestVerificationCode } from '../_helpers/mailpi
  * then assert 200 + resume exists + the row's `emailContact` stays
  * null (no duplicate).
  */
-
-const API_URL = 'http://localhost:3001';
 
 async function signupAndVerify(): Promise<{ session: string; accountEmail: string }> {
   const id = randomUUID().slice(0, 8);

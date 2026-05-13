@@ -1,6 +1,5 @@
 import { type BrowserContext, expect, type Page, test } from '@playwright/test';
-
-const API_URL = 'http://localhost:3001';
+import { API_URL } from '../_helpers/auth';
 
 const user1 = {
   name: 'Chat User 1',

@@ -7,7 +7,13 @@
 // envelope — they get the bare body. This file stays internal: the app
 // barrel re-exports only `ApiError`, `isApiError`, `getBaseUrl`, `setBaseUrl`.
 
-let baseUrl = 'http://localhost:3001';
+// Matches the dev backend's published port in
+// `profile-services/docker-compose.dev.yml`: host 13001 → container 3001.
+// Production callers MUST override via `setBaseUrl()` (the root layout
+// does this from `import.meta.env.VITE_API_URL`); this default exists
+// only so a Node-side import of the SDK doesn't crash on
+// `setBaseUrl()`-not-called.
+let baseUrl = 'http://localhost:13001';
 
 export function setBaseUrl(url: string) {
   baseUrl = url;

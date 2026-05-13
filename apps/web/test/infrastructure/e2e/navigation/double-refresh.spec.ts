@@ -1,6 +1,5 @@
 import { type BrowserContext, expect, test } from '@playwright/test';
-
-const API_URL = 'http://localhost:3001';
+import { API_URL } from '../_helpers/auth';
 
 // `/test-404` used to exist as a top-level public dev route; it now lives under
 // the admin dev-tools segment, so these tests need an authenticated admin

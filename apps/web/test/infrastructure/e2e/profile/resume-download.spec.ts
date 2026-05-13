@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signupTestUser } from '../_helpers/auth';
-
-const API_URL = 'http://localhost:3001';
+import { API_URL, signupTestUser } from '../_helpers/auth';
 
 const user = {
   name: 'Download Test User',

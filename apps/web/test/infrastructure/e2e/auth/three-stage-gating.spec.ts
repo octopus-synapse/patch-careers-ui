@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { type BrowserContext, expect, test } from '@playwright/test';
-import { seedLocaleCookie, signupTestUser } from '../_helpers/auth';
+import { API_URL, seedLocaleCookie, signupTestUser } from '../_helpers/auth';
 import { deleteMessagesFor, getLatestVerificationCode } from '../_helpers/mailpit';
 
 /**
@@ -14,7 +14,6 @@ import { deleteMessagesFor, getLatestVerificationCode } from '../_helpers/mailpi
  * is meant to protect against regression.
  */
 
-const API_URL = 'http://localhost:3001';
 const GATED_ROUTES = ['/my-profile/dashboard', '/social/feed', '/careers/browse-jobs'];
 
 type User = { email: string; password: string; name: string; userId?: string };

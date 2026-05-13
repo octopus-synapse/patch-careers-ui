@@ -1,6 +1,6 @@
 import { type BrowserContext, expect, type Page, test } from '@playwright/test';
+import { API_URL } from '../_helpers/auth';
 
-const API_URL = 'http://localhost:3001';
 const testUser = {
   name: `E2E Flow ${Date.now()}`,
   email: `e2e-flow-${Date.now()}@test.com`,

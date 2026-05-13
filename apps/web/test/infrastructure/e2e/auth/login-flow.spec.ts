@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
-
-const API_URL = 'http://localhost:3001';
+import { API_URL } from '../_helpers/auth';
 
 // Use a unique user per test run to avoid conflicts
 const suffix = Date.now();

@@ -1,6 +1,13 @@
 import type { Browser, BrowserContext } from '@playwright/test';
 
-export const API_URL = 'http://localhost:3001';
+/**
+ * Backend base URL for every e2e spec. Sourced from `API_URL` env var
+ * so the suite tracks the docker-compose.dev.yml `BACKEND_PORT` setting
+ * without a code change. The fallback matches the new project-unique
+ * default (13001 → container 3001) introduced when we stopped publishing
+ * postgres/redis/etc. on the default ports.
+ */
+export const API_URL = process.env.API_URL ?? 'http://localhost:13001';
 
 /**
  * Shape returned by `POST /api/v1/accounts` after signup. The backend

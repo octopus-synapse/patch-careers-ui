@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { expect, test } from '@playwright/test';
+import { API_URL } from '../_helpers/auth';
 import { deleteMessagesFor, getLatestVerificationCode } from '../_helpers/mailpit';
 
 /**
@@ -59,7 +60,7 @@ for (const run of [1, 2, 3]) {
     await page.waitForURL(/\/onboarding/, { timeout: 15_000 });
 
     // Backend must have flipped emailVerified in the session response.
-    const session = await page.request.get('http://localhost:3001/api/v1/auth/session');
+    const session = await page.request.get(`${API_URL}/api/v1/auth/session`);
     const body = (await session.json()) as {
       user: { emailVerified: boolean; needsEmailVerification: boolean };
     };

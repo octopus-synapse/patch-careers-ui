@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { API_URL } from '../_helpers/auth';
 
 /**
  * Smoke tests for the shared RankBadge / ScoreCard primitives via
@@ -10,7 +11,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('RankBadge + ScoreCard primitives', () => {
   test('admin resume-styles table renders rank letters S/A/B/C/D/F', async ({ browser }) => {
-    const res = await fetch('http://localhost:3001/api/v1/auth/login', {
+    const res = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'admin@example.com', password: 'Admin123!@#' }),
@@ -45,7 +46,7 @@ test.describe('RankBadge + ScoreCard primitives', () => {
   });
 
   test('scores hub renders either a numeric score or a teaser state', async ({ browser }) => {
-    const res = await fetch('http://localhost:3001/api/v1/auth/login', {
+    const res = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'admin@example.com', password: 'Admin123!@#' }),
