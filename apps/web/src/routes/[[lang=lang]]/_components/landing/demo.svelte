@@ -1,6 +1,9 @@
 <script lang="ts">
 import { ArrowRight, Mail, MapPin, Github, Check, X } from 'lucide-svelte';
 import { fade } from 'svelte/transition';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 /** Pre-scripted demo: the same candidate, one base CV rendered in three
  *  ATS-aware variants. The landing does not hit the backend — we show the
@@ -37,7 +40,7 @@ const candidate = {
   github: 'github.com/juliaprado',
 };
 
-const versions: Version[] = [
+const versions: Version[] = $derived.by(() => [
   {
     slug: 'original',
     label: 'Original',
@@ -47,7 +50,7 @@ const versions: Version[] = [
     ],
     roles: [
       {
-        title: 'Senior Software Engineer',
+        title: t('landing.demo.roles.seniorSoftwareEngineer'),
         company: 'Nubank',
         period: '2022 &mdash; Atual',
         bullets: [
@@ -57,7 +60,7 @@ const versions: Version[] = [
         ],
       },
       {
-        title: 'Software Engineer',
+        title: t('landing.demo.roles.softwareEngineer'),
         company: 'Loft',
         period: '2019 &mdash; 2022',
         bullets: [
@@ -82,7 +85,7 @@ const versions: Version[] = [
   },
   {
     slug: 'rust-vercel',
-    label: 'Vercel · Rust',
+    label: t('landing.demo.versions.vercelRust.label'),
     target: 'Senior Rust Backend Engineer &mdash; Vercel',
     summary: [
       { text: 'Engenheira backend com ' },
@@ -91,7 +94,7 @@ const versions: Version[] = [
     ],
     roles: [
       {
-        title: 'Senior Software Engineer',
+        title: t('landing.demo.roles.seniorSoftwareEngineer'),
         company: 'Nubank',
         period: '2022 &mdash; Atual',
         bullets: [
@@ -123,7 +126,7 @@ const versions: Version[] = [
         ],
       },
       {
-        title: 'Software Engineer',
+        title: t('landing.demo.roles.softwareEngineer'),
         company: 'Loft',
         period: '2019 &mdash; 2022',
         bullets: [
@@ -159,7 +162,7 @@ const versions: Version[] = [
   },
   {
     slug: 'data-ifood',
-    label: 'iFood · Data',
+    label: t('landing.demo.versions.ifoodData.label'),
     target: 'Staff Data Engineer &mdash; iFood',
     summary: [
       { text: 'Engenheira de dados com ' },
@@ -168,7 +171,7 @@ const versions: Version[] = [
     ],
     roles: [
       {
-        title: 'Senior Software Engineer',
+        title: t('landing.demo.roles.seniorSoftwareEngineer'),
         company: 'Nubank',
         period: '2022 &mdash; Atual',
         bullets: [
@@ -200,7 +203,7 @@ const versions: Version[] = [
         ],
       },
       {
-        title: 'Software Engineer',
+        title: t('landing.demo.roles.softwareEngineer'),
         company: 'Loft',
         period: '2019 &mdash; 2022',
         bullets: [
@@ -234,7 +237,7 @@ const versions: Version[] = [
       missing: ['Snowflake (parcial)'],
     },
   },
-];
+]);
 
 let selectedSlug = $state('original');
 const selected = $derived(versions.find((v) => v.slug === selectedSlug) ?? versions[0]);
@@ -292,7 +295,7 @@ function pauseAuto(slug: string) {
 					§ 01 &mdash; Demo
 				</p>
 				<h2 class="font-display text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-[6rem]">
-					Um currículo. <span class="font-display-italic" style="color: var(--landing-oxide)">Reescrito</span> pra cada vaga.
+					{t('landing.demo.headingPart1')} <span class="font-display-italic" style="color: var(--landing-oxide)">Reescrito</span> {t('landing.demo.headingPart2')}
 				</h2>
 			</div>
 			<p class="max-w-sm font-mono text-xs uppercase leading-relaxed tracking-[0.14em]" style="color: var(--landing-muted-on-ink)">
@@ -445,7 +448,7 @@ function pauseAuto(slug: string) {
 					<div class="flex flex-wrap items-baseline justify-between gap-2">
 						<div>
 							<h4 class="font-display text-lg leading-tight" style="color: var(--landing-text-on-paper)">
-								Bacharelado em Ciência da Computação
+								{t('landing.demo.education.degree')}
 							</h4>
 							<p class="font-mono text-[11px] uppercase tracking-[0.18em]" style="color: var(--landing-muted-on-paper)">
 								USP &mdash; São Paulo

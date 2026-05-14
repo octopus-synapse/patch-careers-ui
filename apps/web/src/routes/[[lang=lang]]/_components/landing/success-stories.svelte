@@ -2,6 +2,9 @@
 import { createGetV1SuccessStories } from 'api-client';
 import { Quote } from 'lucide-svelte';
 import { browser } from '$app/environment';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 /** Loose shape so we don't break when the API adds extra fields. */
 type Story = {
@@ -32,7 +35,7 @@ const stories = $derived(
 			<div class="mb-10 text-center">
 				<p class="mb-3 font-mono text-xs uppercase tracking-[0.4em] text-cyan-500">Histórias reais</p>
 				<h2 class="text-3xl font-black uppercase leading-none tracking-tighter text-white sm:text-5xl md:text-7xl">
-					De onde pra onde
+					{t('landing.successStories.heading')}
 				</h2>
 				<p class="mx-auto mt-4 max-w-xl text-sm text-zinc-500 sm:text-base">
 					Quem já patched a carreira com a gente.

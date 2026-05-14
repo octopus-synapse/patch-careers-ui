@@ -3,6 +3,9 @@ import { ArrowRight, Check, Plus, Minus } from 'lucide-svelte';
 import LandingDemo from './_components/landing/demo.svelte';
 import LandingSuccessStories from './_components/landing/success-stories.svelte';
 import SeoHead from '$lib/components/seo/seo-head.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const heroBenefits = ['Sem cartão de crédito', 'Cancele quando quiser', 'IA especializada em tech'];
 
@@ -43,13 +46,13 @@ let openFaq = $state<number | null>(null);
 
 <SeoHead
 	title="Patch Careers"
-	description="IA especializada em tech que reescreve seu currículo por vaga, abre ATS com 90%+ e faz Auto-Apply no match real. Sua carreira, patched."
+	description={t('landing.seo.description')}
 	type="website"
 	jsonLd={{
 		'@context': 'https://schema.org',
 		'@type': 'Organization',
 		name: 'Patch Careers',
-		description: 'Patched resumes for tech careers — AI-tailored applications, ATS-optimized.',
+		description: t('landing.seo.organizationDescription'),
 		url: 'https://patch.careers'
 	}}
 />
@@ -178,7 +181,7 @@ let openFaq = $state<number | null>(null);
 
 				<div>
 					<h2 class="font-display text-5xl leading-[1.02] sm:text-6xl md:text-7xl lg:text-[7.5rem]">
-						Pare de ser
+						{t('landing.cta.stopBeing')}
 						<span class="font-display-italic" style="color: var(--landing-oxide)">ignorado</span>.
 					</h2>
 
@@ -220,7 +223,7 @@ let openFaq = $state<number | null>(null);
 						§ 02 &mdash; Plano
 					</p>
 					<h2 class="font-display text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-[6rem]">
-						Um plano. <span class="font-display-italic">Sem pegadinha.</span>
+						{t('landing.pricing.headingPart1')} <span class="font-display-italic">Sem pegadinha.</span>
 					</h2>
 				</div>
 				<p class="max-w-sm font-mono text-xs uppercase leading-relaxed tracking-[0.14em]" style="color: var(--landing-muted-on-paper)">
@@ -352,7 +355,7 @@ let openFaq = $state<number | null>(null);
 						Produto
 					</p>
 					<ul class="space-y-2 text-sm">
-						<li><a href="/identity/sign-up" class="hover:underline" style="text-decoration-color: var(--landing-oxide);">Começar</a></li>
+						<li><a href="/identity/sign-up" class="hover:underline" style="text-decoration-color: var(--landing-oxide);">{t('landing.footer.getStarted')}</a></li>
 						<li><span style="color: var(--landing-muted-on-ink)">Privacidade</span></li>
 						<li><span style="color: var(--landing-muted-on-ink)">Termos de uso</span></li>
 					</ul>
@@ -371,7 +374,7 @@ let openFaq = $state<number | null>(null);
 								onmouseenter={(e) => (e.currentTarget.style.color = 'var(--landing-oxide)')}
 								onmouseleave={(e) => (e.currentTarget.style.color = '')}
 							>
-								oi@patchcareers.org
+								{t('common.email.hi')}
 							</a>
 						</li>
 					</ul>
