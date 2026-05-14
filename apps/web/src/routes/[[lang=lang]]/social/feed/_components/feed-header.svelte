@@ -23,7 +23,7 @@ const placeholder = $derived(
 </script>
 
 <section
-	class="rounded-3xl border border-black/5 bg-white p-5 dark:border-white/[0.06] dark:bg-zinc-900/40 sm:p-6"
+	class="mt-2 rounded-3xl border border-black/5 bg-white p-5 dark:border-white/[0.06] dark:bg-zinc-900/40 sm:p-6"
 >
 	<button
 		type="button"
