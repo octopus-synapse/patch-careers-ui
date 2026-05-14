@@ -165,6 +165,11 @@ export type PutV1OnboardingProgressMutationRequest = {
         */
         jobTitle?: string;
         /**
+         * @maxLength 120
+         * @type string | undefined
+        */
+        headline?: string;
+        /**
          * @minLength 10
          * @maxLength 500
          * @type string | undefined

@@ -53,6 +53,7 @@ export const putV1OnboardingProgressMutationRequestSchema = z.object({
 "professionalProfile": z.optional(z.object({
     "title": z.optional(z.string().min(2).max(100)),
 "jobTitle": z.optional(z.string().min(2).max(100)),
+"headline": z.optional(z.string().max(120)),
 "summary": z.optional(z.string().min(10).max(500)),
 "linkedin": z.optional(z.lazy(() => linkedInUrlSchema).describe("LinkedIn profile or company URL (e.g. `https://www.linkedin.com/in/<handle>` or `https://www.linkedin.com/company/<slug>`).")),
 "github": z.optional(z.lazy(() => gitHubUrlSchema).describe("GitHub profile URL (e.g. `https://github.com/<handle>`).")),
