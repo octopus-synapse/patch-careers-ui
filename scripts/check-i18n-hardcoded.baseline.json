@@ -1,477 +1,2942 @@
 {
-  "note": "pre-existing i18n hardcoded violations. New entries MUST NOT be added — fix the literal with t(...) instead. Refresh with: bun scripts/check-i18n-hardcoded.ts --update-baseline",
+  "note": "pre-existing i18n hardcoded violations grouped by rule. New entries MUST NOT be added — fix the literal with t(...) instead. To plan a sweep, filter `entries` by `rule` (attr / attr-expr / call-arg / object-prop / text-child) or by file. Refresh after a sweep with: bun scripts/check-i18n-hardcoded.ts --update-baseline",
   "count": 471,
+  "byRule": {
+    "attr": 99,
+    "attr-expr": 2,
+    "call-arg": 18,
+    "object-prop": 68,
+    "text-child": 284
+  },
+  "byFile": {
+    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte": 38,
+    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte": 30,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte": 21,
+    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte": 18,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte": 17,
+    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte": 17,
+    "apps/web/src/lib/state/lockout-state.svelte.ts": 14,
+    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte": 14,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte": 14,
+    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte": 12,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte": 12,
+    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte": 11,
+    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte": 11,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte": 9,
+    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte": 8,
+    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte": 8,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte": 8,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte": 8,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte": 8,
+    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte": 8,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte": 7,
+    "apps/web/src/routes/[[lang=lang]]/+page.svelte": 6,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte": 6,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte": 6,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte": 6,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte": 6,
+    "apps/web/src/lib/components/command-palette/command-palette.svelte": 5,
+    "apps/web/src/lib/components/scoring/resume-quality-card.svelte": 5,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte": 5,
+    "packages/ui/src/components/badge/badge-icon.component.svelte": 5,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte": 4,
+    "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte": 4,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte": 4,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte": 4,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte": 4,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte": 4,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte": 4,
+    "packages/ui/src/components/avatar/avatar.component.svelte": 4,
+    "apps/web/src/lib/components/collaboration/comments-panel.svelte": 3,
+    "apps/web/src/lib/components/errors/error-boundary.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte": 3,
+    "apps/web/src/lib/components/chat/message-input.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/analytics/+page.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/endorsements/+page.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-welcome.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/review/+page.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/start/+page.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/sections/+page.svelte": 2,
+    "packages/ui/src/components/otp-input/otp-input.component.svelte": 2,
+    "apps/web/src/lib/components/chat/chat-widget.svelte": 1,
+    "apps/web/src/lib/components/chat/conversation-list.svelte": 1,
+    "apps/web/src/lib/components/chat/user-search.svelte": 1,
+    "apps/web/src/lib/components/errors/error-renderer.svelte": 1,
+    "apps/web/src/lib/components/jobs/new-jobs-badge.svelte": 1,
+    "apps/web/src/lib/components/jobs/similar-jobs-carousel.svelte": 1,
+    "apps/web/src/lib/components/layout/color-schema-toggle.svelte": 1,
+    "apps/web/src/lib/components/layout/footer.svelte": 1,
+    "apps/web/src/lib/components/layout/nav-user-dropdown.svelte": 1,
+    "apps/web/src/lib/components/layout/notification-bell.svelte": 1,
+    "apps/web/src/lib/components/seo/seo-head.svelte": 1,
+    "apps/web/src/routes/+layout.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/[...rest]/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/_components/landing/success-stories.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/careers/apply-modes/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/cv-rerender-modal.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/version-actions.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/careers/search/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/identity/sign-in/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/connected-accounts/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/danger-zone/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/profile/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/sessions/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/field-renderer.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/onboarding-stepper.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/preview-panel.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-theme.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/claim-shadow/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/_components/admin-alerts.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/collaboration/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/test-404/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/health/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/activity/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/feed-list.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/mention-textarea.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/report-modal.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/notifications/+page.svelte": 1,
+    "packages/ui/src/components/fit-score/fit-score-chip.component.svelte": 1,
+    "packages/ui/src/components/matching/match-badge.component.svelte": 1,
+    "packages/ui/src/components/matching/rank-badge.component.svelte": 1,
+    "packages/ui/src/components/modal/danger-confirm-modal.component.svelte": 1,
+    "packages/ui/src/components/search/search-filter-bar.component.svelte": 1
+  },
   "entries": [
-    "apps/web/src/lib/components/chat/chat-widget.svelte:172:16",
-    "apps/web/src/lib/components/chat/conversation-list.svelte:64:17",
-    "apps/web/src/lib/components/chat/message-input.svelte:49:18",
-    "apps/web/src/lib/components/chat/message-input.svelte:56:16",
-    "apps/web/src/lib/components/chat/user-search.svelte:31:54",
-    "apps/web/src/lib/components/collaboration/comments-panel.svelte:108:77",
-    "apps/web/src/lib/components/collaboration/comments-panel.svelte:182:32",
-    "apps/web/src/lib/components/collaboration/comments-panel.svelte:227:20",
-    "apps/web/src/lib/components/command-palette/command-palette.svelte:220:15",
-    "apps/web/src/lib/components/command-palette/command-palette.svelte:49:13",
-    "apps/web/src/lib/components/command-palette/command-palette.svelte:59:13",
-    "apps/web/src/lib/components/command-palette/command-palette.svelte:68:13",
-    "apps/web/src/lib/components/command-palette/command-palette.svelte:90:28",
-    "apps/web/src/lib/components/errors/error-boundary.svelte:53:9",
-    "apps/web/src/lib/components/errors/error-boundary.svelte:62:11",
-    "apps/web/src/lib/components/errors/error-boundary.svelte:69:11",
-    "apps/web/src/lib/components/errors/error-renderer.svelte:196:9",
-    "apps/web/src/lib/components/jobs/new-jobs-badge.svelte:45:36",
-    "apps/web/src/lib/components/jobs/similar-jobs-carousel.svelte:43:31",
-    "apps/web/src/lib/components/layout/color-schema-toggle.svelte:11:14",
-    "apps/web/src/lib/components/layout/footer.svelte:47:32",
-    "apps/web/src/lib/components/layout/nav-user-dropdown.svelte:100:18",
-    "apps/web/src/lib/components/layout/notification-bell.svelte:194:35",
-    "apps/web/src/lib/components/scoring/resume-quality-card.svelte:46:12",
-    "apps/web/src/lib/components/scoring/resume-quality-card.svelte:48:15",
-    "apps/web/src/lib/components/scoring/resume-quality-card.svelte:50:36",
-    "apps/web/src/lib/components/scoring/resume-quality-card.svelte:57:14",
-    "apps/web/src/lib/components/scoring/resume-quality-card.svelte:75:13",
-    "apps/web/src/lib/components/seo/seo-head.svelte:30:58",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:34:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:34:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:36:20",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:36:20",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:39:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:39:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:41:20",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:41:20",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:44:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:44:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:48:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:48:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:52:13",
-    "apps/web/src/lib/state/lockout-state.svelte.ts:52:13",
-    "apps/web/src/routes/+layout.svelte:86:43",
-    "apps/web/src/routes/[[lang=lang]]/+page.svelte:181:7",
-    "apps/web/src/routes/[[lang=lang]]/+page.svelte:223:7",
-    "apps/web/src/routes/[[lang=lang]]/+page.svelte:355:116",
-    "apps/web/src/routes/[[lang=lang]]/+page.svelte:374:9",
-    "apps/web/src/routes/[[lang=lang]]/+page.svelte:46:15",
-    "apps/web/src/routes/[[lang=lang]]/+page.svelte:52:17",
-    "apps/web/src/routes/[[lang=lang]]/[...rest]/+page.svelte:12:3",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:126:17",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:162:13",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:171:17",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:203:17",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:295:107",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:295:6",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:448:9",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:50:17",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:60:17",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:85:13",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:94:17",
-    "apps/web/src/routes/[[lang=lang]]/_components/landing/success-stories.svelte:35:6",
-    "apps/web/src/routes/[[lang=lang]]/careers/apply-modes/+page.svelte:52:24",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:294:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:444:47",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:448:49",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:452:50",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:469:18",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:476:54",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:481:48",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:486:53",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:504:26",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:508:27",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:543:20",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:543:37",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:396:10",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:498:47",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:502:49",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:506:50",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:523:18",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:530:54",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:535:48",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:540:53",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte:129:19",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte:190:6",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte:68:45",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:109:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:143:26",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:147:19",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:177:15",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:184:31",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:194:32",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:34:22",
-    "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:91:22",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:104:20",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:134:5",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:138:27",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:147:31",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:152:33",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:160:13",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:171:29",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:175:28",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:53:45",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:77:22",
-    "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:95:4",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/analytics/+page.svelte:111:11",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/analytics/+page.svelte:130:11",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:110:13",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:123:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:130:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:49:40",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:70:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:82:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:170:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:187:28",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:188:71",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:192:33",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:196:33",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:201:30",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:206:24",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:215:33",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:226:22",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:245:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:257:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:266:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:276:27",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:280:24",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:296:31",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:301:24",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:312:30",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:318:29",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:319:30",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:320:30",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:321:32",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:331:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:338:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:357:24",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:365:72",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:406:15",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:61:46",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:65:46",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:70:50",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/cv-rerender-modal.svelte:41:24",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:137:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:151:7",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:165:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:178:9",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte:42:33",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte:45:32",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte:56:22",
-    "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/version-actions.svelte:84:20",
-    "apps/web/src/routes/[[lang=lang]]/careers/search/+page.svelte:204:51",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:20:9",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:21:58",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:23:9",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:25:46",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:29:70",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:31:9",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:32:156",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:36:9",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:37:58",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:39:9",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:41:46",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:44:9",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:45:70",
-    "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:48:170",
-    "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte:43:9",
-    "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte:67:26",
-    "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte:85:13",
-    "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:59:9",
-    "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:74:33",
-    "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:80:26",
-    "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:87:32",
-    "apps/web/src/routes/[[lang=lang]]/identity/sign-in/+page.svelte:121:45",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:27:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:30:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:33:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:36:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:39:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:41:70",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:46:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:49:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:50:46",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:52:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:55:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:58:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:61:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:64:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:66:70",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:71:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:74:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:75:46",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:101:128",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:103:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:112:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:120:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:129:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:138:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:141:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:144:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:152:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:160:60",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:162:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:165:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:166:40",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:168:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:169:54",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:171:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:172:151",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:174:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:21:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:23:134",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:25:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:34:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:42:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:51:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:60:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:63:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:66:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:74:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:82:59",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:84:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:87:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:88:41",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:90:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:91:54",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:93:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:94:146",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:96:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:99:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:101:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:104:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:105:55",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:21:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:24:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:27:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:30:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:31:148",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:33:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:40:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:43:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:46:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:49:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:52:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:55:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:58:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:61:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:62:57",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:64:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:67:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:70:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:73:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:74:158",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:76:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:83:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:86:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:89:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:92:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:95:9",
-    "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:98:9",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:117:80",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:154:80",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:48:12",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:72:4",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:80:10",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:81:46",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:102:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:37:24",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:49:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:66:76",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:77:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:81:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:91:37",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:91:57",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:156:32",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:19:25",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:23:25",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:79:24",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:161:29",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:161:42",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:67:61",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:110:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:31:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:46:18",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:48:21",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:50:28",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:60:14",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:61:20",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:77:25",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:78:25",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:88:14",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:89:20",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:91:17",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:93:24",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:99:31",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/connected-accounts/+page.svelte:28:75",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/danger-zone/+page.svelte:130:19",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:117:9",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:53:41",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:81:29",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:94:9",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/endorsements/+page.svelte:121:52",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/endorsements/+page.svelte:57:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte:158:35",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte:159:33",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte:160:34",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:115:18",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:123:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:125:29",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:127:28",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:129:46",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:136:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:152:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:160:20",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:161:26",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:168:20",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:169:26",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:176:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:178:74",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:179:76",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:187:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:75:40",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:92:77",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/profile/+page.svelte:199:6",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/sessions/+page.svelte:77:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:103:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:122:9",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:143:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:146:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:156:76",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:190:11",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:215:13",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:224:9",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:228:14",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:232:41",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:238:35",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:264:9",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte:65:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte:79:7",
-    "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte:90:27",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/field-renderer.svelte:104:37",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/onboarding-stepper.svelte:127:61",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/preview-panel.svelte:54:9",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-theme.svelte:36:12",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-welcome.svelte:30:4",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-welcome.svelte:62:3",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/claim-shadow/+page.svelte:77:7",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte:48:37",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte:54:32",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:134:81",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:169:7",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:27:8",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:41:22",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:45:8",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:63:22",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:66:54",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:81:7",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/review/+page.svelte:18:7",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/review/+page.svelte:28:7",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/start/+page.svelte:54:22",
-    "apps/web/src/routes/[[lang=lang]]/onboarding/start/+page.svelte:57:22",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/_components/admin-alerts.svelte:22:5",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:101:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:104:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:109:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:110:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:113:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:87:16",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/collaboration/+page.svelte:47:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:11:13",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:12:19",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:17:13",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:18:19",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:23:13",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:24:19",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:31:76",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte:80:74",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte:89:15",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte:89:30",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/test-404/+page.svelte:6:31",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:34:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:48:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:64:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:68:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:140:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:144:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:232:28",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:247:32",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:254:32",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/health/+page.svelte:23:18",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:65:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:68:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:71:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:77:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:78:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:79:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:80:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:81:24",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:86:9",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:136:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:140:7",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:223:40",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:247:34",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:259:35",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:268:36",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/sections/+page.svelte:54:5",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/sections/+page.svelte:59:18",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:117:31",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:120:37",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:121:32",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:181:18",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:19:69",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:20:46",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:25:12",
-    "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:26:18",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte:27:49",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte:72:24",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte:95:7",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:214:39",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:215:39",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:227:36",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:244:24",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:251:70",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:267:79",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:80:22",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:83:22",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:100:22",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:106:16",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:112:33",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:113:40",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:114:36",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:126:34",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:131:16",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:136:29",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:137:30",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:138:30",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:199:15",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:76:7",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:86:16",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:87:51",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:90:16",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:91:52",
-    "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:96:14",
-    "apps/web/src/routes/[[lang=lang]]/social/activity/+page.svelte:102:27",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte:107:17",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte:183:21",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte:254:9",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte:145:21",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte:155:7",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte:172:19",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/feed-list.svelte:181:40",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/mention-textarea.svelte:138:19",
-    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/report-modal.svelte:41:17",
-    "apps/web/src/routes/[[lang=lang]]/social/notifications/+page.svelte:273:24",
-    "packages/ui/src/components/avatar/avatar.component.svelte:62:17",
-    "packages/ui/src/components/avatar/avatar.component.svelte:70:17",
-    "packages/ui/src/components/avatar/avatar.component.svelte:81:15",
-    "packages/ui/src/components/avatar/avatar.component.svelte:89:15",
-    "packages/ui/src/components/badge/badge-icon.component.svelte:14:13",
-    "packages/ui/src/components/badge/badge-icon.component.svelte:20:13",
-    "packages/ui/src/components/badge/badge-icon.component.svelte:26:13",
-    "packages/ui/src/components/badge/badge-icon.component.svelte:32:13",
-    "packages/ui/src/components/badge/badge-icon.component.svelte:44:13",
-    "packages/ui/src/components/fit-score/fit-score-chip.component.svelte:121:17",
-    "packages/ui/src/components/matching/match-badge.component.svelte:22:9",
-    "packages/ui/src/components/matching/rank-badge.component.svelte:43:10",
-    "packages/ui/src/components/modal/danger-confirm-modal.component.svelte:81:4",
-    "packages/ui/src/components/otp-input/otp-input.component.svelte:122:14",
-    "packages/ui/src/components/otp-input/otp-input.component.svelte:133:17",
-    "packages/ui/src/components/search/search-filter-bar.component.svelte:86:60"
+    {
+      "key": "apps/web/src/lib/components/chat/chat-widget.svelte:172:16",
+      "rule": "attr",
+      "context": "div.aria-label",
+      "value": "Chat window header"
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/conversation-list.svelte:64:17",
+      "rule": "attr",
+      "context": "input.placeholder",
+      "value": "Buscar conversas"
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/message-input.svelte:49:18",
+      "rule": "attr",
+      "context": "textarea.placeholder",
+      "value": "Type a message..."
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/message-input.svelte:56:16",
+      "rule": "attr",
+      "context": "button.aria-label",
+      "value": "Send message"
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/user-search.svelte:31:54",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Search users..."
+    },
+    {
+      "key": "apps/web/src/lib/components/collaboration/comments-panel.svelte:182:32",
+      "rule": "attr",
+      "context": "input.placeholder",
+      "value": "Responder…"
+    },
+    {
+      "key": "apps/web/src/lib/components/collaboration/comments-panel.svelte:227:20",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "Adicionar comentário…"
+    },
+    {
+      "key": "apps/web/src/lib/components/command-palette/command-palette.svelte:220:15",
+      "rule": "attr",
+      "context": "div.aria-label",
+      "value": "Command palette"
+    },
+    {
+      "key": "apps/web/src/lib/components/layout/color-schema-toggle.svelte:11:14",
+      "rule": "attr",
+      "context": "Button.aria-label",
+      "value": "Toggle color schema"
+    },
+    {
+      "key": "apps/web/src/lib/components/scoring/resume-quality-card.svelte:46:12",
+      "rule": "attr",
+      "context": "ScoreCard.label",
+      "value": "Resume Quality"
+    },
+    {
+      "key": "apps/web/src/lib/components/scoring/resume-quality-card.svelte:57:14",
+      "rule": "attr",
+      "context": "ScoreCard.label",
+      "value": "Resume Quality"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:46:15",
+      "rule": "attr",
+      "context": "SeoHead.description",
+      "value": "IA especializada em tech que reescreve seu currículo por vaga, abre ATS com 9…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:444:47",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:448:49",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Acme Inc."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:452:50",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Remote / San Francisco, CA"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:469:18",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "Job description..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:476:54",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "React, TypeScript, 3+ years..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:481:48",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "React, Node.js, PostgreSQL..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:486:53",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "$80k - $120k"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:498:47",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:502:49",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Acme Inc."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:506:50",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Remote / San Francisco, CA"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:523:18",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "Job description..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:530:54",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "React, TypeScript, 3+ years..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:535:48",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "React, Node.js, PostgreSQL..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:540:53",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "$80k - $120k"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte:129:19",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "Cole aqui o texto da vaga…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:143:26",
+      "rule": "attr",
+      "context": "button.title",
+      "value": "Sem resposta há {app.daysSinceLastResponse ?? '?'} dias — clique pra registra…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:184:31",
+      "rule": "attr",
+      "context": "select.aria-label",
+      "value": "Tipo de evento"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:194:32",
+      "rule": "attr",
+      "context": "input.placeholder",
+      "value": "Nota (opcional)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:188:71",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Ex: Backend Pleno 2026"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:206:24",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "2–3 parágrafos sobre sua trajetória"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:280:24",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "enzo-backend-2026"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:301:24",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Deixe vazio para link público"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:357:24",
+      "rule": "attr",
+      "context": "img.alt",
+      "value": "QR para /s/{s.slug}"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:365:72",
+      "rule": "attr",
+      "context": "Lock.aria-label",
+      "value": "Protegido por senha"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/version-actions.svelte:84:20",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Nome da versão"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/search/+page.svelte:204:51",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "React, TypeScript"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte:67:26",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "voce@exemplo.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:80:26",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Mínimo 8 caracteres"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:81:46",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "react, typescript, postgres, aws"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:46:18",
+      "rule": "attr",
+      "context": "ScoreCard.label",
+      "value": "Resume Quality"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:60:14",
+      "rule": "attr",
+      "context": "ScoreCard.label",
+      "value": "Match Score"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:61:20",
+      "rule": "attr",
+      "context": "ScoreCard.description",
+      "value": "Calculado por vaga"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:88:14",
+      "rule": "attr",
+      "context": "ScoreCard.label",
+      "value": "Style Score"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:89:20",
+      "rule": "attr",
+      "context": "ScoreCard.description",
+      "value": "Estilo visual ativo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/danger-zone/+page.svelte:130:19",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "DELETE MY ACCOUNT"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:115:18",
+      "rule": "attr",
+      "context": "Checkbox.label",
+      "value": "Ativar One-Click Apply"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:160:20",
+      "rule": "attr",
+      "context": "Radio.label",
+      "value": "Enviar como está (verbatim)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:161:26",
+      "rule": "attr",
+      "context": "Radio.description",
+      "value": "O currículo master é enviado sem modificações."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:168:20",
+      "rule": "attr",
+      "context": "Radio.label",
+      "value": "Ajustar com IA por vaga"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:169:26",
+      "rule": "attr",
+      "context": "Radio.description",
+      "value": "O Patch reordena seções, destaca skills relevantes e gera uma versão otimizada."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:178:74",
+      "rule": "attr",
+      "context": "Checkbox.label",
+      "value": "Link do GitHub"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:179:76",
+      "rule": "attr",
+      "context": "Checkbox.label",
+      "value": "Link do LinkedIn"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:228:14",
+      "rule": "attr",
+      "context": "img.alt",
+      "value": "QR code para configuração 2FA"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte:90:27",
+      "rule": "attr",
+      "context": "object.aria-label",
+      "value": "Preview de {style.name}"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/preview-panel.svelte:54:9",
+      "rule": "attr",
+      "context": "img.alt",
+      "value": "Resume preview"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-theme.svelte:36:12",
+      "rule": "attr",
+      "context": "img.alt",
+      "value": "Preview of {theme.name}"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:101:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Pending invites"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:104:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Acceptance rate"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:109:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Jobs posted"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:110:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Active jobs"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:113:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Apps / job"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:87:16",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "DAU/MAU"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/health/+page.svelte:23:18",
+      "rule": "attr",
+      "context": "ComingSoonBanner.description",
+      "value": "O endpoint /platform/check ainda não foi exposto pela spec client-only. Volte…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:65:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Heap Used"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:68:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Heap Total"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:71:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Event Loop Lag"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:77:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Resumes Created"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:78:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "User Signups"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:79:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Exports Done"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:80:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Active Users"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:81:24",
+      "rule": "attr",
+      "context": "StatCard.label",
+      "value": "Pending Exports"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/sections/+page.svelte:59:18",
+      "rule": "attr",
+      "context": "input.placeholder",
+      "value": "Buscar..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:181:18",
+      "rule": "attr",
+      "context": "input.placeholder",
+      "value": "Buscar..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:25:12",
+      "rule": "attr",
+      "context": "ComingSoonBanner.title",
+      "value": "Detalhe do usuário (admin) em breve"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:26:18",
+      "rule": "attr",
+      "context": "ComingSoonBanner.description",
+      "value": "A página completa com edição de papéis, suspensão e impersonate ainda não foi…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:244:24",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "3+ anos com React, inglês intermediário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:251:70",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "react, typescript, postgres"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:267:79",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "R$ 8k - 12k"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:100:22",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "Cole a JD aqui — fica usada para contexto. Skills vêm do campo acima."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:87:51",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "ex: Senior Full-Stack Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:91:52",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "react, typescript, postgres"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/activity/+page.svelte:102:27",
+      "rule": "attr",
+      "context": "a.aria-label",
+      "value": "Ver perfil"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte:107:17",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Write a comment..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte:183:21",
+      "rule": "attr",
+      "context": "Input.placeholder",
+      "value": "Reply..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte:172:19",
+      "rule": "attr",
+      "context": "input.placeholder",
+      "value": "Linguagem (ex.: ts, py)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/mention-textarea.svelte:138:19",
+      "rule": "attr",
+      "context": "ul.aria-label",
+      "value": "Menções"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/report-modal.svelte:41:17",
+      "rule": "attr",
+      "context": "Textarea.placeholder",
+      "value": "Describe the reason..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/notifications/+page.svelte:273:24",
+      "rule": "attr",
+      "context": "button.aria-label",
+      "value": "mark read"
+    },
+    {
+      "key": "packages/ui/src/components/avatar/avatar.component.svelte:62:17",
+      "rule": "attr",
+      "context": "img.aria-label",
+      "value": "{name}"
+    },
+    {
+      "key": "packages/ui/src/components/avatar/avatar.component.svelte:70:17",
+      "rule": "attr",
+      "context": "div.aria-label",
+      "value": "{name}"
+    },
+    {
+      "key": "packages/ui/src/components/avatar/avatar.component.svelte:81:15",
+      "rule": "attr",
+      "context": "img.aria-label",
+      "value": "{name}"
+    },
+    {
+      "key": "packages/ui/src/components/avatar/avatar.component.svelte:89:15",
+      "rule": "attr",
+      "context": "div.aria-label",
+      "value": "{name}"
+    },
+    {
+      "key": "packages/ui/src/components/fit-score/fit-score-chip.component.svelte:121:17",
+      "rule": "attr",
+      "context": "button.aria-label",
+      "value": "{pct}% {labels.match}"
+    },
+    {
+      "key": "packages/ui/src/components/matching/match-badge.component.svelte:22:9",
+      "rule": "attr",
+      "context": "span.title",
+      "value": "{pct}% {label}"
+    },
+    {
+      "key": "packages/ui/src/components/matching/rank-badge.component.svelte:43:10",
+      "rule": "attr",
+      "context": "span.title",
+      "value": "Rank {resolvedRank}{typeof score === 'number' ? ` (${score}/100)` : ''}"
+    },
+    {
+      "key": "packages/ui/src/components/otp-input/otp-input.component.svelte:122:14",
+      "rule": "attr",
+      "context": "div.aria-label",
+      "value": "Verification code"
+    },
+    {
+      "key": "packages/ui/src/components/search/search-filter-bar.component.svelte:86:60",
+      "rule": "attr",
+      "context": "button.aria-label",
+      "value": "Clear search field"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte:145:21",
+      "rule": "attr-expr",
+      "context": "input.placeholder",
+      "value": "Opção ${i + 1}"
+    },
+    {
+      "key": "packages/ui/src/components/otp-input/otp-input.component.svelte:133:17",
+      "rule": "attr-expr",
+      "context": "input.aria-label",
+      "value": "Digit ${i + 1}"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/apply-modes/+page.svelte:52:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Failed to update preferences"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:34:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Follow-up registrado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:91:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Evento registrado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:77:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Vaga criada a partir da URL."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:226:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Bundle baixado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/cv-rerender-modal.svelte:41:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Failed to save tailored version"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte:56:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Template atualizado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:37:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Fit Profile apagado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:79:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Fit Profile salvo. Match Score liberado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:27:8",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Importado: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts …"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:41:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "LinkedIn importado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:45:8",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Import do LinkedIn ainda em construção — use PDF ou GitHub por enquanto."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:63:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "PDF enviado. Processando…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/start/+page.svelte:54:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "CV imported"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/start/+page.svelte:57:22",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Could not import the PDF"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:34:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Flag atualizada"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:48:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Broadcast enviado"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte:72:24",
+      "rule": "call-arg",
+      "context": "toastState.show#0",
+      "value": "Perfil cultural salvo"
+    },
+    {
+      "key": "apps/web/src/lib/components/command-palette/command-palette.svelte:49:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Novo post"
+    },
+    {
+      "key": "apps/web/src/lib/components/command-palette/command-palette.svelte:59:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Editar perfil"
+    },
+    {
+      "key": "apps/web/src/lib/components/command-palette/command-palette.svelte:68:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Configurações"
+    },
+    {
+      "key": "apps/web/src/lib/components/command-palette/command-palette.svelte:90:28",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Meus CVs"
+    },
+    {
+      "key": "apps/web/src/lib/components/scoring/resume-quality-card.svelte:48:15",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Ainda sem snapshot"
+    },
+    {
+      "key": "apps/web/src/lib/components/scoring/resume-quality-card.svelte:50:36",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Ver detalhes"
+    },
+    {
+      "key": "apps/web/src/lib/components/seo/seo-head.svelte:30:58",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "${title} · ${appTitle}"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:34:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Fit Profile necessário"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:34:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Fit Profile necessário"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:36:20",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Responder questionário"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:36:20",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Responder questionário"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:39:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Qualidade do currículo abaixo do mínimo"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:39:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Qualidade do currículo abaixo do mínimo"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:41:20",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Ver recomendações"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:41:20",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Ver recomendações"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:44:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Estilo abaixo do limiar ATS-safe"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:44:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Estilo abaixo do limiar ATS-safe"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:48:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Score do estilo não pode regredir"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:48:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Score do estilo não pode regredir"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:52:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Estilo do sistema"
+    },
+    {
+      "key": "apps/web/src/lib/state/lockout-state.svelte.ts:52:13",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Estilo do sistema"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:52:17",
+      "rule": "object-prop",
+      "context": "obj.description",
+      "value": "Patched resumes for tech careers — AI-tailored applications, ATS-optimized."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:126:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:162:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "iFood · Data"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:171:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Senior Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:203:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:50:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Senior Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:60:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:85:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Vercel · Rust"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:94:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Senior Software Engineer"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte:68:45",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Falha ao personalizar o currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:53:45",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Falha ao importar. Verifique a URL e tente de novo."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:49:40",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Falha na simulação."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:61:46",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Slug deve conter apenas letras, números e hifens."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:65:46",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Slug deve ter entre 3 e 80 caracteres."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:70:50",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Senha deve ter entre 4 e 200 caracteres."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte:42:33",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Técnico"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/template-switcher.svelte:45:32",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Acadêmico"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:48:12",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Falha ao calcular seu career graph"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:19:25",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Discordo fortemente"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:23:25",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Concordo fortemente"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:67:61",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Failed to download resume"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:48:21",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Sem currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:50:28",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Criar currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:77:25",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Buscar vagas"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:78:25",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Responder questionário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:91:17",
+      "rule": "object-prop",
+      "context": "obj.title",
+      "value": "Escolha um estilo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:93:24",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Ver estilos"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:75:40",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Falha ao salvar. Rascunho local preservado."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/onboarding-stepper.svelte:127:61",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Failed to complete onboarding"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:66:54",
+      "rule": "object-prop",
+      "context": "obj.message",
+      "value": "Falha ao enviar PDF."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:11:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Admin Test Runner"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:12:19",
+      "rule": "object-prop",
+      "context": "obj.description",
+      "value": "Executar suites de teste administrativas (seed-check, auth-flow, etc.)."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:17:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Backend Connection Tester"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:18:19",
+      "rule": "object-prop",
+      "context": "obj.description",
+      "value": "Diagnosticar conectividade com a API e serviços dependentes."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:23:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Test 404 Page"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:24:19",
+      "rule": "object-prop",
+      "context": "obj.description",
+      "value": "Validar renderização da página 404 genérica."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:117:31",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Áreas"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:120:37",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Linguagens de prog."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/skills/+page.svelte:121:32",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Idiomas falados"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte:27:49",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Self-direction"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:80:22",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Básico"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:83:22",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Salário"
+    },
+    {
+      "key": "packages/ui/src/components/badge/badge-icon.component.svelte:14:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "First Build"
+    },
+    {
+      "key": "packages/ui/src/components/badge/badge-icon.component.svelte:20:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "ATS 90%+"
+    },
+    {
+      "key": "packages/ui/src/components/badge/badge-icon.component.svelte:26:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Mentored 10"
+    },
+    {
+      "key": "packages/ui/src/components/badge/badge-icon.component.svelte:32:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "5 Interviews"
+    },
+    {
+      "key": "packages/ui/src/components/badge/badge-icon.component.svelte:44:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Event Speaker"
+    },
+    {
+      "key": "apps/web/src/lib/components/collaboration/comments-panel.svelte:108:77",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Comentários"
+    },
+    {
+      "key": "apps/web/src/lib/components/errors/error-boundary.svelte:53:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Algo deu errado."
+    },
+    {
+      "key": "apps/web/src/lib/components/errors/error-boundary.svelte:62:11",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Tentar novamente"
+    },
+    {
+      "key": "apps/web/src/lib/components/errors/error-boundary.svelte:69:11",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Recarregar página"
+    },
+    {
+      "key": "apps/web/src/lib/components/errors/error-renderer.svelte:196:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Algo deu errado"
+    },
+    {
+      "key": "apps/web/src/lib/components/jobs/new-jobs-badge.svelte:45:36",
+      "rule": "text-child",
+      "context": "button<{expr}>",
+      "value": "1 nova"
+    },
+    {
+      "key": "apps/web/src/lib/components/jobs/similar-jobs-carousel.svelte:43:31",
+      "rule": "text-child",
+      "context": "h2<{expr}>",
+      "value": "Vagas similares"
+    },
+    {
+      "key": "apps/web/src/lib/components/layout/footer.svelte:47:32",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": ": dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/lib/components/layout/nav-user-dropdown.svelte:100:18",
+      "rule": "text-child",
+      "context": "a<{expr}>",
+      "value": "My CV"
+    },
+    {
+      "key": "apps/web/src/lib/components/layout/notification-bell.svelte:194:35",
+      "rule": "text-child",
+      "context": "a<{expr}>",
+      "value": "Ver todas"
+    },
+    {
+      "key": "apps/web/src/lib/components/scoring/resume-quality-card.svelte:75:13",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Ver lista →"
+    },
+    {
+      "key": "apps/web/src/routes/+layout.svelte:86:43",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Skip to main content"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:181:7",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Pare de ser"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:223:7",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Um plano."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:355:116",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Começar"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:374:9",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "oi@patchcareers.org"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/[...rest]/+page.svelte:12:3",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "go home"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:295:107",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "pra cada vaga."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:295:6",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Um currículo."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:448:9",
+      "rule": "text-child",
+      "context": "h4<text>",
+      "value": "Bacharelado em Ciência da Computação"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/success-stories.svelte:35:6",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "De onde pra onde"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:294:7",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Rage apply"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:504:26",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Fit mínimo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:508:27",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Máximo de aplicações"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:543:20",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Aplicando..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/+page.svelte:543:37",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Rodar agora"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/+page.svelte:396:10",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Personalizar CV"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/[id]/_components/tailor-for-job-modal.svelte:190:6",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Abrir versão personalizada"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:109:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Timeline de aplicações"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:147:19",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Follow-up sugerido ("
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/browse-jobs/applications/+page.svelte:177:15",
+      "rule": "text-child",
+      "context": "summary<text>",
+      "value": "+ Registrar novo evento"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:104:20",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "URL da vaga"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:134:5",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Preview (edite antes de publicar)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:138:27",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Título"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:147:31",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Localização"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:152:33",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Descrição"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:160:13",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Skills extraídas"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:171:29",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Salário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:175:28",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Link de inscrição"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/import-from-url/+page.svelte:95:4",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Importar vaga por URL"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/analytics/+page.svelte:111:11",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Principais origens"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/analytics/+page.svelte:130:11",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Visualizações recentes"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:110:13",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Atenção ("
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:123:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Texto que o ATS vê"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:130:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Estrutura reordenada"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:70:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Pré-visualização ATS"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/ats-preview/+page.svelte:82:7",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Re-simular"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:170:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Editar currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:187:28",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Título do currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:192:33",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Nome completo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:196:33",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Cargo / role"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:201:30",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Resumo profissional"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/edit/+page.svelte:215:33",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Localização"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:245:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Compartilhar currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:257:7",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Baixar tudo (.zip)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:266:7",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Novo link"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:276:27",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Slug custom (opcional)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:296:31",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Senha (opcional)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:312:30",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Expira em"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:318:29",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "7 dias"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:319:30",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "30 dias"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:320:30",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "90 dias"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:321:32",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Nunca expira"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:331:9",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Criar link"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:338:7",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Links ativos"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/[id]/share/+page.svelte:406:15",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Aliases ("
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:137:9",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "PDF (ATS-ready)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:151:7",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Word (.docx)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:165:9",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "JSON Resume"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/careers/manage-resumes/_components/export-menu.svelte:178:9",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "LaTeX (.tex)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:20:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "General support"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:21:58",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "support@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:23:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Data Protection Officer (LGPD)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:25:46",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:29:70",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "legal@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:31:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "National data authority (ANPD)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:32:156",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "gov.br/anpd"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:36:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Suporte geral"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:37:58",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "support@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:39:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Encarregado de Dados (LGPD)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:41:46",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:44:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Jurídico"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:45:70",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "legal@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/contact/+page.svelte:48:170",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "gov.br/anpd"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte:43:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Esqueci minha senha"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/forgot-password/+page.svelte:85:13",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Voltar ao login"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:59:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Redefinir senha"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:74:33",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Nova senha"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/reset-password/+page.svelte:87:32",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Confirmar senha"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/identity/sign-in/+page.svelte:121:45",
+      "rule": "text-child",
+      "context": "a<{expr}>",
+      "value": "Esqueci minha senha"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:27:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Cookie Policy"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:30:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "1. Essential cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:33:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2. Analytics cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:36:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "3. Marketing cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:39:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "4. Managing preferences"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:41:70",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Open cookie preferences"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:46:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "5. Third parties"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:49:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "6. Contact"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:50:46",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:52:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Política de Cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:55:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "1. Cookies essenciais"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:58:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2. Cookies de analytics"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:61:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "3. Cookies de marketing"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:64:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "4. Gerenciar preferências"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:66:70",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "Abrir preferências de cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:71:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "5. Terceiros"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:74:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "6. Contato"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/cookies/+page.svelte:75:46",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:101:128",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:103:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "1. Dados que coletamos"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:112:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2. Bases legais (LGPD art. 7)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:120:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "3. Finalidades (LGPD art. 8 e 9)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:129:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "4. Compartilhamento e terceiros (LGPD art. 33)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:138:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "5. Transferência internacional (LGPD art. 33, III e 35)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:141:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "6. Decisão automatizada (LGPD art. 20)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:144:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "7. Retenção"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:152:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "8. Seus direitos (LGPD art. 18)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:160:60",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:162:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "9. Segurança"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:165:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "10. Cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:166:40",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Política de Cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:168:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "11. Encarregado / DPO"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:169:54",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:171:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "12. ANPD"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:172:151",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "gov.br/anpd"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:174:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "13. Alterações"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:21:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Privacy Policy"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:23:134",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:25:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "1. Data we collect"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:34:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2. Legal bases (LGPD art. 7)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:42:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "3. Purposes (LGPD art. 8 and 9)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:51:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "4. Sharing and third parties (LGPD art. 33)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:60:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "5. International transfer (LGPD art. 33, III and 35)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:63:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "6. Automated decisions (LGPD art. 20)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:66:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "7. Retention"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:74:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "8. Your rights (LGPD art. 18)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:82:59",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:84:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "9. Security"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:87:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "10. Cookies"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:88:41",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Cookie Policy"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:90:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "11. DPO / Encarregado"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:91:54",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:93:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "12. ANPD"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:94:146",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "gov.br/anpd"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:96:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "13. Changes"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/privacy/+page.svelte:99:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Política de Privacidade"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:101:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "11. Lei aplicável"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:104:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "12. Contato"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:105:55",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:21:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Terms of Service"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:24:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "1. Acceptance"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:27:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2. Eligibility"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:30:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "3. Account"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:31:148",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:33:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "4. Acceptable use"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:40:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "5. User-generated content"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:43:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "6. Automated decision-making"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:46:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "7. Third-party services"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:49:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "8. Termination"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:52:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "9. Liability"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:55:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "10. Changes"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:58:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "11. Governing law"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:61:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "12. Contact"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:62:57",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:64:9",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Termos de Uso"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:67:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "1. Aceite"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:70:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2. Elegibilidade"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:73:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "3. Conta"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:74:158",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "dpo@patchcareers.com"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:76:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "4. Uso aceitável"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:83:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "5. Conteúdo do usuário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:86:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "6. Decisão automatizada"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:89:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "7. Serviços de terceiros"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:92:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "8. Encerramento"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:95:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "9. Responsabilidade"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/legal/terms/+page.svelte:98:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "10. Alterações"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:117:80",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Distribuição por anos de experiência"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:154:80",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Se você continuar nesse stack…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:72:4",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Onde estão pessoas com seu stack hoje — e pra onde você pode ir"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:80:10",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Seu stack"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:102:11",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Começar agora"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:49:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Fit Profile"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:66:76",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Perfil ativo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:77:11",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Refazer questionário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:81:11",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Apagar perfil"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:91:37",
+      "rule": "text-child",
+      "context": "h2<{expr}>",
+      "value": "Perfil expirado"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/+page.svelte:91:57",
+      "rule": "text-child",
+      "context": "h2<{expr}>",
+      "value": "Perfil ainda não respondido"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:156:32",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Próxima"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:161:29",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Copiado!"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:161:42",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Copiar link"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:110:7",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Ver status do Fit Profile"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:31:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Seus scores"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/scores/+page.svelte:99:31",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Como os scores se encaixam"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/connected-accounts/+page.svelte:28:75",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Contas conectadas"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:117:9",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Deletar minha conta permanentemente"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:53:41",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Deletar conta"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:81:29",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Senha atual"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/delete-account/+page.svelte:94:9",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "para confirmar"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/endorsements/+page.svelte:121:52",
+      "rule": "text-child",
+      "context": "a<{expr}>",
+      "value": "Usuário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/endorsements/+page.svelte:57:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Meus endossos recebidos"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte:158:35",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Instantâneo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte:159:33",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Resumo diário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/notifications/+page.svelte:160:34",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Resumo semanal"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:123:11",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Currículo padrão"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:125:29",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Qual currículo usar"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:127:28",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "— Primary resume (master) —"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:129:46",
+      "rule": "text-child",
+      "context": "option<{expr}>",
+      "value": "Sem título"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:136:11",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Template de cover letter"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:152:11",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Ajuste do currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:176:11",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Também anexar"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:187:11",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Salvar preferências"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/one-click-apply/+page.svelte:92:77",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "One-Click Apply"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/profile/+page.svelte:199:6",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Refresh my profile"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/sessions/+page.svelte:77:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Sessões e dispositivos"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:103:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Autenticação de dois fatores"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:122:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Guarde esses códigos agora"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:143:11",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Baixar .txt"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:146:11",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Guardei em local seguro"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:156:76",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2FA ativo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:190:11",
+      "rule": "text-child",
+      "context": "h3<text>",
+      "value": "Desativar 2FA"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:215:13",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Desativar 2FA"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:224:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Escaneie o QR com seu app autenticador"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:232:41",
+      "rule": "text-child",
+      "context": "summary<text>",
+      "value": "Ou digite o segredo manualmente"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:238:35",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Código de 6 dígitos do app"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/two-factor/+page.svelte:264:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "2FA não configurado"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte:65:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Estilos de currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/styles/+page.svelte:79:7",
+      "rule": "text-child",
+      "context": "Card<text>",
+      "value": "Nenhum estilo disponível no momento."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/field-renderer.svelte:104:37",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "see example"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-welcome.svelte:30:4",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Crie seu currículo profissional"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/step-welcome.svelte:62:3",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Começar agora →"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/claim-shadow/+page.svelte:77:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Encontramos um perfil pra você"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte:48:37",
+      "rule": "text-child",
+      "context": "h1<{expr}>",
+      "value": "Perfil pronto!"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte:54:32",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Ver vagas"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:134:81",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Upload de PDF"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:169:7",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "ou preencher manualmente →"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/import/+page.svelte:81:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Importar currículo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/review/+page.svelte:18:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Este link de review não está mais ativo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/review/+page.svelte:28:7",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "Voltar ao início"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/_components/admin-alerts.svelte:22:5",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Precisando de atenção"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/collaboration/+page.svelte:47:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Colaboração (admin)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/+page.svelte:31:76",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Dev Tools"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte:80:74",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Backend Connection Test"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte:89:15",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Testing..."
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/backend-connection/+page.svelte:89:30",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Run Tests"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/test-404/+page.svelte:6:31",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Test Page"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:64:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Feature Flags"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/feature-flags/+page.svelte:68:7",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Broadcast refresh"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:140:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Fit Questions"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:144:7",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Nova questão"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:232:28",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Dimensão"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:247:32",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Texto (EN)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/fit-questions/+page.svelte:254:32",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Texto (pt-BR)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:86:9",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Endpoint Latency"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:136:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Resume Styles"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:140:7",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Novo estilo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:223:40",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Descrição"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:247:34",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Typst template"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:259:35",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "styleConfig (JSON)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/resume-styles/+page.svelte:268:36",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "sectionStyles (JSON)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/sections/+page.svelte:54:5",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Section Types"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:19:69",
+      "rule": "text-child",
+      "context": "a<text>",
+      "value": "← Voltar para a lista"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/users/[id]/+page.svelte:20:46",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Usuário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/[id]/cultural-profile/+page.svelte:95:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Perfil Cultural da Vaga"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:214:39",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Full-time"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:215:39",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Part-time"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/jobs/new/+page.svelte:227:36",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "On-site"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:106:16",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Inglês mínimo"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:112:33",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Básico"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:113:40",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Intermediário"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:114:36",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Avançado"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:126:34",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Híbrido"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:131:16",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Qtd. resultados"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:136:29",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Top 5"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:137:30",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Top 10"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:138:30",
+      "rule": "text-child",
+      "context": "option<text>",
+      "value": "Top 25"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:199:15",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Ver perfil"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:76:7",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Descreva a vaga, a gente ranqueia candidatos"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:86:16",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Título da vaga"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:90:16",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Skills (separadas por vírgula)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/recruiting/search-candidates/+page.svelte:96:14",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Descrição completa"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/comment-section.svelte:254:9",
+      "rule": "text-child",
+      "context": "Button<text>",
+      "value": "Show less"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/create-post-modal.svelte:155:7",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "+ adicionar opção"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/feed-list.svelte:181:40",
+      "rule": "text-child",
+      "context": "Button<{expr}>",
+      "value": "Limpar busca"
+    },
+    {
+      "key": "packages/ui/src/components/modal/danger-confirm-modal.component.svelte:81:4",
+      "rule": "text-child",
+      "context": "label<text>",
+      "value": "Para confirmar, digite"
+    }
   ]
 }

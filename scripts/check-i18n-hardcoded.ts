@@ -499,25 +499,67 @@ async function detect(): Promise<Violation[]> {
 // Baseline I/O
 // ---------------------------------------------------------------------------
 
-type BaselineEntry = `${string}:${number}:${number}`;
+type BaselineKey = `${string}:${number}:${number}`;
 
-function loadBaseline(): Set<BaselineEntry> {
+interface BaselineEntry {
+  key: BaselineKey;
+  rule: ViolationRule;
+  context: string;
+  value: string;
+}
+
+interface BaselineFile {
+  note: string;
+  count: number;
+  byRule: Partial<Record<ViolationRule, number>>;
+  byFile: Record<string, number>;
+  entries: BaselineEntry[];
+}
+
+function loadBaseline(): Set<BaselineKey> {
   if (!existsSync(BASELINE_PATH)) return new Set();
-  const raw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8')) as {
-    entries: BaselineEntry[];
-  };
-  return new Set(raw.entries);
+  const raw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8')) as
+    | BaselineFile
+    | { entries: (BaselineKey | BaselineEntry)[] };
+  const out = new Set<BaselineKey>();
+  for (const e of raw.entries) {
+    if (typeof e === 'string') out.add(e);
+    else out.add(e.key);
+  }
+  return out;
 }
 
 function writeBaseline(violations: Violation[]): void {
-  const entries: BaselineEntry[] = violations.map(
-    (v) => `${v.file}:${v.line}:${v.col}` as BaselineEntry,
+  const entries: BaselineEntry[] = violations.map((v) => ({
+    key: `${v.file}:${v.line}:${v.col}` as BaselineKey,
+    rule: v.rule,
+    context: v.context,
+    value: v.value.length > 80 ? `${v.value.slice(0, 77)}…` : v.value,
+  }));
+  entries.sort((a, b) => {
+    if (a.rule !== b.rule) return a.rule < b.rule ? -1 : 1;
+    return a.key < b.key ? -1 : a.key > b.key ? 1 : 0;
+  });
+
+  const byRule: Partial<Record<ViolationRule, number>> = {};
+  const byFile: Record<string, number> = {};
+  for (const e of entries) {
+    byRule[e.rule] = (byRule[e.rule] ?? 0) + 1;
+    const file = e.key.split(':')[0];
+    byFile[file] = (byFile[file] ?? 0) + 1;
+  }
+  // Sort byFile by descending count so the top offenders are obvious.
+  const sortedByFile = Object.fromEntries(
+    Object.entries(byFile).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)),
   );
-  const payload = {
+
+  const payload: BaselineFile = {
     note:
-      'pre-existing i18n hardcoded violations. New entries MUST NOT be added — fix the literal with t(...) instead. Refresh with: bun scripts/check-i18n-hardcoded.ts --update-baseline',
+      'pre-existing i18n hardcoded violations grouped by rule. New entries MUST NOT be added — fix the literal with t(...) instead. To plan a sweep, filter `entries` by `rule` (attr / attr-expr / call-arg / object-prop / text-child) or by file. Refresh after a sweep with: bun scripts/check-i18n-hardcoded.ts --update-baseline',
     count: entries.length,
-    entries: entries.sort(),
+    byRule,
+    byFile: sortedByFile,
+    entries,
   };
   writeFileSync(BASELINE_PATH, `${JSON.stringify(payload, null, 2)}\n`);
 }
