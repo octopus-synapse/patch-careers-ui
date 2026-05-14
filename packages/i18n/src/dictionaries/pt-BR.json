@@ -213,7 +213,16 @@
     "searchEmptyState": "Digite algo para começar a buscar.",
     "searchSoonPosts": "Busca em posts em breve.",
     "searchSoonCompanies": "Busca em empresas em breve.",
-    "searchResultsCount": "{{count}} resultados"
+    "searchResultsCount": "{{count}} resultados",
+    "more": "Mais",
+    "myJobs": "Minhas vagas",
+    "candidates": "Candidatos",
+    "context": {
+      "label": "Contexto",
+      "candidate": "Candidato",
+      "recruiter": "Recrutador",
+      "admin": "Admin"
+    }
   },
   "applyModes": {
     "pageTitle": "Como você se candidata",
@@ -840,7 +849,8 @@
     },
     "likeAction": "Curtir",
     "removeLike": "Descurtir",
-    "newPosts": "{{count}} novos posts"
+    "newPosts": "{{count}} novos posts",
+    "readMore": "Ler mais"
   },
   "twoFactor": {
     "disabledSuccess": "2FA desativado.",

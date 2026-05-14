@@ -110,6 +110,7 @@ const postType = $derived(String(post.type));
 const data = $derived(post.data as PostData | undefined);
 const content = $derived(post.content ? String(post.content) : '');
 const imageUrl = $derived((post.imageUrl ?? data?.imageUrl) as string | undefined);
+const videoUrl = $derived(post.videoUrl as string | undefined);
 const linkPreview = $derived(post.linkPreview as PostLinkPreview | undefined);
 const linkUrl = $derived(post.linkUrl as string | undefined);
 const hardSkills = $derived((post.hardSkills ?? post.hard_skills) as string[] | undefined);
@@ -227,6 +228,22 @@ const relativeTime = $derived(relativeFrom(createdAt, timeTicker.now));
 let showHeartBurst = $state(false);
 let heartBurstTimer: ReturnType<typeof setTimeout> | null = null;
 let lastClickAt = 0;
+
+// "Ler mais" affordance on the content paragraph. Detect overflow via
+// scrollHeight (full text) vs clientHeight (visible clamped). Once the
+// user expands, we don't collapse — keeps their place.
+let bodyEl: HTMLParagraphElement | null = $state(null);
+let expanded = $state(false);
+let isTruncated = $state(false);
+
+$effect(() => {
+  if (!bodyEl) return;
+  void content; // re-evaluate when content changes
+  queueMicrotask(() => {
+    if (!bodyEl) return;
+    isTruncated = bodyEl.scrollHeight > bodyEl.clientHeight + 1;
+  });
+});
 
 function triggerLike() {
   if (isLiked) return;
@@ -386,11 +403,26 @@ function handleDeleteRequest() {
 			<h3 class="mt-4 text-[15px] font-bold leading-snug text-gray-900 dark:text-zinc-100">{title}</h3>
 		{/if}
 
-		<!-- Content -->
+		<!-- Content — clamped to ~6 lines when collapsed; "Ler mais" below
+		     unfolds it. Pure Tailwind line-clamp, no inline style. -->
 		{#if content}
-			<p class="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-gray-700 dark:text-zinc-300">
+			<p
+				bind:this={bodyEl}
+				class="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-gray-700 dark:text-zinc-300 {expanded
+					? ''
+					: 'line-clamp-6'}"
+			>
 				{@html renderRichText(content)}
 			</p>
+			{#if isTruncated && !expanded}
+				<button
+					type="button"
+					class="mt-1 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400"
+					onclick={() => (expanded = true)}
+				>
+					{t('feed.readMore')}
+				</button>
+			{/if}
 		{/if}
 
 		<!-- Quote repost: embed original post -->
@@ -494,6 +526,20 @@ function handleDeleteRequest() {
 		{#if imageUrl}
 			<div class="mt-4 overflow-hidden rounded-2xl ring-1 ring-black/5 dark:ring-white/5">
 				<img src={imageUrl} alt="" class="w-full object-cover" loading="lazy" />
+			</div>
+		{/if}
+
+		<!-- Video -->
+		{#if videoUrl}
+			<div class="mt-4 overflow-hidden rounded-2xl ring-1 ring-black/5 dark:ring-white/5 bg-black">
+				<!-- svelte-ignore a11y_media_has_caption -->
+				<video
+					src={videoUrl}
+					controls
+					preload="metadata"
+					playsinline
+					class="w-full"
+				></video>
 			</div>
 		{/if}
 

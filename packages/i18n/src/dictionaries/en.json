@@ -213,7 +213,16 @@
     "searchEmptyState": "Type something to start searching.",
     "searchSoonPosts": "Search in posts is coming soon.",
     "searchSoonCompanies": "Search in companies is coming soon.",
-    "searchResultsCount": "{{count}} results"
+    "searchResultsCount": "{{count}} results",
+    "more": "More",
+    "myJobs": "My jobs",
+    "candidates": "Candidates",
+    "context": {
+      "label": "Context",
+      "candidate": "Candidate",
+      "recruiter": "Recruiter",
+      "admin": "Admin"
+    }
   },
   "applyModes": {
     "pageTitle": "How you apply",
@@ -840,7 +849,8 @@
     },
     "likeAction": "Like",
     "removeLike": "Unlike",
-    "newPosts": "{{count}} new posts"
+    "newPosts": "{{count}} new posts",
+    "readMore": "Read more"
   },
   "twoFactor": {
     "disabledSuccess": "2FA disabled.",
