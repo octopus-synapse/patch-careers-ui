@@ -550,8 +550,6 @@
   },
   "feed": {
     "pageTitle": "Feed",
-    "whatsOnYourMind": "What's on your mind?",
-    "createPost": "Create Post",
     "noPost": "No posts yet. Be the first to share!",
     "justNow": "just now",
     "tabsPosts": "Posts",
@@ -572,13 +570,6 @@
       "submitting": "Reposting..."
     },
     "reactions": {
-      "react": "React",
-      "triggerAriaLabel": "React to this post",
-      "LIKE": "Like",
-      "CELEBRATE": "Celebrate",
-      "LOVE": "Love",
-      "INSIGHTFUL": "Insightful",
-      "CURIOUS": "Curious",
       "errorGeneric": "Could not save your reaction"
     },
     "comments": "Comments",
@@ -630,8 +621,28 @@
       "browseJobs": "Browse jobs"
     },
     "composer": {
-      "placeholder": "Share an achievement, job, build or question…"
-    }
+      "placeholder": "Share an achievement, job, build or question…",
+      "placeholderWithName": "{{name}}, what are you building today?",
+      "addImage": "Add image",
+      "addLink": "Add link",
+      "addEmoji": "Add emoji",
+      "post": "Post"
+    },
+    "nav": {
+      "saved": "Saved"
+    },
+    "mobileCompose": "Create post",
+    "anonymous": {
+      "label": "Anonymous",
+      "categories": {
+        "SALARY": "Salary",
+        "INTERVIEW": "Interview",
+        "LAYOFF": "Layoff",
+        "TOXIC_CULTURE": "Toxic culture",
+        "HARASSMENT": "Harassment"
+      }
+    },
+    "responseCount": "{{count}} responses"
   },
   "twoFactor": {
     "disabledSuccess": "2FA disabled.",

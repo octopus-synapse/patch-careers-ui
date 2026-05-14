@@ -550,8 +550,6 @@
   },
   "feed": {
     "pageTitle": "Feed",
-    "whatsOnYourMind": "No que você está pensando?",
-    "createPost": "Criar Post",
     "noPost": "Nenhum post ainda. Seja o primeiro a compartilhar!",
     "justNow": "agora",
     "tabsPosts": "Posts",
@@ -572,13 +570,6 @@
       "submitting": "Repostando..."
     },
     "reactions": {
-      "react": "Reagir",
-      "triggerAriaLabel": "Reagir a este post",
-      "LIKE": "Curtir",
-      "CELEBRATE": "Parabéns",
-      "LOVE": "Amei",
-      "INSIGHTFUL": "Esclarecedor",
-      "CURIOUS": "Interessante",
       "errorGeneric": "Não foi possível salvar sua reação"
     },
     "comments": "Comentários",
@@ -630,8 +621,28 @@
       "browseJobs": "Ver vagas"
     },
     "composer": {
-      "placeholder": "Compartilhe uma conquista, vaga, build ou dúvida…"
-    }
+      "placeholder": "Compartilhe uma conquista, vaga, build ou dúvida…",
+      "placeholderWithName": "{{name}}, o que você está construindo hoje?",
+      "addImage": "Adicionar imagem",
+      "addLink": "Adicionar link",
+      "addEmoji": "Adicionar emoji",
+      "post": "Postar"
+    },
+    "nav": {
+      "saved": "Salvos"
+    },
+    "mobileCompose": "Criar post",
+    "anonymous": {
+      "label": "Anônimo",
+      "categories": {
+        "SALARY": "Salário",
+        "INTERVIEW": "Entrevista",
+        "LAYOFF": "Demissão",
+        "TOXIC_CULTURE": "Cultura tóxica",
+        "HARASSMENT": "Assédio"
+      }
+    },
+    "responseCount": "{{count}} respostas"
   },
   "twoFactor": {
     "disabledSuccess": "2FA desativado.",
