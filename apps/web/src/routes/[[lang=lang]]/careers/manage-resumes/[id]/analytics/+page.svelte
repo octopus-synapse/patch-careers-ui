@@ -8,6 +8,9 @@ import { Eye, TrendingUp, Users } from 'lucide-svelte';
 import { Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const resumeId = $derived($page.params.id ?? '');
 
@@ -108,7 +111,7 @@ const data = $derived.by<ViewStats | null>(() => {
     {#if data.topReferrers?.length}
       <section class="mb-8">
         <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-          Principais origens
+          {t('careers.analytics.topSources')}
         </h2>
         <ul class="space-y-2">
           {#each data.topReferrers as r}
@@ -127,7 +130,7 @@ const data = $derived.by<ViewStats | null>(() => {
     {#if data.recentViewers?.length}
       <section>
         <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-          Visualizações recentes
+          {t('careers.analytics.recentViews')}
         </h2>
         <ul class="space-y-2">
           {#each data.recentViewers as v}

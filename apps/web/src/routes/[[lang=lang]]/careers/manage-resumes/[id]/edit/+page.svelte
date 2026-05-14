@@ -167,7 +167,7 @@ function save() {
     </div>
   {:else}
     <h1 class="mb-6 text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Editar currículo
+      {t('careers.editResume.pageTitle')}
     </h1>
 
     {#if resumeId}
@@ -184,26 +184,26 @@ function save() {
       }}
     >
       <div>
-        <Label for="title">Título do currículo</Label>
-        <Input id="title" bind:value={draft.state.title} placeholder="Ex: Backend Pleno 2026" />
+        <Label for="title">{t('careers.editResume.titleLabel')}</Label>
+        <Input id="title" bind:value={draft.state.title} placeholder={t('careers.editResume.titlePlaceholder')} />
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <Label for="fullName">Nome completo</Label>
+          <Label for="fullName">{t('careers.editResume.fullNameLabel')}</Label>
           <Input id="fullName" bind:value={draft.state.fullName} />
         </div>
         <div>
-          <Label for="jobTitle">Cargo / role</Label>
+          <Label for="jobTitle">{t('careers.editResume.roleLabel')}</Label>
           <Input id="jobTitle" bind:value={draft.state.jobTitle} />
         </div>
       </div>
       <div>
-        <Label for="summary">Resumo profissional</Label>
+        <Label for="summary">{t('careers.editResume.summaryLabel')}</Label>
         <Textarea
           id="summary"
           bind:value={draft.state.summary}
           rows={5}
-          placeholder="2–3 parágrafos sobre sua trajetória"
+          placeholder={t('careers.editResume.summaryPlaceholder')}
         />
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -212,7 +212,7 @@ function save() {
           <Input id="phone" bind:value={draft.state.phone} />
         </div>
         <div>
-          <Label for="location">Localização</Label>
+          <Label for="location">{t('careers.editResume.locationLabel')}</Label>
           <Input id="location" bind:value={draft.state.location} />
         </div>
         <div>

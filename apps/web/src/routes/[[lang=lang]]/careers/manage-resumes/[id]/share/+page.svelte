@@ -58,16 +58,16 @@ function validateCreate(): boolean {
   createError = null;
   const slug = customSlug.trim();
   if (slug && !SLUG_PATTERN.test(slug)) {
-    createError = { field: 'slug', message: 'Slug deve conter apenas letras, números e hifens.' };
+    createError = { field: 'slug', message: t('careers.share.errorSlugFormat') };
     return false;
   }
   if (slug && (slug.length < 3 || slug.length > 80)) {
-    createError = { field: 'slug', message: 'Slug deve ter entre 3 e 80 caracteres.' };
+    createError = { field: 'slug', message: t('careers.share.errorSlugLength') };
     return false;
   }
   const pw = password.trim();
   if (pw && (pw.length < 4 || pw.length > 200)) {
-    createError = { field: 'password', message: 'Senha deve ter entre 4 e 200 caracteres.' };
+    createError = { field: 'password', message: t('careers.share.errorPasswordLength') };
     return false;
   }
   return true;
@@ -223,7 +223,7 @@ async function downloadBundle() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    toastState.show('Bundle baixado.', 'success');
+    toastState.show(t('careers.share.toastBundleDownloaded'), 'success');
   } catch (err) {
     handleApiError(err);
   } finally {
@@ -242,7 +242,7 @@ onMount(load);
   <header class="mb-6 flex items-start justify-between gap-4">
     <div>
       <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-        Compartilhar currículo
+        {t('careers.share.pageTitle')}
       </h1>
       <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
         Crie links públicos com senha opcional, expiração e aliases.
@@ -254,7 +254,7 @@ onMount(load);
       {:else}
         <Package size={14} class="mr-2" />
       {/if}
-      Baixar tudo (.zip)
+      {t('careers.share.downloadAllZip')}
     </Button>
   </header>
 
@@ -263,7 +263,7 @@ onMount(load);
     aria-labelledby="create-heading"
   >
     <h2 id="create-heading" class="mb-4 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-      Novo link
+      {t('careers.share.newLinkHeading')}
     </h2>
     <form
       class="space-y-4"
@@ -273,11 +273,11 @@ onMount(load);
       }}
     >
       <div>
-        <Label for="slug">Slug custom (opcional)</Label>
+        <Label for="slug">{t('careers.share.customSlugLabel')}</Label>
         <Input
           id="slug"
           bind:value={customSlug}
-          placeholder="enzo-backend-2026"
+          placeholder={t('careers.share.slugPlaceholder')}
           pattern="[a-zA-Z0-9-]+"
           aria-invalid={createError?.field === 'slug'}
           aria-describedby="slug-help"
@@ -293,12 +293,12 @@ onMount(load);
       </div>
 
       <div>
-        <Label for="password">Senha (opcional)</Label>
+        <Label for="password">{t('careers.share.passwordLabel')}</Label>
         <Input
           id="password"
           type="password"
           bind:value={password}
-          placeholder="Deixe vazio para link público"
+          placeholder={t('careers.share.passwordPlaceholder')}
           aria-invalid={createError?.field === 'password'}
         />
         {#if createError?.field === 'password'}
@@ -309,16 +309,16 @@ onMount(load);
       </div>
 
       <div>
-        <Label for="expires">Expira em</Label>
+        <Label for="expires">{t('careers.share.expiresInLabel')}</Label>
         <select
           id="expires"
           bind:value={expiresInDays}
           class="block w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-800"
         >
-          <option value={7}>7 dias</option>
-          <option value={30}>30 dias</option>
-          <option value={90}>90 dias</option>
-          <option value={null}>Nunca expira</option>
+          <option value={7}>{t('careers.share.expires.7days')}</option>
+          <option value={30}>{t('careers.share.expires.30days')}</option>
+          <option value={90}>{t('careers.share.expires.90days')}</option>
+          <option value={null}>{t('careers.share.expires.never')}</option>
         </select>
       </div>
 
@@ -328,14 +328,14 @@ onMount(load);
         {:else}
           <LinkIcon size={14} class="mr-2" />
         {/if}
-        Criar link
+        {t('careers.share.createLink')}
       </Button>
     </form>
   </section>
 
   <section aria-labelledby="active-heading">
     <h2 id="active-heading" class="mb-3 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-      Links ativos
+      {t('careers.share.activeLinks')}
     </h2>
     {#if loading}
       <div class="flex justify-center py-6">
@@ -354,7 +354,7 @@ onMount(load);
               {#if qrDataUrls[s.slug]}
                 <img
                   src={qrDataUrls[s.slug]}
-                  alt="QR para /s/{s.slug}"
+                  alt={t('careers.share.qrAlt', { slug: s.slug })}
                   class="h-20 w-20 shrink-0 rounded border border-gray-200 bg-white p-1 dark:border-neutral-700"
                 />
               {/if}
@@ -362,7 +362,7 @@ onMount(load);
                 <p class="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-neutral-100">
                   <span class="truncate">/s/{s.slug}</span>
                   {#if s.hasPassword}
-                    <Lock size={12} class="text-amber-500" aria-label="Protegido por senha" />
+                    <Lock size={12} class="text-amber-500" aria-label={t('careers.share.passwordProtectedAria')} />
                   {/if}
                 </p>
                 <p class="mt-1 text-[11px] text-gray-500 dark:text-neutral-500">
@@ -403,7 +403,7 @@ onMount(load);
               {:else}
                 <ChevronRight size={12} />
               {/if}
-              Aliases ({aliasesByShare[s.id]?.length ?? '...'})
+              {t('careers.share.aliasesPrefix')}{aliasesByShare[s.id]?.length ?? '...'})
             </button>
 
             {#if expandedShare[s.id]}

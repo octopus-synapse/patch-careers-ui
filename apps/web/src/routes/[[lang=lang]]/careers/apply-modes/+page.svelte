@@ -49,7 +49,7 @@ const updateMutation = createPatchV1UsersPreferencesFull({
       queryClient.invalidateQueries({ queryKey: getV1UsersPreferencesFullQueryKey() });
     },
     onError() {
-      toastState.show('Failed to update preferences', 'danger');
+      toastState.show(t('careers.applyModes.toastUpdateFailed'), 'danger');
     },
   },
 });

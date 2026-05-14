@@ -8,6 +8,9 @@ import { patchV1ResumesResumeId } from 'api-client';
 import { untrack } from 'svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Loader, toastState } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type Template =
   | 'PROFESSIONAL'
@@ -35,15 +38,15 @@ $effect(() => {
 });
 let saving = $state(false);
 
-const TEMPLATES: Array<{ value: Template; label: string }> = [
+const TEMPLATES: Array<{ value: Template; label: string }> = $derived([
   { value: 'PROFESSIONAL', label: 'Profissional' },
   { value: 'MODERN', label: 'Moderno' },
   { value: 'CREATIVE', label: 'Criativo' },
-  { value: 'TECHNICAL', label: 'Técnico' },
+  { value: 'TECHNICAL', label: t('careers.template.label.technical') },
   { value: 'MINIMAL', label: 'Minimalista' },
   { value: 'EXECUTIVE', label: 'Executivo' },
-  { value: 'ACADEMIC', label: 'Acadêmico' },
-];
+  { value: 'ACADEMIC', label: t('careers.template.label.academic') },
+]);
 
 async function handleChange(e: Event) {
   const next = (e.currentTarget as HTMLSelectElement).value as Template;
@@ -53,7 +56,7 @@ async function handleChange(e: Event) {
   try {
     await patchV1ResumesResumeId(resumeId, { template: next });
     onchange?.(next);
-    toastState.show('Template atualizado.', 'success');
+    toastState.show(t('careers.templateSwitcher.toastUpdated'), 'success');
   } catch (err) {
     current = prev;
     handleApiError(err);
@@ -72,8 +75,8 @@ async function handleChange(e: Event) {
       disabled={saving}
       class="rounded-md border border-gray-200 bg-white px-2 py-1 pr-7 text-xs text-gray-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
     >
-      {#each TEMPLATES as t}
-        <option value={t.value}>{t.label}</option>
+      {#each TEMPLATES as tpl}
+        <option value={tpl.value}>{tpl.label}</option>
       {/each}
     </select>
     {#if saving}

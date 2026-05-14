@@ -393,7 +393,7 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 									onclick={() => (showTailorModal = true)}
 								>
 									<Sparkles size={14} />
-									Personalizar CV
+									{t('careers.tailorForJob.cta')}
 								</Button>
 							{/if}
 							{#if isOwner}
@@ -495,15 +495,15 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 	<div class="space-y-3">
 		<div>
 			<Label>{t('jobs.title')} *</Label>
-			<Input bind:value={formTitle} placeholder="Software Engineer" required />
+			<Input bind:value={formTitle} placeholder={t('jobs.form.placeholderTitle')} required />
 		</div>
 		<div>
 			<Label>{t('jobs.company')} *</Label>
-			<Input bind:value={formCompany} placeholder="Acme Inc." required />
+			<Input bind:value={formCompany} placeholder={t('jobs.form.placeholderCompany')} required />
 		</div>
 		<div>
 			<Label>{t('jobs.location')}</Label>
-			<Input bind:value={formLocation} placeholder="Remote / San Francisco, CA" />
+			<Input bind:value={formLocation} placeholder={t('jobs.form.placeholderLocation')} />
 		</div>
 		<div>
 			<Label>{t('jobs.type')} *</Label>
@@ -520,24 +520,24 @@ const fitDimensions = $derived.by<FitDimension[] | undefined>(() => {
 			<Label>{t('jobs.description')} *</Label>
 			<Textarea
 				bind:value={formDescription}
-				placeholder="Job description..."
+				placeholder={t('jobs.form.placeholderDescription')}
 				required
 				rows={4}
 			/>
 		</div>
 		<div>
 			<Label>{t('jobs.requirements')}</Label>
-			<Input bind:value={formRequirements} placeholder="React, TypeScript, 3+ years..." />
+			<Input bind:value={formRequirements} placeholder={t('jobs.form.placeholderRequirements')} />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
 			<Label>{t('jobs.skills')}</Label>
-			<Input bind:value={formSkills} placeholder="React, Node.js, PostgreSQL..." />
+			<Input bind:value={formSkills} placeholder={t('jobs.form.placeholderSkills')} />
 			<span class="text-[10px] text-gray-500 dark:text-neutral-500">Comma-separated</span>
 		</div>
 		<div>
 			<Label>{t('jobs.salary')}</Label>
-			<Input bind:value={formSalaryRange} placeholder="$80k - $120k" />
+			<Input bind:value={formSalaryRange} placeholder={t('jobs.form.placeholderSalary')} />
 		</div>
 		<div>
 			<Label>{t('jobs.applyUrl')}</Label>

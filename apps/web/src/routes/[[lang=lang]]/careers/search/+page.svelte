@@ -201,7 +201,7 @@ const tabs = $derived([
 					<span class="mb-1 block text-xs text-gray-600 dark:text-neutral-400">
 						{t('nav.searchFilterSkills')}
 					</span>
-					<Input bind:value={skillsInput} placeholder="React, TypeScript" />
+					<Input bind:value={skillsInput} placeholder={t('careers.search.skillsPlaceholder')} />
 				</label>
 				<label class="block">
 					<span class="mb-1 block text-xs text-gray-600 dark:text-neutral-400">

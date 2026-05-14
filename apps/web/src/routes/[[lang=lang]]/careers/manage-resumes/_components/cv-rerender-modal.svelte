@@ -38,7 +38,7 @@ const tailorMutation = createPostV1ResumesResumeIdTailor({
       onClose();
     },
     onError() {
-      toastState.show('Failed to save tailored version', 'danger');
+      toastState.show(t('careers.cvRerender.toastSaveFailed'), 'danger');
     },
   },
 });

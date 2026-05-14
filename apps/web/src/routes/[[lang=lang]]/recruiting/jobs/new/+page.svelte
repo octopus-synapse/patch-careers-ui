@@ -76,12 +76,12 @@
     }
   });
 
-  const steps = [
-    { id: 1, label: 'Básico' },
+  const steps = $derived([
+    { id: 1, label: t('recruiting.jobs.new.steps.basic') },
     { id: 2, label: 'Detalhes' },
     { id: 3, label: 'Skills' },
-    { id: 4, label: 'Salário' },
-  ];
+    { id: 4, label: t('recruiting.jobs.new.steps.salary') },
+  ]);
 
   const canGoNext = $derived.by(() => {
     if (step === 1) return draft.title.trim() && draft.company.trim();
@@ -211,8 +211,8 @@
         <div>
           <Label for="jobType">{t('company.jobs.field.jobType')}</Label>
           <Select id="jobType" bind:value={draft.jobType}>
-            <option value="FULL_TIME">Full-time</option>
-            <option value="PART_TIME">Part-time</option>
+            <option value="FULL_TIME">{t('recruiting.jobs.new.jobType.fullTime')}</option>
+            <option value="PART_TIME">{t('recruiting.jobs.new.jobType.partTime')}</option>
             <option value="CONTRACT">Contract</option>
             <option value="INTERNSHIP">Internship</option>
             <option value="FREELANCE">Freelance</option>
@@ -224,7 +224,7 @@
           <Select id="remotePolicy" bind:value={draft.remotePolicy}>
             <option value="REMOTE">Remote</option>
             <option value="HYBRID">Hybrid</option>
-            <option value="ONSITE">On-site</option>
+            <option value="ONSITE">{t('recruiting.jobs.new.remotePolicy.onsite')}</option>
           </Select>
         </div>
       </div>
@@ -241,14 +241,14 @@
         <Input
           id="requirements"
           bind:value={draft.requirementsCsv}
-          placeholder="3+ anos com React, inglês intermediário"
+          placeholder={t('recruiting.jobs.new.requirementsPlaceholder')}
         />
         <p class="text-[11px] text-gray-500 dark:text-neutral-500">Separe por vírgula.</p>
       </div>
     {:else if step === 3}
       <div>
         <Label for="skills">{t('company.jobs.field.skills')}</Label>
-        <Input id="skills" bind:value={draft.skillsCsv} placeholder="react, typescript, postgres" />
+        <Input id="skills" bind:value={draft.skillsCsv} placeholder={t('recruiting.jobs.new.skillsPlaceholder')} />
         <p class="text-[11px] text-gray-500 dark:text-neutral-500">
           Separe por vírgula. Esses skills viram filtros pro candidato.
         </p>
@@ -264,7 +264,7 @@
       <div class="grid gap-4 md:grid-cols-2">
         <div>
           <Label for="salaryRange">{t('company.jobs.field.salaryRange')}</Label>
-          <Input id="salaryRange" bind:value={draft.salaryRange} placeholder="R$ 8k - 12k" />
+          <Input id="salaryRange" bind:value={draft.salaryRange} placeholder={t('recruiting.jobs.new.salaryPlaceholder')} />
         </div>
         <div>
           <Label for="applyUrl">{t('company.jobs.field.applyUrl')}</Label>

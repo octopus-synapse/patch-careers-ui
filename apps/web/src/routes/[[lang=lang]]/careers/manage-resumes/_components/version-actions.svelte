@@ -81,7 +81,7 @@ function remove() {
   {#if editing}
     <Input
       bind:value={titleDraft}
-      placeholder="Nome da versão"
+      placeholder={t('careers.versions.namePlaceholder')}
       class="h-7 text-xs"
     />
     <Button variant="icon" size="xs" onclick={saveRename} disabled={$renameMutation.isPending} aria-label={t('actions.save')}>

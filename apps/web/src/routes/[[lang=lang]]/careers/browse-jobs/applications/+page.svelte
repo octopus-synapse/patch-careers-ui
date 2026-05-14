@@ -31,7 +31,7 @@ async function quickFollowUp(applicationId: string) {
   try {
     await postV1JobsApplicationsApplicationIdEvents(applicationId, { type: 'FOLLOW_UP_SENT' });
     await load();
-    toastState.show('Follow-up registrado.', 'success');
+    toastState.show(t('careers.applications.toastFollowUpLogged'), 'success');
   } catch (err) {
     handleApiError(err);
   }
@@ -88,7 +88,7 @@ async function addEvent(appId: string) {
     });
     formNote = '';
     await load();
-    toastState.show('Evento registrado.', 'success');
+    toastState.show(t('careers.applications.toastEventLogged'), 'success');
   } catch (err) {
     handleApiError(err);
   } finally {
@@ -106,7 +106,7 @@ onMount(load);
 <div class="mx-auto max-w-4xl px-4 pt-20 pb-12">
   <header class="mb-6">
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Timeline de aplicações
+      {t('careers.applications.pageTitle')}
     </h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
       Registre cada interação — visualização, entrevista, oferta, rejeição. A gente mede silêncio
@@ -140,11 +140,11 @@ onMount(load);
                 <button
                   type="button"
                   class="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs text-amber-600 transition-colors hover:bg-amber-500/20 dark:text-amber-400"
-                  title="Sem resposta há {app.daysSinceLastResponse ?? '?'} dias — clique pra registrar follow-up"
+                  title={t('careers.applications.followUpTitle', { days: app.daysSinceLastResponse ?? '?' })}
                   onclick={() => quickFollowUp(app.id)}
                 >
                   <MessageSquarePlus size={12} />
-                  Follow-up sugerido ({app.daysSinceLastResponse ?? '?'}d)
+                  {t('careers.applications.followUpSuggestedPrefix')}{app.daysSinceLastResponse ?? '?'}d)
                 </button>
               {/if}
             </div>
@@ -174,14 +174,14 @@ onMount(load);
 
           <details class="mt-4">
             <summary class="cursor-pointer text-xs text-cyan-600 hover:underline">
-              + Registrar novo evento
+              {t('careers.applications.addEvent')}
             </summary>
             <div class="mt-3 space-y-2 rounded-lg border border-gray-200 p-3 dark:border-neutral-800">
               <div class="flex gap-2">
                 <select
                   bind:value={formType}
                   class="rounded-md border border-gray-200 bg-white px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-800"
-                  aria-label="Tipo de evento"
+                  aria-label={t('careers.applications.eventTypeAriaLabel')}
                 >
                   {#each Object.entries(EVENT_LABEL) as [value, label]}
                     {#if value !== 'SUBMITTED'}
@@ -191,7 +191,7 @@ onMount(load);
                 </select>
                 <input
                   bind:value={formNote}
-                  placeholder="Nota (opcional)"
+                  placeholder={t('careers.applications.notePlaceholder')}
                   class="flex-1 rounded-md border border-gray-200 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-800"
                 />
                 <Button

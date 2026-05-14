@@ -14,6 +14,9 @@ import { Sparkles } from 'lucide-svelte';
 import { Button, Loader, Modal, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type Props = {
   open: boolean;
@@ -65,7 +68,7 @@ async function handleSubmit() {
     });
   } catch (err) {
     toastState.show(
-      err instanceof Error ? err.message : 'Falha ao personalizar o currículo',
+      err instanceof Error ? err.message : t('careers.tailorForJob.errorTailor'),
       'danger',
     );
   } finally {
@@ -126,7 +129,7 @@ function goToEdit() {
 				<Textarea
 					rows={6}
 					bind:value={jdText}
-					placeholder="Cole aqui o texto da vaga…"
+					placeholder={t('careers.tailorForJob.jdPlaceholder')}
 				/>
 				<p class="mt-1 text-[11px] text-gray-400 dark:text-neutral-500">
 					Já preenchemos com o que extraímos da página. Edite se quiser destacar algum trecho.
@@ -187,7 +190,7 @@ function goToEdit() {
 			<div class="flex flex-wrap items-center justify-end gap-2 border-t pt-3 border-gray-200 dark:border-neutral-700">
 				<Button variant="ghost" size="sm" onclick={onClose}>Fechar</Button>
 				<Button variant="solid" size="sm" onclick={goToEdit}>
-					Abrir versão personalizada
+					{t('careers.tailorForJob.openTailoredVersion')}
 				</Button>
 			</div>
 		</div>

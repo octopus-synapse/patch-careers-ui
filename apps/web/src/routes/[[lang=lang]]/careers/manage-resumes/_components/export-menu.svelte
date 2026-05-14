@@ -13,6 +13,9 @@ import {
 import { Download, FileCode, FileJson, FileText, FileType } from 'lucide-svelte';
 import { Button, Dropdown, Loader } from 'ui';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface Props {
   /** Required for DOCX (current user only). For per-resume formats, pass resumeId. */
@@ -134,7 +137,7 @@ async function downloadLatex() {
         {:else}
           <FileType size={14} />
         {/if}
-        PDF (ATS-ready)
+        {t('careers.export.pdfAtsReady')}
       </button>
     {/if}
     <button
@@ -148,7 +151,7 @@ async function downloadLatex() {
       {:else}
         <FileText size={14} />
       {/if}
-      Word (.docx)
+      {t('careers.export.wordDocx')}
     </button>
     {#if resumeId}
       <button
@@ -162,7 +165,7 @@ async function downloadLatex() {
         {:else}
           <FileJson size={14} />
         {/if}
-        JSON Resume
+        {t('careers.export.jsonResume')}
       </button>
       <button
         type="button"
@@ -175,7 +178,7 @@ async function downloadLatex() {
         {:else}
           <FileCode size={14} />
         {/if}
-        LaTeX (.tex)
+        {t('careers.export.latex')}
       </button>
     {/if}
   </div>

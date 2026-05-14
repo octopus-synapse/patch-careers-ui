@@ -11,6 +11,9 @@
   import { Avatar, Badge, Button, Input, Label, Loader, Textarea } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { goto } from '$app/navigation';
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
 
   type Candidate = PostV1RecruitingMatchCandidates200['candidates'][number];
 
@@ -73,7 +76,7 @@
       Match reverso
     </div>
     <h1 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-      Descreva a vaga, a gente ranqueia candidatos
+      {t('recruiting.searchCandidates.pageTitle')}
     </h1>
     <p class="text-sm text-gray-500 dark:text-neutral-500">
       Só aparecem aqui quem optou por perfil público ou compartilhável. Candidatos privados nunca entram no pool.
@@ -83,35 +86,35 @@
   <section class="rounded-xl border border-gray-200 p-4 dark:border-neutral-700/60">
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <div>
-        <Label>Título da vaga</Label>
-        <Input bind:value={jobTitle} placeholder="ex: Senior Full-Stack Engineer" />
+        <Label>{t('recruiting.searchCandidates.titleLabel')}</Label>
+        <Input bind:value={jobTitle} placeholder={t('recruiting.searchCandidates.titlePlaceholder')} />
       </div>
       <div>
-        <Label>Skills (separadas por vírgula)</Label>
-        <Input bind:value={skillsCsv} placeholder="react, typescript, postgres" />
+        <Label>{t('recruiting.searchCandidates.skillsLabel')}</Label>
+        <Input bind:value={skillsCsv} placeholder={t('recruiting.jobs.new.skillsPlaceholder')} />
       </div>
     </div>
 
     <div class="mt-3">
-      <Label>Descrição completa</Label>
+      <Label>{t('recruiting.searchCandidates.fullDescriptionLabel')}</Label>
       <Textarea
         rows={5}
         bind:value={jobDescription}
-        placeholder="Cole a JD aqui — fica usada para contexto. Skills vêm do campo acima."
+        placeholder={t('recruiting.searchCandidates.jdPlaceholder')}
       />
     </div>
 
     <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
       <div>
-        <Label>Inglês mínimo</Label>
+        <Label>{t('recruiting.searchCandidates.minEnglishLabel')}</Label>
         <select
           bind:value={minEnglishLevel}
           class="w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
         >
           <option value="">Qualquer</option>
-          <option value="BASIC">Básico</option>
-          <option value="INTERMEDIATE">Intermediário</option>
-          <option value="ADVANCED">Avançado</option>
+          <option value="BASIC">{t('recruiting.searchCandidates.englishLevel.basic')}</option>
+          <option value="INTERMEDIATE">{t('recruiting.searchCandidates.englishLevel.intermediate')}</option>
+          <option value="ADVANCED">{t('recruiting.searchCandidates.englishLevel.advanced')}</option>
           <option value="FLUENT">Fluente</option>
         </select>
       </div>
@@ -123,19 +126,19 @@
         >
           <option value="">Qualquer</option>
           <option value="REMOTE">Remoto</option>
-          <option value="HYBRID">Híbrido</option>
+          <option value="HYBRID">{t('recruiting.searchCandidates.remotePolicy.hybrid')}</option>
           <option value="ONSITE">Presencial</option>
         </select>
       </div>
       <div>
-        <Label>Qtd. resultados</Label>
+        <Label>{t('recruiting.searchCandidates.limitLabel')}</Label>
         <select
           bind:value={limit}
           class="w-full rounded-lg border bg-transparent px-3 py-2 text-sm outline-none text-gray-800 dark:text-neutral-200 border-gray-300 dark:border-neutral-600 dark:bg-neutral-700"
         >
-          <option value={5}>Top 5</option>
-          <option value={10}>Top 10</option>
-          <option value={25}>Top 25</option>
+          <option value={5}>{t('recruiting.searchCandidates.limit.top5')}</option>
+          <option value={10}>{t('recruiting.searchCandidates.limit.top10')}</option>
+          <option value={25}>{t('recruiting.searchCandidates.limit.top25')}</option>
         </select>
       </div>
     </div>
@@ -196,7 +199,7 @@
               {/if}
             </div>
             <Button variant="outline" size="xs" onclick={() => viewProfile(c.username, c.userId)}>
-              Ver perfil
+              {t('recruiting.searchCandidates.viewProfile')}
             </Button>
           </article>
         {/each}

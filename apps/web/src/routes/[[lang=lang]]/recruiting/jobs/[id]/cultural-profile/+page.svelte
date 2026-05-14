@@ -14,8 +14,11 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
+  import { locale } from '$lib/state/locale.svelte';
 
-  const DIMENSIONS = {
+  const t = $derived(locale.t);
+
+  const DIMENSIONS: { bigFive: ReadonlyArray<{ key: string; label: string }>; schwartz: ReadonlyArray<{ key: string; label: string }>; sdt: ReadonlyArray<{ key: string; label: string }> } = $derived({
     bigFive: [
       { key: 'BIG_FIVE_OPENNESS', label: 'Openness' },
       { key: 'BIG_FIVE_CONSCIENTIOUSNESS', label: 'Conscientiousness' },
@@ -24,7 +27,7 @@
       { key: 'BIG_FIVE_NEUROTICISM', label: 'Neuroticism' },
     ],
     schwartz: [
-      { key: 'SCHWARTZ_SELF_DIRECTION', label: 'Self-direction' },
+      { key: 'SCHWARTZ_SELF_DIRECTION', label: t('recruiting.jobs.culturalProfile.dimensions.schwartzSelfDirection') },
       { key: 'SCHWARTZ_STIMULATION', label: 'Stimulation' },
       { key: 'SCHWARTZ_HEDONISM', label: 'Hedonism' },
       { key: 'SCHWARTZ_ACHIEVEMENT', label: 'Achievement' },
@@ -40,14 +43,14 @@
       { key: 'SDT_COMPETENCE', label: 'Competence' },
       { key: 'SDT_RELATEDNESS', label: 'Relatedness' },
     ],
-  } as const;
+  });
 
   type SlidersKey = keyof Sliders;
 
-  const ALL_KEYS = [...DIMENSIONS.bigFive, ...DIMENSIONS.schwartz, ...DIMENSIONS.sdt] as readonly {
+  const ALL_KEYS = $derived([...DIMENSIONS.bigFive, ...DIMENSIONS.schwartz, ...DIMENSIONS.sdt] as readonly {
     key: SlidersKey;
     label: string;
-  }[];
+  }[]);
 
   const jobId = $derived(($page.params as Record<string, string>).id ?? '');
 
@@ -69,7 +72,7 @@
     saving = true;
     try {
       await postV1JobsIdFitProfile(jobId, { sliders });
-      toastState.show('Perfil cultural salvo', 'success');
+      toastState.show(t('recruiting.jobs.culturalProfile.toastSaved'), 'success');
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -92,7 +95,7 @@
 <div class="mx-auto max-w-3xl space-y-6 px-3 sm:px-6">
   <header class="space-y-1">
     <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
-      Perfil Cultural da Vaga
+      {t('recruiting.jobs.culturalProfile.pageTitle')}
     </h1>
     <p class="text-sm text-gray-500 dark:text-neutral-400">
       Ajuste os sliders entre 0 e 1 para definir o fit ideal por dimensão.

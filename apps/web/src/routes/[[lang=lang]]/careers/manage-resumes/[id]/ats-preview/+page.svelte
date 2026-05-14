@@ -11,6 +11,9 @@ import { onMount } from 'svelte';
 import { Button, Card, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const resumeId = $derived($page.params.id);
 
@@ -46,7 +49,7 @@ async function simulate() {
     result = (body.data as SimulationResult | undefined) ?? null;
   } catch (err) {
     toastState.show(
-      isApiError(err) ? err.message : 'Falha na simulação.',
+      isApiError(err) ? err.message : t('careers.atsPreview.errorSimulation'),
       'danger',
     );
   } finally {
@@ -67,7 +70,7 @@ onMount(simulate);
     <div>
       <h1 class="flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-neutral-100">
         <ScanText size={20} />
-        Pré-visualização ATS
+        {t('careers.atsPreview.pageTitle')}
       </h1>
       <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
         O que um parser ATS típico (Greenhouse, Workday, Lever) extrai do seu currículo.
@@ -79,7 +82,7 @@ onMount(simulate);
       {:else}
         <Eye size={14} class="mr-2" />
       {/if}
-      Re-simular
+      {t('careers.atsPreview.resimulate')}
     </Button>
   </header>
 
@@ -107,7 +110,7 @@ onMount(simulate);
         <header class="flex items-center gap-2 pb-3">
           <AlertTriangle size={16} class="text-amber-500" />
           <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">
-            Atenção ({result.warnings.length})
+            {t('careers.atsPreview.warningsHeadingPrefix')}{result.warnings.length})
           </h2>
         </header>
         <ul class="space-y-2 text-xs text-gray-700 dark:text-neutral-300">
@@ -120,14 +123,14 @@ onMount(simulate);
 
     <section class="mt-6">
       <h2 class="mb-2 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-        Texto que o ATS vê
+        {t('careers.atsPreview.extractedText')}
       </h2>
       <pre class="max-h-96 overflow-auto rounded-lg border border-gray-200 bg-gray-50 p-4 font-mono text-[11px] text-gray-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200 whitespace-pre-wrap">{result.extractedText}</pre>
     </section>
 
     <section class="mt-6">
       <h2 class="mb-2 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-        Estrutura reordenada
+        {t('careers.atsPreview.reorderedStructure')}
       </h2>
       <p class="mb-3 text-[11px] text-gray-500 dark:text-neutral-500">
         Em layouts de duas colunas o ATS lê a coluna principal antes da sidebar — esta é a ordem real que o parser segue.
