@@ -10,7 +10,7 @@ import {
   postV1PostsIdReport,
   postV1PostsIdRepost,
 } from 'api-client';
-import { type ReactionType, toastState } from 'ui';
+import { toastState } from 'ui';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { track } from '$lib/utils/analytics/track';
@@ -70,14 +70,12 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
     unbookmarkedPosts = new Set();
   }
 
-  async function handleLike(id: string, reactionType?: ReactionType) {
-    const newType: ReactionType = reactionType ?? 'LIKE';
+  async function handleLike(id: string) {
     const snapshotPosts = getPosts();
     const snapshotLiked = likedPosts;
     const snapshotUnliked = unlikedPosts;
     const target = snapshotPosts.find((p) => String(p.id) === id);
     const wasLiked = Boolean(target?.isLiked);
-    const previousType = (target?.reactionType as ReactionType | null | undefined) ?? null;
 
     likedPosts = new Set([...likedPosts, id]);
     unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
@@ -88,25 +86,20 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
         return {
           ...p,
           isLiked: true,
-          reactionType: newType,
           likesCount: wasLiked ? prevCount : prevCount + 1,
         };
       }),
     );
 
     try {
-      await postV1PostsIdLike(id, { reactionType: newType });
-      track(wasLiked ? 'post_reaction_changed' : 'post_reacted', {
-        postId: id,
-        reactionType: newType,
-        previousType,
-      });
+      await postV1PostsIdLike(id, {});
+      track('post_liked', { postId: id });
       queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
     } catch {
       setPosts(snapshotPosts);
       likedPosts = snapshotLiked;
       unlikedPosts = snapshotUnliked;
-      toastState.show(locale.t('feed.reactions.errorGeneric'), 'danger');
+      toastState.show(locale.t('errors.network'), 'danger');
     }
   }
 
@@ -124,7 +117,6 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
         return {
           ...p,
           isLiked: false,
-          reactionType: null,
           likesCount: Math.max(0, prevCount - 1),
         };
       }),

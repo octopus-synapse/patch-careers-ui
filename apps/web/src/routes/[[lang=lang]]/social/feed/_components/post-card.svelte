@@ -14,13 +14,11 @@ import {
   Avatar,
   Badge,
   Button,
-  Card,
   Dropdown,
   FitScoreChip,
   Poll,
   type PollOption,
   QuoteCard,
-  type ReactionType,
 } from 'ui';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import { relativeFrom } from '$lib/utils/relative';
@@ -43,7 +41,7 @@ type Props = {
   post: Record<string, unknown>;
   currentUserId: string;
   fitScore?: PostFitScore | null;
-  onlike: (id: string, reactionType?: ReactionType) => void;
+  onlike: (id: string) => void;
   onunlike: (id: string) => void;
   onbookmark: (id: string) => void;
   onunbookmark: (id: string) => void;
@@ -120,16 +118,13 @@ const isBookmarked = $derived(Boolean(post.isBookmarked ?? post.bookmarked));
 const isAnonymous = $derived(Boolean(post.isAnonymous));
 const anonymousCategory = $derived(post.anonymousCategory as string | undefined);
 
-const ANONYMOUS_CATEGORY_LABELS: Record<string, string> = {
-  SALARY: 'Salário',
-  INTERVIEW: 'Entrevista',
-  LAYOFF: 'Demissão',
-  TOXIC_CULTURE: 'Cultura tóxica',
-  HARASSMENT: 'Assédio',
-};
-const anonymousCategoryLabel = $derived(
-  anonymousCategory ? (ANONYMOUS_CATEGORY_LABELS[anonymousCategory] ?? anonymousCategory) : '',
-);
+// Orphan-key scanner detects this template literal under `t(...)` and
+// keeps `feed.anonymous.categories.*` alive.
+const anonymousCategoryLabel = $derived.by(() => {
+  if (!anonymousCategory) return '';
+  const translated = locale.t(`feed.anonymous.categories.${anonymousCategory}`);
+  return translated.startsWith('feed.anonymous.categories.') ? anonymousCategory : translated;
+});
 // When anonymous, the server already masks the author to `__anonymous__`;
 // we also skip the owner branch so the author can't accidentally reveal
 // themselves through owner-only UI (delete menu).
@@ -139,7 +134,6 @@ const coAuthors = $derived(post.coAuthors as PostAuthor[] | undefined);
 const threadParentId = $derived(post.threadParentId as string | undefined);
 const hasThreadChildren = $derived(Boolean(post.threadChildren) || Boolean(post.isThread));
 const scheduledAt = $derived(post.scheduledAt as string | undefined);
-const currentReaction = $derived(post.reactionType as string | undefined);
 const hasVoted = $derived(Boolean(post.hasVoted));
 
 // Quote repost (original post embedded)
@@ -235,7 +229,7 @@ let lastClickAt = 0;
 
 function triggerLike() {
   if (isLiked) return;
-  onlike(postId, 'LIKE');
+  onlike(postId);
 }
 
 function handleCardDoubleClick(e: MouseEvent) {
@@ -293,7 +287,7 @@ function handleDeleteRequest() {
 			<Heart size={96} class="text-rose-500" fill="currentColor" />
 		</div>
 	{/if}
-	<Card class="shadow-sm hover:shadow-md transition-shadow">
+	<div class="glass glass-reflect group rounded-[28px] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] hover:border-black/10 sm:p-6 dark:hover:border-white/10 dark:hover:shadow-[0_8px_28px_-12px_rgba(0,0,0,0.6)]">
 		<!-- Scheduled badge -->
 		{#if isScheduled}
 			<div class="mb-3">
@@ -324,31 +318,30 @@ function handleDeleteRequest() {
 
 		<!-- Header: avatar + author info + menu -->
 		<div class="flex items-start gap-3">
-			<Avatar name={authorName} photoURL={authorPhoto} size="lg" />
+			<Avatar name={authorName} photoURL={authorPhoto} size="lg" shape="square" ring />
 
 			<div class="min-w-0 flex-1">
-				<div class="flex items-center gap-1.5 text-sm flex-wrap">
-					<span class="font-semibold text-gray-800 dark:text-neutral-200">{authorName}</span>
+				<div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm">
+					<span class="font-bold text-gray-900 dark:text-zinc-100">{authorName}</span>
 					{#if isAnonymous}
-						<span class="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
-							Anônimo{anonymousCategoryLabel ? ` · ${anonymousCategoryLabel}` : ''}
+						<span class="rounded-full bg-violet-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-700 ring-1 ring-violet-500/20 dark:text-violet-300">
+							{t('feed.anonymous.label')}{anonymousCategoryLabel ? ` · ${anonymousCategoryLabel}` : ''}
 						</span>
 					{/if}
 					{#if coAuthors && !isAnonymous}
 						{#each coAuthors as coAuthor}
 							<span class="text-gray-400 dark:text-neutral-500">&</span>
-							<span class="font-semibold text-gray-800 dark:text-neutral-200">{coAuthor.name ?? coAuthor.username}</span>
+							<span class="font-bold text-gray-900 dark:text-zinc-100">{coAuthor.name ?? coAuthor.username}</span>
 						{/each}
 					{/if}
 					{#if authorUsername && !isAnonymous}
-						<span class="text-gray-400 dark:text-neutral-500">@{authorUsername}</span>
+						<span class="text-xs font-medium text-gray-500 dark:text-zinc-500">@{authorUsername}</span>
 					{/if}
-					<span class="text-gray-400 dark:text-neutral-500">&middot;</span>
-					<span class="text-xs text-gray-400 dark:text-neutral-500">{relativeTime}</span>
 				</div>
-
-				<div class="flex items-center gap-1.5 mt-1">
+				<div class="mt-1 flex flex-wrap items-center gap-1.5">
+					<span class="text-[11px] font-medium text-gray-500 dark:text-zinc-500">{relativeTime}</span>
 					{#if postType && typeBadgeLabel[postType]}
+						<span class="text-[11px] text-gray-400 dark:text-zinc-600">·</span>
 						<Badge intent={typeBadgeVariant[postType]} size="sm">
 							{typeBadgeLabel[postType]}
 						</Badge>
@@ -392,12 +385,12 @@ function handleDeleteRequest() {
 
 		<!-- Title -->
 		{#if title}
-			<h3 class="mt-3 text-base font-semibold text-gray-800 dark:text-neutral-200">{title}</h3>
+			<h3 class="mt-4 text-[15px] font-bold leading-snug text-gray-900 dark:text-zinc-100">{title}</h3>
 		{/if}
 
 		<!-- Content -->
 		{#if content}
-			<p class="mt-2 text-sm leading-relaxed text-gray-800 dark:text-neutral-200 whitespace-pre-wrap">
+			<p class="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-gray-700 dark:text-zinc-300">
 				{@html highlightHashtags(content)}
 			</p>
 		{/if}
@@ -489,7 +482,7 @@ function handleDeleteRequest() {
 
 		<!-- Code snippet -->
 		{#if codeSnippet}
-			<div class="mt-3 overflow-hidden rounded-lg border border-gray-200 dark:border-neutral-700/50">
+			<div class="mt-4 overflow-hidden rounded-2xl border border-black/5 dark:border-white/5">
 				{#if codeLanguage}
 					<div class="flex items-center justify-between border-b px-3 py-1.5 border-gray-200 dark:border-neutral-700/50 bg-gray-900">
 						<span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">{codeLanguage}</span>
@@ -501,8 +494,8 @@ function handleDeleteRequest() {
 
 		<!-- Image -->
 		{#if imageUrl}
-			<div class="mt-3 overflow-hidden rounded-lg">
-				<img src={imageUrl} alt="Post attachment" class="w-full object-cover" loading="lazy" />
+			<div class="mt-4 overflow-hidden rounded-2xl ring-1 ring-black/5 dark:ring-white/5">
+				<img src={imageUrl} alt="" class="w-full object-cover" loading="lazy" />
 			</div>
 		{/if}
 
@@ -512,7 +505,7 @@ function handleDeleteRequest() {
 				href={String(linkPreview.url ?? linkUrl ?? '#')}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="mt-3 block overflow-hidden rounded-lg border bg-gray-50 border-gray-200 dark:bg-neutral-700/30 dark:border-neutral-600/50 transition-opacity hover:opacity-80"
+				class="mt-4 block overflow-hidden rounded-2xl border border-black/5 bg-black/[0.02] transition-all hover:border-black/10 hover:bg-black/[0.04] dark:border-white/5 dark:bg-white/[0.02] dark:hover:border-white/10 dark:hover:bg-white/[0.04]"
 			>
 				{#if linkPreview.image}
 					<img src={String(linkPreview.image)} alt="" class="h-32 w-full object-cover" loading="lazy" />
@@ -564,13 +557,12 @@ function handleDeleteRequest() {
 		{/if}
 
 		<!-- Engagement bar -->
-		<div class="mt-3 border-t pt-2 border-gray-100 dark:border-neutral-700/50">
+		<div class="-mx-1 mt-4 border-t border-black/5 pt-3 dark:border-white/5">
 			<EngagementBar
 				{post}
 				{isLiked}
 				{isBookmarked}
-				currentReaction={currentReaction ?? null}
-				onlike={(reactionType?: ReactionType) => onlike(postId, reactionType)}
+				onlike={() => onlike(postId)}
 				onunlike={() => onunlike(postId)}
 				onbookmark={() => onbookmark(postId)}
 				onunbookmark={() => onunbookmark(postId)}
@@ -598,7 +590,7 @@ function handleDeleteRequest() {
 				<CommentSection postId={postId} currentUserId={currentUserId} />
 			</div>
 		{/if}
-	</Card>
+	</div>
 </article>
 
 <style>

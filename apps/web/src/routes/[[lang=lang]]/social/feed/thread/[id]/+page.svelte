@@ -68,7 +68,7 @@ function isPostBookmarked(post: GetV1PostsId200): boolean {
 async function handleLike(id: string) {
   likedPosts = new Set([...likedPosts, id]);
   unlikedPosts = new Set([...unlikedPosts].filter((x) => x !== id));
-  await postV1PostsIdLike(id, { reactionType: 'LIKE' });
+  await postV1PostsIdLike(id, {});
 }
 
 async function handleUnlike(id: string) {

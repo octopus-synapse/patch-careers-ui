@@ -2,7 +2,7 @@
 import { AlertCircle, PenSquare, SearchX } from 'lucide-svelte';
 import { cubicOut } from 'svelte/easing';
 import { fly } from 'svelte/transition';
-import { Button, EmptyState, type ReactionType } from 'ui';
+import { Button, EmptyState } from 'ui';
 import { browser } from '$app/environment';
 import { asIcon } from '$lib/types/icons';
 import { locale } from '$lib/state/locale.svelte';
@@ -32,7 +32,7 @@ type Props = {
   fitScoreByPostId?: Record<string, PostFitScore>;
   isPostLiked: (post: Post) => boolean;
   isPostBookmarked: (post: Post) => boolean;
-  onlike: (id: string, reactionType?: ReactionType) => void;
+  onlike: (id: string) => void;
   onunlike: (id: string) => void;
   onbookmark: (id: string) => void;
   onunbookmark: (id: string) => void;
