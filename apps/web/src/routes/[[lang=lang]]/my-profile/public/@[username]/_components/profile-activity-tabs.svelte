@@ -6,7 +6,7 @@ import {
   createGetV1FeedUserUserId,
   createGetV1UsersUserIdActivities,
   createGetV1UsersUserIdComments,
-  createGetV1UsersUserIdReactions,
+  createGetV1UsersUserIdLikes,
 } from 'api-client';
 import { Activity, FileText, Heart, MessageCircle } from 'lucide-svelte';
 import { Badge, EmptyState, Skeleton, Tabs } from 'ui';
@@ -43,7 +43,7 @@ const commentsQuery = createGetV1UsersUserIdComments(() => userId,
   { query: { enabled: () => browser && !!userId && active === 'comments'} },
 );
 
-const reactionsQuery = createGetV1UsersUserIdReactions(() => userId,
+const reactionsQuery = createGetV1UsersUserIdLikes(() => userId,
   { limit: 20 },
   { query: { enabled: () => browser && !!userId && active === 'reactions'} },
 );
@@ -113,7 +113,6 @@ function reactionEmoji(type: string): string {
 							<p class="mt-1 line-clamp-3 text-sm text-gray-600 dark:text-neutral-400">{post.content}</p>
 						{/if}
 						<div class="mt-2 flex items-center gap-2 text-[11px] text-gray-400 dark:text-neutral-500">
-							<Badge intent="neutral" size="md">{post.type}</Badge>
 							<span>{relativeFrom(post.createdAt)}</span>
 						</div>
 					</li>
@@ -174,7 +173,7 @@ function reactionEmoji(type: string): string {
 			<ul class="space-y-2">
 				{#each reactions as item (item.postId + item.userId)}
 					<li class="flex items-start gap-3 rounded-md border px-3 py-2 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-800/40">
-						<span aria-hidden="true" class="text-lg">{reactionEmoji(item.reactionType)}</span>
+						<span aria-hidden="true" class="text-lg">❤</span>
 						<div class="min-w-0 flex-1">
 							<div class="flex items-center gap-2 text-[11px] text-gray-500 dark:text-neutral-400">
 								<span>{t('feed.reactedTo')}</span>
