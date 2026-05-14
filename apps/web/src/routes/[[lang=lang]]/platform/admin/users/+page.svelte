@@ -8,6 +8,7 @@
     getV1UsersManageQueryKey,
     deleteV1UsersManageIdMutationKey,
   deleteV1UsersManageId,
+    patchV1UsersManageIdRoles,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
   import { Button, Loader, toastState } from 'ui';
@@ -36,6 +37,34 @@
 
   const users = $derived($listQuery.data?.items);
   const totalPages = $derived($listQuery.data?.totalPages ?? 1);
+
+  let updatingRole = $state<string | null>(null);
+  // Single-role display label: highest-priority role wins.
+  function roleLabel(roles: readonly string[] | string | undefined): string {
+    const list = Array.isArray(roles) ? roles : roles ? [roles] : [];
+    if (list.includes('admin')) return 'ADMIN';
+    if (list.includes('recruiter')) return 'RECRUITER';
+    return 'MEMBER';
+  }
+  async function handleRoleChange(id: string, label: string) {
+    // MEMBER = just the base \`user\` role; RECRUITER/ADMIN add their role on top.
+    const next =
+      label === 'ADMIN'
+        ? ['user', 'admin']
+        : label === 'RECRUITER'
+          ? ['user', 'recruiter']
+          : ['user'];
+    updatingRole = id;
+    try {
+      await patchV1UsersManageIdRoles(id, { roles: next });
+      toastState.show(t('admin.users.toastRoleUpdated'), 'success');
+      await queryClient.invalidateQueries({ queryKey: getV1UsersManageQueryKey() });
+    } catch (err) {
+      handleApiError(err);
+    } finally {
+      updatingRole = null;
+    }
+  }
 
   let deleting = $state<string | null>(null);
   async function handleDelete(id: string) {
@@ -101,7 +130,18 @@
               <tr class="border-t border-border">
                 <td class="px-3 py-2 text-xs">{u.email ?? '—'}</td>
                 <td class="px-3 py-2">{u.name ?? '—'}</td>
-                <td class="px-3 py-2 text-xs">{u.role}</td>
+                <td class="px-3 py-2 text-xs">
+                  <select
+                    value={roleLabel(u.role)}
+                    disabled={updatingRole === u.id}
+                    onchange={(e) => handleRoleChange(u.id, (e.currentTarget as HTMLSelectElement).value)}
+                    class="rounded-md border border-border bg-background px-2 py-1 text-xs"
+                  >
+                    <option value="MEMBER">MEMBER</option>
+                    <option value="RECRUITER">RECRUITER</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </select>
+                </td>
                 <td class="px-3 py-2 text-xs">{u.isActive ? 'active' : 'inactive'}</td>
                 <td class="px-3 py-2 text-xs">{u.createdAt}</td>
                 <td class="px-3 py-2 text-right">
