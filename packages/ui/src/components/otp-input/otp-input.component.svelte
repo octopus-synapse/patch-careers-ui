@@ -16,6 +16,10 @@ type Props = {
   disabled?: boolean;
   /** Auto-focus the first slot on mount. */
   autofocus?: boolean;
+  /** aria-label for the whole group (e.g. "Verification code"). */
+  groupAriaLabel: string;
+  /** Per-slot aria-label as `(index) => label` — 1-based. */
+  digitAriaLabel: (index: number) => string;
 };
 
 let {
@@ -26,6 +30,8 @@ let {
   error = false,
   disabled = false,
   autofocus = false,
+  groupAriaLabel,
+  digitAriaLabel,
 }: Props = $props();
 
 const slots = $derived(Array.from({ length }, (_, i) => value[i] ?? ''));
@@ -119,7 +125,7 @@ function handlePaste(event: ClipboardEvent) {
 <div
 	class="flex justify-center gap-2 sm:gap-3 {shake ? 'animate-[otp-shake_0.4s_ease-in-out]' : ''}"
 	role="group"
-	aria-label="Verification code"
+	aria-label={groupAriaLabel}
 >
 	{#each slots as digit, i}
 		<input
@@ -130,7 +136,7 @@ function handlePaste(event: ClipboardEvent) {
 			maxlength="1"
 			value={digit}
 			disabled={disabled}
-			aria-label={`Digit ${i + 1}`}
+			aria-label={digitAriaLabel(i + 1)}
 			oninput={(e) => handleInput(i, e)}
 			onkeydown={(e) => handleKeydown(i, e)}
 			onpaste={handlePaste}

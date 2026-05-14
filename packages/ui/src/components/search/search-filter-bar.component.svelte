@@ -24,6 +24,9 @@ type Props = {
   onsearch: (value: string, field?: string) => void;
   onfilterchange?: (key: string, value: string) => void;
   onsearchfield?: (field: string, value: string) => void;
+  /** aria-label for the "clear detected field" pill — pass via
+   *  t('ui.searchFilterBar.clearAria') from apps/web. */
+  clearFieldAriaLabel?: string;
 };
 
 let {
@@ -34,6 +37,7 @@ let {
   onsearch,
   onfilterchange,
   onsearchfield,
+  clearFieldAriaLabel,
 }: Props = $props();
 
 let debounceTimer: ReturnType<typeof setTimeout>;
@@ -83,7 +87,7 @@ function clearField() {
 		{#if detectedField}
 			<span class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
 				{detectedField}
-				<button type="button" onclick={clearField} aria-label="Clear search field">
+				<button type="button" onclick={clearField} aria-label={clearFieldAriaLabel}>
 					<X size={10} />
 				</button>
 			</span>

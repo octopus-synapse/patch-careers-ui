@@ -14,6 +14,9 @@
     size?: RankBadgeSize;
     /** Whether to show the numeric score in parentheses after the rank. */
     showScore?: boolean;
+    /** Localised tooltip — caller must compute via t('ui.matching.rankBadgeTitle',
+     *  { rank, scoreSuffix }). Optional; falls back to bare rank letter. */
+    titleLabel?: string;
   };
 
   let {
@@ -22,6 +25,7 @@
     label,
     size = 'md',
     showScore = false,
+    titleLabel,
   }: Props = $props();
 
   const resolvedRank = $derived<ScoreRank>(
@@ -40,7 +44,7 @@
 
 <span
   class="inline-flex items-center gap-1 rounded-full uppercase tracking-wide {sizeClass} {tone}"
-  title="Rank {resolvedRank}{typeof score === 'number' ? ` (${score}/100)` : ''}"
+  title={titleLabel ?? resolvedRank}
 >
   <span aria-hidden="true">{resolvedRank}</span>
   {#if showScore && typeof score === 'number'}

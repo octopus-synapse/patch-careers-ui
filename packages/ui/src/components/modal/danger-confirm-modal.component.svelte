@@ -28,6 +28,9 @@ type Props = {
   loading?: boolean;
   /** Optional extra warning below the message (appears in danger color). */
   warning?: string;
+  /** Label shown above the confirm-phrase input — caller passes
+   *  t('ui.dangerConfirmModal.typeToConfirm'). */
+  typeToConfirmLabel: string;
 };
 
 let {
@@ -41,6 +44,7 @@ let {
   cancelLabel = 'Cancelar',
   loading = false,
   warning,
+  typeToConfirmLabel,
 }: Props = $props();
 
 let typed = $state('');
@@ -78,7 +82,7 @@ function handleConfirm() {
 
 	<div>
 		<label for={inputId} class="block text-xs font-medium text-gray-600 dark:text-neutral-400">
-			Para confirmar, digite
+			{typeToConfirmLabel}
 			<code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-gray-900 dark:bg-neutral-700 dark:text-neutral-100">{confirmPhrase}</code>
 		</label>
 		<Input
