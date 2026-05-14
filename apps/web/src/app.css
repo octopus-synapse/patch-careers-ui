@@ -28,12 +28,92 @@ body {
  * Smooth dark/light theme transition — affects every element so the page
  * doesn't snap when the user toggles colorSchema (UX feedback #37).
  * Reduced-motion users opt out via the media query below.
+ *
+ * Wrapped in `@layer base` (instead of un-layered) so per-element Tailwind
+ * utilities like `transition-transform` / `transition-all` keep winning
+ * the cascade. An un-layered universal rule outranks Tailwind's
+ * `@layer utilities`, which silently re-pins `transition-property` back
+ * to the colour-only list — that's why transforms snap.
  */
-*, *::before, *::after {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 200ms;
-  transition-timing-function: ease-in-out;
+@layer base {
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 200ms;
+    transition-timing-function: ease-in-out;
+  }
 }
+
+/*
+ * Premium feed design tokens — glass morphism + radial backdrop + glossy CTA.
+ * Dark uses the spec values (rgba white over near-black); light is the
+ * equivalent over cream so every surface reads in both modes.
+ *
+ * Usage:
+ *   <div class="glass glass-reflect rounded-3xl">…</div>   ← glass card
+ *   <button class="btn-glossy">…</button>                  ← gradient CTA
+ *   <button class="tab-active">…</button>                  ← selected tab
+ *   <div class="page-feed-bg">…</div>                       ← radial backdrop
+ */
+.page-feed-bg {
+  background:
+    radial-gradient(circle at top center, oklch(0.985 0 0) 0%, oklch(0.975 0 0) 48%, oklch(0.97 0 0) 100%);
+}
+:where(.dark) .page-feed-bg {
+  background:
+    radial-gradient(circle at top center, #111111 0%, #050505 48%, #000000 100%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.04);
+}
+:where(.dark) .glass {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.2);
+}
+
+.glass-reflect {
+  position: relative;
+  overflow: hidden;
+}
+.glass-reflect::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent);
+  pointer-events: none;
+}
+:where(.dark) .glass-reflect::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
+.tab-active {
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.04), inset 0 0 10px rgba(0, 0, 0, 0.05);
+  color: #0a0a0a;
+}
+:where(.dark) .tab-active {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), inset 0 0 10px rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+}
+
+.btn-glossy {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 100%),
+    linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow:
+    0 10px 24px rgba(29, 78, 216, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+.btn-glossy:hover { filter: brightness(1.04); }
+.btn-glossy:active { filter: brightness(0.96); }
 
 .scrollbar-thin {
   scrollbar-width: thin;

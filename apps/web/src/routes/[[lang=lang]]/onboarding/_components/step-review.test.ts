@@ -33,7 +33,7 @@ const steps = [
 ];
 
 const fullSession = {
-  personalInfo: { fullName: 'Enzo Ferracini', email: 'enzo@test.com' },
+  personalInfo: { fullName: 'Enzo Ferracini' },
   username: 'enzoferracini',
   professionalProfile: {
     headline: 'Developer',

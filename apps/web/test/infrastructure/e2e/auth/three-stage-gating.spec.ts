@@ -122,7 +122,10 @@ test.describe('3-stage gating — signup → verify → onboarding → app', () 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: code }),
     });
-    expect(verifyRes.status, `verify failed: ${await verifyRes.text()}`).toBe(200);
+    // Backend convention (Q17 — see profile-services/CLAUDE.md): POST handlers
+    // without explicit `statusCode` auto-201. The mounter sets 201; the body
+    // confirms success regardless.
+    expect(verifyRes.status, `verify failed: ${await verifyRes.text()}`).toBe(201);
 
     const ctx = await ctxFor(user, browser);
     const page = await ctx.newPage();

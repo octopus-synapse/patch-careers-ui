@@ -3,11 +3,8 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   postV1ChatMessages,
   createGetV1ChatConversations,
-  createGetV1ChatConversationsConversationIdMessages,
-  createPostV1ChatConversationsConversationIdMessages,
   createPostV1ChatConversationsConversationIdRead,
   getV1ChatConversationsQueryKey,
-  getV1ChatConversationsConversationIdMessagesQueryKey,
 } from 'api-client';
 import { ArrowLeft, Maximize2, Minimize2, MoreHorizontal, X } from 'lucide-svelte';
 import { fade, fly } from 'svelte/transition';
@@ -15,9 +12,8 @@ import { Avatar, Button, Dropdown, Loader } from 'ui';
 import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import ChatThreadPane from './chat-thread-pane.svelte';
 import ConversationList from './conversation-list.svelte';
-import MessageInput from './message-input.svelte';
-import MessageThread from './message-thread.svelte';
 import UserSearch from './user-search.svelte';
 
 /**
@@ -41,32 +37,14 @@ const conversations = createGetV1ChatConversations(
 
 const convList = $derived($conversations.data?.items);
 
-const messages = createGetV1ChatConversationsConversationIdMessages(
-  chatState.activeConversationId || undefined,
-  { limit: 100 },
-  { query: { enabled: () => !!chatState.activeConversationId } },
-);
-
-const msgList = $derived($messages.data?.items);
+// The per-conversation messages query + send mutation live in
+// `chat-thread-pane.svelte`, mounted below under `{#key conversationId}`
+// so a conversation switch destroys and re-creates the query — the
+// only way to escape the kubb wrapper's one-shot `readable()` of the
+// positional conversationId. Same family of fix as feed-content +
+// user-search-results.
 
 const queryClient = useQueryClient();
-
-const sendMessage = createPostV1ChatConversationsConversationIdMessages({
-  mutation: {
-    onSuccess() {
-      if (chatState.activeConversationId) {
-        queryClient.invalidateQueries({
-          queryKey: getV1ChatConversationsConversationIdMessagesQueryKey(chatState.activeConversationId, {
-            limit: 100,
-          }),
-        });
-        queryClient.invalidateQueries({
-          queryKey: getV1ChatConversationsQueryKey({ limit: 50 }),
-        });
-      }
-    },
-  },
-});
 
 const markRead = createPostV1ChatConversationsConversationIdRead();
 
@@ -89,11 +67,6 @@ async function startNewConversation(recipientId: string) {
 
   if (convId) chatState.setActiveConversation(convId);
   queryClient.invalidateQueries({ queryKey: getV1ChatConversationsQueryKey({ limit: 50 }) });
-}
-
-function handleSend(content: string) {
-  if (!chatState.activeConversationId) return;
-  $sendMessage.mutate({ conversationId: chatState.activeConversationId, data: { content } });
 }
 
 const activeOther = $derived.by(() => {
@@ -308,15 +281,15 @@ function onDragEnd(e: PointerEvent) {
 								{@render headerContent()}
 							</div>
 						{/if}
-						{#if msgList}
-							<MessageThread messages={msgList} {currentUserId} />
+						{#if chatState.activeConversationId}
+							{#key chatState.activeConversationId}
+								<ChatThreadPane conversationId={chatState.activeConversationId} {currentUserId} />
+							{/key}
 						{/if}
-						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					{:else if chatState.activeConversationId}
-						{#if msgList}
-							<MessageThread messages={msgList} {currentUserId} />
-						{/if}
-						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
+						{#key chatState.activeConversationId}
+							<ChatThreadPane conversationId={chatState.activeConversationId} {currentUserId} />
+						{/key}
 					{:else}
 						<div class="flex flex-1 items-center justify-center">
 							<span class="text-xs text-gray-500 dark:text-neutral-500">select a conversation</span>
@@ -347,10 +320,11 @@ function onDragEnd(e: PointerEvent) {
 					</div>
 				{:else}
 					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
-						{#if msgList}
-							<MessageThread messages={msgList} {currentUserId} />
+						{#if chatState.activeConversationId}
+							{#key chatState.activeConversationId}
+								<ChatThreadPane conversationId={chatState.activeConversationId} {currentUserId} />
+							{/key}
 						{/if}
-						<MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
 					</div>
 				{/if}
 			</div>

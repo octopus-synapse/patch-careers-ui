@@ -62,7 +62,17 @@ test.describe('Double refresh bug', () => {
       });
 
       page.on('requestfailed', (req) => {
-        failedRequests.push(`${req.method()} ${req.url()} - ${req.failure()?.errorText}`);
+        // SSE streams (notifications, feature-flags) are intentionally
+        // long-lived. `page.reload()` aborts the in-flight stream — that's
+        // expected browser behavior, not a regression. Filter those out
+        // so we only capture real fetch/script failures.
+        const url = req.url();
+        const errorText = req.failure()?.errorText ?? '';
+        const isExpectedAbort =
+          errorText.includes('ERR_ABORTED') &&
+          (url.includes('/stream') || url.includes('/sse') || url.includes('/feature-flags'));
+        if (isExpectedAbort) return;
+        failedRequests.push(`${req.method()} ${url} - ${errorText}`);
       });
 
       // Step 1: Initial navigation

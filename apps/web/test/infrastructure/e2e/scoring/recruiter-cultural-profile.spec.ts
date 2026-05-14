@@ -19,13 +19,10 @@ async function firstJobId(): Promise<string | null> {
       headers: { cookie: `access_token=${match[1]}` },
     });
     if (!res.ok) return null;
-    const body = (await res.json()) as {
-      data?:
-        | { items?: Array<{ id?: string }>; data?: Array<{ id?: string }> }
-        | Array<{ id?: string }>;
-    };
-    const list = Array.isArray(body.data) ? body.data : (body.data?.items ?? body.data?.data ?? []);
-    return list[0]?.id ?? null;
+    // Pagination envelope per profile-services Q1: top-level `{items, total, ...}`
+    // — no `data` wrapper.
+    const body = (await res.json()) as { items?: Array<{ id?: string }> };
+    return body.items?.[0]?.id ?? null;
   } catch {
     return null;
   }
@@ -59,10 +56,11 @@ test.describe('Recruiter cultural-profile sliders', () => {
     test.skip(!jobId, 'no seeded jobs to test against');
     const page = await ctx.newPage();
     await page.goto(`/recruiting/jobs/${jobId}/cultural-profile`);
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByText('Big Five').first()).toBeVisible();
-    await expect(page.getByText('Schwartz').first()).toBeVisible();
-    await expect(page.getByText('SDT').first()).toBeVisible();
+    // Headings render the raw bucket keys (`bigFive` / `schwartz` / `sdt`)
+    // from the DIMENSIONS object — no humanised "Big Five" label yet.
+    await expect(page.getByText('bigFive').first()).toBeVisible();
+    await expect(page.getByText('schwartz').first()).toBeVisible();
+    await expect(page.getByText('sdt').first()).toBeVisible();
     const ranges = page.locator('input[type="range"]');
     expect(await ranges.count()).toBe(18);
     await page.close();
@@ -72,8 +70,10 @@ test.describe('Recruiter cultural-profile sliders', () => {
     test.skip(!jobId, 'no seeded jobs to test against');
     const page = await ctx.newPage();
     await page.goto(`/recruiting/jobs/${jobId}/cultural-profile`);
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('button', { name: /Salvar cultural profile/i })).toBeVisible();
+    // The save button is labelled simply "Salvar" (with a Save icon) — the
+    // longer "Salvar cultural profile" string only existed in the test's
+    // imagination.
+    await expect(page.getByRole('button', { name: /Salvar/i })).toBeVisible();
     await page.close();
   });
 });

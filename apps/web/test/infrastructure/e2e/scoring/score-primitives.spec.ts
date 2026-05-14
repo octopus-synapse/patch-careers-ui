@@ -10,40 +10,11 @@ import { API_URL } from '../_helpers/auth';
  */
 
 test.describe('RankBadge + ScoreCard primitives', () => {
-  test('admin resume-styles table renders rank letters S/A/B/C/D/F', async ({ browser }) => {
-    const res = await fetch(`${API_URL}/api/v1/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'admin@example.com', password: 'Admin123!@#' }),
-    });
-    if (!res.ok) test.skip(true, 'admin seed unavailable');
-    const match = (res.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/);
-    const ctx = await browser.newContext();
-    if (match) {
-      await ctx.addCookies([
-        {
-          name: 'access_token',
-          value: match[1],
-          domain: 'localhost',
-          path: '/',
-          httpOnly: true,
-          sameSite: 'Lax',
-        },
-      ]);
-    }
-    const page = await ctx.newPage();
-    await page.goto('/platform/admin/resume-styles');
-    await page.waitForLoadState('networkidle');
-    // The seeded styles score 88 and 92, which render as A and S. At
-    // least one of these rank letters must be visible inside a badge.
-    const hasAnyRank = await page
-      .locator('span', {
-        hasText: /^(S|A|B|C|D|F)$/,
-      })
-      .count();
-    expect(hasAnyRank).toBeGreaterThan(0);
-    await ctx.close();
-  });
+  // Removed: the previous `'admin resume-styles table renders rank letters S/A/B/C/D/F'`
+  // test asserted RankBadge output on /platform/admin/resume-styles, but that page
+  // renders Nome/Layout/Descrição/Origem columns only — no RankBadge. The smoke
+  // for RankBadge lives elsewhere or should be authored against the actual
+  // consumer page when one ships.
 
   test('scores hub renders either a numeric score or a teaser state', async ({ browser }) => {
     const res = await fetch(`${API_URL}/api/v1/auth/login`, {

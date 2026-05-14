@@ -101,7 +101,7 @@ $effect(() => {
 			<LockoutModal />
 		</div>
 		{#if showCookieBanner}<CookieBanner />{/if}
-		{#if dev}<SvelteQueryDevtools />{/if}
+		{#if dev && !navigator.webdriver}<SvelteQueryDevtools />{/if}
 	</QueryClientProvider>
 {:else}
 	<div class="min-h-screen flex flex-col transition-colors duration-200 bg-gray-50 text-gray-800 dark:bg-neutral-900 dark:text-neutral-200">
@@ -120,7 +120,7 @@ $effect(() => {
 			<ChatFab />
 			<Footer />
 			<LockoutModal />
-			{#if dev}<SvelteQueryDevtools />{/if}
+			{#if dev && !navigator.webdriver}<SvelteQueryDevtools />{/if}
 		</QueryClientProvider>
 		{#if showCookieBanner}<CookieBanner />{/if}
 	</div>

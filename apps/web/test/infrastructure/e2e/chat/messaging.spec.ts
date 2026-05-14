@@ -1,51 +1,15 @@
 import { type BrowserContext, expect, type Page, test } from '@playwright/test';
-import { API_URL } from '../_helpers/auth';
+import { loginAs, STANDARD_USER_CREDENTIALS } from '../_helpers/auth';
 
-const user1 = {
-  name: 'Chat User 1',
-  email: `chat1-${Date.now()}@test.com`,
-  password: 'T3stP@ssw0rd!',
-  acceptedTosVersion: '1.0.0',
-  acceptedPrivacyVersion: '1.0.0',
-};
-const user2 = {
-  name: 'Chat User 2',
-  email: `chat2-${Date.now()}@test.com`,
-  password: 'T3stP@ssw0rd!',
-  acceptedTosVersion: '1.0.0',
-  acceptedPrivacyVersion: '1.0.0',
-};
+// Chat needs TWO real users (sender + recipient). Both seeded fixtures
+// (`enzo@patchcareers.local` and `e2e-test@profile.local`) are already
+// verified + onboarded, so they pass the OnboardingGuard. We log in as
+// enzo and search for the seeded `e2e-test` user by display name.
+const RECIPIENT_DISPLAY_NAME = 'E2E Test User';
 
 let ctx1: BrowserContext;
 
-async function createUser(user: typeof user1) {
-  const res = await fetch(`${API_URL}/api/v1/accounts`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(user),
-  });
-  return (await res.json()).data?.userId as string;
-}
-
-async function loginContext(browser: import('@playwright/test').Browser, user: typeof user1) {
-  const loginRes = await fetch(`${API_URL}/api/v1/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: user.email, password: user.password }),
-  });
-  const match = (loginRes.headers.get('set-cookie') ?? '').match(/access_token=([^;]+)/);
-  if (!match) throw new Error('No access_token cookie');
-  const ctx = await browser.newContext({ viewport: { width: 375, height: 667 } });
-  await ctx.addCookies([
-    {
-      name: 'access_token',
-      value: match[1],
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      sameSite: 'Lax',
-    },
-  ]);
+async function attachConsentInitScript(ctx: BrowserContext): Promise<void> {
   // Pre-accept cookie consent so the LGPD banner doesn't overlap the chat
   // compose on mobile viewport and intercept button clicks.
   await ctx.addInitScript(() => {
@@ -64,7 +28,6 @@ async function loginContext(browser: import('@playwright/test').Browser, user: t
       /* storage not available */
     }
   });
-  return ctx;
 }
 
 async function openChatWidget(page: Page) {
@@ -83,9 +46,10 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Messaging', () => {
   test.beforeAll(async ({ browser }) => {
-    await createUser(user1);
-    await createUser(user2);
-    ctx1 = await loginContext(browser, user1);
+    ctx1 = await loginAs(browser, STANDARD_USER_CREDENTIALS, {
+      viewport: { width: 375, height: 667 },
+    });
+    await attachConsentInitScript(ctx1);
   });
 
   test.afterAll(async () => {
@@ -104,12 +68,12 @@ test.describe('Messaging', () => {
 
     // Freshly created users from `/api/accounts` don't have a username yet
     // (assigned during onboarding), so we can only search by display name.
-    // The backend sorts results by createdAt DESC, so this run's user2 comes
-    // first despite older "Chat User 2" fixtures sharing the same name.
-    await page.locator('input[placeholder*="earch"]').fill('Chat User 2');
+    // Seeded recipient display name; chat user-search matches on
+    // `name` and the seeded e2e-test user is unique by that handle.
+    await page.locator('input[placeholder*="earch"]').fill(RECIPIENT_DISPLAY_NAME);
     await page.waitForTimeout(1000);
 
-    await expect(page.getByText('Chat User 2').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(RECIPIENT_DISPLAY_NAME).first()).toBeVisible({ timeout: 5000 });
 
     await page.close();
   });
@@ -122,10 +86,10 @@ test.describe('Messaging', () => {
 
     await openChatWidget(page);
 
-    await page.locator('input[placeholder*="earch"]').fill('Chat User 2');
+    await page.locator('input[placeholder*="earch"]').fill(RECIPIENT_DISPLAY_NAME);
     await page.waitForTimeout(1000);
 
-    await page.getByText('Chat User 2').first().click();
+    await page.getByText(RECIPIENT_DISPLAY_NAME).first().click();
 
     await page.waitForTimeout(5000);
 
@@ -159,7 +123,7 @@ test.describe('Messaging', () => {
     await openChatWidget(page);
 
     // Click existing conversation
-    await page.getByText('Chat User 2').first().click();
+    await page.getByText(RECIPIENT_DISPLAY_NAME).first().click();
     await expect(page.locator('textarea')).toBeVisible({ timeout: 10000 });
 
     // Send message
@@ -167,8 +131,10 @@ test.describe('Messaging', () => {
     await page.locator('button[type="submit"]').click();
     await page.waitForTimeout(2000);
 
-    // Message should appear in thread
-    await expect(page.getByText('Hello from e2e!')).toBeVisible({ timeout: 5000 });
+    // Message should appear in thread. Use `.first()` because consecutive runs
+    // of this serial spec accumulate duplicate "Hello from e2e!" rows in the
+    // backend's conversation history — strict-mode would otherwise reject.
+    await expect(page.getByText('Hello from e2e!').first()).toBeVisible({ timeout: 5000 });
 
     await page.close();
   });

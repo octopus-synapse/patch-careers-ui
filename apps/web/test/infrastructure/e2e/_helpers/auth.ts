@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import type { Browser, BrowserContext } from '@playwright/test';
 
 /**
@@ -90,6 +91,22 @@ export const E2E_USER_CREDENTIALS = {
   password: 'E2E_Test_Password_123!',
 };
 
+/**
+ * Seeded fixture user representing **verified + NOT onboarded**. Backend
+ * seed (`prisma/seeds/e2e-onboarding-user.seed.ts`) writes:
+ *
+ *   emailVerified:           non-null  → passes verify-email gate
+ *   onboardingCompletedAt:   null      → frontend wants onboarding
+ *   UserRoleAssignment:      none      → role granted on completion
+ *
+ * Prefer the `loginAsUnonboardedUser` helper below over using these
+ * credentials raw with `loginAs(...)`.
+ */
+export const ONBOARDING_USER_CREDENTIALS = {
+  email: 'e2e-onboarding@profile.local',
+  password: 'E2E_Onboarding_123!',
+};
+
 /** Locale used by tests that assert PT-BR copy. Playwright Chromium
  *  defaults to `en-US`, which would make `locale.init()` resolve to
  *  English; setting the cookie up front locks the dictionary so test
@@ -106,11 +123,16 @@ export const DEFAULT_TEST_LOCALE: TestLocale = 'pt-BR';
  * Also seeds the `locale` cookie that `locale.svelte.ts` consults first.
  * Default is pt-BR (the product's primary market); pass `locale: 'en'`
  * for tests that assert English-language copy.
+ *
+ * The optional `viewport` lets mobile-only specs (e.g. chat/messaging)
+ * keep their viewport intent without rebuilding the context manually —
+ * `newContext` accepts the viewport at construction; there's no setter
+ * after the fact.
  */
 export async function loginAs(
   browser: Browser,
   creds: { email: string; password: string },
-  opts: { locale?: TestLocale } = {},
+  opts: { locale?: TestLocale; viewport?: { width: number; height: number } } = {},
 ): Promise<BrowserContext> {
   const res = await fetch(`${API_URL}/api/v1/auth/login`, {
     method: 'POST',
@@ -129,7 +151,7 @@ export async function loginAs(
   const match = setCookie.match(/access_token=([^;]+)/);
   if (!match) throw new Error(`no access_token cookie returned for ${creds.email}`);
 
-  const ctx = await browser.newContext();
+  const ctx = await browser.newContext(opts.viewport ? { viewport: opts.viewport } : {});
   await ctx.addCookies([
     {
       name: 'access_token',
@@ -185,4 +207,87 @@ export async function maybeLoginAs(
   } catch {
     return null;
   }
+}
+
+/**
+ * Log in as the seeded **verified-but-not-onboarded** fixture user.
+ *
+ * Use this for onboarding-stepper specs: the user's session reports
+ * `emailVerified=true` + `needsOnboarding=true`, so the OnboardingGuard
+ * does NOT bounce to `/identity/verify-email` (verified) and DOES
+ * route to `/onboarding/start` from any other path (needs onboarding).
+ * Tests can `page.goto('/onboarding/...')` and assert against the
+ * stepper without the verify-email ceremony.
+ *
+ * Do NOT use this for tests of the email-verification flow itself —
+ * the fixture is pre-verified and the gate test needs a fresh
+ * unverified user (see `signupUnverifiedUser`).
+ *
+ * @example
+ *   const ctx = await loginAsUnonboardedUser(browser);
+ *   const page = await ctx.newPage();
+ *   await page.goto('/onboarding/start');
+ */
+export async function loginAsUnonboardedUser(
+  browser: Browser,
+  opts: { locale?: TestLocale } = {},
+): Promise<BrowserContext> {
+  return loginAs(browser, ONBOARDING_USER_CREDENTIALS, opts);
+}
+
+/**
+ * Fresh signup + JWT/locale cookies installed on a new BrowserContext,
+ * leaving the user in the **unverified** state (no email-verification
+ * call is made by this helper).
+ *
+ * Use this for the verify-email gate specs: the OnboardingGuard will
+ * pin the resulting BrowserContext to `/identity/verify-email` for
+ * every protected route, which is the contract those tests assert.
+ *
+ * Each call produces a UNIQUE user — the verify-email flow consumes
+ * the unverified state, so a stable seed wouldn't survive a second
+ * test in the same run. Override `email` / `password` / `name` if a
+ * spec needs to control the identity (e.g. to fetch the verification
+ * email from Mailpit by `to:<address>`).
+ *
+ * Do NOT use this when the test only needs a logged-in user — prefer
+ * `loginAs(ADMIN_CREDENTIALS / STANDARD_USER_CREDENTIALS / ...)`
+ * which is faster and doesn't touch the signup path.
+ *
+ * @example
+ *   const { ctx, user } = await signupUnverifiedUser(browser);
+ *   const page = await ctx.newPage();
+ *   await page.goto('/my-profile/dashboard');
+ *   await expect(page).toHaveURL(/identity\/verify-email/);
+ */
+export async function signupUnverifiedUser(
+  browser: Browser,
+  overrides?: { email?: string; password?: string; name?: string },
+): Promise<{ ctx: BrowserContext; user: SignupResponse }> {
+  const id = randomUUID().slice(0, 8);
+  const user = await signupTestUser({
+    email: overrides?.email ?? `e2e-unverified-${id}@test.com`,
+    password: overrides?.password ?? 'T3stP@ssw0rd!',
+    name: overrides?.name ?? `E2E Unverified ${id}`,
+  });
+  const ctx = await browser.newContext();
+  await ctx.addCookies([
+    {
+      name: 'access_token',
+      value: user.accessToken,
+      domain: 'localhost',
+      path: '/',
+      httpOnly: true,
+      sameSite: 'Lax',
+    },
+    {
+      name: 'locale',
+      value: DEFAULT_TEST_LOCALE,
+      domain: 'localhost',
+      path: '/',
+      httpOnly: false,
+      sameSite: 'Lax',
+    },
+  ]);
+  return { ctx, user };
 }

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { loginAs, STANDARD_USER_CREDENTIALS } from '../_helpers/auth';
 
 /**
  * Regression: the list endpoint GET /api/v1/resumes returns the lean
@@ -7,28 +8,16 @@ import { expect, test } from '@playwright/test';
  * which throws "Cannot read properties of undefined (reading 'length')"
  * whenever the user actually has at least one resume.
  *
- * This test logs in as a bulk-seed power user (which has a real resume
- * persisted) and asserts the page renders without the error-boundary
- * overlay. Auth helper is inline because this suite doesn't yet have a
- * shared one.
+ * Logs in as the seeded `enzoferracini` fixture — already onboarded with a
+ * real persisted resume (`enzoferracini.seed.ts`) — and asserts the page
+ * renders without the error-boundary overlay.
  */
 
-const SEED_POWER_USER = {
-  email: 'seed+2@patchcareers-seed.local',
-  password: 'SeedUser123!',
-};
-
 test.describe('Manage Resumes page', () => {
-  test('renders for a user with a real resume, no error overlay', async ({ page }) => {
-    // Log in
-    await page.goto('/identity/sign-in');
-    await page.waitForLoadState('networkidle');
-    await page.locator('input[type="email"]').fill(SEED_POWER_USER.email);
-    await page.locator('input[type="password"]').fill(SEED_POWER_USER.password);
-    await page.locator('button[type="submit"]').click();
-    await page.waitForURL((u) => !u.pathname.endsWith('/identity/sign-in'), { timeout: 15000 });
+  test('renders for a user with a real resume, no error overlay', async ({ browser }) => {
+    const ctx = await loginAs(browser, STANDARD_USER_CREDENTIALS);
+    const page = await ctx.newPage();
 
-    // Navigate to the page under test
     await page.goto('/careers/manage-resumes');
     await page.waitForLoadState('networkidle');
 
@@ -39,5 +28,7 @@ test.describe('Manage Resumes page', () => {
 
     // Happy path — the page heading is visible.
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+    await ctx.close();
   });
 });

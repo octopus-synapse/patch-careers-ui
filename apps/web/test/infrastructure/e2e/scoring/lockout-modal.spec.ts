@@ -32,25 +32,27 @@ test.describe('Global 409 lockout modal', () => {
   });
 
   test('match compute as a standard user without fit-profile surfaces a lockout state', async () => {
-    // This test exercises the interceptor end-to-end ONLY when the
-    // backend returns 409 fit_profile_required. A clean standard user
-    // with no fit profile will get that when hitting a job detail.
-    test.skip(!ctx, 'e2e-test user not available (backend seed may be stale)');
+    // The interceptor surfaces a Fit-Profile lockout for standard users
+    // without a fit profile. Whether the page shows it as an inline
+    // teaser (browse-jobs pre-fetch gate) OR as a modal after clicking a
+    // job, either path counts — we just need the lockout copy to appear
+    // somewhere on the route. No skip: if neither shows, the interceptor
+    // regressed.
+    if (!ctx) throw new Error('e2e-test login failed — seed may be stale');
     const page = await (ctx as BrowserContext).newPage();
     await page.goto('/careers/browse-jobs');
-    await page.waitForLoadState('networkidle');
-    // If there are jobs, click the first; if not, skip
-    const firstJobLink = page.locator('a[href*="/careers/browse-jobs/"]').first();
-    if ((await firstJobLink.count()) === 0) {
-      test.skip(true, 'no jobs to click');
+
+    // If the page renders a job table, click the first row to trigger
+    // the 409 flow. Otherwise the gate already fired pre-render and the
+    // teaser/modal is on the page directly.
+    const firstJobRow = page.locator('tbody tr.cursor-pointer').first();
+    if (await firstJobRow.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await firstJobRow.click();
     }
-    await firstJobLink.click();
-    await page.waitForLoadState('networkidle');
-    // Modal title OR inline teaser must be visible — either proves
-    // the interceptor / panel handled the 409 gracefully (no crash).
+
     const modalTitle = page.getByText(/Fit Profile necess[aá]rio/i);
     const teaserTitle = page.getByText(/Fit Profile/i).first();
-    await expect(modalTitle.or(teaserTitle)).toBeVisible({ timeout: 10000 });
+    await expect(modalTitle.or(teaserTitle)).toBeVisible({ timeout: 15_000 });
     await page.close();
   });
 

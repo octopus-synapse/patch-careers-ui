@@ -1,14 +1,18 @@
 /**
  * Mailpit test helper.
  *
- * The dev stack runs a Mailpit SMTP server at localhost:8025 that captures
+ * The dev stack runs a Mailpit web UI at localhost:18025 that captures
  * every email sent by the backend. Verification emails include a 6-digit
  * OTP embedded in the body (snippet preview already exposes it). Tests use
  * this helper to advance a freshly-signed-up user through the email-verify
  * stage without screen-scraping the DB.
+ *
+ * Host port 18025 is the project-unique mapping from `docker-compose.dev.yml`
+ * (container's port 8025 is unchanged). Override with `MAILPIT_URL` env
+ * when running against a different stack.
  */
 
-const MAILPIT_BASE = process.env.MAILPIT_URL ?? 'http://localhost:8025';
+const MAILPIT_BASE = process.env.MAILPIT_URL ?? 'http://localhost:18025';
 
 type MailpitMessage = {
   ID: string;

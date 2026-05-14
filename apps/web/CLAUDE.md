@@ -107,6 +107,27 @@ O alias absorve mudanças do SDK regen sem espalhar `as any`.
 - `useAuth()` em `lib/state/auth.svelte.ts` é o ponto único de auth.
   Não acesse `Session200` diretamente.
 
+## E2E test users
+
+Helpers em `test/infrastructure/e2e/_helpers/auth.ts`. Pick the one
+whose user-state matches the assertion you're writing — don't
+re-build a context from `signupTestUser` for state the seed already
+provides.
+
+| Helper                                  | User state                       | When to use                                   |
+|-----------------------------------------|----------------------------------|-----------------------------------------------|
+| `loginAs(., STANDARD_USER_CREDENTIALS)` | verified + onboarded + resume    | post-onboarding feature tests (enzo)          |
+| `loginAs(., ADMIN_CREDENTIALS)`         | admin                            | admin-only routes / permission bypass         |
+| `loginAs(., E2E_USER_CREDENTIALS)`      | verified + onboarded, no resume  | feature tests that don't need a resume row    |
+| `loginAsUnonboardedUser(browser)`       | verified, NOT onboarded          | onboarding stepper specs                      |
+| `signupUnverifiedUser(browser)`         | fresh, unverified                | verify-email gate specs                       |
+| `signupTestUser({...})` (raw)           | fresh, no BrowserContext         | tests of the signup flow itself               |
+
+Rich JSDoc lives on each export — hover in your editor for the long
+form (which gate each one bypasses, when NOT to use, example
+invocation). The seeds these reference are in
+`profile-services/prisma/seeds/*.seed.ts`.
+
 ## Pending decisions
 
 Decisões de produto não resolvidas vivem em
