@@ -304,12 +304,22 @@ function scanTemplateAttrs(file: string, source: string, out: Violation[]): void
       const attrName = am[1];
       if (!UX_ATTRS.has(attrName)) continue;
       const value = am[2] ?? am[3] ?? am[5] ?? '';
+      const fromExpr = Boolean(am[4]);
+      // Svelte mustache + JS template-literal interpolation isn't a
+      // hardcoded literal. Strip every `{...}` (Svelte) and `${...}`
+      // (JS template) substring; if what's left is pure whitespace
+      // or a tiny punctuation residue (separators like `%`, `/`, `-`),
+      // skip — the value is entirely dynamic content with decorative
+      // glyphs around it.
+      const stripped = value.replace(/\$\{[^}]*\}/g, '').replace(/\{[^}]*\}/g, '').trim();
+      const hadInterpolation = stripped.length !== value.trim().length;
+      if (hadInterpolation && /^[\s%/\-:,;_·]*$/.test(stripped)) continue;
       if (isAllowlistedLiteral(value)) continue;
 
       const literalLocalOffset = am.index + am[0].indexOf(value);
       const absOffset = tagOffset + attrsOffsetInTag + literalLocalOffset;
       const { line, col } = lineColFromOffset(source, absOffset);
-      const rule: ViolationRule = am[4] ? 'attr-expr' : 'attr';
+      const rule: ViolationRule = fromExpr ? 'attr-expr' : 'attr';
       out.push({
         file,
         line,
@@ -498,11 +508,31 @@ async function detect(): Promise<Violation[]> {
 // ---------------------------------------------------------------------------
 // Baseline I/O
 // ---------------------------------------------------------------------------
-
-type BaselineKey = `${string}:${number}:${number}`;
+//
+// Auto-prune model — NO cron job, no manual --update-baseline step:
+//
+//   Match key is `${file}::${value}` (NOT line:col) so that adding /
+//   removing unrelated lines doesn't reshuffle baseline state. Multiple
+//   occurrences of the same literal in the same file are tracked by
+//   count under the same group.
+//
+//   On each run:
+//     - For each (file, value) group:
+//         live[k] > baseline[k]   →  (live − baseline) NEW violations.
+//         live[k] ≤ baseline[k]   →  no new; baseline shrinks by the
+//                                     surplus (the difference is treated
+//                                     as "fixed by this run").
+//     - If 0 NEW violations: rewrite baseline.json in place with the
+//       current live snapshot (refreshes line/col + drops fixed
+//       entries). Exit 0.
+//     - If ≥1 NEW violations: report and exit 1 WITHOUT touching the
+//       baseline (so the failing PR can't silently absorb its debt).
+//
+//   --update-baseline still exists as an escape hatch (force-rewrite
+//   with all current violations, including new ones).
 
 interface BaselineEntry {
-  key: BaselineKey;
+  key: string; // "file:line:col" — current location, regenerated each run
   rule: ViolationRule;
   context: string;
   value: string;
@@ -516,22 +546,40 @@ interface BaselineFile {
   entries: BaselineEntry[];
 }
 
-function loadBaseline(): Set<BaselineKey> {
-  if (!existsSync(BASELINE_PATH)) return new Set();
-  const raw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8')) as
-    | BaselineFile
-    | { entries: (BaselineKey | BaselineEntry)[] };
-  const out = new Set<BaselineKey>();
-  for (const e of raw.entries) {
-    if (typeof e === 'string') out.add(e);
-    else out.add(e.key);
+const NOTE =
+  'i18n hardcoded violations — surviving debt only. Auto-prunes on every gate run: as soon as a literal is wrapped in t(), the entry vanishes from this file. New entries are NEVER auto-added — a failing run reports them but leaves this file untouched. To force a rebuild (e.g. after a tool refactor that shifts line numbers), run: bun scripts/check-i18n-hardcoded.ts --update-baseline';
+
+function loadBaselineGroups(): Map<string, number> {
+  // Group key = `${file}::${value}`, value = expected count.
+  const groups = new Map<string, number>();
+  if (!existsSync(BASELINE_PATH)) return groups;
+  let raw: { entries?: (BaselineEntry | string)[] };
+  try {
+    raw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  } catch {
+    return groups;
   }
-  return out;
+  for (const e of raw.entries ?? []) {
+    if (typeof e === 'string') {
+      // Legacy `file:line:col` baseline — no `value` available, so
+      // these legacy entries get ignored. Re-baseline once after
+      // landing this change to migrate.
+      continue;
+    }
+    const groupKey = `${e.key.split(':')[0]}::${e.value}`;
+    groups.set(groupKey, (groups.get(groupKey) ?? 0) + 1);
+  }
+  return groups;
+}
+
+function violationGroupKey(v: Violation): string {
+  const truncated = v.value.length > 80 ? `${v.value.slice(0, 77)}…` : v.value;
+  return `${v.file}::${truncated}`;
 }
 
 function writeBaseline(violations: Violation[]): void {
   const entries: BaselineEntry[] = violations.map((v) => ({
-    key: `${v.file}:${v.line}:${v.col}` as BaselineKey,
+    key: `${v.file}:${v.line}:${v.col}`,
     rule: v.rule,
     context: v.context,
     value: v.value.length > 80 ? `${v.value.slice(0, 77)}…` : v.value,
@@ -548,14 +596,12 @@ function writeBaseline(violations: Violation[]): void {
     const file = e.key.split(':')[0];
     byFile[file] = (byFile[file] ?? 0) + 1;
   }
-  // Sort byFile by descending count so the top offenders are obvious.
   const sortedByFile = Object.fromEntries(
     Object.entries(byFile).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)),
   );
 
   const payload: BaselineFile = {
-    note:
-      'pre-existing i18n hardcoded violations grouped by rule. New entries MUST NOT be added — fix the literal with t(...) instead. To plan a sweep, filter `entries` by `rule` (attr / attr-expr / call-arg / object-prop / text-child) or by file. Refresh after a sweep with: bun scripts/check-i18n-hardcoded.ts --update-baseline',
+    note: NOTE,
     count: entries.length,
     byRule,
     byFile: sortedByFile,
@@ -564,9 +610,17 @@ function writeBaseline(violations: Violation[]): void {
   writeFileSync(BASELINE_PATH, `${JSON.stringify(payload, null, 2)}\n`);
 }
 
+function readExistingPayload(): string {
+  if (!existsSync(BASELINE_PATH)) return '';
+  try {
+    return readFileSync(BASELINE_PATH, 'utf8');
+  } catch {
+    return '';
+  }
+}
+
 function formatViolation(v: Violation): string {
-  const truncated =
-    v.value.length > 60 ? `${v.value.slice(0, 57)}…` : v.value;
+  const truncated = v.value.length > 60 ? `${v.value.slice(0, 57)}…` : v.value;
   return `  ${v.file}:${v.line}:${v.col} [${v.rule}] ${v.context}: "${truncated}"`;
 }
 
@@ -582,10 +636,27 @@ if (UPDATE) {
   process.exit(0);
 }
 
-const baseline = loadBaseline();
-const newViolations = violations.filter(
-  (v) => !baseline.has(`${v.file}:${v.line}:${v.col}` as BaselineEntry),
-);
+const expectedGroups = loadBaselineGroups();
+
+// Bucket the live violations by group key and count NEW per group.
+const liveGroupCounts = new Map<string, number>();
+const liveByGroup = new Map<string, Violation[]>();
+for (const v of violations) {
+  const gk = violationGroupKey(v);
+  liveGroupCounts.set(gk, (liveGroupCounts.get(gk) ?? 0) + 1);
+  const list = liveByGroup.get(gk) ?? [];
+  list.push(v);
+  liveByGroup.set(gk, list);
+}
+
+const newViolations: Violation[] = [];
+for (const [gk, list] of liveByGroup) {
+  const allowed = expectedGroups.get(gk) ?? 0;
+  if (list.length > allowed) {
+    // First `allowed` are debt; the rest are new.
+    newViolations.push(...list.slice(allowed));
+  }
+}
 
 const ruleCounts: Record<string, number> = {};
 for (const v of violations) ruleCounts[v.rule] = (ruleCounts[v.rule] ?? 0) + 1;
@@ -594,9 +665,28 @@ const summary = Object.entries(ruleCounts)
   .join(', ');
 
 if (newViolations.length === 0) {
-  console.log(
-    `check-i18n-hardcoded: OK (${violations.length} baseline / 0 new) [${summary || '-'}]`,
-  );
+  // Auto-prune: rewrite baseline to the current snapshot. Refreshes
+  // line/col on entries that shifted; drops entries whose literal is
+  // no longer found in source. No-op if nothing changed.
+  const before = readExistingPayload();
+  writeBaseline(violations);
+  const after = readExistingPayload();
+  if (before !== after) {
+    // Count baseline shrinkage by group totals (live vs expected).
+    let droppedGroups = 0;
+    for (const [gk, expected] of expectedGroups) {
+      const live = liveGroupCounts.get(gk) ?? 0;
+      if (live < expected) droppedGroups += expected - live;
+    }
+    console.log(
+      `check-i18n-hardcoded: OK (${violations.length} baseline / 0 new) [${summary || '-'}]\n` +
+        `  auto-pruned: baseline rewritten in place (${droppedGroups} entr${droppedGroups === 1 ? 'y' : 'ies'} dropped or shifted)`,
+    );
+  } else {
+    console.log(
+      `check-i18n-hardcoded: OK (${violations.length} baseline / 0 new) [${summary || '-'}]`,
+    );
+  }
   process.exit(0);
 }
 

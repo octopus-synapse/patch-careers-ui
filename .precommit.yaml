@@ -18,6 +18,8 @@ checks:
     cmd: bun scripts/lint-unused-i18n.ts
   - name: i18n-parity
     cmd: bun scripts/check-i18n-parity.ts
+  - name: i18n-missing
+    cmd: bun scripts/check-i18n-missing-keys.ts
   - name: no-hardcoded-pt
     cmd: bun scripts/check-no-hardcoded-pt.ts
   - name: i18n-hardcoded

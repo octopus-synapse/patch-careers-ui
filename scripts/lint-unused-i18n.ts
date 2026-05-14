@@ -41,6 +41,21 @@ const STATIC_ALLOW: ReadonlySet<string> = new Set([
   'admin.nav.audit',
   'admin.nav.featureFlags',
   'admin.nav.devTools',
+  // Profile-badges: looked up via BADGE_LABEL_KEYS / BADGE_HINT_KEYS
+  // const maps in `_components/profile-badges.svelte`. The literal-text
+  // scanner can't follow the indirection.
+  'ui.badgeIcon.firstBuild',
+  'ui.badgeIcon.ats90Plus',
+  'ui.badgeIcon.mentored10',
+  'ui.badgeIcon.interviews5',
+  'ui.badgeIcon.contributor',
+  'ui.badgeIcon.eventSpeaker',
+  'myProfile.public.badgeHint.firstBuild',
+  'myProfile.public.badgeHint.ats90Plus',
+  'myProfile.public.badgeHint.mentored10',
+  'myProfile.public.badgeHint.interviews5',
+  'myProfile.public.badgeHint.contributor',
+  'myProfile.public.badgeHint.eventSpeaker',
 ]);
 
 // Pending-sweep allowlist — keys added in preparation for the
