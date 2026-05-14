@@ -125,13 +125,23 @@
     "back": "Back",
     "loading": "Loading...",
     "retry": "Try again",
-    "saved": "Saved"
+    "saved": "Saved",
+    "email": {
+      "hi": "oi@patchcareers.org",
+      "support": "support@patchcareers.com",
+      "dpo": "dpo@patchcareers.com",
+      "legal": "legal@patchcareers.com"
+    },
+    "link": {
+      "govBrAnpd": "gov.br/anpd"
+    }
   },
   "errorPage": {
     "notFound": "Page not found",
     "somethingWentWrong": "Something went wrong",
     "goHome": "Go home",
-    "goHomeAria": "Back to home"
+    "goHomeAria": "Back to home",
+    "goHomeShort": "go home"
   },
   "errors": {
     "network": "No connection to the server. Check your internet.",
@@ -222,7 +232,24 @@
       "feature1": "Resume rewritten per job in seconds",
       "feature2": "Cover letter drafted from your profile",
       "feature3": "ATS-optimized output",
-      "feature4": "Full control before submitting"
+      "feature4": "Full control before submitting",
+      "enableLabel": "Enable One-Click Apply",
+      "tailorVerbatimLabel": "Send as is (verbatim)",
+      "tailorVerbatimDescription": "The master resume is sent without modifications.",
+      "tailorAiLabel": "Tailor with AI per job",
+      "tailorAiDescription": "Patch reorders sections, highlights relevant skills, and generates an optimized version.",
+      "attachGithub": "GitHub link",
+      "attachLinkedin": "LinkedIn link",
+      "saveError": "Failed to save. Local draft preserved.",
+      "defaultResumeHeading": "Default resume",
+      "whichResumeLabel": "Which resume to use",
+      "primaryResumeOption": "— Primary resume (master) —",
+      "untitledOption": "Untitled",
+      "coverLetterTemplateHeading": "Cover letter template",
+      "resumeAdjustmentHeading": "Resume adjustment",
+      "alsoAttachHeading": "Also attach",
+      "savePreferences": "Save preferences",
+      "pageHeading": "One-Click Apply"
     },
     "curated": {
       "title": "Weekly Curated",
@@ -324,7 +351,44 @@
       "comingSoonTitle": "Not available yet",
       "comingSoonBody": "We're polishing this import. For now, use another option — you can always come back and enrich your profile later.",
       "useManualInstead": "Continue with the wizard",
-      "close": "Close"
+      "close": "Close",
+      "cvImportedToast": "CV imported",
+      "cvImportErrorToast": "Could not import the PDF"
+    },
+    "import": {
+      "resumePreviewAlt": "Resume preview",
+      "githubImportedToast": "Imported: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts …",
+      "linkedinImportedToast": "LinkedIn imported.",
+      "linkedinUnavailableToast": "LinkedIn import is still under construction — use PDF or GitHub for now.",
+      "pdfUploadedToast": "PDF uploaded. Processing…",
+      "pdfUploadError": "Failed to upload PDF.",
+      "pdfUploadHeading": "PDF upload",
+      "manualFillLink": "or fill in manually →",
+      "heading": "Import resume"
+    },
+    "theme": {
+      "previewAlt": "Preview of {theme.name}"
+    },
+    "stepper": {
+      "completeError": "Failed to complete onboarding"
+    },
+    "fieldRenderer": {
+      "seeExample": "see example"
+    },
+    "welcome": {
+      "heading": "Build your professional resume",
+      "startCta": "Start now →"
+    },
+    "claimShadow": {
+      "heading": "We found a profile for you"
+    },
+    "done": {
+      "heading": "Profile ready!",
+      "seeJobsCta": "See jobs"
+    },
+    "review": {
+      "inactiveHeading": "This review link is no longer active",
+      "backToStart": "Back to start"
     }
   },
   "network": {
@@ -424,18 +488,31 @@
       "confirmDelete": "Are you sure you want to delete this user? This action cannot be undone.",
       "noUsers": "No users found",
       "toastDeleted": "User deleted",
-      "toastRoleUpdated": "Role updated"
+      "toastRoleUpdated": "Role updated",
+      "detailComingSoonTitle": "User detail (admin) coming soon",
+      "detailComingSoonDescription": "The full page with role editing, suspension and impersonate hasn't been released yet — it depends on admin endpoints to ship in the next phase.",
+      "backToList": "← Back to list",
+      "detailHeading": "User"
     },
     "analytics": {
       "title": "Global Analytics",
       "atsDistribution": "ATS Score Distribution",
       "resumesByLanguage": "Resumes by Language",
       "topSections": "Most Used Sections",
-      "importSources": "Import Sources"
+      "importSources": "Import Sources",
+      "statPendingInvites": "Pending invites",
+      "statAcceptanceRate": "Acceptance rate",
+      "statJobsPosted": "Jobs posted",
+      "statActiveJobs": "Active jobs",
+      "statAppsPerJob": "Apps / job",
+      "statDauMau": "DAU/MAU"
     },
     "skills": {
       "title": "Skills Catalog",
-      "noItems": "No items"
+      "noItems": "No items",
+      "groupAreas": "Areas",
+      "groupProgrammingLanguages": "Prog. languages",
+      "groupSpokenLanguages": "Spoken languages"
     },
     "onboarding": {
       "title": "Onboarding Monitoring",
@@ -450,7 +527,8 @@
       "noSteps": "No steps configured"
     },
     "health": {
-      "title": "Health & Infrastructure"
+      "title": "Health & Infrastructure",
+      "checkPendingDescription": "The /platform/check endpoint hasn't been exposed by the client-only spec yet. Come back when the backend ships the typed route."
     },
     "chat": {
       "title": "Chat & Collaboration",
@@ -482,6 +560,63 @@
       "audit": "Audit",
       "featureFlags": "Feature Flags",
       "devTools": "Dev Tools"
+    },
+    "performance": {
+      "heading": "Endpoint Latency",
+      "statHeapUsed": "Heap Used",
+      "statHeapTotal": "Heap Total",
+      "statEventLoopLag": "Event Loop Lag",
+      "statResumesCreated": "Resumes Created",
+      "statUserSignups": "User Signups",
+      "statExportsDone": "Exports Done",
+      "statActiveUsers": "Active Users",
+      "statPendingExports": "Pending Exports"
+    },
+    "sections": {
+      "searchPlaceholder": "Search...",
+      "heading": "Section Types"
+    },
+    "alerts": {
+      "heading": "Needs attention"
+    },
+    "collaboration": {
+      "heading": "Collaboration (admin)"
+    },
+    "devTools": {
+      "heading": "Dev Tools",
+      "toolAdminTestRunnerLabel": "Admin Test Runner",
+      "toolAdminTestRunnerDescription": "Run admin test suites (seed-check, auth-flow, etc.).",
+      "toolBackendConnectionLabel": "Backend Connection Tester",
+      "toolBackendConnectionDescription": "Diagnose connectivity with the API and dependent services.",
+      "toolTest404Label": "Test 404 Page",
+      "toolTest404Description": "Validate generic 404 page rendering.",
+      "test404Heading": "Test Page",
+      "backendConnection": {
+        "heading": "Backend Connection Test",
+        "testing": "Testing...",
+        "runTests": "Run Tests"
+      }
+    },
+    "featureFlags": {
+      "heading": "Feature Flags",
+      "broadcastRefresh": "Broadcast refresh",
+      "toastFlagUpdated": "Flag updated",
+      "toastBroadcastSent": "Broadcast sent"
+    },
+    "fitQuestions": {
+      "heading": "Fit Questions",
+      "newQuestion": "New question",
+      "fieldDimension": "Dimension",
+      "fieldTextEn": "Text (EN)",
+      "fieldTextPtBr": "Text (pt-BR)"
+    },
+    "resumeStyles": {
+      "heading": "Resume Styles",
+      "newStyle": "New style",
+      "fieldDescription": "Description",
+      "fieldTypstTemplate": "Typst template",
+      "fieldStyleConfig": "styleConfig (JSON)",
+      "fieldSectionStyles": "sectionStyles (JSON)"
     }
   },
   "settings": {
@@ -522,7 +657,10 @@
     "deleteAccountWarning": "This action is permanent and cannot be undone. All your data, resumes, and account information will be permanently deleted.",
     "deleteButton": "Delete account",
     "typeToConfirm": "Type DELETE MY ACCOUNT to confirm",
-    "settingsLink": "Settings"
+    "settingsLink": "Settings",
+    "connectedAccountsHeading": "Connected accounts",
+    "refreshMyProfile": "Refresh my profile",
+    "sessionsHeading": "Sessions and devices"
   },
   "notifications": {
     "title": "Notifications",
@@ -549,7 +687,8 @@
     "markAllRead": "Mark all read",
     "empty": "No notifications yet.",
     "noNotifications": "No notifications",
-    "errorMarkRead": "Could not mark as read"
+    "errorMarkRead": "Could not mark as read",
+    "markReadAria": "mark read"
   },
   "feed": {
     "pageTitle": "Feed",
@@ -629,7 +768,10 @@
       "addImage": "Add image",
       "addLink": "Add link",
       "addEmoji": "Add emoji",
-      "post": "Post"
+      "post": "Post",
+      "codeLanguagePlaceholder": "Language (e.g.: ts, py)",
+      "pollOptionPlaceholder": "Option {{index}}",
+      "addOption": "+ add option"
     },
     "nav": {
       "saved": "Saved"
@@ -645,16 +787,58 @@
         "HARASSMENT": "Harassment"
       }
     },
-    "responseCount": "{{count}} responses"
+    "responseCount": "{{count}} responses",
+    "activity": {
+      "viewProfileAria": "View profile"
+    },
+    "commentsList": {
+      "writePlaceholder": "Write a comment...",
+      "replyPlaceholder": "Reply...",
+      "showLess": "Show less"
+    },
+    "mentions": {
+      "listAria": "Mentions"
+    },
+    "report": {
+      "reasonPlaceholder": "Describe the reason..."
+    },
+    "list": {
+      "clearSearchFallback": "Clear search"
+    }
   },
   "twoFactor": {
     "disabledSuccess": "2FA disabled.",
     "codesCopied": "Codes copied.",
     "downloadContent": "Patch Careers — 2FA backup codes\nGenerated at {{date}}\n\n{{codes}}\n\nKeep in a safe place. Each code can be used only once.",
-    "regenerateHeading": "Regenerate backup codes"
+    "regenerateHeading": "Regenerate backup codes",
+    "qrCodeAlt": "QR code for 2FA setup",
+    "heading": "Two-factor authentication",
+    "saveCodesHeading": "Save these codes now",
+    "downloadTxt": "Download .txt",
+    "savedInSafePlace": "I saved them in a safe place",
+    "activeHeading": "2FA active",
+    "disableHeading": "Disable 2FA",
+    "scanQrHeading": "Scan the QR with your authenticator app",
+    "manualSecretToggle": "Or enter the secret manually",
+    "sixDigitCodeLabel": "6-digit code from the app",
+    "notConfiguredHeading": "2FA not configured"
   },
   "fitProfileMine": {
-    "deleteConfirm": "Delete your Fit Profile? Your answers will be anonymized."
+    "deleteConfirm": "Delete your Fit Profile? Your answers will be anonymized.",
+    "deletedToast": "Fit Profile deleted.",
+    "savedToast": "Fit Profile saved. Match Score unlocked.",
+    "questions": {
+      "scaleDisagreeStrongly": "Strongly disagree",
+      "scaleAgreeStrongly": "Strongly agree",
+      "nextButton": "Next"
+    },
+    "startNow": "Start now",
+    "heading": "Fit Profile",
+    "activeHeading": "Active profile",
+    "retakeQuestionnaire": "Retake questionnaire",
+    "deleteProfile": "Delete profile",
+    "expiredHeading": "Profile expired",
+    "neverAnsweredHeading": "Profile not answered yet"
   },
   "styles": {
     "applyRequiresResume": "You need a resume to apply a style.",
@@ -741,7 +925,18 @@
       "remotePartial": "Partial",
       "remoteMismatch": "Mismatch",
       "none": "None"
-    }
+    },
+    "form": {
+      "placeholderTitle": "Software Engineer",
+      "placeholderCompany": "Acme Inc.",
+      "placeholderLocation": "Remote / San Francisco, CA",
+      "placeholderDescription": "Job description...",
+      "placeholderRequirements": "React, TypeScript, 3+ years...",
+      "placeholderSkills": "React, Node.js, PostgreSQL...",
+      "placeholderSalary": "$80k - $120k"
+    },
+    "newJobsSingular": "1 new",
+    "similarTitle": "Similar jobs"
   },
   "auth": {
     "shared": {
@@ -790,6 +985,480 @@
       "resending": "Sending...",
       "resentOk": "A new code has been sent.",
       "resendCooldown": "You can resend the code in {seconds}s."
+    },
+    "forgotPassword": {
+      "emailPlaceholder": "you@example.com",
+      "heading": "Forgot my password",
+      "backToLogin": "Back to login"
+    },
+    "resetPassword": {
+      "newPasswordPlaceholder": "Minimum 8 characters",
+      "heading": "Reset password",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password"
+    }
+  },
+  "landing": {
+    "seo": {
+      "description": "Tech-focused AI that rewrites your resume for each job, beats ATS at 90%+ and runs Auto-Apply on real matches. Your career, patched.",
+      "organizationDescription": "Patched resumes for tech careers — AI-tailored applications, ATS-optimized."
+    },
+    "demo": {
+      "roles": {
+        "softwareEngineer": "Software Engineer",
+        "seniorSoftwareEngineer": "Senior Software Engineer"
+      },
+      "versions": {
+        "ifoodData": {
+          "label": "iFood · Data"
+        },
+        "vercelRust": {
+          "label": "Vercel · Rust"
+        }
+      },
+      "headingPart2": "for every job.",
+      "headingPart1": "One resume.",
+      "education": {
+        "degree": "Bachelor of Computer Science"
+      }
+    },
+    "cta": {
+      "stopBeing": "Stop being"
+    },
+    "pricing": {
+      "headingPart1": "One plan."
+    },
+    "footer": {
+      "getStarted": "Get started"
+    },
+    "successStories": {
+      "heading": "From where to where"
+    }
+  },
+  "contact": {
+    "generalSupport": {
+      "heading": "General support"
+    },
+    "dpo": {
+      "heading": "Data Protection Officer (LGPD)"
+    },
+    "anpd": {
+      "heading": "National data authority (ANPD)"
+    },
+    "legal": {
+      "heading": "Legal"
+    }
+  },
+  "legal": {
+    "cookies": {
+      "heading": "Cookie Policy",
+      "section1": {
+        "heading": "1. Essential cookies"
+      },
+      "section2": {
+        "heading": "2. Analytics cookies"
+      },
+      "section3": {
+        "heading": "3. Marketing cookies"
+      },
+      "section4": {
+        "heading": "4. Managing preferences"
+      },
+      "openPreferences": "Open cookie preferences",
+      "section5": {
+        "heading": "5. Third parties"
+      },
+      "section6": {
+        "heading": "6. Contact"
+      }
+    },
+    "privacy": {
+      "heading": "Privacy Policy",
+      "section1": {
+        "heading": "1. Data we collect"
+      },
+      "section2": {
+        "heading": "2. Legal bases (LGPD art. 7)"
+      },
+      "section3": {
+        "heading": "3. Purposes (LGPD art. 8 and 9)"
+      },
+      "section4": {
+        "heading": "4. Sharing and third parties (LGPD art. 33)"
+      },
+      "section5": {
+        "heading": "5. International transfer (LGPD art. 33, III and 35)"
+      },
+      "section6": {
+        "heading": "6. Automated decisions (LGPD art. 20)"
+      },
+      "section7": {
+        "heading": "7. Retention"
+      },
+      "section8": {
+        "heading": "8. Your rights (LGPD art. 18)"
+      },
+      "section9": {
+        "heading": "9. Security"
+      },
+      "section10": {
+        "heading": "10. Cookies",
+        "linkLabel": "Cookie Policy"
+      },
+      "section11": {
+        "heading": "11. DPO / Encarregado"
+      },
+      "section12": {
+        "heading": "12. ANPD"
+      },
+      "section13": {
+        "heading": "13. Changes"
+      }
+    },
+    "terms": {
+      "heading": "Terms of Service",
+      "section1": {
+        "heading": "1. Acceptance"
+      },
+      "section2": {
+        "heading": "2. Eligibility"
+      },
+      "section3": {
+        "heading": "3. Account"
+      },
+      "section4": {
+        "heading": "4. Acceptable use"
+      },
+      "section5": {
+        "heading": "5. User-generated content"
+      },
+      "section6": {
+        "heading": "6. Automated decision-making"
+      },
+      "section7": {
+        "heading": "7. Third-party services"
+      },
+      "section8": {
+        "heading": "8. Termination"
+      },
+      "section9": {
+        "heading": "9. Liability"
+      },
+      "section10": {
+        "heading": "10. Changes"
+      },
+      "section11": {
+        "heading": "11. Governing law"
+      },
+      "section12": {
+        "heading": "12. Contact"
+      }
+    }
+  },
+  "careers": {
+    "tailorForJob": {
+      "jdPlaceholder": "Paste the job description here…",
+      "errorTailor": "Failed to tailor the resume",
+      "cta": "Tailor CV",
+      "openTailoredVersion": "Open tailored version"
+    },
+    "applications": {
+      "followUpTitle": "No reply in {{days}} days — click to log a follow-up",
+      "eventTypeAriaLabel": "Event type",
+      "notePlaceholder": "Note (optional)",
+      "toastFollowUpLogged": "Follow-up logged.",
+      "toastEventLogged": "Event logged.",
+      "pageTitle": "Applications timeline",
+      "followUpSuggestedPrefix": "Follow-up suggested (",
+      "addEvent": "+ Log new event"
+    },
+    "editResume": {
+      "titlePlaceholder": "e.g. Backend Mid-Level 2026",
+      "summaryPlaceholder": "2–3 paragraphs about your career",
+      "pageTitle": "Edit resume",
+      "titleLabel": "Resume title",
+      "fullNameLabel": "Full name",
+      "roleLabel": "Role / position",
+      "summaryLabel": "Professional summary",
+      "locationLabel": "Location"
+    },
+    "share": {
+      "slugPlaceholder": "enzo-backend-2026",
+      "passwordPlaceholder": "Leave empty for a public link",
+      "qrAlt": "QR for /s/{{slug}}",
+      "passwordProtectedAria": "Password protected",
+      "toastBundleDownloaded": "Bundle downloaded.",
+      "errorSlugFormat": "Slug must contain only letters, numbers and hyphens.",
+      "errorSlugLength": "Slug must be between 3 and 80 characters.",
+      "errorPasswordLength": "Password must be between 4 and 200 characters.",
+      "pageTitle": "Share resume",
+      "downloadAllZip": "Download all (.zip)",
+      "newLinkHeading": "New link",
+      "customSlugLabel": "Custom slug (optional)",
+      "passwordLabel": "Password (optional)",
+      "expiresInLabel": "Expires in",
+      "expires": {
+        "7days": "7 days",
+        "30days": "30 days",
+        "90days": "90 days",
+        "never": "Never expires"
+      },
+      "createLink": "Create link",
+      "activeLinks": "Active links",
+      "aliasesPrefix": "Aliases ("
+    },
+    "versions": {
+      "namePlaceholder": "Version name"
+    },
+    "search": {
+      "skillsPlaceholder": "React, TypeScript"
+    },
+    "applyModes": {
+      "toastUpdateFailed": "Failed to update preferences"
+    },
+    "importFromUrl": {
+      "toastCreated": "Job created from the URL.",
+      "errorImport": "Failed to import. Check the URL and try again.",
+      "urlLabel": "Job URL",
+      "previewHeading": "Preview (edit before publishing)",
+      "titleLabel": "Title",
+      "locationLabel": "Location",
+      "descriptionLabel": "Description",
+      "skillsExtracted": "Extracted skills",
+      "salaryLabel": "Salary",
+      "applyUrlLabel": "Application link",
+      "pageTitle": "Import job by URL"
+    },
+    "cvRerender": {
+      "toastSaveFailed": "Failed to save tailored version"
+    },
+    "templateSwitcher": {
+      "toastUpdated": "Template updated."
+    },
+    "atsPreview": {
+      "errorSimulation": "Simulation failed.",
+      "warningsHeadingPrefix": "Warnings (",
+      "extractedText": "Text the ATS sees",
+      "reorderedStructure": "Reordered structure",
+      "pageTitle": "ATS preview",
+      "resimulate": "Re-simulate"
+    },
+    "template": {
+      "label": {
+        "technical": "Technical",
+        "academic": "Academic"
+      }
+    },
+    "browseJobs": {
+      "rageApply": "Rage apply",
+      "rage": {
+        "minFit": "Minimum fit",
+        "maxApps": "Max applications",
+        "applying": "Applying...",
+        "runNow": "Run now"
+      }
+    },
+    "analytics": {
+      "topSources": "Top sources",
+      "recentViews": "Recent views"
+    },
+    "export": {
+      "pdfAtsReady": "PDF (ATS-ready)",
+      "wordDocx": "Word (.docx)",
+      "jsonResume": "JSON Resume",
+      "latex": "LaTeX (.tex)"
+    }
+  },
+  "recruiting": {
+    "jobs": {
+      "new": {
+        "requirementsPlaceholder": "3+ years with React, intermediate English",
+        "skillsPlaceholder": "react, typescript, postgres",
+        "salaryPlaceholder": "$8k - $12k",
+        "steps": {
+          "basic": "Basic",
+          "salary": "Salary"
+        },
+        "jobType": {
+          "fullTime": "Full-time",
+          "partTime": "Part-time"
+        },
+        "remotePolicy": {
+          "onsite": "On-site"
+        }
+      },
+      "culturalProfile": {
+        "toastSaved": "Cultural profile saved",
+        "dimensions": {
+          "schwartzSelfDirection": "Self-direction"
+        },
+        "pageTitle": "Job Cultural Profile"
+      }
+    },
+    "searchCandidates": {
+      "jdPlaceholder": "Paste the JD here — used for context. Skills come from the field above.",
+      "titlePlaceholder": "e.g. Senior Full-Stack Engineer",
+      "minEnglishLabel": "Minimum English",
+      "englishLevel": {
+        "basic": "Basic",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "remotePolicy": {
+        "hybrid": "Hybrid"
+      },
+      "limitLabel": "Result count",
+      "limit": {
+        "top5": "Top 5",
+        "top10": "Top 10",
+        "top25": "Top 25"
+      },
+      "viewProfile": "View profile",
+      "pageTitle": "Describe the job, we rank candidates",
+      "titleLabel": "Job title",
+      "skillsLabel": "Skills (comma-separated)",
+      "fullDescriptionLabel": "Full description"
+    }
+  },
+  "myProfile": {
+    "careerGraph": {
+      "stackPlaceholder": "react, typescript, postgres, aws",
+      "computeError": "Failed to calculate your career graph",
+      "experienceDistributionHeading": "Distribution by years of experience",
+      "futurePathsHeading": "If you stay on this stack…",
+      "heading": "Where people with your stack are today — and where you can go",
+      "stackLabel": "Your stack"
+    },
+    "scores": {
+      "resumeQualityLabel": "Resume Quality",
+      "matchScoreLabel": "Match Score",
+      "matchScoreDescription": "Calculated per job",
+      "styleScoreLabel": "Style Score",
+      "styleScoreDescription": "Active visual style",
+      "noResumeTitle": "No resume",
+      "noResumeCta": "Create resume",
+      "browseJobsCta": "Browse jobs",
+      "answerQuestionnaireCta": "Answer questionnaire",
+      "pickStyleTitle": "Pick a style",
+      "seeStylesCta": "See styles",
+      "fitProfileStatusLink": "See Fit Profile status",
+      "heading": "Your scores",
+      "howTheyFitHeading": "How the scores fit together"
+    },
+    "deleteAccount": {
+      "confirmPhrasePlaceholder": "DELETE MY ACCOUNT",
+      "confirmButton": "Delete my account permanently",
+      "heading": "Delete account",
+      "currentPasswordLabel": "Current password",
+      "confirmSuffix": "to confirm"
+    },
+    "styles": {
+      "previewAria": "Preview of {style.name}",
+      "heading": "Resume styles",
+      "empty": "No style available at the moment."
+    },
+    "public": {
+      "downloadResumeError": "Failed to download resume",
+      "copiedButton": "Copied!"
+    },
+    "endorsements": {
+      "userLinkLabel": "User",
+      "heading": "My received endorsements"
+    },
+    "notifications": {
+      "frequencyInstant": "Instant",
+      "frequencyDaily": "Daily summary",
+      "frequencyWeekly": "Weekly summary"
+    }
+  },
+  "lockout": {
+    "fitProfileRequired": {
+      "title": "Fit Profile required",
+      "cta": "Answer questionnaire"
+    },
+    "qualityScoreBelowThreshold": {
+      "title": "Resume quality below minimum",
+      "cta": "See recommendations"
+    },
+    "styleBelowAtsThreshold": {
+      "title": "Style below ATS-safe threshold"
+    },
+    "styleScoreRegression": {
+      "title": "Style score cannot regress"
+    },
+    "styleNotEditable": {
+      "title": "System style"
+    }
+  },
+  "chat": {
+    "windowHeaderAria": "Chat window header",
+    "searchConversationsPlaceholder": "Search conversations",
+    "messagePlaceholder": "Type a message...",
+    "sendMessageAria": "Send message",
+    "searchUsersPlaceholder": "Search users..."
+  },
+  "collaboration": {
+    "replyPlaceholder": "Reply…",
+    "addCommentPlaceholder": "Add a comment…",
+    "commentsHeading": "Comments"
+  },
+  "commandPalette": {
+    "ariaLabel": "Command palette",
+    "actions": {
+      "newPost": "New post",
+      "editProfile": "Edit profile",
+      "settings": "Settings",
+      "myResumes": "My resumes"
+    }
+  },
+  "layout": {
+    "toggleColorSchemaAria": "Toggle color schema",
+    "skipToMainContent": "Skip to main content",
+    "dpoEmailSuffix": ": dpo@patchcareers.com",
+    "myCvFallback": "My CV",
+    "viewAllNotificationsFallback": "See all"
+  },
+  "scoring": {
+    "resumeQualityLabel": "Resume Quality",
+    "noSnapshotTitle": "No snapshot yet",
+    "viewDetails": "View details",
+    "viewList": "View list →"
+  },
+  "errorBoundary": {
+    "heading": "Something went wrong.",
+    "tryAgain": "Try again",
+    "reloadPage": "Reload page"
+  },
+  "seo": {
+    "titleSuffix": "{{title}} · {{appTitle}}"
+  },
+  "ui": {
+    "avatar": {
+      "nameAria": "{{name}}"
+    },
+    "fitScore": {
+      "chipAria": "{{pct}}% {{match}}"
+    },
+    "matching": {
+      "matchBadgeTitle": "{{pct}}% {{label}}",
+      "rankBadgeTitle": "Rank {{rank}}{{scoreSuffix}}"
+    },
+    "otpInput": {
+      "verificationCodeAria": "Verification code",
+      "digitAria": "Digit {{index}}"
+    },
+    "searchFilterBar": {
+      "clearAria": "Clear search field"
+    },
+    "badgeIcon": {
+      "firstBuild": "First Build",
+      "ats90Plus": "ATS 90%+",
+      "mentored10": "Mentored 10",
+      "interviews5": "5 Interviews",
+      "eventSpeaker": "Event Speaker"
+    },
+    "dangerConfirmModal": {
+      "typeToConfirm": "To confirm, type"
     }
   }
 }

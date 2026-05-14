@@ -125,13 +125,23 @@
     "back": "Voltar",
     "loading": "Carregando...",
     "retry": "Tentar novamente",
-    "saved": "Salvo"
+    "saved": "Salvo",
+    "email": {
+      "hi": "oi@patchcareers.org",
+      "support": "support@patchcareers.com",
+      "dpo": "dpo@patchcareers.com",
+      "legal": "legal@patchcareers.com"
+    },
+    "link": {
+      "govBrAnpd": "gov.br/anpd"
+    }
   },
   "errorPage": {
     "notFound": "Página não encontrada",
     "somethingWentWrong": "Algo deu errado",
     "goHome": "Ir para o início",
-    "goHomeAria": "Voltar para a página inicial"
+    "goHomeAria": "Voltar para a página inicial",
+    "goHomeShort": "ir para o início"
   },
   "errors": {
     "network": "Sem conexão com o servidor. Verifique sua internet.",
@@ -222,7 +232,24 @@
       "feature1": "Currículo reescrito por vaga em segundos",
       "feature2": "Carta de apresentação gerada do seu perfil",
       "feature3": "Saída otimizada pra ATS",
-      "feature4": "Você revisa antes de enviar"
+      "feature4": "Você revisa antes de enviar",
+      "enableLabel": "Ativar One-Click Apply",
+      "tailorVerbatimLabel": "Enviar como está (verbatim)",
+      "tailorVerbatimDescription": "O currículo master é enviado sem modificações.",
+      "tailorAiLabel": "Ajustar com IA por vaga",
+      "tailorAiDescription": "O Patch reordena seções, destaca skills relevantes e gera uma versão otimizada.",
+      "attachGithub": "Link do GitHub",
+      "attachLinkedin": "Link do LinkedIn",
+      "saveError": "Falha ao salvar. Rascunho local preservado.",
+      "defaultResumeHeading": "Currículo padrão",
+      "whichResumeLabel": "Qual currículo usar",
+      "primaryResumeOption": "— Currículo principal (master) —",
+      "untitledOption": "Sem título",
+      "coverLetterTemplateHeading": "Template de carta de apresentação",
+      "resumeAdjustmentHeading": "Ajuste do currículo",
+      "alsoAttachHeading": "Também anexar",
+      "savePreferences": "Salvar preferências",
+      "pageHeading": "One-Click Apply"
     },
     "curated": {
       "title": "Weekly Curated",
@@ -324,7 +351,44 @@
       "comingSoonTitle": "Ainda não disponível",
       "comingSoonBody": "A gente está polindo esse import. Por enquanto, use outra opção — você pode voltar depois pra enriquecer seu perfil.",
       "useManualInstead": "Seguir pelo wizard",
-      "close": "Fechar"
+      "close": "Fechar",
+      "cvImportedToast": "Currículo importado",
+      "cvImportErrorToast": "Não foi possível importar o PDF"
+    },
+    "import": {
+      "resumePreviewAlt": "Pré-visualização do currículo",
+      "githubImportedToast": "Importado: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts …",
+      "linkedinImportedToast": "LinkedIn importado.",
+      "linkedinUnavailableToast": "Import do LinkedIn ainda em construção — use PDF ou GitHub por enquanto.",
+      "pdfUploadedToast": "PDF enviado. Processando…",
+      "pdfUploadError": "Falha ao enviar PDF.",
+      "pdfUploadHeading": "Upload de PDF",
+      "manualFillLink": "ou preencher manualmente →",
+      "heading": "Importar currículo"
+    },
+    "theme": {
+      "previewAlt": "Pré-visualização de {theme.name}"
+    },
+    "stepper": {
+      "completeError": "Falha ao concluir o onboarding"
+    },
+    "fieldRenderer": {
+      "seeExample": "ver exemplo"
+    },
+    "welcome": {
+      "heading": "Crie seu currículo profissional",
+      "startCta": "Começar agora →"
+    },
+    "claimShadow": {
+      "heading": "Encontramos um perfil pra você"
+    },
+    "done": {
+      "heading": "Perfil pronto!",
+      "seeJobsCta": "Ver vagas"
+    },
+    "review": {
+      "inactiveHeading": "Este link de review não está mais ativo",
+      "backToStart": "Voltar ao início"
     }
   },
   "network": {
@@ -424,18 +488,31 @@
       "confirmDelete": "Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.",
       "noUsers": "Nenhum usuário encontrado",
       "toastDeleted": "Usuário excluído",
-      "toastRoleUpdated": "Papel atualizado"
+      "toastRoleUpdated": "Papel atualizado",
+      "detailComingSoonTitle": "Detalhe do usuário (admin) em breve",
+      "detailComingSoonDescription": "A página completa com edição de papéis, suspensão e impersonate ainda não foi liberada — depende de endpoints administrativos que serão entregues na próxima fase.",
+      "backToList": "← Voltar para a lista",
+      "detailHeading": "Usuário"
     },
     "analytics": {
       "title": "Analytics Global",
       "atsDistribution": "Distribuição de Score ATS",
       "resumesByLanguage": "Currículos por Idioma",
       "topSections": "Seções Mais Usadas",
-      "importSources": "Fontes de Importação"
+      "importSources": "Fontes de Importação",
+      "statPendingInvites": "Convites pendentes",
+      "statAcceptanceRate": "Taxa de aceitação",
+      "statJobsPosted": "Vagas publicadas",
+      "statActiveJobs": "Vagas ativas",
+      "statAppsPerJob": "Candidaturas / vaga",
+      "statDauMau": "DAU/MAU"
     },
     "skills": {
       "title": "Catálogo de Skills",
-      "noItems": "Nenhum item"
+      "noItems": "Nenhum item",
+      "groupAreas": "Áreas",
+      "groupProgrammingLanguages": "Linguagens de prog.",
+      "groupSpokenLanguages": "Idiomas falados"
     },
     "onboarding": {
       "title": "Monitoramento de Onboarding",
@@ -450,7 +527,8 @@
       "noSteps": "Nenhum step configurado"
     },
     "health": {
-      "title": "Saúde & Infraestrutura"
+      "title": "Saúde & Infraestrutura",
+      "checkPendingDescription": "O endpoint /platform/check ainda não foi exposto pela spec client-only. Volte quando o backend publicar a rota tipada."
     },
     "chat": {
       "title": "Chat & Colaboração",
@@ -482,6 +560,63 @@
       "audit": "Auditoria",
       "featureFlags": "Feature Flags",
       "devTools": "Dev Tools"
+    },
+    "performance": {
+      "heading": "Latência por Endpoint",
+      "statHeapUsed": "Heap Used",
+      "statHeapTotal": "Heap Total",
+      "statEventLoopLag": "Latência do Event Loop",
+      "statResumesCreated": "Currículos Criados",
+      "statUserSignups": "Novos Cadastros",
+      "statExportsDone": "Exportações Concluídas",
+      "statActiveUsers": "Usuários Ativos",
+      "statPendingExports": "Exportações Pendentes"
+    },
+    "sections": {
+      "searchPlaceholder": "Buscar...",
+      "heading": "Tipos de Seção"
+    },
+    "alerts": {
+      "heading": "Precisando de atenção"
+    },
+    "collaboration": {
+      "heading": "Colaboração (admin)"
+    },
+    "devTools": {
+      "heading": "Dev Tools",
+      "toolAdminTestRunnerLabel": "Admin Test Runner",
+      "toolAdminTestRunnerDescription": "Executar suites de teste administrativas (seed-check, auth-flow, etc.).",
+      "toolBackendConnectionLabel": "Backend Connection Tester",
+      "toolBackendConnectionDescription": "Diagnosticar conectividade com a API e serviços dependentes.",
+      "toolTest404Label": "Testar Página 404",
+      "toolTest404Description": "Validar renderização da página 404 genérica.",
+      "test404Heading": "Página de Teste",
+      "backendConnection": {
+        "heading": "Teste de Conexão com o Backend",
+        "testing": "Testando...",
+        "runTests": "Executar Testes"
+      }
+    },
+    "featureFlags": {
+      "heading": "Feature Flags",
+      "broadcastRefresh": "Atualizar broadcast",
+      "toastFlagUpdated": "Flag atualizada",
+      "toastBroadcastSent": "Broadcast enviado"
+    },
+    "fitQuestions": {
+      "heading": "Perguntas de Fit",
+      "newQuestion": "Nova questão",
+      "fieldDimension": "Dimensão",
+      "fieldTextEn": "Texto (EN)",
+      "fieldTextPtBr": "Texto (pt-BR)"
+    },
+    "resumeStyles": {
+      "heading": "Estilos de Currículo",
+      "newStyle": "Novo estilo",
+      "fieldDescription": "Descrição",
+      "fieldTypstTemplate": "Template Typst",
+      "fieldStyleConfig": "styleConfig (JSON)",
+      "fieldSectionStyles": "sectionStyles (JSON)"
     }
   },
   "settings": {
@@ -522,7 +657,10 @@
     "deleteAccountWarning": "Esta acao e permanente e nao pode ser desfeita. Todos os seus dados, curriculos e informacoes da conta serao permanentemente excluidos.",
     "deleteButton": "Excluir conta",
     "typeToConfirm": "Digite DELETE MY ACCOUNT para confirmar",
-    "settingsLink": "Configuracoes"
+    "settingsLink": "Configuracoes",
+    "connectedAccountsHeading": "Contas conectadas",
+    "refreshMyProfile": "Atualizar meu perfil",
+    "sessionsHeading": "Sessões e dispositivos"
   },
   "notifications": {
     "title": "Notificações",
@@ -549,7 +687,8 @@
     "markAllRead": "Marcar todas como lidas",
     "empty": "Sem notificações ainda.",
     "noNotifications": "Nenhuma notificação",
-    "errorMarkRead": "Não foi possível marcar como lida"
+    "errorMarkRead": "Não foi possível marcar como lida",
+    "markReadAria": "marcar como lida"
   },
   "feed": {
     "pageTitle": "Feed",
@@ -629,7 +768,10 @@
       "addImage": "Adicionar imagem",
       "addLink": "Adicionar link",
       "addEmoji": "Adicionar emoji",
-      "post": "Postar"
+      "post": "Postar",
+      "codeLanguagePlaceholder": "Linguagem (ex.: ts, py)",
+      "pollOptionPlaceholder": "Opção {{index}}",
+      "addOption": "+ adicionar opção"
     },
     "nav": {
       "saved": "Salvos"
@@ -645,16 +787,58 @@
         "HARASSMENT": "Assédio"
       }
     },
-    "responseCount": "{{count}} respostas"
+    "responseCount": "{{count}} respostas",
+    "activity": {
+      "viewProfileAria": "Ver perfil"
+    },
+    "commentsList": {
+      "writePlaceholder": "Escreva um comentário...",
+      "replyPlaceholder": "Responder...",
+      "showLess": "Mostrar menos"
+    },
+    "mentions": {
+      "listAria": "Menções"
+    },
+    "report": {
+      "reasonPlaceholder": "Descreva o motivo..."
+    },
+    "list": {
+      "clearSearchFallback": "Limpar busca"
+    }
   },
   "twoFactor": {
     "disabledSuccess": "2FA desativado.",
     "codesCopied": "Códigos copiados.",
     "downloadContent": "Patch Careers — códigos de backup 2FA\nGerados em {{date}}\n\n{{codes}}\n\nGuarde em local seguro. Cada código só pode ser usado uma vez.",
-    "regenerateHeading": "Regenerar códigos de backup"
+    "regenerateHeading": "Regenerar códigos de backup",
+    "qrCodeAlt": "QR code para configuração 2FA",
+    "heading": "Autenticação de dois fatores",
+    "saveCodesHeading": "Guarde esses códigos agora",
+    "downloadTxt": "Baixar .txt",
+    "savedInSafePlace": "Guardei em local seguro",
+    "activeHeading": "2FA ativo",
+    "disableHeading": "Desativar 2FA",
+    "scanQrHeading": "Escaneie o QR com seu app autenticador",
+    "manualSecretToggle": "Ou digite o segredo manualmente",
+    "sixDigitCodeLabel": "Código de 6 dígitos do app",
+    "notConfiguredHeading": "2FA não configurado"
   },
   "fitProfileMine": {
-    "deleteConfirm": "Apagar seu Fit Profile? As respostas serão anonimizadas."
+    "deleteConfirm": "Apagar seu Fit Profile? As respostas serão anonimizadas.",
+    "deletedToast": "Fit Profile apagado.",
+    "savedToast": "Fit Profile salvo. Match Score liberado.",
+    "questions": {
+      "scaleDisagreeStrongly": "Discordo fortemente",
+      "scaleAgreeStrongly": "Concordo fortemente",
+      "nextButton": "Próxima"
+    },
+    "startNow": "Começar agora",
+    "heading": "Fit Profile",
+    "activeHeading": "Perfil ativo",
+    "retakeQuestionnaire": "Refazer questionário",
+    "deleteProfile": "Apagar perfil",
+    "expiredHeading": "Perfil expirado",
+    "neverAnsweredHeading": "Perfil ainda não respondido"
   },
   "styles": {
     "applyRequiresResume": "Você precisa ter um currículo pra aplicar um estilo.",
@@ -741,7 +925,18 @@
       "remotePartial": "Parcial",
       "remoteMismatch": "Não bate",
       "none": "Nenhuma"
-    }
+    },
+    "form": {
+      "placeholderTitle": "Software Engineer",
+      "placeholderCompany": "Acme Inc.",
+      "placeholderLocation": "Remoto / São Paulo, SP",
+      "placeholderDescription": "Descrição da vaga...",
+      "placeholderRequirements": "React, TypeScript, 3+ anos...",
+      "placeholderSkills": "React, Node.js, PostgreSQL...",
+      "placeholderSalary": "R$ 8k - 12k"
+    },
+    "newJobsSingular": "1 nova",
+    "similarTitle": "Vagas similares"
   },
   "auth": {
     "shared": {
@@ -790,6 +985,480 @@
       "resending": "Enviando...",
       "resentOk": "Um novo código foi enviado.",
       "resendCooldown": "Você pode reenviar o código em {seconds}s."
+    },
+    "forgotPassword": {
+      "emailPlaceholder": "voce@exemplo.com",
+      "heading": "Esqueci minha senha",
+      "backToLogin": "Voltar ao login"
+    },
+    "resetPassword": {
+      "newPasswordPlaceholder": "Mínimo 8 caracteres",
+      "heading": "Redefinir senha",
+      "newPasswordLabel": "Nova senha",
+      "confirmPasswordLabel": "Confirmar senha"
+    }
+  },
+  "landing": {
+    "seo": {
+      "description": "IA especializada em tech que reescreve seu currículo por vaga, abre ATS com 90%+ e faz Auto-Apply no match real. Sua carreira, patched.",
+      "organizationDescription": "Currículos patched para carreiras em tech — candidaturas sob medida pela IA, otimizadas pra ATS."
+    },
+    "demo": {
+      "roles": {
+        "softwareEngineer": "Software Engineer",
+        "seniorSoftwareEngineer": "Senior Software Engineer"
+      },
+      "versions": {
+        "ifoodData": {
+          "label": "iFood · Data"
+        },
+        "vercelRust": {
+          "label": "Vercel · Rust"
+        }
+      },
+      "headingPart2": "pra cada vaga.",
+      "headingPart1": "Um currículo.",
+      "education": {
+        "degree": "Bacharelado em Ciência da Computação"
+      }
+    },
+    "cta": {
+      "stopBeing": "Pare de ser"
+    },
+    "pricing": {
+      "headingPart1": "Um plano."
+    },
+    "footer": {
+      "getStarted": "Começar"
+    },
+    "successStories": {
+      "heading": "De onde pra onde"
+    }
+  },
+  "contact": {
+    "generalSupport": {
+      "heading": "Suporte geral"
+    },
+    "dpo": {
+      "heading": "Encarregado de Dados (LGPD)"
+    },
+    "anpd": {
+      "heading": "Autoridade nacional de proteção de dados (ANPD)"
+    },
+    "legal": {
+      "heading": "Jurídico"
+    }
+  },
+  "legal": {
+    "cookies": {
+      "heading": "Política de Cookies",
+      "section1": {
+        "heading": "1. Cookies essenciais"
+      },
+      "section2": {
+        "heading": "2. Cookies de analytics"
+      },
+      "section3": {
+        "heading": "3. Cookies de marketing"
+      },
+      "section4": {
+        "heading": "4. Gerenciar preferências"
+      },
+      "openPreferences": "Abrir preferências de cookies",
+      "section5": {
+        "heading": "5. Terceiros"
+      },
+      "section6": {
+        "heading": "6. Contato"
+      }
+    },
+    "privacy": {
+      "heading": "Política de Privacidade",
+      "section1": {
+        "heading": "1. Dados que coletamos"
+      },
+      "section2": {
+        "heading": "2. Bases legais (LGPD art. 7)"
+      },
+      "section3": {
+        "heading": "3. Finalidades (LGPD art. 8 e 9)"
+      },
+      "section4": {
+        "heading": "4. Compartilhamento e terceiros (LGPD art. 33)"
+      },
+      "section5": {
+        "heading": "5. Transferência internacional (LGPD art. 33, III e 35)"
+      },
+      "section6": {
+        "heading": "6. Decisão automatizada (LGPD art. 20)"
+      },
+      "section7": {
+        "heading": "7. Retenção"
+      },
+      "section8": {
+        "heading": "8. Seus direitos (LGPD art. 18)"
+      },
+      "section9": {
+        "heading": "9. Segurança"
+      },
+      "section10": {
+        "heading": "10. Cookies",
+        "linkLabel": "Política de Cookies"
+      },
+      "section11": {
+        "heading": "11. Encarregado / DPO"
+      },
+      "section12": {
+        "heading": "12. ANPD"
+      },
+      "section13": {
+        "heading": "13. Alterações"
+      }
+    },
+    "terms": {
+      "heading": "Termos de Uso",
+      "section1": {
+        "heading": "1. Aceite"
+      },
+      "section2": {
+        "heading": "2. Elegibilidade"
+      },
+      "section3": {
+        "heading": "3. Conta"
+      },
+      "section4": {
+        "heading": "4. Uso aceitável"
+      },
+      "section5": {
+        "heading": "5. Conteúdo do usuário"
+      },
+      "section6": {
+        "heading": "6. Decisão automatizada"
+      },
+      "section7": {
+        "heading": "7. Serviços de terceiros"
+      },
+      "section8": {
+        "heading": "8. Encerramento"
+      },
+      "section9": {
+        "heading": "9. Responsabilidade"
+      },
+      "section10": {
+        "heading": "10. Alterações"
+      },
+      "section11": {
+        "heading": "11. Lei aplicável"
+      },
+      "section12": {
+        "heading": "12. Contato"
+      }
+    }
+  },
+  "careers": {
+    "tailorForJob": {
+      "jdPlaceholder": "Cole aqui o texto da vaga…",
+      "errorTailor": "Falha ao personalizar o currículo",
+      "cta": "Personalizar CV",
+      "openTailoredVersion": "Abrir versão personalizada"
+    },
+    "applications": {
+      "followUpTitle": "Sem resposta há {{days}} dias — clique pra registrar follow-up",
+      "eventTypeAriaLabel": "Tipo de evento",
+      "notePlaceholder": "Nota (opcional)",
+      "toastFollowUpLogged": "Follow-up registrado.",
+      "toastEventLogged": "Evento registrado.",
+      "pageTitle": "Timeline de aplicações",
+      "followUpSuggestedPrefix": "Follow-up sugerido (",
+      "addEvent": "+ Registrar novo evento"
+    },
+    "editResume": {
+      "titlePlaceholder": "Ex: Backend Pleno 2026",
+      "summaryPlaceholder": "2–3 parágrafos sobre sua trajetória",
+      "pageTitle": "Editar currículo",
+      "titleLabel": "Título do currículo",
+      "fullNameLabel": "Nome completo",
+      "roleLabel": "Cargo / role",
+      "summaryLabel": "Resumo profissional",
+      "locationLabel": "Localização"
+    },
+    "share": {
+      "slugPlaceholder": "enzo-backend-2026",
+      "passwordPlaceholder": "Deixe vazio para link público",
+      "qrAlt": "QR para /s/{{slug}}",
+      "passwordProtectedAria": "Protegido por senha",
+      "toastBundleDownloaded": "Bundle baixado.",
+      "errorSlugFormat": "Slug deve conter apenas letras, números e hifens.",
+      "errorSlugLength": "Slug deve ter entre 3 e 80 caracteres.",
+      "errorPasswordLength": "Senha deve ter entre 4 e 200 caracteres.",
+      "pageTitle": "Compartilhar currículo",
+      "downloadAllZip": "Baixar tudo (.zip)",
+      "newLinkHeading": "Novo link",
+      "customSlugLabel": "Slug custom (opcional)",
+      "passwordLabel": "Senha (opcional)",
+      "expiresInLabel": "Expira em",
+      "expires": {
+        "7days": "7 dias",
+        "30days": "30 dias",
+        "90days": "90 dias",
+        "never": "Nunca expira"
+      },
+      "createLink": "Criar link",
+      "activeLinks": "Links ativos",
+      "aliasesPrefix": "Aliases ("
+    },
+    "versions": {
+      "namePlaceholder": "Nome da versão"
+    },
+    "search": {
+      "skillsPlaceholder": "React, TypeScript"
+    },
+    "applyModes": {
+      "toastUpdateFailed": "Falha ao atualizar preferências"
+    },
+    "importFromUrl": {
+      "toastCreated": "Vaga criada a partir da URL.",
+      "errorImport": "Falha ao importar. Verifique a URL e tente de novo.",
+      "urlLabel": "URL da vaga",
+      "previewHeading": "Preview (edite antes de publicar)",
+      "titleLabel": "Título",
+      "locationLabel": "Localização",
+      "descriptionLabel": "Descrição",
+      "skillsExtracted": "Skills extraídas",
+      "salaryLabel": "Salário",
+      "applyUrlLabel": "Link de inscrição",
+      "pageTitle": "Importar vaga por URL"
+    },
+    "cvRerender": {
+      "toastSaveFailed": "Falha ao salvar versão personalizada"
+    },
+    "templateSwitcher": {
+      "toastUpdated": "Template atualizado."
+    },
+    "atsPreview": {
+      "errorSimulation": "Falha na simulação.",
+      "warningsHeadingPrefix": "Atenção (",
+      "extractedText": "Texto que o ATS vê",
+      "reorderedStructure": "Estrutura reordenada",
+      "pageTitle": "Pré-visualização ATS",
+      "resimulate": "Re-simular"
+    },
+    "template": {
+      "label": {
+        "technical": "Técnico",
+        "academic": "Acadêmico"
+      }
+    },
+    "browseJobs": {
+      "rageApply": "Rage apply",
+      "rage": {
+        "minFit": "Fit mínimo",
+        "maxApps": "Máximo de aplicações",
+        "applying": "Aplicando...",
+        "runNow": "Rodar agora"
+      }
+    },
+    "analytics": {
+      "topSources": "Principais origens",
+      "recentViews": "Visualizações recentes"
+    },
+    "export": {
+      "pdfAtsReady": "PDF (pronto para ATS)",
+      "wordDocx": "Word (.docx)",
+      "jsonResume": "JSON Resume",
+      "latex": "LaTeX (.tex)"
+    }
+  },
+  "recruiting": {
+    "jobs": {
+      "new": {
+        "requirementsPlaceholder": "3+ anos com React, inglês intermediário",
+        "skillsPlaceholder": "react, typescript, postgres",
+        "salaryPlaceholder": "R$ 8k - 12k",
+        "steps": {
+          "basic": "Básico",
+          "salary": "Salário"
+        },
+        "jobType": {
+          "fullTime": "Tempo integral",
+          "partTime": "Meio período"
+        },
+        "remotePolicy": {
+          "onsite": "Presencial"
+        }
+      },
+      "culturalProfile": {
+        "toastSaved": "Perfil cultural salvo",
+        "dimensions": {
+          "schwartzSelfDirection": "Autodireção"
+        },
+        "pageTitle": "Perfil Cultural da Vaga"
+      }
+    },
+    "searchCandidates": {
+      "jdPlaceholder": "Cole a JD aqui — fica usada para contexto. Skills vêm do campo acima.",
+      "titlePlaceholder": "ex: Senior Full-Stack Engineer",
+      "minEnglishLabel": "Inglês mínimo",
+      "englishLevel": {
+        "basic": "Básico",
+        "intermediate": "Intermediário",
+        "advanced": "Avançado"
+      },
+      "remotePolicy": {
+        "hybrid": "Híbrido"
+      },
+      "limitLabel": "Qtd. resultados",
+      "limit": {
+        "top5": "Top 5",
+        "top10": "Top 10",
+        "top25": "Top 25"
+      },
+      "viewProfile": "Ver perfil",
+      "pageTitle": "Descreva a vaga, a gente ranqueia candidatos",
+      "titleLabel": "Título da vaga",
+      "skillsLabel": "Skills (separadas por vírgula)",
+      "fullDescriptionLabel": "Descrição completa"
+    }
+  },
+  "myProfile": {
+    "careerGraph": {
+      "stackPlaceholder": "react, typescript, postgres, aws",
+      "computeError": "Falha ao calcular seu career graph",
+      "experienceDistributionHeading": "Distribuição por anos de experiência",
+      "futurePathsHeading": "Se você continuar nesse stack…",
+      "heading": "Onde estão pessoas com seu stack hoje — e pra onde você pode ir",
+      "stackLabel": "Seu stack"
+    },
+    "scores": {
+      "resumeQualityLabel": "Qualidade do currículo",
+      "matchScoreLabel": "Match Score",
+      "matchScoreDescription": "Calculado por vaga",
+      "styleScoreLabel": "Score de estilo",
+      "styleScoreDescription": "Estilo visual ativo",
+      "noResumeTitle": "Sem currículo",
+      "noResumeCta": "Criar currículo",
+      "browseJobsCta": "Buscar vagas",
+      "answerQuestionnaireCta": "Responder questionário",
+      "pickStyleTitle": "Escolha um estilo",
+      "seeStylesCta": "Ver estilos",
+      "fitProfileStatusLink": "Ver status do Fit Profile",
+      "heading": "Seus scores",
+      "howTheyFitHeading": "Como os scores se encaixam"
+    },
+    "deleteAccount": {
+      "confirmPhrasePlaceholder": "DELETE MY ACCOUNT",
+      "confirmButton": "Deletar minha conta permanentemente",
+      "heading": "Deletar conta",
+      "currentPasswordLabel": "Senha atual",
+      "confirmSuffix": "para confirmar"
+    },
+    "styles": {
+      "previewAria": "Preview de {style.name}",
+      "heading": "Estilos de currículo",
+      "empty": "Nenhum estilo disponível no momento."
+    },
+    "public": {
+      "downloadResumeError": "Falha ao baixar currículo",
+      "copiedButton": "Copiado!"
+    },
+    "endorsements": {
+      "userLinkLabel": "Usuário",
+      "heading": "Meus endossos recebidos"
+    },
+    "notifications": {
+      "frequencyInstant": "Instantâneo",
+      "frequencyDaily": "Resumo diário",
+      "frequencyWeekly": "Resumo semanal"
+    }
+  },
+  "lockout": {
+    "fitProfileRequired": {
+      "title": "Fit Profile necessário",
+      "cta": "Responder questionário"
+    },
+    "qualityScoreBelowThreshold": {
+      "title": "Qualidade do currículo abaixo do mínimo",
+      "cta": "Ver recomendações"
+    },
+    "styleBelowAtsThreshold": {
+      "title": "Estilo abaixo do limiar ATS-safe"
+    },
+    "styleScoreRegression": {
+      "title": "Score do estilo não pode regredir"
+    },
+    "styleNotEditable": {
+      "title": "Estilo do sistema"
+    }
+  },
+  "chat": {
+    "windowHeaderAria": "Cabeçalho da janela de chat",
+    "searchConversationsPlaceholder": "Buscar conversas",
+    "messagePlaceholder": "Digite uma mensagem...",
+    "sendMessageAria": "Enviar mensagem",
+    "searchUsersPlaceholder": "Buscar pessoas..."
+  },
+  "collaboration": {
+    "replyPlaceholder": "Responder…",
+    "addCommentPlaceholder": "Adicionar comentário…",
+    "commentsHeading": "Comentários"
+  },
+  "commandPalette": {
+    "ariaLabel": "Paleta de comandos",
+    "actions": {
+      "newPost": "Novo post",
+      "editProfile": "Editar perfil",
+      "settings": "Configurações",
+      "myResumes": "Meus CVs"
+    }
+  },
+  "layout": {
+    "toggleColorSchemaAria": "Alternar esquema de cores",
+    "skipToMainContent": "Pular para o conteúdo principal",
+    "dpoEmailSuffix": ": dpo@patchcareers.com",
+    "myCvFallback": "Meu CV",
+    "viewAllNotificationsFallback": "Ver todas"
+  },
+  "scoring": {
+    "resumeQualityLabel": "Qualidade do currículo",
+    "noSnapshotTitle": "Ainda sem snapshot",
+    "viewDetails": "Ver detalhes",
+    "viewList": "Ver lista →"
+  },
+  "errorBoundary": {
+    "heading": "Algo deu errado.",
+    "tryAgain": "Tentar novamente",
+    "reloadPage": "Recarregar página"
+  },
+  "seo": {
+    "titleSuffix": "{{title}} · {{appTitle}}"
+  },
+  "ui": {
+    "avatar": {
+      "nameAria": "{{name}}"
+    },
+    "fitScore": {
+      "chipAria": "{{pct}}% {{match}}"
+    },
+    "matching": {
+      "matchBadgeTitle": "{{pct}}% {{label}}",
+      "rankBadgeTitle": "Rank {{rank}}{{scoreSuffix}}"
+    },
+    "otpInput": {
+      "verificationCodeAria": "Código de verificação",
+      "digitAria": "Dígito {{index}}"
+    },
+    "searchFilterBar": {
+      "clearAria": "Limpar campo de busca"
+    },
+    "badgeIcon": {
+      "firstBuild": "First Build",
+      "ats90Plus": "ATS 90%+",
+      "mentored10": "Mentorou 10",
+      "interviews5": "5 Entrevistas",
+      "eventSpeaker": "Palestrante de Evento"
+    },
+    "dangerConfirmModal": {
+      "typeToConfirm": "Para confirmar, digite"
     }
   }
 }
