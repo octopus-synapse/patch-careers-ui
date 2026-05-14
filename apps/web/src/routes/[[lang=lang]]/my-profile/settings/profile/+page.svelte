@@ -36,11 +36,20 @@ const updateProfile = createPatchV1UsersProfile({
 
 const profileForm = createForm<PatchV1UsersProfileMutationRequest>({
   schema: patchV1UsersProfileMutationRequestSchema,
-  initial: { name: '', bio: '', location: '', website: '', linkedin: '', github: '' },
+  initial: {
+    name: '',
+    bio: '',
+    headline: '',
+    location: '',
+    website: '',
+    linkedin: '',
+    github: '',
+  },
   mutation: updateProfile,
   transform: (v) => ({
     name: v.name?.trim() || undefined,
     bio: v.bio?.trim() || undefined,
+    headline: v.headline?.trim() || undefined,
     location: v.location?.trim() || undefined,
     website: v.website?.trim() || undefined,
     linkedin: v.linkedin?.trim() || undefined,
@@ -52,6 +61,7 @@ $effect(() => {
   if (profileData) {
     profileForm.values.name = profileData.name ?? '';
     profileForm.values.bio = profileData.bio ?? '';
+    profileForm.values.headline = profileData.headline ?? '';
     profileForm.values.location = profileData.location ?? '';
     profileForm.values.website = profileData.website ?? '';
     profileForm.values.linkedin = profileData.linkedin ?? '';
@@ -94,6 +104,20 @@ function handleSaveProfile() {
 			<div>
 				<Label for="profile-name">{t('settings.name')}</Label>
 				<Input id="profile-name" type="text" bind:value={profileForm.values.name} class="mt-1" />
+			</div>
+			<div>
+				<Label for="profile-headline">{t('settings.headline')}</Label>
+				<Input
+					id="profile-headline"
+					type="text"
+					bind:value={profileForm.values.headline}
+					maxlength={120}
+					placeholder={t('settings.headlinePlaceholder')}
+					class="mt-1"
+				/>
+				<p class="mt-1 text-right text-[10px] text-gray-500 dark:text-neutral-500">
+					{(profileForm.values.headline ?? '').length}/120
+				</p>
 			</div>
 			<div>
 				<Label for="profile-bio">{t('settings.bio')}</Label>

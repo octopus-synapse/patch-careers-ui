@@ -423,7 +423,8 @@
       "created": "Criado em",
       "confirmDelete": "Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.",
       "noUsers": "Nenhum usuário encontrado",
-      "toastDeleted": "Usuário excluído"
+      "toastDeleted": "Usuário excluído",
+      "toastRoleUpdated": "Papel atualizado"
     },
     "analytics": {
       "title": "Analytics Global",
@@ -492,6 +493,8 @@
     "dangerZone": "Zona de perigo",
     "name": "Nome",
     "bio": "Bio",
+    "headline": "Headline",
+    "headlinePlaceholder": "Ex.: Frontend Engineer @ Vercel",
     "location": "Localizacao",
     "website": "Site",
     "saved": "Salvo",

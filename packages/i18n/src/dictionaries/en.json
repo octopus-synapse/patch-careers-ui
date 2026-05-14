@@ -423,7 +423,8 @@
       "created": "Created",
       "confirmDelete": "Are you sure you want to delete this user? This action cannot be undone.",
       "noUsers": "No users found",
-      "toastDeleted": "User deleted"
+      "toastDeleted": "User deleted",
+      "toastRoleUpdated": "Role updated"
     },
     "analytics": {
       "title": "Global Analytics",
@@ -492,6 +493,8 @@
     "dangerZone": "Danger Zone",
     "name": "Name",
     "bio": "Bio",
+    "headline": "Headline",
+    "headlinePlaceholder": "e.g. Frontend Engineer @ Vercel",
     "location": "Location",
     "website": "Website",
     "saved": "Saved",
