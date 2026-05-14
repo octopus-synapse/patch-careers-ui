@@ -786,7 +786,23 @@
       "post": "Postar",
       "codeLanguagePlaceholder": "Linguagem (ex.: ts, py)",
       "pollOptionPlaceholder": "Opção {{index}}",
-      "addOption": "+ adicionar opção"
+      "addOption": "+ adicionar opção",
+      "placeholderQuestion": "No que você está pensando, {{name}}?",
+      "placeholderGeneric": "No que você está pensando?",
+      "imageTooltip": "Adicionar imagem",
+      "pollTooltip": "Criar enquete",
+      "codeTooltip": "Anexar código",
+      "emojiTooltip": "Inserir emoji",
+      "removeImage": "Remover imagem",
+      "charCount": "{{used}} / {{max}}",
+      "draft": "Rascunho",
+      "shortcutHint": "Ctrl + Enter para postar",
+      "visibility": {
+        "anyone": "Visível para todos",
+        "connections": "Só conexões"
+      },
+      "visibilityAriaLabel": "Quem pode ver este post",
+      "dropImageHint": "Solte a imagem aqui"
     },
     "nav": {
       "explore": "Explorar",

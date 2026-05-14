@@ -786,7 +786,23 @@
       "post": "Post",
       "codeLanguagePlaceholder": "Language (e.g.: ts, py)",
       "pollOptionPlaceholder": "Option {{index}}",
-      "addOption": "+ add option"
+      "addOption": "+ add option",
+      "placeholderQuestion": "What's on your mind, {{name}}?",
+      "placeholderGeneric": "What's on your mind?",
+      "imageTooltip": "Add image",
+      "pollTooltip": "Create poll",
+      "codeTooltip": "Attach code",
+      "emojiTooltip": "Insert emoji",
+      "removeImage": "Remove image",
+      "charCount": "{{used}} / {{max}}",
+      "draft": "Draft",
+      "shortcutHint": "Ctrl + Enter to post",
+      "visibility": {
+        "anyone": "Post to Anyone",
+        "connections": "Connections Only"
+      },
+      "visibilityAriaLabel": "Who can see this post",
+      "dropImageHint": "Drop the image here"
     },
     "nav": {
       "explore": "Explore",
