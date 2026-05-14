@@ -2,6 +2,9 @@
 import { getV1AuthOauthAvailableProvider } from 'api-client';
 import { Github, Linkedin } from 'lucide-svelte';
 import { onMount } from 'svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 let providers = $state({ github: false, linkedin: false });
 let loading = $state(true);
@@ -25,7 +28,7 @@ onMount(async () => {
 
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
   <header class="mb-6">
-    <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">Contas conectadas</h1>
+    <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">{t('settings.connectedAccountsHeading')}</h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
       Faça login com provedores externos e importe dados do seu perfil.
     </p>

@@ -50,7 +50,7 @@ async function submit(e: Event) {
   <header class="mb-6">
     <div class="mb-3 flex items-center gap-2 text-red-500">
       <AlertTriangle size={20} />
-      <h1 class="text-xl font-semibold">Deletar conta</h1>
+      <h1 class="text-xl font-semibold">{t('myProfile.deleteAccount.heading')}</h1>
     </div>
     <p class="text-sm text-gray-500 dark:text-neutral-500">
       Esta ação é <strong>irreversível</strong>. Todos os seus currículos, posts, conversas,
@@ -78,7 +78,7 @@ async function submit(e: Event) {
     </div>
 
     <div>
-      <Label for="password">Senha atual</Label>
+      <Label for="password">{t('myProfile.deleteAccount.currentPasswordLabel')}</Label>
       <Input
         id="password"
         type="password"
@@ -91,7 +91,7 @@ async function submit(e: Event) {
     <div>
       <Label for="confirm">
         Digite <code class="rounded bg-gray-100 px-1 dark:bg-neutral-800">{confirmPhrase}</code>
-        para confirmar
+        {t('myProfile.deleteAccount.confirmSuffix')}
       </Label>
       <Input id="confirm" bind:value={confirmText} autocomplete="off" spellcheck="false" />
     </div>
@@ -114,7 +114,7 @@ async function submit(e: Event) {
         {#if submitting}
           <Loader size={14} class="mr-2" />
         {/if}
-        Deletar minha conta permanentemente
+        {t('myProfile.deleteAccount.confirmButton')}
       </Button>
     </div>
   </form>

@@ -13,6 +13,7 @@
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { page } from '$app/stores';
   import { useAuth } from '$lib/state/auth.svelte';
+  import { locale } from '$lib/state/locale.svelte';
   import ProfileActivityTabs from './_components/profile-activity-tabs.svelte';
   import ProfileBadges from './_components/profile-badges.svelte';
   import SkillsSection from './_components/skills-section.svelte';
@@ -20,6 +21,8 @@
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
+
+  const t = $derived(locale.t);
 
   const username = $derived($page.params.username ?? '');
 
@@ -64,7 +67,7 @@
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      downloadError = err instanceof Error ? err.message : 'Failed to download resume';
+      downloadError = err instanceof Error ? err.message : t('myProfile.public.downloadResumeError');
     } finally {
       downloading = false;
     }
@@ -158,7 +161,7 @@
               onclick={copyPublicLink}
               class="rounded-full px-4 py-1.5 text-[11px]"
             >
-              {copiedLink ? 'Copiado!' : 'Copiar link'}
+              {copiedLink ? t('myProfile.public.copiedButton') : t('actions.copyLink')}
             </Button>
           </div>
         </div>

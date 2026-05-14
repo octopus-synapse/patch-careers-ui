@@ -15,6 +15,9 @@ import {
 import { Sparkles, TrendingUp, Users } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Badge, Button, Input, Label, Loader, toastState } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 let skillsCsv = $state('');
 let submitting = $state(false);
@@ -45,7 +48,7 @@ async function handleSearch() {
     const message =
       err && typeof err === 'object' && 'message' in err && typeof err.message === 'string'
         ? err.message
-        : 'Falha ao calcular seu career graph';
+        : t('myProfile.careerGraph.computeError');
     handleApiError(err);
   } finally {
     submitting = false;
@@ -69,7 +72,7 @@ function barWidth(peerCount: number): string {
 			Career graph
 		</div>
 		<h1 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-			Onde estão pessoas com seu stack hoje — e pra onde você pode ir
+			{t('myProfile.careerGraph.heading')}
 		</h1>
 		<p class="text-sm text-gray-500 dark:text-neutral-500">
 			Agregamos perfis públicos com pelo menos 60% das suas skills e mostramos por quantos anos de experiência eles estão, quais cargos ocupam, e projetamos onde você pode estar em 3, 5 e 10 anos. Nenhum nome é revelado.
@@ -77,8 +80,8 @@ function barWidth(peerCount: number): string {
 	</header>
 
 	<section class="rounded-xl border border-gray-200 p-4 dark:border-neutral-700/60">
-		<Label>Seu stack</Label>
-		<Input bind:value={skillsCsv} placeholder="react, typescript, postgres, aws" />
+		<Label>{t('myProfile.careerGraph.stackLabel')}</Label>
+		<Input bind:value={skillsCsv} placeholder={t('myProfile.careerGraph.stackPlaceholder')} />
 		<p class="mt-1 text-[11px] text-gray-400 dark:text-neutral-500">
 			Separe por vírgula. Quanto mais específico, mais útil o cohort.
 		</p>
@@ -114,7 +117,7 @@ function barWidth(peerCount: number): string {
 			</section>
 
 			<section class="rounded-xl border border-gray-200 p-4 dark:border-neutral-700/60">
-				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">Distribuição por anos de experiência</h2>
+				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('myProfile.careerGraph.experienceDistributionHeading')}</h2>
 				<ol class="space-y-2">
 					{#each data.buckets as b (b.experienceYears)}
 						{@const isCurrent = data.current?.experienceYears === b.experienceYears}
@@ -151,7 +154,7 @@ function barWidth(peerCount: number): string {
 			</section>
 
 			<section class="rounded-xl border border-gray-200 p-4 dark:border-neutral-700/60">
-				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">Se você continuar nesse stack…</h2>
+				<h2 class="mb-3 text-sm font-semibold text-gray-800 dark:text-neutral-200">{t('myProfile.careerGraph.futurePathsHeading')}</h2>
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
 					{#each data.projections as p (p.yearsAhead)}
 						<div class="rounded-lg border border-gray-200 p-3 dark:border-neutral-700/60">

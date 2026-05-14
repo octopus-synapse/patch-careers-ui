@@ -4,6 +4,9 @@ import { postV1AuthForgotPasswordMutationRequestSchema } from 'api-client/zod';
 
 import { Button, Input, Label, Loader } from 'ui';
 import { createForm } from '$lib/state/create-form.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 let sent = $state(false);
 let serverError = $state<string | null>(null);
@@ -40,7 +43,7 @@ function handleSubmit(e: Event) {
   <div class="w-full max-w-[360px]">
     <div class="mb-10">
       <h1 class="text-xl font-medium tracking-tight text-gray-800 dark:text-neutral-200">
-        Esqueci minha senha
+        {t('identity.forgotPassword.heading')}
       </h1>
       <p class="text-sm text-gray-500 dark:text-neutral-500">
         Digite seu email e enviaremos um link pra redefinir.
@@ -64,7 +67,7 @@ function handleSubmit(e: Event) {
             type="email"
             bind:value={form.values.email}
             required
-            placeholder="voce@exemplo.com"
+            placeholder={t('identity.forgotPassword.emailPlaceholder')}
           />
           {#if form.errors.email}
             <p class="text-xs font-medium text-red-500/80" role="alert">{form.errors.email}</p>
@@ -82,7 +85,7 @@ function handleSubmit(e: Event) {
         </Button>
         <div class="text-center">
           <a href="/identity/sign-in" class="text-xs text-gray-500 hover:underline dark:text-neutral-500">
-            Voltar ao login
+            {t('identity.forgotPassword.backToLogin')}
           </a>
         </div>
       </form>

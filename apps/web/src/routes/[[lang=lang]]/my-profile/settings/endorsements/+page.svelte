@@ -14,6 +14,9 @@ import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const auth = useAuth();
 const viewerId = $derived(String(auth.userId ?? ''));
@@ -54,7 +57,7 @@ async function toggleExpand(skill: string) {
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
   <header class="mb-6">
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Meus endossos recebidos
+      {t('myProfile.endorsements.heading')}
     </h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
       Veja quem endossou cada skill no seu perfil.
@@ -118,7 +121,7 @@ async function toggleExpand(skill: string) {
                           href="/my-profile/public/@{e.username}"
                           class="text-sm text-gray-800 hover:underline dark:text-neutral-200"
                         >
-                          {e.name ?? e.username ?? 'Usuário'}
+                          {e.name ?? e.username ?? t('myProfile.endorsements.userLinkLabel')}
                         </a>
                         <p class="text-[11px] text-gray-500 dark:text-neutral-500">
                           {new Date(e.endorsedAt).toLocaleDateString()}

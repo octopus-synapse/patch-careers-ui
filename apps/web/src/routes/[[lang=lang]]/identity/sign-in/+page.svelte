@@ -118,7 +118,7 @@ function handleSubmit(e: Event) {
 							href="/identity/forgot-password"
 							class="text-xs text-gray-500 hover:underline dark:text-neutral-500"
 						>
-							{t('auth.sign-in.forgotPassword') ?? 'Esqueci minha senha'}
+							{t('auth.sign-in.forgotPassword') ?? t('identity.forgotPassword.heading')}
 						</a>
 						<span class="inline-flex items-center gap-1 text-xs text-gray-400 dark:text-neutral-500">
 							<Lock size={10} />

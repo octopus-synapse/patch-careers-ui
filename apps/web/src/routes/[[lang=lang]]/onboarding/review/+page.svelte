@@ -1,5 +1,9 @@
 <script lang="ts">
 import { AlertTriangle } from 'lucide-svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
+
 // Shared review links are not currently exposed by the backend. The route
 // stays around for anyone who still has an old email link and lands here —
 // we just tell them the link is no longer active instead of silently failing
@@ -15,7 +19,7 @@ import { AlertTriangle } from 'lucide-svelte';
   <div class="max-w-md text-center">
     <AlertTriangle size={32} class="mx-auto mb-4 text-amber-500" />
     <h1 class="text-lg font-medium text-gray-800 dark:text-neutral-200">
-      Este link de review não está mais ativo
+      {t('onboarding.review.inactiveHeading')}
     </h1>
     <p class="mt-2 text-sm text-gray-500 dark:text-neutral-500">
       O recurso de compartilhar currículos para review externo está temporariamente
@@ -25,7 +29,7 @@ import { AlertTriangle } from 'lucide-svelte';
       href="/identity/sign-in"
       class="mt-6 inline-block text-xs font-medium text-cyan-500 hover:underline"
     >
-      Voltar ao início
+      {t('onboarding.review.backToStart')}
     </a>
   </div>
 </main>

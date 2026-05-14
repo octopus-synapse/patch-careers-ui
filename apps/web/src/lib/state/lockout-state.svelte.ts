@@ -14,6 +14,7 @@
  */
 
 import { isApiError } from 'api-client';
+import { locale } from './locale.svelte';
 
 export type LockoutCode =
   | 'fit_profile_required'
@@ -29,36 +30,44 @@ export interface LockoutInfo {
   readonly cta?: { label: string; href: string };
 }
 
-const LOCKOUT_COPY: Readonly<Record<LockoutCode, Omit<LockoutInfo, 'code'>>> = {
-  fit_profile_required: {
-    title: 'Fit Profile necessário',
-    body: 'Responda o questionário de 25 perguntas para liberar o Match Score, tailor de currículo e auto-apply.',
-    cta: { label: 'Responder questionário', href: '/my-profile/fit-profile/questions' },
-  },
-  quality_score_below_threshold: {
-    title: 'Qualidade do currículo abaixo do mínimo',
-    body: 'Seu currículo precisa atingir pelo menos 50/100 de Resume Quality para esta ação. Volte e complete as seções recomendadas.',
-    cta: { label: 'Ver recomendações', href: '/my-profile/scores' },
-  },
-  style_below_ats_threshold: {
-    title: 'Estilo abaixo do limiar ATS-safe',
-    body: 'Esse estilo ficou abaixo do threshold ATS-safe (70/100) e não pode ser salvo.',
-  },
-  style_score_regression: {
-    title: 'Score do estilo não pode regredir',
-    body: 'A pontuação de estilo é monotônica — uma versão nova precisa ter score igual ou maior que a anterior.',
-  },
-  style_not_editable: {
-    title: 'Estilo do sistema',
-    body: 'Estilos marcados como do sistema não podem ser editados ou excluídos por aqui.',
-  },
-};
+function buildLockoutCopy(code: LockoutCode): Omit<LockoutInfo, 'code'> {
+  const t = locale.t;
+  switch (code) {
+    case 'fit_profile_required':
+      return {
+        title: t('lockout.fitProfileRequired.title'),
+        body: 'Responda o questionário de 25 perguntas para liberar o Match Score, tailor de currículo e auto-apply.',
+        cta: { label: t('lockout.fitProfileRequired.cta'), href: '/my-profile/fit-profile/questions' },
+      };
+    case 'quality_score_below_threshold':
+      return {
+        title: t('lockout.qualityScoreBelowThreshold.title'),
+        body: 'Seu currículo precisa atingir pelo menos 50/100 de Resume Quality para esta ação. Volte e complete as seções recomendadas.',
+        cta: { label: t('lockout.qualityScoreBelowThreshold.cta'), href: '/my-profile/scores' },
+      };
+    case 'style_below_ats_threshold':
+      return {
+        title: t('lockout.styleBelowAtsThreshold.title'),
+        body: 'Esse estilo ficou abaixo do threshold ATS-safe (70/100) e não pode ser salvo.',
+      };
+    case 'style_score_regression':
+      return {
+        title: t('lockout.styleScoreRegression.title'),
+        body: 'A pontuação de estilo é monotônica — uma versão nova precisa ter score igual ou maior que a anterior.',
+      };
+    case 'style_not_editable':
+      return {
+        title: t('lockout.styleNotEditable.title'),
+        body: 'Estilos marcados como do sistema não podem ser editados ou excluídos por aqui.',
+      };
+  }
+}
 
 /** Reactive Svelte 5 store for the one-at-a-time lockout modal. */
 export const lockoutStore = $state<{ current: LockoutInfo | null }>({ current: null });
 
 export function openLockout(code: LockoutCode): void {
-  lockoutStore.current = { code, ...LOCKOUT_COPY[code] };
+  lockoutStore.current = { code, ...buildLockoutCopy(code) };
 }
 
 export function dismissLockout(): void {

@@ -124,7 +124,7 @@ const complete = createPostV1OnboardingSessionComplete({
       goto('/onboarding/done');
     },
     onError(err) {
-      completeError = err instanceof Error ? err.message : 'Failed to complete onboarding';
+      completeError = err instanceof Error ? err.message : t('onboarding.stepper.completeError');
     },
   },
 });

@@ -74,7 +74,7 @@ function skip() {
   </div>
   <header class="mb-6">
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Encontramos um perfil pra você
+      {t('onboarding.claimShadow.heading')}
     </h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
       Já tínhamos dados públicos seus indexados. Reivindique pra começar com um currículo

@@ -51,10 +51,10 @@ async function handlePdfSelected(e: Event) {
     const formData = new FormData();
     formData.append('file', file);
     await postV1ResumesImportsPdf({ data: formData });
-    toastState.show('CV imported', 'success');
+    toastState.show(t('onboarding.start.cvImportedToast'), 'success');
     goto('/careers/manage-resumes');
   } catch {
-    toastState.show('Could not import the PDF', 'danger');
+    toastState.show(t('onboarding.start.cvImportErrorToast'), 'danger');
   } finally {
     pdfPending = false;
     target.value = '';

@@ -1,5 +1,8 @@
 <script lang="ts">
 import { Button } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type StepData = {
   features?: Array<{ icon: string; title: string; description: string }>;
@@ -27,7 +30,7 @@ const estimatedMinutes = $derived(stepData?.estimatedMinutes ?? 5);
 		<h1
 			class="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500 sm:text-4xl"
 		>
-			Crie seu currículo profissional
+			{t('onboarding.welcome.heading')}
 		</h1>
 
 		<p class="mt-4 text-sm text-gray-500 dark:text-neutral-400">
@@ -59,7 +62,7 @@ const estimatedMinutes = $derived(stepData?.estimatedMinutes ?? 5);
 		onclick={onNext}
 		class="mt-10 rounded-full"
 	>
-		Começar agora →
+		{t('onboarding.welcome.startCta')}
 	</Button>
 
 	<p class="mt-6 text-[11px] text-gray-400 dark:text-neutral-500">

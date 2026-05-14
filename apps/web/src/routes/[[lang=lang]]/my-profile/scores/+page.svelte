@@ -8,6 +8,9 @@
   import { browser } from '$app/environment';
   import ResumeQualityCard from '$lib/components/scoring/resume-quality-card.svelte';
   import { Card, ScoreCard } from 'ui';
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
 
   const myResumesQuery = createGetV1Resumes(
     { page: 1, limit: 1 },
@@ -28,7 +31,7 @@
 <section class="mx-auto max-w-4xl space-y-6 p-6">
   <header>
     <h1 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-      Seus scores
+      {t('myProfile.scores.heading')}
     </h1>
     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
       Um painel das três dimensões que a plataforma rankeia: Style, Resume Quality e Match.
@@ -43,11 +46,11 @@
       {:else}
         <ScoreCard
           score={null}
-          label="Resume Quality"
+          label={t('myProfile.scores.resumeQualityLabel')}
           teaser={{
-            title: 'Sem currículo',
+            title: t('myProfile.scores.noResumeTitle'),
             body: 'Crie seu primeiro currículo pra começar a receber pontuação.',
-            cta: { label: 'Criar currículo', href: '/careers/manage-resumes' },
+            cta: { label: t('myProfile.scores.noResumeCta'), href: '/careers/manage-resumes' },
           }}
         />
       {/if}
@@ -57,8 +60,8 @@
          lives on each job detail page. -->
     <ScoreCard
       score={null}
-      label="Match Score"
-      description="Calculado por vaga"
+      label={t('myProfile.scores.matchScoreLabel')}
+      description={t('myProfile.scores.matchScoreDescription')}
       teaser={{
         title:
           fitStatus === 'responded'
@@ -74,8 +77,8 @@
               : 'Responda o questionário de 25 perguntas pra liberar o Match Score.',
         cta:
           fitStatus === 'responded'
-            ? { label: 'Buscar vagas', href: '/careers/browse-jobs' }
-            : { label: 'Responder questionário', href: '/my-profile/fit-profile/questions' },
+            ? { label: t('myProfile.scores.browseJobsCta'), href: '/careers/browse-jobs' }
+            : { label: t('myProfile.scores.answerQuestionnaireCta'), href: '/my-profile/fit-profile/questions' },
       }}
     />
 
@@ -85,18 +88,18 @@
          active style's live styleScore. -->
     <ScoreCard
       score={null}
-      label="Style Score"
-      description="Estilo visual ativo"
+      label={t('myProfile.scores.styleScoreLabel')}
+      description={t('myProfile.scores.styleScoreDescription')}
       teaser={{
-        title: 'Escolha um estilo',
+        title: t('myProfile.scores.pickStyleTitle'),
         body: 'Todos os estilos do sistema são ATS-safe por design. Veja o catálogo e aplique no seu currículo.',
-        cta: { label: 'Ver estilos', href: '/my-profile/styles' },
+        cta: { label: t('myProfile.scores.seeStylesCta'), href: '/my-profile/styles' },
       }}
     />
   </div>
 
   <Card class="text-sm">
-    <h2 class="font-semibold">Como os scores se encaixam</h2>
+    <h2 class="font-semibold">{t('myProfile.scores.howTheyFitHeading')}</h2>
     <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
       Quality mede o seu currículo sozinho. Style mede o estilo visual
       aplicado ao currículo. Match combina os dois com o perfil da vaga
@@ -107,7 +110,7 @@
       href="/my-profile/fit-profile"
       class="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:underline dark:text-emerald-300"
     >
-      Ver status do Fit Profile <ArrowRight size={12} />
+      {t('myProfile.scores.fitProfileStatusLink')} <ArrowRight size={12} />
     </a>
   </Card>
 </section>

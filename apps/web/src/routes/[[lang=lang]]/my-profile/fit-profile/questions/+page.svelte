@@ -15,13 +15,15 @@
   import { goto } from '$app/navigation';
   import { locale } from '$lib/state/locale.svelte';
 
-  const LIKERT_OPTIONS = [
-    { value: 1, label: 'Discordo fortemente' },
+  const t = $derived(locale.t);
+
+  const LIKERT_OPTIONS = $derived([
+    { value: 1, label: t('fitProfileMine.questions.scaleDisagreeStrongly') },
     { value: 2, label: 'Discordo' },
     { value: 3, label: 'Neutro' },
     { value: 4, label: 'Concordo' },
-    { value: 5, label: 'Concordo fortemente' },
-  ] as const;
+    { value: 5, label: t('fitProfileMine.questions.scaleAgreeStrongly') },
+  ] as const);
 
   const questionsQuery = createGetV1FitProfileQuestions({
       query: { enabled: browser, retry: false, refetchOnWindowFocus: false },
@@ -76,7 +78,7 @@
         answers: Array.from(answers, ([questionId, rawValue]) => ({ questionId, rawValue })),
       });
       await queryClient.invalidateQueries({ queryKey: getV1FitProfileMeQueryKey() });
-      toastState.show('Fit Profile salvo. Match Score liberado.', 'success');
+      toastState.show(t('fitProfileMine.savedToast'), 'success');
       void goto('/my-profile/scores');
     } catch (err) {
       handleApiError(err);
@@ -153,7 +155,7 @@
           {#if submitting}
             <Loader size={14} />
           {/if}
-          {isLast ? 'Salvar' : 'Próxima'}
+          {isLast ? 'Salvar' : t('fitProfileMine.questions.nextButton')}
           {#if !isLast}<ArrowRight size={14} />{/if}
         </Button>
       </div>

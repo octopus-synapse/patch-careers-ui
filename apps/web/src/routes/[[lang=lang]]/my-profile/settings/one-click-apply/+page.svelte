@@ -72,7 +72,7 @@ async function save() {
     toastState.show(t('actions.savedPreferences'), 'success');
   } catch (err) {
     toastState.show(
-      isApiError(err) ? err.message : 'Falha ao salvar. Rascunho local preservado.',
+      isApiError(err) ? err.message : t('applyModes.oneClick.saveError'),
       'danger',
     );
   } finally {
@@ -89,7 +89,7 @@ async function save() {
   <header class="mb-6 flex items-start gap-3">
     <Zap class="mt-1 text-cyan-500" size={20} />
     <div>
-      <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">One-Click Apply</h1>
+      <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">{t('applyModes.oneClick.pageHeading')}</h1>
       <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
         Configure o que envia quando você clica "Aplicar" direto em uma vaga, sem abrir modal.
       </p>
@@ -112,7 +112,7 @@ async function save() {
         <Checkbox
           bind:checked={draft.state.enabled}
           class="gap-3"
-          label="Ativar One-Click Apply"
+          label={t('applyModes.oneClick.enableLabel')}
           description={'Quando desligado, clicar "Aplicar" abre o modal padrão.'}
         />
       </section>
@@ -120,20 +120,20 @@ async function save() {
       <section class="rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
         <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-neutral-100">
           <FileText size={14} />
-          Currículo padrão
+          {t('applyModes.oneClick.defaultResumeHeading')}
         </h2>
-        <Label for="resume">Qual currículo usar</Label>
+        <Label for="resume">{t('applyModes.oneClick.whichResumeLabel')}</Label>
         <Select id="resume" bind:value={draft.state.resumeId} class="mt-1">
-          <option value="">— Primary resume (master) —</option>
+          <option value="">{t('applyModes.oneClick.primaryResumeOption')}</option>
           {#each resumes as r}
-            <option value={r.id}>{r.title ?? 'Sem título'}</option>
+            <option value={r.id}>{r.title ?? t('applyModes.oneClick.untitledOption')}</option>
           {/each}
         </Select>
       </section>
 
       <section class="rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
         <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-          Template de cover letter
+          {t('applyModes.oneClick.coverLetterTemplateHeading')}
         </h2>
         <p class="mb-2 text-xs text-gray-500 dark:text-neutral-500">
           Use <code class="rounded bg-gray-100 px-1 dark:bg-neutral-800">{'{{job.title}}'}</code>,
@@ -149,7 +149,7 @@ async function save() {
 
       <section class="rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
         <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-          Ajuste do currículo
+          {t('applyModes.oneClick.resumeAdjustmentHeading')}
         </h2>
         <div class="space-y-2">
           <Radio
@@ -157,26 +157,26 @@ async function save() {
             value="VERBATIM"
             bind:group={draft.state.tailoringMode}
             class="gap-3"
-            label="Enviar como está (verbatim)"
-            description="O currículo master é enviado sem modificações."
+            label={t('applyModes.oneClick.tailorVerbatimLabel')}
+            description={t('applyModes.oneClick.tailorVerbatimDescription')}
           />
           <Radio
             name="tailoringMode"
             value="AI_TAILOR"
             bind:group={draft.state.tailoringMode}
             class="gap-3"
-            label="Ajustar com IA por vaga"
-            description="O Patch reordena seções, destaca skills relevantes e gera uma versão otimizada."
+            label={t('applyModes.oneClick.tailorAiLabel')}
+            description={t('applyModes.oneClick.tailorAiDescription')}
           />
         </div>
       </section>
 
       <section class="rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
         <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-          Também anexar
+          {t('applyModes.oneClick.alsoAttachHeading')}
         </h2>
-        <Checkbox bind:checked={draft.state.alsoAttach.githubUrl} label="Link do GitHub" />
-        <Checkbox bind:checked={draft.state.alsoAttach.linkedinUrl} label="Link do LinkedIn" class="mt-2" />
+        <Checkbox bind:checked={draft.state.alsoAttach.githubUrl} label={t('applyModes.oneClick.attachGithub')} />
+        <Checkbox bind:checked={draft.state.alsoAttach.linkedinUrl} label={t('applyModes.oneClick.attachLinkedin')} class="mt-2" />
       </section>
 
       <div class="flex justify-end">
@@ -184,7 +184,7 @@ async function save() {
           {#if saving}
             <Loader size={14} class="mr-2" />
           {/if}
-          Salvar preferências
+          {t('applyModes.oneClick.savePreferences')}
         </Button>
       </div>
     </form>

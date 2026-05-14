@@ -155,9 +155,9 @@ async function updateEmailMode(p: Preference, mode: EmailDelivery) {
 										class="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
 										aria-label="Email delivery mode for {pref.type}"
 									>
-										<option value="INSTANT">Instantâneo</option>
-										<option value="DAILY">Resumo diário</option>
-										<option value="WEEKLY">Resumo semanal</option>
+										<option value="INSTANT">{t('myProfile.notifications.frequencyInstant')}</option>
+										<option value="DAILY">{t('myProfile.notifications.frequencyDaily')}</option>
+										<option value="WEEKLY">{t('myProfile.notifications.frequencyWeekly')}</option>
 										<option value="OFF">Desativado</option>
 									</select>
 								</div>

@@ -62,7 +62,7 @@
 <section class="mx-auto max-w-5xl space-y-6 p-6">
   <header>
     <h1 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-      Estilos de currículo
+      {t('myProfile.styles.heading')}
     </h1>
     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
       Todos os estilos são ATS-safe por design. Aplique um no seu
@@ -76,7 +76,7 @@
     </div>
   {:else if $listQuery.isError || !styles || styles.length === 0}
     <Card class="sm:p-6 text-sm text-neutral-600 dark:text-neutral-400">
-      Nenhum estilo disponível no momento.
+      {t('myProfile.styles.empty')}
     </Card>
   {:else}
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

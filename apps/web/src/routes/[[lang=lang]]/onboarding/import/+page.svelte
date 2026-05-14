@@ -13,6 +13,9 @@ import {
 import { FileText, Github, Linkedin, Upload } from 'lucide-svelte';
 import { Button, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 let githubLoading = $state(false);
 let linkedinLoading = $state(false);
@@ -38,11 +41,11 @@ async function importLinkedIn() {
   linkedinLoading = true;
   try {
     await postV1ResumesImportsLinkedin();
-    toastState.show('LinkedIn importado.', 'success');
+    toastState.show(t('onboarding.import.linkedinImportedToast'), 'success');
   } catch {
     // Endpoint returns 503 "not implemented yet".
     toastState.show(
-      'Import do LinkedIn ainda em construção — use PDF ou GitHub por enquanto.',
+      t('onboarding.import.linkedinUnavailableToast'),
       'info',
     );
   } finally {
@@ -60,10 +63,10 @@ async function uploadPdf(e: Event) {
     const formData = new FormData();
     formData.append('file', file);
     const body = await postV1ResumesImportsPdf({ data: formData });
-    toastState.show('PDF enviado. Processando…', 'success');
+    toastState.show(t('onboarding.import.pdfUploadedToast'), 'success');
     if (body?.resumeId) goto('/onboarding/review');
   } catch (err) {
-    pdfError = err instanceof Error ? err.message : 'Falha ao enviar PDF.';
+    pdfError = err instanceof Error ? err.message : t('onboarding.import.pdfUploadError');
   } finally {
     pdfLoading = false;
     target.value = '';
@@ -78,7 +81,7 @@ async function uploadPdf(e: Event) {
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
   <header class="mb-8">
     <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
-      Importar currículo
+      {t('onboarding.import.heading')}
     </h1>
     <p class="mt-2 text-sm text-gray-500 dark:text-neutral-500">
       Pule digitação — traga o que você já tem do LinkedIn, GitHub ou de um PDF.
@@ -131,7 +134,7 @@ async function uploadPdf(e: Event) {
       <div class="flex items-start gap-3">
         <FileText size={24} class="mt-0.5 text-gray-700 dark:text-neutral-300" />
         <div class="flex-1">
-          <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">Upload de PDF</h2>
+          <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">{t('onboarding.import.pdfUploadHeading')}</h2>
           <p class="text-xs text-gray-500 dark:text-neutral-500">
             Envie seu currículo em PDF e nós extraímos as seções automaticamente.
           </p>
@@ -166,7 +169,7 @@ async function uploadPdf(e: Event) {
       href="/onboarding/start"
       class="text-xs text-gray-500 hover:underline dark:text-neutral-500"
     >
-      ou preencher manualmente →
+      {t('onboarding.import.manualFillLink')}
     </a>
   </div>
 </div>

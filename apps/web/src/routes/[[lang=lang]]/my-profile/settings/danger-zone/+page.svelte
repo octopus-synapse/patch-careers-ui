@@ -127,7 +127,7 @@ function handleDeleteAccount() {
 					id="delete-confirm"
 					type="text"
 					bind:value={deleteConfirmation}
-					placeholder="DELETE MY ACCOUNT"
+					placeholder={t('myProfile.deleteAccount.confirmPhrasePlaceholder')}
 					class="mt-1 font-mono"
 				/>
 			</div>

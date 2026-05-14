@@ -1,6 +1,10 @@
 <script lang="ts">
 
 import { Loader } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
+
 type Props = {
   token?: string;
 };
@@ -51,7 +55,7 @@ $effect(() => {
 	{#if status === 'ready' && imageUrl}
 		<img
 			src={imageUrl}
-			alt="Resume preview"
+			alt={t('onboarding.import.resumePreviewAlt')}
 			class="w-full"
 			loading="eager"
 		/>

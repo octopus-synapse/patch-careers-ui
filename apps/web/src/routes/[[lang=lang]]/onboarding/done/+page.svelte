@@ -45,13 +45,13 @@ onMount(() => {
 
 	<div class="relative z-10 space-y-4">
 		<h1 class="text-2xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-			{t('onboarding.doneHeadline') ?? 'Perfil pronto!'}
+			{t('onboarding.doneHeadline') ?? t('onboarding.done.heading')}
 		</h1>
 		<p class="text-sm text-gray-500 dark:text-neutral-500">
 			{t('onboarding.doneSubtitle') ?? 'Bora aplicar 🚀'}
 		</p>
 		<Button variant="solid" onclick={() => goto('/careers/browse-jobs')}>
-			{t('onboarding.doneCta') ?? 'Ver vagas'}
+			{t('onboarding.doneCta') ?? t('onboarding.done.seeJobsCta')}
 			<ArrowRight size={14} />
 		</Button>
 	</div>

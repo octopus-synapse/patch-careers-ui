@@ -74,7 +74,7 @@ function formatDevice(ua: string | null): string {
 <div class="mx-auto max-w-3xl px-4 pt-20 pb-12">
   <header class="mb-6">
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Sessões e dispositivos
+      {t('settings.sessionsHeading')}
     </h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
       Dispositivos com sessão ativa na sua conta. Revogar uma sessão desloga aquele aparelho na

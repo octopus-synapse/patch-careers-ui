@@ -100,7 +100,7 @@ function downloadCodes() {
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
   <header class="mb-6">
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Autenticação de dois fatores
+      {t('twoFactor.heading')}
     </h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
       Adicione uma camada extra de segurança ao seu login.
@@ -119,7 +119,7 @@ function downloadCodes() {
       aria-live="assertive"
     >
       <h2 class="mb-2 font-semibold text-amber-700 dark:text-amber-300">
-        Guarde esses códigos agora
+        {t('twoFactor.saveCodesHeading')}
       </h2>
       <p class="mb-4 text-amber-700/80 dark:text-amber-300/80">
         Estes são seus códigos de recuperação. Cada um só pode ser usado uma vez. Se perder
@@ -140,10 +140,10 @@ function downloadCodes() {
         </Button>
         <Button variant="outline" size="sm" onclick={downloadCodes}>
           <Download size={14} class="mr-1" />
-          Baixar .txt
+          {t('twoFactor.downloadTxt')}
         </Button>
         <Button variant="solid" size="sm" onclick={() => (backupCodes = null)}>
-          Guardei em local seguro
+          {t('twoFactor.savedInSafePlace')}
         </Button>
       </div>
     </div>
@@ -153,7 +153,7 @@ function downloadCodes() {
       <div class="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
         <Shield class="mt-0.5 text-emerald-500" size={20} />
         <div class="flex-1">
-          <h2 class="font-semibold text-emerald-700 dark:text-emerald-300">2FA ativo</h2>
+          <h2 class="font-semibold text-emerald-700 dark:text-emerald-300">{t('twoFactor.activeHeading')}</h2>
           <p class="text-xs text-emerald-700/80 dark:text-emerald-300/80">
             {#if status.lastUsedAt}
               Último uso: {new Date(status.lastUsedAt).toLocaleString()}.
@@ -187,7 +187,7 @@ function downloadCodes() {
       <section class="rounded-xl border border-red-500/30 bg-red-500/5 p-5">
         <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-red-700 dark:text-red-300">
           <ShieldOff size={16} />
-          Desativar 2FA
+          {t('twoFactor.disableHeading')}
         </h3>
         <p class="mb-3 text-xs text-red-700/80 dark:text-red-300/80">
           Isso remove a proteção extra da sua conta. Não recomendamos, especialmente se você é
@@ -212,7 +212,7 @@ function downloadCodes() {
           </div>
         {:else}
           <Button variant="outline" onclick={() => (disableConfirming = true)}>
-            Desativar 2FA
+            {t('twoFactor.disableHeading')}
           </Button>
         {/if}
       </section>
@@ -221,21 +221,21 @@ function downloadCodes() {
     <!-- Setup: QR + verify -->
     <div class="space-y-4 rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
       <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">
-        Escaneie o QR com seu app autenticador
+        {t('twoFactor.scanQrHeading')}
       </h2>
       <img
         src={setupData.qrCode}
-        alt="QR code para configuração 2FA"
+        alt={t('twoFactor.qrCodeAlt')}
         class="mx-auto rounded-lg border border-gray-200 dark:border-neutral-800"
       />
       <details class="text-xs text-gray-500 dark:text-neutral-500">
-        <summary class="cursor-pointer">Ou digite o segredo manualmente</summary>
+        <summary class="cursor-pointer">{t('twoFactor.manualSecretToggle')}</summary>
         <code class="mt-2 block rounded bg-gray-100 p-2 font-mono text-xs dark:bg-neutral-800">
           {setupData.manualEntryKey}
         </code>
       </details>
       <div>
-        <Label for="verify-token">Código de 6 dígitos do app</Label>
+        <Label for="verify-token">{t('twoFactor.sixDigitCodeLabel')}</Label>
         <Input
           id="verify-token"
           type="text"
@@ -261,7 +261,7 @@ function downloadCodes() {
     <!-- Disabled: offer setup -->
     <div class="rounded-xl border border-gray-200 p-5 dark:border-neutral-800">
       <h2 class="mb-2 text-sm font-semibold text-gray-900 dark:text-neutral-100">
-        2FA não configurado
+        {t('twoFactor.notConfiguredHeading')}
       </h2>
       <p class="mb-4 text-xs text-gray-500 dark:text-neutral-500">
         Use um app como Google Authenticator, 1Password ou Authy para gerar códigos temporários.

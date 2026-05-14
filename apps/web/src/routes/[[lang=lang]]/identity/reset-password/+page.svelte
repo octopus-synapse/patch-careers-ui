@@ -5,6 +5,9 @@ import { Button, Input, Label, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { createForm } from '$lib/state/create-form.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const token = $derived($page.url.searchParams.get('token') ?? '');
 
@@ -56,7 +59,7 @@ function handleSubmit(e: Event) {
   <div class="w-full max-w-[360px]">
     <div class="mb-10">
       <h1 class="text-xl font-medium tracking-tight text-gray-800 dark:text-neutral-200">
-        Redefinir senha
+        {t('identity.resetPassword.heading')}
       </h1>
       <p class="text-sm text-gray-500 dark:text-neutral-500">Escolha uma senha nova e segura.</p>
     </div>
@@ -71,20 +74,20 @@ function handleSubmit(e: Event) {
     {:else}
       <form onsubmit={handleSubmit} class="space-y-6" novalidate>
         <div>
-          <Label for="password">Nova senha</Label>
+          <Label for="password">{t('identity.resetPassword.newPasswordLabel')}</Label>
           <Input
             id="password"
             type="password"
             bind:value={form.values.newPassword}
             required
-            placeholder="Mínimo 8 caracteres"
+            placeholder={t('identity.resetPassword.newPasswordPlaceholder')}
           />
           {#if form.errors.newPassword}
             <p class="text-xs font-medium text-red-500/80" role="alert">{form.errors.newPassword}</p>
           {/if}
         </div>
         <div>
-          <Label for="confirm">Confirmar senha</Label>
+          <Label for="confirm">{t('identity.resetPassword.confirmPasswordLabel')}</Label>
           <Input id="confirm" type="password" bind:value={confirm} required />
           {#if confirmError}
             <p class="text-xs font-medium text-red-500/80" role="alert">{confirmError}</p>

@@ -2,6 +2,9 @@
 import { getV1UsersUsernameCheck } from 'api-client';
 import type { GetV1UsersUsernameCheck200ReasonEnumKey } from 'api-client';
 import { Button, Input, Label, Textarea } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type Field = {
   key: string;
@@ -101,7 +104,7 @@ function inputType(fieldType: string): string {
 				size="xs"
 				onclick={() => (showSummaryExamples = !showSummaryExamples)}
 			>
-				{showSummaryExamples ? 'hide' : 'see example'}
+				{showSummaryExamples ? 'hide' : t('onboarding.fieldRenderer.seeExample')}
 			</Button>
 			{#if showSummaryExamples}
 				<div class="mt-2 space-y-2">

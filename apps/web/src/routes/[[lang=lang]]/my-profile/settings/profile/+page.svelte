@@ -196,7 +196,7 @@ function handleSaveProfile() {
 						window.location.href = '/onboarding';
 					}}
 				>
-					Refresh my profile
+					{t('settings.refreshMyProfile')}
 				</Button>
 			</div>
 		</div>

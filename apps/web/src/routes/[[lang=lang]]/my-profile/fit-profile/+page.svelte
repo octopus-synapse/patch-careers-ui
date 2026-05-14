@@ -34,7 +34,7 @@
     try {
       await deleteV1FitProfileMe();
       await queryClient.invalidateQueries({ queryKey: getV1FitProfileMeQueryKey() });
-      toastState.show('Fit Profile apagado.' , 'success');
+      toastState.show(t('fitProfileMine.deletedToast') , 'success');
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -46,7 +46,7 @@
 <section class="mx-auto max-w-2xl space-y-6 p-6">
   <header>
     <h1 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-      Fit Profile
+      {t('fitProfileMine.heading')}
     </h1>
     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
       Um vetor comportamental (Big Five + Schwartz + SDT) que destrava
@@ -63,7 +63,7 @@
       <div class="flex items-start gap-3">
         <CheckCircle2 class="mt-0.5 text-emerald-600 dark:text-emerald-300" size={20} />
         <div class="flex-1">
-          <h2 class="font-semibold text-emerald-800 dark:text-emerald-200">Perfil ativo</h2>
+          <h2 class="font-semibold text-emerald-800 dark:text-emerald-200">{t('fitProfileMine.activeHeading')}</h2>
           <p class="mt-1 text-sm text-emerald-700 dark:text-emerald-200/80">
             Match Score e tailor estão liberados.
             {#if expiresAt}
@@ -74,11 +74,11 @@
       </div>
       <div class="mt-4 flex flex-wrap items-center gap-2">
         <Button variant="solid" size="sm" onclick={() => goto('/my-profile/fit-profile/questions')}>
-          Refazer questionário
+          {t('fitProfileMine.retakeQuestionnaire')}
         </Button>
         <Button variant="ghost" size="sm" onclick={handleDelete} disabled={deleting}>
           {#if deleting}<Loader size={14} />{:else}<Trash2 size={14} />{/if}
-          Apagar perfil
+          {t('fitProfileMine.deleteProfile')}
         </Button>
       </div>
     </div>
@@ -88,7 +88,7 @@
         <Clock class="mt-0.5 text-amber-700 dark:text-amber-300" size={20} />
         <div class="flex-1">
           <h2 class="font-semibold text-amber-800 dark:text-amber-200">
-            {status === 'expired' ? 'Perfil expirado' : 'Perfil ainda não respondido'}
+            {status === 'expired' ? t('fitProfileMine.expiredHeading') : t('fitProfileMine.neverAnsweredHeading')}
           </h2>
           <p class="mt-1 text-sm text-amber-700 dark:text-amber-200/80">
             {status === 'expired'
@@ -99,7 +99,7 @@
       </div>
       <div class="mt-4">
         <Button variant="solid" size="sm" onclick={() => goto('/my-profile/fit-profile/questions')}>
-          Começar agora
+          {t('fitProfileMine.startNow')}
         </Button>
       </div>
     </div>
