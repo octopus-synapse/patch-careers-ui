@@ -21,6 +21,7 @@ import {
   QuoteCard,
 } from 'ui';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
+import { renderRichText } from '$lib/utils/linkify';
 import { relativeFrom } from '$lib/utils/relative';
 import { locale } from '$lib/state/locale.svelte';
 import { timeTicker } from '$lib/state/time-ticker.svelte';
@@ -256,9 +257,6 @@ function handleCardTouchEnd(e: TouchEvent) {
   }
 }
 
-function highlightHashtags(text: string): string {
-  return text.replace(/(#\w+)/g, '<span class="text-blue-500">$1</span>');
-}
 
 function handleVoteClick(index: number) {
   if (hasVoted) return;
@@ -391,7 +389,7 @@ function handleDeleteRequest() {
 		<!-- Content -->
 		{#if content}
 			<p class="mt-2 whitespace-pre-wrap text-[14px] leading-relaxed text-gray-700 dark:text-zinc-300">
-				{@html highlightHashtags(content)}
+				{@html renderRichText(content)}
 			</p>
 		{/if}
 
