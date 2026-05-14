@@ -20,6 +20,6 @@
 
   <ComingSoonBanner
     title={t('admin.health.title')}
-    description="O endpoint /platform/check ainda não foi exposto pela spec client-only. Volte quando o backend publicar a rota tipada."
+    description={t('admin.health.checkPendingDescription')}
   />
 </div>

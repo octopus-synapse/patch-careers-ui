@@ -137,6 +137,10 @@
    * on. Toasts are drawn by the existing `<ToastContainer>`; we only need
    * to handle banner + modal here.
    */
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
+
   type Props = {
     /** Optional override for an inline `err` prop (used by form callers). */
     err?: ApiError;
@@ -193,7 +197,7 @@
       onclick={(e) => e.stopPropagation()}
     >
       <h2 class="text-base font-semibold text-gray-900 dark:text-neutral-100">
-        Algo deu errado
+        {t('errorPage.somethingWentWrong')}
       </h2>
       <p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">{modal.message}</p>
       <p class="mt-1 font-mono text-xs text-gray-400 dark:text-neutral-600">

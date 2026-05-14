@@ -84,7 +84,7 @@
       <StatCard label="DAU" value={data.activeUsers.dau} />
       <StatCard label="MAU" value={data.activeUsers.mau} />
       <StatCard
-        label="DAU/MAU"
+        label={t('admin.analytics.statDauMau')}
         value={data.activeUsers.mau > 0
           ? `${Math.round((data.activeUsers.dau / data.activeUsers.mau) * 100)}%`
           : '—'}
@@ -98,19 +98,19 @@
     </div>
 
     <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
-      <StatCard label="Pending invites" value={data.socialStats.pendingInvitations} />
+      <StatCard label={t('admin.analytics.statPendingInvites')} value={data.socialStats.pendingInvitations} />
       <StatCard label="Accepted" value={data.socialStats.acceptedConnections} />
       <StatCard label="Rejected" value={data.socialStats.rejectedConnections} />
-      <StatCard label="Acceptance rate" value={`${data.socialStats.acceptanceRate}%`} />
+      <StatCard label={t('admin.analytics.statAcceptanceRate')} value={`${data.socialStats.acceptanceRate}%`} />
       <StatCard label="Blocked" value={data.socialStats.blockedUsers} />
     </div>
 
     <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
-      <StatCard label="Jobs posted" value={data.jobStats.postedJobs} />
-      <StatCard label="Active jobs" value={data.jobStats.activeJobs} />
+      <StatCard label={t('admin.analytics.statJobsPosted')} value={data.jobStats.postedJobs} />
+      <StatCard label={t('admin.analytics.statActiveJobs')} value={data.jobStats.activeJobs} />
       <StatCard label="Applications" value={data.jobStats.applications} />
       <StatCard label="Withdrawn" value={data.jobStats.withdrawn} />
-      <StatCard label="Apps / job" value={data.jobStats.applicationsPerJob} />
+      <StatCard label={t('admin.analytics.statAppsPerJob')} value={data.jobStats.applicationsPerJob} />
     </div>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">

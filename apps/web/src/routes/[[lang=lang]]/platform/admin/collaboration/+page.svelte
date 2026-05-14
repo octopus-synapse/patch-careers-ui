@@ -13,6 +13,9 @@ import { Shield, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { Avatar, Button, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const queryClient = useQueryClient();
 
@@ -44,7 +47,7 @@ function revoke(resumeId: string, userId: string, label: string) {
   <header class="mb-6 flex items-center gap-2">
     <Shield size={20} class="text-cyan-500" />
     <h1 class="text-xl font-semibold text-gray-900 dark:text-neutral-100">
-      Colaboração (admin)
+      {t('admin.collaboration.heading')}
     </h1>
   </header>
 

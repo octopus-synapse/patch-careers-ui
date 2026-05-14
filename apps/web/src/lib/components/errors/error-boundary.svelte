@@ -6,6 +6,9 @@
 <script lang="ts">
 import type { Snippet } from 'svelte';
 import { onMount } from 'svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface Props {
   children: Snippet;
@@ -50,7 +53,7 @@ const message = $derived(
       aria-live="assertive"
     >
       <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-100">
-        Algo deu errado.
+        {t('errorBoundary.heading')}
       </h1>
       <p class="max-w-md text-sm text-gray-600 dark:text-neutral-400">{message}</p>
       <div class="flex gap-3">
@@ -59,14 +62,14 @@ const message = $derived(
           class="rounded-lg bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-800 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-white"
           onclick={reset}
         >
-          Tentar novamente
+          {t('errorBoundary.tryAgain')}
         </button>
         <button
           type="button"
           class="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
           onclick={() => location.reload()}
         >
-          Recarregar página
+          {t('errorBoundary.reloadPage')}
         </button>
       </div>
     </div>

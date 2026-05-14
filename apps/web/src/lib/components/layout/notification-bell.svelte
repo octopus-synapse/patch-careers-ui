@@ -191,7 +191,7 @@ async function handleNotificationClick(notification: NotificationItem) {
 			onclick={() => (isOpen = false)}
 			class="flex items-center justify-center gap-1 border-t border-gray-200 px-4 py-2 text-[11px] font-medium text-cyan-600 hover:underline dark:border-neutral-700 dark:text-cyan-400"
 		>
-			{t('notifications.viewAll') ?? 'Ver todas'}
+			{t('notifications.viewAll') ?? t('layout.viewAllNotificationsFallback')}
 			<ArrowRight size={10} />
 		</a>
 	</div>

@@ -105,7 +105,7 @@ const repliesByParent = $derived(
   <header class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-neutral-800">
     <div class="flex items-center gap-2">
       <MessageSquare size={16} />
-      <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">Comentários</h2>
+      <h2 class="text-sm font-semibold text-gray-900 dark:text-neutral-100">{t('collaboration.commentsHeading')}</h2>
     </div>
     <Checkbox bind:checked={showResolved} size="sm" class="text-xs text-gray-500 dark:text-neutral-500">
       <span class="text-xs">Mostrar resolvidos</span>
@@ -179,7 +179,7 @@ const repliesByParent = $derived(
               >
                 <input
                   bind:value={replyContent}
-                  placeholder="Responder…"
+                  placeholder={t('collaboration.replyPlaceholder')}
                   class="flex-1 rounded-md border border-gray-200 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-neutral-800"
                 />
                 <Button type="submit" size="sm" variant="solid">Enviar</Button>
@@ -224,7 +224,7 @@ const repliesByParent = $derived(
     <Textarea
       bind:value={newContent}
       rows={3}
-      placeholder="Adicionar comentário…"
+      placeholder={t('collaboration.addCommentPlaceholder')}
     />
     <div class="mt-2 flex justify-end">
       <Button type="submit" size="sm" variant="solid" disabled={$createComment.isPending || !newContent.trim()}>

@@ -23,6 +23,8 @@ import { extractLockoutCode, openLockout } from '$lib/state/lockout-state.svelte
 import { locale } from '$lib/state/locale.svelte';
 import { trackPageView } from '$lib/utils/analytics/track';
 
+const t = $derived(locale.t);
+
 let { children }: { children: Snippet } = $props();
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -83,7 +85,7 @@ $effect(() => {
 });
 </script>
 
-<a href="#main-content" class="skip-link">Skip to main content</a>
+<a href="#main-content" class="skip-link">{t('layout.skipToMainContent')}</a>
 
 {#if isLanding}
 	<QueryClientProvider client={queryClient}>

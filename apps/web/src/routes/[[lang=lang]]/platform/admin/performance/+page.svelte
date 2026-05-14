@@ -7,6 +7,9 @@
   import { browser } from '$app/environment';
   import { Card, Loader } from 'ui';
   import StatCard from '../_components/stat-card.svelte';
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
 
   const metricsQuery = createGetV1AdminMetricsOverview({
       query: { enabled: browser, refetchInterval: 10_000 },
@@ -62,28 +65,28 @@
       <StatCard label="Uptime" value={formatUptime(proc?.uptimeSeconds ?? 0)}>
         {#snippet icon()}<Clock size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
-      <StatCard label="Heap Used" value={`${proc?.heapUsedMb ?? 0} MB`}>
+      <StatCard label={t('admin.performance.statHeapUsed')} value={`${proc?.heapUsedMb ?? 0} MB`}>
         {#snippet icon()}<HardDrive size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
-      <StatCard label="Heap Total" value={`${proc?.heapTotalMb ?? 0} MB`}>
+      <StatCard label={t('admin.performance.statHeapTotal')} value={`${proc?.heapTotalMb ?? 0} MB`}>
         {#snippet icon()}<Cpu size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
-      <StatCard label="Event Loop Lag" value={`${proc?.eventLoopLagMs ?? 0} ms`}>
+      <StatCard label={t('admin.performance.statEventLoopLag')} value={`${proc?.eventLoopLagMs ?? 0} ms`}>
         {#snippet icon()}<Zap size={18} class="text-gray-500 dark:text-neutral-500" />{/snippet}
       </StatCard>
     </div>
 
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-5">
-      <StatCard label="Resumes Created" value={counters?.resumeCreated ?? 0} />
-      <StatCard label="User Signups" value={counters?.userSignups ?? 0} />
-      <StatCard label="Exports Done" value={counters?.exportCompleted ?? 0} />
-      <StatCard label="Active Users" value={gauges?.activeUsers ?? 0} />
-      <StatCard label="Pending Exports" value={gauges?.pendingExports ?? 0} />
+      <StatCard label={t('admin.performance.statResumesCreated')} value={counters?.resumeCreated ?? 0} />
+      <StatCard label={t('admin.performance.statUserSignups')} value={counters?.userSignups ?? 0} />
+      <StatCard label={t('admin.performance.statExportsDone')} value={counters?.exportCompleted ?? 0} />
+      <StatCard label={t('admin.performance.statActiveUsers')} value={gauges?.activeUsers ?? 0} />
+      <StatCard label={t('admin.performance.statPendingExports')} value={gauges?.pendingExports ?? 0} />
     </div>
 
     <div>
       <h2 class="mb-4 text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-neutral-500">
-        Endpoint Latency
+        {t('admin.performance.heading')}
       </h2>
 
       {#if latency && latency.length}

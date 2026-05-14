@@ -43,10 +43,10 @@ type Action = {
 type GlobalSearchGroup = GetV1SearchGlobal200['groups'][number];
 type GlobalSearchItem = GlobalSearchGroup['items'][number];
 
-const quickActions: Action[] = [
+const quickActions: Action[] = $derived([
   {
     id: 'new-post',
-    label: 'Novo post',
+    label: t('commandPalette.actions.newPost'),
     hint: 'Abrir composer do feed',
     icon: Sparkles,
     run: () => {
@@ -56,7 +56,7 @@ const quickActions: Action[] = [
   },
   {
     id: 'edit-profile',
-    label: 'Editar perfil',
+    label: t('commandPalette.actions.editProfile'),
     icon: User,
     run: () => {
       onclose();
@@ -65,7 +65,7 @@ const quickActions: Action[] = [
   },
   {
     id: 'settings',
-    label: 'Configurações',
+    label: t('commandPalette.actions.settings'),
     icon: Settings,
     run: () => {
       onclose();
@@ -81,15 +81,15 @@ const quickActions: Action[] = [
       goto('/identity/sign-out');
     },
   },
-];
+]);
 
-const navigation: Action[] = [
+const navigation: Action[] = $derived([
   { id: 'nav-home', label: 'Dashboard', icon: Home, run: () => { onclose(); goto('/my-profile/dashboard'); } },
   { id: 'nav-feed', label: 'Feed', icon: MessageSquare, run: () => { onclose(); goto('/social/feed'); } },
   { id: 'nav-jobs', label: 'Vagas', icon: Briefcase, run: () => { onclose(); goto('/careers/browse-jobs'); } },
-  { id: 'nav-cvs', label: 'Meus CVs', icon: FileText, run: () => { onclose(); goto('/careers/manage-resumes'); } },
+  { id: 'nav-cvs', label: t('commandPalette.actions.myResumes'), icon: FileText, run: () => { onclose(); goto('/careers/manage-resumes'); } },
   { id: 'nav-network', label: 'Rede', icon: Users, run: () => { onclose(); goto('/social/network'); } },
-];
+]);
 
 let inputRef: HTMLInputElement | undefined = $state();
 let query = $state('');
@@ -217,7 +217,7 @@ function indexOfAction(actionId: string): number {
 		onclick={handleBackdrop}
 		role="dialog"
 		aria-modal="true"
-		aria-label="Command palette"
+		aria-label={t('commandPalette.ariaLabel')}
 		tabindex="-1"
 	>
 		<div

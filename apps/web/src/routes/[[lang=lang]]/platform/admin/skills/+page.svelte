@@ -113,13 +113,13 @@
     }
   }
 
-  const tabs: { value: Tab; label: string }[] = [
-    { value: 'areas', label: 'Áreas' },
+  const tabs: { value: Tab; label: string }[] = $derived([
+    { value: 'areas', label: t('admin.skills.groupAreas') },
     { value: 'niches', label: 'Nichos' },
     { value: 'skills', label: 'Skills' },
-    { value: 'programming', label: 'Linguagens de prog.' },
-    { value: 'spoken', label: 'Idiomas falados' },
-  ];
+    { value: 'programming', label: t('admin.skills.groupProgrammingLanguages') },
+    { value: 'spoken', label: t('admin.skills.groupSpokenLanguages') },
+  ]);
 
   const currentItems = $derived.by(() => {
     switch (tab) {
@@ -178,7 +178,7 @@
 
   <input
     type="search"
-    placeholder="Buscar..."
+    placeholder={t('admin.sections.searchPlaceholder')}
     bind:value={search}
     class="w-full max-w-sm rounded-md border border-border bg-background px-3 py-1.5 text-sm"
   />

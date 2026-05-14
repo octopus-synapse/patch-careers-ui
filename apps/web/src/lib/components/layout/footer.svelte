@@ -44,7 +44,7 @@ const year = new Date().getFullYear();
           </li>
           <li>
             <a href="mailto:dpo@patchcareers.com" class="text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
-              {t('footer.dpo')}: dpo@patchcareers.com
+              {t('footer.dpo')}{t('layout.dpoEmailSuffix')}
             </a>
           </li>
         </ul>

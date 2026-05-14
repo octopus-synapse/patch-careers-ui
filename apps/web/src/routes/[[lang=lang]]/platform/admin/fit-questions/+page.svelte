@@ -137,11 +137,11 @@
 <div class="space-y-6">
   <div class="flex flex-wrap items-center justify-between gap-3">
     <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-      Fit Questions
+      {t('admin.fitQuestions.heading')}
     </h1>
     <Button size="sm" variant="solid" onclick={handleOpen}>
       <Plus class="size-3" />
-      Nova questão
+      {t('admin.fitQuestions.newQuestion')}
     </Button>
   </div>
 
@@ -229,7 +229,7 @@
         {/if}
       </div>
       <div>
-        <Label for="q-dim">Dimensão</Label>
+        <Label for="q-dim">{t('admin.fitQuestions.fieldDimension')}</Label>
         <select
           id="q-dim"
           bind:value={form.values.dimension}
@@ -244,14 +244,14 @@
         {/if}
       </div>
       <div>
-        <Label for="q-text-en">Texto (EN)</Label>
+        <Label for="q-text-en">{t('admin.fitQuestions.fieldTextEn')}</Label>
         <Textarea id="q-text-en" bind:value={form.values.textEn} rows={2} class="mt-1" />
         {#if form.errors.textEn}
           <span class="mt-1 block text-xs text-red-500">{form.errors.textEn}</span>
         {/if}
       </div>
       <div>
-        <Label for="q-text-pt">Texto (pt-BR)</Label>
+        <Label for="q-text-pt">{t('admin.fitQuestions.fieldTextPtBr')}</Label>
         <Textarea id="q-text-pt" bind:value={form.values.textPtBr} rows={2} class="mt-1" />
         {#if form.errors.textPtBr}
           <span class="mt-1 block text-xs text-red-500">{form.errors.textPtBr}</span>

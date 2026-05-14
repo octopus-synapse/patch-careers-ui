@@ -7,6 +7,9 @@
    */
   import { page } from '$app/stores';
   import ComingSoonBanner from '$lib/components/layout/coming-soon-banner.svelte';
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
 </script>
 
 <svelte:head>
@@ -16,13 +19,13 @@
 <main class="mx-auto max-w-3xl p-6">
   <header class="mb-6 flex items-center justify-between gap-3">
     <div>
-      <a class="text-xs text-muted-foreground underline" href="../">← Voltar para a lista</a>
-      <h1 class="mt-2 text-xl font-semibold">Usuário {$page.params.id}</h1>
+      <a class="text-xs text-muted-foreground underline" href="../">{t('admin.users.backToList')}</a>
+      <h1 class="mt-2 text-xl font-semibold">{t('admin.users.detailHeading')} {$page.params.id}</h1>
     </div>
   </header>
 
   <ComingSoonBanner
-    title="Detalhe do usuário (admin) em breve"
-    description="A página completa com edição de papéis, suspensão e impersonate ainda não foi liberada — depende de endpoints administrativos que serão entregues na próxima fase."
+    title={t('admin.users.detailComingSoonTitle')}
+    description={t('admin.users.detailComingSoonDescription')}
   />
 </main>

@@ -51,12 +51,12 @@
 
 <div class="space-y-6">
   <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-    Section Types
+    {t('admin.sections.heading')}
   </h1>
 
   <input
     type="search"
-    placeholder="Buscar..."
+    placeholder={t('admin.sections.searchPlaceholder')}
     bind:value={search}
     class="w-full max-w-sm rounded-md border border-border bg-background px-3 py-1.5 text-sm"
   />

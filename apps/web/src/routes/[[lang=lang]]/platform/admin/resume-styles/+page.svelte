@@ -133,11 +133,11 @@
 <div class="space-y-6">
   <div class="flex flex-wrap items-center justify-between gap-3">
     <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-      Resume Styles
+      {t('admin.resumeStyles.heading')}
     </h1>
     <Button size="sm" variant="solid" onclick={handleOpen}>
       <Plus class="size-3" />
-      Novo estilo
+      {t('admin.resumeStyles.newStyle')}
     </Button>
   </div>
 
@@ -220,7 +220,7 @@
         {/if}
       </div>
       <div>
-        <Label for="style-description">Descrição</Label>
+        <Label for="style-description">{t('admin.resumeStyles.fieldDescription')}</Label>
         <Input
           id="style-description"
           type="text"
@@ -244,7 +244,7 @@
         {/if}
       </div>
       <div>
-        <Label for="style-typst">Typst template</Label>
+        <Label for="style-typst">{t('admin.resumeStyles.fieldTypstTemplate')}</Label>
         <Textarea
           id="style-typst"
           bind:value={form.values.typstTemplate}
@@ -256,7 +256,7 @@
         {/if}
       </div>
       <div>
-        <Label for="style-config">styleConfig (JSON)</Label>
+        <Label for="style-config">{t('admin.resumeStyles.fieldStyleConfig')}</Label>
         <Textarea
           id="style-config"
           bind:value={styleConfigText}
@@ -265,7 +265,7 @@
         />
       </div>
       <div>
-        <Label for="style-section">sectionStyles (JSON)</Label>
+        <Label for="style-section">{t('admin.resumeStyles.fieldSectionStyles')}</Label>
         <Textarea
           id="style-section"
           bind:value={sectionStylesText}

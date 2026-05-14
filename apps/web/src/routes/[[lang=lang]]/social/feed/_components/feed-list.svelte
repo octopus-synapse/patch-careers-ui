@@ -178,7 +178,7 @@ $effect(() => {
 			</div>
 			{#if onclearsearch}
 				<Button variant="ghost" size="sm" onclick={onclearsearch}>
-					{t('feed.sidebar.clearSearch') ?? 'Limpar busca'}
+					{t('feed.sidebar.clearSearch') ?? t('feed.list.clearSearchFallback')}
 				</Button>
 			{/if}
 		</div>

@@ -8,6 +8,9 @@ import { Award, FileText, Palette, Sparkles, UserPlus } from 'lucide-svelte';
 import { Avatar, Loader } from 'ui';
 import { browser } from '$app/environment';
 import { useAuth } from '$lib/state/auth.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const auth = useAuth();
 const viewerId = $derived(String(auth.userId ?? ''));
@@ -99,7 +102,7 @@ function summarize(a: ActivityItem): string {
             <a
               href="/my-profile/public/@{a.user.username}"
               class="text-xs text-cyan-500 hover:underline"
-              aria-label="Ver perfil"
+              aria-label={t('feed.activity.viewProfileAria')}
             >
               ver
             </a>

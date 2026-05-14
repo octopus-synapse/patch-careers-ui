@@ -40,7 +40,7 @@ const items = $derived(
 {#if items.length > 0}
 	<Card class="sm:p-6">
 		<h2 class="mb-3 text-xs font-semibold text-gray-500 dark:text-neutral-500">
-			{t('jobs.similarTitle') ?? 'Vagas similares'}
+			{t('jobs.similarTitle')}
 		</h2>
 		<ul class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-1">
 			{#each items as job (job.id)}

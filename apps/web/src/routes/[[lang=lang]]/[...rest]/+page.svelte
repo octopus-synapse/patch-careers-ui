@@ -1,4 +1,7 @@
 <script lang="ts">
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 </script>
 
 <svelte:head>
@@ -9,6 +12,6 @@
 	<span class="text-6xl font-bold text-gray-800 dark:text-neutral-200">404</span>
 	<span class="text-xs text-gray-500 dark:text-neutral-500">page not found</span>
 	<a href="/" class="mt-4 text-xs text-gray-500 dark:text-neutral-500 underline hover:opacity-70">
-		go home
+		{t('errorPage.goHomeShort')}
 	</a>
 </div>

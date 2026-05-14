@@ -13,6 +13,9 @@
 <script lang="ts">
 import { getV1Search } from 'api-client';
 import { AtSign } from 'lucide-svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface MentionCandidate {
   userId: string;
@@ -135,7 +138,7 @@ function onKeyDown(e: KeyboardEvent) {
     <ul
       class="absolute left-0 top-full z-50 mt-1 w-full max-w-sm overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-900"
       role="listbox"
-      aria-label="Menções"
+      aria-label={t('feed.mentions.listAria')}
     >
       {#each candidates as c, i (c.userId)}
         <li>

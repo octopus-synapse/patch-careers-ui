@@ -42,7 +42,7 @@ function markAsSeen() {
 	>
 		<span class="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" aria-hidden="true"></span>
 		{newCount === 1
-			? (t('jobs.newJobsSingular') ?? '1 nova')
+			? t('jobs.newJobsSingular')
 			: (t('jobs.newJobsPlural', { count: newCount }) ?? `${newCount} novas`)}
 	</button>
 {/if}

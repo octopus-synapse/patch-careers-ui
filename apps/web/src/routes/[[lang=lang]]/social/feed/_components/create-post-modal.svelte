@@ -142,7 +142,7 @@ function handleCancel() {
 						type="text"
 						bind:value={pollOptions[i]}
 						class="block w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-zinc-900"
-						placeholder={`Opção ${i + 1}`}
+						placeholder={t('feed.composer.pollOptionPlaceholder', { index: i + 1 })}
 						maxlength={80}
 					/>
 				{/each}
@@ -152,7 +152,7 @@ function handleCancel() {
 						class="text-xs font-semibold text-blue-600 hover:underline"
 						onclick={() => (pollOptions = [...pollOptions, ''])}
 					>
-						+ adicionar opção
+						{t('feed.composer.addOption')}
 					</button>
 				{/if}
 				<input
@@ -169,7 +169,7 @@ function handleCancel() {
 					type="text"
 					bind:value={codeLanguage}
 					class="block w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-zinc-900"
-					placeholder="Linguagem (ex.: ts, py)"
+					placeholder={t('feed.composer.codeLanguagePlaceholder')}
 					maxlength={40}
 				/>
 				<Textarea bind:value={codeSnippet} rows={6} placeholder="// código..." maxlength={20000} />

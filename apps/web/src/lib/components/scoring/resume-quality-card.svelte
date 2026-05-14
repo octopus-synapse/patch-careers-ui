@@ -2,6 +2,9 @@
   import { browser } from '$app/environment';
   import { createGetV1ResumesResumeIdQuality } from 'api-client';
   import { Badge, ScoreCard, Skeleton } from 'ui';
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
 
   /**
    * Resume Quality card — frontend-burro: backend ships an `overallScore`,
@@ -43,18 +46,18 @@
 {:else if !snapshot || $qualityQuery.isError}
   <ScoreCard
     score={null}
-    label="Resume Quality"
+    label={t('scoring.resumeQualityLabel')}
     teaser={{
-      title: 'Ainda sem snapshot',
+      title: t('scoring.noSnapshotTitle'),
       body: 'Salve uma mudança no currículo para gerar sua primeira pontuação.',
-      cta: detailsHref ? { label: 'Ver detalhes', href: detailsHref } : undefined,
+      cta: detailsHref ? { label: t('scoring.viewDetails'), href: detailsHref } : undefined,
     }}
   />
 {:else}
   <div class="space-y-2">
     <ScoreCard
       score={snapshot.overallScore}
-      label="Resume Quality"
+      label={t('scoring.resumeQualityLabel')}
       subScores={subScores}
     />
     {#if issuesCount > 0}
@@ -72,7 +75,7 @@
             href={detailsHref}
             class="font-semibold text-emerald-700 hover:underline dark:text-emerald-300"
           >
-            Ver lista →
+            {t('scoring.viewList')}
           </a>
         {/if}
       </div>

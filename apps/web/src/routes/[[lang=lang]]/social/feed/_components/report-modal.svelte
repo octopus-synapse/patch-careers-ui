@@ -1,6 +1,9 @@
 <script lang="ts">
 
 import { Button, Loader, Modal, Textarea } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type Props = {
   open: boolean;
@@ -38,7 +41,7 @@ function handleCancel() {
 	<div class="space-y-4">
 		<p class="text-xs text-gray-400 dark:text-neutral-500">Why are you reporting this post?</p>
 		<Textarea
-			placeholder="Describe the reason..."
+			placeholder={t('feed.report.reasonPlaceholder')}
 			rows={4}
 			bind:value={reason}
 		/>

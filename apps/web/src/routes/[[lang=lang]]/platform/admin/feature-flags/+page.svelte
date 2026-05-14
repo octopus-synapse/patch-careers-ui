@@ -14,6 +14,9 @@
   import { Button, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
+  import { locale } from '$lib/state/locale.svelte';
+
+  const t = $derived(locale.t);
 
   type FlagRow = GetV1AdminFeatureFlags200['flags'][number];
 
@@ -31,7 +34,7 @@
     toggling = flag.key;
     try {
       await patchV1AdminFeatureFlagsKey(flag.key, { enabled: !flag.enabled });
-      toastState.show('Flag atualizada', 'success');
+      toastState.show(t('admin.featureFlags.toastFlagUpdated'), 'success');
       await queryClient.invalidateQueries({ queryKey: getV1AdminFeatureFlagsQueryKey() });
     } catch (err) {
       handleApiError(err);
@@ -45,7 +48,7 @@
     broadcasting = true;
     try {
       await postV1AdminFeatureFlagsBroadcastRefresh();
-      toastState.show('Broadcast enviado', 'success');
+      toastState.show(t('admin.featureFlags.toastBroadcastSent'), 'success');
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -61,11 +64,11 @@
 <div class="space-y-6">
   <div class="flex items-center justify-between">
     <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-gray-800 dark:text-neutral-200">
-      Feature Flags
+      {t('admin.featureFlags.heading')}
     </h1>
     <Button size="sm" variant="outline" onclick={broadcast} disabled={broadcasting}>
       {#if broadcasting}<Loader class="size-3 animate-spin" />{:else}<RefreshCw class="size-3" />{/if}
-      Broadcast refresh
+      {t('admin.featureFlags.broadcastRefresh')}
     </Button>
   </div>
 

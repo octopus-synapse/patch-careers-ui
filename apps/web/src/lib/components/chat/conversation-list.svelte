@@ -4,6 +4,8 @@ import { Search } from 'lucide-svelte';
 import { Avatar } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
+const t = $derived(locale.t);
+
 type Conversation = {
   id: string;
   participant: {
@@ -61,7 +63,7 @@ function timeAgo(dateStr: string | null): string {
 		<input
 			type="text"
 			bind:value={search}
-			placeholder="Buscar conversas"
+			placeholder={t('chat.searchConversationsPlaceholder')}
 			class="w-full rounded-md border border-gray-200 bg-transparent py-1 pl-7 pr-2 text-xs outline-none placeholder:text-gray-400 focus:border-cyan-500 dark:border-neutral-700 dark:text-neutral-200"
 		/>
 	</div>

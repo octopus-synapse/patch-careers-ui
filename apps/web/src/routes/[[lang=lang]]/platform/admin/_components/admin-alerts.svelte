@@ -5,6 +5,9 @@
 import { createGetV1AdminAlerts } from 'api-client';
 import { AlertTriangle, Flag, MailCheck, UserPlus } from 'lucide-svelte';
 import { browser } from '$app/environment';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 const alertsQuery = createGetV1AdminAlerts({
   query: { enabled: browser, refetchInterval: 60_000 },
@@ -19,7 +22,7 @@ const total = $derived(alerts?.total ?? 0);
 		<div class="mb-3 flex items-center gap-2">
 			<AlertTriangle size={14} class="text-amber-500" />
 			<h2 class="text-xs font-semibold text-amber-600 dark:text-amber-400">
-				Precisando de atenção
+				{t('admin.alerts.heading')}
 			</h2>
 		</div>
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">

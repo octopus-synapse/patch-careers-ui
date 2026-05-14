@@ -2,6 +2,9 @@
 import { ChevronDown, FileText, Globe, LogOut, Moon, Settings, Sun } from 'lucide-svelte';
 import { Avatar, Button, SegmentToggle } from 'ui';
 import { colorSchema } from '$lib/state/color-schema.svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type User = {
   name?: string | null;
@@ -97,7 +100,7 @@ const localeOptions = $derived(
 					class="flex w-full items-center gap-2 px-4 py-3 text-[11px] transition-opacity hover:opacity-70 text-gray-500 dark:text-neutral-500"
 				>
 					<FileText size={13} />
-					{cvLabel ?? 'My CV'}
+					{cvLabel ?? t('layout.myCvFallback')}
 				</a>
 				<a
 					href="/my-profile/settings"

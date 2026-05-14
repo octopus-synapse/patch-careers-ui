@@ -10,6 +10,9 @@ import { Send, Trash2 } from 'lucide-svelte';
 import { Avatar, Button, Input, Loader } from 'ui';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import { relativeFrom } from '$lib/utils/relative';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 /**
  * Frontend-burro comment thread for a single post. Reads `GET
@@ -104,7 +107,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 	<!-- Comment input -->
 	<div class="flex items-center gap-2">
 		<Input
-			placeholder="Write a comment..."
+			placeholder={t('feed.commentsList.writePlaceholder')}
 			bind:value={commentText}
 			onkeydown={handleCommentKeydown}
 		/>
@@ -180,7 +183,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 				{#if replyingTo === comment.id}
 					<div class="ml-4 sm:ml-10 flex items-center gap-2">
 						<Input
-							placeholder="Reply..."
+							placeholder={t('feed.commentsList.replyPlaceholder')}
 							bind:value={replyText}
 							onkeydown={(e: KeyboardEvent) => handleReplyKeydown(e, comment.id)}
 						/>
@@ -251,7 +254,7 @@ function handleReplyKeydown(e: KeyboardEvent, parentId: string) {
 								size="xs"
 								onclick={() => toggleExpandReplies(comment.id)}
 							>
-								Show less
+								{t('feed.commentsList.showLess')}
 							</Button>
 						{/if}
 					</div>

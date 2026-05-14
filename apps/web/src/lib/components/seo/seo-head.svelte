@@ -5,6 +5,9 @@
 -->
 <script lang="ts">
 import { page } from '$app/stores';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 interface Props {
   title: string;
@@ -27,7 +30,7 @@ let {
 }: Props = $props();
 
 const appTitle = 'Patch Careers';
-const fullTitle = $derived(title === appTitle ? title : `${title} · ${appTitle}`);
+const fullTitle = $derived(title === appTitle ? title : t('seo.titleSuffix', { title, appTitle }));
 const url = $derived(canonical ?? $page.url.toString());
 const ogImage = $derived(image ?? `${$page.url.origin}/og-default.png`);
 

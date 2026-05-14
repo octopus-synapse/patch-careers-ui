@@ -270,7 +270,7 @@ const grouped = $derived.by(() => {
 										<button
 											type="button"
 											class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-500"
-											aria-label="mark read"
+											aria-label={t('notifications.markReadAria')}
 											onclick={() => markOne(item.id)}
 										></button>
 									{/if}

@@ -11,10 +11,13 @@ import { fade, fly } from 'svelte/transition';
 import { Avatar, Button, Dropdown, Loader } from 'ui';
 import { useAuth } from '$lib/state/auth.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
+import { locale } from '$lib/state/locale.svelte';
 import BlockMenuItem from '$lib/components/moderation/block-menu-item.svelte';
 import ChatThreadPane from './chat-thread-pane.svelte';
 import ConversationList from './conversation-list.svelte';
 import UserSearch from './user-search.svelte';
+
+const t = $derived(locale.t);
 
 /**
  * Floating chat widget — frontend-burro renderer for the conversation
@@ -169,7 +172,7 @@ function onDragEnd(e: PointerEvent) {
 		<div
 			role="toolbar"
 			tabindex="-1"
-			aria-label="Chat window header"
+			aria-label={t('chat.windowHeaderAria')}
 			class="flex flex-shrink-0 items-center justify-between border-b px-3 py-2.5 border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 {chatState.isFullscreen ? '' : 'sm:cursor-move'}"
 			onpointerdown={onDragStart}
 			onpointermove={onDragMove}

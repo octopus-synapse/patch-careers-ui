@@ -4,31 +4,31 @@ import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
 
-const tools = [
+const tools = $derived([
   {
     href: '/platform/admin/dev-tools/test',
     icon: FlaskConical,
-    label: 'Admin Test Runner',
-    description: 'Executar suites de teste administrativas (seed-check, auth-flow, etc.).',
+    label: t('admin.devTools.toolAdminTestRunnerLabel'),
+    description: t('admin.devTools.toolAdminTestRunnerDescription'),
   },
   {
     href: '/platform/admin/dev-tools/backend-connection',
     icon: Radio,
-    label: 'Backend Connection Tester',
-    description: 'Diagnosticar conectividade com a API e serviços dependentes.',
+    label: t('admin.devTools.toolBackendConnectionLabel'),
+    description: t('admin.devTools.toolBackendConnectionDescription'),
   },
   {
     href: '/platform/admin/dev-tools/test-404',
     icon: Bug,
-    label: 'Test 404 Page',
-    description: 'Validar renderização da página 404 genérica.',
+    label: t('admin.devTools.toolTest404Label'),
+    description: t('admin.devTools.toolTest404Description'),
   },
-];
+]);
 </script>
 
 <div class="space-y-6">
   <header>
-    <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-100">Dev Tools</h1>
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-neutral-100">{t('admin.devTools.heading')}</h1>
     <p class="text-sm text-gray-500 dark:text-neutral-400 mt-1">
       Ferramentas internas de desenvolvimento e diagnóstico. Disponíveis apenas para administradores.
     </p>

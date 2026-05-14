@@ -6,6 +6,9 @@ import { Button } from 'ui';
 // we want raw HTTP behavior visible here, not the envelope unwrapping done by
 // generated SDK hooks. No `customFetch` import.
 import { browser } from '$app/environment';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 let results = $state<Array<{ endpoint: string; status: string; data: string; time: number }>>([]);
 let testing = $state(false);
@@ -77,7 +80,7 @@ async function runTests() {
 
 <div class="min-h-screen pt-20 pb-12 bg-gray-50 dark:bg-neutral-900">
 	<div class="mx-auto max-w-2xl px-6">
-		<h1 class="text-lg font-bold text-gray-800 dark:text-neutral-200 mb-4">Backend Connection Test</h1>
+		<h1 class="text-lg font-bold text-gray-800 dark:text-neutral-200 mb-4">{t('admin.devTools.backendConnection.heading')}</h1>
 
 		<Button
 			variant="solid"
@@ -86,7 +89,7 @@ async function runTests() {
 			disabled={testing}
 			class="mb-6"
 		>
-			{testing ? 'Testing...' : 'Run Tests'}
+			{testing ? t('admin.devTools.backendConnection.testing') : t('admin.devTools.backendConnection.runTests')}
 		</Button>
 
 		{#if results.length > 0}
