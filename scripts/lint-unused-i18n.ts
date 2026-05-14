@@ -9,7 +9,7 @@
 //                      `t(\`errors.${code}\`)` are flagged as orphan but
 //                      MUST be preserved — add them to ALLOW.
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Glob } from 'bun';
 
@@ -21,7 +21,7 @@ const DICTS = ['en.json', 'pt-BR.json'].map((f) => ({
 
 const SOURCES = ['apps/web/src/**/*.{ts,svelte}', 'packages/ui/src/**/*.{ts,svelte}'];
 
-const ALLOW: ReadonlySet<string> = new Set([
+const STATIC_ALLOW: ReadonlySet<string> = new Set([
   // Single retained network fallback.
   'errors.network',
   // Admin sidebar labels are looked up via the dynamic
@@ -42,6 +42,28 @@ const ALLOW: ReadonlySet<string> = new Set([
   'admin.nav.featureFlags',
   'admin.nav.devTools',
 ]);
+
+// Pending-sweep allowlist — keys added in preparation for the
+// hardcoded-string sweep but not yet referenced via `t(...)` anywhere.
+// Maintained in `scripts/i18n-pending-sweep.json`; an entry survives
+// here until the sweep replaces the source literal with `t('<key>')`.
+// On every commit, when a literal is replaced and the orphan check
+// finds the key referenced, the dev runs the sweep refresher to drop
+// it from the pending file.
+const PENDING_SWEEP_PATH = join(ROOT, 'scripts/i18n-pending-sweep.json');
+const PENDING_SWEEP_KEYS: ReadonlySet<string> = (() => {
+  if (!existsSync(PENDING_SWEEP_PATH)) return new Set<string>();
+  try {
+    const raw = JSON.parse(readFileSync(PENDING_SWEEP_PATH, 'utf8')) as {
+      entries?: { key: string }[];
+    };
+    return new Set(raw.entries?.map((e) => e.key) ?? []);
+  } catch {
+    return new Set<string>();
+  }
+})();
+
+const ALLOW: ReadonlySet<string> = new Set([...STATIC_ALLOW, ...PENDING_SWEEP_KEYS]);
 
 function flatten(obj: Record<string, unknown>, prefix = ''): Map<string, unknown> {
   const out = new Map<string, unknown>();
