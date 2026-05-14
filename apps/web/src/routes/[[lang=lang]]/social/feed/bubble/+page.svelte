@@ -2,8 +2,8 @@
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
-import FeedContent from './_components/feed-content.svelte';
-import PostSkeleton from './_components/post-skeleton.svelte';
+import FeedContent from '../_components/feed-content.svelte';
+import PostSkeleton from '../_components/post-skeleton.svelte';
 
 const t = $derived(locale.t);
 
@@ -18,7 +18,7 @@ $effect(() => {
 </script>
 
 <svelte:head>
-	<title>{t('feed.pageTitle')}</title>
+	<title>{t('feed.nav.bubble')} · {t('feed.pageTitle')}</title>
 </svelte:head>
 
 {#if session.isLoading || !authenticated}
@@ -28,5 +28,5 @@ $effect(() => {
 		</div>
 	</div>
 {:else}
-	<FeedContent followingOnly={false} />
+	<FeedContent followingOnly={true} />
 {/if}
