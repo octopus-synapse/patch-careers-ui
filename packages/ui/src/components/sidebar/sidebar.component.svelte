@@ -102,6 +102,7 @@ function isActive(item: NavItem): boolean {
 			{#if item.href && !onselect}
 				<a
 					href={item.href}
+					data-step-id={item.id}
 					class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs transition-colors
 						{itemActive ? 'bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 font-semibold' : 'text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-800/50'}"
 					title={collapsible && collapsed ? item.label : undefined}
@@ -111,6 +112,7 @@ function isActive(item: NavItem): boolean {
 			{:else}
 				<button
 					onclick={() => handleClick(item)}
+					data-step-id={item.id}
 					class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs cursor-pointer transition-colors
 						{itemActive ? 'bg-white dark:bg-neutral-700/50 font-semibold text-gray-800 dark:text-neutral-200' : 'text-gray-500 dark:text-neutral-500 hover:bg-gray-50 dark:hover:bg-neutral-700/50'}"
 				>
@@ -135,7 +137,10 @@ function isActive(item: NavItem): boolean {
 				{index + 1}
 			{/if}
 			{#if item.missing && !item.completed}
-				<span class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>
+				<span
+					data-testid="step-missing-badge"
+					class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-red-500"
+				></span>
 			{/if}
 		</div>
 	{:else if typeof item.icon === 'string'}

@@ -1,19 +1,33 @@
 <script lang="ts">
 import type { Size } from '../../shared';
 
-type AvatarSize = Extract<Size, 'sm' | 'md' | 'lg'>;
+type AvatarSize = Extract<Size, 'sm' | 'md' | 'lg' | 'xl'>;
+type AvatarShape = 'circle' | 'square';
 
 type Props = {
   name: string;
   photoURL?: string | null;
   size?: AvatarSize;
+  /** Visual shape — `circle` (default) keeps the classic round avatar,
+   *  `square` produces a rounded-2xl chip used by the feed redesign. */
+  shape?: AvatarShape;
+  /** When true, wraps the avatar in a 2px gradient ring (deterministic
+   *  per-name colors). Used for premium feed surfaces. */
+  ring?: boolean;
 };
 
-let { name, photoURL, size = 'sm' }: Props = $props();
+let { name, photoURL, size = 'sm', shape = 'circle', ring = false }: Props = $props();
 
 const initial = $derived(name.charAt(0).toUpperCase());
-const sizeClass = { sm: 'h-8 w-8 text-xs', md: 'h-10 w-10 text-sm', lg: 'h-12 w-12 text-base' };
-const imgSize = { sm: 'h-8 w-8', md: 'h-10 w-10', lg: 'h-12 w-12' };
+const sizeClass = {
+  sm: 'h-8 w-8 text-xs',
+  md: 'h-10 w-10 text-sm',
+  lg: 'h-12 w-12 text-base',
+  xl: 'h-14 w-14 text-lg',
+};
+const imgSize = { sm: 'h-8 w-8', md: 'h-10 w-10', lg: 'h-12 w-12', xl: 'h-14 w-14' };
+const ringSize = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-13 w-13', xl: 'h-15 w-15' };
+const shapeClass = $derived(shape === 'square' ? 'rounded-2xl' : 'rounded-full');
 
 // Deterministic gradient per name so the fallback chip varies across users
 // (instead of every name rendering the same flat neutral block — UX #23).
@@ -37,20 +51,43 @@ function hashName(s: string): number {
 const gradient = $derived(palette[hashName(name) % palette.length]);
 </script>
 
-{#if photoURL}
+{#if ring}
+	<div
+		class="bg-gradient-to-br {gradient} p-0.5 shadow-xl shadow-black/10 inline-flex {shapeClass} {ringSize[size]}"
+	>
+		{#if photoURL}
+			<img
+				src={photoURL}
+				alt=""
+				aria-label="{name}"
+				loading="lazy"
+				decoding="async"
+				class="object-cover bg-white dark:bg-neutral-900 {shapeClass} {imgSize[size]}"
+			/>
+		{:else}
+			<div
+				role="img"
+				aria-label="{name}"
+				class="flex items-center justify-center font-semibold text-white bg-gradient-to-br {gradient} {shapeClass} {sizeClass[size]}"
+			>
+				{initial}
+			</div>
+		{/if}
+	</div>
+{:else if photoURL}
 	<img
 		src={photoURL}
 		alt=""
 		aria-label="{name}"
 		loading="lazy"
 		decoding="async"
-		class="rounded-full object-cover {imgSize[size]}"
+		class="object-cover {shapeClass} {imgSize[size]}"
 	/>
 {:else}
 	<div
 		role="img"
 		aria-label="{name}"
-		class="flex items-center justify-center rounded-full font-semibold text-white bg-gradient-to-br {gradient} {sizeClass[size]}"
+		class="flex items-center justify-center font-semibold text-white bg-gradient-to-br {gradient} {shapeClass} {sizeClass[size]}"
 	>
 		{initial}
 	</div>

@@ -97,6 +97,12 @@ function buttonSlotsFor(variant: ButtonVariant, intent: IntentKey, selected: boo
       const r = resolveIntent(tokens, { mutedTextColor: true });
       return { textColor: r.mutedTextColor };
     }
+    case 'glossy': {
+      // `glossy` is a premium CTA — gradient blue with inner highlight + drop
+      // shadow. Always neutral text (white) regardless of intent. The actual
+      // visual treatment lives in the `.btn-glossy` utility from app.css.
+      return { textColor: '' };
+    }
   }
 }
 
@@ -105,6 +111,12 @@ function buttonSlotsFor(variant: ButtonVariant, intent: IntentKey, selected: boo
 // ──────────────────────────────────────────────────────────────────────────
 
 const sizeStyles: Record<ButtonVariant, Record<ButtonSize, string>> = {
+  glossy: {
+    xs: 'btn-glossy rounded-xl px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest',
+    sm: 'btn-glossy rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-widest',
+    md: 'btn-glossy rounded-2xl px-6 py-2.5 text-sm font-bold',
+    lg: 'btn-glossy rounded-2xl px-8 py-3 text-sm font-bold',
+  },
   solid: {
     xs: 'rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-widest',
     sm: 'rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest',

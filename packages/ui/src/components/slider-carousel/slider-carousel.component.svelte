@@ -72,7 +72,7 @@ function revealMore() {
 <!-- Desktop: perView slider with side-anchored arrows -->
 <div class="relative hidden sm:block">
 	<div class="overflow-hidden px-5 py-4">
-		<div class="flex transition-transform duration-300 ease-out" style={slideStyle}>
+		<div class="flex transition-all duration-300 ease-in-out" style={slideStyle}>
 			{#each items as entry (keyFn(entry))}
 				<div class="flex-shrink-0 px-2" style={itemWidthStyle}>
 					{@render item(entry)}
