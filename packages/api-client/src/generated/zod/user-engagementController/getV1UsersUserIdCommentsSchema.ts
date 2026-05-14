@@ -34,12 +34,12 @@ export const getV1UsersUserIdComments200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     }),
 "post": z.object({
     "id": z.string(),
-"type": z.string(),
 "content": z.nullable(z.string()),
 "authorId": z.string().uuid(),
 "author": z.object({
@@ -47,6 +47,7 @@ export const getV1UsersUserIdComments200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     })

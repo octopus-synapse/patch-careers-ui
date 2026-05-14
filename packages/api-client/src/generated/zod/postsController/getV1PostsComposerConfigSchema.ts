@@ -20,7 +20,7 @@ export const getV1PostsComposerConfig200Schema = z.object({
 "pollMaxOptionLength": z.number().int(),
 "repostEnabled": z.boolean(),
 "mentionLimit": z.number().int(),
-"postTypes": z.array(z.enum(["ACHIEVEMENT", "OPPORTUNITY", "LEARNING", "BUILD", "QUESTION", "REPOST", "CHALLENGE"]))
+"codeEnabled": z.boolean()
     }) as unknown as ToZod<GetV1PostsComposerConfig200>
 
 /**

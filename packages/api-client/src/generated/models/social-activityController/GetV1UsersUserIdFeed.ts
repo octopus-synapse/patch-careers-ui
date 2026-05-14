@@ -45,7 +45,7 @@ export type GetV1UsersUserIdFeedQueryParams = {
     sortOrder?: GetV1UsersUserIdFeedQueryParamsSortOrderEnumKey;
 };
 
-export const itemsTypeEnum9 = {
+export const itemsTypeEnum6 = {
     RESUME_CREATED: "RESUME_CREATED",
     RESUME_UPDATED: "RESUME_UPDATED",
     RESUME_SHARED: "RESUME_SHARED",
@@ -58,7 +58,7 @@ export const itemsTypeEnum9 = {
     CONNECTED_USER: "CONNECTED_USER"
 } as const;
 
-export type ItemsTypeEnum9Key = (typeof itemsTypeEnum9)[keyof typeof itemsTypeEnum9];
+export type ItemsTypeEnum6Key = (typeof itemsTypeEnum6)[keyof typeof itemsTypeEnum6];
 
 /**
  * @description Successful response
@@ -79,7 +79,7 @@ export type GetV1UsersUserIdFeed200 = {
         /**
          * @type string
         */
-        type: ItemsTypeEnum9Key;
+        type: ItemsTypeEnum6Key;
         /**
          * @type object
         */

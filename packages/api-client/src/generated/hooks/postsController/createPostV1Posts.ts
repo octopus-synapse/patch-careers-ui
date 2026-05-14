@@ -20,7 +20,7 @@ export type PostV1PostsMutationKey = ReturnType<typeof postV1PostsMutationKey>
  */
 export function createPostV1Posts<TContext>(options: 
 {
-  mutation?: CreateMutationOptions<PostV1PostsMutationResponse, ResponseErrorConfig<PostV1Posts400 | PostV1Posts401 | PostV1Posts403>, {data: PostV1PostsMutationRequest}, TContext> & { client?: QueryClient },
+  mutation?: CreateMutationOptions<PostV1PostsMutationResponse, ResponseErrorConfig<PostV1Posts400 | PostV1Posts401 | PostV1Posts403>, {data?: PostV1PostsMutationRequest}, TContext> & { client?: QueryClient },
   client?: Partial<RequestConfig<PostV1PostsMutationRequest>> & { client?: Client },
 }
  = {}) {
@@ -29,7 +29,7 @@ export function createPostV1Posts<TContext>(options:
           const { client: queryClient, ...mutationOptions } = mutation;
           const mutationKey = mutationOptions?.mutationKey ?? postV1PostsMutationKey()
 
-          return createMutation<PostV1PostsMutationResponse, ResponseErrorConfig<PostV1Posts400 | PostV1Posts401 | PostV1Posts403>, {data: PostV1PostsMutationRequest}, TContext>({
+          return createMutation<PostV1PostsMutationResponse, ResponseErrorConfig<PostV1Posts400 | PostV1Posts401 | PostV1Posts403>, {data?: PostV1PostsMutationRequest}, TContext>({
             mutationFn: async({ data }) => {
               return postV1Posts(data, config)
             },

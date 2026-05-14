@@ -5,28 +5,6 @@
 
 import type { SocialUrl } from "../SocialUrl";
 
-export const postV1Posts201TypeEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type PostV1Posts201TypeEnumKey = (typeof postV1Posts201TypeEnum)[keyof typeof postV1Posts201TypeEnum];
-
-export const postV1Posts201AnonymousCategoryEnum = {
-    SALARY: "SALARY",
-    INTERVIEW: "INTERVIEW",
-    LAYOFF: "LAYOFF",
-    TOXIC_CULTURE: "TOXIC_CULTURE",
-    HARASSMENT: "HARASSMENT"
-} as const;
-
-export type PostV1Posts201AnonymousCategoryEnumKey = (typeof postV1Posts201AnonymousCategoryEnum)[keyof typeof postV1Posts201AnonymousCategoryEnum];
-
 /**
  * @description Successful response
 */
@@ -42,31 +20,11 @@ export type PostV1Posts201 = {
     /**
      * @type string
     */
-    type: PostV1Posts201TypeEnumKey;
-    /**
-     * @type string
-    */
-    subtype: string | null;
-    /**
-     * @type string
-    */
     content: string | null;
     /**
      * @type array
     */
-    hardSkills: string[];
-    /**
-     * @type array
-    */
-    softSkills: string[];
-    /**
-     * @type array
-    */
     hashtags: string[];
-    /**
-     * @type object
-    */
-    data: object | null;
     /**
      * @type string
     */
@@ -97,13 +55,13 @@ export type PostV1Posts201 = {
         domain: string;
     } | null;
     /**
+     * @type boolean
+    */
+    isRepost: boolean;
+    /**
      * @type string, uuid
     */
     originalPostId: string | null;
-    /**
-     * @type array
-    */
-    coAuthors: string[];
     /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string, date-time
@@ -118,6 +76,15 @@ export type PostV1Posts201 = {
     */
     threadId: string | null;
     /**
+     * @type array
+    */
+    pollOptions?: {
+        /**
+         * @type string
+        */
+        label: string;
+    }[] | null;
+    /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string, date-time
     */
@@ -127,22 +94,13 @@ export type PostV1Posts201 = {
     */
     votesCount: number;
     /**
-     * @type object
+     * @type string
     */
-    codeSnippet: {
-        /**
-         * @type string
-        */
-        language: string;
-        /**
-         * @type string
-        */
-        code: string;
-        /**
-         * @type string | undefined
-        */
-        filename?: string;
-    } | null;
+    codeSnippet: string | null;
+    /**
+     * @type string
+    */
+    codeLanguage: string | null;
     /**
      * @type integer
     */
@@ -168,14 +126,6 @@ export type PostV1Posts201 = {
      * @type string, date-time
     */
     deletedAt: string | null;
-    /**
-     * @type boolean
-    */
-    isAnonymous: boolean;
-    /**
-     * @type string
-    */
-    anonymousCategory: PostV1Posts201AnonymousCategoryEnumKey | null;
     /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string, date-time
@@ -206,6 +156,10 @@ export type PostV1Posts201 = {
          * @type string
         */
         photoURL: string | null;
+        /**
+         * @type string
+        */
+        headline?: string | null;
         /**
          * @type string
         */
@@ -313,58 +267,15 @@ export type PostV1Posts403 = {
     severity: PostV1Posts403SeverityEnumKey;
 };
 
-export const postV1PostsMutationRequestTypeEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type PostV1PostsMutationRequestTypeEnumKey = (typeof postV1PostsMutationRequestTypeEnum)[keyof typeof postV1PostsMutationRequestTypeEnum];
-
-export const postV1PostsMutationRequestAnonymousCategoryEnum = {
-    SALARY: "SALARY",
-    INTERVIEW: "INTERVIEW",
-    LAYOFF: "LAYOFF",
-    TOXIC_CULTURE: "TOXIC_CULTURE",
-    HARASSMENT: "HARASSMENT"
-} as const;
-
-export type PostV1PostsMutationRequestAnonymousCategoryEnumKey = (typeof postV1PostsMutationRequestAnonymousCategoryEnum)[keyof typeof postV1PostsMutationRequestAnonymousCategoryEnum];
-
 /**
  * @example [object Object]
 */
 export type PostV1PostsMutationRequest = {
     /**
-     * @type string
-    */
-    type: PostV1PostsMutationRequestTypeEnumKey;
-    /**
-     * @maxLength 60
-     * @type string | undefined
-    */
-    subtype?: string;
-    /**
      * @maxLength 5000
      * @type string | undefined
     */
     content?: string;
-    /**
-     * @type array | undefined
-    */
-    hardSkills?: string[];
-    /**
-     * @type array | undefined
-    */
-    softSkills?: string[];
-    /**
-     * @type object | undefined
-    */
-    data?: object;
     /**
      * @description Public HTTP(S) URL (max 500 chars). Trimmed on submit.
      * @pattern ^https?:\/\/
@@ -378,14 +289,6 @@ export type PostV1PostsMutationRequest = {
     */
     linkUrl?: SocialUrl;
     /**
-     * @type string | undefined, uuid
-    */
-    originalPostId?: string;
-    /**
-     * @type array | undefined
-    */
-    coAuthors?: string[];
-    /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string | undefined, date-time
     */
@@ -395,33 +298,31 @@ export type PostV1PostsMutationRequest = {
     */
     threadId?: string;
     /**
-     * @type object | undefined
+     * @type array | undefined
     */
-    codeSnippet?: {
+    pollOptions?: {
         /**
-         * @maxLength 40
+         * @minLength 1
+         * @maxLength 80
          * @type string
         */
-        language: string;
-        /**
-         * @maxLength 20000
-         * @type string
-        */
-        code: string;
-        /**
-         * @maxLength 120
-         * @type string | undefined
-        */
-        filename?: string;
-    };
+        label: string;
+    }[];
     /**
-     * @type boolean | undefined
+     * @description ISO-8601 timestamp with timezone offset (RFC 3339).
+     * @type string | undefined, date-time
     */
-    isAnonymous?: boolean;
+    pollDeadline?: string;
     /**
+     * @maxLength 20000
      * @type string | undefined
     */
-    anonymousCategory?: PostV1PostsMutationRequestAnonymousCategoryEnumKey;
+    codeSnippet?: string;
+    /**
+     * @maxLength 40
+     * @type string | undefined
+    */
+    codeLanguage?: string;
 };
 
 export type PostV1PostsMutationResponse = PostV1Posts201;

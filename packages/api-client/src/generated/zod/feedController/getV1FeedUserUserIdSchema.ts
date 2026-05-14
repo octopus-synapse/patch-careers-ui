@@ -23,15 +23,8 @@ export const getV1FeedUserUserId200Schema = z.object({
     "items": z.array(z.object({
     "id": z.string(),
 "authorId": z.string().uuid(),
-"type": z.enum(["ACHIEVEMENT", "OPPORTUNITY", "LEARNING", "BUILD", "QUESTION", "REPOST", "CHALLENGE"]),
-"subtype": z.nullable(z.string()),
 "content": z.nullable(z.string()),
-"hardSkills": z.array(z.string()),
-"softSkills": z.array(z.string()),
 "hashtags": z.array(z.string()),
-"data": z.nullable(z.object({
-    
-    })),
 "imageUrl": z.nullable(z.string()),
 "linkUrl": z.nullable(z.string()),
 "linkPreview": z.nullable(z.object({
@@ -40,26 +33,24 @@ export const getV1FeedUserUserId200Schema = z.object({
 "image": z.nullable(z.string()),
 "domain": z.string()
     })),
+"isRepost": z.boolean(),
 "originalPostId": z.nullable(z.string().uuid()),
-"coAuthors": z.array(z.string()),
 "scheduledAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "isPublished": z.boolean(),
 "threadId": z.nullable(z.string().uuid()),
+"pollOptions": z.array(z.object({
+    "label": z.string()
+    })).nullish(),
 "pollDeadline": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "votesCount": z.number().int(),
-"codeSnippet": z.nullable(z.object({
-    "language": z.string(),
-"code": z.string(),
-"filename": z.optional(z.string())
-    })),
+"codeSnippet": z.nullable(z.string()),
+"codeLanguage": z.nullable(z.string()),
 "likesCount": z.number().int(),
 "commentsCount": z.number().int(),
 "repostsCount": z.number().int(),
 "bookmarksCount": z.number().int(),
 "isDeleted": z.boolean(),
 "deletedAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"isAnonymous": z.boolean(),
-"anonymousCategory": z.nullable(z.enum(["SALARY", "INTERVIEW", "LAYOFF", "TOXIC_CULTURE", "HARASSMENT"])),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "author": z.object({
@@ -67,21 +58,15 @@ export const getV1FeedUserUserId200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     }),
 "originalPost": z.object({
     "id": z.string(),
 "authorId": z.string().uuid(),
-"type": z.enum(["ACHIEVEMENT", "OPPORTUNITY", "LEARNING", "BUILD", "QUESTION", "REPOST", "CHALLENGE"]),
-"subtype": z.nullable(z.string()),
 "content": z.nullable(z.string()),
-"hardSkills": z.array(z.string()),
-"softSkills": z.array(z.string()),
 "hashtags": z.array(z.string()),
-"data": z.nullable(z.object({
-    
-    })),
 "imageUrl": z.nullable(z.string()),
 "linkUrl": z.nullable(z.string()),
 "linkPreview": z.nullable(z.object({
@@ -90,26 +75,24 @@ export const getV1FeedUserUserId200Schema = z.object({
 "image": z.nullable(z.string()),
 "domain": z.string()
     })),
+"isRepost": z.boolean(),
 "originalPostId": z.nullable(z.string().uuid()),
-"coAuthors": z.array(z.string()),
 "scheduledAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "isPublished": z.boolean(),
 "threadId": z.nullable(z.string().uuid()),
+"pollOptions": z.array(z.object({
+    "label": z.string()
+    })).nullish(),
 "pollDeadline": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
 "votesCount": z.number().int(),
-"codeSnippet": z.nullable(z.object({
-    "language": z.string(),
-"code": z.string(),
-"filename": z.optional(z.string())
-    })),
+"codeSnippet": z.nullable(z.string()),
+"codeLanguage": z.nullable(z.string()),
 "likesCount": z.number().int(),
 "commentsCount": z.number().int(),
 "repostsCount": z.number().int(),
 "bookmarksCount": z.number().int(),
 "isDeleted": z.boolean(),
 "deletedAt": z.nullable(z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339).")),
-"isAnonymous": z.boolean(),
-"anonymousCategory": z.nullable(z.enum(["SALARY", "INTERVIEW", "LAYOFF", "TOXIC_CULTURE", "HARASSMENT"])),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "updatedAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "author": z.object({
@@ -117,6 +100,7 @@ export const getV1FeedUserUserId200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     })

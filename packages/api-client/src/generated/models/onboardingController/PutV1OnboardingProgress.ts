@@ -3,7 +3,6 @@
 * Do not edit manually.
 */
 
-import type { Email } from "../Email";
 import type { GitHubUrl } from "../GitHubUrl";
 import type { LinkedInUrl } from "../LinkedInUrl";
 import type { Phone } from "../Phone";
@@ -138,11 +137,6 @@ export type PutV1OnboardingProgressMutationRequest = {
          * @type string | undefined
         */
         fullName?: string;
-        /**
-         * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
-         * @type string | undefined, email
-        */
-        email?: Email;
         /**
          * @description Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).
          * @type string | undefined

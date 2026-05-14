@@ -17,7 +17,7 @@ function getPostV1PostsUrl() {
  * @summary Create a new post
  * {@link /api/v1/posts}
  */
-export async function postV1Posts(data: PostV1PostsMutationRequest, config: Partial<RequestConfig<PostV1PostsMutationRequest>> & { client?: Client } = {}) {
+export async function postV1Posts(data?: PostV1PostsMutationRequest, config: Partial<RequestConfig<PostV1PostsMutationRequest>> & { client?: Client } = {}) {
   const { client: request = fetch, ...requestConfig } = config
 
   const requestData = data

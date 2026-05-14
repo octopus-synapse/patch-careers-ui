@@ -12,16 +12,6 @@ export type PostV1PostsIdLikePathParams = {
     id: string;
 };
 
-export const postV1PostsIdLike201ReactionTypeEnum = {
-    LIKE: "LIKE",
-    CELEBRATE: "CELEBRATE",
-    LOVE: "LOVE",
-    INSIGHTFUL: "INSIGHTFUL",
-    CURIOUS: "CURIOUS"
-} as const;
-
-export type PostV1PostsIdLike201ReactionTypeEnumKey = (typeof postV1PostsIdLike201ReactionTypeEnum)[keyof typeof postV1PostsIdLike201ReactionTypeEnum];
-
 /**
  * @description Successful response
 */
@@ -35,10 +25,6 @@ export type PostV1PostsIdLike201 = {
     */
     userId: string;
     /**
-     * @type string
-    */
-    reactionType: PostV1PostsIdLike201ReactionTypeEnumKey;
-    /**
      * @type string | undefined, uuid
     */
     postAuthorId?: string;
@@ -46,10 +32,6 @@ export type PostV1PostsIdLike201 = {
      * @type boolean
     */
     alreadyLiked: boolean;
-    /**
-     * @type boolean | undefined
-    */
-    updated?: boolean;
 };
 
 export const postV1PostsIdLike400SeverityEnum = {
@@ -180,25 +162,10 @@ export type PostV1PostsIdLike404 = {
     severity: PostV1PostsIdLike404SeverityEnumKey;
 };
 
-export const postV1PostsIdLikeMutationRequestReactionTypeEnum = {
-    LIKE: "LIKE",
-    CELEBRATE: "CELEBRATE",
-    LOVE: "LOVE",
-    INSIGHTFUL: "INSIGHTFUL",
-    CURIOUS: "CURIOUS"
-} as const;
-
-export type PostV1PostsIdLikeMutationRequestReactionTypeEnumKey = (typeof postV1PostsIdLikeMutationRequestReactionTypeEnum)[keyof typeof postV1PostsIdLikeMutationRequestReactionTypeEnum];
-
 /**
  * @example [object Object]
 */
-export type PostV1PostsIdLikeMutationRequest = {
-    /**
-     * @type string | undefined
-    */
-    reactionType?: PostV1PostsIdLikeMutationRequestReactionTypeEnumKey;
-};
+export type PostV1PostsIdLikeMutationRequest = object;
 
 export type PostV1PostsIdLikeMutationResponse = PostV1PostsIdLike201;
 

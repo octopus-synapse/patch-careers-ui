@@ -12,28 +12,6 @@ export type PostV1PostsIdRepostPathParams = {
     id: string;
 };
 
-export const postV1PostsIdRepost201TypeEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type PostV1PostsIdRepost201TypeEnumKey = (typeof postV1PostsIdRepost201TypeEnum)[keyof typeof postV1PostsIdRepost201TypeEnum];
-
-export const postV1PostsIdRepost201AnonymousCategoryEnum = {
-    SALARY: "SALARY",
-    INTERVIEW: "INTERVIEW",
-    LAYOFF: "LAYOFF",
-    TOXIC_CULTURE: "TOXIC_CULTURE",
-    HARASSMENT: "HARASSMENT"
-} as const;
-
-export type PostV1PostsIdRepost201AnonymousCategoryEnumKey = (typeof postV1PostsIdRepost201AnonymousCategoryEnum)[keyof typeof postV1PostsIdRepost201AnonymousCategoryEnum];
-
 export const postV1PostsIdRepost201KindEnum = {
     post: "post"
 } as const;
@@ -61,31 +39,11 @@ export type PostV1PostsIdRepost201 = ({
     /**
      * @type string
     */
-    type: PostV1PostsIdRepost201TypeEnumKey;
-    /**
-     * @type string
-    */
-    subtype: string | null;
-    /**
-     * @type string
-    */
     content: string | null;
     /**
      * @type array
     */
-    hardSkills: string[];
-    /**
-     * @type array
-    */
-    softSkills: string[];
-    /**
-     * @type array
-    */
     hashtags: string[];
-    /**
-     * @type object
-    */
-    data: object | null;
     /**
      * @type string
     */
@@ -116,13 +74,13 @@ export type PostV1PostsIdRepost201 = ({
         domain: string;
     } | null;
     /**
+     * @type boolean
+    */
+    isRepost: boolean;
+    /**
      * @type string, uuid
     */
     originalPostId: string | null;
-    /**
-     * @type array
-    */
-    coAuthors: string[];
     /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string, date-time
@@ -137,6 +95,15 @@ export type PostV1PostsIdRepost201 = ({
     */
     threadId: string | null;
     /**
+     * @type array
+    */
+    pollOptions?: {
+        /**
+         * @type string
+        */
+        label: string;
+    }[] | null;
+    /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string, date-time
     */
@@ -146,22 +113,13 @@ export type PostV1PostsIdRepost201 = ({
     */
     votesCount: number;
     /**
-     * @type object
+     * @type string
     */
-    codeSnippet: {
-        /**
-         * @type string
-        */
-        language: string;
-        /**
-         * @type string
-        */
-        code: string;
-        /**
-         * @type string | undefined
-        */
-        filename?: string;
-    } | null;
+    codeSnippet: string | null;
+    /**
+     * @type string
+    */
+    codeLanguage: string | null;
     /**
      * @type integer
     */
@@ -187,14 +145,6 @@ export type PostV1PostsIdRepost201 = ({
      * @type string, date-time
     */
     deletedAt: string | null;
-    /**
-     * @type boolean
-    */
-    isAnonymous: boolean;
-    /**
-     * @type string
-    */
-    anonymousCategory: PostV1PostsIdRepost201AnonymousCategoryEnumKey | null;
     /**
      * @description ISO-8601 timestamp with timezone offset (RFC 3339).
      * @type string, date-time
@@ -225,6 +175,10 @@ export type PostV1PostsIdRepost201 = ({
          * @type string
         */
         photoURL: string | null;
+        /**
+         * @type string
+        */
+        headline?: string | null;
         /**
          * @type string
         */

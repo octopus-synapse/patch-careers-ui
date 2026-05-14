@@ -3,7 +3,6 @@
 * Do not edit manually.
 */
 
-import type { Email } from "../Email";
 import type { Phone } from "../Phone";
 import type { UserLocation } from "../UserLocation";
 
@@ -185,11 +184,6 @@ export type PostV1OnboardingSessionNext201 = {
          * @type string
         */
         fullName: string;
-        /**
-         * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
-         * @type string | undefined, email
-        */
-        email?: Email;
         /**
          * @description Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).
          * @type string | undefined

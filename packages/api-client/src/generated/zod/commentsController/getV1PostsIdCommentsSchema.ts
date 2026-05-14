@@ -34,6 +34,7 @@ export const getV1PostsIdComments200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     }),
@@ -51,6 +52,7 @@ export const getV1PostsIdComments200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     })

@@ -4,18 +4,6 @@
 */
 
 
-export const getV1PostsComposerConfig200PostTypesEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type GetV1PostsComposerConfig200PostTypesEnumKey = (typeof getV1PostsComposerConfig200PostTypesEnum)[keyof typeof getV1PostsComposerConfig200PostTypesEnum];
-
 /**
  * @description Successful response
 */
@@ -57,9 +45,9 @@ export type GetV1PostsComposerConfig200 = {
     */
     mentionLimit: number;
     /**
-     * @type array
+     * @type boolean
     */
-    postTypes: GetV1PostsComposerConfig200PostTypesEnumKey[];
+    codeEnabled: boolean;
 };
 
 export const getV1PostsComposerConfig400SeverityEnum = {

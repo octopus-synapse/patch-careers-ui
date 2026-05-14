@@ -6,7 +6,6 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1Onboarding201, PostV1Onboarding400, PostV1Onboarding401, PostV1OnboardingMutationRequest, PostV1OnboardingMutationResponse } from "../../models/onboardingController/PostV1Onboarding";
-import { emailSchema } from "../emailSchema";
 import { gitHubUrlSchema } from "../gitHubUrlSchema";
 import { linkedInUrlSchema } from "../linkedInUrlSchema";
 import { phoneSchema } from "../phoneSchema";
@@ -45,7 +44,6 @@ export const postV1OnboardingMutationRequestSchema = z.object({
     "username": z.lazy(() => usernameSchema).describe("Public handle (3-30 chars). Lowercase letters, digits, and single underscores only. Cannot start/end with `_`, contain `__`, or use a reserved name."),
 "personalInfo": z.object({
     "fullName": z.string().min(2).max(100),
-"email": z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit."),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters)."))
     }),

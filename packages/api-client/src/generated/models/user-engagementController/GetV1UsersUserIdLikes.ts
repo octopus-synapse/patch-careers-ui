@@ -4,14 +4,14 @@
 */
 
 
-export type GetV1UsersUserIdReactionsPathParams = {
+export type GetV1UsersUserIdLikesPathParams = {
     /**
      * @type string, uuid
     */
     userId: string;
 };
 
-export type GetV1UsersUserIdReactionsQueryParams = {
+export type GetV1UsersUserIdLikesQueryParams = {
     /**
      * @type string | undefined
     */
@@ -23,20 +23,10 @@ export type GetV1UsersUserIdReactionsQueryParams = {
     limit?: number;
 };
 
-export const itemsReactionTypeEnum2 = {
-    LIKE: "LIKE",
-    CELEBRATE: "CELEBRATE",
-    LOVE: "LOVE",
-    INSIGHTFUL: "INSIGHTFUL",
-    CURIOUS: "CURIOUS"
-} as const;
-
-export type ItemsReactionTypeEnum2Key = (typeof itemsReactionTypeEnum2)[keyof typeof itemsReactionTypeEnum2];
-
 /**
  * @description Successful response
 */
-export type GetV1UsersUserIdReactions200 = {
+export type GetV1UsersUserIdLikes200 = {
     /**
      * @type array
     */
@@ -50,10 +40,6 @@ export type GetV1UsersUserIdReactions200 = {
         */
         userId: string;
         /**
-         * @type string
-        */
-        reactionType: ItemsReactionTypeEnum2Key;
-        /**
          * @description ISO-8601 timestamp with timezone offset (RFC 3339).
          * @type string, date-time
         */
@@ -66,10 +52,6 @@ export type GetV1UsersUserIdReactions200 = {
              * @type string
             */
             id: string;
-            /**
-             * @type string
-            */
-            type: string;
             /**
              * @type string
             */
@@ -101,6 +83,10 @@ export type GetV1UsersUserIdReactions200 = {
                 /**
                  * @type string
                 */
+                headline?: string | null;
+                /**
+                 * @type string
+                */
                 bio?: string | null;
                 /**
                  * @type string
@@ -119,7 +105,7 @@ export type GetV1UsersUserIdReactions200 = {
     hasNext: boolean;
 };
 
-export const getV1UsersUserIdReactions400SeverityEnum = {
+export const getV1UsersUserIdLikes400SeverityEnum = {
     toast: "toast",
     modal: "modal",
     banner: "banner",
@@ -127,12 +113,12 @@ export const getV1UsersUserIdReactions400SeverityEnum = {
     silent: "silent"
 } as const;
 
-export type GetV1UsersUserIdReactions400SeverityEnumKey = (typeof getV1UsersUserIdReactions400SeverityEnum)[keyof typeof getV1UsersUserIdReactions400SeverityEnum];
+export type GetV1UsersUserIdLikes400SeverityEnumKey = (typeof getV1UsersUserIdLikes400SeverityEnum)[keyof typeof getV1UsersUserIdLikes400SeverityEnum];
 
 /**
  * @description Validation error
 */
-export type GetV1UsersUserIdReactions400 = {
+export type GetV1UsersUserIdLikes400 = {
     /**
      * @type integer
     */
@@ -148,10 +134,10 @@ export type GetV1UsersUserIdReactions400 = {
     /**
      * @type string
     */
-    severity: GetV1UsersUserIdReactions400SeverityEnumKey;
+    severity: GetV1UsersUserIdLikes400SeverityEnumKey;
 };
 
-export const getV1UsersUserIdReactions401SeverityEnum = {
+export const getV1UsersUserIdLikes401SeverityEnum = {
     toast: "toast",
     modal: "modal",
     banner: "banner",
@@ -159,12 +145,12 @@ export const getV1UsersUserIdReactions401SeverityEnum = {
     silent: "silent"
 } as const;
 
-export type GetV1UsersUserIdReactions401SeverityEnumKey = (typeof getV1UsersUserIdReactions401SeverityEnum)[keyof typeof getV1UsersUserIdReactions401SeverityEnum];
+export type GetV1UsersUserIdLikes401SeverityEnumKey = (typeof getV1UsersUserIdLikes401SeverityEnum)[keyof typeof getV1UsersUserIdLikes401SeverityEnum];
 
 /**
  * @description Authentication required
 */
-export type GetV1UsersUserIdReactions401 = {
+export type GetV1UsersUserIdLikes401 = {
     /**
      * @type integer
     */
@@ -180,10 +166,10 @@ export type GetV1UsersUserIdReactions401 = {
     /**
      * @type string
     */
-    severity: GetV1UsersUserIdReactions401SeverityEnumKey;
+    severity: GetV1UsersUserIdLikes401SeverityEnumKey;
 };
 
-export const getV1UsersUserIdReactions403SeverityEnum = {
+export const getV1UsersUserIdLikes403SeverityEnum = {
     toast: "toast",
     modal: "modal",
     banner: "banner",
@@ -191,12 +177,12 @@ export const getV1UsersUserIdReactions403SeverityEnum = {
     silent: "silent"
 } as const;
 
-export type GetV1UsersUserIdReactions403SeverityEnumKey = (typeof getV1UsersUserIdReactions403SeverityEnum)[keyof typeof getV1UsersUserIdReactions403SeverityEnum];
+export type GetV1UsersUserIdLikes403SeverityEnumKey = (typeof getV1UsersUserIdLikes403SeverityEnum)[keyof typeof getV1UsersUserIdLikes403SeverityEnum];
 
 /**
  * @description Forbidden
 */
-export type GetV1UsersUserIdReactions403 = {
+export type GetV1UsersUserIdLikes403 = {
     /**
      * @type integer
     */
@@ -212,10 +198,10 @@ export type GetV1UsersUserIdReactions403 = {
     /**
      * @type string
     */
-    severity: GetV1UsersUserIdReactions403SeverityEnumKey;
+    severity: GetV1UsersUserIdLikes403SeverityEnumKey;
 };
 
-export const getV1UsersUserIdReactions404SeverityEnum = {
+export const getV1UsersUserIdLikes404SeverityEnum = {
     toast: "toast",
     modal: "modal",
     banner: "banner",
@@ -223,12 +209,12 @@ export const getV1UsersUserIdReactions404SeverityEnum = {
     silent: "silent"
 } as const;
 
-export type GetV1UsersUserIdReactions404SeverityEnumKey = (typeof getV1UsersUserIdReactions404SeverityEnum)[keyof typeof getV1UsersUserIdReactions404SeverityEnum];
+export type GetV1UsersUserIdLikes404SeverityEnumKey = (typeof getV1UsersUserIdLikes404SeverityEnum)[keyof typeof getV1UsersUserIdLikes404SeverityEnum];
 
 /**
  * @description Not found
 */
-export type GetV1UsersUserIdReactions404 = {
+export type GetV1UsersUserIdLikes404 = {
     /**
      * @type integer
     */
@@ -244,14 +230,14 @@ export type GetV1UsersUserIdReactions404 = {
     /**
      * @type string
     */
-    severity: GetV1UsersUserIdReactions404SeverityEnumKey;
+    severity: GetV1UsersUserIdLikes404SeverityEnumKey;
 };
 
-export type GetV1UsersUserIdReactionsQueryResponse = GetV1UsersUserIdReactions200;
+export type GetV1UsersUserIdLikesQueryResponse = GetV1UsersUserIdLikes200;
 
-export type GetV1UsersUserIdReactionsQuery = {
-    Response: GetV1UsersUserIdReactions200;
-    PathParams: GetV1UsersUserIdReactionsPathParams;
-    QueryParams: GetV1UsersUserIdReactionsQueryParams;
-    Errors: GetV1UsersUserIdReactions400 | GetV1UsersUserIdReactions401 | GetV1UsersUserIdReactions403 | GetV1UsersUserIdReactions404;
+export type GetV1UsersUserIdLikesQuery = {
+    Response: GetV1UsersUserIdLikes200;
+    PathParams: GetV1UsersUserIdLikesPathParams;
+    QueryParams: GetV1UsersUserIdLikesQueryParams;
+    Errors: GetV1UsersUserIdLikes400 | GetV1UsersUserIdLikes401 | GetV1UsersUserIdLikes403 | GetV1UsersUserIdLikes404;
 };

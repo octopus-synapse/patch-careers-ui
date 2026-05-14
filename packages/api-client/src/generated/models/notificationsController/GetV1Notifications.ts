@@ -16,7 +16,7 @@ export type GetV1NotificationsQueryParams = {
     limit?: number;
 };
 
-export const itemsTypeEnum6 = {
+export const itemsTypeEnum3 = {
     POST_LIKED: "POST_LIKED",
     POST_COMMENTED: "POST_COMMENTED",
     POST_REPOSTED: "POST_REPOSTED",
@@ -35,7 +35,7 @@ export const itemsTypeEnum6 = {
     RESUME_QUALITY_REGRESSED: "RESUME_QUALITY_REGRESSED"
 } as const;
 
-export type ItemsTypeEnum6Key = (typeof itemsTypeEnum6)[keyof typeof itemsTypeEnum6];
+export type ItemsTypeEnum3Key = (typeof itemsTypeEnum3)[keyof typeof itemsTypeEnum3];
 
 /**
  * @description Successful response
@@ -56,7 +56,7 @@ export type GetV1Notifications200 = {
         /**
          * @type string
         */
-        type: ItemsTypeEnum6Key;
+        type: ItemsTypeEnum3Key;
         /**
          * @type string, uuid
         */

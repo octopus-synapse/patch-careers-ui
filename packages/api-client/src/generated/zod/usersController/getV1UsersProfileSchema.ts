@@ -17,6 +17,7 @@ export const getV1UsersProfile200Schema = z.object({
 "name": z.string().nullish(),
 "photoURL": z.string().nullish(),
 "bio": z.string().nullish(),
+"headline": z.string().nullish(),
 "location": z.string().nullish(),
 "phone": z.string().nullish(),
 "website": z.string().nullish(),

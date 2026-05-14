@@ -3,15 +3,24 @@
 * Do not edit manually.
 */
 
-import type { Email } from "../Email";
 import type { Phone } from "../Phone";
 import type { UserLocation } from "../UserLocation";
+
+export const postV1OnboardingSessionRestartQueryParamsModeEnum = {
+    clean: "clean"
+} as const;
+
+export type PostV1OnboardingSessionRestartQueryParamsModeEnumKey = (typeof postV1OnboardingSessionRestartQueryParamsModeEnum)[keyof typeof postV1OnboardingSessionRestartQueryParamsModeEnum];
 
 export type PostV1OnboardingSessionRestartQueryParams = {
     /**
      * @type string | undefined
     */
     locale?: string;
+    /**
+     * @type string | undefined
+    */
+    mode?: PostV1OnboardingSessionRestartQueryParamsModeEnumKey;
 };
 
 export const strengthLevelEnum6 = {
@@ -185,11 +194,6 @@ export type PostV1OnboardingSessionRestart201 = {
          * @type string
         */
         fullName: string;
-        /**
-         * @description Email address used for authentication and notifications. Trimmed and lowercased on submit.
-         * @type string | undefined, email
-        */
-        email?: Email;
         /**
          * @description Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).
          * @type string | undefined

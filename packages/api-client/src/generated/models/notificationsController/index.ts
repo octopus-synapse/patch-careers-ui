@@ -1,4 +1,4 @@
-export type { GetV1Notifications200, GetV1Notifications400, GetV1Notifications400SeverityEnumKey, GetV1Notifications401, GetV1Notifications401SeverityEnumKey, GetV1Notifications403, GetV1Notifications403SeverityEnumKey, GetV1NotificationsQuery, GetV1NotificationsQueryParams, GetV1NotificationsQueryResponse, ItemsTypeEnum6Key } from "./GetV1Notifications";
+export type { GetV1Notifications200, GetV1Notifications400, GetV1Notifications400SeverityEnumKey, GetV1Notifications401, GetV1Notifications401SeverityEnumKey, GetV1Notifications403, GetV1Notifications403SeverityEnumKey, GetV1NotificationsQuery, GetV1NotificationsQueryParams, GetV1NotificationsQueryResponse, ItemsTypeEnum3Key } from "./GetV1Notifications";
 export type { GetV1NotificationsPreferences200, GetV1NotificationsPreferences400, GetV1NotificationsPreferences400SeverityEnumKey, GetV1NotificationsPreferences401, GetV1NotificationsPreferences401SeverityEnumKey, GetV1NotificationsPreferences403, GetV1NotificationsPreferences403SeverityEnumKey, GetV1NotificationsPreferencesQuery, GetV1NotificationsPreferencesQueryResponse, PreferencesEmailDeliveryEnumKey, PreferencesTypeEnumKey } from "./GetV1NotificationsPreferences";
 export type { GetV1NotificationsSubscribe200, GetV1NotificationsSubscribe400, GetV1NotificationsSubscribe400SeverityEnumKey, GetV1NotificationsSubscribe401, GetV1NotificationsSubscribe401SeverityEnumKey, GetV1NotificationsSubscribe403, GetV1NotificationsSubscribe403SeverityEnumKey, GetV1NotificationsSubscribeQuery, GetV1NotificationsSubscribeQueryResponse } from "./GetV1NotificationsSubscribe";
 export type { ChannelsKeyEnumKey, GetV1NotificationsTypes200, GetV1NotificationsTypes400, GetV1NotificationsTypes400SeverityEnumKey, GetV1NotificationsTypes401, GetV1NotificationsTypes401SeverityEnumKey, GetV1NotificationsTypes403, GetV1NotificationsTypes403SeverityEnumKey, GetV1NotificationsTypesQuery, GetV1NotificationsTypesQueryResponse, TypesCategoryEnumKey, TypesKeyEnumKey } from "./GetV1NotificationsTypes";
@@ -8,7 +8,7 @@ export type { PutV1NotificationsPreferencesType200, PutV1NotificationsPreference
 export { getV1Notifications400SeverityEnum } from "./GetV1Notifications";
 export { getV1Notifications401SeverityEnum } from "./GetV1Notifications";
 export { getV1Notifications403SeverityEnum } from "./GetV1Notifications";
-export { itemsTypeEnum6 } from "./GetV1Notifications";
+export { itemsTypeEnum3 } from "./GetV1Notifications";
 export { getV1NotificationsPreferences400SeverityEnum } from "./GetV1NotificationsPreferences";
 export { getV1NotificationsPreferences401SeverityEnum } from "./GetV1NotificationsPreferences";
 export { getV1NotificationsPreferences403SeverityEnum } from "./GetV1NotificationsPreferences";

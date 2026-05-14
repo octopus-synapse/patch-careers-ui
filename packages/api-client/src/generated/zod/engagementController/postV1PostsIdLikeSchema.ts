@@ -17,10 +17,8 @@ export const postV1PostsIdLikePathParamsSchema = z.object({
 export const postV1PostsIdLike201Schema = z.object({
     "postId": z.string().uuid(),
 "userId": z.string().uuid(),
-"reactionType": z.enum(["LIKE", "CELEBRATE", "LOVE", "INSIGHTFUL", "CURIOUS"]),
 "postAuthorId": z.optional(z.string().uuid()),
-"alreadyLiked": z.boolean(),
-"updated": z.optional(z.boolean())
+"alreadyLiked": z.boolean()
     }) as unknown as ToZod<PostV1PostsIdLike201>
 
 /**
@@ -64,7 +62,7 @@ export const postV1PostsIdLike404Schema = z.object({
     }) as unknown as ToZod<PostV1PostsIdLike404>
 
 export const postV1PostsIdLikeMutationRequestSchema = z.object({
-    "reactionType": z.optional(z.enum(["LIKE", "CELEBRATE", "LOVE", "INSIGHTFUL", "CURIOUS"]))
+    
     }) as unknown as ToZod<PostV1PostsIdLikeMutationRequest>
 
 export const postV1PostsIdLikeMutationResponseSchema = z.lazy(() => postV1PostsIdLike201Schema) as unknown as ToZod<PostV1PostsIdLikeMutationResponse>

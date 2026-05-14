@@ -28,6 +28,7 @@ export const postV1PostsIdComments201Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     })

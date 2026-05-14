@@ -15,7 +15,7 @@ export type PostV1OnboardingSessionRestartMutationKey = ReturnType<typeof postV1
 
 /**
  * @description Onboarding API
- * @summary Restart onboarding with existing profile data
+ * @summary Restart onboarding (default: carry forward profile data; mode=clean: blank slate)
  * {@link /api/v1/onboarding/session/restart}
  */
 export function createPostV1OnboardingSessionRestart<TContext>(options: 

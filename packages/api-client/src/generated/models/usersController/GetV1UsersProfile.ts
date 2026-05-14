@@ -35,6 +35,10 @@ export type GetV1UsersProfile200 = {
     /**
      * @type string
     */
+    headline?: string | null;
+    /**
+     * @type string
+    */
     location?: string | null;
     /**
      * @type string

@@ -6,7 +6,6 @@
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
 import type { PostV1OnboardingSessionSave201, PostV1OnboardingSessionSave400, PostV1OnboardingSessionSave401, PostV1OnboardingSessionSaveMutationRequest, PostV1OnboardingSessionSaveMutationResponse, PostV1OnboardingSessionSaveQueryParams } from "../../models/onboardingController/PostV1OnboardingSessionSave";
-import { emailSchema } from "../emailSchema";
 import { phoneSchema } from "../phoneSchema";
 import { userLocationSchema } from "../userLocationSchema";
 
@@ -59,7 +58,6 @@ export const postV1OnboardingSessionSave201Schema = z.object({
 "username": z.optional(z.string()),
 "personalInfo": z.optional(z.object({
     "fullName": z.string(),
-"email": z.optional(z.lazy(() => emailSchema).describe("Email address used for authentication and notifications. Trimmed and lowercased on submit.")),
 "phone": z.optional(z.lazy(() => phoneSchema).describe("Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).")),
 "location": z.optional(z.lazy(() => userLocationSchema).describe("Free-form city/region/country label (max 100 characters)."))
     })),

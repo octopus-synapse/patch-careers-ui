@@ -1,11 +1,10 @@
 export type { GetV1UsersUserIdComments200, GetV1UsersUserIdComments400, GetV1UsersUserIdComments400SeverityEnumKey, GetV1UsersUserIdComments401, GetV1UsersUserIdComments401SeverityEnumKey, GetV1UsersUserIdComments403, GetV1UsersUserIdComments403SeverityEnumKey, GetV1UsersUserIdComments404, GetV1UsersUserIdComments404SeverityEnumKey, GetV1UsersUserIdCommentsPathParams, GetV1UsersUserIdCommentsQuery, GetV1UsersUserIdCommentsQueryParams, GetV1UsersUserIdCommentsQueryResponse } from "./GetV1UsersUserIdComments";
-export type { GetV1UsersUserIdReactions200, GetV1UsersUserIdReactions400, GetV1UsersUserIdReactions400SeverityEnumKey, GetV1UsersUserIdReactions401, GetV1UsersUserIdReactions401SeverityEnumKey, GetV1UsersUserIdReactions403, GetV1UsersUserIdReactions403SeverityEnumKey, GetV1UsersUserIdReactions404, GetV1UsersUserIdReactions404SeverityEnumKey, GetV1UsersUserIdReactionsPathParams, GetV1UsersUserIdReactionsQuery, GetV1UsersUserIdReactionsQueryParams, GetV1UsersUserIdReactionsQueryResponse, ItemsReactionTypeEnum2Key } from "./GetV1UsersUserIdReactions";
+export type { GetV1UsersUserIdLikes200, GetV1UsersUserIdLikes400, GetV1UsersUserIdLikes400SeverityEnumKey, GetV1UsersUserIdLikes401, GetV1UsersUserIdLikes401SeverityEnumKey, GetV1UsersUserIdLikes403, GetV1UsersUserIdLikes403SeverityEnumKey, GetV1UsersUserIdLikes404, GetV1UsersUserIdLikes404SeverityEnumKey, GetV1UsersUserIdLikesPathParams, GetV1UsersUserIdLikesQuery, GetV1UsersUserIdLikesQueryParams, GetV1UsersUserIdLikesQueryResponse } from "./GetV1UsersUserIdLikes";
 export { getV1UsersUserIdComments400SeverityEnum } from "./GetV1UsersUserIdComments";
 export { getV1UsersUserIdComments401SeverityEnum } from "./GetV1UsersUserIdComments";
 export { getV1UsersUserIdComments403SeverityEnum } from "./GetV1UsersUserIdComments";
 export { getV1UsersUserIdComments404SeverityEnum } from "./GetV1UsersUserIdComments";
-export { getV1UsersUserIdReactions400SeverityEnum } from "./GetV1UsersUserIdReactions";
-export { getV1UsersUserIdReactions401SeverityEnum } from "./GetV1UsersUserIdReactions";
-export { getV1UsersUserIdReactions403SeverityEnum } from "./GetV1UsersUserIdReactions";
-export { getV1UsersUserIdReactions404SeverityEnum } from "./GetV1UsersUserIdReactions";
-export { itemsReactionTypeEnum2 } from "./GetV1UsersUserIdReactions";
+export { getV1UsersUserIdLikes400SeverityEnum } from "./GetV1UsersUserIdLikes";
+export { getV1UsersUserIdLikes401SeverityEnum } from "./GetV1UsersUserIdLikes";
+export { getV1UsersUserIdLikes403SeverityEnum } from "./GetV1UsersUserIdLikes";
+export { getV1UsersUserIdLikes404SeverityEnum } from "./GetV1UsersUserIdLikes";

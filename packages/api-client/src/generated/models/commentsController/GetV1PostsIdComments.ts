@@ -89,6 +89,10 @@ export type GetV1PostsIdComments200 = {
             /**
              * @type string
             */
+            headline?: string | null;
+            /**
+             * @type string
+            */
             bio?: string | null;
             /**
              * @type string
@@ -153,6 +157,10 @@ export type GetV1PostsIdComments200 = {
                  * @type string
                 */
                 photoURL: string | null;
+                /**
+                 * @type string
+                */
+                headline?: string | null;
                 /**
                  * @type string
                 */

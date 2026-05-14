@@ -391,7 +391,7 @@ export type { AcceptConsentMutationKey } from "./user-consentController/createAc
 export type { GetConsentHistoryQueryKey } from "./user-consentController/createGetConsentHistory";
 export type { GetConsentStatusQueryKey } from "./user-consentController/createGetConsentStatus";
 export type { GetV1UsersUserIdCommentsQueryKey } from "./user-engagementController/createGetV1UsersUserIdComments";
-export type { GetV1UsersUserIdReactionsQueryKey } from "./user-engagementController/createGetV1UsersUserIdReactions";
+export type { GetV1UsersUserIdLikesQueryKey } from "./user-engagementController/createGetV1UsersUserIdLikes";
 export type { DeleteV1MeUiStateKeyMutationKey } from "./usersController/createDeleteV1MeUiStateKey";
 export type { DeleteV1UsersManageIdMutationKey } from "./usersController/createDeleteV1UsersManageId";
 export type { GetV1MeUiStateQueryKey } from "./usersController/createGetV1MeUiState";
@@ -1432,9 +1432,9 @@ export { getConsentStatusQueryOptions } from "./user-consentController/createGet
 export { createGetV1UsersUserIdComments } from "./user-engagementController/createGetV1UsersUserIdComments";
 export { getV1UsersUserIdCommentsQueryKey } from "./user-engagementController/createGetV1UsersUserIdComments";
 export { getV1UsersUserIdCommentsQueryOptions } from "./user-engagementController/createGetV1UsersUserIdComments";
-export { createGetV1UsersUserIdReactions } from "./user-engagementController/createGetV1UsersUserIdReactions";
-export { getV1UsersUserIdReactionsQueryKey } from "./user-engagementController/createGetV1UsersUserIdReactions";
-export { getV1UsersUserIdReactionsQueryOptions } from "./user-engagementController/createGetV1UsersUserIdReactions";
+export { createGetV1UsersUserIdLikes } from "./user-engagementController/createGetV1UsersUserIdLikes";
+export { getV1UsersUserIdLikesQueryKey } from "./user-engagementController/createGetV1UsersUserIdLikes";
+export { getV1UsersUserIdLikesQueryOptions } from "./user-engagementController/createGetV1UsersUserIdLikes";
 export { createDeleteV1MeUiStateKey } from "./usersController/createDeleteV1MeUiStateKey";
 export { deleteV1MeUiStateKeyMutationKey } from "./usersController/createDeleteV1MeUiStateKey";
 export { createDeleteV1UsersManageId } from "./usersController/createDeleteV1UsersManageId";

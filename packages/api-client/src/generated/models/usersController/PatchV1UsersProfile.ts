@@ -43,6 +43,10 @@ export type PatchV1UsersProfile200 = {
     /**
      * @type string
     */
+    headline?: string | null;
+    /**
+     * @type string
+    */
     location?: string | null;
     /**
      * @type string
@@ -102,6 +106,10 @@ export type PatchV1UsersProfile200 = {
          * @type string
         */
         bio?: string | null;
+        /**
+         * @type string
+        */
+        headline?: string | null;
         /**
          * @type string
         */
@@ -255,6 +263,11 @@ export type PatchV1UsersProfileMutationRequest = {
      * @type string | undefined
     */
     bio?: ShortDescription;
+    /**
+     * @maxLength 120
+     * @type string | undefined
+    */
+    headline?: string;
     /**
      * @description Free-form city/region/country label (max 100 characters).
      * @type string | undefined

@@ -73,6 +73,10 @@ export type PostV1PostsIdComments201 = {
         /**
          * @type string
         */
+        headline?: string | null;
+        /**
+         * @type string
+        */
         bio?: string | null;
         /**
          * @type string

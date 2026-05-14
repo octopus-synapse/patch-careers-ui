@@ -4,18 +4,6 @@
 */
 
 
-export const getV1FeedQueryParamsTypeEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type GetV1FeedQueryParamsTypeEnumKey = (typeof getV1FeedQueryParamsTypeEnum)[keyof typeof getV1FeedQueryParamsTypeEnum];
-
 export type GetV1FeedQueryParams = {
     /**
      * @type string | undefined
@@ -29,88 +17,8 @@ export type GetV1FeedQueryParams = {
     /**
      * @type string | undefined
     */
-    type?: GetV1FeedQueryParamsTypeEnumKey;
-    /**
-     * @type string | undefined
-    */
     followingOnly?: string;
 };
-
-export const itemsTypeEnum3 = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type ItemsTypeEnum3Key = (typeof itemsTypeEnum3)[keyof typeof itemsTypeEnum3];
-
-export const itemsAnonymousCategoryEnum = {
-    SALARY: "SALARY",
-    INTERVIEW: "INTERVIEW",
-    LAYOFF: "LAYOFF",
-    TOXIC_CULTURE: "TOXIC_CULTURE",
-    HARASSMENT: "HARASSMENT"
-} as const;
-
-export type ItemsAnonymousCategoryEnumKey = (typeof itemsAnonymousCategoryEnum)[keyof typeof itemsAnonymousCategoryEnum];
-
-export const originalPostTypeEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type OriginalPostTypeEnumKey = (typeof originalPostTypeEnum)[keyof typeof originalPostTypeEnum];
-
-export const originalPostAnonymousCategoryEnum = {
-    SALARY: "SALARY",
-    INTERVIEW: "INTERVIEW",
-    LAYOFF: "LAYOFF",
-    TOXIC_CULTURE: "TOXIC_CULTURE",
-    HARASSMENT: "HARASSMENT"
-} as const;
-
-export type OriginalPostAnonymousCategoryEnumKey = (typeof originalPostAnonymousCategoryEnum)[keyof typeof originalPostAnonymousCategoryEnum];
-
-export const itemsReactionTypeEnum = {
-    LIKE: "LIKE",
-    CELEBRATE: "CELEBRATE",
-    LOVE: "LOVE",
-    INSIGHTFUL: "INSIGHTFUL",
-    CURIOUS: "CURIOUS"
-} as const;
-
-export type ItemsReactionTypeEnumKey = (typeof itemsReactionTypeEnum)[keyof typeof itemsReactionTypeEnum];
-
-export const threadPostsTypeEnum = {
-    ACHIEVEMENT: "ACHIEVEMENT",
-    OPPORTUNITY: "OPPORTUNITY",
-    LEARNING: "LEARNING",
-    BUILD: "BUILD",
-    QUESTION: "QUESTION",
-    REPOST: "REPOST",
-    CHALLENGE: "CHALLENGE"
-} as const;
-
-export type ThreadPostsTypeEnumKey = (typeof threadPostsTypeEnum)[keyof typeof threadPostsTypeEnum];
-
-export const threadPostsAnonymousCategoryEnum = {
-    SALARY: "SALARY",
-    INTERVIEW: "INTERVIEW",
-    LAYOFF: "LAYOFF",
-    TOXIC_CULTURE: "TOXIC_CULTURE",
-    HARASSMENT: "HARASSMENT"
-} as const;
-
-export type ThreadPostsAnonymousCategoryEnumKey = (typeof threadPostsAnonymousCategoryEnum)[keyof typeof threadPostsAnonymousCategoryEnum];
 
 /**
  * @description Successful response
@@ -131,31 +39,11 @@ export type GetV1Feed200 = {
         /**
          * @type string
         */
-        type: ItemsTypeEnum3Key;
-        /**
-         * @type string
-        */
-        subtype: string | null;
-        /**
-         * @type string
-        */
         content: string | null;
         /**
          * @type array
         */
-        hardSkills: string[];
-        /**
-         * @type array
-        */
-        softSkills: string[];
-        /**
-         * @type array
-        */
         hashtags: string[];
-        /**
-         * @type object
-        */
-        data: object | null;
         /**
          * @type string
         */
@@ -186,13 +74,13 @@ export type GetV1Feed200 = {
             domain: string;
         } | null;
         /**
+         * @type boolean
+        */
+        isRepost: boolean;
+        /**
          * @type string, uuid
         */
         originalPostId: string | null;
-        /**
-         * @type array
-        */
-        coAuthors: string[];
         /**
          * @description ISO-8601 timestamp with timezone offset (RFC 3339).
          * @type string, date-time
@@ -207,6 +95,15 @@ export type GetV1Feed200 = {
         */
         threadId: string | null;
         /**
+         * @type array
+        */
+        pollOptions?: {
+            /**
+             * @type string
+            */
+            label: string;
+        }[] | null;
+        /**
          * @description ISO-8601 timestamp with timezone offset (RFC 3339).
          * @type string, date-time
         */
@@ -216,22 +113,13 @@ export type GetV1Feed200 = {
         */
         votesCount: number;
         /**
-         * @type object
+         * @type string
         */
-        codeSnippet: {
-            /**
-             * @type string
-            */
-            language: string;
-            /**
-             * @type string
-            */
-            code: string;
-            /**
-             * @type string | undefined
-            */
-            filename?: string;
-        } | null;
+        codeSnippet: string | null;
+        /**
+         * @type string
+        */
+        codeLanguage: string | null;
         /**
          * @type integer
         */
@@ -257,14 +145,6 @@ export type GetV1Feed200 = {
          * @type string, date-time
         */
         deletedAt: string | null;
-        /**
-         * @type boolean
-        */
-        isAnonymous: boolean;
-        /**
-         * @type string
-        */
-        anonymousCategory: ItemsAnonymousCategoryEnumKey | null;
         /**
          * @description ISO-8601 timestamp with timezone offset (RFC 3339).
          * @type string, date-time
@@ -298,6 +178,10 @@ export type GetV1Feed200 = {
             /**
              * @type string
             */
+            headline?: string | null;
+            /**
+             * @type string
+            */
             bio?: string | null;
             /**
              * @type string
@@ -319,31 +203,11 @@ export type GetV1Feed200 = {
             /**
              * @type string
             */
-            type: OriginalPostTypeEnumKey;
-            /**
-             * @type string
-            */
-            subtype: string | null;
-            /**
-             * @type string
-            */
             content: string | null;
             /**
              * @type array
             */
-            hardSkills: string[];
-            /**
-             * @type array
-            */
-            softSkills: string[];
-            /**
-             * @type array
-            */
             hashtags: string[];
-            /**
-             * @type object
-            */
-            data: object | null;
             /**
              * @type string
             */
@@ -374,13 +238,13 @@ export type GetV1Feed200 = {
                 domain: string;
             } | null;
             /**
+             * @type boolean
+            */
+            isRepost: boolean;
+            /**
              * @type string, uuid
             */
             originalPostId: string | null;
-            /**
-             * @type array
-            */
-            coAuthors: string[];
             /**
              * @description ISO-8601 timestamp with timezone offset (RFC 3339).
              * @type string, date-time
@@ -395,6 +259,15 @@ export type GetV1Feed200 = {
             */
             threadId: string | null;
             /**
+             * @type array
+            */
+            pollOptions?: {
+                /**
+                 * @type string
+                */
+                label: string;
+            }[] | null;
+            /**
              * @description ISO-8601 timestamp with timezone offset (RFC 3339).
              * @type string, date-time
             */
@@ -404,22 +277,13 @@ export type GetV1Feed200 = {
             */
             votesCount: number;
             /**
-             * @type object
+             * @type string
             */
-            codeSnippet: {
-                /**
-                 * @type string
-                */
-                language: string;
-                /**
-                 * @type string
-                */
-                code: string;
-                /**
-                 * @type string | undefined
-                */
-                filename?: string;
-            } | null;
+            codeSnippet: string | null;
+            /**
+             * @type string
+            */
+            codeLanguage: string | null;
             /**
              * @type integer
             */
@@ -445,14 +309,6 @@ export type GetV1Feed200 = {
              * @type string, date-time
             */
             deletedAt: string | null;
-            /**
-             * @type boolean
-            */
-            isAnonymous: boolean;
-            /**
-             * @type string
-            */
-            anonymousCategory: OriginalPostAnonymousCategoryEnumKey | null;
             /**
              * @description ISO-8601 timestamp with timezone offset (RFC 3339).
              * @type string, date-time
@@ -486,6 +342,10 @@ export type GetV1Feed200 = {
                 /**
                  * @type string
                 */
+                headline?: string | null;
+                /**
+                 * @type string
+                */
                 bio?: string | null;
                 /**
                  * @type string
@@ -497,10 +357,6 @@ export type GetV1Feed200 = {
          * @type boolean
         */
         isLiked: boolean;
-        /**
-         * @type string
-        */
-        reactionType: ItemsReactionTypeEnumKey | null;
         /**
          * @type boolean
         */
@@ -532,31 +388,11 @@ export type GetV1Feed200 = {
             /**
              * @type string
             */
-            type: ThreadPostsTypeEnumKey;
-            /**
-             * @type string
-            */
-            subtype: string | null;
-            /**
-             * @type string
-            */
             content: string | null;
             /**
              * @type array
             */
-            hardSkills: string[];
-            /**
-             * @type array
-            */
-            softSkills: string[];
-            /**
-             * @type array
-            */
             hashtags: string[];
-            /**
-             * @type object
-            */
-            data: object | null;
             /**
              * @type string
             */
@@ -587,13 +423,13 @@ export type GetV1Feed200 = {
                 domain: string;
             } | null;
             /**
+             * @type boolean
+            */
+            isRepost: boolean;
+            /**
              * @type string, uuid
             */
             originalPostId: string | null;
-            /**
-             * @type array
-            */
-            coAuthors: string[];
             /**
              * @description ISO-8601 timestamp with timezone offset (RFC 3339).
              * @type string, date-time
@@ -608,6 +444,15 @@ export type GetV1Feed200 = {
             */
             threadId: string | null;
             /**
+             * @type array
+            */
+            pollOptions?: {
+                /**
+                 * @type string
+                */
+                label: string;
+            }[] | null;
+            /**
              * @description ISO-8601 timestamp with timezone offset (RFC 3339).
              * @type string, date-time
             */
@@ -617,22 +462,13 @@ export type GetV1Feed200 = {
             */
             votesCount: number;
             /**
-             * @type object
+             * @type string
             */
-            codeSnippet: {
-                /**
-                 * @type string
-                */
-                language: string;
-                /**
-                 * @type string
-                */
-                code: string;
-                /**
-                 * @type string | undefined
-                */
-                filename?: string;
-            } | null;
+            codeSnippet: string | null;
+            /**
+             * @type string
+            */
+            codeLanguage: string | null;
             /**
              * @type integer
             */
@@ -658,14 +494,6 @@ export type GetV1Feed200 = {
              * @type string, date-time
             */
             deletedAt: string | null;
-            /**
-             * @type boolean
-            */
-            isAnonymous: boolean;
-            /**
-             * @type string
-            */
-            anonymousCategory: ThreadPostsAnonymousCategoryEnumKey | null;
             /**
              * @description ISO-8601 timestamp with timezone offset (RFC 3339).
              * @type string, date-time
@@ -699,6 +527,10 @@ export type GetV1Feed200 = {
                 /**
                  * @type string
                 */
+                headline?: string | null;
+                /**
+                 * @type string
+                */
                 bio?: string | null;
                 /**
                  * @type string
@@ -720,31 +552,11 @@ export type GetV1Feed200 = {
                 /**
                  * @type string
                 */
-                type: OriginalPostTypeEnumKey;
-                /**
-                 * @type string
-                */
-                subtype: string | null;
-                /**
-                 * @type string
-                */
                 content: string | null;
                 /**
                  * @type array
                 */
-                hardSkills: string[];
-                /**
-                 * @type array
-                */
-                softSkills: string[];
-                /**
-                 * @type array
-                */
                 hashtags: string[];
-                /**
-                 * @type object
-                */
-                data: object | null;
                 /**
                  * @type string
                 */
@@ -775,13 +587,13 @@ export type GetV1Feed200 = {
                     domain: string;
                 } | null;
                 /**
+                 * @type boolean
+                */
+                isRepost: boolean;
+                /**
                  * @type string, uuid
                 */
                 originalPostId: string | null;
-                /**
-                 * @type array
-                */
-                coAuthors: string[];
                 /**
                  * @description ISO-8601 timestamp with timezone offset (RFC 3339).
                  * @type string, date-time
@@ -796,6 +608,15 @@ export type GetV1Feed200 = {
                 */
                 threadId: string | null;
                 /**
+                 * @type array
+                */
+                pollOptions?: {
+                    /**
+                     * @type string
+                    */
+                    label: string;
+                }[] | null;
+                /**
                  * @description ISO-8601 timestamp with timezone offset (RFC 3339).
                  * @type string, date-time
                 */
@@ -805,22 +626,13 @@ export type GetV1Feed200 = {
                 */
                 votesCount: number;
                 /**
-                 * @type object
+                 * @type string
                 */
-                codeSnippet: {
-                    /**
-                     * @type string
-                    */
-                    language: string;
-                    /**
-                     * @type string
-                    */
-                    code: string;
-                    /**
-                     * @type string | undefined
-                    */
-                    filename?: string;
-                } | null;
+                codeSnippet: string | null;
+                /**
+                 * @type string
+                */
+                codeLanguage: string | null;
                 /**
                  * @type integer
                 */
@@ -846,14 +658,6 @@ export type GetV1Feed200 = {
                  * @type string, date-time
                 */
                 deletedAt: string | null;
-                /**
-                 * @type boolean
-                */
-                isAnonymous: boolean;
-                /**
-                 * @type string
-                */
-                anonymousCategory: OriginalPostAnonymousCategoryEnumKey | null;
                 /**
                  * @description ISO-8601 timestamp with timezone offset (RFC 3339).
                  * @type string, date-time
@@ -884,6 +688,10 @@ export type GetV1Feed200 = {
                      * @type string
                     */
                     photoURL: string | null;
+                    /**
+                     * @type string
+                    */
+                    headline?: string | null;
                     /**
                      * @type string
                     */

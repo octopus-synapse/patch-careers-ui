@@ -14,7 +14,7 @@ function getPostV1OnboardingSessionRestartUrl() {
 
 /**
  * @description Onboarding API
- * @summary Restart onboarding with existing profile data
+ * @summary Restart onboarding (default: carry forward profile data; mode=clean: blank slate)
  * {@link /api/v1/onboarding/session/restart}
  */
 export async function postV1OnboardingSessionRestart(params?: PostV1OnboardingSessionRestartQueryParams, config: Partial<RequestConfig> & { client?: Client } = {}) {

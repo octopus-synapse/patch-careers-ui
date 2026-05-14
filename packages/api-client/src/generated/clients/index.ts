@@ -485,7 +485,7 @@ export { getConsentHistory } from "./user-consentController/getConsentHistory";
 export { getConsentStatus } from "./user-consentController/getConsentStatus";
 export { userConsentController } from "./user-consentController/userConsentController";
 export { getV1UsersUserIdComments } from "./user-engagementController/getV1UsersUserIdComments";
-export { getV1UsersUserIdReactions } from "./user-engagementController/getV1UsersUserIdReactions";
+export { getV1UsersUserIdLikes } from "./user-engagementController/getV1UsersUserIdLikes";
 export { userEngagementController } from "./user-engagementController/userEngagementController";
 export { deleteV1MeUiStateKey } from "./usersController/deleteV1MeUiStateKey";
 export { deleteV1UsersManageId } from "./usersController/deleteV1UsersManageId";

@@ -4,8 +4,8 @@
 */
 
 import { getV1UsersUserIdComments } from "./getV1UsersUserIdComments";
-import { getV1UsersUserIdReactions } from "./getV1UsersUserIdReactions";
+import { getV1UsersUserIdLikes } from "./getV1UsersUserIdLikes";
 
 export function userEngagementController() {
-  return { getV1UsersUserIdComments, getV1UsersUserIdReactions }
+  return { getV1UsersUserIdComments, getV1UsersUserIdLikes }
 }

@@ -5,29 +5,27 @@
 
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
-import type { GetV1UsersUserIdReactions200, GetV1UsersUserIdReactions400, GetV1UsersUserIdReactions401, GetV1UsersUserIdReactions403, GetV1UsersUserIdReactions404, GetV1UsersUserIdReactionsPathParams, GetV1UsersUserIdReactionsQueryParams, GetV1UsersUserIdReactionsQueryResponse } from "../../models/user-engagementController/GetV1UsersUserIdReactions";
+import type { GetV1UsersUserIdLikes200, GetV1UsersUserIdLikes400, GetV1UsersUserIdLikes401, GetV1UsersUserIdLikes403, GetV1UsersUserIdLikes404, GetV1UsersUserIdLikesPathParams, GetV1UsersUserIdLikesQueryParams, GetV1UsersUserIdLikesQueryResponse } from "../../models/user-engagementController/GetV1UsersUserIdLikes";
 
-export const getV1UsersUserIdReactionsPathParamsSchema = z.object({
+export const getV1UsersUserIdLikesPathParamsSchema = z.object({
     "userId": z.string().uuid()
-    }) as unknown as ToZod<GetV1UsersUserIdReactionsPathParams>
+    }) as unknown as ToZod<GetV1UsersUserIdLikesPathParams>
 
-export const getV1UsersUserIdReactionsQueryParamsSchema = z.object({
+export const getV1UsersUserIdLikesQueryParamsSchema = z.object({
     "cursor": z.optional(z.string()),
 "limit": z.optional(z.coerce.number().int().min(1))
-    }).optional() as unknown as ToZod<GetV1UsersUserIdReactionsQueryParams>
+    }).optional() as unknown as ToZod<GetV1UsersUserIdLikesQueryParams>
 
 /**
  * @description Successful response
  */
-export const getV1UsersUserIdReactions200Schema = z.object({
+export const getV1UsersUserIdLikes200Schema = z.object({
     "items": z.array(z.object({
     "postId": z.string().uuid(),
 "userId": z.string().uuid(),
-"reactionType": z.enum(["LIKE", "CELEBRATE", "LOVE", "INSIGHTFUL", "CURIOUS"]),
 "createdAt": z.string().datetime().describe("ISO-8601 timestamp with timezone offset (RFC 3339)."),
 "post": z.object({
     "id": z.string(),
-"type": z.string(),
 "content": z.nullable(z.string()),
 "authorId": z.string().uuid(),
 "author": z.object({
@@ -35,6 +33,7 @@ export const getV1UsersUserIdReactions200Schema = z.object({
 "name": z.nullable(z.string()),
 "username": z.nullable(z.string()),
 "photoURL": z.nullable(z.string()),
+"headline": z.string().nullish(),
 "bio": z.string().nullish(),
 "location": z.string().nullish()
     })
@@ -42,46 +41,46 @@ export const getV1UsersUserIdReactions200Schema = z.object({
     })),
 "nextCursor": z.nullable(z.string()),
 "hasNext": z.boolean()
-    }) as unknown as ToZod<GetV1UsersUserIdReactions200>
+    }) as unknown as ToZod<GetV1UsersUserIdLikes200>
 
 /**
  * @description Validation error
  */
-export const getV1UsersUserIdReactions400Schema = z.object({
+export const getV1UsersUserIdLikes400Schema = z.object({
     "statusCode": z.number().int(),
 "code": z.string(),
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
-    }) as unknown as ToZod<GetV1UsersUserIdReactions400>
+    }) as unknown as ToZod<GetV1UsersUserIdLikes400>
 
 /**
  * @description Authentication required
  */
-export const getV1UsersUserIdReactions401Schema = z.object({
+export const getV1UsersUserIdLikes401Schema = z.object({
     "statusCode": z.number().int(),
 "code": z.string(),
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
-    }) as unknown as ToZod<GetV1UsersUserIdReactions401>
+    }) as unknown as ToZod<GetV1UsersUserIdLikes401>
 
 /**
  * @description Forbidden
  */
-export const getV1UsersUserIdReactions403Schema = z.object({
+export const getV1UsersUserIdLikes403Schema = z.object({
     "statusCode": z.number().int(),
 "code": z.string(),
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
-    }) as unknown as ToZod<GetV1UsersUserIdReactions403>
+    }) as unknown as ToZod<GetV1UsersUserIdLikes403>
 
 /**
  * @description Not found
  */
-export const getV1UsersUserIdReactions404Schema = z.object({
+export const getV1UsersUserIdLikes404Schema = z.object({
     "statusCode": z.number().int(),
 "code": z.string(),
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
-    }) as unknown as ToZod<GetV1UsersUserIdReactions404>
+    }) as unknown as ToZod<GetV1UsersUserIdLikes404>
 
-export const getV1UsersUserIdReactionsQueryResponseSchema = z.lazy(() => getV1UsersUserIdReactions200Schema) as unknown as ToZod<GetV1UsersUserIdReactionsQueryResponse>
+export const getV1UsersUserIdLikesQueryResponseSchema = z.lazy(() => getV1UsersUserIdLikes200Schema) as unknown as ToZod<GetV1UsersUserIdLikesQueryResponse>
