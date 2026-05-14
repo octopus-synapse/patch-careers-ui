@@ -1,5 +1,5 @@
 <script lang="ts">
-import { postV1Posts } from 'api-client';
+import { postV1Posts, postV1PostsUploadImage } from 'api-client';
 import { Code, Image, ListChecks, X } from 'lucide-svelte';
 import { Button, Loader, Modal, Textarea } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
@@ -53,16 +53,22 @@ function toggleAttachment(next: 'image' | 'poll' | 'code') {
 }
 
 async function handleImageUpload(event: Event) {
-  // TODO: re-wire upload to use FormData against postV1PostsUploadImage.
-  // Temporarily disabled during the minimalist refactor — surface a
-  // local object URL preview so the composer still feels responsive.
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (!file) return;
   uploadingImage = true;
   try {
-    imageUrl = URL.createObjectURL(file);
+    const form = new FormData();
+    form.append('file', file);
+    // The generated client passes the body through verbatim, so a
+    // FormData payload travels as multipart/form-data automatically.
+    const res = await postV1PostsUploadImage({ data: form } as unknown as Record<string, unknown>);
+    imageUrl = res.url;
     imageFile = file;
+  } catch (err) {
+    imageFile = null;
+    imageUrl = '';
+    serverError = err instanceof Error ? err.message : t('errors.network');
   } finally {
     uploadingImage = false;
   }
