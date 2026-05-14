@@ -32,6 +32,7 @@
 // `--update-baseline` to rewrite the baseline after an intentional sweep.
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join, relative } from 'node:path';
 import { Glob } from 'bun';
 
@@ -215,7 +216,7 @@ function isExemptFile(rel: string): boolean {
 // Violation type
 // ---------------------------------------------------------------------------
 
-type ViolationRule = 'attr' | 'attr-expr' | 'call-arg' | 'object-prop';
+type ViolationRule = 'attr' | 'attr-expr' | 'call-arg' | 'object-prop' | 'text-child';
 
 interface Violation {
   file: string;
@@ -428,6 +429,32 @@ async function* listFiles(): AsyncGenerator<string> {
   }
 }
 
+// Spawn the Svelte-AST helper (Node ESM, lives under apps/web/scripts/
+// so `import 'svelte/compiler'` resolves from apps/web's node_modules).
+// It returns JSON-encoded violations for the `text-child` rule.
+function runSvelteAstPass(): Violation[] {
+  const result = spawnSync(
+    'node',
+    ['apps/web/scripts/i18n-text-children.mjs'],
+    { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 },
+  );
+  if (result.status !== 0) {
+    console.error('[i18n-hardcoded] svelte-ast pass failed:');
+    if (result.stderr) console.error(result.stderr);
+    process.exit(2);
+  }
+  if (result.stderr) {
+    // surface parse-skip warnings, but don't fail.
+    process.stderr.write(result.stderr);
+  }
+  try {
+    const parsed = JSON.parse(result.stdout || '[]') as Violation[];
+    return parsed.filter((v): v is Violation => !isExemptFile(v.file));
+  } catch {
+    return [];
+  }
+}
+
 async function detect(): Promise<Violation[]> {
   const violations: Violation[] = [];
   for await (const file of listFiles()) {
@@ -451,6 +478,11 @@ async function detect(): Promise<Violation[]> {
       scanObjectProps(file, src, violations);
     }
   }
+
+  // R5: Svelte-AST text-child pass. Adds rule 'text-child' violations
+  // for <Tag>literal</Tag> in UX components/elements.
+  violations.push(...runSvelteAstPass());
+
   violations.sort((a, b) =>
     a.file === b.file
       ? a.line === b.line
