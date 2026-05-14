@@ -230,7 +230,7 @@ function indexOfAction(actionId: string): number {
 				<input
 					bind:this={inputRef}
 					bind:value={query}
-					placeholder={t('search.palettePlaceholder') ?? 'Digite pra buscar ou navegar…'}
+					placeholder={t('commandPalette.searchPlaceholder')}
 					class="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 dark:text-neutral-200"
 				/>
 				{#if searching}

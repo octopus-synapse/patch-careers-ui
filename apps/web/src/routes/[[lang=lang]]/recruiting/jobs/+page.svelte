@@ -74,6 +74,7 @@
   confirmPhrase={t('company.jobs.deleteTypeKeyword')}
   confirmLabel={t('company.jobs.deleteConfirm')}
   loading={deleting}
+  typeToConfirmLabel={t('ui.dangerConfirmModal.typeToConfirm')}
 />
 
 <div class="mx-auto max-w-5xl space-y-6 px-3 sm:px-6">

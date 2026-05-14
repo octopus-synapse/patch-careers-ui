@@ -6,6 +6,9 @@
 import { createGetV1BadgesUserUserId } from 'api-client';
 import { BadgeIcon, type BadgeKind, Tooltip } from 'ui';
 import { browser } from '$app/environment';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type Props = {
   userId: string;
@@ -23,13 +26,30 @@ const earned = $derived(
   (($query.data as { badges?: BadgeRow[] } | undefined)?.badges ?? []) as BadgeRow[],
 );
 
-const ALL_BADGES: Array<{ kind: BadgeKind; name: string; hint: string }> = [
-  { kind: 'FIRST_BUILD', name: 'Primeira Build', hint: 'Publique seu primeiro post de build.' },
-  { kind: 'ATS_90_PLUS', name: 'ATS 90+', hint: 'Atinja ATS score ≥ 90% em um currículo.' },
-  { kind: 'MENTORED_10', name: 'Mentor', hint: 'Mentore 10 pessoas.' },
-  { kind: 'INTERVIEWS_5', name: 'Em alta', hint: 'Registre 5 entrevistas.' },
-  { kind: 'CONTRIBUTOR', name: 'Contribuidor', hint: 'Contribua com a plataforma.' },
-  { kind: 'EVENT_SPEAKER', name: 'Palestrante', hint: 'Seja speaker em um evento.' },
+const BADGE_LABEL_KEYS: Record<BadgeKind, string> = {
+  FIRST_BUILD: 'ui.badgeIcon.firstBuild',
+  ATS_90_PLUS: 'ui.badgeIcon.ats90Plus',
+  MENTORED_10: 'ui.badgeIcon.mentored10',
+  INTERVIEWS_5: 'ui.badgeIcon.interviews5',
+  CONTRIBUTOR: 'ui.badgeIcon.contributor',
+  EVENT_SPEAKER: 'ui.badgeIcon.eventSpeaker',
+};
+const BADGE_HINT_KEYS: Record<BadgeKind, string> = {
+  FIRST_BUILD: 'myProfile.public.badgeHint.firstBuild',
+  ATS_90_PLUS: 'myProfile.public.badgeHint.ats90Plus',
+  MENTORED_10: 'myProfile.public.badgeHint.mentored10',
+  INTERVIEWS_5: 'myProfile.public.badgeHint.interviews5',
+  CONTRIBUTOR: 'myProfile.public.badgeHint.contributor',
+  EVENT_SPEAKER: 'myProfile.public.badgeHint.eventSpeaker',
+};
+
+const ALL_KINDS: BadgeKind[] = [
+  'FIRST_BUILD',
+  'ATS_90_PLUS',
+  'MENTORED_10',
+  'INTERVIEWS_5',
+  'CONTRIBUTOR',
+  'EVENT_SPEAKER',
 ];
 
 const earnedSet = $derived(new Set(earned.map((b) => b.kind)));
@@ -37,16 +57,20 @@ const earnedSet = $derived(new Set(earned.map((b) => b.kind)));
 
 {#if showLocked}
 	<div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
-		{#each ALL_BADGES as b (b.kind)}
-			{@const unlocked = earnedSet.has(b.kind)}
-			<Tooltip text={unlocked ? b.name : `${b.name} — 🔒 ${b.hint}`}>
+		{#each ALL_KINDS as kind (kind)}
+			{@const unlocked = earnedSet.has(kind)}
+			{@const name = t(BADGE_LABEL_KEYS[kind])}
+			{@const hint = t(BADGE_HINT_KEYS[kind])}
+			<Tooltip text={unlocked ? name : t('myProfile.public.badgeLocked', { name, hint })}>
 				<div
 					class="flex flex-col items-center gap-1"
 					class:opacity-30={!unlocked}
-					aria-label={unlocked ? `${b.name} (conquistada)` : `${b.name} (bloqueada): ${b.hint}`}
+					aria-label={unlocked
+						? t('myProfile.public.badgeEarned', { name })
+						: t('myProfile.public.badgeLockedAria', { name, hint })}
 				>
-					<BadgeIcon kind={b.kind} size={32} />
-					<span class="text-[10px] text-gray-500 dark:text-neutral-500">{b.name}</span>
+					<BadgeIcon {kind} size={32} label={name} />
+					<span class="text-[10px] text-gray-500 dark:text-neutral-500">{name}</span>
 				</div>
 			</Tooltip>
 		{/each}
@@ -54,7 +78,7 @@ const earnedSet = $derived(new Set(earned.map((b) => b.kind)));
 {:else if earned.length > 0}
 	<div class="flex items-center gap-1.5">
 		{#each earned as badge (badge.kind)}
-			<BadgeIcon kind={badge.kind} size={22} />
+			<BadgeIcon kind={badge.kind} size={22} label={t(BADGE_LABEL_KEYS[badge.kind])} />
 		{/each}
 	</div>
 {/if}

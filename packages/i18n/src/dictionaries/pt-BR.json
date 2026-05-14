@@ -134,7 +134,8 @@
     },
     "link": {
       "govBrAnpd": "gov.br/anpd"
-    }
+    },
+    "close": "Fechar"
   },
   "errorPage": {
     "notFound": "Página não encontrada",
@@ -211,7 +212,8 @@
     "searchClear": "Limpar",
     "searchEmptyState": "Digite algo para começar a buscar.",
     "searchSoonPosts": "Busca em posts em breve.",
-    "searchSoonCompanies": "Busca em empresas em breve."
+    "searchSoonCompanies": "Busca em empresas em breve.",
+    "searchResultsCount": "{{count}} resultados"
   },
   "applyModes": {
     "pageTitle": "Como você se candidata",
@@ -290,7 +292,8 @@
       "playing": "Reescrevendo…",
       "saveCta": "Salvar como versão",
       "demoDisclaimer": "Demo — a IA real usa seu CV completo após o cadastro."
-    }
+    },
+    "cardSections": "{{count}} seções"
   },
   "dashboard": {
     "pageTitle": "Painel",
@@ -357,7 +360,7 @@
     },
     "import": {
       "resumePreviewAlt": "Pré-visualização do currículo",
-      "githubImportedToast": "Importado: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts …",
+      "githubImportedToast": "Importado: {{skills}} skills, {{posts}} posts …",
       "linkedinImportedToast": "LinkedIn importado.",
       "linkedinUnavailableToast": "Import do LinkedIn ainda em construção — use PDF ou GitHub por enquanto.",
       "pdfUploadedToast": "PDF enviado. Processando…",
@@ -367,7 +370,7 @@
       "heading": "Importar currículo"
     },
     "theme": {
-      "previewAlt": "Pré-visualização de {theme.name}"
+      "previewAlt": "Pré-visualização de {{name}}"
     },
     "stepper": {
       "completeError": "Falha ao concluir o onboarding"
@@ -389,7 +392,12 @@
     "review": {
       "inactiveHeading": "Este link de review não está mais ativo",
       "backToStart": "Voltar ao início"
-    }
+    },
+    "progressLabel": "Passo {{current}} de {{total}}",
+    "doneTitle": "Tudo pronto",
+    "doneHeadline": "Bem-vindo!",
+    "doneSubtitle": "Seu perfil está pronto. Hora de explorar.",
+    "doneCta": "Ir para o feed"
   },
   "network": {
     "pageTitle": "Minha Rede",
@@ -450,7 +458,8 @@
     "quickMessagePlaceholder": "Escreva uma mensagem rápida…",
     "quickMessageSend": "Enviar",
     "quickMessageSent": "Mensagem enviada",
-    "quickMessageError": "Não foi possível enviar a mensagem"
+    "quickMessageError": "Não foi possível enviar a mensagem",
+    "carouselMutualCount": "{{count}} em comum"
   },
   "admin": {
     "audit": {
@@ -660,7 +669,9 @@
     "settingsLink": "Configuracoes",
     "connectedAccountsHeading": "Contas conectadas",
     "refreshMyProfile": "Atualizar meu perfil",
-    "sessionsHeading": "Sessões e dispositivos"
+    "sessionsHeading": "Sessões e dispositivos",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha"
   },
   "notifications": {
     "title": "Notificações",
@@ -688,7 +699,8 @@
     "empty": "Sem notificações ainda.",
     "noNotifications": "Nenhuma notificação",
     "errorMarkRead": "Não foi possível marcar como lida",
-    "markReadAria": "marcar como lida"
+    "markReadAria": "marcar como lida",
+    "viewAll": "Ver tudo"
   },
   "feed": {
     "pageTitle": "Feed",
@@ -744,7 +756,8 @@
       "closesIn": "encerra em {{value}}",
       "days": "{{count}}d",
       "hours": "{{count}}h",
-      "minutes": "{{count}}min"
+      "minutes": "{{count}}min",
+      "votes": "{{count}} votos"
     },
     "saved": "Salvos",
     "loadingMore": "Carregando mais posts",
@@ -760,7 +773,9 @@
       "trendingTitle": "Em alta",
       "shortcutsTitle": "Atalhos",
       "suggestions": "Sugestões de rede",
-      "browseJobs": "Ver vagas"
+      "browseJobs": "Ver vagas",
+      "emptySearchTitle": "Nada encontrado",
+      "emptySearchHint": "Tente outro termo ou limpe a busca."
     },
     "composer": {
       "placeholder": "Compartilhe uma conquista, vaga, build ou dúvida…",
@@ -774,6 +789,8 @@
       "addOption": "+ adicionar opção"
     },
     "nav": {
+      "explore": "Explorar",
+      "bubble": "Minha Bolha",
       "saved": "Salvos"
     },
     "mobileCompose": "Criar post",
@@ -804,7 +821,10 @@
     },
     "list": {
       "clearSearchFallback": "Limpar busca"
-    }
+    },
+    "likeAction": "Curtir",
+    "removeLike": "Descurtir",
+    "newPosts": "{{count}} novos posts"
   },
   "twoFactor": {
     "disabledSuccess": "2FA desativado.",
@@ -936,7 +956,10 @@
       "placeholderSalary": "R$ 8k - 12k"
     },
     "newJobsSingular": "1 nova",
-    "similarTitle": "Vagas similares"
+    "similarTitle": "Vagas similares",
+    "applicationsBrowse": "Ver candidaturas",
+    "newJobsBadgeDismiss": "Dispensar",
+    "newJobsPlural": "{{count}} novas"
   },
   "auth": {
     "shared": {
@@ -1353,13 +1376,24 @@
       "confirmSuffix": "para confirmar"
     },
     "styles": {
-      "previewAria": "Preview de {style.name}",
+      "previewAria": "Preview de {{name}}",
       "heading": "Estilos de currículo",
       "empty": "Nenhum estilo disponível no momento."
     },
     "public": {
       "downloadResumeError": "Falha ao baixar currículo",
-      "copiedButton": "Copiado!"
+      "copiedButton": "Copiado!",
+      "badgeHint": {
+        "firstBuild": "Publique seu primeiro post de build.",
+        "ats90Plus": "Atinja ATS score ≥ 90% em um currículo.",
+        "mentored10": "Mentore 10 pessoas.",
+        "interviews5": "Registre 5 entrevistas.",
+        "contributor": "Contribua com a plataforma.",
+        "eventSpeaker": "Seja speaker em um evento."
+      },
+      "badgeLocked": "{{name}} — 🔒 {{hint}}",
+      "badgeEarned": "{{name}} (conquistada)",
+      "badgeLockedAria": "{{name}} (bloqueada): {{hint}}"
     },
     "endorsements": {
       "userLinkLabel": "Usuário",
@@ -1404,6 +1438,7 @@
   },
   "commandPalette": {
     "ariaLabel": "Paleta de comandos",
+    "searchPlaceholder": "Digite pra buscar ou navegar…",
     "actions": {
       "newPost": "Novo post",
       "editProfile": "Editar perfil",
@@ -1451,10 +1486,11 @@
       "clearAria": "Limpar campo de busca"
     },
     "badgeIcon": {
-      "firstBuild": "First Build",
+      "firstBuild": "Primeira Build",
       "ats90Plus": "ATS 90%+",
       "mentored10": "Mentorou 10",
       "interviews5": "5 Entrevistas",
+      "contributor": "Contribuidor",
       "eventSpeaker": "Palestrante de Evento"
     },
     "dangerConfirmModal": {

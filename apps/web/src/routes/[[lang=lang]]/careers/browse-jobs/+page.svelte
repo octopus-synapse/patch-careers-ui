@@ -344,6 +344,7 @@ async function runRageApply() {
 					{search}
 					{filters}
 					placeholder={t('jobs.search')}
+					clearFieldAriaLabel={t('ui.searchFilterBar.clearAria')}
 					onsearch={(v) => { search = v; page = 1; }}
 					onfilterchange={(key, value) => { if (key === 'jobType') jobTypeFilter = value; page = 1; }}
 				/>

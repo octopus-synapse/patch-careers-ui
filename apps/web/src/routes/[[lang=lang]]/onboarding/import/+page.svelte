@@ -27,7 +27,10 @@ async function importGitHub() {
   try {
     const res = await postV1ResumesImportsGithub();
     toastState.show(
-      `Importado: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts de build.`,
+      t('onboarding.import.githubImportedToast', {
+        skills: res.primaryStack.length,
+        posts: res.buildPostsCreated,
+      }),
       'success',
     );
   } catch (err) {

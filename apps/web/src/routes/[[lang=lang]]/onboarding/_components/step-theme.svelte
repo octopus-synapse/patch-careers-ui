@@ -1,6 +1,9 @@
 <script lang="ts">
 import { Check, Shield } from 'lucide-svelte';
 import { Badge } from 'ui';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 type ThemeOption = {
   id: string;
@@ -33,7 +36,7 @@ let { themes, selectedThemeId, onselect }: Props = $props();
 				<div class="overflow-hidden border-b border-gray-200 dark:border-neutral-700">
 					<img
 						src={theme.thumbnailUrl}
-						alt="Preview of {theme.name}"
+						alt={t('onboarding.theme.previewAlt', { name: theme.name })}
 						class="w-full"
 						loading="lazy"
 					/>

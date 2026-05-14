@@ -134,7 +134,8 @@
     },
     "link": {
       "govBrAnpd": "gov.br/anpd"
-    }
+    },
+    "close": "Close"
   },
   "errorPage": {
     "notFound": "Page not found",
@@ -211,7 +212,8 @@
     "searchClear": "Clear",
     "searchEmptyState": "Type something to start searching.",
     "searchSoonPosts": "Search in posts is coming soon.",
-    "searchSoonCompanies": "Search in companies is coming soon."
+    "searchSoonCompanies": "Search in companies is coming soon.",
+    "searchResultsCount": "{{count}} results"
   },
   "applyModes": {
     "pageTitle": "How you apply",
@@ -290,7 +292,8 @@
       "playing": "Rewriting…",
       "saveCta": "Save as version",
       "demoDisclaimer": "Demo — the real AI will use your full resume after signup."
-    }
+    },
+    "cardSections": "{{count}} sections"
   },
   "dashboard": {
     "pageTitle": "Dashboard",
@@ -357,7 +360,7 @@
     },
     "import": {
       "resumePreviewAlt": "Resume preview",
-      "githubImportedToast": "Imported: ${res.primaryStack.length} skills, ${res.buildPostsCreated} posts …",
+      "githubImportedToast": "Imported: {{skills}} skills, {{posts}} posts …",
       "linkedinImportedToast": "LinkedIn imported.",
       "linkedinUnavailableToast": "LinkedIn import is still under construction — use PDF or GitHub for now.",
       "pdfUploadedToast": "PDF uploaded. Processing…",
@@ -367,7 +370,7 @@
       "heading": "Import resume"
     },
     "theme": {
-      "previewAlt": "Preview of {theme.name}"
+      "previewAlt": "Preview of {{name}}"
     },
     "stepper": {
       "completeError": "Failed to complete onboarding"
@@ -389,7 +392,12 @@
     "review": {
       "inactiveHeading": "This review link is no longer active",
       "backToStart": "Back to start"
-    }
+    },
+    "progressLabel": "Step {{current}} of {{total}}",
+    "doneTitle": "You're all set",
+    "doneHeadline": "Welcome!",
+    "doneSubtitle": "Your profile is ready. Time to explore.",
+    "doneCta": "Go to the feed"
   },
   "network": {
     "pageTitle": "My Network",
@@ -450,7 +458,8 @@
     "quickMessagePlaceholder": "Write a quick note…",
     "quickMessageSend": "Send",
     "quickMessageSent": "Message sent",
-    "quickMessageError": "Could not send the message"
+    "quickMessageError": "Could not send the message",
+    "carouselMutualCount": "{{count}} mutual"
   },
   "admin": {
     "audit": {
@@ -660,7 +669,9 @@
     "settingsLink": "Settings",
     "connectedAccountsHeading": "Connected accounts",
     "refreshMyProfile": "Refresh my profile",
-    "sessionsHeading": "Sessions and devices"
+    "sessionsHeading": "Sessions and devices",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "notifications": {
     "title": "Notifications",
@@ -688,7 +699,8 @@
     "empty": "No notifications yet.",
     "noNotifications": "No notifications",
     "errorMarkRead": "Could not mark as read",
-    "markReadAria": "mark read"
+    "markReadAria": "mark read",
+    "viewAll": "View all"
   },
   "feed": {
     "pageTitle": "Feed",
@@ -744,7 +756,8 @@
       "closesIn": "closes in {{value}}",
       "days": "{{count}}d",
       "hours": "{{count}}h",
-      "minutes": "{{count}}min"
+      "minutes": "{{count}}min",
+      "votes": "{{count}} votes"
     },
     "saved": "Saved",
     "loadingMore": "Loading more posts",
@@ -760,7 +773,9 @@
       "trendingTitle": "Trending",
       "shortcutsTitle": "Shortcuts",
       "suggestions": "Network suggestions",
-      "browseJobs": "Browse jobs"
+      "browseJobs": "Browse jobs",
+      "emptySearchTitle": "Nothing found",
+      "emptySearchHint": "Try a different term or clear the search."
     },
     "composer": {
       "placeholder": "Share an achievement, job, build or question…",
@@ -774,6 +789,8 @@
       "addOption": "+ add option"
     },
     "nav": {
+      "explore": "Explore",
+      "bubble": "My Bubble",
       "saved": "Saved"
     },
     "mobileCompose": "Create post",
@@ -804,7 +821,10 @@
     },
     "list": {
       "clearSearchFallback": "Clear search"
-    }
+    },
+    "likeAction": "Like",
+    "removeLike": "Unlike",
+    "newPosts": "{{count}} new posts"
   },
   "twoFactor": {
     "disabledSuccess": "2FA disabled.",
@@ -936,7 +956,10 @@
       "placeholderSalary": "$80k - $120k"
     },
     "newJobsSingular": "1 new",
-    "similarTitle": "Similar jobs"
+    "similarTitle": "Similar jobs",
+    "applicationsBrowse": "View applications",
+    "newJobsBadgeDismiss": "Dismiss",
+    "newJobsPlural": "{{count}} new"
   },
   "auth": {
     "shared": {
@@ -1353,13 +1376,24 @@
       "confirmSuffix": "to confirm"
     },
     "styles": {
-      "previewAria": "Preview of {style.name}",
+      "previewAria": "Preview of {{name}}",
       "heading": "Resume styles",
       "empty": "No style available at the moment."
     },
     "public": {
       "downloadResumeError": "Failed to download resume",
-      "copiedButton": "Copied!"
+      "copiedButton": "Copied!",
+      "badgeHint": {
+        "firstBuild": "Publish your first build post.",
+        "ats90Plus": "Hit an ATS score ≥ 90% on a resume.",
+        "mentored10": "Mentor 10 people.",
+        "interviews5": "Log 5 interviews.",
+        "contributor": "Contribute to the platform.",
+        "eventSpeaker": "Be a speaker at an event."
+      },
+      "badgeLocked": "{{name}} — 🔒 {{hint}}",
+      "badgeEarned": "{{name}} (earned)",
+      "badgeLockedAria": "{{name}} (locked): {{hint}}"
     },
     "endorsements": {
       "userLinkLabel": "User",
@@ -1404,6 +1438,7 @@
   },
   "commandPalette": {
     "ariaLabel": "Command palette",
+    "searchPlaceholder": "Type to search or navigate…",
     "actions": {
       "newPost": "New post",
       "editProfile": "Edit profile",
@@ -1455,6 +1490,7 @@
       "ats90Plus": "ATS 90%+",
       "mentored10": "Mentored 10",
       "interviews5": "5 Interviews",
+      "contributor": "Contributor",
       "eventSpeaker": "Event Speaker"
     },
     "dangerConfirmModal": {

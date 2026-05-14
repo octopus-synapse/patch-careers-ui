@@ -230,6 +230,8 @@ function handleResend() {
 							disabled={$verifyEmail.isPending}
 							autofocus
 							oncomplete={handleCompleted}
+							groupAriaLabel={t('ui.otpInput.verificationCodeAria')}
+							digitAriaLabel={(i) => t('ui.otpInput.digitAria', { index: i })}
 						/>
 
 						{#if verifyError}
