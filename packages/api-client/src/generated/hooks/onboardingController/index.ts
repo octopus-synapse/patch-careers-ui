@@ -3,6 +3,7 @@ export type { GetV1OnboardingSessionQueryKey } from "./createGetV1OnboardingSess
 export type { GetV1OnboardingStatusQueryKey } from "./createGetV1OnboardingStatus";
 export type { PostV1OnboardingMutationKey } from "./createPostV1Onboarding";
 export type { PostV1OnboardingSessionCompleteMutationKey } from "./createPostV1OnboardingSessionComplete";
+export type { PostV1OnboardingSessionExtrasMutationKey } from "./createPostV1OnboardingSessionExtras";
 export type { PostV1OnboardingSessionGotoMutationKey } from "./createPostV1OnboardingSessionGoto";
 export type { PostV1OnboardingSessionNextMutationKey } from "./createPostV1OnboardingSessionNext";
 export type { PostV1OnboardingSessionPreviousMutationKey } from "./createPostV1OnboardingSessionPrevious";
@@ -22,6 +23,8 @@ export { createPostV1Onboarding } from "./createPostV1Onboarding";
 export { postV1OnboardingMutationKey } from "./createPostV1Onboarding";
 export { createPostV1OnboardingSessionComplete } from "./createPostV1OnboardingSessionComplete";
 export { postV1OnboardingSessionCompleteMutationKey } from "./createPostV1OnboardingSessionComplete";
+export { createPostV1OnboardingSessionExtras } from "./createPostV1OnboardingSessionExtras";
+export { postV1OnboardingSessionExtrasMutationKey } from "./createPostV1OnboardingSessionExtras";
 export { createPostV1OnboardingSessionGoto } from "./createPostV1OnboardingSessionGoto";
 export { postV1OnboardingSessionGotoMutationKey } from "./createPostV1OnboardingSessionGoto";
 export { createPostV1OnboardingSessionNext } from "./createPostV1OnboardingSessionNext";

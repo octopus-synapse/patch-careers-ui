@@ -47,7 +47,7 @@ $effect(() => {
 
   // 3. Already verified but sitting on /identity/verify-email → move on.
   if (!needsEmailVerification && isVerifyEmail) {
-    goto(needsOnboarding ? '/onboarding/start' : '/');
+    goto(needsOnboarding ? '/onboarding' : '/');
     return;
   }
 
@@ -57,9 +57,10 @@ $effect(() => {
     return;
   }
 
-  // 5. Needs onboarding → send to the picker. Identity pages (verify-email,
-  // reset-password, etc.) and legal pages must NOT trigger this — otherwise
-  // /identity/verify-email ping-pongs with /onboarding/start for fresh users.
+  // 5. Needs onboarding → send to the stepper (welcome is the first step).
+  // Identity pages (verify-email, reset-password, etc.) and legal pages must
+  // NOT trigger this — otherwise /identity/verify-email ping-pongs for fresh
+  // users.
   if (
     needsOnboarding &&
     !isOnboarding &&
@@ -67,7 +68,7 @@ $effect(() => {
     !isLegalPage &&
     !isAdminPage
   ) {
-    goto('/onboarding/start');
+    goto('/onboarding');
     return;
   }
 

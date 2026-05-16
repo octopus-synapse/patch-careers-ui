@@ -7,6 +7,7 @@ import { setBaseUrl } from 'api-client';
 import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
+import { ToastContainer } from 'ui';
 import { colorSchema } from '$lib/state/color-schema.svelte';
 import ChatFab from '$lib/components/chat/chat-fab.svelte';
 import ChatWidget from '$lib/components/chat/chat-widget.svelte';
@@ -22,6 +23,9 @@ import LockoutModal from '$lib/components/lockout-modal.svelte';
 import { extractLockoutCode, openLockout } from '$lib/state/lockout-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { trackPageView } from '$lib/utils/analytics/track';
+import { installZodErrorMap } from '$lib/utils/zod-error-map';
+
+installZodErrorMap();
 
 const t = $derived(locale.t);
 
@@ -102,6 +106,7 @@ $effect(() => {
 			<Footer />
 			<LockoutModal />
 		</div>
+		<ToastContainer />
 		{#if showCookieBanner}<CookieBanner />{/if}
 		{#if dev && !navigator.webdriver}<SvelteQueryDevtools />{/if}
 	</QueryClientProvider>
@@ -122,6 +127,7 @@ $effect(() => {
 			<ChatFab />
 			<Footer />
 			<LockoutModal />
+			<ToastContainer />
 			{#if dev && !navigator.webdriver}<SvelteQueryDevtools />{/if}
 		</QueryClientProvider>
 		{#if showCookieBanner}<CookieBanner />{/if}

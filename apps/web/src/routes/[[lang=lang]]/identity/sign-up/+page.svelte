@@ -14,12 +14,15 @@ import { createForm } from '$lib/state/create-form.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import { PRIVACY_VERSION, TOS_VERSION } from '$lib/utils/consent-versions';
 import PasswordStrength from '$lib/components/forms/password-strength.svelte';
+import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
+
+type SignupFields = 'name' | 'email' | 'password';
+const FIELD_KEYS: ReadonlySet<SignupFields> = new Set(['name', 'email', 'password']);
 
 const queryClient = useQueryClient();
 
 let acceptedConsent = $state(false);
 let acceptedConsentError = $state('');
-let serverError = $state('');
 
 const t = $derived(locale.t);
 
@@ -35,7 +38,22 @@ const signup = createSignup({
       goto('/identity/verify-email');
     },
     onError(err: unknown) {
-      if (isApiError(err)) serverError = err.message;
+      // Per-field server errors take precedence over the global toast so
+      // users see the message next to the offending input. The toast
+      // covers the rest (severity=toast/banner/modal) via handleApiError.
+      if (isApiError(err) && err.fields?.length) {
+        let matched = false;
+        for (const f of err.fields) {
+          const last = f.path[f.path.length - 1];
+          const key = typeof last === 'string' ? last : undefined;
+          if (key && (FIELD_KEYS as Set<string>).has(key)) {
+            form.setFieldError(key as SignupFields, f.message);
+            matched = true;
+          }
+        }
+        if (matched) return;
+      }
+      handleApiError(err);
     },
   },
 });
@@ -60,7 +78,6 @@ const form = createForm({
 function handleSubmit(e: Event) {
   e.preventDefault();
   if (!t) return;
-  serverError = '';
   acceptedConsentError = '';
   if (!acceptedConsent) {
     acceptedConsentError = t('auth.sign-up.consent.errorRequired');
@@ -99,6 +116,9 @@ function handleSubmit(e: Event) {
 								bind:value={form.values.name}
 								placeholder={t('auth.shared.fullNamePlaceholder')}
 							/>
+							{#if form.errors.name}
+								<p role="alert" class="mt-1 text-xs font-medium text-red-500/80">{form.errors.name}</p>
+							{/if}
 						</div>
 
 						<div class="group relative">
@@ -159,10 +179,6 @@ function handleSubmit(e: Event) {
 
 						</div>
 					</div>
-
-					{#if serverError}
-						<p role="alert" class="text-xs font-medium text-red-500/80">{serverError}</p>
-					{/if}
 
 					<Button
 						type="submit"

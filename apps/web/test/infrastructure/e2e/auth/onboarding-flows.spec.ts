@@ -12,7 +12,7 @@ async function dismissWelcome(page: Page) {
   await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10000 });
   const startBtn = page
     .locator('button')
-    .filter({ hasText: /come.ar agora|start now/i })
+    .filter({ hasText: /vamos l.|let's go|come.ar agora|start now/i })
     .first();
   if (await startBtn.isVisible().catch(() => false)) {
     // Pair click with the /next response so we don't move on while the
@@ -332,7 +332,7 @@ test.describe('Onboarding Flows', () => {
     // the stepper frame. Presence of the start button confirms we jumped back.
     const startBtn = page
       .locator('button')
-      .filter({ hasText: /come.ar agora|start now/i })
+      .filter({ hasText: /vamos l.|let's go|come.ar agora|start now/i })
       .first();
     await expect(startBtn).toBeVisible({ timeout: 10000 });
 
@@ -521,7 +521,7 @@ test.describe('Onboarding Flows', () => {
     // If a prior test advanced the user past welcome, goToStep brings us back.
     const startBtn = page
       .locator('button')
-      .filter({ hasText: /come.ar agora|start now/i })
+      .filter({ hasText: /vamos l.|let's go|come.ar agora|start now/i })
       .first();
     if (!(await startBtn.isVisible().catch(() => false))) {
       await dismissWelcome(page); // ensure sidebar exists so we can navigate back
@@ -534,7 +534,7 @@ test.describe('Onboarding Flows', () => {
     await page.waitForTimeout(2500);
 
     const title = await getStepTitle(page);
-    expect(title).toMatch(/dados\s+pessoais|personal\s+info/i);
+    expect(title).toMatch(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i);
 
     await page.close();
   });

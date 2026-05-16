@@ -13,7 +13,7 @@ export type PostV1OnboardingSessionNextQueryParams = {
     locale?: string;
 };
 
-export const strengthLevelEnum4 = {
+export const strengthLevelEnum5 = {
     weak: "weak",
     growing: "growing",
     strong: "strong",
@@ -21,7 +21,7 @@ export const strengthLevelEnum4 = {
     complete: "complete"
 } as const;
 
-export type StrengthLevelEnum4Key = (typeof strengthLevelEnum4)[keyof typeof strengthLevelEnum4];
+export type StrengthLevelEnum5Key = (typeof strengthLevelEnum5)[keyof typeof strengthLevelEnum5];
 
 /**
  * @description Successful response
@@ -58,7 +58,7 @@ export type PostV1OnboardingSessionNext201 = {
         /**
          * @type string
         */
-        level: StrengthLevelEnum4Key;
+        level: StrengthLevelEnum5Key;
     };
     /**
      * @type boolean
@@ -172,6 +172,106 @@ export type PostV1OnboardingSessionNext201 = {
         sectionTypeKey?: string;
         data?: any | null;
     }[];
+    /**
+     * @type array | undefined
+    */
+    availableExtras?: {
+        /**
+         * @type string
+        */
+        id: string;
+        /**
+         * @type string
+        */
+        label: string;
+        /**
+         * @type string
+        */
+        description: string;
+        /**
+         * @type boolean
+        */
+        required: boolean;
+        /**
+         * @type string
+        */
+        component: string;
+        /**
+         * @type string | undefined
+        */
+        icon?: string;
+        /**
+         * @type array | undefined
+        */
+        fields?: {
+            /**
+             * @type string
+            */
+            key: string;
+            /**
+             * @type string
+            */
+            type: string;
+            /**
+             * @type string
+            */
+            label: string;
+            /**
+             * @type boolean
+            */
+            required: boolean;
+            /**
+             * @type array | undefined
+            */
+            options?: string[];
+            /**
+             * @type string | undefined
+            */
+            widget?: string;
+            /**
+             * @minLength 0
+             * @type integer | undefined
+            */
+            minLength?: number;
+            /**
+             * @type integer | undefined
+            */
+            maxLength?: number;
+            /**
+             * @type string | undefined
+            */
+            pattern?: string;
+            /**
+             * @type array | undefined
+            */
+            examples?: string[];
+        }[];
+        /**
+         * @type string | undefined
+        */
+        noDataLabel?: string;
+        /**
+         * @type string | undefined
+        */
+        placeholder?: string;
+        /**
+         * @type string | undefined
+        */
+        addLabel?: string;
+        /**
+         * @type boolean | undefined
+        */
+        multipleItems?: boolean;
+        /**
+         * @type string | undefined
+        */
+        sectionTypeKey?: string;
+        data?: any | null;
+    }[];
+    /**
+     * @type array | undefined
+    */
+    activatedExtras?: string[];
     /**
      * @type string | undefined
     */

@@ -6,7 +6,6 @@ import {
   getV1FeedQueryKey,
 } from 'api-client';
 import { Plus } from 'lucide-svelte';
-import { ToastContainer } from 'ui';
 import { useAuth } from '$lib/state/auth.svelte';
 import CreatePostModal from './create-post-modal.svelte';
 import FeedHeader from './feed-header.svelte';
@@ -206,5 +205,3 @@ function handlePostCreated() {
 		repostTargetPost = null;
 	}}
 />
-
-<ToastContainer />

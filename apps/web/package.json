@@ -19,10 +19,12 @@
     "@tanstack/svelte-query": "^5.90.2",
     "@tanstack/svelte-query-devtools": "5",
     "api-client": "workspace:*",
+    "echarts": "^6.0.0",
     "i18n": "workspace:*",
     "lucide-svelte": "^0.475.0",
     "qrcode": "^1.5.4",
     "svelte-adapter-bun": "^1.0.1",
+    "svelte-echarts": "^1.0.0",
     "ui": "workspace:*",
     "zod": "^3.25.76"
   },

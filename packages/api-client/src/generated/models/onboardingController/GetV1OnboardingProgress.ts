@@ -166,6 +166,106 @@ export type GetV1OnboardingProgress200 = {
         data?: any | null;
     }[];
     /**
+     * @type array | undefined
+    */
+    availableExtras?: {
+        /**
+         * @type string
+        */
+        id: string;
+        /**
+         * @type string
+        */
+        label: string;
+        /**
+         * @type string
+        */
+        description: string;
+        /**
+         * @type boolean
+        */
+        required: boolean;
+        /**
+         * @type string
+        */
+        component: string;
+        /**
+         * @type string | undefined
+        */
+        icon?: string;
+        /**
+         * @type array | undefined
+        */
+        fields?: {
+            /**
+             * @type string
+            */
+            key: string;
+            /**
+             * @type string
+            */
+            type: string;
+            /**
+             * @type string
+            */
+            label: string;
+            /**
+             * @type boolean
+            */
+            required: boolean;
+            /**
+             * @type array | undefined
+            */
+            options?: string[];
+            /**
+             * @type string | undefined
+            */
+            widget?: string;
+            /**
+             * @minLength 0
+             * @type integer | undefined
+            */
+            minLength?: number;
+            /**
+             * @type integer | undefined
+            */
+            maxLength?: number;
+            /**
+             * @type string | undefined
+            */
+            pattern?: string;
+            /**
+             * @type array | undefined
+            */
+            examples?: string[];
+        }[];
+        /**
+         * @type string | undefined
+        */
+        noDataLabel?: string;
+        /**
+         * @type string | undefined
+        */
+        placeholder?: string;
+        /**
+         * @type string | undefined
+        */
+        addLabel?: string;
+        /**
+         * @type boolean | undefined
+        */
+        multipleItems?: boolean;
+        /**
+         * @type string | undefined
+        */
+        sectionTypeKey?: string;
+        data?: any | null;
+    }[];
+    /**
+     * @type array | undefined
+    */
+    activatedExtras?: string[];
+    /**
      * @type string | undefined
     */
     username?: string;

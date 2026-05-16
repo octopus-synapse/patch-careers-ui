@@ -1,5 +1,6 @@
 <script lang="ts">
-import { Check, Minus } from 'lucide-svelte';
+import { Check, Minus, Pencil } from 'lucide-svelte';
+import { locale } from '$lib/state/locale.svelte';
 
 type StepDef = {
   id: string;
@@ -15,11 +16,9 @@ type Props = {
   ongoto: (stepId: string) => void;
 };
 
-let { session, steps, completedSteps, ongoto }: Props = $props();
+let { session, steps, ongoto }: Props = $props();
 
-// Review-invite feature is not currently exposed by the backend. When that
-// endpoint comes back (e.g. POST /api/v1/onboarding/review/invite), wire the
-// UI back through the generated SDK — do NOT reintroduce `customFetch`.
+const t = $derived(locale.t);
 
 type ReviewEntry = { label: string; value: string; long?: boolean };
 type ReviewSection = {
@@ -88,7 +87,7 @@ const sections = $derived.by(() => {
 
       const entries = sec.items.map((item) => {
         const vals = Object.values(item.content ?? {}).filter(Boolean);
-        return { label: '', value: vals.slice(0, 3).join(' · ') || '---' };
+        return { label: '', value: vals.slice(0, 3).join(' · ') || '—' };
       });
       result.push({ label, stepId, entries });
     }
@@ -97,7 +96,7 @@ const sections = $derived.by(() => {
   const ts = session.templateSelection as Record<string, string> | undefined;
   if (ts?.templateId) {
     const step = steps.find((s) => s.id === 'template');
-    const themeData = step?.data?.find((t) => t.id === ts.templateId);
+    const themeData = step?.data?.find((th) => th.id === ts.templateId);
     result.push({
       label: step?.label ?? 'Theme',
       stepId: 'template',
@@ -113,23 +112,35 @@ const sections = $derived.by(() => {
 
 <div class="space-y-3">
 	{#each sections as section}
-		<button
-			onclick={() => ongoto(section.stepId)}
-			class="w-full cursor-pointer rounded-lg border p-5 text-left transition-colors {section.skipped ? 'bg-gray-50 dark:bg-neutral-800/30' : 'bg-white dark:bg-neutral-800/50'} border-gray-200 dark:border-neutral-700/50 hover:border-gray-400 dark:hover:border-neutral-500"
+		<div
+			class="group relative rounded-xl border p-5 transition-colors {section.skipped ? 'bg-gray-50 dark:bg-neutral-800/30' : 'bg-white dark:bg-neutral-800/50'} border-gray-200 dark:border-neutral-700/50"
 		>
-			<div class="mb-3 flex items-center gap-2">
-				{#if section.skipped}
-					<Minus size={12} class="text-gray-500 dark:text-neutral-500" />
-				{:else}
-					<Check size={12} class="text-emerald-500" />
-				{/if}
-				<h3 class="text-xs font-semibold text-gray-500 dark:text-neutral-500">
-					{section.label}
-				</h3>
+			<div class="mb-3 flex items-center justify-between gap-2">
+				<div class="flex items-center gap-2">
+					{#if section.skipped}
+						<Minus size={12} class="text-gray-500 dark:text-neutral-500" />
+					{:else}
+						<Check size={12} class="text-emerald-500" />
+					{/if}
+					<h3 class="text-xs font-semibold text-gray-700 dark:text-neutral-400">
+						{section.label}
+					</h3>
+				</div>
+				<button
+					type="button"
+					onclick={() => ongoto(section.stepId)}
+					class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700/50 dark:hover:text-neutral-100"
+					aria-label="{t('onboarding.review.editAria')} {section.label}"
+				>
+					<Pencil size={11} />
+					{t('onboarding.review.edit')}
+				</button>
 			</div>
 
 			{#if section.skipped}
-				<p class="text-xs italic text-gray-500 dark:text-neutral-500">Skipped</p>
+				<p class="text-xs italic text-gray-500 dark:text-neutral-500">
+					{t('onboarding.review.skipped')}
+				</p>
 			{:else if section.themePreview || section.themeName}
 				<div class="flex items-start gap-4">
 					{#if section.themePreview}
@@ -163,6 +174,6 @@ const sections = $derived.by(() => {
 					{/each}
 				</dl>
 			{/if}
-		</button>
+		</div>
 	{/each}
 </div>

@@ -4,10 +4,7 @@ import { Loader } from 'ui';
 import type { Snippet } from 'svelte';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { page } from '$app/stores';
-import AdminSidebar from './_components/admin-sidebar.svelte';
 import { useAuth } from '$lib/state/auth.svelte';
-import { locale } from '$lib/state/locale.svelte';
 
 let { children }: { children: Snippet } = $props();
 
@@ -16,9 +13,6 @@ const session = useAuth();
 const user = $derived(session.user);
 const authenticated = $derived(session.isAuthenticated);
 const isAdmin = $derived(user?.isAdmin);
-
-const t = $derived(locale.t);
-const currentPath = $derived($page.url.pathname);
 
 $effect(() => {
   if (!browser || session.isLoading) return;
@@ -39,12 +33,7 @@ $effect(() => {
 		<Loader size={24} />
 	</div>
 {:else if authenticated && isAdmin}
-	<div class="flex min-h-screen pt-14">
-		<div class="hidden md:block">
-			<AdminSidebar {currentPath} />
-		</div>
-		<main class="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
-			{@render children()}
-		</main>
-	</div>
+	<main class="mx-auto min-h-screen w-full max-w-7xl px-4 pt-14 pb-8 sm:px-6 md:px-8">
+		{@render children()}
+	</main>
 {/if}

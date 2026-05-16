@@ -1,60 +1,50 @@
 <script lang="ts">
-import { MessageCircle, Shield } from 'lucide-svelte';
-import type { ComponentType } from 'svelte';
+import { Briefcase, LayoutGrid, MessageCircle, Shield, UserCircle } from 'lucide-svelte';
 import { Avatar, Button, SegmentToggle } from 'ui';
+import type { AppContext } from '$lib/state/active-context.svelte';
 import { chatState } from '$lib/state/chat-state.svelte';
 import { colorSchema } from '$lib/state/color-schema.svelte';
+import type { NavLink } from './nav-links-by-context';
 
 type User = {
   name?: string | null;
   email: string;
 };
 
-type NavLink = {
-  key: string;
-  href: string;
-  icon: ComponentType;
-};
-
-type AdminNavLink = {
-  href: string;
-  labelKey: string;
-  icon: ComponentType;
-};
-
 type Props = {
   authenticated: boolean;
   user: User | undefined;
   navLinks: NavLink[];
-  isAdmin: boolean;
   t: (key: string) => string;
   locales: string[];
   currentLocale: string;
+  activeContext: AppContext;
+  allowedContexts: AppContext[];
   onclose: () => void;
   onthemetoggle: (value: string) => void;
   onlocalechange: (value: string) => void;
+  oncontextchange: (value: AppContext) => void;
   onlogout: () => void;
-  adminLinks?: AdminNavLink[];
-  showAdminSection?: boolean;
 };
 
 let {
   authenticated,
   user,
   navLinks,
-  isAdmin,
   t,
   locales,
   currentLocale,
+  activeContext,
+  allowedContexts,
   onclose,
   onthemetoggle,
   onlocalechange,
+  oncontextchange,
   onlogout,
-  adminLinks,
-  showAdminSection = false,
 }: Props = $props();
 
 const cs = $derived(colorSchema.mode);
+const canSwitchContext = $derived(allowedContexts.length > 1);
 const themeOptions = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
@@ -62,6 +52,17 @@ const themeOptions = [
 const localeOptions = $derived(
   locales.map((l) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })),
 );
+
+function contextIcon(ctx: AppContext) {
+  if (ctx === 'candidate') return UserCircle;
+  if (ctx === 'recruiter') return Briefcase;
+  return Shield;
+}
+
+function handleContext(ctx: AppContext) {
+  oncontextchange(ctx);
+  onclose();
+}
 </script>
 
 <div class="fixed inset-0 top-[57px] z-40 overflow-y-auto p-5 sm:p-8 md:hidden bg-gray-50 dark:bg-neutral-900">
@@ -74,7 +75,7 @@ const localeOptions = $derived(
 					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
 				>
 					<link.icon size={24} class="text-gray-500 dark:text-neutral-500" />
-					{t(link.key)}
+					{link.label}
 				</a>
 			{/each}
 
@@ -88,38 +89,6 @@ const localeOptions = $derived(
 					{t('nav.messages')}
 				</button>
 			{/if}
-
-			{#if isAdmin && !showAdminSection}
-				<a
-					href="/platform/admin"
-					onclick={onclose}
-					class="flex items-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
-				>
-					<Shield size={24} class="text-gray-500 dark:text-neutral-500" />
-					Admin
-				</a>
-			{/if}
-
-			{#if showAdminSection && adminLinks && adminLinks.length > 0}
-				<div class="flex flex-col gap-4 border-t pt-5 sm:gap-5 sm:pt-6 border-gray-200/60 dark:border-neutral-800/60">
-					<div class="flex items-center gap-2">
-						<Shield size={16} class="text-gray-500 dark:text-neutral-500" />
-						<span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-neutral-500">
-							Admin
-						</span>
-					</div>
-					{#each adminLinks as link}
-						<a
-							href={link.href}
-							onclick={onclose}
-							class="flex items-center gap-3 sm:gap-4 text-xl sm:text-2xl font-medium tracking-tight transition-opacity hover:opacity-60 text-gray-800 dark:text-neutral-200"
-						>
-							<link.icon size={22} class="text-gray-500 dark:text-neutral-500" />
-							{t(link.labelKey)}
-						</a>
-					{/each}
-				</div>
-			{/if}
 		</div>
 
 		<div class="flex flex-col gap-5 pb-8">
@@ -131,6 +100,32 @@ const localeOptions = $derived(
 						<p class="text-xs text-gray-500 dark:text-neutral-500">{user.email}</p>
 					</div>
 				</div>
+
+				{#if canSwitchContext}
+					<div class="flex flex-col gap-2">
+						<div class="flex items-center gap-2 text-gray-500 dark:text-neutral-500">
+							<LayoutGrid size={14} />
+							<span class="text-xs font-medium">{t('nav.context.label')}</span>
+						</div>
+						<div class="flex flex-col gap-1">
+							{#each allowedContexts as ctx}
+								{@const Icon = contextIcon(ctx)}
+								{@const active = activeContext === ctx}
+								<button
+									onclick={() => handleContext(ctx)}
+									aria-pressed={active}
+									class="flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors
+										{active
+											? 'bg-gray-200/60 dark:bg-neutral-700/60 text-gray-900 dark:text-neutral-100'
+											: 'text-gray-600 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-neutral-700/30'}"
+								>
+									<Icon size={16} />
+									<span>{t(`nav.context.${ctx}`)}</span>
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
 
 				<div class="flex items-center justify-between">
 					<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">{t('nav.theme')}</span>

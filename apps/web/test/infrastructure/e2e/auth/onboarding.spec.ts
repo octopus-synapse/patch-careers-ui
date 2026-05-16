@@ -15,7 +15,7 @@ async function enterStepper(page: Page) {
   await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10000 });
   const startBtn = page
     .locator('button')
-    .filter({ hasText: /come.ar agora|start now/i })
+    .filter({ hasText: /vamos l.|let's go|come.ar agora|start now/i })
     .first();
   if (await startBtn.isVisible().catch(() => false)) {
     await Promise.all([
@@ -45,7 +45,7 @@ async function enterStepper(page: Page) {
         .catch(() => undefined),
       personalBtn.click(),
     ]);
-    await expect(page.locator('h2')).toHaveText(/dados\s+pessoais|personal\s+info/i, {
+    await expect(page.locator('h2')).toHaveText(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i, {
       timeout: 10_000,
     });
   }
@@ -182,7 +182,7 @@ test.describe('Onboarding page', () => {
       await enterStepper(page);
       // We're now on personal-info (post-welcome). h2 should read the
       // current step's label.
-      await expect(page.locator('h2')).toHaveText(/dados\s+pessoais|personal\s+info/i, {
+      await expect(page.locator('h2')).toHaveText(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i, {
         timeout: 5000,
       });
       await page.locator('#fullName').fill('Test User');
@@ -200,7 +200,7 @@ test.describe('Onboarding page', () => {
       // After next, the user advances to `username` whose label is "Usuário".
       // `toHaveText` polls until the assertion passes — robust against the
       // POST → invalidate → GET /session → Svelte rerender chain.
-      await expect(page.locator('h2')).toHaveText(/usu.rio|username/i, { timeout: 10_000 });
+      await expect(page.locator('h2')).toHaveText(/seu usu.rio|your handle|usu.rio|username/i, { timeout: 10_000 });
       await page.close();
     });
 
@@ -233,7 +233,7 @@ test.describe('Onboarding page', () => {
         ),
         usernameBtn.click(),
       ]);
-      await expect(page.locator('h2')).toHaveText(/usu.rio|username/i, { timeout: 15_000 });
+      await expect(page.locator('h2')).toHaveText(/seu usu.rio|your handle|usu.rio|username/i, { timeout: 15_000 });
 
       const backBtn = page.getByRole('button', { name: /voltar|back/i });
       await expect(backBtn).toBeEnabled({ timeout: 10_000 });
@@ -244,7 +244,7 @@ test.describe('Onboarding page', () => {
         ),
         backBtn.click(),
       ]);
-      await expect(page.locator('h2')).toHaveText(/dados\s+pessoais|personal\s+info/i, {
+      await expect(page.locator('h2')).toHaveText(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i, {
         timeout: 15_000,
       });
 

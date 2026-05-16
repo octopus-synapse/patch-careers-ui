@@ -3,19 +3,16 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import { createLogout, sessionQueryKey } from 'api-client';
 import type { Locale } from 'i18n';
 import {
-  Briefcase,
-  LayoutDashboard,
+  ChevronDown,
   Menu,
-  Rss,
   Search,
-  Shield,
-  Users,
   X,
 } from 'lucide-svelte';
 import { Button } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { useActiveContext, type AppContext } from '$lib/state/active-context.svelte';
 import { colorSchema } from '$lib/state/color-schema.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import NavLogo from './nav-logo.svelte';
@@ -23,10 +20,7 @@ import NavMobileMenu from './nav-mobile-menu.svelte';
 import CommandPalette from '../command-palette/command-palette.svelte';
 import NavUserDropdown from './nav-user-dropdown.svelte';
 import NotificationBell from './notification-bell.svelte';
-import {
-  ADMIN_NAV_LINKS,
-  isAdminPath,
-} from '../../../routes/[[lang=lang]]/platform/admin/_components/admin-nav-links';
+import { getNavLinks, homeOf, pathContext } from './nav-links-by-context';
 import { useAuth } from '$lib/state/auth.svelte';
 import { useFeatureFlags } from '$lib/state/feature-flags.svelte';
 
@@ -38,6 +32,7 @@ const t = $derived(locale.t);
 
 let isMenuOpen = $state(false);
 let isDropdownOpen = $state(false);
+let isMoreOpen = $state(false);
 let isSearchOpen = $state(false);
 
 const isMac = $derived(browser && /Mac|iPhone|iPad|iPod/i.test(navigator.platform));
@@ -56,7 +51,11 @@ const canUseApp = $derived(
     !(user?.needsEmailVerification ?? false) &&
     !(user?.needsOnboarding ?? false),
 );
-const isAdmin = $derived(Boolean(user?.isAdmin));
+
+const activeContext = useActiveContext(() => ({
+  isAdmin: Boolean(user?.isAdmin),
+  isLoading: session.isLoading,
+}));
 
 function isActiveRoute(href: string) {
   return pathname === href || pathname.startsWith(href + '/');
@@ -66,20 +65,13 @@ const queryClient = useQueryClient();
 const logout = createLogout({
   mutation: {
     async onSuccess() {
-      // Clear *all* cached queries so the next screen can't flash user
-      // data from the previously authenticated session.
       queryClient.clear();
-      // Re-query session explicitly and await so the SSR/CSR guards
-      // see `authenticated: false` before we navigate.
       await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
       await queryClient.refetchQueries({ queryKey: sessionQueryKey() });
       isDropdownOpen = false;
       goto('/identity/sign-in', { replaceState: true, invalidateAll: true });
     },
     onError() {
-      // Even if the server logout fails (e.g., network), scrub local
-      // cache and send the user to /login — the server session may
-      // have already been invalidated on a different device.
       queryClient.clear();
       isDropdownOpen = false;
       goto('/identity/sign-in', { replaceState: true });
@@ -94,11 +86,36 @@ function handleClickOutside(e: MouseEvent) {
   }
 }
 
+function handleMoreOutside(e: MouseEvent) {
+  const target = e.target as HTMLElement;
+  if (!target.closest('[data-more]')) {
+    isMoreOpen = false;
+  }
+}
+
 $effect(() => {
   if (isDropdownOpen) {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }
+});
+
+$effect(() => {
+  if (isMoreOpen) {
+    document.addEventListener('click', handleMoreOutside);
+    return () => document.removeEventListener('click', handleMoreOutside);
+  }
+});
+
+// Reconcile active context to the URL: if the user landed on an
+// admin/recruiting route via deep link, switch context silently (without
+// navigating) so the navbar reflects where they actually are.
+$effect(() => {
+  const desired = pathContext(pathname);
+  if (!desired) return;
+  if (activeContext.current === desired) return;
+  if (!activeContext.allowedContexts.includes(desired)) return;
+  activeContext.setContext(desired);
 });
 
 function handleThemeToggle(value: string) {
@@ -107,6 +124,13 @@ function handleThemeToggle(value: string) {
 
 function handleLocaleChange(value: string) {
   locale.set(value as Locale);
+}
+
+function handleContextChange(ctx: AppContext) {
+  activeContext.setContext(ctx);
+  isDropdownOpen = false;
+  isMoreOpen = false;
+  if (browser) goto(homeOf(ctx));
 }
 
 function handleLogout() {
@@ -128,6 +152,10 @@ function handleGlobalKeydown(e: KeyboardEvent) {
   }
   if (e.key === 'Escape' && isDropdownOpen) {
     isDropdownOpen = false;
+    return;
+  }
+  if (e.key === 'Escape' && isMoreOpen) {
+    isMoreOpen = false;
     return;
   }
   if (
@@ -152,18 +180,20 @@ const firstName = $derived.by(() => {
 
 const homeLabel = $derived(firstName ? `Olá, ${firstName}` : t('nav.dashboard'));
 
-// Each link may declare a feature-flag key. When the flag is OFF (or its
-// parents cascade off), the link is hidden. Dashboard has no flagKey so
-// it's always reachable.
 const flags = useFeatureFlags(() => ({ authenticated: Boolean(authenticated) }));
-const allNavLinks = $derived([
-  { key: 'nav.dashboard', label: homeLabel, href: '/my-profile/dashboard', icon: LayoutDashboard, flagKey: undefined as string | undefined },
-  { key: 'nav.feed', label: t('nav.feed'), href: '/social/feed', icon: Rss, flagKey: 'social.feed' },
-  { key: 'nav.jobs', label: t('nav.jobs'), href: '/careers/browse-jobs', icon: Briefcase, flagKey: 'jobs' },
-  { key: 'nav.myNetwork', label: t('nav.myNetwork'), href: '/social/network', icon: Users, flagKey: 'social.network' },
-]);
 const navLinks = $derived(
-  allNavLinks.filter((l) => !l.flagKey || flags.enabled(l.flagKey)),
+  getNavLinks(activeContext.current, {
+    t,
+    homeLabel,
+    flagsEnabled: (k) => flags.enabled(k),
+  }),
+);
+const isAdminContext = $derived(activeContext.current === 'admin');
+const primaryLinks = $derived(
+  isAdminContext ? navLinks.filter((l) => l.primary === true) : navLinks,
+);
+const overflowLinks = $derived(
+  isAdminContext ? navLinks.filter((l) => l.primary !== true) : [],
 );
 
 // Rotating placeholder hints for the global search box.
@@ -216,7 +246,7 @@ $effect(() => {
 			<div class="flex shrink-0 items-center gap-1">
 				{#if canUseApp}
 					<div class="hidden items-center gap-1 md:flex">
-						{#each navLinks as link}
+						{#each primaryLinks as link}
 							{@const active = isActiveRoute(link.href)}
 							<a
 								href={link.href}
@@ -235,46 +265,53 @@ $effect(() => {
 							</a>
 						{/each}
 
+						{#if overflowLinks.length > 0}
+							{@const overflowActive = overflowLinks.some((l) => isActiveRoute(l.href))}
+							<div class="relative" data-more>
+								<button
+									onclick={() => (isMoreOpen = !isMoreOpen)}
+									aria-haspopup="true"
+									aria-expanded={isMoreOpen}
+									aria-current={overflowActive ? 'page' : undefined}
+									class="relative flex min-w-[4rem] flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-medium transition-colors
+										{overflowActive
+											? 'text-gray-900 dark:text-neutral-100'
+											: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
+								>
+									<ChevronDown size={20} class="transition-transform duration-200 {isMoreOpen ? 'rotate-180' : ''}" />
+									<span>{t('nav.more')}</span>
+									{#if overflowActive}
+										<span class="absolute inset-x-3 -bottom-px h-px bg-current"></span>
+									{/if}
+								</button>
+
+								{#if isMoreOpen}
+									<div class="absolute right-0 mt-2 w-56 rounded-lg border bg-white shadow-lg dark:bg-neutral-800 border-gray-200/60 dark:border-neutral-700/60">
+										<div class="flex flex-col py-1">
+											{#each overflowLinks as link}
+												{@const linkActive = isActiveRoute(link.href)}
+												<a
+													href={link.href}
+													data-sveltekit-preload-data="hover"
+													onclick={() => (isMoreOpen = false)}
+													aria-current={linkActive ? 'page' : undefined}
+													class="flex items-center gap-2 px-4 py-2 text-xs transition-colors
+														{linkActive
+															? 'bg-gray-100 dark:bg-neutral-700/60 text-gray-900 dark:text-neutral-100'
+															: 'text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700/30'}"
+												>
+													<link.icon size={14} />
+													<span>{link.label}</span>
+												</a>
+											{/each}
+										</div>
+									</div>
+								{/if}
+							</div>
+						{/if}
+
 						{#if authenticated}
 							<NotificationBell />
-						{/if}
-
-						{#if authenticated}
-							{@const companyActive = isActiveRoute('/recruiting')}
-							<a
-								href="/recruiting/jobs"
-								data-sveltekit-preload-data="hover"
-								aria-current={companyActive ? 'page' : undefined}
-								class="relative flex min-w-[4rem] flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-medium transition-colors
-									{companyActive
-										? 'text-gray-900 dark:text-neutral-100'
-										: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
-							>
-								<Briefcase size={20} />
-								<span>{t('company.nav')}</span>
-								{#if companyActive}
-									<span class="absolute inset-x-3 -bottom-px h-px bg-current"></span>
-								{/if}
-							</a>
-						{/if}
-
-						{#if isAdmin}
-							{@const adminActive = isActiveRoute('/platform/admin')}
-							<a
-								href="/platform/admin"
-								data-sveltekit-preload-data="hover"
-								aria-current={adminActive ? 'page' : undefined}
-								class="relative flex min-w-[4rem] flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-medium transition-colors
-									{adminActive
-										? 'text-gray-900 dark:text-neutral-100'
-										: 'text-gray-500 hover:text-gray-800 dark:text-neutral-500 dark:hover:text-neutral-200'}"
-							>
-								<Shield size={20} />
-								<span>Admin</span>
-								{#if adminActive}
-									<span class="absolute inset-x-3 -bottom-px h-px bg-current"></span>
-								{/if}
-							</a>
 						{/if}
 
 						<div class="mx-2 h-8 w-px bg-gray-200 dark:bg-neutral-800"></div>
@@ -291,9 +328,12 @@ $effect(() => {
 						cvLabel={t('cv.pageTitle')}
 						locales={[...locale.locales]}
 						currentLocale={locale.current}
+						activeContext={activeContext.current}
+						allowedContexts={activeContext.allowedContexts}
 						ontoggle={() => isDropdownOpen = !isDropdownOpen}
 						onthemetoggle={handleThemeToggle}
 						onlocalechange={handleLocaleChange}
+						oncontextchange={handleContextChange}
 						onlogout={handleLogout}
 					/>
 				{:else if session.isLoading}
@@ -335,16 +375,16 @@ $effect(() => {
 				authenticated={authenticated ?? false}
 				user={user as { name?: string | null; email: string } | undefined}
 				{navLinks}
-				{isAdmin}
 				{t}
 				locales={[...locale.locales]}
 				currentLocale={locale.current}
+				activeContext={activeContext.current}
+				allowedContexts={activeContext.allowedContexts}
 				onclose={() => isMenuOpen = false}
 				onthemetoggle={handleThemeToggle}
 				onlocalechange={handleLocaleChange}
+				oncontextchange={handleContextChange}
 				onlogout={handleLogout}
-				adminLinks={ADMIN_NAV_LINKS}
-				showAdminSection={isAdmin && isAdminPath(pathname)}
 			/>
 		{/if}
 	</nav>

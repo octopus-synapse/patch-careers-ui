@@ -103,7 +103,7 @@ function openRerender(resume: Resume) {
 							{t('cv.emptyBody')}
 						</p>
 					</div>
-					<Button variant="solid" size="sm" onclick={() => goto('/onboarding/start')}>
+					<Button variant="solid" size="sm" onclick={() => goto('/onboarding')}>
 						{t('cv.emptyCta')}
 					</Button>
 				</div>

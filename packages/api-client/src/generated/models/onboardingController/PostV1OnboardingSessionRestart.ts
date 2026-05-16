@@ -23,7 +23,7 @@ export type PostV1OnboardingSessionRestartQueryParams = {
     mode?: PostV1OnboardingSessionRestartQueryParamsModeEnumKey;
 };
 
-export const strengthLevelEnum6 = {
+export const strengthLevelEnum7 = {
     weak: "weak",
     growing: "growing",
     strong: "strong",
@@ -31,7 +31,7 @@ export const strengthLevelEnum6 = {
     complete: "complete"
 } as const;
 
-export type StrengthLevelEnum6Key = (typeof strengthLevelEnum6)[keyof typeof strengthLevelEnum6];
+export type StrengthLevelEnum7Key = (typeof strengthLevelEnum7)[keyof typeof strengthLevelEnum7];
 
 /**
  * @description Successful response
@@ -68,7 +68,7 @@ export type PostV1OnboardingSessionRestart201 = {
         /**
          * @type string
         */
-        level: StrengthLevelEnum6Key;
+        level: StrengthLevelEnum7Key;
     };
     /**
      * @type boolean
@@ -182,6 +182,106 @@ export type PostV1OnboardingSessionRestart201 = {
         sectionTypeKey?: string;
         data?: any | null;
     }[];
+    /**
+     * @type array | undefined
+    */
+    availableExtras?: {
+        /**
+         * @type string
+        */
+        id: string;
+        /**
+         * @type string
+        */
+        label: string;
+        /**
+         * @type string
+        */
+        description: string;
+        /**
+         * @type boolean
+        */
+        required: boolean;
+        /**
+         * @type string
+        */
+        component: string;
+        /**
+         * @type string | undefined
+        */
+        icon?: string;
+        /**
+         * @type array | undefined
+        */
+        fields?: {
+            /**
+             * @type string
+            */
+            key: string;
+            /**
+             * @type string
+            */
+            type: string;
+            /**
+             * @type string
+            */
+            label: string;
+            /**
+             * @type boolean
+            */
+            required: boolean;
+            /**
+             * @type array | undefined
+            */
+            options?: string[];
+            /**
+             * @type string | undefined
+            */
+            widget?: string;
+            /**
+             * @minLength 0
+             * @type integer | undefined
+            */
+            minLength?: number;
+            /**
+             * @type integer | undefined
+            */
+            maxLength?: number;
+            /**
+             * @type string | undefined
+            */
+            pattern?: string;
+            /**
+             * @type array | undefined
+            */
+            examples?: string[];
+        }[];
+        /**
+         * @type string | undefined
+        */
+        noDataLabel?: string;
+        /**
+         * @type string | undefined
+        */
+        placeholder?: string;
+        /**
+         * @type string | undefined
+        */
+        addLabel?: string;
+        /**
+         * @type boolean | undefined
+        */
+        multipleItems?: boolean;
+        /**
+         * @type string | undefined
+        */
+        sectionTypeKey?: string;
+        data?: any | null;
+    }[];
+    /**
+     * @type array | undefined
+    */
+    activatedExtras?: string[];
     /**
      * @type string | undefined
     */

@@ -21,9 +21,28 @@ type Props = {
   value: string;
   onchange: (value: string) => void;
   error?: string;
+  // 'warning' = soft amber hint (typing in progress); 'error' = red,
+  // shown once the user has tried to advance without satisfying the
+  // schema. Default matches legacy callers that always treated `error`
+  // as hard.
+  severity?: 'warning' | 'error';
 };
 
-let { field, value, onchange, error }: Props = $props();
+let { field, value, onchange, error, severity = 'error' }: Props = $props();
+
+const isWarning = $derived(severity === 'warning');
+const borderClass = $derived(
+  error
+    ? isWarning
+      ? 'border-amber-400 dark:border-amber-500'
+      : 'border-red-500 dark:border-red-400'
+    : '',
+);
+const messageClass = $derived(
+  isWarning
+    ? 'text-amber-600 dark:text-amber-400'
+    : 'text-red-500 dark:text-red-400',
+);
 
 let usernameAvailable = $state<boolean | null>(null);
 let usernameReason = $state<GetV1UsersUsernameCheck200ReasonEnumKey | null>(null);
@@ -95,7 +114,7 @@ function inputType(fieldType: string): string {
 			onblur={() => (focused = false)}
 			oninput={(e) => onchange(e.currentTarget.value)}
 			rows={3}
-			class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm {error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-neutral-700'} text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200"
+			class="w-full resize-none rounded-none border-b bg-transparent py-2 text-sm {borderClass || 'border-gray-300 dark:border-neutral-700'} text-gray-900 placeholder:text-gray-500/50 focus:border-gray-900 dark:text-neutral-200 dark:placeholder:text-neutral-500/50 dark:focus:border-neutral-200"
 		/>
 		{#if summaryExamples?.length && !value}
 			<Button
@@ -120,7 +139,7 @@ function inputType(fieldType: string): string {
 			{value}
 			required={field.required}
 			onchange={(e) => onchange(e.currentTarget.value)}
-			class="w-full rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all {error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-neutral-700'} text-gray-900 focus:border-gray-900 dark:text-neutral-200 dark:focus:border-neutral-200"
+			class="w-full rounded-none border-b bg-transparent py-2 text-sm outline-none transition-all {borderClass || 'border-gray-300 dark:border-neutral-700'} text-gray-900 focus:border-gray-900 dark:text-neutral-200 dark:focus:border-neutral-200"
 		>
 			<option value="">---</option>
 			{#if field.options}
@@ -136,7 +155,7 @@ function inputType(fieldType: string): string {
 			{value}
 			{placeholder}
 			required={field.required}
-			class={error ? 'border-red-500 dark:border-red-400' : ''}
+			class={borderClass}
 			onfocus={() => (focused = true)}
 			onblur={() => (focused = false)}
 			oninput={(e) => {
@@ -154,6 +173,6 @@ function inputType(fieldType: string): string {
 	{/if}
 
 	{#if error}
-		<span class="text-xs text-red-500 dark:text-red-400">{error}</span>
+		<span class="text-xs {messageClass}">{error}</span>
 	{/if}
 </div>

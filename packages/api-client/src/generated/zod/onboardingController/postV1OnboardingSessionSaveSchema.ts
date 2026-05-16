@@ -55,6 +55,33 @@ export const postV1OnboardingSessionSave201Schema = z.object({
 "sectionTypeKey": z.optional(z.string()),
 "data": z.any().nullish()
     })),
+"availableExtras": z.optional(z.array(z.object({
+    "id": z.string(),
+"label": z.string(),
+"description": z.string(),
+"required": z.boolean(),
+"component": z.string(),
+"icon": z.optional(z.string()),
+"fields": z.optional(z.array(z.object({
+    "key": z.string(),
+"type": z.string(),
+"label": z.string(),
+"required": z.boolean(),
+"options": z.optional(z.array(z.string())),
+"widget": z.optional(z.string()),
+"minLength": z.optional(z.number().int().min(0)),
+"maxLength": z.optional(z.number().int().gt(0)),
+"pattern": z.optional(z.string()),
+"examples": z.optional(z.array(z.string()))
+    }))),
+"noDataLabel": z.optional(z.string()),
+"placeholder": z.optional(z.string()),
+"addLabel": z.optional(z.string()),
+"multipleItems": z.optional(z.boolean()),
+"sectionTypeKey": z.optional(z.string()),
+"data": z.any().nullish()
+    }))),
+"activatedExtras": z.optional(z.array(z.string())),
 "username": z.optional(z.string()),
 "personalInfo": z.optional(z.object({
     "fullName": z.string(),

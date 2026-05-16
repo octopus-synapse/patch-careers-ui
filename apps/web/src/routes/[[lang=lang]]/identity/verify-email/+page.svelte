@@ -46,7 +46,7 @@ let cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
 async function leaveVerifyScreen() {
   await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
-  goto('/onboarding/start');
+  goto('/onboarding');
 }
 
 function isAlreadyVerified(err: unknown): boolean {
@@ -134,7 +134,7 @@ $effect(() => {
     return;
   }
   if (authenticated === true && !needsEmailVerification) {
-    goto('/onboarding/start');
+    goto('/onboarding');
   }
 });
 

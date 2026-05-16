@@ -269,6 +269,7 @@ export { getV1OnboardingStatus } from "./onboardingController/getV1OnboardingSta
 export { onboardingController } from "./onboardingController/onboardingController";
 export { postV1Onboarding } from "./onboardingController/postV1Onboarding";
 export { postV1OnboardingSessionComplete } from "./onboardingController/postV1OnboardingSessionComplete";
+export { postV1OnboardingSessionExtras } from "./onboardingController/postV1OnboardingSessionExtras";
 export { postV1OnboardingSessionGoto } from "./onboardingController/postV1OnboardingSessionGoto";
 export { postV1OnboardingSessionNext } from "./onboardingController/postV1OnboardingSessionNext";
 export { postV1OnboardingSessionPrevious } from "./onboardingController/postV1OnboardingSessionPrevious";

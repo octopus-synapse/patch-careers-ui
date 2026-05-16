@@ -6,14 +6,14 @@
 import type { Phone } from "../Phone";
 import type { UserLocation } from "../UserLocation";
 
-export type PostV1OnboardingSessionSaveQueryParams = {
+export type PostV1OnboardingSessionExtrasQueryParams = {
     /**
      * @type string | undefined
     */
     locale?: string;
 };
 
-export const strengthLevelEnum8 = {
+export const strengthLevelEnum3 = {
     weak: "weak",
     growing: "growing",
     strong: "strong",
@@ -21,12 +21,12 @@ export const strengthLevelEnum8 = {
     complete: "complete"
 } as const;
 
-export type StrengthLevelEnum8Key = (typeof strengthLevelEnum8)[keyof typeof strengthLevelEnum8];
+export type StrengthLevelEnum3Key = (typeof strengthLevelEnum3)[keyof typeof strengthLevelEnum3];
 
 /**
  * @description Successful response
 */
-export type PostV1OnboardingSessionSave201 = {
+export type PostV1OnboardingSessionExtras201 = {
     /**
      * @type string
     */
@@ -58,7 +58,7 @@ export type PostV1OnboardingSessionSave201 = {
         /**
          * @type string
         */
-        level: StrengthLevelEnum8Key;
+        level: StrengthLevelEnum3Key;
     };
     /**
      * @type boolean
@@ -363,7 +363,7 @@ export type PostV1OnboardingSessionSave201 = {
     };
 };
 
-export const postV1OnboardingSessionSave400SeverityEnum = {
+export const postV1OnboardingSessionExtras400SeverityEnum = {
     toast: "toast",
     modal: "modal",
     banner: "banner",
@@ -371,12 +371,12 @@ export const postV1OnboardingSessionSave400SeverityEnum = {
     silent: "silent"
 } as const;
 
-export type PostV1OnboardingSessionSave400SeverityEnumKey = (typeof postV1OnboardingSessionSave400SeverityEnum)[keyof typeof postV1OnboardingSessionSave400SeverityEnum];
+export type PostV1OnboardingSessionExtras400SeverityEnumKey = (typeof postV1OnboardingSessionExtras400SeverityEnum)[keyof typeof postV1OnboardingSessionExtras400SeverityEnum];
 
 /**
  * @description Validation error
 */
-export type PostV1OnboardingSessionSave400 = {
+export type PostV1OnboardingSessionExtras400 = {
     /**
      * @type integer
     */
@@ -392,10 +392,10 @@ export type PostV1OnboardingSessionSave400 = {
     /**
      * @type string
     */
-    severity: PostV1OnboardingSessionSave400SeverityEnumKey;
+    severity: PostV1OnboardingSessionExtras400SeverityEnumKey;
 };
 
-export const postV1OnboardingSessionSave401SeverityEnum = {
+export const postV1OnboardingSessionExtras401SeverityEnum = {
     toast: "toast",
     modal: "modal",
     banner: "banner",
@@ -403,12 +403,12 @@ export const postV1OnboardingSessionSave401SeverityEnum = {
     silent: "silent"
 } as const;
 
-export type PostV1OnboardingSessionSave401SeverityEnumKey = (typeof postV1OnboardingSessionSave401SeverityEnum)[keyof typeof postV1OnboardingSessionSave401SeverityEnum];
+export type PostV1OnboardingSessionExtras401SeverityEnumKey = (typeof postV1OnboardingSessionExtras401SeverityEnum)[keyof typeof postV1OnboardingSessionExtras401SeverityEnum];
 
 /**
  * @description Authentication required
 */
-export type PostV1OnboardingSessionSave401 = {
+export type PostV1OnboardingSessionExtras401 = {
     /**
      * @type integer
     */
@@ -424,21 +424,21 @@ export type PostV1OnboardingSessionSave401 = {
     /**
      * @type string
     */
-    severity: PostV1OnboardingSessionSave401SeverityEnumKey;
+    severity: PostV1OnboardingSessionExtras401SeverityEnumKey;
 };
 
-/**
- * @example [object Object]
-*/
-export type PostV1OnboardingSessionSaveMutationRequest = {
-    [key: string]: any | null;
+export type PostV1OnboardingSessionExtrasMutationRequest = {
+    /**
+     * @type array | undefined
+    */
+    extras?: string[];
 };
 
-export type PostV1OnboardingSessionSaveMutationResponse = PostV1OnboardingSessionSave201;
+export type PostV1OnboardingSessionExtrasMutationResponse = PostV1OnboardingSessionExtras201;
 
-export type PostV1OnboardingSessionSaveMutation = {
-    Response: PostV1OnboardingSessionSave201;
-    Request: PostV1OnboardingSessionSaveMutationRequest;
-    QueryParams: PostV1OnboardingSessionSaveQueryParams;
-    Errors: PostV1OnboardingSessionSave400 | PostV1OnboardingSessionSave401;
+export type PostV1OnboardingSessionExtrasMutation = {
+    Response: PostV1OnboardingSessionExtras201;
+    Request: PostV1OnboardingSessionExtrasMutationRequest;
+    QueryParams: PostV1OnboardingSessionExtrasQueryParams;
+    Errors: PostV1OnboardingSessionExtras400 | PostV1OnboardingSessionExtras401;
 };

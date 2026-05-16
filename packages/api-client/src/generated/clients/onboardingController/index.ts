@@ -4,6 +4,7 @@ export { getV1OnboardingStatus } from "./getV1OnboardingStatus";
 export { onboardingController } from "./onboardingController";
 export { postV1Onboarding } from "./postV1Onboarding";
 export { postV1OnboardingSessionComplete } from "./postV1OnboardingSessionComplete";
+export { postV1OnboardingSessionExtras } from "./postV1OnboardingSessionExtras";
 export { postV1OnboardingSessionGoto } from "./postV1OnboardingSessionGoto";
 export { postV1OnboardingSessionNext } from "./postV1OnboardingSessionNext";
 export { postV1OnboardingSessionPrevious } from "./postV1OnboardingSessionPrevious";

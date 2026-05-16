@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/svelte-query';
 import {
   createGetV1OnboardingSession,
   createPostV1OnboardingSessionComplete,
+  createPostV1OnboardingSessionExtras,
   createPostV1OnboardingSessionGoto,
   createPostV1OnboardingSessionNext,
   createPostV1OnboardingSessionPrevious,
@@ -14,9 +15,8 @@ import type { GetV1OnboardingSession200 } from 'api-client';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
 import { beforeNavigate, goto } from '$app/navigation';
-import PreviewPanel from './preview-panel.svelte';
-import OnboardingProgress from './onboarding-progress.svelte';
 import OnboardingSidebar from './onboarding-sidebar.svelte';
+import StepExtrasGate from './step-extras-gate.svelte';
 import StepForm from './step-form.svelte';
 import StepMultiItems from './step-multi-items.svelte';
 import StepReview from './step-review.svelte';
@@ -58,17 +58,28 @@ const steps = $derived<Step[] | undefined>(onboardingData?.steps);
 const currentStepId = $derived(onboardingData?.currentStep ?? '');
 const currentStep = $derived(steps?.find((s) => s.id === currentStepId));
 const progress = $derived(onboardingData?.progress ?? 0);
-const strength = $derived(onboardingData?.strength);
 const missingRequired = $derived(onboardingData?.missingRequired);
+const availableExtras = $derived(onboardingData?.availableExtras ?? []);
+const activatedExtras = $derived(onboardingData?.activatedExtras ?? []);
 const isLastStep = $derived(!onboardingData?.nextStep || currentStep?.component === 'review');
 
 let stepData = $state<Record<string, string>>({});
 let multiItems = $state<SectionItem[]>([]);
+// Dual-validation flag. Field hints stay amber while the user is still
+// typing (`submitted=false`); flips to red once they hit Continue without
+// satisfying the schema. Resets every time the step changes so a fresh
+// step doesn't open in error mode.
+let submitted = $state(false);
+// Local draft of the extras-gate selection, only used while the user is
+// on the gate step. Persisted to the backend when they hit Continue.
+let extrasDraft = $state<string[] | null>(null);
 
 $effect(() => {
   if (currentStep) {
     stepData = {};
     multiItems = [];
+    submitted = false;
+    extrasDraft = currentStep.component === 'extras-gate' ? [...activatedExtras] : null;
 
     if (currentStep.multipleItems && onboardingData?.sections) {
       const section = onboardingData.sections.find(
@@ -112,6 +123,10 @@ const prevStep = createPostV1OnboardingSessionPrevious({
 });
 
 const gotoStep = createPostV1OnboardingSessionGoto({
+  mutation: { onSuccess: invalidateSession },
+});
+
+const setExtras = createPostV1OnboardingSessionExtras({
   mutation: { onSuccess: invalidateSession },
 });
 
@@ -171,6 +186,10 @@ $effect(() => {
   saveStatus = 'idle';
   pendingSaveJson = dataJson;
   if (saveTimer) clearTimeout(saveTimer);
+  // 10s autosave debounce — long enough to not flood the backend on rapid
+  // typing, short enough to recover most progress on accidental refresh.
+  // `beforeNavigate` flushes synchronously, so cross-step transitions
+  // don't have to wait for the timer.
   saveTimer = setTimeout(() => {
     saveTimer = null;
     if (currentStep?.multipleItems) return;
@@ -190,7 +209,7 @@ $effect(() => {
         },
       },
     );
-  }, 2000);
+  }, 10000);
 
   return () => {
     if (saveTimer) clearTimeout(saveTimer);
@@ -210,7 +229,34 @@ let navigating = $state(false);
 
 function handleNext() {
   if (navigating || $nextStep.isPending || $prevStep.isPending || $gotoStep.isPending) return;
+  // Promote any soft validation hints to hard errors. The form may still
+  // be valid — the backend is the final arbiter — but the user sees red
+  // immediately if they tried to skip past a required field.
+  submitted = true;
   navigating = true;
+
+  // Extras gate has its own contract: persist the selection first so
+  // the next session payload already contains the activated extras
+  // (the presenter splices them into `steps`), then advance once.
+  if (currentStep?.component === 'extras-gate' && extrasDraft !== null) {
+    const draft = extrasDraft;
+    $setExtras.mutate(
+      { data: { extras: draft }, params: { locale: locale.current } },
+      {
+        onSuccess: () => {
+          $nextStep.mutate(
+            { data: {}, params: { locale: locale.current } },
+            { onSettled: () => (navigating = false) },
+          );
+        },
+        onError: () => {
+          navigating = false;
+        },
+      },
+    );
+    return;
+  }
+
   const body = currentStep?.multipleItems ? { items: multiItems } : stepData;
   $nextStep.mutate(
     { data: body, params: { locale: locale.current } },
@@ -268,7 +314,11 @@ function handleComplete() {
 const isWelcome = $derived(currentStep?.component === 'welcome');
 
 const isPending = $derived(
-  navigating || $nextStep.isPending || $prevStep.isPending || $complete.isPending,
+  navigating ||
+    $nextStep.isPending ||
+    $prevStep.isPending ||
+    $complete.isPending ||
+    $setExtras.isPending,
 );
 </script>
 
@@ -281,15 +331,13 @@ const isPending = $derived(
 	<div class="font-sans antialiased transition-colors duration-300">
 		<main class="mx-auto max-w-6xl px-3 sm:px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
 			{#if isWelcome}
-				<StepWelcome step={currentStep} onNext={handleNext} />
+				<StepWelcome onNext={handleNext} />
 			{:else}
 				<div class="md:hidden">
 					<StepperMobile
 						{steps}
 						currentStep={currentStepId}
-						{completedSteps}
 						{progress}
-						{strength}
 					/>
 				</div>
 
@@ -300,18 +348,12 @@ const isPending = $derived(
 							currentStep={currentStepId}
 							{completedSteps}
 							{progress}
-							{strength}
 							{missingRequired}
-							{t}
 							ongoto={handleGoto}
 						/>
 					</div>
 
 					<div class="min-w-0 flex-1 max-w-lg pb-8 sm:pb-12">
-						{#if steps.length > 0}
-							{@const idx = Math.max(1, steps.findIndex((s) => s.id === currentStepId) + 1)}
-							<OnboardingProgress current={idx} total={steps.length} />
-						{/if}
 						<div class="mb-8 flex items-center justify-between">
 							<span class="text-xs font-medium text-gray-500 dark:text-neutral-500">
 								{t('onboarding.title')}
@@ -336,6 +378,12 @@ const isPending = $derived(
 								{completedSteps}
 								ongoto={handleGoto}
 							/>
+						{:else if currentStep.component === 'extras-gate'}
+							<StepExtrasGate
+								{availableExtras}
+								initialSelected={activatedExtras}
+								onchange={(extras) => (extrasDraft = extras)}
+							/>
 						{:else if currentStep.component === 'template' && currentStep.data}
 							{@const stepThemes = currentStep.data}
 							<StepTheme
@@ -347,13 +395,14 @@ const isPending = $derived(
 							<StepMultiItems
 								fields={currentStep.fields}
 								items={multiItems}
-								{t}
+								sectionTypeKey={currentStep.sectionTypeKey}
 								onupdate={(items) => (multiItems = items)}
 							/>
 						{:else if currentStep.fields}
 							<StepForm
 								fields={currentStep.fields}
 								data={stepData}
+								{submitted}
 								onupdate={(d) => (stepData = d)}
 							/>
 						{/if}
@@ -420,9 +469,6 @@ const isPending = $derived(
 								</Button>
 							{/if}
 						</div>
-					</div>
-					<div class="hidden xl:block flex-shrink-0">
-						<PreviewPanel token="session" />
 					</div>
 				</div>
 			{/if}

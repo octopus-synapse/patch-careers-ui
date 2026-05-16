@@ -5,18 +5,18 @@
 
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
-import type { GetV1OnboardingSession200, GetV1OnboardingSession400, GetV1OnboardingSession401, GetV1OnboardingSessionQueryParams, GetV1OnboardingSessionQueryResponse } from "../../models/onboardingController/GetV1OnboardingSession";
+import type { PostV1OnboardingSessionExtras201, PostV1OnboardingSessionExtras400, PostV1OnboardingSessionExtras401, PostV1OnboardingSessionExtrasMutationRequest, PostV1OnboardingSessionExtrasMutationResponse, PostV1OnboardingSessionExtrasQueryParams } from "../../models/onboardingController/PostV1OnboardingSessionExtras";
 import { phoneSchema } from "../phoneSchema";
 import { userLocationSchema } from "../userLocationSchema";
 
-export const getV1OnboardingSessionQueryParamsSchema = z.object({
+export const postV1OnboardingSessionExtrasQueryParamsSchema = z.object({
     "locale": z.optional(z.string())
-    }).optional() as unknown as ToZod<GetV1OnboardingSessionQueryParams>
+    }).optional() as unknown as ToZod<PostV1OnboardingSessionExtrasQueryParams>
 
 /**
  * @description Successful response
  */
-export const getV1OnboardingSession200Schema = z.object({
+export const postV1OnboardingSessionExtras201Schema = z.object({
     "currentStep": z.string(),
 "completedSteps": z.array(z.string()),
 "progress": z.number().int().min(0).max(100),
@@ -109,26 +109,30 @@ export const getV1OnboardingSession200Schema = z.object({
     "templateId": z.optional(z.string()),
 "colorScheme": z.optional(z.string())
     }))
-    }) as unknown as ToZod<GetV1OnboardingSession200>
+    }) as unknown as ToZod<PostV1OnboardingSessionExtras201>
 
 /**
  * @description Validation error
  */
-export const getV1OnboardingSession400Schema = z.object({
+export const postV1OnboardingSessionExtras400Schema = z.object({
     "statusCode": z.number().int(),
 "code": z.string(),
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
-    }) as unknown as ToZod<GetV1OnboardingSession400>
+    }) as unknown as ToZod<PostV1OnboardingSessionExtras400>
 
 /**
  * @description Authentication required
  */
-export const getV1OnboardingSession401Schema = z.object({
+export const postV1OnboardingSessionExtras401Schema = z.object({
     "statusCode": z.number().int(),
 "code": z.string(),
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
-    }) as unknown as ToZod<GetV1OnboardingSession401>
+    }) as unknown as ToZod<PostV1OnboardingSessionExtras401>
 
-export const getV1OnboardingSessionQueryResponseSchema = z.lazy(() => getV1OnboardingSession200Schema) as unknown as ToZod<GetV1OnboardingSessionQueryResponse>
+export const postV1OnboardingSessionExtrasMutationRequestSchema = z.object({
+    "extras": z.optional(z.array(z.string()))
+    }) as unknown as ToZod<PostV1OnboardingSessionExtrasMutationRequest>
+
+export const postV1OnboardingSessionExtrasMutationResponseSchema = z.lazy(() => postV1OnboardingSessionExtras201Schema) as unknown as ToZod<PostV1OnboardingSessionExtrasMutationResponse>

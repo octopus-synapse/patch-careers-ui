@@ -1,6 +1,5 @@
 {
   "company": {
-    "nav": "Company",
     "jobs": {
       "pageTitle": "My jobs",
       "title": "My jobs",
@@ -81,7 +80,7 @@
       "length": "8+ characters",
       "case": "upper and lower case",
       "digit": "a number",
-      "symbol": "a symbol"
+      "symbol": "a symbol (@$!%*?&)"
     }
   },
   "footer": {
@@ -148,6 +147,14 @@
     "network": "No connection to the server. Check your internet.",
     "loadFailed": "Failed to load",
     "slugInUse": "That slug is already taken. Choose another."
+  },
+  "validation": {
+    "required": "Required field",
+    "email": "Invalid email",
+    "tooShort": "Use at least {{min}} characters",
+    "tooLong": "Use at most {{max}} characters",
+    "passwordRequirements": "Password needs 8+ characters with uppercase, lowercase, number, and symbol (@$!%*?&)",
+    "invalid": "Invalid value"
   },
   "success": {
     "shareCreated": "Link created.",
@@ -388,8 +395,10 @@
       "seeExample": "see example"
     },
     "welcome": {
-      "heading": "Build your professional resume",
-      "startCta": "Start now →"
+      "heading": "Let's get to know you",
+      "subtitle": "In a few minutes we'll build your résumé from scratch and connect you with matching jobs.",
+      "startCta": "Let's go",
+      "autosaveHint": "Your progress is saved automatically."
     },
     "claimShadow": {
       "heading": "We found a profile for you"
@@ -400,7 +409,14 @@
     },
     "review": {
       "inactiveHeading": "This review link is no longer active",
-      "backToStart": "Back to start"
+      "backToStart": "Back to start",
+      "edit": "Edit",
+      "editAria": "Edit section",
+      "skipped": "Skipped"
+    },
+    "extrasGate": {
+      "hint": "Pick what you want to add. You can skip any of them later.",
+      "empty": "No optional sections available."
     },
     "progressLabel": "Step {{current}} of {{total}}",
     "doneTitle": "You're all set",

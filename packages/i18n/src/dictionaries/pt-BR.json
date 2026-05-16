@@ -1,6 +1,5 @@
 {
   "company": {
-    "nav": "Empresa",
     "jobs": {
       "pageTitle": "Minhas vagas",
       "title": "Minhas vagas",
@@ -81,7 +80,7 @@
       "length": "8+ caracteres",
       "case": "maiúsculas e minúsculas",
       "digit": "um número",
-      "symbol": "um símbolo"
+      "symbol": "um símbolo (@$!%*?&)"
     }
   },
   "footer": {
@@ -148,6 +147,14 @@
     "network": "Sem conexão com o servidor. Verifique sua internet.",
     "loadFailed": "Falha ao carregar",
     "slugInUse": "Esse slug já está em uso. Escolha outro."
+  },
+  "validation": {
+    "required": "Campo obrigatório",
+    "email": "E-mail inválido",
+    "tooShort": "Use ao menos {{min}} caracteres",
+    "tooLong": "Use no máximo {{max}} caracteres",
+    "passwordRequirements": "A senha precisa de 8+ caracteres com maiúscula, minúscula, número e símbolo (@$!%*?&)",
+    "invalid": "Valor inválido"
   },
   "success": {
     "shareCreated": "Link criado.",
@@ -388,8 +395,10 @@
       "seeExample": "ver exemplo"
     },
     "welcome": {
-      "heading": "Crie seu currículo profissional",
-      "startCta": "Começar agora →"
+      "heading": "Vamos conhecer você melhor",
+      "subtitle": "Em alguns minutos a gente monta seu currículo do zero e te conecta com vagas que combinam.",
+      "startCta": "Vamos lá",
+      "autosaveHint": "Seu progresso é salvo automaticamente."
     },
     "claimShadow": {
       "heading": "Encontramos um perfil pra você"
@@ -400,7 +409,14 @@
     },
     "review": {
       "inactiveHeading": "Este link de review não está mais ativo",
-      "backToStart": "Voltar ao início"
+      "backToStart": "Voltar ao início",
+      "edit": "Editar",
+      "editAria": "Editar seção",
+      "skipped": "Pulado"
+    },
+    "extrasGate": {
+      "hint": "Marque o que você quer adicionar. Você pode pular qualquer um deles depois.",
+      "empty": "Sem opcionais disponíveis."
     },
     "progressLabel": "Passo {{current}} de {{total}}",
     "doneTitle": "Tudo pronto",

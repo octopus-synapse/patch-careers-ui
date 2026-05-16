@@ -1,6 +1,5 @@
 <script lang="ts">
 import { ArrowRight } from 'lucide-svelte';
-import { onMount } from 'svelte';
 import { Button } from 'ui';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
@@ -16,11 +15,6 @@ const pieces = Array.from({ length: 30 }, (_, i) => ({
   hue: Math.floor(Math.random() * 360),
   size: 6 + Math.random() * 8,
 }));
-
-onMount(() => {
-  const timer = setTimeout(() => goto('/my-profile/dashboard'), 2400);
-  return () => clearTimeout(timer);
-});
 </script>
 
 <svelte:head>
@@ -50,7 +44,7 @@ onMount(() => {
 		<p class="text-sm text-gray-500 dark:text-neutral-500">
 			{t('onboarding.doneSubtitle') ?? 'Bora aplicar 🚀'}
 		</p>
-		<Button variant="solid" onclick={() => goto('/careers/browse-jobs')}>
+		<Button variant="solid" onclick={() => goto('/social/feed')}>
 			{t('onboarding.doneCta') ?? t('onboarding.done.seeJobsCta')}
 			<ArrowRight size={14} />
 		</Button>

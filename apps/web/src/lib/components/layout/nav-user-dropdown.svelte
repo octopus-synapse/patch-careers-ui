@@ -1,6 +1,19 @@
 <script lang="ts">
-import { ChevronDown, FileText, Globe, LogOut, Moon, Settings, Sun } from 'lucide-svelte';
+import {
+  Briefcase,
+  ChevronDown,
+  FileText,
+  Globe,
+  LayoutGrid,
+  LogOut,
+  Moon,
+  Settings,
+  Shield,
+  Sun,
+  UserCircle,
+} from 'lucide-svelte';
 import { Avatar, Button, SegmentToggle } from 'ui';
+import type { AppContext } from '$lib/state/active-context.svelte';
 import { colorSchema } from '$lib/state/color-schema.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -21,9 +34,12 @@ type Props = {
   cvLabel?: string;
   locales: string[];
   currentLocale: string;
+  activeContext: AppContext;
+  allowedContexts: AppContext[];
   ontoggle: () => void;
   onthemetoggle: (value: string) => void;
   onlocalechange: (value: string) => void;
+  oncontextchange: (value: AppContext) => void;
   onlogout: () => void;
 };
 
@@ -36,15 +52,19 @@ let {
   cvLabel,
   locales,
   currentLocale,
+  activeContext,
+  allowedContexts,
   ontoggle,
   onthemetoggle,
   onlocalechange,
+  oncontextchange,
   onlogout,
 }: Props = $props();
 
 const cs = $derived(colorSchema.mode);
 const displayName = $derived(user.name ?? user.email.split('@')[0]);
 const initial = $derived(user.name ?? user.email);
+const canSwitchContext = $derived(allowedContexts.length > 1);
 const themeOptions = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
@@ -52,6 +72,12 @@ const themeOptions = [
 const localeOptions = $derived(
   locales.map((l) => ({ value: l, label: l === 'pt-BR' ? 'PT' : 'EN' })),
 );
+
+function contextIcon(ctx: AppContext) {
+  if (ctx === 'candidate') return UserCircle;
+  if (ctx === 'recruiter') return Briefcase;
+  return Shield;
+}
 </script>
 
 <div class="relative hidden md:block" data-dropdown>
@@ -69,6 +95,34 @@ const localeOptions = $derived(
 				{/if}
 				<p class="text-[10px] text-gray-500 dark:text-neutral-500">{user.email}</p>
 			</div>
+
+			{#if canSwitchContext}
+				<div class="border-t border-gray-200/60 dark:border-neutral-800/60">
+					<div class="px-4 py-3">
+						<div class="mb-2 flex items-center gap-2 text-gray-500 dark:text-neutral-500">
+							<LayoutGrid size={13} />
+							<span class="text-xs font-medium">{t('nav.context.label')}</span>
+						</div>
+						<div class="flex flex-col gap-0.5">
+							{#each allowedContexts as ctx}
+								{@const Icon = contextIcon(ctx)}
+								{@const active = activeContext === ctx}
+								<button
+									onclick={() => oncontextchange(ctx)}
+									aria-pressed={active}
+									class="flex items-center gap-2 rounded-md px-2 py-1.5 text-[11px] transition-colors
+										{active
+											? 'bg-gray-100 dark:bg-neutral-700/60 text-gray-800 dark:text-neutral-200'
+											: 'text-gray-500 dark:text-neutral-500 hover:bg-gray-50 dark:hover:bg-neutral-700/30'}"
+								>
+									<Icon size={13} />
+									<span>{t(`nav.context.${ctx}`)}</span>
+								</button>
+							{/each}
+						</div>
+					</div>
+				</div>
+			{/if}
 
 			<div class="border-t border-gray-200/60 dark:border-neutral-800/60">
 				<div class="px-4 py-3">
