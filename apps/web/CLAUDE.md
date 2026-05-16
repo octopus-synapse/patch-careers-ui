@@ -1,11 +1,31 @@
 # apps/web — Frontend Conventions
 
-The web app is a SvelteKit 2.58 client-side-only app (`ssr: false`) that
-consumes the kubb-generated SDK from `@packages/api-client`. The driving
-principle is **frontend burro**: the backend is the single source of
-truth for shapes, validation rules, error messages, and pagination
-envelopes. The frontend renders state and forwards user actions — it
-does not re-decide rules.
+The web app is a SvelteKit 2.58 app that **defaults to SSR** (`ssr: true`
+in the root `+layout.ts`) and consumes the kubb-generated SDK from
+`@packages/api-client`. The driving principle is **frontend burro**: the
+backend is the single source of truth for shapes, validation rules, error
+messages, and pagination envelopes. The frontend renders state and
+forwards user actions — it does not re-decide rules.
+
+## SSR doctrine
+
+- **Default = SSR on.** The root `+layout.ts` exports `ssr = true`. Every
+  route is rendered server-side unless it opts out.
+- **Opt out per route** with `export const ssr = false;` in the route's
+  own `+layout.ts` / `+page.ts` when the leaf is intrinsically client-only
+  (depends on `localStorage`, draws on a `<canvas>`, needs `window` before
+  paint, etc.).
+- **SEO-critical routes** (landing, jobs detail, feed post permalink,
+  public profile, sitemap.xml) MUST stay SSR — the previous CSR-only
+  default made them invisible to crawlers and added a 200-300ms blank
+  shell before the first paint.
+- **State that depends on auth cookies** still works with SSR: the SDK
+  fetcher forwards the cookie from the SvelteKit `event.fetch`. Loads
+  that branch on `useAuth()` need to gate on `browser` from
+  `$app/environment`.
+
+> Historical note: this app used to default to `ssr: false` and rely on
+> per-route opt-in. Inverted in the P0 sweep — see `BUG_REPORT.md` #24.
 
 These conventions were established across Fase 1 (audit), Fase 2 (SDK
 adoption), Fase 3 (cleanup). When a convention conflicts with what the

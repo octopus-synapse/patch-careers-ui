@@ -104,15 +104,87 @@ export type Client = <TData, _TError = unknown, TVariables = unknown>(
   config: RequestConfig<TVariables>,
 ) => Promise<ResponseConfig<TData>>;
 
+/**
+ * P0-#23 — defense against path-traversal in SDK path params.
+ *
+ * The Kubb-generated `get…Url(value)` helpers interpolate user-controlled
+ * values into the path template without encoding:
+ *
+ *   /api/v1/profiles/${username}
+ *
+ * A username of `foo/../bar`, `foo?bar=1`, or `foo#frag` previously
+ * escaped the per-resource segment and reached completely different
+ * endpoints. We can't easily change the generator inline; instead the
+ * fetcher walks the path AFTER the API prefix, refuses any segment
+ * containing `..` (path traversal), `/` (segment escape) or unsafe
+ * URL-meta chars, and percent-encodes anything else that wasn't
+ * already encoded.
+ *
+ * Routes whose path is a literal API surface (no `${...}` interpolation)
+ * pass through unchanged.
+ */
+const API_PREFIX_RE = /^\/api\/v\d+\//;
+
+function sanitizePath(path: string): string {
+  // Detach query/hash so we only normalise the path part. Generated SDK
+  // doesn't embed `?`/`#` from user input, but be defensive in case a
+  // future endpoint does.
+  const qIdx = path.indexOf('?');
+  const head = qIdx >= 0 ? path.slice(0, qIdx) : path;
+  const tail = qIdx >= 0 ? path.slice(qIdx) : '';
+
+  if (!API_PREFIX_RE.test(head)) return head + tail;
+
+  const segments = head.split('/');
+  // segments[0] is '' (leading slash), [1]='api', [2]='v1', [3..] = resource.
+  const out: string[] = [];
+  for (let i = 0; i < segments.length; i++) {
+    const s: string = segments[i] ?? '';
+    if (i < 3) {
+      // Prefix segments (`''`, `'api'`, `'v1'`) — leave verbatim.
+      out.push(s);
+      continue;
+    }
+    if (s === '' || s === '.') {
+      // Trailing slash or `.` — allow but normalise.
+      out.push(s);
+      continue;
+    }
+    if (s === '..' || s.includes('..')) {
+      throw new Error(`SDK: refused path traversal segment: ${JSON.stringify(s)}`);
+    }
+    // Re-encode if the segment contains characters that would change the
+    // URL's meaning (`/`, `?`, `#`, `%` when not already a valid %-triplet).
+    // `decodeURIComponent` round-trips clean segments and detects double
+    // encoding.
+    let decoded: string;
+    try {
+      decoded = decodeURIComponent(s);
+    } catch {
+      throw new Error(`SDK: malformed percent-encoding in segment: ${JSON.stringify(s)}`);
+    }
+    out.push(encodeURIComponent(decoded));
+  }
+  return out.join('/') + tail;
+}
+
 function buildUrl(config: RequestConfig): string {
   const root = config.baseURL ?? baseUrl;
-  const path = config.url ?? '';
-  const url = path.startsWith('http') ? path : `${root}${path}`;
+  const rawPath = config.url ?? '';
+  const safePath = rawPath.startsWith('http') ? rawPath : sanitizePath(rawPath);
+  const url = safePath.startsWith('http') ? safePath : `${root}${safePath}`;
   if (!config.params) return url;
   const qs = new URLSearchParams();
   for (const [k, v] of Object.entries(config.params)) {
     if (v === undefined || v === null) continue;
-    qs.set(k, String(v));
+    if (Array.isArray(v)) {
+      // Repeated query params (`?status=a&status=b`) instead of a CSV that
+      // most backends would parse as a single string. Matches OpenAPI
+      // `style: form, explode: true` (the SDK's default).
+      for (const item of v) qs.append(k, String(item));
+    } else {
+      qs.append(k, String(v));
+    }
   }
   const tail = qs.toString();
   return tail ? `${url}?${tail}` : url;

@@ -1,14 +1,37 @@
 import { error } from '@sveltejs/kit';
+import { env as privateEnv } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 import { getV1ProfilesUsername, isApiError } from 'api-client';
 import type { PageServerLoad } from './$types';
 
 // Public profiles are the deepest indexable surface in the app — Google
-// crawls them for resume + skills + activity content, and an empty CSR
-// shell is worthless to rankings. Override the layout's `ssr = false`
-// and prefetch the profile server-side so the initial HTML carries the
-// real name, bio, headline, photo URL, and JSON-LD `Person` schema that
-// `<SeoHead>` emits.
+// crawls them for resume + skills + activity content. SSR is on now by
+// default at the root layout (P0-#24 doctrine inversion).
 export const ssr = true;
+
+/**
+ * P0-#22: previously this called the SDK with
+ *   `baseURL: import.meta.env.VITE_API_URL`
+ *
+ * `VITE_API_URL` is a Vite client-side variable — statically inlined at
+ * build time from `.env.development` (default: `http://localhost:13001`).
+ * In server-side rendering on a deployed container that string was baked
+ * into the bundle, so the SSR load tried to reach `http://localhost:13001`
+ * from inside the container and 500'd. Worse, even when correctly set at
+ * build time, the value was static — the deploy couldn't override per-env.
+ *
+ * Fix: prefer `INTERNAL_API_URL` from `$env/dynamic/private` (read at
+ * runtime, never inlined, only available server-side). Fall back to the
+ * existing PUBLIC_API_URL / VITE_API_URL chain for local dev where the
+ * private var isn't set. The private var is the production source of truth.
+ */
+function resolveServerApiBase(): string {
+  if (privateEnv.INTERNAL_API_URL) return privateEnv.INTERNAL_API_URL;
+  if (publicEnv.PUBLIC_API_URL) return publicEnv.PUBLIC_API_URL;
+  // Last-resort dev fallback. Still wrong for production but at least
+  // matches the historical behaviour while a deploy is being configured.
+  return import.meta.env.VITE_API_URL ?? 'http://localhost:13001';
+}
 
 export const load: PageServerLoad = async ({ params }) => {
   const username = params.username;
@@ -17,18 +40,17 @@ export const load: PageServerLoad = async ({ params }) => {
   }
 
   try {
-    // The Kubb-generated client honours `baseURL` per-call. Pass the
-    // build-time `VITE_API_URL` directly — `setBaseUrl` only runs in
-    // the layout's <script>, which executes AFTER this server `load`,
-    // so the module-level baseUrl is still its hard-coded default
-    // when we get here.
     const profile = await getV1ProfilesUsername(username, {
-      baseURL: import.meta.env.VITE_API_URL,
+      baseURL: resolveServerApiBase(),
     });
     return { profile };
   } catch (err) {
-    if (isApiError(err) && err.statusCode === 404) {
-      throw error(404, 'profile not found');
+    if (isApiError(err)) {
+      if (err.statusCode === 404) throw error(404, 'profile not found');
+      if (err.statusCode === 401 || err.statusCode === 403) {
+        throw error(404, 'profile not found');
+      }
+      if (err.statusCode === 410) throw error(410, 'profile removed');
     }
     throw err;
   }
