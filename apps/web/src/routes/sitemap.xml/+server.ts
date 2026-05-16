@@ -21,7 +21,12 @@ type UserItem = { username?: string; updatedAt?: string };
 
 async function fetchActiveJobs(apiBase: string): Promise<JobItem[]> {
   try {
-    const res = await fetch(`${apiBase}/v1/jobs?limit=100`, { signal: AbortSignal.timeout(5000) });
+    // P0-#21: backend mounts all routes under `/api/v1/...` — previous
+    // `/v1/...` 404'd and the try/catch silently dropped every job from
+    // the sitemap (invisible to Google).
+    const res = await fetch(`${apiBase}/api/v1/jobs?limit=100`, {
+      signal: AbortSignal.timeout(5000),
+    });
     if (!res.ok) return [];
     const body = (await res.json()) as { items?: JobItem[]; data?: JobItem[] };
     return body.items ?? body.data ?? [];
@@ -32,7 +37,8 @@ async function fetchActiveJobs(apiBase: string): Promise<JobItem[]> {
 
 async function fetchPublicProfiles(apiBase: string): Promise<UserItem[]> {
   try {
-    const res = await fetch(`${apiBase}/v1/users/public?limit=500`, {
+    // P0-#21: same path-prefix fix as fetchActiveJobs above.
+    const res = await fetch(`${apiBase}/api/v1/users/public?limit=500`, {
       signal: AbortSignal.timeout(5000),
     });
     if (!res.ok) return [];
