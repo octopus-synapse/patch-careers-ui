@@ -21,6 +21,12 @@ type Props = HTMLButtonAttributes & {
 };
 
 let {
+  // P0-#18: HTML defaults a bare `<button>` to `type='submit'`. Every
+  // `<Button>` placed inside a `<form>` previously submitted that form on
+  // click, breaking apply-modal "Cancel", comment-section close buttons,
+  // settings actions, etc. Default to `'button'` and force callers that
+  // genuinely want submit semantics to declare `type='submit'`.
+  type = 'button',
   variant = 'solid',
   intent = 'neutral',
   size = 'lg',
@@ -45,6 +51,6 @@ const computedClass = $derived(
 );
 </script>
 
-<button class={computedClass} {...rest}>
+<button {type} class={computedClass} {...rest}>
 	{@render children()}
 </button>

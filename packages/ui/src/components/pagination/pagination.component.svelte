@@ -23,7 +23,12 @@ let {
 
 let pageSizeOpen = $state(false);
 
-const pages = $derived(() => {
+// P0-#20: `$derived(() => …)` would have stored the arrow function itself as
+// the derived value (typeof pages === 'function'), and the template `{#each
+// pages() as p}` invoked it OUTSIDE Svelte's reactive tracking — so changing
+// `page`/`totalPages` never recomputed. Use `$derived.by(() => …)` so the
+// value is the array and tracking captures both deps.
+const pages = $derived.by(() => {
   const result: (number | '...')[] = [];
   if (totalPages <= 7) {
     for (let i = 1; i <= totalPages; i++) result.push(i);
@@ -58,7 +63,7 @@ const showPageSize = $derived(
 					<ChevronLeft size={16} />
 				</Button>
 
-				{#each pages() as p}
+				{#each pages as p}
 					{#if p === '...'}
 						<span class="px-2 text-xs text-gray-400 dark:text-neutral-500">...</span>
 					{:else}
