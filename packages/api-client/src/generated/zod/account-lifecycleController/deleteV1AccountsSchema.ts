@@ -35,7 +35,8 @@ export const deleteV1Accounts401Schema = z.object({
     }) as unknown as ToZod<DeleteV1Accounts401>
 
 export const deleteV1AccountsMutationRequestSchema = z.object({
-    "confirmationPhrase": z.string().min(1)
+    "confirmationPhrase": z.string().min(1),
+"currentPassword": z.string().min(1).max(200)
     }) as unknown as ToZod<DeleteV1AccountsMutationRequest>
 
 export const deleteV1AccountsMutationResponseSchema = z.lazy(() => deleteV1Accounts200Schema) as unknown as ToZod<DeleteV1AccountsMutationResponse>

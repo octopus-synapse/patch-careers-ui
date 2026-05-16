@@ -14,7 +14,7 @@ export const deleteV1AccountsMutationKey = () => [{ url: '/api/v1/accounts' }] a
 export type DeleteV1AccountsMutationKey = ReturnType<typeof deleteV1AccountsMutationKey>
 
 /**
- * @description Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT".
+ * @description Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT" AND the current password (re-authentication gate to prevent stolen-cookie deletes).
  * @summary Delete account permanently
  * {@link /api/v1/accounts}
  */

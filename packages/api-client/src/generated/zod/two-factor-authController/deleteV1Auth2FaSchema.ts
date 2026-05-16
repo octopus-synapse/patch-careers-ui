@@ -5,7 +5,8 @@
 
 import * as z from "zod";
 import type { ToZod } from "../../.kubb/ToZod";
-import type { DeleteV1Auth2Fa204, DeleteV1Auth2Fa400, DeleteV1Auth2Fa401, DeleteV1Auth2FaMutationResponse } from "../../models/two-factor-authController/DeleteV1Auth2Fa";
+import type { DeleteV1Auth2Fa204, DeleteV1Auth2Fa400, DeleteV1Auth2Fa401, DeleteV1Auth2FaMutationRequest, DeleteV1Auth2FaMutationResponse } from "../../models/two-factor-authController/DeleteV1Auth2Fa";
+import { twoFactorCodeSchema } from "../twoFactorCodeSchema";
 
 /**
  * @description Successful response
@@ -31,5 +32,10 @@ export const deleteV1Auth2Fa401Schema = z.object({
 "message": z.string(),
 "severity": z.enum(["toast", "modal", "banner", "inline", "silent"])
     }) as unknown as ToZod<DeleteV1Auth2Fa401>
+
+export const deleteV1Auth2FaMutationRequestSchema = z.object({
+    "currentPassword": z.optional(z.string().min(1).max(200)),
+"totpCode": z.optional(z.lazy(() => twoFactorCodeSchema).describe("6-digit numeric TOTP code from the authenticator app."))
+    }) as unknown as ToZod<DeleteV1Auth2FaMutationRequest>
 
 export const deleteV1Auth2FaMutationResponseSchema = z.lazy(() => deleteV1Auth2Fa204Schema) as unknown as ToZod<DeleteV1Auth2FaMutationResponse>

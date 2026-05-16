@@ -4,7 +4,7 @@
 */
 
 import type { Client, RequestConfig, ResponseErrorConfig } from "../../../client/fetcher";
-import type { DeleteV1Auth2FaMutationResponse, DeleteV1Auth2Fa400, DeleteV1Auth2Fa401 } from "../../models/two-factor-authController/DeleteV1Auth2Fa";
+import type { DeleteV1Auth2FaMutationRequest, DeleteV1Auth2FaMutationResponse, DeleteV1Auth2Fa400, DeleteV1Auth2Fa401 } from "../../models/two-factor-authController/DeleteV1Auth2Fa";
 import type { CreateMutationOptions, QueryClient } from "@tanstack/svelte-query";
 import { deleteV1Auth2Fa } from "../../clients/two-factor-authController/deleteV1Auth2Fa";
 import { createMutation } from "@tanstack/svelte-query";
@@ -14,14 +14,14 @@ export const deleteV1Auth2FaMutationKey = () => [{ url: '/api/v1/auth/2fa' }] as
 export type DeleteV1Auth2FaMutationKey = ReturnType<typeof deleteV1Auth2FaMutationKey>
 
 /**
- * @description Disables 2FA and removes all backup codes.
+ * @description Disables 2FA and removes all backup codes. Requires re-authentication via the current password OR a valid TOTP code (either suffices).
  * @summary Disable 2FA
  * {@link /api/v1/auth/2fa}
  */
 export function createDeleteV1Auth2Fa<TContext>(options: 
 {
-  mutation?: CreateMutationOptions<DeleteV1Auth2FaMutationResponse, ResponseErrorConfig<DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401>, void, TContext> & { client?: QueryClient },
-  client?: Partial<RequestConfig> & { client?: Client },
+  mutation?: CreateMutationOptions<DeleteV1Auth2FaMutationResponse, ResponseErrorConfig<DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401>, {data?: DeleteV1Auth2FaMutationRequest}, TContext> & { client?: QueryClient },
+  client?: Partial<RequestConfig<DeleteV1Auth2FaMutationRequest>> & { client?: Client },
 }
  = {}) {
 
@@ -29,9 +29,9 @@ export function createDeleteV1Auth2Fa<TContext>(options:
           const { client: queryClient, ...mutationOptions } = mutation;
           const mutationKey = mutationOptions?.mutationKey ?? deleteV1Auth2FaMutationKey()
 
-          return createMutation<DeleteV1Auth2FaMutationResponse, ResponseErrorConfig<DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401>, void, TContext>({
-            mutationFn: async() => {
-              return deleteV1Auth2Fa(config)
+          return createMutation<DeleteV1Auth2FaMutationResponse, ResponseErrorConfig<DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401>, {data?: DeleteV1Auth2FaMutationRequest}, TContext>({
+            mutationFn: async({ data }) => {
+              return deleteV1Auth2Fa(data, config)
             },
             mutationKey,
             ...mutationOptions

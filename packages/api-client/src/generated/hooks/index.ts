@@ -208,7 +208,6 @@ export type { GetV1NotificationsTypesQueryKey } from "./notificationsController/
 export type { GetV1NotificationsUnreadCountQueryKey } from "./notificationsController/createGetV1NotificationsUnreadCount";
 export type { PostV1NotificationsMarkReadMutationKey } from "./notificationsController/createPostV1NotificationsMarkRead";
 export type { PutV1NotificationsPreferencesTypeMutationKey } from "./notificationsController/createPutV1NotificationsPreferencesType";
-export type { GetV1OnboardingPreviewStreamQueryKey } from "./onboarding-previewController/createGetV1OnboardingPreviewStream";
 export type { GetV1OnboardingProgressQueryKey } from "./onboardingController/createGetV1OnboardingProgress";
 export type { GetV1OnboardingSessionQueryKey } from "./onboardingController/createGetV1OnboardingSession";
 export type { GetV1OnboardingStatusQueryKey } from "./onboardingController/createGetV1OnboardingStatus";
@@ -959,9 +958,6 @@ export { createPostV1NotificationsMarkRead } from "./notificationsController/cre
 export { postV1NotificationsMarkReadMutationKey } from "./notificationsController/createPostV1NotificationsMarkRead";
 export { createPutV1NotificationsPreferencesType } from "./notificationsController/createPutV1NotificationsPreferencesType";
 export { putV1NotificationsPreferencesTypeMutationKey } from "./notificationsController/createPutV1NotificationsPreferencesType";
-export { createGetV1OnboardingPreviewStream } from "./onboarding-previewController/createGetV1OnboardingPreviewStream";
-export { getV1OnboardingPreviewStreamQueryKey } from "./onboarding-previewController/createGetV1OnboardingPreviewStream";
-export { getV1OnboardingPreviewStreamQueryOptions } from "./onboarding-previewController/createGetV1OnboardingPreviewStream";
 export { createGetV1OnboardingProgress } from "./onboardingController/createGetV1OnboardingProgress";
 export { getV1OnboardingProgressQueryKey } from "./onboardingController/createGetV1OnboardingProgress";
 export { getV1OnboardingProgressQueryOptions } from "./onboardingController/createGetV1OnboardingProgress";

@@ -3,6 +3,7 @@
 * Do not edit manually.
 */
 
+import type { TwoFactorCode } from "../TwoFactorCode";
 
 /**
  * @description Successful response
@@ -73,9 +74,25 @@ export type DeleteV1Auth2Fa401 = {
     severity: DeleteV1Auth2Fa401SeverityEnumKey;
 };
 
+export type DeleteV1Auth2FaMutationRequest = {
+    /**
+     * @minLength 1
+     * @maxLength 200
+     * @type string | undefined
+    */
+    currentPassword?: string;
+    /**
+     * @description 6-digit numeric TOTP code from the authenticator app.
+     * @pattern ^\d{6}$
+     * @type string | undefined
+    */
+    totpCode?: TwoFactorCode;
+};
+
 export type DeleteV1Auth2FaMutationResponse = DeleteV1Auth2Fa204;
 
 export type DeleteV1Auth2FaMutation = {
     Response: DeleteV1Auth2Fa204;
+    Request: DeleteV1Auth2FaMutationRequest;
     Errors: DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401;
 };

@@ -1,0 +1,1 @@
+{"type":"string","minLength":6,"maxLength":6,"pattern":"^\\d{6}$","description":"6-digit numeric TOTP code from the authenticator app.","example":"123456","x-readme-ref-name":"TwoFactorCode"}

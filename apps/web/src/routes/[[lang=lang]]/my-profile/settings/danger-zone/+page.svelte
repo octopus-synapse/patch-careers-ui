@@ -8,6 +8,9 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 
 let deleteConfirmation = $state('');
+// P0-#8 follow-up: backend now requires re-auth via current password on
+// DELETE /v1/accounts. UI prompts for it inside the delete modal.
+let deletePassword = $state('');
 let showDeleteModal = $state(false);
 let isExporting = $state(false);
 
@@ -37,8 +40,10 @@ async function handleExportData() {
 }
 
 function handleDeleteAccount() {
-  if (deleteConfirmation === 'DELETE MY ACCOUNT') {
-    $deleteAccount.mutate({ data: { confirmationPhrase: deleteConfirmation } });
+  if (deleteConfirmation === 'DELETE MY ACCOUNT' && deletePassword.length > 0) {
+    $deleteAccount.mutate({
+      data: { confirmationPhrase: deleteConfirmation, currentPassword: deletePassword },
+    });
   }
 }
 </script>
@@ -131,6 +136,16 @@ function handleDeleteAccount() {
 					class="mt-1 font-mono"
 				/>
 			</div>
+			<div>
+				<Label for="delete-password">Senha atual</Label>
+				<Input
+					id="delete-password"
+					type="password"
+					bind:value={deletePassword}
+					autocomplete="current-password"
+					class="mt-1"
+				/>
+			</div>
 			<div class="flex justify-end gap-2 pt-2">
 				<button
 					onclick={() => {
@@ -143,7 +158,7 @@ function handleDeleteAccount() {
 				</button>
 				<button
 					onclick={handleDeleteAccount}
-					disabled={deleteConfirmation !== 'DELETE MY ACCOUNT' || $deleteAccount.isPending}
+					disabled={deleteConfirmation !== 'DELETE MY ACCOUNT' || deletePassword.length === 0 || $deleteAccount.isPending}
 					class="flex items-center gap-2 rounded-full bg-red-500 px-5 py-2 text-[11px] font-semibold text-white transition-all hover:bg-red-600 disabled:opacity-50"
 				>
 					{#if $deleteAccount.isPending}

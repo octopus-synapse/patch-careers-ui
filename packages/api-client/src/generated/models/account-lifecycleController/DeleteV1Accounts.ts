@@ -84,6 +84,12 @@ export type DeleteV1AccountsMutationRequest = {
      * @type string
     */
     confirmationPhrase: string;
+    /**
+     * @minLength 1
+     * @maxLength 200
+     * @type string
+    */
+    currentPassword: string;
 };
 
 export type DeleteV1AccountsMutationResponse = DeleteV1Accounts200;

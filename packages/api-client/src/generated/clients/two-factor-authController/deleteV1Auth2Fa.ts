@@ -5,7 +5,7 @@
 
 import fetch from "../../../client/fetcher";
 import type { Client, RequestConfig, ResponseErrorConfig } from "../../../client/fetcher";
-import type { DeleteV1Auth2FaMutationResponse, DeleteV1Auth2Fa400, DeleteV1Auth2Fa401 } from "../../models/two-factor-authController/DeleteV1Auth2Fa";
+import type { DeleteV1Auth2FaMutationRequest, DeleteV1Auth2FaMutationResponse, DeleteV1Auth2Fa400, DeleteV1Auth2Fa401 } from "../../models/two-factor-authController/DeleteV1Auth2Fa";
 
 function getDeleteV1Auth2FaUrl() {
   const res = { method: 'DELETE', url: `/api/v1/auth/2fa` as const }
@@ -13,15 +13,15 @@ function getDeleteV1Auth2FaUrl() {
 }
 
 /**
- * @description Disables 2FA and removes all backup codes.
+ * @description Disables 2FA and removes all backup codes. Requires re-authentication via the current password OR a valid TOTP code (either suffices).
  * @summary Disable 2FA
  * {@link /api/v1/auth/2fa}
  */
-export async function deleteV1Auth2Fa(config: Partial<RequestConfig> & { client?: Client } = {}) {
+export async function deleteV1Auth2Fa(data?: DeleteV1Auth2FaMutationRequest, config: Partial<RequestConfig<DeleteV1Auth2FaMutationRequest>> & { client?: Client } = {}) {
   const { client: request = fetch, ...requestConfig } = config
 
+  const requestData = data
 
-
-  const res = await request<DeleteV1Auth2FaMutationResponse, ResponseErrorConfig<DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401>, unknown>({ method : "DELETE", url : getDeleteV1Auth2FaUrl().url.toString(), ... requestConfig })
+  const res = await request<DeleteV1Auth2FaMutationResponse, ResponseErrorConfig<DeleteV1Auth2Fa400 | DeleteV1Auth2Fa401>, DeleteV1Auth2FaMutationRequest>({ method : "DELETE", url : getDeleteV1Auth2FaUrl().url.toString(), data : requestData, ... requestConfig })
   return res.data
 }

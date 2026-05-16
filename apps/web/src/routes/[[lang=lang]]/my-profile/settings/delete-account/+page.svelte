@@ -25,7 +25,8 @@ async function submit(e: Event) {
   submitting = true;
   serverError = null;
   try {
-    await deleteV1Accounts({ confirmationPhrase: confirmPhrase });
+    // P0-#8 follow-up: backend now requires currentPassword on delete.
+    await deleteV1Accounts({ confirmationPhrase: confirmPhrase, currentPassword: password });
     toastState.show(t('actions.accountRemoved'), 'success');
     // Clear local session and send to landing.
     await logout({}).catch(() => {});

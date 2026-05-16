@@ -261,8 +261,6 @@ export { getV1NotificationsUnreadCount } from "./notificationsController/getV1No
 export { notificationsController } from "./notificationsController/notificationsController";
 export { postV1NotificationsMarkRead } from "./notificationsController/postV1NotificationsMarkRead";
 export { putV1NotificationsPreferencesType } from "./notificationsController/putV1NotificationsPreferencesType";
-export { getV1OnboardingPreviewStream } from "./onboarding-previewController/getV1OnboardingPreviewStream";
-export { onboardingPreviewController } from "./onboarding-previewController/onboardingPreviewController";
 export { getV1OnboardingProgress } from "./onboardingController/getV1OnboardingProgress";
 export { getV1OnboardingSession } from "./onboardingController/getV1OnboardingSession";
 export { getV1OnboardingStatus } from "./onboardingController/getV1OnboardingStatus";

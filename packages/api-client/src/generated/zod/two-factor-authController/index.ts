@@ -1,4 +1,4 @@
-export { deleteV1Auth2Fa204Schema, deleteV1Auth2Fa400Schema, deleteV1Auth2Fa401Schema, deleteV1Auth2FaMutationResponseSchema } from "./deleteV1Auth2FaSchema";
+export { deleteV1Auth2Fa204Schema, deleteV1Auth2Fa400Schema, deleteV1Auth2Fa401Schema, deleteV1Auth2FaMutationRequestSchema, deleteV1Auth2FaMutationResponseSchema } from "./deleteV1Auth2FaSchema";
 export { getV1Auth2FaStatus200Schema, getV1Auth2FaStatus400Schema, getV1Auth2FaStatus401Schema, getV1Auth2FaStatusQueryResponseSchema } from "./getV1Auth2FaStatusSchema";
 export { postV1Auth2FaBackupCodesRegenerate201Schema, postV1Auth2FaBackupCodesRegenerate400Schema, postV1Auth2FaBackupCodesRegenerate401Schema, postV1Auth2FaBackupCodesRegenerateMutationResponseSchema } from "./postV1Auth2FaBackupCodesRegenerateSchema";
 export { postV1Auth2FaSetup201Schema, postV1Auth2FaSetup400Schema, postV1Auth2FaSetup401Schema, postV1Auth2FaSetupMutationResponseSchema } from "./postV1Auth2FaSetupSchema";

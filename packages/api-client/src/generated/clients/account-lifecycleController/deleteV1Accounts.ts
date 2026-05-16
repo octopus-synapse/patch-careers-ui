@@ -13,7 +13,7 @@ function getDeleteV1AccountsUrl() {
 }
 
 /**
- * @description Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT".
+ * @description Permanently deletes the user account. Requires confirmation phrase: "DELETE MY ACCOUNT" AND the current password (re-authentication gate to prevent stolen-cookie deletes).
  * @summary Delete account permanently
  * {@link /api/v1/accounts}
  */
