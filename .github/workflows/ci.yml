@@ -18,8 +18,8 @@ jobs:
   verify-attestation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@v1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@fe67c4b143601ad1420872aca57a523d9e8c8d3d # v1
 
   build:
     needs: verify-attestation

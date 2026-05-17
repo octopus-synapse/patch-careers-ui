@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           result-encoding: string
           script: |
@@ -26,7 +26,7 @@ jobs:
             });
             return prs.data[0]?.number ?? '';
       - if: steps.pr.outputs.result != ''
-        uses: octopus-synapse/octopus-workflows/.github/actions/post-ci-comment@v1
+        uses: octopus-synapse/octopus-workflows/.github/actions/post-ci-comment@fe67c4b143601ad1420872aca57a523d9e8c8d3d # v1
         with:
           github-token: ${{ github.token }}
           pr-number: ${{ steps.pr.outputs.result }}

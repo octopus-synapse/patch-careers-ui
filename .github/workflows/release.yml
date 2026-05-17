@@ -18,7 +18,7 @@ permissions:
 jobs:
   create-release-pr:
     if: github.ref == 'refs/heads/homolog'
-    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-create-pr.yml@v1
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-create-pr.yml@fe67c4b143601ad1420872aca57a523d9e8c8d3d # v1
     with:
       sha: ${{ github.sha }}
       forced_type: ${{ github.event.inputs.force_release_type || '' }}
@@ -35,13 +35,13 @@ jobs:
     #  - manual workflow_dispatch on main (no head_commit payload to inspect),
     #    used to recover from a release PR merged with the wrong strategy.
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'chore(release):'))
-    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-finalize.yml@v1
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-finalize.yml@fe67c4b143601ad1420872aca57a523d9e8c8d3d # v1
     with:
       commit_sha: ${{ github.sha }}
 
   build-docker:
     needs: finalize-release
     if: needs.finalize-release.outputs.released == 'true'
-    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-docker.yml@v1
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-docker.yml@fe67c4b143601ad1420872aca57a523d9e8c8d3d # v1
     with:
       tag: ${{ needs.finalize-release.outputs.tag }}

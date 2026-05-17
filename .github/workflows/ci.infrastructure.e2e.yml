@@ -6,7 +6,7 @@ on:
 
 jobs:
   e2e:
-    uses: octopus-synapse/octopus-workflows/.github/workflows/_e2e-with-backend.yml@v1
+    uses: octopus-synapse/octopus-workflows/.github/workflows/_e2e-with-backend.yml@fe67c4b143601ad1420872aca57a523d9e8c8d3d # v1
     with:
       backend-repo: octopus-synapse/profile-services
       backend-ref: ci/enzoferracini-seed-on-main
