@@ -9,7 +9,7 @@
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
-  import { Button, LinkButton, Loader, toastState } from 'ui';
+  import { Button, ConfirmModal, LinkButton, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   ;
@@ -27,9 +27,14 @@
   );
   const expiresAt = $derived(me?.expiresAt);
 
+  // P1 #6: native confirm() replaced with a state-driven ConfirmModal.
   let deleting = $state(false);
-  async function handleDelete(): Promise<void> {
-    if (!confirm(t('fitProfileMine.deleteConfirm'))) return;
+  let confirmingDelete = $state(false);
+  function requestDelete() {
+    confirmingDelete = true;
+  }
+  async function confirmDelete(): Promise<void> {
+    confirmingDelete = false;
     deleting = true;
     try {
       await deleteV1FitProfileMe();
@@ -76,7 +81,7 @@
         <LinkButton variant="solid" size="sm"  href="/my-profile/fit-profile/questions">
           {t('fitProfileMine.retakeQuestionnaire')}
         </LinkButton>
-        <Button variant="ghost" size="sm" onclick={handleDelete} disabled={deleting}>
+        <Button variant="ghost" size="sm" onclick={requestDelete} disabled={deleting}>
           {#if deleting}<Loader size={14} />{:else}<Trash2 size={14} />{/if}
           {t('fitProfileMine.deleteProfile')}
         </Button>
@@ -105,3 +110,11 @@
     </div>
   {/if}
 </section>
+
+<ConfirmModal
+  open={confirmingDelete}
+  title={t('fitProfileMine.heading')}
+  message={t('fitProfileMine.deleteConfirm')}
+  onClose={() => (confirmingDelete = false)}
+  onConfirm={confirmDelete}
+/>

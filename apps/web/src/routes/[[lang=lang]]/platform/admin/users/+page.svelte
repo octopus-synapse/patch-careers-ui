@@ -11,7 +11,7 @@
     patchV1UsersManageIdRoles,
   } from 'api-client';
   import { Trash2 } from 'lucide-svelte';
-  import { Button, Loader, toastState } from 'ui';
+  import { Button, ConfirmModal, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
   import { locale } from '$lib/state/locale.svelte';
@@ -69,9 +69,17 @@
     }
   }
 
+  // P1 #6: replaced native confirm() with a state-driven ConfirmModal that
+  // properly traps focus, renders dark-mode styles, and survives async work.
   let deleting = $state<string | null>(null);
-  async function handleDelete(id: string) {
-    if (!confirm(t('admin.users.confirmDelete'))) return;
+  let deleteCandidateId = $state<string | null>(null);
+  function requestDelete(id: string) {
+    deleteCandidateId = id;
+  }
+  async function confirmDelete() {
+    const id = deleteCandidateId;
+    if (!id) return;
+    deleteCandidateId = null;
     deleting = id;
     try {
       await deleteV1UsersManageId(id);
@@ -151,7 +159,7 @@
                   <Button
                     size="sm"
                     variant="ghost"
-                    onclick={() => handleDelete(u.id)}
+                    onclick={() => requestDelete(u.id)}
                     disabled={deleting === u.id}
                   >
                     <Trash2 class="size-3" />
@@ -173,3 +181,11 @@
     </div>
   {/if}
 </div>
+
+<ConfirmModal
+  open={deleteCandidateId !== null}
+  title={t('admin.users.title')}
+  message={t('admin.users.confirmDelete')}
+  onClose={() => (deleteCandidateId = null)}
+  onConfirm={confirmDelete}
+/>
