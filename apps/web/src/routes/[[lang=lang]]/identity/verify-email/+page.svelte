@@ -45,8 +45,13 @@ let cooldownRemaining = $state(0);
 let cooldownTimer: ReturnType<typeof setInterval> | null = null;
 
 async function leaveVerifyScreen() {
+  // P1 #9: invalidate the session BEFORE awaiting goto, then await both so
+  // the next route's load() function reads the fresh session payload (with
+  // `needsEmailVerification = false`) instead of the stale one. The previous
+  // ordering left a race window where the onboarding loader could request
+  // the session before invalidation completed, redirecting back here.
   await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
-  goto('/onboarding');
+  await goto('/onboarding');
 }
 
 function isAlreadyVerified(err: unknown): boolean {
@@ -130,11 +135,11 @@ onMount(() => {
 $effect(() => {
   if (!browser || session.isLoading) return;
   if (authenticated === false) {
-    goto('/identity/sign-in');
+    void goto('/identity/sign-in');
     return;
   }
   if (authenticated === true && !needsEmailVerification) {
-    goto('/onboarding');
+    void goto('/onboarding');
   }
 });
 
