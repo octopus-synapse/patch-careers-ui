@@ -44,9 +44,7 @@ export const acceptConsent401Schema = z.object({
     }) as unknown as ToZod<AcceptConsent401>
 
 export const acceptConsentMutationRequestSchema = z.object({
-    "documentType": z.enum(["TERMS_OF_SERVICE", "PRIVACY_POLICY", "MARKETING_CONSENT"]),
-"ipAddress": z.optional(z.string()),
-"userAgent": z.optional(z.string())
+    "documentType": z.enum(["TERMS_OF_SERVICE", "PRIVACY_POLICY", "MARKETING_CONSENT"])
     }) as unknown as ToZod<AcceptConsentMutationRequest>
 
 export const acceptConsentMutationResponseSchema = z.lazy(() => acceptConsent201Schema) as unknown as ToZod<AcceptConsentMutationResponse>

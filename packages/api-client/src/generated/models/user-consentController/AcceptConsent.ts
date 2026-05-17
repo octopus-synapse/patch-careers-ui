@@ -136,14 +136,6 @@ export type AcceptConsentMutationRequest = {
      * @type string
     */
     documentType: AcceptConsentMutationRequestDocumentTypeEnumKey;
-    /**
-     * @type string | undefined, ip
-    */
-    ipAddress?: string;
-    /**
-     * @type string | undefined
-    */
-    userAgent?: string;
 };
 
 export type AcceptConsentMutationResponse = AcceptConsent201;
