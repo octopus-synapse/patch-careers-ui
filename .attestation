@@ -1,61 +1,61 @@
 {
   "version": "3",
-  "tree_hash": "7ee9dc94e704e870a423956e87919f9538a25a68",
+  "tree_hash": "f26e8087819cc0aaa7e467e73e87408295a058b2",
   "checks": "typecheck lint no-hardcoded-pt",
   "metrics": {
     "typecheck": {
       "status": "ok",
-      "time_ms": 32263
+      "time_ms": 44843
     },
     "lint": {
       "status": "ok",
-      "time_ms": 255
+      "time_ms": 396
     },
     "no-any": {
       "status": "ok",
-      "time_ms": 60
+      "time_ms": 81
     },
     "sdk-drift": {
       "status": "ok",
-      "time_ms": 59
+      "time_ms": 80
     },
     "i18n-keys": {
       "status": "ok",
-      "time_ms": 58
+      "time_ms": 79
     },
     "i18n-orphans": {
       "status": "ok",
-      "time_ms": 71
+      "time_ms": 79
     },
     "i18n-parity": {
       "status": "ok",
-      "time_ms": 70
+      "time_ms": 72
     },
     "i18n-missing": {
       "status": "ok",
-      "time_ms": 102
+      "time_ms": 124
     },
     "no-hardcoded-pt": {
       "status": "ok",
-      "time_ms": 220
+      "time_ms": 289
     },
     "i18n-hardcoded": {
       "status": "ok",
-      "time_ms": 1315
+      "time_ms": 1687
     },
     "no-api-client-deep-imports": {
       "status": "ok",
-      "time_ms": 71
+      "time_ms": 84
     },
     "form-schema-from-sdk": {
       "status": "ok",
-      "time_ms": 49
+      "time_ms": 63
     },
     "file-size": {
       "status": "ok",
-      "time_ms": 67
+      "time_ms": 118
     }
   },
-  "timestamp": "2026-05-17T06:04:43Z",
+  "timestamp": "2026-05-17T06:07:05Z",
   "git_user": "enzo.patti@aluno.senai.br"
 }

@@ -7,6 +7,8 @@
 // envelope — they get the bare body. This file stays internal: the app
 // barrel re-exports only `ApiError`, `isApiError`, `getBaseUrl`, `setBaseUrl`.
 
+import { getOrCreateController } from './abort-registry';
+
 // Matches the dev backend's published port in
 // `profile-services/docker-compose.dev.yml`: host 13001 → container 3001.
 // Production callers MUST override via `setBaseUrl()` (the root layout
@@ -208,11 +210,18 @@ export default async function client<TData, _TError = unknown, TVariables = unkn
         'Accept-Language': acceptLanguage,
       };
 
+  // Default AbortController for callers that didn't pass one. Without
+  // this, imperative SDK calls (analytics, multipart uploads) had no
+  // way to be cancelled — closing a tab or kicking off a retry stacked
+  // pending fetches that all came back to a stale handler.
+  const defaultCtrl = getOrCreateController(config as RequestConfig<unknown>);
+  const signal = config.signal ?? defaultCtrl?.signal;
+
   const response = await fetch(url, {
     method: config.method ?? 'GET',
     headers: { ...baseHeaders, ...config.headers },
     credentials: 'include',
-    signal: config.signal,
+    signal,
     body:
       config.data === undefined
         ? undefined
