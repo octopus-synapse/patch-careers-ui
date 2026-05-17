@@ -9,7 +9,8 @@
   },
   "scripts": {
     "sdk:generate": "kubb generate --config kubb.config.ts && sha256sum ../../../profile-services/client-swagger.json | cut -d' ' -f1 > src/generated/.swagger-hash",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "bun test src/client"
   },
   "peerDependencies": {
     "@tanstack/svelte-query": ">=6.0.0",

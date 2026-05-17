@@ -222,25 +222,27 @@ export default async function client<TData, _TError = unknown, TVariables = unkn
   });
 
   if (!response.ok) {
+    const status = response.status;
     let error: ApiError;
     try {
       const body = (await response.json()) as Record<string, unknown> | null;
       error = {
         code: String(body?.code ?? 'API_ERROR'),
         message: String(body?.message ?? response.statusText),
-        statusCode: typeof body?.statusCode === 'number' ? body.statusCode : response.status,
-        severity:
-          (body?.severity as ApiError['severity']) ?? (response.status >= 500 ? 'modal' : 'toast'),
+        statusCode: typeof body?.statusCode === 'number' ? body.statusCode : status,
+        severity: (body?.severity as ApiError['severity']) ?? (status >= 500 ? 'modal' : 'toast'),
         suggestedAction: body?.suggestedAction as ApiError['suggestedAction'],
         params: body?.params as Record<string, unknown> | undefined,
         fields: body?.fields as ApiError['fields'],
       };
     } catch {
+      // Body wasn't valid JSON; status code is the authoritative routing
+      // signal (404 vs 401 vs 500) and must survive the parse failure.
       error = {
-        code: 'NETWORK_ERROR',
-        message: response.statusText,
-        statusCode: response.status,
-        severity: 'toast',
+        code: 'PARSE_ERROR',
+        message: 'Failed to parse error response',
+        statusCode: status,
+        severity: status >= 500 ? 'modal' : 'toast',
       };
     }
     throw error;
