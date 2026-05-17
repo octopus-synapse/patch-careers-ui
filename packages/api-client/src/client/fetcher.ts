@@ -25,35 +25,26 @@ export function getBaseUrl(): string {
   return baseUrl;
 }
 
-// Locale resolution for `Accept-Language`. Without this every request
-// hits the backend's i18n fallback (`en` per CLAUDE.md Q8) regardless of
-// the user's choice. The SDK is package-level so it can't import from
-// `apps/web`; we read the `locale` cookie that
-// `apps/web/src/lib/state/locale.svelte.ts` writes whenever the user picks
-// a locale (or initial detection runs). The same file accepts cookie /
-// localStorage / `navigator.language` and writes the canonical value
-// back, so this lookup is the single point of truth on the wire.
-const SUPPORTED_LOCALES = ['pt-BR', 'en'] as const;
+// Locale resolution for `Accept-Language`. The app injects its source-of-
+// truth via `setAcceptLanguageProvider`. We do NOT read `document.cookie`
+// from inside the fetcher: doing so was unsafe in SSR (TypeError when no
+// document exists) and incorrect on the server even when guarded (the
+// browser-side cookie isn't the server's locale, it's the cookie of the
+// last user to render on this Node process).
+//
+// On the client the app wires `() => locale.current`.
+// On the server the SvelteKit handle hook wires
+// `() => event.locals.locale`, which is resolved per-request from the URL
+// param / cookie / Accept-Language header parser.
+let acceptLanguageProvider: (() => string | undefined) | null = null;
+
+export function setAcceptLanguageProvider(fn: () => string | undefined): void {
+  acceptLanguageProvider = fn;
+}
 
 function resolveAcceptLanguage(): string {
-  if (typeof document !== 'undefined') {
-    const match = document.cookie.match(/(?:^|;\s*)locale=([^;]+)/);
-    if (match?.[1]) {
-      const decoded = decodeURIComponent(match[1]);
-      if ((SUPPORTED_LOCALES as readonly string[]).includes(decoded)) return decoded;
-    }
-  }
-  if (typeof navigator !== 'undefined') {
-    const tags = navigator.languages?.length ? navigator.languages : [navigator.language];
-    for (const tag of tags) {
-      if (!tag) continue;
-      if ((SUPPORTED_LOCALES as readonly string[]).includes(tag)) return tag;
-      const base = tag.split('-')[0];
-      const match = SUPPORTED_LOCALES.find((l) => l.split('-')[0] === base);
-      if (match) return match;
-    }
-  }
-  return 'pt-BR';
+  const fromProvider = acceptLanguageProvider?.();
+  return fromProvider && fromProvider.length > 0 ? fromProvider : 'pt-BR';
 }
 
 export interface ApiError {

@@ -3,7 +3,7 @@ import '../app.css';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 import { dev } from '$app/environment';
-import { setBaseUrl } from 'api-client';
+import { setAcceptLanguageProvider, setBaseUrl } from 'api-client';
 import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
@@ -33,6 +33,13 @@ let { children }: { children: Snippet } = $props();
 
 const apiUrl = import.meta.env.VITE_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
+
+// Wire the Accept-Language source-of-truth. The fetcher previously read
+// `document.cookie` directly, which threw under SSR and (worse) returned
+// the wrong locale on the server when the cookie wasn't this request's.
+// In the browser, `locale.current` is the canonical choice; the hooks.server
+// wiring sets the same provider per-request server-side.
+setAcceptLanguageProvider(() => locale.current);
 
 colorSchema.init();
 

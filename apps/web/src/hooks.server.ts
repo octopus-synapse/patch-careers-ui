@@ -1,4 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
+import { setAcceptLanguageProvider } from 'api-client';
 import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from 'i18n';
 
 function resolveLocale(event: Parameters<Handle>[0]['event']): Locale {
@@ -31,6 +32,12 @@ function resolveLocale(event: Parameters<Handle>[0]['event']): Locale {
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.locale = resolveLocale(event);
+
+  // Per-request provider for Accept-Language. The fetcher is module-level
+  // singleton state; re-binding here on every request keeps server-side
+  // SDK calls within this handler reading THIS request's locale rather
+  // than whichever request happened to set it last.
+  setAcceptLanguageProvider(() => event.locals.locale);
 
   const response = await resolve(event, {
     transformPageChunk: ({ html }) => html.replace('%lang%', event.locals.locale),
