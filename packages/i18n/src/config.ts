@@ -4,7 +4,8 @@ export const DEFAULT_LOCALE = LOCALES[0];
 
 export type Locale = (typeof LOCALES)[number];
 
-export function isLocale(value: string): value is Locale {
+export function isLocale(value: string | null | undefined): value is Locale {
+  if (value == null) return false;
   return (LOCALES as readonly string[]).includes(value);
 }
 
