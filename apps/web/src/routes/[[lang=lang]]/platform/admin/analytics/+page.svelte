@@ -119,14 +119,14 @@
           <h3 class="mb-4 text-xs font-semibold text-gray-500 dark:text-neutral-500">
             {t('admin.analytics.atsDistribution')}
           </h3>
-          <div class="flex items-end gap-1 sm:gap-2" style="height: 100px; min-height: 80px">
+          <div class="flex items-end gap-1 sm:gap-2 h-[100px] min-h-[80px]">
             {#each data.atsScoreDistribution as bucket}
               {@const pct = (bucket.count / maxValue(data.atsScoreDistribution)) * 100}
               <div class="flex flex-1 flex-col items-center gap-1">
                 <span class="text-[9px] text-gray-500 dark:text-neutral-500">{bucket.count}</span>
                 <div
-                  class="w-full rounded-t bg-gray-700 dark:bg-neutral-400"
-                  style="height: {pct}%; min-height: 2px"
+                  class="w-full rounded-t bg-gray-700 dark:bg-neutral-400 min-h-[2px]"
+                  style:height={`${pct}%`}
                 ></div>
                 <span class="text-[9px] text-gray-500 dark:text-neutral-500">{bucket.bucket}</span>
               </div>
@@ -151,7 +151,7 @@
                 <div class="mt-1 h-2 w-full rounded-full bg-gray-200 dark:bg-neutral-700">
                   <div
                     class="h-full rounded-full bg-gray-700 dark:bg-neutral-400"
-                    style="width: {pct}%"
+                    style:width={`${pct}%`}
                   ></div>
                 </div>
               </div>

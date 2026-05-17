@@ -238,3 +238,278 @@ body {
   background-repeat: no-repeat;
   color: var(--landing-oxide);
 }
+
+/*
+ * ─── Wave 2.2: globalised <style> blocks ───
+ * These rules used to live in component-scoped `<style>` blocks. They
+ * were lifted here verbatim so the components stay Tailwind-only (no
+ * inline `style=""`, no `<style>` block — see project policy in
+ * `feedback_no_inline_style.md`). Each section names the original
+ * component for traceability.
+ */
+
+/* From: apps/web/src/routes/[[lang=lang]]/social/feed/_components/post-card.svelte */
+.heart-burst {
+  animation: heart-burst 0.7s ease-out forwards;
+}
+@keyframes heart-burst {
+  0%   { opacity: 0; transform: scale(0.3); }
+  30%  { opacity: 1; transform: scale(1.1); }
+  60%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .heart-burst { animation: none; opacity: 1; }
+}
+
+/* From: apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte */
+.confetti {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  animation-name: fall;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti { display: none; }
+}
+
+/* From: apps/web/src/routes/[[lang=lang]]/_components/landing/success-stories.svelte */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* From: packages/ui/src/components/otp-input/otp-input.component.svelte
+ * The OtpInput already references the animation via Tailwind arbitrary
+ * `animate-[otp-shake_0.4s_ease-in-out]`; only the @keyframes needs to
+ * live in global scope (Tailwind's animate-[...] cannot define them). */
+@keyframes otp-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+/*
+ * From: apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/+page.svelte
+ * "tracker-shell" is a self-contained design system for the dashboard
+ * tracker view (typography, surfaces, tints, gradients, journey strip,
+ * live pulse, etc). It uses `:global(...)` heavily because the cards
+ * are rendered by child components and the scoping in the original
+ * `<style>` block was already opting out — globalising here is a
+ * lossless move.
+ */
+.tracker-shell {
+  --c-positive: #10b981;
+  --c-active: #38bdf8;
+  --c-pending: #f59e0b;
+  --c-negative: #f43f5e;
+  --c-neutral: #a3a3a3;
+  --c-stage: #a78bfa;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.tracker-shell .mono,
+.tracker-shell .num {
+  font-family: 'IBM Plex Mono', monospace;
+}
+.tracker-shell .num { font-variant-numeric: tabular-nums; }
+.tracker-shell .eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+.tracker-shell .label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+.tracker-shell .sublabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+}
+.tracker-shell .text-positive { color: var(--c-positive); }
+.tracker-shell .text-active   { color: var(--c-active); }
+.tracker-shell .text-pending  { color: var(--c-pending); }
+.tracker-shell .text-negative { color: var(--c-negative); }
+.tracker-shell .text-neutral  { color: var(--c-neutral); }
+.tracker-shell .surface {
+  background: #070707;
+  border: 1px solid #161616;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+.tracker-shell .surface:hover {
+  background: #0a0a0a;
+  border-color: #262626;
+}
+.tracker-shell .clickable { cursor: pointer; }
+.tracker-shell .clickable:hover { transform: translateY(-1px); }
+.tracker-shell .tint-positive  { box-shadow: inset 0 2px 0 0 var(--c-positive); }
+.tracker-shell .tint-active    { box-shadow: inset 0 2px 0 0 var(--c-active); }
+.tracker-shell .tint-pending   { box-shadow: inset 0 2px 0 0 var(--c-pending); }
+.tracker-shell .tint-negative  { box-shadow: inset 0 2px 0 0 var(--c-negative); }
+.tracker-shell .tint-neutral   { box-shadow: inset 0 2px 0 0 var(--c-neutral); }
+.tracker-shell .tint-stage     { box-shadow: inset 0 2px 0 0 var(--c-stage); }
+.tracker-shell .glow-positive  { background: linear-gradient(180deg, rgba(16, 185, 129, 0.07) 0%, rgba(16, 185, 129, 0) 55%), #070707; }
+.tracker-shell .glow-active    { background: linear-gradient(180deg, rgba(56, 189, 248, 0.07) 0%, rgba(56, 189, 248, 0) 55%), #070707; }
+.tracker-shell .glow-pending   { background: linear-gradient(180deg, rgba(245, 158, 11, 0.07) 0%, rgba(245, 158, 11, 0) 55%), #070707; }
+.tracker-shell .glow-negative  { background: linear-gradient(180deg, rgba(244, 63, 94, 0.06) 0%, rgba(244, 63, 94, 0) 55%), #070707; }
+.tracker-shell .glow-neutral   { background: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0) 55%), #070707; }
+.tracker-shell .glow-stage     { background: linear-gradient(180deg, rgba(167, 139, 250, 0.07) 0%, rgba(167, 139, 250, 0) 55%), #070707; }
+.tracker-shell .card-pending {
+  box-shadow: inset 0 2px 0 0 var(--c-pending);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.07) 0%, rgba(245, 158, 11, 0) 55%), #070707;
+  border: 1px solid #161616;
+  transition: all 0.18s ease;
+}
+.tracker-shell .card-pending:hover {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.07) 0%, rgba(245, 158, 11, 0) 55%), #0a0a0a;
+  border-color: #262626;
+}
+.tracker-shell .card-accepted {
+  box-shadow: inset 0 2px 0 0 var(--c-positive);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.07) 0%, rgba(16, 185, 129, 0) 55%), #070707;
+  border: 1px solid #161616;
+  transition: all 0.18s ease;
+}
+.tracker-shell .card-accepted:hover {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.07) 0%, rgba(16, 185, 129, 0) 55%), #0a0a0a;
+  border-color: #262626;
+}
+.tracker-shell .card-declined {
+  box-shadow: inset 0 2px 0 0 var(--c-negative);
+  background: linear-gradient(180deg, rgba(244, 63, 94, 0.06) 0%, rgba(244, 63, 94, 0) 55%), #070707;
+  border: 1px solid #161616;
+  transition: all 0.18s ease;
+}
+.tracker-shell .card-declined:hover {
+  background: linear-gradient(180deg, rgba(244, 63, 94, 0.06) 0%, rgba(244, 63, 94, 0) 55%), #0a0a0a;
+  border-color: #262626;
+}
+.tracker-shell .card-hired {
+  background:
+    radial-gradient(ellipse 48% 38% at 22% 0%, rgba(132, 204, 22, 0.65) 0%, rgba(132, 204, 22, 0.18) 45%, transparent 100%),
+    radial-gradient(ellipse 48% 38% at 78% 0%, rgba(22, 101, 52, 0.85) 0%, rgba(22, 101, 52, 0.25) 45%, transparent 100%),
+    #070707;
+  transition: transform 0.25s ease;
+}
+.tracker-shell .card-hired:hover { transform: translateY(-2px); }
+.tracker-shell .hired-headline {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-size: clamp(2.75rem, 6.5vw, 5rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: white;
+  line-height: 1.05;
+}
+.tracker-shell .hired-accent { color: #a3e635; }
+.tracker-shell .num-xl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(4rem, 9vw, 7rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  color: white;
+}
+.tracker-shell .num-hero {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(3.5rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: white;
+}
+.tracker-shell .num-lg {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: white;
+}
+.tracker-shell .num-md {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: white;
+}
+.tracker-shell .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.tracker-shell .dot-positive { background: var(--c-positive); box-shadow: 0 0 8px var(--c-positive); }
+.tracker-shell .dot-active   { background: var(--c-active);   box-shadow: 0 0 8px var(--c-active); }
+.tracker-shell .dot-pending  { background: var(--c-pending);  box-shadow: 0 0 8px var(--c-pending); }
+.tracker-shell .dot-negative { background: var(--c-negative); box-shadow: 0 0 8px var(--c-negative); }
+.tracker-shell .dot-neutral  { background: var(--c-neutral); }
+.tracker-shell .journey-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.tracker-shell .journey-node-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--c-active);
+  border: 2px solid #070707;
+  box-shadow: 0 0 0 1px var(--c-active), 0 0 14px var(--c-active);
+  position: relative;
+  z-index: 2;
+}
+.tracker-shell .journey-line {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 17px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.5) 0%, rgba(56, 189, 248, 0.5) 100%);
+  z-index: 1;
+}
+.tracker-shell .live-pulse {
+  position: relative;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--c-positive);
+}
+.tracker-shell .live-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  border: 1px solid var(--c-positive);
+  opacity: 0;
+  animation: tracker-pulse 2.2s ease-out infinite;
+}
+@keyframes tracker-pulse {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2); opacity: 0; }
+}

@@ -39,8 +39,7 @@ $effect(() => {
 
 <div
 	bind:this={container}
-	class="flex flex-1 flex-col overflow-y-auto px-3 py-3 sm:px-6 sm:py-4 scrollbar-thin"
-	style="min-height: 0;"
+	class="flex flex-1 flex-col overflow-y-auto px-3 py-3 sm:px-6 sm:py-4 scrollbar-thin min-h-0"
 >
 	<!-- Spacer pushes messages to bottom when few -->
 	<div class="flex-1"></div>

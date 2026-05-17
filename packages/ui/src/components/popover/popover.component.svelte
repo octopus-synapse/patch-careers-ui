@@ -58,7 +58,7 @@ const placementClass = $derived(
 			tabindex="-1"
 			aria-label={label}
 			class="absolute z-20 rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-neutral-700 dark:bg-neutral-800 {placementClass}"
-			style="width: {widthRem}rem"
+			style:width={`${widthRem}rem`}
 		>
 			{@render children()}
 		</div>

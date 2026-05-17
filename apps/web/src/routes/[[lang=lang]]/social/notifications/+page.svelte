@@ -287,7 +287,7 @@ const grouped = $derived.by(() => {
 				{#if loadingMore}
 					<div class="flex gap-2">
 						{#each [1, 2, 3] as _, i}
-							<div class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600" style="animation-delay: {i * 150}ms"></div>
+							<div class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600" style:animation-delay={`${i * 150}ms`}></div>
 						{/each}
 					</div>
 				{/if}

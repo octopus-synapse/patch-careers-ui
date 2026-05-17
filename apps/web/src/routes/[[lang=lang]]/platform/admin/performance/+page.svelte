@@ -111,7 +111,7 @@
                     <div class="h-2 w-full rounded-full bg-gray-200 dark:bg-neutral-700">
                       <div
                         class="h-full rounded-full bg-gray-700 dark:bg-neutral-400"
-                        style="width: {pct}%"
+                        style:width={`${pct}%`}
                       ></div>
                     </div>
                   </td>

@@ -637,32 +637,3 @@ function handleDeleteRequest() {
 	</div>
 </article>
 
-<style>
-	.heart-burst {
-		animation: heart-burst 0.7s ease-out forwards;
-	}
-	@keyframes heart-burst {
-		0% {
-			opacity: 0;
-			transform: scale(0.3);
-		}
-		30% {
-			opacity: 1;
-			transform: scale(1.1);
-		}
-		60% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		100% {
-			opacity: 0;
-			transform: scale(1.05);
-		}
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.heart-burst {
-			animation: none;
-			opacity: 1;
-		}
-	}
-</style>

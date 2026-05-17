@@ -124,7 +124,7 @@
   </div>
 {:else}
   <div class="min-h-screen pt-14">
-    <div class="h-48 w-full sm:h-56" style="background: {bannerGradient(username ?? '')}"></div>
+    <div class="h-48 w-full sm:h-56" style:background={bannerGradient(username ?? '')}></div>
 
     <div class="mx-auto max-w-3xl px-3 sm:px-6">
       <div

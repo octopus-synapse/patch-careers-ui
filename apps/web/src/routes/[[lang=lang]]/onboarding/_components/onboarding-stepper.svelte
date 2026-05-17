@@ -329,7 +329,7 @@ const isPending = $derived(
 {:else if t && onboardingData && currentStep && steps}
 	{@const completedSteps = onboardingData.completedSteps}
 	<div class="font-sans antialiased transition-colors duration-300">
-		<main class="mx-auto max-w-6xl px-3 sm:px-6" style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">
+		<main class="mx-auto max-w-6xl px-3 sm:px-6 pt-[max(5rem,_calc((100vh_-_36rem)_/_2))]">
 			{#if isWelcome}
 				<StepWelcome onNext={handleNext} />
 			{:else}

@@ -84,7 +84,7 @@ function isActive(item: NavItem): boolean {
 	{#if progress}
 		<div class="{collapsible ? 'px-4' : 'pr-6'} mb-4">
 			<div class="h-1 rounded-full bg-gray-200 dark:bg-neutral-700">
-				<div class="h-1 rounded-full transition-all duration-700 {barColor}" style="width: {progress.value}%"></div>
+				<div class="h-1 rounded-full transition-all duration-700 {barColor}" style:width={`${progress.value}%`}></div>
 			</div>
 			{#if progress.message && (!collapsible || !collapsed)}
 				<p class="mt-2 text-xs font-medium text-gray-500 dark:text-neutral-500">

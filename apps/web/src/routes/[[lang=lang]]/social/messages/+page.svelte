@@ -163,7 +163,7 @@ const activeOther = $derived.by(() => {
     </div>
   </aside>
 
-  <section class="flex flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
+  <section class="flex flex-col bg-gray-50/50 dark:bg-neutral-950/30 min-h-0">
     {#if activeId}
       {#if activeOther}
         <header class="flex items-center gap-3 border-b border-gray-200 px-5 py-3 dark:border-neutral-800">

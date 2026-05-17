@@ -239,7 +239,7 @@ function onDragEnd(e: PointerEvent) {
 
 		{#if chatState.isFullscreen}
 			<!-- Fullscreen: two-column layout -->
-			<div class="flex flex-1" style="min-height:0">
+			<div class="flex flex-1 min-h-0">
 				<div class="hidden sm:flex w-72 flex-shrink-0 flex-col border-r border-gray-200 dark:border-neutral-800">
 					<div class="px-3 py-2">
 						<UserSearch onselect={startNewConversation} />
@@ -302,7 +302,7 @@ function onDragEnd(e: PointerEvent) {
 			</div>
 		{:else}
 			<!-- Minified: single column -->
-			<div class="flex flex-1 flex-col" style="min-height:0">
+			<div class="flex flex-1 flex-col min-h-0">
 				{#if showConvList}
 					<div class="px-3 py-2">
 						<UserSearch onselect={startNewConversation} />
@@ -322,7 +322,7 @@ function onDragEnd(e: PointerEvent) {
 						{/if}
 					</div>
 				{:else}
-					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30" style="min-height:0">
+					<div class="flex flex-1 flex-col bg-gray-50/50 dark:bg-neutral-950/30 min-h-0">
 						{#if chatState.activeConversationId}
 							{#key chatState.activeConversationId}
 								<ChatThreadPane conversationId={chatState.activeConversationId} {currentUserId} />

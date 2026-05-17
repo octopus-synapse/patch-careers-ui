@@ -78,7 +78,7 @@ function percentFor(option: PollOption): number {
 					class="absolute inset-y-0 left-0 {selected
 						? 'bg-cyan-100 dark:bg-cyan-900/40'
 						: 'bg-gray-100 dark:bg-neutral-800'}"
-					style="width: {pct}%"
+					style:width={`${pct}%`}
 				></div>
 			{/if}
 			<div

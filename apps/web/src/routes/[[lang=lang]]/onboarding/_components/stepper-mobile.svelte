@@ -29,7 +29,7 @@ const currentLabel = $derived(steps[currentIndex]?.label ?? '');
 	<div class="h-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-neutral-700">
 		<div
 			class="h-full rounded-full bg-gray-800 transition-all duration-500 dark:bg-neutral-200"
-			style="width: {progress}%"
+			style:width={`${progress}%`}
 		></div>
 	</div>
 	{#if currentLabel}

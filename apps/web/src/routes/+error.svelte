@@ -15,8 +15,7 @@
 </svelte:head>
 
 <div
-	class="flex flex-col items-center justify-center gap-3"
-	style="min-height: calc(100vh - 3.5rem); padding-top: 3.5rem;"
+	class="flex flex-col items-center justify-center gap-3 min-h-[calc(100vh_-_3.5rem)] pt-[3.5rem]"
 >
 	<span class="text-6xl font-bold text-gray-800 dark:text-neutral-200">{$page.status}</span>
 	<span

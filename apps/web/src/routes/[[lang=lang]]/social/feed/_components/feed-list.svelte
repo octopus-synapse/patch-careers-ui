@@ -200,7 +200,7 @@ $effect(() => {
 				{#each [0, 1, 2] as step}
 					<div
 						class="h-2 w-2 animate-bounce rounded-full bg-gray-300 dark:bg-neutral-600"
-						style="animation-delay: {step * 150}ms"
+						style:animation-delay={`${step * 150}ms`}
 					></div>
 				{/each}
 			</div>

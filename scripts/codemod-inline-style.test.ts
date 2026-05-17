@@ -148,6 +148,16 @@ describe('codemod-inline-style-to-tw', () => {
     expect(runOn(input)).toBe(`<b class="font-bold">r</b>`);
   });
 
+  test('transition-duration: var(--x) → duration-[var(--x)]', () => {
+    const input = `<div style="transition-duration: var(--dur-tight);">td</div>`;
+    expect(runOn(input)).toBe(`<div class="duration-[var(--dur-tight)]">td</div>`);
+  });
+
+  test('transition-timing-function: var(--x) → ease-[var(--x)]', () => {
+    const input = `<div style="transition-timing-function: var(--ease-precise);">tt</div>`;
+    expect(runOn(input)).toBe(`<div class="ease-[var(--ease-precise)]">tt</div>`);
+  });
+
   test('padding-top: max(5rem, calc((100vh - 36rem) / 2)) → pt-[...]', () => {
     const input = `<div style="padding-top: max(5rem, calc((100vh - 36rem) / 2));">s</div>`;
     const out = runOn(input);

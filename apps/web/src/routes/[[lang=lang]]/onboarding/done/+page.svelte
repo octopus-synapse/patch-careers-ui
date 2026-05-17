@@ -50,31 +50,3 @@ const pieces = Array.from({ length: 30 }, (_, i) => ({
 		</Button>
 	</div>
 </div>
-
-<style>
-	.confetti {
-		position: absolute;
-		top: -20px;
-		border-radius: 2px;
-		animation-name: fall;
-		animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		animation-fill-mode: forwards;
-	}
-
-	@keyframes fall {
-		0% {
-			transform: translateY(0) rotate(0deg);
-			opacity: 1;
-		}
-		100% {
-			transform: translateY(120vh) rotate(720deg);
-			opacity: 0;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.confetti {
-			display: none;
-		}
-	}
-</style>

@@ -106,7 +106,7 @@
       <div class="h-1 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
         <div
           class="h-full bg-emerald-500 transition-all"
-          style="width: {progress}%"
+          style:width={`${progress}%`}
         ></div>
       </div>
     </header>

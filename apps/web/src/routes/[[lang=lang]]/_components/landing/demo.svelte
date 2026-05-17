@@ -286,40 +286,40 @@ function pauseAuto(slug: string) {
 }
 </script>
 
-<section class="relative px-6 py-24 sm:px-10 sm:py-32 md:py-40 lg:px-16" style="background: var(--landing-ink);">
+<section class="relative px-6 py-24 sm:px-10 sm:py-32 md:py-40 lg:px-16 bg-[var(--landing-ink)]">
 	<div class="mx-auto max-w-[1400px]">
 		<!-- Section masthead — matches § 02 / § 03 pattern -->
-		<div class="mb-14 flex flex-col gap-4 border-b pb-10 sm:flex-row sm:items-end sm:justify-between" style="border-color: var(--landing-line-dark)">
+		<div class="mb-14 flex flex-col gap-4 border-b pb-10 sm:flex-row sm:items-end sm:justify-between border-[var(--landing-line-dark)]">
 			<div>
-				<p class="mb-4 font-mono text-[11px] uppercase tracking-[0.24em]" style="color: var(--landing-oxide)">
+				<p class="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-[var(--landing-oxide)]">
 					§ 01 &mdash; Demo
 				</p>
 				<h2 class="font-display text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-[6rem]">
-					{t('landing.demo.headingPart1')} <span class="font-display-italic" style="color: var(--landing-oxide)">Reescrito</span> {t('landing.demo.headingPart2')}
+					{t('landing.demo.headingPart1')} <span class="font-display-italic text-[var(--landing-oxide)]">Reescrito</span> {t('landing.demo.headingPart2')}
 				</h2>
 			</div>
-			<p class="max-w-sm font-mono text-xs uppercase leading-relaxed tracking-[0.14em]" style="color: var(--landing-muted-on-ink)">
+			<p class="max-w-sm font-mono text-xs uppercase leading-relaxed tracking-[0.14em] text-[var(--landing-muted-on-ink)]">
 				Mesma candidata. Três versões. O ATS enxerga a diferença.
 			</p>
 		</div>
 
 		<!-- Version tabs — square, mono, shared border like the scenario strip -->
-		<div class="mb-8 grid gap-0 border sm:grid-cols-3" style="border-color: var(--landing-line-dark)">
+		<div class="mb-8 grid gap-0 border sm:grid-cols-3 border-[var(--landing-line-dark)]">
 			{#each versions as v, i (v.slug)}
 				{@const active = v.slug === selectedSlug}
 				<button
 					type="button"
 					onclick={() => pauseAuto(v.slug)}
-					class="flex flex-col gap-1.5 px-5 py-4 text-left transition-colors {i > 0 ? 'border-t sm:border-l sm:border-t-0' : ''}"
-					style="border-color: var(--landing-line-dark); background: {active ? 'var(--landing-ink-2)' : 'transparent'};"
+					class="flex flex-col gap-1.5 px-5 py-4 text-left transition-colors {i > 0 ? 'border-t sm:border-l sm:border-t-0' : ''} border-[var(--landing-line-dark)]"
+					style:background={active ? 'var(--landing-ink-2)' : 'transparent'}
 				>
-					<span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em]" style="color: {active ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)'};">
+					<span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em]" style:color={active ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)'}>
 						{#if active}
-							<span class="h-1 w-1 rounded-full" style="background: var(--landing-oxide)"></span>
+							<span class="h-1 w-1 rounded-full bg-[var(--landing-oxide)]"></span>
 						{/if}
 						Versão {String(i + 1).padStart(2, '0')} &mdash; {v.label}
 					</span>
-					<span class="font-display text-xl leading-tight" style="color: {active ? 'var(--landing-text-on-ink)' : 'var(--landing-muted-on-ink)'};">
+					<span class="font-display text-xl leading-tight" style:color={active ? 'var(--landing-text-on-ink)' : 'var(--landing-muted-on-ink)'}>
 						{@html v.target}
 					</span>
 				</button>
@@ -327,25 +327,25 @@ function pauseAuto(slug: string) {
 		</div>
 
 		<!-- CV paper (left 2fr) · ATS scan (right 1fr) -->
-		<div class="grid grid-cols-1 gap-0 border lg:grid-cols-[2fr_1fr]" style="border-color: var(--landing-line-dark)">
+		<div class="grid grid-cols-1 gap-0 border lg:grid-cols-[2fr_1fr] border-[var(--landing-line-dark)]">
 			<!-- ░░░ CV PAPER ░░░ -->
-			<article class="relative p-6 sm:p-10 md:p-12" style="background: var(--landing-paper); color: var(--landing-text-on-paper);">
+			<article class="relative p-6 sm:p-10 md:p-12 bg-[var(--landing-paper)] text-[var(--landing-text-on-paper)]">
 				<!-- Decorative corner marks echo the pricing card -->
-				<span class="absolute left-0 top-0 h-3 w-3 border-l border-t" style="border-color: var(--landing-oxide-ink)"></span>
-				<span class="absolute right-0 top-0 h-3 w-3 border-r border-t" style="border-color: var(--landing-oxide-ink)"></span>
-				<span class="absolute bottom-0 left-0 h-3 w-3 border-b border-l" style="border-color: var(--landing-oxide-ink)"></span>
-				<span class="absolute bottom-0 right-0 h-3 w-3 border-b border-r" style="border-color: var(--landing-oxide-ink)"></span>
+				<span class="absolute left-0 top-0 h-3 w-3 border-l border-t border-[var(--landing-oxide-ink)]"></span>
+				<span class="absolute right-0 top-0 h-3 w-3 border-r border-t border-[var(--landing-oxide-ink)]"></span>
+				<span class="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[var(--landing-oxide-ink)]"></span>
+				<span class="absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[var(--landing-oxide-ink)]"></span>
 
 				<!-- Header -->
 				<header class="mb-8">
-					<div class="mb-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-paper)">
+					<div class="mb-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-paper)]">
 						<span>Currículo · PDF</span>
 						<span>Página 1 / 1</span>
 					</div>
-					<h3 class="font-display text-4xl leading-[0.95] sm:text-5xl md:text-6xl" style="color: var(--landing-text-on-paper)">
+					<h3 class="font-display text-4xl leading-[0.95] sm:text-5xl md:text-6xl text-[var(--landing-text-on-paper)]">
 						{candidate.name}
 					</h3>
-					<div class="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.14em]" style="color: var(--landing-muted-on-paper)">
+					<div class="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--landing-muted-on-paper)]">
 						<span class="inline-flex items-center gap-1.5">
 							<Mail size={11} />
 							{candidate.email}
@@ -362,15 +362,15 @@ function pauseAuto(slug: string) {
 				</header>
 
 				<!-- Summary -->
-				<section class="mb-8 border-t pt-6" style="border-color: var(--landing-line-light)">
-					<p class="mb-3 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-oxide-ink)">
+				<section class="mb-8 border-t pt-6 border-[var(--landing-line-light)]">
+					<p class="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-oxide-ink)]">
 						Resumo
 					</p>
 					{#key selected.slug + '-summary'}
-						<p in:fade|local={{ duration: 260 }} class="font-display text-xl leading-snug sm:text-2xl" style="color: var(--landing-text-on-paper)">
+						<p in:fade|local={{ duration: 260 }} class="font-display text-xl leading-snug sm:text-2xl text-[var(--landing-text-on-paper)]">
 							{#each selected.summary as seg (seg.text)}
 								{#if seg.hot}
-									<span class="font-display-italic" style="color: var(--landing-oxide-ink)">{seg.text}</span>
+									<span class="font-display-italic text-[var(--landing-oxide-ink)]">{seg.text}</span>
 								{:else}
 									<span>{seg.text}</span>
 								{/if}
@@ -380,8 +380,8 @@ function pauseAuto(slug: string) {
 				</section>
 
 				<!-- Experience -->
-				<section class="mb-8 border-t pt-6" style="border-color: var(--landing-line-light)">
-					<p class="mb-5 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-oxide-ink)">
+				<section class="mb-8 border-t pt-6 border-[var(--landing-line-light)]">
+					<p class="mb-5 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-oxide-ink)]">
 						Experiência
 					</p>
 					<div class="space-y-8">
@@ -389,25 +389,25 @@ function pauseAuto(slug: string) {
 							<div>
 								<div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
 									<div>
-										<h4 class="font-display text-xl leading-tight" style="color: var(--landing-text-on-paper)">
+										<h4 class="font-display text-xl leading-tight text-[var(--landing-text-on-paper)]">
 											{role.title}
 										</h4>
-										<p class="font-mono text-[11px] uppercase tracking-[0.18em]" style="color: var(--landing-muted-on-paper)">
+										<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--landing-muted-on-paper)]">
 											{role.company}
 										</p>
 									</div>
-									<span class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color: var(--landing-muted-on-paper)">
+									<span class="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--landing-muted-on-paper)]">
 										{@html role.period}
 									</span>
 								</div>
 								<ul class="space-y-2.5">
 									{#each role.bullets as bullet, bi (selected.slug + '-' + ri + '-' + bi)}
-										<li in:fade|local={{ duration: 240, delay: 60 + bi * 50 }} class="flex gap-3 text-[15px] leading-relaxed" style="color: var(--landing-text-on-paper)">
-											<span class="mt-[9px] h-px w-3 shrink-0" style="background: var(--landing-oxide-ink)"></span>
+										<li in:fade|local={{ duration: 240, delay: 60 + bi * 50 }} class="flex gap-3 text-[15px] leading-relaxed text-[var(--landing-text-on-paper)]">
+											<span class="mt-[9px] h-px w-3 shrink-0 bg-[var(--landing-oxide-ink)]"></span>
 											<span>
 												{#each bullet as seg, si (si)}
 													{#if seg.hot}
-														<span class="font-medium" style="color: var(--landing-oxide-ink); background: var(--landing-oxide-tint); padding: 0 3px;">{seg.text}</span>
+														<span class="font-medium text-[var(--landing-oxide-ink)] bg-[var(--landing-oxide-tint)] py-0 px-[3px]">{seg.text}</span>
 													{:else}
 														<span>{seg.text}</span>
 													{/if}
@@ -422,8 +422,8 @@ function pauseAuto(slug: string) {
 				</section>
 
 				<!-- Skills -->
-				<section class="mb-4 border-t pt-6" style="border-color: var(--landing-line-light)">
-					<p class="mb-4 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-oxide-ink)">
+				<section class="mb-4 border-t pt-6 border-[var(--landing-line-light)]">
+					<p class="mb-4 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-oxide-ink)]">
 						Skills
 					</p>
 					{#key selected.slug + '-skills'}
@@ -431,7 +431,9 @@ function pauseAuto(slug: string) {
 							{#each selected.skills as skill (skill.text)}
 								<span
 									class="border px-2.5 py-1 font-mono text-[11px]"
-									style="border-color: {skill.hot ? 'var(--landing-oxide-ink)' : 'var(--landing-line-light)'}; color: {skill.hot ? 'var(--landing-oxide-ink)' : 'var(--landing-muted-on-paper)'}; background: {skill.hot ? 'var(--landing-oxide-tint)' : 'transparent'};"
+									style:border-color={skill.hot ? 'var(--landing-oxide-ink)' : 'var(--landing-line-light)'}
+									style:color={skill.hot ? 'var(--landing-oxide-ink)' : 'var(--landing-muted-on-paper)'}
+									style:background={skill.hot ? 'var(--landing-oxide-tint)' : 'transparent'}
 								>
 									{skill.text}
 								</span>
@@ -441,20 +443,20 @@ function pauseAuto(slug: string) {
 				</section>
 
 				<!-- Education (static, always the same) -->
-				<section class="border-t pt-6" style="border-color: var(--landing-line-light)">
-					<p class="mb-3 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-oxide-ink)">
+				<section class="border-t pt-6 border-[var(--landing-line-light)]">
+					<p class="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-oxide-ink)]">
 						Formação
 					</p>
 					<div class="flex flex-wrap items-baseline justify-between gap-2">
 						<div>
-							<h4 class="font-display text-lg leading-tight" style="color: var(--landing-text-on-paper)">
+							<h4 class="font-display text-lg leading-tight text-[var(--landing-text-on-paper)]">
 								{t('landing.demo.education.degree')}
 							</h4>
-							<p class="font-mono text-[11px] uppercase tracking-[0.18em]" style="color: var(--landing-muted-on-paper)">
+							<p class="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--landing-muted-on-paper)]">
 								USP &mdash; São Paulo
 							</p>
 						</div>
-						<span class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color: var(--landing-muted-on-paper)">
+						<span class="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--landing-muted-on-paper)]">
 							2015 &mdash; 2019
 						</span>
 					</div>
@@ -462,10 +464,10 @@ function pauseAuto(slug: string) {
 			</article>
 
 			<!-- ░░░ ATS SCAN PANEL ░░░ -->
-			<aside class="relative flex flex-col gap-6 p-6 sm:p-8" style="background: var(--landing-ink-2); border-top: 1px solid var(--landing-line-dark);">
-				<div class="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+			<aside class="relative flex flex-col gap-6 p-6 sm:p-8 bg-[var(--landing-ink-2)] border-t border-t-[var(--landing-line-dark)]">
+				<div class="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-ink)]">
 					<span class="inline-flex items-center gap-1.5">
-						<span class="h-1 w-1 rounded-full" style="background: var(--landing-oxide)"></span>
+						<span class="h-1 w-1 rounded-full bg-[var(--landing-oxide)]"></span>
 						ATS Scan
 					</span>
 					<span>Live</span>
@@ -473,47 +475,48 @@ function pauseAuto(slug: string) {
 
 				<!-- Target job -->
 				<div>
-					<p class="font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+					<p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-ink)]">
 						Vaga alvo
 					</p>
 					{#key selected.slug + '-target'}
-						<p in:fade|local={{ duration: 220 }} class="mt-1.5 font-display text-xl leading-tight" style="color: var(--landing-text-on-ink)">
+						<p in:fade|local={{ duration: 220 }} class="mt-1.5 font-display text-xl leading-tight text-[var(--landing-text-on-ink)]">
 							{@html selected.target}
 						</p>
 					{/key}
 				</div>
 
 				<!-- Score dial -->
-				<div class="border-t border-b py-5" style="border-color: var(--landing-line-dark)">
+				<div class="border-t border-b py-5 border-[var(--landing-line-dark)]">
 					<div class="flex items-baseline justify-between">
-						<span class="font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+						<span class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-ink)]">
 							Match score
 						</span>
-						<span class="font-display tabular-nums" style="color: {displayScore >= 80 ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)'}; font-size: 2.75rem; line-height: 1;">
-							{displayScore}<span class="text-lg" style="color: var(--landing-muted-on-ink)">%</span>
+						<span class="font-display tabular-nums text-[2.75rem] leading-[1]" style:color={displayScore >= 80 ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)'}>
+							{displayScore}<span class="text-lg text-[var(--landing-muted-on-ink)]">%</span>
 						</span>
 					</div>
-					<div class="mt-3 h-[2px] w-full" style="background: var(--landing-line-dark)">
+					<div class="mt-3 h-[2px] w-full bg-[var(--landing-line-dark)]">
 						<div
-							class="h-full"
-							style="width: {displayScore}%; background: {displayScore >= 80 ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)'}; transition: width 180ms var(--ease-precise), background 180ms var(--ease-precise);"
+							class="h-full transition-[width_180ms_var(--ease-precise),_background_180ms_var(--ease-precise)]"
+							style:width={`${displayScore}%`}
+							style:background={displayScore >= 80 ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)'}
 						></div>
 					</div>
-					<p class="mt-3 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+					<p class="mt-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-ink)]">
 						{#if displayScore >= 80}Passa na triagem{:else if displayScore >= 60}Triagem parcial{:else}Alta chance de descarte{/if}
 					</p>
 				</div>
 
 				<!-- Detected keywords -->
 				<div>
-					<p class="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-oxide)">
+					<p class="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-oxide)]">
 						<Check size={11} />
 						Detectado ({selected.ats.detected.length})
 					</p>
 					{#key selected.slug + '-detected'}
 						<ul in:fade|local={{ duration: 220 }} class="flex flex-wrap gap-1.5">
 							{#each selected.ats.detected as kw (kw)}
-								<li class="border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]" style="border-color: var(--landing-oxide); color: var(--landing-oxide);">
+								<li class="border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] border-[var(--landing-oxide)] text-[var(--landing-oxide)]">
 									{kw}
 								</li>
 							{/each}
@@ -523,14 +526,14 @@ function pauseAuto(slug: string) {
 
 				<!-- Missing keywords -->
 				<div>
-					<p class="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+					<p class="mb-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-ink)]">
 						<X size={11} />
 						Não detectado ({selected.ats.missing.length})
 					</p>
 					{#key selected.slug + '-missing'}
 						<ul in:fade|local={{ duration: 220 }} class="flex flex-wrap gap-1.5">
 							{#each selected.ats.missing as kw (kw)}
-								<li class="border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]" style="border-color: var(--landing-line-dark); color: var(--landing-muted-on-ink);">
+								<li class="border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] border-[var(--landing-line-dark)] text-[var(--landing-muted-on-ink)]">
 									{kw}
 								</li>
 							{/each}
@@ -539,10 +542,10 @@ function pauseAuto(slug: string) {
 				</div>
 
 				<!-- Auto-cycle status -->
-				<div class="mt-auto border-t pt-4 font-mono text-[10px] uppercase tracking-[0.22em]" style="border-color: var(--landing-line-dark); color: var(--landing-muted-on-ink);">
+				<div class="mt-auto border-t pt-4 font-mono text-[10px] uppercase tracking-[0.22em] border-[var(--landing-line-dark)] text-[var(--landing-muted-on-ink)]">
 					{#if autoCycle}
 						<span class="inline-flex items-center gap-2">
-							<span class="h-1 w-1 animate-pulse rounded-full" style="background: var(--landing-oxide)"></span>
+							<span class="h-1 w-1 animate-pulse rounded-full bg-[var(--landing-oxide)]"></span>
 							Auto &mdash; clique numa versão p/ parar
 						</span>
 					{:else}
@@ -554,13 +557,12 @@ function pauseAuto(slug: string) {
 
 		<!-- Footer CTA -->
 		<div class="mt-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
-			<p class="font-mono text-[10px] uppercase tracking-[0.22em]" style="color: var(--landing-muted-on-ink)">
+			<p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--landing-muted-on-ink)]">
 				Demo ilustrativa &nbsp;·&nbsp; no produto, a IA roda sobre o seu currículo real
 			</p>
 			<a
 				href="/identity/sign-up"
-				class="group inline-flex items-center gap-3 px-7 py-4 text-sm font-medium transition-colors"
-				style="background: var(--landing-oxide); color: var(--landing-ink); transition-duration: var(--dur-tight); transition-timing-function: var(--ease-precise);"
+				class="group inline-flex items-center gap-3 px-7 py-4 text-sm font-medium transition-colors bg-[var(--landing-oxide)] text-[var(--landing-ink)] duration-[var(--dur-tight)] ease-[var(--ease-precise)]"
 				onmouseenter={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--landing-oxide-ink)')}
 				onmouseleave={(e) => ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--landing-oxide)')}
 			>

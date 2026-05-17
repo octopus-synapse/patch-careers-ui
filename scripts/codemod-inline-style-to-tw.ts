@@ -323,6 +323,33 @@ function translateDeclaration(prop: string, rawValue: string, out: Translation):
       // e.g. "border-top: 1px solid var(--x)" — too compound, leave for
       // human review unless a follow-up codemod is added.
       break;
+    case 'transition-duration':
+      // Tailwind: duration-[<value>]
+      if (T_RX.cssVarRich.test(value) || /^\d+ms$/.test(value) || /^[\d.]+s$/.test(value)) {
+        out.classes.push(`duration-${asTwColor(value)}`);
+        return;
+      }
+      break;
+    case 'transition-timing-function':
+      // Tailwind: ease-[<value>]
+      if (T_RX.cssVarRich.test(value) || /^(linear|ease(-in|-out|-in-out)?)$/.test(value)) {
+        out.classes.push(`ease-${asTwColor(value)}`);
+        return;
+      }
+      break;
+    case 'transition-property':
+      if (T_RX.cssVarRich.test(value) || /^[\w,-\s]+$/.test(value)) {
+        out.classes.push(`transition-${asTwColor(value)}`);
+        return;
+      }
+      break;
+    case 'transition': {
+      // Compound transition: e.g. `width 180ms var(--ease-precise),
+      // background 180ms var(--ease-precise)`. Wrap the whole thing in
+      // `transition-[...]` if it's static.
+      out.classes.push(`transition-${asTwColor(value)}`);
+      return;
+    }
   }
 
   // No mapping → emit a stay-as-style directive so behavior is preserved
@@ -409,33 +436,50 @@ const CLASS_ATTR_RX = /\bclass="([^"]*)"/;
 
 // Identify the bounds of the opening tag that contains a given offset.
 function tagBoundsAt(src: string, offset: number): { start: number; end: number } | null {
-  // Walk backward to find the nearest `<` that starts a tag.
+  // Walk backward to find the nearest `<` that starts a tag. Track
+  // matching `{...}` and quoted-string spans BACKWARDS so we don't
+  // confuse `=>` inside an `onclick={() => ...}` block with a real tag
+  // boundary `>`. Same for `>` inside a `"...class > foo..."` string.
   let start = -1;
-  for (let i = offset; i >= 0; i--) {
-    if (src[i] === '<') {
-      start = i;
-      break;
-    }
-    if (src[i] === '>') return null; // inside text, not a tag
-  }
-  if (start === -1) return null;
-  // Walk forward, respecting `{...}` braces and quoted strings, to find
-  // the matching `>`.
   let brace = 0;
   let quote = '';
-  for (let i = start + 1; i < src.length; i++) {
+  for (let i = offset; i >= 0; i--) {
     const c = src[i];
     if (quote) {
-      if (c === quote) quote = '';
+      if (c === quote && src[i - 1] !== '\\') quote = '';
       continue;
     }
     if (c === '"' || c === "'") {
       quote = c;
       continue;
     }
-    if (c === '{') brace++;
-    else if (c === '}') brace--;
-    else if (c === '>' && brace === 0) {
+    if (c === '}') brace++;
+    else if (c === '{') brace--;
+    else if (c === '<' && brace === 0) {
+      start = i;
+      break;
+    } else if (c === '>' && brace === 0) {
+      return null; // inside text, not a tag
+    }
+  }
+  if (start === -1) return null;
+  // Walk forward, respecting `{...}` braces and quoted strings, to find
+  // the matching `>`.
+  let fwdBrace = 0;
+  let fwdQuote = '';
+  for (let i = start + 1; i < src.length; i++) {
+    const c = src[i];
+    if (fwdQuote) {
+      if (c === fwdQuote) fwdQuote = '';
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      fwdQuote = c;
+      continue;
+    }
+    if (c === '{') fwdBrace++;
+    else if (c === '}') fwdBrace--;
+    else if (c === '>' && fwdBrace === 0) {
       return { start, end: i + 1 };
     }
   }

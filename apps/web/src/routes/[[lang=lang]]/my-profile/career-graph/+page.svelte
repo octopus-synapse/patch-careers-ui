@@ -129,7 +129,7 @@ function barWidth(peerCount: number): string {
 								<div class="flex items-center gap-2">
 									<div
 										class="h-5 rounded-full {isCurrent ? 'bg-violet-500 dark:bg-violet-500' : 'bg-gray-200 dark:bg-neutral-700'}"
-										style="width: {barWidth(b.peerCount)};"
+										style:width={barWidth(b.peerCount)}
 									></div>
 									<span class="text-xs text-gray-700 dark:text-neutral-300">
 										{b.peerCount} {b.peerCount === 1 ? 'peer' : 'peers'}
