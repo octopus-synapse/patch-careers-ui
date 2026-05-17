@@ -1,8 +1,9 @@
 import { error } from '@sveltejs/kit';
-import { getV1ProfilesUsername, isApiError } from 'api-client';
+import { getV1ProfilesUsername } from 'api-client';
 import { env as privateEnv } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 import type { PageServerLoad } from './$types';
+import { mapProfileLoadError, type ProfileLoaderResult } from './profile-loader-error-mapping';
 
 // Public profiles are the deepest indexable surface in the app — Google
 // crawls them for resume + skills + activity content. SSR is on now by
@@ -43,15 +44,8 @@ export const load: PageServerLoad = async ({ params }) => {
     const profile = await getV1ProfilesUsername(username, {
       baseURL: resolveServerApiBase(),
     });
-    return { profile };
+    return { profile } satisfies ProfileLoaderResult;
   } catch (err) {
-    if (isApiError(err)) {
-      if (err.statusCode === 404) throw error(404, 'profile not found');
-      if (err.statusCode === 401 || err.statusCode === 403) {
-        throw error(404, 'profile not found');
-      }
-      if (err.statusCode === 410) throw error(410, 'profile removed');
-    }
-    throw err;
+    return mapProfileLoadError(err);
   }
 };
