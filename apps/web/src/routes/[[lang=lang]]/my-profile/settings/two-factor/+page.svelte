@@ -7,6 +7,7 @@
 -->
 <script lang="ts">
 import {
+  createDeleteV1Auth2Fa,
   createPostV1Auth2FaSetup,
   createPostV1Auth2FaBackupCodesRegenerate,
   createGetV1Auth2FaStatus,
@@ -47,7 +48,9 @@ const verify = createPostV1Auth2FaVerify({
   },
 });
 
-const disable = createPostV1Auth2FaSetup({
+// P1 #4: previously hit POST /setup, which created a fresh 2FA setup payload
+// instead of disabling. Real disable endpoint is DELETE /v1/auth/2fa.
+const disable = createDeleteV1Auth2Fa({
   mutation: {
     async onSuccess() {
       disableConfirming = false;
@@ -195,7 +198,7 @@ function downloadCodes() {
           <div class="flex gap-2">
             <Button
               variant="solid"
-              onclick={() => $disable.mutate()}
+              onclick={() => $disable.mutate({})}
               disabled={$disable.isPending}
             >
               {#if $disable.isPending}
