@@ -6,6 +6,7 @@ import { AlertTriangle } from 'lucide-svelte';
 import { Button, Checkbox, Input, Label, LinkButton, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
+import { clearForUser } from '$lib/utils/secure-storage.svelte';
 
 const auth = useAuth();
 const userEmail = $derived(auth.user?.email ?? '');
@@ -29,6 +30,7 @@ async function submit(e: Event) {
     await deleteV1Accounts({ confirmationPhrase: confirmPhrase, currentPassword: password });
     toastState.show(t('actions.accountRemoved'), 'success');
     // Clear local session and send to landing.
+    clearForUser(auth.userId);
     await logout({}).catch(() => {});
     goto('/');
   } catch (err) {

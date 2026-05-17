@@ -23,6 +23,7 @@ import NotificationBell from './notification-bell.svelte';
 import { getNavLinks, homeOf, pathContext } from './nav-links-by-context';
 import { useAuth } from '$lib/state/auth.svelte';
 import { useFeatureFlags } from '$lib/state/feature-flags.svelte';
+import { clearForUser } from '$lib/utils/secure-storage.svelte';
 
 const pathname = $derived($page.url.pathname);
 const isLanding = $derived(pathname === '/');
@@ -65,6 +66,7 @@ const queryClient = useQueryClient();
 const logout = createLogout({
   mutation: {
     async onSuccess() {
+      clearForUser(user?.id);
       queryClient.clear();
       await queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
       await queryClient.refetchQueries({ queryKey: sessionQueryKey() });
@@ -72,6 +74,7 @@ const logout = createLogout({
       goto('/identity/sign-in', { replaceState: true, invalidateAll: true });
     },
     onError() {
+      clearForUser(user?.id);
       queryClient.clear();
       isDropdownOpen = false;
       goto('/identity/sign-in', { replaceState: true });
