@@ -363,27 +363,8 @@
     "modalTitle": "Add item",
     "modalSave": "Save",
     "skip": "Skip this step",
-    "start": {
-      "title": "How should we get you started?",
-      "subtitle": "Pick the fastest path for you. You'll see your first job suggestion in under 2 minutes.",
-      "badgeSoon": "Coming soon",
-      "comingSoonTitle": "Not available yet",
-      "comingSoonBody": "We're polishing this import. For now, use another option — you can always come back and enrich your profile later.",
-      "useManualInstead": "Continue with the wizard",
-      "close": "Close",
-      "cvImportedToast": "CV imported",
-      "cvImportErrorToast": "Could not import the PDF"
-    },
     "import": {
-      "resumePreviewAlt": "Resume preview",
-      "githubImportedToast": "Imported: {{skills}} skills, {{posts}} posts …",
-      "linkedinImportedToast": "LinkedIn imported.",
-      "linkedinUnavailableToast": "LinkedIn import is still under construction — use PDF or GitHub for now.",
-      "pdfUploadedToast": "PDF uploaded. Processing…",
-      "pdfUploadError": "Failed to upload PDF.",
-      "pdfUploadHeading": "PDF upload",
-      "manualFillLink": "or fill in manually →",
-      "heading": "Import resume"
+      "githubImportedToast": "Imported: {{skills}} skills, {{posts}} posts …"
     },
     "theme": {
       "previewAlt": "Preview of {{name}}"

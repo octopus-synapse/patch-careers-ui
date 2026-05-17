@@ -27,7 +27,7 @@
 //   { file, line, col, rule: 'text-child', value, context }
 // On parse error: skip the file and log to stderr (don't fail the run).
 
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse as parseSvelte } from 'svelte/compiler';
 
@@ -246,7 +246,9 @@ function collectLiterals(expr) {
 
 function isUxTag(node) {
   return (
-    (node.type === 'RegularElement' || node.type === 'Component' || node.type === 'SvelteElement') &&
+    (node.type === 'RegularElement' ||
+      node.type === 'Component' ||
+      node.type === 'SvelteElement') &&
     typeof node.name === 'string' &&
     UX_TEXT_TAGS.has(node.name)
   );
@@ -290,7 +292,7 @@ function scanFile(file, source, out) {
           for (const lit of collectLiterals(child.expression)) {
             const val = String(lit.value ?? '');
             if (!val.trim() || isAllowlisted(val)) continue;
-            const offset = typeof lit.start === 'number' ? lit.start : child.start ?? 0;
+            const offset = typeof lit.start === 'number' ? lit.start : (child.start ?? 0);
             const { line, col } = lineColFromOffset(source, offset);
             out.push({
               file,

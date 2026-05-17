@@ -88,10 +88,7 @@ for (const key of refKeys) {
   const enValue = data.en[key];
   if (enValue === undefined) continue; // covered by step 1
   const enTokens = extractTokens(enValue);
-  if (
-    ptTokens.length !== enTokens.length ||
-    ptTokens.some((t, i) => t !== enTokens[i])
-  ) {
+  if (ptTokens.length !== enTokens.length || ptTokens.some((t, i) => t !== enTokens[i])) {
     tokenMismatches.push(
       `${key}: pt-BR=[${ptTokens.join(',') || '-'}] vs en=[${enTokens.join(',') || '-'}]`,
     );

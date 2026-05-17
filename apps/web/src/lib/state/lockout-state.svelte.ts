@@ -37,7 +37,10 @@ function buildLockoutCopy(code: LockoutCode): Omit<LockoutInfo, 'code'> {
       return {
         title: t('lockout.fitProfileRequired.title'),
         body: 'Responda o questionário de 25 perguntas para liberar o Match Score, tailor de currículo e auto-apply.',
-        cta: { label: t('lockout.fitProfileRequired.cta'), href: '/my-profile/fit-profile/questions' },
+        cta: {
+          label: t('lockout.fitProfileRequired.cta'),
+          href: '/my-profile/fit-profile/questions',
+        },
       };
     case 'quality_score_below_threshold':
       return {

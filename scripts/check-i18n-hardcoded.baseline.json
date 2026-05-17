@@ -1,7 +1,94 @@
 {
   "note": "i18n hardcoded violations — surviving debt only. Auto-prunes on every gate run: as soon as a literal is wrapped in t(), the entry vanishes from this file. New entries are NEVER auto-added — a failing run reports them but leaves this file untouched. To force a rebuild (e.g. after a tool refactor that shifts line numbers), run: bun scripts/check-i18n-hardcoded.ts --update-baseline",
-  "count": 0,
-  "byRule": {},
-  "byFile": {},
-  "entries": []
+  "count": 13,
+  "byRule": {
+    "object-prop": 4,
+    "text-child": 9
+  },
+  "byFile": {
+    "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte": 7,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-charts.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/+page.svelte": 2,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/settings/danger-zone/+page.svelte": 1
+  },
+  "entries": [
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:23:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Under Review"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:26:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "On Hold"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:40:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "On Hold (paused)"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:41:13",
+      "rule": "object-prop",
+      "context": "obj.label",
+      "value": "Talent Pool"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/+page.svelte:38:8",
+      "rule": "text-child",
+      "context": "h1<text>",
+      "value": "Your Applications"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/+page.svelte:52:8",
+      "rule": "text-child",
+      "context": "button<text>",
+      "value": "+ New application"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:152:5",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Final Outcome"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:68:5",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Application State"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-board.svelte:94:5",
+      "rule": "text-child",
+      "context": "h2<text>",
+      "value": "Active Pipeline"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-charts.svelte:240:74",
+      "rule": "text-child",
+      "context": "h3<text>",
+      "value": "Pipeline funnel"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-charts.svelte:255:74",
+      "rule": "text-child",
+      "context": "h3<text>",
+      "value": "Final outcomes"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/_components/kpi-charts.svelte:270:74",
+      "rule": "text-child",
+      "context": "h3<text>",
+      "value": "Activity by month"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/settings/danger-zone/+page.svelte:140:34",
+      "rule": "text-child",
+      "context": "Label<text>",
+      "value": "Senha atual"
+    }
+  ]
 }

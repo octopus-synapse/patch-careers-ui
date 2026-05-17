@@ -11,7 +11,7 @@ import { API_URL, STANDARD_USER_CREDENTIALS } from '../_helpers/auth';
  * user's resource and asserts 403, not 200.
  */
 
-let enzoAccessToken: string;
+let _enzoAccessToken: string;
 let enzoSessionCookie: string;
 let enzoUserId: string;
 
@@ -28,7 +28,7 @@ test.describe('Resume PDF Download', () => {
       throw new Error(`login as enzo failed: ${loginRes.status} ${await loginRes.text()}`);
     }
     const loginBody = (await loginRes.json()) as { accessToken?: string };
-    enzoAccessToken = loginBody.accessToken ?? '';
+    _enzoAccessToken = loginBody.accessToken ?? '';
 
     const setCookie = loginRes.headers.get('set-cookie') ?? '';
     enzoSessionCookie = setCookie.match(/access_token=([^;]+)/)?.[1] ?? '';

@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
+import { getV1ProfilesUsername, isApiError } from 'api-client';
 import { env as privateEnv } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
-import { getV1ProfilesUsername, isApiError } from 'api-client';
 import type { PageServerLoad } from './$types';
 
 // Public profiles are the deepest indexable surface in the app — Google

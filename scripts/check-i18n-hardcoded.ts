@@ -31,9 +31,9 @@
 // any (file:line:col, value) that's not in the baseline. Run with
 // `--update-baseline` to rewrite the baseline after an intentional sweep.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { join, relative } from 'node:path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { Glob } from 'bun';
 
 const ROOT = process.cwd();
@@ -178,12 +178,13 @@ const LOCALE_RX = /^[a-z]{2}(-[A-Z]{2})?$/;
 const HAS_LETTER_RX = /\p{L}/u;
 const I18N_KEY_RX = /^[a-zA-Z][\w-]*(?:\.[a-zA-Z][\w-]*)+$/; // looks like an i18n key path
 const SIZE_TOKEN_RX = /^(xs|sm|md|lg|xl|2xl|3xl|4xl)$/;
-const COLOR_TOKEN_RX = /^(neutral|primary|secondary|success|warning|danger|info|muted|accent|ghost|outline|solid|glossy|menu|icon|link|destructive|positive|negative)$/;
+const COLOR_TOKEN_RX =
+  /^(neutral|primary|secondary|success|warning|danger|info|muted|accent|ghost|outline|solid|glossy|menu|icon|link|destructive|positive|negative)$/;
 const ICON_NAME_RX = /^[A-Z][a-z]+(?:[A-Z][a-z]*)*$/; // e.g. ChevronDown, also Svelte component identifier
 const EMOJI_OR_SYMBOL_RX = /^[\p{Emoji}\p{S}\p{P}\s]+$/u;
 const HEX_COLOR_RX = /^#[0-9a-fA-F]{3,8}$/;
 const CSS_UNIT_RX = /^[-\d.]+(px|em|rem|%|vh|vw|fr)$/;
-const VARIANT_RX = /^[a-z][a-z0-9-]*$/i;
+const _VARIANT_RX = /^[a-z][a-z0-9-]*$/i;
 
 function isAllowlistedLiteral(value: string): boolean {
   const trimmed = value.trim();
@@ -251,7 +252,7 @@ function extractScriptBody(source: string): string {
     m = re.exec(source);
     if (!m) break;
     const before = source.slice(0, m.index);
-    const startLine = (before.match(/\n/g)?.length ?? 0);
+    const startLine = before.match(/\n/g)?.length ?? 0;
     const innerLines = m[1].split('\n');
     for (let i = 0; i < innerLines.length; i++) {
       out[startLine + i] = innerLines[i];
@@ -279,8 +280,7 @@ function lineColFromOffset(source: string, offset: number): { line: number; col:
 //
 // Matches both component (`[A-Z]`) and lowercase tag names (`<button>`,
 // `<input>`, etc.) so plain HTML in routes is still checked.
-const TAG_ATTR_RX =
-  /<([A-Za-z][\w.-]*)\b([^>]*?)>/gs;
+const TAG_ATTR_RX = /<([A-Za-z][\w.-]*)\b([^>]*?)>/gs;
 
 function scanTemplateAttrs(file: string, source: string, out: Violation[]): void {
   const masked = maskScripts(source);
@@ -311,7 +311,10 @@ function scanTemplateAttrs(file: string, source: string, out: Violation[]): void
       // or a tiny punctuation residue (separators like `%`, `/`, `-`),
       // skip — the value is entirely dynamic content with decorative
       // glyphs around it.
-      const stripped = value.replace(/\$\{[^}]*\}/g, '').replace(/\{[^}]*\}/g, '').trim();
+      const stripped = value
+        .replace(/\$\{[^}]*\}/g, '')
+        .replace(/\{[^}]*\}/g, '')
+        .trim();
       const hadInterpolation = stripped.length !== value.trim().length;
       if (hadInterpolation && /^[\s%/\-:,;_·]*$/.test(stripped)) continue;
       if (isAllowlistedLiteral(value)) continue;
@@ -366,8 +369,7 @@ function scanScriptCalls(file: string, source: string, out: Violation[]): void {
 }
 
 // `confirm('literal')` / `alert('literal')` at top of expression (no receiver).
-const BARE_CALL_RX =
-  /(?:^|[\s({[,;=])(confirm|alert|prompt)\s*\(\s*(['"`])([^'"`]*?)\2/g;
+const BARE_CALL_RX = /(?:^|[\s({[,;=])(confirm|alert|prompt)\s*\(\s*(['"`])([^'"`]*?)\2/g;
 
 function scanBareCalls(file: string, source: string, out: Violation[]): void {
   BARE_CALL_RX.lastIndex = 0;
@@ -443,11 +445,11 @@ async function* listFiles(): AsyncGenerator<string> {
 // so `import 'svelte/compiler'` resolves from apps/web's node_modules).
 // It returns JSON-encoded violations for the `text-child` rule.
 function runSvelteAstPass(): Violation[] {
-  const result = spawnSync(
-    'node',
-    ['apps/web/scripts/i18n-text-children.mjs'],
-    { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 },
-  );
+  const result = spawnSync('node', ['apps/web/scripts/i18n-text-children.mjs'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    maxBuffer: 32 * 1024 * 1024,
+  });
   if (result.status !== 0) {
     console.error('[i18n-hardcoded] svelte-ast pass failed:');
     if (result.stderr) console.error(result.stderr);

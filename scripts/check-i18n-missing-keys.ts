@@ -37,9 +37,7 @@ const dicts = Object.fromEntries(
   LOCALES.map((l) => [
     l,
     flatten(
-      JSON.parse(
-        readFileSync(join(ROOT, 'packages/i18n/src/dictionaries', `${l}.json`), 'utf8'),
-      ),
+      JSON.parse(readFileSync(join(ROOT, 'packages/i18n/src/dictionaries', `${l}.json`), 'utf8')),
     ),
   ]),
 ) as Record<(typeof LOCALES)[number], Map<string, string>>;
@@ -129,7 +127,5 @@ if (prefixMisses.length > 0) {
   for (const r of prefixMisses.slice(0, 40)) console.error(fmt(r));
   if (prefixMisses.length > 40) console.error(`  ... +${prefixMisses.length - 40} more`);
 }
-console.error(
-  '\nFix: add the missing key in BOTH packages/i18n/src/dictionaries/{pt-BR,en}.json.',
-);
+console.error('\nFix: add the missing key in BOTH packages/i18n/src/dictionaries/{pt-BR,en}.json.');
 process.exit(1);

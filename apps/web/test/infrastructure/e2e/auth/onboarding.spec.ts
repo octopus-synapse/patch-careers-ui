@@ -45,15 +45,21 @@ async function enterStepper(page: Page) {
         .catch(() => undefined),
       personalBtn.click(),
     ]);
-    await expect(page.locator('h2')).toHaveText(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i, {
-      timeout: 10_000,
-    });
+    await expect(page.locator('h2')).toHaveText(
+      /sobre voc.|about you|dados\s+pessoais|personal\s+info/i,
+      {
+        timeout: 10_000,
+      },
+    );
   }
   // Wait for the Continue button to actually be enabled before letting
   // the caller proceed — otherwise a still-pending `$gotoStep.isPending`
   // flag swallows the test's subsequent click (handleNext early-returns
   // when any mutation is pending) and the /next call never fires.
-  const continueBtn = page.locator('button').filter({ hasText: /continuar|continue/i }).first();
+  const continueBtn = page
+    .locator('button')
+    .filter({ hasText: /continuar|continue/i })
+    .first();
   await expect(continueBtn).toBeEnabled({ timeout: 10_000 });
 }
 
@@ -182,9 +188,12 @@ test.describe('Onboarding page', () => {
       await enterStepper(page);
       // We're now on personal-info (post-welcome). h2 should read the
       // current step's label.
-      await expect(page.locator('h2')).toHaveText(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i, {
-        timeout: 5000,
-      });
+      await expect(page.locator('h2')).toHaveText(
+        /sobre voc.|about you|dados\s+pessoais|personal\s+info/i,
+        {
+          timeout: 5000,
+        },
+      );
       await page.locator('#fullName').fill('Test User');
       await page.locator('#phone').fill('+55 11 99999-0000');
 
@@ -200,7 +209,9 @@ test.describe('Onboarding page', () => {
       // After next, the user advances to `username` whose label is "Usuário".
       // `toHaveText` polls until the assertion passes — robust against the
       // POST → invalidate → GET /session → Svelte rerender chain.
-      await expect(page.locator('h2')).toHaveText(/seu usu.rio|your handle|usu.rio|username/i, { timeout: 10_000 });
+      await expect(page.locator('h2')).toHaveText(/seu usu.rio|your handle|usu.rio|username/i, {
+        timeout: 10_000,
+      });
       await page.close();
     });
 
@@ -233,20 +244,26 @@ test.describe('Onboarding page', () => {
         ),
         usernameBtn.click(),
       ]);
-      await expect(page.locator('h2')).toHaveText(/seu usu.rio|your handle|usu.rio|username/i, { timeout: 15_000 });
+      await expect(page.locator('h2')).toHaveText(/seu usu.rio|your handle|usu.rio|username/i, {
+        timeout: 15_000,
+      });
 
       const backBtn = page.getByRole('button', { name: /voltar|back/i });
       await expect(backBtn).toBeEnabled({ timeout: 10_000 });
       await Promise.all([
         page.waitForResponse(
-          (r) => /\/onboarding\/session\/previous\b/.test(r.url()) && r.request().method() === 'POST',
+          (r) =>
+            /\/onboarding\/session\/previous\b/.test(r.url()) && r.request().method() === 'POST',
           { timeout: 10_000 },
         ),
         backBtn.click(),
       ]);
-      await expect(page.locator('h2')).toHaveText(/sobre voc.|about you|dados\s+pessoais|personal\s+info/i, {
-        timeout: 15_000,
-      });
+      await expect(page.locator('h2')).toHaveText(
+        /sobre voc.|about you|dados\s+pessoais|personal\s+info/i,
+        {
+          timeout: 15_000,
+        },
+      );
 
       await page.close();
     });

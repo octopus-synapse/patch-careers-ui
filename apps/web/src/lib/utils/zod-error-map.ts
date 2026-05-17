@@ -1,4 +1,5 @@
-import { z, type ZodErrorMap } from 'zod';
+// biome-ignore lint/style/noRestrictedImports: error-map sees raw Zod issues from runtime validation; rewriting via api-client/zod would require re-issuing every error through the generated wrapper.
+import { type ZodErrorMap, z } from 'zod';
 import { locale } from '$lib/state/locale.svelte';
 
 // Generated Zod schemas come from the OpenAPI envelope, which allows a

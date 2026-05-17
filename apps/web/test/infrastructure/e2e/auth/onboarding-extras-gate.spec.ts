@@ -74,8 +74,7 @@ test.describe('Onboarding — extras gate', () => {
     const continueBtn = page.getByRole('button', { name: /continuar|continue/i }).first();
     await Promise.all([
       page.waitForResponse(
-        (r) =>
-          /\/onboarding\/session\/extras\b/.test(r.url()) && r.request().method() === 'POST',
+        (r) => /\/onboarding\/session\/extras\b/.test(r.url()) && r.request().method() === 'POST',
         { timeout: 10_000 },
       ),
       page.waitForResponse(
@@ -102,8 +101,7 @@ test.describe('Onboarding — extras gate', () => {
 
     await Promise.all([
       page.waitForResponse(
-        (r) =>
-          /\/onboarding\/session\/extras\b/.test(r.url()) && r.request().method() === 'POST',
+        (r) => /\/onboarding\/session\/extras\b/.test(r.url()) && r.request().method() === 'POST',
         { timeout: 10_000 },
       ),
       page.waitForResponse(

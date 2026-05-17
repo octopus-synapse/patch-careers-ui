@@ -363,27 +363,8 @@
     "modalTitle": "Adicionar item",
     "modalSave": "Salvar",
     "skip": "Pular esta etapa",
-    "start": {
-      "title": "Como vamos começar?",
-      "subtitle": "Escolha o caminho mais rápido pra você. Em até 2 minutos você vê sua primeira vaga sugerida.",
-      "badgeSoon": "Em breve",
-      "comingSoonTitle": "Ainda não disponível",
-      "comingSoonBody": "A gente está polindo esse import. Por enquanto, use outra opção — você pode voltar depois pra enriquecer seu perfil.",
-      "useManualInstead": "Seguir pelo wizard",
-      "close": "Fechar",
-      "cvImportedToast": "Currículo importado",
-      "cvImportErrorToast": "Não foi possível importar o PDF"
-    },
     "import": {
-      "resumePreviewAlt": "Pré-visualização do currículo",
-      "githubImportedToast": "Importado: {{skills}} skills, {{posts}} posts …",
-      "linkedinImportedToast": "LinkedIn importado.",
-      "linkedinUnavailableToast": "Import do LinkedIn ainda em construção — use PDF ou GitHub por enquanto.",
-      "pdfUploadedToast": "PDF enviado. Processando…",
-      "pdfUploadError": "Falha ao enviar PDF.",
-      "pdfUploadHeading": "Upload de PDF",
-      "manualFillLink": "ou preencher manualmente →",
-      "heading": "Importar currículo"
+      "githubImportedToast": "Importado: {{skills}} skills, {{posts}} posts …"
     },
     "theme": {
       "previewAlt": "Pré-visualização de {{name}}"

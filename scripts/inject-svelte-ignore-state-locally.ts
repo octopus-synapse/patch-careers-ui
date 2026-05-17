@@ -49,7 +49,7 @@ const sites = new Map<string, Set<number>>();
 for (const m of checkOutput.matchAll(warningRe)) {
   const [, file, line] = m;
   if (!sites.has(file!)) sites.set(file!, new Set());
-  sites.get(file!)!.add(parseInt(line!, 10));
+  sites.get(file!)?.add(parseInt(line!, 10));
 }
 
 console.log(
@@ -75,7 +75,7 @@ for (const [rel, lineSet] of sites) {
     if (idx < 0 || idx >= lines.length) continue;
     let stmtStart = idx;
     while (stmtStart > 0) {
-      const cur = lines[stmtStart]!.trim();
+      const cur = lines[stmtStart]?.trim();
       if (/^(const|let|var)\s/.test(cur) || /^\$effect\b/.test(cur) || /^\$derived\b/.test(cur)) {
         break;
       }
@@ -87,11 +87,11 @@ for (const [rel, lineSet] of sites) {
   // Sort descending so insertions don't shift earlier indices.
   const sortedStarts = [...stmtStarts].sort((a, b) => b - a);
   for (const stmtStart of sortedStarts) {
-    if (stmtStart > 0 && lines[stmtStart - 1]!.includes('svelte-ignore state_referenced_locally')) {
+    if (stmtStart > 0 && lines[stmtStart - 1]?.includes('svelte-ignore state_referenced_locally')) {
       totalSkipped++;
       continue;
     }
-    const indent = lines[stmtStart]!.match(/^\s*/)?.[0] ?? '';
+    const indent = lines[stmtStart]?.match(/^\s*/)?.[0] ?? '';
     lines.splice(stmtStart, 0, `${indent}${IGNORE_COMMENT}`);
     totalInjected++;
   }

@@ -199,7 +199,7 @@ function _wrapEnabledInRange(
       if (!valText) continue;
       if (isAlreadyGetter(valText)) continue;
       if (valText === 'true' || valText === 'false') continue;
-      innerOut += inner.slice(cursor, em.index) + em[0] + `() => ${valText}`;
+      innerOut += `${inner.slice(cursor, em.index) + em[0]}() => ${valText}`;
       cursor = read.end;
       changed++;
     }
@@ -315,7 +315,7 @@ function wrapEnabledNested(src: string): { out: string; changed: number } {
       const valText = read.text.trim();
       if (!valText || isAlreadyGetter(valText) || valText === 'true' || valText === 'false')
         continue;
-      innerOut += inner.slice(innerCursor, em.index) + em[0] + `() => ${valText}`;
+      innerOut += `${inner.slice(innerCursor, em.index) + em[0]}() => ${valText}`;
       innerCursor = read.end;
       changed++;
     }
@@ -351,7 +351,7 @@ for (const rel of files) {
     perFilePath += r.pathChanged;
     perFileEnabled += r.enabledChanged;
     out += original.slice(lastEnd, mm.index) + open + r.out + close;
-    lastEnd = mm.index + whole!.length;
+    lastEnd = mm.index + whole?.length;
   }
   out += original.slice(lastEnd);
   if (out !== original) {
