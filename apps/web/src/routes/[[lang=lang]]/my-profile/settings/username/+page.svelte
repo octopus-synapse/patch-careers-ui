@@ -1,10 +1,11 @@
 <script lang="ts">
-import { useQueryClient } from '@tanstack/svelte-query';
+import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 import {
-  createGetV1UsersUsernameCheck,
   createGetV1UsersProfile,
   createPatchV1UsersUsername,
   getV1UsersProfileQueryKey,
+  getV1UsersUsernameCheck,
+  getV1UsersUsernameCheckQueryKey,
 } from 'api-client';
 import { Check, X } from 'lucide-svelte';
 import { Button, Card, Input, Label, Loader } from 'ui';
@@ -39,11 +40,21 @@ $effect(() => {
   }
 });
 
-// svelte-ignore state_referenced_locally
-const usernameCheck = createGetV1UsersUsernameCheck(
-  { username: debouncedUsername },
-  { query: { enabled: () => browser && debouncedUsername.length >= 3} },
-);
+// P1 #11: kubb-generated `createGetV1UsersUsernameCheck` captures `params`
+// at construction time, so the initial empty string would leak into every
+// subsequent queryKey. Drop down to `createQuery` with a reactive queryKey
+// derived from the live `debouncedUsername` state — that way each value
+// change produces a fresh key and the SDK never sees `username=""`.
+const usernameCheck = createQuery({
+  get queryKey() {
+    return getV1UsersUsernameCheckQueryKey({ username: debouncedUsername });
+  },
+  queryFn: ({ signal }) =>
+    getV1UsersUsernameCheck({ username: debouncedUsername }, { signal }),
+  get enabled() {
+    return browser && debouncedUsername.length >= 3;
+  },
+});
 const usernameAvailable = $derived(
   ($usernameCheck.data as Record<string, boolean> | undefined)?.available,
 );
