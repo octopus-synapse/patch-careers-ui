@@ -1,0 +1,47 @@
+// TODO Wave 2.2 follow-up — visual regression for the inline-style codemod
+//
+// SKIPPED in W2.2 due to time budget. The codemod
+// (`scripts/codemod-inline-style-to-tw.ts`) replaced 146 inline
+// `style="..."` attributes and 5 `<style>` blocks with Tailwind
+// utilities + Svelte `style:` directives + lifts into
+// `apps/web/src/app.css`. The translations are semantically equivalent
+// in theory (e.g. `style="color: var(--landing-oxide)"` ↔
+// `class="text-[var(--landing-oxide)]"`), but Tailwind v4's specificity
+// ordering vs inline-style specificity is not 100% identical when
+// other utilities target the same property. A snapshot pass on the
+// pages with the most rewrites (the landing page and `landing/demo.svelte`)
+// would catch any visual drift introduced by the sweep.
+//
+// What this spec should do once unblocked:
+//
+//   import { expect, test } from '@playwright/test';
+//
+//   const routes = ['/', '/login', '/jobs', '/sitemap.xml'];
+//   for (const path of routes) {
+//     test(`visual: ${path}`, async ({ page }) => {
+//       await page.goto(path);
+//       await page.waitForLoadState('networkidle');
+//       await expect(page).toHaveScreenshot({
+//         maxDiffPixelRatio: 0.001,
+//         fullPage: true,
+//       });
+//     });
+//   }
+//
+// Why it's deferred:
+//   1) Visual snapshots require a stable baseline image, which needs
+//      to be generated on a CI machine (different fonts/AA on local
+//      Linux vs CI Chromium would always diff). Baseline gen needs a
+//      one-shot CI job before this spec is even useful.
+//   2) The auth-gated routes need the `loginAs` helpers from
+//      `test/infrastructure/e2e/_helpers/auth.ts`, which assume the
+//      seeded backend (profile-services) is up — and the Wave 2.2
+//      session was scoped to patch-careers-ui only (profile-services
+//      had a parallel agent).
+//   3) Wave 2.5 is the planned home for visual regression
+//      infrastructure (see PRD). Adding 4 isolated snapshots here now
+//      would be orphan tooling without a CI runner wired up.
+//
+// Open file with `.todo` extension so Playwright's `testDir: './test'`
+// glob (which only picks up `*.spec.ts`) doesn't pick it up. Rename
+// to `.spec.ts` to enable.
