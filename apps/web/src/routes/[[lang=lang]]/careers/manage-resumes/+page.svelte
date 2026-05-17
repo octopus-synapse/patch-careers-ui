@@ -1,7 +1,7 @@
 <script lang="ts">
 import { createGetV1Resumes } from 'api-client';
 import { FileText, PenSquare, Sparkles } from 'lucide-svelte';
-import { Badge, Button, Card, Skeleton } from 'ui';
+import { Badge, Button, Card, LinkButton, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -114,9 +114,9 @@ function openRerender(resume: Resume) {
 							{t('cv.emptyBody')}
 						</p>
 					</div>
-					<Button variant="solid" size="sm" onclick={() => goto('/onboarding')}>
+					<LinkButton variant="solid" size="sm"  href="/onboarding">
 						{t('cv.emptyCta')}
-					</Button>
+					</LinkButton>
 				</div>
 			{:else}
 				<!-- Master -->

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createGetV1JobsApplications } from 'api-client';
-import { Badge, Button, Card, Skeleton } from 'ui';
+import { Badge, Button, Card, LinkButton, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -79,9 +79,9 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 			<p class="text-sm text-gray-700 dark:text-neutral-300">
 				{t('dashboard.applicationsEmpty')}
 			</p>
-			<Button variant="solid" intent="accent" size="sm" onclick={() => goto('/careers/browse-jobs')}>
+			<LinkButton variant="solid" intent="accent" size="sm"  href="/careers/browse-jobs">
 				{t('dashboard.applicationsCtaFirst')}
-			</Button>
+			</LinkButton>
 		</div>
 	{:else}
 		<ul class="-mx-2 divide-y divide-gray-100 dark:divide-neutral-800/80">

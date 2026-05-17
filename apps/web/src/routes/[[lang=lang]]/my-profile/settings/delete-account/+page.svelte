@@ -3,7 +3,7 @@ import { deleteV1Accounts, logout, isApiError } from 'api-client';
 import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 import { AlertTriangle } from 'lucide-svelte';
-import { Button, Checkbox, Input, Label, Loader, toastState } from 'ui';
+import { Button, Checkbox, Input, Label, LinkButton, Loader, toastState } from 'ui';
 import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 
@@ -108,9 +108,9 @@ async function submit(e: Event) {
     {/if}
 
     <div class="flex gap-3">
-      <Button type="button" variant="outline" onclick={() => goto('/my-profile/settings')}>
+      <LinkButton variant="outline"  href="/my-profile/settings">
         Cancelar
-      </Button>
+      </LinkButton>
       <Button type="submit" variant="solid" disabled={!ready || submitting}>
         {#if submitting}
           <Loader size={14} class="mr-2" />

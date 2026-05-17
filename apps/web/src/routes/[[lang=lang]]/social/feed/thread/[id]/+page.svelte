@@ -13,7 +13,7 @@ import {
 } from 'api-client';
 import type { GetV1PostsId200 } from 'api-client';
 import { ArrowLeft } from 'lucide-svelte';
-import { Button, Loader } from 'ui';
+import { Button, LinkButton, Loader } from 'ui';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import PostCard from '../../_components/post-card.svelte';
@@ -115,9 +115,9 @@ async function handleReport(id: string) {
 	<div class="min-h-screen pt-20 pb-12">
 		<main class="mx-auto max-w-2xl px-4">
 			<div class="mb-6 flex items-center gap-3">
-				<Button variant="ghost" size="xs" onclick={() => goto('/social/feed')}>
+				<LinkButton variant="ghost" size="xs"  href="/social/feed">
 					<ArrowLeft size={16} />
-				</Button>
+				</LinkButton>
 				<h1 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">Thread</h1>
 			</div>
 

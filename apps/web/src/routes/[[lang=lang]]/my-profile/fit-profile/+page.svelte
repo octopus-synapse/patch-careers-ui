@@ -9,10 +9,10 @@
   } from 'api-client';
   import { useQueryClient } from '@tanstack/svelte-query';
   import { CheckCircle2, Clock, Trash2 } from 'lucide-svelte';
-  import { Button, Loader, toastState } from 'ui';
+  import { Button, LinkButton, Loader, toastState } from 'ui';
   import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
   import { browser } from '$app/environment';
-  import { goto } from '$app/navigation';
+  ;
   import { locale } from '$lib/state/locale.svelte';
 
   const t = $derived(locale.t);
@@ -73,9 +73,9 @@
         </div>
       </div>
       <div class="mt-4 flex flex-wrap items-center gap-2">
-        <Button variant="solid" size="sm" onclick={() => goto('/my-profile/fit-profile/questions')}>
+        <LinkButton variant="solid" size="sm"  href="/my-profile/fit-profile/questions">
           {t('fitProfileMine.retakeQuestionnaire')}
-        </Button>
+        </LinkButton>
         <Button variant="ghost" size="sm" onclick={handleDelete} disabled={deleting}>
           {#if deleting}<Loader size={14} />{:else}<Trash2 size={14} />{/if}
           {t('fitProfileMine.deleteProfile')}
@@ -98,9 +98,9 @@
         </div>
       </div>
       <div class="mt-4">
-        <Button variant="solid" size="sm" onclick={() => goto('/my-profile/fit-profile/questions')}>
+        <LinkButton variant="solid" size="sm"  href="/my-profile/fit-profile/questions">
           {t('fitProfileMine.startNow')}
-        </Button>
+        </LinkButton>
       </div>
     </div>
   {/if}

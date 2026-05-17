@@ -5,7 +5,7 @@
    */
 import { createGetV1Jobs } from 'api-client';
 import { ArrowRight, Briefcase, Globe2, Sparkles } from 'lucide-svelte';
-import { Badge, Button, Card, MatchBadge, Skeleton } from 'ui';
+import { Badge, Button, Card, LinkButton, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
@@ -114,10 +114,10 @@ const loading = $derived($query.isLoading);
 		{/if}
 
 		<div class="mt-8 flex justify-center">
-			<Button variant="ghost" size="sm" onclick={() => goto('/jobs?remote=usd')}>
+			<LinkButton variant="ghost" size="sm"  href="/jobs?remote=usd">
 				{t('jobs.applicationsBrowse')}
 				<ArrowRight size={14} />
-			</Button>
+			</LinkButton>
 		</div>
 	</main>
 </div>

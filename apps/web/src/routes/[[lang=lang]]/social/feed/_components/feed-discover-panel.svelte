@@ -2,7 +2,6 @@
 import { Bookmark, Hash, Search, Sparkles, Users, X } from 'lucide-svelte';
 import { Card } from 'ui';
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
 
 type Post = Record<string, unknown>;
@@ -130,30 +129,27 @@ function toggleTag(tag: string) {
 			{t('feed.sidebar.shortcutsTitle') ?? 'Atalhos'}
 		</p>
 		<nav class="flex flex-col gap-1">
-			<button
-				type="button"
+			<a
+				href="/social/feed/bookmarks"
 				class="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-				onclick={() => goto('/social/feed/bookmarks')}
 			>
 				<Bookmark size={16} />
 				<span>{t('feed.saved')}</span>
-			</button>
-			<button
-				type="button"
+			</a>
+			<a
+				href="/social/network/suggestions"
 				class="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-				onclick={() => goto('/social/network/suggestions')}
 			>
 				<Users size={16} />
 				<span>{t('feed.sidebar.suggestions') ?? 'Sugestões de rede'}</span>
-			</button>
-			<button
-				type="button"
+			</a>
+			<a
+				href="/careers/browse-jobs"
 				class="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-				onclick={() => goto('/careers/browse-jobs')}
 			>
 				<Sparkles size={16} />
 				<span>{t('feed.sidebar.browseJobs') ?? 'Ver vagas'}</span>
-			</button>
+			</a>
 		</nav>
 	</Card>
 </aside>

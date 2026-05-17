@@ -8,7 +8,7 @@ import {
 } from 'api-client';
 import { ArrowLeft, Save } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { Button, Input, Label, Loader, Textarea, toastState } from 'ui';
+import { Button, Input, Label, LinkButton, Loader, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
@@ -230,7 +230,7 @@ function save() {
       </div>
 
       <div class="flex items-center justify-end gap-3 pt-4">
-        <Button type="button" variant="outline" onclick={() => goto('/careers/manage-resumes')}>Cancelar</Button>
+        <LinkButton variant="outline"  href="/careers/manage-resumes">Cancelar</LinkButton>
         <Button type="submit" variant="solid" disabled={$updateMutation.isPending}>
           {#if $updateMutation.isPending}
             <Loader size={14} class="mr-2" />

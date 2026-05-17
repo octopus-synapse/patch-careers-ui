@@ -1,7 +1,6 @@
 <script lang="ts">
 import { ArrowRight } from 'lucide-svelte';
-import { Button } from 'ui';
-import { goto } from '$app/navigation';
+import { Button, LinkButton } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -44,9 +43,9 @@ const pieces = Array.from({ length: 30 }, (_, i) => ({
 		<p class="text-sm text-gray-500 dark:text-neutral-500">
 			{t('onboarding.doneSubtitle') ?? 'Bora aplicar 🚀'}
 		</p>
-		<Button variant="solid" onclick={() => goto('/social/feed')}>
+		<LinkButton variant="solid"  href="/social/feed">
 			{t('onboarding.doneCta') ?? t('onboarding.done.seeJobsCta')}
 			<ArrowRight size={14} />
-		</Button>
+		</LinkButton>
 	</div>
 </div>

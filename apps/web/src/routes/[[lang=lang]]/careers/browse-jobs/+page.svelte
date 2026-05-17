@@ -12,7 +12,7 @@ import {
 import type { CreateJobRequest, CreateJobRequestJobTypeEnumKey, GetV1JobsRecommended200, GetV1JobsWithFitScore200 } from 'api-client';
 import { formatDate } from 'i18n';
 import { ArrowRight, Bookmark, Globe2, Plus, Sparkles, Zap } from 'lucide-svelte';
-import { Badge, Button, FitScoreChip, FormModal, Input, Label, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
+import { Badge, Button, FitScoreChip, FormModal, Input, Label, LinkButton, Loader, MatchBadge, Modal, Tabs, Textarea, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { DataTable } from 'ui';
@@ -280,10 +280,10 @@ async function runRageApply() {
 					<NewJobsBadge jobs={jobsList} />
 				</div>
 				<div class="flex items-center gap-2">
-					<Button variant="ghost" size="sm" onclick={() => goto('/careers/browse-jobs/saved')}>
+					<LinkButton variant="ghost" size="sm"  href="/careers/browse-jobs/saved">
 						<Bookmark size={14} />
 						{t('jobs.savedNav')}
-					</Button>
+					</LinkButton>
 					<Button
 						variant="outline"
 						size="sm"

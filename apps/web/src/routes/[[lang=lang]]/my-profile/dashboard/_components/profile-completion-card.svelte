@@ -1,6 +1,5 @@
 <script lang="ts">
-import { Button, Card } from 'ui';
-import { goto } from '$app/navigation';
+import { Button, Card, LinkButton } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 type Props = {
@@ -87,9 +86,9 @@ const dashOffset = $derived(CIRCUMFERENCE * (1 - percent / 100));
 			</p>
 			{#if !isComplete}
 				<div class="mt-2">
-					<Button variant="ghost" size="xs" onclick={() => goto('/my-profile/settings')}>
+					<LinkButton variant="ghost" size="xs"  href="/my-profile/settings">
 						{t('dashboard.profileCompletionCta')}
-					</Button>
+					</LinkButton>
 				</div>
 			{/if}
 		</div>
