@@ -1,6 +1,6 @@
 // TODO Wave 2.2 follow-up — visual regression for the inline-style codemod
 //
-// SKIPPED in W2.2 due to time budget. The codemod
+// STILL DEFERRED as of W2.5 (PR2 close-out). The codemod
 // (`scripts/codemod-inline-style-to-tw.ts`) replaced 146 inline
 // `style="..."` attributes and 5 `<style>` blocks with Tailwind
 // utilities + Svelte `style:` directives + lifts into
@@ -28,19 +28,20 @@
 //     });
 //   }
 //
-// Why it's deferred:
+// Why it's deferred (re-evaluated in W2.5):
 //   1) Visual snapshots require a stable baseline image, which needs
 //      to be generated on a CI machine (different fonts/AA on local
 //      Linux vs CI Chromium would always diff). Baseline gen needs a
 //      one-shot CI job before this spec is even useful.
 //   2) The auth-gated routes need the `loginAs` helpers from
 //      `test/infrastructure/e2e/_helpers/auth.ts`, which assume the
-//      seeded backend (profile-services) is up — and the Wave 2.2
-//      session was scoped to patch-careers-ui only (profile-services
-//      had a parallel agent).
-//   3) Wave 2.5 is the planned home for visual regression
-//      infrastructure (see PRD). Adding 4 isolated snapshots here now
-//      would be orphan tooling without a CI runner wired up.
+//      seeded backend (profile-services) is up — every PR2 wave was
+//      scoped to patch-careers-ui only and the seeded backend is
+//      provisioned per-CI-run, not per-local-session.
+//   3) Promoted out of W2.5 deliverables; PR3 (or later) will own the
+//      Playwright snapshot infrastructure end-to-end (baseline runner,
+//      CI gate, diff review flow). Adding 4 isolated snapshots here
+//      without that wiring would be orphan tooling.
 //
 // Open file with `.todo` extension so Playwright's `testDir: './test'`
 // glob (which only picks up `*.spec.ts`) doesn't pick it up. Rename
