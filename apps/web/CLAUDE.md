@@ -148,6 +148,28 @@ form (which gate each one bypasses, when NOT to use, example
 invocation). The seeds these reference are in
 `profile-services/prisma/seeds/*.seed.ts`.
 
+## Primitives & state factories (PR2)
+
+Estabelecidos na PR2 (Waves 2.1–2.5). Use ao invés de reescrever o
+padrão sem-helper.
+
+- **`<LinkButton href>`** (`packages/ui/src/components/link-button/`)
+  — substitui `<Button onclick={() => goto(...)}>` para hrefs
+  conhecidos. Renderiza `<a>`, então SSR/middle-click/copy-link
+  funcionam. SvelteKit ainda intercepta in-app pra navegação CSR.
+- **`<ConfirmModal>`** (`packages/ui/src/components/modal/confirm-modal`)
+  — substitui `confirm()` nativo. Pattern: `let candidate = $state(...)`,
+  `requestX()` seta, `confirmX()` consome no `onConfirm`. Dark-mode +
+  focus-trap saem de graça. Veja `admin/users/+page.svelte` como ref.
+- **`useMeDashboard()`** (`lib/state/me-dashboard.svelte.ts`) — store
+  context-based, NÃO singleton. Provider é `setMeDashboardStore()` no
+  root `+layout.svelte`. Não importe singleton anterior.
+- **`secureStorage`** (`lib/utils/secure-storage.svelte`) — wrapper de
+  `localStorage` com namespace `secure:<userId>:<key>`. Use sempre que
+  estiver guardando PII ou drafts de formulário. Auto-limpa no logout
+  (navbar + delete-account) e em qualquer 401 que a SDK retornar (via
+  `setUnauthorizedHandler` em `+layout.svelte`).
+
 ## Pending decisions
 
 Decisões de produto não resolvidas vivem em
