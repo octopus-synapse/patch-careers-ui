@@ -182,7 +182,9 @@ const activeOther = $derived.by(() => {
           </div>
         </header>
       {/if}
-      <MessageThread messages={msgList} {currentUserId} />
+      {#key activeId}
+        <MessageThread messages={msgList} {currentUserId} />
+      {/key}
       <MessageInput disabled={$sendMessage.isPending} onsend={handleSend} />
     {:else}
       <div
