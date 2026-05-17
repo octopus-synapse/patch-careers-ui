@@ -1,6 +1,7 @@
 import type { Handle } from '@sveltejs/kit';
 import { setAcceptLanguageProvider } from 'api-client';
 import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from 'i18n';
+import { parseAcceptLanguage } from '$lib/utils/accept-language';
 
 function resolveLocale(event: Parameters<Handle>[0]['event']): Locale {
   const urlLang = event.params.lang;
@@ -11,17 +12,9 @@ function resolveLocale(event: Parameters<Handle>[0]['event']): Locale {
 
   const accept = event.request.headers.get('accept-language');
   if (accept) {
-    const preferred = accept
-      .split(',')
-      .map((part) => part.split(';')[0].trim())
-      .find((tag) => {
-        if (isLocale(tag)) return true;
-        const base = tag.split('-')[0];
-        return LOCALES.some((l) => l.split('-')[0] === base);
-      });
-    if (preferred) {
-      if (isLocale(preferred)) return preferred;
-      const base = preferred.split('-')[0];
+    for (const { tag } of parseAcceptLanguage(accept)) {
+      if (isLocale(tag)) return tag;
+      const base = tag.split('-')[0] ?? tag;
       const match = LOCALES.find((l) => l.split('-')[0] === base);
       if (match) return match;
     }
