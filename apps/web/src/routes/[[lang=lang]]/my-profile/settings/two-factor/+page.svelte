@@ -94,7 +94,7 @@ function downloadCodes() {
 </script>
 
 <svelte:head>
-  <title>Autenticação de dois fatores · Patch Careers</title>
+  <title>{t('twoFactor.pageTitle')}</title>
 </svelte:head>
 
 <div class="mx-auto max-w-2xl px-4 pt-20 pb-12">
@@ -103,7 +103,7 @@ function downloadCodes() {
       {t('twoFactor.heading')}
     </h1>
     <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">
-      Adicione uma camada extra de segurança ao seu login.
+      {t('twoFactor.subheading')}
     </p>
   </header>
 
@@ -122,9 +122,8 @@ function downloadCodes() {
         {t('twoFactor.saveCodesHeading')}
       </h2>
       <p class="mb-4 text-amber-700/80 dark:text-amber-300/80">
-        Estes são seus códigos de recuperação. Cada um só pode ser usado uma vez. Se perder
-        acesso ao seu app autenticador, use um código abaixo.
-        <strong>Esta é a única vez que eles serão mostrados.</strong>
+        {t('twoFactor.codesIntro')}
+        <strong>{t('twoFactor.codesOneShotWarning')}</strong>
       </p>
       <ul class="my-4 grid grid-cols-2 gap-2 font-mono text-sm">
         {#each backupCodes as code}
@@ -136,7 +135,7 @@ function downloadCodes() {
       <div class="mt-4 flex gap-2">
         <Button variant="outline" size="sm" onclick={copyCodes}>
           <Copy size={14} class="mr-1" />
-          Copiar
+          {t('twoFactor.copyButton')}
         </Button>
         <Button variant="outline" size="sm" onclick={downloadCodes}>
           <Download size={14} class="mr-1" />
@@ -156,9 +155,9 @@ function downloadCodes() {
           <h2 class="font-semibold text-emerald-700 dark:text-emerald-300">{t('twoFactor.activeHeading')}</h2>
           <p class="text-xs text-emerald-700/80 dark:text-emerald-300/80">
             {#if status.lastUsedAt}
-              Último uso: {new Date(status.lastUsedAt).toLocaleString()}.
+              {t('twoFactor.lastUsedAt', { when: new Date(status.lastUsedAt).toLocaleString() })}
             {/if}
-            Códigos de backup restantes: {status.backupCodesRemaining}.
+            {t('twoFactor.backupCodesRemaining', { count: status.backupCodesRemaining })}
           </p>
         </div>
       </div>
@@ -168,7 +167,7 @@ function downloadCodes() {
           {t('twoFactor.regenerateHeading')}
         </h3>
         <p class="mb-3 text-xs text-gray-500 dark:text-neutral-500">
-          Invalida os códigos atuais e gera novos. Sua sessão atual é a autorização suficiente.
+          {t('twoFactor.regenerateExplain')}
         </p>
         <Button
           variant="outline"
@@ -179,7 +178,7 @@ function downloadCodes() {
             <Loader size={14} />
           {:else}
             <RefreshCw size={14} class="mr-1" />
-            Regenerar
+            {t('twoFactor.regenerateButton')}
           {/if}
         </Button>
       </section>
@@ -190,8 +189,7 @@ function downloadCodes() {
           {t('twoFactor.disableHeading')}
         </h3>
         <p class="mb-3 text-xs text-red-700/80 dark:text-red-300/80">
-          Isso remove a proteção extra da sua conta. Não recomendamos, especialmente se você é
-          admin.
+          {t('twoFactor.disableExplain')}
         </p>
         {#if disableConfirming}
           <div class="flex gap-2">
@@ -203,11 +201,11 @@ function downloadCodes() {
               {#if $disable.isPending}
                 <Loader size={14} />
               {:else}
-                Confirmar
+                {t('twoFactor.confirmDisable')}
               {/if}
             </Button>
             <Button variant="outline" onclick={() => (disableConfirming = false)}>
-              Cancelar
+              {t('twoFactor.cancelDisable')}
             </Button>
           </div>
         {:else}
@@ -253,7 +251,7 @@ function downloadCodes() {
         {#if $verify.isPending}
           <Loader size={14} />
         {:else}
-          Verificar e ativar
+          {t('twoFactor.verifyAndActivate')}
         {/if}
       </Button>
     </div>
@@ -264,13 +262,13 @@ function downloadCodes() {
         {t('twoFactor.notConfiguredHeading')}
       </h2>
       <p class="mb-4 text-xs text-gray-500 dark:text-neutral-500">
-        Use um app como Google Authenticator, 1Password ou Authy para gerar códigos temporários.
+        {t('twoFactor.setupDescription')}
       </p>
       <Button variant="solid" onclick={() => $setup.mutate()} disabled={$setup.isPending}>
         {#if $setup.isPending}
           <Loader size={14} />
         {:else}
-          Iniciar configuração
+          {t('twoFactor.startSetup')}
         {/if}
       </Button>
     </div>

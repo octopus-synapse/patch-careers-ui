@@ -5,6 +5,9 @@
 <script lang="ts">
 import { WifiOff } from 'lucide-svelte';
 import { onMount } from 'svelte';
+import { locale } from '$lib/state/locale.svelte';
+
+const t = $derived(locale.t);
 
 let online = $state(true);
 
@@ -21,13 +24,13 @@ onMount(() => {
 });
 </script>
 
-{#if !online}
+{#if !online && t}
   <div
     class="fixed inset-x-0 top-0 z-50 flex items-center justify-center gap-2 bg-amber-500/95 px-4 py-2 text-sm text-amber-950 shadow"
     role="status"
     aria-live="polite"
   >
     <WifiOff size={16} />
-    <span>Você está offline. Algumas ações ficam em pausa até a conexão voltar.</span>
+    <span>{t('offlineBanner.message')}</span>
   </div>
 {/if}

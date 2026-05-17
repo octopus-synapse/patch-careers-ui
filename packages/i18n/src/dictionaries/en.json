@@ -148,6 +148,9 @@
     "loadFailed": "Failed to load",
     "slugInUse": "That slug is already taken. Choose another."
   },
+  "offlineBanner": {
+    "message": "You're offline. Some actions are paused until the connection returns."
+  },
   "validation": {
     "required": "Required field",
     "email": "Invalid email",
@@ -850,6 +853,21 @@
     "readMore": "Read more"
   },
   "twoFactor": {
+    "pageTitle": "Two-factor authentication · Patch Careers",
+    "subheading": "Add an extra layer of security to your sign-in.",
+    "lastUsedAt": "Last used: {{when}}.",
+    "backupCodesRemaining": "Backup codes remaining: {{count}}.",
+    "codesIntro": "These are your recovery codes. Each one can be used only once. If you lose access to your authenticator app, use a code below.",
+    "codesOneShotWarning": "This is the only time they will be shown.",
+    "copyButton": "Copy",
+    "regenerateExplain": "Invalidates the current codes and generates new ones. Your current session is authorization enough.",
+    "regenerateButton": "Regenerate",
+    "disableExplain": "This removes the extra protection from your account. We don't recommend it, especially if you're an admin.",
+    "confirmDisable": "Confirm",
+    "cancelDisable": "Cancel",
+    "startSetup": "Start setup",
+    "verifyAndActivate": "Verify and activate",
+    "setupDescription": "Use an app like Google Authenticator, 1Password, or Authy to generate temporary codes.",
     "disabledSuccess": "2FA disabled.",
     "codesCopied": "Codes copied.",
     "downloadContent": "Patch Careers — 2FA backup codes\nGenerated at {{date}}\n\n{{codes}}\n\nKeep in a safe place. Each code can be used only once.",
