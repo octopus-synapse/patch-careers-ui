@@ -10,6 +10,7 @@ export default defineConfig({
     setupFiles: ['src/test/setup.ts'],
     alias: {
       $lib: path.resolve('./src/lib'),
+      '$app/environment': path.resolve('./src/test/mocks/app-environment.ts'),
     },
   },
   resolve: {

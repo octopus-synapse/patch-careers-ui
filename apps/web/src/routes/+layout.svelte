@@ -22,6 +22,7 @@ import OnboardingGuard from '$lib/components/layout/onboarding-guard.svelte';
 import LockoutModal from '$lib/components/lockout-modal.svelte';
 import { extractLockoutCode, openLockout } from '$lib/state/lockout-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { setMeDashboardStore } from '$lib/state/me-dashboard.svelte';
 import { trackPageView } from '$lib/utils/analytics/track';
 import { installZodErrorMap } from '$lib/utils/zod-error-map';
 
@@ -42,6 +43,8 @@ if (apiUrl) setBaseUrl(apiUrl);
 setAcceptLanguageProvider(() => locale.current);
 
 colorSchema.init();
+
+setMeDashboardStore();
 
 const initialLang = $page.params.lang;
 locale.init(initialLang && isLocale(initialLang) ? initialLang : undefined);
