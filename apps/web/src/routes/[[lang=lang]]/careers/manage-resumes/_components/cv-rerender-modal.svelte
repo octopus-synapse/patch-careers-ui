@@ -142,17 +142,28 @@ function stopTimer() {
   }
 }
 
+// P1 #19: the previous shape returned a cleanup that called `stopTimer()`,
+// AND the `$effect` cleanup also called `stopTimer()` — running it twice on
+// re-render. Worse, if the `typeStart` setTimeout had already fired before
+// cleanup ran, its setInterval was assigned to `playTimer` AFTER the inner
+// `stopTimer()` call, so the interval leaked across modal close/reopen.
+// New shape: a single `cancelled` flag short-circuits the typeStart
+// callback, so we cannot leak an interval scheduled mid-cleanup.
 function play() {
   stopTimer();
   isPlaying = true;
   showStrike = false;
   typedChars = 0;
 
+  let cancelled = false;
+
   const strikeStart = setTimeout(() => {
+    if (cancelled) return;
     showStrike = true;
   }, 120);
 
   const typeStart = setTimeout(() => {
+    if (cancelled) return;
     playTimer = setInterval(() => {
       if (typedChars >= totalLen) {
         stopTimer();
@@ -164,6 +175,7 @@ function play() {
   }, 900);
 
   return () => {
+    cancelled = true;
     clearTimeout(strikeStart);
     clearTimeout(typeStart);
     stopTimer();
@@ -180,12 +192,11 @@ function selectScenario(slug: string) {
 
 $effect(() => {
   // Replay each time the modal reopens so the animation tells the story.
+  // P1 #19: cleanup chains exactly one `stopTimer` (inside `play()`'s
+  // returned closure), no longer called twice from here.
   if (open) {
     const cleanup = play();
-    return () => {
-      cleanup?.();
-      stopTimer();
-    };
+    return cleanup;
   }
   stopTimer();
 });
