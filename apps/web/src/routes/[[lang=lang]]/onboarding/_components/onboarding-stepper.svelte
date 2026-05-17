@@ -14,6 +14,7 @@ import {
 import type { GetV1OnboardingSession200 } from 'api-client';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-svelte';
 import { Button, Loader } from 'ui';
+import { untrack } from 'svelte';
 import { beforeNavigate, goto } from '$app/navigation';
 import OnboardingSidebar from './onboarding-sidebar.svelte';
 import StepExtrasGate from './step-extras-gate.svelte';
@@ -74,8 +75,16 @@ let submitted = $state(false);
 // on the gate step. Persisted to the backend when they hit Continue.
 let extrasDraft = $state<string[] | null>(null);
 
+// P1 #13: this effect resets `stepData`/`multiItems`/`extrasDraft` whenever
+// the step changes. Without `untrack`, the writes to those `$state` slots
+// re-fired the effect on the next microtask — clobbering any keystrokes the
+// user typed in between and breaking autosave continuity. Track only
+// `currentStepId` (the actual trigger), do the resets inside `untrack`.
 $effect(() => {
-  if (currentStep) {
+  const stepId = currentStepId;
+  if (!stepId) return;
+  untrack(() => {
+    if (!currentStep) return;
     stepData = {};
     multiItems = [];
     submitted = false;
@@ -88,11 +97,11 @@ $effect(() => {
       if (section?.items) {
         multiItems = [...section.items];
       }
-    } else if (currentStepId) {
-      const saved = getSavedDataForStep(currentStepId);
+    } else {
+      const saved = getSavedDataForStep(stepId);
       if (saved) stepData = saved;
     }
-  }
+  });
 });
 
 function getSavedDataForStep(stepId: string): Record<string, string> | null {
