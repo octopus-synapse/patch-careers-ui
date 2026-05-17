@@ -63,6 +63,17 @@ let rerenderOpen = $state(false);
 let rerenderSummary = $state('');
 let rerenderResumeId = $state<string | undefined>(undefined);
 
+// P1 #17: thumbnail endpoint may 404 for seed users without a rendered SVG.
+// Previously we mutated `e.currentTarget.style.display = 'none'` inline,
+// which (a) violates the no-inline-style policy and (b) leaks DOM state
+// outside Svelte's reactivity. Track failures in a Set keyed by resume id
+// and use `class:hidden` to keep all chrome state-driven.
+const thumbnailFailures = $state(new Set<string>());
+
+function markThumbnailFailed(id: string) {
+  thumbnailFailures.add(id);
+}
+
 function openRerender(resume: Resume) {
   rerenderSummary = resume.summary?.trim() || t('cv.noSummary');
   rerenderResumeId = resume.id;
@@ -130,18 +141,15 @@ function openRerender(resume: Resume) {
 						<p class="text-[11px] text-gray-500 dark:text-neutral-500">{t('cv.masterHelp')}</p>
 
 						<div class="mt-3 flex gap-4">
-							<!-- Thumbnail endpoint may 404 for seeded users without a rendered
-							     SVG; hide the image element if it fails so we don't show a
-							     broken-image placeholder with alt text bleeding through. -->
-							<img
-								src="/api/v1/resumes/{master.id}/thumbnail.svg"
-								alt=""
-								class="hidden h-32 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
-								loading="lazy"
-								onerror={(e) => {
-									(e.currentTarget as HTMLImageElement).style.display = 'none';
-								}}
-							/>
+							{#if !thumbnailFailures.has(master.id)}
+								<img
+									src="/api/v1/resumes/{master.id}/thumbnail.svg"
+									alt=""
+									class="hidden h-32 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
+									loading="lazy"
+									onerror={() => markThumbnailFailed(master.id)}
+								/>
+							{/if}
 							<div class="min-w-0 flex-1 space-y-1.5">
 								{#if master.jobTitle}
 									<p class="text-sm font-medium text-gray-800 dark:text-neutral-200">{master.jobTitle}</p>
@@ -185,15 +193,15 @@ function openRerender(resume: Resume) {
 								<li>
 									<Card>
 										<div class="flex items-start justify-between gap-3">
-											<img
-												src="/api/v1/resumes/{r.id}/thumbnail.svg"
-												alt=""
-												class="hidden h-20 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
-												loading="lazy"
-												onerror={(e) => {
-													(e.currentTarget as HTMLImageElement).style.display = 'none';
-												}}
-											/>
+											{#if !thumbnailFailures.has(r.id)}
+												<img
+													src="/api/v1/resumes/{r.id}/thumbnail.svg"
+													alt=""
+													class="hidden h-20 w-auto shrink-0 rounded border border-gray-200 dark:border-neutral-700 sm:block"
+													loading="lazy"
+													onerror={() => markThumbnailFailed(r.id)}
+												/>
+											{/if}
 											<div class="min-w-0 flex-1">
 												<div class="flex items-center gap-2">
 													<PenSquare size={14} class="text-gray-500 dark:text-neutral-400" />
