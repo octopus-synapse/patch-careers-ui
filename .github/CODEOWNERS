@@ -8,3 +8,15 @@
 /scripts/ @efpatti
 /biome.json @efpatti
 /commitlint.config.ts @efpatti
+
+# SDK + i18n + state — critical surfaces, route reviews here even after
+# the org adds a frontend team (placeholder: @octopus-synapse/frontend-team).
+/packages/api-client/ @efpatti
+/packages/i18n/ @efpatti
+/apps/web/src/lib/state/ @efpatti
+
+# Build + test config — same logic, future home for a platform team
+# (placeholder: @octopus-synapse/platform-team).
+/vitest.config.ts @efpatti
+/playwright.config.ts @efpatti
+/renovate.json @efpatti
