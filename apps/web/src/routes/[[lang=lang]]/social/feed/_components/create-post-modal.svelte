@@ -360,7 +360,7 @@ const visibilityLabel = $derived(
 
 			{#if attachment === 'poll'}
 				<div class="mt-4 space-y-2 rounded-2xl border border-black/10 p-3 dark:border-white/10">
-					{#each pollOptions as _, i}
+					{#each pollOptions as _, i (i)}
 						<input
 							type="text"
 							bind:value={pollOptions[i]}

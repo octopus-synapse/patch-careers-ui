@@ -344,7 +344,7 @@ function handleDeleteRequest() {
 						</span>
 					{/if}
 					{#if coAuthors && !isAnonymous}
-						{#each coAuthors as coAuthor}
+						{#each coAuthors as coAuthor (coAuthor.id ?? coAuthor.username ?? coAuthor.name)}
 							<span class="text-gray-400 dark:text-neutral-500">&</span>
 							<span class="font-bold text-gray-900 dark:text-zinc-100">{coAuthor.name ?? coAuthor.username}</span>
 						{/each}
@@ -588,12 +588,12 @@ function handleDeleteRequest() {
 		{#if (hardSkills && hardSkills.length > 0) || (softSkills && softSkills.length > 0)}
 			<div class="mt-3 flex flex-wrap gap-1.5">
 				{#if hardSkills}
-				{#each hardSkills as skill}
+				{#each hardSkills as skill (skill)}
 					<Badge intent="neutral" size="sm">{skill}</Badge>
 				{/each}
 				{/if}
 				{#if softSkills}
-				{#each softSkills as skill}
+				{#each softSkills as skill ("soft-" + skill)}
 					<Badge intent="info" size="sm">{skill}</Badge>
 				{/each}
 				{/if}

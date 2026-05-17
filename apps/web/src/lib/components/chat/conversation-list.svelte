@@ -69,7 +69,7 @@ function timeAgo(dateStr: string | null): string {
 	</div>
 </div>
 
-{#each filteredConversations as conv}
+{#each filteredConversations as conv (conv.id)}
 	{@const o = other(conv)}
 	{@const active = conv.id === activeConversationId}
 

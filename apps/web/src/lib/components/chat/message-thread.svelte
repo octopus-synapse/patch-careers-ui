@@ -45,7 +45,7 @@ $effect(() => {
 	<div class="flex-1"></div>
 
 	<div class="flex flex-col gap-0.5">
-		{#each messages as msg, i}
+		{#each messages as msg, i (msg.id)}
 			{@const own = isOwn(msg)}
 			{@const showAvatar = !own && (i === 0 || messages[i - 1].senderId !== msg.senderId)}
 			{@const consecutive = i > 0 && messages[i - 1].senderId === msg.senderId}
