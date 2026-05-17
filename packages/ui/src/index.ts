@@ -36,6 +36,7 @@ export { default as InfiniteScrollTrigger } from './components/infinite-list/inf
 export { default as Input } from './components/input/input.component.svelte';
 export { default as Textarea } from './components/input/textarea.component.svelte';
 export { default as Label } from './components/label/label.component.svelte';
+export { default as LinkButton } from './components/link-button/link-button.component.svelte';
 export { default as Loader } from './components/loader/loader.component.svelte';
 export { default as MatchBadge } from './components/matching/match-badge.component.svelte';
 export { default as RankBadge } from './components/matching/rank-badge.component.svelte';
