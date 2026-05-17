@@ -6,7 +6,7 @@ import { createDeleteV1ResumesResumeId, createPatchV1ResumesResumeId } from 'api
 import { Check, Pencil, Trash2, X } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { untrack } from 'svelte';
-import { Button, Input, Loader, toastState } from 'ui';
+import { Button, ConfirmModal, Input, Loader, toastState } from 'ui';
 import { locale } from '$lib/state/locale.svelte';
 
 const t = $derived(locale.t);
@@ -63,8 +63,14 @@ function saveRename() {
   );
 }
 
-function remove() {
-  if (!confirm(t('actions.deletedVersionConfirm'))) return;
+let confirmingRemove = $state(false);
+
+function requestRemove() {
+  confirmingRemove = true;
+}
+
+function confirmRemove() {
+  confirmingRemove = false;
   $deleteMutation.mutate(
     { resumeId },
     {
@@ -99,7 +105,7 @@ function remove() {
       <Pencil size={14} class="text-gray-400" />
     </Button>
     {#if canDelete}
-      <Button variant="icon" size="xs" onclick={remove} disabled={$deleteMutation.isPending} aria-label={t('actions.remove')}>
+      <Button variant="icon" size="xs" onclick={requestRemove} disabled={$deleteMutation.isPending} aria-label={t('actions.remove')}>
         {#if $deleteMutation.isPending}
           <Loader size={14} />
         {:else}
@@ -109,3 +115,11 @@ function remove() {
     {/if}
   {/if}
 </div>
+
+<ConfirmModal
+  open={confirmingRemove}
+  title={t('careers.versions.namePlaceholder')}
+  message={t('actions.deletedVersionConfirm')}
+  onClose={() => (confirmingRemove = false)}
+  onConfirm={confirmRemove}
+/>

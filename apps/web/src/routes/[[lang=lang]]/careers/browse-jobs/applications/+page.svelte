@@ -16,7 +16,7 @@ import { locale } from '$lib/state/locale.svelte';
 const t = $derived(locale.t);
 import { Briefcase, Calendar, CheckCircle2, Eye, MessageSquarePlus, XCircle } from 'lucide-svelte';
 import { onMount } from 'svelte';
-import { Button, Loader, toastState } from 'ui';
+import { Button, ConfirmModal, Loader, toastState } from 'ui';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { browser } from '$app/environment';
 
@@ -26,8 +26,16 @@ type EventType = EventsTypeEnumKey;
 type AddableEventType = PostV1JobsApplicationsApplicationIdEventsMutationRequestTypeEnumKey;
 type TrackedApplication = GetV1JobsApplicationsTracker200['applications'][number];
 
-async function quickFollowUp(applicationId: string) {
-  if (!confirm(t('actions.followUpConfirm'))) return;
+let followUpCandidateId = $state<string | null>(null);
+
+function requestFollowUp(applicationId: string) {
+  followUpCandidateId = applicationId;
+}
+
+async function confirmFollowUp() {
+  const applicationId = followUpCandidateId;
+  followUpCandidateId = null;
+  if (!applicationId) return;
   try {
     await postV1JobsApplicationsApplicationIdEvents(applicationId, { type: 'FOLLOW_UP_SENT' });
     await load();
@@ -141,7 +149,7 @@ onMount(load);
                   type="button"
                   class="flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs text-amber-600 transition-colors hover:bg-amber-500/20 dark:text-amber-400"
                   title={t('careers.applications.followUpTitle', { days: app.daysSinceLastResponse ?? '?' })}
-                  onclick={() => quickFollowUp(app.id)}
+                  onclick={() => requestFollowUp(app.id)}
                 >
                   <MessageSquarePlus size={12} />
                   {t('careers.applications.followUpSuggestedPrefix')}{app.daysSinceLastResponse ?? '?'}d)
@@ -214,3 +222,11 @@ onMount(load);
     </ul>
   {/if}
 </div>
+
+<ConfirmModal
+  open={followUpCandidateId !== null}
+  title={t('careers.applications.pageTitle')}
+  message={t('actions.followUpConfirm')}
+  onClose={() => (followUpCandidateId = null)}
+  onConfirm={confirmFollowUp}
+/>

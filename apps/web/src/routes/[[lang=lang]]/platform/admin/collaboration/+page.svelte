@@ -11,7 +11,7 @@ import {
 } from 'api-client';
 import { Shield, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { Avatar, Button, Loader, toastState } from 'ui';
+import { Avatar, Button, ConfirmModal, Loader, toastState } from 'ui';
 import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -33,9 +33,17 @@ const revokeMutation = createDeleteV1AdminCollaborationsResumeIdUserId({
   },
 });
 
-function revoke(resumeId: string, userId: string, label: string) {
-  if (!confirm(`Remover ${label} como colaborador?`)) return;
-  $revokeMutation.mutate({ resumeId, userId });
+let revokeTarget = $state<{ resumeId: string; userId: string; label: string } | null>(null);
+
+function requestRevoke(resumeId: string, userId: string, label: string) {
+  revokeTarget = { resumeId, userId, label };
+}
+
+function confirmRevoke() {
+  const target = revokeTarget;
+  revokeTarget = null;
+  if (!target) return;
+  $revokeMutation.mutate({ resumeId: target.resumeId, userId: target.userId });
 }
 </script>
 
@@ -104,7 +112,7 @@ function revoke(resumeId: string, userId: string, label: string) {
                 <Button
                   variant="icon"
                   size="xs"
-                  onclick={() => revoke(r.resumeId, r.userId, r.user.name ?? r.user.email)}
+                  onclick={() => requestRevoke(r.resumeId, r.userId, r.user.name ?? r.user.email)}
                   disabled={revoking}
                   aria-label="Revogar acesso"
                 >
@@ -122,3 +130,11 @@ function revoke(resumeId: string, userId: string, label: string) {
     </div>
   {/if}
 </div>
+
+<ConfirmModal
+  open={revokeTarget !== null}
+  title={t('admin.collaboration.heading')}
+  message={revokeTarget ? t('actions.revokeCollaboratorConfirm', { label: revokeTarget.label }) : ''}
+  onClose={() => (revokeTarget = null)}
+  onConfirm={confirmRevoke}
+/>

@@ -188,7 +188,9 @@
     "savedPreferences": "Preferences saved.",
     "accountRemoved": "Account removed. See you later.",
     "claimedProfile": "Profile claimed. We added the data to your resume.",
-    "deleteCommentConfirm": "Remove this comment?"
+    "deleteCommentConfirm": "Remove this comment?",
+    "removeAliasConfirm": "Remove this alias?",
+    "revokeCollaboratorConfirm": "Remove {label} as collaborator?"
   },
   "nav": {
     "dashboard": "Dashboard",

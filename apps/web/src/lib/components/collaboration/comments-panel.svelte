@@ -15,7 +15,7 @@ import {
 } from 'api-client';
 import { CheckCircle2, MessageSquare, Trash2 } from 'lucide-svelte';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
-import { Button, Checkbox, Loader, Textarea } from 'ui';
+import { Button, Checkbox, ConfirmModal, Loader, Textarea } from 'ui';
 import { browser } from '$app/environment';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -71,8 +71,16 @@ function resolve(commentId: string) {
   $resolveComment.mutate({ commentId });
 }
 
-function remove(commentId: string) {
-  if (!confirm(t('actions.deleteCommentConfirm'))) return;
+let removeCandidateId = $state<string | null>(null);
+
+function requestRemove(commentId: string) {
+  removeCandidateId = commentId;
+}
+
+function confirmRemove() {
+  const commentId = removeCandidateId;
+  removeCandidateId = null;
+  if (!commentId) return;
   $deleteComment.mutate({ commentId });
 }
 
@@ -161,7 +169,7 @@ const repliesByParent = $derived(
                 <button
                   type="button"
                   class="text-xs text-red-500 hover:underline"
-                  onclick={() => remove(c.id)}
+                  onclick={() => requestRemove(c.id)}
                   aria-label="Delete comment"
                 >
                   <Trash2 size={12} class="inline" />
@@ -198,7 +206,7 @@ const repliesByParent = $derived(
                       <button
                         type="button"
                         class="ml-2 text-red-400 hover:text-red-500"
-                        onclick={() => remove(r.id)}
+                        onclick={() => requestRemove(r.id)}
                         aria-label="Delete reply"
                       >
                         ×
@@ -237,3 +245,11 @@ const repliesByParent = $derived(
     </div>
   </form>
 </aside>
+
+<ConfirmModal
+  open={removeCandidateId !== null}
+  title={t('collaboration.commentsHeading')}
+  message={t('actions.deleteCommentConfirm')}
+  onClose={() => (removeCandidateId = null)}
+  onConfirm={confirmRemove}
+/>

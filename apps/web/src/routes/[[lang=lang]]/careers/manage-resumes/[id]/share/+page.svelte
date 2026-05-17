@@ -20,7 +20,7 @@ import {
 import { ChevronDown, ChevronRight, Copy, Download, Link as LinkIcon, Lock, Package, Plus, QrCode, Trash2 } from 'lucide-svelte';
 import QRCode from 'qrcode';
 import { onMount } from 'svelte';
-import { Button, Input, Label, Loader, toastState } from 'ui';
+import { Button, ConfirmModal, Input, Label, Loader, toastState } from 'ui';
 import { handleApiError } from '$lib/components/errors/error-renderer.svelte';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
@@ -117,8 +117,16 @@ async function createShare() {
   }
 }
 
-async function revoke(id: string) {
-  if (!confirm(t('actions.deletedShareConfirm'))) return;
+let revokeCandidateId = $state<string | null>(null);
+
+function requestRevoke(id: string) {
+  revokeCandidateId = id;
+}
+
+async function confirmRevoke() {
+  const id = revokeCandidateId;
+  revokeCandidateId = null;
+  if (!id) return;
   try {
     await deleteV1SharesShareId(id);
     shares = shares.filter((s) => s.id !== id);
@@ -174,11 +182,19 @@ async function addAlias(shareId: string) {
   }
 }
 
-async function removeAlias(shareId: string, aliasId: string) {
-  if (!confirm('Remover este alias?')) return;
+let removeAliasCandidate = $state<{ shareId: string; aliasId: string } | null>(null);
+
+function requestRemoveAlias(shareId: string, aliasId: string) {
+  removeAliasCandidate = { shareId, aliasId };
+}
+
+async function confirmRemoveAlias() {
+  const target = removeAliasCandidate;
+  removeAliasCandidate = null;
+  if (!target) return;
   try {
-    await deleteV1SharesAliasesAliasId(aliasId);
-    aliasesByShare[shareId] = (aliasesByShare[shareId] ?? []).filter((a) => a.id !== aliasId);
+    await deleteV1SharesAliasesAliasId(target.aliasId);
+    aliasesByShare[target.shareId] = (aliasesByShare[target.shareId] ?? []).filter((a) => a.id !== target.aliasId);
   } catch (err) {
     handleApiError(err);
   }
@@ -387,7 +403,7 @@ onMount(load);
                 <Button variant="icon" size="xs" onclick={() => downloadQr(s.id, s.slug)} aria-label="Baixar QR">
                   <QrCode size={14} />
                 </Button>
-                <Button variant="icon" size="xs" onclick={() => revoke(s.id)} aria-label={t('actions.remove')}>
+                <Button variant="icon" size="xs" onclick={() => requestRevoke(s.id)} aria-label={t('actions.remove')}>
                   <Trash2 size={14} class="text-red-500" />
                 </Button>
               </div>
@@ -419,7 +435,7 @@ onMount(load);
                     {#each aliasesByShare[s.id] as a (a.id)}
                       <li class="flex items-center justify-between rounded bg-gray-50 px-2 py-1 text-[11px] dark:bg-neutral-900">
                         <span class="font-mono">/s/{a.slug}</span>
-                        <Button variant="icon" size="xs" onclick={() => removeAlias(s.id, a.id)} aria-label={t('actions.removeAlias')}>
+                        <Button variant="icon" size="xs" onclick={() => requestRemoveAlias(s.id, a.id)} aria-label={t('actions.removeAlias')}>
                           <Trash2 size={12} class="text-red-500" />
                         </Button>
                       </li>
@@ -452,3 +468,19 @@ onMount(load);
     {/if}
   </section>
 </div>
+
+<ConfirmModal
+  open={revokeCandidateId !== null}
+  title={t('careers.share.pageTitle')}
+  message={t('actions.deletedShareConfirm')}
+  onClose={() => (revokeCandidateId = null)}
+  onConfirm={confirmRevoke}
+/>
+
+<ConfirmModal
+  open={removeAliasCandidate !== null}
+  title={t('careers.share.pageTitle')}
+  message={t('actions.removeAliasConfirm')}
+  onClose={() => (removeAliasCandidate = null)}
+  onConfirm={confirmRemoveAlias}
+/>
