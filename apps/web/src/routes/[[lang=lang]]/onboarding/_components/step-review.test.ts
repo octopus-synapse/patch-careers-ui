@@ -33,7 +33,7 @@ const steps = [
 ];
 
 const fullSession = {
-  personalInfo: { fullName: 'Enzo Ferracini' },
+  personalInfo: { fullName: 'Enzo Ferracini', email: 'enzo@test.com' },
   username: 'enzoferracini',
   professionalProfile: {
     headline: 'Developer',
@@ -85,7 +85,7 @@ describe('StepReview', () => {
     expect(screen.getByText(/Engineer/)).toBeInTheDocument();
 
     expect(screen.getByText('Education')).toBeInTheDocument();
-    expect(screen.getByText('Skipped')).toBeInTheDocument();
+    expect(screen.getByText('onboarding.review.skipped')).toBeInTheDocument();
 
     expect(screen.getByText('Theme')).toBeInTheDocument();
     expect(screen.getByText('Classic')).toBeInTheDocument();
@@ -102,9 +102,10 @@ describe('StepReview', () => {
       },
     });
 
-    const personalInfoButton = screen.getByText('Personal Info').closest('button');
-    if (!personalInfoButton) throw new Error('Personal Info button not found');
-    await userEvent.click(personalInfoButton);
+    const editButton = screen.getByRole('button', {
+      name: /Personal Info$/,
+    });
+    await userEvent.click(editButton);
     expect(ongoto).toHaveBeenCalledWith('personal-info');
   });
 
