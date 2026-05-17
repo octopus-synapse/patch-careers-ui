@@ -3,7 +3,6 @@ import { createGetV1Jobs } from 'api-client';
 import { ArrowRight, Globe2 } from 'lucide-svelte';
 import { Card, Skeleton } from 'ui';
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 
@@ -72,27 +71,28 @@ const total = $derived(($query.data as { total?: number } | undefined)?.total ??
 		<ul class="-mx-2 divide-y divide-gray-100 dark:divide-neutral-800/80">
 			{#each items as job (job.id)}
 				<li>
-					<button
-						type="button"
-						class="group flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
-						onclick={() => job.id && goto(`/careers/browse-jobs/${job.id}`)}
-					>
-						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700 dark:text-neutral-100 dark:group-hover:text-emerald-300">
-								{job.title ?? '—'}
-							</p>
-							{#if job.company}
-								<p class="truncate text-xs text-gray-500 dark:text-neutral-500">{job.company}</p>
+					{#if job.id}
+						<a
+							href={`/careers/browse-jobs/${job.id}`}
+							class="group flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
+						>
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700 dark:text-neutral-100 dark:group-hover:text-emerald-300">
+									{job.title ?? '—'}
+								</p>
+								{#if job.company}
+									<p class="truncate text-xs text-gray-500 dark:text-neutral-500">{job.company}</p>
+								{/if}
+							</div>
+							{#if job.paymentCurrency}
+								<span
+									class="shrink-0 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[11px] font-semibold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
+								>
+									{job.paymentCurrency}
+								</span>
 							{/if}
-						</div>
-						{#if job.paymentCurrency}
-							<span
-								class="shrink-0 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[11px] font-semibold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/15 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-400/20"
-							>
-								{job.paymentCurrency}
-							</span>
-						{/if}
-					</button>
+						</a>
+					{/if}
 				</li>
 			{/each}
 		</ul>

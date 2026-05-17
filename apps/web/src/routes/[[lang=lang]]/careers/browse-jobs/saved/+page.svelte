@@ -10,7 +10,6 @@ import {
 import { Bookmark, Briefcase, Building2, DollarSign, MapPin } from 'lucide-svelte';
 import { Badge, Button, Card, EmptyState, Skeleton, toastState } from 'ui';
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
 import { asIcon } from '$lib/types/icons';
 import { track } from '$lib/utils/analytics/track';
 import { useAuth } from '$lib/state/auth.svelte';
@@ -112,13 +111,12 @@ function handleRemove(id: string) {
 					<Card>
 						<div class="flex items-start justify-between gap-3">
 							<div class="min-w-0 flex-1">
-								<button
-									type="button"
+								<a
+									href={`/careers/browse-jobs/${job.id}`}
 									class="text-left text-base font-semibold text-gray-800 hover:underline dark:text-neutral-200"
-									onclick={() => goto(`/careers/browse-jobs/${job.id}`)}
 								>
 									{job.title}
-								</button>
+								</a>
 								<div class="mt-1 flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-neutral-500">
 									{#if job.company}
 										<span class="flex items-center gap-1">

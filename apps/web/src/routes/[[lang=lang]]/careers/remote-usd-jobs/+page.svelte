@@ -5,9 +5,8 @@
    */
 import { createGetV1Jobs } from 'api-client';
 import { ArrowRight, Briefcase, Globe2, Sparkles } from 'lucide-svelte';
-import { Badge, Button, Card, LinkButton, MatchBadge, Skeleton } from 'ui';
+import { Badge, Card, LinkButton, MatchBadge, Skeleton } from 'ui';
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
 import { locale } from '$lib/state/locale.svelte';
 
 type JobItem = {
@@ -74,9 +73,8 @@ const loading = $derived($query.isLoading);
 			<ul class="space-y-3">
 				{#each jobs as job (job.id)}
 					<li>
-						<button
-							type="button"
-							onclick={() => goto(`/careers/browse-jobs/${job.id}`)}
+						<a
+							href={`/careers/browse-jobs/${job.id}`}
 							class="group flex w-full flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-neutral-700/60 dark:bg-neutral-800/50 dark:hover:border-emerald-500/40 sm:flex-row sm:items-center"
 						>
 							<div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400/20 to-teal-500/10">
@@ -107,7 +105,7 @@ const loading = $derived($query.isLoading);
 								size={14}
 								class="hidden shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 dark:text-neutral-500 sm:inline"
 							/>
-						</button>
+						</a>
 					</li>
 				{/each}
 			</ul>

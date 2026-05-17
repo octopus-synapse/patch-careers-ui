@@ -2,7 +2,6 @@
 import { createGetV1JobsApplications } from 'api-client';
 import { Badge, Button, Card, LinkButton, Skeleton } from 'ui';
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
 import { useAuth } from '$lib/state/auth.svelte';
 import { locale } from '$lib/state/locale.svelte';
 import {
@@ -90,25 +89,26 @@ const statusLabel = (status?: string) => resolveStatusLabel(status, t);
 				{@const company = app.job?.company ?? app.company ?? ''}
 				{@const jobId = app.job?.id ?? app.jobId}
 				<li>
-					<button
-						type="button"
-						class="group flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
-						onclick={() => jobId && goto(`/careers/browse-jobs/${jobId}`)}
-					>
-						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-medium text-gray-900 group-hover:text-cyan-700 dark:text-neutral-100 dark:group-hover:text-cyan-300">
-								{jobTitle}
-							</p>
-							{#if company}
-								<p class="truncate text-xs text-gray-500 dark:text-neutral-500">{company}</p>
+					{#if jobId}
+						<a
+							href={`/careers/browse-jobs/${jobId}`}
+							class="group flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800/60"
+						>
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-sm font-medium text-gray-900 group-hover:text-cyan-700 dark:text-neutral-100 dark:group-hover:text-cyan-300">
+									{jobTitle}
+								</p>
+								{#if company}
+									<p class="truncate text-xs text-gray-500 dark:text-neutral-500">{company}</p>
+								{/if}
+							</div>
+							{#if app.status}
+								<Badge intent={statusIntent(app.status)} size="sm">
+									{statusLabel(app.status)}
+								</Badge>
 							{/if}
-						</div>
-						{#if app.status}
-							<Badge intent={statusIntent(app.status)} size="sm">
-								{statusLabel(app.status)}
-							</Badge>
-						{/if}
-					</button>
+						</a>
+					{/if}
 				</li>
 			{/each}
 		</ul>
