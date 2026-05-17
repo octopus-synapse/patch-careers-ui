@@ -1,6 +1,22 @@
 import type { QueryClient, QueryKey } from '@tanstack/svelte-query';
 import { getBaseUrl } from 'api-client';
 
+/**
+ * Exponential backoff schedule for SSE reconnect attempts.
+ *
+ * - attempt=0 (the first retry after a connection drop): 0ms — a transient
+ *   blip self-heals immediately on the next tick.
+ * - attempt>=1: 1s * 2^(attempt-1), capped at 30s. So the sequence is
+ *   0, 1s, 2s, 4s, 8s, 16s, 30s, 30s, ...
+ *
+ * Exported separately so the schedule can be unit-tested without spinning
+ * up a Svelte component context.
+ */
+export function sseReconnectDelay(attempt: number): number {
+  if (attempt <= 0) return 0;
+  return Math.min(30_000, 1000 * 2 ** (attempt - 1));
+}
+
 type Options<T> = {
   queryClient: QueryClient;
   /** Query keys to invalidate whenever an event arrives. */
@@ -73,8 +89,8 @@ export function useSseSubscribe<T = unknown>(path: string, opts: Options<T>): vo
         source?.close();
         source = null;
         if (closed) return;
+        const delay = sseReconnectDelay(attempt);
         attempt += 1;
-        const delay = Math.min(30_000, 1000 * 2 ** attempt);
         retryTimer = setTimeout(connect, delay);
       };
     };
