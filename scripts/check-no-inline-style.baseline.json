@@ -1,0 +1,802 @@
+{
+  "note": "inline-style violations — surviving debt only. Auto-prunes on every gate run: as soon as a `style=\"\"` attr or `<style>` block is removed, the entry vanishes. New entries are NEVER auto-added — a failing run reports them but leaves this file untouched. To force-rebuild after an intentional bulk edit: bun scripts/check-no-inline-style.ts --update-baseline",
+  "count": 153,
+  "byKind": {
+    "inline-style-attr": 148,
+    "style-block": 5
+  },
+  "byFile": {
+    "apps/web/src/routes/[[lang=lang]]/+page.svelte": 66,
+    "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte": 59,
+    "apps/web/src/lib/components/chat/chat-widget.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte": 3,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/test-404/+page.svelte": 2,
+    "apps/web/src/lib/components/chat/message-thread.svelte": 1,
+    "apps/web/src/routes/+error.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/[...rest]/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/_components/landing/success-stories.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/onboarding-stepper.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/_components/stepper-mobile.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/feed-list.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/feed/_components/post-card.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/messages/+page.svelte": 1,
+    "apps/web/src/routes/[[lang=lang]]/social/notifications/+page.svelte": 1,
+    "packages/ui/src/components/otp-input/otp-input.component.svelte": 1,
+    "packages/ui/src/components/poll/poll.component.svelte": 1,
+    "packages/ui/src/components/popover/popover.component.svelte": 1,
+    "packages/ui/src/components/sidebar/sidebar.component.svelte": 1
+  },
+  "entries": [
+    {
+      "key": "apps/web/src/lib/components/chat/chat-widget.svelte:242:29",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height:0\""
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/chat-widget.svelte:305:38",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height:0\""
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/chat-widget.svelte:325:77",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height:0\""
+    },
+    {
+      "key": "apps/web/src/lib/components/chat/message-thread.svelte:43:2",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height: 0;\""
+    },
+    {
+      "key": "apps/web/src/routes/+error.svelte:19:2",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height: calc(100vh - 3.5rem); padding-top: 3.5rem;\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:100:7",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide); color: var(--landing-ink); transitio…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:107:109",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:111:16",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:122:47",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark); background: var(--landing-ink-…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:123:98",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:126:47",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:133:28",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:135:15",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:136:15",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:140:35",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:141:28",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {poolPct}%; background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:144:28",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:148:28",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:152:28",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:157:78",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark); color: var(--landing-muted-on-…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:175:75",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-ink);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:178:76",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:185:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:188:56",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:197:8",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide); color: var(--landing-ink); transitio…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:204:64",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:217:75",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-paper); color: var(--landing-text-on-paper);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:220:102",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-light)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:222:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:229:87",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:237:47",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-ink); color: var(--landing-text-on-ink);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:239:68",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:240:69",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:241:71",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:242:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:244:103",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:246:47",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:253:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:255:67",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:259:65",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:261:14",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:263:15",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:264:15",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:267:40",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:268:28",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {poolPct}%; background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:270:63",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:277:67",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:278:52",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:287:7",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide); color: var(--landing-ink); transitio…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:294:84",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:301:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:306:47",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-light)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:311:10",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"transition-duration: var(--dur-tight);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:317:54",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"transition-duration: var(--dur-tight); transition-timing-function: var…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:326:57",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:341:56",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-ink); border-top: 1px solid var(--landing-li…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:346:46",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:348:55",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:354:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:358:63",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"text-decoration-color: var(--landing-oxide);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:359:17",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:360:17",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:365:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:373:9",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"transition-duration: var(--dur-tight);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:384:163",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark); color: var(--landing-muted-on-…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:69:123",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:73:29",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:79:83",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:86:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:90:82",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/+page.svelte:92:12",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/[...rest]/+page.svelte:11:62",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height: calc(100vh - 3.5rem); padding-top: 3.5rem;\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:289:74",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-ink);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:292:101",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:294:71",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:298:73",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:301:86",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:307:54",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:314:6",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark); background: {active ? 'var(--l…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:316:93",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: {active ? 'var(--landing-oxide)' : 'var(--landing-muted-on-ink)…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:318:43",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:322:55",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: {active ? 'var(--landing-text-on-ink)' : 'var(--landing-muted-o…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:330:69",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:332:50",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-paper); color: var(--landing-text-on-paper);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:334:67",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:335:68",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:336:70",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:337:71",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:341:108",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:345:79",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:348:107",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:365:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-light)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:366:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:370:98",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:373:44",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:383:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-light)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:384:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:392:58",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:395:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:399:73",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:405:117",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:406:53",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:410:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink); background: var(--landing-oxide-tint)…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:425:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-light)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:426:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:434:10",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: {skill.hot ? 'var(--landing-oxide-ink)' : 'var(--landing…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:444:36",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-light)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:445:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:450:55",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:453:69",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:457:70",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-paper)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:465:59",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-ink-2); border-top: 1px solid var(--landing-…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:466:102",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:468:42",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:476:67",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:480:94",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-text-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:487:41",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:489:71",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:492:47",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: {displayScore >= 80 ? 'var(--landing-oxide)' : 'var(--landing-m…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:493:44",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:496:39",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-line-dark)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:499:8",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {displayScore}%; background: {displayScore >= 80 ? 'var(--landi…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:502:72",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:509:96",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:516:90",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-oxide); color: var(--landing-oxide);\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:526:96",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:533:90",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark); color: var(--landing-muted-on-…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:542:90",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"border-color: var(--landing-line-dark); color: var(--landing-muted-on-…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:545:57",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:557:65",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"color: var(--landing-muted-on-ink)\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/demo.svelte:563:5",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: var(--landing-oxide); color: var(--landing-ink); transitio…"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/career-graph/+page.svelte:132:11",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {barWidth(b.peerCount)};\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/fit-profile/questions/+page.svelte:109:11",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {progress}%\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/public/@[username]/+page.svelte:127:38",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"background: {bannerGradient(username ?? '')}\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/onboarding-stepper.svelte:332:48",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"padding-top: max(5rem, calc((100vh - 36rem) / 2));\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/_components/stepper-mobile.svelte:32:4",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {progress}%\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:122:54",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"height: 100px; min-height: 80px\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:129:19",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"height: {pct}%; min-height: 2px\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/analytics/+page.svelte:154:21",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {pct}%\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/test-404/+page.svelte:8:6",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"padding: 100px; text-align: center;\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/dev-tools/test-404/+page.svelte:9:6",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"font-size: 48px;\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/platform/admin/performance/+page.svelte:114:25",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {pct}%\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/feed-list.svelte:203:7",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"animation-delay: {step * 150}ms\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/messages/+page.svelte:166:71",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"min-height:0\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/notifications/+page.svelte:290:89",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"animation-delay: {i * 150}ms\""
+    },
+    {
+      "key": "packages/ui/src/components/poll/poll.component.svelte:81:6",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {pct}%\""
+    },
+    {
+      "key": "packages/ui/src/components/popover/popover.component.svelte:61:4",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {widthRem}rem\""
+    },
+    {
+      "key": "packages/ui/src/components/sidebar/sidebar.component.svelte:87:74",
+      "kind": "inline-style-attr",
+      "snippet": "style=\"width: {progress.value}%\""
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/_components/landing/success-stories.svelte:98:1",
+      "kind": "style-block",
+      "snippet": "<style>"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/my-profile/dashboard/+page.svelte:213:1",
+      "kind": "style-block",
+      "snippet": "<style>"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/onboarding/done/+page.svelte:54:1",
+      "kind": "style-block",
+      "snippet": "<style>"
+    },
+    {
+      "key": "apps/web/src/routes/[[lang=lang]]/social/feed/_components/post-card.svelte:640:1",
+      "kind": "style-block",
+      "snippet": "<style>"
+    },
+    {
+      "key": "packages/ui/src/components/otp-input/otp-input.component.svelte:153:1",
+      "kind": "style-block",
+      "snippet": "<style>"
+    }
+  ]
+}

@@ -30,3 +30,5 @@ checks:
     cmd: bun scripts/lint-form-schema-from-sdk.ts
   - name: file-size
     cmd: bun scripts/lint-file-size.ts
+  - name: no-inline-style
+    cmd: bun scripts/check-no-inline-style.ts
