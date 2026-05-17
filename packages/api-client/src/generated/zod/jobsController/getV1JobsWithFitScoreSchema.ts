@@ -12,7 +12,7 @@ import { pageSchema } from "../pageSchema";
 export const getV1JobsWithFitScoreQueryParamsSchema = z.object({
     "page": z.optional(z.lazy(() => pageSchema).default(1).describe("1-indexed page number for offset pagination.")),
 "limit": z.optional(z.lazy(() => limitSchema).default(20).describe("Items per page (max 100).")),
-"sortBy": z.optional(z.string()),
+"sortBy": z.optional(z.enum(["createdAt", "updatedAt", "salaryMin", "salaryMax"])),
 "sortOrder": z.enum(["asc", "desc"]).default("desc"),
 "search": z.optional(z.string().max(500)),
 "jobType": z.optional(z.string()),

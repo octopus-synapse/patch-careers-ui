@@ -6,6 +6,15 @@
 import type { Limit } from "../Limit";
 import type { Page } from "../Page";
 
+export const getV1JobsQueryParamsSortByEnum = {
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    salaryMin: "salaryMin",
+    salaryMax: "salaryMax"
+} as const;
+
+export type GetV1JobsQueryParamsSortByEnumKey = (typeof getV1JobsQueryParamsSortByEnum)[keyof typeof getV1JobsQueryParamsSortByEnum];
+
 export const getV1JobsQueryParamsSortOrderEnum = {
     asc: "asc",
     desc: "desc"
@@ -29,7 +38,7 @@ export type GetV1JobsQueryParams = {
     /**
      * @type string | undefined
     */
-    sortBy?: string;
+    sortBy?: GetV1JobsQueryParamsSortByEnumKey;
     /**
      * @default "desc"
      * @type string | undefined
