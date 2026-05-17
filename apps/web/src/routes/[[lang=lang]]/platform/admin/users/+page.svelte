@@ -39,15 +39,18 @@
   const totalPages = $derived($listQuery.data?.totalPages ?? 1);
 
   let updatingRole = $state<string | null>(null);
-  // Single-role display label: highest-priority role wins.
+  // P1 #16: the filter `<select>` exposed values USER/RECRUITER/ADMIN while
+  // the row `<select>` exposed labels MEMBER/RECRUITER/ADMIN. The role-edit
+  // dropdown therefore showed MEMBER for a user the filter called USER —
+  // same row labeled inconsistently across the page. Align everything on the
+  // backend's canonical role names (USER/RECRUITER/ADMIN).
   function roleLabel(roles: readonly string[] | string | undefined): string {
     const list = Array.isArray(roles) ? roles : roles ? [roles] : [];
     if (list.includes('admin')) return 'ADMIN';
     if (list.includes('recruiter')) return 'RECRUITER';
-    return 'MEMBER';
+    return 'USER';
   }
   async function handleRoleChange(id: string, label: string) {
-    // MEMBER = just the base \`user\` role; RECRUITER/ADMIN add their role on top.
     const next =
       label === 'ADMIN'
         ? ['user', 'admin']
@@ -137,7 +140,7 @@
                     onchange={(e) => handleRoleChange(u.id, (e.currentTarget as HTMLSelectElement).value)}
                     class="rounded-md border border-border bg-background px-2 py-1 text-xs"
                   >
-                    <option value="MEMBER">MEMBER</option>
+                    <option value="USER">USER</option>
                     <option value="RECRUITER">RECRUITER</option>
                     <option value="ADMIN">ADMIN</option>
                   </select>

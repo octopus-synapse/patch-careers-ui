@@ -163,15 +163,15 @@
   </h1>
 
   <div class="flex flex-wrap gap-2">
-    {#each tabs as t}
+    {#each tabs as tabItem (tabItem.value)}
       <button
         type="button"
-        class="rounded-md border px-3 py-1.5 text-xs transition-colors {tab === t.value
+        class="rounded-md border px-3 py-1.5 text-xs transition-colors {tab === tabItem.value
           ? 'border-primary bg-primary/10 text-primary'
           : 'border-border text-gray-500 hover:bg-muted dark:text-neutral-500'}"
-        onclick={() => (tab = t.value)}
+        onclick={() => (tab = tabItem.value)}
       >
-        {t.label}
+        {tabItem.label}
       </button>
     {/each}
   </div>
