@@ -135,19 +135,43 @@ export function useFeedEngagement({ getPosts, setPosts }: Options) {
   }
 
   async function handleBookmark(id: string) {
+    const snapshotPosts = getPosts();
+    const snapshotBookmarked = bookmarkedPosts;
+    const snapshotUnbookmarked = unbookmarkedPosts;
+
     bookmarkedPosts = new Set([...bookmarkedPosts, id]);
     unbookmarkedPosts = new Set([...unbookmarkedPosts].filter((x) => x !== id));
-    setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)));
-    await postV1PostsIdBookmark(id);
-    queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
+    setPosts(snapshotPosts.map((p) => (String(p.id) === id ? { ...p, isBookmarked: true } : p)));
+
+    try {
+      await postV1PostsIdBookmark(id);
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
+    } catch {
+      setPosts(snapshotPosts);
+      bookmarkedPosts = snapshotBookmarked;
+      unbookmarkedPosts = snapshotUnbookmarked;
+      toastState.show(locale.t('errors.network'), 'danger');
+    }
   }
 
   async function handleUnbookmark(id: string) {
+    const snapshotPosts = getPosts();
+    const snapshotBookmarked = bookmarkedPosts;
+    const snapshotUnbookmarked = unbookmarkedPosts;
+
     unbookmarkedPosts = new Set([...unbookmarkedPosts, id]);
     bookmarkedPosts = new Set([...bookmarkedPosts].filter((x) => x !== id));
-    setPosts(getPosts().map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)));
-    await deleteV1PostsIdBookmark(id);
-    queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
+    setPosts(snapshotPosts.map((p) => (String(p.id) === id ? { ...p, isBookmarked: false } : p)));
+
+    try {
+      await deleteV1PostsIdBookmark(id);
+      queryClient.invalidateQueries({ queryKey: getV1FeedQueryKey() });
+    } catch {
+      setPosts(snapshotPosts);
+      bookmarkedPosts = snapshotBookmarked;
+      unbookmarkedPosts = snapshotUnbookmarked;
+      toastState.show(locale.t('errors.network'), 'danger');
+    }
   }
 
   function handleDelete(id: string) {
