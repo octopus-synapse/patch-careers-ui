@@ -3,7 +3,7 @@ import '../app.css';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 import { dev } from '$app/environment';
-import { setAcceptLanguageProvider, setBaseUrl } from 'api-client';
+import { setAcceptLanguageProvider, setBaseUrl, setUnauthorizedHandler } from 'api-client';
 import { getTextDirection, isLocale } from 'i18n';
 import type { Snippet } from 'svelte';
 import { page } from '$app/stores';
@@ -20,8 +20,10 @@ import Footer from '$lib/components/layout/footer.svelte';
 import Navbar from '$lib/components/layout/navbar.svelte';
 import OnboardingGuard from '$lib/components/layout/onboarding-guard.svelte';
 import LockoutModal from '$lib/components/lockout-modal.svelte';
+import { getLastKnownUserId } from '$lib/state/auth.svelte';
 import { extractLockoutCode, openLockout } from '$lib/state/lockout-state.svelte';
 import { locale } from '$lib/state/locale.svelte';
+import { clearForUser } from '$lib/utils/secure-storage.svelte';
 import { setMeDashboardStore } from '$lib/state/me-dashboard.svelte';
 import { trackPageView } from '$lib/utils/analytics/track';
 import { installZodErrorMap } from '$lib/utils/zod-error-map';
@@ -41,6 +43,15 @@ if (apiUrl) setBaseUrl(apiUrl);
 // In the browser, `locale.current` is the canonical choice; the hooks.server
 // wiring sets the same provider per-request server-side.
 setAcceptLanguageProvider(() => locale.current);
+
+// Global 401 — clear the outgoing user's per-namespace secureStorage
+// entries (drafts, cached PII) before the session-expiry redirect runs.
+// `getLastKnownUserId()` returns the id captured the last time `useAuth()`
+// saw an authenticated session, so we can clean up even when the session
+// query has already reset to undefined.
+setUnauthorizedHandler(() => {
+  clearForUser(getLastKnownUserId());
+});
 
 colorSchema.init();
 

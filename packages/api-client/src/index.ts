@@ -8,6 +8,7 @@ export {
   isApiError,
   setAcceptLanguageProvider,
   setBaseUrl,
+  setUnauthorizedHandler,
 } from './client/fetcher';
 export * from './generated/clients';
 export * from './generated/hooks';

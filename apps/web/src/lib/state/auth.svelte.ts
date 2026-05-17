@@ -6,6 +6,16 @@ function isAuthSession200(value: unknown): value is Session200 {
   return typeof value === 'object' && value !== null && 'user' in value;
 }
 
+// Last known authenticated userId, captured every time `useAuth()` sees
+// a non-anonymous session. Read by the global 401 handler so we can
+// wipe the outgoing user's per-namespace localStorage even after the
+// session query has reset to `undefined`.
+let lastKnownUserId: string | undefined;
+
+export function getLastKnownUserId(): string | undefined {
+  return lastKnownUserId;
+}
+
 /**
  * Centralized auth hook. The single point in the app that knows the shape
  * of `Session200`. Components consume the derived booleans / fields below;
@@ -28,6 +38,8 @@ export function useAuth() {
     const d = value.data;
     session = isAuthSession200(d) ? d : undefined;
     isLoading = value.isLoading;
+    const id = session?.user?.id;
+    if (id) lastKnownUserId = id;
   });
   onDestroy(unsubscribe);
 

@@ -47,6 +47,20 @@ function resolveAcceptLanguage(): string {
   return fromProvider && fromProvider.length > 0 ? fromProvider : 'pt-BR';
 }
 
+// 401 hook — fires once per response with status 401. The app registers a
+// handler that wipes per-user secureStorage entries (drafts, cached PII)
+// so a session expiry doesn't leak the prior user's data into whatever
+// loads next. Kept here (not in error-renderer) because the trigger is
+// the HTTP status, not the ApiError severity, and we want every 401 path
+// — including endpoints that callers intentionally don't `handleApiError`
+// (analytics, prefetches, dashboard widgets in the background) — to
+// also fire the cleanup.
+let unauthorizedHandler: (() => void) | null = null;
+
+export function setUnauthorizedHandler(fn: (() => void) | null): void {
+  unauthorizedHandler = fn;
+}
+
 export interface ApiError {
   code: string;
   message: string;
@@ -223,6 +237,13 @@ export default async function client<TData, _TError = unknown, TVariables = unkn
 
   if (!response.ok) {
     const status = response.status;
+    if (status === 401 && unauthorizedHandler) {
+      try {
+        unauthorizedHandler();
+      } catch {
+        // never let handler exceptions mask the upstream 401 path
+      }
+    }
     let error: ApiError;
     try {
       const body = (await response.json()) as Record<string, unknown> | null;
