@@ -147,16 +147,13 @@ async function handleNotificationClick(notification: NotificationItem) {
 					<p class="text-xs text-gray-500 dark:text-neutral-500">{t('notifications.noNotifications')}</p>
 				</div>
 			{:else}
-				{#each notifications as notification}
+				{#each notifications as notification (notification.id)}
 					{@const actor = notification.actor}
 					{@const visual = notificationVisual(notification.type)}
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<div
+					<button
+						type="button"
 						onclick={() => handleNotificationClick(notification)}
-						onkeydown={(e) => { if (e.key === 'Enter') handleNotificationClick(notification); }}
-						role="button"
-						tabindex="0"
-						class="flex items-start gap-2.5 px-4 py-3 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/50 {!notification.read ? 'bg-blue-50/50 dark:bg-neutral-800/30' : ''}"
+						class="flex w-full items-start gap-2.5 px-4 py-3 text-left cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700/50 {!notification.read ? 'bg-blue-50/50 dark:bg-neutral-800/30' : ''}"
 					>
 						<div class="relative">
 							<Avatar
@@ -180,7 +177,7 @@ async function handleNotificationClick(notification: NotificationItem) {
 						{#if !notification.read}
 							<span class="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500"></span>
 						{/if}
-					</div>
+					</button>
 				{/each}
 			{/if}
 		</div>
