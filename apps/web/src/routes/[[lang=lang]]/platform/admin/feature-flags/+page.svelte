@@ -22,9 +22,13 @@
 
   const queryClient = useQueryClient();
 
+  // P2-#46: pass `enabled` as a reactive getter so the query unblocks
+  // during hydration. The previous form captured `browser` at module
+  // evaluation — `false` during SSR-prerender — and never re-evaluated,
+  // leaving this admin screen perpetually skipping the request.
   const listQuery = createGetV1AdminFeatureFlags({
-      query: { enabled: browser, refetchOnWindowFocus: false },
-    });
+    query: { enabled: () => browser, refetchOnWindowFocus: false },
+  });
 
   const flags = $derived($listQuery.data?.flags);
 

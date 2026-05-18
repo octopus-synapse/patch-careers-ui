@@ -50,7 +50,8 @@ const items = $derived.by<RecommendedJob[]>(() => {
 
 	{#if $query.isLoading}
 		<ul class="space-y-2">
-			{#each Array(3) as _}
+			<!-- P2-#48: keyed by index so Svelte tracks identity correctly. -->
+			{#each Array(3) as _, i (i)}
 				<li class="flex items-center gap-3">
 					<div class="flex-1 space-y-1">
 						<Skeleton shape="text" width="60%" />

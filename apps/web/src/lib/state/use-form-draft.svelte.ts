@@ -55,14 +55,30 @@ export function useFormDraft<T extends Record<string, unknown>>(
 
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
+  // P2-#43: read the reactive `state` shape inside the effect, but only
+  // call the expensive `$state.snapshot` + `JSON.stringify` inside the
+  // debounced timeout — the previous form ran them synchronously on
+  // every keystroke, which the docstring claimed was already debounced.
+  // Also return a teardown so a rapid remount cancels the pending
+  // write instead of letting it complete against the new instance.
   $effect(() => {
     if (typeof window === 'undefined') return;
-    const snapshot = $state.snapshot(state) as T;
+    // Touch each top-level field so the rune subscribes to updates.
+    for (const _ in state) {
+      // noop — the read is the dependency.
+    }
     const storageKey = `${PREFIX}${getKey()}`;
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
+      const snapshot = $state.snapshot(state) as T;
       storage.set(storageKey, snapshot);
     }, debounceMs);
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+    };
   });
 
   let lastKey = $state(initialStorageKey);

@@ -1,18 +1,17 @@
-// Single entry point for all date formatting in the app. Callers should never
-// reach for `new Date(x).toLocaleDateString()` directly — that bypasses locale
-// fallback rules and produces inconsistent output when the user flips between
-// pt-BR / en mid-session.
+// Local convenience wrappers around `Intl.DateTimeFormat`. Callers
+// should never reach for `new Date(x).toLocaleDateString()` directly —
+// that bypasses locale fallback rules and produces inconsistent output
+// when the user flips between pt-BR / en mid-session.
+//
+// P2-#55: relative-time formatting delegates to
+// `packages/i18n/formatRelativeTime` so we don't keep two competing
+// threshold tables — the previous local copy disagreed with the
+// shared one (30-day "day" cap here vs. 7-day "week" bucket there).
+
+import type { Locale } from 'i18n';
+import { formatRelativeTime as sharedFormatRelativeTime } from 'i18n';
 
 type Style = 'short' | 'long' | 'time' | 'datetime' | 'relative';
-
-const RELATIVE_THRESHOLDS: Array<[Intl.RelativeTimeFormatUnit, number]> = [
-  ['second', 60],
-  ['minute', 60],
-  ['hour', 24],
-  ['day', 30],
-  ['month', 12],
-  ['year', Number.POSITIVE_INFINITY],
-];
 
 function toDate(input: Date | string | number | null | undefined): Date | null {
   if (input == null) return null;
@@ -21,8 +20,8 @@ function toDate(input: Date | string | number | null | undefined): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-function normalizeLocale(locale: string | undefined | null): string {
-  return locale && locale.length > 0 ? locale : 'pt-BR';
+function normalizeLocale(locale: string | undefined | null): Locale {
+  return (locale && locale.length > 0 ? locale : 'pt-BR') as Locale;
 }
 
 export function formatDate(
@@ -62,15 +61,5 @@ export function formatRelative(
 ): string {
   const d = toDate(input);
   if (!d) return '';
-  const loc = normalizeLocale(locale);
-  const rtf = new Intl.RelativeTimeFormat(loc, { numeric: 'auto', style: 'long' });
-
-  let diff = (d.getTime() - Date.now()) / 1000;
-  for (const [unit, factor] of RELATIVE_THRESHOLDS) {
-    if (Math.abs(diff) < factor) {
-      return rtf.format(Math.round(diff), unit);
-    }
-    diff /= factor;
-  }
-  return rtf.format(Math.round(diff), 'year');
+  return sharedFormatRelativeTime(d, normalizeLocale(locale));
 }

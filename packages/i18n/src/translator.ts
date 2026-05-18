@@ -41,8 +41,22 @@ export const NOOP_TRANSLATOR: Translator = (key) => key;
 export function createTranslator(dictionary: Dictionary, locale: Locale): Translator {
   return (key, params) => {
     let value: string | undefined;
-    if (params && typeof params.count === 'number') {
-      value = pluralize(dictionary, key, params.count, locale) ?? resolve(dictionary, key);
+    // P2-#56: coerce `count` to a number when it arrives as a numeric
+    // string (common when the value comes straight from an API field
+    // serialised as `"1"`). Previously the strict `typeof === 'number'`
+    // gate skipped pluralisation, so `t('items.label', { count: '1' })`
+    // returned the bare key when only `items.label_one` existed.
+    const rawCount = params?.count;
+    const numericCount =
+      typeof rawCount === 'number'
+        ? rawCount
+        : typeof rawCount === 'string' &&
+            rawCount.trim() !== '' &&
+            Number.isFinite(Number(rawCount))
+          ? Number(rawCount)
+          : undefined;
+    if (numericCount !== undefined) {
+      value = pluralize(dictionary, key, numericCount, locale) ?? resolve(dictionary, key);
     } else {
       value = resolve(dictionary, key);
     }

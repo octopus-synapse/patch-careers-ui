@@ -87,4 +87,11 @@ function createConsentStore() {
   };
 }
 
+// P2-#45: kept as a module-level singleton intentionally — every
+// localStorage / DOM touch inside `createConsentStore` is gated by a
+// `typeof localStorage === 'undefined'` check, so calling the helper
+// during SSR (e.g. if the analytics route ticked it) is a no-op rather
+// than a corruption. A future migration to `setContext`/`getContext`
+// is tracked under PD-009 (mirrors the `me-dashboard` move). Until
+// then the singleton stays the simpler shape.
 export const consentStore = createConsentStore();

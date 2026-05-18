@@ -73,8 +73,12 @@ $effect(() => {
   }
 
   // 6. Completed onboarding but still on /onboarding → home.
+  // P2-#47: explicit `return` mirrors every earlier branch so a future
+  // edit adding a step 7 doesn't accidentally fall through after
+  // step 6 already dispatched a navigation.
   if (!needsOnboarding && isOnboarding) {
     goto('/');
+    return;
   }
 });
 </script>

@@ -65,7 +65,13 @@ const notifications = $derived(
 function getNotificationMessage(notification: NotificationItem): string {
   const type = notification.type;
   const tKey = `notifications.${type}`;
-  return t(tKey) ?? type ?? '';
+  const translated = t(tKey);
+  // P3-#54: `Translator.t` falls back to returning the key as a string
+  // when the key is missing, so `translated ?? type` never fell through.
+  // Detect the key-equal-itself case explicitly and use the raw type as
+  // a more useful fallback than the literal dotted key.
+  if (translated === tKey) return type ?? '';
+  return translated ?? type ?? '';
 }
 
 function timeAgo(dateStr: string): string {

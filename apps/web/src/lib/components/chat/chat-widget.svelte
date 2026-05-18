@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/svelte-query';
+import { onDestroy } from 'svelte';
 import {
   postV1ChatMessages,
   createGetV1ChatConversations,
@@ -97,6 +98,12 @@ let dragOffsetX = $state(0);
 let dragOffsetY = $state(0);
 let isDragging = $state(false);
 let dragStart = { x: 0, y: 0, offsetX: 0, offsetY: 0 };
+// P2-#52: track the element currently holding pointer capture so an
+// unmount mid-drag releases it instead of leaving a captured pointer
+// that no longer has a listener. Without this the window keeps
+// dispatching pointermove to a destroyed component.
+let dragCaptureEl: HTMLElement | null = null;
+let dragCapturePointerId: number | null = null;
 
 $effect(() => {
   if (typeof window === 'undefined') return;
@@ -120,7 +127,10 @@ function onDragStart(e: PointerEvent) {
   // would otherwise steal their pointer events via setPointerCapture.
   const target = e.target as HTMLElement | null;
   if (target && target !== e.currentTarget && target.closest('button, a')) return;
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  const handle = e.currentTarget as HTMLElement;
+  handle.setPointerCapture(e.pointerId);
+  dragCaptureEl = handle;
+  dragCapturePointerId = e.pointerId;
   isDragging = true;
   dragStart = { x: e.clientX, y: e.clientY, offsetX: dragOffsetX, offsetY: dragOffsetY };
 }
@@ -134,6 +144,8 @@ function onDragMove(e: PointerEvent) {
 function onDragEnd(e: PointerEvent) {
   if (!isDragging) return;
   (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+  dragCaptureEl = null;
+  dragCapturePointerId = null;
   isDragging = false;
   try {
     window.localStorage.setItem(
@@ -144,6 +156,22 @@ function onDragEnd(e: PointerEvent) {
     /* storage full — ignore */
   }
 }
+
+// P2-#52: if the user closes the chat-widget mid-drag the component is
+// torn down without `onDragEnd` ever firing. Release the captured
+// pointer on destroy so the browser doesn't keep dispatching events to
+// a vanished listener (which manifested as the UI freezing).
+onDestroy(() => {
+  if (dragCaptureEl && dragCapturePointerId !== null) {
+    try {
+      dragCaptureEl.releasePointerCapture(dragCapturePointerId);
+    } catch {
+      /* element already detached — ignore */
+    }
+    dragCaptureEl = null;
+    dragCapturePointerId = null;
+  }
+});
 </script>
 
 {#if chatState.isOpen && canUseApp}

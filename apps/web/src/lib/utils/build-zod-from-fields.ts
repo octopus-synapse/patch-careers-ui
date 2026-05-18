@@ -1,5 +1,19 @@
 import { type ZodTypeAny, z } from 'zod';
 
+// P2-#41: compile a server-supplied pattern into a RegExp without
+// taking down the form render on a malformed value. Catastrophic
+// patterns (`(a+)+$`) would still hang the main thread once the regex
+// runs, but the backend onboarding-fields endpoint is the only writer
+// of these strings — a follow-up to allowlist common formats is
+// tracked under PD-009.
+function safeCompileRegex(source: string): RegExp | null {
+  try {
+    return new RegExp(source);
+  } catch {
+    return null;
+  }
+}
+
 /**
  * @deprecated F3 will move all field validation server-side. The backend
  * already returns `{validation:{minLength,maxLength,pattern,...}}` per
@@ -67,7 +81,14 @@ export function buildZodFromFields(
       schema = schema.max(v.maxLength, `${field.label} must be at most ${v.maxLength} characters`);
     }
     if (v.pattern !== undefined) {
-      schema = schema.regex(new RegExp(v.pattern), `${field.label} format is invalid`);
+      // P2-#41: the pattern is supplied by the backend onboarding-fields
+      // payload. A malformed value would `throw SyntaxError` synchronously
+      // and kill the whole form render; a catastrophic regex (`(a+)+$`)
+      // would hang the main thread on every keystroke. Guard with a parse
+      // attempt + skip on failure — the field stays validated by its
+      // type / length rules instead of by the bad pattern.
+      const safe = safeCompileRegex(v.pattern);
+      if (safe) schema = schema.regex(safe, `${field.label} format is invalid`);
     }
 
     if (v.required) {

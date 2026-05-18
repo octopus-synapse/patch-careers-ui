@@ -20,7 +20,11 @@ $effect(() => {
   if (!open) coverLetter = '';
 });
 
-function handleSubmit() {
+function handleSubmit(event?: SubmitEvent) {
+  // P2-#49: when invoked via `<form onsubmit>` make sure we don't fall
+  // through to a real navigation. Manual button clicks pass no event,
+  // so the optional-chain keeps that path working too.
+  event?.preventDefault();
   if (submitting) return;
   onsubmit(coverLetter.trim());
 }
@@ -37,7 +41,10 @@ function handleCancel() {
 		{t('jobs.applyModalTitle', { title: jobTitle })}
 	{/snippet}
 
-	<div class="space-y-4">
+	<!-- P2-#49: wrapping in <form> so Enter / Cmd+Enter inside the textarea
+	     submit the application, matching the platform convention for modals
+	     with a single primary action. -->
+	<form onsubmit={handleSubmit} class="space-y-4">
 		<p class="text-xs text-gray-500 dark:text-neutral-500">
 			{t('jobs.applyModalSubtitle')}
 		</p>
@@ -54,10 +61,10 @@ function handleCancel() {
 		</label>
 
 		<div class="flex items-center justify-end gap-2">
-			<Button variant="ghost" size="sm" onclick={handleCancel} disabled={submitting}>
+			<Button type="button" variant="ghost" size="sm" onclick={handleCancel} disabled={submitting}>
 				{t('jobs.applyCancel')}
 			</Button>
-			<Button variant="solid" size="sm" onclick={handleSubmit} disabled={submitting}>
+			<Button type="submit" variant="solid" size="sm" disabled={submitting}>
 				{#if submitting}
 					<Loader size={14} />
 					{t('jobs.applySubmitting')}
@@ -66,5 +73,5 @@ function handleCancel() {
 				{/if}
 			</Button>
 		</div>
-	</div>
+	</form>
 </Modal>

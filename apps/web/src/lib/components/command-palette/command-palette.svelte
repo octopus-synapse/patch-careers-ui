@@ -13,6 +13,7 @@ import {
   User,
   Users,
 } from 'lucide-svelte';
+import { focusTrap } from 'ui';
 import { goto } from '$app/navigation';
 import { trackCtaClick } from '$lib/utils/analytics/track';
 
@@ -220,10 +221,13 @@ function indexOfAction(actionId: string): number {
 		aria-label={t('commandPalette.ariaLabel')}
 		tabindex="-1"
 	>
+		<!-- P2-#50: trap focus inside the dialog panel so Tab doesn't leak
+		     to the elements behind the backdrop while the palette is open. -->
 		<div
 			class="w-full max-w-xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
 			role="presentation"
 			onkeydown={handleKeydown}
+			use:focusTrap={{ active: open }}
 		>
 			<div class="flex items-center gap-2 border-b border-gray-200 px-4 py-3 dark:border-neutral-700">
 				<Search size={16} class="text-gray-400" />

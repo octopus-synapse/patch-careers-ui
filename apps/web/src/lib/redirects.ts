@@ -21,10 +21,20 @@ export function redirectTo(target: string) {
 /**
  * Variant for catch-all redirects: forwards `/<old-prefix>/<rest>` to
  * `/<new-prefix>/<rest>`, preserving subpath and any trailing segments.
+ *
+ * P2-#39 (defence in depth): `params.rest` is a path segment, never a
+ * full URL, but a future caller misusing the helper with attacker-
+ * controlled input could turn it into an open redirect by leading with
+ * `//evil.com`, `\evil.com`, or `://evil.com`. Reject those shapes up
+ * front so a misuse fails loud instead of leaking traffic.
  */
 export function redirectPrefix(newPrefix: string) {
   return ({ params }: { params: { rest?: string } }) => {
-    const rest = params.rest ? `/${params.rest}` : '';
+    const rawRest = params.rest ?? '';
+    if (/^[/\\]/.test(rawRest) || rawRest.includes('://')) {
+      throw redirect(301, newPrefix);
+    }
+    const rest = rawRest ? `/${rawRest}` : '';
     throw redirect(301, `${newPrefix}${rest}`);
   };
 }

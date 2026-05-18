@@ -18,8 +18,15 @@ const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 function writeLocaleCookie(value: Locale): void {
   if (typeof document === 'undefined') return;
+  // P2-#40: add `Secure` when the page is served over HTTPS. The cookie
+  // is not security-critical (just a locale hint) but `SameSite=Lax`
+  // without `Secure` invites mixed-protocol leaks if any subdomain ever
+  // serves HTTP. Skip the flag on `http://localhost:*` so dev still
+  // works without TLS.
+  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const flags = `path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax${secure ? '; secure' : ''}`;
   // biome-ignore lint/suspicious/noDocumentCookie: locale cookie must be readable by SSR via the Cookie header; Cookie Store API would isolate it from the SSR pipeline.
-  document.cookie = `${LOCALE_COOKIE}=${encodeURIComponent(value)}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax`;
+  document.cookie = `${LOCALE_COOKIE}=${encodeURIComponent(value)}; ${flags}`;
 }
 
 function readLocaleCookie(): Locale | null {

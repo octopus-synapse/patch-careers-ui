@@ -200,6 +200,9 @@ const overflowLinks = $derived(
 );
 
 // Rotating placeholder hints for the global search box.
+// P2-#51: depend on `searchHints.length` so a locale change recreates
+// the interval with a fresh closure (and resets the rotation) instead
+// of letting the previous interval read the stale hint array.
 let searchHintIdx = $state(0);
 const searchHints = $derived([
   t('nav.search'),
@@ -209,8 +212,10 @@ const searchHints = $derived([
 ]);
 $effect(() => {
   if (!browser) return;
+  const length = searchHints.length;
+  searchHintIdx = 0;
   const id = setInterval(() => {
-    searchHintIdx = (searchHintIdx + 1) % searchHints.length;
+    searchHintIdx = (searchHintIdx + 1) % length;
   }, 4000);
   return () => clearInterval(id);
 });

@@ -72,7 +72,10 @@ function detectMention() {
     candidates = [];
     return;
   }
-  mentionStart = caret - match[2].length;
+  // P2-#53: include the leading `@` in the replaced span. Without the
+  // `-1` the inserted username overwrote the query letters but left
+  // the original `@` behind, producing `@@enzo ` instead of `@enzo `.
+  mentionStart = caret - match[2].length - 1;
   currentQuery = match[2];
   showPopover = true;
   if (debounce) clearTimeout(debounce);
@@ -87,7 +90,9 @@ function insertMention(candidate: MentionCandidate) {
   const caret = textarea.selectionStart ?? value.length;
   const before = value.slice(0, mentionStart);
   const after = value.slice(caret);
-  const insert = `${candidate.username} `;
+  // P2-#53: re-emit the `@` we now own (see `detectMention`) so the
+  // mention is complete in the rendered text.
+  const insert = `@${candidate.username} `;
   value = `${before}${insert}${after}`;
   oninput?.(value);
   showPopover = false;
