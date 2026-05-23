@@ -1,0 +1,54 @@
+{
+  "name": "@patch-careers/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./colors": {
+      "types": "./src/colors.ts",
+      "import": "./src/colors.ts",
+      "default": "./src/colors.ts"
+    },
+    "./spacing": {
+      "types": "./src/spacing.ts",
+      "import": "./src/spacing.ts",
+      "default": "./src/spacing.ts"
+    },
+    "./typography": {
+      "types": "./src/typography.ts",
+      "import": "./src/typography.ts",
+      "default": "./src/typography.ts"
+    },
+    "./radius": {
+      "types": "./src/radius.ts",
+      "import": "./src/radius.ts",
+      "default": "./src/radius.ts"
+    },
+    "./shadows": {
+      "types": "./src/shadows.ts",
+      "import": "./src/shadows.ts",
+      "default": "./src/shadows.ts"
+    },
+    "./themes": {
+      "types": "./src/themes.ts",
+      "import": "./src/themes.ts",
+      "default": "./src/themes.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
+    "vitest": "^2.1.9"
+  }
+}
