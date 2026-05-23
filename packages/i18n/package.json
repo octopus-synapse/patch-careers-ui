@@ -1,0 +1,39 @@
+{
+  "name": "@patch-careers/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./translator": {
+      "types": "./src/translator.ts",
+      "import": "./src/translator.ts",
+      "default": "./src/translator.ts"
+    },
+    "./format": {
+      "types": "./src/format.ts",
+      "import": "./src/format.ts",
+      "default": "./src/format.ts"
+    },
+    "./dictionaries/pt-BR": {
+      "types": "./src/dictionaries/pt-BR.ts",
+      "import": "./src/dictionaries/pt-BR.ts",
+      "default": "./src/dictionaries/pt-BR.ts"
+    },
+    "./dictionaries/en": {
+      "types": "./src/dictionaries/en.ts",
+      "import": "./src/dictionaries/en.ts",
+      "default": "./src/dictionaries/en.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run --coverage"
+  }
+}

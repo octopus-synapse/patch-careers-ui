@@ -4,6 +4,9 @@
   "references": [
     {
       "path": "./packages/tokens"
+    },
+    {
+      "path": "./packages/i18n"
     }
   ],
   "compilerOptions": {
