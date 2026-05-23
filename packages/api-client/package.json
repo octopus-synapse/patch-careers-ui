@@ -1,0 +1,38 @@
+{
+  "name": "@patch-careers/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kubb-generated SDK + React Query hooks + Zod schemas for the profile-services backend, plus typed dictionaries / enums / error codes synced from the backend.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dictionaries": "./src/generated/dictionaries.ts",
+    "./enums": "./src/generated/enums.ts",
+    "./error-codes": "./src/generated/error-codes.ts",
+    "./client": "./src/client/fetcher.ts"
+  },
+  "scripts": {
+    "sdk:generate": "kubb generate && tsx scripts/post-kubb.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": ">=5",
+    "react": ">=18",
+    "zod": ">=3"
+  },
+  "devDependencies": {
+    "@kubb/cli": "^3.0.0",
+    "@kubb/plugin-oas": "^3.0.0",
+    "@kubb/plugin-react-query": "^3.0.0",
+    "@kubb/plugin-ts": "^3.0.0",
+    "@kubb/plugin-zod": "^3.0.0",
+    "@tanstack/react-query": "^5.62.0",
+    "react": "^18.3.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3",
+    "zod": "^3.23.8"
+  }
+}

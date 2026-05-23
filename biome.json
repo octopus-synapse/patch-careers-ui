@@ -38,7 +38,8 @@
       "!**/tmp",
       "!**/coverage",
       "!**/*.html",
-      "!**/*.css"
+      "!**/*.css",
+      "!**/src/generated"
     ]
   }
 }
