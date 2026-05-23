@@ -11,6 +11,11 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
+    "test": "nx run-many -t test",
+    "build": "nx run-many -t build",
+    "typecheck": "nx run-many -t typecheck",
+    "graph": "nx graph",
+    "affected": "nx affected",
     "prepare": "husky"
   },
   "devDependencies": {
