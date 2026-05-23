@@ -19,18 +19,43 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@babel/runtime": "~7.27.6",
     "@biomejs/biome": "^2.4.13",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/types": "^19.8.1",
+    "@expo/cli": "~54.0.16",
     "@nx/expo": "^22.7.3",
     "@nx/js": "^22.7.3",
     "@nx/react": "^22.7.3",
+    "@swc-node/register": "~1.11.1",
+    "@swc/core": "~1.15.5",
+    "@swc/helpers": "~0.5.18",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.1.0",
     "@vitest/coverage-v8": "^2.1.9",
+    "babel-preset-expo": "~54.0.7",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "metro-config": "~0.83.0",
+    "metro-resolver": "~0.83.0",
     "nx": "^22.7.3",
+    "tslib": "^2.3.0",
     "typescript": "^5.9.3",
     "vitest": "^2.1.9"
+  },
+  "dependencies": {
+    "@expo/metro-config": "~54.0.9",
+    "@expo/metro-runtime": "~6.1.2",
+    "expo": "~54.0.0",
+    "expo-splash-screen": "~31.0.11",
+    "expo-status-bar": "~3.0.8",
+    "expo-system-ui": "~6.0.8",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-native": "0.81.5",
+    "react-native-svg": "15.12.1",
+    "react-native-svg-transformer": "~1.5.1",
+    "react-native-web": "~0.21.0"
   }
 }

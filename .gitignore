@@ -37,6 +37,16 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .expo
 .expo-shared
 expo-env.d.ts
+.yarn/
+web-build/
+cache/
+# EAS / signing artefacts (never commit)
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
 
 # IntelliJ based IDEs
 .idea
@@ -51,3 +61,7 @@ playwright/.cache
 
 # Worktrees (Claude Code)
 .claude/worktrees/
+
+# Misc
+npm-debug.*
+
