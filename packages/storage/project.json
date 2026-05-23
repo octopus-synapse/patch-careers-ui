@@ -1,0 +1,27 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "storage",
+  "sourceRoot": "packages/storage/src",
+  "projectType": "library",
+  "tags": ["scope:shared", "type:storage"],
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --coverage",
+        "cwd": "packages/storage"
+      },
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome check .",
+        "cwd": "packages/storage"
+      },
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/biome.json"]
+    }
+  }
+}
