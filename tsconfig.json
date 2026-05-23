@@ -10,6 +10,9 @@
     },
     {
       "path": "./packages/storage"
+    },
+    {
+      "path": "./packages/state"
     }
   ],
   "compilerOptions": {
