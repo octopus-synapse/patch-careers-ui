@@ -1,5 +1,6 @@
-# dependencies (bun install)
+# dependencies
 node_modules
+.pnpm-store
 
 # output
 out
@@ -13,8 +14,8 @@ coverage
 
 # logs
 logs
-_.log
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # dotenv environment variable files
 .env
@@ -27,7 +28,15 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .eslintcache
 .cache
 *.tsbuildinfo
-.turbo
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# Expo
+.expo
+.expo-shared
+expo-env.d.ts
 
 # IntelliJ based IDEs
 .idea
@@ -35,13 +44,10 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Finder (MacOS) folder config
 .DS_Store
 
-# SvelteKit
-.svelte-kit
-
 # Playwright
 test-results
 playwright-report
 playwright/.cache
 
-# pre-commit attestation metrics (temporary, per-run)
-.attestation-metrics.json
+# Worktrees (Claude Code)
+.claude/worktrees/

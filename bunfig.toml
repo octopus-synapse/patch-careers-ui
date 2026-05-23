@@ -1,4 +1,0 @@
-# Scoped registry auth for @octopus-synapse/* packages.
-# Set GITHUB_TOKEN (PAT with read:packages) before `bun install`.
-[install.scopes]
-"@octopus-synapse" = { token = "$GITHUB_TOKEN", url = "https://npm.pkg.github.com/" }

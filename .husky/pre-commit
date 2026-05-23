@@ -1,3 +1,8 @@
 #!/bin/sh
-bunx octopus-run-parallel --config .precommit.yaml
-bunx octopus-attest generate --checks "typecheck,lint"
+# V2 pre-commit gate — runs lint via Biome and (when present) Nx typecheck.
+# Heavier per-package checks (i18n parity, no-any, sdk-drift, etc.) are
+# reintroduced in later PRs once their producers exist in the V2 tree.
+pnpm exec biome check . || exit 1
+if [ -f nx.json ]; then
+  pnpm exec nx run-many -t typecheck --output-style=stream || exit 1
+fi

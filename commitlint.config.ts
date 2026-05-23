@@ -1,3 +1,7 @@
-import base from '@octopus-synapse/commitlint-config';
+import type { UserConfig } from "@commitlint/types";
 
-export default base;
+const config: UserConfig = {
+  extends: ["@commitlint/config-conventional"],
+};
+
+export default config;
