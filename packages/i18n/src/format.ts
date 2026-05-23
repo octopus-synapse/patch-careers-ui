@@ -46,7 +46,7 @@ const SIZE_UNITS = ["B", "kB", "MB", "GB", "TB"] as const;
  */
 export function formatFileSize(bytes: number, locale: Locale, fractionDigits = 1): string {
   if (!Number.isFinite(bytes) || bytes < 0) {
-    return new Intl.NumberFormat(locale).format(0) + " B";
+    return `${new Intl.NumberFormat(locale).format(0)} B`;
   }
   let value = bytes;
   let unitIndex = 0;
