@@ -34,17 +34,9 @@
       "!**/dist",
       "!**/build",
       "!**/.nx",
-      "!**/.turbo",
-      "!**/.svelte-kit",
-      "!**/test-results",
-      "!**/playwright-report",
       "!**/coverage",
       "!**/*.html",
-      "!**/*.css",
-      "!apps/web",
-      "!packages/api-client",
-      "!packages/i18n",
-      "!packages/ui"
+      "!**/*.css"
     ]
   }
 }
