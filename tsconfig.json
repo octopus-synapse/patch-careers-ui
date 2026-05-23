@@ -13,6 +13,9 @@
     },
     {
       "path": "./packages/state"
+    },
+    {
+      "path": "./packages/ui"
     }
   ],
   "compilerOptions": {
