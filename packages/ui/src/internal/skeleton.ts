@@ -1,11 +1,10 @@
+import { radius as radiusTokens } from "@patch-careers/tokens";
 /**
  * Skeleton dimension helpers.
  *
  * Maps the `<Skeleton variant="...">` API to concrete width/height/radius
  * values so the JSX wrapper stays trivial.
  */
-
-import { radius as radiusTokens } from "@patch-careers/tokens/radius";
 
 export type SkeletonVariant = "rect" | "text" | "avatar" | "circle";
 

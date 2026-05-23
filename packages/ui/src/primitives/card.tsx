@@ -4,9 +4,7 @@
  * Density follows D63 confortável guideline: 16px padding, 12px gap.
  */
 
-import { radius } from "@patch-careers/tokens/radius";
-import { shadows } from "@patch-careers/tokens/shadows";
-import { spacing } from "@patch-careers/tokens/spacing";
+import { radius, shadows, spacing } from "@patch-careers/tokens";
 import { TCard } from "../internal/tamagui-shim";
 
 export type CardProps = {

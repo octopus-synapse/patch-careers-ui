@@ -2,8 +2,7 @@
  * `<Badge>` — small inline status pill, often used for counts or labels.
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
-import { radius } from "@patch-careers/tokens/radius";
+import { intent as intentTokens, radius } from "@patch-careers/tokens";
 import type { ReactNode } from "react";
 import { TStack } from "../internal/tamagui-shim";
 import type { Intent } from "../internal/types";

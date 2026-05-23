@@ -4,7 +4,7 @@
  * Simpler than `Tabs` (no content panes), good for filter rows.
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
+import { intent as intentTokens } from "@patch-careers/tokens";
 import { TXStack } from "../internal/tamagui-shim";
 import { useThemeName } from "../internal/use-theme-name";
 import { Pill } from "../primitives/pill";

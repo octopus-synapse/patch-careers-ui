@@ -6,7 +6,7 @@
  * a caption list below the bar.
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
+import { intent as intentTokens } from "@patch-careers/tokens";
 import { evaluatePasswordStrength } from "../internal/password-strength";
 import { TXStack, TYStack } from "../internal/tamagui-shim";
 import type { Intent } from "../internal/types";

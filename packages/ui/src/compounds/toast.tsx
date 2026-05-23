@@ -6,7 +6,7 @@
  * (success/warning/error) when the toast appears.
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
+import { intent as intentTokens } from "@patch-careers/tokens";
 import {
   Toast as TamaguiToast,
   ToastProvider as TamaguiToastProvider,

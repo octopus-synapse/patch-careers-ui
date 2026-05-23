@@ -8,7 +8,7 @@
  *   <  40   poor       → danger
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
+import { intent as intentTokens } from "@patch-careers/tokens";
 import type { Intent, ThemeName } from "./types";
 
 export type FitBucket = "excellent" | "good" | "fair" | "poor";

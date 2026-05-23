@@ -64,6 +64,8 @@
   "devDependencies": {
     "@tamagui/sheet": "^1.114.0",
     "@tamagui/toast": "^1.114.0",
-    "@types/react": "^19.0.0"
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "react-native": "^0.85.3"
   }
 }

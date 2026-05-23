@@ -6,10 +6,12 @@
  * every cross-product without dragging Tamagui's runtime into vitest.
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
-import { radius as radiusTokens } from "@patch-careers/tokens/radius";
-import { spacing as spacingTokens } from "@patch-careers/tokens/spacing";
-import { fontSize as fontSizeTokens } from "@patch-careers/tokens/typography";
+import {
+  fontSize as fontSizeTokens,
+  intent as intentTokens,
+  radius as radiusTokens,
+  spacing as spacingTokens,
+} from "@patch-careers/tokens";
 import type { ButtonVariant, Intent, Size, ThemeName } from "./types";
 
 export type ButtonState = "default" | "hover" | "press" | "disabled";

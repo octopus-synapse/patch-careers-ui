@@ -1,11 +1,10 @@
+import { fontSize, fontWeight, lineHeight } from "@patch-careers/tokens";
 /**
  * Pure variant resolver for `<Text>` typography presets.
  *
  * Maps semantic preset names ("h1", "body", etc.) to font-size /
  * line-height / weight triples from `@patch-careers/tokens`.
  */
-
-import { fontSize, fontWeight, lineHeight } from "@patch-careers/tokens/typography";
 
 export type TextPreset = "h1" | "h2" | "h3" | "body" | "caption" | "label" | "mono";
 

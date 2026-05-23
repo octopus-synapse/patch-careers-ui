@@ -5,8 +5,7 @@
  * the score as accessible text so VoiceOver reads "Score 87 de 100".
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens/colors";
-import { radius } from "@patch-careers/tokens/radius";
+import { intent as intentTokens, radius } from "@patch-careers/tokens";
 import { clampScore, fitScoreIntent } from "../internal/fit-score";
 import { TStack } from "../internal/tamagui-shim";
 import { useThemeName } from "../internal/use-theme-name";

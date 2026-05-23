@@ -1,8 +1,7 @@
+import { palette } from "@patch-careers/tokens";
 /**
  * Avatar helpers — initial-fallback computation and color hashing.
  */
-
-import { palette } from "@patch-careers/tokens/colors";
 
 /**
  * Up-to-2-character initials derived from a name string.
