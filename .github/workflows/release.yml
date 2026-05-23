@@ -1,14 +1,20 @@
 name: Release
 
+# V2 release pipeline. The V1 docker-image build step is removed:
+# - apps/app ships via EAS Build / EAS Submit (PR #20)
+# - packages/* are private to this workspace today (no npm publish)
+# Versioning still rides release-please via the octopus-synapse
+# shared workflows.
+
 on:
   push:
     branches: [homolog, main]
   workflow_dispatch:
     inputs:
       force_release_type:
-        description: 'Force release type'
+        description: "Force release type"
         type: choice
-        options: ['', patch, minor, major]
+        options: ["", patch, minor, major]
 
 permissions:
   contents: write
@@ -28,20 +34,7 @@ jobs:
     secrets: inherit
 
   finalize-release:
-    # Two entry points:
-    #  - push to main where the head commit message contains 'chore(release):'
-    #    (covers both squash-merges where the title becomes the commit message
-    #     AND merge-commits where the chore line lives in the body).
-    #  - manual workflow_dispatch on main (no head_commit payload to inspect),
-    #    used to recover from a release PR merged with the wrong strategy.
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'chore(release):'))
     uses: octopus-synapse/octopus-workflows/.github/workflows/_release-finalize.yml@v1
     with:
       commit_sha: ${{ github.sha }}
-
-  build-docker:
-    needs: finalize-release
-    if: needs.finalize-release.outputs.released == 'true'
-    uses: octopus-synapse/octopus-workflows/.github/workflows/_release-docker.yml@v1
-    with:
-      tag: ${{ needs.finalize-release.outputs.tag }}

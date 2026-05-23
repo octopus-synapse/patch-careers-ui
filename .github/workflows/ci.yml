@@ -1,32 +1,107 @@
 name: CI
 
+# V2 monorepo CI — pnpm + Nx. Replaces the V1 pipeline which fanned out
+# via Turbo + octopus-synapse shared actions and built a SvelteKit
+# Docker image. Mobile (EAS Build) and OTA workflows land in PR #20.
+
 on:
   pull_request:
     branches: [main, homolog, dev]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  packages: read
-  pull-requests: write
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  PNPM_VERSION: 9.15.4
+  NODE_VERSION: 20.x
 
 jobs:
-  verify-attestation:
+  setup:
+    name: Setup (install deps)
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - id: cache-key
+        run: echo "value=${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}" >> "$GITHUB_OUTPUT"
+      - run: pnpm install --frozen-lockfile
+
+  lint:
+    name: Lint (Biome)
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: octopus-synapse/octopus-workflows/.github/actions/verify-attestation@v1
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
 
-  build:
-    needs: verify-attestation
-    uses: ./.github/workflows/ci.build.yml
-    secrets: inherit
+  nx-affected:
+    name: Nx affected (typecheck + test + build)
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
 
-  e2e:
-    needs: verify-attestation
-    uses: ./.github/workflows/ci.infrastructure.e2e.yml
-    secrets: inherit
+      # Derive the base ref for `nx affected` so PRs only run on touched
+      # projects; pushes to main run the full graph via run-many.
+      - name: Set Nx SHAs
+        if: github.event_name == 'pull_request'
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Typecheck (affected on PR, all on push)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm exec nx affected -t typecheck --parallel=3
+          else
+            pnpm exec nx run-many -t typecheck --parallel=3
+          fi
+
+      - name: Test (affected on PR, all on push)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm exec nx affected -t test --parallel=3
+          else
+            pnpm exec nx run-many -t test --parallel=3
+          fi
+
+      - name: Build (affected on PR, all on push)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm exec nx affected -t build --parallel=3
+          else
+            pnpm exec nx run-many -t build --parallel=3
+          fi
