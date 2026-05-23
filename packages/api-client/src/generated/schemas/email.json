@@ -1,0 +1,1 @@
+{"type":"string","minLength":5,"maxLength":255,"format":"email","description":"Email address used for authentication and notifications. Trimmed and lowercased on submit.","example":"fixture@profile.local","x-readme-ref-name":"Email"}

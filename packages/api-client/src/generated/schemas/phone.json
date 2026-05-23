@@ -1,0 +1,1 @@
+{"type":"string","maxLength":20,"description":"Phone number, free-form up to 20 characters. Recommended format: E.164 (e.g. `+5511999990000`).","example":"+5511999990000","x-readme-ref-name":"Phone"}
