@@ -1,0 +1,38 @@
+{
+  "name": "@patch-careers/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Token-based auth client (login / refresh / logout / OAuth) shared by the Expo + RN-web app. Wires its refresh queue into @patch-careers/api-client so 401 -> refresh -> retry is transparent to every Kubb-generated React Query hook.",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./store": {
+      "types": "./src/auth.store.ts",
+      "import": "./src/auth.store.ts",
+      "default": "./src/auth.store.ts"
+    },
+    "./oauth": {
+      "types": "./src/oauth.ts",
+      "import": "./src/oauth.ts",
+      "default": "./src/oauth.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zustand": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@patch-careers/api-client": "workspace:*",
+    "@patch-careers/storage": "workspace:*"
+  }
+}

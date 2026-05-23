@@ -81,6 +81,18 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
 
+  packages/auth:
+    dependencies:
+      '@patch-careers/api-client':
+        specifier: workspace:*
+        version: link:../api-client
+      '@patch-careers/storage':
+        specifier: workspace:*
+        version: link:../storage
+      zustand:
+        specifier: ^5.0.0
+        version: 5.0.13(react@19.2.6)
+
   packages/i18n: {}
 
   packages/state:
