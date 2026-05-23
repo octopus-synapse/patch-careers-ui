@@ -3,15 +3,15 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "noEmit": false,
+    "noEmit": true,
     "noEmitOnError": false,
     "composite": false,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true
   },
   "include": ["src/**/*", "contracts/*.json"],
   "exclude": ["node_modules", "dist", "src/generated/**/*.test.ts"]

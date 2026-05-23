@@ -40,7 +40,7 @@ export default defineConfig({
     pluginReactQuery({
       output: { path: "hooks" },
       group: { type: "tag" },
-      client: { importPath: "../../client/fetcher.ts" },
+      client: { importPath: "../../../client/fetcher.ts" },
       suspense: false,
     }),
   ],
