@@ -6,16 +6,20 @@
  *   SafeAreaProvider
  *   └── QueryClientProvider (TanStack)
  *       └── AppTamaguiProvider (resolves theme from useColorScheme)
- *           └── I18nProvider (resolves locale from system)
- *               └── AuthProvider (placeholder; real wiring in PR #7)
- *                   ├── NetInfoBanner (sticky)
- *                   └── <Stack /> (Expo Router)
+ *           └── ToastProvider (Tamagui toast portal — wraps the stack so
+ *               useToast() works from any screen, including the auth
+ *               flows mounted under `(auth)`)
+ *               └── I18nProvider (resolves locale from system)
+ *                   └── AuthProvider (token bootstrap + OAuth callback)
+ *                       ├── NetInfoBanner (sticky)
+ *                       └── <Stack /> (Expo Router)
  *
  * `SplashScreen.preventAutoHideAsync()` keeps the brand splash visible
  * until the providers have mounted; we hide it on first render of the
  * root stack.
  */
 
+import { ToastProvider } from "@patch-careers/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -54,15 +58,21 @@ export default function RootLayout(): ReactElement {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <AppTamaguiProvider>
-          <I18nProvider>
-            <AuthProvider>
-              <StatusBar style="auto" />
-              <NetInfoBanner />
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              </Stack>
-            </AuthProvider>
-          </I18nProvider>
+          <ToastProvider>
+            <I18nProvider>
+              <AuthProvider>
+                <StatusBar style="auto" />
+                <NetInfoBanner />
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                  <Stack.Screen name="reset-password" options={{ headerShown: false }} />
+                  <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
+                  <Stack.Screen name="legal-webview" options={{ headerShown: true, title: "" }} />
+                </Stack>
+              </AuthProvider>
+            </I18nProvider>
+          </ToastProvider>
         </AppTamaguiProvider>
       </QueryClientProvider>
     </SafeAreaProvider>

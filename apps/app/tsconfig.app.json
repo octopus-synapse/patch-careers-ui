@@ -28,6 +28,9 @@
   ],
   "references": [
     {
+      "path": "../../packages/ui"
+    },
+    {
       "path": "../../packages/storage"
     },
     {
@@ -35,6 +38,12 @@
     },
     {
       "path": "../../packages/i18n"
+    },
+    {
+      "path": "../../packages/auth"
+    },
+    {
+      "path": "../../packages/api-client"
     },
     {
       "path": "../../packages/tokens"
