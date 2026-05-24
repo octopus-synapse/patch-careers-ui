@@ -16,6 +16,12 @@
     },
     {
       "path": "./packages/ui"
+    },
+    {
+      "path": "./packages/api-client"
+    },
+    {
+      "path": "./packages/auth"
     }
   ],
   "compilerOptions": {

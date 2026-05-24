@@ -237,6 +237,47 @@ export async function refresh(): Promise<TokenPair> {
 }
 
 /**
+ * POST /v1/auth/session/tokens — exchanges a freshly-created
+ * cookie-based session (e.g. from a web login that the backend started
+ * with `mode=cookie`) into a Bearer pair for the mobile / RN-web app.
+ *
+ * Backend support for this endpoint may or may not yet be live in the
+ * synced swagger snapshot — when the endpoint is unavailable the call
+ * resolves to `null` so the caller can fall back to a normal login
+ * flow. When it succeeds the Bearer pair is persisted to token storage
+ * and the api-client picks it up on the next request.
+ */
+export async function exchangeSessionForTokens(
+  sessionExchangeId: string,
+): Promise<TokenPair | null> {
+  const tokenStorage = getTokenStorageOrThrow();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+  if (runtime.preferTokens) headers["Accept-Mode"] = "tokens";
+  try {
+    const response = await fetch(`${runtime.apiBaseURL}/api/v1/auth/session/tokens`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ sessionExchangeId }),
+    });
+    if (!response.ok) {
+      // 404 = endpoint not deployed yet; surface as null so OAuth /
+      // 2FA flows can degrade to "ask user to sign in again".
+      return null;
+    }
+    const data = (await response.json()) as unknown;
+    const pair = extractTokenPair(data);
+    if (!pair) return null;
+    await tokenStorage.set(pair);
+    return pair;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * POST /v1/auth/logout — invalidates server-side refresh token then
  * unconditionally clears local storage + store, even if the network
  * call fails (user wants out; we don't want a wedged auth state).

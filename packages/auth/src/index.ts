@@ -11,6 +11,8 @@
  */
 export * from "./auth.store";
 export * from "./client";
+export * from "./helpers";
+export * from "./oauth";
 export * from "./refresh-queue";
 export * from "./token-storage";
 export * from "./types";

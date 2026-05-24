@@ -4,6 +4,7 @@ import { useAuthStore } from "./auth.store";
 import {
   bootstrap,
   configureAuthClient,
+  exchangeSessionForTokens,
   login,
   logout,
   refresh,
@@ -192,6 +193,49 @@ describe("client — refresh", () => {
     for (const r of results) {
       expect(r.accessToken).toBe("new-access");
     }
+  });
+});
+
+describe("client — exchangeSessionForTokens", () => {
+  it("persists Bearer pair on success", async () => {
+    const storage = createMemoryStorage();
+    const fetchMock: FetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(200, {
+        accessToken: "ex-access",
+        refreshToken: "ex-refresh",
+        expiresIn: 1800,
+      }),
+    );
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    configureAuthClient({ storage, apiBaseURL: API });
+    const pair = await exchangeSessionForTokens("sx-1");
+    expect(pair?.accessToken).toBe("ex-access");
+
+    const ts = createTokenStorage(storage);
+    expect((await ts.get())?.accessToken).toBe("ex-access");
+  });
+
+  it("returns null when endpoint is unavailable (404)", async () => {
+    const storage = createMemoryStorage();
+    const fetchMock: FetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(404, { code: "NOT_FOUND" }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    configureAuthClient({ storage, apiBaseURL: API });
+    const pair = await exchangeSessionForTokens("sx-1");
+    expect(pair).toBeNull();
+  });
+
+  it("returns null on network failure", async () => {
+    const storage = createMemoryStorage();
+    const fetchMock: FetchMock = vi.fn().mockRejectedValue(new Error("offline"));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    configureAuthClient({ storage, apiBaseURL: API });
+    const pair = await exchangeSessionForTokens("sx-1");
+    expect(pair).toBeNull();
   });
 });
 
