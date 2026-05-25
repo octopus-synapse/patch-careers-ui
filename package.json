@@ -24,7 +24,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/types": "^19.8.1",
-    "@expo/cli": "~54.0.16",
+    "@expo/cli": "~56.1.11",
     "@nx/expo": "^22.7.3",
     "@nx/js": "^22.7.3",
     "@nx/react": "^22.7.3",
