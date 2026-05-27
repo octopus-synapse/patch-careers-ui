@@ -65,12 +65,19 @@ async function writeIndex(keys: Set<string>): Promise<void> {
   await mobileMundane.setItem(SECURE_INDEX_KEY, JSON.stringify(Array.from(keys)));
 }
 
+function secureStoreKey(key: string): string {
+  return key.replace(
+    /[^A-Za-z0-9._-]/g,
+    (char) => `_u${char.charCodeAt(0).toString(16)}_`,
+  );
+}
+
 export const mobileSecure: KeyValueStorage = {
   async getItem(key) {
-    return ExpoSecureStore.getItemAsync(key);
+    return ExpoSecureStore.getItemAsync(secureStoreKey(key));
   },
   async setItem(key, value, options?: SetItemOptions) {
-    await ExpoSecureStore.setItemAsync(key, value, {
+    await ExpoSecureStore.setItemAsync(secureStoreKey(key), value, {
       ...(options?.requireAuthentication !== undefined
         ? { requireAuthentication: options.requireAuthentication }
         : {}),
@@ -80,14 +87,16 @@ export const mobileSecure: KeyValueStorage = {
     await writeIndex(index);
   },
   async removeItem(key) {
-    await ExpoSecureStore.deleteItemAsync(key);
+    await ExpoSecureStore.deleteItemAsync(secureStoreKey(key));
     const index = await readIndex();
     index.delete(key);
     await writeIndex(index);
   },
   async clear() {
     const index = await readIndex();
-    await Promise.all(Array.from(index).map((k) => ExpoSecureStore.deleteItemAsync(k)));
+    await Promise.all(
+      Array.from(index).map((k) => ExpoSecureStore.deleteItemAsync(secureStoreKey(k))),
+    );
     await writeIndex(new Set());
   },
   async getAllKeys() {

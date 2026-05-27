@@ -20,6 +20,7 @@ import {
   themeDark,
   themeLight,
 } from "@patch-careers/tokens";
+import { createAnimations } from "@tamagui/animations-react-native";
 import { createTamagui } from "@tamagui/core";
 
 const space = {
@@ -107,25 +108,80 @@ const tokens = {
   color: colorTokens,
 } as const;
 
+// Tamagui internamente acessa fontSize via $1..$16 (key numérica). Nosso
+// tokens são nomeados semânticos (xs/sm/md/...). Mapeio AMBOS pro mesmo
+// valor — semânticos pra uso explícito (`$md`), numerados pra Tamagui
+// internal defaults (`$4`).
+const fontSizeMap = {
+  // Semânticos (uso explícito no app)
+  xs: fontSize.xs,
+  sm: fontSize.sm,
+  md: fontSize.md,
+  lg: fontSize.lg,
+  xl: fontSize.xl,
+  "2xl": fontSize["2xl"],
+  "3xl": fontSize["3xl"],
+  "4xl": fontSize["4xl"],
+  "5xl": fontSize["5xl"],
+  "6xl": fontSize["6xl"],
+  // Numerados (Tamagui defaults — $1 = menor, $10 = maior)
+  1: fontSize.xs,
+  2: fontSize.sm,
+  3: fontSize.md,
+  4: fontSize.lg,
+  5: fontSize.xl,
+  6: fontSize["2xl"],
+  7: fontSize["3xl"],
+  8: fontSize["4xl"],
+  9: fontSize["5xl"],
+  10: fontSize["6xl"],
+  // True (Tamagui usa $true como default)
+  true: fontSize.md,
+} as const;
+
+const lineHeightMap = {
+  xs: lineHeight.xs,
+  sm: lineHeight.sm,
+  md: lineHeight.md,
+  lg: lineHeight.lg,
+  xl: lineHeight.xl,
+  "2xl": lineHeight["2xl"],
+  "3xl": lineHeight["3xl"],
+  "4xl": lineHeight["4xl"],
+  "5xl": lineHeight["5xl"],
+  "6xl": lineHeight["6xl"],
+  1: lineHeight.xs,
+  2: lineHeight.sm,
+  3: lineHeight.md,
+  4: lineHeight.lg,
+  5: lineHeight.xl,
+  6: lineHeight["2xl"],
+  7: lineHeight["3xl"],
+  8: lineHeight["4xl"],
+  9: lineHeight["5xl"],
+  10: lineHeight["6xl"],
+  true: lineHeight.md,
+} as const;
+
 const fonts = {
   body: {
     family: fontFamily.body,
-    size: fontSize,
-    lineHeight,
+    size: fontSizeMap,
+    lineHeight: lineHeightMap,
     weight: fontWeight,
     letterSpacing,
   },
   heading: {
     family: fontFamily.heading,
-    size: fontSize,
-    lineHeight,
+    size: fontSizeMap,
+    lineHeight: lineHeightMap,
     weight: fontWeight,
     letterSpacing,
   },
   mono: {
     family: fontFamily.mono,
-    size: fontSize,
-    lineHeight,
+    size: fontSizeMap,
+    lineHeight: lineHeightMap,
     weight: fontWeight,
     letterSpacing,
   },
@@ -162,10 +218,19 @@ const themes = {
   },
 } as const;
 
+// Driver de animação pra Tamagui (Toast/Sheet/etc usam internamente).
+// Sem isso aparece warning "No animation driver configured" em runtime.
+const animations = createAnimations({
+  quick: { type: "timing", duration: 180 },
+  medium: { type: "timing", duration: 320 },
+  slow: { type: "timing", duration: 520 },
+});
+
 export const config = createTamagui({
   tokens,
   themes,
   fonts,
+  animations,
   shorthands: {},
   defaultTheme: "light",
   defaultFont: "body",

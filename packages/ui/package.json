@@ -36,16 +36,16 @@
     "@patch-careers/tokens": "workspace:*"
   },
   "peerDependencies": {
-    "@tamagui/animations-react-native": "^1.114.0",
-    "@tamagui/core": "^1.114.0",
-    "@tamagui/font-inter": "^1.114.0",
-    "@tamagui/sheet": "^1.114.0",
-    "@tamagui/toast": "^1.114.0",
-    "lucide-react-native": "^0.460.0",
-    "react": "^18.2.0 || ^19.0.0",
-    "react-native": "*",
+    "@tamagui/animations-react-native": "1.144.4",
+    "@tamagui/core": "1.144.4",
+    "@tamagui/font-inter": "1.144.4",
+    "@tamagui/sheet": "1.144.4",
+    "@tamagui/toast": "1.144.4",
+    "lucide-react-native": "^1.16.0",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
     "react-native-svg": "^15.0.0",
-    "tamagui": "^1.114.0"
+    "tamagui": "1.144.4"
   },
   "peerDependenciesMeta": {
     "@tamagui/animations-react-native": {
@@ -62,10 +62,10 @@
     }
   },
   "devDependencies": {
-    "@tamagui/sheet": "^1.114.0",
-    "@tamagui/toast": "^1.114.0",
+    "@tamagui/sheet": "1.144.4",
+    "@tamagui/toast": "1.144.4",
     "@types/react": "^19.0.0",
-    "react": "^19.0.0",
-    "react-native": "^0.85.3"
+    "react": "19.1.0",
+    "react-native": "0.81.5"
   }
 }

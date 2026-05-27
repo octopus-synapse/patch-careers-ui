@@ -82,11 +82,11 @@ export function resolveButtonStyle(
 
   if (variant === "outlined") {
     base.backgroundColor = "transparent";
-    base.color = tokens.bg;
-    base.borderColor = tokens.bg;
+    base.color = tokens.fg;
+    base.borderColor = tokens.border;
   } else if (variant === "ghost") {
     base.backgroundColor = "transparent";
-    base.color = tokens.bg;
+    base.color = tokens.fg;
     base.borderColor = "transparent";
     base.borderWidth = 0;
   }

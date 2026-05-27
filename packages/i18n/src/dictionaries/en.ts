@@ -69,6 +69,18 @@ export const en: TranslationDict = {
     invalidEmail: "Invalid email",
     legalTerms: "Terms of Service",
     legalPrivacy: "Privacy Policy",
+    validation: {
+      emailRequired: "Enter your email",
+      emailInvalid: "Invalid email",
+      passwordRequired: "Enter your password",
+      passwordTooShort: "Password must be at least 8 characters",
+      passwordTooLong: "Password must be at most 128 characters",
+      passwordNeedsUppercase: "Add at least one uppercase letter",
+      passwordNeedsLowercase: "Add at least one lowercase letter",
+      passwordNeedsDigit: "Add at least one number",
+      passwordNeedsSymbol: "Add at least one symbol (@$!%*?&)",
+      passwordWeak: "Password does not meet security requirements",
+    },
   },
 };
 

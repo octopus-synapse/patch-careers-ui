@@ -1,53 +1,72 @@
 /**
- * Metro config for the universal Expo app inside the pnpm + Nx monorepo.
+ * Metro config WITHOUT Nx (bypass temporário pra debug expo-router app/ resolution).
+ * Original config em metro.config.js.bak — restore com `mv metro.config.js.bak metro.config.js`.
  *
- * Two responsibilities:
- *
- * 1. **Workspace awareness**: Metro must `watchFolders` the workspace
- *    root so changes in `packages/*` invalidate caches. It must also
- *    look up `node_modules` from both the app and the workspace root —
- *    pnpm hoists shared deps to the root.
- *
- * 2. **SVG support**: react-native-svg-transformer turns `*.svg`
- *    imports into React components (parity with web bundlers).
- *
- * Nx `withNxMetro` adds project-graph-aware resolution so workspace
- * libraries are findable without explicit aliases.
+ * Responsibilities:
+ * 1. Workspace-aware: watchFolders + nodeModulesPaths apontam pro root do monorepo
+ *    (pnpm hoista deps lá).
+ * 2. Symlinks habilitados (pnpm usa symlinks heavy).
+ * 3. SVG transformer pra `*.svg` virar React component.
  */
 
-const { withNxMetro } = require("@nx/expo");
 const { getDefaultConfig } = require("@expo/metro-config");
-const { mergeConfig } = require("metro-config");
 const path = require("path");
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, "../..");
 
-const defaultConfig = getDefaultConfig(projectRoot);
-const { assetExts, sourceExts } = defaultConfig.resolver;
+const config = getDefaultConfig(projectRoot);
 
-const customConfig = {
-  cacheVersion: "app",
-  watchFolders: [workspaceRoot],
-  transformer: {
-    babelTransformerPath: require.resolve("react-native-svg-transformer"),
-  },
-  resolver: {
-    assetExts: assetExts.filter((ext) => ext !== "svg"),
-    sourceExts: [...sourceExts, "cjs", "mjs", "svg"],
-    nodeModulesPaths: [
-      path.resolve(projectRoot, "node_modules"),
-      path.resolve(workspaceRoot, "node_modules"),
-    ],
-    // pnpm uses symlinks heavily; Metro >= 0.79 needs this opt-in to
-    // resolve them correctly without infinite traversal.
-    unstable_enableSymlinks: true,
-    unstable_enablePackageExports: true,
-  },
+// Workspace awareness
+config.watchFolders = [workspaceRoot];
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, "node_modules"),
+  path.resolve(workspaceRoot, "node_modules"),
+];
+
+// pnpm symlinks + package exports
+config.resolver.unstable_enableSymlinks = true;
+config.resolver.unstable_enablePackageExports = true;
+
+// Pin Tamagui + React Native + React + Reanimated pra uma única resolução.
+// Em pnpm monorepo, Metro pode resolver o mesmo pacote via paths simbólicos
+// diferentes (apps/app/node_modules/X vs ../../node_modules/X) e isso
+// instancia o módulo 2 vezes — Tamagui detecta e cai em "global config
+// fallback" (warning) + React fica em duplicate version mismatch (erro).
+// Aliasar pra paths absolutos do workspace root garante singleton.
+const singletonPackages = [
+  "react",
+  "react-dom",
+  "react-native",
+  "react-native-reanimated",
+  "react-native-gesture-handler",
+  "tamagui",
+  "@tamagui/core",
+  "@tamagui/web",
+  "@tamagui/portal",
+  "@tamagui/sheet",
+  "@tamagui/toast",
+  "@tamagui/config",
+  "@tamagui/animations-react-native",
+  "@tanstack/react-query",
+  "zustand",
+];
+config.resolver.alias = {
+  ...(config.resolver.alias ?? {}),
+  ...Object.fromEntries(
+    singletonPackages.map((pkg) => [
+      pkg,
+      path.resolve(workspaceRoot, "node_modules", pkg),
+    ]),
+  ),
 };
 
-module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
-  debug: false,
-  extensions: [],
-  watchFolders: [],
-});
+// SVG support (react-native-svg-transformer)
+const { assetExts, sourceExts } = config.resolver;
+config.transformer.babelTransformerPath = require.resolve(
+  "react-native-svg-transformer",
+);
+config.resolver.assetExts = assetExts.filter((ext) => ext !== "svg");
+config.resolver.sourceExts = [...sourceExts, "cjs", "mjs", "svg"];
+
+module.exports = config;

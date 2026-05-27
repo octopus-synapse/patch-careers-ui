@@ -69,6 +69,18 @@ export const ptBR: TranslationDict = {
     invalidEmail: "E-mail inválido",
     legalTerms: "Termos de Uso",
     legalPrivacy: "Política de Privacidade",
+    validation: {
+      emailRequired: "Informe seu e-mail",
+      emailInvalid: "E-mail inválido",
+      passwordRequired: "Informe sua senha",
+      passwordTooShort: "A senha deve ter pelo menos 8 caracteres",
+      passwordTooLong: "A senha deve ter no máximo 128 caracteres",
+      passwordNeedsUppercase: "Inclua ao menos uma letra maiúscula",
+      passwordNeedsLowercase: "Inclua ao menos uma letra minúscula",
+      passwordNeedsDigit: "Inclua ao menos um número",
+      passwordNeedsSymbol: "Inclua ao menos um símbolo (@$!%*?&)",
+      passwordWeak: "A senha não atende aos requisitos de segurança",
+    },
   },
 };
 

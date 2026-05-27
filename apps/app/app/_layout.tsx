@@ -20,6 +20,7 @@
  */
 
 import { ToastProvider } from "@patch-careers/ui";
+import { PortalProvider } from "@tamagui/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -58,6 +59,7 @@ export default function RootLayout(): ReactElement {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <AppTamaguiProvider>
+          <PortalProvider shouldAddRootHost>
           <ToastProvider>
             <I18nProvider>
               <AuthProvider>
@@ -73,6 +75,7 @@ export default function RootLayout(): ReactElement {
               </AuthProvider>
             </I18nProvider>
           </ToastProvider>
+          </PortalProvider>
         </AppTamaguiProvider>
       </QueryClientProvider>
     </SafeAreaProvider>

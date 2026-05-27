@@ -1,234 +1,193 @@
 /**
- * Single-page sign-up (D95): email + password + consent checkbox. The
- * checkbox links to the in-app WebView (D98) so users can read Terms /
- * Privacy without leaving the app.
+ * Sign-up screen (D95-D98) — "Editorial Calm" refinement.
  *
- * On success we navigate to /verify-email — the backend has just sent
- * an OTP to the user's inbox. We pass the email along (mascarado in
- * the next screen header) so verify-email can render context.
+ * Single-page form: email + password (with refined 4-segment strength
+ * meter + check chips) + consent checkbox with inline Terms / Privacy
+ * links. Same chrome (AuthShell + IntroBlock + PrimaryAction) as
+ * sign-in for visual continuity.
+ *
+ * On success → `/verify-email` with the email param (next screen
+ * masks it for the OTP prompt).
  */
 
 import { signup } from "@patch-careers/api-client";
-import { isValidEmail } from "@patch-careers/auth";
-import { palette } from "@patch-careers/tokens";
+import { useToast } from "@patch-careers/ui";
+import { useRouter } from "expo-router";
+import { type ReactElement, useRef, useState } from "react";
+import { type TextInput, View } from "react-native";
+import { useI18n } from "../../providers/I18nProvider";
 import {
-  Button,
-  FormField,
-  Icon,
-  PasswordStrengthBar,
-  Text,
-  useToast,
-  XStack,
-  YStack,
-} from "@patch-careers/ui";
-import { Link, useRouter } from "expo-router";
-import { Check, Eye, EyeOff } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { AuthScreenLayout } from "../../components/AuthScreenLayout";
-import { useTranslator } from "../../providers/I18nProvider";
+  AnimatedField,
+  AuthShell,
+  ConsentCheckbox,
+  FieldError,
+  FooterPrompt,
+  IntroBlock,
+  PasswordInput,
+  PasswordStrengthMeter,
+  PrimaryAction,
+  UnderlineInput,
+} from "../../components/auth/auth-shared";
+import {
+  type AuthFieldErrors,
+  extractApiErrorMessages,
+  validateSignup,
+} from "../../components/auth/validation";
 
-// Versions sent with the consent payload. Backend rejects payloads that
-// don't match the currently-published version, so these must track the
-// live policy. For now we hardcode v1 — the live version comes from a
-// runtime config endpoint in a later PR.
-const TOS_VERSION = "1.0";
-const PRIVACY_VERSION = "1.0";
+// Versions sent with the consent payload. Backend rejects with
+// CONSENT_VERSION_MISMATCH if these don't match the live published
+// versions (currently 1.0.0 semver). The live version will come from
+// a runtime config endpoint in a later PR (see TODO in v2-plan).
+const TOS_VERSION = "1.0.0";
+const PRIVACY_VERSION = "1.0.0";
 
 export default function SignUpScreen(): ReactElement {
-  const t = useTranslator();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const toast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [emailError, setEmailError] = useState<string | undefined>(undefined);
+  const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
   const [consentError, setConsentError] = useState<string | undefined>(undefined);
+  const passwordRef = useRef<TextInput>(null);
 
   async function handleSubmit() {
-    let hasError = false;
-    if (!isValidEmail(email)) {
-      setEmailError(t("auth.invalidEmail"));
-      hasError = true;
+    const trimmedEmail = email.trim();
+    const payload = {
+      email: trimmedEmail,
+      password,
+      acceptedTosVersion: TOS_VERSION,
+      acceptedPrivacyVersion: PRIVACY_VERSION,
+    };
+
+    const clientErrors = validateSignup(payload, t);
+    const nextConsentError = consent ? undefined : t("auth.consentRequired");
+    if (clientErrors || nextConsentError) {
+      setFieldErrors(clientErrors ?? {});
+      setConsentError(nextConsentError);
+      return;
     }
-    if (!consent) {
-      setConsentError(t("auth.consentRequired"));
-      hasError = true;
-    }
-    if (hasError) return;
-    setEmailError(undefined);
+
+    setFieldErrors({});
     setConsentError(undefined);
     setSubmitting(true);
     try {
-      await signup({
-        email: email.trim(),
-        password,
-        acceptedTosVersion: TOS_VERSION,
-        acceptedPrivacyVersion: PRIVACY_VERSION,
-      });
+      await signup(payload);
       router.replace({
         pathname: "/(auth)/verify-email",
-        params: { email: email.trim() },
+        params: { email: trimmedEmail },
       });
-    } catch {
-      toast.show({ title: t("auth.signupFailed"), intent: "danger" });
+    } catch (err) {
+      const { toast: title, fields } = extractApiErrorMessages(
+        err,
+        locale,
+        t,
+        "auth.signupFailed",
+        { email: trimmedEmail, password },
+      );
+      if (Object.keys(fields).length > 0) setFieldErrors(fields);
+      toast.show({ title, intent: "danger" });
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <AuthScreenLayout title={t("auth.signUpTitle")}>
-      <YStack gap={12}>
-        <FormField
-          label={t("auth.email")}
-          placeholder={t("auth.emailPlaceholder")}
-          autoCapitalize="none"
-          autoComplete="email"
-          keyboardType="email-address"
-          textContentType="username"
-          value={email}
-          onChangeText={(next: string) => {
-            setEmail(next);
-            if (emailError) setEmailError(undefined);
-          }}
-          {...(emailError ? { error: emailError } : {})}
-          testID="signup.email"
-        />
-        <YStack gap={8}>
-          <XStack alignItems="flex-end">
-            <YStack flex={1}>
-              <FormField
-                label={t("auth.password")}
-                placeholder={t("auth.passwordPlaceholder")}
-                secureTextEntry={!showPassword}
-                autoComplete="new-password"
-                textContentType="newPassword"
-                value={password}
-                onChangeText={setPassword}
-                testID="signup.password"
-              />
-            </YStack>
-            <Pressable
-              onPress={() => setShowPassword((v) => !v)}
-              accessibilityRole="button"
-              accessibilityLabel={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
-              style={styles.eyeButton}
-              testID="signup.passwordToggle"
-            >
-              <Icon as={showPassword ? EyeOff : Eye} size="md" />
-            </Pressable>
-          </XStack>
-          <PasswordStrengthBar password={password} />
-        </YStack>
+    <AuthShell>
+      <IntroBlock
+        prefix="Create your "
+        emphasis="account."
+        subtitle="A few details to get you in the door."
+      />
 
-        <Pressable
-          onPress={() => {
+      <View style={{ gap: 24 }}>
+        <AnimatedField delay={300}>
+          <UnderlineInput
+            label={t("auth.email")}
+            placeholder={t("auth.emailPlaceholder")}
+            value={email}
+            onChangeText={(next) => {
+              setEmail(next);
+              if (fieldErrors.email)
+                setFieldErrors((prev) => ({ ...prev, email: undefined }));
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            textContentType="emailAddress"
+            autoCorrect={false}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            blurOnSubmit={false}
+            hasError={!!fieldErrors.email}
+            testID="signup.email"
+          />
+          {fieldErrors.email ? <FieldError text={fieldErrors.email} /> : null}
+        </AnimatedField>
+
+        <AnimatedField delay={380}>
+          <PasswordInput
+            ref={passwordRef}
+            label={t("auth.password")}
+            placeholder={t("auth.passwordPlaceholder")}
+            value={password}
+            onChangeText={(next) => {
+              setPassword(next);
+              if (fieldErrors.password)
+                setFieldErrors((prev) => ({ ...prev, password: undefined }));
+            }}
+            returnKeyType="next"
+            showLabel={t("auth.showPassword")}
+            hideLabel={t("auth.hidePassword")}
+            hasError={!!fieldErrors.password}
+            isNew
+            testID="signup.password"
+          />
+          {fieldErrors.password ? <FieldError text={fieldErrors.password} /> : null}
+          <PasswordStrengthMeter password={password} />
+        </AnimatedField>
+
+        <ConsentCheckbox
+          checked={consent}
+          onToggle={() => {
             setConsent((v) => !v);
             if (consentError) setConsentError(undefined);
           }}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: consent }}
-          style={styles.consentRow}
+          intro="I agree to the"
+          termsLabel={t("auth.consentTerms")}
+          termsHref={{
+            pathname: "/legal-webview",
+            params: { kind: "terms", title: t("auth.legalTerms") },
+          }}
+          conjunction="and"
+          privacyLabel={t("auth.consentPrivacy")}
+          privacyHref={{
+            pathname: "/legal-webview",
+            params: { kind: "privacy", title: t("auth.legalPrivacy") },
+          }}
+          {...(consentError ? { error: consentError } : {})}
           testID="signup.consent"
-        >
-          <YStack
-            width={20}
-            height={20}
-            borderRadius={4}
-            borderWidth={2}
-            borderColor={consent ? palette.blue[600] : palette.gray[400]}
-            backgroundColor={consent ? palette.blue[600] : "transparent"}
-            alignItems="center"
-            justifyContent="center"
-          >
-            {consent ? <Icon as={Check} size="xs" color="#ffffff" /> : null}
-          </YStack>
-          <YStack flex={1}>
-            <Text preset="caption">
-              {t("auth.consentLine", {
-                terms: "",
-                privacy: "",
-              }).replace(/\s+\s+/g, " ")}
-            </Text>
-            <XStack gap={8} marginTop={2}>
-              <Link
-                href={{
-                  pathname: "/legal-webview",
-                  params: { kind: "terms", title: t("auth.legalTerms") },
-                }}
-                accessibilityRole="link"
-                testID="signup.termsLink"
-              >
-                <Text preset="caption" color={palette.blue[600]}>
-                  {t("auth.consentTerms")}
-                </Text>
-              </Link>
-              <Text preset="caption" color="$gray9">
-                ·
-              </Text>
-              <Link
-                href={{
-                  pathname: "/legal-webview",
-                  params: { kind: "privacy", title: t("auth.legalPrivacy") },
-                }}
-                accessibilityRole="link"
-                testID="signup.privacyLink"
-              >
-                <Text preset="caption" color={palette.blue[600]}>
-                  {t("auth.consentPrivacy")}
-                </Text>
-              </Link>
-            </XStack>
-            {consentError ? (
-              <Text preset="caption" color="$red10" accessibilityLiveRegion="polite">
-                {consentError}
-              </Text>
-            ) : null}
-          </YStack>
-        </Pressable>
+        />
+      </View>
 
-        <Button
-          intent="accent"
-          size="lg"
+      <View style={{ marginTop: 32 }}>
+        <PrimaryAction
+          label={t("auth.signUp")}
           loading={submitting}
           onPress={handleSubmit}
           testID="signup.submit"
-        >
-          {t("auth.signUp")}
-        </Button>
+        />
+      </View>
 
-        <XStack justifyContent="center" gap={4} marginTop={4}>
-          <Text preset="caption" color="$gray10">
-            {t("auth.haveAccount")}
-          </Text>
-          <Link href="/(auth)/sign-in" accessibilityRole="link" testID="signup.signInLink">
-            <Text preset="caption" color={palette.blue[600]}>
-              {t("auth.signInInstead")}
-            </Text>
-          </Link>
-        </XStack>
-      </YStack>
-    </AuthScreenLayout>
+      <FooterPrompt
+        prompt={t("auth.haveAccount")}
+        linkLabel={t("auth.signInInstead")}
+        href="/(auth)/sign-in"
+        testID="signup.signInLink"
+      />
+    </AuthShell>
   );
 }
-
-const styles = StyleSheet.create({
-  eyeButton: {
-    padding: 12,
-    marginLeft: 4,
-    height: 44,
-    width: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  consentRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-    marginVertical: 4,
-  },
-});
