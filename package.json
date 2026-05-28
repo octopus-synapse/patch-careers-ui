@@ -16,11 +16,11 @@
     "typecheck": "nx run-many -t typecheck",
     "graph": "nx graph",
     "affected": "nx affected",
-    "android": "pnpm --filter app android",
-    "ios": "pnpm --filter app ios",
-    "dev:android": "pnpm --filter app dev:android",
-    "dev:ios": "pnpm --filter app dev:ios",
-    "metro": "pnpm --filter app start",
+    "android": "pnpm --filter client android",
+    "ios": "pnpm --filter client ios",
+    "dev:android": "pnpm --filter client dev:android",
+    "dev:ios": "pnpm --filter client dev:ios",
+    "metro": "pnpm --filter client start",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -49,21 +49,8 @@
     "typescript": "^5.9.3",
     "vitest": "^2.1.9"
   },
-  "pnpm": {
-    "overrides": {
-      "react": "19.1.0",
-      "react-dom": "19.1.0",
-      "react-native": "0.81.5",
-      "lucide-react-native": "^1.16.0",
-      "@tamagui/core": "1.144.4",
-      "@tamagui/web": "1.144.4",
-      "@tamagui/sheet": "1.144.4",
-      "@tamagui/toast": "1.144.4",
-      "@tamagui/config": "1.144.4",
-      "@tamagui/babel-plugin": "1.144.4",
-      "@tamagui/animations-react-native": "1.144.4",
-      "@tamagui/font-inter": "1.144.4",
-      "tamagui": "1.144.4"
-    }
+  "overrides": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   }
 }

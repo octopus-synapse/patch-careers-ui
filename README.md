@@ -2,7 +2,7 @@
 
 Universal-app monorepo for the candidate-facing surface of
 patch-careers. One codebase ships iOS, Android, and the public web
-landing from `apps/app` (Expo Router + React Native Web), with shared
+landing from `apps/client` (Expo Router + React Native Web), with shared
 primitives, design tokens, i18n, state, storage, auth and the
 backend SDK living in `packages/*`.
 
@@ -33,7 +33,7 @@ gone — see PR #1 commits for the cutover diff.
 
 ```
 .
-├── apps/                       # runnable applications (currently empty; apps/app lands in PR #6)
+├── apps/                       # runnable applications (currently empty; apps/client lands in PR #6)
 │   └── README.md
 ├── packages/                   # shared libraries (currently empty; populated PR #4/#5/#8)
 │   └── README.md

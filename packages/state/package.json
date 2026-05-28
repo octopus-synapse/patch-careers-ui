@@ -35,6 +35,7 @@
     "zustand": "^5.0.0"
   },
   "peerDependencies": {
+    "react": "*",
     "@patch-careers/storage": "workspace:*"
   }
 }

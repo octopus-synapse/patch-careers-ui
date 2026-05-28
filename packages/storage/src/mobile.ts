@@ -66,10 +66,7 @@ async function writeIndex(keys: Set<string>): Promise<void> {
 }
 
 function secureStoreKey(key: string): string {
-  return key.replace(
-    /[^A-Za-z0-9._-]/g,
-    (char) => `_u${char.charCodeAt(0).toString(16)}_`,
-  );
+  return key.replace(/[^A-Za-z0-9._-]/g, (char) => `_u${char.charCodeAt(0).toString(16)}_`);
 }
 
 export const mobileSecure: KeyValueStorage = {

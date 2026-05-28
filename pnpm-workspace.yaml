@@ -1,3 +1,23 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+overrides:
+  react: "19.1.0"
+  react-dom: "19.1.0"
+  react-native: "0.81.5"
+  lucide-react-native: "^1.16.0"
+  "@tamagui/core": "1.144.4"
+  "@tamagui/web": "1.144.4"
+  "@tamagui/sheet": "1.144.4"
+  "@tamagui/toast": "1.144.4"
+  "@tamagui/config": "1.144.4"
+  "@tamagui/babel-plugin": "1.144.4"
+  "@tamagui/animations-react-native": "1.144.4"
+  "@tamagui/font-inter": "1.144.4"
+  tamagui: "1.144.4"
+
+packageExtensions:
+  "@wix-pilot/detox@1.0.13":
+    peerDependencies:
+      expect: "30.x.x || 29.x.x || 28.x.x || ^27.2.5"

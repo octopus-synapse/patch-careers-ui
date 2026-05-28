@@ -40,6 +40,11 @@ expo-env.d.ts
 .yarn/
 web-build/
 cache/
+
+# Native dirs (CNG – regenerated via expo prebuild)
+**/android/
+**/ios/
+
 # EAS / signing artefacts (never commit)
 *.jks
 *.p8
@@ -47,6 +52,12 @@ cache/
 *.key
 *.mobileprovision
 *.orig.*
+
+# Tamagui generated
+.tamagui/
+
+# Backup files
+*.bak
 
 # IntelliJ based IDEs
 .idea

@@ -6,10 +6,9 @@ import { DICTIONARIES, type Locale } from './dictionaries';
 
 export type ActivityType = 'ACHIEVEMENT_EARNED' | 'CONNECTED_USER' | 'FOLLOWED_USER' | 'PROFILE_UPDATED' | 'RESUME_CREATED' | 'RESUME_PUBLISHED' | 'RESUME_SHARED' | 'RESUME_UPDATED' | 'SKILL_ADDED' | 'THEME_PUBLISHED';
 export type AnalyticsEvent = 'DOWNLOAD' | 'VIEW';
-export type AnonymousCategory = 'HARASSMENT' | 'INTERVIEW' | 'LAYOFF' | 'SALARY' | 'TOXIC_CULTURE';
 export type ApplyMode = 'AUTO_APPLY' | 'ONE_CLICK' | 'WEEKLY_CURATED';
 export type AttestationWitnessStatus = 'FAILED' | 'PENDING' | 'RUNNING' | 'SUCCEEDED';
-export type AuditAction = 'ACCESS_MODIFIER_APPLIED' | 'ACCESS_MODIFIER_REVOKED' | 'ACCOUNT_DELETED' | 'DATA_EXPORT_DOWNLOADED' | 'DATA_EXPORT_REQUESTED' | 'EMAIL_CHANGED' | 'FEATURE_FLAG_TOGGLED' | 'ONBOARDING_COMPLETED' | 'PASSWORD_CHANGED' | 'PREFERENCES_UPDATED' | 'PRIVACY_POLICY_ACCEPTED' | 'PROFILE_UPDATED' | 'RESUME_CREATED' | 'RESUME_DELETED' | 'RESUME_UPDATED' | 'RESUME_VISIBILITY_CHANGED' | 'ROLE_CHANGED' | 'TOS_ACCEPTED' | 'TWO_FACTOR_DISABLED' | 'TWO_FACTOR_ENABLED' | 'UNAUTHORIZED_ACCESS_ATTEMPT' | 'USERNAME_CHANGED' | 'USER_LOGIN' | 'USER_LOGOUT';
+export type AuditAction = 'ACCESS_MODIFIER_APPLIED' | 'ACCESS_MODIFIER_REVOKED' | 'ACCOUNT_DELETED' | 'CONNECTION_REQUESTED' | 'DATA_EXPORT_DOWNLOADED' | 'DATA_EXPORT_REQUESTED' | 'EMAIL_CHANGED' | 'EXPORT_COMPLETED' | 'EXPORT_FAILED' | 'EXPORT_REQUESTED' | 'FEATURE_FLAG_TOGGLED' | 'LOGIN_FAILED' | 'ONBOARDING_COMPLETED' | 'PASSWORD_CHANGED' | 'PREFERENCES_UPDATED' | 'PRIVACY_POLICY_ACCEPTED' | 'PROFILE_UPDATED' | 'RESUME_CREATED' | 'RESUME_DELETED' | 'RESUME_UPDATED' | 'RESUME_VERSION_CREATED' | 'RESUME_VERSION_RESTORED' | 'RESUME_VISIBILITY_CHANGED' | 'ROLE_CHANGED' | 'SESSION_CREATED' | 'SESSION_TERMINATED' | 'SHARE_DOWNLOADED' | 'TOKEN_REFRESHED' | 'TOS_ACCEPTED' | 'TWO_FACTOR_DISABLED' | 'TWO_FACTOR_ENABLED' | 'UNAUTHORIZED_ACCESS_ATTEMPT' | 'USERNAME_CHANGED' | 'USER_FOLLOWED' | 'USER_LOGGED_IN' | 'USER_LOGGED_OUT' | 'USER_LOGIN' | 'USER_LOGOUT';
 export type BadgeKind = 'ATS_90_PLUS' | 'CONTRIBUTOR' | 'EVENT_SPEAKER' | 'FIRST_BUILD' | 'INTERVIEWS_5' | 'MENTORED_10';
 export type CollaboratorRole = 'ADMIN' | 'EDITOR' | 'VIEWER';
 export type ConnectionStatus = 'ACCEPTED' | 'PENDING' | 'REJECTED';
@@ -30,8 +29,6 @@ export type ModifierEffect = 'DENY' | 'GRANT';
 export type ModifierType = 'GRANT_PERMISSION' | 'SUSPEND_EMAIL_VERIFIED' | 'SUSPEND_ONBOARDING' | 'SUSPEND_ROLE_ADMIN' | 'SUSPEND_ROLE_USER';
 export type NotificationType = 'APPLICATION_STALE' | 'COMMENT_REPLIED' | 'CONNECTION_ACCEPTED' | 'CONNECTION_RECOMMENDATION' | 'CONNECTION_REQUEST' | 'FIT_PROFILE_EXPIRED' | 'FIT_PROFILE_EXPIRY_REMINDER' | 'FOLLOW_NEW' | 'MATCH_RECOMMENDATIONS_READY' | 'POST_BOOKMARKED' | 'POST_COMMENTED' | 'POST_LIKED' | 'POST_REPOSTED' | 'RESUME_QUALITY_IMPROVED' | 'RESUME_QUALITY_REGRESSED' | 'SKILL_DECAY';
 export type PaymentCurrency = 'BRL' | 'EUR' | 'GBP' | 'USD';
-export type PostType = 'ACHIEVEMENT' | 'BUILD' | 'CHALLENGE' | 'LEARNING' | 'OPPORTUNITY' | 'QUESTION' | 'REPOST';
-export type ReactionType = 'CELEBRATE' | 'CURIOUS' | 'INSIGHTFUL' | 'LIKE' | 'LOVE';
 export type RemotePolicy = 'HYBRID' | 'ONSITE' | 'REMOTE';
 export type ReportStatus = 'DISMISSED' | 'PENDING' | 'REVIEWED';
 export type SkillProficiency = 'ADVANCED' | 'BEGINNER' | 'EXPERT' | 'INTERMEDIATE';
@@ -59,14 +56,6 @@ export const AnalyticsEvent = {
   VIEW: 'VIEW',
 } as const satisfies Record<string, AnalyticsEvent>;
 
-export const AnonymousCategory = {
-  HARASSMENT: 'HARASSMENT',
-  INTERVIEW: 'INTERVIEW',
-  LAYOFF: 'LAYOFF',
-  SALARY: 'SALARY',
-  TOXIC_CULTURE: 'TOXIC_CULTURE',
-} as const satisfies Record<string, AnonymousCategory>;
-
 export const ApplyMode = {
   AUTO_APPLY: 'AUTO_APPLY',
   ONE_CLICK: 'ONE_CLICK',
@@ -84,10 +73,15 @@ export const AuditAction = {
   ACCESS_MODIFIER_APPLIED: 'ACCESS_MODIFIER_APPLIED',
   ACCESS_MODIFIER_REVOKED: 'ACCESS_MODIFIER_REVOKED',
   ACCOUNT_DELETED: 'ACCOUNT_DELETED',
+  CONNECTION_REQUESTED: 'CONNECTION_REQUESTED',
   DATA_EXPORT_DOWNLOADED: 'DATA_EXPORT_DOWNLOADED',
   DATA_EXPORT_REQUESTED: 'DATA_EXPORT_REQUESTED',
   EMAIL_CHANGED: 'EMAIL_CHANGED',
+  EXPORT_COMPLETED: 'EXPORT_COMPLETED',
+  EXPORT_FAILED: 'EXPORT_FAILED',
+  EXPORT_REQUESTED: 'EXPORT_REQUESTED',
   FEATURE_FLAG_TOGGLED: 'FEATURE_FLAG_TOGGLED',
+  LOGIN_FAILED: 'LOGIN_FAILED',
   ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
   PASSWORD_CHANGED: 'PASSWORD_CHANGED',
   PREFERENCES_UPDATED: 'PREFERENCES_UPDATED',
@@ -96,13 +90,22 @@ export const AuditAction = {
   RESUME_CREATED: 'RESUME_CREATED',
   RESUME_DELETED: 'RESUME_DELETED',
   RESUME_UPDATED: 'RESUME_UPDATED',
+  RESUME_VERSION_CREATED: 'RESUME_VERSION_CREATED',
+  RESUME_VERSION_RESTORED: 'RESUME_VERSION_RESTORED',
   RESUME_VISIBILITY_CHANGED: 'RESUME_VISIBILITY_CHANGED',
   ROLE_CHANGED: 'ROLE_CHANGED',
+  SESSION_CREATED: 'SESSION_CREATED',
+  SESSION_TERMINATED: 'SESSION_TERMINATED',
+  SHARE_DOWNLOADED: 'SHARE_DOWNLOADED',
+  TOKEN_REFRESHED: 'TOKEN_REFRESHED',
   TOS_ACCEPTED: 'TOS_ACCEPTED',
   TWO_FACTOR_DISABLED: 'TWO_FACTOR_DISABLED',
   TWO_FACTOR_ENABLED: 'TWO_FACTOR_ENABLED',
   UNAUTHORIZED_ACCESS_ATTEMPT: 'UNAUTHORIZED_ACCESS_ATTEMPT',
   USERNAME_CHANGED: 'USERNAME_CHANGED',
+  USER_FOLLOWED: 'USER_FOLLOWED',
+  USER_LOGGED_IN: 'USER_LOGGED_IN',
+  USER_LOGGED_OUT: 'USER_LOGGED_OUT',
   USER_LOGIN: 'USER_LOGIN',
   USER_LOGOUT: 'USER_LOGOUT',
 } as const satisfies Record<string, AuditAction>;
@@ -280,24 +283,6 @@ export const PaymentCurrency = {
   GBP: 'GBP',
   USD: 'USD',
 } as const satisfies Record<string, PaymentCurrency>;
-
-export const PostType = {
-  ACHIEVEMENT: 'ACHIEVEMENT',
-  BUILD: 'BUILD',
-  CHALLENGE: 'CHALLENGE',
-  LEARNING: 'LEARNING',
-  OPPORTUNITY: 'OPPORTUNITY',
-  QUESTION: 'QUESTION',
-  REPOST: 'REPOST',
-} as const satisfies Record<string, PostType>;
-
-export const ReactionType = {
-  CELEBRATE: 'CELEBRATE',
-  CURIOUS: 'CURIOUS',
-  INSIGHTFUL: 'INSIGHTFUL',
-  LIKE: 'LIKE',
-  LOVE: 'LOVE',
-} as const satisfies Record<string, ReactionType>;
 
 export const RemotePolicy = {
   HYBRID: 'HYBRID',
@@ -567,6 +552,62 @@ const ENUM_LABELS = {
     "USER_LOGOUT": {
       "en": "User logout",
       "pt-BR": "Logout realizado"
+    },
+    "LOGIN_FAILED": {
+      "en": "Login failed",
+      "pt-BR": "Falha de login"
+    },
+    "USER_LOGGED_IN": {
+      "en": "User logged in",
+      "pt-BR": "Usuário logou"
+    },
+    "USER_LOGGED_OUT": {
+      "en": "User logged out",
+      "pt-BR": "Usuário deslogou"
+    },
+    "SESSION_CREATED": {
+      "en": "Session created",
+      "pt-BR": "Sessão criada"
+    },
+    "SESSION_TERMINATED": {
+      "en": "Session terminated",
+      "pt-BR": "Sessão encerrada"
+    },
+    "TOKEN_REFRESHED": {
+      "en": "Token refreshed",
+      "pt-BR": "Token renovado"
+    },
+    "EXPORT_REQUESTED": {
+      "en": "Export requested",
+      "pt-BR": "Exportação solicitada"
+    },
+    "EXPORT_COMPLETED": {
+      "en": "Export completed",
+      "pt-BR": "Exportação concluída"
+    },
+    "EXPORT_FAILED": {
+      "en": "Export failed",
+      "pt-BR": "Exportação falhou"
+    },
+    "USER_FOLLOWED": {
+      "en": "User followed",
+      "pt-BR": "Usuário seguido"
+    },
+    "CONNECTION_REQUESTED": {
+      "en": "Connection requested",
+      "pt-BR": "Conexão solicitada"
+    },
+    "SHARE_DOWNLOADED": {
+      "en": "Share downloaded",
+      "pt-BR": "Compartilhamento baixado"
+    },
+    "RESUME_VERSION_CREATED": {
+      "en": "Resume version created",
+      "pt-BR": "Versão do currículo criada"
+    },
+    "RESUME_VERSION_RESTORED": {
+      "en": "Resume version restored",
+      "pt-BR": "Versão do currículo restaurada"
     }
   },
   "BadgeKind": {

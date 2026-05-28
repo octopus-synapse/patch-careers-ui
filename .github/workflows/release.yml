@@ -1,7 +1,7 @@
 name: Release
 
 # V2 release pipeline. The V1 docker-image build step is removed:
-# - apps/app ships via EAS Build / EAS Submit (PR #20)
+# - apps/client ships via EAS Build / EAS Submit (PR #20)
 # - packages/* are private to this workspace today (no npm publish)
 # Versioning still rides release-please via the octopus-synapse
 # shared workflows.
