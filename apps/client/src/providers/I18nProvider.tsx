@@ -1,23 +1,38 @@
 /**
- * I18n provider — selects a locale + binds a `Translator` to it.
+ * I18n provider — selects a locale + binds a `Translator` to it, and lets
+ * the app change it at runtime (the onboarding "Idioma" step).
  *
- * Locale resolution priority (PR #6 baseline):
+ * Locale resolution priority:
  *   1. explicit `<I18nProvider locale="pt-BR">` prop (tests/storybook)
- *   2. Expo `getLocales()[0].languageTag` if it matches a supported tag
- *   3. fallback to `pt-BR` (D66 — pt-BR is the default)
+ *   2. the user's persisted choice (set via `setLocale`, stored in
+ *      `mundane` — the same adapter the onboarding drafts use)
+ *   3. device locale, if it matches a supported tag
+ *   4. fallback to `pt-BR` (D66 — pt-BR is the default)
  *
- * PR #7+ adds the Zustand `localeStore` so users can override via
- * settings. For now we only read the system locale; user preference is
- * intentionally not yet persisted.
+ * Changing the locale re-binds the translator and (because the onboarding
+ * session query is keyed by `locale`) refetches a translated session.
  */
 
 import { createTranslator, en, type Locale, ptBR, type Translator } from "@patch-careers/i18n";
-import { createContext, type ReactElement, type ReactNode, useContext, useMemo } from "react";
+import { mundane } from "@patch-careers/storage";
+import {
+  createContext,
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { NativeModules, Platform } from "react-native";
+
+const LOCALE_STORAGE_KEY = "patch-careers:locale";
 
 interface I18nContextValue {
   readonly locale: Locale;
   readonly t: Translator;
+  readonly setLocale: (locale: Locale) => void;
 }
 
 const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
@@ -25,8 +40,8 @@ const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
 /**
  * Best-effort device locale lookup without adding `expo-localization`
  * as a hard dep (it's heavy and only needed for richer Intl features
- * we don't use yet in PR #6). We use platform-specific natives or fall
- * back to `Intl` on web.
+ * we don't use yet). We use platform-specific natives or fall back to
+ * `Intl` on web.
  */
 function detectLocale(): Locale {
   try {
@@ -53,6 +68,7 @@ const defaultLocale: Locale = "pt-BR";
 const I18nContext = createContext<I18nContextValue>({
   locale: defaultLocale,
   t: createTranslator(dictForLocale(defaultLocale), defaultLocale),
+  setLocale: () => undefined,
 });
 
 interface I18nProviderProps {
@@ -61,15 +77,44 @@ interface I18nProviderProps {
 }
 
 export function I18nProvider({ children, locale }: I18nProviderProps): ReactElement {
-  const resolved = useMemo<I18nContextValue>(() => {
-    const active = locale ?? detectLocale();
-    return {
-      locale: active,
-      t: createTranslator(dictForLocale(active), active),
+  const [active, setActive] = useState<Locale>(() => locale ?? detectLocale());
+
+  // An explicit prop (tests/storybook) always wins and is authoritative.
+  useEffect(() => {
+    if (locale) setActive(locale);
+  }, [locale]);
+
+  // Hydrate the persisted user choice once; it overrides the device
+  // default but never an explicit prop.
+  useEffect(() => {
+    if (locale) return;
+    let cancelled = false;
+    mundane
+      .getItem(LOCALE_STORAGE_KEY)
+      .then((stored) => {
+        if (!cancelled && (stored === "en" || stored === "pt-BR")) setActive(stored);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
     };
   }, [locale]);
 
-  return <I18nContext.Provider value={resolved}>{children}</I18nContext.Provider>;
+  const setLocale = useCallback((next: Locale) => {
+    setActive(next);
+    mundane.setItem(LOCALE_STORAGE_KEY, next).catch(() => undefined);
+  }, []);
+
+  const value = useMemo<I18nContextValue>(
+    () => ({
+      locale: active,
+      t: createTranslator(dictForLocale(active), active),
+      setLocale,
+    }),
+    [active, setLocale],
+  );
+
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n(): I18nContextValue {

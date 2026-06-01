@@ -32,7 +32,7 @@ export function Modal({
       <TDialog.Portal>
         <TDialog.Overlay
           key="overlay"
-          animation="lazy"
+          animation="quick"
           opacity={0.5}
           enterStyle={{ opacity: 0 }}
           exitStyle={{ opacity: 0 }}

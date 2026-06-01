@@ -8,14 +8,19 @@
 
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
+import { getAuthenticatedRoute } from "../navigation/authRedirect";
 import { useAuthBootstrap, useAuthState } from "../providers/AuthProvider";
 
 export default function Index(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
-  const { isAuthenticated } = useAuthState();
+  const { currentUser, isAuthenticated } = useAuthState();
 
   // Wait for the first bootstrap before deciding — avoids a flash of
   // the sign-in screen while we resolve a freshly-restored session.
   if (!hasBootstrapped) return null;
-  return isAuthenticated ? <Redirect href="/(tabs)/jobs" /> : <Redirect href="/(auth)/sign-in" />;
+  return isAuthenticated ? (
+    <Redirect href={getAuthenticatedRoute(currentUser)} />
+  ) : (
+    <Redirect href="/(auth)/sign-in" />
+  );
 }

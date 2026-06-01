@@ -91,6 +91,25 @@ describe("client — login", () => {
     expect(await ts.get()).toBeNull();
   });
 
+  it("returns sessionExchangeId when backend defers token issuance", async () => {
+    const storage = createMemoryStorage();
+    const fetchMock: FetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(200, {
+        userId: "u-1",
+        twoFactorRequired: false,
+        sessionExchangeId: "sxc_test123",
+      }),
+    );
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    configureAuthClient({ storage, apiBaseURL: API, preferTokens: true });
+    const result = await login("a@b.c", "secret");
+
+    expect(result.sessionExchangeId).toBe("sxc_test123");
+    const ts = createTokenStorage(storage);
+    expect(await ts.get()).toBeNull();
+  });
+
   it("clears the loading flag even when login throws", async () => {
     const storage = createMemoryStorage();
     const fetchMock: FetchMock = vi
@@ -125,6 +144,24 @@ describe("client — verifyTwoFactor", () => {
     const ts = createTokenStorage(storage);
     const pair = await ts.get();
     expect(pair?.accessToken).toBe("access-2");
+  });
+
+  it("returns sessionExchangeId when backend defers token issuance", async () => {
+    const storage = createMemoryStorage();
+    const fetchMock: FetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(200, {
+        userId: "u-1",
+        sessionExchangeId: "sxc_2fa456",
+      }),
+    );
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    configureAuthClient({ storage, apiBaseURL: API, preferTokens: true });
+    const result = await verifyTwoFactor("u-1", "123456");
+
+    expect(result.sessionExchangeId).toBe("sxc_2fa456");
+    const ts = createTokenStorage(storage);
+    expect(await ts.get()).toBeNull();
   });
 });
 

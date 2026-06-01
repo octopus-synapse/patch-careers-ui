@@ -33,6 +33,7 @@
     "@nx/expo": "^22.7.3",
     "@nx/js": "^22.7.3",
     "@nx/react": "^22.7.3",
+    "@playwright/test": "^1.60.0",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
@@ -45,12 +46,11 @@
     "metro-config": "~0.83.0",
     "metro-resolver": "~0.83.0",
     "nx": "^22.7.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
     "tslib": "^2.3.0",
     "typescript": "^5.9.3",
     "vitest": "^2.1.9"
-  },
-  "overrides": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
   }
 }

@@ -1,7 +1,7 @@
 # Maestro flows for the V2 auth screens (PR #7).
 #
 # Run locally with `maestro test apps/client/.maestro/auth-flows.yaml`
-# pointed at a debug build of the app and a backend with seed users.
+# pointed a t a debug build of the app and a backend with seed users.
 #
 # Three end-to-end paths covered:
 #   1. sign-up → verify-email → jobs tab

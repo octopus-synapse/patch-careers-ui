@@ -7,7 +7,7 @@
  *   - Backup-code text input (single-use fallback)
  *
  * On success the bearer pair is persisted by `verifyTwoFactor()` and we
- * call `bootstrap()` + replace into /(tabs)/jobs.
+ * call `bootstrap()` + replace into the post-auth home.
  */
 
 import { bootstrap, exchangeSessionForTokens, verifyTwoFactor } from "@patch-careers/auth";
@@ -17,6 +17,7 @@ import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { AuthScreenLayout } from "../../components/AuthScreenLayout";
+import { getCurrentAuthenticatedRoute } from "../../navigation/authRedirect";
 import { useTranslator } from "../../providers/I18nProvider";
 
 export default function TwoFactorVerifyScreen(): ReactElement {
@@ -44,7 +45,7 @@ export default function TwoFactorVerifyScreen(): ReactElement {
         await exchangeSessionForTokens(result.sessionExchangeId);
       }
       await bootstrap().catch(() => undefined);
-      router.replace("/(tabs)/jobs");
+      router.replace(getCurrentAuthenticatedRoute());
     } catch {
       toast.show({ title: t("auth.loginFailed"), intent: "danger" });
     } finally {

@@ -13,20 +13,12 @@ import { bootstrap, completeOAuth } from "@patch-careers/auth";
 import { secure } from "@patch-careers/storage";
 import { palette } from "@patch-careers/tokens";
 import { Text, useToast, YStack } from "@patch-careers/ui";
-import Constants from "expo-constants";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { resolveApiBaseURL } from "../config/api";
+import { getCurrentAuthenticatedRoute } from "../navigation/authRedirect";
 import { useTranslator } from "../providers/I18nProvider";
-
-function resolveApiBaseURL(): string {
-  const extra = (Constants.expoConfig?.extra ?? {}) as { apiBaseURL?: string };
-  return (
-    extra.apiBaseURL ??
-    (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ??
-    "https://api.patchcareers.com"
-  );
-}
 
 export default function OAuthCallbackScreen(): ReactElement {
   const t = useTranslator();
@@ -53,7 +45,7 @@ export default function OAuthCallbackScreen(): ReactElement {
       if (cancelled) return;
       if (pair) {
         await bootstrap().catch(() => undefined);
-        router.replace("/(tabs)/jobs");
+        router.replace(getCurrentAuthenticatedRoute());
       } else {
         toast.show({ title: t("auth.oauthFailed"), intent: "danger" });
         router.replace("/(auth)/sign-in");

@@ -82,6 +82,36 @@ export const ptBR: TranslationDict = {
       passwordWeak: "A senha não atende aos requisitos de segurança",
     },
   },
+  onboarding: {
+    pageTitle: "Onboarding",
+    title: "Complete seu perfil",
+    next: "Continuar",
+    back: "Voltar",
+    complete: "Concluir",
+    skip: "Pular esta etapa",
+    addItem: "Adicionar",
+    addSection: "Adicionar seção",
+    noData: "Nada adicionado ainda",
+    loadFailed: "Não foi possível carregar seu onboarding.",
+    completeFailed: "Não foi possível concluir o onboarding.",
+    missingRequired: "Complete as etapas obrigatórias antes de concluir.",
+    language: {
+      prompt: "Qual idioma você prefere?",
+    },
+    experience: {
+      statusPrompt: "Qual a sua situação atual?",
+      statusEmployed: "Empregado",
+      statusUnemployed: "Desempregado",
+      statusStudent: "Estudante",
+      statusFreelancer: "Freelancer",
+      statusEntrepreneur: "Empreendedor",
+      statusRetired: "Aposentado",
+      hintCurrent:
+        "Adicione seu emprego atual primeiro (deixe a data de término vazia) e depois experiências anteriores.",
+      hintPast:
+        "Adicione experiências anteriores, incluindo trabalho voluntário — ou pule se não tiver nenhuma.",
+    },
+  },
 };
 
 export default ptBR;

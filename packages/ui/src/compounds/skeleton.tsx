@@ -2,7 +2,7 @@
  * `<Skeleton>` — placeholder block with pulse animation.
  *
  * The wrapper delegates dimension calculation to `resolveSkeletonDimensions`
- * (pure) and uses Tamagui's `animation="pulse"` + opacity loop for the
+ * (pure) and uses Tamagui's configured animation driver for the
  * visual effect.
  */
 
@@ -24,7 +24,7 @@ export function Skeleton({ variant = "rect", width, height }: SkeletonProps) {
       borderRadius={dims.borderRadius}
       backgroundColor="$gray5"
       opacity={0.6}
-      animation="lazy"
+      animation="quick"
       accessibilityLabel="Carregando"
       accessibilityRole="progressbar"
     />

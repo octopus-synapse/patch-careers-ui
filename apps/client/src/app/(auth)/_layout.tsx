@@ -8,16 +8,24 @@
  * button after sign-up → verify-email).
  */
 
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack, usePathname } from "expo-router";
 import type { ReactElement } from "react";
+import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "../../navigation/authRedirect";
 import { useAuthBootstrap, useAuthState } from "../../providers/AuthProvider";
 
 export default function AuthLayout(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
-  const { isAuthenticated } = useAuthState();
+  const { currentUser, isAuthenticated } = useAuthState();
+  const pathname = usePathname();
 
   if (!hasBootstrapped) return null;
-  if (isAuthenticated) return <Redirect href="/(tabs)/jobs" />;
+  if (isAuthenticated && currentUser?.needsEmailVerification) {
+    if (pathname.includes("verify-email")) {
+      return <Stack screenOptions={{ headerShown: false, animation: "fade" }} />;
+    }
+    return <Redirect href={VERIFY_EMAIL_ROUTE} />;
+  }
+  if (isAuthenticated) return <Redirect href={getAuthenticatedRoute(currentUser)} />;
 
   return <Stack screenOptions={{ headerShown: false, animation: "fade" }} />;
 }

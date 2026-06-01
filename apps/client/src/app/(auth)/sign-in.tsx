@@ -10,7 +10,7 @@
  *   1. `login()` from `@patch-careers/auth`
  *   2. `twoFactorRequired` → push `/2fa-verify` with userId
  *   3. `sessionExchangeId` → `exchangeSessionForTokens()`
- *   4. `bootstrap()` then redirect to `/(tabs)/jobs` (index handles
+ *   4. `bootstrap()` then redirect to the post-auth home (index handles
  *      the gate, but we route explicitly for snappier UX)
  */
 
@@ -22,7 +22,6 @@ import {
   signInWithProviderNative,
 } from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
-import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { type ReactElement, useRef, useState } from "react";
 import { type TextInput, View } from "react-native";
@@ -44,16 +43,9 @@ import {
   extractApiErrorMessages,
   validateLogin,
 } from "../../components/auth/validation";
+import { resolveApiBaseURL } from "../../config/api";
+import { getCurrentAuthenticatedRoute } from "../../navigation/authRedirect";
 import { useI18n } from "../../providers/I18nProvider";
-
-function resolveApiBaseURL(): string {
-  const extra = (Constants.expoConfig?.extra ?? {}) as { apiBaseURL?: string };
-  return (
-    extra.apiBaseURL ??
-    (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ??
-    "https://api.patchcareers.com"
-  );
-}
 
 export default function SignInScreen(): ReactElement {
   const { t, locale } = useI18n();
@@ -89,7 +81,7 @@ export default function SignInScreen(): ReactElement {
         await exchangeSessionForTokens(result.sessionExchangeId);
       }
       await bootstrap().catch(() => undefined);
-      router.replace("/(tabs)/jobs");
+      router.replace(getCurrentAuthenticatedRoute());
     } catch (err) {
       const { toast: title, fields } = extractApiErrorMessages(err, locale, t, "auth.loginFailed", {
         email: trimmedEmail,

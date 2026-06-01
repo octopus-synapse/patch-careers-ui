@@ -20,13 +20,14 @@ import {
   configureAuthClient,
   configureOAuthLauncher,
   type OAuthLauncher,
+  selectCurrentUser,
   selectIsAuthenticated,
   selectIsLoading,
   type TokenPair,
+  type User,
   useAuthStore,
 } from "@patch-careers/auth";
 import { mundane, secure } from "@patch-careers/storage";
-import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -38,6 +39,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { resolveApiBaseURL } from "../config/api";
 
 void WebBrowser.maybeCompleteAuthSession();
 
@@ -50,15 +52,6 @@ const AuthBootstrapContext = createContext<AuthBootstrapState>({
   hasBootstrapped: false,
   apiBaseURL: "",
 });
-
-function resolveApiBaseURL(): string {
-  const extra = (Constants.expoConfig?.extra ?? {}) as { apiBaseURL?: string };
-  return (
-    extra.apiBaseURL ??
-    (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ??
-    "https://api.patchcareers.com"
-  );
-}
 
 export function AuthProvider({ children }: { children: ReactNode }): ReactElement {
   const [hasBootstrapped, setHasBootstrapped] = useState(false);
@@ -131,10 +124,15 @@ export function useAuthBootstrap(): AuthBootstrapState {
 }
 
 /** Convenience hook — returns the observable auth state for route gates. */
-export function useAuthState(): { isAuthenticated: boolean; isLoading: boolean } {
+export function useAuthState(): {
+  currentUser: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+} {
+  const currentUser = useAuthStore(selectCurrentUser);
   const isAuthenticated = useAuthStore(selectIsAuthenticated);
   const isLoading = useAuthStore(selectIsLoading);
-  return { isAuthenticated, isLoading };
+  return { currentUser, isAuthenticated, isLoading };
 }
 
 /** Keep the legacy `useAuth()` shape so any callers from PR #6 don't break. */

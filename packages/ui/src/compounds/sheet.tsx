@@ -35,7 +35,7 @@ export function Sheet({ snapPoints = [85, 50, 25], children, ...rest }: SheetPro
       animation="medium"
       {...(rest as LooseProps)}
     >
-      <TSheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <TSheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
       <TSheet.Handle />
       <TSheet.Frame padding={16}>{children}</TSheet.Frame>
     </TSheet>

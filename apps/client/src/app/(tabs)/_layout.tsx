@@ -5,19 +5,36 @@ import type { ReactElement } from "react";
  *
  *   Jobs · Resume · Profile · Applications · Notifications
  *
- * Icons come from `lucide-react-native` (D57 / open-source, RN-native
- * via react-native-svg). Active color uses our accent intent so the
- * tab bar follows the theme.
+ * Icons come from Expo Vector Icons so active tabs can use filled icons
+ * while inactive tabs stay outlined. Active color uses our accent intent
+ * so the tab bar follows the theme.
  *
  * Placeholders here are intentional — PR #9-#18 fill each tab with
  * real screens.
  */
 
+import { Ionicons } from "@expo/vector-icons";
 import { palette } from "@patch-careers/tokens";
-import { Tabs } from "expo-router";
-import { Bell, Briefcase, FileText, Send, User } from "lucide-react-native";
+import { Redirect, Tabs } from "expo-router";
+import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "../../navigation/authRedirect";
+import { useAuthBootstrap, useAuthState } from "../../providers/AuthProvider";
 
-export default function TabsLayout(): ReactElement {
+type IoniconName = keyof typeof Ionicons.glyphMap;
+
+function tabIcon(outline: IoniconName, filled: IoniconName) {
+  return ({ color, focused, size }: { color: string; focused: boolean; size: number }) => (
+    <Ionicons name={focused ? filled : outline} color={color} size={size} />
+  );
+}
+
+export default function TabsLayout(): ReactElement | null {
+  const { hasBootstrapped } = useAuthBootstrap();
+  const { currentUser, isAuthenticated } = useAuthState();
+
+  if (!hasBootstrapped) return null;
+  if (!isAuthenticated) return <Redirect href={AUTH_SIGN_IN_ROUTE} />;
+  if (currentUser?.needsEmailVerification) return <Redirect href={VERIFY_EMAIL_ROUTE} />;
+
   return (
     <Tabs
       screenOptions={{
@@ -30,35 +47,35 @@ export default function TabsLayout(): ReactElement {
         name="jobs"
         options={{
           title: "Jobs",
-          tabBarIcon: ({ color, size }) => <Briefcase color={color} size={size} />,
+          tabBarIcon: tabIcon("briefcase-outline", "briefcase"),
         }}
       />
       <Tabs.Screen
         name="resume"
         options={{
           title: "Resume",
-          tabBarIcon: ({ color, size }) => <FileText color={color} size={size} />,
+          tabBarIcon: tabIcon("document-text-outline", "document-text"),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
+          tabBarIcon: tabIcon("person-outline", "person"),
         }}
       />
       <Tabs.Screen
         name="applications"
         options={{
           title: "Applications",
-          tabBarIcon: ({ color, size }) => <Send color={color} size={size} />,
+          tabBarIcon: tabIcon("send-outline", "send"),
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
           title: "Notifications",
-          tabBarIcon: ({ color, size }) => <Bell color={color} size={size} />,
+          tabBarIcon: tabIcon("notifications-outline", "notifications"),
         }}
       />
     </Tabs>

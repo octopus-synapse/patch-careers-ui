@@ -28,10 +28,9 @@ export interface LoginResult {
   /** True if backend gated login behind a TOTP / backup code prompt. */
   twoFactorRequired: boolean;
   /**
-   * Only present on web (cookie mode) when the backend issued a short
-   * exchange handle to flip a freshly-authenticated cookie session into
-   * a Bearer pair (no equivalent endpoint exists yet in the contract —
-   * left optional for future use by the OAuth callback flow).
+   * Present when the backend authenticated the session but did not return
+   * a Bearer pair inline (mobile `Accept-Mode: tokens`). Call
+   * `exchangeSessionForTokens()` before `bootstrap()`.
    */
   sessionExchangeId?: string;
 }

@@ -82,6 +82,34 @@ export const en: TranslationDict = {
       passwordWeak: "Password does not meet security requirements",
     },
   },
+  onboarding: {
+    pageTitle: "Onboarding",
+    title: "Complete your profile",
+    next: "Continue",
+    back: "Back",
+    complete: "Complete",
+    skip: "Skip this step",
+    addItem: "Add",
+    addSection: "Add section",
+    noData: "Nothing added yet",
+    loadFailed: "Could not load your onboarding.",
+    completeFailed: "Could not complete onboarding.",
+    missingRequired: "Complete the required steps before finishing.",
+    language: {
+      prompt: "Which language do you prefer?",
+    },
+    experience: {
+      statusPrompt: "What's your current situation?",
+      statusEmployed: "Employed",
+      statusUnemployed: "Unemployed",
+      statusStudent: "Student",
+      statusFreelancer: "Freelancer",
+      statusEntrepreneur: "Entrepreneur",
+      statusRetired: "Retired",
+      hintCurrent: "Add your current job first (leave the end date empty), then any past roles.",
+      hintPast: "Add any past experience, including volunteer work — or skip if you have none.",
+    },
+  },
 };
 
 export default en;

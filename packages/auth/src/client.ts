@@ -119,6 +119,12 @@ function extractTokenPair(payload: unknown): TokenPair | null {
   return null;
 }
 
+function extractSessionExchangeId(data: unknown): string | undefined {
+  if (!data || typeof data !== "object") return undefined;
+  const id = (data as { sessionExchangeId?: unknown }).sessionExchangeId;
+  return typeof id === "string" ? id : undefined;
+}
+
 function mapSessionUser(payload: unknown): User | null {
   if (!payload || typeof payload !== "object") return null;
   const u = (payload as { user?: Record<string, unknown> }).user;
@@ -154,6 +160,7 @@ export async function login(email: string, password: string): Promise<LoginResul
     return {
       userId: (data as { userId: string }).userId,
       twoFactorRequired: (data as { twoFactorRequired?: boolean }).twoFactorRequired === true,
+      sessionExchangeId: extractSessionExchangeId(data),
     };
   } finally {
     useAuthStore.getState().setLoading(false);
@@ -176,6 +183,7 @@ export async function verifyTwoFactor(userId: string, code: string): Promise<Log
     return {
       userId: (data as { userId: string }).userId,
       twoFactorRequired: false,
+      sessionExchangeId: extractSessionExchangeId(data),
     };
   } finally {
     useAuthStore.getState().setLoading(false);

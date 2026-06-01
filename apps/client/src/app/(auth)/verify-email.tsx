@@ -5,13 +5,12 @@
  *
  * Two paths into success:
  *   1. User types the 6-digit code → POST /v1/auth/verify with the code
- *      as `token` → toast + navigate to /(tabs)/jobs (or onboarding
- *      placeholder).
+ *      as `token` → toast + navigate to the post-auth home.
  *   2. User taps the email link → universal link `/verify-email?token=...`
  *      → useEffect detects the token param, auto-calls verify.
  *
- * D102: after success → /(onboarding) when that group lands, until
- * then we drop into /(tabs)/jobs.
+ * D102: after success → /(onboarding) when the hydrated user still needs
+ * onboarding; otherwise into the tabbed shell.
  */
 
 import { postV1AuthEmailVerificationSend, verify as verifyApi } from "@patch-careers/api-client";
@@ -22,6 +21,7 @@ import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { AuthScreenLayout } from "../../components/AuthScreenLayout";
+import { getCurrentAuthenticatedRoute } from "../../navigation/authRedirect";
 import { useTranslator } from "../../providers/I18nProvider";
 
 const RESEND_COOLDOWN_S = 60;
@@ -38,7 +38,8 @@ export default function VerifyEmailScreen(): ReactElement {
   const [submitting, setSubmitting] = useState(false);
   const [lastResendAt, setLastResendAt] = useState<number | null>(null);
   const [now, setNow] = useState(Date.now());
-  const autoFiredRef = useRef(false);
+  const autoSubmitTokenRef = useRef(false);
+  const autoSendCodeRef = useRef(false);
 
   const remaining = cooldownSecondsRemaining(lastResendAt, RESEND_COOLDOWN_S, now);
   const canResend = remaining === 0;
@@ -59,9 +60,7 @@ export default function VerifyEmailScreen(): ReactElement {
         await verifyApi({ token });
         await bootstrap().catch(() => undefined);
         toast.show({ title: t("auth.verifySuccess"), intent: "success" });
-        // Onboarding wizard lands in a later PR — for now we drop the
-        // user into the tabbed shell directly.
-        router.replace("/(tabs)/jobs");
+        router.replace(getCurrentAuthenticatedRoute());
       } catch {
         toast.show({ title: t("auth.resetInvalidToken"), intent: "danger" });
       } finally {
@@ -73,15 +72,15 @@ export default function VerifyEmailScreen(): ReactElement {
 
   // Auto-submit when the deep-link path provides a token directly.
   useEffect(() => {
-    if (autoFiredRef.current) return;
+    if (autoSubmitTokenRef.current) return;
     const token = params.token;
     if (token && token.length > 0) {
-      autoFiredRef.current = true;
+      autoSubmitTokenRef.current = true;
       void submitToken(token);
     }
   }, [params.token, submitToken]);
 
-  async function handleResend() {
+  const requestVerificationCode = useCallback(async () => {
     if (!canResend) return;
     setLastResendAt(Date.now());
     try {
@@ -91,6 +90,18 @@ export default function VerifyEmailScreen(): ReactElement {
       setTestCode(null);
       // Ignore — user can retry after cooldown.
     }
+  }, [canResend]);
+
+  // Landing here after sign-up should trigger the first verification email.
+  // In dev, the backend may also return the test code to display on-screen.
+  useEffect(() => {
+    if (autoSendCodeRef.current || params.token) return;
+    autoSendCodeRef.current = true;
+    void requestVerificationCode();
+  }, [params.token, requestVerificationCode]);
+
+  async function handleResend() {
+    await requestVerificationCode();
   }
 
   function handleComplete(value: string) {
