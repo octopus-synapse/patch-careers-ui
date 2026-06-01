@@ -80,7 +80,7 @@ jobs:
       # projects; pushes to main run the full graph via run-many.
       - name: Set Nx SHAs
         if: github.event_name == 'pull_request'
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
 
       - name: Typecheck (affected on PR, all on push)
         run: |
