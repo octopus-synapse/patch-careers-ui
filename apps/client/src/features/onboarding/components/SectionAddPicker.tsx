@@ -4,10 +4,13 @@
  * those not yet activated) and reports the chosen extra id back so the hub
  * can activate it (`POST /v1/onboarding/session/extras`) and open its
  * editor inline.
+ *
+ * Thin wrapper over the shared `<ListPicker>` — preserves this feature's
+ * `SectionAddOption` API while the list UI lives in `@patch-careers/ui`.
  */
 
-import { Button, Sheet, Text, XStack, YStack } from "@patch-careers/ui";
-import { Pressable, ScrollView } from "react-native";
+import { ListPicker, Text } from "@patch-careers/ui";
+import type { ReactElement } from "react";
 
 export interface SectionAddOption {
   id: string;
@@ -31,46 +34,20 @@ export function SectionAddPicker({
   onPick,
   title,
   emptyLabel,
-}: SectionAddPickerProps) {
+}: SectionAddPickerProps): ReactElement {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} snapPoints={[60]}>
-      <YStack gap={12} flex={1}>
-        <Text preset="h3">{title ?? "Adicionar seção"}</Text>
-        {options.length === 0 ? (
-          <Text preset="body" color="$gray10">
-            {emptyLabel ?? "Você já adicionou todas as seções disponíveis."}
-          </Text>
-        ) : (
-          <ScrollView keyboardShouldPersistTaps="handled">
-            <YStack gap={6}>
-              {options.map((option) => (
-                <Pressable
-                  key={option.id}
-                  onPress={() => onPick(option.id)}
-                  accessibilityRole="button"
-                >
-                  <XStack
-                    alignItems="center"
-                    gap={10}
-                    paddingVertical={12}
-                    paddingHorizontal={12}
-                    borderWidth={1}
-                    borderColor="$gray6"
-                    borderRadius={12}
-                  >
-                    {option.icon ? <Text>{option.icon}</Text> : null}
-                    <Text flex={1}>{option.label}</Text>
-                    <Text color="$blue10">+</Text>
-                  </XStack>
-                </Pressable>
-              ))}
-            </YStack>
-          </ScrollView>
-        )}
-        <Button variant="ghost" intent="neutral" onPress={() => onOpenChange(false)}>
-          Fechar
-        </Button>
-      </YStack>
-    </Sheet>
+    <ListPicker
+      open={open}
+      onOpenChange={onOpenChange}
+      options={options.map((o) => ({
+        id: o.id,
+        label: o.label,
+        ...(o.icon ? { icon: <Text>{o.icon}</Text> } : {}),
+      }))}
+      onPick={onPick}
+      title={title ?? "Adicionar seção"}
+      emptyLabel={emptyLabel ?? "Você já adicionou todas as seções disponíveis."}
+      closeLabel="Fechar"
+    />
   );
 }

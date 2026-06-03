@@ -3,7 +3,7 @@
  *
  * Layout: brand wordmark + serif italic headline ("Welcome *back.*") +
  * underlined inputs + deep-ink primary CTA + OAuth row + footer prompt.
- * All animations come from `_components/auth-shared` (stagger reveal on
+ * All animations come from `@patch-careers/ui/editorial` (stagger reveal on
  * mount + animated focus underline + CTA arrow nudge).
  *
  * Flow preserved from the previous version:
@@ -14,17 +14,7 @@
  *      the gate, but we route explicitly for snappier UX)
  */
 
-import {
-  bootstrap,
-  exchangeSessionForTokens,
-  type LoginResult,
-  login,
-  signInWithProviderNative,
-} from "@patch-careers/auth";
-import { useToast } from "@patch-careers/ui";
-import { useRouter } from "expo-router";
-import { type ReactElement, useRef, useState } from "react";
-import { type TextInput, View } from "react-native";
+import { type LoginResult, login } from "@patch-careers/auth";
 import {
   AnimatedField,
   AuthShell,
@@ -37,25 +27,27 @@ import {
   PasswordInput,
   PrimaryAction,
   UnderlineInput,
-} from "../../components/auth/auth-shared";
-import {
-  type AuthFieldErrors,
-  extractApiErrorMessages,
-  validateLogin,
-} from "../../components/auth/validation";
-import { resolveApiBaseURL } from "../../config/api";
-import { getCurrentAuthenticatedRoute } from "../../navigation/authRedirect";
-import { useI18n } from "../../providers/I18nProvider";
+} from "@patch-careers/ui/editorial";
+import { type ReactElement, useRef, useState } from "react";
+import { type TextInput, View } from "react-native";
+import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
+import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
+import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "../../components/auth/hooks/useCompleteAuth";
+import { useOAuthSignIn } from "../../components/auth/hooks/useOAuthSignIn";
+import { useSubmit } from "../../components/auth/hooks/useSubmit";
+import { GithubGlyph, LinkedinGlyph } from "../../components/auth/oauth-glyphs";
+import { validateLogin } from "../../components/auth/validation";
 
 export default function SignInScreen(): ReactElement {
-  const { t, locale } = useI18n();
-  const router = useRouter();
-  const toast = useToast();
+  const { t, locale, router, toast } = useAuthScreen();
+  const { fieldErrors, setFieldErrors, clearError } = useAuthFields();
+  const { handleOAuth } = useOAuthSignIn();
+  const { finishAuthentication } = useCompleteAuth();
+  const { submitting, run } = useSubmit();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
   const passwordRef = useRef<TextInput>(null);
 
   async function handleSubmit() {
@@ -67,46 +59,30 @@ export default function SignInScreen(): ReactElement {
     }
 
     setFieldErrors({});
-    setSubmitting(true);
-    try {
-      const result: LoginResult = await login(trimmedEmail, password);
-      if (result.twoFactorRequired) {
-        router.replace({
-          pathname: "/(auth)/2fa-verify",
-          params: { userId: result.userId },
+    await run(async () => {
+      try {
+        const result: LoginResult = await login(trimmedEmail, password);
+        if (result.twoFactorRequired) {
+          router.replace({
+            pathname: "/(auth)/2fa-verify",
+            params: { userId: result.userId },
+          });
+          return;
+        }
+        await finishAuthentication(
+          result.sessionExchangeId ? { sessionExchangeId: result.sessionExchangeId } : undefined,
+        );
+      } catch (err) {
+        handleAuthApiError(err, {
+          locale,
+          t,
+          toast,
+          setFieldErrors,
+          fallbackKey: "auth.loginFailed",
+          payload: { email: trimmedEmail, password },
         });
-        return;
       }
-      if (result.sessionExchangeId) {
-        await exchangeSessionForTokens(result.sessionExchangeId);
-      }
-      await bootstrap().catch(() => undefined);
-      router.replace(getCurrentAuthenticatedRoute());
-    } catch (err) {
-      const { toast: title, fields } = extractApiErrorMessages(err, locale, t, "auth.loginFailed", {
-        email: trimmedEmail,
-        password,
-      });
-      if (Object.keys(fields).length > 0) setFieldErrors(fields);
-      toast.show({ title, intent: "danger" });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  async function handleOAuth(provider: "github" | "linkedin") {
-    try {
-      const apiBaseURL = resolveApiBaseURL();
-      const result = await signInWithProviderNative(provider, {
-        apiBaseURL,
-        redirectUri: "patchcareers://auth/callback",
-      });
-      if (!result.ok) {
-        toast.show({ title: t("auth.oauthFailed"), intent: "danger" });
-      }
-    } catch {
-      toast.show({ title: t("auth.oauthFailed"), intent: "danger" });
-    }
+    });
   }
 
   return (
@@ -121,7 +97,7 @@ export default function SignInScreen(): ReactElement {
             value={email}
             onChangeText={(next) => {
               setEmail(next);
-              if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: undefined }));
+              clearError("email");
             }}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -145,8 +121,7 @@ export default function SignInScreen(): ReactElement {
             value={password}
             onChangeText={(next) => {
               setPassword(next);
-              if (fieldErrors.password)
-                setFieldErrors((prev) => ({ ...prev, password: undefined }));
+              clearError("password");
             }}
             returnKeyType="go"
             onSubmitEditing={() => void handleSubmit()}
@@ -158,7 +133,7 @@ export default function SignInScreen(): ReactElement {
           {fieldErrors.password ? <FieldError text={fieldErrors.password} /> : null}
           <InlineLink
             label={t("auth.forgotPassword")}
-            href="/(auth)/forgot-password"
+            onPress={() => router.push("/(auth)/forgot-password")}
             align="right"
             testID="auth.forgotLink"
           />
@@ -178,13 +153,15 @@ export default function SignInScreen(): ReactElement {
 
       <View>
         <OAuthButton
-          brand="github"
+          icon={GithubGlyph}
+          delay={700}
           label={t("auth.continueWith", { provider: "GitHub" })}
           onPress={() => handleOAuth("github")}
           testID="auth.github"
         />
         <OAuthButton
-          brand="linkedin"
+          icon={LinkedinGlyph}
+          delay={800}
           label={t("auth.continueWith", { provider: "LinkedIn" })}
           onPress={() => handleOAuth("linkedin")}
           testID="auth.linkedin"
@@ -194,7 +171,7 @@ export default function SignInScreen(): ReactElement {
       <FooterPrompt
         prompt={t("auth.noAccount")}
         linkLabel={t("auth.createOne")}
-        href="/(auth)/sign-up"
+        onPress={() => router.push("/(auth)/sign-up")}
         testID="auth.signUpLink"
       />
     </AuthShell>

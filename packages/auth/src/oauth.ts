@@ -17,7 +17,8 @@
 import { configureApiClient } from "@patch-careers/api-client";
 import type { KeyValueStorage } from "@patch-careers/storage";
 import { useAuthStore } from "./auth.store";
-import { createTokenStorage, type TokenStorage } from "./token-storage";
+import { parseTokenPairFromParams } from "./token-pair";
+import { createTokenStorage, makeBearerAuthHeader } from "./token-storage";
 import type { TokenPair } from "./types";
 
 export type OAuthProvider = "github" | "linkedin";
@@ -105,26 +106,17 @@ export async function completeOAuth(
   apiBaseURL: string,
 ): Promise<TokenPair | null> {
   const url = new URL(callbackUrl);
-  const accessToken = url.searchParams.get("accessToken");
-  const refreshToken = url.searchParams.get("refreshToken");
-  const expiresInRaw = url.searchParams.get("expiresIn");
-  if (!accessToken || !refreshToken || !expiresInRaw) return null;
-  const expiresIn = Number.parseInt(expiresInRaw, 10);
-  if (Number.isNaN(expiresIn)) return null;
+  const pair = parseTokenPairFromParams(url.searchParams);
+  if (!pair) return null;
 
-  const pair: TokenPair = { accessToken, refreshToken, expiresIn };
-  const tokenStorage: TokenStorage = createTokenStorage(storage);
+  const tokenStorage = createTokenStorage(storage);
   await tokenStorage.set(pair);
 
   // Make sure subsequent requests pick up the new token even if
   // configureAuthClient() ran before the OAuth dance kicked off.
   configureApiClient({
     baseURL: apiBaseURL,
-    getAuthHeader: async () => {
-      const persisted = await tokenStorage.get();
-      if (!persisted) return null;
-      return `Bearer ${persisted.accessToken}`;
-    },
+    getAuthHeader: makeBearerAuthHeader(tokenStorage),
   });
 
   // Optimistically flag the user as authenticated — the host should

@@ -4,9 +4,9 @@
  * the "Editorial Calm" tone (sober, not a colorful illustration pack).
  */
 
+import { editorialPalette as authTokens } from "@patch-careers/tokens";
 import type { ReactElement } from "react";
 import Svg, { Circle, Line, Path, Rect } from "react-native-svg";
-import { authTokens } from "../../../components/auth/auth-shared";
 
 export interface OnboardingArtProps {
   /** Square-ish art; width drives the box, height ≈ width * 0.8. */

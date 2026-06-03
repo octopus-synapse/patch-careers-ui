@@ -4,6 +4,11 @@ import { Platform } from "react-native";
 const PRODUCTION_API_BASE_URL = "https://api.patchcareers.com";
 const LOCAL_API_PORT = 13001;
 
+/** Deep link the backend redirects to after OAuth, carrying the token triple. */
+export const OAUTH_CALLBACK_URL = "patchcareers://auth/callback";
+/** Path fragment used to recognise the OAuth callback deep link. */
+export const OAUTH_CALLBACK_PATH = "auth/callback";
+
 export interface ApiBaseURLConfig {
   extraApiBaseURL?: string | undefined;
   envApiBaseURL?: string | undefined;

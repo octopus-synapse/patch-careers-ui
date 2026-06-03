@@ -12,18 +12,12 @@
  * Apps that need stricter platform-only bundles can import the named
  * `webMundane` / `mobileMundane` etc. directly.
  */
+import { isWebRuntime } from "@patch-careers/platform";
 import type { KeyValueStorage, SetItemOptions } from "./interface";
 import { webMundane, webSecure } from "./web";
 
 export type { KeyValueStorage, SetItemOptions } from "./interface";
 export { createWebStorage, webMundane, webSecure } from "./web";
-
-function isWebRuntime(): boolean {
-  // Hermes / React Native expose `navigator.product === "ReactNative"`.
-  const nav = (globalThis as { navigator?: { product?: string } }).navigator;
-  if (nav?.product === "ReactNative") return false;
-  return true;
-}
 
 async function loadMobileAdapter(slot: "mobileMundane" | "mobileSecure"): Promise<KeyValueStorage> {
   const mod = (await import("./mobile")) as typeof import("./mobile");

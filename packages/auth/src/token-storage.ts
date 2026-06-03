@@ -31,6 +31,19 @@ export interface TokenStorage {
   clear(): Promise<void>;
 }
 
+/**
+ * Builds a `getAuthHeader` callback for `configureApiClient`: reads the
+ * persisted pair and formats the Bearer header, or `null` when there's no
+ * token. Shared by `configureAuthClient` and the OAuth callback handler.
+ */
+export function makeBearerAuthHeader(tokenStorage: TokenStorage): () => Promise<string | null> {
+  return async () => {
+    const pair = await tokenStorage.get();
+    if (!pair) return null;
+    return `Bearer ${pair.accessToken}`;
+  };
+}
+
 export function createTokenStorage(storage: KeyValueStorage): TokenStorage {
   return {
     async get(): Promise<PersistedTokenPair | null> {

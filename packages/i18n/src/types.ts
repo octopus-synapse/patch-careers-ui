@@ -12,6 +12,11 @@
 
 export type Locale = "pt-BR" | "en";
 
+/** Runtime guard for a supported locale tag (single source for the rule). */
+export function isLocale(value: unknown): value is Locale {
+  return value === "pt-BR" || value === "en";
+}
+
 export type TranslationLeaf = string;
 
 export interface TranslationDict {

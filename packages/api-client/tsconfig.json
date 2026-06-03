@@ -17,5 +17,10 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*", "contracts/*.json"],
-  "exclude": ["node_modules", "dist", "src/generated/**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "src/generated/**/*.test.ts"],
+  "references": [
+    {
+      "path": "../platform"
+    }
+  ]
 }

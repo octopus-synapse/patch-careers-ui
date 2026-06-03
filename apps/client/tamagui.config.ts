@@ -9,6 +9,7 @@
  */
 
 import {
+  editorialPalette,
   fontFamily,
   fontSize,
   fontWeight,
@@ -22,6 +23,7 @@ import {
 } from "@patch-careers/tokens";
 import { createAnimations } from "@tamagui/animations-react-native";
 import { createTamagui } from "@tamagui/core";
+import { Platform } from "react-native";
 
 const space = {
   $0: spacing[0],
@@ -98,6 +100,26 @@ const colorTokens = {
   $background: themeLight.colors.neutral.subtleBg,
   $foreground: themeLight.colors.neutral.fg,
   $border: themeLight.colors.neutral.border,
+
+  // editorial palette — global tokens so `@patch-careers/ui/editorial`
+  // components resolve them regardless of the active theme (the `editorial`
+  // theme below only flips surface/text defaults). Light-only by design.
+  $paper: editorialPalette.bg,
+  $surface: editorialPalette.surface,
+  $ink: editorialPalette.ink,
+  $inkBody: editorialPalette.body,
+  $inkMuted: editorialPalette.muted,
+  $inkSubtle: editorialPalette.subtle,
+  $hairline: editorialPalette.hairline,
+  $hairlineStrong: editorialPalette.hairlineStrong,
+  $accentBlue: editorialPalette.accent,
+  $accentDeep: editorialPalette.accentDeep,
+  $primaryInk: editorialPalette.primary,
+  $primaryInkPress: editorialPalette.primaryPress,
+  $editorialDanger: editorialPalette.danger,
+  $editorialSuccess: editorialPalette.success,
+  $editorialWarn: editorialPalette.warn,
+  $editorialFair: editorialPalette.fair,
 } as const;
 
 const tokens = {
@@ -163,6 +185,15 @@ const lineHeightMap = {
   true: lineHeight.md,
 } as const;
 
+// Editorial serif stack — Georgia on iOS/web, platform serif on Android.
+// Registered as a Tamagui font family string (no expo-font / bundled file);
+// italic is a separate `fontStyle="italic"` prop, not a distinct family.
+const serifFamily = Platform.select({
+  ios: "Georgia",
+  android: "serif",
+  default: "Georgia",
+});
+
 const fonts = {
   body: {
     family: fontFamily.body,
@@ -180,6 +211,13 @@ const fonts = {
   },
   mono: {
     family: fontFamily.mono,
+    size: fontSizeMap,
+    lineHeight: lineHeightMap,
+    weight: fontWeight,
+    letterSpacing,
+  },
+  serif: {
+    family: serifFamily,
     size: fontSizeMap,
     lineHeight: lineHeightMap,
     weight: fontWeight,
@@ -215,6 +253,22 @@ const themes = {
     successFg: themeDark.colors.success.fg,
     neutralBg: themeDark.colors.neutral.bg,
     neutralFg: themeDark.colors.neutral.fg,
+  },
+  // Editorial Calm — light-only. Same key set as light/dark (keeps `$token`
+  // typing sound); editorial-specific colors live in `tokens.color` above.
+  // `theme="editorial"` flips surface/text defaults to warm paper + ink.
+  editorial: {
+    background: editorialPalette.bg,
+    foreground: editorialPalette.ink,
+    border: editorialPalette.hairline,
+    accentBg: editorialPalette.accent,
+    accentFg: editorialPalette.surface,
+    dangerBg: editorialPalette.danger,
+    dangerFg: editorialPalette.surface,
+    successBg: editorialPalette.success,
+    successFg: editorialPalette.surface,
+    neutralBg: editorialPalette.surface,
+    neutralFg: editorialPalette.ink,
   },
 } as const;
 

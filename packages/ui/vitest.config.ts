@@ -20,6 +20,8 @@ export default defineConfig({
         // covered by `internal/*` tests separately.
         "src/primitives/**/*.tsx",
         "src/compounds/**/*.tsx",
+        "src/editorial/**/*.tsx",
+        "src/editorial/fonts.ts",
         "src/icons/**/*.tsx",
         "src/internal/tamagui-shim.ts",
         "src/internal/use-theme-name.ts",

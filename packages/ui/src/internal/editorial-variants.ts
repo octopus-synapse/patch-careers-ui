@@ -1,0 +1,47 @@
+/**
+ * Pure color resolvers for the editorial components' state-dependent styling.
+ *
+ * These replace the inline ternaries that lived in `auth-shared.tsx`
+ * (`hasError ? danger : accent`, etc.) so the branches are unit-testable and
+ * the JSX wrappers stay declarative. All values come from the editorial
+ * palette in `@patch-careers/tokens`.
+ */
+
+import { editorialPalette as p } from "@patch-careers/tokens";
+
+/** UnderlineInput: the static hairline + the animated focus line color. */
+export function resolveUnderlineColors(hasError: boolean): {
+  hairline: string;
+  focus: string;
+} {
+  return {
+    hairline: hasError ? p.danger : p.hairlineStrong,
+    focus: hasError ? p.danger : p.accent,
+  };
+}
+
+/** EditorialLabel text color. */
+export function resolveLabelColor(error: boolean): string {
+  return error ? p.danger : p.muted;
+}
+
+/** OAuthButton ghost surface — flips on press. */
+export function resolveOAuthColors(pressed: boolean): {
+  backgroundColor: string;
+  borderColor: string;
+} {
+  return {
+    backgroundColor: pressed ? p.hairline : p.surface,
+    borderColor: pressed ? p.muted : p.hairlineStrong,
+  };
+}
+
+/** ConsentCheckbox square — checked wins over error wins over default. */
+export function resolveConsentBoxColors(
+  checked: boolean,
+  hasError: boolean,
+): { backgroundColor: string; borderColor: string } {
+  if (checked) return { backgroundColor: p.primary, borderColor: p.primary };
+  if (hasError) return { backgroundColor: p.surface, borderColor: p.danger };
+  return { backgroundColor: p.surface, borderColor: p.hairlineStrong };
+}

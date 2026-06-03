@@ -17,6 +17,8 @@
  *     imported by every generated hook.
  */
 
+import { isReactNativeRuntime, singleFlight } from "@patch-careers/platform";
+
 export type RequestMethod = "GET" | "PUT" | "PATCH" | "POST" | "DELETE" | "OPTIONS" | "HEAD";
 
 export interface RequestConfig<TData = unknown> {
@@ -112,27 +114,12 @@ interface RuntimeConfig {
   isNative: boolean;
 }
 
-function detectNative(): boolean {
-  // React Native ships a `navigator.product === 'ReactNative'` sentinel.
-  // We also accept an explicit env override for tests / web-first builds.
-  if (typeof process !== "undefined" && process.env?.PATCH_CAREERS_NATIVE === "1") {
-    return true;
-  }
-  if (
-    typeof navigator !== "undefined" &&
-    (navigator as { product?: string }).product === "ReactNative"
-  ) {
-    return true;
-  }
-  return false;
-}
-
 const runtime: RuntimeConfig = {
   baseURL: "",
   getAuthHeader: null,
   refreshAuth: null,
   defaultHeaders: {},
-  isNative: detectNative(),
+  isNative: isReactNativeRuntime(),
 };
 
 export interface ConfigureApiClientOptions {
@@ -171,7 +158,7 @@ export function resetApiClient(): void {
   runtime.getAuthHeader = null;
   runtime.refreshAuth = null;
   runtime.defaultHeaders = {};
-  runtime.isNative = detectNative();
+  runtime.isNative = isReactNativeRuntime();
   __resetRefreshState();
 }
 
@@ -205,38 +192,25 @@ function buildUrl(path: string, params?: Record<string, unknown>): string {
   return qs ? `${url}${url.includes("?") ? "&" : "?"}${qs}` : url;
 }
 
-let refreshInFlight: Promise<string | null> | null = null;
+const refreshFlight = singleFlight<string | null>();
 
 /**
  * Single-flight refresh: concurrent 401 callers all await the same
  * Promise. After it settles (success OR failure) the slot is cleared so
  * the next 401 can trigger a fresh refresh attempt.
  *
- * Exposed for the auth package's own refresh-queue module which mirrors
- * the same singleton pattern; the fetcher uses this internal one as the
- * source of truth.
+ * Backed by the shared `singleFlight` from `@patch-careers/platform` — the
+ * same primitive the auth package's refresh-queue uses.
  */
-async function runRefreshOnce(): Promise<string | null> {
-  if (!runtime.refreshAuth) return null;
-  if (refreshInFlight) return refreshInFlight;
+function runRefreshOnce(): Promise<string | null> {
   const refresh = runtime.refreshAuth;
-  refreshInFlight = (async () => {
-    try {
-      return await refresh();
-    } finally {
-      // Defer clearing until next microtask so awaiters that resolve
-      // synchronously see the same Promise.
-      queueMicrotask(() => {
-        refreshInFlight = null;
-      });
-    }
-  })();
-  return refreshInFlight;
+  if (!refresh) return Promise.resolve(null);
+  return refreshFlight.run(() => refresh());
 }
 
 /** Test-only helper to reset the in-flight refresh slot between cases. */
 export function __resetRefreshState(): void {
-  refreshInFlight = null;
+  refreshFlight.reset();
 }
 
 async function buildInit(config: RequestConfig, authHeader: string | null): Promise<RequestInit> {

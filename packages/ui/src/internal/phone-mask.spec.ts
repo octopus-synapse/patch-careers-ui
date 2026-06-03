@@ -6,12 +6,12 @@ import {
   PHONE_COUNTRIES,
   parseCanonicalPhone,
   toCanonicalPhone,
-} from "./phoneMask";
+} from "./phone-mask";
 
 const BR = findCountryByIso("BR") ?? DEFAULT_PHONE_COUNTRY;
 const US = findCountryByIso("US") ?? DEFAULT_PHONE_COUNTRY;
 
-describe("phoneMask", () => {
+describe("phone-mask", () => {
   it("formats a Brazilian mobile exactly as specified", () => {
     expect(formatPhoneDisplay(BR, "11978833101")).toBe("+55 (11) 97883-3101");
   });
@@ -28,6 +28,11 @@ describe("phoneMask", () => {
 
   it("formats a US/NANP number", () => {
     expect(formatPhoneDisplay(US, "4155550132")).toBe("+1 (415) 555-0132");
+  });
+
+  it("falls back to generic 3-3-4 grouping for countries without a mask", () => {
+    const pt = findCountryByIso("PT") ?? DEFAULT_PHONE_COUNTRY;
+    expect(formatPhoneDisplay(pt, "912345678")).toBe("+351 912 345 678");
   });
 
   it("shows just the dial code when empty", () => {

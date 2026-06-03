@@ -18,6 +18,9 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@patch-careers/platform": "workspace:*"
+  },
   "peerDependencies": {
     "@tanstack/react-query": ">=5",
     "react": "19.1.0",

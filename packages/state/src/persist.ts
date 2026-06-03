@@ -16,6 +16,6 @@ export function asZustandStorage(storage: KeyValueStorage): StateStorage {
   };
 }
 
-export function zustandJSONStorage(storage: KeyValueStorage) {
-  return createJSONStorage(() => asZustandStorage(storage));
+export function zustandJSONStorage<S = unknown>(storage: KeyValueStorage) {
+  return createJSONStorage<S>(() => asZustandStorage(storage));
 }

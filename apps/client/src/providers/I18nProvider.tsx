@@ -13,7 +13,15 @@
  * session query is keyed by `locale`) refetches a translated session.
  */
 
-import { createTranslator, en, type Locale, ptBR, type Translator } from "@patch-careers/i18n";
+import {
+  createTranslator,
+  en,
+  isLocale,
+  type Locale,
+  ptBR,
+  type Translator,
+} from "@patch-careers/i18n";
+import { LOCALE_STORE_KEY } from "@patch-careers/state";
 import { mundane } from "@patch-careers/storage";
 import {
   createContext,
@@ -26,8 +34,6 @@ import {
   useState,
 } from "react";
 import { NativeModules, Platform } from "react-native";
-
-const LOCALE_STORAGE_KEY = "patch-careers:locale";
 
 interface I18nContextValue {
   readonly locale: Locale;
@@ -90,9 +96,9 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
     if (locale) return;
     let cancelled = false;
     mundane
-      .getItem(LOCALE_STORAGE_KEY)
+      .getItem(LOCALE_STORE_KEY)
       .then((stored) => {
-        if (!cancelled && (stored === "en" || stored === "pt-BR")) setActive(stored);
+        if (!cancelled && isLocale(stored)) setActive(stored);
       })
       .catch(() => undefined);
     return () => {
@@ -102,7 +108,7 @@ export function I18nProvider({ children, locale }: I18nProviderProps): ReactElem
 
   const setLocale = useCallback((next: Locale) => {
     setActive(next);
-    mundane.setItem(LOCALE_STORAGE_KEY, next).catch(() => undefined);
+    mundane.setItem(LOCALE_STORE_KEY, next).catch(() => undefined);
   }, []);
 
   const value = useMemo<I18nContextValue>(

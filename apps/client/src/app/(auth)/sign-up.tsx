@@ -11,10 +11,6 @@
  */
 
 import { signup } from "@patch-careers/api-client";
-import { useToast } from "@patch-careers/ui";
-import { useRouter } from "expo-router";
-import { type ReactElement, useRef, useState } from "react";
-import { type TextInput, View } from "react-native";
 import {
   AnimatedField,
   AuthShell,
@@ -26,13 +22,14 @@ import {
   PasswordStrengthMeter,
   PrimaryAction,
   UnderlineInput,
-} from "../../components/auth/auth-shared";
-import {
-  type AuthFieldErrors,
-  extractApiErrorMessages,
-  validateSignup,
-} from "../../components/auth/validation";
-import { useI18n } from "../../providers/I18nProvider";
+} from "@patch-careers/ui/editorial";
+import { type ReactElement, useRef, useState } from "react";
+import { type TextInput, View } from "react-native";
+import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
+import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
+import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
+import { useSubmit } from "../../components/auth/hooks/useSubmit";
+import { validateSignup } from "../../components/auth/validation";
 
 // Versions sent with the consent payload. Backend rejects with
 // CONSENT_VERSION_MISMATCH if these don't match the live published
@@ -42,15 +39,13 @@ const TOS_VERSION = "1.0.0";
 const PRIVACY_VERSION = "1.0.0";
 
 export default function SignUpScreen(): ReactElement {
-  const { t, locale } = useI18n();
-  const router = useRouter();
-  const toast = useToast();
+  const { t, locale, router, toast } = useAuthScreen();
+  const { fieldErrors, setFieldErrors, clearError } = useAuthFields();
+  const { submitting, run } = useSubmit();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [consent, setConsent] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
   const [consentError, setConsentError] = useState<string | undefined>(undefined);
   const passwordRef = useRef<TextInput>(null);
 
@@ -73,26 +68,24 @@ export default function SignUpScreen(): ReactElement {
 
     setFieldErrors({});
     setConsentError(undefined);
-    setSubmitting(true);
-    try {
-      await signup(payload);
-      router.replace({
-        pathname: "/(auth)/verify-email",
-        params: { email: trimmedEmail },
-      });
-    } catch (err) {
-      const { toast: title, fields } = extractApiErrorMessages(
-        err,
-        locale,
-        t,
-        "auth.signupFailed",
-        { email: trimmedEmail, password },
-      );
-      if (Object.keys(fields).length > 0) setFieldErrors(fields);
-      toast.show({ title, intent: "danger" });
-    } finally {
-      setSubmitting(false);
-    }
+    await run(async () => {
+      try {
+        await signup(payload);
+        router.replace({
+          pathname: "/(auth)/verify-email",
+          params: { email: trimmedEmail },
+        });
+      } catch (err) {
+        handleAuthApiError(err, {
+          locale,
+          t,
+          toast,
+          setFieldErrors,
+          fallbackKey: "auth.signupFailed",
+          payload: { email: trimmedEmail, password },
+        });
+      }
+    });
   }
 
   return (
@@ -111,7 +104,7 @@ export default function SignUpScreen(): ReactElement {
             value={email}
             onChangeText={(next) => {
               setEmail(next);
-              if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: undefined }));
+              clearError("email");
             }}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -135,8 +128,7 @@ export default function SignUpScreen(): ReactElement {
             value={password}
             onChangeText={(next) => {
               setPassword(next);
-              if (fieldErrors.password)
-                setFieldErrors((prev) => ({ ...prev, password: undefined }));
+              clearError("password");
             }}
             returnKeyType="next"
             showLabel={t("auth.showPassword")}
@@ -157,16 +149,20 @@ export default function SignUpScreen(): ReactElement {
           }}
           intro="I agree to the"
           termsLabel={t("auth.consentTerms")}
-          termsHref={{
-            pathname: "/legal-webview",
-            params: { kind: "terms", title: t("auth.legalTerms") },
-          }}
+          onTermsPress={() =>
+            router.push({
+              pathname: "/legal-webview",
+              params: { kind: "terms", title: t("auth.legalTerms") },
+            })
+          }
           conjunction="and"
           privacyLabel={t("auth.consentPrivacy")}
-          privacyHref={{
-            pathname: "/legal-webview",
-            params: { kind: "privacy", title: t("auth.legalPrivacy") },
-          }}
+          onPrivacyPress={() =>
+            router.push({
+              pathname: "/legal-webview",
+              params: { kind: "privacy", title: t("auth.legalPrivacy") },
+            })
+          }
           {...(consentError ? { error: consentError } : {})}
           testID="signup.consent"
         />
@@ -184,7 +180,7 @@ export default function SignUpScreen(): ReactElement {
       <FooterPrompt
         prompt={t("auth.haveAccount")}
         linkLabel={t("auth.signInInstead")}
-        href="/(auth)/sign-in"
+        onPress={() => router.push("/(auth)/sign-in")}
         testID="signup.signInLink"
       />
     </AuthShell>

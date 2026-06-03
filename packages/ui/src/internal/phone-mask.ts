@@ -1,7 +1,7 @@
 /**
- * Phone formatting for the onboarding "Pessoal" step. The user first picks
- * a country (dial code), then types digits; we render a pretty mask while
- * storing the canonical `+<dial><national>` string.
+ * Phone formatting for `<PhoneInput>` (onboarding "Pessoal" step). The user
+ * first picks a country (dial code), then types digits; we render a pretty
+ * mask while storing the canonical `+<dial><national>` string.
  *
  * Example (Brazil): typing `11978833101` with country +55 renders
  * `+55 (11) 97883-3101` and stores `+5511978833101`.

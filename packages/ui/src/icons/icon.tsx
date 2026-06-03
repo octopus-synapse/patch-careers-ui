@@ -8,6 +8,7 @@
 
 import type { ComponentType } from "react";
 import { useTheme } from "tamagui";
+import { readThemeValue } from "../internal/theme-value";
 
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -42,18 +43,7 @@ export function Icon({
 }: IconProps) {
   const theme = useTheme();
   const px = typeof size === "number" ? size : SIZE_TO_PX[size];
-  let resolvedColor: string;
-  if (color) {
-    resolvedColor = color;
-  } else {
-    const raw = theme.color as unknown;
-    if (raw && typeof (raw as { get?: () => unknown }).get === "function") {
-      const value = (raw as { get: () => unknown }).get();
-      resolvedColor = typeof value === "string" ? value : "currentColor";
-    } else {
-      resolvedColor = "currentColor";
-    }
-  }
+  const resolvedColor = color ?? readThemeValue(theme.color) ?? "currentColor";
   const a11yProps = accessibilityLabel
     ? { "aria-label": accessibilityLabel }
     : { "aria-hidden": true };

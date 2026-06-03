@@ -5,9 +5,11 @@
  * the number; the field renders the pretty national mask (e.g.
  * `(11) 97883-3101`) while the component emits the canonical
  * `+<dial><national>` string the backend stores.
+ *
+ * Router/data-agnostic — pure presentational compound. Phone formatting lives
+ * in `internal/phone-mask`.
  */
 
-import { Input, Label, Pill, Sheet, Text, XStack, YStack } from "@patch-careers/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView } from "react-native";
 import {
@@ -19,7 +21,13 @@ import {
   type PhoneCountry,
   parseCanonicalPhone,
   toCanonicalPhone,
-} from "../phone/phoneMask";
+} from "../internal/phone-mask";
+import { Input } from "../primitives/input";
+import { Label } from "../primitives/label";
+import { Pill } from "../primitives/pill";
+import { XStack, YStack } from "../primitives/stack";
+import { Text } from "../primitives/text";
+import { Sheet } from "./sheet";
 
 export interface PhoneInputProps {
   label: string;

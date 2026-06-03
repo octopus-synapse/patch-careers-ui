@@ -9,6 +9,16 @@ import {
 } from "@patch-careers/api-client";
 import { bootstrap } from "@patch-careers/auth";
 import { formatDate, type Locale, type Translator } from "@patch-careers/i18n";
+import { editorialPalette as authTokens } from "@patch-careers/tokens";
+import { PhoneInput } from "@patch-careers/ui";
+import {
+  AnimatedField,
+  FieldError,
+  editorialFonts as fonts,
+  PrimaryAction,
+  UnderlineInput,
+  Wordmark,
+} from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import {
@@ -47,19 +57,9 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import {
-  AnimatedField,
-  authTokens,
-  FieldError,
-  fonts,
-  PrimaryAction,
-  UnderlineInput,
-  Wordmark,
-} from "../../components/auth/auth-shared";
 import { getCompletedOnboardingRoute } from "../../navigation/authRedirect";
 import { useI18n } from "../../providers/I18nProvider";
 import { LocationAutocomplete } from "./components/LocationAutocomplete";
-import { PhoneInput } from "./components/PhoneInput";
 import { SectionAddPicker } from "./components/SectionAddPicker";
 import {
   countedIndexOf,

@@ -39,7 +39,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { resolveApiBaseURL } from "../config/api";
+import { OAUTH_CALLBACK_PATH, resolveApiBaseURL } from "../config/api";
 
 void WebBrowser.maybeCompleteAuthSession();
 
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     // persist the pair + re-hydrate the api-client headers.
     const sub = Linking.addEventListener("url", (event) => {
       if (!event.url) return;
-      if (event.url.includes("/auth/callback") || event.url.includes("auth/callback")) {
+      if (event.url.includes(OAUTH_CALLBACK_PATH)) {
         void completeOAuth(event.url, secure, apiBaseURL)
           .then(async (pair: TokenPair | null) => {
             if (pair) await bootstrap().catch(() => undefined);

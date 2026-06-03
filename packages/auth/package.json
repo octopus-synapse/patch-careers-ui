@@ -29,6 +29,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@patch-careers/platform": "workspace:*",
     "zustand": "^5.0.0"
   },
   "peerDependencies": {

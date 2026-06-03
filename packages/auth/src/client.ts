@@ -28,7 +28,8 @@ import {
 import type { KeyValueStorage } from "@patch-careers/storage";
 import { useAuthStore } from "./auth.store";
 import { refreshOnce } from "./refresh-queue";
-import { createTokenStorage, type TokenStorage } from "./token-storage";
+import { extractTokenPair } from "./token-pair";
+import { createTokenStorage, makeBearerAuthHeader, type TokenStorage } from "./token-storage";
 import type { LoginResult, TokenPair, User } from "./types";
 
 interface AuthClientRuntime {
@@ -60,17 +61,14 @@ export interface ConfigureAuthClientOptions {
  * automatically gains 401 -> refresh -> retry behaviour.
  */
 export function configureAuthClient(options: ConfigureAuthClientOptions): void {
-  runtime.tokenStorage = createTokenStorage(options.storage);
+  const tokenStorage = createTokenStorage(options.storage);
+  runtime.tokenStorage = tokenStorage;
   runtime.apiBaseURL = options.apiBaseURL;
   if (options.preferTokens !== undefined) runtime.preferTokens = options.preferTokens;
 
   configureApiClient({
     baseURL: options.apiBaseURL,
-    getAuthHeader: async () => {
-      const pair = await runtime.tokenStorage?.get();
-      if (!pair) return null;
-      return `Bearer ${pair.accessToken}`;
-    },
+    getAuthHeader: makeBearerAuthHeader(tokenStorage),
     refreshAuth: async () => {
       const next = await refreshAccessToken();
       if (!next) return null;
@@ -95,28 +93,6 @@ function getTokenStorageOrThrow(): TokenStorage {
     );
   }
   return runtime.tokenStorage;
-}
-
-function extractTokenPair(payload: unknown): TokenPair | null {
-  if (!payload || typeof payload !== "object") return null;
-  const candidate = payload as {
-    mode?: string;
-    accessToken?: string;
-    refreshToken?: string;
-    expiresIn?: number;
-  };
-  if (
-    typeof candidate.accessToken === "string" &&
-    typeof candidate.refreshToken === "string" &&
-    typeof candidate.expiresIn === "number"
-  ) {
-    return {
-      accessToken: candidate.accessToken,
-      refreshToken: candidate.refreshToken,
-      expiresIn: candidate.expiresIn,
-    };
-  }
-  return null;
 }
 
 function extractSessionExchangeId(data: unknown): string | undefined {
@@ -194,6 +170,19 @@ export async function verifyTwoFactor(userId: string, code: string): Promise<Log
   }
 }
 
+/**
+ * JSON headers for the raw (fetcher-bypassing) auth fetches, plus the
+ * `Accept-Mode: tokens` line when the host opted into the Bearer flow.
+ */
+function authJsonHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+  if (runtime.preferTokens) headers["Accept-Mode"] = "tokens";
+  return headers;
+}
+
 async function refreshAccessTokenRaw(): Promise<TokenPair> {
   const tokenStorage = runtime.tokenStorage;
   if (!tokenStorage) throw new Error("AUTH.NOT_CONFIGURED");
@@ -206,14 +195,9 @@ async function refreshAccessTokenRaw(): Promise<TokenPair> {
   // otherwise re-enter `runtime.refreshAuth` (= us) and await its own
   // in-flight Promise -> deadlock. Going around the fetcher entirely
   // is the simplest way to keep the refresh path single-pass.
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  };
-  if (runtime.preferTokens) headers["Accept-Mode"] = "tokens";
   const response = await fetch(`${runtime.apiBaseURL}/api/v1/auth/refresh`, {
     method: "POST",
-    headers,
+    headers: authJsonHeaders(),
     body: JSON.stringify({ refreshToken: persisted.refreshToken }),
   });
   if (!response.ok) {
@@ -263,15 +247,10 @@ export async function exchangeSessionForTokens(
   sessionExchangeId: string,
 ): Promise<TokenPair | null> {
   const tokenStorage = getTokenStorageOrThrow();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  };
-  if (runtime.preferTokens) headers["Accept-Mode"] = "tokens";
   try {
     const response = await fetch(`${runtime.apiBaseURL}/api/v1/auth/session/tokens`, {
       method: "POST",
-      headers,
+      headers: authJsonHeaders(),
       body: JSON.stringify({ sessionExchangeId }),
     });
     if (!response.ok) {
