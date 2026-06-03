@@ -1,3 +1,5 @@
+import type { FlowStep, FlowStepId } from "./flow/flowPlan";
+import { FLOW_PLAN, flowStepsForServerStep } from "./flow/flowPlan";
 import type {
   FormData,
   OnboardingField,
@@ -53,6 +55,58 @@ export function visibleFields(step: OnboardingStep | undefined): OnboardingField
   return step?.fields ?? [];
 }
 
+/**
+ * Resolve the backend step a flow step renders/persists to. Form/style steps
+ * map by `serverStepId`; section steps map by `serverSectionKey` (the section
+ * type, not the `section:<key>` id). Local/review flow steps have no backend
+ * step and return `undefined`.
+ */
+export function backendStepForFlow(
+  session: OnboardingSession | undefined,
+  flow: FlowStep | undefined,
+): OnboardingStep | undefined {
+  if (!session || !flow) return undefined;
+  if (flow.serverSectionKey) {
+    return session.steps.find((step) => step.sectionTypeKey === flow.serverSectionKey);
+  }
+  if (flow.serverStepId) {
+    return session.steps.find((step) => step.id === flow.serverStepId);
+  }
+  return undefined;
+}
+
+/** Slice a backend step's fields down to the flow step's `fieldKeys`,
+ *  preserving backend order. No `fieldKeys` → all fields (back-compat). */
+export function fieldsForFlowStep(
+  step: OnboardingStep | undefined,
+  flow: FlowStep | undefined,
+): OnboardingField[] {
+  const fields = visibleFields(step);
+  const keys = flow?.fieldKeys;
+  if (!keys) return fields;
+  return fields.filter((field) => keys.includes(field.key));
+}
+
+/** Is this the LAST flow step that persists to its backend step? Several flow
+ *  steps can share one backend step (headline+links → professional-profile);
+ *  only the last one submits the accumulated payload. Sections/style/local are
+ *  always "last" (single-mapped). */
+export function isLastFlowStepForBackend(flow: FlowStep | undefined): boolean {
+  if (!flow?.serverStepId) return true;
+  const siblings = flowStepsForServerStep(flow.serverStepId);
+  return siblings[siblings.length - 1]?.id === flow.id;
+}
+
+/** Map a backend step id back to the FIRST flow step that renders it — used to
+ *  initialise the flow cursor when resuming a persisted session. */
+export function flowStepForBackendStep(
+  session: OnboardingSession | undefined,
+  backendStepId: string | null | undefined,
+): FlowStep | undefined {
+  if (!session || !backendStepId) return undefined;
+  return FLOW_PLAN.find((flow) => backendStepForFlow(session, flow)?.id === backendStepId);
+}
+
 export function getSavedDataForStep(
   session: OnboardingSession | undefined,
   step: OnboardingStep | undefined,
@@ -91,9 +145,14 @@ export function getSavedItemsForStep(
   }));
 }
 
-export function validateStepFields(step: OnboardingStep, data: FormData): Record<string, string> {
+export function validateStepFields(
+  step: OnboardingStep,
+  data: FormData,
+  fieldKeys?: readonly string[],
+): Record<string, string> {
   const errors: Record<string, string> = {};
   for (const field of visibleFields(step)) {
+    if (fieldKeys && !fieldKeys.includes(field.key)) continue;
     const value = data[field.key]?.trim() ?? "";
     if (field.required && value.length === 0) {
       errors[field.key] = REQUIRED_MESSAGE;
@@ -127,10 +186,11 @@ export function canContinueStep(
   step: OnboardingStep | undefined,
   data: FormData,
   items: SectionItem[],
+  fieldKeys?: readonly string[],
 ): boolean {
   if (!step || isReviewStep(step) || isWelcomeStep(step)) return true;
   if (isSectionStep(step)) return !step.required || items.length > 0;
-  return Object.keys(validateStepFields(step, data)).length === 0;
+  return Object.keys(validateStepFields(step, data, fieldKeys)).length === 0;
 }
 
 export function buildNextPayload(
@@ -244,6 +304,61 @@ function fieldsToEntries(
       long: field.key === longKey,
     }))
     .filter((entry) => entry.value.length > 0);
+}
+
+/** A required-but-incomplete step surfaced on the review hub, with the linear
+ *  flow step to jump to (when one exists — extras are edited via overlay). */
+export interface MissingRequiredTarget {
+  /** Backend step id (also the overlay edit target). */
+  readonly stepId: string;
+  /** Linear flow step that owns this backend step, if any. */
+  readonly flowStepId?: FlowStepId;
+  readonly label: string;
+}
+
+/** Map `session.missingRequired` (backend step ids, or occasionally a field
+ *  key) to actionable targets the review banner can link to. */
+export function missingRequiredTargets(
+  session: OnboardingSession | undefined,
+): MissingRequiredTarget[] {
+  const ids = session?.missingRequired ?? [];
+  if (ids.length === 0 || !session) return [];
+  return ids.map((id) => {
+    const byId = session.steps.find((step) => step.id === id);
+    const byField = byId
+      ? undefined
+      : session.steps.find((step) => (step.fields ?? []).some((field) => field.key === id));
+    const flow = flowStepForBackendStep(session, byId?.id ?? byField?.id);
+    const fieldLabel = byField?.fields?.find((field) => field.key === id)?.label;
+    return {
+      stepId: byId?.id ?? byField?.id ?? id,
+      ...(flow ? { flowStepId: flow.id } : {}),
+      label: byId?.label ?? fieldLabel ?? byField?.label ?? id,
+    };
+  });
+}
+
+/** Map a device/UI locale to a default ISO country, used to pre-suggest the
+ *  phone country and location before the user types. Only a hint — the user
+ *  confirms/edits. */
+export function defaultCountryFromLocale(locale: string | undefined): string | undefined {
+  if (!locale) return undefined;
+  const lower = locale.toLowerCase();
+  if (lower.startsWith("pt")) return "BR";
+  if (lower.startsWith("en")) return "US";
+  const region = lower.split(/[-_]/)[1];
+  return region ? region.toUpperCase() : undefined;
+}
+
+export type AtsBandKey = "high" | "good" | "fair";
+
+/** Bucket an ATS score into a band whose label/blurb copy lives under
+ *  `onboarding.ats.<band>` in the dictionaries. */
+export function atsBand(score: number | null | undefined): AtsBandKey | null {
+  if (typeof score !== "number") return null;
+  if (score >= 90) return "high";
+  if (score >= 75) return "good";
+  return "fair";
 }
 
 export function extrasToActivate(session: OnboardingSession | undefined): string[] {

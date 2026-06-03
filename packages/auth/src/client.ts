@@ -157,10 +157,12 @@ export async function login(email: string, password: string): Promise<LoginResul
     const data = await apiLogin({ email, password });
     const pair = extractTokenPair(data);
     if (pair) await tokenStorage.set(pair);
+    const sessionExchangeId = extractSessionExchangeId(data);
+    // `sessionExchangeId` is exact-optional — omit it rather than set undefined.
     return {
       userId: (data as { userId: string }).userId,
       twoFactorRequired: (data as { twoFactorRequired?: boolean }).twoFactorRequired === true,
-      sessionExchangeId: extractSessionExchangeId(data),
+      ...(sessionExchangeId ? { sessionExchangeId } : {}),
     };
   } finally {
     useAuthStore.getState().setLoading(false);
@@ -180,10 +182,12 @@ export async function verifyTwoFactor(userId: string, code: string): Promise<Log
     const data = await apiVerify2Fa({ userId, code });
     const pair = extractTokenPair(data);
     if (pair) await tokenStorage.set(pair);
+    const sessionExchangeId = extractSessionExchangeId(data);
+    // `sessionExchangeId` is exact-optional — omit it rather than set undefined.
     return {
       userId: (data as { userId: string }).userId,
       twoFactorRequired: false,
-      sessionExchangeId: extractSessionExchangeId(data),
+      ...(sessionExchangeId ? { sessionExchangeId } : {}),
     };
   } finally {
     useAuthStore.getState().setLoading(false);

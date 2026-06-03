@@ -6,53 +6,109 @@ import {
   usePostV1OnboardingSessionExtras,
   usePostV1OnboardingSessionGoto,
   usePostV1OnboardingSessionNext,
-  usePostV1OnboardingSessionPrevious,
 } from "@patch-careers/api-client";
 import { bootstrap } from "@patch-careers/auth";
-import type { Locale } from "@patch-careers/i18n";
-import { palette } from "@patch-careers/tokens";
-import { Button, Modal, Pill, SegmentedControl, Text, XStack, YStack } from "@patch-careers/ui";
+import { formatDate, type Locale, type Translator } from "@patch-careers/i18n";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Check, Minus, Plus, Trash2 } from "lucide-react-native";
-import { type ReactElement, useEffect, useMemo, useRef, useState } from "react";
+import {
+  AlertCircle,
+  Calendar,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Minus,
+  Plus,
+  RefreshCw,
+  Trash2,
+  X,
+} from "lucide-react-native";
+import {
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   Pressable,
+  Text as RNText,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
+import {
+  AnimatedField,
+  authTokens,
+  FieldError,
+  fonts,
+  PrimaryAction,
+  UnderlineInput,
+  Wordmark,
+} from "../../components/auth/auth-shared";
 import { getCompletedOnboardingRoute } from "../../navigation/authRedirect";
 import { useI18n } from "../../providers/I18nProvider";
 import { LocationAutocomplete } from "./components/LocationAutocomplete";
 import { PhoneInput } from "./components/PhoneInput";
 import { SectionAddPicker } from "./components/SectionAddPicker";
 import {
+  countedIndexOf,
+  countedTotal,
+  estimatedRemainingMinutes,
+  FLOW_PLAN,
+  type FlowStep,
+  type FlowStepId,
+  flowIndexOf,
+  nextFlowStep,
+  phaseForFlowStep,
+  prevFlowStep,
+} from "./flow/flowPlan";
+import { suggestHeadlineFromExperience } from "./flow/suggestions";
+import {
+  atsBand,
+  backendStepForFlow,
   buildNextPayload,
   buildReviewSections,
   buildSkipPayload,
   canContinueStep,
+  defaultCountryFromLocale,
+  fieldsForFlowStep,
+  flowStepForBackendStep,
   getSavedDataForStep,
   getSavedItemsForStep,
-  isOptionalStep,
+  isLastFlowStepForBackend,
   isResumeStyleStep,
-  isReviewStep,
   isSectionStep,
-  isWelcomeStep,
   itemSummary,
+  type MissingRequiredTarget,
+  missingRequiredTargets,
   parseResumeStyles,
   validateStepFields,
   visibleFields,
 } from "./helpers";
+import { sectionArtFor, WelcomeArt } from "./illustrations/OnboardingArt";
 import {
+  clearResumeDismissed,
   clearSessionSnapshot,
   clearStepDraft,
+  markResumeDismissed,
+  markWelcomeSeen,
+  readPhoneCountry,
+  readResumeDismissed,
   readSessionSnapshot,
   readStepDraft,
+  readWelcomeSeen,
+  savePhoneCountry,
   saveSessionSnapshot,
   saveStepDraft,
 } from "./storage";
@@ -75,6 +131,7 @@ function getErrorStatus(error: unknown): number | undefined {
 
 export function OnboardingWizard(): ReactElement {
   const { locale, t, setLocale } = useI18n();
+  const { width, height } = useWindowDimensions();
   const router = useRouter();
   const queryClient = useQueryClient();
   const sessionKey = useMemo(() => getV1OnboardingSessionQueryKey({ locale }), [locale]);
@@ -83,18 +140,53 @@ export function OnboardingWizard(): ReactElement {
   const [items, setItems] = useState<SectionItem[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [completeError, setCompleteError] = useState("");
+  // App-owned flow cursor (drives which screen renders + which fields show).
+  // Starts on the language pick; the welcome interstitial follows it (and is
+  // skipped once seen).
+  const [flowStepId, setFlowStepId] = useState<FlowStepId>("language");
+  // When editing a section from the review hub, render that one backend step
+  // directly (full fields) and return to review on save — extras (projects,
+  // certs…) have no linear flow step, so this overlay covers them too.
+  const [editStepId, setEditStepId] = useState<string | null>(null);
+  // Phone country survives location → personal and reloads (item: sticky country).
+  const [phoneCountryIso, setPhoneCountryIso] = useState<string | undefined>(undefined);
+  // Backend step ids the user has tried (and failed) to submit — so re-entering
+  // a step re-surfaces its errors instead of looking pristine.
+  const [attemptedSteps, setAttemptedSteps] = useState<ReadonlySet<string>>(() => new Set());
+  // Non-destructive save failure: keep the data, offer a retry.
+  const [saveError, setSaveError] = useState("");
+  // "Continue where you left off" banner shown once on a resumed session.
+  const [resumeBanner, setResumeBanner] = useState<{ phaseLabel: string } | null>(null);
   const refreshedAuthRef = useRef(false);
   const resyncedStepRef = useRef(false);
+  const welcomeSeenRef = useRef(false);
+  const welcomeCheckedRef = useRef(false);
+  const resumeDismissedRef = useRef(false);
+  const lastSaveRef = useRef<{
+    stepId: string;
+    payload: Parameters<typeof saveBackendStep>[1];
+    isEdit: boolean;
+  } | null>(null);
+  const prevBackendStepIdRef = useRef<string | undefined>(undefined);
 
   const sessionQuery = useGetV1OnboardingSession({ locale });
   const session = sessionQuery.data ?? fallbackSession ?? undefined;
-  const currentStep = session?.steps.find((step) => step.id === session.currentStep);
-  const hasStepMismatch = Boolean(session && !currentStep && session.steps?.length);
+  const flowStep: FlowStep | undefined = FLOW_PLAN[flowIndexOf(flowStepId)];
+  const editStep = editStepId ? session?.steps.find((step) => step.id === editStepId) : undefined;
+  // The backend step the current screen renders/persists to. In edit mode it's
+  // the clicked step; otherwise it's derived from the flow cursor.
+  const currentStep = editStep ?? backendStepForFlow(session, flowStep);
+  // Fields visible on this screen: edit mode shows the whole backend step;
+  // the linear flow shows only the slice this flow step owns.
+  const flowFields = editStep ? visibleFields(editStep) : fieldsForFlowStep(currentStep, flowStep);
+  const activeFieldKeys = editStep ? undefined : flowStep?.fieldKeys;
 
   const retryLoad = async () => {
     // Prefer server truth over any possibly-corrupt local snapshot.
     setFallbackSession(null);
     await clearSessionSnapshot();
+    await clearResumeDismissed();
+    resumeDismissedRef.current = false;
     resyncedStepRef.current = false;
     refreshedAuthRef.current = false;
     await sessionQuery.refetch();
@@ -107,13 +199,6 @@ export function OnboardingWizard(): ReactElement {
   };
 
   const nextStep = usePostV1OnboardingSessionNext({
-    mutation: {
-      onSuccess: (data) => {
-        void persistSession(data);
-      },
-    },
-  });
-  const previousStep = usePostV1OnboardingSessionPrevious({
     mutation: {
       onSuccess: (data) => {
         void persistSession(data);
@@ -138,6 +223,7 @@ export function OnboardingWizard(): ReactElement {
     mutation: {
       async onSuccess() {
         await clearSessionSnapshot();
+        await clearResumeDismissed();
         await bootstrap().catch(() => undefined);
         router.replace(getCompletedOnboardingRoute());
       },
@@ -148,11 +234,7 @@ export function OnboardingWizard(): ReactElement {
   });
 
   const isPending =
-    nextStep.isPending ||
-    previousStep.isPending ||
-    gotoStep.isPending ||
-    extras.isPending ||
-    complete.isPending;
+    nextStep.isPending || gotoStep.isPending || extras.isPending || complete.isPending;
 
   useEffect(() => {
     void readSessionSnapshot().then((snapshot) => {
@@ -176,74 +258,229 @@ export function OnboardingWizard(): ReactElement {
   }, [sessionQuery.data]);
 
   useEffect(() => {
-    // Defensive: if API returns a currentStep that isn't in steps (can happen after
-    // locale/extras changes), move to a valid step so the wizard can recover.
-    if (!session || !hasStepMismatch || isPending || resyncedStepRef.current) return;
-    const safeStepId =
-      (session.nextStep && session.steps.some((step) => step.id === session.nextStep)
-        ? session.nextStep
-        : session.steps[0]?.id) ?? null;
-    if (!safeStepId) return;
+    // Initialise the app flow cursor from the persisted backend pointer once,
+    // so a returning user resumes near where they left off. Start/terminal
+    // backend steps (welcome, complete) have no flow step → default to
+    // "language".
+    if (!session || resyncedStepRef.current) return;
     resyncedStepRef.current = true;
-    gotoStep.mutate({ data: { stepId: safeStepId }, params: { locale } });
-  }, [gotoStep, hasStepMismatch, isPending, locale, session]);
+    const resumed = flowStepForBackendStep(session, session.currentStep);
+    if (!resumed) return;
+    setFlowStepId(resumed.id);
+    if (countedIndexOf(resumed.id) > 0 && !resumeDismissedRef.current) {
+      // Returning mid-flow: offer a "continue where you left off" banner unless
+      // it was already dismissed on a previous reload.
+      const phase = phaseForFlowStep(resumed.id);
+      setResumeBanner({ phaseLabel: phase ? t(phase.labelKey) : "" });
+    }
+  }, [session, t]);
 
   useEffect(() => {
-    if (!session || !currentStep) return;
-    setErrors({});
-    const savedData = getSavedDataForStep(session, currentStep);
-    const savedItems = getSavedItemsForStep(session, currentStep);
-    setFormData(savedData);
-    setItems(savedItems);
-    void readStepDraft(currentStep.id).then((draft) => {
-      if (!draft || session.currentStep !== currentStep.id) return;
+    // Hydrate the sticky phone country: a prior choice wins, otherwise derive a
+    // best-effort default from the device/UI locale (the user still confirms).
+    void readPhoneCountry().then((iso) => {
+      if (iso) setPhoneCountryIso(iso);
+      else setPhoneCountryIso((prev) => prev ?? defaultCountryFromLocale(locale));
+    });
+  }, [locale]);
+
+  useEffect(() => {
+    // Load the once-per-device welcome flag so advanceFlow can skip the
+    // interstitial after the language pick on subsequent runs.
+    if (welcomeCheckedRef.current) return;
+    welcomeCheckedRef.current = true;
+    void readWelcomeSeen().then((seen) => {
+      welcomeSeenRef.current = seen;
+    });
+    void readResumeDismissed().then((dismissed) => {
+      resumeDismissedRef.current = dismissed;
+    });
+  }, []);
+
+  useEffect(() => {
+    // Re-hydrate form/items only when the BACKEND step changes. Sibling flow
+    // steps that share a backend step (location↔personal, headline↔links)
+    // keep accumulating into the same formData instead of being wiped.
+    if (!session) return;
+    const backendStepId = currentStep?.id;
+    if (prevBackendStepIdRef.current === backendStepId) return;
+    prevBackendStepIdRef.current = backendStepId;
+    const saved = getSavedDataForStep(session, currentStep);
+    setFormData(saved);
+    setItems(getSavedItemsForStep(session, currentStep));
+    // Re-entering a step the user already tried (and failed) to submit keeps
+    // its errors visible, so the "why" survives a Back/Next round-trip.
+    setErrors(
+      backendStepId && currentStep && attemptedSteps.has(backendStepId)
+        ? validateStepFields(currentStep, saved)
+        : {},
+    );
+    if (!backendStepId) return;
+    void readStepDraft(backendStepId).then((draft) => {
+      if (!draft || prevBackendStepIdRef.current !== backendStepId) return;
       if (Object.keys(draft.data).length > 0) setFormData((prev) => ({ ...prev, ...draft.data }));
       if (draft.items.length > 0) setItems(draft.items);
     });
-  }, [currentStep, session]);
+  }, [currentStep, session, attemptedSteps]);
 
   useEffect(() => {
-    if (!currentStep || isReviewStep(currentStep) || isWelcomeStep(currentStep)) return;
+    // Pre-fill the headline from the current job once, until the user edits it.
+    if (flowStepId !== "headline" || editStepId) return;
+    const workStep = session?.steps.find((step) => step.sectionTypeKey === "work_experience_v1");
+    const suggested = suggestHeadlineFromExperience(getSavedItemsForStep(session, workStep));
+    if (!suggested) return;
+    setFormData((prev) => (prev.headline?.trim() ? prev : { ...prev, headline: suggested }));
+  }, [flowStepId, editStepId, session]);
+
+  useEffect(() => {
+    if (!currentStep) return;
     void saveStepDraft(currentStep.id, formData, items);
   }, [currentStep, formData, items]);
+
+  // The backend routes posted data into buckets by its OWN stored pointer, and
+  // `goto` repositions that pointer with no validation — so the app drives
+  // ordering by positioning the pointer right before each save.
+  async function saveBackendStep(
+    stepId: string,
+    payload: NonNullable<Parameters<typeof nextStep.mutateAsync>[0]["data"]>,
+  ) {
+    await gotoStep.mutateAsync({ data: { stepId }, params: { locale } });
+    await nextStep.mutateAsync({ data: payload, params: { locale } });
+    await clearStepDraft(stepId);
+  }
 
   async function handleAddSection(extraId: string) {
     if (isPending) return;
     const nextExtras = Array.from(new Set([...(session?.activatedExtras ?? []), extraId]));
     await extras.mutateAsync({ data: { extras: nextExtras }, params: { locale } });
     await gotoStep.mutateAsync({ data: { stepId: extraId }, params: { locale } });
+    setEditStepId(extraId);
+  }
+
+  // Save wrapper that keeps the data on failure and arms a retry instead of
+  // throwing — a dropped connection mid-flow shouldn't lose what was typed.
+  async function commitSave(
+    stepId: string,
+    payload: Parameters<typeof saveBackendStep>[1],
+    isEdit: boolean,
+  ): Promise<boolean> {
+    setSaveError("");
+    try {
+      await saveBackendStep(stepId, payload);
+      lastSaveRef.current = null;
+      return true;
+    } catch {
+      lastSaveRef.current = { stepId, payload, isEdit };
+      setSaveError(t("onboarding.saveFailed"));
+      return false;
+    }
+  }
+
+  function advanceFlow() {
+    const nextFlow = nextFlowStep(flowStepId);
+    if (!nextFlow) return;
+    // Skip the welcome interstitial when it's already been seen on this device.
+    if (nextFlow.id === "welcome" && welcomeSeenRef.current) {
+      const afterWelcome = nextFlowStep("welcome");
+      if (afterWelcome) setFlowStepId(afterWelcome.id);
+      return;
+    }
+    setFlowStepId(nextFlow.id);
+  }
+
+  function markAttempted(stepId: string) {
+    setAttemptedSteps((current) => {
+      if (current.has(stepId)) return current;
+      const next = new Set(current);
+      next.add(stepId);
+      return next;
+    });
   }
 
   async function handleNext() {
-    if (!currentStep || isPending) return;
-    const nextErrors = validateStepFields(currentStep, formData);
-    setErrors(nextErrors);
-    if (!canContinueStep(currentStep, formData, items)) return;
+    if (!flowStep || isPending) return;
 
-    await nextStep.mutateAsync({
-      data: buildNextPayload(currentStep, formData, items),
-      params: { locale },
-    });
-    await clearStepDraft(currentStep.id);
+    // Editing a section from the review hub: persist the whole backend step and
+    // return to review (the cursor is already parked on the review step).
+    if (editStep) {
+      const editErrors = validateStepFields(editStep, formData);
+      setErrors(editErrors);
+      if (!canContinueStep(editStep, formData, items)) {
+        markAttempted(editStep.id);
+        return;
+      }
+      if (await commitSave(editStep.id, buildNextPayload(editStep, formData, items), true)) {
+        setEditStepId(null);
+      }
+      return;
+    }
+
+    if (currentStep) {
+      const nextErrors = validateStepFields(currentStep, formData, activeFieldKeys);
+      setErrors(nextErrors);
+      if (!canContinueStep(currentStep, formData, items, activeFieldKeys)) {
+        markAttempted(currentStep.id);
+        return;
+      }
+      // Sibling sub-steps (location, headline) defer the save to the last flow
+      // step sharing their backend step, so the merged payload lands at once.
+      if (isLastFlowStepForBackend(flowStep)) {
+        const saved = await commitSave(
+          currentStep.id,
+          buildNextPayload(currentStep, formData, items),
+          false,
+        );
+        if (!saved) return;
+      }
+    }
+    advanceFlow();
   }
 
   async function handleSkip() {
-    if (!currentStep || isPending) return;
-    await nextStep.mutateAsync({
-      data: buildSkipPayload(),
-      params: { locale },
-    });
-    await clearStepDraft(currentStep.id);
+    if (!flowStep || isPending) return;
+    if (currentStep && isLastFlowStepForBackend(flowStep)) {
+      // Sections mark themselves skipped; optional form steps just persist
+      // whatever was accumulated (e.g. a headline typed before skipping links).
+      const payload = isSectionStep(currentStep)
+        ? buildSkipPayload()
+        : buildNextPayload(currentStep, formData, items);
+      if (!(await commitSave(currentStep.id, payload, false))) return;
+    }
+    advanceFlow();
   }
 
-  async function handleBack() {
-    if (isPending) return;
-    await previousStep.mutateAsync({ params: { locale } });
+  // The save-failure banner re-runs the exact pending save, then resumes the
+  // navigation the original action intended.
+  async function retrySave() {
+    const pending = lastSaveRef.current;
+    if (!pending || isPending) return;
+    if (!(await commitSave(pending.stepId, pending.payload, pending.isEdit))) return;
+    if (pending.isEdit) setEditStepId(null);
+    else advanceFlow();
   }
 
-  async function handleGoto(stepId: string) {
+  function handleBack() {
     if (isPending) return;
-    await gotoStep.mutateAsync({ data: { stepId }, params: { locale } });
+    setSaveError("");
+    if (editStep) {
+      setEditStepId(null);
+      return;
+    }
+    // Step over intro screens (welcome is forward-only) when going back.
+    let prev = prevFlowStep(flowStepId);
+    while (prev?.intro) prev = prevFlowStep(prev.id);
+    if (prev) setFlowStepId(prev.id);
+  }
+
+  function handleGoto(stepId: string) {
+    if (isPending) return;
+    setEditStepId(stepId);
+  }
+
+  function dismissResumeBanner() {
+    setResumeBanner(null);
+    resumeDismissedRef.current = true;
+    void markResumeDismissed();
   }
 
   function handleComplete() {
@@ -258,143 +495,322 @@ export function OnboardingWizard(): ReactElement {
     return <CenteredState label={t("common.loading")} />;
   }
 
-  if (!session || !currentStep) {
+  if (!session || !flowStep) {
     return (
       <CenteredState
-        label={
-          hasStepMismatch || sessionQuery.isFetching
-            ? t("common.loading")
-            : t("onboarding.loadFailed")
-        }
+        label={sessionQuery.isFetching ? t("common.loading") : t("onboarding.loadFailed")}
         actionLabel={t("common.retry")}
         onAction={() => void retryLoad()}
       />
     );
   }
 
-  const showComplete = isReviewStep(currentStep) || !session.nextStep;
-  const showSkip = isOptionalStep(currentStep) && !showComplete && !isWelcomeStep(currentStep);
-  const canContinue = canContinueStep(currentStep, formData, items);
+  // Welcome intro: its own centered layout, outside the counted progress.
+  if (!editStep && flowStep.intro) {
+    return (
+      <WelcomeScreen
+        t={t}
+        onStart={() => {
+          welcomeSeenRef.current = true;
+          void markWelcomeSeen();
+          advanceFlow();
+        }}
+      />
+    );
+  }
+
+  const isLocal = !editStep && flowStep.kind === "local";
+  const isReview = !editStep && flowStep.kind === "review";
+  const showComplete = isReview;
+  const showSkip = !showComplete && !isLocal && !editStep && flowStep.optional;
+  const showBack = Boolean(editStep) || Boolean(prevFlowStep(flowStepId));
+  const canContinue = editStep
+    ? canContinueStep(editStep, formData, items)
+    : canContinueStep(currentStep, formData, items, activeFieldKeys);
+
+  const total = countedTotal();
+  const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
+  const phase = phaseForFlowStep(editStep ? "review" : flowStepId);
+  const stepTitle = editStep ? editStep.label : t(flowStep.titleKey);
+  const stepSubtitle = editStep
+    ? (editStep.description ?? "")
+    : t(flowStep.titleKey.replace(".title", ".subtitle"));
+  // A subtitle key that isn't translated falls back to the raw key path — hide it.
+  const subtitleText = stepSubtitle.startsWith("onboarding.flow.") ? "" : stepSubtitle;
+  const headingKey = `${flowStepId}:${editStepId ?? ""}`;
+
+  // Tighten gutters on small phones; cap the column to the available width.
+  const horizontalPadding = width > 0 && width < 375 ? 20 : 28;
+  const columnMaxWidth = width > 0 ? Math.min(460, width - horizontalPadding * 2) : 460;
+  // The body gets one fixed height for ALL steps so the masthead and footer
+  // never shift between steps — short steps just center their content in it,
+  // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
+  const bodyHeight = height > 0 ? Math.max(300, Math.min(440, Math.round(height * 0.46))) : 380;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={ed.root}>
+      <KeyboardAvoidingView
+        style={ed.flex}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ProgressHeader session={session} step={currentStep} />
-
-        <View style={styles.card}>
-          <Text
-            preset="caption"
-            color={palette.gray[500]}
-            textTransform="uppercase"
-            letterSpacing={1.6}
-          >
-            {t("onboarding.title")}
-          </Text>
-          <Text preset="h2" color={palette.gray[900]} marginTop={12}>
-            {currentStep.label}
-          </Text>
-          {currentStep.description ? (
-            <Text preset="caption" color={palette.gray[500]} marginTop={6}>
-              {currentStep.description}
-            </Text>
-          ) : null}
-
-          <View style={styles.stepBody}>
-            {isWelcomeStep(currentStep) ? (
-              <LanguageStep locale={locale} onSelect={setLocale} t={t} />
-            ) : isReviewStep(currentStep) ? (
-              <ReviewSummary
-                session={session}
-                steps={session.steps}
-                onEdit={(stepId) => void handleGoto(stepId)}
-                onAddSection={(extraId) => void handleAddSection(extraId)}
-                addPending={extras.isPending || gotoStep.isPending}
+        {/* Cluster centered in the viewport. The body below is a fixed height on
+            every step, so the masthead and footer never shift between steps —
+            only the body's own content moves (centered, or scrolled if taller). */}
+        <View style={[ed.page, { paddingHorizontal: horizontalPadding }]}>
+          <View style={[ed.column, { maxWidth: columnMaxWidth }]}>
+            {resumeBanner ? (
+              <ResumeBanner
+                phaseLabel={resumeBanner.phaseLabel}
+                onDismiss={dismissResumeBanner}
                 t={t}
               />
-            ) : isResumeStyleStep(currentStep) ? (
-              <ResumeStylePicker
-                step={currentStep}
-                selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
-                onSelect={(resumeStyleId) => {
-                  setFormData({ resumeStyleId });
-                  setErrors({});
-                }}
-              />
-            ) : currentStep.sectionTypeKey === "work_experience_v1" ? (
-              <WorkExperienceStep step={currentStep} items={items} onChange={setItems} t={t} />
-            ) : isSectionStep(currentStep) ? (
-              <MultiItemStep step={currentStep} items={items} onChange={setItems} t={t} />
-            ) : (
-              <StepForm step={currentStep} data={formData} errors={errors} onChange={setFormData} />
-            )}
-          </View>
+            ) : null}
+            <Masthead
+              phaseLabel={phase ? t(phase.labelKey) : ""}
+              timeText={t("onboarding.progress.timeRemaining", {
+                min: editStep ? 1 : estimatedRemainingMinutes(flowStepId),
+              })}
+              counterText={t("onboarding.progress.step", { n: stepNumber, total })}
+              progressPct={(stepNumber / total) * 100}
+            />
 
-          {showSkip ? (
-            <Button
-              variant="ghost"
-              intent="neutral"
-              size="sm"
-              onPress={() => void handleSkip()}
-              disabled={isPending}
-            >
-              {currentStep.noDataLabel ?? t("onboarding.skip")}
-            </Button>
-          ) : null}
+            <View key={headingKey}>
+              <StepHeading title={stepTitle} subtitle={subtitleText} />
+            </View>
 
-          <XStack marginTop={28} alignItems="center" justifyContent="space-between" gap={12}>
-            {session.previousStep ? (
-              <Button
-                variant="ghost"
-                intent="neutral"
-                size="md"
-                onPress={() => void handleBack()}
-                disabled={isPending}
+            {/* Fixed-height body: same on every step. Content centers inside it;
+                if a step is taller than the box, it scrolls within the box. */}
+            <View style={[ed.body, { height: bodyHeight }]}>
+              <ScrollView
+                style={ed.flex}
+                contentContainerStyle={ed.bodyScroll}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
               >
-                {t("onboarding.back")}
-              </Button>
-            ) : (
-              <View />
-            )}
-            {showComplete ? (
-              <YStack alignItems="flex-end" gap={6}>
-                <Button
-                  intent="accent"
-                  size="lg"
+                <View key={`body:${headingKey}`}>
+                  {isLocal ? (
+                    <LanguageStep locale={locale} onSelect={setLocale} t={t} />
+                  ) : isReview ? (
+                    <ReviewSummary
+                      session={session}
+                      steps={session.steps}
+                      onEdit={handleGoto}
+                      onAddSection={(extraId) => void handleAddSection(extraId)}
+                      addPending={extras.isPending || gotoStep.isPending}
+                      t={t}
+                    />
+                  ) : !currentStep ? null : isResumeStyleStep(currentStep) ? (
+                    <ResumeStylePicker
+                      step={currentStep}
+                      selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
+                      t={t}
+                      onSelect={(resumeStyleId) => {
+                        setFormData({ resumeStyleId });
+                        setErrors({});
+                      }}
+                    />
+                  ) : isSectionStep(currentStep) ? (
+                    <MultiItemStep
+                      step={currentStep}
+                      items={items}
+                      onChange={setItems}
+                      isPending={isPending}
+                      t={t}
+                    />
+                  ) : (
+                    <StepForm
+                      fields={flowFields}
+                      data={formData}
+                      errors={errors}
+                      onChange={setFormData}
+                      phoneCountryIso={phoneCountryIso}
+                      onPhoneCountry={(iso) => {
+                        setPhoneCountryIso(iso);
+                        void savePhoneCountry(iso);
+                      }}
+                    />
+                  )}
+                </View>
+
+                <StepContext flowStepId={flowStepId} formData={formData} session={session} t={t} />
+
+                {showSkip ? (
+                  <View style={ed.skipRow}>
+                    <GhostButton
+                      label={currentStep?.noDataLabel ?? t("onboarding.skip")}
+                      onPress={() => void handleSkip()}
+                      disabled={isPending}
+                    />
+                  </View>
+                ) : null}
+              </ScrollView>
+            </View>
+
+            <View style={ed.footer}>
+              {showBack ? (
+                <GhostButton
+                  label={t("onboarding.back")}
+                  onPress={handleBack}
+                  disabled={isPending}
+                />
+              ) : (
+                <View />
+              )}
+              {showComplete ? (
+                <PrimaryAction
+                  label={t("onboarding.complete")}
                   loading={complete.isPending}
                   disabled={isPending || Boolean(session.missingRequired?.length)}
                   onPress={handleComplete}
                   testID="onboarding.complete"
-                >
-                  {t("onboarding.complete")}
-                </Button>
-                {completeError ? (
-                  <Text preset="caption" color={palette.red[600]}>
-                    {completeError}
-                  </Text>
-                ) : null}
-              </YStack>
-            ) : (
-              <Button
-                intent="accent"
-                size="lg"
-                loading={nextStep.isPending}
-                disabled={isPending || !canContinue}
-                onPress={() => void handleNext()}
-                testID="onboarding.next"
-              >
-                {t("onboarding.next")}
-              </Button>
-            )}
-          </XStack>
+                />
+              ) : (
+                <PrimaryAction
+                  label={editStep ? t("common.save") : t("onboarding.next")}
+                  loading={nextStep.isPending || gotoStep.isPending}
+                  disabled={isPending || !canContinue}
+                  onPress={() => void handleNext()}
+                  testID="onboarding.next"
+                />
+              )}
+            </View>
+            {saveError ? (
+              <RetryBanner
+                label={saveError}
+                onRetry={() => void retrySave()}
+                disabled={isPending}
+              />
+            ) : null}
+            {completeError ? (
+              <View style={ed.footerError}>
+                <FieldError text={completeError} />
+              </View>
+            ) : null}
+          </View>
         </View>
-      </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
+
+// ────────────────────────────────────────────────────────────
+// Chrome — masthead, progress, heading
+// ────────────────────────────────────────────────────────────
+
+function Masthead({
+  counterText,
+  phaseLabel,
+  progressPct,
+  timeText,
+}: {
+  counterText: string;
+  phaseLabel: string;
+  progressPct: number;
+  timeText: string;
+}): ReactElement {
+  const pct = Math.max(0, Math.min(100, progressPct));
+  return (
+    <View style={ed.mastheadWrap}>
+      <View style={ed.masthead}>
+        <Wordmark />
+        <RNText style={ed.counter}>{counterText}</RNText>
+      </View>
+      <View style={ed.mastheadMeta}>
+        {phaseLabel ? <RNText style={ed.phaseLabel}>{phaseLabel}</RNText> : <View />}
+        <RNText style={ed.timeText}>{timeText}</RNText>
+      </View>
+      <View style={ed.track}>
+        <View style={[ed.fill, { width: `${pct}%` }]} />
+      </View>
+    </View>
+  );
+}
+
+function splitHeading(title: string): { head: string; tail: string } {
+  const parts = title.trim().split(/\s+/);
+  if (parts.length <= 1) return { head: "", tail: title };
+  const tail = parts.pop() as string;
+  return { head: `${parts.join(" ")} `, tail };
+}
+
+function StepHeading({ subtitle, title }: { subtitle?: string; title: string }): ReactElement {
+  const { head, tail } = splitHeading(title);
+  return (
+    <View>
+      <AnimatedField delay={80}>
+        <RNText style={ed.heading}>
+          {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}
+          <RNText style={ed.headingItalic}>{tail}</RNText>
+        </RNText>
+      </AnimatedField>
+      {subtitle ? (
+        <AnimatedField delay={170}>
+          <RNText style={ed.subtitle}>{subtitle}</RNText>
+        </AnimatedField>
+      ) : null}
+    </View>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// Small editorial building blocks
+// ────────────────────────────────────────────────────────────
+
+function GhostButton({
+  danger,
+  disabled,
+  label,
+  onPress,
+}: {
+  danger?: boolean;
+  disabled?: boolean;
+  label: string;
+  onPress: () => void;
+}): ReactElement {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      disabled={disabled}
+      onPress={onPress}
+      hitSlop={8}
+      style={ed.ghost}
+    >
+      <RNText style={[ed.ghostLabel, danger ? ed.ghostDanger : null, disabled ? ed.dim : null]}>
+        {label}
+      </RNText>
+    </Pressable>
+  );
+}
+
+function FieldLabel({ children, error }: { children: ReactNode; error?: boolean }): ReactElement {
+  return <RNText style={[ed.fieldLabel, error ? ed.fieldLabelError : null]}>{children}</RNText>;
+}
+
+function OptionPill({
+  label,
+  onPress,
+  selected,
+}: {
+  label: string;
+  onPress: () => void;
+  selected: boolean;
+}): ReactElement {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={[ed.pill, selected ? ed.pillSelected : null]}
+    >
+      <RNText style={[ed.pillLabel, selected ? ed.pillLabelSelected : null]}>{label}</RNText>
+    </Pressable>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// States
+// ────────────────────────────────────────────────────────────
 
 function CenteredState({
   actionLabel,
@@ -406,108 +822,86 @@ function CenteredState({
   onAction?: () => void;
 }): ReactElement {
   return (
-    <SafeAreaView style={styles.centered}>
-      <ActivityIndicator color={palette.blue[600]} />
-      <Text preset="body" color={palette.gray[600]} textAlign="center">
-        {label}
-      </Text>
-      {actionLabel && onAction ? (
-        <Button variant="ghost" intent="neutral" onPress={onAction}>
-          {actionLabel}
-        </Button>
-      ) : null}
+    <SafeAreaView style={ed.centered}>
+      <ActivityIndicator color={authTokens.ink} />
+      <RNText style={ed.centeredText}>{label}</RNText>
+      {actionLabel && onAction ? <GhostButton label={actionLabel} onPress={onAction} /> : null}
     </SafeAreaView>
   );
 }
 
-function ProgressHeader({ session, step }: { session: OnboardingSession; step: OnboardingStep }) {
-  const score = session.strength?.score ?? session.progress;
-  const message = session.strength?.message ?? `${session.progress}%`;
-  const stepIndex = Math.max(
-    0,
-    session.steps.findIndex((item) => item.id === step.id),
-  );
-  return (
-    <View style={styles.progressHeader}>
-      <XStack justifyContent="space-between" alignItems="center">
-        <Text preset="caption" color={palette.gray[500]}>
-          {stepIndex + 1}/{session.steps.length}
-        </Text>
-        <Text preset="caption" color={palette.gray[500]}>
-          {message}
-        </Text>
-      </XStack>
-      <View style={styles.progressTrack}>
-        <View style={[styles.progressFill, { width: `${Math.max(0, Math.min(100, score))}%` }]} />
-      </View>
-    </View>
-  );
-}
+// ────────────────────────────────────────────────────────────
+// Forms
+// ────────────────────────────────────────────────────────────
 
 function StepForm({
   data,
   errors,
+  fields,
   onChange,
-  step,
+  phoneCountryIso,
+  onPhoneCountry,
 }: {
   data: FormData;
   errors: Record<string, string>;
+  // The exact fields to render — a slice of the backend step owned by the
+  // current flow step (the wizard splits one backend step across screens).
+  fields: OnboardingField[];
   onChange: (data: FormData) => void;
-  step: OnboardingStep;
+  // Phone country is owned by the wizard so it survives the location → personal
+  // hop and reloads; falls back to local state for forms without a phone field.
+  phoneCountryIso?: string | undefined;
+  onPhoneCountry?: (iso: string) => void;
 }): ReactElement {
-  // Selecting a location surfaces its country, used to default the phone
-  // country when both live in the same step (personal-info).
-  const [phoneCountryIso, setPhoneCountryIso] = useState<string | undefined>(undefined);
+  const [localCountryIso, setLocalCountryIso] = useState<string | undefined>(undefined);
+  const countryIso = phoneCountryIso ?? localCountryIso;
+  const setCountryIso = onPhoneCountry ?? setLocalCountryIso;
   return (
-    <YStack gap={18}>
-      {visibleFields(step).map((field) => {
+    <View style={ed.fieldStack}>
+      {fields.map((field, index) => {
         const fieldError = errors[field.key];
         const errorProps = fieldError ? { error: fieldError } : {};
+        let node: ReactElement;
         if (field.key === "location") {
-          return (
+          node = (
             <LocationAutocomplete
-              key={field.key}
               label={field.label}
               value={data[field.key] ?? ""}
               onChange={(label, meta) => {
                 onChange({ ...data, location: label });
-                if (meta?.countryCode) setPhoneCountryIso(meta.countryCode);
+                if (meta?.countryCode) setCountryIso(meta.countryCode);
               }}
               {...errorProps}
             />
           );
-        }
-        if (field.key === "phone") {
-          return (
+        } else if (field.key === "phone") {
+          node = (
             <PhoneInput
-              key={field.key}
               label={field.label}
               value={data[field.key] ?? ""}
               onChange={(value) => onChange({ ...data, phone: value })}
-              {...(phoneCountryIso ? { defaultCountryIso: phoneCountryIso } : {})}
+              onCountryChange={setCountryIso}
+              {...(countryIso ? { defaultCountryIso: countryIso } : {})}
               {...errorProps}
+            />
+          );
+        } else {
+          node = (
+            <FieldRenderer
+              field={field}
+              value={data[field.key] ?? ""}
+              {...errorProps}
+              onChange={(value) => onChange({ ...data, [field.key]: value })}
             />
           );
         }
         return (
-          <FieldRenderer
-            key={field.key}
-            field={field}
-            value={data[field.key] ?? ""}
-            {...errorProps}
-            onChange={(value) => {
-              // Suggest the headline from the job title until the user
-              // edits it themselves (both live on professional-profile).
-              if (field.key === "jobTitle" && !data.headline?.trim()) {
-                onChange({ ...data, jobTitle: value, headline: value });
-              } else {
-                onChange({ ...data, [field.key]: value });
-              }
-            }}
-          />
+          <AnimatedField key={field.key} delay={120 + index * 70}>
+            {node}
+          </AnimatedField>
         );
       })}
-    </YStack>
+    </View>
   );
 }
 
@@ -520,21 +914,291 @@ function LanguageStep({
   onSelect: (locale: Locale) => void;
   t: (key: string) => string;
 }): ReactElement {
+  // `hint` is written in each target language (like `native`), so it reads the
+  // same regardless of the current UI locale — and it gives the short language
+  // step enough body to fill the step without looking sparse.
+  const options: ReadonlyArray<{ value: Locale; label: string; native: string; hint: string }> = [
+    {
+      value: "en",
+      label: "English",
+      native: "English",
+      hint: "Interface, dates & content in English",
+    },
+    {
+      value: "pt-BR",
+      label: "Português",
+      native: "Português (Brasil)",
+      hint: "Interface, datas e conteúdo em português",
+    },
+  ];
   return (
-    <YStack gap={12}>
-      <Text preset="body" color={palette.gray[600]}>
-        {t("onboarding.language.prompt")}
-      </Text>
-      <SegmentedControl<Locale>
-        items={[
-          { value: "en", label: "English" },
-          { value: "pt-BR", label: "Português" },
-        ]}
-        value={locale}
-        onChange={onSelect}
-        accessibilityLabel={t("onboarding.language.prompt")}
+    <View style={ed.langWrap}>
+      {options.map((option, index) => {
+        const selected = locale === option.value;
+        return (
+          <AnimatedField key={option.value} delay={120 + index * 80}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityState={{ selected }}
+              accessibilityLabel={t("onboarding.language.prompt")}
+              onPress={() => onSelect(option.value)}
+              style={[ed.langCard, selected ? ed.langCardSelected : null]}
+            >
+              <View style={ed.langText}>
+                <RNText style={ed.langLabel}>{option.native}</RNText>
+                <RNText style={ed.langHint}>{option.hint}</RNText>
+              </View>
+              {selected ? <Check size={18} color={authTokens.ink} strokeWidth={2} /> : null}
+            </Pressable>
+          </AnimatedField>
+        );
+      })}
+    </View>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// Step context — supportive content that fills out the short steps so
+// they read as intentional instead of a lone field floating in the box.
+// ────────────────────────────────────────────────────────────
+
+// Public profile link, shown as a live preview on the username step.
+const PROFILE_URL_HOST = "patchcareers.com";
+
+function ContextNote({ body, label }: { body: string; label: string }): ReactElement {
+  return (
+    <View>
+      <View style={ed.contextRule} />
+      <RNText style={ed.contextLabel}>{label}</RNText>
+      <RNText style={ed.contextBody}>{body}</RNText>
+    </View>
+  );
+}
+
+function LinkPreview({
+  handle,
+  host,
+  label,
+  note,
+}: {
+  handle: string;
+  host: string;
+  label: string;
+  note: string;
+}): ReactElement {
+  return (
+    <View style={ed.linkCard}>
+      <RNText style={ed.linkCardLabel}>{label}</RNText>
+      <RNText style={ed.linkUrl} numberOfLines={1}>
+        {host}/<RNText style={ed.linkHandle}>@{handle}</RNText>
+      </RNText>
+      <RNText style={ed.linkNote}>{note}</RNText>
+    </View>
+  );
+}
+
+function StepContext({
+  flowStepId,
+  formData,
+  session,
+  t,
+}: {
+  flowStepId: FlowStepId;
+  formData: FormData;
+  session: OnboardingSession;
+  t: (key: string) => string;
+}): ReactElement | null {
+  if (flowStepId === "username") {
+    const handle = (formData.username ?? session.username ?? "").trim();
+    if (!handle) return null;
+    return (
+      <View style={ed.context}>
+        <LinkPreview
+          host={PROFILE_URL_HOST}
+          handle={handle}
+          label={t("onboarding.flow.username.linkLabel")}
+          note={t("onboarding.flow.username.linkNote")}
+        />
+      </View>
+    );
+  }
+  if (flowStepId === "location" || flowStepId === "personal") {
+    return (
+      <View style={ed.context}>
+        <ContextNote
+          label={t(`onboarding.flow.${flowStepId}.contextLabel`)}
+          body={t(`onboarding.flow.${flowStepId}.contextNote`)}
+        />
+      </View>
+    );
+  }
+  return null;
+}
+
+// ────────────────────────────────────────────────────────────
+// Date field — a dependency-free month/year picker. Job & education dates are
+// month-granular (the API stores day 01, e.g. "2022-06-01"), so a native picker
+// would be overkill and would pull in a native module + dev-client rebuild.
+// ────────────────────────────────────────────────────────────
+
+function parseYearMonth(value: string): { month: number; year: number } | null {
+  const match = /^(\d{4})-(\d{2})/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) return null;
+  return { month, year };
+}
+
+// Build the date from local components so a date-only string can't shift a
+// month across the UTC boundary when Intl formats it.
+function monthLabel(
+  year: number,
+  month: number,
+  locale: Locale,
+  opts: Intl.DateTimeFormatOptions,
+): string {
+  return formatDate(new Date(year, month - 1, 1), locale, opts);
+}
+
+function DateField({
+  allowEmpty,
+  error,
+  label,
+  onChange,
+  value,
+}: {
+  allowEmpty: boolean;
+  error?: string | undefined;
+  label: string;
+  onChange: (value: string) => void;
+  value: string;
+}): ReactElement {
+  const { locale, t } = useI18n();
+  const [open, setOpen] = useState(false);
+  const parsed = parseYearMonth(value);
+  const display = parsed
+    ? monthLabel(parsed.year, parsed.month, locale, { month: "short", year: "numeric" })
+    : allowEmpty
+      ? t("onboarding.date.present")
+      : t("onboarding.date.placeholder");
+  return (
+    <View>
+      <FieldLabel error={Boolean(error)}>{label}</FieldLabel>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${label}: ${display}`}
+        onPress={() => setOpen(true)}
+        style={ed.dateField}
+      >
+        <RNText style={[ed.dateValue, parsed ? null : ed.datePlaceholder]}>{display}</RNText>
+        <Calendar size={18} color={authTokens.subtle} />
+      </Pressable>
+      <View style={[ed.dateLine, error ? ed.dateLineError : null]} />
+      {error ? <FieldError text={error} /> : null}
+      <MonthYearPicker
+        visible={open}
+        value={value}
+        title={label}
+        allowEmpty={allowEmpty}
+        onClose={() => setOpen(false)}
+        onChange={(next) => {
+          onChange(next);
+          setOpen(false);
+        }}
       />
-    </YStack>
+    </View>
+  );
+}
+
+function MonthYearPicker({
+  allowEmpty,
+  onChange,
+  onClose,
+  title,
+  value,
+  visible,
+}: {
+  allowEmpty: boolean;
+  onChange: (value: string) => void;
+  onClose: () => void;
+  title: string;
+  value: string;
+  visible: boolean;
+}): ReactElement {
+  const { locale, t } = useI18n();
+  const selected = parseYearMonth(value);
+  const thisYear = new Date().getFullYear();
+  const [year, setYear] = useState(selected?.year ?? thisYear);
+  // Re-seed the visible year each time the sheet opens.
+  useEffect(() => {
+    if (visible) setYear(parseYearMonth(value)?.year ?? thisYear);
+  }, [visible, value, thisYear]);
+  const months = Array.from({ length: 12 }, (_, i) =>
+    monthLabel(2020, i + 1, locale, { month: "short" }),
+  );
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      statusBarTranslucent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <Pressable style={ed.pickerOverlay} onPress={onClose}>
+        {/* Absorb taps inside the card so they don't dismiss it. */}
+        <Pressable style={ed.pickerCard} onPress={() => undefined}>
+          <RNText style={ed.pickerTitle}>{title}</RNText>
+          <View style={ed.pickerYearRow}>
+            <Pressable
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={t("onboarding.date.prevYear")}
+              onPress={() => setYear((y) => Math.max(1950, y - 1))}
+            >
+              <ChevronLeft size={22} color={authTokens.ink} />
+            </Pressable>
+            <RNText style={ed.pickerYear}>{year}</RNText>
+            <Pressable
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={t("onboarding.date.nextYear")}
+              onPress={() => setYear((y) => Math.min(thisYear + 1, y + 1))}
+            >
+              <ChevronRight size={22} color={authTokens.ink} />
+            </Pressable>
+          </View>
+          <View style={ed.pickerGrid}>
+            {months.map((monthName, i) => {
+              const month = i + 1;
+              const isSel = selected?.month === month && selected?.year === year;
+              return (
+                <Pressable
+                  key={monthName}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isSel }}
+                  onPress={() => onChange(`${year}-${String(month).padStart(2, "0")}-01`)}
+                  style={[ed.pickerMonth, isSel ? ed.pickerMonthSelected : null]}
+                >
+                  <RNText style={[ed.pickerMonthText, isSel ? ed.pickerMonthTextSelected : null]}>
+                    {monthName}
+                  </RNText>
+                </Pressable>
+              );
+            })}
+          </View>
+          {allowEmpty ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => onChange("")}
+              style={ed.pickerClear}
+            >
+              <RNText style={ed.pickerClearText}>{t("onboarding.date.present")}</RNText>
+            </Pressable>
+          ) : null}
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -549,313 +1213,515 @@ function FieldRenderer({
   onChange: (value: string) => void;
   value: string;
 }): ReactElement {
+  const { t } = useI18n();
   const [focused, setFocused] = useState(false);
   const [usernameState, setUsernameState] = useState<
-    "idle" | "checking" | "available" | "unavailable"
+    "idle" | "checking" | "available" | "unavailable" | "error"
   >("idle");
   const examples = field.examples ?? [];
-  const placeholder = focused ? "" : (examples[0] ?? field.label);
+  const placeholder = examples[0] ?? "";
   const multiline = field.type === "textarea" || field.widget === "textarea";
   const hasOptions = field.type === "select" || Boolean(field.options?.length);
+  const isUsername = field.key === "username";
+  // The backend still ships start/end dates as plain text; treat anything that
+  // looks like a date (type/widget "date", or a `*Date` key) as a month picker.
+  const isDate = field.type === "date" || field.widget === "date" || /[a-z]Date$/.test(field.key);
+
+  // Surface the failure (item: username checker fallback) so the user can retry
+  // instead of the chip silently disappearing. Stable so it can be reused by the
+  // debounced effect and the manual retry.
+  const checkUsername = useCallback((username: string) => {
+    void getV1UsersUsernameCheck({ username })
+      .then((result) => setUsernameState(result.available ? "available" : "unavailable"))
+      .catch(() => setUsernameState("error"));
+  }, []);
 
   useEffect(() => {
-    if (field.key !== "username") return;
+    if (!isUsername) return;
     const username = value.trim();
     if (username.length < 3) {
       setUsernameState("idle");
       return;
     }
     setUsernameState("checking");
-    const timer = setTimeout(() => {
-      void getV1UsersUsernameCheck({ username })
-        .then((result) => setUsernameState(result.available ? "available" : "unavailable"))
-        .catch(() => setUsernameState("idle"));
-    }, 450);
+    const timer = setTimeout(() => checkUsername(username), 450);
     return () => clearTimeout(timer);
-  }, [field.key, value]);
+  }, [isUsername, value, checkUsername]);
 
-  return (
-    <View>
-      <XStack alignItems="center" gap={4}>
-        <Text preset="caption" color={palette.gray[600]} fontWeight="700">
-          {field.label}
-        </Text>
-        {field.required ? (
-          <Text preset="caption" color={palette.red[600]}>
-            *
-          </Text>
-        ) : null}
-      </XStack>
+  const retryUsername = () => {
+    const username = value.trim();
+    if (username.length < 3) return;
+    setUsernameState("checking");
+    checkUsername(username);
+  };
 
-      {hasOptions ? (
-        <View style={styles.optionWrap}>
-          {(field.options ?? []).map((option) => {
-            const selected = option === value;
-            return (
-              <Pressable
-                key={option}
-                accessibilityRole="button"
-                accessibilityState={{ selected }}
-                onPress={() => onChange(option)}
-                style={[styles.optionPill, selected && styles.optionPillSelected]}
-              >
-                <Text preset="caption" color={selected ? palette.gray[50] : palette.gray[700]}>
-                  {option}
-                </Text>
-              </Pressable>
-            );
-          })}
+  if (isDate) {
+    return (
+      <DateField
+        label={field.label}
+        value={value}
+        onChange={onChange}
+        error={error}
+        // An empty end date means "present"; start dates are required.
+        allowEmpty={field.key === "endDate" || !field.required}
+      />
+    );
+  }
+
+  if (hasOptions) {
+    return (
+      <View>
+        <FieldLabel error={Boolean(error)}>{field.label}</FieldLabel>
+        <View style={ed.pillWrap}>
+          {(field.options ?? []).map((option) => (
+            <OptionPill
+              key={option}
+              label={option}
+              selected={option === value}
+              onPress={() => onChange(option)}
+            />
+          ))}
         </View>
-      ) : (
+        {error ? <FieldError text={error} /> : null}
+      </View>
+    );
+  }
+
+  if (multiline) {
+    return (
+      <View>
+        <FieldLabel error={Boolean(error)}>{field.label}</FieldLabel>
         <TextInput
           value={value}
           onChangeText={onChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={placeholder}
-          placeholderTextColor={palette.gray[400]}
-          multiline={multiline}
-          keyboardType={
-            field.type === "email" ? "email-address" : field.type === "url" ? "url" : "default"
-          }
-          autoCapitalize={
-            field.key === "username" || field.type === "email" || field.type === "url"
-              ? "none"
-              : "sentences"
-          }
-          autoCorrect={field.type !== "url" && field.type !== "email" && field.key !== "username"}
-          style={[styles.input, multiline && styles.textarea, error && styles.inputError]}
+          placeholderTextColor={authTokens.subtle}
+          multiline
+          style={ed.textarea}
         />
-      )}
+        <View
+          style={[
+            ed.textareaLine,
+            focused ? ed.textareaLineFocused : null,
+            error ? ed.textareaLineError : null,
+          ]}
+        />
+        {error ? <FieldError text={error} /> : null}
+      </View>
+    );
+  }
 
-      {field.key === "username" && usernameState !== "idle" ? (
-        <Text
-          preset="caption"
-          color={
-            usernameState === "available"
-              ? palette.green[600]
-              : usernameState === "unavailable"
-                ? palette.red[600]
-                : palette.gray[500]
-          }
-          marginTop={6}
+  return (
+    <View>
+      <UnderlineInput
+        label={field.label}
+        value={value}
+        onChangeText={onChange}
+        placeholder={placeholder}
+        hasError={Boolean(error)}
+        keyboardType={
+          field.type === "email" ? "email-address" : field.type === "url" ? "url" : "default"
+        }
+        autoCapitalize={
+          isUsername || field.type === "email" || field.type === "url" ? "none" : "sentences"
+        }
+        autoCorrect={field.type !== "url" && field.type !== "email" && !isUsername}
+        {...(isUsername
+          ? { autoComplete: "username" as const, textContentType: "username" as const }
+          : {})}
+      />
+      {isUsername && usernameState !== "idle" ? (
+        <Pressable
+          style={ed.chip}
+          disabled={usernameState !== "error"}
+          onPress={retryUsername}
+          accessibilityRole={usernameState === "error" ? "button" : "text"}
         >
-          {usernameState === "checking"
-            ? "Verificando..."
-            : usernameState === "available"
-              ? "Username disponível"
-              : "Username indisponível"}
-        </Text>
+          <View
+            style={[
+              ed.chipDot,
+              {
+                backgroundColor:
+                  usernameState === "available"
+                    ? authTokens.success
+                    : usernameState === "unavailable"
+                      ? authTokens.danger
+                      : usernameState === "error"
+                        ? authTokens.warn
+                        : authTokens.subtle,
+              },
+            ]}
+          />
+          <RNText
+            style={[
+              ed.chipText,
+              {
+                color:
+                  usernameState === "available"
+                    ? authTokens.success
+                    : usernameState === "unavailable"
+                      ? authTokens.danger
+                      : usernameState === "error"
+                        ? authTokens.warn
+                        : authTokens.muted,
+              },
+            ]}
+          >
+            {usernameState === "checking"
+              ? t("onboarding.username.checking")
+              : usernameState === "available"
+                ? t("onboarding.username.available")
+                : usernameState === "unavailable"
+                  ? t("onboarding.username.taken")
+                  : t("onboarding.username.error")}
+          </RNText>
+        </Pressable>
       ) : null}
-      {error ? (
-        <Text preset="caption" color={palette.red[600]} marginTop={6}>
-          {error}
-        </Text>
-      ) : null}
+      {error ? <FieldError text={error} /> : null}
     </View>
   );
 }
 
-type ExperienceStatus =
-  | "employed"
-  | "unemployed"
-  | "student"
-  | "freelancer"
-  | "entrepreneur"
-  | "retired";
-
-const EXPERIENCE_STATUSES: ReadonlyArray<{ value: ExperienceStatus; labelKey: string }> = [
-  { value: "employed", labelKey: "onboarding.experience.statusEmployed" },
-  { value: "unemployed", labelKey: "onboarding.experience.statusUnemployed" },
-  { value: "student", labelKey: "onboarding.experience.statusStudent" },
-  { value: "freelancer", labelKey: "onboarding.experience.statusFreelancer" },
-  { value: "entrepreneur", labelKey: "onboarding.experience.statusEntrepreneur" },
-  { value: "retired", labelKey: "onboarding.experience.statusRetired" },
-];
+// ────────────────────────────────────────────────────────────
+// Multi-item editor (inline)
+// ────────────────────────────────────────────────────────────
 
 /**
- * Work experience step — a quick occupation-status selector (NOT persisted,
- * it only frames the guidance) on top of the standard multi-item editor.
- * The "current job" is simply the first entry with an empty end date.
+ * Multi-item editor (work experience, education, …). The editor is INLINE — a
+ * card that replaces the list — rather than a modal, which on web rendered
+ * blank inside the scroll container and offered no cancel/delete. Items live in
+ * local state and only reach the backend when the section step is submitted.
+ *
+ * When the section is empty it opens straight into the new-item editor (fields
+ * ready to fill); saving the first item reveals the list with an "add another"
+ * affordance.
  */
-function WorkExperienceStep({
-  items,
-  onChange,
-  step,
-  t,
-}: {
-  items: SectionItem[];
-  onChange: (items: SectionItem[]) => void;
-  step: OnboardingStep;
-  t: (key: string) => string;
-}): ReactElement {
-  const [status, setStatus] = useState<ExperienceStatus>("employed");
-  const pastOnly = status === "unemployed" || status === "retired";
-  return (
-    <YStack gap={14}>
-      <Text preset="caption" color={palette.gray[600]} fontWeight="700">
-        {t("onboarding.experience.statusPrompt")}
-      </Text>
-      <XStack flexWrap="wrap" gap={8}>
-        {EXPERIENCE_STATUSES.map((option) => (
-          <Pill
-            key={option.value}
-            intent="accent"
-            selected={status === option.value}
-            onPress={() => setStatus(option.value)}
-          >
-            {t(option.labelKey)}
-          </Pill>
-        ))}
-      </XStack>
-      <Text preset="caption" color={palette.gray[500]}>
-        {pastOnly ? t("onboarding.experience.hintPast") : t("onboarding.experience.hintCurrent")}
-      </Text>
-      <MultiItemStep step={step} items={items} onChange={onChange} t={t} />
-    </YStack>
-  );
-}
-
 function MultiItemStep({
+  isPending,
   items,
   onChange,
   step,
   t,
 }: {
+  isPending: boolean;
   items: SectionItem[];
   onChange: (items: SectionItem[]) => void;
   step: OnboardingStep;
   t: (key: string) => string;
 }): ReactElement {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [modalData, setModalData] = useState<FormData>({});
-  const [modalErrors, setModalErrors] = useState<Record<string, string>>({});
-  const open = editingIndex !== null;
+  const [draft, setDraft] = useState<FormData>({});
+  const [draftErrors, setDraftErrors] = useState<Record<string, string>>({});
+  const fields = visibleFields(step);
+  // Safety net: if the backend session didn't return this section's item fields
+  // (e.g. the section-type definitions aren't seeded), don't drop the user into
+  // a blank editor — show a notice and let them skip.
+  const hasNoFields = fields.length === 0;
+  const isEmpty = items.length === 0;
+  const isEditing = editingIndex !== null;
+  const showEditor = isEditing;
+  const activeIndex = editingIndex ?? items.length;
+  const isNew = activeIndex === items.length;
+  const hasErrors = Object.keys(validateStepFields(step, draft)).length > 0;
 
   function openNew() {
+    setDraft({});
+    setDraftErrors({});
     setEditingIndex(items.length);
-    setModalData({});
-    setModalErrors({});
   }
 
   function openExisting(index: number) {
     const content = items[index]?.content ?? {};
-    setEditingIndex(index);
-    setModalData(
+    setDraft(
       Object.fromEntries(Object.entries(content).map(([key, value]) => [key, String(value ?? "")])),
     );
-    setModalErrors({});
+    setDraftErrors({});
+    setEditingIndex(index);
+  }
+
+  function cancelEdit() {
+    setEditingIndex(null);
+    setDraft({});
+    setDraftErrors({});
   }
 
   function saveItem() {
-    const nextErrors = validateStepFields(step, modalData);
-    setModalErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0 || editingIndex === null) return;
+    const nextErrors = validateStepFields(step, draft);
+    setDraftErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
     const next = items.slice();
-    next[editingIndex] = { content: { ...modalData } };
+    // Preserve the backend id when editing so the section isn't re-created.
+    const existing = items[activeIndex];
+    next[activeIndex] = { ...(existing?.id ? { id: existing.id } : {}), content: { ...draft } };
     onChange(next);
     setEditingIndex(null);
+    setDraft({});
+    setDraftErrors({});
   }
 
-  function removeItem(index: number) {
+  function removeAt(index: number) {
     onChange(items.filter((_, itemIndex) => itemIndex !== index));
   }
 
+  function deleteEditing() {
+    if (!isEditing || isNew) return;
+    removeAt(activeIndex);
+    setEditingIndex(null);
+    setDraft({});
+  }
+
+  if (hasNoFields) {
+    return (
+      <View style={ed.noticeCard}>
+        <AlertCircle size={18} color={authTokens.warn} />
+        <RNText style={ed.noticeTitle}>{t("onboarding.section.noFieldsTitle")}</RNText>
+        <RNText style={ed.noticeBody}>{t("onboarding.section.noFieldsBody")}</RNText>
+      </View>
+    );
+  }
+
+  const addLabel = step.addLabel ?? t("onboarding.addItem");
+
+  // The list / empty-state stays mounted; the item editor opens as a full-screen
+  // modal over it (slides up), rather than replacing the content inline.
+  const underlying = isEmpty ? (
+    <SectionEmptyState
+      sectionTypeKey={step.sectionTypeKey}
+      addLabel={addLabel}
+      onAdd={openNew}
+      t={t}
+    />
+  ) : (
+    <View>
+      <View>
+        {items.map((item, index) => (
+          <Pressable
+            key={item.id ?? `${index}-${itemSummary(item)}`}
+            onPress={() => openExisting(index)}
+            style={ed.itemRow}
+          >
+            <RNText style={ed.itemText} numberOfLines={1}>
+              {itemSummary(item)}
+            </RNText>
+            <Pressable accessibilityRole="button" onPress={() => removeAt(index)} hitSlop={8}>
+              <Trash2 size={16} color={authTokens.danger} />
+            </Pressable>
+          </Pressable>
+        ))}
+      </View>
+
+      <Pressable accessibilityRole="button" onPress={openNew} style={ed.addRow}>
+        <Plus size={15} color={authTokens.ink} strokeWidth={2} />
+        <RNText style={ed.addLabel}>{addLabel}</RNText>
+      </Pressable>
+    </View>
+  );
+
   return (
     <View>
-      {items.length === 0 ? (
-        <Text preset="body" color={palette.gray[500]}>
-          {step.placeholder ?? t("onboarding.noData")}
-        </Text>
-      ) : (
-        <YStack gap={10}>
-          {items.map((item, index) => (
-            <Pressable
-              key={item.id ?? `${index}-${itemSummary(item)}`}
-              onPress={() => openExisting(index)}
-              style={styles.itemRow}
-            >
-              <Text preset="body" color={palette.gray[800]} flex={1}>
-                {itemSummary(item)}
-              </Text>
-              <Pressable accessibilityRole="button" onPress={() => removeItem(index)} hitSlop={8}>
-                <Trash2 size={16} color={palette.red[600]} />
-              </Pressable>
-            </Pressable>
-          ))}
-        </YStack>
-      )}
-
-      <Button variant="ghost" intent="neutral" size="sm" onPress={openNew} marginTop={14}>
-        <XStack gap={8} alignItems="center">
-          <Plus size={14} color={palette.gray[700]} />
-          <Text preset="caption" color={palette.gray[700]}>
-            {step.addLabel ?? t("onboarding.addItem")}
-          </Text>
-        </XStack>
-      </Button>
-
-      <Modal
-        open={open}
-        onOpenChange={(nextOpen) => {
-          if (!nextOpen) setEditingIndex(null);
-        }}
-        title={step.addLabel ?? t("onboarding.addItem")}
-      >
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <StepForm step={step} data={modalData} errors={modalErrors} onChange={setModalData} />
-          <XStack marginTop={18} justifyContent="flex-end">
-            <Button intent="accent" onPress={saveItem}>
-              {t("common.save")}
-            </Button>
-          </XStack>
-        </ScrollView>
-      </Modal>
+      {underlying}
+      <MultiItemEditorModal
+        visible={showEditor}
+        title={isNew ? addLabel : t("onboarding.editItem")}
+        fields={fields}
+        draft={draft}
+        draftErrors={draftErrors}
+        onChangeDraft={setDraft}
+        onSave={saveItem}
+        onCancel={cancelEdit}
+        {...(isEditing && !isNew ? { onDelete: deleteEditing } : {})}
+        saveDisabled={hasErrors || isPending}
+        disabled={isPending}
+        t={t}
+      />
     </View>
   );
 }
+
+/** Full-screen item editor for section steps (work experience, education, …).
+ *  Slides up over the list; opaque so it reads as a dedicated screen. */
+function MultiItemEditorModal({
+  disabled,
+  draft,
+  draftErrors,
+  fields,
+  onCancel,
+  onChangeDraft,
+  onDelete,
+  onSave,
+  saveDisabled,
+  t,
+  title,
+  visible,
+}: {
+  disabled: boolean;
+  draft: FormData;
+  draftErrors: Record<string, string>;
+  fields: OnboardingField[];
+  onCancel: () => void;
+  onChangeDraft: (data: FormData) => void;
+  onDelete?: () => void;
+  onSave: () => void;
+  saveDisabled: boolean;
+  t: (key: string) => string;
+  title: string;
+  visible: boolean;
+}): ReactElement {
+  // Centered card (80% × 80%) over a scrim instead of a full-bleed slide-up:
+  // a RN <Modal> renders in its own native root where safe-area insets don't
+  // apply, so a full-screen header collided with the status bar. Centering the
+  // card clears the top inset by construction and reads as a focused dialog.
+  return (
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      statusBarTranslucent
+      onRequestClose={onCancel}
+    >
+      <KeyboardAvoidingView
+        style={ed.editorModalOverlay}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        {/* Tap outside the card to dismiss */}
+        <Pressable
+          style={ed.editorModalBackdrop}
+          accessibilityRole="button"
+          accessibilityLabel={t("common.cancel")}
+          onPress={onCancel}
+        />
+        <View style={ed.editorModalCard}>
+          <View style={ed.editorModalHeader}>
+            <RNText style={ed.editorModalTitle}>{title}</RNText>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("common.cancel")}
+              hitSlop={12}
+              onPress={onCancel}
+            >
+              <X size={22} color={authTokens.muted} />
+            </Pressable>
+          </View>
+          <ScrollView
+            style={ed.flex}
+            contentContainerStyle={ed.editorModalScroll}
+            keyboardShouldPersistTaps="handled"
+          >
+            <StepForm fields={fields} data={draft} errors={draftErrors} onChange={onChangeDraft} />
+          </ScrollView>
+          <View style={ed.editorModalFooter}>
+            {onDelete ? (
+              <GhostButton
+                danger
+                label={t("common.delete")}
+                onPress={onDelete}
+                disabled={disabled}
+              />
+            ) : (
+              <View />
+            )}
+            <PrimaryAction label={t("common.save")} onPress={onSave} disabled={saveDisabled} />
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
+/** Illustrated empty state for a section step (item: SVG empty states). */
+function SectionEmptyState({
+  addLabel,
+  onAdd,
+  sectionTypeKey,
+  t,
+}: {
+  addLabel: string;
+  onAdd: () => void;
+  sectionTypeKey: string | undefined;
+  t: (key: string) => string;
+}): ReactElement {
+  const Art = sectionArtFor(sectionTypeKey);
+  return (
+    <AnimatedField delay={120}>
+      <View style={ed.emptyState}>
+        <Art size={120} />
+        <RNText style={ed.emptyTitle}>{t("onboarding.section.emptyTitle")}</RNText>
+        <RNText style={ed.emptyBody}>{t("onboarding.section.emptyBody")}</RNText>
+        <Pressable accessibilityRole="button" onPress={onAdd} style={ed.emptyAdd}>
+          <Plus size={15} color={authTokens.ink} strokeWidth={2} />
+          <RNText style={ed.addLabel}>{addLabel}</RNText>
+        </Pressable>
+      </View>
+    </AnimatedField>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// Resume style
+// ────────────────────────────────────────────────────────────
 
 function ResumeStylePicker({
   onSelect,
   selectedId,
   step,
+  t,
 }: {
   onSelect: (id: string) => void;
   selectedId: string;
   step: OnboardingStep;
+  t: Translator;
 }): ReactElement {
   const stylesList = parseResumeStyles(step);
+  // Tapping a card opens a full-screen preview; selection happens there.
+  const [previewId, setPreviewId] = useState<string | null>(null);
   if (stylesList.length === 0) {
     return (
       <StepForm
-        step={step}
+        fields={visibleFields(step)}
         data={selectedId ? { resumeStyleId: selectedId } : {}}
         errors={{}}
         onChange={(data) => onSelect(data.resumeStyleId ?? "")}
       />
     );
   }
+  const previewed = stylesList.find((style) => style.id === previewId) ?? null;
   return (
-    <YStack gap={12}>
-      {stylesList.map((style) => (
-        <ResumeStyleCard
-          key={style.id}
-          option={style}
-          selected={style.id === selectedId}
-          onPress={() => onSelect(style.id)}
-        />
+    <View style={ed.styleStack}>
+      {stylesList.map((style, index) => (
+        <AnimatedField key={style.id} delay={120 + index * 70}>
+          <ResumeStyleCard
+            option={style}
+            selected={style.id === selectedId}
+            previewHint={t("onboarding.resumeStyle.previewHint")}
+            onPress={() => setPreviewId(style.id)}
+          />
+        </AnimatedField>
       ))}
-    </YStack>
+      <ResumeStyleModal
+        option={previewed}
+        selected={previewed?.id === selectedId}
+        t={t}
+        onClose={() => setPreviewId(null)}
+        onUse={(id) => {
+          onSelect(id);
+          setPreviewId(null);
+        }}
+      />
+    </View>
   );
 }
 
 function ResumeStyleCard({
   onPress,
   option,
+  previewHint,
   selected,
 }: {
   onPress: () => void;
   option: ResumeStyleOption;
+  previewHint: string;
   selected: boolean;
 }): ReactElement {
   return (
@@ -863,32 +1729,91 @@ function ResumeStyleCard({
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}
-      style={[styles.styleCard, selected && styles.styleCardSelected]}
+      style={[ed.styleCard, selected ? ed.styleCardSelected : null]}
     >
       {option.thumbnailUrl ? (
-        <Image source={{ uri: option.thumbnailUrl }} style={styles.styleImage} />
+        <Image source={{ uri: option.thumbnailUrl }} style={ed.styleImage} />
       ) : null}
-      <YStack flex={1} gap={4}>
-        <XStack alignItems="center" gap={8}>
-          <Text preset="body" color={palette.gray[900]} fontWeight="700">
-            {option.name}
-          </Text>
-          {selected ? <Check size={14} color={palette.gray[900]} /> : null}
-        </XStack>
-        {option.description ? (
-          <Text preset="caption" color={palette.gray[500]}>
-            {option.description}
-          </Text>
-        ) : null}
-        {option.atsScore ? (
-          <Text preset="caption" color={palette.green[700]}>
-            ATS {option.atsScore}/100
-          </Text>
-        ) : null}
-      </YStack>
+      <View style={ed.styleBody}>
+        <View style={ed.styleNameRow}>
+          <RNText style={ed.styleName}>{option.name}</RNText>
+          {selected ? <Check size={16} color={authTokens.ink} strokeWidth={2} /> : null}
+        </View>
+        {option.description ? <RNText style={ed.styleDesc}>{option.description}</RNText> : null}
+        {option.atsScore ? <RNText style={ed.styleAts}>ATS {option.atsScore}/100</RNText> : null}
+        <RNText style={ed.stylePreviewHint}>{previewHint}</RNText>
+      </View>
     </Pressable>
   );
 }
+
+/** Full-screen preview of a résumé template + ATS-band explanation (item:
+ *  resume-style modal). Selection is confirmed here. */
+function ResumeStyleModal({
+  onClose,
+  onUse,
+  option,
+  selected,
+  t,
+}: {
+  onClose: () => void;
+  onUse: (id: string) => void;
+  option: ResumeStyleOption | null;
+  selected: boolean;
+  t: Translator;
+}): ReactElement {
+  const band = atsBand(option?.atsScore);
+  return (
+    <Modal visible={Boolean(option)} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={ed.modalBackdrop}>
+        <View style={ed.modalSheet}>
+          <View style={ed.modalHeader}>
+            <RNText style={ed.modalTitle}>{option?.name ?? ""}</RNText>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="close"
+              hitSlop={8}
+              onPress={onClose}
+            >
+              <X size={20} color={authTokens.muted} />
+            </Pressable>
+          </View>
+          <ScrollView contentContainerStyle={ed.modalScroll}>
+            {option?.thumbnailUrl ? (
+              <Image
+                source={{ uri: option.thumbnailUrl }}
+                style={ed.modalPreview}
+                resizeMode="contain"
+              />
+            ) : (
+              <View style={[ed.modalPreview, ed.modalPreviewEmpty]} />
+            )}
+            {band ? (
+              <View style={ed.atsSeal}>
+                <RNText style={ed.atsSealLabel}>
+                  {option?.atsScore ? `${option.atsScore}/100 · ` : ""}
+                  {t(`onboarding.ats.${band}.label`)}
+                </RNText>
+                <RNText style={ed.atsSealBlurb}>{t(`onboarding.ats.${band}.blurb`)}</RNText>
+              </View>
+            ) : null}
+            {option?.description ? (
+              <RNText style={ed.modalDesc}>{option.description}</RNText>
+            ) : null}
+          </ScrollView>
+          <PrimaryAction
+            label={selected ? t("common.save") : t("onboarding.resumeStyle.use")}
+            onPress={() => option && onUse(option.id)}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// Review hub
+// ────────────────────────────────────────────────────────────
 
 function ReviewSummary({
   addPending,
@@ -906,95 +1831,70 @@ function ReviewSummary({
   t: (key: string) => string;
 }): ReactElement {
   const sections = buildReviewSections(session, steps);
+  const missing = missingRequiredTargets(session);
   const [pickerOpen, setPickerOpen] = useState(false);
   const activated = new Set(session.activatedExtras ?? []);
   const options = (session.availableExtras ?? [])
     .filter((extra) => !activated.has(extra.id))
-    .map((extra) => ({
-      id: extra.id,
-      label: extra.label,
-      icon: extra.icon,
-    }));
+    .map((extra) => ({ id: extra.id, label: extra.label, icon: extra.icon }));
   return (
-    <YStack gap={12}>
-      {sections.map((section) => (
-        <Pressable
-          key={section.stepId}
-          style={styles.reviewCard}
-          onPress={() => onEdit(section.stepId)}
-        >
-          <XStack alignItems="center" gap={8} marginBottom={10}>
+    <View>
+      {missing.length > 0 ? <MissingBanner targets={missing} onFix={onEdit} t={t} /> : null}
+      {sections.map((section, index) => (
+        <AnimatedField key={section.stepId} delay={100 + index * 50}>
+          <Pressable style={ed.reviewCard} onPress={() => onEdit(section.stepId)}>
+            <View style={ed.reviewHead}>
+              {section.skipped ? (
+                <Minus size={13} color={authTokens.subtle} />
+              ) : (
+                <Check size={13} color={authTokens.success} strokeWidth={2.5} />
+              )}
+              <RNText style={ed.reviewLabel}>{section.label}</RNText>
+            </View>
             {section.skipped ? (
-              <Minus size={13} color={palette.gray[500]} />
+              <RNText style={ed.reviewSkipped}>—</RNText>
+            ) : section.styleName ? (
+              <View style={ed.reviewStyleRow}>
+                {section.stylePreviewUrl ? (
+                  <Image source={{ uri: section.stylePreviewUrl }} style={ed.reviewImage} />
+                ) : null}
+                <RNText style={ed.reviewStyleName}>{section.styleName}</RNText>
+              </View>
             ) : (
-              <Check size={13} color={palette.green[600]} />
+              <View>
+                {section.entries.map((entry) => (
+                  <View key={`${entry.label}:${entry.value}`} style={ed.reviewEntry}>
+                    {entry.label ? (
+                      <RNText style={ed.reviewEntryLabel}>{entry.label}</RNText>
+                    ) : null}
+                    <RNText
+                      style={[ed.reviewEntryValue, entry.long ? ed.reviewEntryLong : null]}
+                      numberOfLines={entry.long ? 4 : 2}
+                    >
+                      {entry.value}
+                    </RNText>
+                  </View>
+                ))}
+              </View>
             )}
-            <Text
-              preset="caption"
-              color={palette.gray[500]}
-              textTransform="uppercase"
-              letterSpacing={1.4}
-            >
-              {section.label}
-            </Text>
-          </XStack>
-          {section.skipped ? (
-            <Text preset="caption" color={palette.gray[500]}>
-              Pulado
-            </Text>
-          ) : section.styleName ? (
-            <XStack gap={12} alignItems="center">
-              {section.stylePreviewUrl ? (
-                <Image source={{ uri: section.stylePreviewUrl }} style={styles.reviewImage} />
-              ) : null}
-              <Text preset="body" color={palette.gray[800]}>
-                {section.styleName}
-              </Text>
-            </XStack>
-          ) : (
-            <YStack gap={8}>
-              {section.entries.map((entry) => (
-                <XStack
-                  key={`${entry.label}:${entry.value}`}
-                  justifyContent="space-between"
-                  gap={12}
-                >
-                  {entry.label ? (
-                    <Text preset="caption" color={palette.gray[500]} flex={1}>
-                      {entry.label}
-                    </Text>
-                  ) : null}
-                  <Text
-                    preset="caption"
-                    color={palette.gray[800]}
-                    flex={2}
-                    textAlign={entry.long ? "left" : "right"}
-                  >
-                    {entry.value}
-                  </Text>
-                </XStack>
-              ))}
-            </YStack>
-          )}
-        </Pressable>
+          </Pressable>
+        </AnimatedField>
       ))}
 
       {options.length > 0 ? (
-        <Button
-          variant="outlined"
-          intent="accent"
-          size="md"
+        <Pressable
+          accessibilityRole="button"
           onPress={() => setPickerOpen(true)}
           disabled={addPending}
-          loading={addPending}
+          style={[ed.addSection, addPending ? ed.dim : null]}
         >
-          <XStack gap={8} alignItems="center">
-            <Plus size={14} color={palette.blue[600]} />
-            <Text preset="caption" color={palette.blue[600]}>
-              {t("onboarding.addSection")}
-            </Text>
-          </XStack>
-        </Button>
+          {addPending ? (
+            <ActivityIndicator size="small" color={authTokens.ink} />
+          ) : (
+            <Plus size={14} color={authTokens.ink} strokeWidth={2} />
+          )}
+          <RNText style={ed.addSectionLabel}>{t("onboarding.addSection")}</RNText>
+        </Pressable>
       ) : null}
 
       <SectionAddPicker
@@ -1007,127 +1907,808 @@ function ReviewSummary({
         }}
         title={t("onboarding.addSection")}
       />
-    </YStack>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: palette.gray[50],
+// ────────────────────────────────────────────────────────────
+// Welcome, banners
+// ────────────────────────────────────────────────────────────
+
+/** Value-prop intro shown before the counted flow (item: welcome screen). */
+function WelcomeScreen({ onStart, t }: { onStart: () => void; t: Translator }): ReactElement {
+  return (
+    <SafeAreaView style={ed.root}>
+      <View style={ed.welcomeWrap}>
+        <AnimatedField delay={60}>
+          <Wordmark />
+        </AnimatedField>
+        <AnimatedField delay={140}>
+          <View style={ed.welcomeArt}>
+            <WelcomeArt size={148} />
+          </View>
+        </AnimatedField>
+        <AnimatedField delay={220}>
+          <RNText style={ed.welcomeHeading}>
+            <RNText style={ed.headingRegular}>{t("onboarding.title")} </RNText>
+          </RNText>
+        </AnimatedField>
+        <AnimatedField delay={300}>
+          <RNText style={ed.welcomeTagline}>{t("onboarding.welcome.tagline")}</RNText>
+        </AnimatedField>
+        <AnimatedField delay={360}>
+          <View style={ed.welcomeBadge}>
+            <Check size={14} color={authTokens.accent} strokeWidth={2.5} />
+            <RNText style={ed.welcomeBadgeText}>{t("onboarding.welcome.timePromise")}</RNText>
+          </View>
+        </AnimatedField>
+        <AnimatedField delay={440}>
+          <View style={ed.welcomeCta}>
+            <PrimaryAction
+              label={t("onboarding.welcome.cta")}
+              onPress={onStart}
+              testID="onboarding.welcome.start"
+            />
+          </View>
+        </AnimatedField>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+/** "Continue where you left off" banner on a resumed session. */
+function ResumeBanner({
+  onDismiss,
+  phaseLabel,
+  t,
+}: {
+  onDismiss: () => void;
+  phaseLabel: string;
+  t: Translator;
+}): ReactElement {
+  return (
+    <View style={ed.resumeBanner}>
+      <View style={ed.resumeBannerBody}>
+        <RNText style={ed.resumeBannerTitle}>
+          {t("onboarding.resume.title", { phase: phaseLabel })}
+        </RNText>
+        <RNText style={ed.resumeBannerSubtitle}>{t("onboarding.resume.subtitle")}</RNText>
+      </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="dismiss"
+        hitSlop={8}
+        onPress={onDismiss}
+      >
+        <X size={18} color={authTokens.muted} />
+      </Pressable>
+    </View>
+  );
+}
+
+/** Non-destructive save-failure banner with a retry (item: resilient retry). */
+function RetryBanner({
+  disabled,
+  label,
+  onRetry,
+}: {
+  disabled?: boolean;
+  label: string;
+  onRetry: () => void;
+}): ReactElement {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      disabled={disabled}
+      onPress={onRetry}
+      style={[ed.retryBanner, disabled ? ed.dim : null]}
+    >
+      <AlertCircle size={16} color={authTokens.danger} />
+      <RNText style={ed.retryText}>{label}</RNText>
+      <RefreshCw size={15} color={authTokens.danger} />
+    </Pressable>
+  );
+}
+
+/** Upfront list of required-but-incomplete steps on the review hub. */
+function MissingBanner({
+  onFix,
+  targets,
+  t,
+}: {
+  onFix: (stepId: string) => void;
+  targets: readonly MissingRequiredTarget[];
+  t: Translator;
+}): ReactElement {
+  return (
+    <View style={ed.missingBanner}>
+      <View style={ed.missingHead}>
+        <AlertCircle size={15} color={authTokens.warn} />
+        <RNText style={ed.missingTitle}>{t("onboarding.review.missingTitle")}</RNText>
+      </View>
+      {targets.map((target) => (
+        <Pressable
+          key={target.stepId}
+          accessibilityRole="button"
+          onPress={() => onFix(target.stepId)}
+          style={ed.missingRow}
+        >
+          <RNText style={ed.missingLabel} numberOfLines={1}>
+            {target.label}
+          </RNText>
+          <RNText style={ed.missingFix}>{t("onboarding.review.fix")}</RNText>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// Styles — "Editorial Calm" (shared with the auth screens)
+// ────────────────────────────────────────────────────────────
+
+const ed = StyleSheet.create({
+  root: { flex: 1, backgroundColor: authTokens.bg },
+  flex: { flex: 1 },
+  // Page fills the viewport and centers the cluster vertically. Because the body
+  // is a fixed height (set inline from the viewport), the cluster's total height
+  // is constant — the masthead and footer land at the same Y on every step.
+  page: { flex: 1, justifyContent: "center", paddingTop: 24, paddingBottom: 28 },
+  column: { width: "100%", maxWidth: 460, alignSelf: "center" },
+  // Body content sits at the TOP of the fixed box (right under the subtitle), so
+  // short steps read top-anchored while the box itself stays centered in the
+  // viewport. flexGrow keeps the scroll area full-height; taller steps scroll.
+  bodyScroll: { flexGrow: 1, justifyContent: "flex-start" },
+
+  // masthead + progress
+  mastheadWrap: { marginBottom: 32 },
+  masthead: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
-  centered: {
+  counter: { fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1.6, color: authTokens.subtle },
+  mastheadMeta: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  phaseLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 10,
+    letterSpacing: 1.8,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.ink,
+  },
+  timeText: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.6, color: authTokens.subtle },
+  track: {
+    height: 2,
+    width: "100%",
+    backgroundColor: authTokens.hairline,
+    borderRadius: 2,
+    overflow: "hidden",
+  },
+  fill: { height: "100%", backgroundColor: authTokens.ink, borderRadius: 2 },
+
+  // heading
+  heading: {
+    fontFamily: fonts.serif,
+    fontSize: 34,
+    lineHeight: 40,
+    color: authTokens.ink,
+    letterSpacing: -0.6,
+    fontWeight: "400",
+  },
+  headingRegular: { fontStyle: "normal" },
+  headingItalic: { fontStyle: "italic" },
+  subtitle: {
+    fontFamily: fonts.sans,
+    fontSize: 15,
+    lineHeight: 22,
+    color: authTokens.body,
+    marginTop: 12,
+    // Full column width (was capped at 380) so blocks share one width rhythm.
+  },
+  body: { marginTop: 34 },
+
+  // footer
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 36,
+  },
+  footerError: { alignItems: "flex-end", marginTop: 10 },
+  skipRow: { alignItems: "center", marginTop: 22 },
+  ghost: { paddingVertical: 10, paddingHorizontal: 2 },
+  ghostLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 12,
+    letterSpacing: 1.6,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.muted,
+  },
+  ghostDanger: { color: authTokens.danger },
+  dim: { opacity: 0.4 },
+
+  // fields
+  fieldStack: { gap: 26 },
+  fieldLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 10,
+    letterSpacing: 1.8,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.muted,
+    marginBottom: 10,
+  },
+  fieldLabelError: { color: authTokens.danger },
+  textarea: {
+    fontFamily: fonts.sans,
+    fontSize: 17,
+    lineHeight: 24,
+    color: authTokens.ink,
+    paddingVertical: 8,
+    minHeight: 92,
+    textAlignVertical: "top",
+  },
+  textareaLine: { height: 1, width: "100%", backgroundColor: authTokens.hairlineStrong },
+  textareaLineFocused: { height: 1.5, backgroundColor: authTokens.accent },
+  textareaLineError: { height: 1.5, backgroundColor: authTokens.danger },
+
+  // option pills
+  pillWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  pill: {
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    backgroundColor: authTokens.surface,
+  },
+  pillSelected: { borderColor: authTokens.ink, backgroundColor: authTokens.ink },
+  pillLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 13,
+    letterSpacing: 0.2,
+    fontWeight: "500",
+    color: authTokens.body,
+  },
+  pillLabelSelected: { color: authTokens.surface },
+
+  // username chip
+  chip: { flexDirection: "row", alignItems: "center", gap: 7, marginTop: 10 },
+  chipDot: { width: 6, height: 6, borderRadius: 3 },
+  chipText: {
+    fontFamily: fonts.mono,
+    fontSize: 11,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+  },
+
+  // date field (trigger mimics the underline input)
+  dateField: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 40,
+    paddingVertical: 8,
+  },
+  dateValue: { fontFamily: fonts.sans, fontSize: 18, color: authTokens.ink },
+  datePlaceholder: { color: authTokens.subtle },
+  dateLine: { height: 1, width: "100%", backgroundColor: authTokens.hairlineStrong },
+  dateLineError: { backgroundColor: authTokens.danger },
+
+  // month/year picker
+  pickerOverlay: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 16,
-    padding: 24,
-    backgroundColor: palette.gray[50],
+    paddingHorizontal: 28,
+    backgroundColor: "rgba(10,10,10,0.45)",
   },
-  scroll: {
-    flex: 1,
+  pickerCard: {
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: authTokens.bg,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    gap: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
-  scrollContent: {
-    flexGrow: 1,
+  pickerTitle: { fontFamily: fonts.serif, fontSize: 20, color: authTokens.ink },
+  pickerYearRow: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-    paddingBottom: 40,
+    gap: 28,
   },
-  progressHeader: {
-    marginBottom: 18,
+  pickerYear: {
+    fontFamily: fonts.mono,
+    fontSize: 18,
+    letterSpacing: 1,
+    color: authTokens.ink,
+    minWidth: 64,
+    textAlign: "center",
   },
-  progressTrack: {
-    height: 6,
-    overflow: "hidden",
-    borderRadius: 999,
-    backgroundColor: palette.gray[200],
-    marginTop: 8,
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 999,
-    backgroundColor: palette.blue[600],
-  },
-  card: {
-    borderWidth: 1,
-    borderColor: palette.gray[200],
-    backgroundColor: "white",
-    borderRadius: 24,
-    padding: 20,
-  },
-  stepBody: {
-    marginTop: 24,
-  },
-  input: {
-    minHeight: 46,
-    borderBottomWidth: 1,
-    borderBottomColor: palette.gray[300],
-    color: palette.gray[900],
-    fontSize: 15,
-    paddingVertical: 10,
-  },
-  textarea: {
-    minHeight: 96,
-    textAlignVertical: "top",
-  },
-  inputError: {
-    borderBottomColor: palette.red[600],
-  },
-  optionWrap: {
+  pickerGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
-    marginTop: 10,
+    justifyContent: "space-between",
+    rowGap: 10,
   },
-  optionPill: {
+  pickerMonth: {
+    width: "31%",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: palette.gray[200],
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: "white",
+    borderColor: authTokens.hairline,
+    backgroundColor: authTokens.surface,
   },
-  optionPillSelected: {
-    borderColor: palette.gray[900],
-    backgroundColor: palette.gray[900],
+  pickerMonthSelected: { backgroundColor: authTokens.ink, borderColor: authTokens.ink },
+  pickerMonthText: {
+    fontFamily: fonts.sans,
+    fontSize: 14,
+    color: authTokens.body,
+    textTransform: "capitalize",
   },
+  pickerMonthTextSelected: { color: authTokens.surface },
+  pickerClear: { alignItems: "center", paddingVertical: 6 },
+  pickerClearText: {
+    fontFamily: fonts.sans,
+    fontSize: 12,
+    letterSpacing: 1.4,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.muted,
+  },
+
+  // language
+  langWrap: { gap: 10 },
+  langCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: authTokens.surface,
+  },
+  langCardSelected: { borderColor: authTokens.ink },
+  langText: { flex: 1, gap: 3 },
+  langLabel: { fontFamily: fonts.serif, fontSize: 19, color: authTokens.ink },
+  langHint: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 17, color: authTokens.muted },
+
+  // step context — fills out short steps (link preview + reassurance notes)
+  context: { marginTop: 28 },
+  contextRule: {
+    height: 1,
+    width: 28,
+    backgroundColor: authTokens.hairlineStrong,
+    marginBottom: 12,
+  },
+  contextLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 10,
+    letterSpacing: 1.8,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.muted,
+    marginBottom: 8,
+  },
+  contextBody: { fontFamily: fonts.sans, fontSize: 13.5, lineHeight: 20, color: authTokens.body },
+  linkCard: {
+    borderWidth: 1,
+    borderColor: authTokens.hairline,
+    borderRadius: 14,
+    backgroundColor: authTokens.surface,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 6,
+  },
+  linkCardLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 10,
+    letterSpacing: 1.8,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.muted,
+  },
+  linkUrl: { fontFamily: fonts.mono, fontSize: 14, letterSpacing: 0.2, color: authTokens.subtle },
+  linkHandle: { color: authTokens.ink },
+  linkNote: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 17, color: authTokens.muted },
+
+  // multi-item
   itemRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: palette.gray[200],
-    paddingVertical: 14,
+    borderBottomColor: authTokens.hairline,
+    paddingVertical: 16,
   },
+  itemText: { flex: 1, fontFamily: fonts.sans, fontSize: 15, color: authTokens.ink },
+  addRow: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 16, marginTop: 4 },
+  addLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 12,
+    letterSpacing: 1.4,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.ink,
+  },
+  // full-screen item editor modal
+  editorModalOverlay: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(10,10,10,0.45)",
+  },
+  editorModalBackdrop: { ...StyleSheet.absoluteFillObject },
+  editorModalCard: {
+    width: "90%",
+    height: "90%",
+    maxWidth: 560,
+    backgroundColor: authTokens.bg,
+    borderRadius: 22,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
+  },
+  editorModalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 22,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: authTokens.hairline,
+  },
+  editorModalTitle: { fontFamily: fonts.serif, fontSize: 22, color: authTokens.ink },
+  editorModalScroll: { paddingHorizontal: 24, paddingTop: 24, paddingBottom: 32 },
+  editorModalFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: authTokens.hairline,
+  },
+
+  // resume style
+  styleStack: { gap: 12 },
   styleCard: {
     flexDirection: "row",
     gap: 14,
     borderWidth: 1,
-    borderColor: palette.gray[200],
+    borderColor: authTokens.hairlineStrong,
     borderRadius: 18,
-    backgroundColor: "white",
+    backgroundColor: authTokens.surface,
     padding: 14,
   },
-  styleCardSelected: {
-    borderColor: palette.gray[900],
-  },
-  styleImage: {
-    width: 64,
-    height: 84,
-    borderRadius: 8,
-    backgroundColor: palette.gray[100],
-  },
+  styleCardSelected: { borderColor: authTokens.ink },
+  styleImage: { width: 60, height: 80, borderRadius: 10, backgroundColor: authTokens.hairline },
+  styleBody: { flex: 1, gap: 4, justifyContent: "center" },
+  styleNameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  styleName: { fontFamily: fonts.serif, fontSize: 18, color: authTokens.ink },
+  styleDesc: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 18, color: authTokens.muted },
+  styleAts: { fontFamily: fonts.mono, fontSize: 11, letterSpacing: 0.5, color: authTokens.success },
+
+  // review
   reviewCard: {
     borderWidth: 1,
-    borderColor: palette.gray[200],
+    borderColor: authTokens.hairline,
     borderRadius: 18,
-    backgroundColor: "white",
+    backgroundColor: authTokens.surface,
+    padding: 18,
+    marginBottom: 12,
+  },
+  reviewHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 },
+  reviewLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 10,
+    letterSpacing: 1.6,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.muted,
+  },
+  reviewSkipped: { fontFamily: fonts.sans, fontSize: 14, color: authTokens.subtle },
+  reviewStyleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  reviewStyleName: { fontFamily: fonts.serif, fontSize: 17, color: authTokens.ink },
+  reviewImage: { width: 48, height: 64, borderRadius: 8, backgroundColor: authTokens.hairline },
+  reviewEntry: { flexDirection: "row", justifyContent: "space-between", gap: 12, marginTop: 7 },
+  reviewEntryLabel: { fontFamily: fonts.sans, fontSize: 12, color: authTokens.muted, flex: 1 },
+  reviewEntryValue: {
+    fontFamily: fonts.sans,
+    fontSize: 14,
+    color: authTokens.ink,
+    flex: 2,
+    textAlign: "right",
+  },
+  reviewEntryLong: { textAlign: "left" },
+  addSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderStyle: "dashed",
+    borderRadius: 14,
+    paddingVertical: 15,
+    marginTop: 4,
+  },
+  addSectionLabel: {
+    fontFamily: fonts.sans,
+    fontSize: 12,
+    letterSpacing: 1.2,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.ink,
+  },
+
+  // states
+  centered: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
+    padding: 28,
+    backgroundColor: authTokens.bg,
+  },
+  centeredText: {
+    fontFamily: fonts.sans,
+    fontSize: 15,
+    color: authTokens.body,
+    textAlign: "center",
+  },
+
+  // welcome
+  welcomeWrap: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 460,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 18,
+    paddingHorizontal: 28,
+  },
+  welcomeArt: { marginVertical: 8 },
+  welcomeHeading: {
+    fontFamily: fonts.serif,
+    fontSize: 32,
+    lineHeight: 38,
+    color: authTokens.ink,
+    letterSpacing: -0.6,
+    textAlign: "center",
+  },
+  welcomeTagline: {
+    fontFamily: fonts.sans,
+    fontSize: 15,
+    lineHeight: 22,
+    color: authTokens.body,
+    textAlign: "center",
+    maxWidth: 340,
+  },
+  welcomeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: authTokens.surface,
+  },
+  welcomeBadgeText: {
+    fontFamily: fonts.sans,
+    fontSize: 12,
+    letterSpacing: 0.4,
+    fontWeight: "600",
+    color: authTokens.ink,
+  },
+  welcomeCta: { width: "100%", marginTop: 8, alignItems: "stretch" },
+
+  // resume banner
+  resumeBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 14,
+    backgroundColor: authTokens.surface,
+    padding: 14,
+    marginBottom: 20,
+  },
+  resumeBannerBody: { flex: 1, gap: 2 },
+  resumeBannerTitle: { fontFamily: fonts.serif, fontSize: 16, color: authTokens.ink },
+  resumeBannerSubtitle: { fontFamily: fonts.sans, fontSize: 13, color: authTokens.muted },
+
+  // retry banner
+  retryBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderWidth: 1,
+    borderColor: authTokens.danger,
+    borderRadius: 12,
+    backgroundColor: authTokens.surface,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginTop: 12,
+  },
+  retryText: { flex: 1, fontFamily: fonts.sans, fontSize: 13, color: authTokens.danger },
+
+  // missing-required banner
+  missingBanner: {
+    borderWidth: 1,
+    borderColor: authTokens.warn,
+    borderRadius: 14,
+    backgroundColor: authTokens.surface,
     padding: 16,
+    marginBottom: 16,
+    gap: 4,
   },
-  reviewImage: {
-    width: 52,
-    height: 68,
-    borderRadius: 6,
-    backgroundColor: palette.gray[100],
+  missingHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
+  missingTitle: {
+    fontFamily: fonts.sans,
+    fontSize: 10,
+    letterSpacing: 1.6,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.warn,
   },
+  missingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: authTokens.hairline,
+  },
+  missingLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 14, color: authTokens.ink },
+  missingFix: {
+    fontFamily: fonts.sans,
+    fontSize: 11,
+    letterSpacing: 1.2,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    color: authTokens.accent,
+  },
+
+  // section empty state
+  emptyState: {
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 20,
+  },
+  emptyTitle: { fontFamily: fonts.serif, fontSize: 20, color: authTokens.ink, marginTop: 4 },
+  emptyBody: {
+    fontFamily: fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+    color: authTokens.muted,
+    textAlign: "center",
+    maxWidth: 300,
+  },
+  emptyAdd: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 999,
+    paddingHorizontal: 18,
+    paddingVertical: 11,
+    marginTop: 6,
+  },
+
+  // section "no fields" safety-net notice
+  noticeCard: {
+    alignItems: "center",
+    gap: 10,
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 16,
+    backgroundColor: authTokens.surface,
+    paddingVertical: 28,
+    paddingHorizontal: 22,
+  },
+  noticeTitle: {
+    fontFamily: fonts.serif,
+    fontSize: 18,
+    color: authTokens.ink,
+    textAlign: "center",
+  },
+  noticeBody: {
+    fontFamily: fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+    color: authTokens.muted,
+    textAlign: "center",
+    maxWidth: 300,
+  },
+
+  // resume-style preview hint + modal
+  stylePreviewHint: {
+    fontFamily: fonts.sans,
+    fontSize: 11,
+    letterSpacing: 0.4,
+    color: authTokens.subtle,
+    marginTop: 2,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(10,10,10,0.55)",
+    justifyContent: "flex-end",
+  },
+  modalSheet: {
+    backgroundColor: authTokens.bg,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 22,
+    paddingBottom: 32,
+    gap: 16,
+    maxHeight: "88%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  modalTitle: { fontFamily: fonts.serif, fontSize: 22, color: authTokens.ink },
+  modalScroll: { gap: 16, alignItems: "center" },
+  modalPreview: {
+    width: "100%",
+    height: 320,
+    borderRadius: 14,
+    backgroundColor: authTokens.surface,
+  },
+  modalPreviewEmpty: { borderWidth: 1, borderColor: authTokens.hairline },
+  modalDesc: {
+    fontFamily: fonts.sans,
+    fontSize: 14,
+    lineHeight: 20,
+    color: authTokens.body,
+    alignSelf: "stretch",
+  },
+  atsSeal: {
+    alignSelf: "stretch",
+    borderWidth: 1,
+    borderColor: authTokens.hairlineStrong,
+    borderRadius: 14,
+    backgroundColor: authTokens.surface,
+    padding: 14,
+    gap: 4,
+  },
+  atsSealLabel: {
+    fontFamily: fonts.mono,
+    fontSize: 12,
+    letterSpacing: 0.4,
+    color: authTokens.ink,
+  },
+  atsSealBlurb: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 19, color: authTokens.muted },
 });

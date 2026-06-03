@@ -11,6 +11,7 @@ export const en: TranslationDict = {
     error: "Error",
     save: "Save",
     cancel: "Cancel",
+    delete: "Delete",
     confirm: "Confirm",
     retry: "Try again",
     welcome: "Welcome, {name}!",
@@ -90,13 +91,129 @@ export const en: TranslationDict = {
     complete: "Complete",
     skip: "Skip this step",
     addItem: "Add",
+    editItem: "Edit",
     addSection: "Add section",
     noData: "Nothing added yet",
     loadFailed: "Could not load your onboarding.",
     completeFailed: "Could not complete onboarding.",
+    saveFailed: "Connection failed. Tap to try again.",
     missingRequired: "Complete the required steps before finishing.",
     language: {
       prompt: "Which language do you prefer?",
+    },
+    username: {
+      checking: "Checking…",
+      available: "Available",
+      taken: "Taken",
+      error: "Couldn't check — tap to retry",
+    },
+    progress: {
+      step: "STEP {n} / {total}",
+      timeRemaining: "~{min} min left",
+    },
+    welcome: {
+      tagline: "Build a recruiter-ready resume, optimized to pass ATS screens.",
+      timePromise: "Ready in ~3 minutes",
+      cta: "Get started",
+    },
+    review: {
+      missingTitle: "Finish these required steps",
+      fix: "Fix",
+    },
+    resume: {
+      title: "You left off at {phase}",
+      subtitle: "Pick up where you stopped, or start over.",
+      continue: "Continue",
+      restart: "Start over",
+    },
+    resumeStyle: {
+      use: "Use this template",
+      previewHint: "Tap to preview",
+    },
+    ats: {
+      high: {
+        label: "High ATS match",
+        blurb: "Single column, no tables — easy for parsers to read.",
+      },
+      good: {
+        label: "Good ATS match",
+        blurb: "Clean structure that most parsers handle well.",
+      },
+      fair: {
+        label: "Fair ATS match",
+        blurb: "More styling — best for human-first applications.",
+      },
+    },
+    section: {
+      emptyTitle: "Nothing here yet",
+      emptyBody: "Add your first entry — or skip and come back later.",
+      noFieldsTitle: "Section unavailable right now",
+      noFieldsBody: "We couldn't load this section's fields. You can skip it for now.",
+    },
+    flow: {
+      phases: {
+        identity: "Identity",
+        history: "History",
+        resume: "Resume",
+      },
+      welcome: {
+        title: "Welcome",
+        subtitle: "",
+      },
+      language: {
+        title: "Choose your language",
+        subtitle: "Pick the language you'd like to continue in.",
+      },
+      location: {
+        title: "Where are you based?",
+        subtitle: "We tailor roles and formatting to your region.",
+        contextLabel: "Why we ask",
+        contextNote:
+          "We use your city to surface roles open near you and match local salary and date formats.",
+      },
+      personal: {
+        title: "About you",
+        subtitle: "The essentials recruiters see first.",
+        contextLabel: "Stays private",
+        contextNote:
+          "Your phone is only shared after you apply — it's never shown on your public profile.",
+      },
+      username: {
+        title: "Pick a username",
+        subtitle: "This becomes your public profile link.",
+        linkLabel: "Your public link",
+        linkNote: "Recruiters open this to see your profile.",
+      },
+      experience: {
+        title: "Your experience",
+        subtitle: "Add your roles — start with your most recent.",
+      },
+      headline: {
+        title: "Your headline",
+        subtitle: "A one-line pitch, plus a short bio if you like.",
+      },
+      links: {
+        title: "Your links",
+        subtitle: "LinkedIn, GitHub, portfolio — all optional.",
+      },
+      education: {
+        title: "Your education",
+        subtitle: "Degrees, bootcamps, courses — or skip it.",
+      },
+      resumeStyle: {
+        title: "Pick a style",
+        subtitle: "Choose the look of your resume. You can change it later.",
+      },
+      review: {
+        title: "Almost there",
+        subtitle: "Review everything and add any optional sections.",
+      },
+    },
+    date: {
+      present: "Present",
+      placeholder: "Select date",
+      prevYear: "Previous year",
+      nextYear: "Next year",
     },
     experience: {
       statusPrompt: "What's your current situation?",

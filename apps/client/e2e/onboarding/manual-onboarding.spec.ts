@@ -42,7 +42,10 @@ const steps: Step[] = [
     description: "Seu momento profissional",
     required: true,
     component: "professional-profile",
-    fields: [{ key: "jobTitle", type: "text", label: "Cargo", required: true }],
+    fields: [
+      { key: "headline", type: "text", label: "Headline", required: false },
+      { key: "summary", type: "textarea", label: "Resumo", required: false },
+    ],
   },
   {
     id: "section:project_v1",
@@ -92,7 +95,7 @@ function sessionFor(currentStep: string) {
     username: currentStep === "username" ? "" : "maria",
     personalInfo: currentStep === "personal-info" ? {} : { fullName: "Maria Silva" },
     professionalProfile:
-      currentStep === "professional-profile" ? {} : { jobTitle: "Software Engineer" },
+      currentStep === "professional-profile" ? {} : { headline: "Software Engineer @ Acme" },
     sections: [
       {
         sectionTypeKey: "project_v1",

@@ -1,17 +1,31 @@
 import { describe, expect, it } from "vitest";
+import { FLOW_PLAN } from "./flow/flowPlan";
 import {
+  atsBand,
+  backendStepForFlow,
   buildNextPayload,
   buildReviewSections,
   buildSkipPayload,
   canContinueStep,
+  defaultCountryFromLocale,
   extrasToActivate,
+  fieldsForFlowStep,
+  flowStepForBackendStep,
   getSavedDataForStep,
   getSavedItemsForStep,
+  isLastFlowStepForBackend,
   isOptionalStep,
+  missingRequiredTargets,
   parseResumeStyles,
   validateStepFields,
 } from "./helpers";
 import type { OnboardingSession, OnboardingStep, SectionItem } from "./types";
+
+const flow = (id: string) => {
+  const step = FLOW_PLAN.find((candidate) => candidate.id === id);
+  if (!step) throw new Error(`unknown flow step ${id}`);
+  return step;
+};
 
 const personalStep: OnboardingStep = {
   id: "personal-info",
@@ -80,7 +94,21 @@ const session: OnboardingSession = {
       description: "",
       required: true,
       component: "professional-profile",
-      fields: [{ key: "jobTitle", type: "text", label: "Cargo", required: true }],
+      fields: [
+        { key: "headline", type: "text", label: "Headline", required: false },
+        { key: "summary", type: "textarea", label: "Resumo", required: false },
+        { key: "linkedin", type: "url", label: "LinkedIn", required: false },
+      ],
+    },
+    {
+      id: "section:work_experience_v1",
+      label: "Experiência",
+      description: "",
+      required: false,
+      component: "generic-section",
+      multipleItems: true,
+      sectionTypeKey: "work_experience_v1",
+      fields: [{ key: "role", type: "text", label: "Cargo", required: true }],
     },
     sectionStep,
     styleStep,
@@ -90,7 +118,7 @@ const session: OnboardingSession = {
   activatedExtras: [],
   username: "maria",
   personalInfo: { fullName: "Maria Silva", phone: "+55 11 90000-0000" },
-  professionalProfile: { jobTitle: "Software Engineer" },
+  professionalProfile: { headline: "Software Engineer", summary: "Builds things." },
   sections: [
     {
       sectionTypeKey: "project_v1",
@@ -149,6 +177,47 @@ describe("onboarding helpers", () => {
     expect(review.map((section) => section.stepId)).toContain("resume-style");
   });
 
+  it("validates only the requested field slice", () => {
+    const profileStep = session.steps.find((step) => step.id === "professional-profile");
+    if (!profileStep) throw new Error("missing professional-profile step");
+    // linkedin is not a valid URL, but the headline slice ignores it.
+    const data = { linkedin: "not-a-url" };
+    expect(validateStepFields(profileStep, data, ["headline"])).toEqual({});
+    expect(validateStepFields(profileStep, data, ["linkedin"]).linkedin).toBeDefined();
+  });
+
+  it("resolves the backend step for a flow step", () => {
+    expect(backendStepForFlow(session, flow("location"))?.id).toBe("personal-info");
+    expect(backendStepForFlow(session, flow("headline"))?.id).toBe("professional-profile");
+    expect(backendStepForFlow(session, flow("experience"))?.id).toBe("section:work_experience_v1");
+    expect(backendStepForFlow(session, flow("language"))).toBeUndefined();
+  });
+
+  it("slices a backend step's fields to the flow step's fieldKeys", () => {
+    const profileStep = backendStepForFlow(session, flow("headline"));
+    expect(fieldsForFlowStep(profileStep, flow("headline")).map((field) => field.key)).toEqual([
+      "headline",
+      "summary",
+    ]);
+    expect(fieldsForFlowStep(profileStep, flow("links")).map((field) => field.key)).toEqual([
+      "linkedin",
+    ]);
+  });
+
+  it("marks only the last sibling flow step as persisting", () => {
+    expect(isLastFlowStepForBackend(flow("location"))).toBe(false);
+    expect(isLastFlowStepForBackend(flow("personal"))).toBe(true);
+    expect(isLastFlowStepForBackend(flow("headline"))).toBe(false);
+    expect(isLastFlowStepForBackend(flow("links"))).toBe(true);
+    expect(isLastFlowStepForBackend(flow("experience"))).toBe(true);
+  });
+
+  it("maps a backend step back to its first flow step (resume cursor)", () => {
+    expect(flowStepForBackendStep(session, "personal-info")?.id).toBe("location");
+    expect(flowStepForBackendStep(session, "professional-profile")?.id).toBe("headline");
+    expect(flowStepForBackendStep(session, "welcome")).toBeUndefined();
+  });
+
   it("activates project and certification extras only", () => {
     expect(
       extrasToActivate({
@@ -160,5 +229,29 @@ describe("onboarding helpers", () => {
         ],
       }),
     ).toEqual(["section:project_v1", "section:certification_v1"]);
+  });
+
+  it("maps missingRequired step ids to actionable targets", () => {
+    const targets = missingRequiredTargets(session);
+    expect(targets).toEqual([
+      { stepId: "personal-info", flowStepId: "location", label: "Dados pessoais" },
+    ]);
+    expect(missingRequiredTargets({ ...session, missingRequired: [] })).toEqual([]);
+    expect(missingRequiredTargets(undefined)).toEqual([]);
+  });
+
+  it("derives a default country from the locale (hint only)", () => {
+    expect(defaultCountryFromLocale("pt-BR")).toBe("BR");
+    expect(defaultCountryFromLocale("en")).toBe("US");
+    expect(defaultCountryFromLocale("es-MX")).toBe("MX");
+    expect(defaultCountryFromLocale(undefined)).toBeUndefined();
+  });
+
+  it("buckets ATS scores into bands", () => {
+    expect(atsBand(96)).toBe("high");
+    expect(atsBand(80)).toBe("good");
+    expect(atsBand(60)).toBe("fair");
+    expect(atsBand(null)).toBeNull();
+    expect(atsBand(undefined)).toBeNull();
   });
 });

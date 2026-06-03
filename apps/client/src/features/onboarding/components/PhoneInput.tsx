@@ -28,6 +28,8 @@ export interface PhoneInputProps {
   onChange: (canonical: string) => void;
   /** ISO code to default the country to (e.g. from the location step). */
   defaultCountryIso?: string;
+  /** Bubbles the chosen ISO up so the wizard can keep it sticky across steps. */
+  onCountryChange?: (iso: string) => void;
   placeholder?: string;
   error?: string | undefined;
 }
@@ -37,6 +39,7 @@ export function PhoneInput({
   value,
   onChange,
   defaultCountryIso,
+  onCountryChange,
   placeholder,
   error,
 }: PhoneInputProps) {
@@ -61,6 +64,15 @@ export function PhoneInput({
     setNational(parsed.national);
   }, [value]);
 
+  // Follow a late-arriving default country (derived from location/locale) while
+  // the user hasn't typed a number yet — keeps the picker in sync without
+  // overriding an explicit choice.
+  useEffect(() => {
+    if (!defaultCountryIso || national.length > 0) return;
+    const found = findCountryByIso(defaultCountryIso);
+    if (found && found.iso !== country.iso) setCountry(found);
+  }, [defaultCountryIso, national.length, country.iso]);
+
   const emit = (c: PhoneCountry, n: string) => {
     const canonical = toCanonicalPhone(c, n);
     lastEmitted.current = canonical;
@@ -78,6 +90,7 @@ export function PhoneInput({
     setOpen(false);
     setSearch("");
     emit(c, national);
+    onCountryChange?.(c.iso);
   };
 
   const filtered = useMemo(() => {

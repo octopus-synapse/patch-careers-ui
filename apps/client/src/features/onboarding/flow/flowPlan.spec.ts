@@ -1,16 +1,32 @@
 import { describe, expect, it } from "vitest";
 import {
+  countedFlowSteps,
+  countedIndexOf,
+  countedTotal,
+  estimatedRemainingMinutes,
+  FLOW_PHASES,
   FLOW_PLAN,
   flowIndexOf,
   flowStepsForServerStep,
   nextFlowStep,
+  phaseForFlowStep,
   prevFlowStep,
 } from "./flowPlan";
 
 describe("flowPlan", () => {
-  it("starts at language and ends at review", () => {
+  it("opens with the language pick, then the welcome intro, and ends at review", () => {
     expect(FLOW_PLAN[0]?.id).toBe("language");
+    expect(FLOW_PLAN[1]?.id).toBe("welcome");
     expect(FLOW_PLAN[FLOW_PLAN.length - 1]?.id).toBe("review");
+  });
+
+  it("counts steps excluding the intro", () => {
+    expect(FLOW_PLAN[1]?.intro).toBe(true);
+    expect(countedFlowSteps().some((step) => step.intro)).toBe(false);
+    expect(countedTotal()).toBe(FLOW_PLAN.length - 1);
+    expect(countedFlowSteps()[0]?.id).toBe("language");
+    expect(countedIndexOf("welcome")).toBe(-1);
+    expect(countedIndexOf("language")).toBe(0);
   });
 
   it("orders experience before headline (headline suggested from the job)", () => {
@@ -37,8 +53,10 @@ describe("flowPlan", () => {
   });
 
   it("navigates next/prev correctly", () => {
-    expect(nextFlowStep("language")?.id).toBe("location");
-    expect(prevFlowStep("location")?.id).toBe("language");
+    expect(nextFlowStep("language")?.id).toBe("welcome");
+    expect(nextFlowStep("welcome")?.id).toBe("location");
+    expect(prevFlowStep("welcome")?.id).toBe("language");
+    expect(prevFlowStep("location")?.id).toBe("welcome");
     expect(prevFlowStep("language")).toBeUndefined();
     expect(nextFlowStep("review")).toBeUndefined();
   });
@@ -46,5 +64,25 @@ describe("flowPlan", () => {
   it("every step has a unique id", () => {
     const ids = FLOW_PLAN.map((s) => s.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("phases cover every counted step exactly once, in order", () => {
+    const phaseIds = FLOW_PHASES.flatMap((phase) => phase.stepIds);
+    expect(phaseIds).toEqual(countedFlowSteps().map((step) => step.id));
+    expect(new Set(phaseIds).size).toBe(phaseIds.length);
+  });
+
+  it("maps a step to its phase (and intro to none)", () => {
+    expect(phaseForFlowStep("username")?.key).toBe("identity");
+    expect(phaseForFlowStep("education")?.key).toBe("history");
+    expect(phaseForFlowStep("review")?.key).toBe("resume");
+    expect(phaseForFlowStep("welcome")).toBeUndefined();
+  });
+
+  it("estimates non-increasing time as the flow advances, floored at 1", () => {
+    const atLanguage = estimatedRemainingMinutes("language");
+    const atResume = estimatedRemainingMinutes("resume-style");
+    expect(atLanguage).toBeGreaterThanOrEqual(atResume);
+    expect(estimatedRemainingMinutes("review")).toBeGreaterThanOrEqual(1);
   });
 });

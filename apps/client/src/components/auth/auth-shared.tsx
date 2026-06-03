@@ -81,7 +81,7 @@ export const authTokens = {
 
 const PressableAnimated = Animated.createAnimatedComponent(Pressable);
 
-const fonts = {
+export const fonts = {
   serif: Platform.select({ ios: "Georgia", android: "serif", default: "Georgia" }),
   sans: Platform.select({
     ios: "-apple-system",

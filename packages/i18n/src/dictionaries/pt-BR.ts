@@ -11,6 +11,7 @@ export const ptBR: TranslationDict = {
     error: "Erro",
     save: "Salvar",
     cancel: "Cancelar",
+    delete: "Excluir",
     confirm: "Confirmar",
     retry: "Tentar novamente",
     welcome: "Bem-vindo, {name}!",
@@ -90,13 +91,131 @@ export const ptBR: TranslationDict = {
     complete: "Concluir",
     skip: "Pular esta etapa",
     addItem: "Adicionar",
+    editItem: "Editar",
     addSection: "Adicionar seção",
     noData: "Nada adicionado ainda",
     loadFailed: "Não foi possível carregar seu onboarding.",
     completeFailed: "Não foi possível concluir o onboarding.",
+    saveFailed: "Falha de conexão. Toque para tentar de novo.",
     missingRequired: "Complete as etapas obrigatórias antes de concluir.",
     language: {
       prompt: "Qual idioma você prefere?",
+    },
+    username: {
+      checking: "Verificando…",
+      available: "Disponível",
+      taken: "Indisponível",
+      error: "Não foi possível verificar — toque para tentar",
+    },
+    progress: {
+      step: "ETAPA {n} / {total}",
+      timeRemaining: "~{min} min restantes",
+    },
+    welcome: {
+      tagline:
+        "Monte um currículo pronto para recrutadores, otimizado para passar pelos filtros ATS.",
+      timePromise: "Pronto em ~3 minutos",
+      cta: "Começar",
+    },
+    review: {
+      missingTitle: "Conclua estas etapas obrigatórias",
+      fix: "Corrigir",
+    },
+    resume: {
+      title: "Você parou em {phase}",
+      subtitle: "Continue de onde parou, ou recomece.",
+      continue: "Continuar",
+      restart: "Recomeçar",
+    },
+    resumeStyle: {
+      use: "Usar este modelo",
+      previewHint: "Toque para visualizar",
+    },
+    ats: {
+      high: {
+        label: "Alta compatibilidade ATS",
+        blurb: "Coluna única, sem tabelas — fácil de ler pelos robôs.",
+      },
+      good: {
+        label: "Boa compatibilidade ATS",
+        blurb: "Estrutura limpa que a maioria dos robôs lê bem.",
+      },
+      fair: {
+        label: "Compatibilidade ATS média",
+        blurb: "Mais estilizado — melhor para candidaturas avaliadas por pessoas.",
+      },
+    },
+    section: {
+      emptyTitle: "Nada por aqui ainda",
+      emptyBody: "Adicione o primeiro item — ou pule e volte depois.",
+      noFieldsTitle: "Seção indisponível no momento",
+      noFieldsBody:
+        "Não foi possível carregar os campos desta seção. Você pode pular por enquanto.",
+    },
+    flow: {
+      phases: {
+        identity: "Identidade",
+        history: "Histórico",
+        resume: "Currículo",
+      },
+      welcome: {
+        title: "Boas-vindas",
+        subtitle: "",
+      },
+      language: {
+        title: "Escolha seu idioma",
+        subtitle: "Selecione o idioma para continuar.",
+      },
+      location: {
+        title: "Onde você mora?",
+        subtitle: "Ajustamos vagas e formatação à sua região.",
+        contextLabel: "Por que pedimos",
+        contextNote:
+          "Usamos sua cidade para mostrar vagas perto de você e ajustar formatos locais de salário e data.",
+      },
+      personal: {
+        title: "Sobre você",
+        subtitle: "O essencial que os recrutadores veem primeiro.",
+        contextLabel: "Fica privado",
+        contextNote:
+          "Seu telefone só é compartilhado quando você se candidata — nunca aparece no perfil público.",
+      },
+      username: {
+        title: "Escolha um usuário",
+        subtitle: "Vira o link público do seu perfil.",
+        linkLabel: "Seu link público",
+        linkNote: "Recrutadores abrem isto para ver seu perfil.",
+      },
+      experience: {
+        title: "Sua experiência",
+        subtitle: "Adicione suas experiências — comece pela mais recente.",
+      },
+      headline: {
+        title: "Sua headline",
+        subtitle: "Uma frase de impacto e, se quiser, uma bio curta.",
+      },
+      links: {
+        title: "Seus links",
+        subtitle: "LinkedIn, GitHub, portfólio — todos opcionais.",
+      },
+      education: {
+        title: "Sua formação",
+        subtitle: "Graduações, cursos, bootcamps — ou pule.",
+      },
+      resumeStyle: {
+        title: "Escolha um estilo",
+        subtitle: "Defina o visual do currículo. Dá pra mudar depois.",
+      },
+      review: {
+        title: "Quase lá",
+        subtitle: "Revise tudo e adicione seções opcionais.",
+      },
+    },
+    date: {
+      present: "Atual",
+      placeholder: "Selecionar data",
+      prevYear: "Ano anterior",
+      nextYear: "Próximo ano",
     },
     experience: {
       statusPrompt: "Qual a sua situação atual?",

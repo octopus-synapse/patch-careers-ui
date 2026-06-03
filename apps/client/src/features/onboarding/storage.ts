@@ -3,6 +3,9 @@ import type { FormData, OnboardingSession, SectionItem } from "./types";
 
 const SNAPSHOT_KEY = "onboarding:session-snapshot";
 const DRAFT_PREFIX = "onboarding:draft:";
+const PHONE_COUNTRY_KEY = "onboarding:phone-country";
+const WELCOME_SEEN_KEY = "onboarding:welcome-seen";
+const RESUME_DISMISSED_KEY = "onboarding:resume-dismissed";
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 type SnapshotPayload = {
@@ -68,4 +71,40 @@ export async function readStepDraft(
 
 export async function clearStepDraft(stepId: string): Promise<void> {
   await mundane.removeItem(`${DRAFT_PREFIX}${stepId}`).catch(() => undefined);
+}
+
+/** The phone country ISO survives across flow steps (location → personal) and
+ *  reloads, so a choice made once isn't reset when navigating. */
+export async function savePhoneCountry(iso: string): Promise<void> {
+  await mundane.setItem(PHONE_COUNTRY_KEY, iso).catch(() => undefined);
+}
+
+export async function readPhoneCountry(): Promise<string | null> {
+  return mundane.getItem(PHONE_COUNTRY_KEY).catch(() => null);
+}
+
+/** One-shot flag so the welcome intro shows once per device, not on every
+ *  reload of an unstarted session. */
+export async function markWelcomeSeen(): Promise<void> {
+  await mundane.setItem(WELCOME_SEEN_KEY, "1").catch(() => undefined);
+}
+
+export async function readWelcomeSeen(): Promise<boolean> {
+  const raw = await mundane.getItem(WELCOME_SEEN_KEY).catch(() => null);
+  return raw === "1";
+}
+
+/** Remember that the user dismissed the "continue where you left off" banner so
+ *  it doesn't reappear on every reload. Cleared on complete / fresh restart. */
+export async function markResumeDismissed(): Promise<void> {
+  await mundane.setItem(RESUME_DISMISSED_KEY, "1").catch(() => undefined);
+}
+
+export async function readResumeDismissed(): Promise<boolean> {
+  const raw = await mundane.getItem(RESUME_DISMISSED_KEY).catch(() => null);
+  return raw === "1";
+}
+
+export async function clearResumeDismissed(): Promise<void> {
+  await mundane.removeItem(RESUME_DISMISSED_KEY).catch(() => undefined);
 }
