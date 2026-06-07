@@ -1,60 +1,56 @@
 /**
- * 2FA verification screen (D104) — second leg of a sign-in that the
- * backend gated with `twoFactorRequired: true`.
+ * 2FA verification screen (D104) — "Editorial Calm" DS. Second leg of a
+ * sign-in the backend gated with `twoFactorRequired: true`.
  *
- * Two input modes:
- *   - OTPInput (6-digit TOTP from the authenticator app, default)
- *   - Backup-code text input (single-use fallback)
- *
- * On success the bearer pair is persisted by `verifyTwoFactor()` and we
- * call `bootstrap()` + replace into the post-auth home.
+ * Two input modes: TOTP (6-digit, auto-submit) and a single-use backup
+ * code. On success `verifyTwoFactor()` persists the pair and
+ * `finishAuthentication()` bootstraps + routes to the post-auth home.
  */
 
-import { bootstrap, exchangeSessionForTokens, verifyTwoFactor } from "@patch-careers/auth";
-import { palette } from "@patch-careers/tokens";
-import { Button, FormField, OTPInput, Text, useToast, XStack, YStack } from "@patch-careers/ui";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { verifyTwoFactor } from "@patch-careers/auth";
+import { OTPInput } from "@patch-careers/ui";
+import {
+  AuthShell,
+  CaptionButton,
+  IntroBlock,
+  PrimaryAction,
+  UnderlineInput,
+} from "@patch-careers/ui/editorial";
+import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { AuthScreenLayout } from "../../components/AuthScreenLayout";
-import { getCurrentAuthenticatedRoute } from "../../navigation/authRedirect";
-import { useTranslator } from "../../providers/I18nProvider";
+import { View } from "react-native";
+import { BackToSignInLink } from "../../components/auth/BackToSignInLink";
+import { failToSignIn } from "../../components/auth/helpers/failToSignIn";
+import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "../../components/auth/hooks/useCompleteAuth";
+import { useSubmit } from "../../components/auth/hooks/useSubmit";
 
 export default function TwoFactorVerifyScreen(): ReactElement {
-  const t = useTranslator();
-  const router = useRouter();
-  const toast = useToast();
+  const { t, router, toast } = useAuthScreen();
+  const { finishAuthentication } = useCompleteAuth();
+  const { submitting, run } = useSubmit();
   const params = useLocalSearchParams<{ userId?: string }>();
 
   const [mode, setMode] = useState<"totp" | "backup">("totp");
   const [code, setCode] = useState("");
   const [backupCode, setBackupCode] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
   async function submitCode(value: string) {
     const userId = params.userId;
     if (!userId) {
-      toast.show({ title: t("auth.loginFailed"), intent: "danger" });
-      router.replace("/(auth)/sign-in");
+      failToSignIn({ toast, router, t, titleKey: "auth.loginFailed" });
       return;
     }
-    setSubmitting(true);
-    try {
-      const result = await verifyTwoFactor(userId, value);
-      if (result.sessionExchangeId) {
-        await exchangeSessionForTokens(result.sessionExchangeId);
+    await run(async () => {
+      try {
+        const result = await verifyTwoFactor(userId, value);
+        await finishAuthentication(
+          result.sessionExchangeId ? { sessionExchangeId: result.sessionExchangeId } : undefined,
+        );
+      } catch {
+        toast.show({ title: t("auth.loginFailed"), intent: "danger" });
       }
-      await bootstrap().catch(() => undefined);
-      router.replace(getCurrentAuthenticatedRoute());
-    } catch {
-      toast.show({ title: t("auth.loginFailed"), intent: "danger" });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  function handleOtpComplete(value: string) {
-    void submitCode(value);
+    });
   }
 
   async function handleBackupSubmit() {
@@ -63,16 +59,24 @@ export default function TwoFactorVerifyScreen(): ReactElement {
   }
 
   return (
-    <AuthScreenLayout
-      title={mode === "totp" ? t("auth.twoFaTitle") : t("auth.twoFaBackupTitle")}
-      subtitle={mode === "totp" ? t("auth.twoFaIntro") : t("auth.twoFaBackupIntro")}
-    >
-      <YStack gap={16} alignItems="center">
+    <AuthShell>
+      <IntroBlock
+        emphasis={mode === "totp" ? t("auth.twoFaTitle") : t("auth.twoFaBackupTitle")}
+        subtitle={mode === "totp" ? t("auth.twoFaIntro") : t("auth.twoFaBackupIntro")}
+      />
+      <View style={{ gap: 20 }}>
         {mode === "totp" ? (
-          <OTPInput value={code} onChangeText={setCode} onComplete={handleOtpComplete} autoFocus />
+          <View style={{ alignItems: "center" }}>
+            <OTPInput
+              value={code}
+              onChangeText={setCode}
+              onComplete={(v) => void submitCode(v)}
+              autoFocus
+            />
+          </View>
         ) : (
-          <YStack width="100%" gap={12}>
-            <FormField
+          <View style={{ gap: 16 }}>
+            <UnderlineInput
               label={t("auth.twoFaBackupTitle")}
               placeholder={t("auth.twoFaBackupPlaceholder")}
               autoCapitalize="characters"
@@ -80,49 +84,22 @@ export default function TwoFactorVerifyScreen(): ReactElement {
               onChangeText={setBackupCode}
               testID="twofa.backupCode"
             />
-            <Button
-              intent="accent"
-              size="lg"
+            <PrimaryAction
+              label={t("common.submit")}
               loading={submitting}
               onPress={handleBackupSubmit}
               testID="twofa.backupSubmit"
-            >
-              {t("common.submit")}
-            </Button>
-          </YStack>
+            />
+          </View>
         )}
 
-        <Pressable
+        <CaptionButton
+          label={mode === "totp" ? t("auth.twoFaUseBackup") : t("auth.twoFaUseTotp")}
           onPress={() => setMode(mode === "totp" ? "backup" : "totp")}
-          accessibilityRole="button"
-          style={styles.toggleButton}
           testID="twofa.toggleMode"
-        >
-          <Text preset="caption" color={palette.blue[600]}>
-            {mode === "totp" ? t("auth.twoFaUseBackup") : t("auth.twoFaUseTotp")}
-          </Text>
-        </Pressable>
-
-        {submitting && mode === "totp" ? (
-          <Text preset="caption" color="$gray10">
-            {t("common.loading")}
-          </Text>
-        ) : null}
-
-        <XStack justifyContent="center" gap={4} marginTop={8}>
-          <Link href="/(auth)/sign-in" accessibilityRole="link" testID="twofa.backToSignIn">
-            <Text preset="caption" color={palette.blue[600]}>
-              {t("common.back")}
-            </Text>
-          </Link>
-        </XStack>
-      </YStack>
-    </AuthScreenLayout>
+        />
+        <BackToSignInLink testID="twofa.backToSignIn" />
+      </View>
+    </AuthShell>
   );
 }
-
-const styles = StyleSheet.create({
-  toggleButton: {
-    padding: 8,
-  },
-});

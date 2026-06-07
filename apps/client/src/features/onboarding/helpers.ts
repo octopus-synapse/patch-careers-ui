@@ -1,5 +1,10 @@
 import type { FlowStep, FlowStepId } from "./flow/flowPlan";
 import { FLOW_PLAN, flowStepsForServerStep } from "./flow/flowPlan";
+import {
+  hasProfileFieldRule,
+  isProfileFieldRequired,
+  validateProfileField,
+} from "./profileValidation";
 import type {
   FormData,
   OnboardingField,
@@ -154,11 +159,23 @@ export function validateStepFields(
   for (const field of visibleFields(step)) {
     if (fieldKeys && !fieldKeys.includes(field.key)) continue;
     const value = data[field.key]?.trim() ?? "";
-    if (field.required && value.length === 0) {
+    // Required = backend flag OR the contract (complete-time) requiredness —
+    // the session marks summary/phone/location optional, but complete needs them.
+    if ((field.required || isProfileFieldRequired(field.key)) && value.length === 0) {
       errors[field.key] = REQUIRED_MESSAGE;
       continue;
     }
     if (value.length === 0) continue;
+    // Kubb-contract validation (length + format) — authoritative for the
+    // profile fields the backend validates on complete. Unmapped fields
+    // (phone, location, section content) fall through to the backend-supplied
+    // minLength/maxLength/pattern below.
+    const contractError = validateProfileField(field.key, value);
+    if (contractError) {
+      errors[field.key] = contractError;
+      continue;
+    }
+    if (hasProfileFieldRule(field.key)) continue;
     if (field.minLength !== undefined && value.length < field.minLength) {
       errors[field.key] = `Mínimo de ${field.minLength} caracteres`;
       continue;

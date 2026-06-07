@@ -15,6 +15,10 @@ import { XStack, YStack } from "../primitives/stack";
 import { Text } from "../primitives/text";
 import { Sheet } from "./sheet";
 
+// Bound the list to the sheet/modal height so it scrolls inside the frame
+// instead of overflowing it. `minHeight: 0` lets the flex child shrink on web.
+const listScrollStyle = { flex: 1, minHeight: 0 } as const;
+
 export interface ListPickerOption<T extends string = string> {
   id: T;
   label: string;
@@ -23,6 +27,8 @@ export interface ListPickerOption<T extends string = string> {
   /** Trailing slot; defaults to a subtle "+" affordance. */
   trailing?: ReactNode;
   selected?: boolean;
+  /** Text the search box matches against (defaults to `label`). */
+  searchText?: string;
 }
 
 export interface ListPickerProps<T extends string = string> {
@@ -58,13 +64,17 @@ export function ListPicker<T extends string = string>({
     if (!searchable) return options;
     const q = search.trim().toLowerCase();
     if (!q) return options;
-    return options.filter((o) => o.label.toLowerCase().includes(q));
+    return options.filter((o) => (o.searchText ?? o.label).toLowerCase().includes(q));
   }, [options, search, searchable]);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} snapPoints={snapPoints}>
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      snapPoints={snapPoints}
+      title={title ?? "Selecionar"}
+    >
       <YStack gap={12} flex={1}>
-        <Text preset="h3">{title ?? "Selecionar"}</Text>
         {searchable ? (
           <Input
             value={search}
@@ -77,7 +87,7 @@ export function ListPicker<T extends string = string>({
             {emptyLabel ?? "Nenhuma opção disponível."}
           </Text>
         ) : (
-          <ScrollView keyboardShouldPersistTaps="handled">
+          <ScrollView keyboardShouldPersistTaps="handled" style={listScrollStyle}>
             <YStack gap={6}>
               {visible.map((option) => (
                 <Pressable

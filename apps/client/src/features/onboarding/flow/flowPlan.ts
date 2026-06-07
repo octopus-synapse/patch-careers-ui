@@ -114,8 +114,10 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     serverStepId: "professional-profile",
     // Headline + the longer bio (summary) share this step; the cargo field
     // (jobTitle) was removed — the role now comes from work experience.
+    // Non-optional: the backend requires `summary` (min 10) at complete, so the
+    // step can't be skipped — `headline` itself stays optional.
     fieldKeys: ["headline", "summary"],
-    optional: true,
+    optional: false,
     titleKey: "onboarding.flow.headline.title",
   },
   {

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { _getHapticHandler, hapticImpact, setHapticHandler } from "./haptics";
+import { _getHapticHandler, hapticImpact, setHapticHandler, withHaptic } from "./haptics";
 
 describe("haptics", () => {
   afterEach(() => {
@@ -24,5 +24,15 @@ describe("haptics", () => {
     setHapticHandler(null);
     hapticImpact("warning");
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("withHaptic fires the impact then delegates with the same args", () => {
+    const haptic = vi.fn();
+    setHapticHandler(haptic);
+    const fn = vi.fn();
+    const wrapped = withHaptic("heavy", fn);
+    wrapped("a", 1);
+    expect(haptic).toHaveBeenCalledWith("heavy");
+    expect(fn).toHaveBeenCalledWith("a", 1);
   });
 });

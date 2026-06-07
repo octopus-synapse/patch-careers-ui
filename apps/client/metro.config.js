@@ -58,6 +58,26 @@ config.resolver.alias = {
   ),
 };
 
+// zustand v5 web fix.
+// A ESM build do zustand (esm/*.mjs) lê `import.meta.env.MODE` (Vite-ism) no
+// devtools middleware — puxado transitivamente via `@patch-careers/state` →
+// `zustand/middleware` (persist). Na WEB o Metro resolve a condition `import`
+// (→ .mjs) e serve o bundle como <script> clássico (sem type="module"), onde
+// `import.meta` é parse error fatal → bundle inteiro quebra → tela branca.
+// Nativo não é afetado (resolve a condition `react-native` → CJS, que usa
+// process.env.NODE_ENV). Então forçamos o build CJS do zustand só na web.
+const zustandDir = path.dirname(
+  require.resolve("zustand/package.json", { paths: [projectRoot] }),
+);
+const upstreamResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (platform === "web" && (moduleName === "zustand" || moduleName.startsWith("zustand/"))) {
+    const sub = moduleName === "zustand" ? "index" : moduleName.slice("zustand/".length);
+    return { type: "sourceFile", filePath: path.join(zustandDir, `${sub}.js`) };
+  }
+  return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
+};
+
 // SVG support (react-native-svg-transformer)
 const { assetExts, sourceExts } = config.resolver;
 config.transformer.babelTransformerPath = require.resolve("react-native-svg-transformer");

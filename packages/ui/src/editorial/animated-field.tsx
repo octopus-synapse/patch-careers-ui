@@ -4,7 +4,8 @@
  */
 
 import type { ReactElement, ReactNode } from "react";
-import Animated, { Easing, FadeInDown } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
+import { editorialFadeInDown } from "./motion";
 
 export function AnimatedField({
   delay,
@@ -13,11 +14,5 @@ export function AnimatedField({
   delay: number;
   children: ReactNode;
 }): ReactElement {
-  return (
-    <Animated.View
-      entering={FadeInDown.delay(delay).duration(500).easing(Easing.out(Easing.cubic))}
-    >
-      {children}
-    </Animated.View>
-  );
+  return <Animated.View entering={editorialFadeInDown(delay)}>{children}</Animated.View>;
 }

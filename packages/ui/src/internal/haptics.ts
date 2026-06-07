@@ -20,6 +20,20 @@ export function hapticImpact(impact: HapticImpact): void {
   handler?.(impact);
 }
 
+/**
+ * Wraps a handler so it fires `impact` before delegating — the
+ * "haptic then run" pattern (e.g. a destructive confirm's heavy impact).
+ */
+export function withHaptic<A extends unknown[]>(
+  impact: HapticImpact,
+  fn: (...args: A) => void,
+): (...args: A) => void {
+  return (...args: A) => {
+    hapticImpact(impact);
+    fn(...args);
+  };
+}
+
 /** Test seam: returns current handler (or null if unset). */
 export function _getHapticHandler(): HapticHandler | null {
   return handler;

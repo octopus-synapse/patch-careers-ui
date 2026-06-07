@@ -1,43 +1,34 @@
 /**
- * Reset-password screen — lives at the root `/reset-password` path
- * (not inside the `(auth)` group) so universal links of the form
- * `https://patchcareers.com/reset-password?token=X` land here directly
- * via Expo Router's typed routes.
+ * Reset-password screen — root `/reset-password` path (universal links of
+ * the form `https://patchcareers.com/reset-password?token=X` land here).
  *
- * D100: token comes from the deep link → 2 password inputs with a
- * PasswordStrengthBar → POST /v1/auth/reset-password → toast + bounce
- * to /sign-in.
+ * D100: token from the deep link → 2 password inputs + strength meter →
+ * POST /v1/auth/reset-password → toast + bounce to /sign-in. "Editorial
+ * Calm" DS (PasswordInput owns its own show/hide eye toggle).
  */
 
 import { postV1AuthResetPassword } from "@patch-careers/api-client";
-import { palette } from "@patch-careers/tokens";
 import {
-  Button,
-  FormField,
-  Icon,
-  PasswordStrengthBar,
-  Text,
-  useToast,
-  XStack,
-  YStack,
-} from "@patch-careers/ui";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Eye, EyeOff } from "lucide-react-native";
+  AuthShell,
+  Banner,
+  IntroBlock,
+  PasswordStrengthMeter,
+  PrimaryAction,
+} from "@patch-careers/ui/editorial";
+import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import { AuthScreenLayout } from "../components/AuthScreenLayout";
-import { useTranslator } from "../providers/I18nProvider";
+import { View } from "react-native";
+import { AuthPasswordField } from "../components/auth/fields";
+import { useAuthScreen } from "../components/auth/hooks/useAuthScreen";
+import { useSubmit } from "../components/auth/hooks/useSubmit";
 
 export default function ResetPasswordScreen(): ReactElement {
-  const t = useTranslator();
-  const router = useRouter();
-  const toast = useToast();
+  const { t, router, toast } = useAuthScreen();
+  const { submitting, run } = useSubmit();
   const params = useLocalSearchParams<{ token?: string }>();
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [mismatchError, setMismatchError] = useState<string | undefined>(undefined);
 
   const tokenMissing = !params.token || params.token.length === 0;
@@ -49,118 +40,76 @@ export default function ResetPasswordScreen(): ReactElement {
     }
     if (tokenMissing) return;
     setMismatchError(undefined);
-    setSubmitting(true);
-    try {
-      await postV1AuthResetPassword({
-        token: params.token as string,
-        newPassword,
-      });
-      toast.show({ title: t("auth.resetSuccess"), intent: "success" });
-      router.replace("/(auth)/sign-in");
-    } catch {
-      toast.show({ title: t("auth.resetInvalidToken"), intent: "danger" });
-    } finally {
-      setSubmitting(false);
-    }
+    await run(async () => {
+      try {
+        await postV1AuthResetPassword({ token: params.token as string, newPassword });
+        toast.show({ title: t("auth.resetSuccess"), intent: "success" });
+        router.replace("/(auth)/sign-in");
+      } catch {
+        toast.show({ title: t("auth.resetInvalidToken"), intent: "danger" });
+      }
+    });
   }
 
   if (tokenMissing) {
     return (
-      <AuthScreenLayout title={t("auth.resetTitle")}>
-        <View style={styles.errorBanner}>
-          <Text preset="body" color={palette.red[700]}>
+      <AuthShell>
+        <IntroBlock emphasis={t("auth.resetTitle")} subtitle={t("auth.resetInvalidToken")} />
+        <View style={{ gap: 24 }}>
+          <Banner intent="danger" testID="reset.invalidToken">
             {t("auth.resetInvalidToken")}
-          </Text>
+          </Banner>
+          <PrimaryAction
+            label={t("auth.forgotPassword")}
+            onPress={() => router.replace("/(auth)/forgot-password")}
+            testID="reset.requestNew"
+          />
         </View>
-        <Button
-          intent="accent"
-          size="lg"
-          onPress={() => router.replace("/(auth)/forgot-password")}
-          testID="reset.requestNew"
-        >
-          {t("auth.forgotPassword")}
-        </Button>
-      </AuthScreenLayout>
+      </AuthShell>
     );
   }
 
   return (
-    <AuthScreenLayout title={t("auth.resetTitle")}>
-      <YStack gap={12}>
-        <YStack gap={8}>
-          <XStack alignItems="flex-end">
-            <YStack flex={1}>
-              <FormField
-                label={t("auth.resetNewPassword")}
-                placeholder={t("auth.passwordPlaceholder")}
-                secureTextEntry={!showPassword}
-                autoComplete="new-password"
-                textContentType="newPassword"
-                value={newPassword}
-                onChangeText={(next: string) => {
-                  setNewPassword(next);
-                  if (mismatchError) setMismatchError(undefined);
-                }}
-                testID="reset.password"
-              />
-            </YStack>
-            <Pressable
-              onPress={() => setShowPassword((v) => !v)}
-              accessibilityRole="button"
-              accessibilityLabel={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
-              style={styles.eyeButton}
-              testID="reset.passwordToggle"
-            >
-              <Icon as={showPassword ? EyeOff : Eye} size="md" />
-            </Pressable>
-          </XStack>
-          <PasswordStrengthBar password={newPassword} />
-        </YStack>
+    <AuthShell>
+      <IntroBlock emphasis={t("auth.resetTitle")} subtitle={t("auth.resetNewPassword")} />
+      <View style={{ gap: 24 }}>
+        <AuthPasswordField
+          label={t("auth.resetNewPassword")}
+          value={newPassword}
+          onChangeText={(next) => {
+            setNewPassword(next);
+            if (mismatchError) setMismatchError(undefined);
+          }}
+          testID="reset.password"
+          isNew
+          returnKeyType="next"
+        >
+          <PasswordStrengthMeter password={newPassword} />
+        </AuthPasswordField>
 
-        <FormField
+        <AuthPasswordField
           label={t("auth.resetConfirmPassword")}
-          placeholder={t("auth.passwordPlaceholder")}
-          secureTextEntry={!showPassword}
-          autoComplete="new-password"
-          textContentType="newPassword"
           value={confirmPassword}
-          onChangeText={(next: string) => {
+          onChangeText={(next) => {
             setConfirmPassword(next);
             if (mismatchError) setMismatchError(undefined);
           }}
-          {...(mismatchError ? { error: mismatchError } : {})}
+          error={mismatchError}
           testID="reset.confirm"
+          isNew
+          returnKeyType="go"
+          onSubmitEditing={handleSubmit}
         />
 
-        <Button
-          intent="accent"
-          size="lg"
-          loading={submitting}
-          onPress={handleSubmit}
-          testID="reset.submit"
-        >
-          {t("common.submit")}
-        </Button>
-      </YStack>
-    </AuthScreenLayout>
+        <View style={{ marginTop: 8 }}>
+          <PrimaryAction
+            label={t("common.submit")}
+            loading={submitting}
+            onPress={handleSubmit}
+            testID="reset.submit"
+          />
+        </View>
+      </View>
+    </AuthShell>
   );
 }
-
-const styles = StyleSheet.create({
-  eyeButton: {
-    padding: 12,
-    marginLeft: 4,
-    height: 44,
-    width: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  errorBanner: {
-    backgroundColor: palette.red[50],
-    borderColor: palette.red[200],
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-  },
-});

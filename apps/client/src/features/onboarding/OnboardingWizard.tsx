@@ -2,6 +2,7 @@ import {
   getV1OnboardingSessionQueryKey,
   getV1UsersUsernameCheck,
   useGetV1OnboardingSession,
+  useGetV1ResumeStylesIdPreviewPdf,
   usePostV1OnboardingSessionComplete,
   usePostV1OnboardingSessionExtras,
   usePostV1OnboardingSessionGoto,
@@ -15,9 +16,9 @@ import {
   AnimatedField,
   FieldError,
   editorialFonts as fonts,
+  PatchLogo,
   PrimaryAction,
   UnderlineInput,
-  Wordmark,
 } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -52,14 +53,18 @@ import {
   Text as RNText,
   SafeAreaView,
   ScrollView,
+  type StyleProp,
   StyleSheet,
   TextInput,
+  type TextStyle,
   useWindowDimensions,
   View,
+  type ViewStyle,
 } from "react-native";
+import { translateBackendCode } from "../../components/auth/validation";
 import { getCompletedOnboardingRoute } from "../../navigation/authRedirect";
 import { useI18n } from "../../providers/I18nProvider";
-import { LocationAutocomplete } from "./components/LocationAutocomplete";
+import { LocationPicker } from "./components/LocationPicker";
 import { SectionAddPicker } from "./components/SectionAddPicker";
 import {
   countedIndexOf,
@@ -97,6 +102,7 @@ import {
   visibleFields,
 } from "./helpers";
 import { sectionArtFor, WelcomeArt } from "./illustrations/OnboardingArt";
+import { isProfileFieldRequired } from "./profileValidation";
 import {
   clearResumeDismissed,
   clearSessionSnapshot,
@@ -138,6 +144,9 @@ export function OnboardingWizard(): ReactElement {
   const [fallbackSession, setFallbackSession] = useState<OnboardingSession | null>(null);
   const [formData, setFormData] = useState<FormData>({});
   const [items, setItems] = useState<SectionItem[]>([]);
+  // Optional section steps require an explicit acknowledgement ("I don't have
+  // any X") to continue when empty — so the user can't blow past them blindly.
+  const [noItemsAck, setNoItemsAck] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [completeError, setCompleteError] = useState("");
   // App-owned flow cursor (drives which screen renders + which fields show).
@@ -228,7 +237,18 @@ export function OnboardingWizard(): ReactElement {
         router.replace(getCompletedOnboardingRoute());
       },
       onError(error) {
-        setCompleteError(error.response?.data?.message ?? t("onboarding.completeFailed"));
+        // Localize the backend rejection (e.g. INVALID_PROFESSIONAL_PROFILE)
+        // via the contracts dictionary instead of surfacing the raw English
+        // message; falls back to the backend message, then a generic key.
+        const data = error.response?.data as { code?: unknown; message?: unknown } | undefined;
+        setCompleteError(
+          translateBackendCode(
+            typeof data?.code === "string" ? data.code : undefined,
+            locale,
+            t("onboarding.completeFailed"),
+            typeof data?.message === "string" ? data.message : undefined,
+          ),
+        );
       },
     },
   });
@@ -308,6 +328,7 @@ export function OnboardingWizard(): ReactElement {
     const saved = getSavedDataForStep(session, currentStep);
     setFormData(saved);
     setItems(getSavedItemsForStep(session, currentStep));
+    setNoItemsAck(false);
     // Re-entering a step the user already tried (and failed) to submit keeps
     // its errors visible, so the "why" survives a Back/Next round-trip.
     setErrors(
@@ -416,6 +437,12 @@ export function OnboardingWizard(): ReactElement {
     }
 
     if (currentStep) {
+      // Optional section acknowledged as empty ("I have none") → persist the
+      // skip payload and advance, same as the explicit skip.
+      if (isSectionStep(currentStep) && items.length === 0 && noItemsAck) {
+        await handleSkip();
+        return;
+      }
       const nextErrors = validateStepFields(currentStep, formData, activeFieldKeys);
       setErrors(nextErrors);
       if (!canContinueStep(currentStep, formData, items, activeFieldKeys)) {
@@ -483,9 +510,34 @@ export function OnboardingWizard(): ReactElement {
     void markResumeDismissed();
   }
 
+  /** First backend form step whose saved data fails the (Kubb-contract)
+   *  per-step validation. Sections + resume-style are validated elsewhere. */
+  function firstInvalidProfileStep(): string | null {
+    if (!session) return null;
+    for (const step of session.steps) {
+      if (isSectionStep(step) || isResumeStyleStep(step)) continue;
+      const stepErrors = validateStepFields(step, getSavedDataForStep(session, step));
+      if (Object.keys(stepErrors).length > 0) return step.id;
+    }
+    return null;
+  }
+
   function handleComplete() {
+    setCompleteError("");
     if (session?.missingRequired?.length) {
       setCompleteError(t("onboarding.missingRequired"));
+      return;
+    }
+    // Pre-complete gate: validate the assembled profile with the same
+    // contract rules as the steps, and route to the first step with an invalid
+    // field — its errors surface inline on entry (the step is marked attempted)
+    // — instead of round-tripping to the backend for a generic
+    // INVALID_PROFESSIONAL_PROFILE.
+    const invalidStepId = firstInvalidProfileStep();
+    if (invalidStepId) {
+      markAttempted(invalidStepId);
+      setEditStepId(invalidStepId);
+      setCompleteError(t("onboarding.fixBeforeComplete"));
       return;
     }
     complete.mutate();
@@ -524,9 +576,30 @@ export function OnboardingWizard(): ReactElement {
   const showComplete = isReview;
   const showSkip = !showComplete && !isLocal && !editStep && flowStep.optional;
   const showBack = Boolean(editStep) || Boolean(prevFlowStep(flowStepId));
-  const canContinue = editStep
-    ? canContinueStep(editStep, formData, items)
-    : canContinueStep(currentStep, formData, items, activeFieldKeys);
+  // Requiredness: a field is required when the contract's complete-time schema
+  // requires it (`isProfileFieldRequired` — e.g. `summary`, even though the
+  // session marks it optional) OR the backend flags it on the session field.
+  // `validateStepFields` uses the same rule, so the label and the gate agree.
+  const fieldIsRequired = (field: OnboardingField): boolean =>
+    isProfileFieldRequired(field.key) || Boolean(field.required);
+  // Suffix every label with its requiredness so each step always shows what's
+  // obrigatório vs opcional.
+  const labeledFields = flowFields.map((field) => ({
+    ...field,
+    label: `${field.label} · ${t(
+      fieldIsRequired(field) ? "onboarding.field.required" : "onboarding.field.optional",
+    )}`,
+  }));
+  const canContinue = ((): boolean => {
+    if (editStep) return canContinueStep(editStep, formData, items);
+    if (!currentStep) return true;
+    // Optional sections need ≥1 item OR an explicit "I have none" acknowledgement.
+    if (isSectionStep(currentStep)) return items.length > 0 || noItemsAck;
+    // Form/style steps: canContinueStep → validateStepFields enforces the
+    // contract requiredness, so steps like "username" or the summary on the
+    // headline step can't be left empty.
+    return canContinueStep(currentStep, formData, items, activeFieldKeys);
+  })();
 
   const total = countedTotal();
   const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
@@ -546,6 +619,7 @@ export function OnboardingWizard(): ReactElement {
   // never shift between steps — short steps just center their content in it,
   // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
   const bodyHeight = height > 0 ? Math.max(300, Math.min(440, Math.round(height * 0.46))) : 380;
+  const remainingMin = editStep ? 1 : estimatedRemainingMinutes(flowStepId);
 
   return (
     <SafeAreaView style={ed.root}>
@@ -567,10 +641,12 @@ export function OnboardingWizard(): ReactElement {
             ) : null}
             <Masthead
               phaseLabel={phase ? t(phase.labelKey) : ""}
-              timeText={t("onboarding.progress.timeRemaining", {
-                min: editStep ? 1 : estimatedRemainingMinutes(flowStepId),
-              })}
-              counterText={t("onboarding.progress.step", { n: stepNumber, total })}
+              timeText={t(
+                remainingMin === 1
+                  ? "onboarding.progress.timeRemainingOne"
+                  : "onboarding.progress.timeRemaining",
+                { min: remainingMin },
+              )}
               progressPct={(stepNumber / total) * 100}
             />
 
@@ -619,7 +695,7 @@ export function OnboardingWizard(): ReactElement {
                     />
                   ) : (
                     <StepForm
-                      fields={flowFields}
+                      fields={labeledFields}
                       data={formData}
                       errors={errors}
                       onChange={setFormData}
@@ -634,7 +710,18 @@ export function OnboardingWizard(): ReactElement {
 
                 <StepContext flowStepId={flowStepId} formData={formData} session={session} t={t} />
 
-                {showSkip ? (
+                {showSkip && isSectionStep(currentStep) ? (
+                  items.length === 0 ? (
+                    <View style={ed.skipRow}>
+                      <AckCheckbox
+                        label={currentStep?.noDataLabel ?? t("onboarding.skip")}
+                        checked={noItemsAck}
+                        onToggle={() => setNoItemsAck((value) => !value)}
+                        disabled={isPending}
+                      />
+                    </View>
+                  ) : null
+                ) : showSkip ? (
                   <View style={ed.skipRow}>
                     <GhostButton
                       label={currentStep?.noDataLabel ?? t("onboarding.skip")}
@@ -698,12 +785,10 @@ export function OnboardingWizard(): ReactElement {
 // ────────────────────────────────────────────────────────────
 
 function Masthead({
-  counterText,
   phaseLabel,
   progressPct,
   timeText,
 }: {
-  counterText: string;
   phaseLabel: string;
   progressPct: number;
   timeText: string;
@@ -711,16 +796,18 @@ function Masthead({
   const pct = Math.max(0, Math.min(100, progressPct));
   return (
     <View style={ed.mastheadWrap}>
-      <View style={ed.masthead}>
-        <Wordmark />
-        <RNText style={ed.counter}>{counterText}</RNText>
+      {/* Brand isolated + centered, with breathing room above the progress. */}
+      <View style={ed.mastheadBrand}>
+        <PatchLogo />
       </View>
+      {/* The progress bar leads as the section divider/rule. */}
+      <View style={ed.track}>
+        <View style={[ed.fill, { width: `${pct}%` }]} />
+      </View>
+      {/* Justified byline beneath the rule: section (left) ↔ time (right). */}
       <View style={ed.mastheadMeta}>
         {phaseLabel ? <RNText style={ed.phaseLabel}>{phaseLabel}</RNText> : <View />}
         <RNText style={ed.timeText}>{timeText}</RNText>
-      </View>
-      <View style={ed.track}>
-        <View style={[ed.fill, { width: `${pct}%` }]} />
       </View>
     </View>
   );
@@ -785,6 +872,127 @@ function GhostButton({
 
 function FieldLabel({ children, error }: { children: ReactNode; error?: boolean }): ReactElement {
   return <RNText style={[ed.fieldLabel, error ? ed.fieldLabelError : null]}>{children}</RNText>;
+}
+
+/** Acknowledgement checkbox — gates "Continuar" on an empty optional section
+ *  ("Não tenho X"): the user must add an item or tick this to proceed. */
+function AckCheckbox({
+  checked,
+  disabled,
+  label,
+  onToggle,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  label: string;
+  onToggle: () => void;
+}): ReactElement {
+  return (
+    <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked, disabled: Boolean(disabled) }}
+      accessibilityLabel={label}
+      disabled={disabled}
+      onPress={onToggle}
+      hitSlop={8}
+      style={ed.ackRow}
+    >
+      <View style={[ed.ackBox, checked ? ed.ackBoxChecked : null]}>
+        {checked ? <Check size={12} color={authTokens.surface} strokeWidth={3} /> : null}
+      </View>
+      <RNText style={[ed.ghostLabel, disabled ? ed.dim : null]}>{label}</RNText>
+    </Pressable>
+  );
+}
+
+/**
+ * "Plus (or spinner) + label" affordance — the add row the multi-item list,
+ * the section empty state and the review hub each hand-rolled.
+ */
+function AddRow({
+  label,
+  onPress,
+  style,
+  labelStyle,
+  loading = false,
+  disabled = false,
+  iconSize = 15,
+}: {
+  label: string;
+  onPress: () => void;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  loading?: boolean;
+  disabled?: boolean;
+  iconSize?: number;
+}): ReactElement {
+  return (
+    <Pressable accessibilityRole="button" onPress={onPress} disabled={disabled} style={style}>
+      {loading ? (
+        <ActivityIndicator size="small" color={authTokens.ink} />
+      ) : (
+        <Plus size={iconSize} color={authTokens.ink} strokeWidth={2} />
+      )}
+      <RNText style={labelStyle ?? ed.addLabel}>{label}</RNText>
+    </Pressable>
+  );
+}
+
+/**
+ * Full-screen RN `<Modal>` with the shared transparent / fade / scrim prop
+ * set the onboarding modals each repeated; callers supply the scrim + card.
+ */
+function OverlayModal({
+  visible,
+  onRequestClose,
+  children,
+}: {
+  visible: boolean;
+  onRequestClose: () => void;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      statusBarTranslucent
+      animationType="fade"
+      onRequestClose={onRequestClose}
+    >
+      {children}
+    </Modal>
+  );
+}
+
+/**
+ * Label + control + hairline underline + error — the shape the textarea
+ * and date fields each hand-rolled, mirroring the editorial UnderlineInput.
+ */
+function FieldShell({
+  label,
+  error,
+  focused = false,
+  children,
+}: {
+  label: string;
+  error?: string | undefined;
+  focused?: boolean;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <View>
+      <FieldLabel error={Boolean(error)}>{label}</FieldLabel>
+      {children}
+      <View
+        style={[
+          ed.fieldLine,
+          focused ? ed.fieldLineFocused : null,
+          error ? ed.fieldLineError : null,
+        ]}
+      />
+      {error ? <FieldError text={error} /> : null}
+    </View>
+  );
 }
 
 function OptionPill({
@@ -864,7 +1072,7 @@ function StepForm({
         let node: ReactElement;
         if (field.key === "location") {
           node = (
-            <LocationAutocomplete
+            <LocationPicker
               label={field.label}
               value={data[field.key] ?? ""}
               onChange={(label, meta) => {
@@ -1083,19 +1291,18 @@ function DateField({
       ? t("onboarding.date.present")
       : t("onboarding.date.placeholder");
   return (
-    <View>
-      <FieldLabel error={Boolean(error)}>{label}</FieldLabel>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`${label}: ${display}`}
-        onPress={() => setOpen(true)}
-        style={ed.dateField}
-      >
-        <RNText style={[ed.dateValue, parsed ? null : ed.datePlaceholder]}>{display}</RNText>
-        <Calendar size={18} color={authTokens.subtle} />
-      </Pressable>
-      <View style={[ed.dateLine, error ? ed.dateLineError : null]} />
-      {error ? <FieldError text={error} /> : null}
+    <>
+      <FieldShell label={label} error={error}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${label}: ${display}`}
+          onPress={() => setOpen(true)}
+          style={ed.dateField}
+        >
+          <RNText style={[ed.dateValue, parsed ? null : ed.datePlaceholder]}>{display}</RNText>
+          <Calendar size={18} color={authTokens.subtle} />
+        </Pressable>
+      </FieldShell>
       <MonthYearPicker
         visible={open}
         value={value}
@@ -1107,7 +1314,7 @@ function DateField({
           setOpen(false);
         }}
       />
-    </View>
+    </>
   );
 }
 
@@ -1138,13 +1345,7 @@ function MonthYearPicker({
     monthLabel(2020, i + 1, locale, { month: "short" }),
   );
   return (
-    <Modal
-      visible={visible}
-      transparent
-      statusBarTranslucent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <OverlayModal visible={visible} onRequestClose={onClose}>
       <Pressable style={ed.pickerOverlay} onPress={onClose}>
         {/* Absorb taps inside the card so they don't dismiss it. */}
         <Pressable style={ed.pickerCard} onPress={() => undefined}>
@@ -1198,9 +1399,32 @@ function MonthYearPicker({
           ) : null}
         </Pressable>
       </Pressable>
-    </Modal>
+    </OverlayModal>
   );
 }
+
+/** Per-state visuals for the username availability chip (dot + text + label). */
+const USERNAME_STATE_META: Record<
+  "checking" | "available" | "unavailable" | "error",
+  { dot: string; color: string; labelKey: string }
+> = {
+  checking: {
+    dot: authTokens.subtle,
+    color: authTokens.muted,
+    labelKey: "onboarding.username.checking",
+  },
+  available: {
+    dot: authTokens.success,
+    color: authTokens.success,
+    labelKey: "onboarding.username.available",
+  },
+  unavailable: {
+    dot: authTokens.danger,
+    color: authTokens.danger,
+    labelKey: "onboarding.username.taken",
+  },
+  error: { dot: authTokens.warn, color: authTokens.warn, labelKey: "onboarding.username.error" },
+};
 
 function FieldRenderer({
   error,
@@ -1289,8 +1513,7 @@ function FieldRenderer({
 
   if (multiline) {
     return (
-      <View>
-        <FieldLabel error={Boolean(error)}>{field.label}</FieldLabel>
+      <FieldShell label={field.label} error={error} focused={focused}>
         <TextInput
           value={value}
           onChangeText={onChange}
@@ -1301,15 +1524,7 @@ function FieldRenderer({
           multiline
           style={ed.textarea}
         />
-        <View
-          style={[
-            ed.textareaLine,
-            focused ? ed.textareaLineFocused : null,
-            error ? ed.textareaLineError : null,
-          ]}
-        />
-        {error ? <FieldError text={error} /> : null}
-      </View>
+      </FieldShell>
     );
   }
 
@@ -1339,43 +1554,9 @@ function FieldRenderer({
           onPress={retryUsername}
           accessibilityRole={usernameState === "error" ? "button" : "text"}
         >
-          <View
-            style={[
-              ed.chipDot,
-              {
-                backgroundColor:
-                  usernameState === "available"
-                    ? authTokens.success
-                    : usernameState === "unavailable"
-                      ? authTokens.danger
-                      : usernameState === "error"
-                        ? authTokens.warn
-                        : authTokens.subtle,
-              },
-            ]}
-          />
-          <RNText
-            style={[
-              ed.chipText,
-              {
-                color:
-                  usernameState === "available"
-                    ? authTokens.success
-                    : usernameState === "unavailable"
-                      ? authTokens.danger
-                      : usernameState === "error"
-                        ? authTokens.warn
-                        : authTokens.muted,
-              },
-            ]}
-          >
-            {usernameState === "checking"
-              ? t("onboarding.username.checking")
-              : usernameState === "available"
-                ? t("onboarding.username.available")
-                : usernameState === "unavailable"
-                  ? t("onboarding.username.taken")
-                  : t("onboarding.username.error")}
+          <View style={[ed.chipDot, { backgroundColor: USERNAME_STATE_META[usernameState].dot }]} />
+          <RNText style={[ed.chipText, { color: USERNAME_STATE_META[usernameState].color }]}>
+            {t(USERNAME_STATE_META[usernameState].labelKey)}
           </RNText>
         </Pressable>
       ) : null}
@@ -1512,10 +1693,7 @@ function MultiItemStep({
         ))}
       </View>
 
-      <Pressable accessibilityRole="button" onPress={openNew} style={ed.addRow}>
-        <Plus size={15} color={authTokens.ink} strokeWidth={2} />
-        <RNText style={ed.addLabel}>{addLabel}</RNText>
-      </Pressable>
+      <AddRow label={addLabel} onPress={openNew} style={ed.addRow} />
     </View>
   );
 
@@ -1574,13 +1752,7 @@ function MultiItemEditorModal({
   // apply, so a full-screen header collided with the status bar. Centering the
   // card clears the top inset by construction and reads as a focused dialog.
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      transparent
-      statusBarTranslucent
-      onRequestClose={onCancel}
-    >
+    <OverlayModal visible={visible} onRequestClose={onCancel}>
       <KeyboardAvoidingView
         style={ed.editorModalOverlay}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -1626,7 +1798,7 @@ function MultiItemEditorModal({
           </View>
         </View>
       </KeyboardAvoidingView>
-    </Modal>
+    </OverlayModal>
   );
 }
 
@@ -1649,10 +1821,7 @@ function SectionEmptyState({
         <Art size={120} />
         <RNText style={ed.emptyTitle}>{t("onboarding.section.emptyTitle")}</RNText>
         <RNText style={ed.emptyBody}>{t("onboarding.section.emptyBody")}</RNText>
-        <Pressable accessibilityRole="button" onPress={onAdd} style={ed.emptyAdd}>
-          <Plus size={15} color={authTokens.ink} strokeWidth={2} />
-          <RNText style={ed.addLabel}>{addLabel}</RNText>
-        </Pressable>
+        <AddRow label={addLabel} onPress={onAdd} style={ed.emptyAdd} />
       </View>
     </AnimatedField>
   );
@@ -1747,8 +1916,83 @@ function ResumeStyleCard({
   );
 }
 
-/** Full-screen preview of a résumé template + ATS-band explanation (item:
- *  resume-style modal). Selection is confirmed here. */
+/** Web-only: the style's generic preview PDF (`GET …/preview.pdf`, JWT-gated)
+ *  fetched as a blob and rendered inline through the browser's native PDF
+ *  viewer via an object URL — no presigned-URL hop, no extra deps. Mirrors the
+ *  Resume tab's `srcDoc` iframe split. The hook only mounts while the modal is
+ *  open (parent guards on `option`), so the PDF render isn't kicked off until
+ *  the user actually opens a preview. */
+function StylePreviewWeb({ option }: { option: ResumeStyleOption }): ReactElement {
+  const pdf = useGetV1ResumeStylesIdPreviewPdf(option.id, {
+    client: { responseType: "blob" },
+    query: { refetchOnWindowFocus: false, staleTime: 5 * 60_000 },
+  });
+  const blob = pdf.data;
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!blob) {
+      setUrl(null);
+      return;
+    }
+    // The endpoint streams the PDF as application/octet-stream; re-tag the
+    // blob as application/pdf so the <iframe> renders it inline instead of
+    // offering a download.
+    const pdf =
+      blob.type === "application/pdf" ? blob : blob.slice(0, blob.size, "application/pdf");
+    const objectUrl = URL.createObjectURL(pdf);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [blob]);
+
+  if (pdf.isLoading) {
+    return (
+      <View style={[ed.modalPreview, ed.modalPreviewEmpty, ed.modalPreviewCenter]}>
+        <ActivityIndicator color={authTokens.ink} />
+      </View>
+    );
+  }
+  if (pdf.isError || !url) {
+    return (
+      <View style={[ed.modalPreview, ed.modalPreviewEmpty, ed.modalPreviewCenter]}>
+        <RNText style={ed.modalPreviewHint}>Pré-visualização indisponível.</RNText>
+      </View>
+    );
+  }
+  return (
+    <View style={ed.modalPreview}>
+      <iframe
+        src={`${url}#toolbar=0&navpanes=0&view=FitH`}
+        title={option.name}
+        style={
+          {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            border: "none",
+          } as unknown as undefined
+        }
+      />
+    </View>
+  );
+}
+
+/** Preview visual: live PDF render on web; thumbnail (or placeholder) native. */
+function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
+  if (Platform.OS === "web") return <StylePreviewWeb option={option} />;
+  return option.thumbnailUrl ? (
+    <Image source={{ uri: option.thumbnailUrl }} style={ed.modalPreview} resizeMode="contain" />
+  ) : (
+    <View style={[ed.modalPreview, ed.modalPreviewEmpty]} />
+  );
+}
+
+/** Preview of a résumé template + ATS-band explanation (item: resume-style
+ *  modal). Centered card over a scrim — same size/positioning as the
+ *  add-education/experience editor (`MultiItemEditorModal`). Selection is
+ *  confirmed here. */
 function ResumeStyleModal({
   onClose,
   onUse,
@@ -1764,30 +2008,29 @@ function ResumeStyleModal({
 }): ReactElement {
   const band = atsBand(option?.atsScore);
   return (
-    <Modal visible={Boolean(option)} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={ed.modalBackdrop}>
-        <View style={ed.modalSheet}>
-          <View style={ed.modalHeader}>
-            <RNText style={ed.modalTitle}>{option?.name ?? ""}</RNText>
+    <OverlayModal visible={Boolean(option)} onRequestClose={onClose}>
+      <View style={ed.editorModalOverlay}>
+        {/* Tap outside the card to dismiss */}
+        <Pressable
+          style={ed.editorModalBackdrop}
+          accessibilityRole="button"
+          accessibilityLabel="close"
+          onPress={onClose}
+        />
+        <View style={ed.editorModalCard}>
+          <View style={ed.editorModalHeader}>
+            <RNText style={ed.editorModalTitle}>{option?.name ?? ""}</RNText>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="close"
-              hitSlop={8}
+              hitSlop={12}
               onPress={onClose}
             >
-              <X size={20} color={authTokens.muted} />
+              <X size={22} color={authTokens.muted} />
             </Pressable>
           </View>
-          <ScrollView contentContainerStyle={ed.modalScroll}>
-            {option?.thumbnailUrl ? (
-              <Image
-                source={{ uri: option.thumbnailUrl }}
-                style={ed.modalPreview}
-                resizeMode="contain"
-              />
-            ) : (
-              <View style={[ed.modalPreview, ed.modalPreviewEmpty]} />
-            )}
+          <ScrollView style={ed.flex} contentContainerStyle={ed.modalScroll}>
+            {option ? <StylePreview option={option} /> : null}
             {band ? (
               <View style={ed.atsSeal}>
                 <RNText style={ed.atsSealLabel}>
@@ -1801,13 +2044,15 @@ function ResumeStyleModal({
               <RNText style={ed.modalDesc}>{option.description}</RNText>
             ) : null}
           </ScrollView>
-          <PrimaryAction
-            label={selected ? t("common.save") : t("onboarding.resumeStyle.use")}
-            onPress={() => option && onUse(option.id)}
-          />
+          <View style={ed.modalFooter}>
+            <PrimaryAction
+              label={selected ? t("common.save") : t("onboarding.resumeStyle.use")}
+              onPress={() => option && onUse(option.id)}
+            />
+          </View>
         </View>
       </View>
-    </Modal>
+    </OverlayModal>
   );
 }
 
@@ -1882,19 +2127,15 @@ function ReviewSummary({
       ))}
 
       {options.length > 0 ? (
-        <Pressable
-          accessibilityRole="button"
+        <AddRow
+          label={t("onboarding.addSection")}
           onPress={() => setPickerOpen(true)}
           disabled={addPending}
+          loading={addPending}
+          iconSize={14}
           style={[ed.addSection, addPending ? ed.dim : null]}
-        >
-          {addPending ? (
-            <ActivityIndicator size="small" color={authTokens.ink} />
-          ) : (
-            <Plus size={14} color={authTokens.ink} strokeWidth={2} />
-          )}
-          <RNText style={ed.addSectionLabel}>{t("onboarding.addSection")}</RNText>
-        </Pressable>
+          labelStyle={ed.addSectionLabel}
+        />
       ) : null}
 
       <SectionAddPicker
@@ -1921,7 +2162,7 @@ function WelcomeScreen({ onStart, t }: { onStart: () => void; t: Translator }): 
     <SafeAreaView style={ed.root}>
       <View style={ed.welcomeWrap}>
         <AnimatedField delay={60}>
-          <Wordmark />
+          <PatchLogo size={42} />
         </AnimatedField>
         <AnimatedField delay={140}>
           <View style={ed.welcomeArt}>
@@ -2047,6 +2288,13 @@ function MissingBanner({
 // Styles — "Editorial Calm" (shared with the auth screens)
 // ────────────────────────────────────────────────────────────
 
+/** Shared "small-caps eyebrow" recipe; entries add fontSize/letterSpacing/color. */
+const eyebrow = {
+  fontFamily: fonts.sans,
+  fontWeight: "600",
+  textTransform: "uppercase",
+} as const;
+
 const ed = StyleSheet.create({
   root: { flex: 1, backgroundColor: authTokens.bg },
   flex: { flex: 1 },
@@ -2061,29 +2309,30 @@ const ed = StyleSheet.create({
   bodyScroll: { flexGrow: 1, justifyContent: "flex-start" },
 
   // masthead + progress
-  mastheadWrap: { marginBottom: 32 },
-  masthead: {
-    flexDirection: "row",
+  mastheadWrap: { marginBottom: 36 },
+  mastheadBrand: {
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 26,
   },
-  counter: { fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1.6, color: authTokens.subtle },
   mastheadMeta: {
     flexDirection: "row",
     alignItems: "baseline",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginTop: 14,
   },
   phaseLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 10,
     letterSpacing: 1.8,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.ink,
   },
-  timeText: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.6, color: authTokens.subtle },
+  timeText: {
+    fontFamily: fonts.mono,
+    fontSize: 15.6,
+    fontWeight: "600",
+    letterSpacing: 0.4,
+    color: authTokens.ink,
+  },
   track: {
     height: 2,
     width: "100%",
@@ -2124,13 +2373,22 @@ const ed = StyleSheet.create({
   },
   footerError: { alignItems: "flex-end", marginTop: 10 },
   skipRow: { alignItems: "center", marginTop: 22 },
+  ackRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 6 },
+  ackBox: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: authTokens.hairlineStrong,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ackBoxChecked: { backgroundColor: authTokens.ink, borderColor: authTokens.ink },
   ghost: { paddingVertical: 10, paddingHorizontal: 2 },
   ghostLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 12,
     letterSpacing: 1.6,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.muted,
   },
   ghostDanger: { color: authTokens.danger },
@@ -2139,11 +2397,9 @@ const ed = StyleSheet.create({
   // fields
   fieldStack: { gap: 26 },
   fieldLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 10,
     letterSpacing: 1.8,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.muted,
     marginBottom: 10,
   },
@@ -2157,9 +2413,9 @@ const ed = StyleSheet.create({
     minHeight: 92,
     textAlignVertical: "top",
   },
-  textareaLine: { height: 1, width: "100%", backgroundColor: authTokens.hairlineStrong },
-  textareaLineFocused: { height: 1.5, backgroundColor: authTokens.accent },
-  textareaLineError: { height: 1.5, backgroundColor: authTokens.danger },
+  fieldLine: { height: 1, width: "100%", backgroundColor: authTokens.hairlineStrong },
+  fieldLineFocused: { height: 1.5, backgroundColor: authTokens.accent },
+  fieldLineError: { height: 1.5, backgroundColor: authTokens.danger },
 
   // option pills
   pillWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
@@ -2201,8 +2457,6 @@ const ed = StyleSheet.create({
   },
   dateValue: { fontFamily: fonts.sans, fontSize: 18, color: authTokens.ink },
   datePlaceholder: { color: authTokens.subtle },
-  dateLine: { height: 1, width: "100%", backgroundColor: authTokens.hairlineStrong },
-  dateLineError: { backgroundColor: authTokens.danger },
 
   // month/year picker
   pickerOverlay: {
@@ -2266,11 +2520,9 @@ const ed = StyleSheet.create({
   pickerMonthTextSelected: { color: authTokens.surface },
   pickerClear: { alignItems: "center", paddingVertical: 6 },
   pickerClearText: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 12,
     letterSpacing: 1.4,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.muted,
   },
 
@@ -2302,11 +2554,9 @@ const ed = StyleSheet.create({
     marginBottom: 12,
   },
   contextLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 10,
     letterSpacing: 1.8,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.muted,
     marginBottom: 8,
   },
@@ -2321,11 +2571,9 @@ const ed = StyleSheet.create({
     gap: 6,
   },
   linkCardLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 10,
     letterSpacing: 1.8,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.muted,
   },
   linkUrl: { fontFamily: fonts.mono, fontSize: 14, letterSpacing: 0.2, color: authTokens.subtle },
@@ -2344,11 +2592,9 @@ const ed = StyleSheet.create({
   itemText: { flex: 1, fontFamily: fonts.sans, fontSize: 15, color: authTokens.ink },
   addRow: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 16, marginTop: 4 },
   addLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 12,
     letterSpacing: 1.4,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.ink,
   },
   // full-screen item editor modal
@@ -2424,11 +2670,9 @@ const ed = StyleSheet.create({
   },
   reviewHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 },
   reviewLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 10,
     letterSpacing: 1.6,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.muted,
   },
   reviewSkipped: { fontFamily: fonts.sans, fontSize: 14, color: authTokens.subtle },
@@ -2458,11 +2702,9 @@ const ed = StyleSheet.create({
     marginTop: 4,
   },
   addSectionLabel: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 12,
     letterSpacing: 1.2,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.ink,
   },
 
@@ -2573,11 +2815,9 @@ const ed = StyleSheet.create({
   },
   missingHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
   missingTitle: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 10,
     letterSpacing: 1.6,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.warn,
   },
   missingRow: {
@@ -2591,11 +2831,9 @@ const ed = StyleSheet.create({
   },
   missingLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 14, color: authTokens.ink },
   missingFix: {
-    fontFamily: fonts.sans,
+    ...eyebrow,
     fontSize: 11,
     letterSpacing: 1.2,
-    fontWeight: "600",
-    textTransform: "uppercase",
     color: authTokens.accent,
   },
 
@@ -2660,34 +2898,24 @@ const ed = StyleSheet.create({
     color: authTokens.subtle,
     marginTop: 2,
   },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: "rgba(10,10,10,0.55)",
-    justifyContent: "flex-end",
+  modalScroll: { gap: 16, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 24 },
+  modalFooter: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 16,
+    borderTopWidth: 1,
+    borderTopColor: authTokens.hairline,
   },
-  modalSheet: {
-    backgroundColor: authTokens.bg,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 22,
-    paddingBottom: 32,
-    gap: 16,
-    maxHeight: "88%",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  modalTitle: { fontFamily: fonts.serif, fontSize: 22, color: authTokens.ink },
-  modalScroll: { gap: 16, alignItems: "center" },
   modalPreview: {
     width: "100%",
-    height: 320,
+    aspectRatio: 1 / Math.SQRT2, // A4 portrait (√2 ratio) — height scales with card width
     borderRadius: 14,
     backgroundColor: authTokens.surface,
+    overflow: "hidden",
   },
   modalPreviewEmpty: { borderWidth: 1, borderColor: authTokens.hairline },
+  modalPreviewCenter: { alignItems: "center", justifyContent: "center" },
+  modalPreviewHint: { fontFamily: fonts.sans, fontSize: 13, color: authTokens.muted },
   modalDesc: {
     fontFamily: fonts.sans,
     fontSize: 14,

@@ -38,7 +38,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@patch-careers/tokens": "workspace:*"
+    "@patch-careers/tokens": "workspace:*",
+    "libphonenumber-js": "^1.13.5"
   },
   "peerDependencies": {
     "@tamagui/animations-react-native": "1.144.4",

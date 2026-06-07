@@ -26,6 +26,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { type ReactElement, useEffect } from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NetInfoBanner } from "../components/NetInfoBanner";
 import { AppTamaguiProvider } from "../providers/AppTamaguiProvider";
@@ -57,28 +58,34 @@ export default function RootLayout(): ReactElement {
 
   return (
     <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <AppTamaguiProvider>
-          <PortalProvider shouldAddRootHost>
-            <ToastProvider>
-              <I18nProvider>
-                <AuthProvider>
-                  <StatusBar style="auto" />
-                  <NetInfoBanner />
-                  <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                    <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                    <Stack.Screen name="reset-password" options={{ headerShown: false }} />
-                    <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
-                    <Stack.Screen name="legal-webview" options={{ headerShown: true, title: "" }} />
-                  </Stack>
-                </AuthProvider>
-              </I18nProvider>
-            </ToastProvider>
-          </PortalProvider>
-        </AppTamaguiProvider>
-      </QueryClientProvider>
+      <KeyboardProvider>
+        <QueryClientProvider client={queryClient}>
+          <AppTamaguiProvider>
+            <PortalProvider shouldAddRootHost>
+              <ToastProvider>
+                <I18nProvider>
+                  <AuthProvider>
+                    <StatusBar style="auto" />
+                    <NetInfoBanner />
+                    <Stack screenOptions={{ headerShown: false }}>
+                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                      <Stack.Screen name="conversation/[id]" options={{ headerShown: false }} />
+                      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                      <Stack.Screen name="reset-password" options={{ headerShown: false }} />
+                      <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
+                      <Stack.Screen
+                        name="legal-webview"
+                        options={{ headerShown: true, title: "" }}
+                      />
+                    </Stack>
+                  </AuthProvider>
+                </I18nProvider>
+              </ToastProvider>
+            </PortalProvider>
+          </AppTamaguiProvider>
+        </QueryClientProvider>
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 }

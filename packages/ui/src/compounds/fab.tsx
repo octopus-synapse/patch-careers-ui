@@ -2,11 +2,12 @@
  * `<FAB>` — floating action button.
  *
  * Position-fixed bottom-right with `safeArea`-aware offset and a heavy
- * shadow elevation. Auto-pulses a light haptic on press.
+ * shadow elevation. The press haptic is inherited from `<Button>` (which
+ * fires a light impact on every press) — the FAB does NOT re-wrap it, so
+ * the haptic fires exactly once.
  */
 
 import type { ReactNode } from "react";
-import { hapticImpact } from "../internal/haptics";
 import { Button, type ButtonProps } from "../primitives/button";
 
 export type FABProps = Omit<ButtonProps, "size" | "variant"> & {
@@ -14,7 +15,7 @@ export type FABProps = Omit<ButtonProps, "size" | "variant"> & {
   children: ReactNode;
 };
 
-export function FAB({ accessibilityLabel, onPress, children, ...rest }: FABProps) {
+export function FAB({ accessibilityLabel, children, ...rest }: FABProps) {
   return (
     <Button
       position="absolute"
@@ -31,14 +32,10 @@ export function FAB({ accessibilityLabel, onPress, children, ...rest }: FABProps
       shadowOpacity={0.2}
       shadowRadius={8}
       shadowOffset={{ width: 0, height: 4 }}
-      elevation={6}
       intent="accent"
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      onPress={(event: unknown) => {
-        hapticImpact("light");
-        (onPress as ((e: unknown) => void) | undefined)?.(event);
-      }}
+      elevation={6}
       {...rest}
     >
       {children}

@@ -4,7 +4,7 @@
  * Simpler than `Tabs` (no content panes), good for filter rows.
  */
 
-import { intent as intentTokens } from "@patch-careers/tokens";
+import { intent as intentTokens, radius } from "@patch-careers/tokens";
 import { TXStack } from "../internal/tamagui-shim";
 import { useThemeName } from "../internal/use-theme-name";
 import { Pill } from "../primitives/pill";
@@ -29,7 +29,7 @@ export function SegmentedControl<T extends string = string>({
   return (
     <TXStack
       backgroundColor={tokens.subtleBg}
-      borderRadius={9999}
+      borderRadius={radius.full}
       padding={2}
       gap={2}
       accessibilityRole="radiogroup"

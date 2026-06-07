@@ -6,12 +6,15 @@
  * `(11) 97883-3101`) while the component emits the canonical
  * `+<dial><national>` string the backend stores.
  *
+ * The country sheet is rendered through the shared `<ListPicker>` so the
+ * sheet/search/row scaffolding lives in one place.
+ *
  * Router/data-agnostic — pure presentational compound. Phone formatting lives
  * in `internal/phone-mask`.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, ScrollView } from "react-native";
+import { Pressable } from "react-native";
 import {
   DEFAULT_PHONE_COUNTRY,
   findCountryByIso,
@@ -27,7 +30,7 @@ import { Label } from "../primitives/label";
 import { Pill } from "../primitives/pill";
 import { XStack, YStack } from "../primitives/stack";
 import { Text } from "../primitives/text";
-import { Sheet } from "./sheet";
+import { ListPicker, type ListPickerOption } from "./list-picker";
 
 export interface PhoneInputProps {
   label: string;
@@ -58,7 +61,6 @@ export function PhoneInput({
   });
   const [national, setNational] = useState<string>(() => parseCanonicalPhone(value).national);
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
 
   // Track what we last emitted so an external value change (e.g. a draft
   // loading asynchronously) re-syncs us, but our own emits don't.
@@ -93,21 +95,31 @@ export function PhoneInput({
     emit(country, digits);
   };
 
-  const pickCountry = (c: PhoneCountry) => {
+  const pickCountry = (iso: string) => {
+    const c = findCountryByIso(iso);
+    if (!c) return;
     setCountry(c);
     setOpen(false);
-    setSearch("");
     emit(c, national);
     onCountryChange?.(c.iso);
   };
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return PHONE_COUNTRIES;
-    return PHONE_COUNTRIES.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.dialCode.includes(q),
-    );
-  }, [search]);
+  const countryOptions = useMemo<ListPickerOption[]>(
+    () =>
+      PHONE_COUNTRIES.map((c) => ({
+        id: c.iso,
+        label: c.name,
+        icon: <Text>{c.flag}</Text>,
+        trailing: (
+          <Pill intent="neutral" selected={c.iso === country.iso}>
+            +{c.dialCode}
+          </Pill>
+        ),
+        // Allow matching by name, ISO code, or dial code (e.g. "br" / "55").
+        searchText: `${c.name} ${c.iso} ${c.dialCode}`,
+      })),
+    [country.iso],
+  );
 
   const hasError = Boolean(error);
 
@@ -144,33 +156,16 @@ export function PhoneInput({
         </Text>
       ) : null}
 
-      <Sheet open={open} onOpenChange={setOpen} snapPoints={[70]}>
-        <YStack gap={8} flex={1}>
-          <Text preset="h3">Selecione o país</Text>
-          <Input value={search} onChangeText={setSearch} placeholder="Buscar país..." />
-          <ScrollView keyboardShouldPersistTaps="handled">
-            <YStack gap={2}>
-              {filtered.map((c) => (
-                <Pressable key={c.iso} onPress={() => pickCountry(c)} accessibilityRole="button">
-                  <XStack
-                    alignItems="center"
-                    gap={8}
-                    paddingVertical={10}
-                    paddingHorizontal={8}
-                    borderRadius={8}
-                  >
-                    <Text>{c.flag}</Text>
-                    <Text flex={1}>{c.name}</Text>
-                    <Pill intent="neutral" selected={c.iso === country.iso}>
-                      +{c.dialCode}
-                    </Pill>
-                  </XStack>
-                </Pressable>
-              ))}
-            </YStack>
-          </ScrollView>
-        </YStack>
-      </Sheet>
+      <ListPicker
+        open={open}
+        onOpenChange={setOpen}
+        options={countryOptions}
+        onPick={pickCountry}
+        title="Selecione o país"
+        searchable
+        searchPlaceholder="Buscar país..."
+        snapPoints={[70]}
+      />
     </YStack>
   );
 }

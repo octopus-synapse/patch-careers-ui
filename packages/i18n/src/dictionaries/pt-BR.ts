@@ -56,6 +56,7 @@ export const ptBR: TranslationDict = {
     verifyResend: "Reenviar código",
     verifyResendIn: "Reenviar em {seconds}s",
     verifySuccess: "E-mail verificado!",
+    verifyInvalidToken: "Código inválido ou expirado. Solicite um novo.",
     twoFaTitle: "Verificação em duas etapas",
     twoFaIntro: "Digite o código do seu app autenticador.",
     twoFaUseBackup: "Usar código de backup",
@@ -98,6 +99,19 @@ export const ptBR: TranslationDict = {
     completeFailed: "Não foi possível concluir o onboarding.",
     saveFailed: "Falha de conexão. Toque para tentar de novo.",
     missingRequired: "Complete as etapas obrigatórias antes de concluir.",
+    fixBeforeComplete: "Revise os campos destacados antes de concluir.",
+    field: {
+      required: "obrigatório",
+      optional: "opcional",
+    },
+    location: {
+      title: "Selecione a localização",
+      placeholder: "Selecione a localização",
+      searchPlaceholder: "Buscar cidade, estado ou país…",
+      hintMinChars: "Digite ao menos 2 letras para buscar.",
+      hintSearching: "Buscando…",
+      hintEmpty: "Nenhum resultado para “{q}”.",
+    },
     language: {
       prompt: "Qual idioma você prefere?",
     },
@@ -108,8 +122,8 @@ export const ptBR: TranslationDict = {
       error: "Não foi possível verificar — toque para tentar",
     },
     progress: {
-      step: "ETAPA {n} / {total}",
       timeRemaining: "~{min} min restantes",
+      timeRemainingOne: "~{min} min restante",
     },
     welcome: {
       tagline:

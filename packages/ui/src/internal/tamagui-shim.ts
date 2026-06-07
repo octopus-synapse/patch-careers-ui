@@ -29,7 +29,16 @@ import {
   ZStack as TamaguiZStack,
 } from "tamagui";
 
-type LooseProps = Record<string, unknown> & { children?: ReactNode };
+export type LooseProps = Record<string, unknown> & { children?: ReactNode };
+
+/**
+ * The single sanctioned `as unknown as ...` typing escape — casts a Tamagui
+ * (or RN) component to a relaxed prop surface. Consumers import this instead
+ * of re-deriving the cast inline.
+ */
+export function asLoose<T>(component: unknown): T {
+  return component as T;
+}
 
 export const TButton = TamaguiButton as unknown as ComponentType<LooseProps>;
 export const TCard = TamaguiCard as unknown as ComponentType<LooseProps>;

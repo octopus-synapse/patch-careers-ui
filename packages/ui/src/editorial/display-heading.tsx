@@ -4,9 +4,10 @@
  */
 
 import type { ReactElement, ReactNode } from "react";
-import Animated, { Easing, FadeIn, FadeInDown } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { TText, TYStack } from "../internal/tamagui-shim";
 import { editorialFonts } from "./fonts";
+import { editorialFadeInDown } from "./motion";
 import { Wordmark } from "./wordmark";
 
 export function DisplayHeading({
@@ -19,7 +20,7 @@ export function DisplayHeading({
   suffix?: string;
 }): ReactElement {
   return (
-    <Animated.View entering={FadeInDown.delay(100).duration(600).easing(Easing.out(Easing.cubic))}>
+    <Animated.View entering={editorialFadeInDown(100, 600)}>
       <TText
         fontFamily={editorialFonts.serif}
         fontSize={38}
@@ -38,7 +39,7 @@ export function DisplayHeading({
 
 export function SubtitleLine({ children }: { children: ReactNode }): ReactElement {
   return (
-    <Animated.View entering={FadeInDown.delay(200).duration(600).easing(Easing.out(Easing.cubic))}>
+    <Animated.View entering={editorialFadeInDown(200, 600)}>
       <TText
         fontFamily={editorialFonts.sans}
         fontSize={15}

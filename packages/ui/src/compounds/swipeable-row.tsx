@@ -7,9 +7,9 @@
  * a future iteration (TODO).
  */
 
-import { type ReactNode, useRef } from "react";
+import { type ComponentType, type ReactNode, useRef } from "react";
 import { Animated, PanResponder } from "react-native";
-import { TStack, TXStack } from "../internal/tamagui-shim";
+import { asLoose, TStack, TXStack } from "../internal/tamagui-shim";
 
 export type SwipeableRowProps = {
   children: ReactNode;
@@ -50,11 +50,13 @@ export function SwipeableRow({
 
   // Animated.View doesn't expose JSX intrinsic typings cleanly under our
   // strict TS config — cast through a typed ComponentType.
-  const AnimView = Animated.View as unknown as React.ComponentType<{
-    style: unknown;
-    children?: ReactNode;
-    [key: string]: unknown;
-  }>;
+  const AnimView = asLoose<
+    ComponentType<{
+      style: unknown;
+      children?: ReactNode;
+      [key: string]: unknown;
+    }>
+  >(Animated.View);
 
   return (
     <TStack position="relative">

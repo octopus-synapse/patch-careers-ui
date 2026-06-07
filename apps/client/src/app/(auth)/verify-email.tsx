@@ -1,41 +1,37 @@
 /**
- * Verify email screen (D101): OTPInput 6 dígitos com auto-submit, iOS
- * Auto-Fill via `textContentType="oneTimeCode"`, botão Reenviar com
- * cooldown.
+ * Verify-email screen (D101) — "Editorial Calm" DS. 6-digit OTP with
+ * auto-submit + iOS Auto-Fill, resend with cooldown.
  *
  * Two paths into success:
- *   1. User types the 6-digit code → POST /v1/auth/verify with the code
- *      as `token` → toast + navigate to the post-auth home.
- *   2. User taps the email link → universal link `/verify-email?token=...`
- *      → useEffect detects the token param, auto-calls verify.
- *
- * D102: after success → /(onboarding) when the hydrated user still needs
- * onboarding; otherwise into the tabbed shell.
+ *   1. User types the 6-digit code → POST /v1/auth/verify → success toast
+ *      → `finishAuthentication()` (bootstrap + route to post-auth home).
+ *   2. User taps the email link → `/verify-email?token=...` → the effect
+ *      detects the token param and auto-submits.
  */
 
 import { postV1AuthEmailVerificationSend, verify as verifyApi } from "@patch-careers/api-client";
-import { bootstrap, cooldownSecondsRemaining, maskEmail } from "@patch-careers/auth";
-import { palette } from "@patch-careers/tokens";
-import { OTPInput, Text, useToast, XStack, YStack } from "@patch-careers/ui";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { cooldownSecondsRemaining, maskEmail } from "@patch-careers/auth";
+import { OTPInput, Text } from "@patch-careers/ui";
+import { AuthShell, CaptionButton, IntroBlock } from "@patch-careers/ui/editorial";
+import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { AuthScreenLayout } from "../../components/AuthScreenLayout";
-import { getCurrentAuthenticatedRoute } from "../../navigation/authRedirect";
-import { useTranslator } from "../../providers/I18nProvider";
+import { View } from "react-native";
+import { BackToSignInLink } from "../../components/auth/BackToSignInLink";
+import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "../../components/auth/hooks/useCompleteAuth";
+import { useSubmit } from "../../components/auth/hooks/useSubmit";
 
 const RESEND_COOLDOWN_S = 60;
 
 export default function VerifyEmailScreen(): ReactElement {
-  const t = useTranslator();
-  const router = useRouter();
-  const toast = useToast();
+  const { t, toast } = useAuthScreen();
+  const { finishAuthentication } = useCompleteAuth();
+  const { run } = useSubmit();
   const params = useLocalSearchParams<{ email?: string; token?: string }>();
 
   const email = params.email ?? "";
   const [code, setCode] = useState("");
   const [testCode, setTestCode] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [lastResendAt, setLastResendAt] = useState<number | null>(null);
   const [now, setNow] = useState(Date.now());
   const autoSubmitTokenRef = useRef(false);
@@ -44,9 +40,7 @@ export default function VerifyEmailScreen(): ReactElement {
   const remaining = cooldownSecondsRemaining(lastResendAt, RESEND_COOLDOWN_S, now);
   const canResend = remaining === 0;
 
-  // Tick the cooldown so the UI reflects elapsed time without manual
-  // refresh. We only tick while the cooldown is active to avoid a
-  // perpetual setInterval.
+  // Tick the cooldown only while active (avoid a perpetual interval).
   useEffect(() => {
     if (canResend) return;
     const handle = setInterval(() => setNow(Date.now()), 1000);
@@ -55,19 +49,17 @@ export default function VerifyEmailScreen(): ReactElement {
 
   const submitToken = useCallback(
     async (token: string) => {
-      setSubmitting(true);
-      try {
-        await verifyApi({ token });
-        await bootstrap().catch(() => undefined);
-        toast.show({ title: t("auth.verifySuccess"), intent: "success" });
-        router.replace(getCurrentAuthenticatedRoute());
-      } catch {
-        toast.show({ title: t("auth.resetInvalidToken"), intent: "danger" });
-      } finally {
-        setSubmitting(false);
-      }
+      await run(async () => {
+        try {
+          await verifyApi({ token });
+          toast.show({ title: t("auth.verifySuccess"), intent: "success" });
+          await finishAuthentication();
+        } catch {
+          toast.show({ title: t("auth.verifyInvalidToken"), intent: "danger" });
+        }
+      });
     },
-    [router, t, toast],
+    [run, finishAuthentication, t, toast],
   );
 
   // Auto-submit when the deep-link path provides a token directly.
@@ -92,65 +84,41 @@ export default function VerifyEmailScreen(): ReactElement {
     }
   }, [canResend]);
 
-  // Landing here after sign-up should trigger the first verification email.
-  // In dev, the backend may also return the test code to display on-screen.
+  // Landing here after sign-up triggers the first verification email.
   useEffect(() => {
     if (autoSendCodeRef.current || params.token) return;
     autoSendCodeRef.current = true;
     void requestVerificationCode();
   }, [params.token, requestVerificationCode]);
 
-  async function handleResend() {
-    await requestVerificationCode();
-  }
-
-  function handleComplete(value: string) {
-    void submitToken(value);
-  }
-
   return (
-    <AuthScreenLayout
-      title={t("auth.verifyTitle")}
-      subtitle={t("auth.verifyIntro", { email: email ? maskEmail(email) : "" })}
-    >
-      <YStack gap={16} alignItems="center">
-        <OTPInput value={code} onChangeText={setCode} onComplete={handleComplete} autoFocus />
-        <Pressable
-          onPress={handleResend}
-          accessibilityRole="button"
-          accessibilityState={{ disabled: !canResend }}
+    <AuthShell>
+      <IntroBlock
+        emphasis={t("auth.verifyTitle")}
+        subtitle={t("auth.verifyIntro", { email: email ? maskEmail(email) : "" })}
+      />
+      <View style={{ gap: 20, alignItems: "center" }}>
+        <OTPInput
+          value={code}
+          onChangeText={setCode}
+          onComplete={(v) => void submitToken(v)}
+          autoFocus
+        />
+        <CaptionButton
+          label={
+            canResend ? t("auth.verifyResend") : t("auth.verifyResendIn", { seconds: remaining })
+          }
+          onPress={() => void requestVerificationCode()}
           disabled={!canResend}
-          style={styles.resendButton}
           testID="verify.resend"
-        >
-          <Text preset="caption" color={canResend ? palette.blue[600] : palette.gray[500]}>
-            {canResend ? t("auth.verifyResend") : t("auth.verifyResendIn", { seconds: remaining })}
-          </Text>
-        </Pressable>
-        {submitting ? (
-          <Text preset="caption" color="$gray10">
-            {t("common.loading")}
-          </Text>
-        ) : null}
+        />
         {testCode ? (
           <Text preset="caption" color="$gray10" testID="verify.testCode">
-            Codigo enviado (teste): {testCode}
+            {`Codigo enviado (teste): ${testCode}`}
           </Text>
         ) : null}
-        <XStack justifyContent="center" gap={4} marginTop={8}>
-          <Link href="/(auth)/sign-in" accessibilityRole="link" testID="verify.backToSignIn">
-            <Text preset="caption" color={palette.blue[600]}>
-              {t("common.back")}
-            </Text>
-          </Link>
-        </XStack>
-      </YStack>
-    </AuthScreenLayout>
+        <BackToSignInLink testID="verify.backToSignIn" />
+      </View>
+    </AuthShell>
   );
 }
-
-const styles = StyleSheet.create({
-  resendButton: {
-    padding: 8,
-  },
-});

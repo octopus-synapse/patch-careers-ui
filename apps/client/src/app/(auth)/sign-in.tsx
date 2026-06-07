@@ -16,20 +16,17 @@
 
 import { type LoginResult, login } from "@patch-careers/auth";
 import {
-  AnimatedField,
   AuthShell,
-  FieldError,
   FooterPrompt,
   InlineLink,
   IntroBlock,
   OAuthButton,
   OrDivider,
-  PasswordInput,
   PrimaryAction,
-  UnderlineInput,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useRef, useState } from "react";
 import { type TextInput, View } from "react-native";
+import { AuthEmailField, AuthPasswordField } from "../../components/auth/fields";
 import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
 import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
 import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
@@ -90,54 +87,36 @@ export default function SignInScreen(): ReactElement {
       <IntroBlock prefix="Welcome " emphasis="back." subtitle="Sign in to continue your search." />
 
       <View style={{ gap: 24 }}>
-        <AnimatedField delay={300}>
-          <UnderlineInput
-            label={t("auth.email")}
-            placeholder={t("auth.emailPlaceholder")}
-            value={email}
-            onChangeText={(next) => {
-              setEmail(next);
-              clearError("email");
-            }}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            textContentType="emailAddress"
-            autoCorrect={false}
-            returnKeyType="next"
-            onSubmitEditing={() => passwordRef.current?.focus()}
-            blurOnSubmit={false}
-            hasError={!!fieldErrors.email}
-            testID="auth.email"
-          />
-          {fieldErrors.email ? <FieldError text={fieldErrors.email} /> : null}
-        </AnimatedField>
+        <AuthEmailField
+          value={email}
+          onChangeText={(next) => {
+            setEmail(next);
+            clearError("email");
+          }}
+          error={fieldErrors.email}
+          testID="auth.email"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+        />
 
-        <AnimatedField delay={380}>
-          <PasswordInput
-            ref={passwordRef}
-            label={t("auth.password")}
-            placeholder={t("auth.passwordPlaceholder")}
-            value={password}
-            onChangeText={(next) => {
-              setPassword(next);
-              clearError("password");
-            }}
-            returnKeyType="go"
-            onSubmitEditing={() => void handleSubmit()}
-            showLabel={t("auth.showPassword")}
-            hideLabel={t("auth.hidePassword")}
-            hasError={!!fieldErrors.password}
-            testID="auth.password"
-          />
-          {fieldErrors.password ? <FieldError text={fieldErrors.password} /> : null}
+        <AuthPasswordField
+          inputRef={passwordRef}
+          value={password}
+          onChangeText={(next) => {
+            setPassword(next);
+            clearError("password");
+          }}
+          error={fieldErrors.password}
+          testID="auth.password"
+          returnKeyType="go"
+          onSubmitEditing={() => void handleSubmit()}
+        >
           <InlineLink
             label={t("auth.forgotPassword")}
             onPress={() => router.push("/(auth)/forgot-password")}
             align="right"
             testID="auth.forgotLink"
           />
-        </AnimatedField>
+        </AuthPasswordField>
       </View>
 
       <View style={{ marginTop: 32 }}>

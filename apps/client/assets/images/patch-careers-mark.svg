@@ -1,0 +1,13 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Patch Careers">
+  <defs>
+    <clipPath id="pcMarkRounded">
+      <rect x="2" y="2" width="96" height="96" rx="22" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#pcMarkRounded)">
+    <!-- Blue piece (top) — bottom edge carries the jigsaw socket -->
+    <path fill="#2563EB" d="M0 0 H100 V48 H62 C70 40 66 18 50 18 C34 18 30 40 38 48 H0 Z" />
+    <!-- Ink piece (bottom) — top edge carries the matching jigsaw tab -->
+    <path fill="#0F172A" d="M0 52 H38 C30 44 34 22 50 22 C66 22 70 44 62 52 H100 V100 H0 Z" />
+  </g>
+</svg>

@@ -2,13 +2,13 @@
  * InlineLink — right-aligned subtle link (e.g. "Forgot password?").
  *
  * Router-agnostic: the app wires navigation via `onPress` (the package never
- * imports expo-router).
+ * imports expo-router). Wraps `EditorialTextLink` (the inline recipe) in a
+ * block stack for alignment.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import type { ReactElement } from "react";
-import { TText, TYStack } from "../internal/tamagui-shim";
-import { editorialFonts } from "./fonts";
+import { TYStack } from "../internal/tamagui-shim";
+import { EditorialTextLink } from "./editorial-text-link";
 
 export type InlineLinkProps = {
   label: string;
@@ -25,19 +25,12 @@ export function InlineLink({
 }: InlineLinkProps): ReactElement {
   return (
     <TYStack marginTop={12} alignItems={align === "right" ? "flex-end" : "flex-start"}>
-      <TText
+      <EditorialTextLink
+        label={label}
         onPress={onPress}
-        accessibilityRole="link"
-        fontFamily={editorialFonts.sans}
         fontSize={13}
-        color="$accentBlue"
-        fontWeight="500"
-        textDecorationLine="underline"
-        textDecorationColor={editorialPalette.accent}
         {...(testID ? { testID } : {})}
-      >
-        {label}
-      </TText>
+      />
     </TYStack>
   );
 }

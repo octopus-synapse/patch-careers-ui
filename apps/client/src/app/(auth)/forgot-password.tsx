@@ -1,26 +1,26 @@
 /**
- * Forgot-password screen (D99): single email input + submit, success
- * state shows a generic banner regardless of whether the email exists
- * (avoids account enumeration — backend already returns the same
- * response in both cases).
+ * Forgot-password screen (D99) — "Editorial Calm" DS.
+ *
+ * Single email input + submit; on success shows a generic banner
+ * regardless of whether the email exists (avoids account enumeration —
+ * the backend already returns the same response either way).
  */
 
 import { postV1AuthForgotPassword } from "@patch-careers/api-client";
 import { isValidEmail } from "@patch-careers/auth";
-import { palette } from "@patch-careers/tokens";
-import { Button, FormField, Text, YStack } from "@patch-careers/ui";
-import { Link, useRouter } from "expo-router";
+import { AuthShell, Banner, IntroBlock, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { AuthScreenLayout } from "../../components/AuthScreenLayout";
-import { useTranslator } from "../../providers/I18nProvider";
+import { View } from "react-native";
+import { BackToSignInLink } from "../../components/auth/BackToSignInLink";
+import { AuthEmailField } from "../../components/auth/fields";
+import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
+import { useSubmit } from "../../components/auth/hooks/useSubmit";
 
 export default function ForgotPasswordScreen(): ReactElement {
-  const t = useTranslator();
-  const router = useRouter();
+  const { t, router } = useAuthScreen();
+  const { submitting, run } = useSubmit();
 
   const [email, setEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [emailError, setEmailError] = useState<string | undefined>(undefined);
 
@@ -30,91 +30,58 @@ export default function ForgotPasswordScreen(): ReactElement {
       return;
     }
     setEmailError(undefined);
-    setSubmitting(true);
-    try {
-      await postV1AuthForgotPassword({ email: email.trim() });
-    } catch {
-      // Per-spec we treat any backend response the same way to avoid
-      // leaking whether the email exists — including network errors,
-      // which the user can retry from the success screen.
-    }
-    setSent(true);
-    setSubmitting(false);
+    await run(async () => {
+      try {
+        await postV1AuthForgotPassword({ email: email.trim() });
+      } catch {
+        // Per-spec we treat any backend response (incl. network errors)
+        // the same way to avoid leaking whether the email exists.
+      }
+      setSent(true);
+    });
   }
 
   return (
-    <AuthScreenLayout
-      title={t("auth.forgotTitle")}
-      subtitle={sent ? undefined : t("auth.forgotIntro")}
-    >
+    <AuthShell>
+      <IntroBlock
+        emphasis={t("auth.forgotTitle")}
+        subtitle={sent ? t("auth.forgotSuccess") : t("auth.forgotIntro")}
+      />
+
       {sent ? (
-        <YStack gap={16}>
-          <View style={styles.successBanner}>
-            <Text preset="body" color={palette.green[700]}>
-              {t("auth.forgotSuccess")}
-            </Text>
-          </View>
-          <Button
-            intent="accent"
-            size="lg"
+        <View style={{ gap: 24 }}>
+          <Banner intent="success" testID="forgot.success">
+            {t("auth.forgotSuccess")}
+          </Banner>
+          <PrimaryAction
+            label={t("auth.signIn")}
             onPress={() => router.replace("/(auth)/sign-in")}
             testID="forgot.backToSignIn"
-          >
-            {t("auth.signIn")}
-          </Button>
-        </YStack>
+          />
+        </View>
       ) : (
-        <YStack gap={12}>
-          <FormField
-            label={t("auth.email")}
-            placeholder={t("auth.emailPlaceholder")}
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            textContentType="username"
+        <View style={{ gap: 24 }}>
+          <AuthEmailField
             value={email}
-            onChangeText={(next: string) => {
+            onChangeText={(next) => {
               setEmail(next);
               if (emailError) setEmailError(undefined);
             }}
-            {...(emailError ? { error: emailError } : {})}
+            error={emailError}
             testID="forgot.email"
+            onSubmitEditing={handleSubmit}
           />
-          <Button
-            intent="accent"
-            size="lg"
-            loading={submitting}
-            onPress={handleSubmit}
-            testID="forgot.submit"
-          >
-            {t("common.submit")}
-          </Button>
-          <Link
-            href="/(auth)/sign-in"
-            accessibilityRole="link"
-            style={styles.backLink}
-            testID="forgot.backLink"
-          >
-            <Text preset="caption" color={palette.blue[600]}>
-              {t("common.back")}
-            </Text>
-          </Link>
-        </YStack>
+          <View style={{ marginTop: 8 }}>
+            <PrimaryAction
+              label={t("common.submit")}
+              loading={submitting}
+              onPress={handleSubmit}
+              testID="forgot.submit"
+            />
+          </View>
+          <BackToSignInLink testID="forgot.backLink" />
+        </View>
       )}
-    </AuthScreenLayout>
+    </AuthShell>
   );
 }
-
-const styles = StyleSheet.create({
-  successBanner: {
-    backgroundColor: palette.green[50],
-    borderColor: palette.green[200],
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 16,
-  },
-  backLink: {
-    alignSelf: "center",
-    marginTop: 8,
-  },
-});

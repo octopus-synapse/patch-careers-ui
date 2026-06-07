@@ -9,6 +9,39 @@ by reading the files.
 
 ---
 
+## ✅ Resolution status (2026-06-03)
+
+**34 of 35 fully resolved · 1 partial (U7).** Every change is unstaged for review;
+each was verified per-package with `typecheck + test + lint` (packages are source-consumed,
+so `typecheck` = the compile/build check) and the client suite. New shared helpers got
+Vitest tests.
+
+What landed, by cluster:
+- **New shared homes:** `@patch-careers/platform` (`singleFlight`, `isReactNativeRuntime`);
+  `apps/client/src/components/auth/{hooks,helpers}` (`useSubmit`, `useCompleteAuth`,
+  `useAuthScreen`, `useOAuthSignIn`, `useAuthFields`, `handleAuthApiError`, `failToSignIn`,
+  `fields.tsx`, `BackToSignInLink`); `packages/state` `createPersistedStore`; editorial
+  `Banner`, `CaptionButton`, `EditorialTextLink`, `editorialFadeInDown`, `motion.ts`;
+  auth `token-pair.ts` + `makeBearerAuthHeader` + `authJsonHeaders`; ui internal
+  `passwordSignals`/`passwordScore`, `readThemeValue`, `withHaptic`, exported `LooseProps`/`asLoose`;
+  onboarding `FieldShell`, `AddRow`, `OverlayModal`, `makeFlag`, `readFresh`, `USERNAME_STATE_META`,
+  base `eyebrow` style.
+- **Auth DS converged:** all 5 legacy screens (forgot-password, verify-email, 2fa-verify,
+  reset-password, oauth-callback) migrated to `AuthShell`/editorial; `AuthScreenLayout`
+  (now dead) deleted.
+- **Bugs fixed (per decision, kept logically separate):** FAB double-haptic (U3);
+  verify-email now uses a dedicated `auth.verifyInvalidToken` key instead of borrowing
+  `auth.resetInvalidToken` (A7). The `createPersistedStore` factory also removed a latent
+  migrate-clobbers-actions footgun (P1).
+
+**Partial — U7 (Low):** the "full radius spelled 4 ways" fix landed (`9999`/`999` → `radius.full`
+in segmented-control / oauth-button / primary-action; FAB's `28` left as-is — it's a fixed-size
+circle, not a pill). **Deferred:** routing hairlines through `<Divider>` and aliasing the
+hardcoded `$gray*`/`$red*` tokens — these span ~12 DS components, are design-touchy (risk of
+visual regressions), and are the lowest-value slice. Tracked here rather than silently dropped.
+
+---
+
 ## Summary
 
 | #  | Severity | Cluster      | Violation |

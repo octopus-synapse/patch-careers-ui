@@ -1,12 +1,13 @@
 /**
  * `<ConfirmModal>` / `<DangerConfirmModal>` — confirmation dialogs.
  *
- * The danger variant flips the primary action to the `danger` intent
- * and fires a heavy haptic on press, matching the iOS HIG guideline
- * for destructive actions.
+ * Both render the same shell + footer (cancel + confirm); the danger
+ * variant flips the confirm to the `danger` intent, swaps the default
+ * label, and fires a heavy haptic on press (iOS HIG for destructive
+ * actions). They share one `ConfirmModalBase`.
  */
 
-import { hapticImpact } from "../internal/haptics";
+import { withHaptic } from "../internal/haptics";
 import { TXStack } from "../internal/tamagui-shim";
 import { Button } from "../primitives/button";
 import { Modal } from "./modal";
@@ -32,14 +33,15 @@ function buildModalProps(props: ConfirmModalProps) {
   return props.description === undefined ? base : { ...base, description: props.description };
 }
 
-export function ConfirmModal(props: ConfirmModalProps) {
+function ConfirmModalBase({ danger, props }: { danger: boolean; props: ConfirmModalProps }) {
   const {
     onOpenChange,
-    confirmLabel = "Confirmar",
-    cancelLabel = "Cancelar",
     onConfirm,
     onCancel,
+    confirmLabel = danger ? "Excluir" : "Confirmar",
+    cancelLabel = "Cancelar",
   } = props;
+  const handleConfirm = danger ? withHaptic("heavy", onConfirm) : onConfirm;
   return (
     <Modal {...buildModalProps(props)}>
       <TXStack gap={8} justifyContent="flex-end" marginTop={12}>
@@ -53,7 +55,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
         >
           {cancelLabel}
         </Button>
-        <Button intent="accent" onPress={onConfirm}>
+        <Button intent={danger ? "danger" : "accent"} onPress={handleConfirm}>
           {confirmLabel}
         </Button>
       </TXStack>
@@ -61,30 +63,10 @@ export function ConfirmModal(props: ConfirmModalProps) {
   );
 }
 
+export function ConfirmModal(props: ConfirmModalProps) {
+  return <ConfirmModalBase danger={false} props={props} />;
+}
+
 export function DangerConfirmModal(props: ConfirmModalProps) {
-  return (
-    <Modal {...buildModalProps(props)}>
-      <TXStack gap={8} justifyContent="flex-end" marginTop={12}>
-        <Button
-          variant="outlined"
-          intent="neutral"
-          onPress={() => {
-            props.onCancel?.();
-            props.onOpenChange(false);
-          }}
-        >
-          {props.cancelLabel ?? "Cancelar"}
-        </Button>
-        <Button
-          intent="danger"
-          onPress={() => {
-            hapticImpact("heavy");
-            props.onConfirm();
-          }}
-        >
-          {props.confirmLabel ?? "Excluir"}
-        </Button>
-      </TXStack>
-    </Modal>
-  );
+  return <ConfirmModalBase danger props={props} />;
 }

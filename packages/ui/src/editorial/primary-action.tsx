@@ -5,19 +5,14 @@
  * — a bespoke micro-animation the Tamagui driver can't replicate identically.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
+import { editorialPalette, radius } from "@patch-careers/tokens";
 import { ArrowRight } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
-import Animated, {
-  Easing,
-  FadeInDown,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { TText } from "../internal/tamagui-shim";
 import { editorialFonts } from "./fonts";
+import { editorialFadeInDown } from "./motion";
 
 const PressableAnimated = Animated.createAnimatedComponent(Pressable);
 
@@ -48,7 +43,7 @@ export function PrimaryAction({
   }));
 
   return (
-    <Animated.View entering={FadeInDown.delay(450).duration(600).easing(Easing.out(Easing.cubic))}>
+    <Animated.View entering={editorialFadeInDown(450, 600)}>
       <PressableAnimated
         accessibilityRole="button"
         accessibilityLabel={label}
@@ -98,7 +93,7 @@ const primaryStyles = StyleSheet.create({
     backgroundColor: editorialPalette.primary,
     paddingVertical: 16,
     paddingHorizontal: 24,
-    borderRadius: 999,
+    borderRadius: radius.full,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

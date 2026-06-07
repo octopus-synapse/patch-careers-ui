@@ -1,29 +1,26 @@
 /**
- * OAuth callback (D106) — the deep link `patchcareers://auth/callback`
- * also resolves to this screen when the system delivers it via
- * `Linking.openURL` instead of the live subscription. We parse the
- * tokens out of the URL, persist them, and bootstrap.
- *
- * In the happy path the AuthProvider's `Linking.addEventListener`
- * already handled the URL — this screen is a fallback for cold-start
- * navigation and a place to show a spinner while completion finishes.
+ * OAuth callback (D106) — fallback for cold-start delivery of the deep
+ * link `patchcareers://auth/callback` (the happy path is handled live by
+ * AuthProvider's `Linking` subscription). Parses the tokens, persists
+ * them via `completeOAuth`, then bootstraps + routes. Shows a spinner
+ * while completion finishes.
  */
 
-import { bootstrap, completeOAuth } from "@patch-careers/auth";
+import { completeOAuth } from "@patch-careers/auth";
 import { secure } from "@patch-careers/storage";
-import { palette } from "@patch-careers/tokens";
-import { Text, useToast, YStack } from "@patch-careers/ui";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { editorialPalette } from "@patch-careers/tokens";
+import { Text } from "@patch-careers/ui";
+import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { resolveApiBaseURL } from "../config/api";
-import { getCurrentAuthenticatedRoute } from "../navigation/authRedirect";
-import { useTranslator } from "../providers/I18nProvider";
+import { failToSignIn } from "../components/auth/helpers/failToSignIn";
+import { useAuthScreen } from "../components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "../components/auth/hooks/useCompleteAuth";
+import { OAUTH_CALLBACK_URL, resolveApiBaseURL } from "../config/api";
 
 export default function OAuthCallbackScreen(): ReactElement {
-  const t = useTranslator();
-  const router = useRouter();
-  const toast = useToast();
+  const { t, router, toast } = useAuthScreen();
+  const { finishAuthentication } = useCompleteAuth();
   const params = useLocalSearchParams<{
     accessToken?: string;
     refreshToken?: string;
@@ -40,31 +37,35 @@ export default function OAuthCallbackScreen(): ReactElement {
       if (params.accessToken) usp.set("accessToken", params.accessToken);
       if (params.refreshToken) usp.set("refreshToken", params.refreshToken);
       if (params.expiresIn) usp.set("expiresIn", params.expiresIn);
-      const reconstructed = `patchcareers://auth/callback?${usp.toString()}`;
+      const reconstructed = `${OAUTH_CALLBACK_URL}?${usp.toString()}`;
       const pair = await completeOAuth(reconstructed, secure, apiBaseURL).catch(() => null);
       if (cancelled) return;
       if (pair) {
-        await bootstrap().catch(() => undefined);
-        router.replace(getCurrentAuthenticatedRoute());
+        await finishAuthentication();
       } else {
-        toast.show({ title: t("auth.oauthFailed"), intent: "danger" });
-        router.replace("/(auth)/sign-in");
+        failToSignIn({ toast, router, t, titleKey: "auth.oauthFailed" });
       }
     }
     void finish();
     return () => {
       cancelled = true;
     };
-  }, [params.accessToken, params.refreshToken, params.expiresIn, router, toast, t]);
+  }, [
+    params.accessToken,
+    params.refreshToken,
+    params.expiresIn,
+    finishAuthentication,
+    router,
+    toast,
+    t,
+  ]);
 
   return (
     <View style={styles.root}>
-      <YStack alignItems="center" gap={16}>
-        <ActivityIndicator size="large" color={palette.blue[600]} />
-        <Text preset="body" color="$gray10">
-          {t("auth.oauthFinishing")}
-        </Text>
-      </YStack>
+      <ActivityIndicator size="large" color={editorialPalette.ink} />
+      <Text preset="body" color="$gray10">
+        {t("auth.oauthFinishing")}
+      </Text>
     </View>
   );
 }
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: palette.gray[50],
+    gap: 16,
+    backgroundColor: editorialPalette.bg,
   },
 });

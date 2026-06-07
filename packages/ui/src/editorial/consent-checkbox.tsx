@@ -6,11 +6,13 @@
 
 import { Check } from "lucide-react-native";
 import type { ReactElement } from "react";
-import Animated, { Easing, FadeInDown } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Icon } from "../icons/icon";
 import { resolveConsentBoxColors } from "../internal/editorial-variants";
 import { TStack, TText, TXStack, TYStack } from "../internal/tamagui-shim";
+import { EditorialTextLink } from "./editorial-text-link";
 import { editorialFonts } from "./fonts";
+import { editorialFadeInDown } from "./motion";
 
 export type ConsentCheckboxProps = {
   checked: boolean;
@@ -39,7 +41,7 @@ export function ConsentCheckbox({
 }: ConsentCheckboxProps): ReactElement {
   const box = resolveConsentBoxColors(checked, !!error);
   return (
-    <Animated.View entering={FadeInDown.delay(350).duration(500).easing(Easing.out(Easing.cubic))}>
+    <Animated.View entering={editorialFadeInDown(350)}>
       <TXStack
         onPress={onToggle}
         accessibilityRole="checkbox"
@@ -64,27 +66,9 @@ export function ConsentCheckbox({
         </TStack>
         <TYStack flex={1}>
           <TText fontFamily={editorialFonts.sans} fontSize={13} color="$inkBody" lineHeight={20}>
-            {intro}{" "}
-            <TText
-              onPress={onTermsPress}
-              accessibilityRole="link"
-              color="$accentBlue"
-              fontWeight="500"
-              textDecorationLine="underline"
-            >
-              {termsLabel}
-            </TText>
+            {intro} <EditorialTextLink label={termsLabel} onPress={onTermsPress} />
             <TText>{` ${conjunction} `}</TText>
-            <TText
-              onPress={onPrivacyPress}
-              accessibilityRole="link"
-              color="$accentBlue"
-              fontWeight="500"
-              textDecorationLine="underline"
-            >
-              {privacyLabel}
-            </TText>
-            .
+            <EditorialTextLink label={privacyLabel} onPress={onPrivacyPress} />.
           </TText>
           {error ? (
             <TText

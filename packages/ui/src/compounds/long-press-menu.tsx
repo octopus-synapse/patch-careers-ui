@@ -8,7 +8,7 @@
 
 import { type ComponentType, type ReactNode, useState } from "react";
 import { hapticImpact } from "../internal/haptics";
-import { TPopover, TYStack } from "../internal/tamagui-shim";
+import { asLoose, TPopover, TYStack } from "../internal/tamagui-shim";
 
 type LooseTriggerProps = {
   asChild?: boolean;
@@ -18,7 +18,7 @@ type LooseTriggerProps = {
 };
 // Cast the compound's Trigger to expose RN-specific props (`delayLongPress`,
 // `onLongPress`) that Tamagui's StackProps doesn't surface.
-const PopoverTrigger = TPopover.Trigger as unknown as ComponentType<LooseTriggerProps>;
+const PopoverTrigger = asLoose<ComponentType<LooseTriggerProps>>(TPopover.Trigger);
 
 export type LongPressMenuItem = {
   key: string;

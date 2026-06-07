@@ -16,16 +16,14 @@ import {
 } from "@tamagui/toast";
 import { type ComponentType, type ReactNode, useEffect } from "react";
 import { type HapticImpact, hapticImpact } from "../internal/haptics";
-import { TStack } from "../internal/tamagui-shim";
+import { asLoose, type LooseProps, TStack } from "../internal/tamagui-shim";
 import type { Intent } from "../internal/types";
 import { useThemeName } from "../internal/use-theme-name";
 import { Text } from "../primitives/text";
 
-type LooseProps = Record<string, unknown> & { children?: ReactNode };
-
-const TToast = TamaguiToast as unknown as ComponentType<LooseProps>;
-const TToastProvider = TamaguiToastProvider as unknown as ComponentType<LooseProps>;
-const TToastViewport = TamaguiToastViewport as unknown as ComponentType<LooseProps>;
+const TToast = asLoose<ComponentType<LooseProps>>(TamaguiToast);
+const TToastProvider = asLoose<ComponentType<LooseProps>>(TamaguiToastProvider);
+const TToastViewport = asLoose<ComponentType<LooseProps>>(TamaguiToastViewport);
 
 const INTENT_TO_HAPTIC: Record<Intent, HapticImpact> = {
   neutral: "light",

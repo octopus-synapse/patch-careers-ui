@@ -16,6 +16,7 @@ import type { ReactElement } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { palette } from "@patch-careers/tokens";
 import { Redirect, Tabs } from "expo-router";
+import { AppHeader } from "../../components/AppHeader";
 import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "../../navigation/authRedirect";
 import { useAuthBootstrap, useAuthState } from "../../providers/AuthProvider";
 
@@ -38,7 +39,9 @@ export default function TabsLayout(): ReactElement | null {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        // Global top app bar: avatar (left) · brand (center) · messages (right).
+        headerShown: true,
+        header: () => <AppHeader />,
         tabBarActiveTintColor: palette.blue[600],
         tabBarInactiveTintColor: palette.gray[500],
       }}
@@ -69,6 +72,15 @@ export default function TabsLayout(): ReactElement | null {
         options={{
           title: "Applications",
           tabBarIcon: tabIcon("send-outline", "send"),
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: "Messages",
+          // Lives in the AppHeader (top-right) now, not the bottom bar —
+          // `href: null` keeps the route navigable while hiding the tab button.
+          href: null,
         }}
       />
       <Tabs.Screen

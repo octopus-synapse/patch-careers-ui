@@ -8,49 +8,76 @@ import type { KeyValueStorage } from "./interface";
  * falls back to an in-memory Map so unit tests do not need jsdom for
  * smoke checks. Tests that explicitly want browser semantics use jsdom.
  */
+type SyncStore = {
+  get(key: string): string | null;
+  set(key: string, value: string): void;
+  remove(key: string): void;
+  clear(): void;
+  keys(): string[];
+};
+
+/**
+ * Normalises the real `Storage` and the in-memory `Map` fallback to one
+ * uniform synchronous surface, so the public async methods don't each
+ * branch on `store instanceof Map`.
+ */
+function adapt(store: Storage | Map<string, string>): SyncStore {
+  if (store instanceof Map) {
+    return {
+      get: (key) => store.get(key) ?? null,
+      set: (key, value) => {
+        store.set(key, value);
+      },
+      remove: (key) => {
+        store.delete(key);
+      },
+      clear: () => {
+        store.clear();
+      },
+      keys: () => Array.from(store.keys()),
+    };
+  }
+  return {
+    get: (key) => store.getItem(key),
+    set: (key, value) => {
+      store.setItem(key, value);
+    },
+    remove: (key) => {
+      store.removeItem(key);
+    },
+    clear: () => {
+      store.clear();
+    },
+    keys: () => {
+      const out: string[] = [];
+      for (let i = 0; i < store.length; i++) {
+        const k = store.key(i);
+        if (k !== null) out.push(k);
+      }
+      return out;
+    },
+  };
+}
+
 export function createWebStorage(getBackend: () => Storage | undefined): KeyValueStorage {
   const memoryFallback = new Map<string, string>();
-  const backend = (): Storage | Map<string, string> => getBackend() ?? memoryFallback;
+  const store = (): SyncStore => adapt(getBackend() ?? memoryFallback);
 
   return {
     async getItem(key) {
-      const store = backend();
-      if (store instanceof Map) return store.get(key) ?? null;
-      return store.getItem(key);
+      return store().get(key);
     },
     async setItem(key, value) {
-      const store = backend();
-      if (store instanceof Map) {
-        store.set(key, value);
-        return;
-      }
-      store.setItem(key, value);
+      store().set(key, value);
     },
     async removeItem(key) {
-      const store = backend();
-      if (store instanceof Map) {
-        store.delete(key);
-        return;
-      }
-      store.removeItem(key);
+      store().remove(key);
     },
     async clear() {
-      const store = backend();
-      if (store instanceof Map) {
-        store.clear();
-        return;
-      }
-      store.clear();
+      store().clear();
     },
     async getAllKeys() {
-      const store = backend();
-      if (store instanceof Map) return Array.from(store.keys());
-      const keys: string[] = [];
-      for (let i = 0; i < store.length; i++) {
-        const k = store.key(i);
-        if (k !== null) keys.push(k);
-      }
-      return keys;
+      return store().keys();
     },
   };
 }

@@ -56,6 +56,7 @@ export const en: TranslationDict = {
     verifyResend: "Resend code",
     verifyResendIn: "Resend in {seconds}s",
     verifySuccess: "Email verified!",
+    verifyInvalidToken: "Invalid or expired code. Please request a new one.",
     twoFaTitle: "Two-factor verification",
     twoFaIntro: "Enter the code from your authenticator app.",
     twoFaUseBackup: "Use backup code",
@@ -98,6 +99,19 @@ export const en: TranslationDict = {
     completeFailed: "Could not complete onboarding.",
     saveFailed: "Connection failed. Tap to try again.",
     missingRequired: "Complete the required steps before finishing.",
+    fixBeforeComplete: "Review the highlighted fields before finishing.",
+    field: {
+      required: "required",
+      optional: "optional",
+    },
+    location: {
+      title: "Select your location",
+      placeholder: "Select your location",
+      searchPlaceholder: "Search city, state, or country…",
+      hintMinChars: "Type at least 2 letters to search.",
+      hintSearching: "Searching…",
+      hintEmpty: "No results for “{q}”.",
+    },
     language: {
       prompt: "Which language do you prefer?",
     },
@@ -108,8 +122,8 @@ export const en: TranslationDict = {
       error: "Couldn't check — tap to retry",
     },
     progress: {
-      step: "STEP {n} / {total}",
       timeRemaining: "~{min} min left",
+      timeRemainingOne: "~{min} min left",
     },
     welcome: {
       tagline: "Build a recruiter-ready resume, optimized to pass ATS screens.",
