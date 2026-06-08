@@ -2,7 +2,7 @@
  * AppHeader — the global top app bar for the authed tab stack.
  *
  * Three anchors, mobile-first: the user's rounded avatar on the left
- * (→ Profile), the global search bar centered, and the Messages
+ * (→ the account menu), the global search bar centered, and the Messages
  * quick-action on the right (→ the inbox) carrying the live unread badge.
  *
  * Rendered as the react-navigation `header` for every tab so it stays put
@@ -17,11 +17,12 @@ import { useGetV1ChatUnread, useGetV1UsersProfile } from "@patch-careers/api-cli
 import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Text, XStack } from "@patch-careers/ui";
 import { useRouter } from "expo-router";
-import type { ReactElement } from "react";
+import { type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthState } from "../providers/AuthProvider";
 import { GlobalSearchBar } from "./GlobalSearchBar";
+import { ProfileMenu } from "./ProfileMenu";
 
 // Matched left/right column widths keep the centered search bar optically
 // centered regardless of avatar vs. icon width.
@@ -34,6 +35,7 @@ export function AppHeader(): ReactElement {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { currentUser, isAuthenticated } = useAuthState();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const profile = useGetV1UsersProfile({ query: { enabled: isAuthenticated } });
   const photoURL = profile.data?.photoURL ?? undefined;
@@ -57,11 +59,11 @@ export function AppHeader(): ReactElement {
       }}
     >
       <XStack alignItems="center" height={BAR_HEIGHT} paddingHorizontal={16}>
-        {/* Left — rounded avatar → Profile */}
+        {/* Left — rounded avatar → account menu */}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Abrir seu perfil"
-          onPress={() => router.push("/profile")}
+          accessibilityLabel="Abrir menu da conta"
+          onPress={() => setMenuOpen(true)}
           hitSlop={8}
           style={{ width: EDGE, alignItems: "flex-start" }}
         >
@@ -106,6 +108,15 @@ export function AppHeader(): ReactElement {
           </View>
         </Pressable>
       </XStack>
+
+      <ProfileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        name={name}
+        headline={profile.data?.headline ?? undefined}
+        location={profile.data?.location ?? undefined}
+        photoURL={photoURL}
+      />
     </View>
   );
 }

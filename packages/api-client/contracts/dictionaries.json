@@ -592,6 +592,10 @@
       "en": "Invalid limit parameter — must be a positive integer",
       "pt-BR": "Parâmetro \"limit\" inválido — precisa ser um inteiro positivo"
     },
+    "INVALID_LOCATION": {
+      "en": "Location is not a recognized place — pick one from the suggestions",
+      "pt-BR": "Localização não reconhecida — escolha uma das sugestões"
+    },
     "INVALID_METRICS_API_KEY": {
       "en": "Invalid metrics API key",
       "pt-BR": "Chave de API de métricas inválida"
@@ -2425,7 +2429,11 @@
         "en": "No update from {companyName} for {daysSince} days on \"{jobTitle}\". Follow up?",
         "pt-BR": "Sem retorno de {companyName} há {daysSince} dias em \"{jobTitle}\". Dar um toque?"
       },
-      "params": ["companyName", "daysSince", "jobTitle"]
+      "params": [
+        "companyName",
+        "daysSince",
+        "jobTitle"
+      ]
     },
     "COMMENT_REPLIED": {
       "title": {
@@ -2436,7 +2444,10 @@
         "en": "{actorName} replied: \"{replyExcerpt}\"",
         "pt-BR": "{actorName} respondeu: \"{replyExcerpt}\""
       },
-      "params": ["actorName", "replyExcerpt"]
+      "params": [
+        "actorName",
+        "replyExcerpt"
+      ]
     },
     "CONNECTION_ACCEPTED": {
       "title": {
@@ -2447,7 +2458,9 @@
         "en": "You are now connected with {actorName}",
         "pt-BR": "Você agora está conectado com {actorName}"
       },
-      "params": ["actorName"]
+      "params": [
+        "actorName"
+      ]
     },
     "CONNECTION_RECOMMENDATION": {
       "title": {
@@ -2458,7 +2471,10 @@
         "en": "{candidateName} shares {sharedSkillsCount} skills with you",
         "pt-BR": "{candidateName} compartilha {sharedSkillsCount} habilidades com você"
       },
-      "params": ["candidateName", "sharedSkillsCount"]
+      "params": [
+        "candidateName",
+        "sharedSkillsCount"
+      ]
     },
     "CONNECTION_REQUEST": {
       "title": {
@@ -2469,7 +2485,9 @@
         "en": "{actorName} sent you a connection request",
         "pt-BR": "{actorName} enviou um pedido de conexão"
       },
-      "params": ["actorName"]
+      "params": [
+        "actorName"
+      ]
     },
     "FIT_PROFILE_EXPIRED": {
       "title": {
@@ -2480,7 +2498,9 @@
         "en": "Retake the {questionCount}-question quiz to unlock match scoring again.",
         "pt-BR": "Refaça o questionário de {questionCount} perguntas para liberar o match novamente."
       },
-      "params": ["questionCount"]
+      "params": [
+        "questionCount"
+      ]
     },
     "FIT_PROFILE_EXPIRY_REMINDER": {
       "title": {
@@ -2491,7 +2511,10 @@
         "en": "Retake the quiz before {expiresAt} to keep using match scoring without interruption.",
         "pt-BR": "Refaça o questionário antes de {expiresAt} para continuar usando o match sem interrupção."
       },
-      "params": ["daysLeft", "expiresAt"]
+      "params": [
+        "daysLeft",
+        "expiresAt"
+      ]
     },
     "FOLLOW_NEW": {
       "title": {
@@ -2502,7 +2525,9 @@
         "en": "{actorName} is now following you",
         "pt-BR": "{actorName} agora te segue"
       },
-      "params": ["actorName"]
+      "params": [
+        "actorName"
+      ]
     },
     "MATCH_RECOMMENDATIONS_READY": {
       "title": {
@@ -2513,7 +2538,10 @@
         "en": "We ranked the latest jobs in your areas of interest. Top match: {topMatchTitle}.",
         "pt-BR": "Rankeamos as vagas mais recentes nas suas áreas de interesse. Top match: {topMatchTitle}."
       },
-      "params": ["matchCount", "topMatchTitle"]
+      "params": [
+        "matchCount",
+        "topMatchTitle"
+      ]
     },
     "POST_BOOKMARKED": {
       "title": {
@@ -2524,7 +2552,10 @@
         "en": "{actorName} bookmarked \"{postExcerpt}\"",
         "pt-BR": "{actorName} salvou \"{postExcerpt}\""
       },
-      "params": ["actorName", "postExcerpt"]
+      "params": [
+        "actorName",
+        "postExcerpt"
+      ]
     },
     "POST_COMMENTED": {
       "title": {
@@ -2535,7 +2566,10 @@
         "en": "{actorName} commented: \"{commentExcerpt}\"",
         "pt-BR": "{actorName} comentou: \"{commentExcerpt}\""
       },
-      "params": ["actorName", "commentExcerpt"]
+      "params": [
+        "actorName",
+        "commentExcerpt"
+      ]
     },
     "POST_LIKED": {
       "title": {
@@ -2546,7 +2580,10 @@
         "en": "{actorName} liked your post \"{postExcerpt}\"",
         "pt-BR": "{actorName} curtiu seu post \"{postExcerpt}\""
       },
-      "params": ["actorName", "postExcerpt"]
+      "params": [
+        "actorName",
+        "postExcerpt"
+      ]
     },
     "POST_REPOSTED": {
       "title": {
@@ -2557,7 +2594,10 @@
         "en": "{actorName} reposted \"{postExcerpt}\"",
         "pt-BR": "{actorName} repostou \"{postExcerpt}\""
       },
-      "params": ["actorName", "postExcerpt"]
+      "params": [
+        "actorName",
+        "postExcerpt"
+      ]
     },
     "RESUME_QUALITY_IMPROVED": {
       "title": {
@@ -2568,7 +2608,11 @@
         "en": "Your latest snapshot ({newScore}/100) crossed the {previousRank} → {newRank} boundary. Keep going.",
         "pt-BR": "Seu novo snapshot ({newScore}/100) cruzou a faixa {previousRank} → {newRank}. Continua assim."
       },
-      "params": ["newScore", "previousRank", "newRank"]
+      "params": [
+        "newScore",
+        "previousRank",
+        "newRank"
+      ]
     },
     "RESUME_QUALITY_REGRESSED": {
       "title": {
@@ -2579,7 +2623,11 @@
         "en": "Your latest snapshot ({newScore}/100) crossed the {previousRank} → {newRank} boundary. Open the resume to see what changed.",
         "pt-BR": "Seu novo snapshot ({newScore}/100) cruzou a faixa {previousRank} → {newRank}. Abra o currículo pra ver o que mudou."
       },
-      "params": ["newScore", "previousRank", "newRank"]
+      "params": [
+        "newScore",
+        "previousRank",
+        "newRank"
+      ]
     },
     "SKILL_DECAY": {
       "title": {
@@ -2590,7 +2638,10 @@
         "en": "You have not touched \"{skillName}\" in {daysIdle} days. Time to dust it off?",
         "pt-BR": "Você não mexe em \"{skillName}\" há {daysIdle} dias. Hora de revisitar?"
       },
-      "params": ["skillName", "daysIdle"]
+      "params": [
+        "skillName",
+        "daysIdle"
+      ]
     }
   },
   "success": {

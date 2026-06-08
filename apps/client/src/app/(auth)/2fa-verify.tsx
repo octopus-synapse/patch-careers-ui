@@ -18,7 +18,7 @@ import {
 } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { BackToSignInLink } from "../../components/auth/BackToSignInLink";
 import { failToSignIn } from "../../components/auth/helpers/failToSignIn";
 import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
@@ -29,7 +29,8 @@ export default function TwoFactorVerifyScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();
   const { finishAuthentication } = useCompleteAuth();
   const { submitting, run } = useSubmit();
-  const params = useLocalSearchParams<{ userId?: string }>();
+  const params = useLocalSearchParams<{ userId?: string; keepSignedIn?: string }>();
+  const keepSignedIn = params.keepSignedIn === "1";
 
   const [mode, setMode] = useState<"totp" | "backup">("totp");
   const [code, setCode] = useState("");
@@ -43,7 +44,11 @@ export default function TwoFactorVerifyScreen(): ReactElement {
     }
     await run(async () => {
       try {
-        const result = await verifyTwoFactor(userId, value);
+        const result = await verifyTwoFactor(
+          userId,
+          value,
+          Platform.OS === "web" ? { keepSignedIn } : undefined,
+        );
         await finishAuthentication(
           result.sessionExchangeId ? { sessionExchangeId: result.sessionExchangeId } : undefined,
         );

@@ -168,6 +168,43 @@ describe("fetcher — 401 refresh interceptor", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("cookie mode: retries after a successful refresh that returns no header", async () => {
+    const fetchMock: FetchMock = vi
+      .fn()
+      .mockImplementationOnce(async () => emptyResponse(401))
+      .mockImplementationOnce(async () => jsonResponse(200, { ok: true }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    // Cookie mode: refresh rolls the httpOnly cookie and returns null (no Bearer).
+    const refreshAuth = vi.fn().mockResolvedValue(null);
+    configureApiClient({
+      baseURL: "https://api.example.com",
+      getAuthHeader: null,
+      refreshAuth,
+      useCookies: true,
+    });
+
+    const res = await fetcher<{ ok: boolean }>({ method: "GET", url: "/v1/me" });
+
+    expect(res.data).toEqual({ ok: true });
+    expect(refreshAuth).toHaveBeenCalledTimes(1);
+    // Retried even though refresh returned no header — the rolled cookie carries auth.
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const [, retryInit] = fetchMock.mock.calls[1] as [string, RequestInit];
+    expect(retryInit.credentials).toBe("include");
+  });
+
+  it("attaches credentials:'include' on every request in cookie mode", async () => {
+    const fetchMock: FetchMock = vi.fn().mockResolvedValue(jsonResponse(200, { ok: true }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    configureApiClient({ baseURL: "https://api.example.com", useCookies: true });
+
+    await fetcher({ method: "GET", url: "/v1/me" });
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(init.credentials).toBe("include");
+  });
+
   it("does not refresh when no refreshAuth is registered", async () => {
     const fetchMock: FetchMock = vi
       .fn()

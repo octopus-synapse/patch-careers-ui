@@ -69,7 +69,16 @@ export default function RootLayout(): ReactElement {
                     <NetInfoBanner />
                     <Stack screenOptions={{ headerShown: false }}>
                       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                      <Stack.Screen name="conversation/[id]" options={{ headerShown: false }} />
+                      {/* Messages is a standalone screen (no tab bar, no AppHeader)
+                          that slides in over the tabs from the header's chat icon. */}
+                      <Stack.Screen
+                        name="messages"
+                        options={{ headerShown: false, animation: "slide_from_right" }}
+                      />
+                      <Stack.Screen
+                        name="conversation/[id]"
+                        options={{ headerShown: false, animation: "slide_from_right" }}
+                      />
                       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
                       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                       <Stack.Screen name="reset-password" options={{ headerShown: false }} />

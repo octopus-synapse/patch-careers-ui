@@ -38,19 +38,26 @@ interface AuthClientRuntime {
   /** When true, send `Accept-Mode: tokens` on auth-mutating calls so
    * the backend returns the Bearer pair instead of a Set-Cookie. */
   preferTokens: boolean;
+  /** Cookie mode (web): JS holds no token; the httpOnly session cookie
+   * authenticates and `/refresh` rolls it. The inverse of `preferTokens`. */
+  useCookies: boolean;
 }
 
 const runtime: AuthClientRuntime = {
   tokenStorage: null,
   apiBaseURL: "",
   preferTokens: true,
+  useCookies: false,
 };
 
 export interface ConfigureAuthClientOptions {
   storage: KeyValueStorage;
   apiBaseURL: string;
-  /** Web hosts can opt out of token mode to stay cookie-based. Defaults
-   * to `true` (universal Bearer flow per V2 D17). */
+  /**
+   * Bearer-token mode (default `true`): secure-store + `Accept-Mode: tokens`.
+   * Pass `false` for httpOnly cookie mode (web) — the host decides per
+   * platform (see AuthProvider), keeping this package platform-agnostic.
+   */
   preferTokens?: boolean;
 }
 
@@ -65,16 +72,28 @@ export function configureAuthClient(options: ConfigureAuthClientOptions): void {
   runtime.tokenStorage = tokenStorage;
   runtime.apiBaseURL = options.apiBaseURL;
   if (options.preferTokens !== undefined) runtime.preferTokens = options.preferTokens;
+  // Cookie mode is the inverse of Bearer mode. The host opts in per platform
+  // (web → cookies) via `preferTokens: false`; default stays Bearer.
+  const useCookies = !runtime.preferTokens;
+  runtime.useCookies = useCookies;
 
   configureApiClient({
     baseURL: options.apiBaseURL,
-    getAuthHeader: makeBearerAuthHeader(tokenStorage),
-    refreshAuth: async () => {
-      const next = await refreshAccessToken();
-      if (!next) return null;
-      return `Bearer ${next.accessToken}`;
-    },
+    // Cookie mode: no Bearer header — the httpOnly cookie authenticates.
+    getAuthHeader: useCookies ? null : makeBearerAuthHeader(tokenStorage),
+    refreshAuth: useCookies
+      ? async () => {
+          // Roll the session cookie; the fetcher retries on success (no header).
+          await refreshCookieSession();
+          return null;
+        }
+      : async () => {
+          const next = await refreshAccessToken();
+          if (!next) return null;
+          return `Bearer ${next.accessToken}`;
+        },
     defaultHeaders: runtime.preferTokens ? { "Accept-Mode": "tokens" } : {},
+    useCookies,
   });
 }
 
@@ -83,6 +102,7 @@ export function resetAuthClient(): void {
   runtime.tokenStorage = null;
   runtime.apiBaseURL = "";
   runtime.preferTokens = true;
+  runtime.useCookies = false;
   useAuthStore.getState().reset();
 }
 
@@ -126,11 +146,21 @@ function mapSessionUser(payload: unknown): User | null {
  * `LoginResult.twoFactorRequired` so the caller can route to the OTP
  * prompt before calling `verifyTwoFactor()`.
  */
-export async function login(email: string, password: string): Promise<LoginResult> {
+export async function login(
+  email: string,
+  password: string,
+  options?: { keepSignedIn?: boolean },
+): Promise<LoginResult> {
   const tokenStorage = getTokenStorageOrThrow();
   useAuthStore.getState().setLoading(true);
   try {
-    const data = await apiLogin({ email, password });
+    // `keepSignedIn` drives the web cookie lifetime (session vs persistent);
+    // mobile ignores it (cookie suppressed via Accept-Mode: tokens).
+    const data = await apiLogin({
+      email,
+      password,
+      ...(options?.keepSignedIn !== undefined ? { keepSignedIn: options.keepSignedIn } : {}),
+    });
     const pair = extractTokenPair(data);
     if (pair) await tokenStorage.set(pair);
     const sessionExchangeId = extractSessionExchangeId(data);
@@ -151,11 +181,20 @@ export async function login(email: string, password: string): Promise<LoginResul
  * value returned by the preceding `login()` call (backend uses it to
  * scope the TOTP / backup-code check to the right pending session).
  */
-export async function verifyTwoFactor(userId: string, code: string): Promise<LoginResult> {
+export async function verifyTwoFactor(
+  userId: string,
+  code: string,
+  options?: { keepSignedIn?: boolean },
+): Promise<LoginResult> {
   const tokenStorage = getTokenStorageOrThrow();
   useAuthStore.getState().setLoading(true);
   try {
-    const data = await apiVerify2Fa({ userId, code });
+    // Carry the "keep me signed in" choice through 2FA.
+    const data = await apiVerify2Fa({
+      userId,
+      code,
+      ...(options?.keepSignedIn !== undefined ? { keepSignedIn: options.keepSignedIn } : {}),
+    });
     const pair = extractTokenPair(data);
     if (pair) await tokenStorage.set(pair);
     const sessionExchangeId = extractSessionExchangeId(data);
@@ -219,6 +258,25 @@ async function refreshAccessToken(): Promise<TokenPair | null> {
   const tokenStorage = runtime.tokenStorage;
   if (!tokenStorage) return null;
   return refreshOnce(refreshAccessTokenRaw);
+}
+
+/**
+ * Web cookie-mode refresh: POST /v1/auth/refresh with no body and
+ * `credentials: 'include'`. The backend reads the httpOnly session cookie,
+ * rolls it (sliding the "keep me signed in" window), and re-sets it via
+ * Set-Cookie. JS never sees a token. Throws on non-2xx so the fetcher keeps
+ * the original 401 (and `bootstrap` treats it as "not signed in").
+ */
+async function refreshCookieSession(): Promise<void> {
+  const response = await fetch(`${runtime.apiBaseURL}/api/v1/auth/refresh`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({}),
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error(`AUTH.REFRESH_FAILED:${response.status}`);
+  }
 }
 
 /**
@@ -292,10 +350,14 @@ export async function logout(): Promise<void> {
  */
 export async function bootstrap(): Promise<User | null> {
   const tokenStorage = getTokenStorageOrThrow();
-  const persisted = await tokenStorage.get();
-  if (!persisted) {
-    useAuthStore.getState().setUser(null);
-    return null;
+  // Bearer mode: no stored pair → definitely logged out, skip the round-trip.
+  // Cookie mode (web): nothing in storage anyway — rely on the httpOnly cookie.
+  if (!runtime.useCookies) {
+    const persisted = await tokenStorage.get();
+    if (!persisted) {
+      useAuthStore.getState().setUser(null);
+      return null;
+    }
   }
 
   useAuthStore.getState().setLoading(true);
@@ -303,16 +365,21 @@ export async function bootstrap(): Promise<User | null> {
     const data = await apiSession();
     const user = mapSessionUser(data);
     useAuthStore.getState().setUser(user);
+    // Cookie mode: slide the persistent "keep me signed in" window now that
+    // we know the session is valid. Best-effort — failure doesn't block entry.
+    if (runtime.useCookies && user) {
+      void refreshCookieSession().catch(() => undefined);
+    }
     return user;
   } catch (err) {
     const fetcherErr = err as FetcherError;
     if (fetcherErr?.status === 401) {
-      // Tokens invalid — clear them so next boot is clean.
-      await tokenStorage.clear();
+      // Invalid/absent session — clear any stored pair so next boot is clean.
+      if (!runtime.useCookies) await tokenStorage.clear();
       useAuthStore.getState().setUser(null);
       return null;
     }
-    // Network / 5xx — leave the tokens in place, surface to caller.
+    // Network / 5xx — leave state in place, surface to caller.
     throw err;
   } finally {
     useAuthStore.getState().setLoading(false);

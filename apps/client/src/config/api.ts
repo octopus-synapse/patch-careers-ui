@@ -1,13 +1,26 @@
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 
-const PRODUCTION_API_BASE_URL = "https://api.patchcareers.com";
+const PRODUCTION_API_BASE_URL = "https://backend.patchcareers.org";
 const LOCAL_API_PORT = 13001;
 
 /** Deep link the backend redirects to after OAuth, carrying the token triple. */
 export const OAUTH_CALLBACK_URL = "patchcareers://auth/callback";
 /** Path fragment used to recognise the OAuth callback deep link. */
 export const OAUTH_CALLBACK_PATH = "auth/callback";
+
+/**
+ * Web-only OAuth return URL. On web the backend sets a persistent session
+ * cookie and 302s here (same-site with the API, so the cookie flows). Built
+ * from the live origin so it works in dev (localhost:8081) and prod
+ * (patchcareers.org) without hardcoding. Both must be in the backend's
+ * `OAUTH_REDIRECT_URI_ALLOWLIST`.
+ */
+export function oauthWebCallbackUrl(): string {
+  const origin =
+    typeof window !== "undefined" && window.location?.origin ? window.location.origin : "";
+  return `${origin}/oauth-callback`;
+}
 
 export interface ApiBaseURLConfig {
   extraApiBaseURL?: string | undefined;

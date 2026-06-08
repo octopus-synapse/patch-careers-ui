@@ -11,9 +11,21 @@
     "SKILL_ADDED",
     "THEME_PUBLISHED"
   ],
-  "AnalyticsEvent": ["DOWNLOAD", "VIEW"],
-  "ApplyMode": ["AUTO_APPLY", "ONE_CLICK", "WEEKLY_CURATED"],
-  "AttestationWitnessStatus": ["FAILED", "PENDING", "RUNNING", "SUCCEEDED"],
+  "AnalyticsEvent": [
+    "DOWNLOAD",
+    "VIEW"
+  ],
+  "ApplyMode": [
+    "AUTO_APPLY",
+    "ONE_CLICK",
+    "WEEKLY_CURATED"
+  ],
+  "AttestationWitnessStatus": [
+    "FAILED",
+    "PENDING",
+    "RUNNING",
+    "SUCCEEDED"
+  ],
   "AuditAction": [
     "ACCESS_MODIFIER_APPLIED",
     "ACCESS_MODIFIER_REVOKED",
@@ -62,13 +74,45 @@
     "INTERVIEWS_5",
     "MENTORED_10"
   ],
-  "CollaboratorRole": ["ADMIN", "EDITOR", "VIEWER"],
-  "ConnectionStatus": ["ACCEPTED", "PENDING", "REJECTED"],
-  "ConsentDocumentType": ["MARKETING_CONSENT", "PRIVACY_POLICY", "TERMS_OF_SERVICE"],
-  "DigestFrequency": ["DAILY", "MONTHLY", "NEVER", "WEEKLY"],
-  "EmailDeliveryMode": ["DAILY", "INSTANT", "OFF", "WEEKLY"],
-  "EmailStatus": ["BOUNCED", "FAILED", "PENDING", "SENT"],
-  "EnglishLevel": ["ADVANCED", "BASIC", "FLUENT", "INTERMEDIATE"],
+  "CollaboratorRole": [
+    "ADMIN",
+    "EDITOR",
+    "VIEWER"
+  ],
+  "ConnectionStatus": [
+    "ACCEPTED",
+    "PENDING",
+    "REJECTED"
+  ],
+  "ConsentDocumentType": [
+    "MARKETING_CONSENT",
+    "PRIVACY_POLICY",
+    "TERMS_OF_SERVICE"
+  ],
+  "DigestFrequency": [
+    "DAILY",
+    "MONTHLY",
+    "NEVER",
+    "WEEKLY"
+  ],
+  "EmailDeliveryMode": [
+    "DAILY",
+    "INSTANT",
+    "OFF",
+    "WEEKLY"
+  ],
+  "EmailStatus": [
+    "BOUNCED",
+    "FAILED",
+    "PENDING",
+    "SENT"
+  ],
+  "EnglishLevel": [
+    "ADVANCED",
+    "BASIC",
+    "FLUENT",
+    "INTERMEDIATE"
+  ],
   "FitDimension": [
     "BIG_FIVE_AGREEABLENESS",
     "BIG_FIVE_CONSCIENTIOUSNESS",
@@ -89,7 +133,13 @@
     "SDT_COMPETENCE",
     "SDT_RELATEDNESS"
   ],
-  "ImportSource": ["DOCX", "GITHUB", "JSON", "LINKEDIN", "PDF"],
+  "ImportSource": [
+    "DOCX",
+    "GITHUB",
+    "JSON",
+    "LINKEDIN",
+    "PDF"
+  ],
   "ImportStatus": [
     "COMPLETED",
     "FAILED",
@@ -110,11 +160,35 @@
     "VIEWED",
     "WITHDRAWN"
   ],
-  "JobApplicationStatus": ["ACCEPTED", "REJECTED", "SUBMITTED", "VIEWED", "WITHDRAWN"],
-  "JobType": ["CONTRACT", "FREELANCE", "FULL_TIME", "INTERNSHIP", "PART_TIME", "VOLUNTEER"],
-  "LayoutKind": ["DOUBLE_COLUMN", "SINGLE_COLUMN"],
-  "MecSyncStatus": ["FAILED", "PARTIAL", "RUNNING", "SUCCESS"],
-  "ModifierEffect": ["DENY", "GRANT"],
+  "JobApplicationStatus": [
+    "ACCEPTED",
+    "REJECTED",
+    "SUBMITTED",
+    "VIEWED",
+    "WITHDRAWN"
+  ],
+  "JobType": [
+    "CONTRACT",
+    "FREELANCE",
+    "FULL_TIME",
+    "INTERNSHIP",
+    "PART_TIME",
+    "VOLUNTEER"
+  ],
+  "LayoutKind": [
+    "DOUBLE_COLUMN",
+    "SINGLE_COLUMN"
+  ],
+  "MecSyncStatus": [
+    "FAILED",
+    "PARTIAL",
+    "RUNNING",
+    "SUCCESS"
+  ],
+  "ModifierEffect": [
+    "DENY",
+    "GRANT"
+  ],
   "ModifierType": [
     "GRANT_PERMISSION",
     "SUSPEND_EMAIL_VERIFIED",
@@ -140,10 +214,28 @@
     "RESUME_QUALITY_REGRESSED",
     "SKILL_DECAY"
   ],
-  "PaymentCurrency": ["BRL", "EUR", "GBP", "USD"],
-  "RemotePolicy": ["HYBRID", "ONSITE", "REMOTE"],
-  "ReportStatus": ["DISMISSED", "PENDING", "REVIEWED"],
-  "SkillProficiency": ["ADVANCED", "BEGINNER", "EXPERT", "INTERMEDIATE"],
+  "PaymentCurrency": [
+    "BRL",
+    "EUR",
+    "GBP",
+    "USD"
+  ],
+  "RemotePolicy": [
+    "HYBRID",
+    "ONSITE",
+    "REMOTE"
+  ],
+  "ReportStatus": [
+    "DISMISSED",
+    "PENDING",
+    "REVIEWED"
+  ],
+  "SkillProficiency": [
+    "ADVANCED",
+    "BEGINNER",
+    "EXPERT",
+    "INTERMEDIATE"
+  ],
   "SkillType": [
     "CERTIFICATION",
     "DATABASE",
@@ -156,7 +248,12 @@
     "SOFT_SKILL",
     "TOOL"
   ],
-  "SuccessStoryStatus": ["ARCHIVED", "DRAFT", "PENDING_REVIEW", "PUBLISHED"],
+  "SuccessStoryStatus": [
+    "ARCHIVED",
+    "DRAFT",
+    "PENDING_REVIEW",
+    "PUBLISHED"
+  ],
   "TechAreaType": [
     "DATA",
     "DESIGN",
@@ -168,6 +265,16 @@
     "QA",
     "SECURITY"
   ],
-  "WeeklyCuratedBatchStatus": ["COMPLETED", "FAILED", "PENDING", "SENT"],
-  "WeeklyCuratedItemStatus": ["APPROVED", "EXPIRED", "PENDING_APPROVAL", "REJECTED"]
+  "WeeklyCuratedBatchStatus": [
+    "COMPLETED",
+    "FAILED",
+    "PENDING",
+    "SENT"
+  ],
+  "WeeklyCuratedItemStatus": [
+    "APPROVED",
+    "EXPIRED",
+    "PENDING_APPROVAL",
+    "REJECTED"
+  ]
 }

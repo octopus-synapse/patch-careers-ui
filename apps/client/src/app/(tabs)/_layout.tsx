@@ -75,15 +75,6 @@ export default function TabsLayout(): ReactElement | null {
         }}
       />
       <Tabs.Screen
-        name="messages"
-        options={{
-          title: "Messages",
-          // Lives in the AppHeader (top-right) now, not the bottom bar —
-          // `href: null` keeps the route navigable while hiding the tab button.
-          href: null,
-        }}
-      />
-      <Tabs.Screen
         name="notifications"
         options={{
           title: "Notifications",

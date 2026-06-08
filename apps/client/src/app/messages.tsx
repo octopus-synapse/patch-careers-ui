@@ -1,10 +1,13 @@
 /**
- * Messages tab — the inbox.
+ * Messages — a standalone screen, NOT a bottom-tab item.
  *
- * Native adaptation of the web two-pane chat: this pane is the conversation
- * list plus a people-search to start new threads; tapping a row pushes the
- * full-screen thread (`conversation/[id]`) over the tab bar. Re-skinned in the
- * Editorial Calm DS and composed from `@patch-careers/ui`.
+ * Reached from the AppHeader's messages icon via `router.push("/messages")`,
+ * it sits at the root Stack level (sibling to `(tabs)`) so it slides in over
+ * the tabs with no bottom tab bar and no global AppHeader — its own slim back
+ * bar owns the exit. The inbox itself is the conversation list plus a
+ * people-search to start new threads; tapping a row pushes the full-screen
+ * thread (`conversation/[id]`). Editorial Calm DS, composed from
+ * `@patch-careers/ui`.
  */
 
 import { editorialPalette } from "@patch-careers/tokens";
@@ -12,17 +15,17 @@ import { EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { MessageCircle, Search as SearchIcon } from "lucide-react-native";
+import { ChevronLeft, MessageCircle, Search as SearchIcon } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ConversationListSkeleton } from "../../features/messages/components/ConversationListSkeleton";
-import { ConversationRow } from "../../features/messages/components/ConversationRow";
-import { UserResultRow } from "../../features/messages/components/UserResultRow";
-import { UserSearchField } from "../../features/messages/components/UserSearchField";
-import { participantLabel } from "../../features/messages/helpers";
-import { lookupConversationWithUser, useInbox, useUserSearch } from "../../features/messages/hooks";
-import type { ChatUser, Conversation } from "../../features/messages/types";
+import { ConversationListSkeleton } from "../features/messages/components/ConversationListSkeleton";
+import { ConversationRow } from "../features/messages/components/ConversationRow";
+import { UserResultRow } from "../features/messages/components/UserResultRow";
+import { UserSearchField } from "../features/messages/components/UserSearchField";
+import { participantLabel } from "../features/messages/helpers";
+import { lookupConversationWithUser, useInbox, useUserSearch } from "../features/messages/hooks";
+import type { ChatUser, Conversation } from "../features/messages/types";
 
 function RowSeparator(): ReactElement {
   return (
@@ -45,6 +48,13 @@ export default function MessagesScreen(): ReactElement {
   const search = useUserSearch(term);
   const searching = term.trim().length >= 2;
   const now = Date.now();
+
+  // Standalone screen, so it owns its exit. Fall back to the home tab when
+  // there's no back stack (e.g. opened via a cold deep link).
+  function goBack(): void {
+    if (router.canGoBack()) router.back();
+    else router.replace("/jobs");
+  }
 
   function goToThread(params: { id: string } & Record<string, string>): void {
     router.push({ pathname: "/conversation/[id]", params });
@@ -73,8 +83,21 @@ export default function MessagesScreen(): ReactElement {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: editorialPalette.bg }}>
-      <YStack paddingHorizontal={20} paddingTop={12} paddingBottom={10}>
+    <View style={{ flex: 1, backgroundColor: editorialPalette.bg, paddingTop: insets.top }}>
+      {/* Slim back bar — this screen has no global AppHeader. */}
+      <XStack alignItems="center" height={44} paddingHorizontal={8}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+          onPress={goBack}
+          hitSlop={8}
+          style={{ padding: 6 }}
+        >
+          <Icon as={ChevronLeft} size={26} color={editorialPalette.ink} />
+        </Pressable>
+      </XStack>
+
+      <YStack paddingHorizontal={20} paddingTop={4} paddingBottom={10}>
         <Text
           fontFamily={editorialFonts.serif}
           fontSize={30}

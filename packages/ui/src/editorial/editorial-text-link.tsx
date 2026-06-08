@@ -26,6 +26,7 @@ export function EditorialTextLink({
     <TText
       onPress={onPress}
       accessibilityRole="link"
+      cursor="pointer"
       fontFamily={editorialFonts.sans}
       color="$accentBlue"
       fontWeight="500"

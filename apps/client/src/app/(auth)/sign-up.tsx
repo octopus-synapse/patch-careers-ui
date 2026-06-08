@@ -13,19 +13,21 @@
 import { signup } from "@patch-careers/api-client";
 import {
   AuthShell,
+  CheckboxField,
   ConsentCheckbox,
   FooterPrompt,
   IntroBlock,
   PasswordStrengthMeter,
   PrimaryAction,
 } from "@patch-careers/ui/editorial";
-import { type ReactElement, useRef, useState } from "react";
-import { type TextInput, View } from "react-native";
+import { type ReactElement, useEffect, useRef, useState } from "react";
+import { Platform, type TextInput, View } from "react-native";
 import { AuthEmailField, AuthPasswordField } from "../../components/auth/fields";
 import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
 import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
 import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
 import { useSubmit } from "../../components/auth/hooks/useSubmit";
+import { readKeepSignedIn, saveKeepSignedIn } from "../../components/auth/keepSignedInPreference";
 import { validateSignup } from "../../components/auth/validation";
 
 // Versions sent with the consent payload. Backend rejects with
@@ -44,7 +46,16 @@ export default function SignUpScreen(): ReactElement {
   const [password, setPassword] = useState("");
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState<string | undefined>(undefined);
+  // Web-only "remember me" — persisted to the shared preference so it pre-fills
+  // the eventual post-verification sign-in (cookie mode). Hidden on native.
+  const isWeb = Platform.OS === "web";
+  const [rememberMe, setRememberMe] = useState(false);
   const passwordRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    if (!isWeb) return;
+    void readKeepSignedIn().then(setRememberMe);
+  }, [isWeb]);
 
   async function handleSubmit() {
     const trimmedEmail = email.trim();
@@ -145,6 +156,22 @@ export default function SignUpScreen(): ReactElement {
           {...(consentError ? { error: consentError } : {})}
           testID="signup.consent"
         />
+
+        {isWeb ? (
+          <CheckboxField
+            checked={rememberMe}
+            onToggle={() =>
+              setRememberMe((v) => {
+                const next = !v;
+                void saveKeepSignedIn(next);
+                return next;
+              })
+            }
+            label={t("auth.rememberMe")}
+            delay={400}
+            testID="signup.rememberMe"
+          />
+        ) : null}
       </View>
 
       <View style={{ marginTop: 32 }}>

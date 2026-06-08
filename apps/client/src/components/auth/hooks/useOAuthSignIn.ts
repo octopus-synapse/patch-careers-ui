@@ -1,7 +1,12 @@
-import { type OAuthProvider, signInWithProviderNative } from "@patch-careers/auth";
+import {
+  type OAuthProvider,
+  signInWithProviderNative,
+  signInWithProviderWeb,
+} from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
 import { useCallback } from "react";
-import { OAUTH_CALLBACK_URL, resolveApiBaseURL } from "../../../config/api";
+import { Platform } from "react-native";
+import { OAUTH_CALLBACK_URL, oauthWebCallbackUrl, resolveApiBaseURL } from "../../../config/api";
 import { useTranslator } from "../../../providers/I18nProvider";
 
 /**
@@ -19,6 +24,16 @@ export function useOAuthSignIn(): {
   const handleOAuth = useCallback(
     async (provider: OAuthProvider) => {
       try {
+        if (Platform.OS === "web") {
+          // Full-page redirect to the backend OAuth start. On return the
+          // backend has set a persistent session cookie and 302s to
+          // oauthWebCallbackUrl() — the page navigates away here.
+          signInWithProviderWeb(provider, {
+            apiBaseURL: resolveApiBaseURL(),
+            redirectUri: oauthWebCallbackUrl(),
+          });
+          return;
+        }
         const result = await signInWithProviderNative(provider, {
           apiBaseURL: resolveApiBaseURL(),
           redirectUri: OAUTH_CALLBACK_URL,

@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
-import { PlaceholderScreen } from "../../components/PlaceholderScreen";
+import { ProfileScreen } from "../../features/profile/ProfileScreen";
 
-export default function ProfileScreen(): ReactElement {
-  return <PlaceholderScreen title="Profile" />;
+export default function ProfileTab(): ReactElement {
+  return <ProfileScreen />;
 }

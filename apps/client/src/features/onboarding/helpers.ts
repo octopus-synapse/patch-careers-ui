@@ -199,6 +199,13 @@ export function validateStepFields(
   return errors;
 }
 
+/** True when none of the given fields hold a value — the form-step analogue of
+ *  an empty section (`items.length === 0`). Drives the "skip this step"
+ *  acknowledgement gate on optional form steps (e.g. links). */
+export function isFormStepEmpty(fields: OnboardingField[], data: FormData): boolean {
+  return fields.every((field) => (data[field.key]?.trim() ?? "").length === 0);
+}
+
 export function canContinueStep(
   step: OnboardingStep | undefined,
   data: FormData,

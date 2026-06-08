@@ -31,6 +31,7 @@ export function FooterPrompt({
         <TText
           onPress={onPress}
           accessibilityRole="link"
+          cursor="pointer"
           fontFamily={editorialFonts.sans}
           fontSize={13}
           color="$ink"

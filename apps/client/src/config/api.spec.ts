@@ -34,7 +34,7 @@ describe("resolveApiBaseURLFromConfig", () => {
 
   it("keeps production builds on the public API host", () => {
     expect(resolveApiBaseURLFromConfig({ isDev: false, platformOS: "android" })).toBe(
-      "https://api.patchcareers.com",
+      "https://backend.patchcareers.org",
     );
   });
 });

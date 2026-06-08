@@ -39,6 +39,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Platform } from "react-native";
 import { OAUTH_CALLBACK_PATH, resolveApiBaseURL } from "../config/api";
 
 void WebBrowser.maybeCompleteAuthSession();
@@ -61,8 +62,14 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     let cancelled = false;
 
     // One-time wiring. `secure` is a proxy that lazily picks expo-secure-store
-    // on RN and a same-origin cookie store on web.
-    configureAuthClient({ storage: secure, apiBaseURL });
+    // on RN and a same-origin cookie store on web. Web uses httpOnly cookie
+    // mode (no JS token; `/refresh` rolls the cookie) while native keeps the
+    // Bearer + secure-store flow.
+    configureAuthClient({
+      storage: secure,
+      apiBaseURL,
+      preferTokens: Platform.OS !== "web",
+    });
 
     // OAuth launcher: opens the system browser tab (or in-app Custom Tabs
     // on Android) and waits for the deep-link callback. The auth helper

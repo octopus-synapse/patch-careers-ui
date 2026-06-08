@@ -144,6 +144,9 @@
           },
           "password": {
             "$ref": "#/components/schemas/PasswordInput"
+          },
+          "keepSignedIn": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -20835,6 +20838,9 @@
                   "code": {
                     "type": "string",
                     "minLength": 6
+                  },
+                  "keepSignedIn": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -30399,6 +30405,183 @@
         "x-guards": [
           "feature-flag"
         ]
+      }
+    },
+    "/api/v1/export/resume/preview": {
+      "get": {
+        "summary": "Render the resume as an HTML preview (high-fidelity PDF mirror)",
+        "description": "Export API",
+        "tags": [
+          "export"
+        ],
+        "operationId": "get_v1_export_resume_preview",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "palette",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "lang",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "bannerColor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "template",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "html": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "html"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "resume:read"
       }
     },
     "/api/v1/export/user/{userId}/resume/pdf": {
@@ -50509,11 +50692,6 @@
                         "minLength": 2,
                         "maxLength": 100
                       },
-                      "jobTitle": {
-                        "type": "string",
-                        "minLength": 2,
-                        "maxLength": 100
-                      },
                       "headline": {
                         "type": "string",
                         "minLength": 1,
@@ -50598,7 +50776,7 @@
                     "location": "San Francisco, CA"
                   },
                   "professionalProfile": {
-                    "jobTitle": "Senior Backend Engineer",
+                    "headline": "Senior Backend Engineer",
                     "summary": "Backend engineer with 8+ years building distributed systems."
                   },
                   "resumeStyleId": "019e4a58-581a-7679-9351-df6a83687eed",
@@ -51022,11 +51200,6 @@
                           "minLength": 2,
                           "maxLength": 100
                         },
-                        "jobTitle": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
                         "headline": {
                           "type": "string",
                           "minLength": 1,
@@ -51259,11 +51432,6 @@
                     "type": "object",
                     "properties": {
                       "title": {
-                        "type": "string",
-                        "minLength": 2,
-                        "maxLength": 100
-                      },
-                      "jobTitle": {
                         "type": "string",
                         "minLength": 2,
                         "maxLength": 100
@@ -51772,11 +51940,6 @@
                       "type": "object",
                       "properties": {
                         "title": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
-                        "jobTitle": {
                           "type": "string",
                           "minLength": 2,
                           "maxLength": 100
@@ -52391,11 +52554,6 @@
                           "minLength": 2,
                           "maxLength": 100
                         },
-                        "jobTitle": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
                         "headline": {
                           "type": "string",
                           "minLength": 1,
@@ -52897,11 +53055,6 @@
                           "minLength": 2,
                           "maxLength": 100
                         },
-                        "jobTitle": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
                         "headline": {
                           "type": "string",
                           "minLength": 1,
@@ -53084,7 +53237,7 @@
                 },
                 "example": {
                   "fullName": "Fixture User",
-                  "jobTitle": "Senior Software Engineer"
+                  "headline": "Senior Software Engineer"
                 }
               }
             }
@@ -53394,11 +53547,6 @@
                       "type": "object",
                       "properties": {
                         "title": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
-                        "jobTitle": {
                           "type": "string",
                           "minLength": 2,
                           "maxLength": 100
@@ -53879,11 +54027,6 @@
                       "type": "object",
                       "properties": {
                         "title": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
-                        "jobTitle": {
                           "type": "string",
                           "minLength": 2,
                           "maxLength": 100
@@ -54379,11 +54522,6 @@
                           "minLength": 2,
                           "maxLength": 100
                         },
-                        "jobTitle": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
                         "headline": {
                           "type": "string",
                           "minLength": 1,
@@ -54538,6 +54676,132 @@
         "x-auth": "jwt"
       }
     },
+    "/api/v1/onboarding/session/resume-preview": {
+      "get": {
+        "summary": "Render a live résumé preview from saved progress in a candidate style",
+        "description": "Onboarding API",
+        "tags": [
+          "onboarding"
+        ],
+        "operationId": "get_v1_onboarding_session_resume_preview",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "01900000-0000-7000-a000-000000000001"
+            },
+            "required": true,
+            "name": "styleId",
+            "in": "query",
+            "example": "01900000-0000-7000-a000-000000000001"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "locale",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "html": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "html"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt"
+      }
+    },
     "/api/v1/onboarding/session/save": {
       "post": {
         "summary": "Save current step data without advancing",
@@ -54566,7 +54830,7 @@
                 },
                 "example": {
                   "fullName": "Fixture User",
-                  "jobTitle": "Senior Software Engineer"
+                  "headline": "Senior Software Engineer"
                 }
               }
             }
@@ -54876,11 +55140,6 @@
                       "type": "object",
                       "properties": {
                         "title": {
-                          "type": "string",
-                          "minLength": 2,
-                          "maxLength": 100
-                        },
-                        "jobTitle": {
                           "type": "string",
                           "minLength": 2,
                           "maxLength": 100
@@ -103007,183 +103266,6 @@
           },
           "404": {
             "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "statusCode",
-                    "code",
-                    "message",
-                    "severity"
-                  ],
-                  "properties": {
-                    "statusCode": {
-                      "type": "integer"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "severity": {
-                      "type": "string",
-                      "enum": [
-                        "toast",
-                        "modal",
-                        "banner",
-                        "inline",
-                        "silent"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "x-auth": "jwt",
-        "x-permission": "resume:read"
-      }
-    },
-    "/api/v1/export/resume/preview": {
-      "get": {
-        "summary": "Render the resume as an HTML preview (high-fidelity PDF mirror)",
-        "description": "Export API",
-        "tags": [
-          "export"
-        ],
-        "operationId": "get_v1_export_resume_preview",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "palette",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "lang",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "bannerColor",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "template",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "html": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "html"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "statusCode",
-                    "code",
-                    "message",
-                    "severity"
-                  ],
-                  "properties": {
-                    "statusCode": {
-                      "type": "integer"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "severity": {
-                      "type": "string",
-                      "enum": [
-                        "toast",
-                        "modal",
-                        "banner",
-                        "inline",
-                        "silent"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "statusCode",
-                    "code",
-                    "message",
-                    "severity"
-                  ],
-                  "properties": {
-                    "statusCode": {
-                      "type": "integer"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "severity": {
-                      "type": "string",
-                      "enum": [
-                        "toast",
-                        "modal",
-                        "banner",
-                        "inline",
-                        "silent"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {

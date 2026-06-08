@@ -112,6 +112,12 @@ interface RuntimeConfig {
   refreshAuth: RefreshAuth | null;
   defaultHeaders: Record<string, string>;
   isNative: boolean;
+  /**
+   * Cookie mode (web): send `credentials: 'include'` so the httpOnly
+   * session cookie flows, and treat a refresh that returns no Bearer
+   * header as a success (the cookie was rolled) so the 401 is retried.
+   */
+  useCookies: boolean;
 }
 
 const runtime: RuntimeConfig = {
@@ -120,6 +126,7 @@ const runtime: RuntimeConfig = {
   refreshAuth: null,
   defaultHeaders: {},
   isNative: isReactNativeRuntime(),
+  useCookies: false,
 };
 
 export interface ConfigureApiClientOptions {
@@ -129,6 +136,8 @@ export interface ConfigureApiClientOptions {
   defaultHeaders?: Record<string, string>;
   /** Force native-mode header injection regardless of platform detection. */
   forceNative?: boolean;
+  /** Web cookie mode — attach `credentials: 'include'` to every request. */
+  useCookies?: boolean;
 }
 
 /**
@@ -150,6 +159,7 @@ export function configureApiClient(options: ConfigureApiClientOptions): void {
     runtime.defaultHeaders = { ...options.defaultHeaders };
   }
   if (options.forceNative !== undefined) runtime.isNative = options.forceNative;
+  if (options.useCookies !== undefined) runtime.useCookies = options.useCookies;
 }
 
 /** Test-only escape hatch — wipes all wiring back to defaults. */
@@ -159,6 +169,7 @@ export function resetApiClient(): void {
   runtime.refreshAuth = null;
   runtime.defaultHeaders = {};
   runtime.isNative = isReactNativeRuntime();
+  runtime.useCookies = false;
   __resetRefreshState();
 }
 
@@ -237,6 +248,8 @@ async function buildInit(config: RequestConfig, authHeader: string | null): Prom
     method: config.method,
     headers,
   };
+  // Cookie mode (web): send the httpOnly session cookie cross-origin.
+  if (runtime.useCookies) init.credentials = "include";
   if (hasBody) {
     init.body = typeof config.data === "string" ? config.data : JSON.stringify(config.data);
   }
@@ -292,8 +305,18 @@ export async function fetcher<TData = unknown, _TError = unknown, TRequestBody =
   let response = await executeOnce(config as RequestConfig, initialAuth);
 
   if (response.status === 401 && runtime.refreshAuth) {
-    const newAuth = await runRefreshOnce().catch(() => null);
-    if (newAuth) {
+    let refreshed = false;
+    let newAuth: string | null = null;
+    try {
+      newAuth = await runRefreshOnce();
+      refreshed = true;
+    } catch {
+      // Refresh failed (e.g. refresh token / cookie rejected) — keep the 401.
+      refreshed = false;
+    }
+    // Bearer mode retries when a new header came back; cookie mode retries on
+    // any successful refresh since the rolled cookie carries the new session.
+    if (refreshed && (newAuth || runtime.useCookies)) {
       response = await executeOnce(config as RequestConfig, newAuth);
     }
   }

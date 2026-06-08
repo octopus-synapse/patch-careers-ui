@@ -17,6 +17,7 @@
 import { type LoginResult, login } from "@patch-careers/auth";
 import {
   AuthShell,
+  CheckboxField,
   FooterPrompt,
   InlineLink,
   IntroBlock,
@@ -24,8 +25,8 @@ import {
   OrDivider,
   PrimaryAction,
 } from "@patch-careers/ui/editorial";
-import { type ReactElement, useRef, useState } from "react";
-import { type TextInput, View } from "react-native";
+import { type ReactElement, useEffect, useRef, useState } from "react";
+import { Platform, type TextInput, View } from "react-native";
 import { AuthEmailField, AuthPasswordField } from "../../components/auth/fields";
 import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
 import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
@@ -33,7 +34,8 @@ import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
 import { useCompleteAuth } from "../../components/auth/hooks/useCompleteAuth";
 import { useOAuthSignIn } from "../../components/auth/hooks/useOAuthSignIn";
 import { useSubmit } from "../../components/auth/hooks/useSubmit";
-import { GithubGlyph, LinkedinGlyph } from "../../components/auth/oauth-glyphs";
+import { readKeepSignedIn, saveKeepSignedIn } from "../../components/auth/keepSignedInPreference";
+import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "../../components/auth/oauth-glyphs";
 import { validateLogin } from "../../components/auth/validation";
 
 export default function SignInScreen(): ReactElement {
@@ -45,7 +47,17 @@ export default function SignInScreen(): ReactElement {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // Web-only "keep me signed in" — cookie mode. Default unchecked; restore the
+  // user's last choice so it's pre-filled. Native uses persistent secure-store
+  // and shows no checkbox.
+  const isWeb = Platform.OS === "web";
+  const [keepSignedIn, setKeepSignedIn] = useState(false);
   const passwordRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    if (!isWeb) return;
+    void readKeepSignedIn().then(setKeepSignedIn);
+  }, [isWeb]);
 
   async function handleSubmit() {
     const trimmedEmail = email.trim();
@@ -56,13 +68,19 @@ export default function SignInScreen(): ReactElement {
     }
 
     setFieldErrors({});
+    // Remember the choice for next time (web only).
+    if (isWeb) void saveKeepSignedIn(keepSignedIn);
     await run(async () => {
       try {
-        const result: LoginResult = await login(trimmedEmail, password);
+        const result: LoginResult = await login(
+          trimmedEmail,
+          password,
+          isWeb ? { keepSignedIn } : undefined,
+        );
         if (result.twoFactorRequired) {
           router.replace({
             pathname: "/(auth)/2fa-verify",
-            params: { userId: result.userId },
+            params: { userId: result.userId, keepSignedIn: keepSignedIn ? "1" : "0" },
           });
           return;
         }
@@ -119,7 +137,25 @@ export default function SignInScreen(): ReactElement {
         </AuthPasswordField>
       </View>
 
-      <View style={{ marginTop: 32 }}>
+      {isWeb ? (
+        <View style={{ marginTop: 20 }}>
+          <CheckboxField
+            checked={keepSignedIn}
+            onToggle={() =>
+              setKeepSignedIn((v) => {
+                const next = !v;
+                void saveKeepSignedIn(next);
+                return next;
+              })
+            }
+            label={t("auth.keepSignedIn")}
+            delay={300}
+            testID="auth.keepSignedIn"
+          />
+        </View>
+      ) : null}
+
+      <View style={{ marginTop: 28 }}>
         <PrimaryAction
           label={t("auth.signIn")}
           loading={submitting}
@@ -144,6 +180,13 @@ export default function SignInScreen(): ReactElement {
           label={t("auth.continueWith", { provider: "LinkedIn" })}
           onPress={() => handleOAuth("linkedin")}
           testID="auth.linkedin"
+        />
+        <OAuthButton
+          icon={GoogleGlyph}
+          delay={900}
+          label={t("auth.continueWith", { provider: "Google" })}
+          onPress={() => handleOAuth("google")}
+          testID="auth.google"
         />
       </View>
 

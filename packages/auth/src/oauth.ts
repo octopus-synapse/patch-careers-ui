@@ -1,5 +1,5 @@
 /**
- * OAuth (GitHub / LinkedIn) helpers.
+ * OAuth (GitHub / LinkedIn / Google) helpers.
  *
  * Implementation notes:
  *   - Backend OAuth start endpoints accept `?redirect_uri=...` per the
@@ -21,7 +21,7 @@ import { parseTokenPairFromParams } from "./token-pair";
 import { createTokenStorage, makeBearerAuthHeader } from "./token-storage";
 import type { TokenPair } from "./types";
 
-export type OAuthProvider = "github" | "linkedin";
+export type OAuthProvider = "github" | "linkedin" | "google";
 
 export interface OAuthStartOptions {
   apiBaseURL: string;

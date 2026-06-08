@@ -12,7 +12,7 @@ import { editorialPalette } from "@patch-careers/tokens";
 import { Text } from "@patch-careers/ui";
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import { failToSignIn } from "../components/auth/helpers/failToSignIn";
 import { useAuthScreen } from "../components/auth/hooks/useAuthScreen";
 import { useCompleteAuth } from "../components/auth/hooks/useCompleteAuth";
@@ -31,6 +31,12 @@ export default function OAuthCallbackScreen(): ReactElement {
     let cancelled = false;
     async function finish() {
       const apiBaseURL = resolveApiBaseURL();
+      // Web cookie mode: the backend already set the session cookie on the
+      // OAuth 302 (no token params in the URL). Just bootstrap via the cookie.
+      if (Platform.OS === "web" && !params.accessToken) {
+        await finishAuthentication();
+        return;
+      }
       // Rebuild the callback URL from the params so we can reuse
       // completeOAuth() — it handles cookie / token modes uniformly.
       const usp = new URLSearchParams();
