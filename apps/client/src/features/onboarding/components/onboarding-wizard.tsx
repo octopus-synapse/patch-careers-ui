@@ -3,7 +3,7 @@ import type { Locale, Translator } from "@patch-careers/i18n";
 import { editorialPalette as authTokens } from "@patch-careers/tokens";
 import { PhoneInput } from "@patch-careers/ui";
 import { AnimatedField, FieldError, PatchLogo, PrimaryAction } from "@patch-careers/ui/editorial";
-import { AlertCircle, Check, Minus, RefreshCw, X } from "lucide-react-native";
+import { Check, Minus, X } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import {
   ActivityIndicator,
@@ -41,7 +41,6 @@ import {
   canContinueStep,
   isResumeStyleStep,
   isSectionStep,
-  type MissingRequiredTarget,
   missingRequiredTargets,
   parseResumeStyles,
   visibleFields,
@@ -59,6 +58,15 @@ import type {
 import { LocationPicker } from "./location-picker";
 import { sectionArtFor, WelcomeArt } from "./onboarding-art";
 import { SectionAddPicker } from "./section-add-picker";
+import {
+  AckCheckbox,
+  CenteredState,
+  Masthead,
+  MissingBanner,
+  ResumeBanner,
+  RetryBanner,
+  StepHeading,
+} from "./wizard-chrome";
 
 export function OnboardingWizard(): ReactElement {
   // Scope the draft store to one wizard mount; it is discarded on exit.
@@ -331,122 +339,6 @@ function OnboardingWizardInner(): ReactElement {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
-}
-
-// ────────────────────────────────────────────────────────────
-// Chrome — masthead, progress, heading
-// ────────────────────────────────────────────────────────────
-
-function Masthead({
-  phaseLabel,
-  progressPct,
-  timeText,
-}: {
-  phaseLabel: string;
-  progressPct: number;
-  timeText: string;
-}): ReactElement {
-  const pct = Math.max(0, Math.min(100, progressPct));
-  return (
-    <View style={ed.mastheadWrap}>
-      {/* Brand isolated + centered, with breathing room above the progress. */}
-      <View style={ed.mastheadBrand}>
-        <PatchLogo />
-      </View>
-      {/* The progress bar leads as the section divider/rule. */}
-      <View style={ed.track}>
-        <View style={[ed.fill, { width: `${pct}%` }]} />
-      </View>
-      {/* Justified byline beneath the rule: section (left) ↔ time (right). */}
-      <View style={ed.mastheadMeta}>
-        {phaseLabel ? <RNText style={ed.phaseLabel}>{phaseLabel}</RNText> : <View />}
-        <RNText style={ed.timeText}>{timeText}</RNText>
-      </View>
-    </View>
-  );
-}
-
-function splitHeading(title: string): { head: string; tail: string } {
-  const parts = title.trim().split(/\s+/);
-  if (parts.length <= 1) return { head: "", tail: title };
-  const tail = parts.pop() as string;
-  return { head: `${parts.join(" ")} `, tail };
-}
-
-function StepHeading({ subtitle, title }: { subtitle?: string; title: string }): ReactElement {
-  const { head, tail } = splitHeading(title);
-  return (
-    <View>
-      <AnimatedField delay={80}>
-        <RNText style={ed.heading}>
-          {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}
-          <RNText style={ed.headingItalic}>{tail}</RNText>
-        </RNText>
-      </AnimatedField>
-      {subtitle ? (
-        <AnimatedField delay={170}>
-          <RNText style={ed.subtitle}>{subtitle}</RNText>
-        </AnimatedField>
-      ) : null}
-    </View>
-  );
-}
-
-// ────────────────────────────────────────────────────────────
-// Small editorial building blocks
-// ────────────────────────────────────────────────────────────
-
-/** Acknowledgement checkbox — gates "Continuar" on an empty optional section
- *  ("Não tenho X"): the user must add an item or tick this to proceed. */
-function AckCheckbox({
-  checked,
-  disabled,
-  label,
-  onToggle,
-}: {
-  checked: boolean;
-  disabled?: boolean;
-  label: string;
-  onToggle: () => void;
-}): ReactElement {
-  return (
-    <Pressable
-      accessibilityRole="checkbox"
-      accessibilityState={{ checked, disabled: Boolean(disabled) }}
-      accessibilityLabel={label}
-      disabled={disabled}
-      onPress={onToggle}
-      hitSlop={8}
-      style={ed.ackRow}
-    >
-      <View style={[ed.ackBox, checked ? ed.ackBoxChecked : null]}>
-        {checked ? <Check size={12} color={authTokens.surface} strokeWidth={3} /> : null}
-      </View>
-      <RNText style={[ed.ghostLabel, disabled ? ed.dim : null]}>{label}</RNText>
-    </Pressable>
-  );
-}
-
-// ────────────────────────────────────────────────────────────
-// States
-// ────────────────────────────────────────────────────────────
-
-function CenteredState({
-  actionLabel,
-  label,
-  onAction,
-}: {
-  actionLabel?: string;
-  label: string;
-  onAction?: () => void;
-}): ReactElement {
-  return (
-    <SafeAreaView style={ed.centered}>
-      <ActivityIndicator color={authTokens.ink} />
-      <RNText style={ed.centeredText}>{label}</RNText>
-      {actionLabel && onAction ? <GhostButton label={actionLabel} onPress={onAction} /> : null}
     </SafeAreaView>
   );
 }
@@ -1061,92 +953,5 @@ function WelcomeScreen({ onStart, t }: { onStart: () => void; t: Translator }): 
         </AnimatedField>
       </View>
     </SafeAreaView>
-  );
-}
-
-/** "Continue where you left off" banner on a resumed session. */
-function ResumeBanner({
-  onDismiss,
-  phaseLabel,
-  t,
-}: {
-  onDismiss: () => void;
-  phaseLabel: string;
-  t: Translator;
-}): ReactElement {
-  return (
-    <View style={ed.resumeBanner}>
-      <View style={ed.resumeBannerBody}>
-        <RNText style={ed.resumeBannerTitle}>
-          {t("onboarding.resume.title", { phase: phaseLabel })}
-        </RNText>
-        <RNText style={ed.resumeBannerSubtitle}>{t("onboarding.resume.subtitle")}</RNText>
-      </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="dismiss"
-        hitSlop={8}
-        onPress={onDismiss}
-      >
-        <X size={18} color={authTokens.muted} />
-      </Pressable>
-    </View>
-  );
-}
-
-/** Non-destructive save-failure banner with a retry (item: resilient retry). */
-function RetryBanner({
-  disabled,
-  label,
-  onRetry,
-}: {
-  disabled?: boolean;
-  label: string;
-  onRetry: () => void;
-}): ReactElement {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      disabled={disabled}
-      onPress={onRetry}
-      style={[ed.retryBanner, disabled ? ed.dim : null]}
-    >
-      <AlertCircle size={16} color={authTokens.danger} />
-      <RNText style={ed.retryText}>{label}</RNText>
-      <RefreshCw size={15} color={authTokens.danger} />
-    </Pressable>
-  );
-}
-
-/** Upfront list of required-but-incomplete steps on the review hub. */
-function MissingBanner({
-  onFix,
-  targets,
-  t,
-}: {
-  onFix: (stepId: string) => void;
-  targets: readonly MissingRequiredTarget[];
-  t: Translator;
-}): ReactElement {
-  return (
-    <View style={ed.missingBanner}>
-      <View style={ed.missingHead}>
-        <AlertCircle size={15} color={authTokens.warn} />
-        <RNText style={ed.missingTitle}>{t("onboarding.review.missingTitle")}</RNText>
-      </View>
-      {targets.map((target) => (
-        <Pressable
-          key={target.stepId}
-          accessibilityRole="button"
-          onPress={() => onFix(target.stepId)}
-          style={ed.missingRow}
-        >
-          <RNText style={ed.missingLabel} numberOfLines={1}>
-            {target.label}
-          </RNText>
-          <RNText style={ed.missingFix}>{t("onboarding.review.fix")}</RNText>
-        </Pressable>
-      ))}
-    </View>
   );
 }
