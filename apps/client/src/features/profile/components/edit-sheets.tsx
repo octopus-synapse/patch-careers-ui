@@ -3,11 +3,15 @@
  * Each reuses the shared editorial <SectionForm> over a small static field set
  * and saves via PATCH /v1/users/profile. Identity also embeds the geo-validated
  * <LocationPicker> so location stays a picked value (avoids INVALID_LOCATION).
+ *
+ * Form: React Hook Form (ADR-0005) — the resolver reuses validateSectionFields,
+ * and the controlled SectionForm is bridged via watch + setValue.
  */
 import type { PatchV1UsersProfileMutationRequest } from "@patch-careers/api-client";
 import { Sheet } from "@patch-careers/ui";
 import { PrimaryAction } from "@patch-careers/ui/editorial";
-import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 import { View } from "react-native";
 import { LocationPicker } from "@/features/onboarding";
 import {
@@ -16,6 +20,7 @@ import {
   SectionForm,
   validateSectionFields,
 } from "@/features/sections";
+import { fieldErrorsResolver } from "@/forms";
 import { pf } from "../lib/styles";
 
 /** Profile fields the owner can read back from GET /v1/users/profile. */
@@ -60,47 +65,62 @@ function ProfileEditSheet({
   onSubmit,
   children,
 }: SheetShellProps): ReactElement {
-  const [draft, setDraft] = useState<FormData>(initial);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [saving, setSaving] = useState(false);
+  const form = useForm<FormData>({
+    defaultValues: initial,
+    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),
+  });
+  const draft = form.watch();
+
   // Seed the draft once per open (not on every `initial` identity change).
   const seeded = useRef(false);
   useEffect(() => {
     if (open && !seeded.current) {
       seeded.current = true;
-      setDraft(initial);
-      setErrors({});
+      form.reset(initial);
     } else if (!open) {
       seeded.current = false;
     }
-  }, [open, initial]);
+  }, [open, initial, form]);
 
-  const save = async (): Promise<void> => {
-    const nextErrors = validateSectionFields(fields, draft);
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
-    setSaving(true);
+  // Bridge the controlled SectionForm (whole-object onChange) onto RHF state.
+  const setDraft = (updater: (d: FormData) => FormData): void => {
+    for (const [key, value] of Object.entries(updater(form.getValues()))) {
+      form.setValue(key as keyof FormData & string, value, { shouldValidate: false });
+    }
+  };
+
+  const errors: Record<string, string> = {};
+  for (const [key, error] of Object.entries(form.formState.errors)) {
+    if (error?.message) errors[key] = String(error.message);
+  }
+
+  const submit = form.handleSubmit(async (values) => {
     try {
-      await onSubmit(draft);
+      await onSubmit(values);
       onOpenChange(false);
     } catch {
       // Keep the sheet open on failure.
-    } finally {
-      setSaving(false);
     }
-  };
+  });
+
+  const busy = form.formState.isSubmitting || isPending;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title}>
       <View style={pf.sheetBody}>
-        <SectionForm fields={fields} data={draft} errors={errors} onChange={setDraft} />
+        <SectionForm
+          fields={fields}
+          data={draft}
+          errors={errors}
+          onChange={(next) => setDraft(() => next)}
+        />
         {children?.(draft, setDraft)}
         <View style={pf.sheetActions}>
           <PrimaryAction
             label="Salvar"
-            onPress={() => void save()}
-            loading={saving || isPending}
-            disabled={saving || isPending}
+            onPress={() => void submit()}
+            loading={busy}
+            disabled={busy}
           />
         </View>
       </View>
