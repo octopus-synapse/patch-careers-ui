@@ -12,7 +12,7 @@ import NetInfo, { type NetInfoState } from "@react-native-community/netinfo";
 import { type ReactElement, useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTranslator } from "../providers/I18nProvider";
+import { useTranslator } from "@/providers/I18nProvider";
 
 export function NetInfoBanner(): ReactElement | null {
   const insets = useSafeAreaInsets();

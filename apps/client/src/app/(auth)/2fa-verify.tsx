@@ -19,11 +19,11 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Platform, View } from "react-native";
-import { BackToSignInLink } from "../../components/auth/BackToSignInLink";
-import { failToSignIn } from "../../components/auth/helpers/failToSignIn";
-import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
-import { useCompleteAuth } from "../../components/auth/hooks/useCompleteAuth";
-import { useSubmit } from "../../components/auth/hooks/useSubmit";
+import { BackToSignInLink } from "@/components/auth/BackToSignInLink";
+import { failToSignIn } from "@/components/auth/helpers/failToSignIn";
+import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "@/components/auth/hooks/useCompleteAuth";
+import { useSubmit } from "@/components/auth/hooks/useSubmit";
 
 export default function TwoFactorVerifyScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();

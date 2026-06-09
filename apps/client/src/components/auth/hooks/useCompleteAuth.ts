@@ -1,7 +1,7 @@
 import { bootstrap, exchangeSessionForTokens } from "@patch-careers/auth";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
-import { getCurrentAuthenticatedRoute } from "../../../navigation/authRedirect";
+import { getCurrentAuthenticatedRoute } from "@/navigation/authRedirect";
 
 /**
  * Finishes a successful authentication: optionally exchanges a session

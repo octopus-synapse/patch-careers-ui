@@ -15,7 +15,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useMemo } from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import WebView from "react-native-webview";
-import { useTranslator } from "../providers/I18nProvider";
+import { useTranslator } from "@/providers/I18nProvider";
 
 type Kind = "terms" | "privacy";
 

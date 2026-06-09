@@ -27,16 +27,16 @@ import {
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Platform, type TextInput, View } from "react-native";
-import { AuthEmailField, AuthPasswordField } from "../../components/auth/fields";
-import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
-import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
-import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
-import { useCompleteAuth } from "../../components/auth/hooks/useCompleteAuth";
-import { useOAuthSignIn } from "../../components/auth/hooks/useOAuthSignIn";
-import { useSubmit } from "../../components/auth/hooks/useSubmit";
-import { readKeepSignedIn, saveKeepSignedIn } from "../../components/auth/keepSignedInPreference";
-import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "../../components/auth/oauth-glyphs";
-import { validateLogin } from "../../components/auth/validation";
+import { AuthEmailField, AuthPasswordField } from "@/components/auth/fields";
+import { handleAuthApiError } from "@/components/auth/helpers/handleAuthApiError";
+import { useAuthFields } from "@/components/auth/hooks/useAuthFields";
+import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "@/components/auth/hooks/useCompleteAuth";
+import { useOAuthSignIn } from "@/components/auth/hooks/useOAuthSignIn";
+import { useSubmit } from "@/components/auth/hooks/useSubmit";
+import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keepSignedInPreference";
+import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
+import { validateLogin } from "@/components/auth/validation";
 
 export default function SignInScreen(): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();

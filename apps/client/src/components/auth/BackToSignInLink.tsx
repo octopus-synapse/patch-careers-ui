@@ -6,7 +6,7 @@
 import { InlineLink } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import type { ReactElement } from "react";
-import { useTranslator } from "../../providers/I18nProvider";
+import { useTranslator } from "@/providers/I18nProvider";
 
 export function BackToSignInLink({ testID }: { testID?: string }): ReactElement {
   const t = useTranslator();

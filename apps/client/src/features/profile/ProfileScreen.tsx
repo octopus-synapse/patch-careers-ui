@@ -21,8 +21,8 @@ import {
 } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, ScrollView, Text, View } from "react-native";
-import { useI18n } from "../../providers/I18nProvider";
-import { SectionItemEditor, type SectionPersistAction } from "../sections";
+import { SectionItemEditor, type SectionPersistAction } from "@/features/sections";
+import { useI18n } from "@/providers/I18nProvider";
 import { CvModal } from "./components/CvModal";
 import { AboutEditSheet, IdentityEditSheet, SocialLinksEditSheet } from "./components/EditSheets";
 import {

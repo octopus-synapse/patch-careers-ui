@@ -32,7 +32,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AUTH_SIGN_IN_ROUTE } from "../navigation/authRedirect";
+import { AUTH_SIGN_IN_ROUTE } from "@/navigation/authRedirect";
 import { ConfirmDialog } from "./ConfirmDialog";
 
 // Soft, light scrim — the app is light, so a heavy dark dim reads wrong.

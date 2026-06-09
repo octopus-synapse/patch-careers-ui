@@ -40,7 +40,7 @@ import {
   useState,
 } from "react";
 import { Platform } from "react-native";
-import { OAUTH_CALLBACK_PATH, resolveApiBaseURL } from "../config/api";
+import { OAUTH_CALLBACK_PATH, resolveApiBaseURL } from "@/config/api";
 
 void WebBrowser.maybeCompleteAuthSession();
 

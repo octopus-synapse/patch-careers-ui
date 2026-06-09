@@ -4,7 +4,7 @@
  * tab's CV modal).
  */
 import type { ReactElement } from "react";
-import { ResumePreview } from "../../components/ResumePreview";
+import { ResumePreview } from "@/components/ResumePreview";
 
 export default function ResumeScreen(): ReactElement {
   return <ResumePreview />;

@@ -1,5 +1,5 @@
 import type { Translator } from "@patch-careers/i18n";
-import { AUTH_SIGN_IN_ROUTE } from "../../../navigation/authRedirect";
+import { AUTH_SIGN_IN_ROUTE } from "@/navigation/authRedirect";
 
 type ToastLike = { show: (options: { title: string; intent: "danger" }) => void };
 type RouterLike = { replace: (href: typeof AUTH_SIGN_IN_ROUTE) => void };

@@ -4,7 +4,7 @@
  * `buildFieldsFromSectionDefinition` (onboarding.presenter.ts) so the Profile
  * editor offers the same fields/enums the server validates against.
  */
-import type { SectionField } from "../../sections";
+import type { SectionField } from "@/features/sections";
 
 type RawFieldDefinition = {
   key?: string;

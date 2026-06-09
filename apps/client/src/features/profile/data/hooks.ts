@@ -19,7 +19,7 @@ import {
   usePostV1ResumesResumeIdSectionsSectionTypeKeyItems,
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
-import type { SectionDescriptor, SectionItem, SectionPersistAction } from "../../sections";
+import type { SectionDescriptor, SectionItem, SectionPersistAction } from "@/features/sections";
 import { fieldsFromDefinition } from "./sectionDefinition";
 import { type PickedImage, uploadProfileImage } from "./uploadProfileImage";
 

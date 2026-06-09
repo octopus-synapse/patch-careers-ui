@@ -22,13 +22,13 @@ import {
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Platform, type TextInput, View } from "react-native";
-import { AuthEmailField, AuthPasswordField } from "../../components/auth/fields";
-import { handleAuthApiError } from "../../components/auth/helpers/handleAuthApiError";
-import { useAuthFields } from "../../components/auth/hooks/useAuthFields";
-import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
-import { useSubmit } from "../../components/auth/hooks/useSubmit";
-import { readKeepSignedIn, saveKeepSignedIn } from "../../components/auth/keepSignedInPreference";
-import { validateSignup } from "../../components/auth/validation";
+import { AuthEmailField, AuthPasswordField } from "@/components/auth/fields";
+import { handleAuthApiError } from "@/components/auth/helpers/handleAuthApiError";
+import { useAuthFields } from "@/components/auth/hooks/useAuthFields";
+import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
+import { useSubmit } from "@/components/auth/hooks/useSubmit";
+import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keepSignedInPreference";
+import { validateSignup } from "@/components/auth/validation";
 
 // Versions sent with the consent payload. Backend rejects with
 // CONSENT_VERSION_MISMATCH if these don't match the live published

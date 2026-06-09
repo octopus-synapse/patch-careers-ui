@@ -9,13 +9,13 @@ import { Sheet } from "@patch-careers/ui";
 import { PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { LocationPicker } from "../../onboarding/components/LocationPicker";
+import { LocationPicker } from "@/features/onboarding/components/LocationPicker";
 import {
   type FormData,
   type SectionField,
   SectionForm,
   validateSectionFields,
-} from "../../sections";
+} from "@/features/sections";
 import { pf } from "../styles";
 
 /** Profile fields the owner can read back from GET /v1/users/profile. */

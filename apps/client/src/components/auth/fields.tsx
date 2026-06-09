@@ -13,7 +13,7 @@ import {
 } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode, Ref } from "react";
 import type { ReturnKeyTypeOptions, TextInput } from "react-native";
-import { useTranslator } from "../../providers/I18nProvider";
+import { useTranslator } from "@/providers/I18nProvider";
 
 export function AuthEmailField({
   value,

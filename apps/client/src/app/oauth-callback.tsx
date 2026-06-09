@@ -13,10 +13,10 @@ import { Text } from "@patch-careers/ui";
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useEffect } from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
-import { failToSignIn } from "../components/auth/helpers/failToSignIn";
-import { useAuthScreen } from "../components/auth/hooks/useAuthScreen";
-import { useCompleteAuth } from "../components/auth/hooks/useCompleteAuth";
-import { OAUTH_CALLBACK_URL, resolveApiBaseURL } from "../config/api";
+import { failToSignIn } from "@/components/auth/helpers/failToSignIn";
+import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
+import { useCompleteAuth } from "@/components/auth/hooks/useCompleteAuth";
+import { OAUTH_CALLBACK_URL, resolveApiBaseURL } from "@/config/api";
 
 export default function OAuthCallbackScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();

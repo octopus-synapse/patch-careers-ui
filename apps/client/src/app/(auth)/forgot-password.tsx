@@ -11,10 +11,10 @@ import { isValidEmail } from "@patch-careers/auth";
 import { AuthShell, Banner, IntroBlock, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useState } from "react";
 import { View } from "react-native";
-import { BackToSignInLink } from "../../components/auth/BackToSignInLink";
-import { AuthEmailField } from "../../components/auth/fields";
-import { useAuthScreen } from "../../components/auth/hooks/useAuthScreen";
-import { useSubmit } from "../../components/auth/hooks/useSubmit";
+import { BackToSignInLink } from "@/components/auth/BackToSignInLink";
+import { AuthEmailField } from "@/components/auth/fields";
+import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
+import { useSubmit } from "@/components/auth/hooks/useSubmit";
 
 export default function ForgotPasswordScreen(): ReactElement {
   const { t, router } = useAuthScreen();

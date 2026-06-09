@@ -1,12 +1,12 @@
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
-import { OnboardingWizard } from "../features/onboarding/OnboardingWizard";
+import { OnboardingWizard } from "@/features/onboarding/OnboardingWizard";
 import {
   AUTH_SIGN_IN_ROUTE,
   getCompletedOnboardingRoute,
   VERIFY_EMAIL_ROUTE,
-} from "../navigation/authRedirect";
-import { useAuthBootstrap, useAuthState } from "../providers/AuthProvider";
+} from "@/navigation/authRedirect";
+import { useAuthBootstrap, useAuthState } from "@/providers/AuthProvider";
 
 export default function OnboardingScreen(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();

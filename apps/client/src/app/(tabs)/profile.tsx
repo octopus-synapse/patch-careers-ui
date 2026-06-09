@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { ProfileScreen } from "../../features/profile/ProfileScreen";
+import { ProfileScreen } from "@/features/profile/ProfileScreen";
 
 export default function ProfileTab(): ReactElement {
   return <ProfileScreen />;

@@ -8,8 +8,8 @@
 
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
-import { getAuthenticatedRoute } from "../navigation/authRedirect";
-import { useAuthBootstrap, useAuthState } from "../providers/AuthProvider";
+import { getAuthenticatedRoute } from "@/navigation/authRedirect";
+import { useAuthBootstrap, useAuthState } from "@/providers/AuthProvider";
 
 export default function Index(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();

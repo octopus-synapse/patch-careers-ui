@@ -4,7 +4,7 @@ import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ResumePreview } from "../../../components/ResumePreview";
+import { ResumePreview } from "@/components/ResumePreview";
 import { pf } from "../styles";
 
 export function CvModal({

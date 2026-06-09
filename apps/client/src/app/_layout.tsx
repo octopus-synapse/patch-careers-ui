@@ -28,10 +28,10 @@ import { StatusBar } from "expo-status-bar";
 import { type ReactElement, useEffect } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { NetInfoBanner } from "../components/NetInfoBanner";
-import { AppTamaguiProvider } from "../providers/AppTamaguiProvider";
-import { AuthProvider } from "../providers/AuthProvider";
-import { I18nProvider } from "../providers/I18nProvider";
+import { NetInfoBanner } from "@/components/NetInfoBanner";
+import { AppTamaguiProvider } from "@/providers/AppTamaguiProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
+import { I18nProvider } from "@/providers/I18nProvider";
 
 void SplashScreen.preventAutoHideAsync().catch(() => {
   // already hidden / not available on web — non-fatal

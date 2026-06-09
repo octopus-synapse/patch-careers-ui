@@ -30,9 +30,7 @@ import {
   View,
 } from "react-native";
 import WebView from "react-native-webview";
-import { translateBackendCode } from "../../components/auth/validation";
-import { getCompletedOnboardingRoute } from "../../navigation/authRedirect";
-import { useI18n } from "../../providers/I18nProvider";
+import { translateBackendCode } from "@/components/auth/validation";
 import {
   AddRow,
   ed,
@@ -40,7 +38,9 @@ import {
   GhostButton,
   OverlayModal,
   SectionItemEditor,
-} from "../sections";
+} from "@/features/sections";
+import { getCompletedOnboardingRoute } from "@/navigation/authRedirect";
+import { useI18n } from "@/providers/I18nProvider";
 import { LocationPicker } from "./components/LocationPicker";
 import { SectionAddPicker } from "./components/SectionAddPicker";
 import {
