@@ -16,7 +16,7 @@ import type { ReactElement } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { palette } from "@patch-careers/tokens";
 import { Redirect, Tabs } from "expo-router";
-import { AppHeader } from "@/components/AppHeader";
+import { AppHeader } from "@/components/app-header";
 import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/authRedirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/AuthProvider";
 

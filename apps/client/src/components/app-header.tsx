@@ -21,8 +21,8 @@ import { type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthState } from "@/providers/AuthProvider";
-import { GlobalSearchBar } from "./GlobalSearchBar";
-import { ProfileMenu } from "./ProfileMenu";
+import { GlobalSearchBar } from "./global-search-bar";
+import { ProfileMenu } from "./profile-menu";
 
 // Matched left/right column widths keep the centered search bar optically
 // centered regardless of avatar vs. icon width.
