@@ -1,21 +1,10 @@
-import {
-  getV1OnboardingSessionQueryKey,
-  useGetV1OnboardingSession,
-  useGetV1OnboardingSessionResumePreview,
-  usePostV1OnboardingSessionComplete,
-  usePostV1OnboardingSessionExtras,
-  usePostV1OnboardingSessionGoto,
-  usePostV1OnboardingSessionNext,
-} from "@patch-careers/api-client";
-import { bootstrap } from "@patch-careers/auth";
+import { useGetV1OnboardingSessionResumePreview } from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import { editorialPalette as authTokens } from "@patch-careers/tokens";
 import { PhoneInput } from "@patch-careers/ui";
 import { AnimatedField, FieldError, PatchLogo, PrimaryAction } from "@patch-careers/ui/editorial";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
 import { AlertCircle, Check, Minus, RefreshCw, X } from "lucide-react-native";
-import { type ReactElement, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactElement, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -26,11 +15,9 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  useWindowDimensions,
   View,
 } from "react-native";
 import WebView from "react-native-webview";
-import { translateBackendCode } from "@/components/auth/validation";
 import {
   AddRow,
   ed,
@@ -39,60 +26,29 @@ import {
   OverlayModal,
   SectionItemEditor,
 } from "@/features/sections";
-import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 import {
   countedIndexOf,
   countedTotal,
   estimatedRemainingMinutes,
-  FLOW_PLAN,
-  type FlowStep,
   type FlowStepId,
-  flowIndexOf,
-  nextFlowStep,
   phaseForFlowStep,
   prevFlowStep,
 } from "../lib/flow-plan";
 import {
   atsBand,
-  backendStepForFlow,
-  buildNextPayload,
   buildReviewSections,
-  buildSkipPayload,
   canContinueStep,
-  defaultCountryFromLocale,
-  fieldsForFlowStep,
-  flowStepForBackendStep,
-  getSavedDataForStep,
-  getSavedItemsForStep,
-  isFormStepEmpty,
-  isLastFlowStepForBackend,
   isResumeStyleStep,
   isSectionStep,
   type MissingRequiredTarget,
   missingRequiredTargets,
   parseResumeStyles,
-  validateStepFields,
   visibleFields,
 } from "../lib/helpers";
 import { isProfileFieldRequired } from "../lib/profile-validation";
-import {
-  clearResumeDismissed,
-  clearSessionSnapshot,
-  clearStepDraft,
-  markResumeDismissed,
-  markWelcomeSeen,
-  readPhoneCountry,
-  readResumeDismissed,
-  readSessionSnapshot,
-  readStepDraft,
-  readWelcomeSeen,
-  savePhoneCountry,
-  saveSessionSnapshot,
-  saveStepDraft,
-} from "../lib/storage";
-import { suggestHeadlineFromExperience } from "../lib/suggestions";
-import { useWizardStore, WizardStoreProvider } from "../model/wizard-store-context";
+import { useOnboardingFlow } from "../model/use-onboarding-flow";
+import { WizardStoreProvider } from "../model/wizard-store-context";
 import type {
   FormData,
   OnboardingField,
@@ -104,14 +60,6 @@ import { LocationPicker } from "./location-picker";
 import { sectionArtFor, WelcomeArt } from "./onboarding-art";
 import { SectionAddPicker } from "./section-add-picker";
 
-function getErrorStatus(error: unknown): number | undefined {
-  if (!error || typeof error !== "object") return undefined;
-  const response = (error as { response?: unknown }).response;
-  if (!response || typeof response !== "object") return undefined;
-  const status = (response as { status?: unknown }).status;
-  return typeof status === "number" ? status : undefined;
-}
-
 export function OnboardingWizard(): ReactElement {
   // Scope the draft store to one wizard mount; it is discarded on exit.
   return (
@@ -122,423 +70,51 @@ export function OnboardingWizard(): ReactElement {
 }
 
 function OnboardingWizardInner(): ReactElement {
-  const { locale, t, setLocale } = useI18n();
-  const { width, height } = useWindowDimensions();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const sessionKey = useMemo(() => getV1OnboardingSessionQueryKey({ locale }), [locale]);
-  const [fallbackSession, setFallbackSession] = useState<OnboardingSession | null>(null);
-  // Draft lives in the scoped wizard store (ADR-0004). setFormData/setItems keep
-  // useState's value-or-updater signature, so the call sites below are unchanged.
-  const formData = useWizardStore((s) => s.formData);
-  const setFormData = useWizardStore((s) => s.setFormData);
-  const items = useWizardStore((s) => s.items);
-  const setItems = useWizardStore((s) => s.setItems);
-  // Optional section steps require an explicit acknowledgement ("I don't have
-  // any X") to continue when empty — so the user can't blow past them blindly.
-  const [noItemsAck, setNoItemsAck] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [completeError, setCompleteError] = useState("");
-  // App-owned flow cursor (drives which screen renders + which fields show).
-  // Starts on the language pick; the welcome interstitial follows it (and is
-  // skipped once seen).
-  const [flowStepId, setFlowStepId] = useState<FlowStepId>("language");
-  // When editing a section from the review hub, render that one backend step
-  // directly (full fields) and return to review on save — extras (projects,
-  // certs…) have no linear flow step, so this overlay covers them too.
-  const [editStepId, setEditStepId] = useState<string | null>(null);
-  // Phone country survives location → personal and reloads (item: sticky country).
-  const [phoneCountryIso, setPhoneCountryIso] = useState<string | undefined>(undefined);
-  // Backend step ids the user has tried (and failed) to submit — so re-entering
-  // a step re-surfaces its errors instead of looking pristine.
-  const [attemptedSteps, setAttemptedSteps] = useState<ReadonlySet<string>>(() => new Set());
-  // Non-destructive save failure: keep the data, offer a retry.
-  const [saveError, setSaveError] = useState("");
-  // "Continue where you left off" banner shown once on a resumed session.
-  const [resumeBanner, setResumeBanner] = useState<{ phaseLabel: string } | null>(null);
-  const refreshedAuthRef = useRef(false);
-  const resyncedStepRef = useRef(false);
-  const welcomeSeenRef = useRef(false);
-  const welcomeCheckedRef = useRef(false);
-  const resumeDismissedRef = useRef(false);
-  const lastSaveRef = useRef<{
-    stepId: string;
-    payload: Parameters<typeof saveBackendStep>[1];
-    isEdit: boolean;
-  } | null>(null);
-  const prevBackendStepIdRef = useRef<string | undefined>(undefined);
-
-  const sessionQuery = useGetV1OnboardingSession({ locale });
-  const session = sessionQuery.data ?? fallbackSession ?? undefined;
-  const flowStep: FlowStep | undefined = FLOW_PLAN[flowIndexOf(flowStepId)];
-  const editStep = editStepId ? session?.steps.find((step) => step.id === editStepId) : undefined;
-  // The backend step the current screen renders/persists to. In edit mode it's
-  // the clicked step; otherwise it's derived from the flow cursor.
-  const currentStep = editStep ?? backendStepForFlow(session, flowStep);
-  // Fields visible on this screen: edit mode shows the whole backend step;
-  // the linear flow shows only the slice this flow step owns.
-  const flowFields = editStep ? visibleFields(editStep) : fieldsForFlowStep(currentStep, flowStep);
-  const activeFieldKeys = editStep ? undefined : flowStep?.fieldKeys;
-  // "Empty" = nothing to persist: a section with no items, or a form step with
-  // no field filled. Optional steps gate "Continuar" on an explicit skip
-  // acknowledgement while empty (sections + the links step alike).
-  const stepIsEmpty = isSectionStep(currentStep)
-    ? items.length === 0
-    : isFormStepEmpty(flowFields, formData);
-
-  const retryLoad = async () => {
-    // Prefer server truth over any possibly-corrupt local snapshot.
-    setFallbackSession(null);
-    await clearSessionSnapshot();
-    await clearResumeDismissed();
-    resumeDismissedRef.current = false;
-    resyncedStepRef.current = false;
-    refreshedAuthRef.current = false;
-    await sessionQuery.refetch();
-  };
-
-  const persistSession = async (nextSession: OnboardingSession) => {
-    queryClient.setQueryData(sessionKey, nextSession);
-    setFallbackSession(nextSession);
-    await saveSessionSnapshot(nextSession);
-  };
-
-  const nextStep = usePostV1OnboardingSessionNext({
-    mutation: {
-      onSuccess: (data) => {
-        void persistSession(data);
-      },
-    },
-  });
-  const gotoStep = usePostV1OnboardingSessionGoto({
-    mutation: {
-      onSuccess: (data) => {
-        void persistSession(data);
-      },
-    },
-  });
-  const extras = usePostV1OnboardingSessionExtras({
-    mutation: {
-      onSuccess: (data) => {
-        void persistSession(data);
-      },
-    },
-  });
-  const complete = usePostV1OnboardingSessionComplete({
-    mutation: {
-      async onSuccess() {
-        await clearSessionSnapshot();
-        await clearResumeDismissed();
-        await bootstrap().catch(() => undefined);
-        router.replace(getCompletedOnboardingRoute());
-      },
-      onError(error) {
-        // Localize the backend rejection (e.g. INVALID_PROFESSIONAL_PROFILE)
-        // via the contracts dictionary instead of surfacing the raw English
-        // message; falls back to the backend message, then a generic key.
-        const data = error.response?.data as { code?: unknown; message?: unknown } | undefined;
-        setCompleteError(
-          translateBackendCode(
-            typeof data?.code === "string" ? data.code : undefined,
-            locale,
-            t("onboarding.completeFailed"),
-            typeof data?.message === "string" ? data.message : undefined,
-          ),
-        );
-      },
-    },
-  });
-
-  const isPending =
-    nextStep.isPending || gotoStep.isPending || extras.isPending || complete.isPending;
-
-  useEffect(() => {
-    void readSessionSnapshot().then((snapshot) => {
-      if (!sessionQuery.data && snapshot) setFallbackSession(snapshot);
-    });
-  }, [sessionQuery.data]);
-
-  useEffect(() => {
-    // Token/session can expire mid-onboarding; try a silent refresh once.
-    const status = getErrorStatus(sessionQuery.error);
-    if (status !== 401 || refreshedAuthRef.current) return;
-    refreshedAuthRef.current = true;
-    void bootstrap()
-      .catch(() => undefined)
-      .then(() => sessionQuery.refetch())
-      .catch(() => undefined);
-  }, [sessionQuery.error, sessionQuery.refetch]);
-
-  useEffect(() => {
-    if (sessionQuery.data) void saveSessionSnapshot(sessionQuery.data);
-  }, [sessionQuery.data]);
-
-  useEffect(() => {
-    // Initialise the app flow cursor from the persisted backend pointer once,
-    // so a returning user resumes near where they left off. Start/terminal
-    // backend steps (welcome, complete) have no flow step → default to
-    // "language".
-    if (!session || resyncedStepRef.current) return;
-    resyncedStepRef.current = true;
-    const resumed = flowStepForBackendStep(session, session.currentStep);
-    if (!resumed) return;
-    setFlowStepId(resumed.id);
-    if (countedIndexOf(resumed.id) > 0 && !resumeDismissedRef.current) {
-      // Returning mid-flow: offer a "continue where you left off" banner unless
-      // it was already dismissed on a previous reload.
-      const phase = phaseForFlowStep(resumed.id);
-      setResumeBanner({ phaseLabel: phase ? t(phase.labelKey) : "" });
-    }
-  }, [session, t]);
-
-  useEffect(() => {
-    // Hydrate the sticky phone country: a prior choice wins, otherwise derive a
-    // best-effort default from the device/UI locale (the user still confirms).
-    void readPhoneCountry().then((iso) => {
-      if (iso) setPhoneCountryIso(iso);
-      else setPhoneCountryIso((prev) => prev ?? defaultCountryFromLocale(locale));
-    });
-  }, [locale]);
-
-  useEffect(() => {
-    // Load the once-per-device welcome flag so advanceFlow can skip the
-    // interstitial after the language pick on subsequent runs.
-    if (welcomeCheckedRef.current) return;
-    welcomeCheckedRef.current = true;
-    void readWelcomeSeen().then((seen) => {
-      welcomeSeenRef.current = seen;
-    });
-    void readResumeDismissed().then((dismissed) => {
-      resumeDismissedRef.current = dismissed;
-    });
-  }, []);
-
-  useEffect(() => {
-    // Re-hydrate form/items only when the BACKEND step changes. Sibling flow
-    // steps that share a backend step (location↔personal, headline↔links)
-    // keep accumulating into the same formData instead of being wiped.
-    if (!session) return;
-    const backendStepId = currentStep?.id;
-    if (prevBackendStepIdRef.current === backendStepId) return;
-    prevBackendStepIdRef.current = backendStepId;
-    const saved = getSavedDataForStep(session, currentStep);
-    setFormData(saved);
-    setItems(getSavedItemsForStep(session, currentStep));
-    setNoItemsAck(false);
-    // Re-entering a step the user already tried (and failed) to submit keeps
-    // its errors visible, so the "why" survives a Back/Next round-trip.
-    setErrors(
-      backendStepId && currentStep && attemptedSteps.has(backendStepId)
-        ? validateStepFields(currentStep, saved)
-        : {},
-    );
-    if (!backendStepId) return;
-    void readStepDraft(backendStepId).then((draft) => {
-      if (!draft || prevBackendStepIdRef.current !== backendStepId) return;
-      if (Object.keys(draft.data).length > 0) setFormData((prev) => ({ ...prev, ...draft.data }));
-      if (draft.items.length > 0) setItems(draft.items);
-    });
-  }, [currentStep, session, attemptedSteps, setFormData, setItems]);
-
-  useEffect(() => {
-    // Pre-fill the headline from the current job once, until the user edits it.
-    if (flowStepId !== "headline" || editStepId) return;
-    const workStep = session?.steps.find((step) => step.sectionTypeKey === "work_experience_v1");
-    const suggested = suggestHeadlineFromExperience(getSavedItemsForStep(session, workStep));
-    if (!suggested) return;
-    setFormData((prev) => (prev.headline?.trim() ? prev : { ...prev, headline: suggested }));
-  }, [flowStepId, editStepId, session, setFormData]);
-
-  useEffect(() => {
-    if (!currentStep) return;
-    void saveStepDraft(currentStep.id, formData, items);
-  }, [currentStep, formData, items]);
-
-  // The backend routes posted data into buckets by its OWN stored pointer, and
-  // `goto` repositions that pointer with no validation — so the app drives
-  // ordering by positioning the pointer right before each save.
-  async function saveBackendStep(
-    stepId: string,
-    payload: NonNullable<Parameters<typeof nextStep.mutateAsync>[0]["data"]>,
-  ) {
-    await gotoStep.mutateAsync({ data: { stepId }, params: { locale } });
-    await nextStep.mutateAsync({ data: payload, params: { locale } });
-    await clearStepDraft(stepId);
-  }
-
-  async function handleAddSection(extraId: string) {
-    if (isPending) return;
-    const nextExtras = Array.from(new Set([...(session?.activatedExtras ?? []), extraId]));
-    await extras.mutateAsync({ data: { extras: nextExtras }, params: { locale } });
-    await gotoStep.mutateAsync({ data: { stepId: extraId }, params: { locale } });
-    setEditStepId(extraId);
-  }
-
-  // Save wrapper that keeps the data on failure and arms a retry instead of
-  // throwing — a dropped connection mid-flow shouldn't lose what was typed.
-  async function commitSave(
-    stepId: string,
-    payload: Parameters<typeof saveBackendStep>[1],
-    isEdit: boolean,
-  ): Promise<boolean> {
-    setSaveError("");
-    try {
-      await saveBackendStep(stepId, payload);
-      lastSaveRef.current = null;
-      return true;
-    } catch {
-      lastSaveRef.current = { stepId, payload, isEdit };
-      setSaveError(t("onboarding.saveFailed"));
-      return false;
-    }
-  }
-
-  function advanceFlow() {
-    const nextFlow = nextFlowStep(flowStepId);
-    if (!nextFlow) return;
-    // Skip the welcome interstitial when it's already been seen on this device.
-    if (nextFlow.id === "welcome" && welcomeSeenRef.current) {
-      const afterWelcome = nextFlowStep("welcome");
-      if (afterWelcome) setFlowStepId(afterWelcome.id);
-      return;
-    }
-    setFlowStepId(nextFlow.id);
-  }
-
-  function markAttempted(stepId: string) {
-    setAttemptedSteps((current) => {
-      if (current.has(stepId)) return current;
-      const next = new Set(current);
-      next.add(stepId);
-      return next;
-    });
-  }
-
-  async function handleNext() {
-    if (!flowStep || isPending) return;
-
-    // Editing a section from the review hub: persist the whole backend step and
-    // return to review (the cursor is already parked on the review step).
-    if (editStep) {
-      const editErrors = validateStepFields(editStep, formData);
-      setErrors(editErrors);
-      if (!canContinueStep(editStep, formData, items)) {
-        markAttempted(editStep.id);
-        return;
-      }
-      if (await commitSave(editStep.id, buildNextPayload(editStep, formData, items), true)) {
-        setEditStepId(null);
-      }
-      return;
-    }
-
-    if (currentStep) {
-      // Optional step acknowledged as empty ("I have none" / "skip this step")
-      // → persist the skip payload and advance. Covers empty sections and the
-      // optional links step, both gated on the same ack checkbox.
-      if (flowStep.optional && stepIsEmpty && noItemsAck) {
-        await handleSkip();
-        return;
-      }
-      const nextErrors = validateStepFields(currentStep, formData, activeFieldKeys);
-      setErrors(nextErrors);
-      if (!canContinueStep(currentStep, formData, items, activeFieldKeys)) {
-        markAttempted(currentStep.id);
-        return;
-      }
-      // Sibling sub-steps (location, headline) defer the save to the last flow
-      // step sharing their backend step, so the merged payload lands at once.
-      if (isLastFlowStepForBackend(flowStep)) {
-        const saved = await commitSave(
-          currentStep.id,
-          buildNextPayload(currentStep, formData, items),
-          false,
-        );
-        if (!saved) return;
-      }
-    }
-    advanceFlow();
-  }
-
-  async function handleSkip() {
-    if (!flowStep || isPending) return;
-    if (currentStep && isLastFlowStepForBackend(flowStep)) {
-      // Sections mark themselves skipped; optional form steps just persist
-      // whatever was accumulated (e.g. a headline typed before skipping links).
-      const payload = isSectionStep(currentStep)
-        ? buildSkipPayload()
-        : buildNextPayload(currentStep, formData, items);
-      if (!(await commitSave(currentStep.id, payload, false))) return;
-    }
-    advanceFlow();
-  }
-
-  // The save-failure banner re-runs the exact pending save, then resumes the
-  // navigation the original action intended.
-  async function retrySave() {
-    const pending = lastSaveRef.current;
-    if (!pending || isPending) return;
-    if (!(await commitSave(pending.stepId, pending.payload, pending.isEdit))) return;
-    if (pending.isEdit) setEditStepId(null);
-    else advanceFlow();
-  }
-
-  function handleBack() {
-    if (isPending) return;
-    setSaveError("");
-    if (editStep) {
-      setEditStepId(null);
-      return;
-    }
-    // Step over intro screens (welcome is forward-only) when going back.
-    let prev = prevFlowStep(flowStepId);
-    while (prev?.intro) prev = prevFlowStep(prev.id);
-    if (prev) setFlowStepId(prev.id);
-  }
-
-  function handleGoto(stepId: string) {
-    if (isPending) return;
-    setEditStepId(stepId);
-  }
-
-  function dismissResumeBanner() {
-    setResumeBanner(null);
-    resumeDismissedRef.current = true;
-    void markResumeDismissed();
-  }
-
-  /** First backend form step whose saved data fails the (Kubb-contract)
-   *  per-step validation. Sections + resume-style are validated elsewhere. */
-  function firstInvalidProfileStep(): string | null {
-    if (!session) return null;
-    for (const step of session.steps) {
-      if (isSectionStep(step) || isResumeStyleStep(step)) continue;
-      const stepErrors = validateStepFields(step, getSavedDataForStep(session, step));
-      if (Object.keys(stepErrors).length > 0) return step.id;
-    }
-    return null;
-  }
-
-  function handleComplete() {
-    setCompleteError("");
-    if (session?.missingRequired?.length) {
-      setCompleteError(t("onboarding.missingRequired"));
-      return;
-    }
-    // Pre-complete gate: validate the assembled profile with the same
-    // contract rules as the steps, and route to the first step with an invalid
-    // field — its errors surface inline on entry (the step is marked attempted)
-    // — instead of round-tripping to the backend for a generic
-    // INVALID_PROFESSIONAL_PROFILE.
-    const invalidStepId = firstInvalidProfileStep();
-    if (invalidStepId) {
-      markAttempted(invalidStepId);
-      setEditStepId(invalidStepId);
-      setCompleteError(t("onboarding.fixBeforeComplete"));
-      return;
-    }
-    complete.mutate();
-  }
+  const {
+    locale,
+    t,
+    setLocale,
+    width,
+    height,
+    sessionQuery,
+    fallbackSession,
+    session,
+    flowStep,
+    flowStepId,
+    editStep,
+    editStepId,
+    currentStep,
+    flowFields,
+    activeFieldKeys,
+    stepIsEmpty,
+    formData,
+    setFormData,
+    items,
+    setItems,
+    errors,
+    setErrors,
+    noItemsAck,
+    setNoItemsAck,
+    phoneCountryIso,
+    setPhoneCountry,
+    resumeBanner,
+    saveError,
+    completeError,
+    isPending,
+    nextStep,
+    gotoStep,
+    extras,
+    complete,
+    retryLoad,
+    handleNext,
+    handleBack,
+    handleGoto,
+    handleComplete,
+    handleAddSection,
+    retrySave,
+    dismissResumeBanner,
+    markWelcomeSeenAndAdvance,
+  } = useOnboardingFlow();
 
   if (sessionQuery.isLoading && !fallbackSession) {
     return <CenteredState label={t("common.loading")} />;
@@ -556,16 +132,7 @@ function OnboardingWizardInner(): ReactElement {
 
   // Welcome intro: its own centered layout, outside the counted progress.
   if (!editStep && flowStep.intro) {
-    return (
-      <WelcomeScreen
-        t={t}
-        onStart={() => {
-          welcomeSeenRef.current = true;
-          void markWelcomeSeen();
-          advanceFlow();
-        }}
-      />
-    );
+    return <WelcomeScreen t={t} onStart={markWelcomeSeenAndAdvance} />;
   }
 
   const isLocal = !editStep && flowStep.kind === "local";
@@ -701,10 +268,7 @@ function OnboardingWizardInner(): ReactElement {
                       errors={errors}
                       onChange={setFormData}
                       phoneCountryIso={phoneCountryIso}
-                      onPhoneCountry={(iso) => {
-                        setPhoneCountryIso(iso);
-                        void savePhoneCountry(iso);
-                      }}
+                      onPhoneCountry={setPhoneCountry}
                     />
                   )}
                 </View>
