@@ -1,10 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
@@ -25,38 +22,21 @@
   "targetDefaults": {
     "build": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     },
     "test": {
       "cache": true,
-      "inputs": [
-        "default",
-        "^production"
-      ]
+      "inputs": ["default", "^production"]
     },
     "lint": {
       "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/biome.json"
-      ]
+      "inputs": ["default", "{workspaceRoot}/biome.json"]
     },
     "typecheck": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "default",
-        "^production",
-        "{workspaceRoot}/tsconfig.base.json"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^production", "{workspaceRoot}/tsconfig.base.json"]
     }
   },
   "plugins": [
@@ -90,10 +70,7 @@
     }
   ],
   "release": {
-    "projects": [
-      "packages/*",
-      "apps/*"
-    ]
+    "projects": ["packages/*", "apps/*"]
   },
   "defaultBase": "main",
   "analytics": true

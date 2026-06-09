@@ -39,7 +39,8 @@
       "!**/coverage",
       "!**/*.html",
       "!**/*.css",
-      "!**/src/generated"
+      "!**/src/generated",
+      "!**/contracts"
     ]
   }
 }

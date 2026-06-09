@@ -66,9 +66,7 @@ config.resolver.alias = {
 // `import.meta` é parse error fatal → bundle inteiro quebra → tela branca.
 // Nativo não é afetado (resolve a condition `react-native` → CJS, que usa
 // process.env.NODE_ENV). Então forçamos o build CJS do zustand só na web.
-const zustandDir = path.dirname(
-  require.resolve("zustand/package.json", { paths: [projectRoot] }),
-);
+const zustandDir = path.dirname(require.resolve("zustand/package.json", { paths: [projectRoot] }));
 const upstreamResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (platform === "web" && (moduleName === "zustand" || moduleName.startsWith("zustand/"))) {
