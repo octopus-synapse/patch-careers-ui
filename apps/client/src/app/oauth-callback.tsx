@@ -14,8 +14,8 @@ import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useEffect } from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import { failToSignIn } from "@/components/auth/helpers/failToSignIn";
-import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
-import { useCompleteAuth } from "@/components/auth/hooks/useCompleteAuth";
+import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
+import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { OAUTH_CALLBACK_URL, resolveApiBaseURL } from "@/config/api";
 
 export default function OAuthCallbackScreen(): ReactElement {

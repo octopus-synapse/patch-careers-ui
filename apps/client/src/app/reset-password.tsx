@@ -19,8 +19,8 @@ import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { View } from "react-native";
 import { AuthPasswordField } from "@/components/auth/fields";
-import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
-import { useSubmit } from "@/components/auth/hooks/useSubmit";
+import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
+import { useSubmit } from "@/components/auth/hooks/use-submit";
 
 export default function ResetPasswordScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();

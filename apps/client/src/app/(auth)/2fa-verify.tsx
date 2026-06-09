@@ -21,9 +21,9 @@ import { type ReactElement, useState } from "react";
 import { Platform, View } from "react-native";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { failToSignIn } from "@/components/auth/helpers/failToSignIn";
-import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
-import { useCompleteAuth } from "@/components/auth/hooks/useCompleteAuth";
-import { useSubmit } from "@/components/auth/hooks/useSubmit";
+import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
+import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
+import { useSubmit } from "@/components/auth/hooks/use-submit";
 
 export default function TwoFactorVerifyScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();

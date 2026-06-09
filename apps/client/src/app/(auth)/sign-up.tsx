@@ -24,9 +24,9 @@ import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Platform, type TextInput, View } from "react-native";
 import { AuthEmailField, AuthPasswordField } from "@/components/auth/fields";
 import { handleAuthApiError } from "@/components/auth/helpers/handleAuthApiError";
-import { useAuthFields } from "@/components/auth/hooks/useAuthFields";
-import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
-import { useSubmit } from "@/components/auth/hooks/useSubmit";
+import { useAuthFields } from "@/components/auth/hooks/use-auth-fields";
+import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
+import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keepSignedInPreference";
 import { validateSignup } from "@/components/auth/validation";
 

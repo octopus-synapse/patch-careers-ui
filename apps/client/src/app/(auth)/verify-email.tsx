@@ -17,9 +17,9 @@ import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
-import { useAuthScreen } from "@/components/auth/hooks/useAuthScreen";
-import { useCompleteAuth } from "@/components/auth/hooks/useCompleteAuth";
-import { useSubmit } from "@/components/auth/hooks/useSubmit";
+import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
+import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
+import { useSubmit } from "@/components/auth/hooks/use-submit";
 
 const RESEND_COOLDOWN_S = 60;
 
