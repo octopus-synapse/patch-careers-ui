@@ -3,14 +3,15 @@
  *
  * Validates on touch and resolves errors from the schema, so a form's source
  * of truth is its Zod schema (often a Kubb-generated one) rather than ad-hoc
- * field checks. `z.input`/`z.output` are threaded so schemas with coercion or
- * transforms keep their typed parsed result on submit.
+ * field checks. Constrained to object schemas (the shape every form has) so
+ * @hookform/resolvers' zod overload resolves; `z.input`/`z.output` are threaded
+ * so schemas with coercion or transforms keep their typed parsed result.
  */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UseFormProps, useForm } from "react-hook-form";
 import type { z } from "zod";
 
-export function useZodForm<TSchema extends z.ZodType>(
+export function useZodForm<TSchema extends z.ZodObject<z.ZodRawShape>>(
   schema: TSchema,
   options?: Omit<UseFormProps<z.input<TSchema>, unknown, z.output<TSchema>>, "resolver">,
 ) {

@@ -25,6 +25,8 @@
     "src/config/**/*.tsx",
     "src/features/**/*.ts",
     "src/features/**/*.tsx",
+    "src/forms/**/*.ts",
+    "src/forms/**/*.tsx",
     "src/navigation/**/*.ts",
     "src/navigation/**/*.tsx",
     "src/providers/**/*.ts",
