@@ -92,13 +92,13 @@ import {
   saveStepDraft,
 } from "../lib/storage";
 import { suggestHeadlineFromExperience } from "../lib/suggestions";
+import { useWizardStore, WizardStoreProvider } from "../model/wizard-store-context";
 import type {
   FormData,
   OnboardingField,
   OnboardingSession,
   OnboardingStep,
   ResumeStyleOption,
-  SectionItem,
 } from "../types";
 import { LocationPicker } from "./location-picker";
 import { sectionArtFor, WelcomeArt } from "./onboarding-art";
@@ -113,14 +113,27 @@ function getErrorStatus(error: unknown): number | undefined {
 }
 
 export function OnboardingWizard(): ReactElement {
+  // Scope the draft store to one wizard mount; it is discarded on exit.
+  return (
+    <WizardStoreProvider>
+      <OnboardingWizardInner />
+    </WizardStoreProvider>
+  );
+}
+
+function OnboardingWizardInner(): ReactElement {
   const { locale, t, setLocale } = useI18n();
   const { width, height } = useWindowDimensions();
   const router = useRouter();
   const queryClient = useQueryClient();
   const sessionKey = useMemo(() => getV1OnboardingSessionQueryKey({ locale }), [locale]);
   const [fallbackSession, setFallbackSession] = useState<OnboardingSession | null>(null);
-  const [formData, setFormData] = useState<FormData>({});
-  const [items, setItems] = useState<SectionItem[]>([]);
+  // Draft lives in the scoped wizard store (ADR-0004). setFormData/setItems keep
+  // useState's value-or-updater signature, so the call sites below are unchanged.
+  const formData = useWizardStore((s) => s.formData);
+  const setFormData = useWizardStore((s) => s.setFormData);
+  const items = useWizardStore((s) => s.items);
+  const setItems = useWizardStore((s) => s.setItems);
   // Optional section steps require an explicit acknowledgement ("I don't have
   // any X") to continue when empty — so the user can't blow past them blindly.
   const [noItemsAck, setNoItemsAck] = useState(false);
@@ -325,7 +338,7 @@ export function OnboardingWizard(): ReactElement {
       if (Object.keys(draft.data).length > 0) setFormData((prev) => ({ ...prev, ...draft.data }));
       if (draft.items.length > 0) setItems(draft.items);
     });
-  }, [currentStep, session, attemptedSteps]);
+  }, [currentStep, session, attemptedSteps, setFormData, setItems]);
 
   useEffect(() => {
     // Pre-fill the headline from the current job once, until the user edits it.
@@ -334,7 +347,7 @@ export function OnboardingWizard(): ReactElement {
     const suggested = suggestHeadlineFromExperience(getSavedItemsForStep(session, workStep));
     if (!suggested) return;
     setFormData((prev) => (prev.headline?.trim() ? prev : { ...prev, headline: suggested }));
-  }, [flowStepId, editStepId, session]);
+  }, [flowStepId, editStepId, session, setFormData]);
 
   useEffect(() => {
     if (!currentStep) return;
