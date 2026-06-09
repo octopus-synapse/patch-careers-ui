@@ -21,8 +21,8 @@ import {
 } from "@patch-careers/api-client";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { sortMessagesAsc } from "./helpers";
-import type { ChatMessage, ChatUser, Conversation } from "./types";
+import { sortMessagesAsc } from "../lib/helpers";
+import type { ChatMessage, ChatUser, Conversation } from "../types";
 
 const INBOX_LIMIT = 50;
 const THREAD_LIMIT = 100;

@@ -1,4 +1,4 @@
-import type { FormData, SectionField } from "./types";
+import type { FormData, SectionField } from "../types";
 
 const REQUIRED_MESSAGE = "Campo obrigatório";
 const INVALID_URL_MESSAGE = "Informe uma URL válida";

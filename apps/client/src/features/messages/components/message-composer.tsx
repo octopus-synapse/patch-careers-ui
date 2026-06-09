@@ -8,7 +8,7 @@ import { editorialPalette } from "@patch-careers/tokens";
 import { Icon, IconButton, Input, XStack } from "@patch-careers/ui";
 import { Send } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import { chatColors } from "../theme";
+import { chatColors } from "../lib/theme";
 
 export function MessageComposer({
   disabled = false,

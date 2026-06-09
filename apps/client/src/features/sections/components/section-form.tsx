@@ -7,9 +7,9 @@
 import { AnimatedField } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { View } from "react-native";
-import { FieldRenderer } from "./FieldRenderer";
-import { ed } from "./styles";
-import type { FormData, SectionField } from "./types";
+import { ed } from "../lib/styles";
+import type { FormData, SectionField } from "../types";
+import { FieldRenderer } from "./field-renderer";
 
 export function SectionForm({
   data,

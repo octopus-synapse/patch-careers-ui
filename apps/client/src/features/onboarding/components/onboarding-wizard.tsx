@@ -41,8 +41,6 @@ import {
 } from "@/features/sections";
 import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
-import { LocationPicker } from "./components/LocationPicker";
-import { SectionAddPicker } from "./components/SectionAddPicker";
 import {
   countedIndexOf,
   countedTotal,
@@ -54,8 +52,7 @@ import {
   nextFlowStep,
   phaseForFlowStep,
   prevFlowStep,
-} from "./flow/flowPlan";
-import { suggestHeadlineFromExperience } from "./flow/suggestions";
+} from "../lib/flow-plan";
 import {
   atsBand,
   backendStepForFlow,
@@ -77,9 +74,8 @@ import {
   parseResumeStyles,
   validateStepFields,
   visibleFields,
-} from "./helpers";
-import { sectionArtFor, WelcomeArt } from "./illustrations/OnboardingArt";
-import { isProfileFieldRequired } from "./profileValidation";
+} from "../lib/helpers";
+import { isProfileFieldRequired } from "../lib/profile-validation";
 import {
   clearResumeDismissed,
   clearSessionSnapshot,
@@ -94,7 +90,8 @@ import {
   savePhoneCountry,
   saveSessionSnapshot,
   saveStepDraft,
-} from "./storage";
+} from "../lib/storage";
+import { suggestHeadlineFromExperience } from "../lib/suggestions";
 import type {
   FormData,
   OnboardingField,
@@ -102,7 +99,10 @@ import type {
   OnboardingStep,
   ResumeStyleOption,
   SectionItem,
-} from "./types";
+} from "../types";
+import { LocationPicker } from "./location-picker";
+import { sectionArtFor, WelcomeArt } from "./onboarding-art";
+import { SectionAddPicker } from "./section-add-picker";
 
 function getErrorStatus(error: unknown): number | undefined {
   if (!error || typeof error !== "object") return undefined;

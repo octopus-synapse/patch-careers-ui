@@ -8,7 +8,7 @@
  * the time helpers stay deterministic.
  */
 
-import type { ChatMessage, ChatParticipant, ChatUser } from "./types";
+import type { ChatMessage, ChatParticipant, ChatUser } from "../types";
 
 /** Best human label for a participant or a people-search result. */
 export function participantLabel(

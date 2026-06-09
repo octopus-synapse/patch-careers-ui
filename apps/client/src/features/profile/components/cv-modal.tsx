@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ResumePreview } from "@/components/resume-preview";
-import { pf } from "../styles";
+import { pf } from "../lib/styles";
 
 export function CvModal({
   visible,

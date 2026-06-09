@@ -1,5 +1,5 @@
 import { formatDate, type Locale } from "@patch-careers/i18n";
-import type { SectionItem } from "./types";
+import type { SectionItem } from "../types";
 
 const DATE_LIKE = /^\d{4}-\d{2}(-\d{2})?$/;
 

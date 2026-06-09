@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { FLOW_PLAN } from "./flow/flowPlan";
+import type { OnboardingSession, OnboardingStep, SectionItem } from "../types";
+import { FLOW_PLAN } from "./flow-plan";
 import {
   atsBand,
   backendStepForFlow,
@@ -19,7 +20,6 @@ import {
   parseResumeStyles,
   validateStepFields,
 } from "./helpers";
-import type { OnboardingSession, OnboardingStep, SectionItem } from "./types";
 
 const flow = (id: string) => {
   const step = FLOW_PLAN.find((candidate) => candidate.id === id);

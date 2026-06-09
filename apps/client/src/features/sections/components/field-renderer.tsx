@@ -12,10 +12,10 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
-import { monthLabel, parseYearMonth } from "./helpers";
+import { monthLabel, parseYearMonth } from "../lib/helpers";
+import { ed } from "../lib/styles";
+import type { SectionField } from "../types";
 import { FieldLabel, FieldShell, OptionPill, OverlayModal } from "./primitives";
-import { ed } from "./styles";
-import type { SectionField } from "./types";
 
 function DateField({
   allowEmpty,

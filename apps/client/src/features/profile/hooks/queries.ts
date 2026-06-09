@@ -20,8 +20,8 @@ import {
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import type { SectionDescriptor, SectionItem, SectionPersistAction } from "@/features/sections";
-import { fieldsFromDefinition } from "./sectionDefinition";
-import { type PickedImage, uploadProfileImage } from "./uploadProfileImage";
+import { fieldsFromDefinition } from "../lib/section-definition";
+import { type PickedImage, uploadProfileImage } from "../lib/upload-profile-image";
 
 export const WORK_EXPERIENCE_KEY = "work_experience_v1";
 export const EDUCATION_KEY = "education_v1";

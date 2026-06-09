@@ -7,7 +7,7 @@ import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
-import { participantLabel } from "../helpers";
+import { participantLabel } from "../lib/helpers";
 import type { ChatUser } from "../types";
 
 export function UserResultRow({

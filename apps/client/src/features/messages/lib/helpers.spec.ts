@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import type { ChatMessage } from "../types";
 import { buildRenderList, formatTime, participantLabel, sortMessagesAsc, timeAgo } from "./helpers";
-import type { ChatMessage } from "./types";
 
 function msg(
   over: Partial<ChatMessage> & Pick<ChatMessage, "id" | "senderId" | "createdAt">,

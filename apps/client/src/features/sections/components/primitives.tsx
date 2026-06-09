@@ -16,7 +16,7 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
-import { ed } from "./styles";
+import { ed } from "../lib/styles";
 
 export function GhostButton({
   danger,

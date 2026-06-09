@@ -1,10 +1,3 @@
-import type { FlowStep, FlowStepId } from "./flow/flowPlan";
-import { FLOW_PLAN, flowStepsForServerStep } from "./flow/flowPlan";
-import {
-  hasProfileFieldRule,
-  isProfileFieldRequired,
-  validateProfileField,
-} from "./profileValidation";
 import type {
   FormData,
   OnboardingField,
@@ -13,7 +6,14 @@ import type {
   ResumeStyleOption,
   ReviewSection,
   SectionItem,
-} from "./types";
+} from "../types";
+import type { FlowStep, FlowStepId } from "./flow-plan";
+import { FLOW_PLAN, flowStepsForServerStep } from "./flow-plan";
+import {
+  hasProfileFieldRule,
+  isProfileFieldRequired,
+  validateProfileField,
+} from "./profile-validation";
 
 const REQUIRED_MESSAGE = "Campo obrigatório";
 const INVALID_URL_MESSAGE = "Informe uma URL válida";

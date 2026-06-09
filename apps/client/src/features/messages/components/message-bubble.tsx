@@ -8,8 +8,8 @@ import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { Check, CheckCheck } from "lucide-react-native";
 import type { ReactElement } from "react";
-import { formatTime, type RenderedMessage } from "../helpers";
-import { chatColors } from "../theme";
+import { formatTime, type RenderedMessage } from "../lib/helpers";
+import { chatColors } from "../lib/theme";
 
 export function MessageBubble({ item }: { item: RenderedMessage }): ReactElement {
   const { message, own, startsGroup, showAvatar } = item;

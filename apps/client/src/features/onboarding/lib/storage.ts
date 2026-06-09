@@ -1,5 +1,5 @@
 import { mundane } from "@patch-careers/storage";
-import type { FormData, OnboardingSession, SectionItem } from "./types";
+import type { FormData, OnboardingSession, SectionItem } from "../types";
 
 const SNAPSHOT_KEY = "onboarding:session-snapshot";
 const DRAFT_PREFIX = "onboarding:draft:";

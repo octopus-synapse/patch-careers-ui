@@ -8,8 +8,8 @@ import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
-import { participantLabel, timeAgo } from "../helpers";
-import { chatColors } from "../theme";
+import { participantLabel, timeAgo } from "../lib/helpers";
+import { chatColors } from "../lib/theme";
 import type { Conversation } from "../types";
 
 function UnreadPill({ count }: { count: number }): ReactElement {

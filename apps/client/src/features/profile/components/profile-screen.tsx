@@ -23,8 +23,6 @@ import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { SectionItemEditor, type SectionPersistAction } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
-import { CvModal } from "./components/CvModal";
-import { AboutEditSheet, IdentityEditSheet, SocialLinksEditSheet } from "./components/EditSheets";
 import {
   type ProfileSection,
   useMasterResumeId,
@@ -32,10 +30,12 @@ import {
   useProfileMutations,
   useProfileSections,
   useSectionItemMutations,
-} from "./data/hooks";
-import { type CompletenessField, computeCompleteness } from "./helpers/completeness";
-import { buildPublicUrl, shareProfile } from "./helpers/publicLink";
-import { pf } from "./styles";
+} from "../hooks/queries";
+import { type CompletenessField, computeCompleteness } from "../lib/completeness";
+import { buildPublicUrl, shareProfile } from "../lib/public-link";
+import { pf } from "../lib/styles";
+import { CvModal } from "./cv-modal";
+import { AboutEditSheet, IdentityEditSheet, SocialLinksEditSheet } from "./edit-sheets";
 
 type SheetKind = "identity" | "about" | "links";
 

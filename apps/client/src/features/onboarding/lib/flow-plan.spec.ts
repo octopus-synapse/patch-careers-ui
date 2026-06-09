@@ -11,7 +11,7 @@ import {
   nextFlowStep,
   phaseForFlowStep,
   prevFlowStep,
-} from "./flowPlan";
+} from "./flow-plan";
 
 describe("flowPlan", () => {
   it("opens with the language pick, then the welcome intro, and ends at review", () => {

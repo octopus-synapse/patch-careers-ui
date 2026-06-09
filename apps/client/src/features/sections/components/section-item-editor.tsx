@@ -15,18 +15,18 @@ import { AlertCircle, Trash2, X } from "lucide-react-native";
 import { type ComponentType, type ReactElement, useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
-import { itemCardParts, itemSummary } from "./helpers";
-import { AddRow, GhostButton, OverlayModal } from "./primitives";
-import { SectionForm } from "./SectionForm";
-import { ed, webNoOutline } from "./styles";
+import { itemCardParts, itemSummary } from "../lib/helpers";
+import { ed, webNoOutline } from "../lib/styles";
+import { validateSectionFields } from "../lib/validation";
 import type {
   FormData,
   SectionDescriptor,
   SectionField,
   SectionItem,
   SectionPersistAction,
-} from "./types";
-import { validateSectionFields } from "./validation";
+} from "../types";
+import { AddRow, GhostButton, OverlayModal } from "./primitives";
+import { SectionForm } from "./section-form";
 
 /** Illustration component for a section's empty state (e.g. onboarding's art). */
 type SectionArt = ComponentType<{ size?: number }>;
