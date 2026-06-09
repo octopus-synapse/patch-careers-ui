@@ -89,11 +89,6 @@ function ProfileEditSheet({
     }
   };
 
-  const errors: Record<string, string> = {};
-  for (const [key, error] of Object.entries(form.formState.errors)) {
-    if (error?.message) errors[key] = String(error.message);
-  }
-
   const submit = form.handleSubmit(async (values) => {
     try {
       await onSubmit(values);
@@ -108,12 +103,7 @@ function ProfileEditSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title}>
       <View style={pf.sheetBody}>
-        <SectionForm
-          fields={fields}
-          data={draft}
-          errors={errors}
-          onChange={(next) => setDraft(() => next)}
-        />
+        <SectionForm control={form.control} fields={fields} />
         {children?.(draft, setDraft)}
         <View style={pf.sheetActions}>
           <PrimaryAction

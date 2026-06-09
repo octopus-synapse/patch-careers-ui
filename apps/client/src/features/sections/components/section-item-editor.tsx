@@ -13,7 +13,9 @@ import { editorialPalette as authTokens } from "@patch-careers/tokens";
 import { AnimatedField, PrimaryAction } from "@patch-careers/ui/editorial";
 import { AlertCircle, Trash2, X } from "lucide-react-native";
 import { type ComponentType, type ReactElement, useState } from "react";
+import { type Control, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
+import { fieldErrorsResolver } from "@/forms";
 import { useI18n } from "@/providers/i18n-provider";
 import { itemCardParts, itemSummary } from "../lib/helpers";
 import { ed, webNoOutline } from "../lib/styles";
@@ -127,12 +129,10 @@ function SectionEmptyState({
 
 /** Full-screen item editor for section steps. Slides up over the list. */
 function MultiItemEditorModal({
+  control,
   disabled,
-  draft,
-  draftErrors,
   fields,
   onCancel,
-  onChangeDraft,
   onDelete,
   onSave,
   saveDisabled,
@@ -140,12 +140,10 @@ function MultiItemEditorModal({
   title,
   visible,
 }: {
+  control: Control<FormData>;
   disabled: boolean;
-  draft: FormData;
-  draftErrors: Record<string, string>;
   fields: SectionField[];
   onCancel: () => void;
-  onChangeDraft: (data: FormData) => void;
   onDelete?: () => void;
   onSave: () => void;
   saveDisabled: boolean;
@@ -183,12 +181,7 @@ function MultiItemEditorModal({
             contentContainerStyle={ed.editorModalScroll}
             keyboardShouldPersistTaps="handled"
           >
-            <SectionForm
-              fields={fields}
-              data={draft}
-              errors={draftErrors}
-              onChange={onChangeDraft}
-            />
+            <SectionForm control={control} fields={fields} />
           </ScrollView>
           <View style={ed.editorModalFooter}>
             {onDelete ? (
@@ -229,10 +222,14 @@ export function SectionItemEditor({
   t: (key: string) => string;
 }): ReactElement {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [draft, setDraft] = useState<FormData>({});
-  const [draftErrors, setDraftErrors] = useState<Record<string, string>>({});
   const [persisting, setPersisting] = useState(false);
   const fields = step.fields ?? [];
+  // The per-item modal form lives in RHF (ADR-0005); the list of items stays in
+  // the parent (local state for onboarding, refetched query for Profile).
+  const form = useForm<FormData>({
+    defaultValues: {},
+    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),
+  });
   // Safety net: if the section's item fields aren't available (definitions not
   // seeded), don't drop the user into a blank editor — show a notice instead.
   const hasNoFields = fields.length === 0;
@@ -241,27 +238,24 @@ export function SectionItemEditor({
   const activeIndex = editingIndex ?? items.length;
   const isNew = activeIndex === items.length;
   const busy = isPending || persisting;
-  const hasErrors = Object.keys(validateSectionFields(fields, draft)).length > 0;
+  const hasErrors = Object.keys(validateSectionFields(fields, form.watch())).length > 0;
 
   function openNew(): void {
-    setDraft({});
-    setDraftErrors({});
+    form.reset({});
     setEditingIndex(items.length);
   }
 
   function openExisting(index: number): void {
     const content = items[index]?.content ?? {};
-    setDraft(
+    form.reset(
       Object.fromEntries(Object.entries(content).map(([key, value]) => [key, String(value ?? "")])),
     );
-    setDraftErrors({});
     setEditingIndex(index);
   }
 
   function closeEditor(): void {
     setEditingIndex(null);
-    setDraft({});
-    setDraftErrors({});
+    form.reset({});
   }
 
   function itemAt(index: number): SectionItem {
@@ -272,14 +266,11 @@ export function SectionItemEditor({
     };
   }
 
-  async function saveItem(): Promise<void> {
-    const nextErrors = validateSectionFields(fields, draft);
-    setDraftErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
+  const saveItem = form.handleSubmit(async (values) => {
     const existing = items[activeIndex];
     const item: SectionItem = {
       ...(existing?.id ? { id: existing.id } : {}),
-      content: { ...draft },
+      content: { ...values },
     };
     if (onPersistItem) {
       setPersisting(true);
@@ -297,7 +288,7 @@ export function SectionItemEditor({
     next[activeIndex] = item;
     onChange?.(next);
     closeEditor();
-  }
+  });
 
   async function removeAt(index: number): Promise<void> {
     if (onPersistItem) {
@@ -362,9 +353,7 @@ export function SectionItemEditor({
         visible={isEditing}
         title={isNew ? addLabel : t("onboarding.editItem")}
         fields={fields}
-        draft={draft}
-        draftErrors={draftErrors}
-        onChangeDraft={setDraft}
+        control={form.control}
         onSave={() => void saveItem()}
         onCancel={closeEditor}
         {...(isEditing && !isNew ? { onDelete: () => void deleteEditing() } : {})}
