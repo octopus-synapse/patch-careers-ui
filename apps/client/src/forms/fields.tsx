@@ -5,8 +5,9 @@
  * React Hook Form `control`, so forms get validation + state from RHF while
  * the rendered field stays the same Editorial Calm component.
  */
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode, Ref } from "react";
 import { type Control, Controller, type FieldPath, type FieldValues } from "react-hook-form";
+import type { ReturnKeyTypeOptions, TextInput } from "react-native";
 import { AuthEmailField, AuthPasswordField } from "@/components/auth/fields";
 
 type BaseFieldProps<T extends FieldValues> = {
@@ -46,7 +47,16 @@ export function FormPasswordField<T extends FieldValues>({
   onSubmitEditing,
   isNew,
   label,
-}: BaseFieldProps<T> & { isNew?: boolean; label?: string }): ReactElement {
+  inputRef,
+  returnKeyType,
+  children,
+}: BaseFieldProps<T> & {
+  isNew?: boolean;
+  label?: string;
+  inputRef?: Ref<TextInput>;
+  returnKeyType?: ReturnKeyTypeOptions;
+  children?: ReactNode;
+}): ReactElement {
   return (
     <Controller
       control={control}
@@ -57,10 +67,14 @@ export function FormPasswordField<T extends FieldValues>({
           onChangeText={field.onChange}
           error={fieldState.error?.message}
           testID={testID}
+          {...(inputRef ? { inputRef } : {})}
+          {...(returnKeyType ? { returnKeyType } : {})}
           {...(isNew !== undefined ? { isNew } : {})}
           {...(label !== undefined ? { label } : {})}
           {...(onSubmitEditing ? { onSubmitEditing } : {})}
-        />
+        >
+          {children}
+        </AuthPasswordField>
       )}
     />
   );
