@@ -6,7 +6,7 @@ import {
   getCompletedOnboardingRoute,
   VERIFY_EMAIL_ROUTE,
 } from "@/navigation/authRedirect";
-import { useAuthBootstrap, useAuthState } from "@/providers/AuthProvider";
+import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function OnboardingScreen(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();

@@ -9,7 +9,7 @@
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
 import { getAuthenticatedRoute } from "@/navigation/authRedirect";
-import { useAuthBootstrap, useAuthState } from "@/providers/AuthProvider";
+import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function Index(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();

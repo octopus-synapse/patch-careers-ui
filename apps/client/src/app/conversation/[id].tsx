@@ -28,7 +28,7 @@ import { MessageBubble } from "@/features/messages/components/MessageBubble";
 import { MessageComposer } from "@/features/messages/components/MessageComposer";
 import { buildRenderList } from "@/features/messages/helpers";
 import { useConversationThread } from "@/features/messages/hooks";
-import { useAuthState } from "@/providers/AuthProvider";
+import { useAuthState } from "@/providers/auth-provider";
 
 function firstParam(value: string | string[] | undefined): string {
   if (Array.isArray(value)) return value[0] ?? "";

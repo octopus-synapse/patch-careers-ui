@@ -7,7 +7,7 @@ import { useToast } from "@patch-careers/ui";
 import { useCallback } from "react";
 import { Platform } from "react-native";
 import { OAUTH_CALLBACK_URL, oauthWebCallbackUrl, resolveApiBaseURL } from "@/config/api";
-import { useTranslator } from "@/providers/I18nProvider";
+import { useTranslator } from "@/providers/i18n-provider";
 
 /**
  * Drives a native OAuth sign-in: resolves the API base URL, launches the

@@ -22,7 +22,7 @@ import {
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { SectionItemEditor, type SectionPersistAction } from "@/features/sections";
-import { useI18n } from "@/providers/I18nProvider";
+import { useI18n } from "@/providers/i18n-provider";
 import { CvModal } from "./components/CvModal";
 import { AboutEditSheet, IdentityEditSheet, SocialLinksEditSheet } from "./components/EditSheets";
 import {

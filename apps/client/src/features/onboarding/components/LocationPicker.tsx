@@ -14,7 +14,7 @@ import { EditorialLabel, editorialFonts, FieldError } from "@patch-careers/ui/ed
 import { ChevronDown } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useI18n } from "@/providers/I18nProvider";
+import { useI18n } from "@/providers/i18n-provider";
 
 export interface LocationMeta {
   countryCode?: string;

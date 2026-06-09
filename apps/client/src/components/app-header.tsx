@@ -20,7 +20,7 @@ import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAuthState } from "@/providers/AuthProvider";
+import { useAuthState } from "@/providers/auth-provider";
 import { GlobalSearchBar } from "./global-search-bar";
 import { ProfileMenu } from "./profile-menu";
 

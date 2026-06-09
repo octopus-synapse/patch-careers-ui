@@ -11,7 +11,7 @@ import { FieldError, UnderlineInput } from "@patch-careers/ui/editorial";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import { useI18n } from "@/providers/I18nProvider";
+import { useI18n } from "@/providers/i18n-provider";
 import { monthLabel, parseYearMonth } from "./helpers";
 import { FieldLabel, FieldShell, OptionPill, OverlayModal } from "./primitives";
 import { ed } from "./styles";

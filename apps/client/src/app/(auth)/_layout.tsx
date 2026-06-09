@@ -11,7 +11,7 @@
 import { Redirect, Stack, usePathname } from "expo-router";
 import type { ReactElement } from "react";
 import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "@/navigation/authRedirect";
-import { useAuthBootstrap, useAuthState } from "@/providers/AuthProvider";
+import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function AuthLayout(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
