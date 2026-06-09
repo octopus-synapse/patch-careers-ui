@@ -12,7 +12,7 @@
  */
 
 import { signup } from "@patch-careers/api-client";
-import { login } from "@patch-careers/auth";
+import { exchangeSessionForTokens, login } from "@patch-careers/auth";
 import {
   AuthShell,
   CheckboxField,
@@ -98,15 +98,25 @@ export default function SignUpScreen(): ReactElement {
     await run(async () => {
       try {
         await signup(payload);
-        // Signup itself returns no tokens, so establish a session now (the
-        // backend allows logging into an unverified account — it returns
-        // needsEmailVerification=true). Without this, verify-email's
-        // finishAuthentication() bootstraps with no session and bounces to
-        // sign-in instead of onboarding. Best-effort: a failure here just
-        // falls back to the prior behavior.
-        await login(trimmedEmail, pw, isWeb ? { keepSignedIn: rememberMe } : undefined).catch(
-          () => undefined,
-        );
+        // Signup only sets an httpOnly cookie, but mobile auth is Bearer-based
+        // (preferTokens). Log in to obtain a real session: on mobile, login
+        // returns a one-shot sessionExchangeId we swap for a token pair, so the
+        // session survives the verify step. Without this, verify-email's
+        // finishAuthentication() bootstraps with no token and bounces to
+        // sign-in instead of onboarding. Wrapped so a failure still falls back
+        // to the prior behavior (user can verify + sign in manually).
+        try {
+          const result = await login(
+            trimmedEmail,
+            pw,
+            isWeb ? { keepSignedIn: rememberMe } : undefined,
+          );
+          if (result.sessionExchangeId) {
+            await exchangeSessionForTokens(result.sessionExchangeId);
+          }
+        } catch {
+          // Fall through to verify-email regardless.
+        }
         router.replace({ pathname: "/(auth)/verify-email", params: { email: trimmedEmail } });
       } catch (err) {
         handleAuthApiError(err, {
