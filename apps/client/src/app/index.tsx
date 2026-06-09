@@ -8,7 +8,7 @@
 
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
-import { getAuthenticatedRoute } from "@/navigation/authRedirect";
+import { getAuthenticatedRoute } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function Index(): ReactElement | null {

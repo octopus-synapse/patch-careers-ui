@@ -5,7 +5,7 @@ import {
   getAuthenticatedRoute,
   ONBOARDING_ROUTE,
   VERIFY_EMAIL_ROUTE,
-} from "./authRedirect";
+} from "./auth-redirect";
 
 const baseUser: User = {
   userId: "u-1",

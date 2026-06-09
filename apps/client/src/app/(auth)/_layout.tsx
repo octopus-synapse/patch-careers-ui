@@ -10,7 +10,7 @@
 
 import { Redirect, Stack, usePathname } from "expo-router";
 import type { ReactElement } from "react";
-import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "@/navigation/authRedirect";
+import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function AuthLayout(): ReactElement | null {

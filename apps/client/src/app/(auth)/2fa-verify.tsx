@@ -20,7 +20,7 @@ import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Platform, View } from "react-native";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
-import { failToSignIn } from "@/components/auth/helpers/failToSignIn";
+import { failToSignIn } from "@/components/auth/helpers/fail-to-sign-in";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useSubmit } from "@/components/auth/hooks/use-submit";

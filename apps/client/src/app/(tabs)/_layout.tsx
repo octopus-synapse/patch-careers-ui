@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { palette } from "@patch-careers/tokens";
 import { Redirect, Tabs } from "expo-router";
 import { AppHeader } from "@/components/app-header";
-import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/authRedirect";
+import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 type IoniconName = keyof typeof Ionicons.glyphMap;

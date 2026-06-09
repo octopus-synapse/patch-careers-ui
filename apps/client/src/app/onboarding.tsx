@@ -5,7 +5,7 @@ import {
   AUTH_SIGN_IN_ROUTE,
   getCompletedOnboardingRoute,
   VERIFY_EMAIL_ROUTE,
-} from "@/navigation/authRedirect";
+} from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function OnboardingScreen(): ReactElement | null {

@@ -1,6 +1,6 @@
 import type { Locale, Translator } from "@patch-careers/i18n";
 import { describe, expect, it, vi } from "vitest";
-import { handleAuthApiError } from "./handleAuthApiError";
+import { handleAuthApiError } from "./handle-auth-api-error";
 
 const t = ((key: string) => key) as Translator;
 const locale: Locale = "en";

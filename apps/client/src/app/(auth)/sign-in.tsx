@@ -28,13 +28,13 @@ import {
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Platform, type TextInput, View } from "react-native";
 import { AuthEmailField, AuthPasswordField } from "@/components/auth/fields";
-import { handleAuthApiError } from "@/components/auth/helpers/handleAuthApiError";
+import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthFields } from "@/components/auth/hooks/use-auth-fields";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
-import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keepSignedInPreference";
+import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keep-signed-in-preference";
 import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
 import { validateLogin } from "@/components/auth/validation";
 

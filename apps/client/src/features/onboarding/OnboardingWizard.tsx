@@ -39,7 +39,7 @@ import {
   OverlayModal,
   SectionItemEditor,
 } from "@/features/sections";
-import { getCompletedOnboardingRoute } from "@/navigation/authRedirect";
+import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 import { LocationPicker } from "./components/LocationPicker";
 import { SectionAddPicker } from "./components/SectionAddPicker";
