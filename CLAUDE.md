@@ -2,6 +2,17 @@
 
 Este monorepo foi reescrito na V2 pra uma stack universal Expo + RN Web + Tamagui gerenciada por **Nx + pnpm**. Bun, Turbo e SvelteKit foram removidos no big-bang cutover (D49). Não os reintroduza.
 
+## Arquitetura & convenções
+
+Doc normativo: **[ARCHITECTURE.md](./ARCHITECTURE.md)** + ADRs em **[docs/adr/](./docs/adr/)**. Todo código novo DEVE seguir:
+
+- **Naming kebab-case** no sistema de arquivos; export idiomático (componente `app-header.tsx` → `AppHeader`; hook `use-inbox.ts` → `useInbox`; helper `handle-auth-api-error.ts`). Testes `*.spec.ts` colocados. Rotas Expo em `app/**` seguem o framework (`_layout.tsx`, `[id].tsx`, `(grupo)/`). (ADR-0001)
+- **Feature-first**: features vivem em `apps/client/src/features/*` com template fixo (`index.ts` · `types.ts` · `components/` · `hooks/` · `lib/` · `model/` opcional). `index.ts` é a **API pública** — imports de fora da feature passam só pelo barrel. (ADR-0002)
+- **Camadas estritas**: `app → features → @patch-careers/ui → @patch-careers/tokens`; infra (`api-client`/`auth`/`state`/`storage`/`i18n`/`platform`) é lateral. Nenhuma seta volta pra cima. Enforçado por Biome `noRestrictedImports` + tags Nx. (ADR-0003)
+- **Estado**: server → React Query (cache é a fonte da verdade); global/persistente → Zustand; efêmero → `useState`/`useReducer`; forms → RHF+Zod. (ADR-0004/0005)
+- **Imports**: alias `@/` → `apps/client/src/`; pacotes do workspace por nome. (ADR-0006)
+- **Pacote só com 2+ consumidores** (rule of three).
+
 ## Package manager: pnpm
 
 - Use `pnpm install` (NUNCA `bun install` / `npm install` / `yarn install`)
@@ -37,7 +48,7 @@ Este monorepo foi reescrito na V2 pra uma stack universal Expo + RN Web + Tamagu
 ## Testes
 
 - **Unit/integration**: Vitest + MSW (D37-D38). NÃO use `bun test`, NÃO use Jest
-- **E2E mobile**: Maestro (planejado pro PR #20). YAML em `apps/app/.maestro/`
+- **E2E mobile**: Maestro (planejado pro PR #20). YAML em `apps/client/.maestro/`
 - **E2E web universal**: Playwright (planejado pro PR #20)
 - Coverage threshold: lines 70%, branches 60% (D39, enforcer em CI)
 
@@ -82,7 +93,7 @@ Este monorepo foi reescrito na V2 pra uma stack universal Expo + RN Web + Tamagu
 
 - **NUNCA** `style="..."` ou `<style>` em componente React Native — use Tamagui styled props ou tokens. (Equivalente da regra antiga "no inline style" do Svelte)
 - **NUNCA** rotas de `apps/web` (SvelteKit) reaparecem — esse repo é Expo agora
-- **Componente reused em 2+ rotas** → vai pra `packages/ui`. Reused em 1 → fica no `apps/app/components/`
+- **Componente reused em 2+ rotas** → vai pra `packages/ui`. Reused em 1 → fica no `apps/client/src/components/` (rule of three)
 - **Adicione comentário** só quando o "porquê" é não-óbvio. WHAT já está no código
 
 ## Decisões e plano
