@@ -42,5 +42,69 @@
       "!**/src/generated",
       "!**/contracts"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/client/src/**", "packages/*/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": {
+              "level": "error",
+              "options": { "filenameCases": ["kebab-case"], "requireAscii": true }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/client/src/app/**"],
+      "linter": {
+        "rules": { "style": { "useFilenamingConvention": "off" } }
+      }
+    },
+    {
+      "includes": ["packages/tokens/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@patch-careers/ui": "tokens is a leaf layer (ADR-0003)",
+                  "@patch-careers/api-client": "tokens is a leaf layer (ADR-0003)",
+                  "@patch-careers/auth": "tokens is a leaf layer (ADR-0003)",
+                  "@patch-careers/state": "tokens is a leaf layer (ADR-0003)",
+                  "@patch-careers/storage": "tokens is a leaf layer (ADR-0003)",
+                  "@patch-careers/i18n": "tokens is a leaf layer (ADR-0003)",
+                  "@patch-careers/platform": "tokens is a leaf layer (ADR-0003)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/ui/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@patch-careers/api-client": "ui must not depend on the data layer (ADR-0003)",
+                  "@patch-careers/auth": "ui must not depend on the auth/session layer (ADR-0003)",
+                  "@patch-careers/state": "ui must not depend on app state stores (ADR-0003)",
+                  "@patch-careers/storage": "ui must not depend on the storage layer (ADR-0003)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
