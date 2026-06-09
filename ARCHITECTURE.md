@@ -68,6 +68,15 @@ packages/
   ui/                                           # design system (primitives/compounds/editorial)
 ```
 
+### 3.1 Colocação de componentes (rule of three)
+
+Um componente reusado em **2+ lugares** e **genérico** (depende só de `ui`/`tokens`/RN)
+vai pra `@patch-careers/ui`; reusado em 1 lugar ou acoplado a app/feature/infra fica em
+`apps/client/src/components/`. Auditoria de 2026-06-09: todos os componentes app-local estão
+corretamente colocados — `resume-preview` fica no app por depender de `@patch-careers/api-client`
+(mover violaria as camadas), `confirm-dialog`/`global-search-bar` têm 1 consumidor cada, e
+`placeholder-screen` se sobrepõe ao `EmptyState` que o `ui` já expõe. Nada a migrar.
+
 ---
 
 ## 4. Convenções de naming
