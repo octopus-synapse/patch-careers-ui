@@ -19,17 +19,17 @@ import { ChevronLeft, MessageCircle, Search as SearchIcon } from "lucide-react-n
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ConversationListSkeleton } from "@/features/messages/components/conversation-list-skeleton";
-import { ConversationRow } from "@/features/messages/components/conversation-row";
-import { UserResultRow } from "@/features/messages/components/user-result-row";
-import { UserSearchField } from "@/features/messages/components/user-search-field";
+import type { ChatUser, Conversation } from "@/features/messages";
 import {
+  ConversationListSkeleton,
+  ConversationRow,
   lookupConversationWithUser,
+  participantLabel,
+  UserResultRow,
+  UserSearchField,
   useInbox,
   useUserSearch,
-} from "@/features/messages/hooks/queries";
-import { participantLabel } from "@/features/messages/lib/helpers";
-import type { ChatUser, Conversation } from "@/features/messages/types";
+} from "@/features/messages";
 
 function RowSeparator(): ReactElement {
   return (

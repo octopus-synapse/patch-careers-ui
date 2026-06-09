@@ -9,7 +9,7 @@ import { Sheet } from "@patch-careers/ui";
 import { PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { LocationPicker } from "@/features/onboarding/components/location-picker";
+import { LocationPicker } from "@/features/onboarding";
 import {
   type FormData,
   type SectionField,

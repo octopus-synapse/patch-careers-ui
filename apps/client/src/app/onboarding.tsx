@@ -1,6 +1,6 @@
 import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
-import { OnboardingWizard } from "@/features/onboarding/components/onboarding-wizard";
+import { OnboardingWizard } from "@/features/onboarding";
 import {
   AUTH_SIGN_IN_ROUTE,
   getCompletedOnboardingRoute,

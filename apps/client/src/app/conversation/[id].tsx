@@ -23,11 +23,13 @@ import { type ReactElement, useCallback, useEffect, useRef } from "react";
 import { ActivityIndicator, Keyboard, ScrollView, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ChatHeader } from "@/features/messages/components/chat-header";
-import { MessageBubble } from "@/features/messages/components/message-bubble";
-import { MessageComposer } from "@/features/messages/components/message-composer";
-import { useConversationThread } from "@/features/messages/hooks/queries";
-import { buildRenderList } from "@/features/messages/lib/helpers";
+import {
+  buildRenderList,
+  ChatHeader,
+  MessageBubble,
+  MessageComposer,
+  useConversationThread,
+} from "@/features/messages";
 import { useAuthState } from "@/providers/auth-provider";
 
 function firstParam(value: string | string[] | undefined): string {
