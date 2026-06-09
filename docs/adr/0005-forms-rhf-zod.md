@@ -26,4 +26,15 @@ DS editorial são integrados via `Controller`, com wrappers reutilizáveis.
 
 - Validação unificada nos schemas Zod (fonte única, alinhada ao backend via Kubb).
 - Menos re-renders e menos código por form.
-- Migração incremental de auth/profile/sections/onboarding (fase pesada do refactor).
+- Migração incremental de auth/profile/sections.
+
+## Escopo — o que NÃO usa RHF (e por quê)
+
+- **Onboarding `StepForm`**: o draft do wizard vive no Zustand escopado por
+  decisão de arquitetura ([ADR-0004](./0004-state-management.md) — persiste entre
+  steps). RHF (estado de form local por step) criaria duas fontes de verdade, então
+  o `StepForm` continua store-backed/controlado. O editor de itens de seção
+  (`SectionItemEditor`) **usa** RHF no form do modal por-item — o store guarda a
+  lista, não o draft de um item.
+- **OTP de campo único** (`2fa-verify`, `verify-email`): RHF não agrega para um
+  único campo com `OtpInput` próprio — ficam como estão.
