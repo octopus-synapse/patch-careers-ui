@@ -6,8 +6,10 @@
  * `(11) 97883-3101`) while the component emits the canonical
  * `+<dial><national>` string the backend stores.
  *
- * The country sheet is rendered through the shared `<ListPicker>` so the
- * sheet/search/row scaffolding lives in one place.
+ * The country sheet is rendered through the shared `<CatalogPickerSheet>`
+ * (the editorial chrome the location/institution/course pickers use) so all
+ * catalog-style sheets in the app look the same: flag as the leading emoji,
+ * dial code as the mono meta line, a check on the current country.
  *
  * Router/data-agnostic — pure presentational compound. Phone formatting lives
  * in `internal/phone-mask`.
@@ -27,10 +29,9 @@ import {
 } from "../internal/phone-mask";
 import { Input } from "../primitives/input";
 import { Label } from "../primitives/label";
-import { Pill } from "../primitives/pill";
 import { XStack, YStack } from "../primitives/stack";
 import { Text } from "../primitives/text";
-import { ListPicker, type ListPickerOption } from "./list-picker";
+import { CatalogPickerSheet, type CatalogRow } from "./catalog-picker-field";
 
 export interface PhoneInputProps {
   label: string;
@@ -61,6 +62,7 @@ export function PhoneInput({
   });
   const [national, setNational] = useState<string>(() => parseCanonicalPhone(value).national);
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   // Track what we last emitted so an external value change (e.g. a draft
   // loading asynchronously) re-syncs us, but our own emits don't.
@@ -104,22 +106,20 @@ export function PhoneInput({
     onCountryChange?.(c.iso);
   };
 
-  const countryOptions = useMemo<ListPickerOption[]>(
-    () =>
-      PHONE_COUNTRIES.map((c) => ({
-        id: c.iso,
-        label: c.name,
-        icon: <Text>{c.flag}</Text>,
-        trailing: (
-          <Pill intent="neutral" selected={c.iso === country.iso}>
-            +{c.dialCode}
-          </Pill>
-        ),
-        // Allow matching by name, ISO code, or dial code (e.g. "br" / "55").
-        searchText: `${c.name} ${c.iso} ${c.dialCode}`,
-      })),
-    [country.iso],
-  );
+  // Closed list filtered locally; matches by name, ISO code, or dial code
+  // (e.g. "br" / "55").
+  const countryRows = useMemo<CatalogRow[]>(() => {
+    const q = search.trim().toLowerCase();
+    return PHONE_COUNTRIES.filter(
+      (c) => q.length === 0 || `${c.name} ${c.iso} ${c.dialCode}`.toLowerCase().includes(q),
+    ).map((c) => ({
+      key: c.iso,
+      title: c.name,
+      meta: `+${c.dialCode}`,
+      leading: c.flag,
+      selected: c.iso === country.iso,
+    }));
+  }, [search, country.iso]);
 
   const hasError = Boolean(error);
 
@@ -127,7 +127,13 @@ export function PhoneInput({
     <YStack gap={4}>
       <Label>{label}</Label>
       <XStack gap={8} alignItems="center">
-        <Pressable onPress={() => setOpen(true)} accessibilityRole="button">
+        <Pressable
+          onPress={() => {
+            setSearch("");
+            setOpen(true);
+          }}
+          accessibilityRole="button"
+        >
           <XStack
             alignItems="center"
             gap={4}
@@ -156,15 +162,16 @@ export function PhoneInput({
         </Text>
       ) : null}
 
-      <ListPicker
+      <CatalogPickerSheet
         open={open}
         onOpenChange={setOpen}
-        options={countryOptions}
-        onPick={pickCountry}
         title="Selecione o país"
-        searchable
         searchPlaceholder="Buscar país..."
-        snapPoints={[70]}
+        searchText={search}
+        onSearchTextChange={setSearch}
+        hint={countryRows.length === 0 ? `Nenhum país para “${search.trim()}”` : null}
+        rows={countryRows}
+        onSelectRow={(row) => pickCountry(row.key)}
       />
     </YStack>
   );

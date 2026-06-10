@@ -117,6 +117,7 @@ export type { PostV1ResumesResumeIdCommentsMutationKey } from "./hooks/collabora
 export type { DeleteV1PostsCommentsIdMutationKey } from "./hooks/commentsController/useDeleteV1PostsCommentsId.ts";
 export type { GetV1PostsIdCommentsQueryKey } from "./hooks/commentsController/useGetV1PostsIdComments.ts";
 export type { PostV1PostsIdCommentsMutationKey } from "./hooks/commentsController/usePostV1PostsIdComments.ts";
+export type { GetV1CompaniesSearchQueryKey } from "./hooks/companiesController/useGetV1CompaniesSearch.ts";
 export type { GetV1ConfigPasswordPolicyQueryKey } from "./hooks/configController/useGetV1ConfigPasswordPolicy.ts";
 export type { GetV1DslRenderPublicSlugQueryKey } from "./hooks/dslController/useGetV1DslRenderPublicSlug.ts";
 export type { GetV1DslRenderResumeIdQueryKey } from "./hooks/dslController/useGetV1DslRenderResumeId.ts";
@@ -550,6 +551,7 @@ export type { PostV1ResumesResumeIdCommentsPathParams, PostV1ResumesResumeIdComm
 export type { DeleteV1PostsCommentsIdPathParams, DeleteV1PostsCommentsId200DeletedEnum, DeleteV1PostsCommentsId200, DeleteV1PostsCommentsId400SeverityEnum, DeleteV1PostsCommentsId400, DeleteV1PostsCommentsId401SeverityEnum, DeleteV1PostsCommentsId401, DeleteV1PostsCommentsId403SeverityEnum, DeleteV1PostsCommentsId403, DeleteV1PostsCommentsId404SeverityEnum, DeleteV1PostsCommentsId404, DeleteV1PostsCommentsIdMutationResponse, DeleteV1PostsCommentsIdMutation } from "./ts/commentsController/DeleteV1PostsCommentsId.ts";
 export type { GetV1PostsIdCommentsPathParams, GetV1PostsIdCommentsQueryParams, GetV1PostsIdComments200, GetV1PostsIdComments400SeverityEnum, GetV1PostsIdComments400, GetV1PostsIdComments401SeverityEnum, GetV1PostsIdComments401, GetV1PostsIdComments403SeverityEnum, GetV1PostsIdComments403, GetV1PostsIdComments404SeverityEnum, GetV1PostsIdComments404, GetV1PostsIdCommentsQueryResponse, GetV1PostsIdCommentsQuery } from "./ts/commentsController/GetV1PostsIdComments.ts";
 export type { PostV1PostsIdCommentsPathParams, PostV1PostsIdComments201, PostV1PostsIdComments400SeverityEnum, PostV1PostsIdComments400, PostV1PostsIdComments401SeverityEnum, PostV1PostsIdComments401, PostV1PostsIdComments403SeverityEnum, PostV1PostsIdComments403, PostV1PostsIdComments404SeverityEnum, PostV1PostsIdComments404, PostV1PostsIdCommentsMutationRequest, PostV1PostsIdCommentsMutationResponse, PostV1PostsIdCommentsMutation } from "./ts/commentsController/PostV1PostsIdComments.ts";
+export type { GetV1CompaniesSearchQueryParams, GetV1CompaniesSearch200, GetV1CompaniesSearch400SeverityEnum, GetV1CompaniesSearch400, GetV1CompaniesSearch401SeverityEnum, GetV1CompaniesSearch401, GetV1CompaniesSearchQueryResponse, GetV1CompaniesSearchQuery } from "./ts/companiesController/GetV1CompaniesSearch.ts";
 export type { GetV1ConfigPasswordPolicy200, GetV1ConfigPasswordPolicy400SeverityEnum, GetV1ConfigPasswordPolicy400, GetV1ConfigPasswordPolicyQueryResponse, GetV1ConfigPasswordPolicyQuery } from "./ts/configController/GetV1ConfigPasswordPolicy.ts";
 export type { CreateAccountRequest } from "./ts/CreateAccountRequest.ts";
 export type { CreateJobRequestJobTypeEnum, CreateJobRequestPaymentCurrencyEnum, CreateJobRequestRemotePolicyEnum, CreateJobRequestMinEnglishLevelEnum, CreateJobRequest } from "./ts/CreateJobRequest.ts";
@@ -1006,6 +1008,7 @@ export { postV1ResumesResumeIdCommentsMutationKey, postV1ResumesResumeIdComments
 export { deleteV1PostsCommentsIdMutationKey, deleteV1PostsCommentsId, useDeleteV1PostsCommentsId } from "./hooks/commentsController/useDeleteV1PostsCommentsId.ts";
 export { getV1PostsIdCommentsQueryKey, getV1PostsIdComments, getV1PostsIdCommentsQueryOptions, useGetV1PostsIdComments } from "./hooks/commentsController/useGetV1PostsIdComments.ts";
 export { postV1PostsIdCommentsMutationKey, postV1PostsIdComments, usePostV1PostsIdComments } from "./hooks/commentsController/usePostV1PostsIdComments.ts";
+export { getV1CompaniesSearchQueryKey, getV1CompaniesSearch, getV1CompaniesSearchQueryOptions, useGetV1CompaniesSearch } from "./hooks/companiesController/useGetV1CompaniesSearch.ts";
 export { getV1ConfigPasswordPolicyQueryKey, getV1ConfigPasswordPolicy, getV1ConfigPasswordPolicyQueryOptions, useGetV1ConfigPasswordPolicy } from "./hooks/configController/useGetV1ConfigPasswordPolicy.ts";
 export { getV1DslRenderPublicSlugQueryKey, getV1DslRenderPublicSlug, getV1DslRenderPublicSlugQueryOptions, useGetV1DslRenderPublicSlug } from "./hooks/dslController/useGetV1DslRenderPublicSlug.ts";
 export { getV1DslRenderResumeIdQueryKey, getV1DslRenderResumeId, getV1DslRenderResumeIdQueryOptions, useGetV1DslRenderResumeId } from "./hooks/dslController/useGetV1DslRenderResumeId.ts";
@@ -1436,6 +1439,7 @@ export { postV1ResumesResumeIdComments400SeverityEnum, postV1ResumesResumeIdComm
 export { deleteV1PostsCommentsId200DeletedEnum, deleteV1PostsCommentsId400SeverityEnum, deleteV1PostsCommentsId401SeverityEnum, deleteV1PostsCommentsId403SeverityEnum, deleteV1PostsCommentsId404SeverityEnum } from "./ts/commentsController/DeleteV1PostsCommentsId.ts";
 export { getV1PostsIdComments400SeverityEnum, getV1PostsIdComments401SeverityEnum, getV1PostsIdComments403SeverityEnum, getV1PostsIdComments404SeverityEnum } from "./ts/commentsController/GetV1PostsIdComments.ts";
 export { postV1PostsIdComments400SeverityEnum, postV1PostsIdComments401SeverityEnum, postV1PostsIdComments403SeverityEnum, postV1PostsIdComments404SeverityEnum } from "./ts/commentsController/PostV1PostsIdComments.ts";
+export { getV1CompaniesSearch400SeverityEnum, getV1CompaniesSearch401SeverityEnum } from "./ts/companiesController/GetV1CompaniesSearch.ts";
 export { getV1ConfigPasswordPolicy400SeverityEnum } from "./ts/configController/GetV1ConfigPasswordPolicy.ts";
 export { createJobRequestJobTypeEnum, createJobRequestPaymentCurrencyEnum, createJobRequestRemotePolicyEnum, createJobRequestMinEnglishLevelEnum } from "./ts/CreateJobRequest.ts";
 export { createWebhookRequestEventsEnum } from "./ts/CreateWebhookRequest.ts";
@@ -1873,6 +1877,7 @@ export { postV1ResumesResumeIdCommentsPathParamsSchema, postV1ResumesResumeIdCom
 export { deleteV1PostsCommentsIdPathParamsSchema, deleteV1PostsCommentsId200Schema, deleteV1PostsCommentsId400Schema, deleteV1PostsCommentsId401Schema, deleteV1PostsCommentsId403Schema, deleteV1PostsCommentsId404Schema, deleteV1PostsCommentsIdMutationResponseSchema } from "./zod/commentsController/deleteV1PostsCommentsIdSchema.ts";
 export { getV1PostsIdCommentsPathParamsSchema, getV1PostsIdCommentsQueryParamsSchema, getV1PostsIdComments200Schema, getV1PostsIdComments400Schema, getV1PostsIdComments401Schema, getV1PostsIdComments403Schema, getV1PostsIdComments404Schema, getV1PostsIdCommentsQueryResponseSchema } from "./zod/commentsController/getV1PostsIdCommentsSchema.ts";
 export { postV1PostsIdCommentsPathParamsSchema, postV1PostsIdComments201Schema, postV1PostsIdComments400Schema, postV1PostsIdComments401Schema, postV1PostsIdComments403Schema, postV1PostsIdComments404Schema, postV1PostsIdCommentsMutationRequestSchema, postV1PostsIdCommentsMutationResponseSchema } from "./zod/commentsController/postV1PostsIdCommentsSchema.ts";
+export { getV1CompaniesSearchQueryParamsSchema, getV1CompaniesSearch200Schema, getV1CompaniesSearch400Schema, getV1CompaniesSearch401Schema, getV1CompaniesSearchQueryResponseSchema } from "./zod/companiesController/getV1CompaniesSearchSchema.ts";
 export { getV1ConfigPasswordPolicy200Schema, getV1ConfigPasswordPolicy400Schema, getV1ConfigPasswordPolicyQueryResponseSchema } from "./zod/configController/getV1ConfigPasswordPolicySchema.ts";
 export { createAccountRequestSchema } from "./zod/createAccountRequestSchema.ts";
 export { createJobRequestSchema } from "./zod/createJobRequestSchema.ts";

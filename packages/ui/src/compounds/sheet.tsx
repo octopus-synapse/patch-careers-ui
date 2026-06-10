@@ -3,20 +3,36 @@
  *
  * Native wraps `@tamagui/sheet` (handle, snap points, backdrop). On web a
  * bottom sheet reads wrong, so we render a centered card that mirrors the
- * onboarding editor modal: warm-paper panel (max 560px wide), a serif title +
- * close (X) header over a hairline divider, and a scrollable body.
+ * onboarding editor modal: warm-paper panel (max 560px wide / 90% × 90%), a
+ * serif title + close (X) header over a hairline divider, and a scrollable
+ * body. `presentation="card"` opts native into that same centered card —
+ * used by the catalog pickers so they match the section editor modal.
  *
  * The `@tamagui/sheet` import is tagged `as unknown as ...` to relax Tamagui's
  * tight generic surface (loaded for its runtime, not its TS types).
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
 import { Sheet as TamaguiSheet } from "@tamagui/sheet";
 import { X } from "lucide-react-native";
 import type { ComponentType, ReactNode } from "react";
-import { Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { editorialFonts } from "../editorial/fonts";
 import { asLoose, type LooseProps } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
+import { useThemeName } from "../internal/use-theme-name";
 
 type SheetCompound = ComponentType<LooseProps> & {
   Overlay: ComponentType<LooseProps>;
@@ -35,8 +51,14 @@ export type SheetProps = {
   closeLabel?: string;
   /** Default snap points (% of screen) — native bottom sheet only. */
   snapPoints?: number[];
-  /** Web centered-modal max width in px. Ignored on native. */
+  /** Centered-card max width in px (web always; native with `card`). */
   webMaxWidth?: number;
+  /**
+   * Native presentation: `"sheet"` (default) is the Tamagui bottom sheet;
+   * `"card"` is the web-style centered card (matches the editor modal).
+   * Web always renders the card.
+   */
+  presentation?: "sheet" | "card";
   children?: ReactNode;
 };
 
@@ -49,6 +71,8 @@ function SheetHeader({
   onClose: () => void;
   closeLabel?: string | undefined;
 }) {
+  const palette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   if (!title) return null;
   return (
     <View style={styles.header}>
@@ -59,7 +83,7 @@ function SheetHeader({
         hitSlop={12}
         onPress={onClose}
       >
-        <X size={22} color={editorialPalette.muted} />
+        <X size={22} color={palette.muted} />
       </Pressable>
     </View>
   );
@@ -72,15 +96,26 @@ export function Sheet({
   closeLabel,
   snapPoints = [85, 50, 25],
   webMaxWidth = 560,
+  presentation = "sheet",
   children,
   ...rest
 }: SheetProps) {
+  const styles = stylesByTheme[useThemeName()];
   const close = () => onOpenChange?.(false);
 
-  if (Platform.OS === "web") {
+  if (Platform.OS === "web" || presentation === "card") {
     return (
-      <Modal visible={open} transparent animationType="fade" onRequestClose={close}>
-        <View style={styles.webOverlay}>
+      <Modal
+        visible={open}
+        transparent
+        statusBarTranslucent
+        animationType="fade"
+        onRequestClose={close}
+      >
+        <KeyboardAvoidingView
+          style={styles.webOverlay}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
           {/* Backdrop — tap outside the card to dismiss. */}
           <Pressable
             accessibilityRole="button"
@@ -92,61 +127,82 @@ export function Sheet({
             <SheetHeader title={title} onClose={close} closeLabel={closeLabel} />
             <View style={styles.webBody}>{children}</View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   }
 
+  // Native: with `modal`, the Tamagui sheet portals to the app ROOT, which
+  // sits behind any RN `Modal` already on screen (e.g. the section editors) —
+  // the sheet would open invisibly. Hosting it inside its own RN Modal keeps
+  // it in the frontmost window, so it stacks above modal-presented content
+  // and looks the same when opened from a plain screen.
   return (
-    <TSheet
-      modal
-      open={open}
-      onOpenChange={onOpenChange}
-      dismissOnSnapToBottom
-      snapPoints={snapPoints}
-      animation="medium"
-      {...(rest as LooseProps)}
+    <Modal
+      visible={open}
+      transparent
+      statusBarTranslucent
+      animationType="fade"
+      onRequestClose={close}
     >
-      <TSheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
-      <TSheet.Handle />
-      <TSheet.Frame padding={0}>
-        <SheetHeader title={title} onClose={close} closeLabel={closeLabel} />
-        <View style={styles.nativeBody}>{children}</View>
-      </TSheet.Frame>
-    </TSheet>
+      <TSheet
+        modal={false}
+        open={open}
+        onOpenChange={onOpenChange}
+        dismissOnSnapToBottom
+        snapPoints={snapPoints}
+        animation="medium"
+        {...(rest as LooseProps)}
+      >
+        <TSheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+        <TSheet.Handle />
+        <TSheet.Frame padding={0}>
+          <SheetHeader title={title} onClose={close} closeLabel={closeLabel} />
+          <View style={styles.nativeBody}>{children}</View>
+        </TSheet.Frame>
+      </TSheet>
+    </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  webOverlay: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(10,10,10,0.45)",
-  },
-  webCard: {
-    width: "90%",
-    height: "90%",
-    backgroundColor: editorialPalette.bg,
-    borderRadius: 22,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOpacity: 0.18,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-  },
-  webBody: { flex: 1, minHeight: 0, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 },
-  nativeBody: { flex: 1, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16 },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 22,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: editorialPalette.hairline,
-  },
-  title: { fontFamily: editorialFonts.serif, fontSize: 22, color: editorialPalette.ink },
-});
+const stylesFor = (p: EditorialPalette, scrim: string) =>
+  StyleSheet.create({
+    webOverlay: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: scrim,
+    },
+    webCard: {
+      width: "90%",
+      height: "90%",
+      backgroundColor: p.bg,
+      borderRadius: 22,
+      overflow: "hidden",
+      shadowColor: "#000",
+      shadowOpacity: 0.18,
+      shadowRadius: 24,
+      shadowOffset: { width: 0, height: 12 },
+      // Android shadow when the card presentation renders natively.
+      elevation: 12,
+    },
+    webBody: { flex: 1, minHeight: 0, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 },
+    nativeBody: { flex: 1, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16 },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: 22,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: p.hairline,
+    },
+    title: { fontFamily: editorialFonts.serif, fontSize: 22, color: p.ink },
+  });
+
+const stylesByTheme = {
+  light: stylesFor(editorialPalette, "rgba(10,10,10,0.45)"),
+  dark: stylesFor(editorialPaletteDark, "rgba(0,0,0,0.6)"),
+} as const;
 
 export { TSheet as SheetRoot };

@@ -4,7 +4,7 @@
  * the "Editorial Calm" tone (sober, not a colorful illustration pack).
  */
 
-import { editorialPalette as authTokens } from "@patch-careers/tokens";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import Svg, { Circle, Line, Path, Rect } from "react-native-svg";
 
@@ -13,11 +13,9 @@ export interface OnboardingArtProps {
   readonly size?: number;
 }
 
-const STROKE = authTokens.subtle;
-const ACCENT = authTokens.accent;
-
 /** A résumé page with an accent check — used on the welcome screen. */
 export function WelcomeArt({ size = 132 }: OnboardingArtProps): ReactElement {
+  const { subtle: STROKE, accent: ACCENT } = useEditorialPalette();
   const h = Math.round(size * 0.86);
   return (
     <Svg width={size} height={h} viewBox="0 0 132 114" fill="none">
@@ -72,6 +70,7 @@ export function WelcomeArt({ size = 132 }: OnboardingArtProps): ReactElement {
 
 /** A briefcase outline — work-experience empty state. */
 export function ExperienceArt({ size = 120 }: OnboardingArtProps): ReactElement {
+  const { subtle: STROKE, accent: ACCENT } = useEditorialPalette();
   const h = Math.round(size * 0.8);
   return (
     <Svg width={size} height={h} viewBox="0 0 120 96" fill="none">
@@ -90,6 +89,7 @@ export function ExperienceArt({ size = 120 }: OnboardingArtProps): ReactElement 
 
 /** A graduation cap outline — education empty state. */
 export function EducationArt({ size = 120 }: OnboardingArtProps): ReactElement {
+  const { subtle: STROKE, accent: ACCENT } = useEditorialPalette();
   const h = Math.round(size * 0.8);
   return (
     <Svg width={size} height={h} viewBox="0 0 120 96" fill="none">
@@ -122,6 +122,7 @@ export function EducationArt({ size = 120 }: OnboardingArtProps): ReactElement {
 
 /** Generic empty-state mark for sections without a bespoke illustration. */
 export function GenericSectionArt({ size = 120 }: OnboardingArtProps): ReactElement {
+  const { subtle: STROKE, accent: ACCENT } = useEditorialPalette();
   const h = Math.round(size * 0.8);
   return (
     <Svg width={size} height={h} viewBox="0 0 120 96" fill="none">

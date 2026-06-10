@@ -9,16 +9,27 @@
  *   - present → Profile: each add/edit/delete is committed immediately to the
  *     resume's section items; the list is re-derived from the refetched query.
  */
-import { editorialPalette as authTokens } from "@patch-careers/tokens";
-import { AnimatedField, PrimaryAction } from "@patch-careers/ui/editorial";
+import { AnimatedField, PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { AlertCircle, Trash2, X } from "lucide-react-native";
-import { type ComponentType, type ReactElement, useState } from "react";
+import {
+  type ComponentType,
+  type ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { type Control, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { fieldErrorsResolver } from "@/forms";
 import { useI18n } from "@/providers/i18n-provider";
-import { itemCardParts, itemSummary } from "../lib/helpers";
-import { ed, webNoOutline } from "../lib/styles";
+import {
+  degreeTypeFromGrau,
+  itemCardParts,
+  itemSummary,
+  suggestEndDateFromWorkload,
+} from "../lib/helpers";
+import { useEd, webNoOutline } from "../lib/styles";
 import { validateSectionFields } from "../lib/validation";
 import type {
   FormData,
@@ -27,8 +38,12 @@ import type {
   SectionItem,
   SectionPersistAction,
 } from "../types";
+import type { PickedCompany } from "./company-picker";
+import type { PickedCourse } from "./course-picker";
 import { AddRow, GhostButton, OverlayModal } from "./primitives";
 import { SectionForm } from "./section-form";
+
+const EMPTY_KEY_SET: ReadonlySet<string> = new Set();
 
 /** Illustration component for a section's empty state (e.g. onboarding's art). */
 type SectionArt = ComponentType<{ size?: number }>;
@@ -50,6 +65,8 @@ function ItemCard({
   onRemove: () => void;
   removeLabel: string;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   const { locale } = useI18n();
   const { primary, meta } = itemCardParts(item, locale);
   const [active, setActive] = useState(false);
@@ -115,6 +132,7 @@ function SectionEmptyState({
   onAdd: () => void;
   t: (key: string) => string;
 }): ReactElement {
+  const ed = useEd();
   return (
     <AnimatedField delay={120}>
       <View style={ed.emptyState}>
@@ -133,8 +151,11 @@ function MultiItemEditorModal({
   disabled,
   fields,
   onCancel,
+  onCompanyPick,
+  onCoursePick,
   onDelete,
   onSave,
+  readOnlyKeys,
   saveDisabled,
   t,
   title,
@@ -144,13 +165,18 @@ function MultiItemEditorModal({
   disabled: boolean;
   fields: SectionField[];
   onCancel: () => void;
+  onCompanyPick?: ((company: PickedCompany | null) => void) | undefined;
+  onCoursePick?: ((course: PickedCourse | null) => void) | undefined;
   onDelete?: () => void;
   onSave: () => void;
+  readOnlyKeys?: ReadonlySet<string> | undefined;
   saveDisabled: boolean;
   t: (key: string) => string;
   title: string;
   visible: boolean;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <OverlayModal visible={visible} onRequestClose={onCancel}>
       <KeyboardAvoidingView
@@ -181,7 +207,13 @@ function MultiItemEditorModal({
             contentContainerStyle={ed.editorModalScroll}
             keyboardShouldPersistTaps="handled"
           >
-            <SectionForm control={control} fields={fields} />
+            <SectionForm
+              control={control}
+              fields={fields}
+              readOnlyKeys={readOnlyKeys}
+              onCompanyPick={onCompanyPick}
+              onCoursePick={onCoursePick}
+            />
           </ScrollView>
           <View style={ed.editorModalFooter}>
             {onDelete ? (
@@ -221,6 +253,8 @@ export function SectionItemEditor({
   step: SectionDescriptor;
   t: (key: string) => string;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [persisting, setPersisting] = useState(false);
   const fields = step.fields ?? [];
@@ -230,6 +264,95 @@ export function SectionItemEditor({
     defaultValues: {},
     resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),
   });
+
+  // Education cascade: degree + degreeType derive from the picked MEC course
+  // (its `grau`), so they render read-only while derived; a free-text course
+  // clears them back to manual entry. Changing the institution invalidates
+  // everything downstream (the course may not exist there).
+  const isEducation =
+    fields.some((field) => field.key === "institution") &&
+    fields.some((field) => field.key === "field");
+  // Work experience cascade: the hidden `companyDomain` (drives the logo)
+  // follows the company picker — a catalog pick sets it, a typed/edited
+  // company clears it so a stale logo never outlives its company.
+  const hasCompany = fields.some((field) => field.key === "company");
+  const lastCompany = useRef("");
+  const [derivedKeys, setDerivedKeys] = useState<ReadonlySet<string>>(EMPTY_KEY_SET);
+  const lastInstitution = useRef("");
+  // Workload (hours) of the picked MEC course + the end date we last suggested
+  // from it — so a re-pick or start-date change updates our own suggestion but
+  // never clobbers a date the user typed themselves.
+  const pickedWorkload = useRef<number | null>(null);
+  const lastSuggestedEnd = useRef("");
+
+  // Validate only when a value goes IN — clearing a downstream field must not
+  // surface its "required" error while the user hasn't reached it yet.
+  const setCascadeValue = useCallback(
+    (key: string, value: string): void => {
+      form.setValue(key, value, { shouldDirty: true, shouldValidate: value.length > 0 });
+      if (value.length === 0) form.clearErrors(key);
+    },
+    [form],
+  );
+
+  // Fill `endDate` with the expected graduation derived from the course's
+  // workload — only once a start date exists, and only over an empty field or
+  // our own previous suggestion (never over a manually entered date).
+  const suggestEndDate = useCallback((): void => {
+    const startDate = String(form.getValues("startDate") ?? "");
+    const suggestion = suggestEndDateFromWorkload(startDate, pickedWorkload.current);
+    if (!suggestion) return;
+    const currentEnd = String(form.getValues("endDate") ?? "");
+    if (currentEnd.length > 0 && currentEnd !== lastSuggestedEnd.current) return;
+    lastSuggestedEnd.current = suggestion;
+    setCascadeValue("endDate", suggestion);
+  }, [form, setCascadeValue]);
+
+  const handleCompanyPick = (company: PickedCompany | null) => {
+    lastCompany.current = String(form.getValues("company") ?? "");
+    setCascadeValue("companyDomain", company?.domain ?? "");
+  };
+
+  useEffect(() => {
+    if (!hasCompany) return;
+    const subscription = form.watch((values, { name }) => {
+      if (name !== "company") return;
+      const next = String(values.company ?? "");
+      if (next === lastCompany.current) return;
+      lastCompany.current = next;
+      setCascadeValue("companyDomain", "");
+    });
+    return () => subscription.unsubscribe();
+  }, [hasCompany, form, setCascadeValue]);
+
+  const handleCoursePick = (course: PickedCourse | null) => {
+    const grau = course?.grau ?? null;
+    setCascadeValue("degree", grau ?? "");
+    setCascadeValue("degreeType", degreeTypeFromGrau(grau) ?? "");
+    setDerivedKeys(grau ? new Set(["degree", "degreeType"]) : EMPTY_KEY_SET);
+    pickedWorkload.current = course?.cargaHoraria ?? null;
+    suggestEndDate();
+  };
+
+  useEffect(() => {
+    if (!isEducation) return;
+    const subscription = form.watch((values, { name }) => {
+      if (name === "startDate") {
+        suggestEndDate();
+        return;
+      }
+      if (name !== "institution") return;
+      const next = String(values.institution ?? "");
+      if (next === lastInstitution.current) return;
+      lastInstitution.current = next;
+      setCascadeValue("field", "");
+      setCascadeValue("degree", "");
+      setCascadeValue("degreeType", "");
+      setDerivedKeys(EMPTY_KEY_SET);
+      pickedWorkload.current = null;
+    });
+    return () => subscription.unsubscribe();
+  }, [isEducation, form, setCascadeValue, suggestEndDate]);
   // Safety net: if the section's item fields aren't available (definitions not
   // seeded), don't drop the user into a blank editor — show a notice instead.
   const hasNoFields = fields.length === 0;
@@ -242,6 +365,11 @@ export function SectionItemEditor({
 
   function openNew(): void {
     form.reset({});
+    lastInstitution.current = "";
+    lastCompany.current = "";
+    pickedWorkload.current = null;
+    lastSuggestedEnd.current = "";
+    setDerivedKeys(EMPTY_KEY_SET);
     setEditingIndex(items.length);
   }
 
@@ -250,12 +378,25 @@ export function SectionItemEditor({
     form.reset(
       Object.fromEntries(Object.entries(content).map(([key, value]) => [key, String(value ?? "")])),
     );
+    // Saved entries open fully editable: we can't tell whether their degree
+    // was MEC-derived, so nothing is marked read-only.
+    lastInstitution.current = String(content.institution ?? "");
+    // Seed with the saved name so reopening doesn't clear the saved domain.
+    lastCompany.current = String(content.company ?? "");
+    pickedWorkload.current = null;
+    lastSuggestedEnd.current = "";
+    setDerivedKeys(EMPTY_KEY_SET);
     setEditingIndex(index);
   }
 
   function closeEditor(): void {
     setEditingIndex(null);
     form.reset({});
+    lastInstitution.current = "";
+    lastCompany.current = "";
+    pickedWorkload.current = null;
+    lastSuggestedEnd.current = "";
+    setDerivedKeys(EMPTY_KEY_SET);
   }
 
   function itemAt(index: number): SectionItem {
@@ -354,6 +495,9 @@ export function SectionItemEditor({
         title={isNew ? addLabel : t("onboarding.editItem")}
         fields={fields}
         control={form.control}
+        readOnlyKeys={derivedKeys}
+        onCompanyPick={hasCompany ? handleCompanyPick : undefined}
+        onCoursePick={isEducation ? handleCoursePick : undefined}
         onSave={() => void saveItem()}
         onCancel={closeEditor}
         {...(isEditing && !isNew ? { onDelete: () => void deleteEditing() } : {})}

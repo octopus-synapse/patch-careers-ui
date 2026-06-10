@@ -1,4 +1,4 @@
-import { editorialPalette as p } from "@patch-careers/tokens";
+import { editorialPalette, editorialPaletteDark, editorialPalettes } from "@patch-careers/tokens";
 import { describe, expect, it } from "vitest";
 import {
   resolveConsentBoxColors,
@@ -7,61 +7,73 @@ import {
   resolveUnderlineColors,
 } from "./editorial-variants";
 
-describe("resolveUnderlineColors", () => {
+const palettes = [
+  ["light", editorialPalette],
+  ["dark", editorialPaletteDark],
+] as const;
+
+describe.each(palettes)("resolveUnderlineColors (%s)", (_name, p) => {
   it("uses accent + strong hairline when valid", () => {
-    expect(resolveUnderlineColors(false)).toEqual({
+    expect(resolveUnderlineColors(p, false)).toEqual({
       hairline: p.hairlineStrong,
       focus: p.accent,
     });
   });
 
   it("uses danger for both when in error", () => {
-    expect(resolveUnderlineColors(true)).toEqual({ hairline: p.danger, focus: p.danger });
+    expect(resolveUnderlineColors(p, true)).toEqual({ hairline: p.danger, focus: p.danger });
   });
 });
 
-describe("resolveLabelColor", () => {
+describe.each(palettes)("resolveLabelColor (%s)", (_name, p) => {
   it("muted normally, danger on error", () => {
-    expect(resolveLabelColor(false)).toBe(p.muted);
-    expect(resolveLabelColor(true)).toBe(p.danger);
+    expect(resolveLabelColor(p, false)).toBe(p.muted);
+    expect(resolveLabelColor(p, true)).toBe(p.danger);
   });
 });
 
-describe("resolveOAuthColors", () => {
+describe.each(palettes)("resolveOAuthColors (%s)", (_name, p) => {
   it("surface/hairlineStrong at rest", () => {
-    expect(resolveOAuthColors(false)).toEqual({
+    expect(resolveOAuthColors(p, false)).toEqual({
       backgroundColor: p.surface,
       borderColor: p.hairlineStrong,
     });
   });
 
   it("darkens on press", () => {
-    expect(resolveOAuthColors(true)).toEqual({
+    expect(resolveOAuthColors(p, true)).toEqual({
       backgroundColor: p.hairline,
       borderColor: p.muted,
     });
   });
 });
 
-describe("resolveConsentBoxColors", () => {
-  it("checked wins (ink fill) even with error", () => {
-    expect(resolveConsentBoxColors(true, true)).toEqual({
+describe.each(palettes)("resolveConsentBoxColors (%s)", (_name, p) => {
+  it("checked wins (primary fill) even with error", () => {
+    expect(resolveConsentBoxColors(p, true, true)).toEqual({
       backgroundColor: p.primary,
       borderColor: p.primary,
     });
   });
 
   it("error border when unchecked + error", () => {
-    expect(resolveConsentBoxColors(false, true)).toEqual({
+    expect(resolveConsentBoxColors(p, false, true)).toEqual({
       backgroundColor: p.surface,
       borderColor: p.danger,
     });
   });
 
   it("default border when unchecked + valid", () => {
-    expect(resolveConsentBoxColors(false, false)).toEqual({
+    expect(resolveConsentBoxColors(p, false, false)).toEqual({
       backgroundColor: p.surface,
       borderColor: p.hairlineStrong,
     });
+  });
+});
+
+describe("palette wiring", () => {
+  it("the dark CTA flips to a light fill", () => {
+    const dark = resolveConsentBoxColors(editorialPalettes.dark, true, false);
+    expect(dark.backgroundColor).toBe(editorialPaletteDark.primary);
   });
 });

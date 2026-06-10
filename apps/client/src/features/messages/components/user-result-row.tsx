@@ -3,8 +3,8 @@
  * that user.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
 import { participantLabel } from "../lib/helpers";
@@ -17,6 +17,7 @@ export function UserResultRow({
   user: ChatUser;
   onPress: (user: ChatUser) => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const name = participantLabel(user);
 
   return (

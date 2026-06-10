@@ -1,3 +1,10 @@
+export {
+  CatalogPickerField,
+  type CatalogPickerFieldProps,
+  CatalogPickerSheet,
+  type CatalogPickerSheetProps,
+  type CatalogRow,
+} from "./catalog-picker-field";
 export { ConfirmModal, type ConfirmModalProps, DangerConfirmModal } from "./confirm-modal";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { FAB, type FABProps } from "./fab";

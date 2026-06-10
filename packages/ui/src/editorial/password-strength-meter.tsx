@@ -3,16 +3,16 @@
  * Scoring/labels/colors come from `internal/editorial-password`.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import type { ReactElement } from "react";
 import {
   type PasswordHints,
   passwordChecks,
-  STRENGTH_COLOR,
   STRENGTH_LABEL,
   scorePassword,
+  strengthColor,
 } from "../internal/editorial-password";
 import { TStack, TText, TXStack, TYStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts } from "./fonts";
 
 const SEGMENTS = [0, 1, 2, 3];
@@ -24,8 +24,9 @@ export function PasswordStrengthMeter({
   password: string;
   hints?: PasswordHints;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const score = scorePassword(password);
-  const color = STRENGTH_COLOR[score];
+  const color = strengthColor(editorialPalette, score);
   const label = STRENGTH_LABEL[score];
   const checks = passwordChecks(password, hints);
 

@@ -5,12 +5,11 @@
  * onboarding-wizard.tsx so the wizard is just orchestration + a step switch.
  */
 import type { Translator } from "@patch-careers/i18n";
-import { editorialPalette as authTokens } from "@patch-careers/tokens";
-import { AnimatedField, PatchLogo } from "@patch-careers/ui/editorial";
+import { AnimatedField, PatchLogo, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { AlertCircle, Check, RefreshCw, X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text as RNText, SafeAreaView, View } from "react-native";
-import { ed, GhostButton } from "@/features/sections";
+import { GhostButton, useEd } from "@/features/sections";
 import type { MissingRequiredTarget } from "../lib/helpers";
 
 export function Masthead({
@@ -22,6 +21,7 @@ export function Masthead({
   progressPct: number;
   timeText: string;
 }): ReactElement {
+  const ed = useEd();
   const pct = Math.max(0, Math.min(100, progressPct));
   return (
     <View style={ed.mastheadWrap}>
@@ -56,6 +56,7 @@ export function StepHeading({
   subtitle?: string;
   title: string;
 }): ReactElement {
+  const ed = useEd();
   const { head, tail } = splitHeading(title);
   return (
     <View>
@@ -87,6 +88,8 @@ export function AckCheckbox({
   label: string;
   onToggle: () => void;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <Pressable
       accessibilityRole="checkbox"
@@ -114,6 +117,8 @@ export function CenteredState({
   label: string;
   onAction?: () => void;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <SafeAreaView style={ed.centered}>
       <ActivityIndicator color={authTokens.ink} />
@@ -133,6 +138,8 @@ export function ResumeBanner({
   phaseLabel: string;
   t: Translator;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <View style={ed.resumeBanner}>
       <View style={ed.resumeBannerBody}>
@@ -163,6 +170,8 @@ export function RetryBanner({
   label: string;
   onRetry: () => void;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <Pressable
       accessibilityRole="button"
@@ -187,6 +196,8 @@ export function MissingBanner({
   targets: readonly MissingRequiredTarget[];
   t: Translator;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <View style={ed.missingBanner}>
       <View style={ed.missingHead}>

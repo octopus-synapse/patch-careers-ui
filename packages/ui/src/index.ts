@@ -15,4 +15,6 @@ export * from "./compounds";
 export * from "./icons";
 export { type HapticHandler, type HapticImpact, setHapticHandler } from "./internal/haptics";
 export type { ButtonVariant, Intent, Size, ThemeName } from "./internal/types";
+export { useEditorialPalette } from "./internal/use-editorial-palette";
+export { useThemeName } from "./internal/use-theme-name";
 export * from "./primitives";

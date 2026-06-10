@@ -6,12 +6,13 @@
  * icons, so the app supplies its own Github/LinkedIn marks.
  */
 
-import { editorialPalette, radius } from "@patch-careers/tokens";
+import { radius } from "@patch-careers/tokens";
 import type { ReactElement } from "react";
 import Animated from "react-native-reanimated";
 import { Icon, type LucideIconLike } from "../icons/icon";
 import { resolveOAuthColors } from "../internal/editorial-variants";
 import { TText, TXStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts } from "./fonts";
 import { editorialFadeInDown } from "./motion";
 
@@ -25,9 +26,6 @@ export type OAuthButtonProps = {
   testID?: string;
 };
 
-const base = resolveOAuthColors(false);
-const pressed = resolveOAuthColors(true);
-
 export function OAuthButton({
   label,
   onPress,
@@ -36,6 +34,9 @@ export function OAuthButton({
   delay = 700,
   testID,
 }: OAuthButtonProps): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const base = resolveOAuthColors(editorialPalette, false);
+  const pressed = resolveOAuthColors(editorialPalette, true);
   return (
     <Animated.View entering={editorialFadeInDown(delay)}>
       <TXStack

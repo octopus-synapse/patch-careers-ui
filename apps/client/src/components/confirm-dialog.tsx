@@ -12,8 +12,13 @@
  * native and web, so it deliberately does not reuse the shared bottom <Sheet>.
  */
 
-import { editorialPalette, radius } from "@patch-careers/tokens";
-import { editorialFonts } from "@patch-careers/ui/editorial";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+  radius,
+} from "@patch-careers/tokens";
+import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
 import type { ComponentType, ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -31,7 +36,8 @@ import {
 
 // Slightly deeper than the ProfileMenu scrim — this sits on top of the drawer
 // and needs to pull focus to the decision, but still reads calm on a light app.
-const SCRIM = "rgba(10,10,10,0.32)";
+// Dark mode dims harder so the card separates from the already-dark backdrop.
+const SCRIM = { light: "rgba(10,10,10,0.32)", dark: "rgba(0,0,0,0.55)" } as const;
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
 type GlyphProps = { size?: number; color?: string; strokeWidth?: number };
@@ -62,6 +68,8 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   const { width: screenW } = useWindowDimensions();
   const cardWidth = Math.min(380, screenW - 48);
   const resolvedConfirm = confirmLabel ?? (danger ? "Excluir" : "Confirmar");
@@ -180,64 +188,71 @@ export function ConfirmDialog({
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
-  scrim: { backgroundColor: SCRIM },
-  card: {
-    backgroundColor: editorialPalette.surface,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: editorialPalette.hairline,
-    paddingHorizontal: 26,
-    paddingTop: 26,
-    paddingBottom: 22,
-    shadowColor: "#000",
-    shadowOpacity: 0.14,
-    shadowRadius: 28,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 20,
-  },
-  header: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
-  headerText: { flex: 1, paddingTop: 2 },
-  iconChip: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.full,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontFamily: editorialFonts.serif,
-    fontSize: 24,
-    lineHeight: 30,
-    letterSpacing: -0.4,
-    color: editorialPalette.ink,
-  },
-  description: {
-    fontFamily: editorialFonts.sans,
-    fontSize: 14.5,
-    lineHeight: 21,
-    color: editorialPalette.muted,
-    marginTop: 8,
-  },
-  actions: { flexDirection: "row", gap: 10, marginTop: 24 },
-  button: {
-    flex: 1,
-    minHeight: 50,
-    borderRadius: radius.full,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 13,
-    paddingHorizontal: 16,
-  },
-  cancelButton: {
-    backgroundColor: editorialPalette.surface,
-    borderWidth: 1,
-    borderColor: editorialPalette.hairlineStrong,
-  },
-  cancelPressed: { backgroundColor: editorialPalette.bg },
-  confirmPressed: { opacity: 0.88 },
-  buttonLabel: { fontFamily: editorialFonts.sans, fontSize: 15, letterSpacing: 0.2 },
-  cancelLabel: { color: editorialPalette.ink, fontWeight: "500" },
-  confirmLabel: { color: "#FFFFFF", fontWeight: "600" },
-});
+const stylesFor = (p: EditorialPalette, scrim: string) =>
+  StyleSheet.create({
+    root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
+    scrim: { backgroundColor: scrim },
+    card: {
+      backgroundColor: p.surface,
+      borderRadius: 24,
+      borderWidth: 1,
+      borderColor: p.hairline,
+      paddingHorizontal: 26,
+      paddingTop: 26,
+      paddingBottom: 22,
+      shadowColor: "#000",
+      shadowOpacity: 0.14,
+      shadowRadius: 28,
+      shadowOffset: { width: 0, height: 12 },
+      elevation: 20,
+    },
+    header: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
+    headerText: { flex: 1, paddingTop: 2 },
+    iconChip: {
+      width: 40,
+      height: 40,
+      borderRadius: radius.full,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    title: {
+      fontFamily: editorialFonts.serif,
+      fontSize: 24,
+      lineHeight: 30,
+      letterSpacing: -0.4,
+      color: p.ink,
+    },
+    description: {
+      fontFamily: editorialFonts.sans,
+      fontSize: 14.5,
+      lineHeight: 21,
+      color: p.muted,
+      marginTop: 8,
+    },
+    actions: { flexDirection: "row", gap: 10, marginTop: 24 },
+    button: {
+      flex: 1,
+      minHeight: 50,
+      borderRadius: radius.full,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 13,
+      paddingHorizontal: 16,
+    },
+    cancelButton: {
+      backgroundColor: p.surface,
+      borderWidth: 1,
+      borderColor: p.hairlineStrong,
+    },
+    cancelPressed: { backgroundColor: p.bg },
+    confirmPressed: { opacity: 0.88 },
+    buttonLabel: { fontFamily: editorialFonts.sans, fontSize: 15, letterSpacing: 0.2 },
+    cancelLabel: { color: p.ink, fontWeight: "500" },
+    confirmLabel: { color: p.onPrimary, fontWeight: "600" },
+  });
+
+// Precomputed per theme so style-object identity is stable across renders.
+const stylesByTheme = {
+  light: stylesFor(editorialPalette, SCRIM.light),
+  dark: stylesFor(editorialPaletteDark, SCRIM.dark),
+} as const;

@@ -5,11 +5,12 @@
  * Tamagui `$tokens`, so we read hex straight from the editorial palette.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import type { ReactElement } from "react";
 import Svg, { Circle, Rect } from "react-native-svg";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 
 export function BrandMark({ size = 28 }: { size?: number }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <Svg width={size} height={size} viewBox="0 0 28 28">
       <Rect x={0} y={0} width={22} height={22} rx={5} fill={editorialPalette.primary} />

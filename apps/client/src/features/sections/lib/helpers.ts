@@ -73,3 +73,44 @@ export function itemCardParts(
   const meta = [...restTexts, dateSegment].filter(Boolean).join("  ·  ");
   return { primary, meta };
 }
+
+/**
+ * Map a MEC course `grau` to the education `degreeType` enum value.
+ * MEC only catalogs graduação: Tecnológico maps to Technical; Bacharelado /
+ * Licenciatura / ABI are bachelor-level. Anything unrecognized returns null
+ * so the field stays for the user to pick.
+ */
+export function degreeTypeFromGrau(grau: string | null): string | null {
+  if (!grau) return null;
+  if (/tecn[oó]l/i.test(grau)) return "Technical";
+  if (/bacharel|licenciatura|área básica|abi/i.test(grau)) return "Bachelor";
+  return null;
+}
+
+// MEC catalogs total workload in hours, not semesters; ~400h per semester is
+// the usual full-time pace (3200h bacharelado → 8 semesters).
+const HOURS_PER_SEMESTER = 400;
+const MAX_SEMESTERS = 14;
+
+/**
+ * Suggest a graduation date from the MEC course workload: convert hours to
+ * semesters, then walk Brazilian academic halves (Jan–Jun / Jul–Dec) from the
+ * start date — Feb 2025 + 8 semesters lands on Dec 2028, Aug 2025 on Jun 2029.
+ * Returns null when either input can't produce a sensible suggestion.
+ */
+export function suggestEndDateFromWorkload(
+  startDate: string,
+  cargaHoraria: number | null,
+): string | null {
+  const start = parseYearMonth(startDate);
+  if (!start || !cargaHoraria || cargaHoraria <= 0) return null;
+  const semesters = Math.min(
+    MAX_SEMESTERS,
+    Math.max(1, Math.round(cargaHoraria / HOURS_PER_SEMESTER)),
+  );
+  const startHalf = start.month <= 6 ? 0 : 1;
+  const endHalfIndex = start.year * 2 + startHalf + semesters - 1;
+  const endYear = Math.floor(endHalfIndex / 2);
+  const endMonth = endHalfIndex % 2 === 0 ? 6 : 12;
+  return `${endYear}-${String(endMonth).padStart(2, "0")}-01`;
+}

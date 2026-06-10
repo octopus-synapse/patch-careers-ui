@@ -4,14 +4,16 @@
  * the sender avatar on the last bubble of each run.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Icon, Text, XStack, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Check, CheckCheck } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { formatTime, type RenderedMessage } from "../lib/helpers";
-import { chatColors } from "../lib/theme";
+import { useChatColors } from "../lib/theme";
 
 export function MessageBubble({ item }: { item: RenderedMessage }): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const chatColors = useChatColors();
   const { message, own, startsGroup, showAvatar } = item;
 
   return (

@@ -15,7 +15,7 @@ export {
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";
 export { itemCardParts, itemSummary, monthLabel, parseYearMonth } from "./lib/helpers";
-export { ed, eyebrow, webNoOutline } from "./lib/styles";
+export { eyebrow, useEd, webNoOutline } from "./lib/styles";
 export { validateSectionFields } from "./lib/validation";
 export type {
   FormData,

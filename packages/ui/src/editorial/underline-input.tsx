@@ -7,7 +7,6 @@
  * as a Tamagui styled component without diverging from the original look.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { forwardRef, type ReactElement, type ReactNode, useEffect, useState } from "react";
 import {
   type KeyboardTypeOptions,
@@ -26,6 +25,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { resolveUnderlineColors } from "../internal/editorial-variants";
 import { TStack, TXStack, TYStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { EditorialLabel } from "./editorial-label";
 import { editorialFonts } from "./fonts";
 
@@ -63,7 +63,8 @@ export const UnderlineInput = forwardRef<TextInput, UnderlineInputProps>(
   ): ReactElement => {
     const [focused, setFocused] = useState(false);
     const progress = useSharedValue(0);
-    const colors = resolveUnderlineColors(hasError);
+    const editorialPalette = useEditorialPalette();
+    const colors = resolveUnderlineColors(editorialPalette, hasError);
 
     useEffect(() => {
       progress.value = withTiming(focused ? 1 : 0, {
@@ -85,7 +86,7 @@ export const UnderlineInput = forwardRef<TextInput, UnderlineInputProps>(
             ref={ref}
             value={value}
             onChangeText={onChangeText}
-            style={inputStyles.input}
+            style={[inputStyles.input, { color: editorialPalette.ink }]}
             placeholderTextColor={editorialPalette.subtle}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
@@ -111,7 +112,6 @@ const inputStyles = StyleSheet.create({
     flex: 1,
     fontFamily: editorialFonts.sans,
     fontSize: 18,
-    color: editorialPalette.ink,
     paddingVertical: 8,
     paddingHorizontal: 0,
     // Remove default RN-Web input outline.

@@ -14,8 +14,8 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import { useGetV1ChatUnread, useGetV1UsersProfile } from "@patch-careers/api-client";
-import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Text, XStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
@@ -32,6 +32,7 @@ const EDGE = 44;
 const BAR_HEIGHT = 56;
 
 export function AppHeader(): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { currentUser, isAuthenticated } = useAuthState();

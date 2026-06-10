@@ -4,15 +4,17 @@
  * the same warm-paper tint the rest of the app uses for pressed surfaces.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
 import { participantLabel, timeAgo } from "../lib/helpers";
-import { chatColors } from "../lib/theme";
+import { useChatColors } from "../lib/theme";
 import type { Conversation } from "../types";
 
 function UnreadPill({ count }: { count: number }): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const chatColors = useChatColors();
   return (
     <XStack
       backgroundColor={chatColors.unread}
@@ -39,6 +41,7 @@ export function ConversationRow({
   now: number;
   onPress: (conversation: Conversation) => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const { participant, lastMessage, unreadCount } = conversation;
   const name = participantLabel(participant);
   const unread = unreadCount > 0;

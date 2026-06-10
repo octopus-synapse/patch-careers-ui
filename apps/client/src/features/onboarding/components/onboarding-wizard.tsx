@@ -1,7 +1,8 @@
 import { FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
-import { ed, GhostButton, SectionItemEditor } from "@/features/sections";
+import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
+import { useColorSchemeStore } from "@/providers/color-scheme";
 import {
   countedIndexOf,
   countedTotal,
@@ -29,6 +30,7 @@ import {
   ReviewSummary,
   StepContext,
   StepForm,
+  ThemeStep,
   WelcomeScreen,
 } from "./wizard-steps";
 
@@ -42,6 +44,7 @@ export function OnboardingWizard(): ReactElement {
 }
 
 function OnboardingWizardInner(): ReactElement {
+  const ed = useEd();
   const {
     locale,
     t,
@@ -87,6 +90,9 @@ function OnboardingWizardInner(): ReactElement {
     dismissResumeBanner,
     markWelcomeSeenAndAdvance,
   } = useOnboardingFlow();
+
+  const scheme = useColorSchemeStore((s) => s.scheme);
+  const setScheme = useColorSchemeStore((s) => s.setScheme);
 
   if (sessionQuery.isLoading && !fallbackSession) {
     return <CenteredState label={t("common.loading")} />;
@@ -204,7 +210,11 @@ function OnboardingWizardInner(): ReactElement {
               >
                 <View key={`body:${headingKey}`}>
                   {isLocal ? (
-                    <LanguageStep locale={locale} onSelect={setLocale} t={t} />
+                    flowStepId === "theme" ? (
+                      <ThemeStep scheme={scheme} onSelect={setScheme} t={t} />
+                    ) : (
+                      <LanguageStep locale={locale} onSelect={setLocale} t={t} />
+                    )
                   ) : isReview ? (
                     <ReviewSummary
                       session={session}

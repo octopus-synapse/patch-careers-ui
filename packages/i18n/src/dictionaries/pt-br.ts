@@ -115,8 +115,52 @@ export const ptBR: TranslationDict = {
       hintSearching: "Buscando…",
       hintEmpty: "Nenhum resultado para “{q}”.",
     },
+    institution: {
+      title: "Selecione a instituição",
+      placeholder: "Busque ou digite a instituição",
+      searchPlaceholder: "Buscar instituições do Brasil (MEC)…",
+      hintMinChars: "Digite ao menos 3 letras para buscar.",
+      hintSearching: "Buscando…",
+      hintEmpty: "Nenhum resultado do MEC para “{q}”.",
+      useTyped: "Usar “{q}” como digitado",
+    },
+    course: {
+      title: "Selecione o curso",
+      placeholder: "Busque ou digite o curso",
+      searchPlaceholder: "Buscar cursos (MEC)…",
+      hintMinChars: "Digite ao menos 3 letras para buscar.",
+      hintSearching: "Buscando…",
+      hintEmpty: "Nenhum resultado do MEC para “{q}”.",
+      hintInstitution: "Mostrando cursos de {institution} (MEC).",
+      useTyped: "Usar “{q}” como digitado",
+    },
+    company: {
+      title: "Selecione a empresa",
+      placeholder: "Busque ou digite a empresa",
+      searchPlaceholder: "Buscar empresas…",
+      hintMinChars: "Digite ao menos 2 letras para buscar.",
+      hintSearching: "Buscando…",
+      hintEmpty: "Nenhum resultado para “{q}”.",
+      useTyped: "Usar “{q}” como digitado",
+      // Brand name + free-tier attribution requirement: stays in English.
+      attribution: "Logos provided by Logo.dev",
+    },
     language: {
       prompt: "Qual idioma você prefere?",
+    },
+    theme: {
+      light: {
+        label: "Claro",
+        hint: "Papel claro, tinta escura.",
+      },
+      dark: {
+        label: "Escuro",
+        hint: "Papel escuro, tinta clara.",
+      },
+      system: {
+        label: "Automático",
+        hint: "Segue a aparência do sistema.",
+      },
     },
     username: {
       checking: "Verificando…",
@@ -182,6 +226,10 @@ export const ptBR: TranslationDict = {
       language: {
         title: "Escolha seu idioma",
         subtitle: "Selecione o idioma para continuar.",
+      },
+      theme: {
+        title: "Escolha seu tema",
+        subtitle: "O app muda na hora — dá pra trocar depois no menu da conta.",
       },
       location: {
         title: "Onde você mora?",

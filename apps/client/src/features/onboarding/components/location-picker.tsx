@@ -1,19 +1,16 @@
 /**
  * `<LocationPicker>` — País/Estado/Cidade as a modal selection (NOT a free
- * text field). The trigger shows the chosen location; tapping it opens the
- * shared `<Sheet>` (centered card on web, bottom sheet on native) with a
+ * text field), rendered through the shared `<CatalogPickerField>` shell
+ * (same chrome as the education institution/course pickers). The trigger
+ * shows the chosen location; tapping it opens the shared `<Sheet>` with a
  * search box backed by the geo endpoint. The value can only be set by
- * picking a predefined result — selecting one also surfaces its `countryCode`
- * so the caller can default the phone country.
+ * picking a predefined result (no "use as typed" row) — selecting one also
+ * surfaces its `countryCode` so the caller can default the phone country.
  */
 
 import { useGetV1GeoLocations } from "@patch-careers/api-client";
-import { editorialPalette } from "@patch-careers/tokens";
-import { Input, Sheet } from "@patch-careers/ui";
-import { EditorialLabel, editorialFonts, FieldError } from "@patch-careers/ui/editorial";
-import { ChevronDown } from "lucide-react-native";
+import { CatalogPickerField } from "@patch-careers/ui";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
 export interface LocationMeta {
@@ -58,7 +55,6 @@ export function LocationPicker({
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [query, setQuery] = useState("");
-  const hasError = Boolean(error);
 
   // Debounce the typed text into the query that hits the endpoint.
   useEffect(() => {
@@ -79,103 +75,43 @@ export function LocationPicker({
     setOpen(true);
   };
 
-  const select = (itemLabel: string, countryCode: string) => {
-    onChange(itemLabel, { countryCode });
-    setOpen(false);
-  };
+  const hint =
+    query.length < MIN_QUERY
+      ? t("onboarding.location.hintMinChars")
+      : isFetching && items.length === 0
+        ? t("onboarding.location.hintSearching")
+        : items.length === 0
+          ? t("onboarding.location.hintEmpty", { q: query })
+          : null;
+
+  const rowKey = (item: (typeof items)[number]) =>
+    `${item.label}-${item.countryCode}-${item.stateCode ?? ""}`;
 
   return (
-    <View>
-      <EditorialLabel error={hasError}>{label}</EditorialLabel>
-
-      <Pressable accessibilityRole="button" onPress={openModal} style={styles.trigger}>
-        <Text
-          numberOfLines={1}
-          style={[styles.triggerText, value ? styles.valueText : styles.placeholderText]}
-        >
-          {value || placeholder || t("onboarding.location.placeholder")}
-        </Text>
-        <ChevronDown size={18} color={editorialPalette.subtle} />
-      </Pressable>
-      <View style={[styles.hairline, hasError ? styles.hairlineError : null]} />
-
-      {error ? <FieldError text={error} /> : null}
-
-      <Sheet open={open} onOpenChange={setOpen} title={title ?? t("onboarding.location.title")}>
-        <View style={styles.body}>
-          <Input
-            value={text}
-            onChangeText={setText}
-            placeholder={searchPlaceholder ?? t("onboarding.location.searchPlaceholder")}
-            autoFocus
-            autoCorrect={false}
-          />
-
-          {query.length < MIN_QUERY ? (
-            <Text style={styles.hint}>{t("onboarding.location.hintMinChars")}</Text>
-          ) : isFetching && items.length === 0 ? (
-            <Text style={styles.hint}>{t("onboarding.location.hintSearching")}</Text>
-          ) : items.length === 0 ? (
-            <Text style={styles.hint}>{t("onboarding.location.hintEmpty", { q: query })}</Text>
-          ) : null}
-
-          <ScrollView keyboardShouldPersistTaps="handled" style={styles.scroll}>
-            {items.map((item) => (
-              <Pressable
-                key={`${item.label}-${item.countryCode}-${item.stateCode ?? ""}`}
-                accessibilityRole="button"
-                onPress={() => select(item.label, item.countryCode)}
-                style={({ pressed }) => [styles.row, pressed ? styles.rowPressed : null]}
-              >
-                <Text style={styles.flag}>{flagFromIso(item.countryCode)}</Text>
-                <Text numberOfLines={1} style={styles.rowText}>
-                  {item.label}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-      </Sheet>
-    </View>
+    <CatalogPickerField
+      label={label}
+      value={value}
+      error={error}
+      placeholder={placeholder ?? t("onboarding.location.placeholder")}
+      sheetTitle={title ?? t("onboarding.location.title")}
+      searchPlaceholder={searchPlaceholder ?? t("onboarding.location.searchPlaceholder")}
+      open={open}
+      onOpenChange={setOpen}
+      onTriggerPress={openModal}
+      searchText={text}
+      onSearchTextChange={setText}
+      hint={hint}
+      rows={items.map((item) => ({
+        key: rowKey(item),
+        title: item.label,
+        leading: flagFromIso(item.countryCode),
+      }))}
+      onSelectRow={(row) => {
+        const picked = items.find((item) => rowKey(item) === row.key);
+        if (!picked) return;
+        onChange(picked.label, { countryCode: picked.countryCode });
+        setOpen(false);
+      }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  trigger: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    minHeight: 40,
-    paddingVertical: 8,
-    gap: 8,
-  },
-  triggerText: {
-    flex: 1,
-    fontFamily: editorialFonts.sans,
-    fontSize: 18,
-  },
-  valueText: { color: editorialPalette.ink },
-  placeholderText: { color: editorialPalette.subtle },
-  hairline: { height: 1, width: "100%", backgroundColor: editorialPalette.hairline },
-  hairlineError: { backgroundColor: editorialPalette.danger },
-
-  body: { flex: 1, minHeight: 0, gap: 12 },
-  hint: {
-    fontFamily: editorialFonts.mono,
-    fontSize: 12,
-    color: editorialPalette.muted,
-    paddingVertical: 4,
-  },
-  scroll: { flex: 1, minHeight: 0 },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  rowPressed: { backgroundColor: editorialPalette.surface },
-  flag: { fontSize: 20 },
-  rowText: { flex: 1, fontFamily: editorialFonts.sans, fontSize: 16, color: editorialPalette.ink },
-});

@@ -1,11 +1,6 @@
-import { editorialPalette } from "@patch-careers/tokens";
+import { editorialPalette, editorialPaletteDark } from "@patch-careers/tokens";
 import { describe, expect, it } from "vitest";
-import {
-  passwordChecks,
-  STRENGTH_COLOR,
-  STRENGTH_LABEL,
-  scorePassword,
-} from "./editorial-password";
+import { passwordChecks, STRENGTH_LABEL, scorePassword, strengthColor } from "./editorial-password";
 
 describe("scorePassword", () => {
   it("returns 0 for empty input", () => {
@@ -29,19 +24,20 @@ describe("scorePassword", () => {
   });
 });
 
-describe("STRENGTH_LABEL / STRENGTH_COLOR", () => {
-  it("maps every score to a label and a palette color", () => {
+describe("STRENGTH_LABEL / strengthColor", () => {
+  it("maps every score to a label and a palette color in both themes", () => {
     for (const score of [0, 1, 2, 3, 4] as const) {
       expect(STRENGTH_LABEL[score]).toBeTypeOf("string");
-      expect(STRENGTH_COLOR[score]).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(strengthColor(editorialPalette, score)).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(strengthColor(editorialPaletteDark, score)).toMatch(/^#[0-9a-f]{6}$/i);
     }
   });
 
   it("uses the editorial ramp (danger→warn→fair→success)", () => {
-    expect(STRENGTH_COLOR[1]).toBe(editorialPalette.danger);
-    expect(STRENGTH_COLOR[2]).toBe(editorialPalette.warn);
-    expect(STRENGTH_COLOR[3]).toBe(editorialPalette.fair);
-    expect(STRENGTH_COLOR[4]).toBe(editorialPalette.success);
+    expect(strengthColor(editorialPalette, 1)).toBe(editorialPalette.danger);
+    expect(strengthColor(editorialPalette, 2)).toBe(editorialPalette.warn);
+    expect(strengthColor(editorialPalette, 3)).toBe(editorialPalette.fair);
+    expect(strengthColor(editorialPalette, 4)).toBe(editorialPalette.success);
   });
 });
 

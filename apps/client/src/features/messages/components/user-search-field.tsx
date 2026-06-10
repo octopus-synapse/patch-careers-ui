@@ -4,8 +4,8 @@
  * appears once there's a query.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Icon, Input, XStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Search, X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
@@ -19,6 +19,7 @@ export function UserSearchField({
   onChangeText: (text: string) => void;
   onClear: () => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <XStack
       alignItems="center"

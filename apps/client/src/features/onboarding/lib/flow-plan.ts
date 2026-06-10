@@ -16,6 +16,7 @@
 export type FlowStepId =
   | "welcome"
   | "language"
+  | "theme"
   | "location"
   | "personal"
   | "username"
@@ -67,6 +68,15 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     kind: "local",
     optional: false,
     titleKey: "onboarding.flow.language.title",
+  },
+  {
+    // Light/dark/system pick, right after language so its copy is already
+    // translated. App-local (color-scheme store) — nothing goes to the
+    // backend, but it's a regular counted step with the full chrome.
+    id: "theme",
+    kind: "local",
+    optional: false,
+    titleKey: "onboarding.flow.theme.title",
   },
   {
     // Shown AFTER the language pick so the value-prop reads in the chosen
@@ -160,7 +170,7 @@ export const FLOW_PHASES: readonly FlowPhase[] = [
   {
     key: "identity",
     labelKey: "onboarding.flow.phases.identity",
-    stepIds: ["language", "location", "personal", "username"],
+    stepIds: ["language", "theme", "location", "personal", "username"],
   },
   {
     key: "history",
@@ -178,6 +188,7 @@ export const FLOW_PHASES: readonly FlowPhase[] = [
  *  estimate. Approximate by design — they drive a hint, not a contract. */
 const STEP_SECONDS: Record<FlowStepId, number> = {
   welcome: 0,
+  theme: 5,
   language: 5,
   location: 20,
   personal: 30,

@@ -5,12 +5,19 @@
  * — a bespoke micro-animation the Tamagui driver can't replicate identically.
  */
 
-import { editorialPalette, radius } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+  radius,
+} from "@patch-careers/tokens";
 import { ArrowRight } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { TText } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
+import { useThemeName } from "../internal/use-theme-name";
 import { editorialFonts } from "./fonts";
 import { editorialFadeInDown } from "./motion";
 
@@ -33,6 +40,8 @@ export function PrimaryAction({
 }: PrimaryActionProps): ReactElement {
   const scale = useSharedValue(1);
   const arrowX = useSharedValue(0);
+  const palette = useEditorialPalette();
+  const primaryStyles = stylesByTheme[useThemeName()];
   const inactive = loading || disabled;
 
   const containerStyle = useAnimatedStyle(() => ({
@@ -66,20 +75,20 @@ export function PrimaryAction({
         {...(testID ? { testID } : {})}
       >
         {loading ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
+          <ActivityIndicator size="small" color={palette.onPrimary} />
         ) : (
           <>
             <TText
               fontFamily={editorialFonts.sans}
               fontSize={15}
-              color="#FFFFFF"
+              color={palette.onPrimary}
               fontWeight="600"
               letterSpacing={0.2}
             >
               {label}
             </TText>
             <Animated.View style={arrowStyle}>
-              <ArrowRight size={18} color="#FFFFFF" strokeWidth={1.75} />
+              <ArrowRight size={18} color={palette.onPrimary} strokeWidth={1.75} />
             </Animated.View>
           </>
         )}
@@ -88,22 +97,30 @@ export function PrimaryAction({
   );
 }
 
-const primaryStyles = StyleSheet.create({
-  button: {
-    backgroundColor: editorialPalette.primary,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: radius.full,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    minHeight: 54,
-    shadowColor: editorialPalette.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.16,
-    shadowRadius: 16,
-    elevation: 3,
-  },
-  buttonInactive: { opacity: 0.55 },
-});
+// Precomputed per theme so style-object identity stays stable across renders.
+// The dark CTA is a light fill — its shadow stays black, not the fill color.
+const stylesFor = (p: EditorialPalette, shadow: string) =>
+  StyleSheet.create({
+    button: {
+      backgroundColor: p.primary,
+      paddingVertical: 16,
+      paddingHorizontal: 24,
+      borderRadius: radius.full,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 12,
+      minHeight: 54,
+      shadowColor: shadow,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.16,
+      shadowRadius: 16,
+      elevation: 3,
+    },
+    buttonInactive: { opacity: 0.55 },
+  });
+
+const stylesByTheme = {
+  light: stylesFor(editorialPalette, editorialPalette.primary),
+  dark: stylesFor(editorialPaletteDark, "#000000"),
+} as const;

@@ -8,15 +8,16 @@
  * mark's px size; the text scales relative to it).
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { type ReactElement, useId } from "react";
 import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
 import { TText, TXStack, TYStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts } from "./fonts";
 
 export function PatchLogo({ size = 34 }: { size?: number }): ReactElement {
   // Sanitize useId() (may contain ':') into a valid SVG id / url() reference.
   const clipId = `patchLogo-${useId().replace(/:/g, "")}`;
+  const editorialPalette = useEditorialPalette();
   return (
     <TXStack alignItems="center" gap={size * 0.32}>
       <Svg width={size} height={size} viewBox="0 0 100 100">

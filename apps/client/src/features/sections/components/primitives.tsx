@@ -2,8 +2,7 @@
  * Small editorial building blocks shared by the section editor and the
  * onboarding wizard chrome (extracted verbatim from `OnboardingWizard.tsx`).
  */
-import { editorialPalette as authTokens } from "@patch-careers/tokens";
-import { FieldError } from "@patch-careers/ui/editorial";
+import { FieldError, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Plus } from "lucide-react-native";
 import type { ReactElement, ReactNode } from "react";
 import {
@@ -16,7 +15,7 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
-import { ed } from "../lib/styles";
+import { useEd } from "../lib/styles";
 
 export function GhostButton({
   danger,
@@ -29,6 +28,7 @@ export function GhostButton({
   label: string;
   onPress: () => void;
 }): ReactElement {
+  const ed = useEd();
   return (
     <Pressable
       accessibilityRole="button"
@@ -52,6 +52,7 @@ export function FieldLabel({
   children: ReactNode;
   error?: boolean;
 }): ReactElement {
+  const ed = useEd();
   return <Text style={[ed.fieldLabel, error ? ed.fieldLabelError : null]}>{children}</Text>;
 }
 
@@ -70,6 +71,7 @@ export function FieldShell({
   focused?: boolean;
   children: ReactNode;
 }): ReactElement {
+  const ed = useEd();
   return (
     <View>
       <FieldLabel error={Boolean(error)}>{label}</FieldLabel>
@@ -95,6 +97,7 @@ export function OptionPill({
   onPress: () => void;
   selected: boolean;
 }): ReactElement {
+  const ed = useEd();
   return (
     <Pressable
       accessibilityRole="button"
@@ -128,6 +131,8 @@ export function AddRow({
   disabled?: boolean;
   iconSize?: number;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <Pressable accessibilityRole="button" onPress={onPress} disabled={disabled} style={style}>
       {loading ? (
@@ -158,6 +163,10 @@ export function OverlayModal({
       visible={visible}
       transparent
       statusBarTranslucent
+      // Android Modals open a NEW window which is NOT hardware-accelerated by
+      // default — chromium WebViews can't composite into a software window, so
+      // embedded previews render blank without this (web/iOS ignore the prop).
+      hardwareAccelerated
       animationType="fade"
       onRequestClose={onRequestClose}
     >

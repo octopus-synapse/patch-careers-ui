@@ -4,9 +4,9 @@
  * the block-positioned variant.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import type { ReactElement } from "react";
 import { TText } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts } from "./fonts";
 
 export type EditorialTextLinkProps = {
@@ -22,6 +22,7 @@ export function EditorialTextLink({
   fontSize,
   testID,
 }: EditorialTextLinkProps): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <TText
       onPress={onPress}

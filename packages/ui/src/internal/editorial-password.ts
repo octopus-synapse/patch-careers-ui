@@ -8,7 +8,7 @@
  * palette. Sharing one resolver would couple two unrelated visual treatments.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
+import type { EditorialPalette } from "@patch-careers/tokens";
 import { passwordScore, passwordSignals } from "./password-strength";
 
 export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
@@ -28,13 +28,16 @@ export const STRENGTH_LABEL: Record<PasswordStrengthScore, string> = {
   4: "Strong",
 };
 
-export const STRENGTH_COLOR: Record<PasswordStrengthScore, string> = {
-  0: editorialPalette.hairline,
-  1: editorialPalette.danger,
-  2: editorialPalette.warn,
-  3: editorialPalette.fair,
-  4: editorialPalette.success,
-};
+export function strengthColor(p: EditorialPalette, score: PasswordStrengthScore): string {
+  const ramp: Record<PasswordStrengthScore, string> = {
+    0: p.hairline,
+    1: p.danger,
+    2: p.warn,
+    3: p.fair,
+    4: p.success,
+  };
+  return ramp[score];
+}
 
 export type PasswordHints = {
   length: string;

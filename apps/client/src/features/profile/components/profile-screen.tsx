@@ -4,8 +4,8 @@
  * completeness meter, share link, about, social links, editable experience /
  * education (reusing the onboarding section editor), and a CV preview button.
  */
-import { editorialPalette as palette } from "@patch-careers/tokens";
 import { Avatar } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import * as ImagePicker from "expo-image-picker";
 import {
   AtSign,
@@ -33,7 +33,7 @@ import {
 } from "../hooks/queries";
 import { type CompletenessField, computeCompleteness } from "../lib/completeness";
 import { buildPublicUrl, shareProfile } from "../lib/public-link";
-import { pf } from "../lib/styles";
+import { usePf } from "../lib/styles";
 import { CvModal } from "./cv-modal";
 import { AboutEditSheet, IdentityEditSheet, SocialLinksEditSheet } from "./edit-sheets";
 
@@ -51,6 +51,8 @@ const SOCIAL_LINKS: ReadonlyArray<{
 ];
 
 export function ProfileScreen(): ReactElement {
+  const palette = useEditorialPalette();
+  const pf = usePf();
   const { t } = useI18n();
   const profileQuery = useProfile();
   const profile = profileQuery.data;
@@ -121,7 +123,7 @@ export function ProfileScreen(): ReactElement {
           >
             <Avatar src={profile?.photoURL ?? undefined} name={name} size="xl" />
             <View style={pf.avatarBadge}>
-              <Camera size={15} color={palette.surface} strokeWidth={2} />
+              <Camera size={15} color={palette.onPrimary} strokeWidth={2} />
             </View>
           </Pressable>
           <Text style={pf.name}>{name}</Text>
@@ -257,6 +259,8 @@ function CompletenessChip({
   field: CompletenessField;
   onPress?: (() => void) | undefined;
 }): ReactElement {
+  const palette = useEditorialPalette();
+  const pf = usePf();
   return (
     <Pressable
       accessibilityRole={onPress ? "button" : "text"}
@@ -279,6 +283,7 @@ function SectionFrame({
   onEdit?: () => void;
   children: ReactElement;
 }): ReactElement {
+  const pf = usePf();
   return (
     <View style={pf.section}>
       <View style={pf.sectionHead}>
@@ -310,6 +315,8 @@ function SocialLinks({
       }
     | undefined;
 }): ReactElement {
+  const palette = useEditorialPalette();
+  const pf = usePf();
   const rows = SOCIAL_LINKS.map((link) => ({ ...link, value: profile?.[link.key] ?? "" })).filter(
     (row) => row.value.length > 0,
   );
@@ -354,6 +361,7 @@ function SectionBlock({
   section: ProfileSection;
   t: (key: string) => string;
 }): ReactElement {
+  const pf = usePf();
   return (
     <View style={pf.section}>
       <Text style={pf.sectionLabel}>{label}</Text>

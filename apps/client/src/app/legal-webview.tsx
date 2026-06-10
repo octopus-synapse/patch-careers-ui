@@ -9,7 +9,12 @@
  * patchcareers.com URLs.
  */
 
-import { palette } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
+import { useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import Constants from "expo-constants";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useMemo } from "react";
@@ -31,6 +36,8 @@ function resolveLegalUrl(kind: Kind): string {
 export default function LegalWebViewScreen(): ReactElement {
   const t = useTranslator();
   const router = useRouter();
+  const palette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   const params = useLocalSearchParams<{ kind?: string; title?: string; url?: string }>();
   const kind: Kind = params.kind === "privacy" ? "privacy" : "terms";
   const title =
@@ -39,7 +46,14 @@ export default function LegalWebViewScreen(): ReactElement {
 
   return (
     <View style={styles.root}>
-      <Stack.Screen options={{ title, headerBackTitle: t("common.back") }} />
+      <Stack.Screen
+        options={{
+          title,
+          headerBackTitle: t("common.back"),
+          headerStyle: { backgroundColor: palette.surface },
+          headerTintColor: palette.ink,
+        }}
+      />
       {Platform.OS === "web" ? (
         // RNW renders WebView as an <iframe>; falling back lets us also
         // use this screen during web dev without polyfills.
@@ -54,7 +68,7 @@ export default function LegalWebViewScreen(): ReactElement {
           startInLoadingState
           renderLoading={() => (
             <View style={styles.loadingOverlay}>
-              <ActivityIndicator size="large" color={palette.blue[600]} />
+              <ActivityIndicator size="large" color={palette.accent} />
             </View>
           )}
           onNavigationStateChange={(state) => {
@@ -70,16 +84,22 @@ export default function LegalWebViewScreen(): ReactElement {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: palette.gray[50] },
-  loadingOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: palette.gray[50],
-  },
-});
+const stylesFor = (p: EditorialPalette) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: p.bg },
+    loadingOverlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: p.bg,
+    },
+  });
+
+const stylesByTheme = {
+  light: stylesFor(editorialPalette),
+  dark: stylesFor(editorialPaletteDark),
+} as const;

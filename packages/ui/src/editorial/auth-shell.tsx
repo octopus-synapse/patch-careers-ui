@@ -6,23 +6,25 @@
  * masthead and form column are Tamagui stacks.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import type { ReactElement, ReactNode } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TText, TXStack, TYStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
+import { useThemeName } from "../internal/use-theme-name";
 import { BrandMark } from "./brand-mark";
 import { editorialFonts } from "./fonts";
 
-const rootStyle = { flex: 1, backgroundColor: editorialPalette.bg } as const;
 const flexStyle = { flex: 1 } as const;
 
 export function AuthShell({ children }: { children: ReactNode }): ReactElement {
   const insets = useSafeAreaInsets();
+  const editorialPalette = useEditorialPalette();
+  const barStyle = useThemeName() === "dark" ? "light-content" : "dark-content";
   return (
-    <View style={rootStyle}>
-      <StatusBar barStyle="dark-content" backgroundColor={editorialPalette.bg} />
+    <View style={[flexStyle, { backgroundColor: editorialPalette.bg }]}>
+      <StatusBar barStyle={barStyle} backgroundColor={editorialPalette.bg} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={flexStyle}

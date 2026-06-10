@@ -5,6 +5,7 @@
 import type { ReactElement, ReactNode } from "react";
 import { resolveLabelColor } from "../internal/editorial-variants";
 import { TText } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts } from "./fonts";
 
 export function EditorialLabel({
@@ -14,6 +15,7 @@ export function EditorialLabel({
   children: ReactNode;
   error?: boolean;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <TText
       fontFamily={editorialFonts.sans}
@@ -22,7 +24,7 @@ export function EditorialLabel({
       fontWeight="600"
       marginBottom={4}
       textTransform="uppercase"
-      color={resolveLabelColor(error)}
+      color={resolveLabelColor(editorialPalette, error)}
     >
       {children}
     </TText>

@@ -115,8 +115,51 @@ export const en: TranslationDict = {
       hintSearching: "Searching…",
       hintEmpty: "No results for “{q}”.",
     },
+    institution: {
+      title: "Select your institution",
+      placeholder: "Search or type your institution",
+      searchPlaceholder: "Search Brazilian institutions (MEC)…",
+      hintMinChars: "Type at least 3 letters to search.",
+      hintSearching: "Searching…",
+      hintEmpty: "No MEC results for “{q}”.",
+      useTyped: "Use “{q}” as typed",
+    },
+    course: {
+      title: "Select your course",
+      placeholder: "Search or type your course",
+      searchPlaceholder: "Search MEC courses…",
+      hintMinChars: "Type at least 3 letters to search.",
+      hintSearching: "Searching…",
+      hintEmpty: "No MEC results for “{q}”.",
+      hintInstitution: "Showing courses offered by {institution} (MEC).",
+      useTyped: "Use “{q}” as typed",
+    },
+    company: {
+      title: "Select a company",
+      placeholder: "Search or type a company",
+      searchPlaceholder: "Search companies…",
+      hintMinChars: "Type at least 2 letters to search.",
+      hintSearching: "Searching…",
+      hintEmpty: "No results for “{q}”.",
+      useTyped: "Use “{q}” as typed",
+      attribution: "Logos provided by Logo.dev",
+    },
     language: {
       prompt: "Which language do you prefer?",
+    },
+    theme: {
+      light: {
+        label: "Light",
+        hint: "Light paper, dark ink.",
+      },
+      dark: {
+        label: "Dark",
+        hint: "Dark paper, light ink.",
+      },
+      system: {
+        label: "Automatic",
+        hint: "Follows your system appearance.",
+      },
     },
     username: {
       checking: "Checking…",
@@ -180,6 +223,10 @@ export const en: TranslationDict = {
       language: {
         title: "Choose your language",
         subtitle: "Pick the language you'd like to continue in.",
+      },
+      theme: {
+        title: "Choose your theme",
+        subtitle: "The app updates instantly — you can change it later from the account menu.",
       },
       location: {
         title: "Where are you based?",

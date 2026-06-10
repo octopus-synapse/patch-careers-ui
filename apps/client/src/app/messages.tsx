@@ -10,9 +10,8 @@
  * `@patch-careers/ui`.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
-import { editorialFonts } from "@patch-careers/ui/editorial";
+import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { ChevronLeft, MessageCircle, Search as SearchIcon } from "lucide-react-native";
@@ -32,6 +31,7 @@ import {
 } from "@/features/messages";
 
 function RowSeparator(): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <View
       style={{
@@ -44,6 +44,7 @@ function RowSeparator(): ReactElement {
 }
 
 export default function MessagesScreen(): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -153,6 +154,7 @@ function SearchResults({
   isLoading: boolean;
   onSelect: (user: ChatUser) => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   if (isLoading) {
     return (
       <XStack justifyContent="center" paddingVertical={28}>
@@ -180,6 +182,7 @@ function SearchResults({
 }
 
 function EmptyInbox(): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <YStack flex={1} justifyContent="center">
       <EmptyState
@@ -192,6 +195,7 @@ function EmptyInbox(): ReactElement {
 }
 
 function InboxError({ onRetry }: { onRetry: () => void }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <YStack flex={1} justifyContent="center">
       <EmptyState

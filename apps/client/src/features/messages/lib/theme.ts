@@ -1,20 +1,40 @@
 /**
  * Chat-specific colour decisions, layered on top of the Editorial Calm
  * palette so the thread reads as the same product as auth/onboarding:
- * a soft accent tint for your own bubbles, white + hairline for theirs,
+ * a soft accent tint for your own bubbles, surface + hairline for theirs,
  * deep-ink send button, blue reserved for links/ticks/unread only.
+ *
+ * Theme-aware: both variants are precomputed from the light/dark palettes and
+ * `useChatColors()` resolves the active one — no per-render object churn.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
+import { useThemeName } from "@patch-careers/ui/editorial";
 
-export const chatColors = {
-  ownBubble: "#EAF1FE", // accent at low tint — "blue used sparingly"
-  otherBubble: editorialPalette.surface,
-  ownText: editorialPalette.ink,
-  otherText: editorialPalette.body,
-  sendButton: editorialPalette.primary, // deep ink, matches the editorial CTA
-  sendButtonFg: editorialPalette.surface,
-  tickRead: editorialPalette.accent,
-  tickSent: editorialPalette.subtle,
-  unread: editorialPalette.accent,
+const chatColorsFor = (p: EditorialPalette, ownBubble: string) =>
+  ({
+    ownBubble, // accent at low tint — "blue used sparingly"
+    otherBubble: p.surface,
+    ownText: p.ink,
+    otherText: p.body,
+    sendButton: p.primary, // matches the editorial CTA fill
+    sendButtonFg: p.onPrimary,
+    tickRead: p.accent,
+    tickSent: p.subtle,
+    unread: p.accent,
+  }) as const;
+
+const chatColorsByTheme = {
+  light: chatColorsFor(editorialPalette, "#EAF1FE"),
+  dark: chatColorsFor(editorialPaletteDark, "#22324A"),
 } as const;
+
+export type ChatColors = (typeof chatColorsByTheme)["light"];
+
+export function useChatColors(): ChatColors {
+  return chatColorsByTheme[useThemeName()];
+}

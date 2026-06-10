@@ -14,7 +14,7 @@ import type { ReactElement } from "react";
  */
 
 import { Ionicons } from "@expo/vector-icons";
-import { palette } from "@patch-careers/tokens";
+import { useEditorialPalette } from "@patch-careers/ui";
 import { Redirect, Tabs } from "expo-router";
 import { AppHeader } from "@/components/app-header";
 import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
@@ -31,6 +31,7 @@ function tabIcon(outline: IoniconName, filled: IoniconName) {
 export default function TabsLayout(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
   const { currentUser, isAuthenticated } = useAuthState();
+  const palette = useEditorialPalette();
 
   if (!hasBootstrapped) return null;
   if (!isAuthenticated) return <Redirect href={AUTH_SIGN_IN_ROUTE} />;
@@ -42,8 +43,10 @@ export default function TabsLayout(): ReactElement | null {
         // Global top app bar: avatar (left) · brand (center) · messages (right).
         headerShown: true,
         header: () => <AppHeader />,
-        tabBarActiveTintColor: palette.blue[600],
-        tabBarInactiveTintColor: palette.gray[500],
+        tabBarActiveTintColor: palette.accent,
+        tabBarInactiveTintColor: palette.muted,
+        tabBarStyle: { backgroundColor: palette.surface, borderTopColor: palette.hairline },
+        sceneStyle: { backgroundColor: palette.bg },
       }}
     >
       <Tabs.Screen

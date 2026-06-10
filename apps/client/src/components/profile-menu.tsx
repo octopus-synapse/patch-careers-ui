@@ -12,11 +12,26 @@
  */
 
 import { logout } from "@patch-careers/auth";
-import { editorialPalette } from "@patch-careers/tokens";
+import type { ColorScheme } from "@patch-careers/state";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
 import { Avatar } from "@patch-careers/ui";
-import { editorialFonts } from "@patch-careers/ui/editorial";
+import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { type Href, useRouter } from "expo-router";
-import { ChevronRight, FileText, LogOut, MapPin, Send, User } from "lucide-react-native";
+import {
+  ChevronRight,
+  FileText,
+  LogOut,
+  MapPin,
+  MonitorSmartphone,
+  Moon,
+  Send,
+  Sun,
+  User,
+} from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -33,10 +48,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
+import { useColorSchemeStore } from "@/providers/color-scheme";
 import { ConfirmDialog } from "./confirm-dialog";
 
-// Soft, light scrim — the app is light, so a heavy dark dim reads wrong.
-const SCRIM = "rgba(10,10,10,0.18)";
+// Soft, light scrim — heavy dim reads wrong on light paper; dark mode needs
+// a deeper wash so the panel separates from the already-dark backdrop.
+const SCRIM = { light: "rgba(10,10,10,0.18)", dark: "rgba(0,0,0,0.5)" } as const;
 // translateX/opacity ride the native driver; web falls back to JS animation.
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
@@ -66,6 +83,8 @@ function MenuRow({
   onPress: () => void;
   danger?: boolean;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   const tint = danger ? editorialPalette.danger : editorialPalette.ink;
   return (
     <Pressable
@@ -87,6 +106,51 @@ function MenuRow({
   );
 }
 
+const THEME_CHOICES: ReadonlyArray<{ value: ColorScheme; label: string; icon: Glyph }> = [
+  { value: "light", label: "Claro", icon: Sun },
+  { value: "dark", label: "Escuro", icon: Moon },
+  { value: "system", label: "Sistema", icon: MonitorSmartphone },
+];
+
+/** Inline 3-option theme switcher — applies immediately (non-destructive). */
+function ThemeSelector(): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
+  const scheme = useColorSchemeStore((s) => s.scheme);
+  const setScheme = useColorSchemeStore((s) => s.setScheme);
+  return (
+    <View style={styles.themeSection}>
+      <Text style={styles.themeLabel}>TEMA</Text>
+      <View style={styles.themeRow}>
+        {THEME_CHOICES.map(({ value, label, icon: OptionIcon }) => {
+          const selected = scheme === value;
+          return (
+            <Pressable
+              key={value}
+              accessibilityRole="button"
+              accessibilityState={{ selected }}
+              accessibilityLabel={`Tema ${label}`}
+              onPress={() => setScheme(value)}
+              style={[styles.themePill, selected ? styles.themePillSelected : null]}
+            >
+              <OptionIcon
+                size={15}
+                color={selected ? editorialPalette.ink : editorialPalette.muted}
+                strokeWidth={1.75}
+              />
+              <Text
+                style={[styles.themePillLabel, selected ? styles.themePillLabelSelected : null]}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export function ProfileMenu({
   open,
   onClose,
@@ -95,6 +159,8 @@ export function ProfileMenu({
   location,
   photoURL,
 }: ProfileMenuProps): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width: screenW } = useWindowDimensions();
@@ -217,6 +283,10 @@ export function ProfileMenu({
               <MenuRow icon={User} label="Ver meu perfil" onPress={() => go("/profile")} />
               <MenuRow icon={FileText} label="Meu currículo" onPress={() => go("/resume")} />
               <MenuRow icon={Send} label="Candidaturas" onPress={() => go("/applications")} />
+
+              <View style={styles.divider} />
+
+              <ThemeSelector />
             </ScrollView>
 
             {/* Sign-out pinned to the bottom, mirroring the LinkedIn "me" menu. */}
@@ -242,69 +312,98 @@ export function ProfileMenu({
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  scrim: { backgroundColor: SCRIM },
-  panel: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: editorialPalette.surface,
-    borderRightWidth: 1,
-    borderRightColor: editorialPalette.hairline,
-    paddingHorizontal: 24,
-    shadowColor: "#000",
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    shadowOffset: { width: 4, height: 0 },
-    elevation: 16,
-  },
-  scroll: { flex: 1 },
-  scrollBody: { gap: 6, paddingTop: 4 },
-  card: {
-    alignItems: "flex-start",
-    gap: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-    borderRadius: 16,
-  },
-  cardPressed: { backgroundColor: editorialPalette.bg },
-  cardText: { gap: 6, width: "100%" },
-  name: {
-    flexShrink: 1,
-    fontFamily: editorialFonts.serif,
-    fontSize: 23,
-    lineHeight: 30,
-    color: editorialPalette.ink,
-  },
-  headline: {
-    fontFamily: editorialFonts.sans,
-    fontSize: 13,
-    lineHeight: 19,
-    color: editorialPalette.body,
-  },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 3 },
-  location: { fontFamily: editorialFonts.sans, fontSize: 12.5, color: editorialPalette.muted },
-  divider: {
-    height: 1,
-    backgroundColor: editorialPalette.hairline,
-    marginVertical: 18,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    paddingVertical: 15,
-    paddingHorizontal: 4,
-    borderRadius: 12,
-  },
-  rowPressed: { backgroundColor: editorialPalette.bg },
-  rowLabel: { flex: 1, fontFamily: editorialFonts.sans, fontSize: 15.5 },
-  footer: {
-    borderTopWidth: 1,
-    borderTopColor: editorialPalette.hairline,
-    paddingTop: 10,
-    marginTop: 12,
-  },
-});
+const stylesFor = (p: EditorialPalette, scrim: string) =>
+  StyleSheet.create({
+    root: { flex: 1 },
+    scrim: { backgroundColor: scrim },
+    panel: {
+      position: "absolute",
+      left: 0,
+      top: 0,
+      bottom: 0,
+      backgroundColor: p.surface,
+      borderRightWidth: 1,
+      borderRightColor: p.hairline,
+      paddingHorizontal: 24,
+      shadowColor: "#000",
+      shadowOpacity: 0.12,
+      shadowRadius: 20,
+      shadowOffset: { width: 4, height: 0 },
+      elevation: 16,
+    },
+    scroll: { flex: 1 },
+    scrollBody: { gap: 6, paddingTop: 4 },
+    card: {
+      alignItems: "flex-start",
+      gap: 16,
+      paddingVertical: 10,
+      paddingHorizontal: 4,
+      borderRadius: 16,
+    },
+    cardPressed: { backgroundColor: p.bg },
+    cardText: { gap: 6, width: "100%" },
+    name: {
+      flexShrink: 1,
+      fontFamily: editorialFonts.serif,
+      fontSize: 23,
+      lineHeight: 30,
+      color: p.ink,
+    },
+    headline: {
+      fontFamily: editorialFonts.sans,
+      fontSize: 13,
+      lineHeight: 19,
+      color: p.body,
+    },
+    locationRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 3 },
+    location: { fontFamily: editorialFonts.sans, fontSize: 12.5, color: p.muted },
+    divider: {
+      height: 1,
+      backgroundColor: p.hairline,
+      marginVertical: 18,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 16,
+      paddingVertical: 15,
+      paddingHorizontal: 4,
+      borderRadius: 12,
+    },
+    rowPressed: { backgroundColor: p.bg },
+    rowLabel: { flex: 1, fontFamily: editorialFonts.sans, fontSize: 15.5 },
+    themeSection: { gap: 10, paddingHorizontal: 4, paddingVertical: 6 },
+    themeLabel: {
+      fontFamily: editorialFonts.sans,
+      fontSize: 10,
+      fontWeight: "600",
+      letterSpacing: 1.8,
+      color: p.muted,
+    },
+    themeRow: { flexDirection: "row", gap: 8 },
+    themePill: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      borderWidth: 1,
+      borderColor: p.hairlineStrong,
+      borderRadius: 999,
+      paddingHorizontal: 13,
+      paddingVertical: 8,
+    },
+    themePillSelected: { borderColor: p.ink, backgroundColor: p.bg },
+    themePillLabel: { fontFamily: editorialFonts.sans, fontSize: 12.5, color: p.muted },
+    themePillLabelSelected: { color: p.ink, fontWeight: "600" },
+    footer: {
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+      paddingTop: 10,
+      marginTop: 12,
+    },
+  });
+
+// Precomputed per theme so style-object identity is stable across renders.
+const stylesByTheme = {
+  light: stylesFor(editorialPalette, SCRIM.light),
+  dark: stylesFor(editorialPaletteDark, SCRIM.dark),
+} as const;

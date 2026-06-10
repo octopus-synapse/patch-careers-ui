@@ -4,11 +4,11 @@
  * IconButton so it inherits the app's touch-target and haptics conventions.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Icon, IconButton, Input, XStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Send } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import { chatColors } from "../lib/theme";
+import { useChatColors } from "../lib/theme";
 
 export function MessageComposer({
   disabled = false,
@@ -17,6 +17,8 @@ export function MessageComposer({
   disabled?: boolean;
   onSend: (content: string) => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const chatColors = useChatColors();
   const [content, setContent] = useState("");
   const canSend = !disabled && content.trim().length > 0;
 

@@ -291,15 +291,17 @@ export function useOnboardingFlow() {
     }
   }
 
+  function introSeen(id: FlowStepId): boolean {
+    return id === "welcome" && welcomeSeenRef.current;
+  }
+
   function advanceFlow() {
-    const nextFlow = nextFlowStep(flowStepId);
-    if (!nextFlow) return;
-    if (nextFlow.id === "welcome" && welcomeSeenRef.current) {
-      const afterWelcome = nextFlowStep("welcome");
-      if (afterWelcome) setFlowStepId(afterWelcome.id);
-      return;
+    let nextFlow = nextFlowStep(flowStepId);
+    // Intro screens (welcome) show once per device — skip when already seen.
+    while (nextFlow?.intro && introSeen(nextFlow.id)) {
+      nextFlow = nextFlowStep(nextFlow.id);
     }
-    setFlowStepId(nextFlow.id);
+    if (nextFlow) setFlowStepId(nextFlow.id);
   }
 
   function markAttempted(stepId: string) {

@@ -3,14 +3,17 @@
  *
  * These replace the inline ternaries that lived in `auth-shared.tsx`
  * (`hasError ? danger : accent`, etc.) so the branches are unit-testable and
- * the JSX wrappers stay declarative. All values come from the editorial
- * palette in `@patch-careers/tokens`.
+ * the JSX wrappers stay declarative. The palette is injected (light or dark,
+ * via `useEditorialPalette()`) so the same branches serve both themes.
  */
 
-import { editorialPalette as p } from "@patch-careers/tokens";
+import type { EditorialPalette } from "@patch-careers/tokens";
 
 /** UnderlineInput: the static hairline + the animated focus line color. */
-export function resolveUnderlineColors(hasError: boolean): {
+export function resolveUnderlineColors(
+  p: EditorialPalette,
+  hasError: boolean,
+): {
   hairline: string;
   focus: string;
 } {
@@ -21,12 +24,15 @@ export function resolveUnderlineColors(hasError: boolean): {
 }
 
 /** EditorialLabel text color. */
-export function resolveLabelColor(error: boolean): string {
+export function resolveLabelColor(p: EditorialPalette, error: boolean): string {
   return error ? p.danger : p.muted;
 }
 
 /** OAuthButton ghost surface — flips on press. */
-export function resolveOAuthColors(pressed: boolean): {
+export function resolveOAuthColors(
+  p: EditorialPalette,
+  pressed: boolean,
+): {
   backgroundColor: string;
   borderColor: string;
 } {
@@ -38,6 +44,7 @@ export function resolveOAuthColors(pressed: boolean): {
 
 /** ConsentCheckbox square — checked wins over error wins over default. */
 export function resolveConsentBoxColors(
+  p: EditorialPalette,
   checked: boolean,
   hasError: boolean,
 ): { backgroundColor: string; borderColor: string } {

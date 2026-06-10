@@ -7,7 +7,10 @@
  * live here so the Tamagui wrapper can register an `editorial` sub-theme and
  * `@patch-careers/ui/editorial` components can consume them.
  *
- * Light-only by design — there is no dark variant for this aesthetic.
+ * Two variants share one shape: `editorialPalette` (light, warm paper) and
+ * `editorialPaletteDark` (warm dark paper — near-black with the same warm
+ * cast, inverted ink, CTA flips to a light fill). Components resolve the
+ * active one via `useEditorialPalette()` in `@patch-careers/ui`.
  *
  * NOTE: the serif/sans/mono font stack stays in `apps/client/tamagui.config.ts`
  * (it needs `Platform.select`, and this package is platform-agnostic). Here we
@@ -27,6 +30,8 @@ export type EditorialPalette = {
   accentDeep: string;
   primary: string;
   primaryPress: string;
+  /** Content (label/spinner/glyph) rendered on top of a `primary` fill. */
+  onPrimary: string;
   danger: string;
   success: string;
   warn: string;
@@ -46,10 +51,36 @@ export const editorialPalette = {
   accentDeep: "#1D4ED8",
   primary: "#0F172A", // CTA fill — deep ink, more sophisticated than bright blue
   primaryPress: "#1E293B",
+  onPrimary: "#FFFFFF",
   danger: "#DC2626",
   success: "#16A34A",
   warn: "#D97706",
   fair: "#EAB308",
 } as const satisfies EditorialPalette;
+
+export const editorialPaletteDark = {
+  bg: "#161512", // warm dark paper
+  surface: "#1E1D19",
+  ink: "#F5F5F0",
+  body: "#C8C8C2",
+  muted: "#8A8A84",
+  subtle: "#5F5F5A",
+  hairline: "#2E2D28",
+  hairlineStrong: "#3A3933",
+  accent: "#60A5FA", // lightened blue for contrast on dark paper
+  accentDeep: "#93C5FD",
+  primary: "#F5F5F0", // CTA inverts: light fill, dark content
+  primaryPress: "#E4E4DE",
+  onPrimary: "#161512",
+  danger: "#F87171",
+  success: "#4ADE80",
+  warn: "#FBBF24",
+  fair: "#FDE047",
+} as const satisfies EditorialPalette;
+
+export const editorialPalettes = {
+  light: editorialPalette,
+  dark: editorialPaletteDark,
+} as const;
 
 export type EditorialColor = keyof typeof editorialPalette;

@@ -6,10 +6,15 @@
  */
 import { useGetV1OnboardingSessionResumePreview } from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
-import { editorialPalette as authTokens } from "@patch-careers/tokens";
+import type { ColorScheme } from "@patch-careers/state";
 import { PhoneInput } from "@patch-careers/ui";
-import { AnimatedField, PatchLogo, PrimaryAction } from "@patch-careers/ui/editorial";
-import { Check, Minus, X } from "lucide-react-native";
+import {
+  AnimatedField,
+  PatchLogo,
+  PrimaryAction,
+  useEditorialPalette,
+} from "@patch-careers/ui/editorial";
+import { Check, Minus, MonitorSmartphone, Moon, Sun, X } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import {
   ActivityIndicator,
@@ -23,7 +28,7 @@ import {
   View,
 } from "react-native";
 import WebView from "react-native-webview";
-import { AddRow, ed, FieldRenderer, OverlayModal } from "@/features/sections";
+import { AddRow, FieldRenderer, OverlayModal, useEd } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
 import {
@@ -64,6 +69,7 @@ export function StepForm({
   phoneCountryIso?: string | undefined;
   onPhoneCountry?: (iso: string) => void;
 }): ReactElement {
+  const ed = useEd();
   const [localCountryIso, setLocalCountryIso] = useState<string | undefined>(undefined);
   const countryIso = phoneCountryIso ?? localCountryIso;
   const setCountryIso = onPhoneCountry ?? setLocalCountryIso;
@@ -125,6 +131,8 @@ export function LanguageStep({
   onSelect: (locale: Locale) => void;
   t: (key: string) => string;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   // `hint` is written in each target language (like `native`), so it reads the
   // same regardless of the current UI locale — and it gives the short language
   // step enough body to fill the step without looking sparse.
@@ -168,10 +176,60 @@ export function LanguageStep({
   );
 }
 
+const THEME_OPTIONS = [
+  { value: "light", icon: Sun },
+  { value: "dark", icon: Moon },
+  { value: "system", icon: MonitorSmartphone },
+] as const;
+
+/** Light/dark/system pick — a regular counted step: masthead, progress and
+ *  the back/continue footer come from the wizard chrome, like every other
+ *  step. Selecting an option writes the color-scheme store, so the whole app
+ *  re-themes instantly: the step IS the preview. */
+export function ThemeStep({
+  scheme,
+  onSelect,
+  t,
+}: {
+  scheme: ColorScheme;
+  onSelect: (scheme: ColorScheme) => void;
+  t: Translator;
+}): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
+  return (
+    <View style={ed.langWrap}>
+      {THEME_OPTIONS.map((option, index) => {
+        const selected = scheme === option.value;
+        const OptionIcon = option.icon;
+        return (
+          <AnimatedField key={option.value} delay={120 + index * 80}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityState={{ selected }}
+              accessibilityLabel={t(`onboarding.theme.${option.value}.label`)}
+              onPress={() => onSelect(option.value)}
+              style={[ed.langCard, selected ? ed.langCardSelected : null]}
+            >
+              <OptionIcon size={20} color={authTokens.muted} strokeWidth={1.75} />
+              <View style={ed.langText}>
+                <RNText style={ed.langLabel}>{t(`onboarding.theme.${option.value}.label`)}</RNText>
+                <RNText style={ed.langHint}>{t(`onboarding.theme.${option.value}.hint`)}</RNText>
+              </View>
+              {selected ? <Check size={18} color={authTokens.ink} strokeWidth={2} /> : null}
+            </Pressable>
+          </AnimatedField>
+        );
+      })}
+    </View>
+  );
+}
+
 // Public profile link, shown as a live preview on the username step.
 const PROFILE_URL_HOST = "patchcareers.com";
 
 function ContextNote({ body, label }: { body: string; label: string }): ReactElement {
+  const ed = useEd();
   return (
     <View>
       <View style={ed.contextRule} />
@@ -192,6 +250,7 @@ function LinkPreview({
   label: string;
   note: string;
 }): ReactElement {
+  const ed = useEd();
   return (
     <View style={ed.linkCard}>
       <RNText style={ed.linkCardLabel}>{label}</RNText>
@@ -214,6 +273,7 @@ export function StepContext({
   session: OnboardingSession;
   t: (key: string) => string;
 }): ReactElement | null {
+  const ed = useEd();
   if (flowStepId === "username") {
     const handle = (formData.username ?? session.username ?? "").trim();
     if (!handle) return null;
@@ -252,6 +312,7 @@ export function ResumeStylePicker({
   step: OnboardingStep;
   t: Translator;
 }): ReactElement {
+  const ed = useEd();
   const stylesList = parseResumeStyles(step);
   // Tapping a card opens a full-screen preview; selection happens there.
   const [previewId, setPreviewId] = useState<string | null>(null);
@@ -303,6 +364,8 @@ function ResumeStyleCard({
   previewHint: string;
   selected: boolean;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <Pressable
       accessibilityRole="button"
@@ -334,6 +397,8 @@ function ResumeStyleCard({
  *  so the render isn't kicked off until the user actually opens a preview.
  *  `styleId` is the tapped card's style, so switching styles re-renders. */
 function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   const { locale } = useI18n();
   const preview = useGetV1OnboardingSessionResumePreview(
     { styleId: option.id, locale },
@@ -397,6 +462,7 @@ function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
  *  page auto-fits to this tiny box via the document's own fit script.
  *  `pointerEvents="none"` keeps the parent review card tappable. */
 function ReviewStylePreview({ styleId }: { styleId: string }): ReactElement | null {
+  const ed = useEd();
   const { locale } = useI18n();
   const preview = useGetV1OnboardingSessionResumePreview(
     { styleId, locale },
@@ -450,6 +516,8 @@ function ResumeStyleModal({
   selected: boolean;
   t: Translator;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   const band = atsBand(option?.atsScore);
   return (
     <OverlayModal visible={Boolean(option)} onRequestClose={onClose}>
@@ -515,6 +583,8 @@ export function ReviewSummary({
   steps: OnboardingStep[];
   t: (key: string) => string;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   const sections = buildReviewSections(session, steps);
   const missing = missingRequiredTargets(session);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -604,6 +674,8 @@ export function WelcomeScreen({
   onStart: () => void;
   t: Translator;
 }): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
   return (
     <SafeAreaView style={ed.root}>
       <View style={ed.welcomeWrap}>

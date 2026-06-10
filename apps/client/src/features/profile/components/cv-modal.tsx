@@ -1,11 +1,11 @@
 /** Full-screen modal showing the resume preview + "Baixar PDF" (shared component). */
-import { editorialPalette } from "@patch-careers/tokens";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ResumePreview } from "@/components/resume-preview";
-import { pf } from "../lib/styles";
+import { usePf } from "../lib/styles";
 
 export function CvModal({
   visible,
@@ -15,8 +15,18 @@ export function CvModal({
   onClose: () => void;
 }): ReactElement {
   const insets = useSafeAreaInsets();
+  const editorialPalette = useEditorialPalette();
+  const pf = usePf();
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      onRequestClose={onClose}
+      statusBarTranslucent
+      // Android Modal windows are not hardware-accelerated by default and the
+      // chromium WebView inside ResumePreview renders blank without it.
+      hardwareAccelerated
+    >
       <View style={[pf.cvModalRoot, { paddingTop: insets.top }]}>
         <View style={pf.cvModalHeader}>
           <Text style={pf.cvModalTitle}>Currículo</Text>

@@ -11,8 +11,8 @@
  */
 
 import { useGetV1SearchGlobal } from "@patch-careers/api-client";
-import { editorialPalette } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Portal } from "@tamagui/portal";
 import { type Href, useFocusEffect, useRouter } from "expo-router";
 import { Search, X } from "lucide-react-native";
@@ -31,6 +31,7 @@ const MIN_CHARS = 2;
 const DEBOUNCE_MS = 250;
 
 export function GlobalSearchBar({ headerHeight }: { headerHeight: number }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -207,6 +208,7 @@ function ResultRow({
   badge?: string | undefined;
   onPress: () => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress}>
       {({ pressed }) => (

@@ -6,16 +6,19 @@
  * `palette.*[50/200/700]` ramps share one definition.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import type { ReactElement, ReactNode } from "react";
 import { TText, TYStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
+import { useThemeName } from "../internal/use-theme-name";
 import { editorialFonts } from "./fonts";
 
 export type BannerIntent = "success" | "danger";
 
-const INTENT: Record<BannerIntent, { color: string; tint: string }> = {
-  success: { color: editorialPalette.success, tint: "rgba(22,163,74,0.08)" },
-  danger: { color: editorialPalette.danger, tint: "rgba(220,38,38,0.08)" },
+// Tints are the intent color at low alpha — slightly stronger on dark so the
+// wash stays visible against the dark paper.
+const TINT: Record<"light" | "dark", Record<BannerIntent, string>> = {
+  light: { success: "rgba(22,163,74,0.08)", danger: "rgba(220,38,38,0.08)" },
+  dark: { success: "rgba(74,222,128,0.12)", danger: "rgba(248,113,113,0.12)" },
 };
 
 export type BannerProps = {
@@ -25,7 +28,9 @@ export type BannerProps = {
 };
 
 export function Banner({ intent, children, testID }: BannerProps): ReactElement {
-  const { color, tint } = INTENT[intent];
+  const palette = useEditorialPalette();
+  const color = palette[intent];
+  const tint = TINT[useThemeName()][intent];
   return (
     <TYStack
       backgroundColor={tint}

@@ -5,7 +5,12 @@ import type { ReactElement } from "react";
  * Real per-tab screens land in PR #9-#18.
  */
 
-import { palette } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
+import { useThemeName } from "@patch-careers/ui";
 import { StyleSheet, Text, View } from "react-native";
 
 interface Props {
@@ -13,6 +18,7 @@ interface Props {
 }
 
 export function PlaceholderScreen({ title }: Props): ReactElement {
+  const styles = stylesByTheme[useThemeName()];
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -21,22 +27,28 @@ export function PlaceholderScreen({ title }: Props): ReactElement {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: palette.gray[50],
-    padding: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: palette.gray[900],
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: palette.gray[500],
-  },
-});
+const stylesFor = (p: EditorialPalette) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: p.bg,
+      padding: 24,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "600",
+      color: p.ink,
+      marginBottom: 8,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: p.muted,
+    },
+  });
+
+const stylesByTheme = {
+  light: stylesFor(editorialPalette),
+  dark: stylesFor(editorialPaletteDark),
+} as const;

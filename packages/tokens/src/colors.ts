@@ -7,8 +7,14 @@
  *      `light` and `dark` variants exposing `bg`, `fg`, `border`,
  *      `hoverBg`, `pressBg`, `subtleBg`, `subtleFg`
  *
+ * The `dark` variants are anchored to the warm dark paper editorial palette,
+ * NOT to the Tailwind gray ramp — Tailwind's "gray" is slate (blue-cast), and
+ * slate surfaces/borders read as navy against the warm `#161512` paper.
+ *
  * A Tamagui wrapper (PR #6) maps these to `createTamagui()`.
  */
+
+import { editorialPaletteDark } from "./editorial";
 
 export type ColorRamp = {
   50: string;
@@ -106,13 +112,13 @@ export const intent: Record<IntentName, IntentVariant> = {
       subtleFg: palette.gray[700],
     },
     dark: {
-      bg: palette.gray[800],
-      fg: palette.gray[50],
-      border: palette.gray[700],
-      hoverBg: palette.gray[700],
-      pressBg: palette.gray[600],
-      subtleBg: palette.gray[900],
-      subtleFg: palette.gray[300],
+      bg: editorialPaletteDark.surface,
+      fg: editorialPaletteDark.ink,
+      border: editorialPaletteDark.hairlineStrong,
+      hoverBg: editorialPaletteDark.hairline,
+      pressBg: "#46443D",
+      subtleBg: editorialPaletteDark.bg,
+      subtleFg: editorialPaletteDark.body,
     },
   },
   accent: {
@@ -125,14 +131,17 @@ export const intent: Record<IntentName, IntentVariant> = {
       subtleBg: palette.blue[50],
       subtleFg: palette.blue[700],
     },
+    // Filled accent inverts like the editorial CTA: light-blue fill, dark ink
+    // content. `subtleBg` is the one deliberately blue-tinted dark wash
+    // (matches the chat own-bubble tone) — never used for neutral chrome.
     dark: {
-      bg: palette.blue[500],
-      fg: palette.gray[50],
-      border: palette.blue[400],
-      hoverBg: palette.blue[400],
-      pressBg: palette.blue[300],
-      subtleBg: palette.blue[900],
-      subtleFg: palette.blue[200],
+      bg: editorialPaletteDark.accent,
+      fg: editorialPaletteDark.bg,
+      border: editorialPaletteDark.accent,
+      hoverBg: palette.blue[300],
+      pressBg: palette.blue[200],
+      subtleBg: "#22324A",
+      subtleFg: palette.blue[300],
     },
   },
   danger: {
@@ -146,12 +155,12 @@ export const intent: Record<IntentName, IntentVariant> = {
       subtleFg: palette.red[700],
     },
     dark: {
-      bg: palette.red[500],
-      fg: palette.gray[50],
-      border: palette.red[400],
-      hoverBg: palette.red[400],
-      pressBg: palette.red[300],
-      subtleBg: palette.red[900],
+      bg: editorialPaletteDark.danger,
+      fg: editorialPaletteDark.bg,
+      border: editorialPaletteDark.danger,
+      hoverBg: palette.red[300],
+      pressBg: palette.red[200],
+      subtleBg: "#3B1D1B",
       subtleFg: palette.red[200],
     },
   },
@@ -166,12 +175,12 @@ export const intent: Record<IntentName, IntentVariant> = {
       subtleFg: palette.green[700],
     },
     dark: {
-      bg: palette.green[500],
-      fg: palette.gray[50],
-      border: palette.green[400],
-      hoverBg: palette.green[400],
-      pressBg: palette.green[300],
-      subtleBg: palette.green[900],
+      bg: editorialPaletteDark.success,
+      fg: editorialPaletteDark.bg,
+      border: editorialPaletteDark.success,
+      hoverBg: palette.green[300],
+      pressBg: palette.green[200],
+      subtleBg: "#17291C",
       subtleFg: palette.green[200],
     },
   },

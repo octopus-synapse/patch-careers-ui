@@ -1,5 +1,6 @@
 export * from "./avatar";
 export * from "./button-variants";
+export * from "./editorial-palette";
 export * from "./editorial-password";
 export * from "./editorial-variants";
 export * from "./fit-score";
@@ -11,4 +12,5 @@ export * from "./skeleton";
 export * from "./text-variants";
 export * from "./theme-value";
 export * from "./types";
+export * from "./use-editorial-palette";
 export * from "./use-theme-name";

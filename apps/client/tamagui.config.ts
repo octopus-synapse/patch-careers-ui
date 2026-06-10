@@ -9,7 +9,9 @@
  */
 
 import {
+  type EditorialPalette,
   editorialPalette,
+  editorialPaletteDark,
   fontFamily,
   fontSize,
   fontWeight,
@@ -101,9 +103,11 @@ const colorTokens = {
   $foreground: themeLight.colors.neutral.fg,
   $border: themeLight.colors.neutral.border,
 
-  // editorial palette — global tokens so `@patch-careers/ui/editorial`
-  // components resolve them regardless of the active theme (the `editorial`
-  // theme below only flips surface/text defaults). Light-only by design.
+  // editorial palette — light-value fallbacks so `$paper`-style tokens still
+  // resolve outside a theme. The light/dark THEMES below carry the same key
+  // names (theme keys win over same-named global tokens), which is what makes
+  // `color="$ink"` flip automatically when the dark theme is active.
+  $onPrimary: editorialPalette.onPrimary,
   $paper: editorialPalette.bg,
   $surface: editorialPalette.surface,
   $ink: editorialPalette.ink,
@@ -225,11 +229,71 @@ const fonts = {
   },
 };
 
+// Editorial keys + the standard Tamagui surface keys built-in components
+// read (Input/Button resolve `color`/`background`/`placeholderColor`/...).
+// Leaving the standard keys undefined in `dark` is what turned inputs black
+// on web last time — both themes carry the full set, anchored to the
+// editorial palette of each scheme so anything that leaks through reads as
+// the same paper.
+function editorialThemeKeys(p: EditorialPalette) {
+  return {
+    // editorial palette (same names as the global `$` tokens — theme wins)
+    paper: p.bg,
+    surface: p.surface,
+    ink: p.ink,
+    inkBody: p.body,
+    inkMuted: p.muted,
+    inkSubtle: p.subtle,
+    hairline: p.hairline,
+    hairlineStrong: p.hairlineStrong,
+    accentBlue: p.accent,
+    accentDeep: p.accentDeep,
+    primaryInk: p.primary,
+    primaryInkPress: p.primaryPress,
+    onPrimary: p.onPrimary,
+    editorialDanger: p.danger,
+    editorialSuccess: p.success,
+    editorialWarn: p.warn,
+    editorialFair: p.fair,
+
+    // radix-style numeric scales some compounds reference ($gray6 borders,
+    // $gray10 secondary text, $red8/$red10 errors, $blue10 links). These had
+    // no token backing at all — mapped here onto the editorial palette so
+    // they resolve in both themes.
+    gray3: p.hairline,
+    gray5: p.hairline,
+    gray6: p.hairlineStrong,
+    gray10: p.muted,
+    red8: p.danger,
+    red10: p.danger,
+    blue10: p.accent,
+
+    // standard Tamagui surface keys
+    color: p.ink,
+    colorHover: p.ink,
+    colorPress: p.ink,
+    colorFocus: p.ink,
+    background: p.bg,
+    backgroundHover: p.surface,
+    backgroundPress: p.hairline,
+    backgroundFocus: p.surface,
+    backgroundStrong: p.surface,
+    backgroundTransparent: "rgba(0,0,0,0)",
+    borderColor: p.hairline,
+    borderColorHover: p.hairlineStrong,
+    borderColorPress: p.hairlineStrong,
+    borderColorFocus: p.accent,
+    placeholderColor: p.subtle,
+    shadowColor: "rgba(0,0,0,0.12)",
+    outlineColor: p.accent,
+  } as const;
+}
+
 // Tamagui themes are flat name→color maps. We expose the same semantic
 // names from `colorTokens` but with values swapped between light/dark.
 const themes = {
   light: {
-    background: themeLight.colors.neutral.subtleBg,
+    ...editorialThemeKeys(editorialPalette),
     foreground: themeLight.colors.neutral.fg,
     border: themeLight.colors.neutral.border,
     accentBg: themeLight.colors.accent.bg,
@@ -242,9 +306,10 @@ const themes = {
     neutralFg: themeLight.colors.neutral.fg,
   },
   dark: {
-    background: themeDark.colors.neutral.subtleBg,
-    foreground: themeDark.colors.neutral.fg,
-    border: themeDark.colors.neutral.border,
+    ...editorialThemeKeys(editorialPaletteDark),
+    shadowColor: "rgba(0,0,0,0.4)",
+    foreground: editorialPaletteDark.ink,
+    border: editorialPaletteDark.hairline,
     accentBg: themeDark.colors.accent.bg,
     accentFg: themeDark.colors.accent.fg,
     dangerBg: themeDark.colors.danger.bg,
@@ -253,22 +318,6 @@ const themes = {
     successFg: themeDark.colors.success.fg,
     neutralBg: themeDark.colors.neutral.bg,
     neutralFg: themeDark.colors.neutral.fg,
-  },
-  // Editorial Calm — light-only. Same key set as light/dark (keeps `$token`
-  // typing sound); editorial-specific colors live in `tokens.color` above.
-  // `theme="editorial"` flips surface/text defaults to warm paper + ink.
-  editorial: {
-    background: editorialPalette.bg,
-    foreground: editorialPalette.ink,
-    border: editorialPalette.hairline,
-    accentBg: editorialPalette.accent,
-    accentFg: editorialPalette.surface,
-    dangerBg: editorialPalette.danger,
-    dangerFg: editorialPalette.surface,
-    successBg: editorialPalette.success,
-    successFg: editorialPalette.surface,
-    neutralBg: editorialPalette.surface,
-    neutralFg: editorialPalette.ink,
   },
 } as const;
 

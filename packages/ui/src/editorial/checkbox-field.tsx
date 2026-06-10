@@ -12,6 +12,7 @@ import Animated from "react-native-reanimated";
 import { Icon } from "../icons/icon";
 import { resolveConsentBoxColors } from "../internal/editorial-variants";
 import { TStack, TText, TXStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { editorialFonts } from "./fonts";
 import { editorialFadeInDown } from "./motion";
 
@@ -31,7 +32,8 @@ export function CheckboxField({
   delay = 350,
   testID,
 }: CheckboxFieldProps): ReactElement {
-  const box = resolveConsentBoxColors(checked, false);
+  const editorialPalette = useEditorialPalette();
+  const box = resolveConsentBoxColors(editorialPalette, checked, false);
   return (
     <Animated.View entering={editorialFadeInDown(delay)}>
       <TXStack
@@ -53,7 +55,9 @@ export function CheckboxField({
           backgroundColor={box.backgroundColor}
           borderColor={box.borderColor}
         >
-          {checked ? <Icon as={Check} size={12} color="#FFFFFF" strokeWidth={3} /> : null}
+          {checked ? (
+            <Icon as={Check} size={12} color={editorialPalette.onPrimary} strokeWidth={3} />
+          ) : null}
         </TStack>
         <TText fontFamily={editorialFonts.sans} fontSize={13} color="$inkBody">
           {label}

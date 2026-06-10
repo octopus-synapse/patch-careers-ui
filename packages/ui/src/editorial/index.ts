@@ -22,6 +22,8 @@ export {
   passwordChecks,
   scorePassword,
 } from "../internal/editorial-password";
+export { useEditorialPalette } from "../internal/use-editorial-palette";
+export { useThemeName } from "../internal/use-theme-name";
 export { AnimatedField } from "./animated-field";
 export { AuthShell } from "./auth-shell";
 export { Banner, type BannerIntent, type BannerProps } from "./banner";

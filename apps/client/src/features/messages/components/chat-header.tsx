@@ -4,8 +4,8 @@
  * (the bottom tab bar is hidden while a thread is open).
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Avatar, Icon, Text, XStack, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ChevronLeft } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
@@ -21,6 +21,7 @@ export function ChatHeader({
   photoURL?: string | undefined;
   onBack: () => void;
 }): ReactElement {
+  const editorialPalette = useEditorialPalette();
   return (
     <XStack
       alignItems="center"

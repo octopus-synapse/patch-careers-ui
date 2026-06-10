@@ -21,7 +21,7 @@ import {
   validateSectionFields,
 } from "@/features/sections";
 import { fieldErrorsResolver } from "@/forms";
-import { pf } from "../lib/styles";
+import { usePf } from "../lib/styles";
 
 /** Profile fields the owner can read back from GET /v1/users/profile. */
 export type EditableProfile = {
@@ -65,6 +65,7 @@ function ProfileEditSheet({
   onSubmit,
   children,
 }: SheetShellProps): ReactElement {
+  const pf = usePf();
   const form = useForm<FormData>({
     defaultValues: initial,
     resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),

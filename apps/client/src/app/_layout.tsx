@@ -19,6 +19,7 @@
  * root stack.
  */
 
+import { editorialPalettes } from "@patch-careers/tokens";
 import { ToastProvider } from "@patch-careers/ui";
 import { PortalProvider } from "@tamagui/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -31,6 +32,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NetInfoBanner } from "@/components/net-info-banner";
 import { AppTamaguiProvider } from "@/providers/app-tamagui-provider";
 import { AuthProvider } from "@/providers/auth-provider";
+import { useColorSchemeStore, useResolvedScheme } from "@/providers/color-scheme";
 import { I18nProvider } from "@/providers/i18n-provider";
 
 void SplashScreen.preventAutoHideAsync().catch(() => {
@@ -50,10 +52,24 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout(): ReactElement {
+  const scheme = useResolvedScheme();
+  const palette = editorialPalettes[scheme];
+
   useEffect(() => {
-    // Fire-and-forget; if the splash is already hidden the promise
-    // rejects harmlessly.
-    void SplashScreen.hideAsync().catch(() => undefined);
+    // Hold the splash until the persisted color scheme hydrates, so an
+    // explicit "dark" choice doesn't flash a light first frame (with a
+    // timeout fallback in case storage never resolves).
+    const hide = () => void SplashScreen.hideAsync().catch(() => undefined);
+    if (useColorSchemeStore.persist.hasHydrated()) {
+      hide();
+      return;
+    }
+    const unsubscribe = useColorSchemeStore.persist.onFinishHydration(hide);
+    const fallback = setTimeout(hide, 500);
+    return () => {
+      unsubscribe();
+      clearTimeout(fallback);
+    };
   }, []);
 
   return (
@@ -65,9 +81,17 @@ export default function RootLayout(): ReactElement {
               <ToastProvider>
                 <I18nProvider>
                   <AuthProvider>
-                    <StatusBar style="auto" />
+                    {/* Follow the in-app choice, not the OS ("auto" tracks the OS). */}
+                    <StatusBar style={scheme === "dark" ? "light" : "dark"} />
                     <NetInfoBanner />
-                    <Stack screenOptions={{ headerShown: false }}>
+                    <Stack
+                      screenOptions={{
+                        headerShown: false,
+                        // Paper-colored scene background so push transitions
+                        // don't flash white on dark.
+                        contentStyle: { backgroundColor: palette.bg },
+                      }}
+                    >
                       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                       {/* Messages is a standalone screen (no tab bar, no AppHeader)
                           that slides in over the tabs from the header's chat icon. */}

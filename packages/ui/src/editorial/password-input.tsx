@@ -2,11 +2,11 @@
  * PasswordInput — UnderlineInput + eye toggle slot.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Eye, EyeOff } from "lucide-react-native";
 import { forwardRef, type ReactElement, useState } from "react";
 import { Pressable, StyleSheet, type TextInput } from "react-native";
 import { Icon } from "../icons/icon";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { UnderlineInput, type UnderlineInputProps } from "./underline-input";
 
 export type PasswordInputProps = Omit<
@@ -22,6 +22,7 @@ export type PasswordInputProps = Omit<
 export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
   ({ showLabel, hideLabel, isNew = false, ...rest }, ref): ReactElement => {
     const [show, setShow] = useState(false);
+    const editorialPalette = useEditorialPalette();
     return (
       <UnderlineInput
         ref={ref}

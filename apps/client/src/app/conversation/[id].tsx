@@ -16,8 +16,8 @@
  * keyboard with no double-counted inset.
  */
 
-import { editorialPalette } from "@patch-careers/tokens";
 import { Button, Text, YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useCallback, useEffect, useRef } from "react";
 import { ActivityIndicator, Keyboard, ScrollView, View } from "react-native";
@@ -38,6 +38,7 @@ function firstParam(value: string | string[] | undefined): string {
 }
 
 export default function ConversationScreen(): ReactElement {
+  const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const params = useLocalSearchParams<{

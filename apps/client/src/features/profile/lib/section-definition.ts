@@ -11,7 +11,7 @@ type RawFieldDefinition = {
   type?: string;
   required?: boolean;
   enum?: string[];
-  meta?: { label?: unknown; widget?: unknown } | null;
+  meta?: { label?: unknown; widget?: unknown; hidden?: unknown } | null;
 };
 
 function inferUiType(type: string | undefined, widget: unknown): string {
@@ -30,7 +30,9 @@ export function fieldsFromDefinition(definition: unknown): SectionField[] {
   for (const field of def?.fields ?? []) {
     // Skip composite fields (arrays/objects) the flat editor can't render.
     if (!field.key || field.type === "array" || field.type === "object") continue;
-    const meta = (field.meta ?? {}) as { label?: unknown; widget?: unknown };
+    const meta = (field.meta ?? {}) as { label?: unknown; widget?: unknown; hidden?: unknown };
+    // Derived-only fields (e.g. companyDomain) carry data but never render.
+    if (meta.hidden === true) continue;
     out.push({
       key: field.key,
       type: inferUiType(field.type, meta.widget),

@@ -10,6 +10,7 @@ import Animated from "react-native-reanimated";
 import { Icon } from "../icons/icon";
 import { resolveConsentBoxColors } from "../internal/editorial-variants";
 import { TStack, TText, TXStack, TYStack } from "../internal/tamagui-shim";
+import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { EditorialTextLink } from "./editorial-text-link";
 import { editorialFonts } from "./fonts";
 import { editorialFadeInDown } from "./motion";
@@ -39,7 +40,8 @@ export function ConsentCheckbox({
   error,
   testID,
 }: ConsentCheckboxProps): ReactElement {
-  const box = resolveConsentBoxColors(checked, !!error);
+  const editorialPalette = useEditorialPalette();
+  const box = resolveConsentBoxColors(editorialPalette, checked, !!error);
   return (
     <Animated.View entering={editorialFadeInDown(350)}>
       <TXStack
@@ -62,7 +64,9 @@ export function ConsentCheckbox({
           backgroundColor={box.backgroundColor}
           borderColor={box.borderColor}
         >
-          {checked ? <Icon as={Check} size={12} color="#FFFFFF" strokeWidth={3} /> : null}
+          {checked ? (
+            <Icon as={Check} size={12} color={editorialPalette.onPrimary} strokeWidth={3} />
+          ) : null}
         </TStack>
         <TYStack flex={1}>
           <TText fontFamily={editorialFonts.sans} fontSize={13} color="$inkBody" lineHeight={20}>

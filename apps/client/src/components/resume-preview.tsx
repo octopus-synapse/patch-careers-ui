@@ -10,17 +10,26 @@
  */
 import { Ionicons } from "@expo/vector-icons";
 import { useGetV1ExportResumePdf, useGetV1ExportResumePreview } from "@patch-careers/api-client";
-import { editorialPalette } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
 import { Button, Text } from "@patch-careers/ui";
+import { useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import * as WebBrowser from "expo-web-browser";
 import { type ReactElement, type ReactNode, useRef } from "react";
 import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from "react-native";
 import WebView from "react-native-webview";
 
-// Matches the HTML document's body backdrop so the safe-area inset blends in.
-const BACKDROP = "#e5e7eb";
+// Light: matches the HTML document's body backdrop so the safe-area inset
+// blends in. Dark: the document stays a white "page", so the container frames
+// it like a PDF viewer instead of mirroring it.
+const BACKDROP = { light: "#e5e7eb", dark: "#111110" } as const;
 
 export function ResumePreview(): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   const preview = useGetV1ExportResumePreview(undefined, {
     query: { refetchOnWindowFocus: false },
   });
@@ -112,39 +121,47 @@ export function ResumePreview(): ReactElement {
 }
 
 function Centered({ children }: { children: ReactNode }): ReactElement {
+  const styles = stylesByTheme[useThemeName()];
   return <View style={styles.centered}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: BACKDROP },
-  flex: { flex: 1, backgroundColor: BACKDROP },
-  toolbar: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: editorialPalette.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: editorialPalette.hairline,
-  },
-  download: { flexDirection: "row", alignItems: "center", gap: 6 },
-  centered: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    padding: 24,
-    backgroundColor: editorialPalette.bg,
-  },
-  loadingOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: BACKDROP,
-  },
-});
+const stylesFor = (p: EditorialPalette, backdrop: string) =>
+  StyleSheet.create({
+    root: { flex: 1, backgroundColor: backdrop },
+    flex: { flex: 1, backgroundColor: backdrop },
+    toolbar: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      backgroundColor: p.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: p.hairline,
+    },
+    download: { flexDirection: "row", alignItems: "center", gap: 6 },
+    centered: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 12,
+      padding: 24,
+      backgroundColor: p.bg,
+    },
+    loadingOverlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: backdrop,
+    },
+  });
+
+// Precomputed per theme so style-object identity is stable across renders.
+const stylesByTheme = {
+  light: stylesFor(editorialPalette, BACKDROP.light),
+  dark: stylesFor(editorialPaletteDark, BACKDROP.dark),
+} as const;

@@ -8,8 +8,13 @@
 
 import { completeOAuth } from "@patch-careers/auth";
 import { secure } from "@patch-careers/storage";
-import { editorialPalette } from "@patch-careers/tokens";
+import {
+  type EditorialPalette,
+  editorialPalette,
+  editorialPaletteDark,
+} from "@patch-careers/tokens";
 import { Text } from "@patch-careers/ui";
+import { useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useEffect } from "react";
 import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
@@ -19,6 +24,8 @@ import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { OAUTH_CALLBACK_URL, resolveApiBaseURL } from "@/config/api";
 
 export default function OAuthCallbackScreen(): ReactElement {
+  const editorialPalette = useEditorialPalette();
+  const styles = stylesByTheme[useThemeName()];
   const { t, router, toast } = useAuthScreen();
   const { finishAuthentication } = useCompleteAuth();
   const params = useLocalSearchParams<{
@@ -76,12 +83,19 @@ export default function OAuthCallbackScreen(): ReactElement {
   );
 }
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    backgroundColor: editorialPalette.bg,
-  },
-});
+const stylesFor = (p: EditorialPalette) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 16,
+      backgroundColor: p.bg,
+    },
+  });
+
+// Precomputed per theme so style-object identity is stable across renders.
+const stylesByTheme = {
+  light: stylesFor(editorialPalette),
+  dark: stylesFor(editorialPaletteDark),
+} as const;
