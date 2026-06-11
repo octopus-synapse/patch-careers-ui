@@ -5,7 +5,6 @@
  * ResumeSectionsManager the Perfil sub-tab uses.
  */
 import { useGetV1ExportResumePdf } from "@patch-careers/api-client";
-import { formatRelativeTime } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
@@ -16,8 +15,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ResumePreview } from "@/components/resume-preview";
 import { ResumeSectionsManager } from "@/features/sections";
-import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
+import { editedAgo } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { RenameSheet } from "./rename-sheet";
@@ -53,7 +52,6 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { locale } = useI18n();
   const detail = useResumeDetail(id);
   const { resumeId: masterResumeId } = useMasterResumeId();
   const { renameResume, deleteResume, isPending } = useResumeMutations();
@@ -137,9 +135,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
           </View>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>Última edição</Text>
-            <Text style={rz.metaValue}>
-              {formatRelativeTime(new Date(resume.updatedAt), locale)}
-            </Text>
+            <Text style={rz.metaValue}>{editedAgo(resume.updatedAt)}</Text>
           </View>
         </View>
 

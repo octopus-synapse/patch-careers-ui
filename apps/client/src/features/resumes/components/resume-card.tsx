@@ -5,23 +5,19 @@
  * variants grouped as indented sub-rows. Tapping the card opens the detail
  * screen.
  */
-import { formatRelativeTime } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { CornerDownRight, Eye } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { webNoOutline } from "@/features/sections";
-import { useI18n } from "@/providers/i18n-provider";
 import type { ResumeListItem } from "../hooks/queries";
 import { useTailoredVersions } from "../hooks/queries";
+import { editedAgo } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 
-export function resumeMetaLine(
-  item: ResumeListItem,
-  locale: Parameters<typeof formatRelativeTime>[1],
-): string {
+export function resumeMetaLine(item: ResumeListItem): string {
   const parts = [
-    `editado ${formatRelativeTime(new Date(item.updatedAt), locale)}`,
+    `editado ${editedAgo(item.updatedAt)}`,
     item.language?.toUpperCase(),
     item.style?.name,
   ];
@@ -39,7 +35,6 @@ export function ResumeCard({
 }): ReactElement {
   const rz = useRz();
   const palette = useEditorialPalette();
-  const { locale } = useI18n();
   const [active, setActive] = useState(false);
   const { versions } = useTailoredVersions(item.id);
 
@@ -67,7 +62,7 @@ export function ResumeCard({
             ) : null}
           </View>
           <Text style={rz.cardMeta} numberOfLines={1}>
-            {resumeMetaLine(item, locale)}
+            {resumeMetaLine(item)}
           </Text>
         </View>
         <Pressable
