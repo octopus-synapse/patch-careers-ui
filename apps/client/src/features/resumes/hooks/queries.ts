@@ -57,16 +57,19 @@ export function useResumeSlots(): {
   };
 }
 
-/** The user's master resume id (`isPrimary` from the backend, first as fallback). */
+/** The user's master resume (`isPrimary` from the backend, first as fallback). */
 export function useMasterResumeId(): {
   resumeId: string | undefined;
+  language: string | undefined;
   isLoading: boolean;
   isError: boolean;
 } {
   const query = useGetV1Resumes();
   const items = query.data?.items ?? [];
+  const master = items.find((item) => item.isPrimary) ?? items[0];
   return {
-    resumeId: items.find((item) => item.isPrimary)?.id ?? items[0]?.id,
+    resumeId: master?.id,
+    language: master?.language,
     isLoading: query.isLoading,
     isError: query.isError,
   };

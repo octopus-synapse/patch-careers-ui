@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { editedAgo } from "./helpers";
+import { editedAgo, resumeLanguageToLocale } from "./helpers";
 
 const NOW = new Date("2026-06-11T12:00:00Z").getTime();
 
@@ -20,5 +20,24 @@ describe("editedAgo", () => {
 
   it("falls back to an absolute date after ~a month", () => {
     expect(editedAgo("2026-04-01T12:00:00Z", NOW)).toMatch(/2026/);
+  });
+});
+
+describe("resumeLanguageToLocale", () => {
+  it("maps pt-br (any case) to pt-BR", () => {
+    expect(resumeLanguageToLocale("pt-br")).toBe("pt-BR");
+    expect(resumeLanguageToLocale("pt-BR")).toBe("pt-BR");
+    expect(resumeLanguageToLocale("pt")).toBe("pt-BR");
+  });
+
+  it("maps en variants to en", () => {
+    expect(resumeLanguageToLocale("en")).toBe("en");
+    expect(resumeLanguageToLocale("en-US")).toBe("en");
+  });
+
+  it("returns undefined for missing/unknown so the caller falls back to UI locale", () => {
+    expect(resumeLanguageToLocale(undefined)).toBeUndefined();
+    expect(resumeLanguageToLocale(null)).toBeUndefined();
+    expect(resumeLanguageToLocale("fr")).toBeUndefined();
   });
 });

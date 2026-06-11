@@ -8,14 +8,14 @@ import { FileText } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { ResumePreviewModal } from "@/components/resume-preview-modal";
-import { useMasterResumeId } from "@/features/resumes";
+import { resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
 import { ResumeSectionsManager } from "@/features/sections";
 import { usePf } from "../lib/styles";
 
 export function MasterSectionsTab(): ReactElement {
   const palette = useEditorialPalette();
   const pf = usePf();
-  const { resumeId, isLoading } = useMasterResumeId();
+  const { resumeId, language, isLoading } = useMasterResumeId();
   const [cvOpen, setCvOpen] = useState(false);
 
   if (!resumeId && !isLoading) {
@@ -26,7 +26,7 @@ export function MasterSectionsTab(): ReactElement {
 
   return (
     <View style={pf.masterTab}>
-      <ResumeSectionsManager resumeId={resumeId} />
+      <ResumeSectionsManager resumeId={resumeId} locale={resumeLanguageToLocale(language)} />
 
       {resumeId ? (
         <Pressable

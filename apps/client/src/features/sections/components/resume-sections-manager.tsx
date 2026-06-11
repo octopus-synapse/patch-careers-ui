@@ -11,6 +11,7 @@
  *     the only way to add an item, even to an existing section.
  */
 
+import type { Locale } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Plus, Trash2 } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
@@ -92,13 +93,16 @@ function EditItemModal({
 
 export function ResumeSectionsManager({
   resumeId,
+  locale,
 }: {
   resumeId: string | undefined;
+  /** Localize the catalog by the resume's language (falls back to UI locale). */
+  locale?: Locale | undefined;
 }): ReactElement {
   const ed = useEd();
   const authTokens = useEditorialPalette();
   const { t } = useI18n();
-  const { visible, catalog, isLoading, isError } = useResumeSections(resumeId);
+  const { visible, catalog, isLoading, isError } = useResumeSections(resumeId, locale);
   const { persistFor, isPending } = useSectionItemMutations(resumeId);
 
   const [editing, setEditing] = useState<EditingState | null>(null);

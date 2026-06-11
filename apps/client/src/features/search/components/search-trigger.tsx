@@ -1,7 +1,7 @@
 /**
  * SearchTrigger — the header's non-editable search pill. Visually the same
  * pill the old inline input drew, but it's a button: tapping it opens the
- * fullscreen SearchModal, where the real input lives.
+ * centered SearchModal command palette, where the real input lives.
  */
 
 import { Icon, Text, XStack } from "@patch-careers/ui";

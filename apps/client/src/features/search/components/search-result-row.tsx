@@ -37,7 +37,7 @@ export function SearchResultRow({
           alignItems="center"
           gap={12}
           paddingHorizontal={16}
-          paddingVertical={11}
+          paddingVertical={12}
           backgroundColor={pressed ? editorialPalette.bg : "transparent"}
         >
           {Glyph ? (

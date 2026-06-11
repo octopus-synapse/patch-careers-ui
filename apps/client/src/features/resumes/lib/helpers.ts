@@ -1,3 +1,20 @@
+import type { Locale } from "@patch-careers/i18n";
+
+/**
+ * Map a resume's content `language` (Prisma stores "pt-br" lowercase, plus
+ * "en") to a supported i18n `Locale` ("pt-BR" | "en"). Used to localize the
+ * section-type catalog by the DOCUMENT's language rather than the device UI
+ * locale — a Portuguese resume shows Portuguese section names even on an
+ * English phone.
+ */
+export function resumeLanguageToLocale(language: string | null | undefined): Locale | undefined {
+  if (!language) return undefined;
+  const normalized = language.trim().toLowerCase();
+  if (normalized.startsWith("pt")) return "pt-BR";
+  if (normalized.startsWith("en")) return "en";
+  return undefined;
+}
+
 /**
  * Dependency-free relative "edited ago" label. Deliberately NOT
  * Intl.RelativeTimeFormat (`formatRelativeTime` from @patch-careers/i18n):

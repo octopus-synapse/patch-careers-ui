@@ -17,3 +17,4 @@ export {
   useResumeStyles,
   useTailoredVersions,
 } from "./hooks/queries";
+export { resumeLanguageToLocale } from "./lib/helpers";

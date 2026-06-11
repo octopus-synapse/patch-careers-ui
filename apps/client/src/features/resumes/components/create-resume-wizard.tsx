@@ -42,6 +42,7 @@ import {
 } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import { useResumeMutations, useResumeStyles } from "../hooks/queries";
+import { resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 
 const LANGUAGES = [
@@ -66,12 +67,15 @@ function buildInitialSelection(sections: MergedSection[]): Selection {
 export function CreateResumeWizard({
   visible,
   sourceResumeId,
+  sourceLanguage,
   onClose,
   onCreated,
 }: {
   visible: boolean;
   /** Resume to copy from — the master on the list tab, any resume on detail. */
   sourceResumeId: string | undefined;
+  /** Source resume's language — localizes the section checklist. */
+  sourceLanguage?: string | undefined;
   onClose: () => void;
   onCreated: (resumeId: string) => void;
 }): ReactElement {
@@ -80,7 +84,10 @@ export function CreateResumeWizard({
   const styles = stylesByTheme[useThemeName()];
   const palette = useEditorialPalette();
   const { locale } = useI18n();
-  const { visible: masterSections } = useResumeSections(visible ? sourceResumeId : undefined);
+  const { visible: masterSections } = useResumeSections(
+    visible ? sourceResumeId : undefined,
+    resumeLanguageToLocale(sourceLanguage),
+  );
   const stylesQuery = useResumeStyles();
   const { duplicateResume, isPending } = useResumeMutations();
 

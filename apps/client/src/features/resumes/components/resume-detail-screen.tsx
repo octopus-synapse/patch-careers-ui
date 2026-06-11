@@ -16,7 +16,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ResumePreview } from "@/components/resume-preview";
 import { ResumeSectionsManager } from "@/features/sections";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
-import { editedAgo } from "../lib/helpers";
+import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { RenameSheet } from "./rename-sheet";
@@ -153,7 +153,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <View>
           <Text style={rz.sectionLabel}>Seções</Text>
         </View>
-        <ResumeSectionsManager resumeId={id} />
+        <ResumeSectionsManager resumeId={id} locale={resumeLanguageToLocale(resume.language)} />
       </ScrollView>
 
       <RenameSheet
@@ -167,6 +167,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
       <CreateResumeWizard
         visible={duplicateOpen}
         sourceResumeId={id}
+        sourceLanguage={resume.language}
         onClose={() => setDuplicateOpen(false)}
         onCreated={(newId) => {
           setDuplicateOpen(false);

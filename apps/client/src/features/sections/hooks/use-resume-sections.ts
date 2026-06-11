@@ -7,6 +7,7 @@ import {
   useGetV1ResumesResumeIdSections,
   useGetV1ResumesResumeIdSectionsTypes,
 } from "@patch-careers/api-client";
+import type { Locale } from "@patch-careers/i18n";
 import { useI18n } from "@/providers/i18n-provider";
 import { type MergedSection, mergeSectionsWithCatalog } from "../lib/section-visibility";
 
@@ -19,8 +20,17 @@ export type ResumeSections = {
   isError: boolean;
 };
 
-export function useResumeSections(resumeId: string | undefined): ResumeSections {
-  const { locale } = useI18n();
+export function useResumeSections(
+  resumeId: string | undefined,
+  /**
+   * Locale to localize the section-type catalog. Pass the resume's own
+   * language so the catalog matches the document being edited; falls back to
+   * the app UI locale when omitted.
+   */
+  localeOverride?: Locale,
+): ResumeSections {
+  const { locale: uiLocale } = useI18n();
+  const locale = localeOverride ?? uiLocale;
   const enabled = Boolean(resumeId);
   const sectionsQuery = useGetV1ResumesResumeIdSections(resumeId ?? "", {
     query: { enabled },

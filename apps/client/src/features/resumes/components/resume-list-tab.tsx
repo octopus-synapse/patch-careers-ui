@@ -21,7 +21,7 @@ export function ResumeListTab(): ReactElement {
   const router = useRouter();
   const { resumes, isLoading, isError } = useResumeList();
   const slots = useResumeSlots();
-  const { resumeId: masterResumeId } = useMasterResumeId();
+  const { resumeId: masterResumeId, language: masterLanguage } = useMasterResumeId();
   const [preview, setPreview] = useState<{ id: string; title: string } | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
 
@@ -88,6 +88,7 @@ export function ResumeListTab(): ReactElement {
       <CreateResumeWizard
         visible={wizardOpen}
         sourceResumeId={masterResumeId}
+        sourceLanguage={masterLanguage}
         onClose={() => setWizardOpen(false)}
         onCreated={(id) => {
           setWizardOpen(false);
