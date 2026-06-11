@@ -28,6 +28,7 @@ import { CompanyPicker, type PickedCompany } from "./company-picker";
 import { CoursePicker, type PickedCourse } from "./course-picker";
 import { InstitutionPicker } from "./institution-picker";
 import { FieldLabel, FieldShell, OptionPill, OverlayModal } from "./primitives";
+import { RolePicker } from "./role-picker";
 
 function DateField({
   allowEmpty,
@@ -246,6 +247,9 @@ export function FieldRenderer({
   // Work experience's company is backed by the logo.dev brand search (free
   // text still allowed inside the picker).
   const isCompany = field.key === "company";
+  // Work experience's role is backed by the ESCO/CBO/O*NET job-title
+  // dictionary (free text still allowed inside the picker).
+  const isRole = field.key === "role";
   // Field of study suggests the selected institution's MEC courses; the
   // sibling value only arrives in sections that have an institution field,
   // so it doubles as the gate (other sections' `field` keys stay plain text).
@@ -295,6 +299,10 @@ export function FieldRenderer({
         error={error}
       />
     );
+  }
+
+  if (isRole) {
+    return <RolePicker label={field.label} value={value} onChange={onChange} error={error} />;
   }
 
   if (isCourse) {

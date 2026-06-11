@@ -145,6 +145,15 @@ export const ptBR: TranslationDict = {
       // Brand name + free-tier attribution requirement: stays in English.
       attribution: "Logos provided by Logo.dev",
     },
+    role: {
+      title: "Selecione o cargo",
+      placeholder: "Busque ou digite o cargo",
+      searchPlaceholder: "Buscar cargos…",
+      hintMinChars: "Digite ao menos 2 letras para buscar.",
+      hintSearching: "Buscando…",
+      hintEmpty: "Nenhum resultado para “{q}”.",
+      useTyped: "Usar “{q}” como digitado",
+    },
     language: {
       prompt: "Qual idioma você prefere?",
     },

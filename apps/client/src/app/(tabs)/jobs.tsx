@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
-import { PlaceholderScreen } from "@/components/placeholder-screen";
+import { JobsScreen } from "@/features/jobs";
 
-export default function JobsScreen(): ReactElement {
-  return <PlaceholderScreen title="Jobs" />;
+export default function JobsTab(): ReactElement {
+  return <JobsScreen />;
 }

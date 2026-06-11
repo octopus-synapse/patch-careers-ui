@@ -2,8 +2,9 @@
  * AppHeader — the global top app bar for the authed tab stack.
  *
  * Three anchors, mobile-first: the user's rounded avatar on the left
- * (→ the account menu), the global search bar centered, and the Messages
- * quick-action on the right (→ the inbox) carrying the live unread badge.
+ * (→ the account menu), the global search trigger centered (→ the
+ * fullscreen SearchModal), and the Messages quick-action on the right
+ * (→ the inbox) carrying the live unread badge.
  *
  * Rendered as the react-navigation `header` for every tab so it stays put
  * while the bottom tab bar switches screens; it owns the top safe-area
@@ -20,15 +21,14 @@ import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SearchModal, SearchTrigger } from "@/features/search";
 import { useAuthState } from "@/providers/auth-provider";
-import { GlobalSearchBar } from "./global-search-bar";
 import { ProfileMenu } from "./profile-menu";
 
 // Matched left/right column widths keep the centered search bar optically
 // centered regardless of avatar vs. icon width.
 const EDGE = 44;
-// Header content row height (excludes the top safe-area inset). The search
-// panel anchors just below this.
+// Header content row height (excludes the top safe-area inset).
 const BAR_HEIGHT = 56;
 
 export function AppHeader(): ReactElement {
@@ -37,6 +37,7 @@ export function AppHeader(): ReactElement {
   const router = useRouter();
   const { currentUser, isAuthenticated } = useAuthState();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const profile = useGetV1UsersProfile({ query: { enabled: isAuthenticated } });
   const photoURL = profile.data?.photoURL ?? undefined;
@@ -71,9 +72,9 @@ export function AppHeader(): ReactElement {
           <Avatar src={photoURL} name={name} size="md" />
         </Pressable>
 
-        {/* Center — global search */}
+        {/* Center — global search trigger → fullscreen modal */}
         <View style={{ flex: 1, marginHorizontal: 10 }}>
-          <GlobalSearchBar headerHeight={BAR_HEIGHT} />
+          <SearchTrigger onPress={() => setSearchOpen(true)} />
         </View>
 
         {/* Right — Messages quick action → inbox */}
@@ -109,6 +110,8 @@ export function AppHeader(): ReactElement {
           </View>
         </Pressable>
       </XStack>
+
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       <ProfileMenu
         open={menuOpen}

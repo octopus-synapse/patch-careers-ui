@@ -611,6 +611,10 @@ export const DICTIONARIES = {
       "en": "Invalid metrics API key",
       "pt-BR": "Chave de API de métricas inválida"
     },
+    "INVALID_OCCURRED_AT": {
+      "en": "The event date is invalid — it cannot be in the future or before the application",
+      "pt-BR": "A data do evento é inválida — não pode estar no futuro nem antes da candidatura"
+    },
     "INVALID_PERSONAL_INFO": {
       "en": "Personal information is invalid",
       "pt-BR": "Informações pessoais inválidas"
@@ -694,6 +698,18 @@ export const DICTIONARIES = {
     "JOB_MATCH_RESUME_NOT_FOUND": {
       "en": "Resume not found",
       "pt-BR": "Currículo não encontrado"
+    },
+    "JSEARCH_NOT_CONFIGURED": {
+      "en": "External job search is not configured",
+      "pt-BR": "A busca externa de vagas não está configurada"
+    },
+    "JSEARCH_QUOTA_EXCEEDED": {
+      "en": "External job search monthly quota exceeded",
+      "pt-BR": "Cota mensal da busca externa de vagas excedida"
+    },
+    "JSEARCH_UPSTREAM_FAILED": {
+      "en": "External job provider request failed",
+      "pt-BR": "Falha na requisição ao provedor externo de vagas"
     },
     "LAST_ADMIN_CANNOT_BE_REMOVED": {
       "en": "Cannot remove admin role from the last admin user",
@@ -1493,28 +1509,6 @@ export const DICTIONARIES = {
         "pt-BR": "Visualização"
       }
     },
-    "AnonymousCategory": {
-      "HARASSMENT": {
-        "en": "Harassment",
-        "pt-BR": "Assédio"
-      },
-      "INTERVIEW": {
-        "en": "Interview",
-        "pt-BR": "Entrevista"
-      },
-      "LAYOFF": {
-        "en": "Layoff",
-        "pt-BR": "Demissão"
-      },
-      "SALARY": {
-        "en": "Salary",
-        "pt-BR": "Salário"
-      },
-      "TOXIC_CULTURE": {
-        "en": "Toxic culture",
-        "pt-BR": "Cultura tóxica"
-      }
-    },
     "ApplyMode": {
       "AUTO_APPLY": {
         "en": "Auto-apply",
@@ -2197,58 +2191,6 @@ export const DICTIONARIES = {
         "pt-BR": "USD"
       }
     },
-    "PostType": {
-      "ACHIEVEMENT": {
-        "en": "Achievement",
-        "pt-BR": "Conquista"
-      },
-      "BUILD": {
-        "en": "Build",
-        "pt-BR": "Build"
-      },
-      "CHALLENGE": {
-        "en": "Challenge",
-        "pt-BR": "Desafio"
-      },
-      "LEARNING": {
-        "en": "Learning",
-        "pt-BR": "Aprendizado"
-      },
-      "OPPORTUNITY": {
-        "en": "Opportunity",
-        "pt-BR": "Oportunidade"
-      },
-      "QUESTION": {
-        "en": "Question",
-        "pt-BR": "Pergunta"
-      },
-      "REPOST": {
-        "en": "Repost",
-        "pt-BR": "Repostagem"
-      }
-    },
-    "ReactionType": {
-      "CELEBRATE": {
-        "en": "Celebrate",
-        "pt-BR": "Celebrar"
-      },
-      "CURIOUS": {
-        "en": "Curious",
-        "pt-BR": "Curioso"
-      },
-      "INSIGHTFUL": {
-        "en": "Insightful",
-        "pt-BR": "Perspicaz"
-      },
-      "LIKE": {
-        "en": "Like",
-        "pt-BR": "Curtir"
-      },
-      "LOVE": {
-        "en": "Love",
-        "pt-BR": "Adorar"
-      }
-    },
     "RemotePolicy": {
       "HYBRID": {
         "en": "Hybrid",
@@ -2275,6 +2217,30 @@ export const DICTIONARIES = {
       "REVIEWED": {
         "en": "Reviewed",
         "pt-BR": "Revisada"
+      }
+    },
+    "RoleTitleLang": {
+      "EN": {
+        "en": "English",
+        "pt-BR": "Inglês"
+      },
+      "PT": {
+        "en": "Portuguese",
+        "pt-BR": "Português"
+      }
+    },
+    "RoleTitleSource": {
+      "CBO": {
+        "en": "CBO",
+        "pt-BR": "CBO"
+      },
+      "ESCO": {
+        "en": "ESCO",
+        "pt-BR": "ESCO"
+      },
+      "ONET": {
+        "en": "O*NET",
+        "pt-BR": "O*NET"
       }
     },
     "SkillProficiency": {

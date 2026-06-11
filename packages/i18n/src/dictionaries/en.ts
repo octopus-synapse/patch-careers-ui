@@ -144,6 +144,15 @@ export const en: TranslationDict = {
       useTyped: "Use “{q}” as typed",
       attribution: "Logos provided by Logo.dev",
     },
+    role: {
+      title: "Select a role",
+      placeholder: "Search or type your role",
+      searchPlaceholder: "Search job titles…",
+      hintMinChars: "Type at least 2 letters to search.",
+      hintSearching: "Searching…",
+      hintEmpty: "No results for “{q}”.",
+      useTyped: "Use “{q}” as typed",
+    },
     language: {
       prompt: "Which language do you prefer?",
     },

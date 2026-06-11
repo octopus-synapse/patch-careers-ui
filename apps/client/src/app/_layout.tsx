@@ -103,6 +103,11 @@ export default function RootLayout(): ReactElement {
                         name="conversation/[id]"
                         options={{ headerShown: false, animation: "slide_from_right" }}
                       />
+                      {/* Job detail pushes over the tabs from a list card. */}
+                      <Stack.Screen
+                        name="job/[id]"
+                        options={{ headerShown: false, animation: "slide_from_right" }}
+                      />
                       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
                       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                       <Stack.Screen name="reset-password" options={{ headerShown: false }} />

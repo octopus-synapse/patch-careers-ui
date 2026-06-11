@@ -31,6 +31,8 @@ export type NotificationType = 'APPLICATION_STALE' | 'COMMENT_REPLIED' | 'CONNEC
 export type PaymentCurrency = 'BRL' | 'EUR' | 'GBP' | 'USD';
 export type RemotePolicy = 'HYBRID' | 'ONSITE' | 'REMOTE';
 export type ReportStatus = 'DISMISSED' | 'PENDING' | 'REVIEWED';
+export type RoleTitleLang = 'EN' | 'PT';
+export type RoleTitleSource = 'CBO' | 'ESCO' | 'ONET';
 export type SkillProficiency = 'ADVANCED' | 'BEGINNER' | 'EXPERT' | 'INTERMEDIATE';
 export type SkillType = 'CERTIFICATION' | 'DATABASE' | 'FRAMEWORK' | 'LANGUAGE' | 'LIBRARY' | 'METHODOLOGY' | 'OTHER' | 'PLATFORM' | 'SOFT_SKILL' | 'TOOL';
 export type SuccessStoryStatus = 'ARCHIVED' | 'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED';
@@ -296,6 +298,17 @@ export const ReportStatus = {
   REVIEWED: 'REVIEWED',
 } as const satisfies Record<string, ReportStatus>;
 
+export const RoleTitleLang = {
+  EN: 'EN',
+  PT: 'PT',
+} as const satisfies Record<string, RoleTitleLang>;
+
+export const RoleTitleSource = {
+  CBO: 'CBO',
+  ESCO: 'ESCO',
+  ONET: 'ONET',
+} as const satisfies Record<string, RoleTitleSource>;
+
 export const SkillProficiency = {
   ADVANCED: 'ADVANCED',
   BEGINNER: 'BEGINNER',
@@ -400,28 +413,6 @@ const ENUM_LABELS = {
     "VIEW": {
       "en": "View",
       "pt-BR": "Visualização"
-    }
-  },
-  "AnonymousCategory": {
-    "HARASSMENT": {
-      "en": "Harassment",
-      "pt-BR": "Assédio"
-    },
-    "INTERVIEW": {
-      "en": "Interview",
-      "pt-BR": "Entrevista"
-    },
-    "LAYOFF": {
-      "en": "Layoff",
-      "pt-BR": "Demissão"
-    },
-    "SALARY": {
-      "en": "Salary",
-      "pt-BR": "Salário"
-    },
-    "TOXIC_CULTURE": {
-      "en": "Toxic culture",
-      "pt-BR": "Cultura tóxica"
     }
   },
   "ApplyMode": {
@@ -1106,58 +1097,6 @@ const ENUM_LABELS = {
       "pt-BR": "USD"
     }
   },
-  "PostType": {
-    "ACHIEVEMENT": {
-      "en": "Achievement",
-      "pt-BR": "Conquista"
-    },
-    "BUILD": {
-      "en": "Build",
-      "pt-BR": "Build"
-    },
-    "CHALLENGE": {
-      "en": "Challenge",
-      "pt-BR": "Desafio"
-    },
-    "LEARNING": {
-      "en": "Learning",
-      "pt-BR": "Aprendizado"
-    },
-    "OPPORTUNITY": {
-      "en": "Opportunity",
-      "pt-BR": "Oportunidade"
-    },
-    "QUESTION": {
-      "en": "Question",
-      "pt-BR": "Pergunta"
-    },
-    "REPOST": {
-      "en": "Repost",
-      "pt-BR": "Repostagem"
-    }
-  },
-  "ReactionType": {
-    "CELEBRATE": {
-      "en": "Celebrate",
-      "pt-BR": "Celebrar"
-    },
-    "CURIOUS": {
-      "en": "Curious",
-      "pt-BR": "Curioso"
-    },
-    "INSIGHTFUL": {
-      "en": "Insightful",
-      "pt-BR": "Perspicaz"
-    },
-    "LIKE": {
-      "en": "Like",
-      "pt-BR": "Curtir"
-    },
-    "LOVE": {
-      "en": "Love",
-      "pt-BR": "Adorar"
-    }
-  },
   "RemotePolicy": {
     "HYBRID": {
       "en": "Hybrid",
@@ -1184,6 +1123,30 @@ const ENUM_LABELS = {
     "REVIEWED": {
       "en": "Reviewed",
       "pt-BR": "Revisada"
+    }
+  },
+  "RoleTitleLang": {
+    "EN": {
+      "en": "English",
+      "pt-BR": "Inglês"
+    },
+    "PT": {
+      "en": "Portuguese",
+      "pt-BR": "Português"
+    }
+  },
+  "RoleTitleSource": {
+    "CBO": {
+      "en": "CBO",
+      "pt-BR": "CBO"
+    },
+    "ESCO": {
+      "en": "ESCO",
+      "pt-BR": "ESCO"
+    },
+    "ONET": {
+      "en": "O*NET",
+      "pt-BR": "O*NET"
     }
   },
   "SkillProficiency": {

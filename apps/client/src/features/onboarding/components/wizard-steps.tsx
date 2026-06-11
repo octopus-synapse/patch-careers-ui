@@ -405,15 +405,11 @@ function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
     { query: { refetchOnWindowFocus: false, staleTime: 5 * 60_000 } },
   );
   const html = preview.data?.html;
+  // Native only: flips when the REAL document finished loading, so the spinner
+  // overlay also hides the blank placeholder page (avoids a white flash).
+  const [docReady, setDocReady] = useState(false);
 
-  if (preview.isLoading) {
-    return (
-      <View style={[ed.modalPreview, ed.modalPreviewEmpty, ed.modalPreviewCenter]}>
-        <ActivityIndicator color={authTokens.ink} />
-      </View>
-    );
-  }
-  if (preview.isError || !html) {
+  if (preview.isError || (!preview.isLoading && !html)) {
     return (
       <View style={[ed.modalPreview, ed.modalPreviewEmpty, ed.modalPreviewCenter]}>
         <RNText style={ed.modalPreviewHint}>Pré-visualização indisponível.</RNText>
@@ -423,35 +419,42 @@ function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
   return (
     <View style={ed.modalPreview}>
       {Platform.OS === "web" ? (
-        // RNW renders the host <iframe> through react-dom; `srcDoc` embeds
-        // the document inline (no cross-origin / presigned-URL hop).
-        <iframe
-          srcDoc={html}
-          title={option.name}
-          style={
-            {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              border: "none",
-            } as unknown as undefined
-          }
-        />
+        html ? (
+          // RNW renders the host <iframe> through react-dom; `srcDoc` embeds
+          // the document inline (no cross-origin / presigned-URL hop).
+          <iframe
+            srcDoc={html}
+            title={option.name}
+            style={
+              {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                border: "none",
+              } as unknown as undefined
+            }
+          />
+        ) : null
       ) : (
+        // Android can't composite a chromium WebView ATTACHED to a Modal
+        // window after that window is already on screen — mounting the
+        // WebView only after the fetch resolved left the first open blank
+        // (a cached reopen mounted it together with the Modal and worked).
+        // Mount it with the modal and swap the document in once it arrives.
         <WebView
           originWhitelist={["*"]}
-          source={{ html }}
+          source={{ html: html ?? "<!DOCTYPE html><html><body></body></html>" }}
           style={StyleSheet.absoluteFill}
-          startInLoadingState
-          renderLoading={() => (
-            <View style={[ed.modalPreviewEmpty, ed.modalPreviewCenter, StyleSheet.absoluteFill]}>
-              <ActivityIndicator color={authTokens.ink} />
-            </View>
-          )}
+          onLoadEnd={() => html && setDocReady(true)}
         />
       )}
+      {!html || (Platform.OS !== "web" && !docReady) ? (
+        <View style={[ed.modalPreviewEmpty, ed.modalPreviewCenter, StyleSheet.absoluteFill]}>
+          <ActivityIndicator color={authTokens.ink} />
+        </View>
+      ) : null}
     </View>
   );
 }
