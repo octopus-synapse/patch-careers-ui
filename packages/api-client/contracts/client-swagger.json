@@ -719,6 +719,68 @@
           "isPublic": true
         }
       },
+      "DuplicateResumeRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Title for the new resume (max 100 chars)."
+          },
+          "styleId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ResumeStyle for the copy. Defaults to the source resume style."
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the copy (e.g. pt-br, en). Defaults to the source language."
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sectionTypeKey": {
+                  "type": "string",
+                  "example": "work_experience_v1"
+                },
+                "itemIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "description": "Item ids of this section to copy. Omitted = every item."
+                }
+              },
+              "required": [
+                "sectionTypeKey"
+              ]
+            },
+            "description": "Sections (and optionally which items) to copy from the source. Omitted = copy everything."
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "description": "Snapshot-copy of an existing resume. The copy diverges from the source — later edits to either do not affect the other. Publish state (slug/isPublic) and stats are reset.",
+        "example": {
+          "title": "Backend Sênior — fintech",
+          "include": [
+            {
+              "sectionTypeKey": "work_experience_v1"
+            },
+            {
+              "sectionTypeKey": "education_v1",
+              "itemIds": [
+                "01900000-0000-7000-a000-000000000087"
+              ]
+            }
+          ]
+        }
+      },
       "FullName": {
         "type": "string",
         "minLength": 2,
@@ -30400,6 +30462,16 @@
             "required": false,
             "name": "template",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Resume to render. Omitted = the primary resume (backward-compatible default). Must be owned by the authenticated user."
+            },
+            "required": false,
+            "name": "resumeId",
+            "in": "query"
           }
         ],
         "responses": {
@@ -30591,6 +30663,16 @@
             },
             "required": false,
             "name": "template",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Resume to render. Omitted = the primary resume (backward-compatible default). Must be owned by the authenticated user."
+            },
+            "required": false,
+            "name": "resumeId",
             "in": "query"
           }
         ],
@@ -63581,6 +63663,29 @@
                           "summary": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "isPrimary": {
+                            "type": "boolean",
+                            "description": "True when this resume is the master (User.primaryResumeId).",
+                            "example": true
+                          },
+                          "style": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "01900000-0000-7000-a000-000000000042"
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "Swiss Minimal"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "description": "Active visual style (template) of the resume."
                           }
                         },
                         "required": [
@@ -63588,7 +63693,8 @@
                           "title",
                           "isPublic",
                           "createdAt",
-                          "updatedAt"
+                          "updatedAt",
+                          "isPrimary"
                         ]
                       }
                     },
@@ -75619,6 +75725,249 @@
         "x-auth": "jwt"
       }
     },
+    "/api/v1/resumes/{resumeId}/duplicate": {
+      "post": {
+        "summary": "Duplicate a resume (snapshot copy that diverges from the source)",
+        "description": "Resume CRUD operations",
+        "tags": [
+          "resumes"
+        ],
+        "operationId": "post_v1_resumes_resumeId_duplicate",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Resume UUID (path parameter).",
+              "example": "01900000-0000-7000-a000-000000000010"
+            },
+            "required": true,
+            "name": "resumeId",
+            "in": "path",
+            "example": "01900000-0000-7000-a000-000000000010"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DuplicateResumeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string",
+                  "example": "/api/v1/resumes/01900000-0000-7000-a000-000000000010"
+                },
+                "required": false
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "language": {
+                      "type": "string"
+                    },
+                    "targetRole": {
+                      "type": "string"
+                    },
+                    "isPublic": {
+                      "type": "boolean"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "ISO-8601 timestamp with timezone offset (RFC 3339).",
+                      "example": "2026-05-07T00:00:00.000Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "ISO-8601 timestamp with timezone offset (RFC 3339).",
+                      "example": "2026-05-07T00:00:00.000Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "isPublic",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "resume:create"
+      }
+    },
     "/api/v1/resumes/{resumeId}/full": {
       "get": {
         "summary": "Get a resume with all sections",
@@ -77054,6 +77403,11 @@
                           "isRepeatable": {
                             "type": "boolean"
                           },
+                          "isMandatory": {
+                            "type": "boolean",
+                            "description": "Derived from definition.ats.isMandatory || minItems > 0. Mandatory sections are shown by the app even when empty.",
+                            "example": true
+                          },
                           "minItems": {
                             "type": "integer",
                             "nullable": true
@@ -77121,6 +77475,7 @@
                           "isActive",
                           "isSystem",
                           "isRepeatable",
+                          "isMandatory",
                           "minItems",
                           "maxItems",
                           "definition",
@@ -79749,6 +80104,18 @@
                             "type": "string",
                             "nullable": true,
                             "format": "uuid"
+                          },
+                          "tailoredJobTitle": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Title of the job this variant was tailored for (null if the job was deleted).",
+                            "example": "Senior Backend Engineer"
+                          },
+                          "tailoredJobCompany": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Company of the job this variant was tailored for (null if the job was deleted).",
+                            "example": "Acme Corp"
                           }
                         },
                         "required": [
@@ -79756,7 +80123,9 @@
                           "versionNumber",
                           "label",
                           "createdAt",
-                          "tailoredJobId"
+                          "tailoredJobId",
+                          "tailoredJobTitle",
+                          "tailoredJobCompany"
                         ]
                       }
                     }
