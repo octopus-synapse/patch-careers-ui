@@ -8,42 +8,21 @@
  *     (the wizard passes `onChange` and commits the whole section later).
  *   - present → Profile: each add/edit/delete is committed immediately to the
  *     resume's section items; the list is re-derived from the refetched query.
+ *
+ * The per-item form/cascades live in `useSectionItemForm` and the modal chrome
+ * in `SectionItemModal`, shared with the resume section manager.
  */
-import { AnimatedField, PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { AlertCircle, Trash2, X } from "lucide-react-native";
-import {
-  type ComponentType,
-  type ReactElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { type Control, useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
-import { fieldErrorsResolver } from "@/forms";
+import { AnimatedField, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { AlertCircle, Trash2 } from "lucide-react-native";
+import { type ComponentType, type ReactElement, useState } from "react";
+import { Pressable, Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
-import {
-  degreeTypeFromGrau,
-  itemCardParts,
-  itemSummary,
-  suggestEndDateFromWorkload,
-} from "../lib/helpers";
+import { useSectionItemForm } from "../hooks/use-section-item-form";
+import { itemCardParts, itemSummary } from "../lib/helpers";
 import { useEd, webNoOutline } from "../lib/styles";
-import { validateSectionFields } from "../lib/validation";
-import type {
-  FormData,
-  SectionDescriptor,
-  SectionField,
-  SectionItem,
-  SectionPersistAction,
-} from "../types";
-import type { PickedCompany } from "./company-picker";
-import type { PickedCourse } from "./course-picker";
-import { AddRow, GhostButton, OverlayModal } from "./primitives";
-import { SectionForm } from "./section-form";
-
-const EMPTY_KEY_SET: ReadonlySet<string> = new Set();
+import type { SectionDescriptor, SectionItem, SectionPersistAction } from "../types";
+import { AddRow } from "./primitives";
+import { SectionItemModal } from "./section-item-modal";
 
 /** Illustration component for a section's empty state (e.g. onboarding's art). */
 type SectionArt = ComponentType<{ size?: number }>;
@@ -145,95 +124,6 @@ function SectionEmptyState({
   );
 }
 
-/** Full-screen item editor for section steps. Slides up over the list. */
-function MultiItemEditorModal({
-  control,
-  disabled,
-  fields,
-  onCancel,
-  onCompanyPick,
-  onCoursePick,
-  onDelete,
-  onSave,
-  readOnlyKeys,
-  saveDisabled,
-  t,
-  title,
-  visible,
-}: {
-  control: Control<FormData>;
-  disabled: boolean;
-  fields: SectionField[];
-  onCancel: () => void;
-  onCompanyPick?: ((company: PickedCompany | null) => void) | undefined;
-  onCoursePick?: ((course: PickedCourse | null) => void) | undefined;
-  onDelete?: () => void;
-  onSave: () => void;
-  readOnlyKeys?: ReadonlySet<string> | undefined;
-  saveDisabled: boolean;
-  t: (key: string) => string;
-  title: string;
-  visible: boolean;
-}): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  return (
-    <OverlayModal visible={visible} onRequestClose={onCancel}>
-      <KeyboardAvoidingView
-        style={ed.editorModalOverlay}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        {/* Tap outside the card to dismiss */}
-        <Pressable
-          style={ed.editorModalBackdrop}
-          accessibilityRole="button"
-          accessibilityLabel={t("common.cancel")}
-          onPress={onCancel}
-        />
-        <View style={ed.editorModalCard}>
-          <View style={ed.editorModalHeader}>
-            <Text style={ed.editorModalTitle}>{title}</Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("common.cancel")}
-              hitSlop={12}
-              onPress={onCancel}
-            >
-              <X size={22} color={authTokens.muted} />
-            </Pressable>
-          </View>
-          <ScrollView
-            style={ed.flex}
-            contentContainerStyle={ed.editorModalScroll}
-            keyboardShouldPersistTaps="handled"
-          >
-            <SectionForm
-              control={control}
-              fields={fields}
-              readOnlyKeys={readOnlyKeys}
-              onCompanyPick={onCompanyPick}
-              onCoursePick={onCoursePick}
-            />
-          </ScrollView>
-          <View style={ed.editorModalFooter}>
-            {onDelete ? (
-              <GhostButton
-                danger
-                label={t("common.delete")}
-                onPress={onDelete}
-                disabled={disabled}
-              />
-            ) : (
-              <View />
-            )}
-            <PrimaryAction label={t("common.save")} onPress={onSave} disabled={saveDisabled} />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </OverlayModal>
-  );
-}
-
 export function SectionItemEditor({
   art,
   isPending = false,
@@ -260,99 +150,18 @@ export function SectionItemEditor({
   const fields = step.fields ?? [];
   // The per-item modal form lives in RHF (ADR-0005); the list of items stays in
   // the parent (local state for onboarding, refetched query for Profile).
-  const form = useForm<FormData>({
-    defaultValues: {},
-    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),
-  });
+  const {
+    form,
+    derivedKeys,
+    hasCompany,
+    isEducation,
+    handleCompanyPick,
+    handleCoursePick,
+    resetForNew,
+    resetForExisting,
+    hasErrors,
+  } = useSectionItemForm(fields);
 
-  // Education cascade: degree + degreeType derive from the picked MEC course
-  // (its `grau`), so they render read-only while derived; a free-text course
-  // clears them back to manual entry. Changing the institution invalidates
-  // everything downstream (the course may not exist there).
-  const isEducation =
-    fields.some((field) => field.key === "institution") &&
-    fields.some((field) => field.key === "field");
-  // Work experience cascade: the hidden `companyDomain` (drives the logo)
-  // follows the company picker — a catalog pick sets it, a typed/edited
-  // company clears it so a stale logo never outlives its company.
-  const hasCompany = fields.some((field) => field.key === "company");
-  const lastCompany = useRef("");
-  const [derivedKeys, setDerivedKeys] = useState<ReadonlySet<string>>(EMPTY_KEY_SET);
-  const lastInstitution = useRef("");
-  // Workload (hours) of the picked MEC course + the end date we last suggested
-  // from it — so a re-pick or start-date change updates our own suggestion but
-  // never clobbers a date the user typed themselves.
-  const pickedWorkload = useRef<number | null>(null);
-  const lastSuggestedEnd = useRef("");
-
-  // Validate only when a value goes IN — clearing a downstream field must not
-  // surface its "required" error while the user hasn't reached it yet.
-  const setCascadeValue = useCallback(
-    (key: string, value: string): void => {
-      form.setValue(key, value, { shouldDirty: true, shouldValidate: value.length > 0 });
-      if (value.length === 0) form.clearErrors(key);
-    },
-    [form],
-  );
-
-  // Fill `endDate` with the expected graduation derived from the course's
-  // workload — only once a start date exists, and only over an empty field or
-  // our own previous suggestion (never over a manually entered date).
-  const suggestEndDate = useCallback((): void => {
-    const startDate = String(form.getValues("startDate") ?? "");
-    const suggestion = suggestEndDateFromWorkload(startDate, pickedWorkload.current);
-    if (!suggestion) return;
-    const currentEnd = String(form.getValues("endDate") ?? "");
-    if (currentEnd.length > 0 && currentEnd !== lastSuggestedEnd.current) return;
-    lastSuggestedEnd.current = suggestion;
-    setCascadeValue("endDate", suggestion);
-  }, [form, setCascadeValue]);
-
-  const handleCompanyPick = (company: PickedCompany | null) => {
-    lastCompany.current = String(form.getValues("company") ?? "");
-    setCascadeValue("companyDomain", company?.domain ?? "");
-  };
-
-  useEffect(() => {
-    if (!hasCompany) return;
-    const subscription = form.watch((values, { name }) => {
-      if (name !== "company") return;
-      const next = String(values.company ?? "");
-      if (next === lastCompany.current) return;
-      lastCompany.current = next;
-      setCascadeValue("companyDomain", "");
-    });
-    return () => subscription.unsubscribe();
-  }, [hasCompany, form, setCascadeValue]);
-
-  const handleCoursePick = (course: PickedCourse | null) => {
-    const grau = course?.grau ?? null;
-    setCascadeValue("degree", grau ?? "");
-    setCascadeValue("degreeType", degreeTypeFromGrau(grau) ?? "");
-    setDerivedKeys(grau ? new Set(["degree", "degreeType"]) : EMPTY_KEY_SET);
-    pickedWorkload.current = course?.cargaHoraria ?? null;
-    suggestEndDate();
-  };
-
-  useEffect(() => {
-    if (!isEducation) return;
-    const subscription = form.watch((values, { name }) => {
-      if (name === "startDate") {
-        suggestEndDate();
-        return;
-      }
-      if (name !== "institution") return;
-      const next = String(values.institution ?? "");
-      if (next === lastInstitution.current) return;
-      lastInstitution.current = next;
-      setCascadeValue("field", "");
-      setCascadeValue("degree", "");
-      setCascadeValue("degreeType", "");
-      setDerivedKeys(EMPTY_KEY_SET);
-      pickedWorkload.current = null;
-    });
-    return () => subscription.unsubscribe();
-  }, [isEducation, form, setCascadeValue, suggestEndDate]);
   // Safety net: if the section's item fields aren't available (definitions not
   // seeded), don't drop the user into a blank editor — show a notice instead.
   const hasNoFields = fields.length === 0;
@@ -361,42 +170,20 @@ export function SectionItemEditor({
   const activeIndex = editingIndex ?? items.length;
   const isNew = activeIndex === items.length;
   const busy = isPending || persisting;
-  const hasErrors = Object.keys(validateSectionFields(fields, form.watch())).length > 0;
 
   function openNew(): void {
-    form.reset({});
-    lastInstitution.current = "";
-    lastCompany.current = "";
-    pickedWorkload.current = null;
-    lastSuggestedEnd.current = "";
-    setDerivedKeys(EMPTY_KEY_SET);
+    resetForNew();
     setEditingIndex(items.length);
   }
 
   function openExisting(index: number): void {
-    const content = items[index]?.content ?? {};
-    form.reset(
-      Object.fromEntries(Object.entries(content).map(([key, value]) => [key, String(value ?? "")])),
-    );
-    // Saved entries open fully editable: we can't tell whether their degree
-    // was MEC-derived, so nothing is marked read-only.
-    lastInstitution.current = String(content.institution ?? "");
-    // Seed with the saved name so reopening doesn't clear the saved domain.
-    lastCompany.current = String(content.company ?? "");
-    pickedWorkload.current = null;
-    lastSuggestedEnd.current = "";
-    setDerivedKeys(EMPTY_KEY_SET);
+    resetForExisting(items[index]?.content ?? {});
     setEditingIndex(index);
   }
 
   function closeEditor(): void {
     setEditingIndex(null);
-    form.reset({});
-    lastInstitution.current = "";
-    lastCompany.current = "";
-    pickedWorkload.current = null;
-    lastSuggestedEnd.current = "";
-    setDerivedKeys(EMPTY_KEY_SET);
+    resetForNew();
   }
 
   function itemAt(index: number): SectionItem {
@@ -490,7 +277,7 @@ export function SectionItemEditor({
   return (
     <View>
       {underlying}
-      <MultiItemEditorModal
+      <SectionItemModal
         visible={isEditing}
         title={isNew ? addLabel : t("onboarding.editItem")}
         fields={fields}
