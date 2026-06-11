@@ -14,7 +14,11 @@ export {
 } from "./components/primitives";
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";
+export { type ResumeSections, useResumeSections } from "./hooks/use-resume-sections";
+export { useSectionItemMutations } from "./hooks/use-section-item-mutations";
 export { itemCardParts, itemSummary, monthLabel, parseYearMonth } from "./lib/helpers";
+export { fieldsFromDefinition } from "./lib/section-definition";
+export type { MergedSection } from "./lib/section-visibility";
 export { eyebrow, useEd, webNoOutline } from "./lib/styles";
 export { validateSectionFields } from "./lib/validation";
 export type {

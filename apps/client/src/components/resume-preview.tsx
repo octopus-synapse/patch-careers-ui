@@ -1,7 +1,7 @@
 /**
  * ResumePreview — the user's master resume as a realtime, high-fidelity HTML
  * render that mirrors the Typst PDF (`GET /v1/export/resume/preview`), plus a
- * "Baixar PDF" action. Shared by the Resume tab and the Profile tab's CV modal.
+ * "Baixar PDF" action. Rendered by the Profile tab's CV modal.
  *
  * The backend returns a self-contained HTML document: embedded via `srcDoc` on
  * web and `WebView source.html` on native (same split as `legal-webview.tsx`).
@@ -27,14 +27,16 @@ import WebView from "react-native-webview";
 // it like a PDF viewer instead of mirroring it.
 const BACKDROP = { light: "#e5e7eb", dark: "#111110" } as const;
 
-export function ResumePreview(): ReactElement {
+export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const styles = stylesByTheme[useThemeName()];
-  const preview = useGetV1ExportResumePreview(undefined, {
+  // Omitted resumeId = the master resume (backend default).
+  const params = resumeId ? { resumeId } : undefined;
+  const preview = useGetV1ExportResumePreview(params, {
     query: { refetchOnWindowFocus: false },
   });
   // Lazy: only fetched (native) when the user taps "Baixar PDF".
-  const pdf = useGetV1ExportResumePdf(undefined, { query: { enabled: false } });
+  const pdf = useGetV1ExportResumePdf(params, { query: { enabled: false } });
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const onDownload = async (): Promise<void> => {
