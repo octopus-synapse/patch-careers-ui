@@ -11,6 +11,7 @@ const pfFor = (p: EditorialPalette) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: p.bg },
     scroll: { paddingHorizontal: 22, paddingBottom: 48, gap: 26 },
+    centered: { alignItems: "center", justifyContent: "center" },
 
     // header
     header: { alignItems: "center", gap: 12, paddingTop: 20 },
@@ -46,21 +47,10 @@ const pfFor = (p: EditorialPalette) =>
     location: { fontFamily: fonts.sans, fontSize: 13, color: p.muted },
     headlinePlaceholder: { color: p.subtle, fontStyle: "italic" },
 
-    // section scaffold
-    section: { gap: 12 },
-    sectionHead: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    sectionLabel: {
-      fontFamily: fonts.sans,
-      fontSize: 10,
-      fontWeight: "600",
-      letterSpacing: 1.8,
-      textTransform: "uppercase",
-      color: p.muted,
-    },
+    // edit-sheet triggers under the header ("Editar perfil · Sobre · Links")
+    editTriggers: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 4 },
+    editTriggerWrap: { flexDirection: "row", alignItems: "center", gap: 10 },
+    editTriggerDot: { fontFamily: fonts.sans, fontSize: 12, color: p.subtle },
     editLink: {
       fontFamily: fonts.sans,
       fontSize: 11,
@@ -69,88 +59,9 @@ const pfFor = (p: EditorialPalette) =>
       textTransform: "uppercase",
       color: p.accent,
     },
-    hairline: { height: 1, backgroundColor: p.hairline },
 
-    // card / body text
-    card: {
-      borderWidth: 1,
-      borderColor: p.hairline,
-      borderRadius: 16,
-      backgroundColor: p.surface,
-      padding: 16,
-    },
-    bodyText: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 22, color: p.body },
-    placeholder: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 20, color: p.subtle },
-
-    // completeness
-    completeCard: {
-      borderWidth: 1,
-      borderColor: p.hairlineStrong,
-      borderRadius: 16,
-      backgroundColor: p.surface,
-      padding: 16,
-      gap: 12,
-    },
-    completeHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between" },
-    completeTitle: { fontFamily: fonts.serif, fontSize: 17, color: p.ink },
-    completePct: { fontFamily: fonts.mono, fontSize: 15, fontWeight: "600", color: p.ink },
-    completeTrack: { height: 6, borderRadius: 3, backgroundColor: p.hairline, overflow: "hidden" },
-    completeFill: { height: "100%", borderRadius: 3, backgroundColor: p.success },
-    chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-    chip: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 6,
-      borderWidth: 1,
-      borderColor: p.hairlineStrong,
-      borderRadius: 999,
-      paddingHorizontal: 12,
-      paddingVertical: 7,
-    },
-    chipText: { fontFamily: fonts.sans, fontSize: 12.5, color: p.body },
-
-    // share row
-    shareRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 10,
-      borderWidth: 1,
-      borderColor: p.hairline,
-      borderRadius: 14,
-      backgroundColor: p.surface,
-      paddingHorizontal: 14,
-      paddingVertical: 12,
-    },
-    shareBody: { flex: 1, gap: 2 },
-    shareLabel: {
-      fontFamily: fonts.sans,
-      fontSize: 10,
-      fontWeight: "600",
-      letterSpacing: 1.6,
-      textTransform: "uppercase",
-      color: p.muted,
-    },
-    shareUrl: { fontFamily: fonts.mono, fontSize: 13, color: p.ink },
-
-    // social links
-    linkRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 12,
-      paddingVertical: 12,
-      borderTopWidth: 1,
-      borderTopColor: p.hairline,
-    },
-    linkIcon: {
-      width: 34,
-      height: 34,
-      borderRadius: 17,
-      backgroundColor: p.bg,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    linkLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 14.5, color: p.ink },
-    linkValue: { fontFamily: fonts.sans, fontSize: 13, color: p.muted, maxWidth: 160 },
+    // "Perfil" sub-tab body
+    masterTab: { gap: 26 },
 
     // cv button
     cvButton: {
@@ -171,20 +82,6 @@ const pfFor = (p: EditorialPalette) =>
       letterSpacing: 0.4,
       color: p.ink,
     },
-
-    // cv modal
-    cvModalRoot: { flex: 1, backgroundColor: p.bg },
-    cvModalHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 18,
-      paddingVertical: 14,
-      borderBottomWidth: 1,
-      borderBottomColor: p.hairline,
-      backgroundColor: p.surface,
-    },
-    cvModalTitle: { fontFamily: fonts.serif, fontSize: 20, color: p.ink },
 
     // edit sheets
     sheetBody: { gap: 22, paddingBottom: 8 },
