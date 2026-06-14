@@ -46,8 +46,8 @@ import { resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 
 const LANGUAGES = [
-  { value: "pt-br", label: "Português" },
-  { value: "en", label: "English" },
+  { value: "pt-br", labelKey: "resumes.wizard.languagePt" },
+  { value: "en", labelKey: "resumes.wizard.languageEn" },
 ] as const;
 
 type Selection = Map<string, Set<string>>;
@@ -83,7 +83,7 @@ export function CreateResumeWizard({
   const rz = useRz();
   const styles = stylesByTheme[useThemeName()];
   const palette = useEditorialPalette();
-  const { locale } = useI18n();
+  const { t, locale } = useI18n();
   const { visible: masterSections } = useResumeSections(
     visible ? sourceResumeId : undefined,
     resumeLanguageToLocale(sourceLanguage),
@@ -153,7 +153,7 @@ export function CreateResumeWizard({
       reset();
       onCreated(id);
     } catch {
-      setError("Não foi possível criar o currículo. Tente novamente.");
+      setError(t("resumes.wizard.createError"));
     }
   };
 
@@ -172,7 +172,7 @@ export function CreateResumeWizard({
         <Pressable
           style={ed.editorModalBackdrop}
           accessibilityRole="button"
-          accessibilityLabel="Cancelar"
+          accessibilityLabel={t("resumes.wizard.cancel")}
           onPress={close}
         />
         <View style={ed.editorModalCard}>
@@ -181,7 +181,7 @@ export function CreateResumeWizard({
               {step === 2 ? (
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Voltar"
+                  accessibilityLabel={t("resumes.wizard.back")}
                   hitSlop={12}
                   onPress={() => setStep(1)}
                 >
@@ -191,13 +191,13 @@ export function CreateResumeWizard({
               <View>
                 <Text style={rz.wizardStepLabel}>{step} / 2</Text>
                 <Text style={ed.editorModalTitle}>
-                  {step === 1 ? "O que entra nesse currículo?" : "Detalhes do currículo"}
+                  {step === 1 ? t("resumes.wizard.step1Title") : t("resumes.wizard.step2Title")}
                 </Text>
               </View>
             </View>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Fechar"
+              accessibilityLabel={t("resumes.wizard.close")}
               hitSlop={12}
               onPress={close}
             >
@@ -212,10 +212,7 @@ export function CreateResumeWizard({
           >
             {step === 1 ? (
               <View>
-                <Text style={rz.wizardHint}>
-                  Tudo vem do seu currículo principal. Desmarque o que não deve aparecer — a cópia
-                  vive a própria vida depois.
-                </Text>
+                <Text style={rz.wizardHint}>{t("resumes.wizard.step1Hint")}</Text>
                 {copyable.map((section) => {
                   const picked = effective.get(section.key) ?? new Set<string>();
                   const allChecked = picked.size === section.items.length && picked.size > 0;
@@ -256,26 +253,24 @@ export function CreateResumeWizard({
                   );
                 })}
                 {copyable.length === 0 ? (
-                  <Text style={rz.centeredText}>
-                    Seu currículo principal ainda não tem itens para copiar.
-                  </Text>
+                  <Text style={rz.centeredText}>{t("resumes.wizard.emptyMaster")}</Text>
                 ) : null}
               </View>
             ) : (
               <View style={styles.detailsStack}>
                 <UnderlineInput
-                  label="Nome do currículo"
+                  label={t("resumes.wizard.nameLabel")}
                   value={title}
                   onChangeText={setTitle}
-                  placeholder="ex.: Backend Sênior — fintech"
+                  placeholder={t("resumes.wizard.namePlaceholder")}
                 />
                 <View style={styles.fieldBlock}>
-                  <Text style={rz.sectionLabel}>Idioma</Text>
+                  <Text style={rz.sectionLabel}>{t("resumes.wizard.languageLabel")}</Text>
                   <View style={ed.pillWrap}>
                     {LANGUAGES.map((lang) => (
                       <OptionPill
                         key={lang.value}
-                        label={lang.label}
+                        label={t(lang.labelKey)}
                         selected={language === lang.value}
                         onPress={() => setLanguage(lang.value)}
                       />
@@ -283,7 +278,7 @@ export function CreateResumeWizard({
                   </View>
                 </View>
                 <View style={styles.fieldBlock}>
-                  <Text style={rz.sectionLabel}>Estilo visual</Text>
+                  <Text style={rz.sectionLabel}>{t("resumes.wizard.styleLabel")}</Text>
                   <View style={ed.styleStack}>
                     {(stylesQuery.data?.items ?? []).map((style) => {
                       const selected = styleId === style.id;
@@ -312,9 +307,7 @@ export function CreateResumeWizard({
                       );
                     })}
                   </View>
-                  <Text style={rz.wizardHint}>
-                    Sem escolha, a cópia mantém o estilo do currículo principal.
-                  </Text>
+                  <Text style={rz.wizardHint}>{t("resumes.wizard.styleHint")}</Text>
                 </View>
                 {error ? <Text style={styles.error}>{error}</Text> : null}
               </View>
@@ -325,13 +318,13 @@ export function CreateResumeWizard({
             <View />
             {step === 1 ? (
               <PrimaryAction
-                label="Continuar"
+                label={t("resumes.wizard.continue")}
                 onPress={() => setStep(2)}
                 disabled={copyable.length === 0}
               />
             ) : (
               <PrimaryAction
-                label="Criar currículo"
+                label={t("resumes.wizard.create")}
                 onPress={() => void create()}
                 loading={isPending}
                 disabled={title.trim().length === 0 || isPending}

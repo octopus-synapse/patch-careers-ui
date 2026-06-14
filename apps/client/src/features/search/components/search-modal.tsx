@@ -34,6 +34,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useI18n } from "@/providers/i18n-provider";
 import { SEARCH_MIN_CHARS, useGlobalSearch } from "../hooks/use-global-search";
 import { useRecentSearchesStore } from "../model/recent-searches.store";
 import type { ExploreShortcut, RecentSearchItem, SearchGroup } from "../types";
@@ -74,6 +75,7 @@ export function SearchModal({
   open: boolean;
   onClose: () => void;
 }): ReactElement {
+  const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   const themeName = useThemeName();
   const insets = useSafeAreaInsets();
@@ -186,7 +188,7 @@ export function SearchModal({
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Fechar busca"
+          accessibilityLabel={t("search.closeA11y")}
           style={StyleSheet.absoluteFill}
           onPress={close}
         />
@@ -223,7 +225,7 @@ export function SearchModal({
             flex={1}
             value={term}
             onChangeText={setTerm}
-            placeholder="Buscar…"
+            placeholder={t("search.placeholder")}
             placeholderTextColor={editorialPalette.subtle}
             autoCapitalize="none"
             autoCorrect={false}
@@ -238,7 +240,7 @@ export function SearchModal({
           {term.length > 0 ? (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Limpar busca"
+              accessibilityLabel={t("search.clearA11y")}
               onPress={() => setTerm("")}
               hitSlop={8}
             >
@@ -246,7 +248,11 @@ export function SearchModal({
             </Pressable>
           ) : null}
           {Platform.OS === "web" ? (
-            <Pressable accessibilityRole="button" accessibilityLabel="Fechar busca" onPress={close}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("search.closeA11y")}
+              onPress={close}
+            >
               <Text
                 fontFamily={editorialFonts.mono}
                 fontSize={11}
@@ -263,7 +269,7 @@ export function SearchModal({
           ) : (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Fechar busca"
+              accessibilityLabel={t("search.closeA11y")}
               onPress={close}
               hitSlop={8}
             >
@@ -285,10 +291,10 @@ export function SearchModal({
         ) : groups.length === 0 ? (
           <YStack alignItems="center" gap={4} paddingVertical={32} paddingHorizontal={24}>
             <Text preset="caption" color={editorialPalette.subtle} textAlign="center">
-              Nenhum resultado para “{debounced}”
+              {t("search.noResults", { term: debounced })}
             </Text>
             <Text preset="caption" color={editorialPalette.subtle} textAlign="center">
-              Tente outro termo — cargos, pessoas ou empresas.
+              {t("search.noResultsHint")}
             </Text>
           </YStack>
         ) : (

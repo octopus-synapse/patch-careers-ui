@@ -33,6 +33,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 
 // Slightly deeper than the ProfileMenu scrim — this sits on top of the drawer
 // and needs to pull focus to the decision, but still reads calm on a light app.
@@ -62,17 +63,19 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
-  cancelLabel = "Cancelar",
+  cancelLabel,
   danger = false,
   icon: Icon,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps): ReactElement {
+  const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   const styles = stylesByTheme[useThemeName()];
   const { width: screenW } = useWindowDimensions();
   const cardWidth = Math.min(380, screenW - 48);
-  const resolvedConfirm = confirmLabel ?? (danger ? "Excluir" : "Confirmar");
+  const resolvedCancel = cancelLabel ?? t("common.cancel");
+  const resolvedConfirm = confirmLabel ?? (danger ? t("common.delete") : t("common.confirm"));
 
   // `anim`: 0 = hidden, 1 = shown. `visible` keeps the Modal mounted through
   // the exit animation before unmounting (mirrors <ProfileMenu>).
@@ -123,7 +126,7 @@ export function ConfirmDialog({
         <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: anim }]}>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Fechar"
+            accessibilityLabel={t("app.confirmDialog.close")}
             style={StyleSheet.absoluteFill}
             onPress={dismiss}
           />
@@ -158,7 +161,7 @@ export function ConfirmDialog({
           <View style={styles.actions}>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={cancelLabel}
+              accessibilityLabel={resolvedCancel}
               onPress={dismiss}
               style={({ pressed }) => [
                 styles.button,
@@ -166,7 +169,7 @@ export function ConfirmDialog({
                 pressed ? styles.cancelPressed : null,
               ]}
             >
-              <Text style={[styles.buttonLabel, styles.cancelLabel]}>{cancelLabel}</Text>
+              <Text style={[styles.buttonLabel, styles.cancelLabel]}>{resolvedCancel}</Text>
             </Pressable>
 
             <Pressable

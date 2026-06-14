@@ -18,7 +18,14 @@ import { editorialFonts } from "./fonts";
 
 const flexStyle = { flex: 1 } as const;
 
-export function AuthShell({ children }: { children: ReactNode }): ReactElement {
+export function AuthShell({
+  children,
+  showEra = true,
+}: {
+  children: ReactNode;
+  /** Shows the "EST · 2025" masthead flourish. Off on sign-in/sign-up. */
+  showEra?: boolean;
+}): ReactElement {
   const insets = useSafeAreaInsets();
   const editorialPalette = useEditorialPalette();
   const barStyle = useThemeName() === "dark" ? "light-content" : "dark-content";
@@ -45,14 +52,16 @@ export function AuthShell({ children }: { children: ReactNode }): ReactElement {
               <TXStack alignItems="center">
                 <BrandMark size={22} />
               </TXStack>
-              <TText
-                fontFamily={editorialFonts.mono}
-                fontSize={10}
-                letterSpacing={1.8}
-                color="$inkSubtle"
-              >
-                EST · 2025
-              </TText>
+              {showEra ? (
+                <TText
+                  fontFamily={editorialFonts.mono}
+                  fontSize={10}
+                  letterSpacing={1.8}
+                  color="$inkSubtle"
+                >
+                  EST · 2025
+                </TText>
+              ) : null}
             </TXStack>
           </Animated.View>
 

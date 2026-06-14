@@ -8,6 +8,7 @@ import { Icon, IconButton, Input, XStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Send } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
+import { useI18n } from "@/providers/i18n-provider";
 import { useChatColors } from "../lib/theme";
 
 export function MessageComposer({
@@ -19,6 +20,7 @@ export function MessageComposer({
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const chatColors = useChatColors();
+  const { t } = useI18n();
   const [content, setContent] = useState("");
   const canSend = !disabled && content.trim().length > 0;
 
@@ -53,7 +55,7 @@ export function MessageComposer({
           flex={1}
           value={content}
           onChangeText={setContent}
-          placeholder="Escreva uma mensagem…"
+          placeholder={t("messages.composer.placeholder")}
           placeholderTextColor={editorialPalette.subtle}
           multiline
           minHeight={44}
@@ -67,7 +69,7 @@ export function MessageComposer({
       </XStack>
 
       <IconButton
-        accessibilityLabel="Enviar mensagem"
+        accessibilityLabel={t("messages.composer.send")}
         onPress={submit}
         disabled={!canSend}
         backgroundColor={chatColors.sendButton}

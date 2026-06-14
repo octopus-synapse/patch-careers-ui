@@ -8,12 +8,14 @@ import { Avatar, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Check, CheckCheck } from "lucide-react-native";
 import type { ReactElement } from "react";
+import { useI18n } from "@/providers/i18n-provider";
 import { formatTime, type RenderedMessage } from "../lib/helpers";
 import { useChatColors } from "../lib/theme";
 
 export function MessageBubble({ item }: { item: RenderedMessage }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const chatColors = useChatColors();
+  const { t } = useI18n();
   const { message, own, startsGroup, showAvatar } = item;
 
   return (
@@ -65,7 +67,9 @@ export function MessageBubble({ item }: { item: RenderedMessage }): ReactElement
               as={message.isRead ? CheckCheck : Check}
               size={13}
               color={message.isRead ? chatColors.tickRead : chatColors.tickSent}
-              accessibilityLabel={message.isRead ? "Lida" : "Enviada"}
+              accessibilityLabel={
+                message.isRead ? t("messages.bubble.read") : t("messages.bubble.sent")
+              }
             />
           ) : null}
         </XStack>

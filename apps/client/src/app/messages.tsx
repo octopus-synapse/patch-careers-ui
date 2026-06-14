@@ -29,6 +29,7 @@ import {
   useInbox,
   useUserSearch,
 } from "@/features/messages";
+import { useI18n } from "@/providers/i18n-provider";
 
 function RowSeparator(): ReactElement {
   const editorialPalette = useEditorialPalette();
@@ -47,6 +48,7 @@ export default function MessagesScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const inbox = useInbox();
   const [term, setTerm] = useState("");
@@ -68,14 +70,14 @@ export default function MessagesScreen(): ReactElement {
   function openConversation(conversation: Conversation): void {
     goToThread({
       id: conversation.id,
-      name: participantLabel(conversation.participant),
+      name: participantLabel(conversation.participant, t),
       photo: conversation.participant.photoURL ?? "",
       username: conversation.participant.username ?? "",
     });
   }
 
   async function openUser(user: ChatUser): Promise<void> {
-    const name = participantLabel(user);
+    const name = participantLabel(user, t);
     const base = { name, photo: user.photoURL ?? "", username: user.username ?? "" };
     let existing: string | null = null;
     try {
@@ -93,7 +95,7 @@ export default function MessagesScreen(): ReactElement {
       <XStack alignItems="center" height={44} paddingHorizontal={8}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Voltar"
+          accessibilityLabel={t("common.back")}
           onPress={goBack}
           hitSlop={8}
           style={{ padding: 6 }}
@@ -102,16 +104,17 @@ export default function MessagesScreen(): ReactElement {
         </Pressable>
       </XStack>
 
-      <YStack paddingHorizontal={20} paddingTop={4} paddingBottom={10}>
+      <YStack paddingHorizontal={20} paddingTop={8} paddingBottom={24}>
         <Text
           fontFamily={editorialFonts.serif}
           fontSize={30}
-          lineHeight={36}
+          lineHeight={40}
           letterSpacing={-0.6}
           fontWeight="400"
           color={editorialPalette.ink}
+          textAlign="center"
         >
-          Mensagens
+          {t("messages.title")}
         </Text>
       </YStack>
 
@@ -155,6 +158,7 @@ function SearchResults({
   onSelect: (user: ChatUser) => void;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const { t } = useI18n();
   if (isLoading) {
     return (
       <XStack justifyContent="center" paddingVertical={28}>
@@ -166,7 +170,7 @@ function SearchResults({
     return (
       <XStack justifyContent="center" paddingVertical={28}>
         <Text preset="caption" color={editorialPalette.subtle}>
-          Nenhuma pessoa encontrada
+          {t("messages.search.noResults")}
         </Text>
       </XStack>
     );
@@ -183,12 +187,13 @@ function SearchResults({
 
 function EmptyInbox(): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const { t } = useI18n();
   return (
     <YStack flex={1} justifyContent="center">
       <EmptyState
         icon={<Icon as={MessageCircle} size={32} color={editorialPalette.subtle} />}
-        title="Nenhuma conversa ainda"
-        description="Busque uma pessoa acima para iniciar uma conversa."
+        title={t("messages.inbox.emptyTitle")}
+        description={t("messages.inbox.emptyDescription")}
       />
     </YStack>
   );
@@ -196,13 +201,14 @@ function EmptyInbox(): ReactElement {
 
 function InboxError({ onRetry }: { onRetry: () => void }): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const { t } = useI18n();
   return (
     <YStack flex={1} justifyContent="center">
       <EmptyState
         icon={<Icon as={SearchIcon} size={32} color={editorialPalette.subtle} />}
-        title="Não foi possível carregar suas conversas"
-        description="Verifique sua conexão e tente novamente."
-        ctaLabel="Tentar novamente"
+        title={t("messages.inbox.errorTitle")}
+        description={t("messages.inbox.errorDescription")}
+        ctaLabel={t("common.retry")}
         onCta={onRetry}
       />
     </YStack>

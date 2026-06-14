@@ -11,6 +11,7 @@
 
 import { ListPicker, Text } from "@patch-careers/ui";
 import type { ReactElement } from "react";
+import { useI18n } from "@/providers/i18n-provider";
 
 export interface SectionAddOption {
   id: string;
@@ -35,6 +36,7 @@ export function SectionAddPicker({
   title,
   emptyLabel,
 }: SectionAddPickerProps): ReactElement {
+  const { t } = useI18n();
   return (
     <ListPicker
       open={open}
@@ -45,9 +47,9 @@ export function SectionAddPicker({
         ...(o.icon ? { icon: <Text>{o.icon}</Text> } : {}),
       }))}
       onPick={onPick}
-      title={title ?? "Adicionar seção"}
-      emptyLabel={emptyLabel ?? "Você já adicionou todas as seções disponíveis."}
-      closeLabel="Fechar"
+      title={title ?? t("onboarding.addSection")}
+      emptyLabel={emptyLabel ?? t("onboarding.sectionPicker.empty")}
+      closeLabel={t("onboarding.sectionPicker.close")}
     />
   );
 }

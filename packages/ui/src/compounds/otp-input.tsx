@@ -8,6 +8,7 @@
 
 import { createRef, useEffect, useMemo, useRef } from "react";
 import {
+  backspaceOtp,
   isOtpComplete,
   nextOtpIndex,
   OTP_DEFAULT_LENGTH,
@@ -70,6 +71,16 @@ export function OTPInput({
     }
   }
 
+  // Backspace from an empty slot has no text change to fire `onChangeText`,
+  // so we delete the digit behind the active slot ourselves.
+  function handleKeyPress(index: number, key: string) {
+    if (key !== "Backspace") return;
+    const result = backspaceOtp(value, index, length);
+    if (!result) return;
+    onChangeText(result.value);
+    refs[result.focusIndex]?.current?.focus();
+  }
+
   return (
     <TXStack gap={8} accessibilityRole="none" accessibilityLabel="Código de verificação">
       {slots.map((digit, i) => (
@@ -79,6 +90,9 @@ export function OTPInput({
           ref={refs[i]}
           value={digit}
           onChangeText={(raw: string) => handleSlot(i, raw)}
+          onKeyPress={(e: { nativeEvent: { key: string } }) =>
+            handleKeyPress(i, e.nativeEvent.key)
+          }
           maxLength={length}
           keyboardType="number-pad"
           textAlign="center"

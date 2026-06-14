@@ -8,9 +8,10 @@
  * and the controlled SectionForm is bridged via watch + setValue.
  */
 import type { PatchV1UsersProfileMutationRequest } from "@patch-careers/api-client";
+import type { Translator } from "@patch-careers/i18n";
 import { Sheet } from "@patch-careers/ui";
 import { PrimaryAction } from "@patch-careers/ui/editorial";
-import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
+import { type ReactElement, type ReactNode, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 import { LocationPicker } from "@/features/onboarding";
@@ -21,6 +22,7 @@ import {
   validateSectionFields,
 } from "@/features/sections";
 import { fieldErrorsResolver } from "@/forms";
+import { useI18n } from "@/providers/i18n-provider";
 import { usePf } from "../lib/styles";
 
 /** Profile fields the owner can read back from GET /v1/users/profile. */
@@ -65,10 +67,11 @@ function ProfileEditSheet({
   onSubmit,
   children,
 }: SheetShellProps): ReactElement {
+  const { t } = useI18n();
   const pf = usePf();
   const form = useForm<FormData>({
     defaultValues: initial,
-    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),
+    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values, t)),
   });
   const draft = form.watch();
 
@@ -108,7 +111,7 @@ function ProfileEditSheet({
         {children?.(draft, setDraft)}
         <View style={pf.sheetActions}>
           <PrimaryAction
-            label="Salvar"
+            label={t("common.save")}
             onPress={() => void submit()}
             loading={busy}
             disabled={busy}
@@ -119,18 +122,19 @@ function ProfileEditSheet({
   );
 }
 
-const IDENTITY_FIELDS: SectionField[] = [
-  { key: "name", type: "text", label: "Nome", required: true },
-  { key: "headline", type: "text", label: "Título profissional", required: false },
+const identityFields = (t: Translator): SectionField[] => [
+  { key: "name", type: "text", label: t("profile.edit.fields.name"), required: true },
+  { key: "headline", type: "text", label: t("profile.edit.fields.headline"), required: false },
 ];
-const ABOUT_FIELDS: SectionField[] = [
-  { key: "bio", type: "textarea", label: "Sobre você", required: false },
+const aboutFields = (t: Translator): SectionField[] => [
+  { key: "bio", type: "textarea", label: t("profile.edit.fields.bio"), required: false },
 ];
-const LINK_FIELDS: SectionField[] = [
+const linkFields = (t: Translator): SectionField[] => [
+  // LinkedIn/GitHub are brand names — same in every locale.
   { key: "linkedin", type: "url", label: "LinkedIn", required: false },
   { key: "github", type: "url", label: "GitHub", required: false },
-  { key: "website", type: "url", label: "Website", required: false },
-  { key: "twitter", type: "url", label: "Twitter / X", required: false },
+  { key: "website", type: "url", label: t("profile.edit.fields.website"), required: false },
+  { key: "twitter", type: "url", label: t("profile.edit.fields.twitter"), required: false },
 ];
 
 type SectionSheetProps = {
@@ -148,6 +152,8 @@ export function IdentityEditSheet({
   isPending,
   onSubmit,
 }: SectionSheetProps): ReactElement {
+  const { t } = useI18n();
+  const fields = useMemo(() => identityFields(t), [t]);
   const initial: FormData = {
     ...(profile?.name ? { name: profile.name } : {}),
     ...(profile?.headline ? { headline: profile.headline } : {}),
@@ -157,8 +163,8 @@ export function IdentityEditSheet({
     <ProfileEditSheet
       open={open}
       onOpenChange={onOpenChange}
-      title="Editar perfil"
-      fields={IDENTITY_FIELDS}
+      title={t("profile.edit.identityTitle")}
+      fields={fields}
       initial={initial}
       isPending={isPending}
       onSubmit={(d) =>
@@ -167,7 +173,7 @@ export function IdentityEditSheet({
     >
       {(draft, setDraft) => (
         <LocationPicker
-          label="Localização"
+          label={t("profile.edit.locationLabel")}
           value={draft.location ?? ""}
           onChange={(label) => setDraft((d) => ({ ...d, location: label }))}
         />
@@ -183,13 +189,15 @@ export function AboutEditSheet({
   isPending,
   onSubmit,
 }: SectionSheetProps): ReactElement {
+  const { t } = useI18n();
+  const fields = useMemo(() => aboutFields(t), [t]);
   const initial: FormData = profile?.bio ? { bio: profile.bio } : {};
   return (
     <ProfileEditSheet
       open={open}
       onOpenChange={onOpenChange}
-      title="Sobre você"
-      fields={ABOUT_FIELDS}
+      title={t("profile.edit.aboutTitle")}
+      fields={fields}
       initial={initial}
       isPending={isPending}
       onSubmit={(d) => onSubmit(nonEmpty({ bio: d.bio }))}
@@ -204,6 +212,8 @@ export function SocialLinksEditSheet({
   isPending,
   onSubmit,
 }: SectionSheetProps): ReactElement {
+  const { t } = useI18n();
+  const fields = useMemo(() => linkFields(t), [t]);
   const initial: FormData = {
     ...(profile?.linkedin ? { linkedin: profile.linkedin } : {}),
     ...(profile?.github ? { github: profile.github } : {}),
@@ -214,8 +224,8 @@ export function SocialLinksEditSheet({
     <ProfileEditSheet
       open={open}
       onOpenChange={onOpenChange}
-      title="Links"
-      fields={LINK_FIELDS}
+      title={t("profile.edit.linksTitle")}
+      fields={fields}
       initial={initial}
       isPending={isPending}
       onSubmit={(d) =>

@@ -28,7 +28,7 @@ import {
   View,
 } from "react-native";
 import WebView from "react-native-webview";
-import { AddRow, FieldRenderer, OverlayModal, useEd } from "@/features/sections";
+import { AddRow, FieldRenderer, GhostButton, OverlayModal, useEd } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
 import {
@@ -139,15 +139,15 @@ export function LanguageStep({
   const options: ReadonlyArray<{ value: Locale; label: string; native: string; hint: string }> = [
     {
       value: "en",
-      label: "English",
-      native: "English",
-      hint: "Interface, dates & content in English",
+      label: t("onboarding.language.english.native"),
+      native: t("onboarding.language.english.native"),
+      hint: t("onboarding.language.english.hint"),
     },
     {
       value: "pt-BR",
-      label: "Português",
-      native: "Português (Brasil)",
-      hint: "Interface, datas e conteúdo em português",
+      label: t("onboarding.language.portuguese.native"),
+      native: t("onboarding.language.portuguese.native"),
+      hint: t("onboarding.language.portuguese.hint"),
     },
   ];
   return (
@@ -672,9 +672,12 @@ export function ReviewSummary({
 /** Value-prop intro shown before the counted flow (item: welcome screen). */
 export function WelcomeScreen({
   onStart,
+  onBack,
   t,
 }: {
   onStart: () => void;
+  /** Back to the preceding step (theme); omitted when there's nowhere to go. */
+  onBack?: (() => void) | undefined;
   t: Translator;
 }): ReactElement {
   const ed = useEd();
@@ -711,6 +714,11 @@ export function WelcomeScreen({
               onPress={onStart}
               testID="onboarding.welcome.start"
             />
+            {onBack ? (
+              <View style={ed.welcomeBack}>
+                <GhostButton label={t("onboarding.back")} onPress={onBack} />
+              </View>
+            ) : null}
           </View>
         </AnimatedField>
       </View>

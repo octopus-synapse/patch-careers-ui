@@ -7,8 +7,11 @@
  *   styled props → StyleSheet (D11, ~3-5× perf gains in long lists).
  *   We point it at our config + the shared UI package so optimizations
  *   transfer across the monorepo.
- * - `react-native-reanimated/plugin` MUST be listed last (Reanimated
- *   docs) — it transforms worklet boundaries.
+ * - Reanimated v4 worklet transforms are injected automatically by
+ *   `babel-preset-expo` (→ `react-native-worklets/plugin` when the
+ *   worklets package is installed). Do NOT add the legacy
+ *   `react-native-reanimated/plugin` here — duplicate plugins crash
+ *   at runtime in Expo Go.
  */
 module.exports = (api) => {
   api.cache(true);
@@ -24,7 +27,6 @@ module.exports = (api) => {
           disableExtraction: process.env.NODE_ENV === "development",
         },
       ],
-      "react-native-reanimated/plugin",
     ],
   };
 };

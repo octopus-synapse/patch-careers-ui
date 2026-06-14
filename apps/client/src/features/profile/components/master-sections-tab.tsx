@@ -10,18 +10,18 @@ import { Pressable, Text, View } from "react-native";
 import { ResumePreviewModal } from "@/components/resume-preview-modal";
 import { resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
 import { ResumeSectionsManager } from "@/features/sections";
+import { useI18n } from "@/providers/i18n-provider";
 import { usePf } from "../lib/styles";
 
 export function MasterSectionsTab(): ReactElement {
+  const { t } = useI18n();
   const palette = useEditorialPalette();
   const pf = usePf();
   const { resumeId, language, isLoading } = useMasterResumeId();
   const [cvOpen, setCvOpen] = useState(false);
 
   if (!resumeId && !isLoading) {
-    return (
-      <Text style={pf.noResume}>Conclua o onboarding para montar seu currículo principal.</Text>
-    );
+    return <Text style={pf.noResume}>{t("profile.master.onboardingRequired")}</Text>;
   }
 
   return (
@@ -31,12 +31,12 @@ export function MasterSectionsTab(): ReactElement {
       {resumeId ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Ver currículo"
+          accessibilityLabel={t("profile.master.viewResumeA11y")}
           onPress={() => setCvOpen(true)}
           style={pf.cvButton}
         >
           <FileText size={18} color={palette.ink} strokeWidth={1.75} />
-          <Text style={pf.cvButtonLabel}>Ver currículo (CV)</Text>
+          <Text style={pf.cvButtonLabel}>{t("profile.master.viewResume")}</Text>
         </Pressable>
       ) : null}
 

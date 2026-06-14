@@ -3,8 +3,8 @@
  *
  * Three anchors, mobile-first: the user's rounded avatar on the left
  * (→ the account menu), the global search trigger centered (→ the
- * fullscreen SearchModal), and the Messages quick-action on the right
- * (→ the inbox) carrying the live unread badge.
+ * SearchModal command palette), and the Messages quick-action on the
+ * right (→ the inbox) carrying the live unread badge.
  *
  * Rendered as the react-navigation `header` for every tab so it stays put
  * while the bottom tab bar switches screens; it owns the top safe-area
@@ -23,6 +23,7 @@ import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SearchModal, SearchTrigger } from "@/features/search";
 import { useAuthState } from "@/providers/auth-provider";
+import { useI18n } from "@/providers/i18n-provider";
 import { ProfileMenu } from "./profile-menu";
 
 // Matched left/right column widths keep the centered search bar optically
@@ -32,6 +33,7 @@ const EDGE = 44;
 const BAR_HEIGHT = 56;
 
 export function AppHeader(): ReactElement {
+  const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -41,7 +43,7 @@ export function AppHeader(): ReactElement {
 
   const profile = useGetV1UsersProfile({ query: { enabled: isAuthenticated } });
   const photoURL = profile.data?.photoURL ?? undefined;
-  const name = profile.data?.name ?? currentUser?.name ?? currentUser?.email ?? "Você";
+  const name = profile.data?.name ?? currentUser?.name ?? currentUser?.email ?? t("app.header.you");
 
   // Unread badge on the Messages action. Polls so the count stays roughly
   // live without a socket; React Query dedupes this against any other caller.
@@ -64,7 +66,7 @@ export function AppHeader(): ReactElement {
         {/* Left — rounded avatar → account menu */}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Abrir menu da conta"
+          accessibilityLabel={t("app.header.openAccountMenu")}
           onPress={() => setMenuOpen(true)}
           hitSlop={8}
           style={{ width: EDGE, alignItems: "flex-start" }}
@@ -80,7 +82,11 @@ export function AppHeader(): ReactElement {
         {/* Right — Messages quick action → inbox */}
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={totalUnread > 0 ? `Mensagens, ${totalUnread} não lidas` : "Mensagens"}
+          accessibilityLabel={
+            totalUnread > 0
+              ? t("app.header.messagesUnread", { count: totalUnread })
+              : t("app.header.messages")
+          }
           onPress={() => router.push("/messages")}
           hitSlop={8}
           style={{ width: EDGE, alignItems: "flex-end" }}

@@ -9,6 +9,7 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { ChevronLeft } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 
 export function ChatHeader({
   name,
@@ -22,6 +23,7 @@ export function ChatHeader({
   onBack: () => void;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const { t } = useI18n();
   return (
     <XStack
       alignItems="center"
@@ -34,7 +36,7 @@ export function ChatHeader({
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Voltar"
+        accessibilityLabel={t("common.back")}
         onPress={onBack}
         hitSlop={8}
         style={{ padding: 4 }}

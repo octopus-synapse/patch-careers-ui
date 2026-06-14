@@ -6,8 +6,12 @@
  *   1. explicit `<I18nProvider locale="pt-BR">` prop (tests/storybook)
  *   2. the user's persisted choice (set via `setLocale`, stored in
  *      `mundane` — the same adapter the onboarding drafts use)
- *   3. device locale, if it matches a supported tag
- *   4. fallback to `pt-BR` (D66 — pt-BR is the default)
+ *   3. fallback to `pt-BR` (D66 — pt-BR is the default)
+ *
+ * The device locale is deliberately NOT consulted: the product is
+ * pt-BR-first and most feature copy is authored in pt-BR, so seeding from
+ * an en-US device produced a half-translated UI. Only the explicit choice
+ * in the onboarding "Idioma" step switches to English.
  *
  * Changing the locale re-binds the translator and (because the onboarding
  * session query is keyed by `locale`) refetches a translated session.
@@ -33,7 +37,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { NativeModules, Platform } from "react-native";
 
 interface I18nContextValue {
   readonly locale: Locale;
@@ -42,32 +45,6 @@ interface I18nContextValue {
 }
 
 const dictForLocale = (locale: Locale) => (locale === "en" ? en : ptBR);
-
-/**
- * Best-effort device locale lookup without adding `expo-localization`
- * as a hard dep (it's heavy and only needed for richer Intl features
- * we don't use yet). We use platform-specific natives or fall back to
- * `Intl` on web.
- */
-function detectLocale(): Locale {
-  try {
-    let raw: string | undefined;
-    if (Platform.OS === "ios") {
-      const settings = NativeModules.SettingsManager?.settings as
-        | { AppleLocale?: string; AppleLanguages?: readonly string[] }
-        | undefined;
-      raw = settings?.AppleLocale ?? settings?.AppleLanguages?.[0];
-    } else if (Platform.OS === "android") {
-      raw = (NativeModules.I18nManager?.localeIdentifier as string | undefined) ?? undefined;
-    } else {
-      raw = typeof navigator !== "undefined" ? navigator.language : undefined;
-    }
-    if (!raw) raw = Intl.DateTimeFormat().resolvedOptions().locale;
-    return raw.toLowerCase().startsWith("en") ? "en" : "pt-BR";
-  } catch {
-    return "pt-BR";
-  }
-}
 
 const defaultLocale: Locale = "pt-BR";
 
@@ -83,7 +60,7 @@ interface I18nProviderProps {
 }
 
 export function I18nProvider({ children, locale }: I18nProviderProps): ReactElement {
-  const [active, setActive] = useState<Locale>(() => locale ?? detectLocale());
+  const [active, setActive] = useState<Locale>(() => locale ?? defaultLocale);
 
   // An explicit prop (tests/storybook) always wins and is authoritative.
   useEffect(() => {

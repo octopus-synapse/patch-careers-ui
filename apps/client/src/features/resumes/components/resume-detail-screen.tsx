@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ResumePreview } from "@/components/resume-preview";
 import { ResumeSectionsManager } from "@/features/sections";
+import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
 import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
@@ -48,6 +49,7 @@ function ActionPill({
 }
 
 export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
+  const { t, locale } = useI18n();
   const rz = useRz();
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
@@ -95,8 +97,8 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   if (detail.isError || !resume) {
     return (
       <View style={[rz.detailRoot, rz.centered, { paddingTop: insets.top }]}>
-        <Text style={rz.centeredText}>Currículo não encontrado.</Text>
-        <ActionPill label="Voltar" icon={ChevronLeft} onPress={back} />
+        <Text style={rz.centeredText}>{t("resumes.detail.notFound")}</Text>
+        <ActionPill label={t("resumes.detail.back")} icon={ChevronLeft} onPress={back} />
       </View>
     );
   }
@@ -106,7 +108,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
       <View style={rz.detailHeader}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Voltar"
+          accessibilityLabel={t("resumes.detail.back")}
           hitSlop={12}
           onPress={back}
         >
@@ -126,32 +128,49 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         {/* Metadata */}
         <View style={rz.metaBlock}>
           <View style={rz.metaRow}>
-            <Text style={rz.metaLabel}>Idioma</Text>
+            <Text style={rz.metaLabel}>{t("resumes.detail.language")}</Text>
             <Text style={rz.metaValue}>{resume.language?.toUpperCase() ?? "—"}</Text>
           </View>
           <View style={rz.metaRow}>
-            <Text style={rz.metaLabel}>Estilo</Text>
+            <Text style={rz.metaLabel}>{t("resumes.detail.style")}</Text>
             <Text style={rz.metaValue}>{resume.style?.name ?? "—"}</Text>
           </View>
           <View style={rz.metaRow}>
-            <Text style={rz.metaLabel}>Última edição</Text>
-            <Text style={rz.metaValue}>{editedAgo(resume.updatedAt)}</Text>
+            <Text style={rz.metaLabel}>{t("resumes.detail.lastEdited")}</Text>
+            <Text style={rz.metaValue}>{editedAgo(resume.updatedAt, t, locale)}</Text>
           </View>
         </View>
 
         {/* Actions */}
         <View style={rz.actions}>
-          <ActionPill label="Renomear" icon={Pencil} onPress={() => setRenameOpen(true)} />
-          <ActionPill label="Baixar PDF" icon={Download} onPress={() => void downloadPdf()} />
-          <ActionPill label="Duplicar" icon={Copy} onPress={() => setDuplicateOpen(true)} />
+          <ActionPill
+            label={t("resumes.detail.rename")}
+            icon={Pencil}
+            onPress={() => setRenameOpen(true)}
+          />
+          <ActionPill
+            label={t("resumes.detail.downloadPdf")}
+            icon={Download}
+            onPress={() => void downloadPdf()}
+          />
+          <ActionPill
+            label={t("resumes.detail.duplicate")}
+            icon={Copy}
+            onPress={() => setDuplicateOpen(true)}
+          />
           {!isMaster ? (
-            <ActionPill label="Excluir" icon={Trash2} danger onPress={() => setDeleteOpen(true)} />
+            <ActionPill
+              label={t("resumes.detail.delete")}
+              icon={Trash2}
+              danger
+              onPress={() => setDeleteOpen(true)}
+            />
           ) : null}
         </View>
 
         {/* Full section editing — the exact same manager as the Perfil sub-tab */}
         <View>
-          <Text style={rz.sectionLabel}>Seções</Text>
+          <Text style={rz.sectionLabel}>{t("resumes.detail.sections")}</Text>
         </View>
         <ResumeSectionsManager resumeId={id} locale={resumeLanguageToLocale(resume.language)} />
       </ScrollView>
@@ -178,8 +197,8 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title="Excluir currículo?"
-        description={`"${resume.title}" será apagado de vez, com todas as seções e itens.`}
+        title={t("resumes.detail.deleteTitle")}
+        description={t("resumes.detail.deleteMessage", { title: resume.title })}
         danger
         icon={Trash2}
         onConfirm={() => void confirmDelete()}

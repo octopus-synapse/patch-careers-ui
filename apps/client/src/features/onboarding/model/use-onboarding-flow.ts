@@ -233,7 +233,7 @@ export function useOnboardingFlow() {
     setNoItemsAck(false);
     setErrors(
       backendStepId && currentStep && attemptedSteps.has(backendStepId)
-        ? validateStepFields(currentStep, saved)
+        ? validateStepFields(currentStep, saved, t)
         : {},
     );
     if (!backendStepId) return;
@@ -242,7 +242,7 @@ export function useOnboardingFlow() {
       if (Object.keys(draft.data).length > 0) setFormData((prev) => ({ ...prev, ...draft.data }));
       if (draft.items.length > 0) setItems(draft.items);
     });
-  }, [currentStep, session, attemptedSteps, setFormData, setItems]);
+  }, [currentStep, session, attemptedSteps, setFormData, setItems, t]);
 
   useEffect(() => {
     if (flowStepId !== "headline" || editStepId) return;
@@ -316,9 +316,9 @@ export function useOnboardingFlow() {
   async function handleNext() {
     if (!flowStep || isPending) return;
     if (editStep) {
-      const editErrors = validateStepFields(editStep, formData);
+      const editErrors = validateStepFields(editStep, formData, t);
       setErrors(editErrors);
-      if (!canContinueStep(editStep, formData, items)) {
+      if (!canContinueStep(editStep, formData, items, t)) {
         markAttempted(editStep.id);
         return;
       }
@@ -332,9 +332,9 @@ export function useOnboardingFlow() {
         await handleSkip();
         return;
       }
-      const nextErrors = validateStepFields(currentStep, formData, activeFieldKeys);
+      const nextErrors = validateStepFields(currentStep, formData, t, activeFieldKeys);
       setErrors(nextErrors);
-      if (!canContinueStep(currentStep, formData, items, activeFieldKeys)) {
+      if (!canContinueStep(currentStep, formData, items, t, activeFieldKeys)) {
         markAttempted(currentStep.id);
         return;
       }
@@ -396,7 +396,7 @@ export function useOnboardingFlow() {
     if (!session) return null;
     for (const step of session.steps) {
       if (isSectionStep(step) || isResumeStyleStep(step)) continue;
-      const stepErrors = validateStepFields(step, getSavedDataForStep(session, step));
+      const stepErrors = validateStepFields(step, getSavedDataForStep(session, step), t);
       if (Object.keys(stepErrors).length > 0) return step.id;
     }
     return null;

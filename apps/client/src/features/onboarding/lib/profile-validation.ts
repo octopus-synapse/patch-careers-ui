@@ -26,6 +26,7 @@ import {
   socialUrlSchema,
   usernameSchema,
 } from "@patch-careers/api-client";
+import type { Translator } from "@patch-careers/i18n";
 
 /** Minimal structural view of a Zod schema's `safeParse` (the Kubb exports satisfy it). */
 type FormatSchema = { safeParse: (value: unknown) => { success: boolean } };
@@ -35,11 +36,11 @@ interface FieldRule {
   min?: number;
   max?: number;
   format?: FormatSchema;
-  formatMessage?: string;
+  formatMessageKey?: string;
 }
 
-const INVALID_URL_MESSAGE = "Informe uma URL válida";
-const INVALID_USERNAME_MESSAGE = "Use apenas letras minúsculas, números e _";
+const INVALID_URL_KEY = "onboarding.validation.invalidUrl";
+const INVALID_USERNAME_KEY = "onboarding.validation.username";
 
 const PROFILE_FIELD_RULES: Record<string, FieldRule> = {
   // personalInfo — fullName/phone/location are all required at complete.
@@ -51,15 +52,15 @@ const PROFILE_FIELD_RULES: Record<string, FieldRule> = {
     min: 3,
     max: 30,
     format: usernameSchema,
-    formatMessage: INVALID_USERNAME_MESSAGE,
+    formatMessageKey: INVALID_USERNAME_KEY,
   },
   // professionalProfile — summary is required (10-500); the rest are optional.
   headline: { min: 1, max: 120 },
   summary: { required: true, min: 10, max: 500 },
-  linkedin: { format: linkedInUrlSchema, formatMessage: INVALID_URL_MESSAGE },
-  github: { format: gitHubUrlSchema, formatMessage: INVALID_URL_MESSAGE },
-  website: { format: socialUrlSchema, formatMessage: INVALID_URL_MESSAGE },
-  portfolio: { format: socialUrlSchema, formatMessage: INVALID_URL_MESSAGE },
+  linkedin: { format: linkedInUrlSchema, formatMessageKey: INVALID_URL_KEY },
+  github: { format: gitHubUrlSchema, formatMessageKey: INVALID_URL_KEY },
+  website: { format: socialUrlSchema, formatMessageKey: INVALID_URL_KEY },
+  portfolio: { format: socialUrlSchema, formatMessageKey: INVALID_URL_KEY },
 };
 
 /** True when `key` has a contract rule (so callers can skip the backend fallback). */
@@ -78,19 +79,23 @@ export function isProfileFieldRequired(key: string): boolean {
 
 /**
  * Validates a single profile field's value against its contract rule (length +
- * format). Returns a pt-BR error message, or `null` when valid / unmapped /
- * empty — emptiness is surfaced by the caller's `required` check
+ * format). Returns a localized error message (via `t`), or `null` when valid /
+ * unmapped / empty — emptiness is surfaced by the caller's `required` check
  * (`isProfileFieldRequired`), not here.
  */
-export function validateProfileField(key: string, value: string): string | null {
+export function validateProfileField(key: string, value: string, t: Translator): string | null {
   const rule = PROFILE_FIELD_RULES[key];
   if (!rule) return null;
   const v = value.trim();
   if (v.length === 0) return null;
-  if (rule.min !== undefined && v.length < rule.min) return `Mínimo de ${rule.min} caracteres`;
-  if (rule.max !== undefined && v.length > rule.max) return `Máximo de ${rule.max} caracteres`;
+  if (rule.min !== undefined && v.length < rule.min) {
+    return t("onboarding.validation.minLength", { count: rule.min });
+  }
+  if (rule.max !== undefined && v.length > rule.max) {
+    return t("onboarding.validation.maxLength", { count: rule.max });
+  }
   if (rule.format && !rule.format.safeParse(v).success) {
-    return rule.formatMessage ?? "Formato inválido";
+    return t(rule.formatMessageKey ?? "onboarding.validation.invalidPattern");
   }
   return null;
 }

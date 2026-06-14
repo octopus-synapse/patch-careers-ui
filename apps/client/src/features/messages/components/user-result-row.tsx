@@ -7,6 +7,7 @@ import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 import { participantLabel } from "../lib/helpers";
 import type { ChatUser } from "../types";
 
@@ -18,12 +19,13 @@ export function UserResultRow({
   onPress: (user: ChatUser) => void;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
-  const name = participantLabel(user);
+  const { t } = useI18n();
+  const name = participantLabel(user, t);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Conversar com ${name}`}
+      accessibilityLabel={t("messages.search.resultLabel", { name })}
       onPress={() => onPress(user)}
       style={({ pressed }) => ({
         backgroundColor: pressed ? editorialPalette.bg : editorialPalette.surface,

@@ -1,10 +1,14 @@
 /**
- * Job detail — pushed over the tabs from a list card.
+ * Job detail — pushed over the tabs from a list row.
  *
  * There is no `GET /v1/jobs/external/:id`: listings exist only inside the
- * list cache (daily batch), so this screen resolves its data via
- * `findExternalJob`. A cold deep link (cache miss) degrades to a friendly
- * not-found state pointing back to the list.
+ * list caches (daily batch + the user's saved snapshots), so this screen
+ * resolves its data via `findExternalJob`. A cold deep link (cache miss)
+ * degrades to a friendly not-found state pointing back to the list.
+ *
+ * The bookmark toggle keeps a local `saved` mirror: the resolved job is a
+ * memoized cache snapshot, so the optimistic cache write alone would not
+ * re-render this screen.
  *
  * One primary CTA — "Candidatar-se" — opens the publisher's apply URL in
  * the in-app browser; the caption under it makes the handoff explicit.
@@ -15,12 +19,13 @@ import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-caree
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { ChevronLeft, FileQuestion } from "lucide-react-native";
-import { type ReactElement, useMemo } from "react";
+import { Bookmark, ChevronLeft, FileQuestion } from "lucide-react-native";
+import { type ReactElement, useMemo, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
+import { useToggleSaveJob } from "../hooks/use-save-job";
 import { jobMetaLine, postedAgo } from "../lib/helpers";
 
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
@@ -28,9 +33,22 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { locale } = useI18n();
+  const { t, locale } = useI18n();
+  const { toggle: toggleSave, pendingId } = useToggleSaveJob();
 
   const job = useMemo(() => findExternalJob(queryClient, id), [queryClient, id]);
+  const [saved, setSaved] = useState(job?.isSaved ?? false);
+  const savePending = job !== null && pendingId === job.externalId;
+
+  function onToggleSave(): void {
+    if (job === null || savePending) return;
+    // Re-resolve at press time: a save made on this screen patches the real
+    // `savedId` into the cache, which the memoized snapshot never sees. The
+    // local flip keeps this snapshot-rendered screen consistent.
+    const fresh = findExternalJob(queryClient, id) ?? job;
+    toggleSave({ ...fresh, isSaved: saved });
+    setSaved((prev) => !prev);
+  }
 
   function goBack(): void {
     if (router.canGoBack()) router.back();
@@ -39,25 +57,42 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
 
   return (
     <View style={{ flex: 1, backgroundColor: editorialPalette.bg, paddingTop: insets.top }}>
-      <XStack alignItems="center" height={44} paddingHorizontal={8}>
+      <XStack alignItems="center" justifyContent="space-between" height={44} paddingHorizontal={8}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Voltar"
+          accessibilityLabel={t("jobs.detail.back")}
           onPress={goBack}
           hitSlop={8}
           style={{ padding: 6 }}
         >
           <Icon as={ChevronLeft} size={24} color={editorialPalette.ink} />
         </Pressable>
+        {job !== null ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={saved ? t("jobs.save.remove") : t("jobs.save.add")}
+            accessibilityState={{ selected: saved, disabled: savePending }}
+            disabled={savePending}
+            onPress={onToggleSave}
+            hitSlop={8}
+            style={{ padding: 6, opacity: savePending ? 0.4 : 1 }}
+          >
+            <Bookmark
+              size={22}
+              color={saved ? editorialPalette.ink : editorialPalette.subtle}
+              fill={saved ? editorialPalette.ink : "transparent"}
+            />
+          </Pressable>
+        ) : null}
       </XStack>
 
       {job === null ? (
         <YStack flex={1} justifyContent="center">
           <EmptyState
             icon={<Icon as={FileQuestion} size={32} color={editorialPalette.subtle} />}
-            title="Vaga não encontrada"
-            description="Esta vaga não está mais disponível ou ainda não foi carregada."
-            ctaLabel="Ver vagas"
+            title={t("jobs.detail.notFound.title")}
+            description={t("jobs.detail.notFound.description")}
+            ctaLabel={t("jobs.detail.notFound.cta")}
             onCta={() => router.replace("/jobs")}
           />
         </YStack>
@@ -65,9 +100,9 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
         <>
           <ScrollView
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 8, paddingBottom: 32 }}
+            contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 40 }}
           >
-            <YStack gap={10}>
+            <YStack gap={14}>
               <Text
                 preset="caption"
                 fontSize={13}
@@ -79,8 +114,8 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
               </Text>
               <Text
                 fontFamily={editorialFonts.serif}
-                fontSize={26}
-                lineHeight={34}
+                fontSize={30}
+                lineHeight={40}
                 color={editorialPalette.ink}
                 accessibilityRole="header"
               >
@@ -92,7 +127,10 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
                 </Text>
               ) : null}
               <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
-                {[postedAgo(job, Date.now()), job.publisher ? `via ${job.publisher}` : null]
+                {[
+                  postedAgo(job, Date.now(), t, locale),
+                  job.publisher ? t("jobs.row.viaPublisher", { publisher: job.publisher }) : null,
+                ]
                   .filter(Boolean)
                   .join(" · ")}
               </Text>
@@ -102,18 +140,17 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
               style={{
                 height: 1,
                 backgroundColor: editorialPalette.hairline,
-                marginVertical: 20,
+                marginVertical: 28,
               }}
             />
 
             {job.description ? (
-              <Text fontSize={15} lineHeight={24} color={editorialPalette.body}>
+              <Text fontSize={15} lineHeight={25} color={editorialPalette.body}>
                 {job.description}
               </Text>
             ) : (
-              <Text fontSize={15} lineHeight={24} color={editorialPalette.muted}>
-                O anunciante não forneceu uma descrição. Os detalhes completos estão na página da
-                vaga.
+              <Text fontSize={15} lineHeight={25} color={editorialPalette.muted}>
+                {t("jobs.detail.noDescription")}
               </Text>
             )}
           </ScrollView>
@@ -128,13 +165,13 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
             borderTopColor={editorialPalette.hairline}
           >
             <PrimaryAction
-              label="Candidatar-se"
+              label={t("jobs.detail.apply")}
               onPress={() => void WebBrowser.openBrowserAsync(job.applyUrl)}
             />
             <Text preset="caption" fontSize={12} color={editorialPalette.subtle} textAlign="center">
               {job.publisher
-                ? `Abre a vaga no site do anunciante (${job.publisher})`
-                : "Abre a vaga no site do anunciante"}
+                ? t("jobs.detail.opensPublisherSiteNamed", { publisher: job.publisher })
+                : t("jobs.detail.opensPublisherSite")}
             </Text>
           </YStack>
         </>

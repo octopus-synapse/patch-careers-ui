@@ -58,18 +58,23 @@ export function IntroBlock({
   emphasis,
   suffix,
   subtitle,
+  showWordmark = true,
 }: {
   prefix?: string;
   emphasis: string;
   suffix?: string;
   subtitle: ReactNode;
+  /** Shows the "Patch · CAREERS" wordmark. Off on sign-in/sign-up. */
+  showWordmark?: boolean;
 }): ReactElement {
   return (
     <TYStack marginBottom={36}>
-      <Animated.View entering={FadeIn.duration(500)}>
-        <Wordmark />
-      </Animated.View>
-      <TYStack marginTop={28} gap={14}>
+      {showWordmark ? (
+        <Animated.View entering={FadeIn.duration(500)}>
+          <Wordmark />
+        </Animated.View>
+      ) : null}
+      <TYStack marginTop={showWordmark ? 28 : 0} gap={14}>
         <DisplayHeading
           {...(prefix ? { prefix } : {})}
           emphasis={emphasis}

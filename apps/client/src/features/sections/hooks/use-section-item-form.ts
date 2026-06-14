@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { fieldErrorsResolver } from "@/forms";
+import { useI18n } from "@/providers/i18n-provider";
 import type { PickedCompany } from "../components/company-picker";
 import type { PickedCourse } from "../components/course-picker";
 import { degreeTypeFromGrau, suggestEndDateFromWorkload } from "../lib/helpers";
@@ -36,9 +37,10 @@ export type SectionItemFormApi = {
 };
 
 export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
+  const { t } = useI18n();
   const form = useForm<FormData>({
     defaultValues: {},
-    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values)),
+    resolver: fieldErrorsResolver<FormData>((values) => validateSectionFields(fields, values, t)),
   });
 
   const isEducation =
@@ -144,7 +146,7 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
     resetRefs(String(content.institution ?? ""), String(content.company ?? ""));
   };
 
-  const hasErrors = Object.keys(validateSectionFields(fields, form.watch())).length > 0;
+  const hasErrors = Object.keys(validateSectionFields(fields, form.watch(), t)).length > 0;
 
   return {
     form,

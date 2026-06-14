@@ -109,8 +109,13 @@ export default function SignInScreen(): ReactElement {
   });
 
   return (
-    <AuthShell>
-      <IntroBlock prefix="Welcome " emphasis="back." subtitle="Sign in to continue your search." />
+    <AuthShell showEra={false}>
+      <IntroBlock
+        prefix={t("app.signIn.heroPrefix")}
+        emphasis={t("app.signIn.heroEmphasis")}
+        subtitle={t("app.signIn.subtitle")}
+        showWordmark={false}
+      />
 
       <View style={{ gap: 24 }}>
         <FormEmailField

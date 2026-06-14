@@ -110,7 +110,13 @@ function OnboardingWizardInner(): ReactElement {
 
   // Welcome intro: its own centered layout, outside the counted progress.
   if (!editStep && flowStep.intro) {
-    return <WelcomeScreen t={t} onStart={markWelcomeSeenAndAdvance} />;
+    return (
+      <WelcomeScreen
+        t={t}
+        onStart={markWelcomeSeenAndAdvance}
+        onBack={prevFlowStep(flowStepId) ? handleBack : undefined}
+      />
+    );
   }
 
   const isLocal = !editStep && flowStep.kind === "local";
@@ -133,7 +139,7 @@ function OnboardingWizardInner(): ReactElement {
     )}`,
   }));
   const canContinue = ((): boolean => {
-    if (editStep) return canContinueStep(editStep, formData, items);
+    if (editStep) return canContinueStep(editStep, formData, items, t);
     if (!currentStep) return true;
     // Optional empty steps (sections AND the links step) need an explicit
     // "skip this step" acknowledgement before "Continuar" unlocks — once an
@@ -143,7 +149,7 @@ function OnboardingWizardInner(): ReactElement {
     // Form/style steps: canContinueStep → validateStepFields enforces the
     // contract requiredness, so steps like "username" or the summary on the
     // headline step can't be left empty.
-    return canContinueStep(currentStep, formData, items, activeFieldKeys);
+    return canContinueStep(currentStep, formData, items, t, activeFieldKeys);
   })();
 
   const total = countedTotal();
@@ -184,16 +190,18 @@ function OnboardingWizardInner(): ReactElement {
                 t={t}
               />
             ) : null}
-            <Masthead
-              phaseLabel={phase ? t(phase.labelKey) : ""}
-              timeText={t(
-                remainingMin === 1
-                  ? "onboarding.progress.timeRemainingOne"
-                  : "onboarding.progress.timeRemaining",
-                { min: remainingMin },
-              )}
-              progressPct={(stepNumber / total) * 100}
-            />
+            {editStep || !flowStep.hideMasthead ? (
+              <Masthead
+                phaseLabel={phase ? t(phase.labelKey) : ""}
+                timeText={t(
+                  remainingMin === 1
+                    ? "onboarding.progress.timeRemainingOne"
+                    : "onboarding.progress.timeRemaining",
+                  { min: remainingMin },
+                )}
+                progressPct={(stepNumber / total) * 100}
+              />
+            ) : null}
 
             <View key={headingKey}>
               <StepHeading title={stepTitle} subtitle={subtitleText} />

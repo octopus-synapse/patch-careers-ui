@@ -19,18 +19,20 @@ import type { ReactElement } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ResumePreview } from "@/components/resume-preview";
+import { useI18n } from "@/providers/i18n-provider";
 
 export function ResumePreviewModal({
   visible,
   onClose,
   resumeId,
-  title = "Currículo",
+  title,
 }: {
   visible: boolean;
   onClose: () => void;
   resumeId?: string | undefined;
-  title?: string;
+  title?: string | undefined;
 }): ReactElement {
+  const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const palette = useEditorialPalette();
   const styles = stylesByTheme[useThemeName()];
@@ -47,11 +49,11 @@ export function ResumePreviewModal({
       <View style={[styles.root, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Text style={styles.title} numberOfLines={1}>
-            {title}
+            {title ?? t("resumes.preview.title")}
           </Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Fechar"
+            accessibilityLabel={t("resumes.preview.close")}
             hitSlop={12}
             onPress={onClose}
           >

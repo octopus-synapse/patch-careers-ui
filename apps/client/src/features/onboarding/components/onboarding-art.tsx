@@ -56,11 +56,13 @@ export function WelcomeArt({ size = 132 }: OnboardingArtProps): ReactElement {
         strokeWidth={1.5}
         strokeLinecap="round"
       />
-      <Circle cx={94} cy={86} r={18} stroke={ACCENT} strokeWidth={1.75} />
+      {/* Filled accent disc with a white tick — pops on warm paper (light)
+          and warm dark paper (dark) without restating the theme bg. */}
+      <Circle cx={94} cy={86} r={18} fill={ACCENT} />
       <Path
         d="M86 86l5.5 5.5L103 80"
-        stroke={ACCENT}
-        strokeWidth={2}
+        stroke="#FFFFFF"
+        strokeWidth={2.25}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -82,7 +84,9 @@ export function ExperienceArt({ size = 120 }: OnboardingArtProps): ReactElement 
         strokeLinecap="round"
       />
       <Line x1={18} y1={56} x2={102} y2={56} stroke={STROKE} strokeWidth={1.5} />
-      <Rect x={52} y={50} width={16} height={12} rx={3} stroke={ACCENT} strokeWidth={1.75} />
+      {/* Filled accent clasp — same solid-accent treatment as the welcome
+          check; reads on warm paper (light) and warm dark paper (dark). */}
+      <Rect x={52} y={50} width={16} height={12} rx={3} fill={ACCENT} />
     </Svg>
   );
 }

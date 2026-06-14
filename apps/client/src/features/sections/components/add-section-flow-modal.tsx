@@ -142,7 +142,7 @@ export function AddSectionFlowModal({
               {picked ? (
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Voltar"
+                  accessibilityLabel={t("common.back")}
                   hitSlop={12}
                   onPress={() => setPicked(null)}
                 >
@@ -150,7 +150,7 @@ export function AddSectionFlowModal({
                 </Pressable>
               ) : null}
               <Text style={ed.editorModalTitle} numberOfLines={1}>
-                {picked ? picked.addLabel : "Adicionar ao currículo"}
+                {picked ? picked.addLabel : t("sections.addToResume")}
               </Text>
             </View>
             <Pressable
@@ -195,7 +195,7 @@ export function AddSectionFlowModal({
                       ) : null}
                     </View>
                     <Text style={styles.catalogDesc} numberOfLines={2}>
-                      {section.atCapacity ? "Limite de itens atingido" : section.description}
+                      {section.atCapacity ? t("sections.atCapacity") : section.description}
                     </Text>
                   </View>
                   <ChevronRight size={18} color={authTokens.subtle} strokeWidth={1.75} />

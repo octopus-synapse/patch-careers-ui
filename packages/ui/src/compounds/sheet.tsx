@@ -3,7 +3,8 @@
  *
  * Native wraps `@tamagui/sheet` (handle, snap points, backdrop). On web a
  * bottom sheet reads wrong, so we render a centered card that mirrors the
- * onboarding editor modal: warm-paper panel (max 560px wide / 90% × 90%), a
+ * onboarding editor modal: warm-paper panel (max 560px wide / 90% wide,
+ * height grows with content up to the safe area above the keyboard), a
  * serif title + close (X) header over a hairline divider, and a scrollable
  * body. `presentation="card"` opts native into that same centered card —
  * used by the catalog pickers so they match the section editor modal.
@@ -29,6 +30,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { editorialFonts } from "../editorial/fonts";
 import { asLoose, type LooseProps } from "../internal/tamagui-shim";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
@@ -59,6 +61,13 @@ export type SheetProps = {
    * Web always renders the card.
    */
   presentation?: "sheet" | "card";
+  /**
+   * Card presentation only: fill the available height (between the safe-area
+   * insets) instead of growing with content. Use for search/list pickers so
+   * the panel stays tall and stable while results stream in, matching the
+   * section editor modal — without it the card collapses to the search box.
+   */
+  fillHeight?: boolean;
   children?: ReactNode;
 };
 
@@ -97,10 +106,12 @@ export function Sheet({
   snapPoints = [85, 50, 25],
   webMaxWidth = 560,
   presentation = "sheet",
+  fillHeight = false,
   children,
   ...rest
 }: SheetProps) {
   const styles = stylesByTheme[useThemeName()];
+  const insets = useSafeAreaInsets();
   const close = () => onOpenChange?.(false);
 
   if (Platform.OS === "web" || presentation === "card") {
@@ -113,7 +124,12 @@ export function Sheet({
         onRequestClose={close}
       >
         <KeyboardAvoidingView
-          style={styles.webOverlay}
+          // Keep the centered card inside the safe area so it never slides up
+          // under the status bar when the keyboard shrinks the avail. height.
+          style={[
+            styles.webOverlay,
+            { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 12 },
+          ]}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           {/* Backdrop — tap outside the card to dismiss. */}
@@ -123,7 +139,9 @@ export function Sheet({
             style={StyleSheet.absoluteFill}
             onPress={close}
           />
-          <View style={[styles.webCard, { maxWidth: webMaxWidth }]}>
+          <View
+            style={[styles.webCard, { maxWidth: webMaxWidth }, fillHeight ? styles.webCardFill : null]}
+          >
             <SheetHeader title={title} onClose={close} closeLabel={closeLabel} />
             <View style={styles.webBody}>{children}</View>
           </View>
@@ -175,7 +193,10 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
     },
     webCard: {
       width: "90%",
-      height: "90%",
+      // Grow with content (search box + results) up to the available space, so
+      // the card stays compact when empty and the keyboard never covers the
+      // input. The body's flex:1 ScrollView takes over scrolling at the cap.
+      maxHeight: "100%",
       backgroundColor: p.bg,
       borderRadius: 22,
       overflow: "hidden",
@@ -186,6 +207,9 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       // Android shadow when the card presentation renders natively.
       elevation: 12,
     },
+    // Fill the safe-area height (search/list pickers) so the panel is tall and
+    // stable instead of collapsing to the search box before results arrive.
+    webCardFill: { flex: 1 },
     webBody: { flex: 1, minHeight: 0, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 },
     nativeBody: { flex: 1, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16 },
     header: {

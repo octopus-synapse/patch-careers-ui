@@ -9,6 +9,7 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Search, X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 
 export function UserSearchField({
   value,
@@ -20,6 +21,7 @@ export function UserSearchField({
   onClear: () => void;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const { t } = useI18n();
   return (
     <XStack
       alignItems="center"
@@ -38,7 +40,7 @@ export function UserSearchField({
         flex={1}
         value={value}
         onChangeText={onChangeText}
-        placeholder="Buscar pessoas…"
+        placeholder={t("messages.search.placeholder")}
         placeholderTextColor={editorialPalette.subtle}
         autoCapitalize="none"
         autoCorrect={false}
@@ -52,7 +54,7 @@ export function UserSearchField({
       {value.length > 0 ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Limpar busca"
+          accessibilityLabel={t("messages.search.clear")}
           onPress={onClear}
           hitSlop={8}
         >

@@ -13,13 +13,21 @@ import { passwordScore, passwordSignals } from "./password-strength";
 
 export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
 
-/** 4 signals (length>=8, mixed case, digit, symbol); hard 0 below 6 chars. */
+/**
+ * 4 signals (length>=8, mixed case, digit, symbol). Score 0 is reserved
+ * for the empty field (meter is collapsed then) — any typed password is
+ * at least "weak" (1), so the indicator never shows the neutral "—".
+ */
 export function scorePassword(password: string): PasswordStrengthScore {
   if (!password) return 0;
-  if (password.length < 6) return 0;
-  return passwordScore(passwordSignals(password));
+  if (password.length < 6) return 1;
+  return Math.max(1, passwordScore(passwordSignals(password))) as PasswordStrengthScore;
 }
 
+/** Strength words keyed by score. Index 0 is unused (empty → collapsed). */
+export type StrengthLabels = Record<Exclude<PasswordStrengthScore, 0>, string>;
+
+/** English fallbacks; the app passes localized labels via props. */
 export const STRENGTH_LABEL: Record<PasswordStrengthScore, string> = {
   0: "—",
   1: "Weak",

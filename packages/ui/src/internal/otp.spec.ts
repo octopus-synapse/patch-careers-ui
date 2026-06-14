@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { isOtpComplete, nextOtpIndex, OTP_DEFAULT_LENGTH, sanitizeOtp, splitOtp } from "./otp";
+import {
+  backspaceOtp,
+  isOtpComplete,
+  nextOtpIndex,
+  OTP_DEFAULT_LENGTH,
+  sanitizeOtp,
+  splitOtp,
+} from "./otp";
 
 describe("sanitizeOtp", () => {
   it("strips non-digits", () => {
@@ -45,6 +52,21 @@ describe("splitOtp", () => {
 
   it("fills missing slots with empty string", () => {
     expect(splitOtp("12")).toEqual(["1", "2", "", "", "", ""]);
+  });
+});
+
+describe("backspaceOtp", () => {
+  it("deletes the digit behind an empty active slot and focuses it", () => {
+    // Typed "35", cursor in empty slot index 2 → delete "5", focus slot 1.
+    expect(backspaceOtp("35", 2)).toEqual({ value: "3", focusIndex: 1 });
+  });
+
+  it("returns null when the active slot has its own digit (onChangeText handles it)", () => {
+    expect(backspaceOtp("35", 1)).toBeNull();
+  });
+
+  it("returns null at the first slot (nothing behind it)", () => {
+    expect(backspaceOtp("", 0)).toBeNull();
   });
 });
 

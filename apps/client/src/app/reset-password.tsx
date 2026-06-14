@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
+import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { FormPasswordField, fieldErrorsResolver } from "@/forms";
 
 type ResetForm = { newPassword: string; confirmPassword: string };
@@ -85,7 +86,7 @@ export default function ResetPasswordScreen(): ReactElement {
           isNew
           returnKeyType="next"
         >
-          <PasswordStrengthMeter password={newPassword} />
+          <PasswordStrengthMeter password={newPassword} {...passwordMeterLabels(t)} />
         </FormPasswordField>
 
         <FormPasswordField

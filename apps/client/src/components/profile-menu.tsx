@@ -12,7 +12,6 @@
  */
 
 import { logout } from "@patch-careers/auth";
-import type { ColorScheme } from "@patch-careers/state";
 import {
   type EditorialPalette,
   editorialPalette,
@@ -21,17 +20,7 @@ import {
 import { Avatar } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import { type Href, useRouter } from "expo-router";
-import {
-  ChevronRight,
-  FileText,
-  LogOut,
-  MapPin,
-  MonitorSmartphone,
-  Moon,
-  Send,
-  Sun,
-  User,
-} from "lucide-react-native";
+import { ChevronRight, LogOut, MapPin, Settings } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -48,7 +37,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
-import { useColorSchemeStore } from "@/providers/color-scheme";
+import { useI18n } from "@/providers/i18n-provider";
 import { ConfirmDialog } from "./confirm-dialog";
 
 // Soft, light scrim — heavy dim reads wrong on light paper; dark mode needs
@@ -106,51 +95,6 @@ function MenuRow({
   );
 }
 
-const THEME_CHOICES: ReadonlyArray<{ value: ColorScheme; label: string; icon: Glyph }> = [
-  { value: "light", label: "Claro", icon: Sun },
-  { value: "dark", label: "Escuro", icon: Moon },
-  { value: "system", label: "Sistema", icon: MonitorSmartphone },
-];
-
-/** Inline 3-option theme switcher — applies immediately (non-destructive). */
-function ThemeSelector(): ReactElement {
-  const editorialPalette = useEditorialPalette();
-  const styles = stylesByTheme[useThemeName()];
-  const scheme = useColorSchemeStore((s) => s.scheme);
-  const setScheme = useColorSchemeStore((s) => s.setScheme);
-  return (
-    <View style={styles.themeSection}>
-      <Text style={styles.themeLabel}>TEMA</Text>
-      <View style={styles.themeRow}>
-        {THEME_CHOICES.map(({ value, label, icon: OptionIcon }) => {
-          const selected = scheme === value;
-          return (
-            <Pressable
-              key={value}
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
-              accessibilityLabel={`Tema ${label}`}
-              onPress={() => setScheme(value)}
-              style={[styles.themePill, selected ? styles.themePillSelected : null]}
-            >
-              <OptionIcon
-                size={15}
-                color={selected ? editorialPalette.ink : editorialPalette.muted}
-                strokeWidth={1.75}
-              />
-              <Text
-                style={[styles.themePillLabel, selected ? styles.themePillLabelSelected : null]}
-              >
-                {label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
-
 export function ProfileMenu({
   open,
   onClose,
@@ -159,6 +103,7 @@ export function ProfileMenu({
   location,
   photoURL,
 }: ProfileMenuProps): ReactElement {
+  const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   const styles = stylesByTheme[useThemeName()];
   const router = useRouter();
@@ -171,6 +116,11 @@ export function ProfileMenu({
   const anim = useRef(new Animated.Value(0)).current;
   const [visible, setVisible] = useState(open);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  // Set when the user taps sign-out: the confirm dialog is opened only AFTER
+  // the drawer Modal has fully dismissed (below), never in the same tick — on
+  // iOS presenting a second Modal while the first is still on screen leaves a
+  // stuck, invisible modal that swallows touches (frozen app, no dialog).
+  const pendingLogoutRef = useRef(false);
 
   useEffect(() => {
     if (open) {
@@ -188,7 +138,13 @@ export function ProfileMenu({
         easing: Easing.in(Easing.cubic),
         useNativeDriver: USE_NATIVE_DRIVER,
       }).start(({ finished }) => {
-        if (finished) setVisible(false);
+        if (!finished) return;
+        setVisible(false);
+        // Drawer Modal is now unmounted — safe to present the confirm dialog.
+        if (pendingLogoutRef.current) {
+          pendingLogoutRef.current = false;
+          setLogoutConfirmOpen(true);
+        }
       });
     }
   }, [open, anim]);
@@ -199,11 +155,12 @@ export function ProfileMenu({
   };
 
   // Logout is destructive, so it's gated behind a confirm dialog. Both the
-  // drawer and <ConfirmDialog> are native RN Modals, so we close the drawer
-  // first, then open the confirm — the actual sign-out only runs on confirm.
+  // drawer and <ConfirmDialog> are native RN Modals, so we flag the intent and
+  // close the drawer; the confirm opens once the drawer Modal has fully
+  // dismissed (see the close-animation callback) — never stacked on top of it.
   const requestLogout = (): void => {
+    pendingLogoutRef.current = true;
     onClose();
-    setLogoutConfirmOpen(true);
   };
 
   const performLogout = async (): Promise<void> => {
@@ -226,7 +183,7 @@ export function ProfileMenu({
           <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: anim }]}>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Fechar menu da conta"
+              accessibilityLabel={t("profile.menu.closeA11y")}
               style={StyleSheet.absoluteFill}
               onPress={onClose}
             />
@@ -253,7 +210,7 @@ export function ProfileMenu({
               {/* Profile card — avatar stacked over name, taps through to profile. */}
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`Ver perfil de ${name}`}
+                accessibilityLabel={t("profile.menu.viewProfileOfA11y", { name })}
                 onPress={() => go("/profile")}
                 style={({ pressed }) => [styles.card, pressed ? styles.cardPressed : null]}
               >
@@ -277,21 +234,22 @@ export function ProfileMenu({
                   ) : null}
                 </View>
               </Pressable>
-
-              <View style={styles.divider} />
-
-              <MenuRow icon={User} label="Ver meu perfil" onPress={() => go("/profile")} />
-              <MenuRow icon={FileText} label="Meu currículo" onPress={() => go("/resume")} />
-              <MenuRow icon={Send} label="Candidaturas" onPress={() => go("/applications")} />
-
-              <View style={styles.divider} />
-
-              <ThemeSelector />
             </ScrollView>
 
-            {/* Sign-out pinned to the bottom, mirroring the LinkedIn "me" menu. */}
+            {/* Settings + sign-out pinned to the bottom, mirroring the
+                LinkedIn "me" menu. */}
             <View style={styles.footer}>
-              <MenuRow icon={LogOut} label="Sair da conta" danger onPress={requestLogout} />
+              <MenuRow
+                icon={Settings}
+                label={t("profile.menu.settings")}
+                onPress={() => go("/settings")}
+              />
+              <MenuRow
+                icon={LogOut}
+                label={t("profile.menu.signOut")}
+                danger
+                onPress={requestLogout}
+              />
             </View>
           </Animated.View>
         </View>
@@ -302,10 +260,10 @@ export function ProfileMenu({
         onOpenChange={setLogoutConfirmOpen}
         danger
         icon={LogOut}
-        title="Sair da conta?"
-        description="Você vai precisar entrar de novo para voltar."
-        confirmLabel="Sair"
-        cancelLabel="Cancelar"
+        title={t("profile.menu.signOutConfirm.title")}
+        description={t("profile.menu.signOutConfirm.description")}
+        confirmLabel={t("profile.menu.signOutConfirm.confirm")}
+        cancelLabel={t("common.cancel")}
         onConfirm={() => void performLogout()}
       />
     </>
@@ -372,28 +330,6 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
     },
     rowPressed: { backgroundColor: p.bg },
     rowLabel: { flex: 1, fontFamily: editorialFonts.sans, fontSize: 15.5 },
-    themeSection: { gap: 10, paddingHorizontal: 4, paddingVertical: 6 },
-    themeLabel: {
-      fontFamily: editorialFonts.sans,
-      fontSize: 10,
-      fontWeight: "600",
-      letterSpacing: 1.8,
-      color: p.muted,
-    },
-    themeRow: { flexDirection: "row", gap: 8 },
-    themePill: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 6,
-      borderWidth: 1,
-      borderColor: p.hairlineStrong,
-      borderRadius: 999,
-      paddingHorizontal: 13,
-      paddingVertical: 8,
-    },
-    themePillSelected: { borderColor: p.ink, backgroundColor: p.bg },
-    themePillLabel: { fontFamily: editorialFonts.sans, fontSize: 12.5, color: p.muted },
-    themePillLabelSelected: { color: p.ink, fontWeight: "600" },
     footer: {
       borderTopWidth: 1,
       borderTopColor: p.hairline,

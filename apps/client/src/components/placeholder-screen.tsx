@@ -12,17 +12,19 @@ import {
 } from "@patch-careers/tokens";
 import { useThemeName } from "@patch-careers/ui";
 import { StyleSheet, Text, View } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 
 interface Props {
   readonly title: string;
 }
 
 export function PlaceholderScreen({ title }: Props): ReactElement {
+  const { t } = useI18n();
   const styles = stylesByTheme[useThemeName()];
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>Tab placeholder</Text>
+      <Text style={styles.subtitle}>{t("app.placeholderScreen.subtitle")}</Text>
     </View>
   );
 }

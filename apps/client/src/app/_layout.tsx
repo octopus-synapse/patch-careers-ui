@@ -117,6 +117,11 @@ export default function RootLayout(): ReactElement {
                           name="resume/[id]"
                           options={{ headerShown: false, animation: "slide_from_right" }}
                         />
+                        {/* Settings slides in over the tabs from the account menu. */}
+                        <Stack.Screen
+                          name="settings"
+                          options={{ headerShown: false, animation: "slide_from_right" }}
+                        />
                         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
                         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                         <Stack.Screen name="reset-password" options={{ headerShown: false }} />

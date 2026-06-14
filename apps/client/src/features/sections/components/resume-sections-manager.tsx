@@ -120,7 +120,7 @@ export function ResumeSectionsManager({
   if (isError) {
     return (
       <View style={styles.centered}>
-        <Text style={ed.centeredText}>Não foi possível carregar as seções do currículo.</Text>
+        <Text style={ed.centeredText}>{t("sections.loadError")}</Text>
       </View>
     );
   }
@@ -162,12 +162,12 @@ export function ResumeSectionsManager({
           comes through here. */}
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Adicionar ao currículo"
+        accessibilityLabel={t("sections.addToResume")}
         onPress={() => setAddOpen(true)}
         style={ed.addSection}
       >
         <Plus size={15} color={authTokens.ink} strokeWidth={2} />
-        <Text style={ed.addSectionLabel}>Adicionar ao currículo</Text>
+        <Text style={ed.addSectionLabel}>{t("sections.addToResume")}</Text>
       </Pressable>
 
       {editing ? (
@@ -202,8 +202,8 @@ export function ResumeSectionsManager({
         onOpenChange={(open) => {
           if (!open) setConfirm(null);
         }}
-        title="Excluir item?"
-        description="Essa ação não pode ser desfeita. O item sai do seu currículo na hora."
+        title={t("sections.deleteConfirm.title")}
+        description={t("sections.deleteConfirm.description")}
         danger
         icon={Trash2}
         onConfirm={() => void confirmDelete()}

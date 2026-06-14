@@ -29,6 +29,7 @@ import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-er
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keep-signed-in-preference";
+import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { type AuthFieldErrors, validateSignup } from "@/components/auth/validation";
 import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms";
 
@@ -132,11 +133,12 @@ export default function SignUpScreen(): ReactElement {
   });
 
   return (
-    <AuthShell>
+    <AuthShell showEra={false}>
       <IntroBlock
-        prefix="Create your "
-        emphasis="account."
-        subtitle="A few details to get you in the door."
+        prefix={t("app.signUp.heroPrefix")}
+        emphasis={t("app.signUp.heroEmphasis")}
+        subtitle={t("app.signUp.subtitle")}
+        showWordmark={false}
       />
 
       <View style={{ gap: 24 }}>
@@ -155,7 +157,7 @@ export default function SignUpScreen(): ReactElement {
           returnKeyType="next"
           isNew
         >
-          <PasswordStrengthMeter password={password} />
+          <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
         </FormPasswordField>
 
         <ConsentCheckbox

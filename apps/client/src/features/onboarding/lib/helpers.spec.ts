@@ -1,3 +1,4 @@
+import { createTranslator, ptBR } from "@patch-careers/i18n";
 import { describe, expect, it } from "vitest";
 import type { OnboardingSession, OnboardingStep, SectionItem } from "../types";
 import { FLOW_PLAN } from "./flow-plan";
@@ -20,6 +21,8 @@ import {
   parseResumeStyles,
   validateStepFields,
 } from "./helpers";
+
+const t = createTranslator(ptBR, "pt-BR");
 
 const flow = (id: string) => {
   const step = FLOW_PLAN.find((candidate) => candidate.id === id);
@@ -144,11 +147,11 @@ describe("onboarding helpers", () => {
   });
 
   it("blocks required fields before continuing", () => {
-    expect(validateStepFields(personalStep, { fullName: "" })).toEqual({
+    expect(validateStepFields(personalStep, { fullName: "" }, t)).toEqual({
       fullName: "Campo obrigatório",
     });
-    expect(canContinueStep(personalStep, { fullName: "" }, [])).toBe(false);
-    expect(canContinueStep(personalStep, { fullName: "Ma" }, [])).toBe(true);
+    expect(canContinueStep(personalStep, { fullName: "" }, [], t)).toBe(false);
+    expect(canContinueStep(personalStep, { fullName: "Ma" }, [], t)).toBe(true);
   });
 
   it("treats section steps as skippable and builds API payloads", () => {
@@ -182,8 +185,8 @@ describe("onboarding helpers", () => {
     if (!profileStep) throw new Error("missing professional-profile step");
     // linkedin is not a valid URL, but the headline slice ignores it.
     const data = { linkedin: "not-a-url" };
-    expect(validateStepFields(profileStep, data, ["headline"])).toEqual({});
-    expect(validateStepFields(profileStep, data, ["linkedin"]).linkedin).toBeDefined();
+    expect(validateStepFields(profileStep, data, t, ["headline"])).toEqual({});
+    expect(validateStepFields(profileStep, data, t, ["linkedin"]).linkedin).toBeDefined();
   });
 
   it("resolves the backend step for a flow step", () => {

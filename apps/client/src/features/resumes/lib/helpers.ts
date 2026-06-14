@@ -1,4 +1,4 @@
-import type { Locale } from "@patch-careers/i18n";
+import type { Locale, Translator } from "@patch-careers/i18n";
 
 /**
  * Map a resume's content `language` (Prisma stores "pt-br" lowercase, plus
@@ -22,18 +22,24 @@ export function resumeLanguageToLocale(language: string | null | undefined): Loc
  * 'prototype' of undefined" — same reason the messages feature hand-rolls
  * its `timeAgo`.
  */
-export function editedAgo(dateStr: string | null | undefined, now: number = Date.now()): string {
+export function editedAgo(
+  dateStr: string | null | undefined,
+  t: Translator,
+  locale: Locale = "pt-BR",
+  now: number = Date.now(),
+): string {
   if (!dateStr) return "";
   const then = new Date(dateStr).getTime();
   if (Number.isNaN(then)) return "";
   const mins = Math.floor((now - then) / 60_000);
-  if (mins < 1) return "agora";
-  if (mins < 60) return `há ${mins} min`;
+  if (mins < 1) return t("resumes.time.justNow");
+  if (mins < 60) return t("resumes.time.minutesAgo", { count: mins });
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `há ${hrs} h`;
+  if (hrs < 24) return t("resumes.time.hoursAgo", { count: hrs });
   const days = Math.floor(hrs / 24);
-  if (days < 30) return days === 1 ? "há 1 dia" : `há ${days} dias`;
-  return new Date(then).toLocaleDateString("pt-BR", {
+  if (days < 30)
+    return days === 1 ? t("resumes.time.dayAgo") : t("resumes.time.daysAgo", { count: days });
+  return new Date(then).toLocaleDateString(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",

@@ -106,9 +106,10 @@ export function CatalogPickerSheet({
   const palette = useEditorialPalette();
 
   return (
-    // Card presentation on every platform so the picker matches the section
-    // editor modal's size (90% × 90%, max 560) instead of a low bottom sheet.
-    <Sheet open={open} onOpenChange={onOpenChange} title={title} presentation="card">
+    // Card presentation on every platform, filling the safe-area height so the
+    // picker matches the section editor modal (tall + stable) instead of a low
+    // bottom sheet or a card that collapses to the search box before results.
+    <Sheet open={open} onOpenChange={onOpenChange} title={title} presentation="card" fillHeight>
       <View style={styles.body}>
         <Input
           value={searchText}

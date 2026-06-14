@@ -31,6 +31,7 @@ import {
   useConversationThread,
 } from "@/features/messages";
 import { useAuthState } from "@/providers/auth-provider";
+import { useI18n } from "@/providers/i18n-provider";
 
 function firstParam(value: string | string[] | undefined): string {
   if (Array.isArray(value)) return value[0] ?? "";
@@ -41,6 +42,7 @@ export default function ConversationScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useI18n();
   const params = useLocalSearchParams<{
     id: string;
     recipientId?: string;
@@ -55,7 +57,7 @@ export default function ConversationScreen(): ReactElement {
   const rawId = firstParam(params.id);
   const isNew = rawId === "new";
   const recipientId = firstParam(params.recipientId) || null;
-  const name = firstParam(params.name) || "Conversa";
+  const name = firstParam(params.name) || t("messages.thread.fallbackTitle");
   const photo = firstParam(params.photo) || undefined;
   const username = firstParam(params.username) || undefined;
 
@@ -102,10 +104,10 @@ export default function ConversationScreen(): ReactElement {
           ) : thread.isError ? (
             <YStack flex={1} alignItems="center" justifyContent="center" gap={12} padding={24}>
               <Text preset="body" color={editorialPalette.muted} textAlign="center">
-                Não foi possível carregar as mensagens.
+                {t("messages.thread.loadError")}
               </Text>
               <Button intent="accent" variant="outlined" onPress={thread.refetch}>
-                Tentar novamente
+                {t("common.retry")}
               </Button>
             </YStack>
           ) : (
@@ -123,8 +125,8 @@ export default function ConversationScreen(): ReactElement {
                 <YStack alignItems="center" paddingBottom={24}>
                   <Text preset="caption" color={editorialPalette.subtle}>
                     {isNew
-                      ? `Diga olá para ${name}.`
-                      : "Envie uma mensagem para começar a conversa."}
+                      ? t("messages.thread.sayHello", { name })
+                      : t("messages.thread.emptyHint")}
                   </Text>
                 </YStack>
               ) : (

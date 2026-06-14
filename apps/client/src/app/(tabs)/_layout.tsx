@@ -1,16 +1,14 @@
 import type { ReactElement } from "react";
 
 /**
- * Bottom tab bar (D51 — fixed bottom tab) with 5 tabs (D52):
+ * Bottom tab bar (D51 — fixed bottom tab) with 4 tabs (D52):
  *
- *   Jobs · Resume · Profile · Applications · Notifications
+ *   Jobs · Applications · Notifications · Profile
  *
- * Icons come from Expo Vector Icons so active tabs can use filled icons
- * while inactive tabs stay outlined. Active color uses our accent intent
- * so the tab bar follows the theme.
- *
- * Placeholders here are intentional — PR #9-#18 fill each tab with
- * real screens.
+ * Labels come from the i18n dictionaries (`tabs.*`) so they follow the
+ * user's locale. Icons come from Expo Vector Icons so active tabs can use
+ * filled icons while inactive tabs stay outlined. Active color uses our
+ * accent intent so the tab bar follows the theme.
  */
 
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +17,7 @@ import { Redirect, Tabs } from "expo-router";
 import { AppHeader } from "@/components/app-header";
 import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
+import { useI18n } from "@/providers/i18n-provider";
 
 type IoniconName = keyof typeof Ionicons.glyphMap;
 
@@ -32,6 +31,7 @@ export default function TabsLayout(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
   const { currentUser, isAuthenticated } = useAuthState();
   const palette = useEditorialPalette();
+  const { t } = useI18n();
 
   if (!hasBootstrapped) return null;
   if (!isAuthenticated) return <Redirect href={AUTH_SIGN_IN_ROUTE} />;
@@ -52,36 +52,29 @@ export default function TabsLayout(): ReactElement | null {
       <Tabs.Screen
         name="jobs"
         options={{
-          title: "Jobs",
+          title: t("tabs.jobs"),
           tabBarIcon: tabIcon("briefcase-outline", "briefcase"),
-        }}
-      />
-      <Tabs.Screen
-        name="resume"
-        options={{
-          title: "Resume",
-          tabBarIcon: tabIcon("document-text-outline", "document-text"),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: tabIcon("person-outline", "person"),
         }}
       />
       <Tabs.Screen
         name="applications"
         options={{
-          title: "Applications",
+          title: t("tabs.applications"),
           tabBarIcon: tabIcon("send-outline", "send"),
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          title: "Notifications",
+          title: t("tabs.notifications"),
           tabBarIcon: tabIcon("notifications-outline", "notifications"),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: t("tabs.profile"),
+          tabBarIcon: tabIcon("person-outline", "person"),
         }}
       />
     </Tabs>

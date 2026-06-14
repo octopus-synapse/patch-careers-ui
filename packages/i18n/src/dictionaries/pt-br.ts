@@ -1,10 +1,31 @@
 import type { TranslationDict } from "../types";
+import { appPtBR } from "./domains/app";
+import { jobsPtBR } from "./domains/jobs";
+import { messagesPtBR } from "./domains/messages";
+import { profilePtBR } from "./domains/profile";
+import { resumesPtBR } from "./domains/resumes";
+import { searchPtBR } from "./domains/search";
+import { sectionsPtBR } from "./domains/sections";
 
 /**
- * Placeholder pt-BR dictionary. PR #5 (api-client) ships a typed
- * generated dictionary that supersedes this file.
+ * pt-BR dictionary. Feature copy lives in per-domain fragments under
+ * `./domains/` (one file per feature, both locales side by side); the
+ * groups inlined here predate that split.
  */
 export const ptBR: TranslationDict = {
+  app: appPtBR,
+  jobs: jobsPtBR,
+  messages: messagesPtBR,
+  profile: profilePtBR,
+  resumes: resumesPtBR,
+  search: searchPtBR,
+  sections: sectionsPtBR,
+  tabs: {
+    jobs: "Vagas",
+    applications: "Candidaturas",
+    notifications: "Notificações",
+    profile: "Perfil",
+  },
   common: {
     hello: "Olá",
     loading: "Carregando…",
@@ -85,6 +106,16 @@ export const ptBR: TranslationDict = {
       passwordNeedsSymbol: "Inclua ao menos um símbolo (@$!%*?&)",
       passwordWeak: "A senha não atende aos requisitos de segurança",
     },
+    passwordStrength: {
+      weak: "Fraca",
+      fair: "Razoável",
+      good: "Boa",
+      strong: "Forte",
+      hintChars: "8+ caracteres",
+      hintCase: "Aa",
+      hintDigit: "0-9",
+      hintSymbol: "Símbolo",
+    },
   },
   onboarding: {
     pageTitle: "Onboarding",
@@ -106,6 +137,18 @@ export const ptBR: TranslationDict = {
     field: {
       required: "obrigatório",
       optional: "opcional",
+    },
+    validation: {
+      required: "Campo obrigatório",
+      invalidUrl: "Informe uma URL válida",
+      invalidPattern: "Formato inválido",
+      minLength: "Mínimo de {count} caracteres",
+      maxLength: "Máximo de {count} caracteres",
+      username: "Use apenas letras minúsculas, números e _",
+    },
+    sectionPicker: {
+      empty: "Você já adicionou todas as seções disponíveis.",
+      close: "Fechar",
     },
     location: {
       title: "Selecione a localização",
@@ -156,6 +199,17 @@ export const ptBR: TranslationDict = {
     },
     language: {
       prompt: "Qual idioma você prefere?",
+      // Each option is written in its own target language on purpose, so it
+      // reads the same regardless of the current UI locale — both dictionaries
+      // carry identical values for these keys.
+      english: {
+        native: "English",
+        hint: "Interface, dates & content in English",
+      },
+      portuguese: {
+        native: "Português (Brasil)",
+        hint: "Interface, datas e conteúdo em português",
+      },
     },
     theme: {
       light: {

@@ -20,6 +20,7 @@ export {
   type PasswordHints,
   type PasswordStrengthScore,
   passwordChecks,
+  type StrengthLabels,
   scorePassword,
 } from "../internal/editorial-password";
 export { useEditorialPalette } from "../internal/use-editorial-palette";
@@ -44,6 +45,7 @@ export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { PasswordStrengthMeter } from "./password-strength-meter";
 export { PatchLogo } from "./patch-logo";
 export { PrimaryAction, type PrimaryActionProps } from "./primary-action";
+export { SegmentedTabs, type SegmentedTabsProps } from "./segmented-tabs";
 export { UnderlineInput, type UnderlineInputProps } from "./underline-input";
 export { Wordmark } from "./wordmark";
 

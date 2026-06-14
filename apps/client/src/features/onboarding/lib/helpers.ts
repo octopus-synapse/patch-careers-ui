@@ -1,3 +1,4 @@
+import type { Translator } from "@patch-careers/i18n";
 import type {
   FormData,
   OnboardingField,
@@ -14,10 +15,6 @@ import {
   isProfileFieldRequired,
   validateProfileField,
 } from "./profile-validation";
-
-const REQUIRED_MESSAGE = "Campo obrigatório";
-const INVALID_URL_MESSAGE = "Informe uma URL válida";
-const INVALID_PATTERN_MESSAGE = "Formato inválido";
 
 export const ACTIVATED_EXTRA_STEP_IDS = ["section:project_v1", "section:certification_v1"];
 
@@ -153,6 +150,7 @@ export function getSavedItemsForStep(
 export function validateStepFields(
   step: OnboardingStep,
   data: FormData,
+  t: Translator,
   fieldKeys?: readonly string[],
 ): Record<string, string> {
   const errors: Record<string, string> = {};
@@ -162,7 +160,7 @@ export function validateStepFields(
     // Required = backend flag OR the contract (complete-time) requiredness —
     // the session marks summary/phone/location optional, but complete needs them.
     if ((field.required || isProfileFieldRequired(field.key)) && value.length === 0) {
-      errors[field.key] = REQUIRED_MESSAGE;
+      errors[field.key] = t("onboarding.validation.required");
       continue;
     }
     if (value.length === 0) continue;
@@ -170,27 +168,29 @@ export function validateStepFields(
     // profile fields the backend validates on complete. Unmapped fields
     // (phone, location, section content) fall through to the backend-supplied
     // minLength/maxLength/pattern below.
-    const contractError = validateProfileField(field.key, value);
+    const contractError = validateProfileField(field.key, value, t);
     if (contractError) {
       errors[field.key] = contractError;
       continue;
     }
     if (hasProfileFieldRule(field.key)) continue;
     if (field.minLength !== undefined && value.length < field.minLength) {
-      errors[field.key] = `Mínimo de ${field.minLength} caracteres`;
+      errors[field.key] = t("onboarding.validation.minLength", { count: field.minLength });
       continue;
     }
     if (field.maxLength !== undefined && value.length > field.maxLength) {
-      errors[field.key] = `Máximo de ${field.maxLength} caracteres`;
+      errors[field.key] = t("onboarding.validation.maxLength", { count: field.maxLength });
       continue;
     }
     if ((field.type === "url" || field.key === "website") && !/^https?:\/\/\S+/i.test(value)) {
-      errors[field.key] = INVALID_URL_MESSAGE;
+      errors[field.key] = t("onboarding.validation.invalidUrl");
       continue;
     }
     if (field.pattern) {
       try {
-        if (!new RegExp(field.pattern).test(value)) errors[field.key] = INVALID_PATTERN_MESSAGE;
+        if (!new RegExp(field.pattern).test(value)) {
+          errors[field.key] = t("onboarding.validation.invalidPattern");
+        }
       } catch {
         // Backend owns malformed dynamic patterns; keep the UI usable.
       }
@@ -210,11 +210,12 @@ export function canContinueStep(
   step: OnboardingStep | undefined,
   data: FormData,
   items: SectionItem[],
+  t: Translator,
   fieldKeys?: readonly string[],
 ): boolean {
   if (!step || isReviewStep(step) || isWelcomeStep(step)) return true;
   if (isSectionStep(step)) return !step.required || items.length > 0;
-  return Object.keys(validateStepFields(step, data, fieldKeys)).length === 0;
+  return Object.keys(validateStepFields(step, data, t, fieldKeys)).length === 0;
 }
 
 export function buildNextPayload(

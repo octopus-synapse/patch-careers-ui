@@ -39468,29 +39468,35 @@
           {
             "schema": {
               "type": "string",
-              "enum": [
-                "true",
-                "false"
-              ]
+              "description": "Comma-separated list (any-of match).",
+              "example": "REMOTE,HYBRID"
             },
             "required": false,
-            "name": "isRemote",
+            "name": "workMode",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated list (any-of match).",
+              "example": "FULL_TIME,CONTRACT"
+            },
+            "required": false,
+            "name": "employmentType",
             "in": "query"
           },
           {
             "schema": {
               "type": "string",
               "enum": [
-                "INTERNSHIP",
-                "CONTRACT",
-                "FULL_TIME",
-                "PART_TIME",
-                "VOLUNTEER",
-                "FREELANCE"
+                "TODAY",
+                "LAST_3_DAYS",
+                "LAST_WEEK",
+                "LAST_MONTH"
               ]
             },
             "required": false,
-            "name": "employmentType",
+            "name": "postedWithin",
             "in": "query"
           }
         ],
@@ -39526,7 +39532,17 @@
                           },
                           "isRemote": {
                             "type": "boolean",
+                            "description": "Raw upstream remote flag. Deprecated — read `workMode` instead.",
                             "example": true
+                          },
+                          "workMode": {
+                            "type": "string",
+                            "enum": [
+                              "REMOTE",
+                              "HYBRID",
+                              "ONSITE"
+                            ],
+                            "example": "REMOTE"
                           },
                           "employmentType": {
                             "type": "string",
@@ -39564,6 +39580,14 @@
                             "format": "date-time",
                             "description": "ISO-8601 timestamp with timezone offset (RFC 3339).",
                             "example": "2026-05-07T00:00:00.000Z"
+                          },
+                          "isSaved": {
+                            "type": "boolean"
+                          },
+                          "savedId": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Id of the caller’s saved row for this listing; null when not saved."
                           }
                         },
                         "required": [
@@ -39573,6 +39597,311 @@
                           "company",
                           "location",
                           "isRemote",
+                          "workMode",
+                          "employmentType",
+                          "applyUrl",
+                          "publisher",
+                          "description",
+                          "postedAt",
+                          "fetchedAt",
+                          "isSaved",
+                          "savedId"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "hasNext": {
+                      "type": "boolean"
+                    },
+                    "hasPrev": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total",
+                    "page",
+                    "limit",
+                    "totalPages",
+                    "hasNext",
+                    "hasPrev"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "feed:use"
+      }
+    },
+    "/api/v1/jobs/external/saved": {
+      "get": {
+        "summary": "List external jobs saved by the current user",
+        "description": "Jobs API",
+        "tags": [
+          "jobs"
+        ],
+        "operationId": "get_v1_jobs_external_saved",
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/components/schemas/Page"
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/Limit"
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$"
+            },
+            "required": false,
+            "name": "sortBy",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "required": false,
+            "name": "sortOrder",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "savedId": {
+                            "type": "string"
+                          },
+                          "savedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "ISO-8601 timestamp with timezone offset (RFC 3339).",
+                            "example": "2026-05-07T00:00:00.000Z"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "company": {
+                            "type": "string"
+                          },
+                          "location": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "isRemote": {
+                            "type": "boolean"
+                          },
+                          "workMode": {
+                            "type": "string",
+                            "enum": [
+                              "REMOTE",
+                              "HYBRID",
+                              "ONSITE"
+                            ]
+                          },
+                          "employmentType": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "INTERNSHIP",
+                              "CONTRACT",
+                              "FULL_TIME",
+                              "PART_TIME",
+                              "VOLUNTEER",
+                              "FREELANCE"
+                            ]
+                          },
+                          "applyUrl": {
+                            "type": "string"
+                          },
+                          "publisher": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "postedAt": {
+                            "type": "string",
+                            "nullable": true,
+                            "format": "date-time",
+                            "description": "ISO-8601 timestamp with timezone offset (RFC 3339).",
+                            "example": "2026-05-07T00:00:00.000Z"
+                          },
+                          "fetchedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "ISO-8601 timestamp with timezone offset (RFC 3339).",
+                            "example": "2026-05-07T00:00:00.000Z"
+                          }
+                        },
+                        "required": [
+                          "savedId",
+                          "savedAt",
+                          "externalId",
+                          "title",
+                          "company",
+                          "location",
+                          "isRemote",
+                          "workMode",
                           "employmentType",
                           "applyUrl",
                           "publisher",
@@ -39694,6 +40023,409 @@
           },
           "403": {
             "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "feed:use"
+      }
+    },
+    "/api/v1/jobs/external/saved/{id}": {
+      "delete": {
+        "summary": "Remove a saved external job",
+        "description": "Jobs API",
+        "tags": [
+          "jobs"
+        ],
+        "operationId": "delete_v1_jobs_external_saved_id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Resource UUID (path parameter).",
+              "example": "01900000-0000-7000-a000-000000000001"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "example": "01900000-0000-7000-a000-000000000001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "savedId": {
+                      "type": "string"
+                    },
+                    "removed": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "required": [
+                    "savedId",
+                    "removed"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "feed:use"
+      }
+    },
+    "/api/v1/jobs/external/{id}/save": {
+      "post": {
+        "summary": "Save an external job (snapshots the listing for the current user)",
+        "description": "Jobs API",
+        "tags": [
+          "jobs"
+        ],
+        "operationId": "post_v1_jobs_external_id_save",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Resource UUID (path parameter).",
+              "example": "01900000-0000-7000-a000-000000000001"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "example": "01900000-0000-7000-a000-000000000001"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "savedId": {
+                      "type": "string"
+                    },
+                    "externalId": {
+                      "type": "string"
+                    },
+                    "alreadySaved": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "savedId",
+                    "externalId",
+                    "alreadySaved"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
             "content": {
               "application/json": {
                 "schema": {

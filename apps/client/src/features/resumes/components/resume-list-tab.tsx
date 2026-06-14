@@ -10,12 +10,14 @@ import { Plus } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { ResumePreviewModal } from "@/components/resume-preview-modal";
+import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeList, useResumeSlots } from "../hooks/queries";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { ResumeCard } from "./resume-card";
 
 export function ResumeListTab(): ReactElement {
+  const { t } = useI18n();
   const rz = useRz();
   const palette = useEditorialPalette();
   const router = useRouter();
@@ -36,7 +38,7 @@ export function ResumeListTab(): ReactElement {
   if (isError) {
     return (
       <View style={rz.centered}>
-        <Text style={rz.centeredText}>Não foi possível carregar seus currículos.</Text>
+        <Text style={rz.centeredText}>{t("resumes.list.loadError")}</Text>
       </View>
     );
   }
@@ -46,9 +48,9 @@ export function ResumeListTab(): ReactElement {
   return (
     <View style={rz.list}>
       <View style={rz.slotsRow}>
-        <Text style={rz.slotsLabel}>Seus currículos</Text>
+        <Text style={rz.slotsLabel}>{t("resumes.list.header")}</Text>
         <Text style={rz.slotsCount}>
-          {slots.used} de {slots.limit}
+          {t("resumes.list.slotsCount", { used: slots.used, limit: slots.limit })}
         </Text>
       </View>
 
@@ -63,26 +65,24 @@ export function ResumeListTab(): ReactElement {
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Criar currículo"
+        accessibilityLabel={t("resumes.list.create")}
         accessibilityState={{ disabled: full }}
         disabled={full}
         onPress={() => setWizardOpen(true)}
         style={[rz.createBox, full && rz.createBoxDisabled]}
       >
         <Plus size={15} color={palette.ink} strokeWidth={2} />
-        <Text style={rz.createBoxLabel}>Criar currículo</Text>
+        <Text style={rz.createBoxLabel}>{t("resumes.list.create")}</Text>
       </Pressable>
       {full ? (
-        <Text style={rz.slotsNote}>
-          Limite de {slots.limit} currículos atingido — exclua um para criar outro.
-        </Text>
+        <Text style={rz.slotsNote}>{t("resumes.list.limitReached", { limit: slots.limit })}</Text>
       ) : null}
 
       <ResumePreviewModal
         visible={preview !== null}
         onClose={() => setPreview(null)}
         resumeId={preview?.id}
-        title={preview?.title ?? "Currículo"}
+        title={preview?.title}
       />
 
       <CreateResumeWizard

@@ -9,11 +9,17 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Search } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 
 export function SearchTrigger({ onPress }: { onPress: () => void }): ReactElement {
+  const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel="Abrir busca" onPress={onPress}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t("search.openA11y")}
+      onPress={onPress}
+    >
       {({ pressed }) => (
         <XStack
           alignItems="center"
@@ -27,7 +33,7 @@ export function SearchTrigger({ onPress }: { onPress: () => void }): ReactElemen
         >
           <Icon as={Search} size={15} color={editorialPalette.subtle} />
           <Text preset="label" fontSize={14} color={editorialPalette.subtle}>
-            Buscar…
+            {t("search.placeholder")}
           </Text>
         </XStack>
       )}

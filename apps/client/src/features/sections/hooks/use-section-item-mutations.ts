@@ -14,12 +14,14 @@ import {
   usePostV1ResumesResumeIdSectionsSectionTypeKeyItems,
 } from "@patch-careers/api-client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useI18n } from "@/providers/i18n-provider";
 import type { SectionPersistAction } from "../types";
 
 export function useSectionItemMutations(resumeId: string | undefined): {
   persistFor: (sectionTypeKey: string) => (action: SectionPersistAction) => Promise<void>;
   isPending: boolean;
 } {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const create = usePostV1ResumesResumeIdSectionsSectionTypeKeyItems();
   const update = usePatchV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId();
@@ -38,7 +40,7 @@ export function useSectionItemMutations(resumeId: string | undefined): {
   };
 
   const persistFor = (sectionTypeKey: string) => async (action: SectionPersistAction) => {
-    if (!resumeId) throw new Error("Sem currículo para editar");
+    if (!resumeId) throw new Error(t("sections.errors.noResume"));
     const content = action.item.content ?? {};
     if (action.kind === "create") {
       await create.mutateAsync({ resumeId, sectionTypeKey, data: { content } });

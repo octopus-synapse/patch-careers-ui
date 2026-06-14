@@ -47,6 +47,10 @@ export interface FlowStep {
   /** Intro screens (welcome) sit outside the counted progress — they don't
    *  show the masthead and aren't part of the "NN / NN" total or time estimate. */
   readonly intro?: boolean;
+  /** Hides the masthead (progress bar + phase label + time estimate) while
+   *  keeping the step counted. Used by the language/theme picks, which read as
+   *  pre-flow preferences rather than profile-building progress. */
+  readonly hideMasthead?: boolean;
 }
 
 /** A named, contiguous group of counted steps, surfaced in the masthead. */
@@ -67,15 +71,17 @@ export const FLOW_PLAN: readonly FlowStep[] = [
     id: "language",
     kind: "local",
     optional: false,
+    hideMasthead: true,
     titleKey: "onboarding.flow.language.title",
   },
   {
     // Light/dark/system pick, right after language so its copy is already
     // translated. App-local (color-scheme store) — nothing goes to the
-    // backend, but it's a regular counted step with the full chrome.
+    // backend. Counted, but no masthead (reads as a preference, not progress).
     id: "theme",
     kind: "local",
     optional: false,
+    hideMasthead: true,
     titleKey: "onboarding.flow.theme.title",
   },
   {

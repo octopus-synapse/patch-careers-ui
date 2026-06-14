@@ -43,3 +43,23 @@ export function splitOtp(value: string, length = OTP_DEFAULT_LENGTH): string[] {
 export function isOtpComplete(value: string, length = OTP_DEFAULT_LENGTH): boolean {
   return sanitizeOtp(value, length).length === length;
 }
+
+/**
+ * Backspace from an *empty* slot: deletes the digit behind the active slot
+ * (the previous filled box) and reports where focus should land.
+ *
+ * Returns `null` when there's nothing to delete (slot has its own digit —
+ * handled by `onChangeText` instead — or the cursor is at the first slot).
+ */
+export function backspaceOtp(
+  value: string,
+  index: number,
+  length = OTP_DEFAULT_LENGTH,
+): { value: string; focusIndex: number } | null {
+  const sanitized = sanitizeOtp(value, length);
+  if (sanitized[index]) return null;
+  const target = index - 1;
+  if (target < 0) return null;
+  const next = `${sanitized.slice(0, target)}${sanitized.slice(target + 1)}`;
+  return { value: sanitizeOtp(next, length), focusIndex: target };
+}

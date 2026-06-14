@@ -8,6 +8,7 @@ import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 import { participantLabel, timeAgo } from "../lib/helpers";
 import { useChatColors } from "../lib/theme";
 import type { Conversation } from "../types";
@@ -42,14 +43,15 @@ export function ConversationRow({
   onPress: (conversation: Conversation) => void;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const { t } = useI18n();
   const { participant, lastMessage, unreadCount } = conversation;
-  const name = participantLabel(participant);
+  const name = participantLabel(participant, t);
   const unread = unreadCount > 0;
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Conversa com ${name}`}
+      accessibilityLabel={t("messages.inbox.rowLabel", { name })}
       onPress={() => onPress(conversation)}
       style={({ pressed }) => ({
         backgroundColor: pressed ? editorialPalette.bg : editorialPalette.surface,
@@ -70,7 +72,7 @@ export function ConversationRow({
             </Text>
             {lastMessage ? (
               <Text preset="caption" fontSize={11} color={editorialPalette.subtle}>
-                {timeAgo(lastMessage.createdAt, now)}
+                {timeAgo(lastMessage.createdAt, now, t)}
               </Text>
             ) : null}
           </XStack>
@@ -82,7 +84,7 @@ export function ConversationRow({
               color={unread ? editorialPalette.body : editorialPalette.muted}
               fontWeight={unread ? "600" : "400"}
             >
-              {lastMessage?.content ?? "Sem mensagens ainda"}
+              {lastMessage?.content ?? t("messages.inbox.noMessagesYet")}
             </Text>
             {unread ? <UnreadPill count={unreadCount} /> : null}
           </XStack>

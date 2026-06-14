@@ -92,10 +92,11 @@ export default function VerifyEmailScreen(): ReactElement {
   }, [params.token, requestVerificationCode]);
 
   return (
-    <AuthShell>
+    <AuthShell showEra={false}>
       <IntroBlock
         emphasis={t("auth.verifyTitle")}
         subtitle={t("auth.verifyIntro", { email: email ? maskEmail(email) : "" })}
+        showWordmark={false}
       />
       <View style={{ gap: 20, alignItems: "center" }}>
         <OTPInput
@@ -114,7 +115,7 @@ export default function VerifyEmailScreen(): ReactElement {
         />
         {testCode ? (
           <Text preset="caption" color="$gray10" testID="verify.testCode">
-            {`Codigo enviado (teste): ${testCode}`}
+            {t("app.verifyEmail.testCodeSent", { code: testCode })}
           </Text>
         ) : null}
         <BackToSignInLink testID="verify.backToSignIn" />

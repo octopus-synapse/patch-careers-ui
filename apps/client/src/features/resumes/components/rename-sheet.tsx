@@ -3,6 +3,7 @@ import { Sheet } from "@patch-careers/ui";
 import { PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 
 export function RenameSheet({
   open,
@@ -17,6 +18,7 @@ export function RenameSheet({
   isPending: boolean;
   onSubmit: (title: string) => Promise<void>;
 }): ReactElement {
+  const { t } = useI18n();
   const [title, setTitle] = useState(currentTitle);
 
   // Re-seed each open with the latest saved title.
@@ -34,11 +36,15 @@ export function RenameSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title="Renomear currículo">
+    <Sheet open={open} onOpenChange={onOpenChange} title={t("resumes.rename.title")}>
       <View style={styles.body}>
-        <UnderlineInput label="Nome do currículo" value={title} onChangeText={setTitle} />
+        <UnderlineInput
+          label={t("resumes.rename.nameLabel")}
+          value={title}
+          onChangeText={setTitle}
+        />
         <PrimaryAction
-          label="Salvar"
+          label={t("resumes.rename.save")}
           onPress={() => void save()}
           loading={isPending}
           disabled={title.trim().length === 0 || isPending}

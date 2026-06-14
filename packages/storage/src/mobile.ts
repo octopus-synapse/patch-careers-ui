@@ -14,28 +14,62 @@ import type { KeyValueStorage, SetItemOptions } from "./interface";
 import * as ExpoSecureStore from "expo-secure-store";
 import { MMKV } from "react-native-mmkv";
 
-let mmkvSingleton: MMKV | null = null;
-function mmkv(): MMKV {
-  if (mmkvSingleton === null) mmkvSingleton = new MMKV();
-  return mmkvSingleton;
+/** The subset of `MMKV` the mundane adapter uses — also implemented by the
+ *  in-memory fallback below so the two are interchangeable. */
+type MundaneBackend = Pick<MMKV, "getString" | "set" | "delete" | "clearAll" | "getAllKeys">;
+
+/** In-memory stand-in used when MMKV can't initialise (see `mundaneBackend`). */
+function createMemoryBackend(): MundaneBackend {
+  const map = new Map<string, string>();
+  return {
+    getString: (key) => map.get(key),
+    set: (key, value) => {
+      map.set(key, String(value));
+    },
+    delete: (key) => {
+      map.delete(key);
+    },
+    clearAll: () => {
+      map.clear();
+    },
+    getAllKeys: () => Array.from(map.keys()),
+  };
+}
+
+let backendSingleton: MundaneBackend | null = null;
+function mundaneBackend(): MundaneBackend {
+  if (backendSingleton === null) {
+    try {
+      backendSingleton = new MMKV();
+    } catch (error) {
+      // react-native-mmkv 3.x requires the New Architecture; on an old-arch
+      // binary (e.g. Expo Go) `new MMKV()` throws and would otherwise crash
+      // any flow that touches mundane storage (the logout path hits it via the
+      // secure-key index). Degrade to an in-memory store so the app stays
+      // usable; real persistence resumes on a New-Architecture build.
+      console.warn("[storage] MMKV unavailable, falling back to in-memory store:", error);
+      backendSingleton = createMemoryBackend();
+    }
+  }
+  return backendSingleton;
 }
 
 export const mobileMundane: KeyValueStorage = {
   async getItem(key) {
-    const value = mmkv().getString(key);
+    const value = mundaneBackend().getString(key);
     return value ?? null;
   },
   async setItem(key, value) {
-    mmkv().set(key, value);
+    mundaneBackend().set(key, value);
   },
   async removeItem(key) {
-    mmkv().delete(key);
+    mundaneBackend().delete(key);
   },
   async clear() {
-    mmkv().clearAll();
+    mundaneBackend().clearAll();
   },
   async getAllKeys() {
-    return mmkv().getAllKeys();
+    return mundaneBackend().getAllKeys();
   },
 };
 

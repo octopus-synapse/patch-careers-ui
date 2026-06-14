@@ -1,0 +1,148 @@
+/**
+ * Resumes copy. Both locales live side by side so key parity is reviewed
+ * in one place; the parity spec in apps/client enforces it.
+ */
+
+import type { TranslationDict } from "../../types";
+
+export const resumesPtBR: TranslationDict = {
+  preview: {
+    title: "Currículo",
+    close: "Fechar",
+    rendering: "Renderizando seu currículo…",
+    errorTitle: "Não foi possível carregar seu currículo",
+    errorHint: "Confirme que você concluiu o onboarding e tente novamente.",
+    retry: "Tentar novamente",
+    downloadPdf: "Baixar PDF",
+  },
+  list: {
+    loadError: "Não foi possível carregar seus currículos.",
+    header: "Seus currículos",
+    slotsCount: "{used} de {limit}",
+    create: "Criar currículo",
+    limitReached: "Limite de {limit} currículos atingido — exclua um para criar outro.",
+  },
+  card: {
+    masterBadge: "Principal",
+    editedMeta: "editado {ago}",
+    previewLabel: "Visualizar {title}",
+    version: "Versão {number}",
+  },
+  wizard: {
+    step1Title: "O que entra nesse currículo?",
+    step2Title: "Detalhes do currículo",
+    step1Hint:
+      "Tudo vem do seu currículo principal. Desmarque o que não deve aparecer — a cópia vive a própria vida depois.",
+    emptyMaster: "Seu currículo principal ainda não tem itens para copiar.",
+    nameLabel: "Nome do currículo",
+    namePlaceholder: "ex.: Backend Sênior — fintech",
+    languageLabel: "Idioma",
+    languagePt: "Português",
+    languageEn: "English",
+    styleLabel: "Estilo visual",
+    styleHint: "Sem escolha, a cópia mantém o estilo do currículo principal.",
+    continue: "Continuar",
+    create: "Criar currículo",
+    createError: "Não foi possível criar o currículo. Tente novamente.",
+    cancel: "Cancelar",
+    back: "Voltar",
+    close: "Fechar",
+  },
+  rename: {
+    title: "Renomear currículo",
+    nameLabel: "Nome do currículo",
+    save: "Salvar",
+  },
+  detail: {
+    notFound: "Currículo não encontrado.",
+    back: "Voltar",
+    language: "Idioma",
+    style: "Estilo",
+    lastEdited: "Última edição",
+    rename: "Renomear",
+    downloadPdf: "Baixar PDF",
+    duplicate: "Duplicar",
+    delete: "Excluir",
+    sections: "Seções",
+    deleteTitle: "Excluir currículo?",
+    deleteMessage: '"{title}" será apagado de vez, com todas as seções e itens.',
+  },
+  time: {
+    justNow: "agora",
+    minutesAgo: "há {count} min",
+    hoursAgo: "há {count} h",
+    dayAgo: "há 1 dia",
+    daysAgo: "há {count} dias",
+  },
+};
+
+export const resumesEn: TranslationDict = {
+  preview: {
+    title: "Resume",
+    close: "Close",
+    rendering: "Rendering your resume…",
+    errorTitle: "We couldn't load your resume",
+    errorHint: "Make sure you've completed onboarding and try again.",
+    retry: "Try again",
+    downloadPdf: "Download PDF",
+  },
+  list: {
+    loadError: "We couldn't load your resumes.",
+    header: "Your resumes",
+    slotsCount: "{used} of {limit}",
+    create: "Create resume",
+    limitReached: "Limit of {limit} resumes reached — delete one to create another.",
+  },
+  card: {
+    masterBadge: "Primary",
+    editedMeta: "edited {ago}",
+    previewLabel: "Preview {title}",
+    version: "Version {number}",
+  },
+  wizard: {
+    step1Title: "What goes into this resume?",
+    step2Title: "Resume details",
+    step1Hint:
+      "Everything comes from your primary resume. Uncheck what shouldn't appear — the copy lives its own life afterwards.",
+    emptyMaster: "Your primary resume doesn't have any items to copy yet.",
+    nameLabel: "Resume name",
+    namePlaceholder: "e.g. Senior Backend — fintech",
+    languageLabel: "Language",
+    languagePt: "Português",
+    languageEn: "English",
+    styleLabel: "Visual style",
+    styleHint: "If you don't choose, the copy keeps the primary resume's style.",
+    continue: "Continue",
+    create: "Create resume",
+    createError: "We couldn't create the resume. Try again.",
+    cancel: "Cancel",
+    back: "Back",
+    close: "Close",
+  },
+  rename: {
+    title: "Rename resume",
+    nameLabel: "Resume name",
+    save: "Save",
+  },
+  detail: {
+    notFound: "Resume not found.",
+    back: "Back",
+    language: "Language",
+    style: "Style",
+    lastEdited: "Last edited",
+    rename: "Rename",
+    downloadPdf: "Download PDF",
+    duplicate: "Duplicate",
+    delete: "Delete",
+    sections: "Sections",
+    deleteTitle: "Delete resume?",
+    deleteMessage: '"{title}" will be permanently deleted, with all its sections and items.',
+  },
+  time: {
+    justNow: "just now",
+    minutesAgo: "{count} min ago",
+    hoursAgo: "{count} h ago",
+    dayAgo: "1 day ago",
+    daysAgo: "{count} days ago",
+  },
+};

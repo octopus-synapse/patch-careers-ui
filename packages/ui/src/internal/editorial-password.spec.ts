@@ -7,9 +7,13 @@ describe("scorePassword", () => {
     expect(scorePassword("")).toBe(0);
   });
 
-  it("hard-zeros passwords shorter than 6 chars regardless of signals", () => {
-    // has upper+lower+digit+symbol but only 5 chars → 0
-    expect(scorePassword("Aa1$z")).toBe(0);
+  it("floors passwords shorter than 6 chars to weak regardless of signals", () => {
+    // has upper+lower+digit+symbol but only 5 chars → weak (1), never 0
+    expect(scorePassword("Aa1$z")).toBe(1);
+  });
+
+  it("treats any non-empty password as at least weak", () => {
+    expect(scorePassword("a")).toBe(1);
   });
 
   it("counts each independent signal", () => {

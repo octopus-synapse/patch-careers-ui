@@ -36,7 +36,7 @@ export function NetInfoBanner(): ReactElement | null {
 
   return (
     <View style={[styles.banner, { paddingTop: topPad + 6 }]} accessibilityRole="alert">
-      <Text style={styles.text}>{t("common.error")} — offline</Text>
+      <Text style={styles.text}>{t("app.netInfoBanner.offline")}</Text>
     </View>
   );
 }

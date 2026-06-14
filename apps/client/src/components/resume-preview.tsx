@@ -21,6 +21,7 @@ import * as WebBrowser from "expo-web-browser";
 import { type ReactElement, type ReactNode, useRef } from "react";
 import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from "react-native";
 import WebView from "react-native-webview";
+import { useI18n } from "@/providers/i18n-provider";
 
 // Light: matches the HTML document's body backdrop so the safe-area inset
 // blends in. Dark: the document stays a white "page", so the container frames
@@ -28,6 +29,7 @@ import WebView from "react-native-webview";
 const BACKDROP = { light: "#e5e7eb", dark: "#111110" } as const;
 
 export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): ReactElement {
+  const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   const styles = stylesByTheme[useThemeName()];
   // Omitted resumeId = the master resume (backend default).
@@ -54,7 +56,7 @@ export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): 
       <Centered>
         <ActivityIndicator color={editorialPalette.ink} />
         <Text preset="body" color="$inkMuted">
-          Renderizando seu currículo…
+          {t("resumes.preview.rendering")}
         </Text>
       </Centered>
     );
@@ -65,13 +67,13 @@ export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): 
       <Centered>
         <Ionicons name="document-text-outline" size={40} color={editorialPalette.subtle} />
         <Text preset="h3" color="$ink" textAlign="center">
-          Não foi possível carregar seu currículo
+          {t("resumes.preview.errorTitle")}
         </Text>
         <Text preset="body" color="$inkMuted" textAlign="center">
-          Confirme que você concluiu o onboarding e tente novamente.
+          {t("resumes.preview.errorHint")}
         </Text>
         <Button intent="accent" onPress={() => void preview.refetch()}>
-          Tentar novamente
+          {t("resumes.preview.retry")}
         </Button>
       </Centered>
     );
@@ -84,14 +86,14 @@ export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): 
       <View style={styles.toolbar}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Baixar PDF"
+          accessibilityLabel={t("resumes.preview.downloadPdf")}
           onPress={() => void onDownload()}
           style={styles.download}
           hitSlop={8}
         >
           <Ionicons name="download-outline" size={18} color={editorialPalette.accent} />
           <Text preset="label" color="$accentBlue">
-            Baixar PDF
+            {t("resumes.preview.downloadPdf")}
           </Text>
         </Pressable>
       </View>
@@ -102,7 +104,7 @@ export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): 
         <iframe
           ref={iframeRef}
           srcDoc={html}
-          title="Currículo"
+          title={t("resumes.preview.title")}
           style={{ flex: 1, border: "none", width: "100%", height: "100%" } as unknown as undefined}
         />
       ) : (

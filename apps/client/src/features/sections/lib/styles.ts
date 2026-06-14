@@ -558,6 +558,7 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       color: authTokens.ink,
     },
     welcomeCta: { width: "100%", marginTop: 8, alignItems: "stretch" },
+    welcomeBack: { alignItems: "center", marginTop: 12 },
 
     // resume banner
     resumeBanner: {

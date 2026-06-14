@@ -1,10 +1,31 @@
 import type { TranslationDict } from "../types";
+import { appEn } from "./domains/app";
+import { jobsEn } from "./domains/jobs";
+import { messagesEn } from "./domains/messages";
+import { profileEn } from "./domains/profile";
+import { resumesEn } from "./domains/resumes";
+import { searchEn } from "./domains/search";
+import { sectionsEn } from "./domains/sections";
 
 /**
- * Placeholder en dictionary. PR #5 (api-client) ships a typed
- * generated dictionary that supersedes this file.
+ * en dictionary. Feature copy lives in per-domain fragments under
+ * `./domains/` (one file per feature, both locales side by side); the
+ * groups inlined here predate that split.
  */
 export const en: TranslationDict = {
+  app: appEn,
+  jobs: jobsEn,
+  messages: messagesEn,
+  profile: profileEn,
+  resumes: resumesEn,
+  search: searchEn,
+  sections: sectionsEn,
+  tabs: {
+    jobs: "Jobs",
+    applications: "Applications",
+    notifications: "Notifications",
+    profile: "Profile",
+  },
   common: {
     hello: "Hello",
     loading: "Loading…",
@@ -85,6 +106,16 @@ export const en: TranslationDict = {
       passwordNeedsSymbol: "Add at least one symbol (@$!%*?&)",
       passwordWeak: "Password does not meet security requirements",
     },
+    passwordStrength: {
+      weak: "Weak",
+      fair: "Fair",
+      good: "Good",
+      strong: "Strong",
+      hintChars: "8+ chars",
+      hintCase: "Aa",
+      hintDigit: "0-9",
+      hintSymbol: "Symbol",
+    },
   },
   onboarding: {
     pageTitle: "Onboarding",
@@ -106,6 +137,18 @@ export const en: TranslationDict = {
     field: {
       required: "required",
       optional: "optional",
+    },
+    validation: {
+      required: "Required field",
+      invalidUrl: "Enter a valid URL",
+      invalidPattern: "Invalid format",
+      minLength: "Minimum of {count} characters",
+      maxLength: "Maximum of {count} characters",
+      username: "Use only lowercase letters, numbers, and _",
+    },
+    sectionPicker: {
+      empty: "You've already added all the available sections.",
+      close: "Close",
     },
     location: {
       title: "Select your location",
@@ -155,6 +198,17 @@ export const en: TranslationDict = {
     },
     language: {
       prompt: "Which language do you prefer?",
+      // Each option is written in its own target language on purpose, so it
+      // reads the same regardless of the current UI locale — both dictionaries
+      // carry identical values for these keys.
+      english: {
+        native: "English",
+        hint: "Interface, dates & content in English",
+      },
+      portuguese: {
+        native: "Português (Brasil)",
+        hint: "Interface, datas e conteúdo em português",
+      },
     },
     theme: {
       light: {

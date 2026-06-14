@@ -4,21 +4,35 @@
  * a backend schema change breaks the build here instead of at runtime.
  */
 
-import type { GetV1JobsExternal200, JobType } from "@patch-careers/api-client";
+import type {
+  GetV1JobsExternal200,
+  GetV1JobsExternalQueryParamsPostedWithinEnum,
+  GetV1JobsExternalSaved200,
+  JobType,
+  RemotePolicy,
+} from "@patch-careers/api-client";
 
 export type ExternalJob = GetV1JobsExternal200["items"][number];
 
+/** One row of `GET /v1/jobs/external/saved` — a snapshot, keyed by `savedId`. */
+export type SavedExternalJobItem = GetV1JobsExternalSaved200["items"][number];
+
+export type PostedWithin = GetV1JobsExternalQueryParamsPostedWithinEnum;
+
+/** Which list the screen shows: every listing or only the user's saved ones. */
+export type JobsScope = "all" | "saved";
+
 export type JobsFilters = {
-  /** Free-text search over title/company (backend `q`). */
-  readonly q: string;
-  /** `true` filters to remote-only; `null` means "any". */
-  readonly remoteOnly: boolean;
-  /** Single-select employment type; `null` means "all types". */
-  readonly employmentType: JobType | null;
+  /** Any-of work modes (Presencial/Híbrido/Remoto); empty means "any". */
+  readonly workModes: readonly RemotePolicy[];
+  /** Any-of employment types; empty means "any". */
+  readonly employmentTypes: readonly JobType[];
+  /** Posted-date window; `null` means "qualquer data". */
+  readonly postedWithin: PostedWithin | null;
 };
 
 export const EMPTY_JOBS_FILTERS: JobsFilters = {
-  q: "",
-  remoteOnly: false,
-  employmentType: null,
+  workModes: [],
+  employmentTypes: [],
+  postedWithin: null,
 };

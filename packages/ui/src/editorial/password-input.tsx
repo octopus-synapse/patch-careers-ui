@@ -29,7 +29,10 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
         {...rest}
         secureTextEntry={!show}
         autoComplete={isNew ? "new-password" : "password"}
-        textContentType={isNew ? "newPassword" : "password"}
+        // iOS: qualquer textContentType de senha dispara o modal "iPhone created a
+        // strong password". "oneTimeCode" é o único valor que suprime o gerador de
+        // forma confiável (trade-off: desliga o AutoFill/salvar senha do iOS aqui).
+        textContentType="oneTimeCode"
         autoCorrect={false}
         rightSlot={
           <Pressable

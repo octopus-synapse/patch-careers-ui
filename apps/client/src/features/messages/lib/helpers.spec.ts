@@ -1,6 +1,9 @@
+import { createTranslator, ptBR } from "@patch-careers/i18n";
 import { describe, expect, it } from "vitest";
 import type { ChatMessage } from "../types";
 import { buildRenderList, formatTime, participantLabel, sortMessagesAsc, timeAgo } from "./helpers";
+
+const t = createTranslator(ptBR, "pt-BR");
 
 function msg(
   over: Partial<ChatMessage> & Pick<ChatMessage, "id" | "senderId" | "createdAt">,
@@ -19,24 +22,24 @@ const NOW = new Date("2026-06-04T12:00:00.000Z").getTime();
 
 describe("participantLabel", () => {
   it("prefers name, then username, then a fallback", () => {
-    expect(participantLabel({ name: "Ada Lovelace", username: "ada" })).toBe("Ada Lovelace");
-    expect(participantLabel({ name: null, username: "ada" })).toBe("ada");
-    expect(participantLabel({ name: null, username: null })).toBe("Usuário");
+    expect(participantLabel({ name: "Ada Lovelace", username: "ada" }, t)).toBe("Ada Lovelace");
+    expect(participantLabel({ name: null, username: "ada" }, t)).toBe("ada");
+    expect(participantLabel({ name: null, username: null }, t)).toBe("Usuário");
   });
 });
 
 describe("timeAgo", () => {
   it("renders relative buckets up to a week", () => {
-    expect(timeAgo(new Date(NOW - 30_000).toISOString(), NOW)).toBe("agora");
-    expect(timeAgo(new Date(NOW - 5 * 60_000).toISOString(), NOW)).toBe("5m");
-    expect(timeAgo(new Date(NOW - 3 * 3_600_000).toISOString(), NOW)).toBe("3h");
-    expect(timeAgo(new Date(NOW - 2 * 86_400_000).toISOString(), NOW)).toBe("2d");
+    expect(timeAgo(new Date(NOW - 30_000).toISOString(), NOW, t)).toBe("agora");
+    expect(timeAgo(new Date(NOW - 5 * 60_000).toISOString(), NOW, t)).toBe("5m");
+    expect(timeAgo(new Date(NOW - 3 * 3_600_000).toISOString(), NOW, t)).toBe("3h");
+    expect(timeAgo(new Date(NOW - 2 * 86_400_000).toISOString(), NOW, t)).toBe("2d");
   });
 
   it("falls back to a short date past a week and is safe on bad input", () => {
-    expect(timeAgo(new Date(NOW - 30 * 86_400_000).toISOString(), NOW)).toMatch(/\w/);
-    expect(timeAgo(null, NOW)).toBe("");
-    expect(timeAgo("not-a-date", NOW)).toBe("");
+    expect(timeAgo(new Date(NOW - 30 * 86_400_000).toISOString(), NOW, t)).toMatch(/\w/);
+    expect(timeAgo(null, NOW, t)).toBe("");
+    expect(timeAgo("not-a-date", NOW, t)).toBe("");
   });
 });
 
