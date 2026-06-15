@@ -209,20 +209,29 @@ export function FieldRenderer({
   error,
   field,
   institutionName,
+  lockHint,
+  lockedOption,
   onChange,
   onCompanyPick,
   onCoursePick,
+  onRolePick,
   value,
 }: {
   error?: string;
   field: SectionField;
   /** Sibling `institution` value — present only in sections that have one. */
   institutionName?: string | undefined;
+  /** When set on an options field, only `lockedOption` is selectable (others
+   *  render disabled) and `lockHint` explains why. */
+  lockHint?: string | undefined;
+  lockedOption?: string | undefined;
   onChange: (value: string) => void;
   /** Forwarded to the company picker so the editor can sync `companyDomain`. */
   onCompanyPick?: ((company: PickedCompany | null) => void) | undefined;
   /** Forwarded to the course picker so the editor can derive degree fields. */
   onCoursePick?: ((course: PickedCourse | null) => void) | undefined;
+  /** Forwarded to the role picker so the editor can sync `roleSeniority`. */
+  onRolePick?: ((seniority: string | null) => void) | undefined;
   value: string;
 }): ReactElement {
   const ed = useEd();
@@ -302,7 +311,15 @@ export function FieldRenderer({
   }
 
   if (isRole) {
-    return <RolePicker label={field.label} value={value} onChange={onChange} error={error} />;
+    return (
+      <RolePicker
+        label={field.label}
+        value={value}
+        onChange={onChange}
+        onPickSeniority={onRolePick}
+        error={error}
+      />
+    );
   }
 
   if (isCourse) {
@@ -335,19 +352,22 @@ export function FieldRenderer({
   }
 
   if (hasOptions) {
+    const locked = lockedOption !== undefined;
     return (
       <View>
         <FieldLabel error={Boolean(error)}>{field.label}</FieldLabel>
         <View style={ed.pillWrap}>
           {(field.options ?? []).map((option) => (
             <OptionPill
-              key={option}
-              label={option}
-              selected={option === value}
-              onPress={() => onChange(option)}
+              key={option.value}
+              label={option.label}
+              selected={locked ? option.value === lockedOption : option.value === value}
+              disabled={locked && option.value !== lockedOption}
+              onPress={() => onChange(option.value)}
             />
           ))}
         </View>
+        {locked && lockHint ? <Text style={ed.lockHint}>{lockHint}</Text> : null}
         {error ? <FieldError text={error} /> : null}
       </View>
     );

@@ -20,11 +20,13 @@ import {
 } from "@patch-careers/tokens";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
-import type { ComponentType, ReactElement } from "react";
+import type { ComponentType, ReactElement, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Easing,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
@@ -55,6 +57,12 @@ export type ConfirmDialogProps = {
   icon?: Glyph | undefined;
   onConfirm: () => void;
   onCancel?: (() => void) | undefined;
+  /** Extra content (e.g. confirmation inputs) rendered below the description. */
+  children?: ReactNode | undefined;
+  /** Greys out and blocks the confirm pill — used to gate on a typed phrase. */
+  confirmDisabled?: boolean | undefined;
+  /** Shows a spinner in the confirm pill and blocks repeat taps. */
+  loading?: boolean | undefined;
 };
 
 export function ConfirmDialog({
@@ -68,6 +76,9 @@ export function ConfirmDialog({
   icon: Icon,
   onConfirm,
   onCancel,
+  children,
+  confirmDisabled = false,
+  loading = false,
 }: ConfirmDialogProps): ReactElement {
   const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
@@ -108,7 +119,9 @@ export function ConfirmDialog({
     onOpenChange(false);
   };
 
+  const confirmBlocked = confirmDisabled || loading;
   const confirm = (): void => {
+    if (confirmBlocked) return;
     if (danger && Platform.OS !== "web") {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     }
@@ -121,7 +134,10 @@ export function ConfirmDialog({
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={dismiss}>
-      <View style={styles.root}>
+      <KeyboardAvoidingView
+        style={styles.root}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         {/* Light scrim — tap outside the card to dismiss. */}
         <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: anim }]}>
           <Pressable
@@ -158,6 +174,8 @@ export function ConfirmDialog({
             </View>
           </View>
 
+          {children ? <View style={styles.body}>{children}</View> : null}
+
           <View style={styles.actions}>
             <Pressable
               accessibilityRole="button"
@@ -175,18 +193,25 @@ export function ConfirmDialog({
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={resolvedConfirm}
+              accessibilityState={{ disabled: confirmBlocked }}
+              disabled={confirmBlocked}
               onPress={confirm}
               style={({ pressed }) => [
                 styles.button,
                 { backgroundColor: tint },
-                pressed ? styles.confirmPressed : null,
+                confirmBlocked ? styles.confirmDisabled : null,
+                pressed && !confirmBlocked ? styles.confirmPressed : null,
               ]}
             >
-              <Text style={[styles.buttonLabel, styles.confirmLabel]}>{resolvedConfirm}</Text>
+              {loading ? (
+                <ActivityIndicator color={editorialPalette.onPrimary} />
+              ) : (
+                <Text style={[styles.buttonLabel, styles.confirmLabel]}>{resolvedConfirm}</Text>
+              )}
             </Pressable>
           </View>
         </Animated.View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -232,6 +257,7 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       color: p.muted,
       marginTop: 8,
     },
+    body: { marginTop: 20, gap: 16 },
     actions: { flexDirection: "row", gap: 10, marginTop: 24 },
     button: {
       flex: 1,
@@ -249,6 +275,7 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
     },
     cancelPressed: { backgroundColor: p.bg },
     confirmPressed: { opacity: 0.88 },
+    confirmDisabled: { opacity: 0.45 },
     buttonLabel: { fontFamily: editorialFonts.sans, fontSize: 15, letterSpacing: 0.2 },
     cancelLabel: { color: p.ink, fontWeight: "500" },
     confirmLabel: { color: p.onPrimary, fontWeight: "600" },

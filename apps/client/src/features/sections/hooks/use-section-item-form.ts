@@ -7,7 +7,9 @@
  *     a new institution invalidates everything downstream, and the course's
  *     workload suggests an end date (never over a manually typed one);
  *   - work experience: the hidden `companyDomain` follows the company picker —
- *     a catalog pick sets it, a typed/edited company clears it.
+ *     a catalog pick sets it, a typed/edited company clears it; the hidden
+ *     `roleSeniority` follows the role picker, and an INTERN pick auto-locks
+ *     `employmentType` to Internship (cleared again on a manual role edit).
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
@@ -29,6 +31,8 @@ export type SectionItemFormApi = {
   isEducation: boolean;
   handleCompanyPick: (company: PickedCompany | null) => void;
   handleCoursePick: (course: PickedCourse | null) => void;
+  /** Records the picked role's seniority; INTERN locks employmentType. */
+  handleRolePick: (seniority: string | null) => void;
   /** Reset for a blank item. */
   resetForNew: () => void;
   /** Reset prefilled with a saved item's content (fully editable). */
@@ -47,8 +51,12 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
     fields.some((field) => field.key === "institution") &&
     fields.some((field) => field.key === "field");
   const hasCompany = fields.some((field) => field.key === "company");
+  // `role`/`roleSeniority`/`employmentType` are work-experience-only; the
+  // hidden roleSeniority isn't in `fields`, so gate on the visible `role`.
+  const hasRole = fields.some((field) => field.key === "role");
 
   const lastCompany = useRef("");
+  const lastRole = useRef("");
   const [derivedKeys, setDerivedKeys] = useState<ReadonlySet<string>>(EMPTY_KEY_SET);
   const lastInstitution = useRef("");
   const pickedWorkload = useRef<number | null>(null);
@@ -94,6 +102,35 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
     return () => subscription.unsubscribe();
   }, [hasCompany, form, setCascadeValue]);
 
+  // Role picker → seniority. An INTERN title pins employmentType to
+  // Internship (the UI locks the other options); leaving an internship role
+  // releases that pinned value so the user can pick again.
+  const handleRolePick = (seniority: string | null): void => {
+    lastRole.current = String(form.getValues("role") ?? "");
+    const level = seniority ?? "";
+    const wasIntern = String(form.getValues("roleSeniority") ?? "") === "INTERN";
+    setCascadeValue("roleSeniority", level);
+    // Canonical JobType value (matches the seed enum + backend invariant).
+    if (level === "INTERN") setCascadeValue("employmentType", "INTERNSHIP");
+    else if (wasIntern) setCascadeValue("employmentType", "");
+  };
+
+  // A manual role edit invalidates the picked seniority (it belonged to the
+  // previous title) and, if that was an internship, releases the lock.
+  useEffect(() => {
+    if (!hasRole) return;
+    const subscription = form.watch((values, { name }) => {
+      if (name !== "role") return;
+      const next = String(values.role ?? "");
+      if (next === lastRole.current) return;
+      lastRole.current = next;
+      const wasIntern = String(values.roleSeniority ?? "") === "INTERN";
+      setCascadeValue("roleSeniority", "");
+      if (wasIntern) setCascadeValue("employmentType", "");
+    });
+    return () => subscription.unsubscribe();
+  }, [hasRole, form, setCascadeValue]);
+
   const handleCoursePick = (course: PickedCourse | null): void => {
     const grau = course?.grau ?? null;
     setCascadeValue("degree", grau ?? "");
@@ -123,9 +160,10 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
     return () => subscription.unsubscribe();
   }, [isEducation, form, setCascadeValue, suggestEndDate]);
 
-  const resetRefs = (institution: string, company: string): void => {
+  const resetRefs = (institution: string, company: string, role: string): void => {
     lastInstitution.current = institution;
     lastCompany.current = company;
+    lastRole.current = role;
     pickedWorkload.current = null;
     lastSuggestedEnd.current = "";
     setDerivedKeys(EMPTY_KEY_SET);
@@ -133,7 +171,7 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
 
   const resetForNew = (): void => {
     form.reset({});
-    resetRefs("", "");
+    resetRefs("", "", "");
   };
 
   const resetForExisting = (content: Record<string, unknown>): void => {
@@ -143,7 +181,11 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
     // Saved entries open fully editable: we can't tell whether their degree
     // was MEC-derived, so nothing is marked read-only. Seed the refs with the
     // saved values so reopening doesn't clear saved cascades.
-    resetRefs(String(content.institution ?? ""), String(content.company ?? ""));
+    resetRefs(
+      String(content.institution ?? ""),
+      String(content.company ?? ""),
+      String(content.role ?? ""),
+    );
   };
 
   const hasErrors = Object.keys(validateSectionFields(fields, form.watch(), t)).length > 0;
@@ -155,6 +197,7 @@ export function useSectionItemForm(fields: SectionField[]): SectionItemFormApi {
     isEducation,
     handleCompanyPick,
     handleCoursePick,
+    handleRolePick,
     resetForNew,
     resetForExisting,
     hasErrors,

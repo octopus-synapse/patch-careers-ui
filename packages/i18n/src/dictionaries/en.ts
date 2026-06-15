@@ -6,6 +6,7 @@ import { profileEn } from "./domains/profile";
 import { resumesEn } from "./domains/resumes";
 import { searchEn } from "./domains/search";
 import { sectionsEn } from "./domains/sections";
+import { settingsEn } from "./domains/settings";
 
 /**
  * en dictionary. Feature copy lives in per-domain fragments under
@@ -20,6 +21,7 @@ export const en: TranslationDict = {
   resumes: resumesEn,
   search: searchEn,
   sections: sectionsEn,
+  settings: settingsEn,
   tabs: {
     jobs: "Jobs",
     applications: "Applications",
@@ -195,6 +197,7 @@ export const en: TranslationDict = {
       hintSearching: "Searching…",
       hintEmpty: "No results for “{q}”.",
       useTyped: "Use “{q}” as typed",
+      internLocked: "Internship roles set the type to Internship. Change the role to edit it.",
     },
     language: {
       prompt: "Which language do you prefer?",

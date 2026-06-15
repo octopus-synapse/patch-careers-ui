@@ -1,7 +1,30 @@
+import { type EnumName, labelFor } from "@patch-careers/api-client";
 import { formatDate, type Locale } from "@patch-careers/i18n";
-import type { SectionItem } from "../types";
+import type { SectionField, SectionItem } from "../types";
 
 const DATE_LIKE = /^\d{4}-\d{2}(-\d{2})?$/;
+
+/** Localize saved content for a card: enum fields render their dictionary
+ *  label (the stored value is SCREAMING_CASE), everything else stays as-is.
+ *  When `fields` is given the card shows only those visible fields, in order
+ *  (so hidden/derived keys like companyDomain don't leak); without it, falls
+ *  back to the raw content values. */
+function displayEntries(item: SectionItem, locale: Locale, fields?: SectionField[]): string[] {
+  const content = item.content ?? {};
+  const enumByKey = new Map<string, string>();
+  for (const f of fields ?? []) if (f.enumName) enumByKey.set(f.key, f.enumName);
+  const entries: Array<[string, unknown]> = fields
+    ? fields.map((f) => [f.key, content[f.key]])
+    : Object.entries(content);
+  const out: string[] = [];
+  for (const [key, raw] of entries) {
+    const value = stringifyValue(raw).trim();
+    if (!value) continue;
+    const enumName = enumByKey.get(key);
+    out.push(enumName ? labelFor(enumName as EnumName, value, locale) : value);
+  }
+  return out;
+}
 
 export function parseYearMonth(value: string): { month: number; year: number } | null {
   const match = /^(\d{4})-(\d{2})/.exec(value);
@@ -31,9 +54,13 @@ function stringifyValue(value: unknown): string {
 }
 
 /** Short "value · value · value" line used as a list-key and accessible summary. */
-export function itemSummary(item: SectionItem): string {
+export function itemSummary(
+  item: SectionItem,
+  locale: Locale = "en",
+  fields?: SectionField[],
+): string {
   if (!item.content) return "---";
-  const values = Object.values(item.content).map(stringifyValue).filter(Boolean);
+  const values = displayEntries(item, locale, fields);
   return values.slice(0, 3).join(" · ") || "---";
 }
 
@@ -46,10 +73,9 @@ export function itemSummary(item: SectionItem): string {
 export function itemCardParts(
   item: SectionItem,
   locale: Locale,
+  fields?: SectionField[],
 ): { primary: string; meta: string } {
-  const values = Object.values(item.content ?? {})
-    .map((value) => (value == null ? "" : String(value).trim()))
-    .filter(Boolean);
+  const values = displayEntries(item, locale, fields);
   const texts: string[] = [];
   const dates: string[] = [];
   for (const value of values) {
@@ -82,8 +108,9 @@ export function itemCardParts(
  */
 export function degreeTypeFromGrau(grau: string | null): string | null {
   if (!grau) return null;
-  if (/tecn[oó]l/i.test(grau)) return "Technical";
-  if (/bacharel|licenciatura|área básica|abi/i.test(grau)) return "Bachelor";
+  // Canonical DegreeType values (match the seed enum + ENUM_DICTIONARY).
+  if (/tecn[oó]l/i.test(grau)) return "TECHNICAL";
+  if (/bacharel|licenciatura|área básica|abi/i.test(grau)) return "BACHELOR";
   return null;
 }
 

@@ -86,6 +86,69 @@
           "acceptedPrivacyVersion": "1.0.0"
         }
       },
+      "ConfirmAccountDeletionRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 6
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "description": "Step 2: confirm the emailed 6-digit code to permanently delete the account.",
+        "example": {
+          "code": "123456"
+        }
+      },
+      "AccountDeletionCodeSentResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "Localized confirmation that a code was sent."
+          },
+          "cooldownSeconds": {
+            "type": "integer",
+            "description": "Seconds before a resend is allowed."
+          },
+          "testCode": {
+            "type": "string",
+            "description": "Non-production only (BYPASS_2FA): the issued code."
+          }
+        },
+        "required": [
+          "cooldownSeconds"
+        ]
+      },
+      "RequestAccountDeletionRequest": {
+        "type": "object",
+        "properties": {
+          "confirmationPhrase": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currentPassword": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "confirmationPhrase",
+          "currentPassword"
+        ],
+        "description": "Step 1 of the code-confirmed account deletion. Validates the confirmation phrase + current password and emails a 6-digit code; nothing is deleted yet.",
+        "example": {
+          "confirmationPhrase": "DELETE MY ACCOUNT",
+          "currentPassword": "NotTheRealPassword!"
+        }
+      },
       "ShortDescription": {
         "type": "string",
         "minLength": 1,
@@ -521,6 +584,66 @@
           "resumeId": "01900000-0000-7000-a000-000000000010"
         }
       },
+      "ConfirmEmailChangeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 6
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "description": "Step 2: confirm the emailed 6-digit code to apply the email change.",
+        "example": {
+          "code": "123456"
+        }
+      },
+      "EmailChangeCodeSentResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "Localized confirmation that a code was sent."
+          },
+          "cooldownSeconds": {
+            "type": "integer",
+            "description": "Seconds before a resend is allowed."
+          },
+          "testCode": {
+            "type": "string",
+            "description": "Non-production only (BYPASS_2FA): the issued code."
+          }
+        },
+        "required": [
+          "cooldownSeconds"
+        ]
+      },
+      "RequestEmailChangeRequest": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "$ref": "#/components/schemas/PasswordInput"
+          },
+          "newEmail": {
+            "$ref": "#/components/schemas/Email"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newEmail"
+        ],
+        "description": "Step 1 of the code-confirmed email change. Verifies the current password and emails a 6-digit code to the NEW address; the email is not changed yet.",
+        "example": {
+          "currentPassword": "NotTheRealPassword!",
+          "newEmail": "new@example.com"
+        }
+      },
       "ChangePasswordRequest": {
         "type": "object",
         "properties": {
@@ -548,6 +671,111 @@
         "example": {
           "currentPassword": "NotTheRealPassword!",
           "newPassword": "NewSecurePass456!"
+        }
+      },
+      "ConfirmPasswordChangeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 6
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "description": "Step 2: confirm the emailed 6-digit code to apply the password change.",
+        "example": {
+          "code": "123456"
+        }
+      },
+      "PasswordChangeCodeSentResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "Localized confirmation that a code was sent."
+          },
+          "cooldownSeconds": {
+            "type": "integer",
+            "description": "Seconds before a resend is allowed."
+          },
+          "testCode": {
+            "type": "string",
+            "description": "Non-production only (BYPASS_2FA): the issued code."
+          }
+        },
+        "required": [
+          "cooldownSeconds"
+        ]
+      },
+      "RequestPasswordChangeRequest": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "$ref": "#/components/schemas/PasswordInput"
+          },
+          "newPassword": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Password"
+              },
+              {
+                "pattern": "[A-Z]"
+              }
+            ],
+            "description": "Password (8-128 chars). Must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).",
+            "example": "Fixture_Password_123!"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "description": "Step 1 of the code-confirmed password change. Validates current + new password and emails a 6-digit code; the password is not changed yet.",
+        "example": {
+          "currentPassword": "NotTheRealPassword!",
+          "newPassword": "NewSecurePass456!"
+        }
+      },
+      "PushDeviceResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterPushDeviceRequest": {
+        "type": "object",
+        "properties": {
+          "expoPushToken": {
+            "type": "string",
+            "minLength": 1
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "IOS",
+              "ANDROID",
+              "WEB"
+            ]
+          }
+        },
+        "required": [
+          "expoPushToken",
+          "platform"
+        ],
+        "example": {
+          "expoPushToken": "ExponentPushToken[xxxxxxxxxxxx]",
+          "platform": "IOS"
         }
       },
       "Username": {
@@ -780,6 +1008,33 @@
             }
           ]
         }
+      },
+      "ConnectedAccountsResponse": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string"
+                },
+                "connectedAt": {
+                  "type": "string",
+                  "description": "ISO-8601 link timestamp."
+                }
+              },
+              "required": [
+                "provider",
+                "connectedAt"
+              ]
+            }
+          }
+        },
+        "required": [
+          "accounts"
+        ]
       },
       "FullName": {
         "type": "string",
@@ -1300,137 +1555,6 @@
       }
     },
     "/api/v1/accounts": {
-      "delete": {
-        "summary": "Delete account permanently",
-        "description": "Permanently deletes the user account. Requires confirmation phrase: \"DELETE MY ACCOUNT\" AND the current password (re-authentication gate to prevent stolen-cookie deletes).",
-        "tags": [
-          "account-lifecycle"
-        ],
-        "operationId": "delete_v1_accounts",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "confirmationPhrase": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "currentPassword": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 200
-                  }
-                },
-                "required": [
-                  "confirmationPhrase",
-                  "currentPassword"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "statusCode",
-                    "code",
-                    "message",
-                    "severity"
-                  ],
-                  "properties": {
-                    "statusCode": {
-                      "type": "integer"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "severity": {
-                      "type": "string",
-                      "enum": [
-                        "toast",
-                        "modal",
-                        "banner",
-                        "inline",
-                        "silent"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "statusCode",
-                    "code",
-                    "message",
-                    "severity"
-                  ],
-                  "properties": {
-                    "statusCode": {
-                      "type": "integer"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "severity": {
-                      "type": "string",
-                      "enum": [
-                        "toast",
-                        "modal",
-                        "banner",
-                        "inline",
-                        "silent"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "x-auth": "jwt",
-        "x-guards": [
-          "skip-tos-check",
-          "rate-limit"
-        ]
-      },
       "post": {
         "summary": "Create new account",
         "description": "Registers a new user account. Authentication is established via httpOnly session cookie set in parallel; no bearer tokens are returned in the body.",
@@ -1636,6 +1760,236 @@
           }
         },
         "x-auth": "jwt"
+      }
+    },
+    "/api/v1/accounts/delete/confirm": {
+      "post": {
+        "summary": "Confirm account deletion (step 2, code-confirmed)",
+        "description": "Permanently erases the account after verifying the emailed 6-digit code.",
+        "tags": [
+          "account-lifecycle"
+        ],
+        "operationId": "post_v1_accounts_delete_confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmAccountDeletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-guards": [
+          "skip-tos-check",
+          "rate-limit",
+          "multi-step-flow"
+        ]
+      }
+    },
+    "/api/v1/accounts/delete/request": {
+      "post": {
+        "summary": "Request account deletion (step 1, code-confirmed)",
+        "description": "Validates the confirmation phrase \"DELETE MY ACCOUNT\" AND the current password (re-authentication gate to prevent stolen-cookie deletes), then emails a 6-digit code. The account is only erased after POST /v1/accounts/delete/confirm.",
+        "tags": [
+          "account-lifecycle"
+        ],
+        "operationId": "post_v1_accounts_delete_request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestAccountDeletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDeletionCodeSentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-guards": [
+          "skip-tos-check",
+          "rate-limit",
+          "multi-step-flow"
+        ]
       }
     },
     "/api/v1/admin/alerts": {
@@ -47264,6 +47618,226 @@
         "x-permission": "resume:read"
       }
     },
+    "/api/v1/me/email/change/confirm": {
+      "post": {
+        "summary": "Confirm email change (step 2, code-confirmed)",
+        "description": "Applies the email change after verifying the emailed 6-digit code.",
+        "tags": [
+          "password-management"
+        ],
+        "operationId": "post_v1_me_email_change_confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-guards": [
+          "rate-limit",
+          "multi-step-flow"
+        ]
+      }
+    },
+    "/api/v1/me/email/change/request": {
+      "post": {
+        "summary": "Request email change (step 1, code-confirmed)",
+        "description": "Verifies the current password and emails a 6-digit code to the new address. The email is only changed after POST /v1/me/email/change/confirm.",
+        "tags": [
+          "password-management"
+        ],
+        "operationId": "post_v1_me_email_change_request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEmailChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailChangeCodeSentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-guards": [
+          "rate-limit",
+          "multi-step-flow"
+        ]
+      }
+    },
     "/api/v1/me/gdpr-export": {
       "get": {
         "summary": "Export user data (GDPR Article 20)",
@@ -47885,6 +48459,226 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PasswordMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-guards": [
+          "rate-limit",
+          "multi-step-flow"
+        ]
+      }
+    },
+    "/api/v1/me/password/change/confirm": {
+      "post": {
+        "summary": "Confirm password change (step 2, code-confirmed)",
+        "description": "Applies the password change after verifying the emailed 6-digit code.",
+        "tags": [
+          "password-management"
+        ],
+        "operationId": "post_v1_me_password_change_confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPasswordChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-guards": [
+          "rate-limit",
+          "multi-step-flow"
+        ]
+      }
+    },
+    "/api/v1/me/password/change/request": {
+      "post": {
+        "summary": "Request password change (step 1, code-confirmed)",
+        "description": "Validates the current + new password and emails a 6-digit confirmation code. The password is only changed after POST /v1/me/password/change/confirm.",
+        "tags": [
+          "password-management"
+        ],
+        "operationId": "post_v1_me_password_change_request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPasswordChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordChangeCodeSentResponse"
                 }
               }
             }
@@ -50838,6 +51632,334 @@
         "x-permission": "notification:read"
       }
     },
+    "/api/v1/notifications/devices": {
+      "post": {
+        "summary": "Register an Expo push device token",
+        "description": "Notifications API",
+        "tags": [
+          "notifications"
+        ],
+        "operationId": "post_v1_notifications_devices",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPushDeviceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushDeviceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "notification:read"
+      }
+    },
+    "/api/v1/notifications/devices/{token}": {
+      "delete": {
+        "summary": "Unregister an Expo push device token",
+        "description": "Notifications API",
+        "tags": [
+          "notifications"
+        ],
+        "operationId": "delete_v1_notifications_devices_token",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "fixture-token-replace-me"
+            },
+            "required": true,
+            "name": "token",
+            "in": "path",
+            "example": "fixture-token-replace-me"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushDeviceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "notification:read"
+      }
+    },
     "/api/v1/notifications/mark-read": {
       "post": {
         "summary": "Mark notifications as read",
@@ -51045,7 +52167,13 @@
                           "enabled": {
                             "type": "boolean"
                           },
+                          "inAppEnabled": {
+                            "type": "boolean"
+                          },
                           "emailEnabled": {
+                            "type": "boolean"
+                          },
+                          "pushEnabled": {
                             "type": "boolean"
                           },
                           "emailDelivery": {
@@ -51061,7 +52189,9 @@
                         "required": [
                           "type",
                           "enabled",
+                          "inAppEnabled",
                           "emailEnabled",
+                          "pushEnabled",
                           "emailDelivery"
                         ]
                       }
@@ -51237,7 +52367,13 @@
                   "enabled": {
                     "type": "boolean"
                   },
+                  "inAppEnabled": {
+                    "type": "boolean"
+                  },
                   "emailEnabled": {
+                    "type": "boolean"
+                  },
+                  "pushEnabled": {
                     "type": "boolean"
                   },
                   "emailDelivery": {
@@ -51252,7 +52388,9 @@
                 },
                 "example": {
                   "enabled": true,
+                  "inAppEnabled": true,
                   "emailEnabled": true,
+                  "pushEnabled": false,
                   "emailDelivery": "DAILY"
                 }
               }
@@ -51291,7 +52429,13 @@
                     "enabled": {
                       "type": "boolean"
                     },
+                    "inAppEnabled": {
+                      "type": "boolean"
+                    },
                     "emailEnabled": {
+                      "type": "boolean"
+                    },
+                    "pushEnabled": {
                       "type": "boolean"
                     },
                     "emailDelivery": {
@@ -51307,7 +52451,9 @@
                   "required": [
                     "type",
                     "enabled",
+                    "inAppEnabled",
                     "emailEnabled",
+                    "pushEnabled",
                     "emailDelivery"
                   ]
                 }
@@ -52310,8 +53456,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -52414,8 +53575,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -53054,8 +54230,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -53158,8 +54349,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -53664,8 +54870,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -53768,8 +54989,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -54165,8 +55401,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -54269,8 +55520,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -54661,8 +55927,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -54765,8 +56046,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -55141,8 +56437,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -55245,8 +56556,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -55632,8 +56958,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -55736,8 +57077,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -56255,8 +57611,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -56359,8 +57730,23 @@
                                 "options": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "value",
+                                      "label"
+                                    ]
                                   }
+                                },
+                                "enumName": {
+                                  "type": "string"
                                 },
                                 "widget": {
                                   "type": "string"
@@ -81594,12 +82980,25 @@
                             "enum": [
                               "ESCO",
                               "CBO",
-                              "ONET"
+                              "ONET",
+                              "CURATED"
                             ]
                           },
                           "isPreferred": {
                             "type": "boolean",
                             "example": true
+                          },
+                          "seniority": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "INTERN",
+                              "JUNIOR",
+                              "MID",
+                              "SENIOR",
+                              "TRAINEE"
+                            ],
+                            "example": "INTERN"
                           }
                         },
                         "required": [
@@ -91681,6 +93080,334 @@
         "x-permission": "resume:update"
       }
     },
+    "/api/v1/users/connected-accounts": {
+      "get": {
+        "summary": "List the current user's linked OAuth accounts",
+        "description": "Users API",
+        "tags": [
+          "users"
+        ],
+        "operationId": "get_v1_users_connected_accounts",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectedAccountsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "user:profile_read"
+      }
+    },
+    "/api/v1/users/connected-accounts/{provider}": {
+      "delete": {
+        "summary": "Disconnect a linked OAuth account",
+        "description": "Users API. Refuses to remove the last login method when the user has no password set.",
+        "tags": [
+          "users"
+        ],
+        "operationId": "delete_v1_users_connected_accounts_provider",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "OAuth provider id, e.g. google/github/linkedin.",
+              "example": "github"
+            },
+            "required": true,
+            "name": "provider",
+            "in": "path",
+            "example": "github"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "statusCode",
+                    "code",
+                    "message",
+                    "severity"
+                  ],
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "toast",
+                        "modal",
+                        "banner",
+                        "inline",
+                        "silent"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-auth": "jwt",
+        "x-permission": "user:profile_update"
+      }
+    },
     "/api/v1/users/manage": {
       "get": {
         "summary": "List all users with pagination",
@@ -97112,7 +98839,20 @@
                           "type": "string"
                         },
                         "profileVisibility": {
-                          "type": "string"
+                          "type": "string",
+                          "enum": [
+                            "PUBLIC",
+                            "RECRUITERS_ONLY",
+                            "PRIVATE"
+                          ]
+                        },
+                        "messagePrivacy": {
+                          "type": "string",
+                          "enum": [
+                            "EVERYONE",
+                            "RECRUITERS_ONLY",
+                            "NOBODY"
+                          ]
                         },
                         "showEmail": {
                           "type": "boolean"
@@ -97231,6 +98971,7 @@
                         "emailShareExpiring",
                         "digestFrequency",
                         "profileVisibility",
+                        "messagePrivacy",
                         "showEmail",
                         "showPhone",
                         "allowSearchEngineIndex",
@@ -97432,7 +99173,20 @@
                     ]
                   },
                   "profileVisibility": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "PUBLIC",
+                      "RECRUITERS_ONLY",
+                      "PRIVATE"
+                    ]
+                  },
+                  "messagePrivacy": {
+                    "type": "string",
+                    "enum": [
+                      "EVERYONE",
+                      "RECRUITERS_ONLY",
+                      "NOBODY"
+                    ]
                   },
                   "showEmail": {
                     "type": "boolean"
@@ -97522,7 +99276,7 @@
                   "timezone": "America/Sao_Paulo",
                   "emailNotifications": true,
                   "digestFrequency": "WEEKLY",
-                  "profileVisibility": "public",
+                  "profileVisibility": "PUBLIC",
                   "applyMode": "ONE_CLICK"
                 }
               }
@@ -97587,7 +99341,20 @@
                           "type": "string"
                         },
                         "profileVisibility": {
-                          "type": "string"
+                          "type": "string",
+                          "enum": [
+                            "PUBLIC",
+                            "RECRUITERS_ONLY",
+                            "PRIVATE"
+                          ]
+                        },
+                        "messagePrivacy": {
+                          "type": "string",
+                          "enum": [
+                            "EVERYONE",
+                            "RECRUITERS_ONLY",
+                            "NOBODY"
+                          ]
                         },
                         "showEmail": {
                           "type": "boolean"
@@ -97706,6 +99473,7 @@
                         "emailShareExpiring",
                         "digestFrequency",
                         "profileVisibility",
+                        "messagePrivacy",
                         "showEmail",
                         "showPhone",
                         "allowSearchEngineIndex",
@@ -97907,6 +99675,13 @@
                     "twitter": {
                       "type": "string",
                       "nullable": true
+                    },
+                    "usernameChangeAvailableAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "description": "When the user may next change their username, or null if they can change it now. The first change after sign-up is always free; later changes are gated once every `cooldownDays` (see GET /v1/users/username/rules).",
+                      "example": "2026-05-07T00:00:00.000Z"
                     },
                     "createdAt": {
                       "type": "string",
@@ -98171,6 +99946,13 @@
                       "type": "string",
                       "nullable": true
                     },
+                    "usernameChangeAvailableAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "description": "When the user may next change their username, or null if they can change it now. The first change after sign-up is always free; later changes are gated once every `cooldownDays` (see GET /v1/users/username/rules).",
+                      "example": "2026-05-07T00:00:00.000Z"
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time",
@@ -98236,6 +100018,13 @@
                         "twitter": {
                           "type": "string",
                           "nullable": true
+                        },
+                        "usernameChangeAvailableAt": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "description": "When the user may next change their username, or null if they can change it now. The first change after sign-up is always free; later changes are gated once every `cooldownDays` (see GET /v1/users/username/rules).",
+                          "example": "2026-05-07T00:00:00.000Z"
                         },
                         "createdAt": {
                           "type": "string",
@@ -98861,6 +100650,13 @@
                       "type": "integer",
                       "minimum": 0,
                       "exclusiveMinimum": true
+                    },
+                    "cooldownDays": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "description": "Days a user must wait between username changes. The first change after sign-up is free.",
+                      "example": 30
                     }
                   },
                   "required": [
@@ -98869,7 +100665,8 @@
                     "endsWithPattern",
                     "forbiddenSubstring",
                     "minLength",
-                    "maxLength"
+                    "maxLength",
+                    "cooldownDays"
                   ]
                 }
               }

@@ -1,0 +1,1 @@
+{"type":"object","properties":{"expoPushToken":{"type":"string","minLength":1},"platform":{"type":"string","enum":["IOS","ANDROID","WEB"]}},"required":["expoPushToken","platform"],"example":{"expoPushToken":"ExponentPushToken[xxxxxxxxxxxx]","platform":"IOS"},"x-readme-ref-name":"RegisterPushDeviceRequest"}

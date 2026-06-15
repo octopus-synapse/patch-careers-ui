@@ -6,6 +6,7 @@ import { profilePtBR } from "./domains/profile";
 import { resumesPtBR } from "./domains/resumes";
 import { searchPtBR } from "./domains/search";
 import { sectionsPtBR } from "./domains/sections";
+import { settingsPtBR } from "./domains/settings";
 
 /**
  * pt-BR dictionary. Feature copy lives in per-domain fragments under
@@ -20,6 +21,7 @@ export const ptBR: TranslationDict = {
   resumes: resumesPtBR,
   search: searchPtBR,
   sections: sectionsPtBR,
+  settings: settingsPtBR,
   tabs: {
     jobs: "Vagas",
     applications: "Candidaturas",
@@ -196,6 +198,7 @@ export const ptBR: TranslationDict = {
       hintSearching: "Buscando…",
       hintEmpty: "Nenhum resultado para “{q}”.",
       useTyped: "Usar “{q}” como digitado",
+      internLocked: "Cargos de estágio definem o tipo como Estágio. Troque o cargo para alterar.",
     },
     language: {
       prompt: "Qual idioma você prefere?",

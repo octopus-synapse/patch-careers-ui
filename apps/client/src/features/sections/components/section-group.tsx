@@ -13,6 +13,7 @@ import {
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 import { itemSummary } from "../lib/helpers";
 import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
@@ -32,6 +33,8 @@ export function SectionGroup({
 }): ReactElement {
   const ed = useEd();
   const styles = stylesByTheme[useThemeName()];
+  const { locale } = useI18n();
+  const fields = section.descriptor.fields ?? undefined;
   return (
     <View style={styles.group}>
       <Text style={styles.label}>{section.title}</Text>
@@ -41,9 +44,10 @@ export function SectionGroup({
         <View style={ed.list}>
           {section.items.map((item, index) => (
             <SwipeableItemRow
-              key={item.id ?? `${index}-${itemSummary(item)}`}
+              key={item.id ?? `${index}-${itemSummary(item, locale, fields)}`}
               index={index}
               item={item}
+              fields={fields}
               onEdit={() => onEditItem(item, index)}
               onDelete={() => onDeleteItem(item, index)}
               deleteLabel={deleteLabel}

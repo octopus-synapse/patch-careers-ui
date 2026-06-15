@@ -25,6 +25,7 @@ import {
   useWatch,
 } from "react-hook-form";
 import { View } from "react-native";
+import { useI18n } from "@/providers/i18n-provider";
 import { useEd } from "../lib/styles";
 import type { SectionField } from "../types";
 import type { PickedCompany } from "./company-picker";
@@ -46,6 +47,7 @@ export function SectionForm<T extends FieldValues>({
   readOnlyKeys,
   onCompanyPick,
   onCoursePick,
+  onRolePick,
 }: {
   control: Control<T>;
   fields: SectionField[];
@@ -55,8 +57,11 @@ export function SectionForm<T extends FieldValues>({
   onCompanyPick?: ((company: PickedCompany | null) => void) | undefined;
   /** Bubbles the course picker's pick up so the editor can derive fields. */
   onCoursePick?: ((course: PickedCourse | null) => void) | undefined;
+  /** Bubbles the role picker's seniority up so the editor can lock employment. */
+  onRolePick?: ((seniority: string | null) => void) | undefined;
 }): ReactElement {
   const ed = useEd();
+  const { t } = useI18n();
   // Live values drive the sequential unlock chain (every section) and the
   // institution → course scoping (education only).
   const hasInstitution = fields.some((field) => field.key === "institution");
@@ -66,6 +71,10 @@ export function SectionForm<T extends FieldValues>({
   const filled = (key: string): boolean => String(values[key] ?? "").trim().length > 0;
   const unlockedAt = (index: number): boolean =>
     fields.slice(0, index).every((field) => !blocksChain(field) || filled(field.key));
+
+  // An internship role pins employmentType to Internship and disables the
+  // other options (the backend enforces the same invariant on save).
+  const internLocked = String(values.roleSeniority ?? "") === "INTERN";
 
   return (
     <View style={ed.fieldStack}>
@@ -88,6 +97,10 @@ export function SectionForm<T extends FieldValues>({
                     institutionName={institutionName}
                     onCompanyPick={field.key === "company" ? onCompanyPick : undefined}
                     onCoursePick={field.key === "field" ? onCoursePick : undefined}
+                    onRolePick={field.key === "role" ? onRolePick : undefined}
+                    {...(field.key === "employmentType" && internLocked
+                      ? { lockedOption: "INTERNSHIP", lockHint: t("onboarding.role.internLocked") }
+                      : {})}
                     {...(fieldState.error?.message ? { error: fieldState.error.message } : {})}
                     onChange={rhf.onChange}
                   />

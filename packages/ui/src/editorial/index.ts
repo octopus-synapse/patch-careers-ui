@@ -31,6 +31,7 @@ export { Banner, type BannerIntent, type BannerProps } from "./banner";
 export { BrandMark } from "./brand-mark";
 export { CaptionButton, type CaptionButtonProps } from "./caption-button";
 export { CheckboxField, type CheckboxFieldProps } from "./checkbox-field";
+export { ToggleField, type ToggleFieldProps } from "./toggle-field";
 export { ConsentCheckbox, type ConsentCheckboxProps } from "./consent-checkbox";
 export { DisplayHeading, IntroBlock, SubtitleLine } from "./display-heading";
 export { EditorialLabel } from "./editorial-label";

@@ -22,6 +22,7 @@ export function SectionItemModal({
   onCancel,
   onCompanyPick,
   onCoursePick,
+  onRolePick,
   onDelete,
   onSave,
   readOnlyKeys,
@@ -36,6 +37,7 @@ export function SectionItemModal({
   onCancel: () => void;
   onCompanyPick?: ((company: PickedCompany | null) => void) | undefined;
   onCoursePick?: ((course: PickedCourse | null) => void) | undefined;
+  onRolePick?: ((seniority: string | null) => void) | undefined;
   onDelete?: (() => void) | undefined;
   onSave: () => void;
   readOnlyKeys?: ReadonlySet<string> | undefined;
@@ -82,6 +84,7 @@ export function SectionItemModal({
               readOnlyKeys={readOnlyKeys}
               onCompanyPick={onCompanyPick}
               onCoursePick={onCoursePick}
+              onRolePick={onRolePick}
             />
           </ScrollView>
           <View style={ed.editorModalFooter}>

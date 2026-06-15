@@ -63,6 +63,7 @@ const rzFor = (p: EditorialPalette) =>
       color: p.muted,
     },
     cardMeta: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 17, color: p.muted },
+    headActions: { flexDirection: "row", alignItems: "center", gap: 8 },
     eyeButton: {
       width: 40,
       height: 40,
@@ -72,6 +73,28 @@ const rzFor = (p: EditorialPalette) =>
       borderWidth: 1,
       borderColor: p.hairline,
     },
+    // web-only inline row actions (revealed on hover/focus of the card)
+    headActionBtnActive: { borderColor: p.hairlineStrong, backgroundColor: p.bg },
+    headActionBtnDanger: { borderColor: p.danger, backgroundColor: "rgba(220,38,38,0.08)" },
+
+    // native swipe-to-reveal action drawer (behind the card, right side)
+    swipeActions: { flexDirection: "row", alignItems: "stretch" },
+    swipeAction: {
+      width: 76,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 5,
+    },
+    swipeActionDuplicate: { backgroundColor: p.bg },
+    swipeActionDelete: { backgroundColor: p.danger },
+    swipeActionLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 11,
+      fontWeight: "600",
+      letterSpacing: 0.2,
+    },
+    swipeActionLabelDuplicate: { color: p.ink },
+    swipeActionLabelDelete: { color: p.onPrimary },
 
     // tailored variants under a card
     tailoredList: { gap: 6, marginTop: 2 },

@@ -57,6 +57,7 @@ function AddItemForm({
     isEducation,
     handleCompanyPick,
     handleCoursePick,
+    handleRolePick,
     hasErrors,
   } = useSectionItemForm(fields);
 
@@ -77,6 +78,7 @@ function AddItemForm({
           readOnlyKeys={derivedKeys}
           onCompanyPick={hasCompany ? handleCompanyPick : undefined}
           onCoursePick={isEducation ? handleCoursePick : undefined}
+          onRolePick={hasCompany ? handleRolePick : undefined}
         />
       </ScrollView>
       <View style={ed.editorModalFooter}>

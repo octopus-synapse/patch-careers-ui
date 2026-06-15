@@ -5,16 +5,24 @@
  * new resume's detail screen.
  */
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import { Plus } from "lucide-react-native";
+import { Plus, Trash2 } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ResumePreviewModal } from "@/components/resume-preview-modal";
 import { useI18n } from "@/providers/i18n-provider";
-import { useMasterResumeId, useResumeList, useResumeSlots } from "../hooks/queries";
+import {
+  type ResumeListItem,
+  useMasterResumeId,
+  useResumeList,
+  useResumeMutations,
+  useResumeSlots,
+} from "../hooks/queries";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
-import { ResumeCard } from "./resume-card";
+import { SwipeableResumeCard } from "./swipeable-resume-card";
 
 export function ResumeListTab(): ReactElement {
   const { t } = useI18n();
@@ -24,8 +32,38 @@ export function ResumeListTab(): ReactElement {
   const { resumes, isLoading, isError } = useResumeList();
   const slots = useResumeSlots();
   const { resumeId: masterResumeId, language: masterLanguage } = useMasterResumeId();
+  const { duplicateResume, deleteResume, isPending } = useResumeMutations();
   const [preview, setPreview] = useState<{ id: string; title: string } | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<ResumeListItem | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const handleDuplicate = async (item: ResumeListItem): Promise<void> => {
+    if (isPending) return;
+    setActionError(null);
+    // Title caps at 100 chars server-side; trim the source so the suffix fits.
+    const copyTitle = t("resumes.card.copySuffix", { title: item.title.slice(0, 90) });
+    try {
+      await duplicateResume(item.id, { title: copyTitle });
+      if (Platform.OS !== "web") {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+    } catch {
+      setActionError(t("resumes.list.duplicateError"));
+    }
+  };
+
+  const confirmDelete = async (): Promise<void> => {
+    const target = pendingDelete;
+    if (!target) return;
+    setPendingDelete(null);
+    setActionError(null);
+    try {
+      await deleteResume(target.id);
+    } catch {
+      setActionError(t("resumes.list.deleteError"));
+    }
+  };
 
   if (isLoading) {
     return (
@@ -55,13 +93,18 @@ export function ResumeListTab(): ReactElement {
       </View>
 
       {resumes.map((item) => (
-        <ResumeCard
+        <SwipeableResumeCard
           key={item.id}
           item={item}
           onOpen={() => router.push(`/resume/${item.id}`)}
           onPreview={() => setPreview({ id: item.id, title: item.title })}
+          onDuplicate={() => void handleDuplicate(item)}
+          onDelete={item.isPrimary ? undefined : () => setPendingDelete(item)}
+          canDuplicate={!full}
         />
       ))}
+
+      {actionError ? <Text style={rz.slotsNote}>{actionError}</Text> : null}
 
       <Pressable
         accessibilityRole="button"
@@ -94,6 +137,23 @@ export function ResumeListTab(): ReactElement {
           setWizardOpen(false);
           router.push(`/resume/${id}`);
         }}
+      />
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+        title={t("resumes.detail.deleteTitle")}
+        description={
+          pendingDelete
+            ? t("resumes.detail.deleteMessage", { title: pendingDelete.title })
+            : undefined
+        }
+        danger
+        icon={Trash2}
+        confirmLabel={t("resumes.detail.delete")}
+        onConfirm={() => void confirmDelete()}
       />
     </View>
   );

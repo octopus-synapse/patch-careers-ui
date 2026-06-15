@@ -13,13 +13,14 @@ import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeabl
 import { useI18n } from "@/providers/i18n-provider";
 import { itemCardParts } from "../lib/helpers";
 import { useEd, webNoOutline } from "../lib/styles";
-import type { SectionItem } from "../types";
+import type { SectionField, SectionItem } from "../types";
 
 const ACTION_WIDTH = 72;
 
 function RowCard({
   index,
   item,
+  fields,
   onEdit,
   onDelete,
   deleteLabel,
@@ -27,6 +28,7 @@ function RowCard({
 }: {
   index: number;
   item: SectionItem;
+  fields?: SectionField[] | undefined;
   onEdit: () => void;
   onDelete: () => void;
   deleteLabel: string;
@@ -35,7 +37,7 @@ function RowCard({
   const ed = useEd();
   const authTokens = useEditorialPalette();
   const { locale } = useI18n();
-  const { primary, meta } = itemCardParts(item, locale);
+  const { primary, meta } = itemCardParts(item, locale, fields);
   const [active, setActive] = useState(false);
   const [removeActive, setRemoveActive] = useState(false);
   const ordinal = String(index + 1).padStart(2, "0");
@@ -92,12 +94,14 @@ function RowCard({
 export function SwipeableItemRow({
   index,
   item,
+  fields,
   onEdit,
   onDelete,
   deleteLabel,
 }: {
   index: number;
   item: SectionItem;
+  fields?: SectionField[] | undefined;
   onEdit: () => void;
   onDelete: () => void;
   deleteLabel: string;
@@ -109,6 +113,7 @@ export function SwipeableItemRow({
       <RowCard
         index={index}
         item={item}
+        fields={fields}
         onEdit={onEdit}
         onDelete={onDelete}
         deleteLabel={deleteLabel}
@@ -136,6 +141,7 @@ export function SwipeableItemRow({
       <RowCard
         index={index}
         item={item}
+        fields={fields}
         onEdit={onEdit}
         onDelete={onDelete}
         deleteLabel={deleteLabel}

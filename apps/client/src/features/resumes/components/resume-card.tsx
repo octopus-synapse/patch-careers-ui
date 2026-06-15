@@ -7,7 +7,7 @@
  */
 import type { Locale, Translator } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { CornerDownRight, Eye } from "lucide-react-native";
+import { Copy, CornerDownRight, Eye, Trash2 } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { webNoOutline } from "@/features/sections";
@@ -16,6 +16,45 @@ import type { ResumeListItem } from "../hooks/queries";
 import { useTailoredVersions } from "../hooks/queries";
 import { editedAgo } from "../lib/helpers";
 import { useRz } from "../lib/styles";
+
+type Glyph = typeof Eye;
+
+/** Small round icon button used in the card head (web inline duplicate/delete). */
+function CardActionButton({
+  label,
+  icon: Icon,
+  danger = false,
+  onPress,
+}: {
+  label: string;
+  icon: Glyph;
+  danger?: boolean;
+  onPress: () => void;
+}): ReactElement {
+  const rz = useRz();
+  const palette = useEditorialPalette();
+  const [active, setActive] = useState(false);
+  const tint = danger ? palette.danger : palette.ink;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={8}
+      onPress={onPress}
+      onHoverIn={() => setActive(true)}
+      onHoverOut={() => setActive(false)}
+      onFocus={() => setActive(true)}
+      onBlur={() => setActive(false)}
+      style={[
+        rz.eyeButton,
+        active && (danger ? rz.headActionBtnDanger : rz.headActionBtnActive),
+        webNoOutline,
+      ]}
+    >
+      <Icon size={17} color={active ? tint : palette.muted} strokeWidth={1.75} />
+    </Pressable>
+  );
+}
 
 export function resumeMetaLine(item: ResumeListItem, t: Translator, locale: Locale): string {
   const parts = [
@@ -30,16 +69,30 @@ export function ResumeCard({
   item,
   onOpen,
   onPreview,
+  onDuplicate,
+  onDelete,
+  canDuplicate = true,
+  inlineActions = false,
 }: {
   item: ResumeListItem;
   onOpen: () => void;
   onPreview: () => void;
+  /** Duplicate this resume (web inline button). Native uses the swipe drawer. */
+  onDuplicate?: (() => void) | undefined;
+  /** Delete this resume. Absent on the master, which can never be deleted. */
+  onDelete?: (() => void) | undefined;
+  /** Slots remaining — duplicate is disabled when the list is full. */
+  canDuplicate?: boolean;
+  /** Render the inline duplicate/delete icon buttons (web; native swipes). */
+  inlineActions?: boolean;
 }): ReactElement {
   const { t, locale } = useI18n();
   const rz = useRz();
   const palette = useEditorialPalette();
   const [active, setActive] = useState(false);
   const { versions } = useTailoredVersions(item.id);
+  const showDuplicate = inlineActions && onDuplicate && canDuplicate;
+  const showDelete = inlineActions && onDelete;
 
   return (
     <Pressable
@@ -68,15 +121,32 @@ export function ResumeCard({
             {resumeMetaLine(item, t, locale)}
           </Text>
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("resumes.card.previewLabel", { title: item.title })}
-          hitSlop={8}
-          onPress={onPreview}
-          style={rz.eyeButton}
-        >
-          <Eye size={18} color={palette.ink} strokeWidth={1.75} />
-        </Pressable>
+        <View style={rz.headActions}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("resumes.card.previewLabel", { title: item.title })}
+            hitSlop={8}
+            onPress={onPreview}
+            style={rz.eyeButton}
+          >
+            <Eye size={18} color={palette.ink} strokeWidth={1.75} />
+          </Pressable>
+          {showDuplicate ? (
+            <CardActionButton
+              label={t("resumes.card.duplicateLabel", { title: item.title })}
+              icon={Copy}
+              onPress={onDuplicate}
+            />
+          ) : null}
+          {showDelete ? (
+            <CardActionButton
+              label={t("resumes.card.deleteLabel", { title: item.title })}
+              icon={Trash2}
+              danger
+              onPress={onDelete}
+            />
+          ) : null}
+        </View>
       </View>
 
       {versions.length > 0 ? (

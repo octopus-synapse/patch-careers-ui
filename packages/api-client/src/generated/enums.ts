@@ -13,7 +13,10 @@ export type BadgeKind = 'ATS_90_PLUS' | 'CONTRIBUTOR' | 'EVENT_SPEAKER' | 'FIRST
 export type CollaboratorRole = 'ADMIN' | 'EDITOR' | 'VIEWER';
 export type ConnectionStatus = 'ACCEPTED' | 'PENDING' | 'REJECTED';
 export type ConsentDocumentType = 'MARKETING_CONSENT' | 'PRIVACY_POLICY' | 'TERMS_OF_SERVICE';
+export type DegreeType = 'BACHELOR' | 'BOOTCAMP' | 'DOCTORATE' | 'HIGH_SCHOOL' | 'MASTER' | 'SELF_TAUGHT' | 'TECHNICAL';
+export type DevicePlatform = 'ANDROID' | 'IOS' | 'WEB';
 export type DigestFrequency = 'DAILY' | 'MONTHLY' | 'NEVER' | 'WEEKLY';
+export type EducationStatus = 'COMPLETED' | 'DROPPED' | 'IN_PROGRESS' | 'PAUSED';
 export type EmailDeliveryMode = 'DAILY' | 'INSTANT' | 'OFF' | 'WEEKLY';
 export type EmailStatus = 'BOUNCED' | 'FAILED' | 'PENDING' | 'SENT';
 export type EnglishLevel = 'ADVANCED' | 'BASIC' | 'FLUENT' | 'INTERMEDIATE';
@@ -23,20 +26,27 @@ export type ImportStatus = 'COMPLETED' | 'FAILED' | 'IMPORTING' | 'MAPPING' | 'P
 export type JobApplicationEventType = 'FOLLOW_UP_SENT' | 'INTERVIEW_COMPLETED' | 'INTERVIEW_SCHEDULED' | 'OFFER_RECEIVED' | 'REJECTED' | 'SUBMITTED' | 'VIEWED' | 'WITHDRAWN';
 export type JobApplicationStatus = 'ACCEPTED' | 'REJECTED' | 'SUBMITTED' | 'VIEWED' | 'WITHDRAWN';
 export type JobType = 'CONTRACT' | 'FREELANCE' | 'FULL_TIME' | 'INTERNSHIP' | 'PART_TIME' | 'VOLUNTEER';
+export type LanguageLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'NATIVE';
 export type LayoutKind = 'DOUBLE_COLUMN' | 'SINGLE_COLUMN';
 export type MecSyncStatus = 'FAILED' | 'PARTIAL' | 'RUNNING' | 'SUCCESS';
+export type MessagePrivacy = 'EVERYONE' | 'NOBODY' | 'RECRUITERS_ONLY';
 export type ModifierEffect = 'DENY' | 'GRANT';
 export type ModifierType = 'GRANT_PERMISSION' | 'SUSPEND_EMAIL_VERIFIED' | 'SUSPEND_ONBOARDING' | 'SUSPEND_ROLE_ADMIN' | 'SUSPEND_ROLE_USER';
-export type NotificationType = 'APPLICATION_STALE' | 'COMMENT_REPLIED' | 'CONNECTION_ACCEPTED' | 'CONNECTION_RECOMMENDATION' | 'CONNECTION_REQUEST' | 'FIT_PROFILE_EXPIRED' | 'FIT_PROFILE_EXPIRY_REMINDER' | 'FOLLOW_NEW' | 'MATCH_RECOMMENDATIONS_READY' | 'POST_BOOKMARKED' | 'POST_COMMENTED' | 'POST_LIKED' | 'POST_REPOSTED' | 'RESUME_QUALITY_IMPROVED' | 'RESUME_QUALITY_REGRESSED' | 'SKILL_DECAY';
+export type NotificationType = 'APPLICATION_STALE' | 'COMMENT_REPLIED' | 'CONNECTION_ACCEPTED' | 'CONNECTION_RECOMMENDATION' | 'CONNECTION_REQUEST' | 'FIT_PROFILE_EXPIRED' | 'FIT_PROFILE_EXPIRY_REMINDER' | 'FOLLOW_NEW' | 'MATCH_RECOMMENDATIONS_READY' | 'MESSAGE_RECEIVED' | 'POST_BOOKMARKED' | 'POST_COMMENTED' | 'POST_LIKED' | 'POST_REPOSTED' | 'RESUME_QUALITY_IMPROVED' | 'RESUME_QUALITY_REGRESSED' | 'SKILL_DECAY';
+export type OpenSourceRole = 'CONTRIBUTOR' | 'CREATOR' | 'MAINTAINER';
 export type PaymentCurrency = 'BRL' | 'EUR' | 'GBP' | 'USD';
+export type ProfileVisibility = 'PRIVATE' | 'PUBLIC' | 'RECRUITERS_ONLY';
 export type RemotePolicy = 'HYBRID' | 'ONSITE' | 'REMOTE';
 export type ReportStatus = 'DISMISSED' | 'PENDING' | 'REVIEWED';
+export type RoleSeniority = 'INTERN' | 'JUNIOR' | 'MID' | 'SENIOR' | 'TRAINEE';
 export type RoleTitleLang = 'EN' | 'PT';
-export type RoleTitleSource = 'CBO' | 'ESCO' | 'ONET';
+export type RoleTitleSource = 'CBO' | 'CURATED' | 'ESCO' | 'ONET';
+export type Severity = 'CRITICAL' | 'HIGH' | 'LOW' | 'MEDIUM';
 export type SkillProficiency = 'ADVANCED' | 'BEGINNER' | 'EXPERT' | 'INTERMEDIATE';
 export type SkillType = 'CERTIFICATION' | 'DATABASE' | 'FRAMEWORK' | 'LANGUAGE' | 'LIBRARY' | 'METHODOLOGY' | 'OTHER' | 'PLATFORM' | 'SOFT_SKILL' | 'TOOL';
 export type SuccessStoryStatus = 'ARCHIVED' | 'DRAFT' | 'PENDING_REVIEW' | 'PUBLISHED';
 export type TechAreaType = 'DATA' | 'DESIGN' | 'DEVELOPMENT' | 'DEVOPS' | 'INFRASTRUCTURE' | 'OTHER' | 'PRODUCT' | 'QA' | 'SECURITY';
+export type VerificationPurpose = 'ACCOUNT_DELETION' | 'EMAIL_CHANGE' | 'EMAIL_VERIFY' | 'PASSWORD_CHANGE';
 export type WeeklyCuratedBatchStatus = 'COMPLETED' | 'FAILED' | 'PENDING' | 'SENT';
 export type WeeklyCuratedItemStatus = 'APPROVED' | 'EXPIRED' | 'PENDING_APPROVAL' | 'REJECTED';
 
@@ -139,12 +149,35 @@ export const ConsentDocumentType = {
   TERMS_OF_SERVICE: 'TERMS_OF_SERVICE',
 } as const satisfies Record<string, ConsentDocumentType>;
 
+export const DegreeType = {
+  BACHELOR: 'BACHELOR',
+  BOOTCAMP: 'BOOTCAMP',
+  DOCTORATE: 'DOCTORATE',
+  HIGH_SCHOOL: 'HIGH_SCHOOL',
+  MASTER: 'MASTER',
+  SELF_TAUGHT: 'SELF_TAUGHT',
+  TECHNICAL: 'TECHNICAL',
+} as const satisfies Record<string, DegreeType>;
+
+export const DevicePlatform = {
+  ANDROID: 'ANDROID',
+  IOS: 'IOS',
+  WEB: 'WEB',
+} as const satisfies Record<string, DevicePlatform>;
+
 export const DigestFrequency = {
   DAILY: 'DAILY',
   MONTHLY: 'MONTHLY',
   NEVER: 'NEVER',
   WEEKLY: 'WEEKLY',
 } as const satisfies Record<string, DigestFrequency>;
+
+export const EducationStatus = {
+  COMPLETED: 'COMPLETED',
+  DROPPED: 'DROPPED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  PAUSED: 'PAUSED',
+} as const satisfies Record<string, EducationStatus>;
 
 export const EmailDeliveryMode = {
   DAILY: 'DAILY',
@@ -235,6 +268,16 @@ export const JobType = {
   VOLUNTEER: 'VOLUNTEER',
 } as const satisfies Record<string, JobType>;
 
+export const LanguageLevel = {
+  A1: 'A1',
+  A2: 'A2',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+  NATIVE: 'NATIVE',
+} as const satisfies Record<string, LanguageLevel>;
+
 export const LayoutKind = {
   DOUBLE_COLUMN: 'DOUBLE_COLUMN',
   SINGLE_COLUMN: 'SINGLE_COLUMN',
@@ -246,6 +289,12 @@ export const MecSyncStatus = {
   RUNNING: 'RUNNING',
   SUCCESS: 'SUCCESS',
 } as const satisfies Record<string, MecSyncStatus>;
+
+export const MessagePrivacy = {
+  EVERYONE: 'EVERYONE',
+  NOBODY: 'NOBODY',
+  RECRUITERS_ONLY: 'RECRUITERS_ONLY',
+} as const satisfies Record<string, MessagePrivacy>;
 
 export const ModifierEffect = {
   DENY: 'DENY',
@@ -270,6 +319,7 @@ export const NotificationType = {
   FIT_PROFILE_EXPIRY_REMINDER: 'FIT_PROFILE_EXPIRY_REMINDER',
   FOLLOW_NEW: 'FOLLOW_NEW',
   MATCH_RECOMMENDATIONS_READY: 'MATCH_RECOMMENDATIONS_READY',
+  MESSAGE_RECEIVED: 'MESSAGE_RECEIVED',
   POST_BOOKMARKED: 'POST_BOOKMARKED',
   POST_COMMENTED: 'POST_COMMENTED',
   POST_LIKED: 'POST_LIKED',
@@ -279,12 +329,24 @@ export const NotificationType = {
   SKILL_DECAY: 'SKILL_DECAY',
 } as const satisfies Record<string, NotificationType>;
 
+export const OpenSourceRole = {
+  CONTRIBUTOR: 'CONTRIBUTOR',
+  CREATOR: 'CREATOR',
+  MAINTAINER: 'MAINTAINER',
+} as const satisfies Record<string, OpenSourceRole>;
+
 export const PaymentCurrency = {
   BRL: 'BRL',
   EUR: 'EUR',
   GBP: 'GBP',
   USD: 'USD',
 } as const satisfies Record<string, PaymentCurrency>;
+
+export const ProfileVisibility = {
+  PRIVATE: 'PRIVATE',
+  PUBLIC: 'PUBLIC',
+  RECRUITERS_ONLY: 'RECRUITERS_ONLY',
+} as const satisfies Record<string, ProfileVisibility>;
 
 export const RemotePolicy = {
   HYBRID: 'HYBRID',
@@ -298,6 +360,14 @@ export const ReportStatus = {
   REVIEWED: 'REVIEWED',
 } as const satisfies Record<string, ReportStatus>;
 
+export const RoleSeniority = {
+  INTERN: 'INTERN',
+  JUNIOR: 'JUNIOR',
+  MID: 'MID',
+  SENIOR: 'SENIOR',
+  TRAINEE: 'TRAINEE',
+} as const satisfies Record<string, RoleSeniority>;
+
 export const RoleTitleLang = {
   EN: 'EN',
   PT: 'PT',
@@ -305,9 +375,17 @@ export const RoleTitleLang = {
 
 export const RoleTitleSource = {
   CBO: 'CBO',
+  CURATED: 'CURATED',
   ESCO: 'ESCO',
   ONET: 'ONET',
 } as const satisfies Record<string, RoleTitleSource>;
+
+export const Severity = {
+  CRITICAL: 'CRITICAL',
+  HIGH: 'HIGH',
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+} as const satisfies Record<string, Severity>;
 
 export const SkillProficiency = {
   ADVANCED: 'ADVANCED',
@@ -347,6 +425,13 @@ export const TechAreaType = {
   QA: 'QA',
   SECURITY: 'SECURITY',
 } as const satisfies Record<string, TechAreaType>;
+
+export const VerificationPurpose = {
+  ACCOUNT_DELETION: 'ACCOUNT_DELETION',
+  EMAIL_CHANGE: 'EMAIL_CHANGE',
+  EMAIL_VERIFY: 'EMAIL_VERIFY',
+  PASSWORD_CHANGE: 'PASSWORD_CHANGE',
+} as const satisfies Record<string, VerificationPurpose>;
 
 export const WeeklyCuratedBatchStatus = {
   COMPLETED: 'COMPLETED',
@@ -669,6 +754,50 @@ const ENUM_LABELS = {
       "pt-BR": "Termos de serviço"
     }
   },
+  "DegreeType": {
+    "HIGH_SCHOOL": {
+      "en": "High School",
+      "pt-BR": "Ensino Médio"
+    },
+    "TECHNICAL": {
+      "en": "Technical",
+      "pt-BR": "Técnico"
+    },
+    "BACHELOR": {
+      "en": "Bachelor's",
+      "pt-BR": "Bacharelado"
+    },
+    "MASTER": {
+      "en": "Master's",
+      "pt-BR": "Mestrado"
+    },
+    "DOCTORATE": {
+      "en": "Doctorate",
+      "pt-BR": "Doutorado"
+    },
+    "BOOTCAMP": {
+      "en": "Bootcamp",
+      "pt-BR": "Bootcamp"
+    },
+    "SELF_TAUGHT": {
+      "en": "Self-taught",
+      "pt-BR": "Autodidata"
+    }
+  },
+  "DevicePlatform": {
+    "ANDROID": {
+      "en": "Android",
+      "pt-BR": "Android"
+    },
+    "IOS": {
+      "en": "iOS",
+      "pt-BR": "iOS"
+    },
+    "WEB": {
+      "en": "Web",
+      "pt-BR": "Web"
+    }
+  },
   "DigestFrequency": {
     "DAILY": {
       "en": "Daily",
@@ -685,6 +814,24 @@ const ENUM_LABELS = {
     "WEEKLY": {
       "en": "Weekly",
       "pt-BR": "Semanal"
+    }
+  },
+  "EducationStatus": {
+    "IN_PROGRESS": {
+      "en": "In Progress",
+      "pt-BR": "Em andamento"
+    },
+    "COMPLETED": {
+      "en": "Completed",
+      "pt-BR": "Concluído"
+    },
+    "PAUSED": {
+      "en": "Paused",
+      "pt-BR": "Pausado"
+    },
+    "DROPPED": {
+      "en": "Dropped",
+      "pt-BR": "Trancado"
     }
   },
   "EmailDeliveryMode": {
@@ -953,6 +1100,36 @@ const ENUM_LABELS = {
       "pt-BR": "Voluntário"
     }
   },
+  "LanguageLevel": {
+    "A1": {
+      "en": "A1",
+      "pt-BR": "A1"
+    },
+    "A2": {
+      "en": "A2",
+      "pt-BR": "A2"
+    },
+    "B1": {
+      "en": "B1",
+      "pt-BR": "B1"
+    },
+    "B2": {
+      "en": "B2",
+      "pt-BR": "B2"
+    },
+    "C1": {
+      "en": "C1",
+      "pt-BR": "C1"
+    },
+    "C2": {
+      "en": "C2",
+      "pt-BR": "C2"
+    },
+    "NATIVE": {
+      "en": "Native",
+      "pt-BR": "Nativo"
+    }
+  },
   "LayoutKind": {
     "SINGLE_COLUMN": {
       "en": "Single column",
@@ -979,6 +1156,20 @@ const ENUM_LABELS = {
     "SUCCESS": {
       "en": "Success",
       "pt-BR": "Sucesso"
+    }
+  },
+  "MessagePrivacy": {
+    "EVERYONE": {
+      "en": "Everyone",
+      "pt-BR": "Todos"
+    },
+    "NOBODY": {
+      "en": "Nobody",
+      "pt-BR": "Ninguém"
+    },
+    "RECRUITERS_ONLY": {
+      "en": "Recruiters only",
+      "pt-BR": "Só recrutadores"
     }
   },
   "ModifierEffect": {
@@ -1050,6 +1241,10 @@ const ENUM_LABELS = {
       "en": "New job recommendations ready",
       "pt-BR": "Novas recomendações de vagas"
     },
+    "MESSAGE_RECEIVED": {
+      "en": "New message",
+      "pt-BR": "Nova mensagem"
+    },
     "POST_BOOKMARKED": {
       "en": "Post bookmarked",
       "pt-BR": "Post salvo"
@@ -1079,6 +1274,20 @@ const ENUM_LABELS = {
       "pt-BR": "Habilidade enferrujando"
     }
   },
+  "OpenSourceRole": {
+    "MAINTAINER": {
+      "en": "Maintainer",
+      "pt-BR": "Mantenedor"
+    },
+    "CONTRIBUTOR": {
+      "en": "Contributor",
+      "pt-BR": "Contribuidor"
+    },
+    "CREATOR": {
+      "en": "Creator",
+      "pt-BR": "Criador"
+    }
+  },
   "PaymentCurrency": {
     "BRL": {
       "en": "BRL",
@@ -1095,6 +1304,20 @@ const ENUM_LABELS = {
     "USD": {
       "en": "USD",
       "pt-BR": "USD"
+    }
+  },
+  "ProfileVisibility": {
+    "PRIVATE": {
+      "en": "Private",
+      "pt-BR": "Privado"
+    },
+    "PUBLIC": {
+      "en": "Public",
+      "pt-BR": "Público"
+    },
+    "RECRUITERS_ONLY": {
+      "en": "Recruiters only",
+      "pt-BR": "Só recrutadores"
     }
   },
   "RemotePolicy": {
@@ -1125,6 +1348,28 @@ const ENUM_LABELS = {
       "pt-BR": "Revisada"
     }
   },
+  "RoleSeniority": {
+    "INTERN": {
+      "en": "Intern",
+      "pt-BR": "Estagiário"
+    },
+    "JUNIOR": {
+      "en": "Junior",
+      "pt-BR": "Júnior"
+    },
+    "MID": {
+      "en": "Mid-level",
+      "pt-BR": "Pleno"
+    },
+    "SENIOR": {
+      "en": "Senior",
+      "pt-BR": "Sênior"
+    },
+    "TRAINEE": {
+      "en": "Trainee",
+      "pt-BR": "Trainee"
+    }
+  },
   "RoleTitleLang": {
     "EN": {
       "en": "English",
@@ -1147,6 +1392,28 @@ const ENUM_LABELS = {
     "ONET": {
       "en": "O*NET",
       "pt-BR": "O*NET"
+    },
+    "CURATED": {
+      "en": "Curated",
+      "pt-BR": "Curado"
+    }
+  },
+  "Severity": {
+    "LOW": {
+      "en": "Low",
+      "pt-BR": "Baixa"
+    },
+    "MEDIUM": {
+      "en": "Medium",
+      "pt-BR": "Média"
+    },
+    "HIGH": {
+      "en": "High",
+      "pt-BR": "Alta"
+    },
+    "CRITICAL": {
+      "en": "Critical",
+      "pt-BR": "Crítica"
     }
   },
   "SkillProficiency": {
@@ -1263,6 +1530,24 @@ const ENUM_LABELS = {
     "SECURITY": {
       "en": "Security",
       "pt-BR": "Segurança"
+    }
+  },
+  "VerificationPurpose": {
+    "ACCOUNT_DELETION": {
+      "en": "Account deletion",
+      "pt-BR": "Exclusão de conta"
+    },
+    "EMAIL_CHANGE": {
+      "en": "Email change",
+      "pt-BR": "Alteração de e-mail"
+    },
+    "EMAIL_VERIFY": {
+      "en": "Email verification",
+      "pt-BR": "Verificação de e-mail"
+    },
+    "PASSWORD_CHANGE": {
+      "en": "Password change",
+      "pt-BR": "Alteração de senha"
     }
   },
   "WeeklyCuratedBatchStatus": {

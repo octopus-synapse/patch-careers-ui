@@ -18,6 +18,9 @@ export interface RolePickerProps {
   label: string;
   value: string;
   onChange: (label: string) => void;
+  /** Fires with the picked title's seniority (null for free text) so the
+   *  editor can auto-lock employmentType when it's an internship. */
+  onPickSeniority?: ((seniority: string | null) => void) | undefined;
   error?: string | undefined;
 }
 
@@ -26,7 +29,7 @@ const MIN_QUERY = 2;
 const DEBOUNCE_MS = 250;
 const LIMIT = 20;
 
-export function RolePicker({ label, value, onChange, error }: RolePickerProps) {
+export function RolePicker({ label, value, onChange, onPickSeniority, error }: RolePickerProps) {
   const { locale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -54,8 +57,9 @@ export function RolePicker({ label, value, onChange, error }: RolePickerProps) {
     setOpen(true);
   };
 
-  const select = (roleLabel: string) => {
+  const select = (roleLabel: string, seniority: string | null) => {
     onChange(roleLabel);
+    onPickSeniority?.(seniority);
     setOpen(false);
   };
 
@@ -96,10 +100,10 @@ export function RolePicker({ label, value, onChange, error }: RolePickerProps) {
       }))}
       onSelectRow={(row) => {
         const picked = roles.find((role) => `${role.lang}|${role.label}` === row.key);
-        if (picked) select(picked.label);
+        if (picked) select(picked.label, picked.seniority ?? null);
       }}
       useTypedLabel={showUseTyped ? t("onboarding.role.useTyped", { q: typed }) : null}
-      onUseTyped={() => select(typed)}
+      onUseTyped={() => select(typed, null)}
     />
   );
 }

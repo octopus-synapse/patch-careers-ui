@@ -55,6 +55,7 @@ function EditItemModal({
     isEducation,
     handleCompanyPick,
     handleCoursePick,
+    handleRolePick,
     resetForExisting,
     hasErrors,
   } = useSectionItemForm(fields);
@@ -81,6 +82,7 @@ function EditItemModal({
       readOnlyKeys={derivedKeys}
       onCompanyPick={hasCompany ? handleCompanyPick : undefined}
       onCoursePick={isEducation ? handleCoursePick : undefined}
+      onRolePick={hasCompany ? handleRolePick : undefined}
       onSave={() => void save()}
       onCancel={onClose}
       onDelete={onRequestDelete}

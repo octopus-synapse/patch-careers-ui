@@ -92,20 +92,31 @@ export function OptionPill({
   label,
   onPress,
   selected,
+  disabled = false,
 }: {
   label: string;
   onPress: () => void;
   selected: boolean;
+  disabled?: boolean;
 }): ReactElement {
   const ed = useEd();
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={{ selected }}
-      onPress={onPress}
-      style={[ed.pill, selected ? ed.pillSelected : null]}
+      accessibilityState={{ selected, disabled }}
+      disabled={disabled}
+      onPress={disabled ? undefined : onPress}
+      style={[ed.pill, selected ? ed.pillSelected : null, disabled ? ed.pillDisabled : null]}
     >
-      <Text style={[ed.pillLabel, selected ? ed.pillLabelSelected : null]}>{label}</Text>
+      <Text
+        style={[
+          ed.pillLabel,
+          selected ? ed.pillLabelSelected : null,
+          disabled ? ed.pillLabelDisabled : null,
+        ]}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }

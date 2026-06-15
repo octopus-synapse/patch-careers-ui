@@ -174,6 +174,18 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       color: authTokens.body,
     },
     pillLabelSelected: { color: authTokens.surface },
+    // Locked-out option (e.g. non-Internship types when the role is an
+    // internship): visible but non-interactive.
+    pillDisabled: { opacity: 0.4 },
+    pillLabelDisabled: { color: authTokens.muted },
+    // Explains why a locked field can't be changed (intern → Internship).
+    lockHint: {
+      fontFamily: fonts.sans,
+      fontSize: 12,
+      lineHeight: 16,
+      color: authTokens.muted,
+      marginTop: 8,
+    },
 
     // username chip
     chip: { flexDirection: "row", alignItems: "center", gap: 7, marginTop: 10 },

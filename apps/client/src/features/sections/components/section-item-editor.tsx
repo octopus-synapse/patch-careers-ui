@@ -20,7 +20,7 @@ import { useI18n } from "@/providers/i18n-provider";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
 import { itemCardParts, itemSummary } from "../lib/helpers";
 import { useEd, webNoOutline } from "../lib/styles";
-import type { SectionDescriptor, SectionItem, SectionPersistAction } from "../types";
+import type { SectionDescriptor, SectionField, SectionItem, SectionPersistAction } from "../types";
 import { AddRow } from "./primitives";
 import { SectionItemModal } from "./section-item-modal";
 
@@ -34,12 +34,14 @@ type SectionArt = ComponentType<{ size?: number }>;
 function ItemCard({
   index,
   item,
+  fields,
   onEdit,
   onRemove,
   removeLabel,
 }: {
   index: number;
   item: SectionItem;
+  fields?: SectionField[] | undefined;
   onEdit: () => void;
   onRemove: () => void;
   removeLabel: string;
@@ -47,7 +49,7 @@ function ItemCard({
   const ed = useEd();
   const authTokens = useEditorialPalette();
   const { locale } = useI18n();
-  const { primary, meta } = itemCardParts(item, locale);
+  const { primary, meta } = itemCardParts(item, locale, fields);
   const [active, setActive] = useState(false);
   const [removeActive, setRemoveActive] = useState(false);
   const ordinal = String(index + 1).padStart(2, "0");
@@ -157,6 +159,7 @@ export function SectionItemEditor({
     isEducation,
     handleCompanyPick,
     handleCoursePick,
+    handleRolePick,
     resetForNew,
     resetForExisting,
     hasErrors,
@@ -263,6 +266,7 @@ export function SectionItemEditor({
             key={item.id ?? `${index}-${itemSummary(item)}`}
             index={index}
             item={item}
+            fields={fields}
             onEdit={() => openExisting(index)}
             onRemove={() => void removeAt(index)}
             removeLabel={t("onboarding.removeItem")}
@@ -285,6 +289,7 @@ export function SectionItemEditor({
         readOnlyKeys={derivedKeys}
         onCompanyPick={hasCompany ? handleCompanyPick : undefined}
         onCoursePick={isEducation ? handleCoursePick : undefined}
+        onRolePick={hasCompany ? handleRolePick : undefined}
         onSave={() => void saveItem()}
         onCancel={closeEditor}
         {...(isEditing && !isNew ? { onDelete: () => void deleteEditing() } : {})}
