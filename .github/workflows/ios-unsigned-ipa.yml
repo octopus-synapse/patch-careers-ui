@@ -59,6 +59,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Kubb output (src/generated/{hooks,ts,zod}) is gitignored and
+      # regenerated from the committed swagger contract. Without it the
+      # SDK barrel exports unresolved modules and the Metro release bundle
+      # fails during archive.
+      - name: Generate API SDK
+        run: pnpm --filter @patch-careers/api-client sdk:generate
+
       # Generate the native ios/ project from app.json (managed → bare).
       # --no-install: pods are installed in the dedicated step below so we
       # control caching and surface pod failures distinctly from prebuild.
