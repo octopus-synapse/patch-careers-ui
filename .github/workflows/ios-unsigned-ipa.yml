@@ -71,14 +71,15 @@ jobs:
         run: pod install
 
       # Discover the workspace + scheme instead of hardcoding "PatchCareers":
-      # prebuild derives them from expo.name, so a rename shouldn't break CI.
+      # prebuild names the workspace after expo.name and the app scheme matches
+      # it, so deriving the scheme from the workspace basename avoids picking a
+      # dependency scheme (e.g. "Burnt") that `-list` happens to sort first.
       - name: Resolve workspace & scheme
         id: xcode
         working-directory: ${{ env.CLIENT_DIR }}
         run: |
           WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' | head -n1)
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json \
-            | jq -r '.workspace.schemes[0]')
+          SCHEME=$(basename "$WORKSPACE" .xcworkspace)
           echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
           echo "Workspace: $WORKSPACE / Scheme: $SCHEME"
