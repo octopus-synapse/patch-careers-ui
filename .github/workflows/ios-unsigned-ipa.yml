@@ -35,11 +35,18 @@ env:
 jobs:
   build-ipa:
     name: Build unsigned .ipa
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
+
+      # RN 0.81 requires Xcode >= 16.1; pin to the newest 16.x on the image
+      # so the toolchain is explicit rather than relying on the runner default.
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_16*.app | sort -V | tail -1)/Contents/Developer"
+          xcodebuild -version
 
       - uses: pnpm/action-setup@v4
         with:
