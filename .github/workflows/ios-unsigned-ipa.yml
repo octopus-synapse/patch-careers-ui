@@ -1,0 +1,132 @@
+name: iOS Unsigned IPA
+
+# Builds an UNSIGNED .ipa of apps/client on an Apple runner so it can be
+# sideloaded onto a single device without TestFlight / the Apple Developer
+# Program. The artifact carries no provisioning profile on purpose — the
+# 7-day free-provisioning signature is injected at install time by
+# AltServer (AltServer-Linux on the maintainer's Linux box).
+#
+# This is NOT the release path: apps/client still ships to stores via
+# EAS Build / EAS Submit. Re-run this manually only when the native code
+# changes — the weekly re-sign happens off-CI on the install machine.
+
+on:
+  workflow_dispatch:
+    inputs:
+      configuration:
+        description: "Configuração de build do Xcode"
+        type: choice
+        default: Release
+        options: [Release, Debug]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-ipa-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: 9.15.4
+  NODE_VERSION: 20.x
+  CLIENT_DIR: apps/client
+  ARTIFACT_NAME: patch-careers-ui-unsigned
+
+jobs:
+  build-ipa:
+    name: Build unsigned .ipa
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Generate the native ios/ project from app.json (managed → bare).
+      # --no-install: pods are installed in the dedicated step below so we
+      # control caching and surface pod failures distinctly from prebuild.
+      - name: Expo prebuild (ios)
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: pnpm exec expo prebuild -p ios --clean --no-install
+
+      - name: Install CocoaPods
+        working-directory: ${{ env.CLIENT_DIR }}/ios
+        run: pod install
+
+      # Discover the workspace + scheme instead of hardcoding "PatchCareers":
+      # prebuild derives them from expo.name, so a rename shouldn't break CI.
+      - name: Resolve workspace & scheme
+        id: xcode
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: |
+          WORKSPACE=$(find ios -maxdepth 1 -name '*.xcworkspace' | head -n1)
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json \
+            | jq -r '.workspace.schemes[0]')
+          echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
+          echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
+          echo "Workspace: $WORKSPACE / Scheme: $SCHEME"
+
+      # Archive WITHOUT signing — no certificate or paid account needed.
+      # CODE_SIGNING_ALLOWED=NO lets xcodebuild produce a bare .app.
+      - name: Archive (unsigned)
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: |
+          xcodebuild \
+            -workspace "${{ steps.xcode.outputs.workspace }}" \
+            -scheme "${{ steps.xcode.outputs.scheme }}" \
+            -configuration ${{ inputs.configuration }} \
+            -sdk iphoneos \
+            -archivePath build/app.xcarchive \
+            -destination 'generic/platform=iOS' \
+            archive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+
+      # Wrap the .app in Payload/ and zip it — that *is* the .ipa format.
+      - name: Package .ipa
+        id: package
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: |
+          APP_PATH=$(find build/app.xcarchive/Products/Applications \
+            -maxdepth 1 -name '*.app' | head -n1)
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::No .app found in archive"; exit 1
+          fi
+          rm -rf Payload && mkdir Payload
+          cp -R "$APP_PATH" Payload/
+          IPA="${{ env.ARTIFACT_NAME }}.ipa"
+          zip -qr "$IPA" Payload
+          echo "ipa_path=${{ env.CLIENT_DIR }}/$IPA" >> "$GITHUB_OUTPUT"
+          echo "ipa_size=$(du -h "$IPA" | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ steps.package.outputs.ipa_path }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📦 iOS Unsigned IPA" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Property | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Scheme | \`${{ steps.xcode.outputs.scheme }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Configuration | \`${{ inputs.configuration }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Artifact | \`${{ env.ARTIFACT_NAME }}.ipa\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Size | ${{ steps.package.outputs.ipa_size || 'n/a' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Signing | none (sideload via AltServer) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "> Re-sign every 7 days on the install machine — this artifact carries no provisioning profile." >> "$GITHUB_STEP_SUMMARY"
