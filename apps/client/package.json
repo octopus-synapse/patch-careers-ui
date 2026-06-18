@@ -28,7 +28,7 @@
     "@patch-careers/storage": "workspace:^",
     "@patch-careers/tokens": "workspace:^",
     "@patch-careers/ui": "workspace:^",
-    "@react-native-community/netinfo": "^11.4.1",
+    "@react-native-community/netinfo": "^12.0.1",
     "@react-navigation/bottom-tabs": "7.16.2",
     "@tamagui/animations-react-native": "1.144.4",
     "@tamagui/babel-plugin": "1.144.4",
