@@ -12,11 +12,11 @@
 
 import { EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, SegmentedTabs, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useRouter } from "expo-router";
 import { Bookmark, BriefcaseBusiness, SearchX, SlidersHorizontal } from "lucide-react-native";
 import { type ReactElement, useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, SectionList, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useI18n } from "@/providers/i18n-provider";
 import { useExternalJobs } from "../hooks/queries";
 import { useToggleSaveJob } from "../hooks/use-save-job";
@@ -35,7 +35,8 @@ function RowSeparator(): ReactElement {
 
 export function JobsScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
-  const insets = useSafeAreaInsets();
+  // Bar floats over content; pad the list so the last rows clear it.
+  const tabBarHeight = useBottomTabBarHeight();
   const router = useRouter();
   const { t } = useI18n();
   const [scope, setScope] = useState<JobsScope>("all");
@@ -163,7 +164,7 @@ export function JobsScreen(): ReactElement {
             </View>
           ) : null
         }
-        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+        contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
       />
     );
   }

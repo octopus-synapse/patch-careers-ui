@@ -19,6 +19,8 @@
  * root stack.
  */
 
+import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
+import { PlayfairDisplay_500Medium, useFonts } from "@expo-google-fonts/playfair-display";
 import { editorialPalettes } from "@patch-careers/tokens";
 import { ToastProvider } from "@patch-careers/ui";
 import { PortalProvider } from "@tamagui/portal";
@@ -55,23 +57,27 @@ const queryClient = new QueryClient({
 export default function RootLayout(): ReactElement {
   const scheme = useResolvedScheme();
   const palette = editorialPalettes[scheme];
+  // Editorial display serif + technical mono (bundled assets — no network).
+  // editorialFonts maps to these exact family keys.
+  const [fontsLoaded] = useFonts({ PlayfairDisplay_500Medium, JetBrainsMono_500Medium });
 
   useEffect(() => {
-    // Hold the splash until the persisted color scheme hydrates, so an
-    // explicit "dark" choice doesn't flash a light first frame (with a
-    // timeout fallback in case storage never resolves).
+    // Hold the splash until BOTH the persisted color scheme hydrates (so an
+    // explicit "dark" choice doesn't flash a light first frame) AND the
+    // editorial fonts register (so serif/mono don't flash a fallback face). A
+    // timeout backstop hides the splash even if either never resolves.
     const hide = () => void SplashScreen.hideAsync().catch(() => undefined);
-    if (useColorSchemeStore.persist.hasHydrated()) {
-      hide();
-      return;
-    }
-    const unsubscribe = useColorSchemeStore.persist.onFinishHydration(hide);
-    const fallback = setTimeout(hide, 500);
+    const tryHide = () => {
+      if (fontsLoaded && useColorSchemeStore.persist.hasHydrated()) hide();
+    };
+    tryHide();
+    const unsubscribe = useColorSchemeStore.persist.onFinishHydration(tryHide);
+    const fallback = setTimeout(hide, 1500);
     return () => {
       unsubscribe();
       clearTimeout(fallback);
     };
-  }, []);
+  }, [fontsLoaded]);
 
   return (
     // Required once at the root for react-native-gesture-handler (swipe-to-

@@ -11,7 +11,6 @@ import type { ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { usePf } from "../lib/styles";
-import type { SheetKind } from "./profile-screen";
 
 export type HeaderProfile = {
   name?: string | null;
@@ -20,20 +19,12 @@ export type HeaderProfile = {
   photoURL?: string | null;
 };
 
-const EDIT_TRIGGERS: ReadonlyArray<{ kind: SheetKind; labelKey: string }> = [
-  { kind: "identity", labelKey: "profile.header.editProfile" },
-  { kind: "about", labelKey: "profile.header.about" },
-  { kind: "links", labelKey: "profile.header.links" },
-];
-
 export function ProfileHeader({
   profile,
   onChangePhoto,
-  onEdit,
 }: {
   profile: HeaderProfile | undefined;
   onChangePhoto: () => void;
-  onEdit: (sheet: SheetKind) => void;
 }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
@@ -67,22 +58,6 @@ export function ProfileHeader({
           <Text style={pf.location}>{profile.location}</Text>
         </View>
       ) : null}
-
-      <View style={pf.editTriggers}>
-        {EDIT_TRIGGERS.map(({ kind, labelKey }, index) => (
-          <View key={kind} style={pf.editTriggerWrap}>
-            {index > 0 ? <Text style={pf.editTriggerDot}>·</Text> : null}
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t(labelKey)}
-              hitSlop={6}
-              onPress={() => onEdit(kind)}
-            >
-              <Text style={pf.editLink}>{t(labelKey)}</Text>
-            </Pressable>
-          </View>
-        ))}
-      </View>
     </View>
   );
 }

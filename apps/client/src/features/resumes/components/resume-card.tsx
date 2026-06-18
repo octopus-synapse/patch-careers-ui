@@ -6,16 +6,20 @@
  * screen.
  */
 import type { Locale, Translator } from "@patch-careers/i18n";
+import { StyleScoreChip } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Copy, CornerDownRight, Eye, Trash2 } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { ResumeThumbnail } from "@/components/resume-thumbnail";
+import { StyleScoreBadge } from "@/components/style-score-badge";
 import { webNoOutline } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import type { ResumeListItem } from "../hooks/queries";
 import { useTailoredVersions } from "../hooks/queries";
 import { editedAgo } from "../lib/helpers";
 import { useRz } from "../lib/styles";
+import { QualityScoreBadge } from "./quality-score-badge";
 
 type Glyph = typeof Eye;
 
@@ -106,6 +110,7 @@ export function ResumeCard({
       style={({ pressed }) => [rz.card, (active || pressed) && rz.cardActive, webNoOutline]}
     >
       <View style={rz.cardHead}>
+        <ResumeThumbnail resumeId={item.id} width={48} height={64} radius={8} />
         <View style={rz.cardTitleWrap}>
           <View style={rz.cardTitleRow}>
             <Text style={rz.cardTitle} numberOfLines={1}>
@@ -116,6 +121,10 @@ export function ResumeCard({
                 <Text style={rz.masterBadgeText}>{t("resumes.card.masterBadge")}</Text>
               </View>
             ) : null}
+            {item.style ? (
+              <StyleScoreBadge styleId={item.style.id} styleScore={item.style.styleScore} />
+            ) : null}
+            <QualityScoreBadge resumeId={item.id} updatedAt={item.updatedAt} />
           </View>
           <Text style={rz.cardMeta} numberOfLines={1}>
             {resumeMetaLine(item, t, locale)}
@@ -164,6 +173,17 @@ export function ResumeCard({
                   </Text>
                 ) : null}
               </Text>
+              {/* Tailored versions are snapshots of the parent resume, so they
+                  inherit its active template — show the same Style Score. */}
+              {item.style ? (
+                <StyleScoreChip
+                  score={item.style.styleScore}
+                  size="sm"
+                  accessibilityLabel={t("resumes.styleScore.a11y", {
+                    score: Math.round(item.style.styleScore),
+                  })}
+                />
+              ) : null}
             </View>
           ))}
         </View>

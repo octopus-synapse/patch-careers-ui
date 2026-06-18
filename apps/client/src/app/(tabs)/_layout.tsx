@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEditorialPalette } from "@patch-careers/ui";
 import { Redirect, Tabs } from "expo-router";
 import { AppHeader } from "@/components/app-header";
+import { EditorialTabBar } from "@/components/editorial-tab-bar";
+import { ProfileTabIcon } from "@/components/profile-tab-icon";
 import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
@@ -39,13 +41,14 @@ export default function TabsLayout(): ReactElement | null {
 
   return (
     <Tabs
+      tabBar={(props) => <EditorialTabBar {...props} />}
       screenOptions={{
         // Global top app bar: avatar (left) · brand (center) · messages (right).
         headerShown: true,
         header: () => <AppHeader />,
-        tabBarActiveTintColor: palette.accent,
-        tabBarInactiveTintColor: palette.muted,
-        tabBarStyle: { backgroundColor: palette.surface, borderTopColor: palette.hairline },
+        // The custom EditorialTabBar owns the bar's look; only the scene bg
+        // stays here. `title` feeds each tab's label/a11y; `tabBarIcon` feeds
+        // its glyph (read from the descriptor by the custom bar).
         sceneStyle: { backgroundColor: palette.bg },
       }}
     >
@@ -59,14 +62,14 @@ export default function TabsLayout(): ReactElement | null {
       <Tabs.Screen
         name="applications"
         options={{
-          title: t("tabs.applications"),
+          title: t("tabs.applicationsShort"),
           tabBarIcon: tabIcon("send-outline", "send"),
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          title: t("tabs.notifications"),
+          title: t("tabs.notificationsShort"),
           tabBarIcon: tabIcon("notifications-outline", "notifications"),
         }}
       />
@@ -74,7 +77,7 @@ export default function TabsLayout(): ReactElement | null {
         name="profile"
         options={{
           title: t("tabs.profile"),
-          tabBarIcon: tabIcon("person-outline", "person"),
+          tabBarIcon: ({ focused, size }) => <ProfileTabIcon focused={focused} size={size} />,
         }}
       />
     </Tabs>

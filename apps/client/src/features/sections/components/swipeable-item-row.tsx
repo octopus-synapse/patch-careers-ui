@@ -18,7 +18,6 @@ import type { SectionField, SectionItem } from "../types";
 const ACTION_WIDTH = 72;
 
 function RowCard({
-  index,
   item,
   fields,
   onEdit,
@@ -26,7 +25,6 @@ function RowCard({
   deleteLabel,
   inlineTrash,
 }: {
-  index: number;
   item: SectionItem;
   fields?: SectionField[] | undefined;
   onEdit: () => void;
@@ -40,7 +38,6 @@ function RowCard({
   const { primary, meta } = itemCardParts(item, locale, fields);
   const [active, setActive] = useState(false);
   const [removeActive, setRemoveActive] = useState(false);
-  const ordinal = String(index + 1).padStart(2, "0");
   return (
     <Pressable
       accessibilityRole="button"
@@ -53,7 +50,6 @@ function RowCard({
       onBlur={() => setActive(false)}
       style={({ pressed }) => [ed.card, (active || pressed) && ed.cardActive, webNoOutline]}
     >
-      <Text style={ed.cardIndex}>{ordinal}</Text>
       <View style={ed.cardBody}>
         <Text style={ed.cardPrimary} numberOfLines={1}>
           {primary}
@@ -92,14 +88,12 @@ function RowCard({
 }
 
 export function SwipeableItemRow({
-  index,
   item,
   fields,
   onEdit,
   onDelete,
   deleteLabel,
 }: {
-  index: number;
   item: SectionItem;
   fields?: SectionField[] | undefined;
   onEdit: () => void;
@@ -111,7 +105,6 @@ export function SwipeableItemRow({
   if (Platform.OS === "web") {
     return (
       <RowCard
-        index={index}
         item={item}
         fields={fields}
         onEdit={onEdit}
@@ -139,7 +132,6 @@ export function SwipeableItemRow({
       )}
     >
       <RowCard
-        index={index}
         item={item}
         fields={fields}
         onEdit={onEdit}

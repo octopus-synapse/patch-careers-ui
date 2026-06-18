@@ -15,6 +15,8 @@
     "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . apps/client"
   },
   "dependencies": {
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
+    "@expo-google-fonts/playfair-display": "^0.4.2",
     "@expo/metro-config": "~54.0.9",
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.1.1",
@@ -27,6 +29,7 @@
     "@patch-careers/tokens": "workspace:^",
     "@patch-careers/ui": "workspace:^",
     "@react-native-community/netinfo": "^11.4.1",
+    "@react-navigation/bottom-tabs": "7.16.2",
     "@tamagui/animations-react-native": "1.144.4",
     "@tamagui/babel-plugin": "1.144.4",
     "@tamagui/config": "1.144.4",
@@ -38,7 +41,9 @@
     "burnt": "^0.13.0",
     "expo": "~54.0.0",
     "expo-auth-session": "~7.0.8",
+    "expo-blur": "~15.0.8",
     "expo-constants": "~18.0.9",
+    "expo-font": "~14.0.12",
     "expo-haptics": "~15.0.7",
     "expo-image-picker": "~17.0.8",
     "expo-linking": "~8.0.8",

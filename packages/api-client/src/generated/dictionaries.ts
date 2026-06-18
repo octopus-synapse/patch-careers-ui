@@ -1259,10 +1259,6 @@ export const DICTIONARIES = {
       "en": "Resume style not found",
       "pt-BR": "Estilo do currículo não encontrado"
     },
-    "STYLE_SCORE_REGRESSION": {
-      "en": "Style score is monotonic and cannot regress",
-      "pt-BR": "A pontuação do estilo é monotônica e não pode regredir"
-    },
     "SUCCESS_STORY_ALREADY_PUBLISHED": {
       "en": "Success story already published",
       "pt-BR": "Caso de sucesso já publicado"
@@ -1724,10 +1720,6 @@ export const DICTIONARIES = {
       }
     },
     "BadgeKind": {
-      "ATS_90_PLUS": {
-        "en": "ATS 90+",
-        "pt-BR": "ATS 90+"
-      },
       "CONTRIBUTOR": {
         "en": "Contributor",
         "pt-BR": "Contribuidor"

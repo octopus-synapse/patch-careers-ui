@@ -31,6 +31,8 @@ import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keep-signed-in-preference";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { type AuthFieldErrors, validateSignup } from "@/components/auth/validation";
+import { isDevTestFillEnabled } from "@/config/dev-flags";
+import { GhostButton } from "@/features/sections";
 import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms";
 
 // Versions sent with the consent payload. Backend rejects with
@@ -80,6 +82,16 @@ export default function SignUpScreen(): ReactElement {
       const message = fields[key];
       if (message) form.setError(key, { message });
     }
+  }
+
+  // DEV-only: pre-fill the form with a unique email + a valid password and
+  // accept consent, so sign-up testing is one tap. Gated by the same flag as
+  // the onboarding test-fill. Stays on the screen (the user taps Sign up).
+  function fillSignupTest(): void {
+    form.setValue("email", `testuser${Date.now()}@example.com`, { shouldValidate: true });
+    form.setValue("password", "TestPass123!", { shouldValidate: true });
+    setConsent(true);
+    setConsentError(undefined);
   }
 
   const onSubmit = form.handleSubmit(async ({ email, password: pw }) => {
@@ -140,6 +152,12 @@ export default function SignUpScreen(): ReactElement {
         subtitle={t("app.signUp.subtitle")}
         showWordmark={false}
       />
+
+      {isDevTestFillEnabled() ? (
+        <View style={{ marginBottom: 8 }}>
+          <GhostButton label="test" onPress={fillSignupTest} />
+        </View>
+      ) : null}
 
       <View style={{ gap: 24 }}>
         <FormEmailField

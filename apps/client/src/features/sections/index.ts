@@ -12,7 +12,11 @@ export {
   OptionPill,
   OverlayModal,
 } from "./components/primitives";
-export { ResumeSectionsManager } from "./components/resume-sections-manager";
+export {
+  ResumeSectionsManager,
+  type ResumeSectionsManagerProps,
+  type SectionsManagerHandle,
+} from "./components/resume-sections-manager";
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";
 export { type ResumeSections, useResumeSections } from "./hooks/use-resume-sections";

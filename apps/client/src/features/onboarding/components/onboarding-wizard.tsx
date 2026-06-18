@@ -1,6 +1,7 @@
 import { FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
+import { isDevTestFillEnabled } from "@/config/dev-flags";
 import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
 import { useColorSchemeStore } from "@/providers/color-scheme";
 import {
@@ -13,9 +14,11 @@ import {
 import { canContinueStep, isResumeStyleStep, isSectionStep } from "../lib/helpers";
 import { isProfileFieldRequired } from "../lib/profile-validation";
 import { useOnboardingFlow } from "../model/use-onboarding-flow";
+import { useTestFill } from "../model/use-test-fill";
 import { WizardStoreProvider } from "../model/wizard-store-context";
 import type { OnboardingField } from "../types";
 import { sectionArtFor } from "./onboarding-art";
+import { TestFillBar } from "./test-fill-bar";
 import {
   AckCheckbox,
   CenteredState,
@@ -56,6 +59,7 @@ function OnboardingWizardInner(): ReactElement {
     session,
     flowStep,
     flowStepId,
+    setFlowStepId,
     editStep,
     editStepId,
     currentStep,
@@ -87,12 +91,26 @@ function OnboardingWizardInner(): ReactElement {
     handleComplete,
     handleAddSection,
     retrySave,
+    commitSave,
     dismissResumeBanner,
     markWelcomeSeenAndAdvance,
   } = useOnboardingFlow();
 
   const scheme = useColorSchemeStore((s) => s.scheme);
   const setScheme = useColorSchemeStore((s) => s.setScheme);
+
+  // DEV-only test-fill engine. Hook is always called (no conditional hooks);
+  // the UI is gated by `isDevTestFillEnabled()` so it never renders in prod.
+  const testFill = useTestFill({
+    session,
+    saveStep: (stepId, payload) =>
+      commitSave(stepId, payload as Parameters<typeof commitSave>[1], false),
+    setFlowStepId,
+    setFormData,
+    setItems,
+    setLocale,
+    setScheme,
+  });
 
   if (sessionQuery.isLoading && !fallbackSession) {
     return <CenteredState label={t("common.loading")} />;
@@ -204,6 +222,14 @@ function OnboardingWizardInner(): ReactElement {
             ) : null}
 
             <View key={headingKey}>
+              {isDevTestFillEnabled() && !editStep ? (
+                <TestFillBar
+                  flowStepId={flowStepId}
+                  onFillStep={() => testFill.fillStep(flowStepId, currentStep)}
+                  onFillAll={() => void testFill.fillAll()}
+                  disabled={isPending || testFill.isRunning}
+                />
+              ) : null}
               <StepHeading title={stepTitle} subtitle={subtitleText} />
             </View>
 

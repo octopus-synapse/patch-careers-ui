@@ -27,6 +27,9 @@ export const ptBR: TranslationDict = {
     applications: "Candidaturas",
     notifications: "Notificações",
     profile: "Perfil",
+    // Short variants for the bottom tab bar (4 small-caps labels, tight fit).
+    applicationsShort: "Candid.",
+    notificationsShort: "Notif.",
   },
   common: {
     hello: "Olá",

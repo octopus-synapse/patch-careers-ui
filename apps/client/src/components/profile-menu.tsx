@@ -214,9 +214,9 @@ export function ProfileMenu({
                 onPress={() => go("/profile")}
                 style={({ pressed }) => [styles.card, pressed ? styles.cardPressed : null]}
               >
-                <Avatar src={photoURL} name={name} size="lg" />
+                <Avatar src={photoURL} name={name} size="xl" />
                 <View style={styles.cardText}>
-                  <Text style={styles.name} numberOfLines={1}>
+                  <Text style={styles.name} numberOfLines={2}>
                     {name}
                   </Text>
                   {headline ? (
@@ -234,6 +234,10 @@ export function ProfileMenu({
                   ) : null}
                 </View>
               </Pressable>
+
+              {/* Hairline under the profile hero, mirroring the one above the
+                  footer (Configurações / Sair). */}
+              <View style={styles.divider} />
             </ScrollView>
 
             {/* Settings + sign-out pinned to the bottom, mirroring the
@@ -292,33 +296,41 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
     scroll: { flex: 1 },
     scrollBody: { gap: 6, paddingTop: 4 },
     card: {
-      alignItems: "flex-start",
-      gap: 16,
-      paddingVertical: 10,
+      alignItems: "center",
+      gap: 12,
+      paddingTop: 8,
+      paddingBottom: 14,
       paddingHorizontal: 4,
       borderRadius: 16,
     },
     cardPressed: { backgroundColor: p.bg },
-    cardText: { gap: 6, width: "100%" },
+    cardText: { gap: 6, width: "100%", alignItems: "center" },
     name: {
-      flexShrink: 1,
       fontFamily: editorialFonts.serif,
-      fontSize: 23,
+      fontSize: 24,
       lineHeight: 30,
       color: p.ink,
+      textAlign: "center",
     },
     headline: {
       fontFamily: editorialFonts.sans,
-      fontSize: 13,
-      lineHeight: 19,
+      fontSize: 14,
+      lineHeight: 20,
       color: p.body,
+      textAlign: "center",
     },
-    locationRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 3 },
-    location: { fontFamily: editorialFonts.sans, fontSize: 12.5, color: p.muted },
+    locationRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 5,
+      marginTop: 3,
+    },
+    location: { fontFamily: editorialFonts.sans, fontSize: 13, color: p.muted },
     divider: {
       height: 1,
       backgroundColor: p.hairline,
-      marginVertical: 18,
+      marginTop: 16,
     },
     row: {
       flexDirection: "row",

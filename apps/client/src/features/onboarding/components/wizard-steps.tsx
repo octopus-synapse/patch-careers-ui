@@ -4,7 +4,10 @@
  * resume-style picker (+ live preview modal), the review hub, and the welcome
  * intro. Extracted from onboarding-wizard.tsx; the wizard just routes to these.
  */
-import { useGetV1OnboardingSessionResumePreview } from "@patch-careers/api-client";
+import {
+  useGetV1OnboardingSessionResumePreview,
+  useGetV1ResumeStyles,
+} from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import type { ColorScheme } from "@patch-careers/state";
 import { PhoneInput } from "@patch-careers/ui";
@@ -28,6 +31,7 @@ import {
   View,
 } from "react-native";
 import WebView from "react-native-webview";
+import { StyleScoreBadge } from "@/components/style-score-badge";
 import { AddRow, FieldRenderer, GhostButton, OverlayModal, useEd } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
@@ -314,6 +318,12 @@ export function ResumeStylePicker({
 }): ReactElement {
   const ed = useEd();
   const stylesList = parseResumeStyles(step);
+  // Live Style Scores from the catalog (replaces the step payload's stale
+  // hardcoded ATS number), keyed by style id.
+  const stylesQuery = useGetV1ResumeStyles();
+  const scoreById = new Map<string, number>(
+    (stylesQuery.data?.items ?? []).map((s) => [s.id, s.styleScore]),
+  );
   // Tapping a card opens a full-screen preview; selection happens there.
   const [previewId, setPreviewId] = useState<string | null>(null);
   if (stylesList.length === 0) {
@@ -333,6 +343,7 @@ export function ResumeStylePicker({
         <AnimatedField key={style.id} delay={120 + index * 70}>
           <ResumeStyleCard
             option={style}
+            liveScore={scoreById.get(style.id)}
             selected={style.id === selectedId}
             previewHint={t("onboarding.resumeStyle.previewHint")}
             onPress={() => setPreviewId(style.id)}
@@ -341,6 +352,7 @@ export function ResumeStylePicker({
       ))}
       <ResumeStyleModal
         option={previewed}
+        liveScore={previewed ? scoreById.get(previewed.id) : undefined}
         selected={previewed?.id === selectedId}
         t={t}
         onClose={() => setPreviewId(null)}
@@ -356,11 +368,13 @@ export function ResumeStylePicker({
 function ResumeStyleCard({
   onPress,
   option,
+  liveScore,
   previewHint,
   selected,
 }: {
   onPress: () => void;
   option: ResumeStyleOption;
+  liveScore?: number | undefined;
   previewHint: string;
   selected: boolean;
 }): ReactElement {
@@ -382,7 +396,9 @@ function ResumeStyleCard({
           {selected ? <Check size={16} color={authTokens.ink} strokeWidth={2} /> : null}
         </View>
         {option.description ? <RNText style={ed.styleDesc}>{option.description}</RNText> : null}
-        {option.atsScore ? <RNText style={ed.styleAts}>ATS {option.atsScore}/100</RNText> : null}
+        {typeof liveScore === "number" ? (
+          <StyleScoreBadge styleId={option.id} styleScore={liveScore} />
+        ) : null}
         <RNText style={ed.stylePreviewHint}>{previewHint}</RNText>
       </View>
     </Pressable>
@@ -510,18 +526,20 @@ function ResumeStyleModal({
   onClose,
   onUse,
   option,
+  liveScore,
   selected,
   t,
 }: {
   onClose: () => void;
   onUse: (id: string) => void;
   option: ResumeStyleOption | null;
+  liveScore?: number | undefined;
   selected: boolean;
   t: Translator;
 }): ReactElement {
   const ed = useEd();
   const authTokens = useEditorialPalette();
-  const band = atsBand(option?.atsScore);
+  const band = atsBand(liveScore);
   return (
     <OverlayModal visible={Boolean(option)} onRequestClose={onClose}>
       <View style={ed.editorModalOverlay}>
@@ -549,7 +567,7 @@ function ResumeStyleModal({
             {band ? (
               <View style={ed.atsSeal}>
                 <RNText style={ed.atsSealLabel}>
-                  {option?.atsScore ? `${option.atsScore}/100 · ` : ""}
+                  {typeof liveScore === "number" ? `${liveScore}/100 · ` : ""}
                   {t(`onboarding.ats.${band}.label`)}
                 </RNText>
                 <RNText style={ed.atsSealBlurb}>{t(`onboarding.ats.${band}.blurb`)}</RNText>

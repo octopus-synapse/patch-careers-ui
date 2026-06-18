@@ -7,6 +7,7 @@
 import {
   getV1ExportResumePreviewQueryKey,
   getV1ResumesQueryKey,
+  getV1ResumesResumeIdQualityQueryKey,
   getV1ResumesResumeIdQueryKey,
   getV1ResumesResumeIdSectionsQueryKey,
   useDeleteV1ResumesResumeIdSectionsSectionTypeKeyItemsItemId,
@@ -36,6 +37,9 @@ export function useSectionItemMutations(resumeId: string | undefined): {
       // parameterization (master default + explicit resumeId).
       queryClient.invalidateQueries({ queryKey: getV1ResumesQueryKey() }),
       queryClient.invalidateQueries({ queryKey: getV1ExportResumePreviewQueryKey() }),
+      // Bullet/content edit → the quality score recomputes server-side
+      // (debounced worker); refetch so the panel flips to "calculating".
+      queryClient.invalidateQueries({ queryKey: getV1ResumesResumeIdQualityQueryKey(resumeId) }),
     ]);
   };
 

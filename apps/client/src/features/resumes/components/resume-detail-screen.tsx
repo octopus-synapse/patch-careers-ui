@@ -9,18 +9,20 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { ChevronLeft, Copy, Download, Pencil, Trash2 } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
+import { type ReactElement, useRef, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ResumePreview } from "@/components/resume-preview";
-import { ResumeSectionsManager } from "@/features/sections";
+import { StyleScoreBadge } from "@/components/style-score-badge";
+import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import { useMasterResumeId, useResumeDetail, useResumeMutations } from "../hooks/queries";
 import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { RenameSheet } from "./rename-sheet";
+import { ResumeQualityPanel } from "./resume-quality-panel";
 
 function ActionPill({
   label,
@@ -62,6 +64,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [duplicateOpen, setDuplicateOpen] = useState(false);
+  const managerRef = useRef<SectionsManagerHandle>(null);
 
   const resume = detail.data;
   // The detail payload carries no isPrimary — the list query (already cached)
@@ -133,13 +136,29 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
           </View>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>{t("resumes.detail.style")}</Text>
-            <Text style={rz.metaValue}>{resume.style?.name ?? "—"}</Text>
+            {resume.style ? (
+              <View style={rz.metaValueRow}>
+                <Text style={rz.metaValue}>{resume.style.name}</Text>
+                <StyleScoreBadge styleId={resume.style.id} styleScore={resume.style.styleScore} />
+              </View>
+            ) : (
+              <Text style={rz.metaValue}>—</Text>
+            )}
           </View>
           <View style={rz.metaRow}>
             <Text style={rz.metaLabel}>{t("resumes.detail.lastEdited")}</Text>
             <Text style={rz.metaValue}>{editedAgo(resume.updatedAt, t, locale)}</Text>
           </View>
         </View>
+
+        {/* Resume Quality Score — overall pill + expandable breakdown */}
+        <ResumeQualityPanel
+          resumeId={id}
+          updatedAt={resume.updatedAt}
+          onOpenIssue={(sectionKey, itemIndex) =>
+            managerRef.current?.openItem(sectionKey, itemIndex)
+          }
+        />
 
         {/* Actions */}
         <View style={rz.actions}>
@@ -172,7 +191,11 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         <View>
           <Text style={rz.sectionLabel}>{t("resumes.detail.sections")}</Text>
         </View>
-        <ResumeSectionsManager resumeId={id} locale={resumeLanguageToLocale(resume.language)} />
+        <ResumeSectionsManager
+          ref={managerRef}
+          resumeId={id}
+          locale={resumeLanguageToLocale(resume.language)}
+        />
       </ScrollView>
 
       <RenameSheet

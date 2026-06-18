@@ -442,6 +442,7 @@ export function useOnboardingFlow() {
     session,
     flowStep,
     flowStepId,
+    setFlowStepId,
     editStep,
     editStepId,
     currentStep,
@@ -470,6 +471,7 @@ export function useOnboardingFlow() {
     extras,
     complete,
     // actions
+    commitSave,
     retryLoad,
     handleNext,
     handleSkip,

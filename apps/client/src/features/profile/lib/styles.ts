@@ -47,41 +47,42 @@ const pfFor = (p: EditorialPalette) =>
     location: { fontFamily: fonts.sans, fontSize: 13, color: p.muted },
     headlinePlaceholder: { color: p.subtle, fontStyle: "italic" },
 
-    // edit-sheet triggers under the header ("Editar perfil · Sobre · Links")
-    editTriggers: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 4 },
-    editTriggerWrap: { flexDirection: "row", alignItems: "center", gap: 10 },
-    editTriggerDot: { fontFamily: fonts.sans, fontSize: 12, color: p.subtle },
-    editLink: {
-      fontFamily: fonts.sans,
-      fontSize: 11,
-      fontWeight: "600",
-      letterSpacing: 1.2,
-      textTransform: "uppercase",
-      color: p.accent,
-    },
-
     // "Perfil" sub-tab body
     masterTab: { gap: 26 },
 
-    // cv button
-    cvButton: {
+    // "Perfil" group of editable rows (identity / about / links)
+    profileGroup: { gap: 12 },
+    profileGroupLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 10,
+      fontWeight: "600",
+      letterSpacing: 1.8,
+      textTransform: "uppercase",
+      color: p.muted,
+    },
+    profileRows: { gap: 10 },
+    linksGroup: { gap: 10, marginTop: 14 },
+
+    // master resume mini-preview banner (tap → full preview modal)
+    previewBanner: {
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
-      gap: 10,
+      gap: 14,
       borderWidth: 1,
-      borderColor: p.primary,
+      borderColor: p.hairline,
       borderRadius: 14,
       backgroundColor: p.surface,
-      paddingVertical: 15,
+      padding: 12,
     },
-    cvButtonLabel: {
+    previewBannerBody: { flex: 1, gap: 3 },
+    previewBannerTitle: {
       fontFamily: fonts.sans,
       fontSize: 14,
       fontWeight: "600",
-      letterSpacing: 0.4,
+      letterSpacing: 0.2,
       color: p.ink,
     },
+    previewBannerMeta: { fontFamily: fonts.sans, fontSize: 12, lineHeight: 16, color: p.muted },
 
     // edit sheets
     sheetBody: { gap: 22, paddingBottom: 8 },

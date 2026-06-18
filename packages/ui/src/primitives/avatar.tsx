@@ -24,13 +24,14 @@ const SIZE_TO_PX: Record<AvatarSize, number> = {
 export type AvatarProps = {
   src?: string | undefined;
   name: string;
-  size?: AvatarSize;
+  /** A named preset, or an explicit pixel size for fine control. */
+  size?: AvatarSize | number;
   accessibilityLabel?: string;
 };
 
 export function Avatar({ src, name, size = "md", accessibilityLabel }: AvatarProps) {
   const [errored, setErrored] = useState(false);
-  const px = SIZE_TO_PX[size];
+  const px = typeof size === "number" ? size : SIZE_TO_PX[size];
   const bgColor = avatarBackgroundColor(name);
   const showFallback = !src || errored;
 

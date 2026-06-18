@@ -161,6 +161,7 @@ const rzFor = (p: EditorialPalette) =>
     },
     metaBlock: { gap: 6 },
     metaRow: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
+    metaValueRow: { flexDirection: "row", alignItems: "center", gap: 8 },
     metaLabel: { fontFamily: fonts.sans, fontSize: 12, color: p.muted },
     metaValue: { fontFamily: fonts.sans, fontSize: 13.5, color: p.ink, textAlign: "right" },
 

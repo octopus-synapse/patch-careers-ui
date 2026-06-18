@@ -27,6 +27,9 @@ export const en: TranslationDict = {
     applications: "Applications",
     notifications: "Notifications",
     profile: "Profile",
+    // Short variants for the bottom tab bar (4 small-caps labels, tight fit).
+    applicationsShort: "Apps",
+    notificationsShort: "Notifs",
   },
   common: {
     hello: "Hello",

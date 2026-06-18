@@ -20,7 +20,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.patchcareers.app",
-      "associatedDomains": ["applinks:patchcareers.com"]
+      "associatedDomains": [
+        "applinks:patchcareers.com"
+      ]
     },
     "android": {
       "package": "com.patchcareers.app",
@@ -39,7 +41,10 @@
               "host": "patchcareers.com"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -60,7 +65,8 @@
       ],
       "expo-secure-store",
       "expo-local-authentication",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

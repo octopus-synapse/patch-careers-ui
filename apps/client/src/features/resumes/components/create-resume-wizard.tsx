@@ -40,6 +40,7 @@ import {
   useEd,
   useResumeSections,
 } from "@/features/sections";
+import { StyleScoreBadge } from "@/components/style-score-badge";
 import { useI18n } from "@/providers/i18n-provider";
 import { useResumeMutations, useResumeStyles } from "../hooks/queries";
 import { resumeLanguageToLocale } from "../lib/helpers";
@@ -302,6 +303,7 @@ export function CreateResumeWizard({
                                 {style.description}
                               </Text>
                             ) : null}
+                            <StyleScoreBadge styleId={style.id} styleScore={style.styleScore} />
                           </View>
                         </Pressable>
                       );

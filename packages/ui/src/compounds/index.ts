@@ -26,12 +26,28 @@ export { PasswordStrengthBar, type PasswordStrengthBarProps } from "./password-s
 export { PhoneInput, type PhoneInputProps } from "./phone-input";
 export { PullToRefresh, type PullToRefreshProps } from "./pull-to-refresh";
 export {
+  type QualityBreakdownIssue,
+  type QualitySeverity,
+  type QualitySubScore,
+  ResumeQualityBreakdown,
+  type ResumeQualityBreakdownProps,
+} from "./resume-quality-breakdown";
+export { ScoreChip, type ScoreChipProps, type ScoreChipSize } from "./score-chip";
+export {
   SegmentedControl,
   type SegmentedControlProps,
   type SegmentedItem,
 } from "./segmented-control";
 export { Sheet, type SheetProps, SheetRoot } from "./sheet";
 export { Skeleton, type SkeletonProps } from "./skeleton";
+export {
+  StyleScoreBreakdown,
+  type StyleScoreBreakdownBucket,
+  type StyleScoreBreakdownIssue,
+  type StyleScoreBreakdownProps,
+  type StyleScoreSeverity,
+} from "./style-score-breakdown";
+export { StyleScoreChip, type StyleScoreChipProps } from "./style-score-chip";
 export { SwipeableRow, type SwipeableRowProps } from "./swipeable-row";
 export { Tabs, type TabsProps } from "./tabs";
 export {

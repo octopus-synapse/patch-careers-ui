@@ -45,7 +45,6 @@ export function SectionGroup({
           {section.items.map((item, index) => (
             <SwipeableItemRow
               key={item.id ?? `${index}-${itemSummary(item, locale, fields)}`}
-              index={index}
               item={item}
               fields={fields}
               onEdit={() => onEditItem(item, index)}

@@ -11,28 +11,40 @@
  * The old completeness card and public-profile link are gone by design.
  */
 
+import type { PatchV1UsersProfileMutationRequest } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import * as ImagePicker from "expo-image-picker";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
 import { ResumeListTab } from "@/features/resumes";
+import { useI18n } from "@/providers/i18n-provider";
 import { useProfile, useProfileMutations } from "../hooks/queries";
+import { type ProfileFieldKey, profileFields } from "../lib/profile-fields";
 import { usePf } from "../lib/styles";
-import { AboutEditSheet, IdentityEditSheet, SocialLinksEditSheet } from "./edit-sheets";
+import { FieldEditModal } from "./field-edit-modal";
+import { LocationEditModal } from "./location-edit-modal";
 import { MasterSectionsTab } from "./master-sections-tab";
 import { ProfileHeader } from "./profile-header";
 import { type ProfileSubTab, ProfileSubTabs } from "./profile-sub-tabs";
 
-export type SheetKind = "identity" | "about" | "links";
-
 export function ProfileScreen(): ReactElement {
+  const { t } = useI18n();
   const palette = useEditorialPalette();
   const pf = usePf();
+  // Bar floats over content; pad the scroll so the last items clear it.
+  const tabBarHeight = useBottomTabBarHeight();
   const profileQuery = useProfile();
   const profile = profileQuery.data;
   const { updateProfile, updatePhoto, isPending: profilePending } = useProfileMutations();
-  const [sheet, setSheet] = useState<SheetKind | null>(null);
+  const [editing, setEditing] = useState<ProfileFieldKey | null>(null);
   const [tab, setTab] = useState<ProfileSubTab>("perfil");
+  const activeField = editing ? (profileFields(t).find((f) => f.key === editing) ?? null) : null;
+
+  const saveField = async (key: ProfileFieldKey, value: string): Promise<void> => {
+    const trimmed = value.trim();
+    await updateProfile((trimmed ? { [key]: trimmed } : {}) as PatchV1UsersProfileMutationRequest);
+  };
 
   const onChangePhoto = async (): Promise<void> => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -66,39 +78,38 @@ export function ProfileScreen(): ReactElement {
 
   return (
     <View style={pf.root}>
-      <ScrollView contentContainerStyle={pf.scroll} showsVerticalScrollIndicator={false}>
-        <ProfileHeader
-          profile={profile}
-          onChangePhoto={() => void onChangePhoto()}
-          onEdit={setSheet}
-        />
+      <ScrollView
+        contentContainerStyle={[pf.scroll, { paddingBottom: tabBarHeight }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <ProfileHeader profile={profile} onChangePhoto={() => void onChangePhoto()} />
 
         <ProfileSubTabs value={tab} onChange={setTab} />
 
-        {tab === "perfil" ? <MasterSectionsTab /> : <ResumeListTab />}
+        {tab === "perfil" ? (
+          <MasterSectionsTab profile={profile} onEdit={setEditing} />
+        ) : (
+          <ResumeListTab />
+        )}
       </ScrollView>
 
-      <IdentityEditSheet
-        open={sheet === "identity"}
-        onOpenChange={(open) => setSheet(open ? "identity" : null)}
-        profile={profile}
-        isPending={profilePending}
-        onSubmit={updateProfile}
-      />
-      <AboutEditSheet
-        open={sheet === "about"}
-        onOpenChange={(open) => setSheet(open ? "about" : null)}
-        profile={profile}
-        isPending={profilePending}
-        onSubmit={updateProfile}
-      />
-      <SocialLinksEditSheet
-        open={sheet === "links"}
-        onOpenChange={(open) => setSheet(open ? "links" : null)}
-        profile={profile}
-        isPending={profilePending}
-        onSubmit={updateProfile}
-      />
+      {activeField?.kind === "location" ? (
+        <LocationEditModal
+          open
+          onClose={() => setEditing(null)}
+          onSave={(label) => saveField("location", label)}
+        />
+      ) : activeField ? (
+        <FieldEditModal
+          key={activeField.key}
+          descriptor={activeField}
+          initialValue={profile?.[activeField.key] ?? ""}
+          open
+          onClose={() => setEditing(null)}
+          onSave={(value) => saveField(activeField.key, value)}
+          isPending={profilePending}
+        />
+      ) : null}
     </View>
   );
 }

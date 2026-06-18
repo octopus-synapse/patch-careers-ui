@@ -10,25 +10,37 @@ import {
   editorialPalette,
   editorialPaletteDark,
 } from "@patch-careers/tokens";
-import { type ReactElement, useEffect, useRef, useState } from "react";
+import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
 import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useThemeName } from "../internal/use-theme-name";
 import { editorialFonts as fonts } from "./fonts";
 
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
+export type SegmentedTab<T extends string> = {
+  key: T;
+  label: string;
+  /** Glyph for the `"icon"` variant; receives the resolved per-state color. */
+  icon?: (color: string) => ReactNode;
+};
+
 export type SegmentedTabsProps<T extends string> = {
-  tabs: ReadonlyArray<{ key: T; label: string }>;
+  tabs: ReadonlyArray<SegmentedTab<T>>;
   value: T;
   onChange: (tab: T) => void;
+  /** `"label"` (default) shows text; `"icon"` shows the glyph only (IG-style). */
+  variant?: "label" | "icon";
 };
 
 export function SegmentedTabs<T extends string>({
   tabs,
   value,
   onChange,
+  variant = "label",
 }: SegmentedTabsProps<T>): ReactElement {
-  const styles = stylesByTheme[useThemeName()];
+  const theme = useThemeName();
+  const styles = stylesByTheme[theme];
+  const palette = theme === "dark" ? editorialPaletteDark : editorialPalette;
   const [width, setWidth] = useState(0);
   const index = tabs.findIndex((tab) => tab.key === value);
   const anim = useRef(new Animated.Value(index)).current;
@@ -57,11 +69,16 @@ export function SegmentedTabs<T extends string>({
             <Pressable
               key={tab.key}
               accessibilityRole="tab"
+              accessibilityLabel={tab.label}
               accessibilityState={{ selected }}
               onPress={() => onChange(tab.key)}
               style={styles.segment}
             >
-              <Text style={[styles.label, selected && styles.labelSelected]}>{tab.label}</Text>
+              {variant === "icon" && tab.icon ? (
+                tab.icon(selected ? palette.ink : palette.muted)
+              ) : (
+                <Text style={[styles.label, selected && styles.labelSelected]}>{tab.label}</Text>
+              )}
             </Pressable>
           );
         })}

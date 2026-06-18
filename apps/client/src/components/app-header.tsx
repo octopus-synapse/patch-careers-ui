@@ -15,8 +15,8 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import { useGetV1ChatUnread, useGetV1UsersProfile } from "@patch-careers/api-client";
-import { Avatar, Text, XStack } from "@patch-careers/ui";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { Avatar, XStack } from "@patch-careers/ui";
+import { CountBadge, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
@@ -51,7 +51,6 @@ export function AppHeader(): ReactElement {
     query: { enabled: isAuthenticated, refetchInterval: 30_000 },
   });
   const totalUnread = unread.data?.totalUnread ?? 0;
-  const unreadBadge = totalUnread > 99 ? "99+" : String(totalUnread);
 
   return (
     <View
@@ -93,26 +92,7 @@ export function AppHeader(): ReactElement {
         >
           <View>
             <Ionicons name="chatbubble-ellipses-outline" size={26} color={editorialPalette.ink} />
-            {totalUnread > 0 ? (
-              <View
-                style={{
-                  position: "absolute",
-                  top: -5,
-                  right: -6,
-                  minWidth: 16,
-                  height: 16,
-                  paddingHorizontal: 3,
-                  borderRadius: 8,
-                  backgroundColor: editorialPalette.accent,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text color="white" fontSize={10} lineHeight={12} fontWeight="700">
-                  {unreadBadge}
-                </Text>
-              </View>
-            ) : null}
+            <CountBadge count={totalUnread} />
           </View>
         </Pressable>
       </XStack>

@@ -51,6 +51,13 @@ export const profilePtBR: TranslationDict = {
     onboardingRequired: "Conclua o onboarding para montar seu currículo principal.",
     viewResumeA11y: "Ver currículo",
     viewResume: "Ver currículo (CV)",
+    previewHint: "Toque para ver e baixar em PDF",
+  },
+  rows: {
+    groupLabel: "PERFIL",
+    links: "LINKS",
+    add: "Adicionar",
+    editA11y: "Editar {label}",
   },
   edit: {
     identityTitle: "Editar perfil",
@@ -60,7 +67,7 @@ export const profilePtBR: TranslationDict = {
     fields: {
       name: "Nome",
       headline: "Título profissional",
-      bio: "Sobre você",
+      bio: "Resumo profissional",
       website: "Website",
       twitter: "Twitter / X",
     },
@@ -113,6 +120,13 @@ export const profileEn: TranslationDict = {
     onboardingRequired: "Complete the onboarding to build your main resume.",
     viewResumeA11y: "View resume",
     viewResume: "View resume (CV)",
+    previewHint: "Tap to view and download as PDF",
+  },
+  rows: {
+    groupLabel: "PROFILE",
+    links: "LINKS",
+    add: "Add",
+    editA11y: "Edit {label}",
   },
   edit: {
     identityTitle: "Edit profile",
@@ -122,7 +136,7 @@ export const profileEn: TranslationDict = {
     fields: {
       name: "Name",
       headline: "Professional title",
-      bio: "About you",
+      bio: "Professional summary",
       website: "Website",
       twitter: "Twitter / X",
     },
