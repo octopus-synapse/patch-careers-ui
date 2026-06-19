@@ -17,6 +17,7 @@ import {
   getV1JobsExternalSaved,
 } from "@patch-careers/api-client";
 import { keepPreviousData, type QueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { normalizeSavedJob } from "../lib/helpers";
 import type { ExternalJob, JobsFilters, JobsScope } from "../types";
 
@@ -95,8 +96,23 @@ export function useExternalJobs(
   });
 
   const pages = query.data?.pages ?? [];
+  // Dedupe by id across pages: page-number pagination over a daily batch can
+  // repeat a listing between consecutive pages, which would otherwise surface
+  // as duplicate SectionList keys ("two children with the same key").
+  const jobs = useMemo(() => {
+    const seen = new Set<string>();
+    const out: ExternalJob[] = [];
+    for (const page of pages) {
+      for (const job of page.items) {
+        if (seen.has(job.id)) continue;
+        seen.add(job.id);
+        out.push(job);
+      }
+    }
+    return out;
+  }, [pages]);
   return {
-    jobs: pages.flatMap((page) => page.items),
+    jobs,
     total: pages[0]?.total ?? 0,
     isLoading: query.isLoading,
     isError: query.isError,
