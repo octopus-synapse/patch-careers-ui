@@ -64,9 +64,12 @@ export function useExternalJobs(
   fetchNextPage: () => void;
   refetch: () => void;
 } {
-  // The saved list is a snapshot archive — filters only apply to "all".
+  // The saved list is a snapshot archive — filters only apply to "all". The
+  // "applications" scope is served by `useApplications`, not this hook, so the
+  // infinite query stays disabled there (no wasted saved-list fetch).
   const params = scope === "all" ? filtersToParams(filters) : { limit: PAGE_SIZE };
   const query = useInfiniteQuery({
+    enabled: scope !== "applications",
     queryKey: [scope === "all" ? EXTERNAL_JOBS_BASE : SAVED_JOBS_BASE, "infinite", params],
     queryFn: async ({ pageParam, signal }): Promise<JobsPage> => {
       if (scope === "all") {

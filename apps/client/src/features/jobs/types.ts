@@ -19,8 +19,14 @@ export type SavedExternalJobItem = GetV1JobsExternalSaved200["items"][number];
 
 export type PostedWithin = GetV1JobsExternalQueryParamsPostedWithinEnum;
 
-/** Which list the screen shows: every listing or only the user's saved ones. */
-export type JobsScope = "all" | "saved";
+/**
+ * Which list the Vagas tab shows:
+ *   • `all`          — every external listing (discovery, the default)
+ *   • `saved`        — the user's saved snapshots
+ *   • `applications` — the user's applications (internal + self-reported
+ *                      external), folded in from the retired Candidaturas tab.
+ */
+export type JobsScope = "all" | "saved" | "applications";
 
 export type JobsFilters = {
   /** Any-of work modes (Presencial/Híbrido/Remoto); empty means "any". */

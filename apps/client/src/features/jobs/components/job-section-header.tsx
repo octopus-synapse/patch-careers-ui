@@ -1,18 +1,17 @@
 /**
- * Editorial period header for the grouped list ("Hoje" / "Esta semana" /
- * "Anteriores"): small-caps muted label with generous top breathing room.
- * Receives the section *key* and resolves the display title itself.
+ * Editorial section header for the grouped list — small-caps muted label with
+ * generous top breathing room. Used for both the period sections of the jobs
+ * list ("Hoje" / "Esta semana" / "Anteriores") and the status sections of the
+ * Candidaturas scope ("Em análise" / "Resposta" / …). The caller resolves the
+ * display title so this stays a pure presenter.
  */
 
 import { Text, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
-import { useI18n } from "@/providers/i18n-provider";
-import type { JobSection } from "../lib/helpers";
 
-export function JobSectionHeader({ sectionKey }: { sectionKey: JobSection["key"] }): ReactElement {
+export function JobSectionHeader({ title }: { title: string }): ReactElement {
   const editorialPalette = useEditorialPalette();
-  const { t } = useI18n();
   return (
     <YStack paddingHorizontal={20} paddingTop={28} paddingBottom={6}>
       <Text
@@ -23,7 +22,7 @@ export function JobSectionHeader({ sectionKey }: { sectionKey: JobSection["key"]
         textTransform="uppercase"
         color={editorialPalette.muted}
       >
-        {t(`jobs.sections.${sectionKey}`)}
+        {title}
       </Text>
     </YStack>
   );

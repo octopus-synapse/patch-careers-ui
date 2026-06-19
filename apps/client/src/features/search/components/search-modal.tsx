@@ -210,16 +210,21 @@ export function SearchModal({
           },
         ]}
       >
-        {/* Top row — the real search input, over a hairline rule. */}
+        {/* Top row — the real search input, styled as the header trigger in its
+            active "V3" state (accent focus ring + accent glyph) so the palette
+            reads as the same field lighting up as it grows out of the header. */}
         <XStack
           alignItems="center"
-          gap={7}
-          paddingHorizontal={16}
-          paddingVertical={12}
-          borderBottomWidth={1}
-          borderBottomColor={editorialPalette.hairline}
+          gap={10}
+          margin={10}
+          paddingHorizontal={14}
+          height={46}
+          borderRadius={23}
+          borderWidth={2}
+          borderColor={`${editorialPalette.accent}4D`}
+          backgroundColor={editorialPalette.surface}
         >
-          <Icon as={Search} size={16} color={editorialPalette.subtle} />
+          <Icon as={Search} size={22} color={editorialPalette.accent} />
           <Input
             ref={inputRef}
             flex={1}

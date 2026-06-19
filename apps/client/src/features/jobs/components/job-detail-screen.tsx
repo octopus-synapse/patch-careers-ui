@@ -25,8 +25,10 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
+import { useReportApplied } from "../hooks/use-report-applied";
 import { useToggleSaveJob } from "../hooks/use-save-job";
 import { jobMetaLine, postedAgo } from "../lib/helpers";
+import { DidYouApplySheet } from "./did-you-apply-sheet";
 
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const editorialPalette = useEditorialPalette();
@@ -35,10 +37,29 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const queryClient = useQueryClient();
   const { t, locale } = useI18n();
   const { toggle: toggleSave, pendingId } = useToggleSaveJob();
+  const { report: reportApplied, pending: reportPending } = useReportApplied();
 
   const job = useMemo(() => findExternalJob(queryClient, id), [queryClient, id]);
   const [saved, setSaved] = useState(job?.isSaved ?? false);
   const savePending = job !== null && pendingId === job.externalId;
+  const [didApplyOpen, setDidApplyOpen] = useState(false);
+
+  // External jobs apply on the publisher's site, so we can't observe the
+  // outcome: open the apply URL, then ask "você se candidatou?" on return.
+  async function onApply(): Promise<void> {
+    if (job === null) return;
+    await WebBrowser.openBrowserAsync(job.applyUrl);
+    setDidApplyOpen(true);
+  }
+
+  async function onDidApplyAnswer(didApply: boolean): Promise<void> {
+    if (job !== null) {
+      const fresh = findExternalJob(queryClient, id) ?? job;
+      await reportApplied({ ...fresh, isSaved: saved, savedId: fresh.savedId }, didApply);
+      if (didApply) setSaved(true);
+    }
+    setDidApplyOpen(false);
+  }
 
   function onToggleSave(): void {
     if (job === null || savePending) return;
@@ -164,10 +185,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
             borderTopWidth={1}
             borderTopColor={editorialPalette.hairline}
           >
-            <PrimaryAction
-              label={t("jobs.detail.apply")}
-              onPress={() => void WebBrowser.openBrowserAsync(job.applyUrl)}
-            />
+            <PrimaryAction label={t("jobs.detail.apply")} onPress={() => void onApply()} />
             <Text preset="caption" fontSize={12} color={editorialPalette.subtle} textAlign="center">
               {job.publisher
                 ? t("jobs.detail.opensPublisherSiteNamed", { publisher: job.publisher })
@@ -176,6 +194,13 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
           </YStack>
         </>
       )}
+
+      <DidYouApplySheet
+        open={didApplyOpen}
+        onOpenChange={setDidApplyOpen}
+        onAnswer={(didApply) => void onDidApplyAnswer(didApply)}
+        pending={reportPending}
+      />
     </View>
   );
 }

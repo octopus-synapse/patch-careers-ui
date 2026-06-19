@@ -12,6 +12,7 @@ export const jobsPtBR: TranslationDict = {
   scope: {
     all: "Todas",
     saved: "Salvas",
+    applications: "Candidaturas",
   },
   count: {
     updatedDaily: "Atualizadas diariamente",
@@ -26,6 +27,10 @@ export const jobsPtBR: TranslationDict = {
     saved: {
       one: "{count} vaga salva",
       many: "{count} vagas salvas",
+    },
+    applications: {
+      one: "{count} candidatura",
+      many: "{count} candidaturas",
     },
   },
   sections: {
@@ -54,11 +59,33 @@ export const jobsPtBR: TranslationDict = {
     apply: "Aplicar",
     clearAll: "Limpar tudo",
     clearAllA11y: "Limpar todos os filtros",
+    removeChipA11y: "Remover filtro {label}",
     groups: {
       workMode: "Modalidade",
       employmentType: "Tipo de vaga",
       postedWithin: "Publicada em",
     },
+  },
+  // Candidaturas scope (folded in from the retired Candidaturas tab).
+  applications: {
+    appliedTag: "Candidatado",
+    silence: "Sem resposta há {days} dias",
+    status: {
+      review: "Em análise",
+      interview: "Entrevista",
+      response: "Resposta",
+      noResponse: "Sem retorno",
+      closed: "Encerradas",
+    },
+  },
+  // "Você se candidatou?" prompt shown on return from an external apply site.
+  didApply: {
+    title: "Você se candidatou?",
+    description:
+      "Concluiu a candidatura no site do anunciante? Usamos isso para acompanhar suas candidaturas.",
+    yes: "Sim, me candidatei",
+    no: "Ainda não",
+    dismiss: "Agora não",
   },
   postedWithin: {
     today: "Hoje",
@@ -86,6 +113,11 @@ export const jobsPtBR: TranslationDict = {
       title: "Nenhuma vaga por aqui ainda",
       description: "Novas vagas chegam todos os dias às 6h. Volte em breve.",
     },
+    applications: {
+      title: "Nenhuma candidatura ainda",
+      description: "Quando você se candidatar a uma vaga, ela aparece aqui.",
+      cta: "Encontrar vagas para aplicar",
+    },
   },
   detail: {
     back: "Voltar",
@@ -108,6 +140,7 @@ export const jobsEn: TranslationDict = {
   scope: {
     all: "All",
     saved: "Saved",
+    applications: "Applications",
   },
   count: {
     updatedDaily: "Updated daily",
@@ -122,6 +155,10 @@ export const jobsEn: TranslationDict = {
     saved: {
       one: "{count} saved job",
       many: "{count} saved jobs",
+    },
+    applications: {
+      one: "{count} application",
+      many: "{count} applications",
     },
   },
   sections: {
@@ -150,11 +187,33 @@ export const jobsEn: TranslationDict = {
     apply: "Apply",
     clearAll: "Clear all",
     clearAllA11y: "Clear all filters",
+    removeChipA11y: "Remove filter {label}",
     groups: {
       workMode: "Work mode",
       employmentType: "Job type",
       postedWithin: "Posted",
     },
+  },
+  // Applications scope (folded in from the retired Applications tab).
+  applications: {
+    appliedTag: "Applied",
+    silence: "No reply for {days} days",
+    status: {
+      review: "In review",
+      interview: "Interview",
+      response: "Response",
+      noResponse: "No reply",
+      closed: "Closed",
+    },
+  },
+  // "Did you apply?" prompt shown on return from an external apply site.
+  didApply: {
+    title: "Did you apply?",
+    description:
+      "Did you finish applying on the publisher's site? We use this to track your applications.",
+    yes: "Yes, I applied",
+    no: "Not yet",
+    dismiss: "Not now",
   },
   postedWithin: {
     today: "Today",
@@ -181,6 +240,11 @@ export const jobsEn: TranslationDict = {
     none: {
       title: "No jobs here yet",
       description: "New jobs arrive every day at 6 a.m. Check back soon.",
+    },
+    applications: {
+      title: "No applications yet",
+      description: "When you apply to a job, it shows up here.",
+      cta: "Find jobs to apply to",
     },
   },
   detail: {

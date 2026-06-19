@@ -1,9 +1,13 @@
 import type { ReactElement } from "react";
 
 /**
- * Bottom tab bar (D51 — fixed bottom tab) with 4 tabs (D52):
+ * Bottom tab bar (D51 — fixed bottom tab) with 3 tabs:
  *
- *   Jobs · Applications · Notifications · Profile
+ *   Vagas · Notificações · Perfil
+ *
+ * "Candidaturas" was folded into the Vagas tab as a third scope
+ * (Todas · Salvas · Candidaturas), so it no longer has its own tab. With
+ * only three tabs there is room for full (non-abbreviated) labels.
  *
  * Labels come from the i18n dictionaries (`tabs.*`) so they follow the
  * user's locale. Icons come from Expo Vector Icons so active tabs can use
@@ -60,16 +64,9 @@ export default function TabsLayout(): ReactElement | null {
         }}
       />
       <Tabs.Screen
-        name="applications"
-        options={{
-          title: t("tabs.applicationsShort"),
-          tabBarIcon: tabIcon("send-outline", "send"),
-        }}
-      />
-      <Tabs.Screen
         name="notifications"
         options={{
-          title: t("tabs.notificationsShort"),
+          title: t("tabs.notifications"),
           tabBarIcon: tabIcon("notifications-outline", "notifications"),
         }}
       />

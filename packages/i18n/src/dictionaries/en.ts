@@ -24,12 +24,11 @@ export const en: TranslationDict = {
   settings: settingsEn,
   tabs: {
     jobs: "Jobs",
+    // "Applications" is no longer a tab — it's a scope inside Jobs — but the
+    // label is reused there (see jobs.scope.applications).
     applications: "Applications",
     notifications: "Notifications",
     profile: "Profile",
-    // Short variants for the bottom tab bar (4 small-caps labels, tight fit).
-    applicationsShort: "Apps",
-    notificationsShort: "Notifs",
   },
   common: {
     hello: "Hello",

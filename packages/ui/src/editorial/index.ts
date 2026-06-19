@@ -40,6 +40,7 @@ export { EditorialTextLink, type EditorialTextLinkProps } from "./editorial-text
 export { FieldError } from "./field-error";
 export { editorialFonts } from "./fonts";
 export { FooterPrompt, type FooterPromptProps } from "./footer-prompt";
+export { FROSTED_PILL_STATE, FrostedPill, type FrostedPillProps } from "./frosted-pill";
 export { InlineLink, type InlineLinkProps } from "./inline-link";
 export { OAuthButton, type OAuthButtonProps } from "./oauth-button";
 export { OrDivider } from "./or-divider";
@@ -48,6 +49,14 @@ export { PasswordStrengthMeter } from "./password-strength-meter";
 export { PatchLogo } from "./patch-logo";
 export { PrimaryAction, type PrimaryActionProps } from "./primary-action";
 export { type SegmentedTab, SegmentedTabs, type SegmentedTabsProps } from "./segmented-tabs";
+export {
+  FrostedBar,
+  type FrostedBarVariant,
+  TAB_ICON_BAND,
+  TAB_ICON_SIZE,
+  TabBarItem,
+  type TabBarItemSize,
+} from "./tab-bar";
 export { ToggleField, type ToggleFieldProps } from "./toggle-field";
 export { UnderlineInput, type UnderlineInputProps } from "./underline-input";
 export { Wordmark } from "./wordmark";
