@@ -15,8 +15,8 @@ import {
   StyleScoreBreakdown,
   type StyleScoreBreakdownBucket,
   type StyleScoreBreakdownIssue,
-  type StyleScoreSeverity,
   StyleScoreChip,
+  type StyleScoreSeverity,
 } from "@patch-careers/ui";
 import { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";

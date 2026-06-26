@@ -15,12 +15,7 @@ import { useRouter } from "expo-router";
 import { AtSign, Download, KeyRound, Link2, Mail, Trash2, UserMinus } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import {
-  SectionHeader,
-  SettingsCard,
-  SettingsRow,
-  SettingsScreenShell,
-} from "@/features/settings";
+import { SectionHeader, SettingsCard, SettingsRow, SettingsScreenShell } from "@/features/settings";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";

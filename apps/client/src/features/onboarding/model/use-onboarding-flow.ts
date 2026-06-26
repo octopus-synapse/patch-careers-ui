@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
-import { translateBackendCode } from "@/components/auth/validation";
+import { translateBackendCode } from "@/lib/errors/backend-error";
 import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 import {

@@ -8,7 +8,7 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Ban } from "lucide-react-native";
 import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import {
   type MessagePrivacy,
   PillSelect,
@@ -29,16 +29,22 @@ export default function PrivacyScreen(): ReactElement {
   const prefsQuery = useGetV1UsersPreferencesFull();
   const patch = usePatchV1UsersPreferencesFull();
 
+  // Local copies give the pills instant feedback on tap; they're seeded from
+  // the server response and fall back to the backend defaults so a missing
+  // field never strands the screen on a spinner.
+  const prefs = prefsQuery.data?.preferences;
   const [visibility, setVisibility] = useState<ProfileVisibility | null>(null);
   const [messaging, setMessaging] = useState<MessagePrivacy | null>(null);
 
   useEffect(() => {
-    const p = prefsQuery.data?.preferences;
-    if (p) {
-      setVisibility(p.profileVisibility as ProfileVisibility);
-      setMessaging(p.messagePrivacy as MessagePrivacy);
+    if (prefs) {
+      setVisibility(prefs.profileVisibility as ProfileVisibility);
+      setMessaging(prefs.messagePrivacy as MessagePrivacy);
     }
-  }, [prefsQuery.data]);
+  }, [prefs]);
+
+  const visValue = visibility ?? (prefs?.profileVisibility as ProfileVisibility) ?? "PRIVATE";
+  const msgValue = messaging ?? (prefs?.messagePrivacy as MessagePrivacy) ?? "EVERYONE";
 
   const visOptions = [
     { value: "PUBLIC" as const, label: t("settings.privacy.visibility.public") },
@@ -51,12 +57,19 @@ export default function PrivacyScreen(): ReactElement {
     { value: "NOBODY" as const, label: t("settings.privacy.messaging.nobody") },
   ];
 
-  const ready = visibility != null && messaging != null;
-
   return (
     <SettingsScreenShell title={t("settings.privacy.title")}>
-      {!ready ? (
+      {prefsQuery.isPending ? (
         <ActivityIndicator color={palette.ink} style={{ marginTop: 32 }} />
+      ) : prefsQuery.isError ? (
+        <View style={{ marginTop: 24, gap: 12 }}>
+          <Text style={styles.bodyText}>{t("settings.privacy.loadError")}</Text>
+          <Pressable onPress={() => prefsQuery.refetch()} disabled={prefsQuery.isFetching}>
+            <Text style={[styles.bodyText, { color: palette.accent, fontWeight: "600" }]}>
+              {t("settings.privacy.retry")}
+            </Text>
+          </Pressable>
+        </View>
       ) : (
         <>
           <SectionHeader label={t("settings.privacy.visibility.label")} />
@@ -64,7 +77,7 @@ export default function PrivacyScreen(): ReactElement {
             <View style={styles.cardInner}>
               <PillSelect<ProfileVisibility>
                 options={visOptions}
-                value={visibility}
+                value={visValue}
                 onChange={(v) => {
                   setVisibility(v);
                   patch.mutate({ data: { profileVisibility: v } });
@@ -78,7 +91,7 @@ export default function PrivacyScreen(): ReactElement {
             <View style={styles.cardInner}>
               <PillSelect<MessagePrivacy>
                 options={msgOptions}
-                value={messaging}
+                value={msgValue}
                 onChange={(v) => {
                   setMessaging(v);
                   patch.mutate({ data: { messagePrivacy: v } });

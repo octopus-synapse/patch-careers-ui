@@ -400,7 +400,7 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
     editorModalBackdrop: { ...StyleSheet.absoluteFillObject },
     editorModalCard: {
       width: "90%",
-      height: "90%",
+      height: "84%",
       maxWidth: 560,
       backgroundColor: authTokens.bg,
       borderRadius: 22,

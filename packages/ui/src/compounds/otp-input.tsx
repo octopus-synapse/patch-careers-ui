@@ -90,9 +90,7 @@ export function OTPInput({
           ref={refs[i]}
           value={digit}
           onChangeText={(raw: string) => handleSlot(i, raw)}
-          onKeyPress={(e: { nativeEvent: { key: string } }) =>
-            handleKeyPress(i, e.nativeEvent.key)
-          }
+          onKeyPress={(e: { nativeEvent: { key: string } }) => handleKeyPress(i, e.nativeEvent.key)}
           maxLength={length}
           keyboardType="number-pad"
           textAlign="center"

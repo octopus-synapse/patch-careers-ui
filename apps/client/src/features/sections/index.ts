@@ -3,6 +3,7 @@
  * experience, education, …) plus the field controls, primitives and styles it
  * is built from. Consumed by both the onboarding wizard and the Profile tab.
  */
+export { AddSectionFlowModal } from "./components/add-section-flow-modal";
 export { FieldRenderer } from "./components/field-renderer";
 export {
   AddRow,
@@ -17,9 +18,14 @@ export {
   type ResumeSectionsManagerProps,
   type SectionsManagerHandle,
 } from "./components/resume-sections-manager";
+export { SectionCard } from "./components/section-card";
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";
-export { type ResumeSections, useResumeSections } from "./hooks/use-resume-sections";
+export {
+  type ResumeSections,
+  type SectionGroupInfo,
+  useResumeSections,
+} from "./hooks/use-resume-sections";
 export { useSectionItemMutations } from "./hooks/use-section-item-mutations";
 export { itemCardParts, itemSummary, monthLabel, parseYearMonth } from "./lib/helpers";
 export { fieldsFromDefinition } from "./lib/section-definition";

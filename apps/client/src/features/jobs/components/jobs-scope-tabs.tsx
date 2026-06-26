@@ -5,16 +5,14 @@
  * ink text + a filled glyph; the inactive ones are deep translucent glass with
  * light text + an outline glyph.
  *
- * The pill material comes from the shared `FrostedPill` primitive
- * (`@patch-careers/ui/editorial`), so these scope tabs and the active filter
- * chips render the EXACT same thing (DRY). This file owns only the scope set,
- * the per-scope icons, and the navigation wiring.
+ * The row + pill material come from the shared `FrostedPillTabs` primitive
+ * (`@patch-careers/ui/editorial`), which the Profile sub-tabs render through
+ * too, so the two stay byte-for-byte identical (DRY). This file owns only the
+ * scope set, the per-scope icons, and the navigation wiring.
  */
 import { Ionicons } from "@expo/vector-icons";
-import { FrostedPill } from "@patch-careers/ui/editorial";
-import * as Haptics from "expo-haptics";
+import { FrostedPillTabs } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
-import { Platform, ScrollView } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import type { JobsScope } from "../types";
 
@@ -36,43 +34,16 @@ export function JobsScopeTabs({
   const { t } = useI18n();
 
   return (
-    // Centered when the three pills fit; horizontally scrollable when
-    // "Candidaturas" pushes them past a narrow viewport.
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{
-        flexGrow: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10,
-        paddingHorizontal: 16,
-      }}
-    >
-      {SCOPES.map((scope) => {
-        const focused = scope.key === value;
-        return (
-          <FrostedPill
-            key={scope.key}
-            active={focused}
-            size="sm"
-            label={t(`jobs.scope.${scope.key}`)}
-            renderLeading={(color, iconSize) => (
-              <Ionicons
-                name={focused ? scope.filled : scope.outline}
-                size={iconSize}
-                color={color}
-              />
-            )}
-            onPress={() => {
-              if (focused) return;
-              if (Platform.OS !== "web") void Haptics.selectionAsync();
-              onChange(scope.key);
-            }}
-          />
-        );
-      })}
-    </ScrollView>
+    <FrostedPillTabs
+      value={value}
+      onChange={onChange}
+      tabs={SCOPES.map((scope) => ({
+        key: scope.key,
+        label: t(`jobs.scope.${scope.key}`),
+        renderIcon: (color, size, active) => (
+          <Ionicons name={active ? scope.filled : scope.outline} size={size} color={color} />
+        ),
+      }))}
+    />
   );
 }

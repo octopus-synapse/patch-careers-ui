@@ -140,7 +140,11 @@ export function Sheet({
             onPress={close}
           />
           <View
-            style={[styles.webCard, { maxWidth: webMaxWidth }, fillHeight ? styles.webCardFill : null]}
+            style={[
+              styles.webCard,
+              { maxWidth: webMaxWidth },
+              fillHeight ? styles.webCardFill : null,
+            ]}
           >
             <SheetHeader title={title} onClose={close} closeLabel={closeLabel} />
             <View style={styles.webBody}>{children}</View>

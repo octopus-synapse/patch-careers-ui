@@ -1,13 +1,13 @@
 import type { ReactElement } from "react";
 
 /**
- * Bottom tab bar (D51 — fixed bottom tab) with 3 tabs:
+ * Bottom tab bar (D51 — fixed bottom tab) with 4 tabs:
  *
- *   Vagas · Notificações · Perfil
+ *   Vagas · Mensagens · Notificações · Perfil
  *
  * "Candidaturas" was folded into the Vagas tab as a third scope
- * (Todas · Salvas · Candidaturas), so it no longer has its own tab. With
- * only three tabs there is room for full (non-abbreviated) labels.
+ * (Todas · Salvas · Candidaturas), so it no longer has its own tab. Messages
+ * was promoted from an AppHeader quick-action to its own tab.
  *
  * Labels come from the i18n dictionaries (`tabs.*`) so they follow the
  * user's locale. Icons come from Expo Vector Icons so active tabs can use
@@ -18,6 +18,7 @@ import type { ReactElement } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useEditorialPalette } from "@patch-careers/ui";
 import { Redirect, Tabs } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppHeader } from "@/components/app-header";
 import { EditorialTabBar } from "@/components/editorial-tab-bar";
 import { ProfileTabIcon } from "@/components/profile-tab-icon";
@@ -37,7 +38,17 @@ export default function TabsLayout(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
   const { currentUser, isAuthenticated } = useAuthState();
   const palette = useEditorialPalette();
+  const insets = useSafeAreaInsets();
   const { t } = useI18n();
+
+  // Opt a tab out of the global AppHeader: drop the navbar *and* reserve the
+  // safe-area top space on the scene so content isn't clipped by the status
+  // bar/notch. Spread into any tab that should be header-less — that's the
+  // only line a new tab needs.
+  const headerlessTab = {
+    headerShown: false,
+    sceneStyle: { backgroundColor: palette.bg, paddingTop: insets.top },
+  } as const;
 
   if (!hasBootstrapped) return null;
   if (!isAuthenticated) return <Redirect href={AUTH_SIGN_IN_ROUTE} />;
@@ -64,6 +75,14 @@ export default function TabsLayout(): ReactElement | null {
         }}
       />
       <Tabs.Screen
+        name="messages"
+        options={{
+          ...headerlessTab,
+          title: t("tabs.messages"),
+          tabBarIcon: tabIcon("chatbubble-ellipses-outline", "chatbubble-ellipses"),
+        }}
+      />
+      <Tabs.Screen
         name="notifications"
         options={{
           title: t("tabs.notifications"),
@@ -73,6 +92,7 @@ export default function TabsLayout(): ReactElement | null {
       <Tabs.Screen
         name="profile"
         options={{
+          ...headerlessTab,
           title: t("tabs.profile"),
           tabBarIcon: ({ focused, size }) => <ProfileTabIcon focused={focused} size={size} />,
         }}

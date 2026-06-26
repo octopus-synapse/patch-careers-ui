@@ -20,7 +20,7 @@ import {
   useEditorialPalette,
   useThemeName,
 } from "@patch-careers/ui/editorial";
-import { Check, ChevronLeft, X } from "lucide-react-native";
+import { Check, ChevronLeft, Minus, X } from "lucide-react-native";
 import { type ReactElement, useMemo, useState } from "react";
 import {
   Image,
@@ -32,6 +32,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { StyleScoreBadge } from "@/components/style-score-badge";
 import {
   itemCardParts,
   type MergedSection,
@@ -40,7 +41,6 @@ import {
   useEd,
   useResumeSections,
 } from "@/features/sections";
-import { StyleScoreBadge } from "@/components/style-score-badge";
 import { useI18n } from "@/providers/i18n-provider";
 import { useResumeMutations, useResumeStyles } from "../hooks/queries";
 import { resumeLanguageToLocale } from "../lib/helpers";
@@ -107,6 +107,14 @@ export function CreateResumeWizard({
   // Seed the checklist with everything selected once the data arrives.
   const effective = selection ?? buildInitialSelection(copyable);
 
+  // Live totals for the recap line (only copyable items carry an id).
+  const totalItems = copyable.reduce(
+    (sum, section) => sum + section.items.filter((item) => item.id).length,
+    0,
+  );
+  let selectedItems = 0;
+  for (const section of copyable) selectedItems += effective.get(section.key)?.size ?? 0;
+
   const toggleItem = (sectionKey: string, itemId: string): void => {
     const next = new Map(effective);
     const items = new Set(next.get(sectionKey) ?? []);
@@ -158,9 +166,11 @@ export function CreateResumeWizard({
     }
   };
 
-  const checkbox = (checked: boolean): ReactElement => (
-    <View style={[rz.checkBox, checked && rz.checkBoxChecked]}>
-      {checked ? <Check size={12} color={palette.surface} strokeWidth={3} /> : null}
+  // off → empty · partial → minus (only the master row) · on → filled check
+  const checkbox = (state: "off" | "partial" | "on"): ReactElement => (
+    <View style={[rz.checkBox, state === "on" && rz.checkBoxChecked]}>
+      {state === "on" ? <Check size={14} color={palette.surface} strokeWidth={3} /> : null}
+      {state === "partial" ? <Minus size={14} color={palette.ink} strokeWidth={3} /> : null}
     </View>
   );
 
@@ -176,7 +186,10 @@ export function CreateResumeWizard({
           accessibilityLabel={t("resumes.wizard.cancel")}
           onPress={close}
         />
-        <View style={ed.editorModalCard}>
+        <View style={rz.wizardCard}>
+          <View style={rz.progressTrack}>
+            <View style={step === 1 ? rz.progressFillHalf : rz.progressFillFull} />
+          </View>
           <View style={ed.editorModalHeader}>
             <View style={styles.headerLead}>
               {step === 2 ? (
@@ -189,12 +202,9 @@ export function CreateResumeWizard({
                   <ChevronLeft size={22} color={palette.muted} />
                 </Pressable>
               ) : null}
-              <View>
-                <Text style={rz.wizardStepLabel}>{step} / 2</Text>
-                <Text style={ed.editorModalTitle}>
-                  {step === 1 ? t("resumes.wizard.step1Title") : t("resumes.wizard.step2Title")}
-                </Text>
-              </View>
+              <Text style={[ed.editorModalTitle, styles.headerTitle]} numberOfLines={2}>
+                {step === 1 ? t("resumes.wizard.step1Title") : t("resumes.wizard.step2Title")}
+              </Text>
             </View>
             <Pressable
               accessibilityRole="button"
@@ -207,55 +217,79 @@ export function CreateResumeWizard({
           </View>
 
           <ScrollView
-            style={ed.flex}
+            style={rz.wizardScroll}
             contentContainerStyle={ed.editorModalScroll}
             keyboardShouldPersistTaps="handled"
           >
             {step === 1 ? (
               <View>
                 <Text style={rz.wizardHint}>{t("resumes.wizard.step1Hint")}</Text>
-                {copyable.map((section) => {
-                  const picked = effective.get(section.key) ?? new Set<string>();
-                  const allChecked = picked.size === section.items.length && picked.size > 0;
-                  return (
-                    <View key={section.key} style={rz.checkSection}>
-                      <Pressable
-                        accessibilityRole="checkbox"
-                        accessibilityState={{ checked: allChecked }}
-                        onPress={() => toggleSection(section)}
-                        style={rz.checkRow}
-                      >
-                        {checkbox(allChecked)}
-                        <Text style={[rz.checkLabel, rz.checkLabelSection]}>{section.title}</Text>
-                        <Text style={rz.checkMeta}>
-                          {picked.size}/{section.items.length}
-                        </Text>
-                      </Pressable>
-                      {section.items.map((item) => {
-                        if (!item.id) return null;
-                        const checked = picked.has(item.id);
-                        const { primary } = itemCardParts(item, locale);
+                {copyable.length > 0 ? (
+                  <>
+                    <View style={rz.checklist}>
+                      {copyable.map((section) => {
+                        const picked = effective.get(section.key) ?? new Set<string>();
+                        const total = section.items.filter((item) => item.id).length;
+                        const master =
+                          picked.size === 0 ? "off" : picked.size >= total ? "on" : "partial";
                         return (
-                          <Pressable
-                            key={item.id}
-                            accessibilityRole="checkbox"
-                            accessibilityState={{ checked }}
-                            onPress={() => item.id && toggleItem(section.key, item.id)}
-                            style={[rz.checkRow, rz.checkRowNested]}
-                          >
-                            {checkbox(checked)}
-                            <Text style={rz.checkLabel} numberOfLines={1}>
-                              {primary}
-                            </Text>
-                          </Pressable>
+                          <View key={section.key} style={rz.secCard}>
+                            <Pressable
+                              accessibilityRole="checkbox"
+                              accessibilityState={{ checked: master === "on" }}
+                              onPress={() => toggleSection(section)}
+                              style={rz.secHeader}
+                            >
+                              {checkbox(master)}
+                              <View style={rz.secHeaderText}>
+                                <Text style={rz.secTitle}>{section.title}</Text>
+                              </View>
+                              <Text style={rz.secCount}>
+                                {picked.size}/{total}
+                              </Text>
+                            </Pressable>
+                            {section.items.map((item) => {
+                              if (!item.id) return null;
+                              const checked = picked.has(item.id);
+                              const { primary, meta } = itemCardParts(item, locale);
+                              return (
+                                <Pressable
+                                  key={item.id}
+                                  accessibilityRole="checkbox"
+                                  accessibilityState={{ checked }}
+                                  onPress={() => item.id && toggleItem(section.key, item.id)}
+                                  style={rz.itemRow}
+                                >
+                                  {checkbox(checked ? "on" : "off")}
+                                  <View style={[rz.itemBody, !checked && rz.itemRowOff]}>
+                                    <Text style={rz.itemPrimary} numberOfLines={1}>
+                                      {primary}
+                                    </Text>
+                                    {meta ? (
+                                      <Text style={rz.itemMeta} numberOfLines={1}>
+                                        {meta}
+                                      </Text>
+                                    ) : null}
+                                  </View>
+                                </Pressable>
+                              );
+                            })}
+                          </View>
                         );
                       })}
                     </View>
-                  );
-                })}
-                {copyable.length === 0 ? (
-                  <Text style={rz.centeredText}>{t("resumes.wizard.emptyMaster")}</Text>
-                ) : null}
+                    <View style={rz.recapRow}>
+                      <View style={rz.recapDot} />
+                      <Text style={rz.recapText}>
+                        {t("resumes.wizard.recap", { count: selectedItems, total: totalItems })}
+                      </Text>
+                    </View>
+                  </>
+                ) : (
+                  <View style={rz.centered}>
+                    <Text style={rz.centeredText}>{t("resumes.wizard.emptyMaster")}</Text>
+                  </View>
+                )}
               </View>
             ) : (
               <View style={styles.detailsStack}>
@@ -342,6 +376,7 @@ export function CreateResumeWizard({
 const stylesFor = (p: EditorialPalette) =>
   StyleSheet.create({
     headerLead: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, marginRight: 12 },
+    headerTitle: { flex: 1 },
     detailsStack: { gap: 26 },
     fieldBlock: { gap: 12 },
     error: { fontFamily: fonts.sans, fontSize: 13, color: p.danger },

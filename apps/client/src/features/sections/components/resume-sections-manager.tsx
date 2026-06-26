@@ -13,8 +13,15 @@
 
 import type { Locale } from "@patch-careers/i18n";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
-import { Plus, Trash2 } from "lucide-react-native";
-import { forwardRef, type ReactElement, useImperativeHandle, useState } from "react";
+import { Link as LinkIcon, Plus, Trash2 } from "lucide-react-native";
+import {
+  forwardRef,
+  type ReactElement,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useI18n } from "@/providers/i18n-provider";
@@ -25,8 +32,12 @@ import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
 import type { SectionItem } from "../types";
 import { AddSectionFlowModal } from "./add-section-flow-modal";
+import { LinksCard } from "./links-card";
+import { SectionCard } from "./section-card";
 import { SectionGroup } from "./section-group";
 import { SectionItemModal } from "./section-item-modal";
+
+const LINKS_SECTION_KEY = "links_v1";
 
 type EditingState = { section: MergedSection; item: SectionItem; index: number };
 type ConfirmState = { section: MergedSection; item: SectionItem; index: number };
@@ -112,38 +123,74 @@ export type ResumeSectionsManagerProps = {
   resumeId: string | undefined;
   /** Localize the catalog by the resume's language (falls back to UI locale). */
   locale?: Locale | undefined;
+  /**
+   * "flat" (default) = the plain small-caps groups used by the resume detail
+   * screen. "grouped" = the Profile tab's supersection cards (links rendered as
+   * a dedicated card, standalone sections each in their own card).
+   */
+  variant?: "flat" | "grouped";
+  /**
+   * Deep-link target: once the sections load, open this section's editor
+   * (or its add flow when empty). Used by `?section=` and the quality
+   * "fix this" flow. The parent should clear it via `onAutoOpenHandled`.
+   */
+  autoOpenSectionKey?: string | undefined;
+  onAutoOpenHandled?: (() => void) | undefined;
+  /**
+   * Render (and scope "add") to a single section only — used by the Profile
+   * tab's per-section detail screens. Omit to manage every section.
+   */
+  onlySection?: string | undefined;
 };
 
 export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSectionsManagerProps>(
-  function ResumeSectionsManager({ resumeId, locale }, ref): ReactElement {
+  function ResumeSectionsManager(
+    { resumeId, locale, variant = "flat", autoOpenSectionKey, onAutoOpenHandled, onlySection },
+    ref,
+  ): ReactElement {
     const ed = useEd();
     const authTokens = useEditorialPalette();
     const { t } = useI18n();
-    const { visible, catalog, isLoading, isError } = useResumeSections(resumeId, locale);
+    const { visible, catalog, groups, isLoading, isError } = useResumeSections(resumeId, locale);
     const { persistFor, isPending } = useSectionItemMutations(resumeId);
 
     const [editing, setEditing] = useState<EditingState | null>(null);
     const [addOpen, setAddOpen] = useState(false);
     const [confirm, setConfirm] = useState<ConfirmState | null>(null);
 
+    // Open a section's editor by key. The quality issue's `context.sectionKey`
+    // may be the section type key (`work_experience_v1`) or its semanticKind
+    // (`WORK_EXPERIENCE`); normalize both sides so either resolves.
+    const openByKey = useCallback(
+      (sectionKey: string, itemIndex?: number): boolean => {
+        const target = normalizeSectionKey(sectionKey);
+        const section = visible.find((s) => normalizeSectionKey(s.key) === target);
+        if (!section) return false;
+        const index = itemIndex ?? 0;
+        const item = section.items[index];
+        if (item) setEditing({ section, item, index });
+        else setAddOpen(true);
+        return true;
+      },
+      [visible],
+    );
+
     useImperativeHandle(
       ref,
       () => ({
         openItem: (sectionKey, itemIndex) => {
-          // The quality issue's `context.sectionKey` may be the section
-          // type key (`work_experience_v1`) or its semanticKind
-          // (`WORK_EXPERIENCE`); normalize both sides so either resolves.
-          const target = normalizeSectionKey(sectionKey);
-          const section = visible.find((s) => normalizeSectionKey(s.key) === target);
-          if (!section) return;
-          const index = itemIndex ?? 0;
-          const item = section.items[index];
-          if (item) setEditing({ section, item, index });
-          else setAddOpen(true);
+          openByKey(sectionKey, itemIndex);
         },
       }),
-      [visible],
+      [openByKey],
     );
+
+    // Deep-link / "fix this" open: fire once the catalog has loaded.
+    useEffect(() => {
+      if (!autoOpenSectionKey || visible.length === 0) return;
+      openByKey(autoOpenSectionKey);
+      onAutoOpenHandled?.();
+    }, [autoOpenSectionKey, visible, onAutoOpenHandled, openByKey]);
 
     if (isLoading) {
       return (
@@ -182,17 +229,64 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
       setAddOpen(false);
     };
 
+    const editItem = (section: MergedSection, item: SectionItem, index: number): void =>
+      setEditing({ section, item, index });
+    const deleteItem = (section: MergedSection, item: SectionItem, index: number): void =>
+      setConfirm({ section, item, index });
+    const removeLabel = t("onboarding.removeItem");
+
+    const inScope = (key: string): boolean =>
+      !onlySection || normalizeSectionKey(key) === normalizeSectionKey(onlySection);
+    const linksSection = inScope(LINKS_SECTION_KEY)
+      ? visible.find((s) => s.key === LINKS_SECTION_KEY)
+      : undefined;
+    const standalone = visible.filter((s) => s.key !== LINKS_SECTION_KEY && inScope(s.key));
+    const onlineGroup = groups.find((g) => g.key === "online_presence");
+    // Scope the add catalog to the focused section so its "+" adds an item to
+    // it directly (rather than offering the whole catalog).
+    const addCatalog = onlySection ? catalog.filter((c) => inScope(c.key)) : catalog;
+
     return (
       <View style={styles.root}>
-        {visible.map((section) => (
-          <SectionGroup
-            key={section.key}
-            section={section}
-            onEditItem={(item, index) => setEditing({ section, item, index })}
-            onDeleteItem={(item, index) => setConfirm({ section, item, index })}
-            deleteLabel={t("onboarding.removeItem")}
-          />
-        ))}
+        {variant === "grouped" ? (
+          <>
+            {standalone.map((section) => (
+              <SectionCard key={section.key} title={section.title}>
+                <SectionGroup
+                  section={section}
+                  showLabel={false}
+                  onEditItem={(item, index) => editItem(section, item, index)}
+                  onDeleteItem={(item, index) => deleteItem(section, item, index)}
+                  deleteLabel={removeLabel}
+                />
+              </SectionCard>
+            ))}
+
+            {linksSection ? (
+              <SectionCard
+                title={onlineGroup?.title ?? linksSection.title}
+                leading={<LinkIcon size={16} color={authTokens.muted} strokeWidth={1.75} />}
+              >
+                <LinksCard
+                  section={linksSection}
+                  onEditItem={(item, index) => editItem(linksSection, item, index)}
+                  onDeleteItem={(item, index) => deleteItem(linksSection, item, index)}
+                  deleteLabel={removeLabel}
+                />
+              </SectionCard>
+            ) : null}
+          </>
+        ) : (
+          visible.map((section) => (
+            <SectionGroup
+              key={section.key}
+              section={section}
+              onEditItem={(item, index) => editItem(section, item, index)}
+              onDeleteItem={(item, index) => deleteItem(section, item, index)}
+              deleteLabel={removeLabel}
+            />
+          ))
+        )}
 
         {/* The single add affordance — even a 2nd item of an existing section
           comes through here. */}
@@ -227,7 +321,7 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
         <AddSectionFlowModal
           visible={addOpen}
           onClose={() => setAddOpen(false)}
-          catalog={catalog}
+          catalog={addCatalog}
           onCreate={createItem}
           isPending={isPending}
           t={t}

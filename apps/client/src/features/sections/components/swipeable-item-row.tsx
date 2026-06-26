@@ -7,7 +7,7 @@
  */
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Trash2 } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
+import { type ReactElement, type ReactNode, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useI18n } from "@/providers/i18n-provider";
@@ -24,6 +24,9 @@ function RowCard({
   onDelete,
   deleteLabel,
   inlineTrash,
+  leading,
+  primaryOverride,
+  metaOverride,
 }: {
   item: SectionItem;
   fields?: SectionField[] | undefined;
@@ -31,11 +34,16 @@ function RowCard({
   onDelete: () => void;
   deleteLabel: string;
   inlineTrash: boolean;
+  leading?: ReactNode;
+  primaryOverride?: string | undefined;
+  metaOverride?: string | undefined;
 }): ReactElement {
   const ed = useEd();
   const authTokens = useEditorialPalette();
   const { locale } = useI18n();
-  const { primary, meta } = itemCardParts(item, locale, fields);
+  const parts = itemCardParts(item, locale, fields);
+  const primary = primaryOverride ?? parts.primary;
+  const meta = metaOverride ?? parts.meta;
   const [active, setActive] = useState(false);
   const [removeActive, setRemoveActive] = useState(false);
   return (
@@ -50,6 +58,7 @@ function RowCard({
       onBlur={() => setActive(false)}
       style={({ pressed }) => [ed.card, (active || pressed) && ed.cardActive, webNoOutline]}
     >
+      {leading ? <View style={styles.leading}>{leading}</View> : null}
       <View style={ed.cardBody}>
         <Text style={ed.cardPrimary} numberOfLines={1}>
           {primary}
@@ -93,12 +102,20 @@ export function SwipeableItemRow({
   onEdit,
   onDelete,
   deleteLabel,
+  leading,
+  primaryOverride,
+  metaOverride,
 }: {
   item: SectionItem;
   fields?: SectionField[] | undefined;
   onEdit: () => void;
   onDelete: () => void;
   deleteLabel: string;
+  /** Optional leading visual (e.g. a link's brand glyph / logo). */
+  leading?: ReactNode;
+  /** Override the derived primary/meta text (e.g. a link's label + URL). */
+  primaryOverride?: string | undefined;
+  metaOverride?: string | undefined;
 }): ReactElement {
   const authTokens = useEditorialPalette();
 
@@ -111,6 +128,9 @@ export function SwipeableItemRow({
         onDelete={onDelete}
         deleteLabel={deleteLabel}
         inlineTrash
+        leading={leading}
+        primaryOverride={primaryOverride}
+        metaOverride={metaOverride}
       />
     );
   }
@@ -138,6 +158,9 @@ export function SwipeableItemRow({
         onDelete={onDelete}
         deleteLabel={deleteLabel}
         inlineTrash={false}
+        leading={leading}
+        primaryOverride={primaryOverride}
+        metaOverride={metaOverride}
       />
     </ReanimatedSwipeable>
   );
@@ -149,4 +172,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  leading: { width: 22, alignItems: "center", justifyContent: "center" },
 });

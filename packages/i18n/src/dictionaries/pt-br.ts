@@ -2,6 +2,7 @@ import type { TranslationDict } from "../types";
 import { appPtBR } from "./domains/app";
 import { jobsPtBR } from "./domains/jobs";
 import { messagesPtBR } from "./domains/messages";
+import { notificationsPtBR } from "./domains/notifications";
 import { profilePtBR } from "./domains/profile";
 import { resumesPtBR } from "./domains/resumes";
 import { searchPtBR } from "./domains/search";
@@ -17,6 +18,7 @@ export const ptBR: TranslationDict = {
   app: appPtBR,
   jobs: jobsPtBR,
   messages: messagesPtBR,
+  notifications: notificationsPtBR,
   profile: profilePtBR,
   resumes: resumesPtBR,
   search: searchPtBR,
@@ -24,6 +26,7 @@ export const ptBR: TranslationDict = {
   settings: settingsPtBR,
   tabs: {
     jobs: "Vagas",
+    messages: "Mensagens",
     // "Candidaturas" is no longer a tab — it's a scope inside Vagas — but the
     // label is reused there (see jobs.scope.applications).
     applications: "Candidaturas",

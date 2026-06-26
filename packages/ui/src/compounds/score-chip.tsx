@@ -36,7 +36,13 @@ const SIZE_TO_PAD: Record<ScoreChipSize, { ph: number; pv: number; fs: number; g
   lg: { ph: 14, pv: 6, fs: 16, gap: 5 },
 };
 
-export function ScoreChip({ score, size = "md", accessibilityLabel, leading, onPress }: ScoreChipProps) {
+export function ScoreChip({
+  score,
+  size = "md",
+  accessibilityLabel,
+  leading,
+  onPress,
+}: ScoreChipProps) {
   const themeName = useThemeName();
   const safeScore = clampScore(score);
   const tokens = intentTokens[fitScoreIntent(safeScore)][themeName];

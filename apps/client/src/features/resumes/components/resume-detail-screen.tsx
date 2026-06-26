@@ -8,12 +8,11 @@ import { useGetV1ExportResumePdf } from "@patch-careers/api-client";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { ChevronLeft, Copy, Download, Pencil, Trash2 } from "lucide-react-native";
+import { ChevronLeft, Copy, Download, Pencil, Share2, Trash2 } from "lucide-react-native";
 import { type ReactElement, useRef, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { ResumePreview } from "@/components/resume-preview";
 import { StyleScoreBadge } from "@/components/style-score-badge";
 import { ResumeSectionsManager, type SectionsManagerHandle } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
@@ -22,7 +21,9 @@ import { editedAgo, resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
 import { RenameSheet } from "./rename-sheet";
+import { ResumePreview } from "./resume-preview";
 import { ResumeQualityPanel } from "./resume-quality-panel";
+import { ShareResumeSheet } from "./share-resume-sheet";
 
 function ActionPill({
   label,
@@ -64,6 +65,7 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [duplicateOpen, setDuplicateOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const managerRef = useRef<SectionsManagerHandle>(null);
 
   const resume = detail.data;
@@ -173,6 +175,11 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
             onPress={() => void downloadPdf()}
           />
           <ActionPill
+            label={t("resumes.preview.share")}
+            icon={Share2}
+            onPress={() => setShareOpen(true)}
+          />
+          <ActionPill
             label={t("resumes.detail.duplicate")}
             icon={Copy}
             onPress={() => setDuplicateOpen(true)}
@@ -205,6 +212,8 @@ export function ResumeDetailScreen({ id }: { id: string }): ReactElement {
         isPending={isPending}
         onSubmit={(title) => renameResume(id, title)}
       />
+
+      <ShareResumeSheet open={shareOpen} onClose={() => setShareOpen(false)} resumeId={id} />
 
       <CreateResumeWizard
         visible={duplicateOpen}

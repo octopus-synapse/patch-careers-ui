@@ -197,30 +197,92 @@ const rzFor = (p: EditorialPalette) =>
       color: p.muted,
     },
 
-    // wizard
-    wizardStepLabel: {
+    // wizard — adaptive modal card (grows with content up to a cap, then the
+    // scroll body shrinks/scrolls) so short steps don't leave a tall void.
+    wizardCard: {
+      width: "90%",
+      maxWidth: 560,
+      maxHeight: "86%",
+      backgroundColor: p.surface,
+      borderRadius: 24,
+      overflow: "hidden",
+      shadowColor: "#000",
+      shadowOpacity: 0.2,
+      shadowRadius: 28,
+      shadowOffset: { width: 0, height: 14 },
+      elevation: 14,
+    },
+    wizardScroll: { flexShrink: 1 },
+    // top progress strip — flush to the card's top edge, fills per step
+    progressTrack: { height: 3, width: "100%", backgroundColor: p.hairline },
+    progressFillHalf: { height: "100%", width: "50%", backgroundColor: p.ink },
+    progressFillFull: { height: "100%", width: "100%", backgroundColor: p.ink },
+    wizardHint: { fontFamily: fonts.sans, fontSize: 13.5, lineHeight: 20, color: p.muted },
+
+    // step-1 checklist — each master section is a card; items are hairline-divided rows
+    checklist: { gap: 14, marginTop: 20 },
+    secCard: {
+      borderWidth: 1,
+      borderColor: p.hairline,
+      borderRadius: 18,
+      backgroundColor: p.bg,
+      overflow: "hidden",
+    },
+    secHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+    },
+    secHeaderText: { flex: 1, gap: 1 },
+    secTitle: { fontFamily: fonts.serif, fontSize: 17, color: p.ink },
+    secCount: {
       fontFamily: fonts.mono,
       fontSize: 11,
       letterSpacing: 0.6,
-      color: p.subtle,
+      color: p.muted,
+      fontVariant: ["tabular-nums"],
     },
-    wizardHint: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 19, color: p.muted },
-    checkSection: { gap: 8, paddingVertical: 10 },
-    checkRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 6 },
-    checkRowNested: { paddingLeft: 26 },
-    checkLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 14.5, color: p.ink },
-    checkLabelSection: { fontFamily: fonts.serif, fontSize: 17 },
-    checkMeta: { fontFamily: fonts.sans, fontSize: 12, color: p.muted },
+    itemRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+    },
+    itemBody: { flex: 1, gap: 2 },
+    itemPrimary: { fontFamily: fonts.sans, fontSize: 14.5, color: p.ink },
+    itemMeta: { fontFamily: fonts.sans, fontSize: 12, lineHeight: 16, color: p.muted },
+    itemRowOff: { opacity: 0.5 },
+
+    // checkbox (shared by master + item)
     checkBox: {
-      width: 18,
-      height: 18,
-      borderRadius: 4,
+      width: 22,
+      height: 22,
+      borderRadius: 7,
       borderWidth: 1.5,
       borderColor: p.hairlineStrong,
+      backgroundColor: p.surface,
       alignItems: "center",
       justifyContent: "center",
     },
     checkBoxChecked: { backgroundColor: p.ink, borderColor: p.ink },
+
+    // recap — anchors the bottom of the short step so the eye has an endpoint
+    recapRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 9,
+      marginTop: 20,
+      paddingTop: 16,
+      borderTopWidth: 1,
+      borderTopColor: p.hairline,
+    },
+    recapDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: p.ink },
+    recapText: { fontFamily: fonts.sans, fontSize: 12.5, letterSpacing: 0.2, color: p.muted },
 
     centered: { alignItems: "center", justifyContent: "center", paddingVertical: 40, gap: 12 },
     centeredText: {

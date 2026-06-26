@@ -11,7 +11,12 @@ import {
 } from "@patch-careers/api-client";
 import { ToggleField, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import {
+  getNotificationService,
+  isExpoGo,
+  type NotificationRoutableType,
+} from "@/features/notifications";
 import { SectionHeader, SettingsCard, SettingsScreenShell, useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -107,6 +112,75 @@ export default function NotificationsScreen(): ReactElement {
           );
         })
       )}
+      {__DEV__ && isExpoGo() ? <NotificationDevTrigger /> : null}
     </SettingsScreenShell>
+  );
+}
+
+/**
+ * Dev-only affordance (Expo Go): fire a local notification per MVP type to
+ * exercise the full flow — foreground toast, tap → deep-link, badge + inbox
+ * refresh — without a production build. Hidden in real builds.
+ */
+function NotificationDevTrigger(): ReactElement {
+  const { t } = useI18n();
+  const styles = useSet();
+  const palette = useEditorialPalette();
+  const rows: ReadonlyArray<{
+    label: string;
+    type: NotificationRoutableType;
+    title: string;
+    body: string;
+  }> = [
+    {
+      label: t("notifications.dev.simulateMessage"),
+      type: "MESSAGE_RECEIVED",
+      title: t("notifications.dev.sim.messageTitle"),
+      body: t("notifications.dev.sim.messageBody"),
+    },
+    {
+      label: t("notifications.dev.simulateMatch"),
+      type: "MATCH_RECOMMENDATIONS_READY",
+      title: t("notifications.dev.sim.matchTitle"),
+      body: t("notifications.dev.sim.matchBody"),
+    },
+    {
+      label: t("notifications.dev.simulateResumeUp"),
+      type: "RESUME_QUALITY_IMPROVED",
+      title: t("notifications.dev.sim.resumeUpTitle"),
+      body: t("notifications.dev.sim.resumeUpBody"),
+    },
+    {
+      label: t("notifications.dev.simulateResumeDown"),
+      type: "RESUME_QUALITY_REGRESSED",
+      title: t("notifications.dev.sim.resumeDownTitle"),
+      body: t("notifications.dev.sim.resumeDownBody"),
+    },
+  ];
+  const fire = (row: { type: NotificationRoutableType; title: string; body: string }): void => {
+    void getNotificationService().simulateIncoming?.(row.type, {
+      title: row.title,
+      body: row.body,
+    });
+  };
+  return (
+    <View>
+      <SectionHeader label={t("notifications.dev.sectionTitle")} />
+      <SettingsCard>
+        <View style={styles.cardInner}>
+          {rows.map((row) => (
+            <Pressable
+              key={row.type}
+              accessibilityRole="button"
+              style={styles.toggleRow}
+              onPress={() => fire(row)}
+            >
+              <Text style={styles.toggleLabel}>{row.label}</Text>
+              <Text style={{ color: palette.accent, fontWeight: "600" }}>▸</Text>
+            </Pressable>
+          ))}
+        </View>
+      </SettingsCard>
+    </View>
   );
 }

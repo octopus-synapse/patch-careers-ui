@@ -21,7 +21,12 @@ export type StyleScoreChipProps = {
   onPress?: () => void;
 };
 
-export function StyleScoreChip({ score, size = "md", accessibilityLabel, onPress }: StyleScoreChipProps) {
+export function StyleScoreChip({
+  score,
+  size = "md",
+  accessibilityLabel,
+  onPress,
+}: StyleScoreChipProps) {
   const iconSize = size === "lg" ? "sm" : "xs";
   return (
     <ScoreChip

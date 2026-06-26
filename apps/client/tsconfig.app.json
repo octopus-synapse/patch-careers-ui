@@ -29,6 +29,8 @@
     "src/forms/**/*.tsx",
     "src/hooks/**/*.ts",
     "src/hooks/**/*.tsx",
+    "src/lib/**/*.ts",
+    "src/lib/**/*.tsx",
     "src/navigation/**/*.ts",
     "src/navigation/**/*.tsx",
     "src/providers/**/*.ts",

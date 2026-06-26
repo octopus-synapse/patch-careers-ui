@@ -57,7 +57,12 @@ export function StyleScoreBreakdown({
       <TStack gap={10}>
         <Text preset="label">{bucketsHeading}</Text>
         {buckets.map((b) => (
-          <TStack key={b.label} flexDirection="row" justifyContent="space-between" alignItems="center">
+          <TStack
+            key={b.label}
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Text preset="body">{b.label}</Text>
             <Text preset="label">{b.points}</Text>
           </TStack>

@@ -97,6 +97,8 @@ export const settingsPtBR: TranslationDict = {
     },
     blockedRow: "Bloqueados",
     saved: "Preferência atualizada.",
+    loadError: "Não foi possível carregar suas preferências de privacidade.",
+    retry: "Tentar de novo",
     blocked: {
       title: "Bloqueados",
       empty: "Ninguém bloqueado",
@@ -246,6 +248,8 @@ export const settingsEn: TranslationDict = {
     },
     blockedRow: "Blocked",
     saved: "Preference updated.",
+    loadError: "We couldn't load your privacy preferences.",
+    retry: "Try again",
     blocked: {
       title: "Blocked",
       empty: "No one blocked",

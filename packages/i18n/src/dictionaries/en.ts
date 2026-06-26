@@ -2,6 +2,7 @@ import type { TranslationDict } from "../types";
 import { appEn } from "./domains/app";
 import { jobsEn } from "./domains/jobs";
 import { messagesEn } from "./domains/messages";
+import { notificationsEn } from "./domains/notifications";
 import { profileEn } from "./domains/profile";
 import { resumesEn } from "./domains/resumes";
 import { searchEn } from "./domains/search";
@@ -17,6 +18,7 @@ export const en: TranslationDict = {
   app: appEn,
   jobs: jobsEn,
   messages: messagesEn,
+  notifications: notificationsEn,
   profile: profileEn,
   resumes: resumesEn,
   search: searchEn,
@@ -24,6 +26,7 @@ export const en: TranslationDict = {
   settings: settingsEn,
   tabs: {
     jobs: "Jobs",
+    messages: "Messages",
     // "Applications" is no longer a tab — it's a scope inside Jobs — but the
     // label is reused there (see jobs.scope.applications).
     applications: "Applications",

@@ -41,6 +41,11 @@ export { FieldError } from "./field-error";
 export { editorialFonts } from "./fonts";
 export { FooterPrompt, type FooterPromptProps } from "./footer-prompt";
 export { FROSTED_PILL_STATE, FrostedPill, type FrostedPillProps } from "./frosted-pill";
+export {
+  type FrostedPillTab,
+  FrostedPillTabs,
+  type FrostedPillTabsProps,
+} from "./frosted-pill-tabs";
 export { InlineLink, type InlineLinkProps } from "./inline-link";
 export { OAuthButton, type OAuthButtonProps } from "./oauth-button";
 export { OrDivider } from "./or-divider";

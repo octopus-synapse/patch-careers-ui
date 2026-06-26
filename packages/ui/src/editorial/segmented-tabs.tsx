@@ -28,8 +28,11 @@ export type SegmentedTabsProps<T extends string> = {
   tabs: ReadonlyArray<SegmentedTab<T>>;
   value: T;
   onChange: (tab: T) => void;
-  /** `"label"` (default) shows text; `"icon"` shows the glyph only (IG-style). */
-  variant?: "label" | "icon";
+  /**
+   * `"label"` (default) shows text; `"icon"` shows the glyph only (IG-style);
+   * `"icon-label"` shows the glyph next to the text.
+   */
+  variant?: "label" | "icon" | "icon-label";
 };
 
 export function SegmentedTabs<T extends string>({
@@ -76,6 +79,11 @@ export function SegmentedTabs<T extends string>({
             >
               {variant === "icon" && tab.icon ? (
                 tab.icon(selected ? palette.ink : palette.muted)
+              ) : variant === "icon-label" && tab.icon ? (
+                <View style={styles.iconLabel}>
+                  {tab.icon(selected ? palette.ink : palette.muted)}
+                  <Text style={[styles.label, selected && styles.labelSelected]}>{tab.label}</Text>
+                </View>
               ) : (
                 <Text style={[styles.label, selected && styles.labelSelected]}>{tab.label}</Text>
               )}
@@ -98,6 +106,7 @@ const stylesFor = (p: EditorialPalette) =>
     root: { position: "relative" },
     row: { flexDirection: "row" },
     segment: { flex: 1, alignItems: "center", paddingVertical: 12 },
+    iconLabel: { flexDirection: "row", alignItems: "center", gap: 7 },
     label: {
       fontFamily: fonts.sans,
       fontSize: 11,

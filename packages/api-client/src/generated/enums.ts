@@ -28,6 +28,7 @@ export type JobApplicationStatus = 'ACCEPTED' | 'REJECTED' | 'SUBMITTED' | 'VIEW
 export type JobType = 'CONTRACT' | 'FREELANCE' | 'FULL_TIME' | 'INTERNSHIP' | 'PART_TIME' | 'VOLUNTEER';
 export type LanguageLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'NATIVE';
 export type LayoutKind = 'DOUBLE_COLUMN' | 'SINGLE_COLUMN';
+export type LinkKind = 'CUSTOM' | 'GITHUB' | 'LINKEDIN' | 'PORTFOLIO' | 'WEBSITE';
 export type MecSyncStatus = 'FAILED' | 'PARTIAL' | 'RUNNING' | 'SUCCESS';
 export type MessagePrivacy = 'EVERYONE' | 'NOBODY' | 'RECRUITERS_ONLY';
 export type ModifierEffect = 'DENY' | 'GRANT';
@@ -281,6 +282,14 @@ export const LayoutKind = {
   DOUBLE_COLUMN: 'DOUBLE_COLUMN',
   SINGLE_COLUMN: 'SINGLE_COLUMN',
 } as const satisfies Record<string, LayoutKind>;
+
+export const LinkKind = {
+  CUSTOM: 'CUSTOM',
+  GITHUB: 'GITHUB',
+  LINKEDIN: 'LINKEDIN',
+  PORTFOLIO: 'PORTFOLIO',
+  WEBSITE: 'WEBSITE',
+} as const satisfies Record<string, LinkKind>;
 
 export const MecSyncStatus = {
   FAILED: 'FAILED',
@@ -1133,6 +1142,28 @@ const ENUM_LABELS = {
     "DOUBLE_COLUMN": {
       "en": "Two columns",
       "pt-BR": "Duas colunas"
+    }
+  },
+  "LinkKind": {
+    "LINKEDIN": {
+      "en": "LinkedIn",
+      "pt-BR": "LinkedIn"
+    },
+    "GITHUB": {
+      "en": "GitHub",
+      "pt-BR": "GitHub"
+    },
+    "WEBSITE": {
+      "en": "Website",
+      "pt-BR": "Site"
+    },
+    "PORTFOLIO": {
+      "en": "Portfolio",
+      "pt-BR": "Portfólio"
+    },
+    "CUSTOM": {
+      "en": "Custom link",
+      "pt-BR": "Link personalizado"
     }
   },
   "MecSyncStatus": {

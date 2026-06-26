@@ -11,7 +11,6 @@ import { Plus, Trash2 } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { ResumePreviewModal } from "@/components/resume-preview-modal";
 import { useI18n } from "@/providers/i18n-provider";
 import {
   type ResumeListItem,
@@ -22,6 +21,7 @@ import {
 } from "../hooks/queries";
 import { useRz } from "../lib/styles";
 import { CreateResumeWizard } from "./create-resume-wizard";
+import { ResumePreviewModal } from "./resume-preview-modal";
 import { SwipeableResumeCard } from "./swipeable-resume-card";
 
 export function ResumeListTab(): ReactElement {

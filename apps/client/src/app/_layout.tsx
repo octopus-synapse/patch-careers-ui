@@ -37,6 +37,7 @@ import { AppTamaguiProvider } from "@/providers/app-tamagui-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { useColorSchemeStore, useResolvedScheme } from "@/providers/color-scheme";
 import { I18nProvider } from "@/providers/i18n-provider";
+import { NotificationsProvider } from "@/providers/notifications-provider";
 
 void SplashScreen.preventAutoHideAsync().catch(() => {
   // already hidden / not available on web — non-fatal
@@ -91,52 +92,58 @@ export default function RootLayout(): ReactElement {
                 <ToastProvider>
                   <I18nProvider>
                     <AuthProvider>
-                      {/* Follow the in-app choice, not the OS ("auto" tracks the OS). */}
-                      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-                      <NetInfoBanner />
-                      <Stack
-                        screenOptions={{
-                          headerShown: false,
-                          // Paper-colored scene background so push transitions
-                          // don't flash white on dark.
-                          contentStyle: { backgroundColor: palette.bg },
-                        }}
-                      >
-                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        {/* Messages is a standalone screen (no tab bar, no AppHeader)
-                          that slides in over the tabs from the header's chat icon. */}
-                        <Stack.Screen
-                          name="messages"
-                          options={{ headerShown: false, animation: "slide_from_right" }}
-                        />
-                        <Stack.Screen
-                          name="conversation/[id]"
-                          options={{ headerShown: false, animation: "slide_from_right" }}
-                        />
-                        {/* Job detail pushes over the tabs from a list card. */}
-                        <Stack.Screen
-                          name="job/[id]"
-                          options={{ headerShown: false, animation: "slide_from_right" }}
-                        />
-                        {/* Resume detail pushes over the tabs from the Currículos sub-tab. */}
-                        <Stack.Screen
-                          name="resume/[id]"
-                          options={{ headerShown: false, animation: "slide_from_right" }}
-                        />
-                        {/* Settings slides in over the tabs from the account menu. */}
-                        <Stack.Screen
-                          name="settings"
-                          options={{ headerShown: false, animation: "slide_from_right" }}
-                        />
-                        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                        <Stack.Screen name="reset-password" options={{ headerShown: false }} />
-                        <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
-                        <Stack.Screen
-                          name="legal-webview"
-                          options={{ headerShown: true, title: "" }}
-                        />
-                      </Stack>
+                      <NotificationsProvider>
+                        {/* Follow the in-app choice, not the OS ("auto" tracks the OS). */}
+                        <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+                        <NetInfoBanner />
+                        <Stack
+                          screenOptions={{
+                            headerShown: false,
+                            // Paper-colored scene background so push transitions
+                            // don't flash white on dark.
+                            contentStyle: { backgroundColor: palette.bg },
+                          }}
+                        >
+                          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                          <Stack.Screen
+                            name="conversation/[id]"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
+                          {/* Profile supersection detail screens (Identidade /
+                          per-section) slide in over the tabs from the Perfil list. */}
+                          <Stack.Screen
+                            name="profile/identity"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
+                          <Stack.Screen
+                            name="profile/section/[key]"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
+                          {/* Job detail pushes over the tabs from a list card. */}
+                          <Stack.Screen
+                            name="job/[id]"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
+                          {/* Resume detail pushes over the tabs from the Currículos sub-tab. */}
+                          <Stack.Screen
+                            name="resume/[id]"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
+                          {/* Settings slides in over the tabs from the account menu. */}
+                          <Stack.Screen
+                            name="settings"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
+                          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                          <Stack.Screen name="reset-password" options={{ headerShown: false }} />
+                          <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
+                          <Stack.Screen
+                            name="legal-webview"
+                            options={{ headerShown: true, title: "" }}
+                          />
+                        </Stack>
+                      </NotificationsProvider>
                     </AuthProvider>
                   </I18nProvider>
                 </ToastProvider>

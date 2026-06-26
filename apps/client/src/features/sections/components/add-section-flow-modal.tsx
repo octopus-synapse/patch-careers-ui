@@ -32,6 +32,7 @@ import { useSectionItemForm } from "../hooks/use-section-item-form";
 import type { MergedSection } from "../lib/section-visibility";
 import { useEd } from "../lib/styles";
 import type { SectionItem } from "../types";
+import { AddLinkForm } from "./add-link-form";
 import { OverlayModal } from "./primitives";
 import { SectionForm } from "./section-form";
 
@@ -166,13 +167,17 @@ export function AddSectionFlowModal({
           </View>
 
           {picked ? (
-            <AddItemForm
-              key={picked.key}
-              section={picked}
-              isPending={isPending}
-              onSave={save}
-              t={t}
-            />
+            picked.key === "links_v1" ? (
+              <AddLinkForm key={picked.key} isPending={isPending} onSave={save} t={t} />
+            ) : (
+              <AddItemForm
+                key={picked.key}
+                section={picked}
+                isPending={isPending}
+                onSave={save}
+                t={t}
+              />
+            )
           ) : (
             <ScrollView style={ed.flex} contentContainerStyle={styles.catalogScroll}>
               {catalog.map((section) => (
@@ -227,7 +232,7 @@ const stylesFor = (p: EditorialPalette) =>
     catalogRowDisabled: { opacity: 0.4 },
     catalogBody: { flex: 1, gap: 3 },
     catalogTitleRow: { flexDirection: "row", alignItems: "baseline", gap: 8 },
-    catalogTitle: { fontFamily: fonts.serif, fontSize: 18, color: p.ink },
+    catalogTitle: { fontFamily: fonts.sans, fontSize: 15, color: p.ink },
     catalogCount: {
       fontFamily: fonts.mono,
       fontSize: 12,

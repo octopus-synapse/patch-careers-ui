@@ -2,11 +2,9 @@
  * Pure merge of the backend's section-type catalog with a resume's existing
  * sections, encoding the Profile redesign's visibility rules:
  *
- *   - mandatory section types (backend `isMandatory`) are ALWAYS listed, even
- *     with zero items — an explicitly empty mandatory section reads as "ainda
- *     não tenho", not as "not filled in";
- *   - optional types only appear once they have at least one item (deleting
- *     the last item makes the section vanish from the list);
+ *   - the VIEW shows only sections with at least one item — this applies to
+ *     mandatory section types too (no "ainda não tenho" placeholder anymore);
+ *   - `isMandatory` survives only as an ordering/hint signal for the catalog;
  *   - order follows the catalog (no user reordering, by design).
  *
  * The full catalog is also returned for the single "add" entry point, with a
@@ -27,6 +25,8 @@ export type CatalogSectionType = {
   isMandatory: boolean;
   isRepeatable: boolean;
   maxItems: number | null;
+  /** Supersection grouping (SectionGroup.key); null/undefined = standalone. */
+  groupKey?: string | null;
   definition?: unknown;
 };
 
@@ -44,6 +44,7 @@ export type MergedSection = {
   icon: string;
   iconType: string;
   isMandatory: boolean;
+  groupKey: string | null;
   addLabel: string;
   noDataLabel: string;
   /** Undefined when the section row doesn't exist yet (mandatory + empty). */
@@ -64,6 +65,7 @@ function toMerged(type: CatalogSectionType, section: ResumeSectionLike | undefin
     icon: type.icon,
     iconType: type.iconType,
     isMandatory: type.isMandatory,
+    groupKey: type.groupKey ?? null,
     addLabel: type.addLabel,
     noDataLabel: type.noDataLabel,
     sectionId: section?.id,
@@ -85,7 +87,7 @@ export function mergeSectionsWithCatalog(
   const byKey = new Map(sections.map((section) => [section.sectionTypeKey, section]));
   const merged = catalog.map((type) => toMerged(type, byKey.get(type.key)));
   return {
-    visible: merged.filter((section) => section.isMandatory || section.items.length > 0),
+    visible: merged.filter((section) => section.items.length > 0),
     catalog: merged,
   };
 }

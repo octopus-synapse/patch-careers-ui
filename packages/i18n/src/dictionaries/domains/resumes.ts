@@ -14,6 +14,15 @@ export const resumesPtBR: TranslationDict = {
     errorHint: "Confirme que você concluiu o onboarding e tente novamente.",
     retry: "Tentar novamente",
     downloadPdf: "Baixar PDF",
+    share: "Compartilhar",
+  },
+  share: {
+    title: "Compartilhar currículo",
+    hint: "Aponte a câmera para o QR ou compartilhe o link do PDF.",
+    shareLink: "Compartilhar link do PDF",
+    generating: "Gerando link…",
+    error: "Não foi possível gerar o link. Tente de novo.",
+    a11y: "Compartilhar currículo",
   },
   list: {
     loadError: "Não foi possível carregar seus currículos.",
@@ -88,7 +97,8 @@ export const resumesPtBR: TranslationDict = {
     step1Title: "O que entra nesse currículo?",
     step2Title: "Detalhes do currículo",
     step1Hint:
-      "Tudo vem do seu currículo principal. Desmarque o que não deve aparecer — a cópia vive a própria vida depois.",
+      "Tudo do seu currículo principal já vem marcado. Desmarque o que não deve aparecer nesta cópia.",
+    recap: "{count} de {total} itens entram nesta cópia",
     emptyMaster: "Seu currículo principal ainda não tem itens para copiar.",
     nameLabel: "Nome do currículo",
     namePlaceholder: "ex.: Backend Sênior — fintech",
@@ -141,6 +151,15 @@ export const resumesEn: TranslationDict = {
     errorHint: "Make sure you've completed onboarding and try again.",
     retry: "Try again",
     downloadPdf: "Download PDF",
+    share: "Share",
+  },
+  share: {
+    title: "Share resume",
+    hint: "Point a camera at the QR code or share the PDF link.",
+    shareLink: "Share PDF link",
+    generating: "Generating link…",
+    error: "Couldn't generate the link. Please try again.",
+    a11y: "Share resume",
   },
   list: {
     loadError: "We couldn't load your resumes.",
@@ -215,7 +234,8 @@ export const resumesEn: TranslationDict = {
     step1Title: "What goes into this resume?",
     step2Title: "Resume details",
     step1Hint:
-      "Everything comes from your primary resume. Uncheck what shouldn't appear — the copy lives its own life afterwards.",
+      "Everything from your primary resume starts checked. Uncheck whatever shouldn't appear in this copy.",
+    recap: "{count} of {total} items in this copy",
     emptyMaster: "Your primary resume doesn't have any items to copy yet.",
     nameLabel: "Resume name",
     namePlaceholder: "e.g. Senior Backend — fintech",

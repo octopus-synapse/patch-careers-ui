@@ -8,9 +8,9 @@ import type { OAuthProvider } from "@patch-careers/auth";
 import { OAuthButton, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
 import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { SettingsCard, SettingsScreenShell, useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 

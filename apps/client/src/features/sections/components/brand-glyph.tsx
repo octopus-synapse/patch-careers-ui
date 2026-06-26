@@ -1,8 +1,8 @@
 /**
- * Monochrome brand glyphs for the social-link rows (GitHub / LinkedIn).
- * Rendered from simple-icons path data via react-native-svg because the
- * project's lucide build strips brand marks. Filled silhouettes — the
- * recognized form for brand logos (the standard exception to outline UI icons).
+ * Monochrome brand glyphs for link rows (GitHub / LinkedIn). Rendered from
+ * simple-icons path data via react-native-svg because the project's lucide
+ * build strips brand marks. Filled silhouettes — the recognized form for brand
+ * logos (the standard exception to outline UI icons).
  */
 import type { ReactElement } from "react";
 import Svg, { Path } from "react-native-svg";

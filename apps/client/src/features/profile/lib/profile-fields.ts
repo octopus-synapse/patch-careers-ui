@@ -1,11 +1,14 @@
 /**
- * Profile fields as individually-editable "sections". Each descriptor is one
- * row in the Perfil group AND drives a focused single-field edit sheet — tap
- * "LinkedIn" and you edit only LinkedIn, exactly like a resume section item.
+ * Identity fields as individually-editable rows. Each descriptor is one row in
+ * the "Perfil" supersection AND drives a focused single-field edit sheet — tap
+ * "Telefone" and you edit only the phone, exactly like a resume section item.
  * Pure data (no JSX) so it is shared by the rows list and the sheet.
+ *
+ * Links are NO LONGER here — they're a real resume section (links_v1), edited
+ * through the section manager. These stay User-backed (PATCH /v1/users/profile)
+ * because they're typed/validated columns used across the app.
  */
 import type { Translator } from "@patch-careers/i18n";
-import type { BrandKey } from "../components/brand-glyph";
 
 /** Profile fields the owner can read back from GET /v1/users/profile. */
 export type EditableProfile = {
@@ -13,49 +16,27 @@ export type EditableProfile = {
   headline?: string | null;
   location?: string | null;
   bio?: string | null;
-  linkedin?: string | null;
-  github?: string | null;
-  website?: string | null;
-  twitter?: string | null;
+  phone?: string | null;
+  /** Read-only here — shown in the identity card, never editable inline. */
+  email?: string | null;
 };
 
-export type ProfileFieldKey =
-  | "name"
-  | "headline"
-  | "location"
-  | "bio"
-  | "linkedin"
-  | "github"
-  | "website"
-  | "twitter";
+export type ProfileFieldKey = "name" | "headline" | "location" | "bio" | "phone";
 
-export type ProfileFieldKind = "text" | "textarea" | "url" | "location";
-export type ProfileFieldGroup = "profile" | "links";
+export type ProfileFieldKind = "text" | "textarea" | "location" | "phone";
 
 export type ProfileFieldDescriptor = {
   key: ProfileFieldKey;
-  group: ProfileFieldGroup;
   kind: ProfileFieldKind;
   label: string;
-  required?: boolean;
-  /** Set for social links → the row shows a brand glyph instead of an icon. */
-  brand?: BrandKey;
 };
 
 export function profileFields(t: Translator): ProfileFieldDescriptor[] {
   return [
-    {
-      key: "name",
-      group: "profile",
-      kind: "text",
-      label: t("profile.edit.fields.name"),
-      required: true,
-    },
-    { key: "headline", group: "profile", kind: "text", label: t("profile.edit.fields.headline") },
-    { key: "location", group: "profile", kind: "location", label: t("profile.edit.locationLabel") },
-    { key: "bio", group: "profile", kind: "textarea", label: t("profile.edit.fields.bio") },
-    { key: "linkedin", group: "links", kind: "url", label: "LinkedIn", brand: "linkedin" },
-    { key: "github", group: "links", kind: "url", label: "GitHub", brand: "github" },
-    { key: "website", group: "links", kind: "url", label: t("profile.edit.fields.website") },
+    { key: "name", kind: "text", label: t("profile.edit.fields.name") },
+    { key: "headline", kind: "text", label: t("profile.edit.fields.headline") },
+    { key: "location", kind: "location", label: t("profile.edit.locationLabel") },
+    { key: "bio", kind: "textarea", label: t("profile.edit.fields.bio") },
+    { key: "phone", kind: "phone", label: t("profile.edit.fields.phone") },
   ];
 }

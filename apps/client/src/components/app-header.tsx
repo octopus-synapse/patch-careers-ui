@@ -1,10 +1,10 @@
 /**
  * AppHeader — the global top app bar for the authed tab stack.
  *
- * Three anchors, mobile-first: the user's rounded avatar on the left
- * (→ the account menu), the global search trigger centered (→ the
- * SearchModal command palette), and the Messages quick-action on the
- * right (→ the inbox) carrying the live unread badge.
+ * Mobile-first: the user's rounded avatar on the left (→ the account menu)
+ * and the global search trigger centered (→ the SearchModal command palette).
+ * Messages moved to its own bottom tab, so the right side is just a spacer
+ * that keeps the search optically centered (and collapses with the avatar).
  *
  * Rendered as the react-navigation `header` for every tab so it stays put
  * while the bottom tab bar switches screens; it owns the top safe-area
@@ -13,11 +13,9 @@
  * name's initials until a photo exists.
  */
 
-import { Ionicons } from "@expo/vector-icons";
-import { useGetV1ChatUnread, useGetV1UsersProfile } from "@patch-careers/api-client";
+import { useGetV1UsersProfile } from "@patch-careers/api-client";
 import { Avatar, XStack } from "@patch-careers/ui";
-import { CountBadge, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useRouter } from "expo-router";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -37,14 +35,13 @@ export function AppHeader(): ReactElement {
   const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
-  const router = useRouter();
   const { currentUser, isAuthenticated } = useAuthState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
   // Collapse-on-scroll (driven by the Vagas screen): when collapsed, the
-  // avatar + messages slide away and the search trigger takes the full width.
-  // `progress` 0 = full, 1 = collapsed.
+  // avatar + right spacer slide away and the search trigger takes the full
+  // width. `progress` 0 = full, 1 = collapsed.
   const collapsed = useHeaderCollapsed();
   const progress = useRef(new Animated.Value(0)).current;
   const reduceMotion = useRef(false);
@@ -89,13 +86,6 @@ export function AppHeader(): ReactElement {
   const photoURL = profile.data?.photoURL ?? undefined;
   const name = profile.data?.name ?? currentUser?.name ?? currentUser?.email ?? t("app.header.you");
 
-  // Unread badge on the Messages action. Polls so the count stays roughly
-  // live without a socket; React Query dedupes this against any other caller.
-  const unread = useGetV1ChatUnread({
-    query: { enabled: isAuthenticated, refetchInterval: 30_000 },
-  });
-  const totalUnread = unread.data?.totalUnread ?? 0;
-
   return (
     <View style={{ paddingTop: insets.top }}>
       {/* Surface + bottom hairline as a fading layer behind the content, so the
@@ -134,24 +124,9 @@ export function AppHeader(): ReactElement {
           />
         </Animated.View>
 
-        {/* Right — Messages quick action → inbox (slides away when collapsed) */}
-        <Animated.View style={[{ alignItems: "flex-end" }, sideStyle]}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={
-              totalUnread > 0
-                ? t("app.header.messagesUnread", { count: totalUnread })
-                : t("app.header.messages")
-            }
-            onPress={() => router.push("/messages")}
-            hitSlop={8}
-          >
-            <View>
-              <Ionicons name="chatbubble-ellipses" size={26} color={editorialPalette.ink} />
-              <CountBadge count={totalUnread} />
-            </View>
-          </Pressable>
-        </Animated.View>
+        {/* Right — spacer matching the avatar column so the search stays
+            optically centered (Messages now lives in the bottom tab bar). */}
+        <Animated.View style={sideStyle} />
       </XStack>
 
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />

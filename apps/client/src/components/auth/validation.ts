@@ -16,13 +16,16 @@
  * for the top-level `code`.
  */
 
-import {
-  createAccountRequestSchema,
-  DICTIONARIES,
-  emailSchema,
-  passwordSchema,
-} from "@patch-careers/api-client";
+import { createAccountRequestSchema, emailSchema, passwordSchema } from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
+import {
+  asRecord,
+  type BackendField,
+  extractBackendPayload,
+  type FetcherErrorLike,
+  messageFromUnknown,
+  translateBackendCode,
+} from "@/lib/errors/backend-error";
 
 export interface AuthFieldErrors {
   email?: string | undefined;
@@ -141,85 +144,6 @@ function zodErrorToFields(
 // Backend error → toast + inline messages
 // ────────────────────────────────────────────────────────────
 
-/**
- * Shape the backend actually returns for a 400 (the swagger only
- * documents the top-level envelope but real responses include
- * `fields[]` for `VALIDATION_ERROR`).
- */
-type BackendField = { path?: string | string[]; code?: string; message?: string };
-
-interface BackendErrorPayload {
-  code?: unknown;
-  message?: unknown;
-  error?: unknown;
-  errors?: unknown;
-  details?: unknown;
-  fields?: BackendField[];
-}
-
-interface FetcherErrorLike {
-  response?: { data?: BackendErrorPayload };
-  data?: unknown;
-  body?: unknown;
-  message?: string;
-  code?: string;
-}
-
-/**
- * Looks up `code` in the generated contracts dictionary (`errors.*`).
- * Falls back to the backend's `message`, then to a caller-supplied
- * generic fallback (e.g. `t("auth.signupFailed")`).
- */
-export function translateBackendCode(
-  code: string | undefined,
-  locale: Locale,
-  fallback: string,
-  backendMessage?: string,
-): string {
-  if (code) {
-    const entry = (DICTIONARIES as { errors: Record<string, Record<Locale, string>> }).errors[code];
-    if (entry?.[locale]) return entry[locale];
-  }
-  return backendMessage ?? code ?? fallback;
-}
-
-function parseJsonLike(value: unknown): unknown {
-  if (typeof value !== "string") return value;
-  try {
-    return JSON.parse(value) as unknown;
-  } catch {
-    return value;
-  }
-}
-
-function asRecord(value: unknown): Record<string, unknown> | null {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
-  return value as Record<string, unknown>;
-}
-
-function toBackendPayload(value: unknown): BackendErrorPayload | null {
-  const parsed = parseJsonLike(value);
-  const record = asRecord(parsed);
-  if (!record) return null;
-
-  const nested = toBackendPayload(record.error) ?? toBackendPayload(record.errors);
-  return {
-    ...nested,
-    ...(record as BackendErrorPayload),
-  };
-}
-
-function extractBackendPayload(err: unknown): BackendErrorPayload {
-  const error = err as FetcherErrorLike;
-  return (
-    toBackendPayload(error.response?.data) ??
-    toBackendPayload(error.data) ??
-    toBackendPayload(error.body) ??
-    toBackendPayload(err) ??
-    {}
-  );
-}
-
 function fieldPathName(path: string | string[] | undefined): keyof AuthFieldErrors | null {
   if (Array.isArray(path)) {
     const match = path.find((segment) => segment === "email" || segment === "password");
@@ -290,21 +214,6 @@ function fieldArrayFromUnknown(value: unknown): BackendField[] | null {
     });
   }
   return fields.length > 0 ? fields : null;
-}
-
-function messageFromUnknown(value: unknown): string | undefined {
-  const parsed = parseJsonLike(value);
-  if (typeof parsed === "string") return parsed;
-  if (Array.isArray(parsed)) {
-    const messages = parsed.map(messageFromUnknown).filter((v): v is string => Boolean(v));
-    return messages.length > 0 ? messages.join("\n") : undefined;
-  }
-  const record = asRecord(parsed);
-  if (!record) return undefined;
-  const direct = record.message;
-  if (typeof direct === "string") return direct;
-  if (Array.isArray(direct)) return messageFromUnknown(direct);
-  return messageFromUnknown(record.error) ?? messageFromUnknown(record.errors);
 }
 
 /**

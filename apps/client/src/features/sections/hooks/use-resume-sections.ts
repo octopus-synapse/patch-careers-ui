@@ -11,11 +11,23 @@ import type { Locale } from "@patch-careers/i18n";
 import { useI18n } from "@/providers/i18n-provider";
 import { type MergedSection, mergeSectionsWithCatalog } from "../lib/section-visibility";
 
+/** Supersection group (localized) as served by GET …/sections/types. */
+export type SectionGroupInfo = {
+  key: string;
+  title: string;
+  description: string | null;
+  icon: string;
+  iconType: string;
+  order: number;
+};
+
 export type ResumeSections = {
-  /** Sections to render in the manager (mandatory always; optional with items). */
+  /** Sections to render in the manager (only those with at least one item). */
   visible: MergedSection[];
   /** Every active type, for the single "add" entry point's picker. */
   catalog: MergedSection[];
+  /** Supersection catalog, referenced by sectionTypes[].groupKey. */
+  groups: SectionGroupInfo[];
   isLoading: boolean;
   isError: boolean;
 };
@@ -52,9 +64,12 @@ export function useResumeSections(
     sections,
   );
 
+  const groups: SectionGroupInfo[] = typesQuery.data?.groups ?? [];
+
   return {
     visible,
     catalog,
+    groups,
     isLoading: sectionsQuery.isLoading || typesQuery.isLoading,
     isError: sectionsQuery.isError || typesQuery.isError,
   };

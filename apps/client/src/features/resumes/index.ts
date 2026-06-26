@@ -7,6 +7,8 @@
 export { CreateResumeWizard } from "./components/create-resume-wizard";
 export { ResumeDetailScreen } from "./components/resume-detail-screen";
 export { ResumeListTab } from "./components/resume-list-tab";
+export { ResumePreviewModal } from "./components/resume-preview-modal";
+export { ResumeQualityPanel } from "./components/resume-quality-panel";
 export {
   type ResumeListItem,
   useMasterResumeId,

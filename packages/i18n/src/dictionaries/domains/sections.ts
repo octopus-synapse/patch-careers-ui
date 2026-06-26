@@ -10,6 +10,21 @@ export const sectionsPtBR: TranslationDict = {
   back: "Voltar",
   loadError: "Não foi possível carregar as seções do currículo.",
   atCapacity: "Limite de itens atingido",
+  links: {
+    kindPickerTitle: "Tipo de link",
+    urlLabel: "Endereço (URL)",
+    urlPlaceholder: "https://...",
+    labelLabel: "Nome",
+    labelPlaceholder: "Como mostrar o link",
+    addCustomTitle: "Adicionar link",
+    kinds: {
+      LINKEDIN: "LinkedIn",
+      GITHUB: "GitHub",
+      WEBSITE: "Site",
+      PORTFOLIO: "Portfólio",
+      CUSTOM: "Outro link",
+    },
+  },
   deleteConfirm: {
     title: "Excluir item?",
     description: "Essa ação não pode ser desfeita. O item sai do seu currículo na hora.",
@@ -31,6 +46,21 @@ export const sectionsEn: TranslationDict = {
   back: "Back",
   loadError: "Could not load the resume sections.",
   atCapacity: "Item limit reached",
+  links: {
+    kindPickerTitle: "Link type",
+    urlLabel: "URL",
+    urlPlaceholder: "https://...",
+    labelLabel: "Label",
+    labelPlaceholder: "How to show the link",
+    addCustomTitle: "Add link",
+    kinds: {
+      LINKEDIN: "LinkedIn",
+      GITHUB: "GitHub",
+      WEBSITE: "Website",
+      PORTFOLIO: "Portfolio",
+      CUSTOM: "Other link",
+    },
+  },
   deleteConfirm: {
     title: "Delete item?",
     description: "This can't be undone. The item leaves your resume immediately.",

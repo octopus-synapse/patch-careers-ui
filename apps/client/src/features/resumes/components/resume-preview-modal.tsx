@@ -18,8 +18,8 @@ import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ResumePreview } from "@/components/resume-preview";
 import { useI18n } from "@/providers/i18n-provider";
+import { ResumePreview } from "./resume-preview";
 
 export function ResumePreviewModal({
   visible,
