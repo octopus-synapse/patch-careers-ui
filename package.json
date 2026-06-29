@@ -40,9 +40,9 @@
   "devDependencies": {
     "@babel/runtime": "~7.27.6",
     "@biomejs/biome": "^2.4.13",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@commitlint/types": "^19.8.1",
+    "@commitlint/cli": "^21.1.0",
+    "@commitlint/config-conventional": "^21.1.0",
+    "@commitlint/types": "^21.1.0",
     "@expo/cli": "~54.0.16",
     "@nx/expo": "^22.7.3",
     "@nx/js": "^22.7.3",
