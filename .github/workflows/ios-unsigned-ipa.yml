@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # RN 0.81 requires Xcode >= 16.1; pin to the newest 16.x on the image
       # so the toolchain is explicit rather than relying on the runner default.
