@@ -8,13 +8,14 @@
  * (shared React Query cache — no extra request).
  */
 import { useGetV1UsersProfile } from "@patch-careers/api-client";
-import { Avatar } from "@patch-careers/ui";
+import { Avatar, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { View } from "react-native";
 
 // Online/presence accent — kept literal (not in the editorial palette, which
 // reserves green for success messaging).
+// @style-allow color: online presence dot (intentional semantic green, not a surface token)
 const PRESENCE_GREEN = "#34D399";
 const RING = 1.5; // ring border width
 const GAP = 0.5; // gap between ring and avatar photo
@@ -42,7 +43,7 @@ export function ProfileTabIcon({
   const dot = Math.round(size * 0.42);
 
   return (
-    <View style={{ position: "relative" }}>
+    <YStack position="relative">
       <View
         style={{
           width: size,
@@ -72,6 +73,6 @@ export function ProfileTabIcon({
           }}
         />
       ) : null}
-    </View>
+    </YStack>
   );
 }

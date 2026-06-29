@@ -5,11 +5,11 @@
  * pending set without closing, so the user can rebuild from zero.
  */
 
-import { Sheet, Text, XStack, YStack } from "@patch-careers/ui";
+import { Divider, Sheet, Text, XStack, YStack } from "@patch-careers/ui";
 import { PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import {
   EMPLOYMENT_TYPE_OPTIONS,
@@ -134,7 +134,7 @@ export function JobsFilterSheet({
           </YStack>
         </ScrollView>
 
-        <View style={{ height: 1, backgroundColor: editorialPalette.hairline }} />
+        <Divider color={editorialPalette.hairline} />
         <YStack gap={10} paddingTop={14}>
           <PrimaryAction label={t("jobs.filters.apply")} onPress={apply} />
           <Pressable

@@ -13,6 +13,7 @@
 
 import { signup } from "@patch-careers/api-client";
 import { exchangeSessionForTokens, login } from "@patch-careers/auth";
+import { YStack } from "@patch-careers/ui";
 import {
   AuthShell,
   CheckboxField,
@@ -24,7 +25,7 @@ import {
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Platform, type TextInput, View } from "react-native";
+import { Platform, type TextInput } from "react-native";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
@@ -154,12 +155,12 @@ export default function SignUpScreen(): ReactElement {
       />
 
       {isDevTestFillEnabled() ? (
-        <View style={{ marginBottom: 8 }}>
+        <YStack marginBottom={8}>
           <GhostButton label="test" onPress={fillSignupTest} />
-        </View>
+        </YStack>
       ) : null}
 
-      <View style={{ gap: 24 }}>
+      <YStack gap={24}>
         <FormEmailField
           control={form.control}
           name="email"
@@ -219,16 +220,16 @@ export default function SignUpScreen(): ReactElement {
             testID="signup.rememberMe"
           />
         ) : null}
-      </View>
+      </YStack>
 
-      <View style={{ marginTop: 32 }}>
+      <YStack marginTop={32}>
         <PrimaryAction
           label={t("auth.signUp")}
           loading={submitting}
           onPress={onSubmit}
           testID="signup.submit"
         />
-      </View>
+      </YStack>
 
       <FooterPrompt
         prompt={t("auth.haveAccount")}

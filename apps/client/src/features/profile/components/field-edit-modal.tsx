@@ -9,7 +9,7 @@
  *   - guards unsaved changes with a discard confirm on close.
  * Location has its own search modal; the dispatcher routes to the right one.
  */
-import { Input, Sheet } from "@patch-careers/ui";
+import { Input, Sheet, Text, XStack, YStack } from "@patch-careers/ui";
 import {
   editorialFonts,
   FieldError,
@@ -17,7 +17,6 @@ import {
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useI18n } from "@/providers/i18n-provider";
 import type { ProfileFieldDescriptor } from "../lib/profile-fields";
@@ -89,8 +88,8 @@ export function FieldEditModal({
         presentation="card"
         fillHeight
       >
-        <View style={styles.body}>
-          <View>
+        <YStack gap={18}>
+          <YStack>
             <Input
               value={text}
               onChangeText={handleChange}
@@ -110,30 +109,45 @@ export function FieldEditModal({
               maxLength={max}
               {...(multiline ? { multiline: true, minHeight: 120, textAlignVertical: "top" } : {})}
             />
-            <View style={styles.metaRow}>
-              <View style={styles.errorSlot}>
-                {touched && error ? <FieldError text={error} /> : null}
-              </View>
+            <XStack alignItems="center" justifyContent="space-between" marginTop={6} gap={12}>
+              <YStack flex={1}>{touched && error ? <FieldError text={error} /> : null}</YStack>
               <Text
-                style={[styles.counter, { color: count >= max ? palette.danger : palette.subtle }]}
+                fontFamily={editorialFonts.sans}
+                fontSize={12}
+                color={count >= max ? palette.danger : palette.subtle}
               >
                 {count}/{max}
               </Text>
-            </View>
-          </View>
+            </XStack>
+          </YStack>
 
           {isBio && count > 0 ? (
-            <View
-              style={[
-                styles.preview,
-                { borderColor: palette.hairline, backgroundColor: palette.surface },
-              ]}
+            <YStack
+              borderWidth={1}
+              borderRadius={12}
+              padding={12}
+              gap={6}
+              borderColor={palette.hairline}
+              backgroundColor={palette.surface}
             >
-              <Text style={[styles.previewLabel, { color: palette.muted }]}>
+              <Text
+                fontFamily={editorialFonts.sans}
+                fontSize={11}
+                letterSpacing={0.6}
+                textTransform="uppercase"
+                color={palette.muted}
+              >
                 {t("profile.edit.bioPreview")}
               </Text>
-              <Text style={[styles.previewText, { color: palette.body }]}>{text.trim()}</Text>
-            </View>
+              <Text
+                fontFamily={editorialFonts.serif}
+                fontSize={15}
+                lineHeight={22}
+                color={palette.body}
+              >
+                {text.trim()}
+              </Text>
+            </YStack>
           ) : null}
 
           <PrimaryAction
@@ -142,7 +156,7 @@ export function FieldEditModal({
             loading={isPending}
             disabled={isPending || !canSave}
           />
-        </View>
+        </YStack>
       </Sheet>
 
       <ConfirmDialog
@@ -160,24 +174,3 @@ export function FieldEditModal({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  body: { gap: 18 },
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 6,
-    gap: 12,
-  },
-  errorSlot: { flex: 1 },
-  counter: { fontFamily: editorialFonts.sans, fontSize: 12 },
-  preview: { borderWidth: 1, borderRadius: 12, padding: 12, gap: 6 },
-  previewLabel: {
-    fontFamily: editorialFonts.sans,
-    fontSize: 11,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
-  },
-  previewText: { fontFamily: editorialFonts.serif, fontSize: 15, lineHeight: 22 },
-});

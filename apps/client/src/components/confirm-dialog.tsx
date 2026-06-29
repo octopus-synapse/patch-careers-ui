@@ -40,7 +40,11 @@ import { useI18n } from "@/providers/i18n-provider";
 // Slightly deeper than the ProfileMenu scrim — this sits on top of the drawer
 // and needs to pull focus to the decision, but still reads calm on a light app.
 // Dark mode dims harder so the card separates from the already-dark backdrop.
+// @style-allow color: modal scrim overlay (intentional alpha wash, not a theme token)
 const SCRIM = { light: "rgba(10,10,10,0.32)", dark: "rgba(0,0,0,0.55)" } as const;
+// Faint red tint behind the destructive glyph chip.
+// @style-allow color: destructive icon-chip wash (intentional red alpha tint, not a theme token)
+const DANGER_CHIP_WASH = "rgba(220,38,38,0.10)";
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
 type GlyphProps = { size?: number; color?: string; strokeWidth?: number };
@@ -162,7 +166,7 @@ export function ConfirmDialog({
               <View
                 style={[
                   styles.iconChip,
-                  { backgroundColor: danger ? "rgba(220,38,38,0.10)" : editorialPalette.bg },
+                  { backgroundColor: danger ? DANGER_CHIP_WASH : editorialPalette.bg },
                 ]}
               >
                 <Icon size={20} color={tint} strokeWidth={1.75} />
@@ -217,6 +221,7 @@ export function ConfirmDialog({
 }
 
 const stylesFor = (p: EditorialPalette, scrim: string) =>
+  // @style-allow stylesheet: animated confirm dialog (Animated.Value enter/exit transitions)
   StyleSheet.create({
     root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
     scrim: { backgroundColor: scrim },

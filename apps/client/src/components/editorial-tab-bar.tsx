@@ -103,6 +103,7 @@ export function EditorialTabBar({
   );
 }
 
+// @style-allow stylesheet: animated tab bar (floating frosted bar primitive + measured height callback)
 const styles = StyleSheet.create({
   bar: {
     // Float over the content so the BlurView has something to frost.

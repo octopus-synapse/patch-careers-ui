@@ -6,7 +6,7 @@
  */
 import type { PatchV1UsersProfileMutationRequest } from "@patch-careers/api-client";
 import { type ReactElement, useState } from "react";
-import { SettingsScreenShell } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { useI18n } from "@/providers/i18n-provider";
 import { useProfile, useProfileMutations } from "../hooks/queries";
 import { type ProfileFieldKey, profileFields } from "../lib/profile-fields";

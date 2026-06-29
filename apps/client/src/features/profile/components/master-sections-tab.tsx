@@ -6,7 +6,7 @@
  * Each existing row pushes its own detail screen, keeping the tab a clean index.
  * Below the list sit the resume quality panel and the CV preview banner.
  */
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import {
   Award,
@@ -32,7 +32,6 @@ import {
   useMasterResumeId,
 } from "@/features/resumes";
 import { type MergedSection, useResumeSections } from "@/features/sections";
-import { SettingsCard, SettingsRow } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 import type { EditableProfile } from "../lib/profile-fields";
 import { usePf } from "../lib/styles";

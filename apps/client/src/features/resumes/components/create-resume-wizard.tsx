@@ -374,6 +374,7 @@ export function CreateResumeWizard({
 }
 
 const stylesFor = (p: EditorialPalette) =>
+  // @style-allow stylesheet: themed style factory (error uses palette.danger) composed alongside the shared ed/rz styles inside an animated overlay modal
   StyleSheet.create({
     headerLead: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, marginRight: 12 },
     headerTitle: { flex: 1 },

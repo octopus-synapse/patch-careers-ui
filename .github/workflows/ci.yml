@@ -98,6 +98,12 @@ jobs:
             pnpm exec nx run-many -t test --parallel=3
           fi
 
+      # Architectural boundary specs live in the client app, which Nx does not
+      # run as a `test` target — gate them explicitly (feature graph + DS
+      # adoption). Style/i18n migration specs stay out until green (ADR-0007).
+      - name: Architecture specs
+        run: pnpm verify:arch
+
       - name: Build (affected on PR, all on push)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then

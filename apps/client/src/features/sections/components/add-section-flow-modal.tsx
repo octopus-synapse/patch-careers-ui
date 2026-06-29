@@ -217,6 +217,7 @@ export function AddSectionFlowModal({
 }
 
 const stylesFor = (p: EditorialPalette) =>
+  // @style-allow stylesheet: modal/sheet styles applied via ScrollView contentContainerStyle and a dynamic Pressable function-style (pressed/atCapacity) — not 1:1 convertible to Tamagui props
   StyleSheet.create({
     headerLead: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, marginRight: 12 },
     catalogScroll: { paddingHorizontal: 24, paddingVertical: 12 },

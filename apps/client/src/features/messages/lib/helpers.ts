@@ -9,6 +9,7 @@
  */
 
 import type { Translator } from "@patch-careers/i18n";
+import { timeAgo as sharedTimeAgo } from "@/lib/time-ago";
 import type { ChatMessage, ChatParticipant, ChatUser } from "../types";
 
 /** Best human label for a participant or a people-search result. */
@@ -20,22 +21,11 @@ export function participantLabel(
 }
 
 /**
- * Compact "time ago" label for the inbox (agora / 5m / 3h / 2d), falling back
- * to a short date once the message is older than a week. Hand-rolled because
- * Hermes ships without Intl.RelativeTimeFormat; templates come from i18n.
+ * Compact "time ago" label for the inbox (agora / 5m / 3h / 2d). Thin wrapper
+ * over the shared `@/lib/time-ago` helper with this feature's i18n namespace.
  */
 export function timeAgo(dateStr: string | null | undefined, now: number, t: Translator): string {
-  if (!dateStr) return "";
-  const then = new Date(dateStr).getTime();
-  if (Number.isNaN(then)) return "";
-  const mins = Math.floor((now - then) / 60_000);
-  if (mins < 1) return t("messages.timeAgo.now");
-  if (mins < 60) return t("messages.timeAgo.minutes", { n: mins });
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return t("messages.timeAgo.hours", { n: hrs });
-  const days = Math.floor(hrs / 24);
-  if (days < 7) return t("messages.timeAgo.days", { n: days });
-  return new Date(then).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
+  return sharedTimeAgo(dateStr, now, t, "messages.timeAgo");
 }
 
 /** Clock label ("14:32") shown under a message bubble. */

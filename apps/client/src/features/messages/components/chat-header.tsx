@@ -11,6 +11,9 @@ import type { ReactElement } from "react";
 import { Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
+// Back-button hit padding (kept on the RN Pressable so it composes with hitSlop).
+const BACK_BUTTON_PADDING = 4;
+
 export function ChatHeader({
   name,
   username,
@@ -39,7 +42,7 @@ export function ChatHeader({
         accessibilityLabel={t("common.back")}
         onPress={onBack}
         hitSlop={8}
-        style={{ padding: 4 }}
+        style={{ padding: BACK_BUTTON_PADDING }}
       >
         <Icon as={ChevronLeft} size={26} color={editorialPalette.ink} />
       </Pressable>

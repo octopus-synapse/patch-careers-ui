@@ -12,7 +12,7 @@ import { memo, type ReactElement } from "react";
 import { Pressable, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import type { ApplicationRow as ApplicationRowData } from "../hooks/use-applications";
-import { postedAgo } from "../lib/helpers";
+import { postedAgo, toTitleCase } from "../lib/helpers";
 
 function ApplicationRowInner({
   application,
@@ -40,6 +40,7 @@ function ApplicationRowInner({
     t,
     locale,
   );
+  const title = toTitleCase(application.title);
   const pressable = application.jobRouteId !== null;
 
   const body = (
@@ -62,7 +63,7 @@ function ApplicationRowInner({
           color={editorialPalette.ink}
           numberOfLines={2}
         >
-          {application.title}
+          {title}
         </Text>
         {meta ? (
           <Text preset="caption" fontSize={13} color={editorialPalette.body} numberOfLines={1}>
@@ -99,7 +100,7 @@ function ApplicationRowInner({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={t("jobs.row.a11y", {
-        title: application.title,
+        title,
         company: application.company,
       })}
       onPress={() => onPress(application)}

@@ -38,6 +38,10 @@ function firstParam(value: string | string[] | undefined): string {
   return value ?? "";
 }
 
+// Static fill style for the keyboard avoider — a non-Tamagui host that takes a
+// plain `style`, so it lives as a stable module const rather than inline.
+const FILL = { flex: 1 };
+
 export default function ConversationScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
@@ -93,10 +97,10 @@ export default function ConversationScreen(): ReactElement {
         paddingBottom: insets.bottom,
       }}
     >
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior="padding" style={FILL}>
         <ChatHeader name={name} username={username} photoURL={photo} onBack={() => router.back()} />
 
-        <View style={{ flex: 1 }}>
+        <YStack flex={1}>
           {thread.isLoading ? (
             <YStack flex={1} alignItems="center" justifyContent="center">
               <ActivityIndicator color={editorialPalette.subtle} />
@@ -134,7 +138,7 @@ export default function ConversationScreen(): ReactElement {
               )}
             </ScrollView>
           )}
-        </View>
+        </YStack>
 
         <MessageComposer disabled={thread.sending} onSend={thread.send} />
       </KeyboardAvoidingView>

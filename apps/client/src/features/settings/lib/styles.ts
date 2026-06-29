@@ -13,6 +13,7 @@ import { editorialFonts, useThemeName } from "@patch-careers/ui/editorial";
 import { StyleSheet } from "react-native";
 
 const stylesFor = (p: EditorialPalette) =>
+  // @style-allow stylesheet: themed editorial style factory consumed by N components (parity with DS internal pattern)
   StyleSheet.create({
     root: { flex: 1, backgroundColor: p.bg },
     backButton: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },

@@ -8,6 +8,7 @@ import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editori
 import { StyleSheet } from "react-native";
 
 const pfFor = (p: EditorialPalette) =>
+  // @style-allow stylesheet: themed editorial style factory consumed by N components (parity with DS internal pattern)
   StyleSheet.create({
     root: { flex: 1, backgroundColor: p.bg },
     scroll: { paddingHorizontal: 22, paddingBottom: 48, gap: 26 },
@@ -27,6 +28,7 @@ const pfFor = (p: EditorialPalette) =>
       right: 0,
       bottom: 0,
       borderRadius: 40,
+      // @style-allow color: avatar-uploading overlay scrim (intentional alpha wash over the photo, not a theme token)
       backgroundColor: "rgba(0,0,0,0.4)",
       alignItems: "center",
       justifyContent: "center",

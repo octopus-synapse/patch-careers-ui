@@ -14,7 +14,7 @@
  * the in-app browser; the caption under it makes the handoff explicit.
  */
 
-import { EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
+import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -27,7 +27,7 @@ import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
 import { useReportApplied } from "../hooks/use-report-applied";
 import { useToggleSaveJob } from "../hooks/use-save-job";
-import { jobMetaLine, postedAgo } from "../lib/helpers";
+import { jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
 import { DidYouApplySheet } from "./did-you-apply-sheet";
 
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
@@ -84,9 +84,10 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
           accessibilityLabel={t("jobs.detail.back")}
           onPress={goBack}
           hitSlop={8}
-          style={{ padding: 6 }}
         >
-          <Icon as={ChevronLeft} size={24} color={editorialPalette.ink} />
+          <YStack padding={6}>
+            <Icon as={ChevronLeft} size={24} color={editorialPalette.ink} />
+          </YStack>
         </Pressable>
         {job !== null ? (
           <Pressable
@@ -120,6 +121,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
       ) : (
         <>
           <ScrollView
+            // @style-allow inline: RN ScrollView fill (not a Tamagui component)
             style={{ flex: 1 }}
             contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 40 }}
           >
@@ -140,7 +142,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
                 color={editorialPalette.ink}
                 accessibilityRole="header"
               >
-                {job.title}
+                {toTitleCase(job.title)}
               </Text>
               {jobMetaLine(job, locale) ? (
                 <Text preset="caption" fontSize={14} color={editorialPalette.body}>
@@ -157,13 +159,9 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
               </Text>
             </YStack>
 
-            <View
-              style={{
-                height: 1,
-                backgroundColor: editorialPalette.hairline,
-                marginVertical: 28,
-              }}
-            />
+            <YStack marginVertical={28}>
+              <Divider color={editorialPalette.hairline} />
+            </YStack>
 
             {job.description ? (
               <Text fontSize={15} lineHeight={25} color={editorialPalette.body}>

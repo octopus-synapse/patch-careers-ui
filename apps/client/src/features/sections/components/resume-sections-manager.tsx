@@ -12,6 +12,7 @@
  */
 
 import type { Locale } from "@patch-careers/i18n";
+import { YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Link as LinkIcon, Plus, Trash2 } from "lucide-react-native";
 import {
@@ -22,7 +23,7 @@ import {
   useImperativeHandle,
   useState,
 } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useI18n } from "@/providers/i18n-provider";
 import { useResumeSections } from "../hooks/use-resume-sections";
@@ -194,17 +195,17 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
 
     if (isLoading) {
       return (
-        <View style={styles.centered}>
+        <YStack alignItems="center" justifyContent="center" paddingVertical={40}>
           <ActivityIndicator color={authTokens.ink} />
-        </View>
+        </YStack>
       );
     }
 
     if (isError) {
       return (
-        <View style={styles.centered}>
+        <YStack alignItems="center" justifyContent="center" paddingVertical={40}>
           <Text style={ed.centeredText}>{t("sections.loadError")}</Text>
-        </View>
+        </YStack>
       );
     }
 
@@ -247,7 +248,7 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
     const addCatalog = onlySection ? catalog.filter((c) => inScope(c.key)) : catalog;
 
     return (
-      <View style={styles.root}>
+      <YStack gap={26}>
         {variant === "grouped" ? (
           <>
             {standalone.map((section) => (
@@ -338,12 +339,7 @@ export const ResumeSectionsManager = forwardRef<SectionsManagerHandle, ResumeSec
           icon={Trash2}
           onConfirm={() => void confirmDelete()}
         />
-      </View>
+      </YStack>
     );
   },
 );
-
-const styles = StyleSheet.create({
-  root: { gap: 26 },
-  centered: { alignItems: "center", justifyContent: "center", paddingVertical: 40 },
-});

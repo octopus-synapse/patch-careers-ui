@@ -1,11 +1,13 @@
 /** Change email (step 1) — current password + new email → emailed code. */
 
 import { usePostV1MeEmailChangeRequest } from "@patch-careers/api-client";
+import { YStack } from "@patch-careers/ui";
 import { PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
-import { SettingsScreenShell, useSet } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function ChangeEmailScreen(): ReactElement {
@@ -56,14 +58,14 @@ export default function ChangeEmailScreen(): ReactElement {
         />
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <View style={{ marginTop: 12 }}>
+      <YStack marginTop={12}>
         <PrimaryAction
           label={t("settings.account.changeEmail.submit")}
           onPress={submit}
           loading={req.isPending}
           disabled={!canSubmit}
         />
-      </View>
+      </YStack>
     </SettingsScreenShell>
   );
 }

@@ -12,7 +12,8 @@ import { logout } from "@patch-careers/auth";
 import { OTPInput, Text } from "@patch-careers/ui";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
-import { SettingsScreenShell, useSet, type VerifyFlow } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { useSet, type VerifyFlow } from "@/features/settings";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 

@@ -105,6 +105,30 @@
           }
         }
       }
+    },
+    {
+      "includes": [
+        "packages/api-client/**",
+        "packages/auth/**",
+        "packages/state/**",
+        "packages/storage/**",
+        "packages/i18n/**",
+        "packages/platform/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@patch-careers/ui": "infra is a lateral layer and must not depend on the presentation layer (ADR-0003)"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

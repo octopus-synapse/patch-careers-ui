@@ -8,14 +8,14 @@
  * nothing until a score exists.
  */
 
-import type { QualitySeverity } from "@patch-careers/ui";
+import { type QualitySeverity, Text, XStack, YStack } from "@patch-careers/ui";
 import {
   EditableRow,
   editorialFonts as fonts,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, type ReactNode, useMemo } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { useResumeQuality } from "../hooks/use-resume-quality";
 import { ScoreRing } from "./score-ring";
@@ -84,9 +84,9 @@ export function ResumeQualityPanel({
   if (quality.state === "empty" || quality.state === "error") return null;
   if (quality.state === "loading" || overall === null) {
     return (
-      <View style={styles.loadingRow}>
+      <YStack paddingVertical={16} alignItems="center">
         <ActivityIndicator color={palette.ink} />
-      </View>
+      </YStack>
     );
   }
 
@@ -97,31 +97,53 @@ export function ResumeQualityPanel({
   ].join("   ·   ");
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <YStack gap={18}>
+      <XStack alignItems="center" gap={16}>
         <ScoreRing score={overall} />
-        <View style={styles.headerText}>
-          <Text style={[styles.label, { color: palette.muted }]}>
+        <YStack flex={1} gap={5}>
+          <Text
+            fontFamily={fonts.sans}
+            fontSize={10}
+            fontWeight="600"
+            letterSpacing={1.8}
+            textTransform="uppercase"
+            color={palette.muted}
+          >
             {t("resumes.quality.overallLabel")}
           </Text>
-          <Text style={[styles.subScores, { color: palette.body }]}>{subScoreText}</Text>
+          <Text fontFamily={fonts.mono} fontSize={13} letterSpacing={0.2} color={palette.body}>
+            {subScoreText}
+          </Text>
           {calculating ? (
-            <View style={styles.calcRow}>
+            <XStack alignItems="center" gap={8}>
               <ActivityIndicator size="small" color={palette.muted} />
-              <Text style={[styles.calcText, { color: palette.muted }]}>
+              <Text fontFamily={fonts.sans} fontSize={11} letterSpacing={0.3} color={palette.muted}>
                 {t("resumes.quality.calculating")}
               </Text>
-            </View>
+            </XStack>
           ) : null}
-        </View>
-      </View>
+        </YStack>
+      </XStack>
 
-      <View style={styles.issues}>
-        <Text style={[styles.issuesHeading, { color: palette.muted }]}>
+      <YStack gap={10}>
+        <Text
+          fontFamily={fonts.sans}
+          fontSize={10}
+          fontWeight="600"
+          letterSpacing={1.8}
+          textTransform="uppercase"
+          color={palette.muted}
+        >
           {t("resumes.quality.issuesHeading")}
         </Text>
         {issues.length === 0 ? (
-          <Text style={[styles.empty, { color: palette.subtle }]}>
+          <Text
+            fontFamily={fonts.sans}
+            fontSize={14}
+            lineHeight={20}
+            fontStyle="italic"
+            color={palette.subtle}
+          >
             {t("resumes.quality.noIssues")}
           </Text>
         ) : (
@@ -132,7 +154,9 @@ export function ResumeQualityPanel({
                 : issue.severity === "medium"
                   ? palette.warn
                   : palette.subtle;
-            const dot: ReactNode = <View style={[styles.dot, { backgroundColor: dotColor }]} />;
+            const dot: ReactNode = (
+              <YStack width={8} height={8} borderRadius={4} backgroundColor={dotColor} />
+            );
             return (
               <EditableRow
                 key={issue.id}
@@ -140,19 +164,19 @@ export function ResumeQualityPanel({
                 value={issue.detail}
                 leading={dot}
                 onPress={issue.onPress ?? (() => {})}
-                {...(issue.onPress ? {} : { trailing: <View /> })}
+                {...(issue.onPress ? {} : { trailing: <YStack /> })}
               />
             );
           })
         )}
-      </View>
+      </YStack>
 
       {quality.state === "aiUnavailable" ? (
-        <Text style={[styles.note, { color: palette.subtle }]}>
+        <Text fontFamily={fonts.sans} fontSize={12.5} lineHeight={18} color={palette.subtle}>
           {t("resumes.quality.aiUnavailable")}
         </Text>
       ) : null}
-    </View>
+    </YStack>
   );
 }
 
@@ -160,31 +184,3 @@ export function ResumeQualityPanel({
 function formatScore(score: number | null, t: (key: string) => string): string {
   return score === null ? t("resumes.quality.unavailableShort") : String(Math.round(score));
 }
-
-const styles = StyleSheet.create({
-  container: { gap: 18 },
-  loadingRow: { paddingVertical: 16, alignItems: "center" },
-  header: { flexDirection: "row", alignItems: "center", gap: 16 },
-  headerText: { flex: 1, gap: 5 },
-  label: {
-    fontFamily: fonts.sans,
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 1.8,
-    textTransform: "uppercase",
-  },
-  subScores: { fontFamily: fonts.mono, fontSize: 13, letterSpacing: 0.2 },
-  calcRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  calcText: { fontFamily: fonts.sans, fontSize: 11, letterSpacing: 0.3 },
-  issues: { gap: 10 },
-  issuesHeading: {
-    fontFamily: fonts.sans,
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 1.8,
-    textTransform: "uppercase",
-  },
-  empty: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 20, fontStyle: "italic" },
-  dot: { width: 8, height: 8, borderRadius: 4 },
-  note: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 18 },
-});

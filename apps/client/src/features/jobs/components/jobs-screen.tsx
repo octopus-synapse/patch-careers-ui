@@ -13,7 +13,7 @@
  * the global header — there is no local field.
  */
 
-import { EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
+import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -75,7 +75,7 @@ const SCOPE_BAR_ESTIMATE = 80;
 
 function RowSeparator(): ReactElement {
   const editorialPalette = useEditorialPalette();
-  return <View style={{ height: 1, marginLeft: 20, backgroundColor: editorialPalette.hairline }} />;
+  return <Divider color={editorialPalette.hairline} marginLeft={20} />;
 }
 
 export function JobsScreen(): ReactElement {
@@ -368,9 +368,9 @@ export function JobsScreen(): ReactElement {
         }
         ListFooterComponent={
           !isApplications && list.isFetchingNextPage ? (
-            <View style={{ paddingVertical: 20 }}>
+            <YStack paddingVertical={20}>
               <ActivityIndicator size="small" color={editorialPalette.muted} />
-            </View>
+            </YStack>
           ) : null
         }
         onScroll={onScroll}

@@ -11,11 +11,10 @@
 
 import { postV1AuthEmailVerificationSend, verify as verifyApi } from "@patch-careers/api-client";
 import { cooldownSecondsRemaining, maskEmail } from "@patch-careers/auth";
-import { OTPInput, Text } from "@patch-careers/ui";
+import { OTPInput, Text, YStack } from "@patch-careers/ui";
 import { AuthShell, CaptionButton, IntroBlock } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
@@ -98,7 +97,7 @@ export default function VerifyEmailScreen(): ReactElement {
         subtitle={t("auth.verifyIntro", { email: email ? maskEmail(email) : "" })}
         showWordmark={false}
       />
-      <View style={{ gap: 20, alignItems: "center" }}>
+      <YStack gap={20} alignItems="center">
         <OTPInput
           value={code}
           onChangeText={setCode}
@@ -119,7 +118,7 @@ export default function VerifyEmailScreen(): ReactElement {
           </Text>
         ) : null}
         <BackToSignInLink testID="verify.backToSignIn" />
-      </View>
+      </YStack>
     </AuthShell>
   );
 }

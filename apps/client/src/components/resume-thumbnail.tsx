@@ -6,17 +6,18 @@
  * spinner; error/empty shows a document glyph. Omitted resumeId = master.
  */
 import { useGetV1ExportResumePreview } from "@patch-careers/api-client";
-import {
-  type EditorialPalette,
-  editorialPalette,
-  editorialPaletteDark,
-} from "@patch-careers/tokens";
+import { editorialPalette, editorialPaletteDark } from "@patch-careers/tokens";
+import { YStack } from "@patch-careers/ui";
 import { useThemeName } from "@patch-careers/ui/editorial";
 import { FileText } from "lucide-react-native";
 import type { ReactElement } from "react";
-import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import WebView from "react-native-webview";
 import { useI18n } from "@/providers/i18n-provider";
+
+// The resume render is a page on white paper — fixed regardless of theme.
+// @style-allow color: resume paper is always white, independent of theme
+const PAPER_WHITE = "#FFFFFF";
 
 export function ResumeThumbnail({
   resumeId,
@@ -31,31 +32,58 @@ export function ResumeThumbnail({
 }): ReactElement {
   const { t } = useI18n();
   const theme = useThemeName();
-  const styles = stylesByTheme[theme];
   const palette = theme === "dark" ? editorialPaletteDark : editorialPalette;
   const preview = useGetV1ExportResumePreview(resumeId ? { resumeId } : undefined, {
     query: { refetchOnWindowFocus: false },
   });
-  const box = { width, height, borderRadius: radius };
 
   if (preview.isLoading) {
     return (
-      <View style={[styles.box, box, styles.center]}>
+      <YStack
+        width={width}
+        height={height}
+        borderRadius={radius}
+        overflow="hidden"
+        borderWidth={1}
+        borderColor={palette.hairline}
+        backgroundColor={palette.surface}
+        alignItems="center"
+        justifyContent="center"
+      >
         <ActivityIndicator size="small" color={palette.subtle} />
-      </View>
+      </YStack>
     );
   }
   if (preview.isError || !preview.data?.html) {
     return (
-      <View style={[styles.box, box, styles.center]}>
+      <YStack
+        width={width}
+        height={height}
+        borderRadius={radius}
+        overflow="hidden"
+        borderWidth={1}
+        borderColor={palette.hairline}
+        backgroundColor={palette.surface}
+        alignItems="center"
+        justifyContent="center"
+      >
         <FileText size={20} color={palette.subtle} strokeWidth={1.5} />
-      </View>
+      </YStack>
     );
   }
 
   const html = preview.data.html;
   return (
-    <View style={[styles.box, box]} pointerEvents="none">
+    <YStack
+      width={width}
+      height={height}
+      borderRadius={radius}
+      overflow="hidden"
+      borderWidth={1}
+      borderColor={palette.hairline}
+      backgroundColor={PAPER_WHITE}
+      pointerEvents="none"
+    >
       {Platform.OS === "web" ? (
         <iframe
           srcDoc={html}
@@ -79,22 +107,6 @@ export function ResumeThumbnail({
           scalesPageToFit
         />
       )}
-    </View>
+    </YStack>
   );
 }
-
-const stylesFor = (p: EditorialPalette) =>
-  StyleSheet.create({
-    box: {
-      overflow: "hidden",
-      backgroundColor: "#FFFFFF",
-      borderWidth: 1,
-      borderColor: p.hairline,
-    },
-    center: { alignItems: "center", justifyContent: "center", backgroundColor: p.surface },
-  });
-
-const stylesByTheme = {
-  light: stylesFor(editorialPalette),
-  dark: stylesFor(editorialPaletteDark),
-} as const;

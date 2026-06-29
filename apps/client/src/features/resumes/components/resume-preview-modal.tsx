@@ -67,6 +67,7 @@ export function ResumePreviewModal({
 }
 
 const stylesFor = (p: EditorialPalette) =>
+  // @style-allow stylesheet: themed style factory (palette/theme) consumed by an animated slide-in Modal and its native View/Text chrome
   StyleSheet.create({
     root: { flex: 1, backgroundColor: p.bg },
     header: {

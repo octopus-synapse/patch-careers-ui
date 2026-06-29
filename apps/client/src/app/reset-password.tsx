@@ -9,6 +9,7 @@
  */
 
 import { postV1AuthResetPassword } from "@patch-careers/api-client";
+import { YStack } from "@patch-careers/ui";
 import {
   AuthShell,
   Banner,
@@ -19,7 +20,6 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import type { ReactElement } from "react";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
@@ -60,7 +60,7 @@ export default function ResetPasswordScreen(): ReactElement {
     return (
       <AuthShell>
         <IntroBlock emphasis={t("auth.resetTitle")} subtitle={t("auth.resetInvalidToken")} />
-        <View style={{ gap: 24 }}>
+        <YStack gap={24}>
           <Banner intent="danger" testID="reset.invalidToken">
             {t("auth.resetInvalidToken")}
           </Banner>
@@ -69,7 +69,7 @@ export default function ResetPasswordScreen(): ReactElement {
             onPress={() => router.replace("/(auth)/forgot-password")}
             testID="reset.requestNew"
           />
-        </View>
+        </YStack>
       </AuthShell>
     );
   }
@@ -77,7 +77,7 @@ export default function ResetPasswordScreen(): ReactElement {
   return (
     <AuthShell>
       <IntroBlock emphasis={t("auth.resetTitle")} subtitle={t("auth.resetNewPassword")} />
-      <View style={{ gap: 24 }}>
+      <YStack gap={24}>
         <FormPasswordField
           control={form.control}
           name="newPassword"
@@ -99,15 +99,15 @@ export default function ResetPasswordScreen(): ReactElement {
           onSubmitEditing={onSubmit}
         />
 
-        <View style={{ marginTop: 8 }}>
+        <YStack marginTop={8}>
           <PrimaryAction
             label={t("common.submit")}
             loading={submitting}
             onPress={onSubmit}
             testID="reset.submit"
           />
-        </View>
-      </View>
+        </YStack>
+      </YStack>
     </AuthShell>
   );
 }

@@ -6,9 +6,9 @@
  */
 
 import type { ReactElement } from "react";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { resumeLanguageToLocale, useMasterResumeId } from "@/features/resumes";
 import { ResumeSectionsManager, useResumeSections } from "@/features/sections";
-import { SettingsScreenShell } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 
 export function SectionDetailScreen({ sectionKey }: { sectionKey: string }): ReactElement {

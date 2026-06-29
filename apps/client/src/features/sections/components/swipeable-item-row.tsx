@@ -5,10 +5,11 @@
  *   - web: mouse-swipe is poor UX on RNW, so the trash stays inline and
  *     hover-revealed (same affordance as the onboarding editor's cards).
  */
+import { YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Trash2 } from "lucide-react-native";
 import { type ReactElement, type ReactNode, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useI18n } from "@/providers/i18n-provider";
 import { itemCardParts } from "../lib/helpers";
@@ -58,7 +59,11 @@ function RowCard({
       onBlur={() => setActive(false)}
       style={({ pressed }) => [ed.card, (active || pressed) && ed.cardActive, webNoOutline]}
     >
-      {leading ? <View style={styles.leading}>{leading}</View> : null}
+      {leading ? (
+        <YStack width={22} alignItems="center" justifyContent="center">
+          {leading}
+        </YStack>
+      ) : null}
       <View style={ed.cardBody}>
         <Text style={ed.cardPrimary} numberOfLines={1}>
           {primary}
@@ -145,7 +150,7 @@ export function SwipeableItemRow({
           accessibilityRole="button"
           accessibilityLabel={deleteLabel}
           onPress={onDelete}
-          style={styles.action}
+          style={{ width: ACTION_WIDTH, alignItems: "center", justifyContent: "center" }}
         >
           <Trash2 size={20} color={authTokens.danger} strokeWidth={1.75} />
         </Pressable>
@@ -165,12 +170,3 @@ export function SwipeableItemRow({
     </ReanimatedSwipeable>
   );
 }
-
-const styles = StyleSheet.create({
-  action: {
-    width: ACTION_WIDTH,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  leading: { width: 22, alignItems: "center", justifyContent: "center" },
-});

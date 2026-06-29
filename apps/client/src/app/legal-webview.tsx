@@ -9,16 +9,12 @@
  * patchcareers.com URLs.
  */
 
-import {
-  type EditorialPalette,
-  editorialPalette,
-  editorialPaletteDark,
-} from "@patch-careers/tokens";
-import { useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import Constants from "expo-constants";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useMemo } from "react";
-import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import WebView from "react-native-webview";
 import { useTranslator } from "@/providers/i18n-provider";
 
@@ -37,7 +33,6 @@ export default function LegalWebViewScreen(): ReactElement {
   const t = useTranslator();
   const router = useRouter();
   const palette = useEditorialPalette();
-  const styles = stylesByTheme[useThemeName()];
   const params = useLocalSearchParams<{ kind?: string; title?: string; url?: string }>();
   const kind: Kind = params.kind === "privacy" ? "privacy" : "terms";
   const title =
@@ -45,7 +40,7 @@ export default function LegalWebViewScreen(): ReactElement {
   const url = useMemo(() => params.url ?? resolveLegalUrl(kind), [params.url, kind]);
 
   return (
-    <View style={styles.root}>
+    <YStack flex={1} backgroundColor={palette.bg}>
       <Stack.Screen
         options={{
           title,
@@ -67,9 +62,18 @@ export default function LegalWebViewScreen(): ReactElement {
           source={{ uri: url }}
           startInLoadingState
           renderLoading={() => (
-            <View style={styles.loadingOverlay}>
+            <YStack
+              position="absolute"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              alignItems="center"
+              justifyContent="center"
+              backgroundColor={palette.bg}
+            >
               <ActivityIndicator size="large" color={palette.accent} />
-            </View>
+            </YStack>
           )}
           onNavigationStateChange={(state) => {
             // Defensive: keep users inside patchcareers.com — outbound
@@ -80,26 +84,6 @@ export default function LegalWebViewScreen(): ReactElement {
           }}
         />
       )}
-    </View>
+    </YStack>
   );
 }
-
-const stylesFor = (p: EditorialPalette) =>
-  StyleSheet.create({
-    root: { flex: 1, backgroundColor: p.bg },
-    loadingOverlay: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: p.bg,
-    },
-  });
-
-const stylesByTheme = {
-  light: stylesFor(editorialPalette),
-  dark: stylesFor(editorialPaletteDark),
-} as const;

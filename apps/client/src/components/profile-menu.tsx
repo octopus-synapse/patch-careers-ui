@@ -42,6 +42,7 @@ import { ConfirmDialog } from "./confirm-dialog";
 
 // Soft, light scrim — heavy dim reads wrong on light paper; dark mode needs
 // a deeper wash so the panel separates from the already-dark backdrop.
+// @style-allow color: modal scrim overlay (intentional alpha wash, not a theme token)
 const SCRIM = { light: "rgba(10,10,10,0.18)", dark: "rgba(0,0,0,0.5)" } as const;
 // translateX/opacity ride the native driver; web falls back to JS animation.
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
@@ -275,6 +276,7 @@ export function ProfileMenu({
 }
 
 const stylesFor = (p: EditorialPalette, scrim: string) =>
+  // @style-allow stylesheet: animated profile drawer (Animated.Value slide-in transitions)
   StyleSheet.create({
     root: { flex: 1 },
     scrim: { backgroundColor: scrim },

@@ -16,6 +16,7 @@
  */
 
 import { type LoginResult, login } from "@patch-careers/auth";
+import { YStack } from "@patch-careers/ui";
 import {
   AuthShell,
   CheckboxField,
@@ -117,7 +118,7 @@ export default function SignInScreen(): ReactElement {
         showWordmark={false}
       />
 
-      <View style={{ gap: 24 }}>
+      <YStack gap={24}>
         <FormEmailField
           control={form.control}
           name="email"
@@ -140,10 +141,10 @@ export default function SignInScreen(): ReactElement {
             testID="auth.forgotLink"
           />
         </FormPasswordField>
-      </View>
+      </YStack>
 
       {isWeb ? (
-        <View style={{ marginTop: 20 }}>
+        <YStack marginTop={20}>
           <CheckboxField
             checked={keepSignedIn}
             onToggle={() =>
@@ -157,17 +158,17 @@ export default function SignInScreen(): ReactElement {
             delay={300}
             testID="auth.keepSignedIn"
           />
-        </View>
+        </YStack>
       ) : null}
 
-      <View style={{ marginTop: 28 }}>
+      <YStack marginTop={28}>
         <PrimaryAction
           label={t("auth.signIn")}
           loading={submitting}
           onPress={onSubmit}
           testID="auth.submit"
         />
-      </View>
+      </YStack>
 
       <OrDivider text={t("auth.orDivider")} />
 

@@ -5,14 +5,14 @@
  * shared artifact is the PDF URL itself.
  */
 import { useGetV1ExportResumePdf } from "@patch-careers/api-client";
-import { Sheet } from "@patch-careers/ui";
+import { Sheet, Text, YStack } from "@patch-careers/ui";
 import {
   editorialFonts as fonts,
   PrimaryAction,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, Share, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Share } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -68,33 +68,48 @@ export function ShareResumeSheet({
       }}
       title={t("resumes.share.title")}
     >
-      <View style={styles.body}>
+      <YStack gap={18} alignItems="center" paddingBottom={8}>
         {error ? (
-          <Text style={[styles.hint, { color: palette.danger }]}>{t("resumes.share.error")}</Text>
+          <Text
+            fontFamily={fonts.sans}
+            fontSize={13}
+            lineHeight={18}
+            textAlign="center"
+            color={palette.danger}
+          >
+            {t("resumes.share.error")}
+          </Text>
         ) : url ? (
           <>
-            <View style={[styles.qrWrap, { borderColor: palette.hairline }]}>
+            <YStack padding={16} borderWidth={1} borderRadius={16} borderColor={palette.hairline}>
               <QRCode value={url} size={188} backgroundColor="transparent" color={palette.ink} />
-            </View>
-            <Text style={[styles.hint, { color: palette.muted }]}>{t("resumes.share.hint")}</Text>
+            </YStack>
+            <Text
+              fontFamily={fonts.sans}
+              fontSize={13}
+              lineHeight={18}
+              textAlign="center"
+              color={palette.muted}
+            >
+              {t("resumes.share.hint")}
+            </Text>
             <PrimaryAction label={t("resumes.share.shareLink")} onPress={() => void onShare()} />
           </>
         ) : (
-          <View style={styles.loading}>
+          <YStack gap={12} alignItems="center" paddingVertical={24}>
             <ActivityIndicator color={palette.ink} />
-            <Text style={[styles.hint, { color: palette.muted }]}>
+            <Text
+              fontFamily={fonts.sans}
+              fontSize={13}
+              lineHeight={18}
+              textAlign="center"
+              color={palette.muted}
+            >
               {t("resumes.share.generating")}
             </Text>
-          </View>
+          </YStack>
         )}
-      </View>
+      </YStack>
     </Sheet>
   );
 }
-
-const styles = StyleSheet.create({
-  body: { gap: 18, alignItems: "center", paddingBottom: 8 },
-  qrWrap: { padding: 16, borderWidth: 1, borderRadius: 16 },
-  loading: { gap: 12, alignItems: "center", paddingVertical: 24 },
-  hint: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 18, textAlign: "center" },
-});

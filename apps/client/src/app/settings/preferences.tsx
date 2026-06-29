@@ -2,16 +2,12 @@
 
 import type { Locale } from "@patch-careers/i18n";
 import type { ColorScheme } from "@patch-careers/state";
+import { SettingsCard } from "@patch-careers/ui/editorial";
 import { MonitorSmartphone, Moon, Sun } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { View } from "react-native";
-import {
-  PillSelect,
-  SectionHeader,
-  SettingsCard,
-  SettingsScreenShell,
-  useSet,
-} from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { PillSelect, SectionHeader, useSet } from "@/features/settings";
 import { useColorSchemeStore } from "@/providers/color-scheme";
 import { useI18n } from "@/providers/i18n-provider";
 

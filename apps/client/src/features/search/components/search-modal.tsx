@@ -42,6 +42,7 @@ import { SearchEmptyState } from "./search-empty-state";
 import { SearchResultRow } from "./search-result-row";
 import { SearchSectionLabel } from "./search-section-label";
 
+// @style-allow color: modal scrim overlay (intentional alpha wash, not a theme token)
 const SCRIM = { light: "rgba(10,10,10,0.32)", dark: "rgba(0,0,0,0.55)" } as const;
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 // Gap between the safe area and the card, and between card and keyboard.
@@ -325,6 +326,7 @@ export function SearchModal({
   );
 }
 
+// @style-allow stylesheet: animated command-palette card (Animated.Value fade/scale enter/exit)
 const styles = StyleSheet.create({
   card: {
     borderRadius: 22,

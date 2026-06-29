@@ -17,9 +17,11 @@ import {
   type StyleScoreBreakdownIssue,
   StyleScoreChip,
   type StyleScoreSeverity,
+  Text,
+  YStack,
 } from "@patch-careers/ui";
 import { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
 export type StyleScoreBadgeProps = {
@@ -72,11 +74,11 @@ export function StyleScoreBadge({ styleId, styleScore, size = "sm" }: StyleScore
         presentation="card"
       >
         {detail.isLoading ? (
-          <View style={styles.center}>
+          <YStack paddingVertical={24} alignItems="center">
             <ActivityIndicator />
-          </View>
+          </YStack>
         ) : detail.isError ? (
-          <Text style={styles.error}>{t("resumes.styleScore.loadError")}</Text>
+          <Text paddingVertical={12}>{t("resumes.styleScore.loadError")}</Text>
         ) : (
           <StyleScoreBreakdown
             score={styleScore}
@@ -92,8 +94,3 @@ export function StyleScoreBadge({ styleId, styleScore, size = "sm" }: StyleScore
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  center: { paddingVertical: 24, alignItems: "center" },
-  error: { paddingVertical: 12 },
-});

@@ -3,7 +3,7 @@
  * so the list doesn't jump when real rows land.
  */
 
-import { Skeleton, YStack } from "@patch-careers/ui";
+import { Divider, Skeleton, YStack } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import { View } from "react-native";
@@ -23,7 +23,7 @@ export function JobListSkeleton(): ReactElement {
             <Skeleton width="82%" height={19} />
             <Skeleton width="58%" height={12} />
           </YStack>
-          <View style={{ height: 1, marginLeft: 20, backgroundColor: editorialPalette.hairline }} />
+          <Divider color={editorialPalette.hairline} marginLeft={20} />
         </View>
       ))}
     </View>

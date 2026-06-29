@@ -11,7 +11,7 @@ import { Bookmark } from "lucide-react-native";
 import { memo, type ReactElement } from "react";
 import { Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
-import { jobMetaLine, postedAgo } from "../lib/helpers";
+import { jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
 import type { ExternalJob } from "../types";
 
 function JobRowInner({
@@ -31,11 +31,12 @@ function JobRowInner({
   const { t, locale } = useI18n();
   const meta = jobMetaLine(job, locale);
   const ago = postedAgo(job, now, t, locale);
+  const title = toTitleCase(job.title);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={t("jobs.row.a11y", { title: job.title, company: job.company })}
+      accessibilityLabel={t("jobs.row.a11y", { title, company: job.company })}
       onPress={() => onPress(job)}
       style={({ pressed }) => ({
         backgroundColor: pressed ? editorialPalette.surface : "transparent",
@@ -60,7 +61,7 @@ function JobRowInner({
             color={editorialPalette.ink}
             numberOfLines={2}
           >
-            {job.title}
+            {title}
           </Text>
           {meta ? (
             <Text preset="caption" fontSize={13} color={editorialPalette.body} numberOfLines={1}>

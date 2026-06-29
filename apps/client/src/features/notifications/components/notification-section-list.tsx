@@ -4,7 +4,7 @@
  * bottom padding that clears the floating tab bar.
  */
 
-import { Text } from "@patch-careers/ui";
+import { Divider, Text } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import type { ReactElement } from "react";
@@ -16,7 +16,7 @@ import { NotificationRow } from "./notification-row";
 
 function RowSeparator(): ReactElement {
   const palette = useEditorialPalette();
-  return <View style={{ height: 1, marginLeft: 76, backgroundColor: palette.hairline }} />;
+  return <Divider color={palette.hairline} marginLeft={76} />;
 }
 
 export function NotificationSectionList({

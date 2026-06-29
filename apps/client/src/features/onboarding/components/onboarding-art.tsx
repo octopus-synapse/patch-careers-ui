@@ -8,6 +8,10 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
 import Svg, { Circle, Line, Path, Rect } from "react-native-svg";
 
+// White tick/detail drawn on top of the filled accent disc.
+// @style-allow color: SVG art colors (illustration palette, not theme tokens)
+const ART = { tick: "#FFFFFF" } as const;
+
 export interface OnboardingArtProps {
   /** Square-ish art; width drives the box, height ≈ width * 0.8. */
   readonly size?: number;
@@ -61,7 +65,7 @@ export function WelcomeArt({ size = 132 }: OnboardingArtProps): ReactElement {
       <Circle cx={94} cy={86} r={18} fill={ACCENT} />
       <Path
         d="M86 86l5.5 5.5L103 80"
-        stroke="#FFFFFF"
+        stroke={ART.tick}
         strokeWidth={2.25}
         strokeLinecap="round"
         strokeLinejoin="round"

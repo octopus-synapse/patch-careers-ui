@@ -55,6 +55,10 @@ const queryClient = new QueryClient({
   },
 });
 
+// Static fill style for the gesture-handler root — a non-Tamagui host that takes
+// a plain `style`, so it lives as a stable module const rather than inline.
+const ROOT_FLEX = { flex: 1 };
+
 export default function RootLayout(): ReactElement {
   const scheme = useResolvedScheme();
   const palette = editorialPalettes[scheme];
@@ -83,7 +87,7 @@ export default function RootLayout(): ReactElement {
   return (
     // Required once at the root for react-native-gesture-handler (swipe-to-
     // delete rows in the resume section manager).
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={ROOT_FLEX}>
       <SafeAreaProvider>
         <KeyboardProvider>
           <QueryClientProvider client={queryClient}>

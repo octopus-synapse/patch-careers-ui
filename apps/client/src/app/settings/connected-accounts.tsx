@@ -5,13 +5,15 @@ import {
   useGetV1UsersConnectedAccounts,
 } from "@patch-careers/api-client";
 import type { OAuthProvider } from "@patch-careers/auth";
-import { OAuthButton, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { OAuthButton, SettingsCard, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
 import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { SettingsCard, SettingsScreenShell, useSet } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
@@ -55,7 +57,9 @@ export default function ConnectedAccountsScreen(): ReactElement {
   return (
     <SettingsScreenShell title={t("settings.account.connected.title")}>
       {query.isLoading ? (
-        <ActivityIndicator color={palette.ink} style={{ marginTop: 24 }} />
+        <YStack marginTop={24}>
+          <ActivityIndicator color={palette.ink} />
+        </YStack>
       ) : (
         <>
           {accounts.length > 0 ? (

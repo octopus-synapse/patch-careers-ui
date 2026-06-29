@@ -8,6 +8,7 @@ import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editori
 import { StyleSheet } from "react-native";
 
 const rzFor = (p: EditorialPalette) =>
+  // @style-allow stylesheet: themed editorial style factory consumed via style prop by 5 components (parity with the DS internal pattern)
   StyleSheet.create({
     // list sub-tab
     list: { gap: 12 },
@@ -75,7 +76,11 @@ const rzFor = (p: EditorialPalette) =>
     },
     // web-only inline row actions (revealed on hover/focus of the card)
     headActionBtnActive: { borderColor: p.hairlineStrong, backgroundColor: p.bg },
-    headActionBtnDanger: { borderColor: p.danger, backgroundColor: "rgba(220,38,38,0.08)" },
+    headActionBtnDanger: {
+      borderColor: p.danger,
+      // @style-allow color: translucent red tint for the web inline delete action's hover state (intentional danger overlay, not a token surface)
+      backgroundColor: "rgba(220,38,38,0.08)",
+    },
 
     // native swipe-to-reveal action drawer (behind the card, right side)
     swipeActions: { flexDirection: "row", alignItems: "stretch" },

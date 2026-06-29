@@ -56,6 +56,107 @@ export function postedWithinLabel(value: PostedWithin, t: Translator): string {
 }
 
 /**
+ * Upstream job titles arrive in wildly inconsistent casing — many BR listings
+ * come SHOUTING ("DESENVOLVEDOR JUNIOR"). We title-case them for display only;
+ * the raw value is kept server-side so search (`contains … insensitive`) and
+ * the dedup hash stay intact.
+ *
+ * Rules: lowercase the loud words, keep Portuguese connectives ("de", "e",
+ * "para"…) down except as the first word, preserve known acronyms (PHP, SQL,
+ * QA…), and leave already-mixed-case tokens alone (JavaScript, DevOps, iOS).
+ */
+const TITLE_ACRONYMS = new Set([
+  "PHP",
+  "SQL",
+  "HTML",
+  "CSS",
+  "JS",
+  "TS",
+  "API",
+  "QA",
+  "UX",
+  "UI",
+  "AWS",
+  "GCP",
+  "CI",
+  "CD",
+  "TI",
+  "RH",
+  "PJ",
+  "CLT",
+  "SAP",
+  "ERP",
+  "CRM",
+  "SEO",
+  "BI",
+  "ETL",
+  "IA",
+  "AI",
+  "ML",
+  "DBA",
+  "SRE",
+  "IOT",
+  "B2B",
+  "B2C",
+  "CTO",
+  "CEO",
+  "II",
+  "III",
+  "IV",
+  "VI",
+  "VII",
+  "VIII",
+]);
+
+const TITLE_CONNECTIVES = new Set([
+  "de",
+  "da",
+  "do",
+  "das",
+  "dos",
+  "e",
+  "ou",
+  "em",
+  "no",
+  "na",
+  "nos",
+  "nas",
+  "a",
+  "o",
+  "as",
+  "os",
+  "ao",
+  "aos",
+  "à",
+  "às",
+  "com",
+  "para",
+  "por",
+  "sem",
+  "the",
+  "of",
+  "and",
+  "for",
+  "to",
+  "in",
+]);
+
+export function toTitleCase(value: string): string {
+  let wordIndex = 0;
+  return value.replace(/\p{L}[\p{L}\p{N}]*/gu, (word) => {
+    const isFirst = wordIndex === 0;
+    wordIndex += 1;
+    const upper = word.toUpperCase();
+    if (TITLE_ACRONYMS.has(upper)) return upper;
+    // Already intentionally mixed (JavaScript, DevOps, iOS) — leave untouched.
+    if (word !== upper && /\p{Lu}/u.test(word.slice(1))) return word;
+    const lower = word.toLowerCase();
+    if (!isFirst && TITLE_CONNECTIVES.has(lower)) return lower;
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  });
+}
+
+/**
  * Relative recency label ("hoje", "há 3 dias"…). Uses `postedAt` when the
  * upstream provided it, else `fetchedAt` (when we first saw the listing).
  */

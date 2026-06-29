@@ -179,13 +179,25 @@ são integrados via `Controller` (wrappers em `@patch-careers/ui` ou `@patch-car
 
 ## 11. Enforcement
 
-- **Naming**: Biome `style/useFilenamingConvention` (`kebab-case`), com `overrides`
-  ignorando `apps/client/src/app/**` (rotas Expo).
-- **Camadas**: Biome `noRestrictedImports` via `overrides` por diretório + tags Nx
-  (`scope:*`, `type:*`) para o grafo/`nx affected` e um check de CI. Ver
-  [ADR-0003](./docs/adr/0003-module-boundaries-enforcement.md).
-- **Commits**: pre-commit roda `biome check .` + `nx run-many -t typecheck`. Nenhum commit
-  pode introduzir estado quebrado. `--no-verify` é proibido.
+Cada regra normativa é **verificada**: Biome para regras de import por nome de package; specs
+de static-analysis (TS compiler API, em `apps/client/src/static-analysis/`) para o que o Biome
+não expressa (grafo de features, estilo, adoção do DS).
+
+| Regra | Mecanismo | Onde |
+|---|---|---|
+| Naming kebab-case | Biome `useFilenamingConvention` (ignora `app/**`) | `biome.json` |
+| Camadas (tokens/ui/infra) | Biome `noRestrictedImports` por diretório + tags Nx | `biome.json` · `project.json` |
+| Cross-feature + deep-import | spec `no-cross-feature-imports` (foundation = `sections`,`resumes`) | ADR-0010 |
+| Adoção do `@patch-careers/ui` | spec `ui-adoption` (Touchable, hairline-divider) | ADR-0009 |
+| Estilo Tamagui-first | spec `no-stylesheet-inline-styles` (StyleSheet/inline/cor) | ADR-0007/0008 |
+| i18n (sem hardcoded) | spec `no-hardcoded-strings` + `locale-parity` | — |
+
+Exceções de estilo/adoção: diretiva inline `// @style-allow <kind>: <reason>` (reason obrigatório).
+
+- **Gating**: pre-commit roda `biome check .` + `nx run-many -t typecheck` + `pnpm verify:arch`
+  (fronteira de features + adoção do DS + estilo Tamagui-first — todas verdes). CI roda
+  `nx affected` + `verify:arch`. A suite i18n (`no-hardcoded-strings`) segue em migração e roda
+  informativamente até ficar verde. `--no-verify` é proibido; nenhum commit introduz estado quebrado.
 
 ---
 
@@ -199,3 +211,7 @@ são integrados via `Controller` (wrappers em `@patch-careers/ui` ou `@patch-car
 | [0004](./docs/adr/0004-state-management.md) | Regra de estado de 3 camadas |
 | [0005](./docs/adr/0005-forms-rhf-zod.md) | Forms com React Hook Form + Zod |
 | [0006](./docs/adr/0006-path-alias-imports.md) | Alias de import `@/` na app |
+| [0007](./docs/adr/0007-tamagui-first-styling.md) | Estilo Tamagui-first (sem StyleSheet/inline estático no produto) |
+| [0008](./docs/adr/0008-design-tokens-no-hardcoded-color.md) | Tokens obrigatórios (sem cor hardcoded) |
+| [0009](./docs/adr/0009-ui-adoption-rule-of-three.md) | Adoção do `@patch-careers/ui` verificada + rule of three |
+| [0010](./docs/adr/0010-foundation-features-cross-import.md) | Foundation features + enforcement cross-feature |

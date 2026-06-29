@@ -4,8 +4,8 @@
  * and jumps to review. Gated by the caller via `isDevTestFillEnabled()`.
  */
 
+import { XStack } from "@patch-careers/ui";
 import type { ReactElement } from "react";
-import { StyleSheet, View } from "react-native";
 import { GhostButton } from "@/features/sections";
 import type { FlowStepId } from "../lib/flow-plan";
 
@@ -22,15 +22,11 @@ export function TestFillBar({
 }): ReactElement {
   const isFirst = flowStepId === "language";
   return (
-    <View style={styles.row}>
+    <XStack gap={12} marginBottom={8}>
       <GhostButton label="test" onPress={onFillStep} disabled={disabled ?? false} />
       {isFirst ? (
         <GhostButton label="test all" onPress={onFillAll} disabled={disabled ?? false} />
       ) : null}
-    </View>
+    </XStack>
   );
 }
-
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", gap: 12, marginBottom: 8 },
-});

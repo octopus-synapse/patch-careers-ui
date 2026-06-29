@@ -11,6 +11,7 @@ import type { NotificationPayload, NotificationRoutableType } from "../types";
 import type { ForegroundHandler, PermissionStatus } from "./notification-service";
 
 export const ANDROID_CHANNEL_ID = "default";
+// @style-allow color: Android notification accent (brand color, not a theme token)
 const BRAND_COLOR = "#2563EB";
 
 /** Coerce a notification's loose `data` bag into our typed payload. */

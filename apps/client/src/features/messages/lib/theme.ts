@@ -29,7 +29,9 @@ const chatColorsFor = (p: EditorialPalette, ownBubble: string) =>
   }) as const;
 
 const chatColorsByTheme = {
+  // @style-allow color: own chat-bubble accent tint (light) passed to the chatColorsFor helper — "blue used sparingly"
   light: chatColorsFor(editorialPalette, "#EAF1FE"),
+  // @style-allow color: own chat-bubble accent tint (dark) passed to the chatColorsFor helper — "blue used sparingly"
   dark: chatColorsFor(editorialPaletteDark, "#22324A"),
 } as const;
 

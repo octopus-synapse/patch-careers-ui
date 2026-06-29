@@ -8,9 +8,10 @@
  */
 
 import { palette } from "@patch-careers/tokens";
+import { Text, YStack } from "@patch-careers/ui";
 import NetInfo, { type NetInfoState } from "@react-native-community/netinfo";
 import { type ReactElement, useEffect, useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslator } from "@/providers/i18n-provider";
 
@@ -35,22 +36,17 @@ export function NetInfoBanner(): ReactElement | null {
   const topPad = Platform.OS === "web" ? 0 : insets.top;
 
   return (
-    <View style={[styles.banner, { paddingTop: topPad + 6 }]} accessibilityRole="alert">
-      <Text style={styles.text}>{t("app.netInfoBanner.offline")}</Text>
-    </View>
+    <YStack
+      accessibilityRole="alert"
+      backgroundColor={palette.red[600]}
+      alignItems="center"
+      paddingHorizontal={16}
+      paddingBottom={8}
+      paddingTop={topPad + 6}
+    >
+      <Text color={palette.gray[50]} fontSize={14} fontWeight="600">
+        {t("app.netInfoBanner.offline")}
+      </Text>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  banner: {
-    backgroundColor: palette.red[600],
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    alignItems: "center",
-  },
-  text: {
-    color: palette.gray[50],
-    fontWeight: "600",
-    fontSize: 14,
-  },
-});

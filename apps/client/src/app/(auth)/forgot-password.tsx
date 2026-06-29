@@ -11,9 +11,9 @@
 
 import { postV1AuthForgotPassword } from "@patch-careers/api-client";
 import { isValidEmail } from "@patch-careers/auth";
+import { YStack } from "@patch-careers/ui";
 import { AuthShell, Banner, IntroBlock, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useMemo, useState } from "react";
-import { View } from "react-native";
 import { z } from "zod";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
@@ -54,7 +54,7 @@ export default function ForgotPasswordScreen(): ReactElement {
       />
 
       {sent ? (
-        <View style={{ gap: 24 }}>
+        <YStack gap={24}>
           <Banner intent="success" testID="forgot.success">
             {t("auth.forgotSuccess")}
           </Banner>
@@ -63,25 +63,25 @@ export default function ForgotPasswordScreen(): ReactElement {
             onPress={() => router.replace("/(auth)/sign-in")}
             testID="forgot.backToSignIn"
           />
-        </View>
+        </YStack>
       ) : (
-        <View style={{ gap: 24 }}>
+        <YStack gap={24}>
           <FormEmailField
             control={form.control}
             name="email"
             testID="forgot.email"
             onSubmitEditing={onSubmit}
           />
-          <View style={{ marginTop: 8 }}>
+          <YStack marginTop={8}>
             <PrimaryAction
               label={t("common.submit")}
               loading={submitting}
               onPress={onSubmit}
               testID="forgot.submit"
             />
-          </View>
+          </YStack>
           <BackToSignInLink testID="forgot.backLink" />
-        </View>
+        </YStack>
       )}
     </AuthShell>
   );

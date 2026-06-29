@@ -7,7 +7,7 @@
  * Calm DS, composed from `@patch-careers/ui`.
  */
 
-import { EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
+import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,15 +30,7 @@ import { useI18n } from "@/providers/i18n-provider";
 
 function RowSeparator(): ReactElement {
   const editorialPalette = useEditorialPalette();
-  return (
-    <View
-      style={{
-        height: 1,
-        marginLeft: 64,
-        backgroundColor: editorialPalette.hairline,
-      }}
-    />
-  );
+  return <Divider color={editorialPalette.hairline} marginLeft={64} />;
 }
 
 export default function MessagesScreen(): ReactElement {

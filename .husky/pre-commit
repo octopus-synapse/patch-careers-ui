@@ -1,8 +1,9 @@
 #!/bin/sh
-# V2 pre-commit gate — runs lint via Biome and (when present) Nx typecheck.
-# Heavier per-package checks (i18n parity, no-any, sdk-drift, etc.) are
-# reintroduced in later PRs once their producers exist in the V2 tree.
+# V2 pre-commit gate — runs lint via Biome, Nx typecheck, and the architectural
+# boundary specs (feature graph + DS adoption). The style/i18n migration specs
+# stay out of the gate until green (see ADR-0007); they run informationally.
 pnpm exec biome check . || exit 1
 if [ -f nx.json ]; then
   pnpm exec nx run-many -t typecheck --output-style=stream || exit 1
 fi
+pnpm verify:arch || exit 1

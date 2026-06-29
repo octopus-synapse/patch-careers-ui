@@ -3,11 +3,11 @@
  * photo (take with the camera / pick from the library). Replaces the old
  * "tap → straight to the gallery" so the camera is reachable in one step.
  */
-import { Sheet } from "@patch-careers/ui";
+import { Sheet, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Camera, Image as ImageIcon, Trash2 } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
 type GlyphProps = { size?: number; color?: string; strokeWidth?: number };
@@ -60,7 +60,7 @@ export function AvatarActionSheet({
       }}
       title={t("profile.photo.title")}
     >
-      <View style={styles.list}>
+      <YStack gap={10} paddingBottom={8}>
         {rows.map(({ key, label, icon: Icon, onPress, danger }) => {
           const tint = danger ? palette.danger : palette.ink;
           return (
@@ -68,36 +68,32 @@ export function AvatarActionSheet({
               key={key}
               accessibilityRole="button"
               accessibilityLabel={label}
-              style={({ pressed }) => [
-                styles.row,
-                { borderColor: palette.hairline },
-                pressed ? { backgroundColor: palette.surface } : null,
-              ]}
               onPress={() => {
                 onClose();
                 onPress();
               }}
             >
-              <Icon size={20} color={tint} strokeWidth={1.75} />
-              <Text style={[styles.label, { color: tint }]}>{label}</Text>
+              {({ pressed }) => (
+                <XStack
+                  alignItems="center"
+                  gap={14}
+                  paddingVertical={14}
+                  paddingHorizontal={14}
+                  borderWidth={1}
+                  borderRadius={12}
+                  borderColor={palette.hairline}
+                  backgroundColor={pressed ? palette.surface : "transparent"}
+                >
+                  <Icon size={20} color={tint} strokeWidth={1.75} />
+                  <Text color={tint} fontFamily={editorialFonts.sans} fontSize={15.5}>
+                    {label}
+                  </Text>
+                </XStack>
+              )}
             </Pressable>
           );
         })}
-      </View>
+      </YStack>
     </Sheet>
   );
 }
-
-const styles = StyleSheet.create({
-  list: { gap: 10, paddingBottom: 8 },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-    borderWidth: 1,
-    borderRadius: 12,
-  },
-  label: { fontFamily: editorialFonts.sans, fontSize: 15.5 },
-});

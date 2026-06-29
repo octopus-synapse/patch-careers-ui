@@ -1,11 +1,13 @@
 /** Change password (step 1) — current + new + confirm → emailed code. */
 
 import { usePostV1MePasswordChangeRequest } from "@patch-careers/api-client";
+import { YStack } from "@patch-careers/ui";
 import { PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
-import { SettingsScreenShell, useSet } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function ChangePasswordScreen(): ReactElement {
@@ -68,14 +70,14 @@ export default function ChangePasswordScreen(): ReactElement {
         ) : null}
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <View style={{ marginTop: 12 }}>
+      <YStack marginTop={12}>
         <PrimaryAction
           label={t("settings.account.changePassword.submit")}
           onPress={submit}
           loading={req.isPending}
           disabled={!canSubmit}
         />
-      </View>
+      </YStack>
     </SettingsScreenShell>
   );
 }

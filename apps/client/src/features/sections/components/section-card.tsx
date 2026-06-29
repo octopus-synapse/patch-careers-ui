@@ -6,14 +6,9 @@
  * borders. Used only by the grouped layout; the flat manager (resume detail)
  * keeps the plain small-caps groups.
  */
-import {
-  type EditorialPalette,
-  editorialPalette,
-  editorialPaletteDark,
-} from "@patch-careers/tokens";
-import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
+import { Text, XStack, YStack } from "@patch-careers/ui";
+import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 export function SectionCard({
   title,
@@ -27,32 +22,23 @@ export function SectionCard({
   action?: ReactNode;
   children: ReactNode;
 }): ReactElement {
-  const styles = stylesByTheme[useThemeName()];
+  const palette = useEditorialPalette();
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <View style={styles.titleRow}>
-          {leading ? <View style={styles.leading}>{leading}</View> : null}
-          <Text style={styles.title}>{title}</Text>
-        </View>
+    <YStack gap={12}>
+      <XStack alignItems="center" justifyContent="space-between">
+        <XStack alignItems="center" gap={8} flex={1}>
+          {leading ? (
+            <YStack width={20} alignItems="center">
+              {leading}
+            </YStack>
+          ) : null}
+          <Text fontFamily={fonts.serif} fontSize={18} color={palette.ink}>
+            {title}
+          </Text>
+        </XStack>
         {action}
-      </View>
-      <View style={styles.body}>{children}</View>
-    </View>
+      </XStack>
+      <YStack gap={10}>{children}</YStack>
+    </YStack>
   );
 }
-
-const stylesFor = (p: EditorialPalette) =>
-  StyleSheet.create({
-    card: { gap: 12 },
-    header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-    titleRow: { flexDirection: "row", alignItems: "center", gap: 8, flex: 1 },
-    leading: { width: 20, alignItems: "center" },
-    title: { fontFamily: fonts.serif, fontSize: 18, color: p.ink },
-    body: { gap: 10 },
-  });
-
-const stylesByTheme = {
-  light: stylesFor(editorialPalette),
-  dark: stylesFor(editorialPaletteDark),
-} as const;

@@ -21,12 +21,12 @@ import {
 } from "@patch-careers/api-client";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { INBOX_POLL_MS } from "@/lib/polling";
 import { sortMessagesAsc } from "../lib/helpers";
 import type { ChatMessage, ChatUser, Conversation } from "../types";
 
 const INBOX_LIMIT = 50;
 const THREAD_LIMIT = 100;
-const INBOX_POLL_MS = 30_000;
 const THREAD_POLL_MS = 12_000;
 
 function inboxKey() {

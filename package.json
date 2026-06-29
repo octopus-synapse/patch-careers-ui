@@ -27,6 +27,7 @@
     "test": "nx run-many -t test",
     "build": "nx run-many -t build",
     "typecheck": "nx run-many -t typecheck",
+    "verify:arch": "vitest run --config apps/client/vitest.config.ts apps/client/src/static-analysis/no-cross-feature-imports.spec.ts apps/client/src/static-analysis/ui-adoption.spec.ts apps/client/src/static-analysis/no-stylesheet-inline-styles.spec.ts",
     "graph": "nx graph",
     "affected": "nx affected",
     "android": "pnpm --filter client android",

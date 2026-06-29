@@ -26,7 +26,18 @@ import { useI18n } from "@/providers/i18n-provider";
 // Light: matches the HTML document's body backdrop so the safe-area inset
 // blends in. Dark: the document stays a white "page", so the container frames
 // it like a PDF viewer instead of mirroring it.
+// @style-allow color: PDF-viewer backdrop (intentional neutral, not a surface token)
 const BACKDROP = { light: "#e5e7eb", dark: "#111110" } as const;
+
+// The host <iframe> is a web DOM element (rendered via react-dom), not a Tamagui
+// node, so its layout stays a plain style object rather than style props.
+// @style-allow inline: web <iframe> host element cannot take Tamagui props
+const IFRAME_STYLE = {
+  flex: 1,
+  border: "none",
+  width: "100%",
+  height: "100%",
+} as unknown as undefined;
 
 export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): ReactElement {
   const { t } = useI18n();
@@ -105,7 +116,7 @@ export function ResumePreview({ resumeId }: { resumeId?: string | undefined }): 
           ref={iframeRef}
           srcDoc={html}
           title={t("resumes.preview.title")}
-          style={{ flex: 1, border: "none", width: "100%", height: "100%" } as unknown as undefined}
+          style={IFRAME_STYLE}
         />
       ) : (
         <WebView
@@ -130,6 +141,7 @@ function Centered({ children }: { children: ReactNode }): ReactElement {
 }
 
 const stylesFor = (p: EditorialPalette, backdrop: string) =>
+  // @style-allow stylesheet: themed style factory (palette + theme-specific backdrop) consumed by native WebView / web iframe / Pressable hosts that cannot take Tamagui props
   StyleSheet.create({
     root: { flex: 1, backgroundColor: backdrop },
     flex: { flex: 1, backgroundColor: backdrop },

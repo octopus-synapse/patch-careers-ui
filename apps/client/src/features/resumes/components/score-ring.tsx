@@ -4,9 +4,9 @@
  * gradients or shadows; the band color (danger / warn / success) carries the
  * only accent. Used by the resume quality surface (and reusable on cards).
  */
+import { Text, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
 
 export function ScoreRing({
@@ -27,7 +27,7 @@ export function ScoreRing({
   const center = size / 2;
 
   return (
-    <View style={{ width: size, height: size }}>
+    <YStack width={size} height={size}>
       <Svg width={size} height={size}>
         <G rotation={-90} origin={`${center}, ${center}`}>
           <Circle
@@ -51,14 +51,26 @@ export function ScoreRing({
           />
         </G>
       </Svg>
-      <View style={styles.center} pointerEvents="none">
-        <Text style={[styles.score, { color: palette.ink }]}>{clamped}</Text>
-      </View>
-    </View>
+      <YStack
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        alignItems="center"
+        justifyContent="center"
+        pointerEvents="none"
+      >
+        <Text
+          fontFamily={fonts.mono}
+          fontSize={17}
+          fontWeight="600"
+          letterSpacing={0.2}
+          color={palette.ink}
+        >
+          {clamped}
+        </Text>
+      </YStack>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  center: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
-  score: { fontFamily: fonts.mono, fontSize: 17, fontWeight: "600", letterSpacing: 0.2 },
-});

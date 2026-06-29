@@ -56,6 +56,7 @@ export function AddSectionButton({
   );
 }
 
+// @style-allow stylesheet: frosted-glass CTA (BlurView + StyleSheet.absoluteFill layering, parity with inactive scope pill)
 const styles = StyleSheet.create({
   // Soft lift identical to the inactive frosted pill.
   wrap: {

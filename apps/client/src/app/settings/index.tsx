@@ -4,11 +4,12 @@
  */
 
 import { logout } from "@patch-careers/auth";
+import { YStack } from "@patch-careers/ui";
+import { SettingsCard, SettingsRow } from "@patch-careers/ui/editorial";
 import { type Href, useRouter } from "expo-router";
 import { Bell, LockKeyhole, LogOut, Palette, UserRound } from "lucide-react-native";
 import type { ReactElement } from "react";
-import { View } from "react-native";
-import { SettingsCard, SettingsRow, SettingsScreenShell } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -48,7 +49,7 @@ export default function SettingsHome(): ReactElement {
         />
       </SettingsCard>
 
-      <View style={{ height: 18 }} />
+      <YStack height={18} />
       <SettingsCard>
         <SettingsRow first danger icon={LogOut} label={t("settings.signOut")} onPress={signOut} />
       </SettingsCard>

@@ -9,15 +9,17 @@ import {
   useGetV1NotificationsPreferences,
   usePutV1NotificationsPreferencesType,
 } from "@patch-careers/api-client";
-import { ToggleField, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { SettingsCard, ToggleField, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import {
   getNotificationService,
   isExpoGo,
   type NotificationRoutableType,
 } from "@/features/notifications";
-import { SectionHeader, SettingsCard, SettingsScreenShell, useSet } from "@/features/settings";
+import { SectionHeader, useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
 
 type Channels = { inAppEnabled: boolean; emailEnabled: boolean; pushEnabled: boolean };
@@ -88,7 +90,9 @@ export default function NotificationsScreen(): ReactElement {
     <SettingsScreenShell title={t("settings.notifications.title")}>
       <Text style={styles.intro}>{t("settings.notifications.intro")}</Text>
       {!ready ? (
-        <ActivityIndicator color={palette.ink} style={{ marginTop: 24 }} />
+        <YStack marginTop={24}>
+          <ActivityIndicator color={palette.ink} />
+        </YStack>
       ) : (
         TYPE_KEYS.map((key) => {
           const cs = state[key] ?? DEFAULTS;

@@ -1,8 +1,7 @@
 /** Rename a resume — small shared <Sheet> with one underline input. */
-import { Sheet } from "@patch-careers/ui";
+import { Sheet, YStack } from "@patch-careers/ui";
 import { PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
 export function RenameSheet({
@@ -37,7 +36,7 @@ export function RenameSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={t("resumes.rename.title")}>
-      <View style={styles.body}>
+      <YStack gap={22} paddingBottom={8}>
         <UnderlineInput
           label={t("resumes.rename.nameLabel")}
           value={title}
@@ -49,11 +48,7 @@ export function RenameSheet({
           loading={isPending}
           disabled={title.trim().length === 0 || isPending}
         />
-      </View>
+      </YStack>
     </Sheet>
   );
 }
-
-const styles = StyleSheet.create({
-  body: { gap: 22, paddingBottom: 8 },
-});

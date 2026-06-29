@@ -20,10 +20,10 @@ import {
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { Platform } from "react-native";
+import { INBOX_POLL_MS } from "@/lib/polling";
 import type { DevicePlatform, NotificationItem } from "../types";
 
 const INBOX_LIMIT = 50;
-const INBOX_POLL_MS = 30_000;
 
 function inboxKey() {
   return getV1NotificationsQueryKey({ limit: INBOX_LIMIT });

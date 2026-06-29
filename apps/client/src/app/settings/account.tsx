@@ -10,12 +10,13 @@ import {
 } from "@patch-careers/api-client";
 import { logout } from "@patch-careers/auth";
 import { useToast } from "@patch-careers/ui";
-import { UnderlineInput } from "@patch-careers/ui/editorial";
+import { SettingsCard, SettingsRow, UnderlineInput } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { AtSign, Download, KeyRound, Link2, Mail, Trash2, UserMinus } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { SectionHeader, SettingsCard, SettingsRow, SettingsScreenShell } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { SectionHeader } from "@/features/settings";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";

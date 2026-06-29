@@ -8,7 +8,7 @@
  */
 
 import { verifyTwoFactor } from "@patch-careers/auth";
-import { OTPInput } from "@patch-careers/ui";
+import { OTPInput, YStack } from "@patch-careers/ui";
 import {
   AuthShell,
   CaptionButton,
@@ -18,7 +18,7 @@ import {
 } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import { type ReactElement, useState } from "react";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { failToSignIn } from "@/components/auth/helpers/fail-to-sign-in";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
@@ -69,18 +69,18 @@ export default function TwoFactorVerifyScreen(): ReactElement {
         emphasis={mode === "totp" ? t("auth.twoFaTitle") : t("auth.twoFaBackupTitle")}
         subtitle={mode === "totp" ? t("auth.twoFaIntro") : t("auth.twoFaBackupIntro")}
       />
-      <View style={{ gap: 20 }}>
+      <YStack gap={20}>
         {mode === "totp" ? (
-          <View style={{ alignItems: "center" }}>
+          <YStack alignItems="center">
             <OTPInput
               value={code}
               onChangeText={setCode}
               onComplete={(v) => void submitCode(v)}
               autoFocus
             />
-          </View>
+          </YStack>
         ) : (
-          <View style={{ gap: 16 }}>
+          <YStack gap={16}>
             <UnderlineInput
               label={t("auth.twoFaBackupTitle")}
               placeholder={t("auth.twoFaBackupPlaceholder")}
@@ -95,7 +95,7 @@ export default function TwoFactorVerifyScreen(): ReactElement {
               onPress={handleBackupSubmit}
               testID="twofa.backupSubmit"
             />
-          </View>
+          </YStack>
         )}
 
         <CaptionButton
@@ -104,7 +104,7 @@ export default function TwoFactorVerifyScreen(): ReactElement {
           testID="twofa.toggleMode"
         />
         <BackToSignInLink testID="twofa.backToSignIn" />
-      </View>
+      </YStack>
     </AuthShell>
   );
 }

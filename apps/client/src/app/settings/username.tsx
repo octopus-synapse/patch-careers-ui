@@ -7,13 +7,15 @@ import {
   usePatchV1UsersUsername,
 } from "@patch-careers/api-client";
 import { formatDate } from "@patch-careers/i18n";
+import { YStack } from "@patch-careers/ui";
 import { PrimaryAction, UnderlineInput, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Clock } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
-import { SettingsScreenShell, useSet } from "@/features/settings";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { useSet } from "@/features/settings";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -87,14 +89,14 @@ export default function UsernameScreen(): ReactElement {
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <View style={{ marginTop: 12 }}>
+      <YStack marginTop={12}>
         <PrimaryAction
           label={t("settings.account.username.submit")}
           onPress={submit}
           loading={patch.isPending}
           disabled={!changed || locked || patch.isPending}
         />
-      </View>
+      </YStack>
     </SettingsScreenShell>
   );
 }

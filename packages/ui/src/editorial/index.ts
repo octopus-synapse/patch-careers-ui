@@ -54,6 +54,7 @@ export { PasswordStrengthMeter } from "./password-strength-meter";
 export { PatchLogo } from "./patch-logo";
 export { PrimaryAction, type PrimaryActionProps } from "./primary-action";
 export { type SegmentedTab, SegmentedTabs, type SegmentedTabsProps } from "./segmented-tabs";
+export { SettingsCard, SettingsRow } from "./settings-surface";
 export {
   FrostedBar,
   type FrostedBarVariant,

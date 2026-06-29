@@ -9,6 +9,7 @@ import {
   jobMetaLine,
   postedAgo,
   setSavedFlag,
+  toTitleCase,
 } from "./helpers";
 
 const DAY_MS = 86_400_000;
@@ -60,6 +61,33 @@ describe("postedAgo", () => {
 
   it("returns empty string for malformed dates", () => {
     expect(postedAgo({ postedAt: "not-a-date", fetchedAt: "also-bad" }, NOW, t, "pt-BR")).toBe("");
+  });
+});
+
+describe("toTitleCase", () => {
+  it("fixes shouty all-caps titles", () => {
+    expect(toTitleCase("DESENVOLVEDOR JUNIOR")).toBe("Desenvolvedor Junior");
+  });
+
+  it("keeps Portuguese connectives lowercase except as the first word", () => {
+    expect(toTitleCase("ANALISTA DE DADOS")).toBe("Analista de Dados");
+    expect(toTitleCase("DE FRENTE PARA O MAR")).toBe("De Frente para o Mar");
+  });
+
+  it("preserves known acronyms", () => {
+    expect(toTitleCase("DESENVOLVEDOR PHP PLENO")).toBe("Desenvolvedor PHP Pleno");
+    expect(toTitleCase("ANALISTA QA")).toBe("Analista QA");
+  });
+
+  it("leaves intentionally mixed-case tokens untouched", () => {
+    expect(toTitleCase("Desenvolvedor JavaScript")).toBe("Desenvolvedor JavaScript");
+    expect(toTitleCase("Engenheiro DevOps")).toBe("Engenheiro DevOps");
+    expect(toTitleCase("DESENVOLVEDOR iOS")).toBe("Desenvolvedor iOS");
+  });
+
+  it("handles hyphen and slash compounds", () => {
+    expect(toTitleCase("DESENVOLVEDOR FRONT-END")).toBe("Desenvolvedor Front-End");
+    expect(toTitleCase("DESENVOLVEDOR PLENO/SENIOR")).toBe("Desenvolvedor Pleno/Senior");
   });
 });
 

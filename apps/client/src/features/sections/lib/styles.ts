@@ -31,6 +31,7 @@ export const webNoOutline =
 type OverlayColors = { scrim: string; dangerTint: string };
 
 const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
+  // @style-allow stylesheet: themed editorial style factory consumed by N components (parity with DS internal pattern)
   StyleSheet.create({
     root: { flex: 1, backgroundColor: authTokens.bg },
     flex: { flex: 1 },
@@ -744,11 +745,15 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
 // Precomputed per theme so style-object identity is stable across renders.
 const edByTheme = {
   light: createEd(editorialPalette, {
+    // @style-allow color: modal/picker scrim overlay wash (light) — not derivable from the palette
     scrim: "rgba(10,10,10,0.45)",
+    // @style-allow color: destructive (remove) hover tint (light) — not derivable from the palette
     dangerTint: "rgba(220,38,38,0.08)",
   }),
   dark: createEd(editorialPaletteDark, {
+    // @style-allow color: modal/picker scrim overlay wash (dark) — not derivable from the palette
     scrim: "rgba(0,0,0,0.6)",
+    // @style-allow color: destructive (remove) hover tint (dark) — not derivable from the palette
     dangerTint: "rgba(248,113,113,0.12)",
   }),
 } as const;

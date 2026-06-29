@@ -4,19 +4,18 @@ import {
   useGetV1UsersPreferencesFull,
   usePatchV1UsersPreferencesFull,
 } from "@patch-careers/api-client";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { YStack } from "@patch-careers/ui";
+import { SettingsCard, SettingsRow, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Ban } from "lucide-react-native";
 import { type ReactElement, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import {
   type MessagePrivacy,
   PillSelect,
   type ProfileVisibility,
   SectionHeader,
-  SettingsCard,
-  SettingsRow,
-  SettingsScreenShell,
   useSet,
 } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
@@ -60,16 +59,18 @@ export default function PrivacyScreen(): ReactElement {
   return (
     <SettingsScreenShell title={t("settings.privacy.title")}>
       {prefsQuery.isPending ? (
-        <ActivityIndicator color={palette.ink} style={{ marginTop: 32 }} />
+        <YStack marginTop={32}>
+          <ActivityIndicator color={palette.ink} />
+        </YStack>
       ) : prefsQuery.isError ? (
-        <View style={{ marginTop: 24, gap: 12 }}>
+        <YStack marginTop={24} gap={12}>
           <Text style={styles.bodyText}>{t("settings.privacy.loadError")}</Text>
           <Pressable onPress={() => prefsQuery.refetch()} disabled={prefsQuery.isFetching}>
             <Text style={[styles.bodyText, { color: palette.accent, fontWeight: "600" }]}>
               {t("settings.privacy.retry")}
             </Text>
           </Pressable>
-        </View>
+        </YStack>
       ) : (
         <>
           <SectionHeader label={t("settings.privacy.visibility.label")} />
@@ -100,7 +101,7 @@ export default function PrivacyScreen(): ReactElement {
             </View>
           </SettingsCard>
 
-          <View style={{ height: 10 }} />
+          <YStack height={10} />
           <SettingsCard>
             <SettingsRow
               first
