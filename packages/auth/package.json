@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@patch-careers/platform": "workspace:*",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.14"
   },
   "peerDependencies": {
     "react": "*",
