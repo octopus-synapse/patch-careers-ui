@@ -50,7 +50,7 @@
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
-    "@types/node": "^20.0.0",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.1.0",
     "@vitest/coverage-v8": "^2.1.9",
     "babel-preset-expo": "~54.0.7",
