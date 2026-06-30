@@ -1,6 +1,8 @@
 import type { TranslationDict } from "../types";
 import { appPtBR } from "./domains/app";
+import { fitPtBR } from "./domains/fit";
 import { jobsPtBR } from "./domains/jobs";
+import { matchPtBR } from "./domains/match";
 import { messagesPtBR } from "./domains/messages";
 import { notificationsPtBR } from "./domains/notifications";
 import { profilePtBR } from "./domains/profile";
@@ -16,7 +18,9 @@ import { settingsPtBR } from "./domains/settings";
  */
 export const ptBR: TranslationDict = {
   app: appPtBR,
+  fit: fitPtBR,
   jobs: jobsPtBR,
+  match: matchPtBR,
   messages: messagesPtBR,
   notifications: notificationsPtBR,
   profile: profilePtBR,

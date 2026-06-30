@@ -11,7 +11,7 @@
 import { intent as intentTokens, radius } from "@patch-careers/tokens";
 import type { ReactNode } from "react";
 import { Pressable } from "react-native";
-import { clampScore, fitScoreIntent } from "../internal/fit-score";
+import { clampScore, scoreGrade, scoreIntent } from "../internal/score-scale";
 import { TStack } from "../internal/tamagui-shim";
 import { useThemeName } from "../internal/use-theme-name";
 import { Text } from "../primitives/text";
@@ -23,6 +23,8 @@ export type ScoreChipProps = {
   size?: ScoreChipSize;
   /** Localised label, e.g. "Style score 100 de 100". Required for a11y. */
   accessibilityLabel: string;
+  /** When true, appends the letter grade after the number ("82 · A"). */
+  grade?: boolean;
   /** Optional leading slot; receives the resolved foreground colour so an
    * icon can match the pill's intent colour. */
   leading?: (foreground: string) => ReactNode;
@@ -40,13 +42,15 @@ export function ScoreChip({
   score,
   size = "md",
   accessibilityLabel,
+  grade = false,
   leading,
   onPress,
 }: ScoreChipProps) {
   const themeName = useThemeName();
   const safeScore = clampScore(score);
-  const tokens = intentTokens[fitScoreIntent(safeScore)][themeName];
+  const tokens = intentTokens[scoreIntent(safeScore)][themeName];
   const pad = SIZE_TO_PAD[size];
+  const label = grade ? `${safeScore} · ${scoreGrade(safeScore)}` : `${safeScore}`;
 
   const pill = (
     <TStack
@@ -62,7 +66,7 @@ export function ScoreChip({
     >
       {leading?.(tokens.fg)}
       <Text preset="label" fontSize={pad.fs} color={tokens.fg}>
-        {safeScore}
+        {label}
       </Text>
     </TStack>
   );

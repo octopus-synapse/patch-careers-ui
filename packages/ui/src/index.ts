@@ -14,6 +14,19 @@
 export * from "./compounds";
 export * from "./icons";
 export { type HapticHandler, type HapticImpact, setHapticHandler } from "./internal/haptics";
+export {
+  clampScore,
+  type EditorialToneKey,
+  type ScoreGrade,
+  type ScoreSeverity,
+  type ScoreTone,
+  scoreColors,
+  scoreGrade,
+  scoreIntent,
+  scoreTone,
+  toneToEditorialKey,
+  toneToIntent,
+} from "./internal/score-scale";
 export type { ButtonVariant, Intent, Size, ThemeName } from "./internal/types";
 export { useEditorialPalette } from "./internal/use-editorial-palette";
 export { useThemeName } from "./internal/use-theme-name";

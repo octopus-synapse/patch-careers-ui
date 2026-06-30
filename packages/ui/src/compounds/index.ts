@@ -25,14 +25,13 @@ export { OTPInput, type OTPInputProps } from "./otp-input";
 export { PasswordStrengthBar, type PasswordStrengthBarProps } from "./password-strength-bar";
 export { PhoneInput, type PhoneInputProps } from "./phone-input";
 export { PullToRefresh, type PullToRefreshProps } from "./pull-to-refresh";
-export {
-  type QualityBreakdownIssue,
-  type QualitySeverity,
-  type QualitySubScore,
-  ResumeQualityBreakdown,
-  type ResumeQualityBreakdownProps,
-} from "./resume-quality-breakdown";
 export { ScoreChip, type ScoreChipProps, type ScoreChipSize } from "./score-chip";
+export {
+  type ScoreExplainSection,
+  ScoreExplainSheet,
+  type ScoreExplainSheetProps,
+} from "./score-explain-sheet";
+export { ScoreRing, type ScoreRingProps } from "./score-ring";
 export {
   SegmentedControl,
   type SegmentedControlProps,

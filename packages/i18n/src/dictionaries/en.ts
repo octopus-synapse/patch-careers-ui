@@ -1,6 +1,8 @@
 import type { TranslationDict } from "../types";
 import { appEn } from "./domains/app";
+import { fitEn } from "./domains/fit";
 import { jobsEn } from "./domains/jobs";
+import { matchEn } from "./domains/match";
 import { messagesEn } from "./domains/messages";
 import { notificationsEn } from "./domains/notifications";
 import { profileEn } from "./domains/profile";
@@ -16,7 +18,9 @@ import { settingsEn } from "./domains/settings";
  */
 export const en: TranslationDict = {
   app: appEn,
+  fit: fitEn,
   jobs: jobsEn,
+  match: matchEn,
   messages: messagesEn,
   notifications: notificationsEn,
   profile: profileEn,

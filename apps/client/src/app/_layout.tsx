@@ -139,6 +139,10 @@ export default function RootLayout(): ReactElement {
                             options={{ headerShown: false, animation: "slide_from_right" }}
                           />
                           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                          <Stack.Screen
+                            name="fit-questionnaire"
+                            options={{ headerShown: false, animation: "slide_from_bottom" }}
+                          />
                           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                           <Stack.Screen name="reset-password" options={{ headerShown: false }} />
                           <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />

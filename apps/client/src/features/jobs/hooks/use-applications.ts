@@ -30,6 +30,8 @@ export interface ApplicationRow {
   readonly status: ApplicationStatusBucket;
   /** Detail route id when the row maps to a cached job (external = savedId). */
   readonly jobRouteId: string | null;
+  /** Match Score frozen at apply time (internal applies only); null otherwise. */
+  readonly matchScore: number | null;
 }
 
 export interface ApplicationSection {
@@ -99,6 +101,7 @@ export function useApplications(enabled: boolean): {
         appliedAtIso: app.createdAt,
         status: bucketForInternalStatus(app.status),
         jobRouteId: null,
+        matchScore: app.matchScoreSnapshot ?? null,
       }));
 
       const externalRows: ApplicationRow[] = saved.items
@@ -114,6 +117,7 @@ export function useApplications(enabled: boolean): {
           appliedAtIso: row.appliedAt ?? row.savedAt,
           status: "review",
           jobRouteId: row.savedId,
+          matchScore: null,
         }));
 
       return [...internalRows, ...externalRows].sort((a, b) =>

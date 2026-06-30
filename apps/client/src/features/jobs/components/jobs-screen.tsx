@@ -16,6 +16,7 @@
 import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useQueryClient } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Bookmark, BriefcaseBusiness, SearchX, Send, SlidersHorizontal } from "lucide-react-native";
@@ -38,8 +39,9 @@ import {
   View,
 } from "react-native";
 import { setHeaderCollapsed } from "@/components/header-collapse-store";
+import { RecommendedSection } from "@/features/match";
 import { useI18n } from "@/providers/i18n-provider";
-import { useExternalJobs } from "../hooks/queries";
+import { EXTERNAL_JOBS_BASE, useExternalJobs } from "../hooks/queries";
 import {
   type ApplicationRow as ApplicationRowData,
   type ApplicationSection,
@@ -83,6 +85,7 @@ export function JobsScreen(): ReactElement {
   // Bottom bar floats over content; pad the list so the last rows clear it.
   const tabBarHeight = useBottomTabBarHeight();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { t } = useI18n();
   const [scope, setScope] = useState<JobsScope>("all");
   const [filters, setFilters] = useState<JobsFilters>(EMPTY_JOBS_FILTERS);
@@ -250,6 +253,19 @@ export function JobsScreen(): ReactElement {
       </View>
       {/* Reserve the floating scope bar's footprint. */}
       <View style={{ height: scopeBarHeight }} />
+      {/* Match-ranked recommendations (or the fit gate) — discovery scope only. */}
+      {scope === "all" ? (
+        <RecommendedSection
+          onOpenJob={(job) => {
+            // The detail screen resolves external jobs from the list cache;
+            // seed this recommended item so the deep link isn't a cold miss.
+            queryClient.setQueryData([EXTERNAL_JOBS_BASE, "recommended-seed", job.id], {
+              items: [job],
+            });
+            router.push({ pathname: "/job/[id]", params: { id: job.id } });
+          }}
+        />
+      ) : null}
     </View>
   );
 

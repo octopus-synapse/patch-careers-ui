@@ -6,7 +6,7 @@
  */
 
 import { labelFor } from "@patch-careers/api-client";
-import { Text, XStack, YStack } from "@patch-careers/ui";
+import { FitScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { memo, type ReactElement } from "react";
 import { Pressable, View } from "react-native";
@@ -90,6 +90,15 @@ function ApplicationRowInner({
           <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
             {ago}
           </Text>
+          {/* Match Score frozen at apply time — internal applies only. */}
+          {application.matchScore !== null ? (
+            <FitScoreChip
+              score={application.matchScore}
+              size="sm"
+              grade
+              accessibilityLabel={`${t("match.matchLabel")} ${application.matchScore}`}
+            />
+          ) : null}
         </XStack>
       </YStack>
     </XStack>

@@ -23,6 +23,7 @@ import { Bookmark, ChevronLeft, FileQuestion } from "lucide-react-native";
 import { type ReactElement, useMemo, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MatchBreakdown } from "@/features/match";
 import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
 import { useReportApplied } from "../hooks/use-report-applied";
@@ -172,6 +173,18 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
                 {t("jobs.detail.noDescription")}
               </Text>
             )}
+
+            <YStack marginVertical={28}>
+              <Divider color={editorialPalette.hairline} />
+            </YStack>
+            <MatchBreakdown
+              job={{
+                id: job.id,
+                title: job.title,
+                company: job.company,
+                description: job.description,
+              }}
+            />
           </ScrollView>
 
           <YStack

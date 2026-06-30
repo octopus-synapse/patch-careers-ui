@@ -26,8 +26,13 @@ import { readAllSourceFiles } from "./utils";
 
 export const SRC_DIR = path.join(__dirname, "..");
 
-/** Features that MAY be imported by other features (shared domain). ADR-0010. */
-export const FOUNDATION_FEATURES = new Set(["sections", "resumes"]);
+/**
+ * Features that MAY be imported by other features (shared domain). ADR-0010.
+ * `fit` + `match` are the scoring foundation: `match` consumes `fit`'s profile
+ * status (gating) and `resumes`; the Jobs tab consumes `match`'s Recomendadas
+ * section + breakdown. Both are cross-cutting score primitives, not leaf UI.
+ */
+export const FOUNDATION_FEATURES = new Set(["sections", "resumes", "fit", "match"]);
 
 export type ImportRule = "cross-feature" | "deep-import";
 

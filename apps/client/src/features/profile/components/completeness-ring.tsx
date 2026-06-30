@@ -2,10 +2,12 @@
  * <CompletenessRing> — a thin progress arc drawn *around* the avatar as a
  * minimalist profile-completeness gauge. The score is the backend-defined
  * `completenessScore` (required-section presence drives it down — a missing
- * high-value section like experience lowers it). Band color matches the
- * resume quality surface (danger / warn / success). The avatar is rendered
- * as `children` in the center; the arc overlays without affecting layout.
+ * high-value section like experience lowers it). Band color follows the
+ * shared score ramp (`scoreTone` → `toneToEditorialKey`: success / accent /
+ * warn / danger), consistent with every other score in the app. The avatar is
+ * rendered as `children` in the center; the arc overlays without affecting layout.
  */
+import { scoreTone, toneToEditorialKey } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
 import { View } from "react-native";
@@ -30,7 +32,7 @@ export function CompletenessRing({
   const r = (ringSize - strokeWidth) / 2;
   const circumference = 2 * Math.PI * r;
   const offset = circumference * (1 - clamped / 100);
-  const color = clamped >= 80 ? palette.success : clamped >= 60 ? palette.warn : palette.danger;
+  const color = palette[toneToEditorialKey(scoreTone(clamped))];
   const center = ringSize / 2;
 
   return (

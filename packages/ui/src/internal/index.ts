@@ -8,6 +8,7 @@ export * from "./haptics";
 export * from "./otp";
 export * from "./password-strength";
 export * from "./phone-mask";
+export * from "./score-scale";
 export * from "./skeleton";
 export * from "./text-variants";
 export * from "./theme-value";

@@ -113,6 +113,20 @@ const BRAND_NAMES = new Set([
   "Logo.dev",
 ]);
 
+/**
+ * Accented grammar particles used by the title-case helper's lowercase set
+ * (`features/jobs/lib/helpers.ts`). Technical tokens, not user copy — a real
+ * UI string is never just "às". (Single-char particles like "à" already pass
+ * the length<2 short-circuit.)
+ */
+const GRAMMAR_PARTICLES = new Set(["às"]);
+
+/**
+ * Dev-only scaffolding: sample onboarding data + the "test all" auto-fill bar.
+ * Not shipped user copy, so its pt-BR fixtures aren't translation targets.
+ */
+const DEV_SCAFFOLDING_RX = /(^|[/\\])(test-fixtures|test-fill-bar)\.(ts|tsx)$/;
+
 const NUMERIC_OR_PUNCT_RX = /^[\d\s\-–—·:./,%+()]+$/;
 const SLUG_RX = /^[a-z][a-zA-Z0-9_-]*$/;
 const URL_OR_PATH_RX = /^(https?:|mailto:|\/|\.\.?\/|patchcareers:)/;
@@ -132,6 +146,7 @@ function isAllowlisted(value: string): boolean {
   if (URL_OR_PATH_RX.test(trimmed)) return true;
   if (LOCALE_RX.test(trimmed)) return true;
   if (BRAND_NAMES.has(trimmed)) return true;
+  if (GRAMMAR_PARTICLES.has(trimmed)) return true;
   if (trimmed.length <= 20 && SLUG_RX.test(trimmed) && !ACCENTED_RX.test(trimmed)) return true;
   return false;
 }
@@ -401,6 +416,7 @@ export function detect(): Violation[] {
       file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
     );
     const fileRel = path.relative(SRC_DIR, file);
+    if (DEV_SCAFFOLDING_RX.test(fileRel)) continue;
     visit(sf, sf, fileRel, violations);
   }
 

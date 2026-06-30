@@ -8,15 +8,24 @@
  * nothing until a score exists.
  */
 
-import { type QualitySeverity, Text, XStack, YStack } from "@patch-careers/ui";
+import {
+  ScoreExplainSheet,
+  type ScoreSeverity,
+  scoreGrade,
+  Text,
+  XStack,
+  YStack,
+} from "@patch-careers/ui";
 import {
   EditableRow,
   editorialFonts as fonts,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-import { type ReactElement, type ReactNode, useMemo } from "react";
-import { ActivityIndicator } from "react-native";
+import { Info } from "lucide-react-native";
+import { type ReactElement, type ReactNode, useMemo, useState } from "react";
+import { ActivityIndicator, Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
+import { useRankPulse } from "../hooks/use-rank-pulse";
 import { useResumeQuality } from "../hooks/use-resume-quality";
 import { ScoreRing } from "./score-ring";
 
@@ -31,7 +40,7 @@ export type ResumeQualityPanelProps = {
 type PanelIssue = {
   id: string;
   label: string;
-  severity: QualitySeverity;
+  severity: ScoreSeverity;
   detail?: string | undefined;
   onPress?: (() => void) | undefined;
 };
@@ -53,6 +62,8 @@ export function ResumeQualityPanel({
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const quality = useResumeQuality(resumeId, updatedAt ? { updatedAt } : {});
+  const [explainOpen, setExplainOpen] = useState(false);
+  const rankDelta = useRankPulse(resumeId, quality.overallScore);
 
   const overall = quality.overallScore;
   const issues: PanelIssue[] = useMemo(() => {
@@ -70,7 +81,7 @@ export function ResumeQualityPanel({
       return {
         id: `${issue.code}:${sectionKey ?? ""}:${issue.context?.itemIndex ?? ""}`,
         label,
-        severity: issue.severity as QualitySeverity,
+        severity: issue.severity as ScoreSeverity,
         detail,
         onPress:
           onOpenIssue && sectionKey
@@ -98,6 +109,16 @@ export function ResumeQualityPanel({
 
   return (
     <YStack gap={18}>
+      {rankDelta ? (
+        <Text
+          fontFamily={fonts.sans}
+          fontSize={13}
+          fontWeight="600"
+          color={rankDelta === "up" ? palette.success : palette.warn}
+        >
+          {t(`resumes.quality.rank.${rankDelta}`, { grade: scoreGrade(overall) })}
+        </Text>
+      ) : null}
       <XStack alignItems="center" gap={16}>
         <ScoreRing score={overall} />
         <YStack flex={1} gap={5}>
@@ -123,6 +144,14 @@ export function ResumeQualityPanel({
             </XStack>
           ) : null}
         </YStack>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("resumes.quality.explain.a11y")}
+          onPress={() => setExplainOpen(true)}
+          hitSlop={8}
+        >
+          <Info size={16} color={palette.muted} />
+        </Pressable>
       </XStack>
 
       <YStack gap={10}>
@@ -176,6 +205,27 @@ export function ResumeQualityPanel({
           {t("resumes.quality.aiUnavailable")}
         </Text>
       ) : null}
+
+      <ScoreExplainSheet
+        open={explainOpen}
+        onOpenChange={setExplainOpen}
+        title={t("resumes.quality.explain.title")}
+        {...(overall !== null ? { score: overall } : {})}
+        grade
+        sections={[
+          {
+            label: t("resumes.quality.completeness"),
+            body: t("resumes.quality.explain.completeness"),
+            trailing: formatScore(quality.completenessScore, t),
+          },
+          {
+            label: t("resumes.quality.content"),
+            body: t("resumes.quality.explain.content"),
+            trailing: formatScore(quality.contentQualityScore, t),
+          },
+        ]}
+        footnote={t("resumes.quality.explain.footnote")}
+      />
     </YStack>
   );
 }
