@@ -12,7 +12,12 @@
  * band, so a taller glyph (e.g. an avatar) never makes its column taller —
  * labels stay on one baseline.
  */
-import { editorialPalette, editorialPaletteDark } from "@patch-careers/tokens";
+import {
+  editorialGlass,
+  editorialPalette,
+  editorialPaletteDark,
+  type FrostedVariant,
+} from "@patch-careers/tokens";
 import { BlurView } from "expo-blur";
 import type { ReactElement, ReactNode } from "react";
 import {
@@ -39,37 +44,32 @@ const SIZES = {
 } as const;
 export type TabBarItemSize = keyof typeof SIZES;
 
-// Blur tint + intensity + a translucent surface wash, keyed by theme. Variants:
-//   • `thin`  — faint veil; leans on content scrolling behind it (bottom bar).
-//   • `panel` — near-opaque surface tone; a self-contained card on a flat bg.
-//   • `glass` — very translucent + strong blur, so live content scrolling
-//     behind reads clearly as frosted glass (the pinned Jobs scope bar).
-const BLUR = {
-  light: {
-    tint: "light",
-    intensity: { thin: 60, panel: 60, glass: 95 },
-    wash: {
-      thin: "rgba(255,255,255,0.45)",
-      panel: "rgba(255,255,255,0.72)",
-      glass: "rgba(250,249,245,0.3)",
-    },
-  },
-  dark: {
-    tint: "dark",
-    intensity: { thin: 50, panel: 50, glass: 85 },
-    wash: {
-      thin: "rgba(30,29,25,0.4)",
-      panel: "rgba(38,36,31,0.72)",
-      glass: "rgba(24,23,20,0.26)",
-    },
-  },
-} as const;
-
-/** Which wash/intensity to lay over the blur — see `BLUR`. Default `"thin"`. */
-export type FrostedBarVariant = "thin" | "panel" | "glass";
+/**
+ * The frosted material on its own: the blur and its wash, both filling the
+ * host. Use it directly when you need the surface inside a container you
+ * already own — an animated drawer panel, say — and `FrostedBar`'s wrapper
+ * would get in the way. Render it as the FIRST child so content paints on top;
+ * the host must establish a containing block and clip its overflow.
+ */
+export function FrostedFill({ variant = "thin" }: { variant?: FrostedVariant }): ReactElement {
+  const material = editorialGlass[useThemeName()][variant];
+  return (
+    <>
+      <BlurView
+        tint={material.tint}
+        intensity={material.intensity}
+        style={StyleSheet.absoluteFill}
+      />
+      <View
+        pointerEvents="none"
+        style={[StyleSheet.absoluteFill, { backgroundColor: material.wash }]}
+      />
+    </>
+  );
+}
 
 /**
- * The frosted translucent surface: a BlurView + theme wash behind `children`.
+ * The frosted translucent surface: `FrostedFill` behind `children`.
  * Positioning, rounding and borders are the caller's job (passed via `style`)
  * since the bottom bar floats edge-to-edge while in-screen bars are rounded
  * and/or pinned. `variant="glass"` is the most translucent — use it when real
@@ -84,18 +84,11 @@ export function FrostedBar({
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
   onLayout?: (e: LayoutChangeEvent) => void;
-  variant?: FrostedBarVariant;
+  variant?: FrostedVariant;
 }): ReactElement {
-  const theme = useThemeName();
-  const blur = BLUR[theme];
   return (
     <View style={[surface.bar, style]} onLayout={onLayout}>
-      <BlurView
-        tint={blur.tint}
-        intensity={blur.intensity[variant]}
-        style={StyleSheet.absoluteFill}
-      />
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: blur.wash[variant] }]} />
+      <FrostedFill variant={variant} />
       {children}
     </View>
   );

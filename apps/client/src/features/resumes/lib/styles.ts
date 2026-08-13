@@ -1,13 +1,15 @@
 /** Editorial Calm styles for the resumes feature (list sub-tab + detail). */
 import {
+  type EditorialOverlays,
   type EditorialPalette,
+  editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
 } from "@patch-careers/tokens";
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import { StyleSheet } from "react-native";
 
-const rzFor = (p: EditorialPalette) =>
+const rzFor = (p: EditorialPalette, ov: EditorialOverlays) =>
   // @style-allow stylesheet: themed editorial style factory consumed via style prop by 5 components (parity with the DS internal pattern)
   StyleSheet.create({
     // list sub-tab
@@ -78,8 +80,7 @@ const rzFor = (p: EditorialPalette) =>
     headActionBtnActive: { borderColor: p.hairlineStrong, backgroundColor: p.bg },
     headActionBtnDanger: {
       borderColor: p.danger,
-      // @style-allow color: translucent red tint for the web inline delete action's hover state (intentional danger overlay, not a token surface)
-      backgroundColor: "rgba(220,38,38,0.08)",
+      backgroundColor: ov.dangerWash,
     },
 
     // native swipe-to-reveal action drawer (behind the card, right side)
@@ -300,8 +301,8 @@ const rzFor = (p: EditorialPalette) =>
 
 // Precomputed per theme so style-object identity is stable across renders.
 const rzByTheme = {
-  light: rzFor(editorialPalette),
-  dark: rzFor(editorialPaletteDark),
+  light: rzFor(editorialPalette, editorialOverlays.light),
+  dark: rzFor(editorialPaletteDark, editorialOverlays.dark),
 } as const;
 
 /** Theme-aware accessor for the resumes feature stylesheet. */

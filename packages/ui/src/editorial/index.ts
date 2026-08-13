@@ -59,7 +59,7 @@ export { type SegmentedTab, SegmentedTabs, type SegmentedTabsProps } from "./seg
 export { SettingsCard, SettingsRow } from "./settings-surface";
 export {
   FrostedBar,
-  type FrostedBarVariant,
+  FrostedFill,
   TAB_ICON_BAND,
   TAB_ICON_SIZE,
   TabBarItem,

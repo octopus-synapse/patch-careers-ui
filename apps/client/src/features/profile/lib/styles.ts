@@ -1,13 +1,15 @@
 /** Editorial Calm styles for the Profile tab (paper bg, serif headings, hairlines). */
 import {
+  type EditorialOverlays,
   type EditorialPalette,
+  editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
 } from "@patch-careers/tokens";
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import { StyleSheet } from "react-native";
 
-const pfFor = (p: EditorialPalette) =>
+const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
   // @style-allow stylesheet: themed editorial style factory consumed by N components (parity with DS internal pattern)
   StyleSheet.create({
     root: { flex: 1, backgroundColor: p.bg },
@@ -28,8 +30,7 @@ const pfFor = (p: EditorialPalette) =>
       right: 0,
       bottom: 0,
       borderRadius: 40,
-      // @style-allow color: avatar-uploading overlay scrim (intentional alpha wash over the photo, not a theme token)
-      backgroundColor: "rgba(0,0,0,0.4)",
+      backgroundColor: ov.scrimMedia,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -126,8 +127,8 @@ const pfFor = (p: EditorialPalette) =>
 
 // Precomputed per theme so style-object identity is stable across renders.
 const pfByTheme = {
-  light: pfFor(editorialPalette),
-  dark: pfFor(editorialPaletteDark),
+  light: pfFor(editorialPalette, editorialOverlays.light),
+  dark: pfFor(editorialPaletteDark, editorialOverlays.dark),
 } as const;
 
 /** Theme-aware accessor for the Profile tab stylesheet. */

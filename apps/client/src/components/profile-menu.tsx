@@ -14,8 +14,12 @@
 import { logout } from "@patch-careers/auth";
 import { type EditorialOverlays, editorialOverlays } from "@patch-careers/tokens";
 import { Avatar } from "@patch-careers/ui";
-import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
-import { BlurView } from "expo-blur";
+import {
+  editorialFonts,
+  FrostedFill,
+  useEditorialPalette,
+  useThemeName,
+} from "@patch-careers/ui/editorial";
 import { type Href, useRouter } from "expo-router";
 import { ChevronRight, LogOut, MapPin, Settings } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
@@ -101,7 +105,6 @@ export function ProfileMenu({
   photoURL,
 }: ProfileMenuProps): ReactElement {
   const { t } = useI18n();
-  const editorialPalette = useEditorialPalette();
   const theme = useThemeName();
   const styles = stylesByTheme[theme];
   const overlays = editorialOverlays[theme];
@@ -201,15 +204,7 @@ export function ProfileMenu({
               },
             ]}
           >
-            <BlurView
-              tint={overlays.glassTint}
-              intensity={overlays.glassIntensity}
-              style={StyleSheet.absoluteFill}
-            />
-            <View
-              pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { backgroundColor: overlays.glassWash }]}
-            />
+            <FrostedFill variant="ink" />
             <ScrollView
               style={styles.scroll}
               showsVerticalScrollIndicator={false}
@@ -234,7 +229,10 @@ export function ProfileMenu({
                   ) : null}
                   {location ? (
                     <View style={styles.locationRow}>
-                      <MapPin size={13} color={editorialPalette.subtle} strokeWidth={1.75} />
+                      {/* On-glass ramp, not the palette: this sits on black
+                          glass, so a palette grey would read as a smudge next
+                          to the white text it labels. */}
+                      <MapPin size={13} color={overlays.onGlassMuted} strokeWidth={1.75} />
                       <Text style={styles.location} numberOfLines={1}>
                         {location}
                       </Text>
@@ -288,7 +286,7 @@ const stylesFor = (ov: EditorialOverlays) =>
   // @style-allow stylesheet: animated profile drawer (Animated.Value slide-in transitions)
   StyleSheet.create({
     root: { flex: 1 },
-    scrim: { backgroundColor: ov.scrim },
+    scrim: { backgroundColor: ov.scrimPanel },
     panel: {
       position: "absolute",
       left: 0,

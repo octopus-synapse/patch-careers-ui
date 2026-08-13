@@ -13,7 +13,9 @@
  */
 
 import {
+  type EditorialOverlays,
   type EditorialPalette,
+  editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
   radius,
@@ -37,14 +39,6 @@ import {
 } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 
-// Slightly deeper than the ProfileMenu scrim — this sits on top of the drawer
-// and needs to pull focus to the decision, but still reads calm on a light app.
-// Dark mode dims harder so the card separates from the already-dark backdrop.
-// @style-allow color: modal scrim overlay (intentional alpha wash, not a theme token)
-const SCRIM = { light: "rgba(10,10,10,0.32)", dark: "rgba(0,0,0,0.55)" } as const;
-// Faint red tint behind the destructive glyph chip.
-// @style-allow color: destructive icon-chip wash (intentional red alpha tint, not a theme token)
-const DANGER_CHIP_WASH = "rgba(220,38,38,0.10)";
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
 type GlyphProps = { size?: number; color?: string; strokeWidth?: number };
@@ -86,7 +80,8 @@ export function ConfirmDialog({
 }: ConfirmDialogProps): ReactElement {
   const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
-  const styles = stylesByTheme[useThemeName()];
+  const theme = useThemeName();
+  const styles = stylesByTheme[theme];
   const { width: screenW } = useWindowDimensions();
   const cardWidth = Math.min(380, screenW - 48);
   const resolvedCancel = cancelLabel ?? t("common.cancel");
@@ -166,7 +161,11 @@ export function ConfirmDialog({
               <View
                 style={[
                   styles.iconChip,
-                  { backgroundColor: danger ? DANGER_CHIP_WASH : editorialPalette.bg },
+                  {
+                    backgroundColor: danger
+                      ? editorialOverlays[theme].dangerWash
+                      : editorialPalette.bg,
+                  },
                 ]}
               >
                 <Icon size={20} color={tint} strokeWidth={1.75} />
@@ -220,11 +219,14 @@ export function ConfirmDialog({
   );
 }
 
-const stylesFor = (p: EditorialPalette, scrim: string) =>
+// A decision stacked over whatever opened it (often the account drawer), so it
+// takes the `dialog` step of the scrim scale — deeper than a panel, since the
+// context behind must stop competing, but still calm on light paper.
+const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
   // @style-allow stylesheet: animated confirm dialog (Animated.Value enter/exit transitions)
   StyleSheet.create({
     root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
-    scrim: { backgroundColor: scrim },
+    scrim: { backgroundColor: ov.scrimDialog },
     card: {
       backgroundColor: p.surface,
       borderRadius: 24,
@@ -288,6 +290,6 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
 
 // Precomputed per theme so style-object identity is stable across renders.
 const stylesByTheme = {
-  light: stylesFor(editorialPalette, SCRIM.light),
-  dark: stylesFor(editorialPaletteDark, SCRIM.dark),
+  light: stylesFor(editorialPalette, editorialOverlays.light),
+  dark: stylesFor(editorialPaletteDark, editorialOverlays.dark),
 } as const;

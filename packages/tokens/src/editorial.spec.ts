@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  editorialGlass,
   editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
@@ -77,17 +78,13 @@ describe("editorialPalette", () => {
   });
 });
 
+const RGBA = /^rgba\(\d+,\d+,\d+,0?\.\d+\)$/;
+
+/** Alpha of an `rgba(r,g,b,a)` string — the trailing component. */
+const alphaOf = (color: string): number => Number(color.slice(color.lastIndexOf(",") + 1, -1));
+
 describe("editorialOverlays", () => {
-  const colorSlots = [
-    "scrim",
-    "glassWash",
-    "onGlassInk",
-    "onGlassBody",
-    "onGlassMuted",
-    "onGlassSubtle",
-    "onGlassPressed",
-    "onGlassHairline",
-  ] as const;
+  const scrimScale = ["scrimPanel", "scrimDialog", "scrimModal"] as const;
 
   it("covers the same themes as the palettes", () => {
     expect(Object.keys(editorialOverlays).sort()).toEqual(Object.keys(editorialPalettes).sort());
@@ -99,24 +96,70 @@ describe("editorialOverlays", () => {
     );
   });
 
-  it("every color slot carries alpha — that is the point of this set", () => {
-    const rgba = /^rgba\(\d+,\d+,\d+,0?\.\d+\)$/;
+  it("every slot carries alpha — that is the point of this set", () => {
     for (const overlays of Object.values(editorialOverlays)) {
-      for (const slot of colorSlots) expect(overlays[slot]).toMatch(rgba);
+      for (const value of Object.values(overlays)) expect(value).toMatch(RGBA);
     }
   });
 
-  it("dims harder in dark so the panel separates from an already-dark backdrop", () => {
-    const alpha = (c: string): number => Number(c.slice(c.lastIndexOf(",") + 1, -1));
-    expect(alpha(editorialOverlays.dark.scrim)).toBeGreaterThan(
-      alpha(editorialOverlays.light.scrim),
+  it("deepens the scrim as the surface demands more focus", () => {
+    for (const overlays of Object.values(editorialOverlays)) {
+      const depths = scrimScale.map((slot) => alphaOf(overlays[slot]));
+      expect(depths).toEqual([...depths].sort((a, b) => a - b));
+      expect(new Set(depths).size).toBe(depths.length);
+    }
+  });
+
+  it("dims harder in dark throughout, so a surface separates from dark paper", () => {
+    for (const slot of scrimScale) {
+      expect(alphaOf(editorialOverlays.dark[slot])).toBeGreaterThan(
+        alphaOf(editorialOverlays.light[slot]),
+      );
+    }
+  });
+
+  it("keeps the media scrim scheme-independent — a photo has no light/dark", () => {
+    expect(editorialOverlays.dark.scrimMedia).toBe(editorialOverlays.light.scrimMedia);
+  });
+
+  it("tracks each scheme's danger red in the destructive wash", () => {
+    const rgbOf = (color: string): string =>
+      color
+        .slice(color.indexOf("(") + 1)
+        .split(",", 3)
+        .join();
+    const asRgb = (hex: string): string =>
+      [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)).join();
+
+    expect(rgbOf(editorialOverlays.light.dangerWash)).toBe(asRgb(editorialPalette.danger));
+    expect(rgbOf(editorialOverlays.dark.dangerWash)).toBe(asRgb(editorialPaletteDark.danger));
+  });
+});
+
+describe("editorialGlass", () => {
+  it("covers the same themes as the palettes", () => {
+    expect(Object.keys(editorialGlass).sort()).toEqual(Object.keys(editorialPalettes).sort());
+  });
+
+  it("dark offers the same variants as light", () => {
+    expect(Object.keys(editorialGlass.dark).sort()).toEqual(
+      Object.keys(editorialGlass.light).sort(),
     );
   });
 
-  it("keeps the glass dark in both schemes — the on-glass ramp depends on it", () => {
-    for (const overlays of Object.values(editorialOverlays)) {
-      expect(overlays.glassTint).toBe("dark");
-      expect(overlays.glassIntensity).toBeGreaterThan(0);
+  it("gives every variant a complete material", () => {
+    for (const variants of Object.values(editorialGlass)) {
+      for (const material of Object.values(variants)) {
+        expect(material.tint).toMatch(/^(light|dark)$/);
+        expect(material.intensity).toBeGreaterThan(0);
+        expect(material.wash).toMatch(RGBA);
+      }
+    }
+  });
+
+  it("keeps `ink` black in both schemes — the on-glass ramp depends on it", () => {
+    for (const variants of Object.values(editorialGlass)) {
+      expect(variants.ink.tint).toBe("dark");
     }
   });
 });

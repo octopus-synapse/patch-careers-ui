@@ -93,31 +93,43 @@ export const editorialPalettes = {
 
 export type EditorialColor = keyof typeof editorialPalette;
 
+/** The two schemes every themed token set is keyed by. */
+export type EditorialTheme = keyof typeof editorialPalettes;
+
 /**
- * Alpha washes the palette above can't model: the scrim behind a modal, and the
- * frosted drawer material (a translucent wash over a blur, plus the text/rule
- * ramp that sits on top of that dark glass).
+ * Alpha washes the palette above can't model: the dim behind a covering
+ * surface, the faint tint behind a destructive affordance, and the text/rule
+ * ramp that reads on top of frosted dark glass.
  *
  * Deliberately NOT slots on `EditorialPalette` — every palette value is an
  * opaque 6-digit hex (asserted in `editorial.spec.ts`) and these need alpha.
- * Components resolve the active set exactly like the palette: keyed by theme.
+ * Resolve the active set exactly like the palette: keyed by theme.
  */
 export type EditorialOverlays = {
   /**
-   * Dim behind a modal/drawer. Light paper takes a soft wash — a heavy dim
-   * reads wrong on it; dark needs a deeper one so the panel separates from an
-   * already-dark backdrop.
+   * The scrim scale. A covering surface dims what it sits on, and it dims it
+   * harder the more exclusively it wants attention — a drawer still shows the
+   * context it slid over, a decision must not compete with it. Dark dims
+   * deeper throughout so the surface separates from an already-dark backdrop.
    */
-  scrim: string;
-  /** Translucent material painted over the drawer's blur. */
-  glassWash: string;
-  /** Tint + strength of that same blur. */
-  glassTint: "dark";
-  glassIntensity: number;
+  scrimPanel: string;
+  scrimDialog: string;
+  scrimModal: string;
   /**
-   * Text/rule ramp for content sitting ON the dark glass. Near-identical across
-   * schemes by design — the glass is black in both, so the ramp answers to the
-   * material, not to the app background.
+   * Dim over a photo (a spinner on the uploading avatar). Identical in both
+   * schemes on purpose: a photograph has no light/dark variant to answer to.
+   */
+  scrimMedia: string;
+  /**
+   * Faint tint behind a destructive affordance. Tracks the scheme's `danger`,
+   * so the dark variant lifts to the lighter red the dark palette uses.
+   */
+  dangerWash: string;
+  /**
+   * Text/rule ramp for content sitting ON frosted dark glass (see
+   * `editorialGlass.ink`). Near-identical across schemes by design — that glass
+   * is black in both, so the ramp answers to the material, not to the app
+   * background.
    */
   onGlassInk: string;
   onGlassBody: string;
@@ -129,10 +141,11 @@ export type EditorialOverlays = {
 
 export const editorialOverlays = {
   light: {
-    scrim: "rgba(10,10,10,0.18)",
-    glassWash: "rgba(12,12,14,0.46)",
-    glassTint: "dark",
-    glassIntensity: 92,
+    scrimPanel: "rgba(10,10,10,0.18)",
+    scrimDialog: "rgba(10,10,10,0.32)",
+    scrimModal: "rgba(10,10,10,0.45)",
+    scrimMedia: "rgba(0,0,0,0.4)",
+    dangerWash: "rgba(220,38,38,0.08)",
     onGlassInk: "rgba(255,255,255,0.96)",
     onGlassBody: "rgba(255,255,255,0.82)",
     onGlassMuted: "rgba(255,255,255,0.62)",
@@ -141,10 +154,11 @@ export const editorialOverlays = {
     onGlassHairline: "rgba(255,255,255,0.14)",
   },
   dark: {
-    scrim: "rgba(0,0,0,0.5)",
-    glassWash: "rgba(18,17,15,0.52)",
-    glassTint: "dark",
-    glassIntensity: 82,
+    scrimPanel: "rgba(0,0,0,0.5)",
+    scrimDialog: "rgba(0,0,0,0.55)",
+    scrimModal: "rgba(0,0,0,0.6)",
+    scrimMedia: "rgba(0,0,0,0.4)",
+    dangerWash: "rgba(248,113,113,0.12)",
     onGlassInk: "rgba(255,255,255,0.96)",
     onGlassBody: "rgba(255,255,255,0.82)",
     onGlassMuted: "rgba(255,255,255,0.62)",
@@ -152,4 +166,42 @@ export const editorialOverlays = {
     onGlassPressed: "rgba(255,255,255,0.08)",
     onGlassHairline: "rgba(255,255,255,0.12)",
   },
-} as const satisfies Record<keyof typeof editorialPalettes, EditorialOverlays>;
+} as const satisfies Record<EditorialTheme, EditorialOverlays>;
+
+/**
+ * A frosted translucent surface: a blur, its strength, and the wash laid over
+ * it. The three always travel together, so they live together.
+ */
+export type FrostedMaterial = {
+  tint: "light" | "dark";
+  intensity: number;
+  wash: string;
+};
+
+/**
+ * The frosted materials, keyed by theme then by variant:
+ *   • `thin`  — faint veil; leans on content scrolling behind it (bottom bar).
+ *   • `panel` — near-opaque surface tone; a self-contained card on a flat bg.
+ *   • `glass` — very translucent + strong blur, so live content scrolling
+ *     behind reads clearly as frosted glass (the pinned Jobs scope bar).
+ *   • `ink`   — black glass in BOTH schemes (the account drawer); it is a
+ *     material in its own right, not a tint of the background, so content on
+ *     it uses the `onGlass*` ramp above rather than the palette.
+ */
+export const editorialGlass = {
+  light: {
+    thin: { tint: "light", intensity: 60, wash: "rgba(255,255,255,0.45)" },
+    panel: { tint: "light", intensity: 60, wash: "rgba(255,255,255,0.72)" },
+    glass: { tint: "light", intensity: 95, wash: "rgba(250,249,245,0.3)" },
+    ink: { tint: "dark", intensity: 92, wash: "rgba(12,12,14,0.46)" },
+  },
+  dark: {
+    thin: { tint: "dark", intensity: 50, wash: "rgba(30,29,25,0.4)" },
+    panel: { tint: "dark", intensity: 50, wash: "rgba(38,36,31,0.72)" },
+    glass: { tint: "dark", intensity: 85, wash: "rgba(24,23,20,0.26)" },
+    ink: { tint: "dark", intensity: 82, wash: "rgba(18,17,15,0.52)" },
+  },
+} as const satisfies Record<EditorialTheme, Record<string, FrostedMaterial>>;
+
+/** Which frosted material to lay down — see `editorialGlass`. */
+export type FrostedVariant = keyof typeof editorialGlass.light;

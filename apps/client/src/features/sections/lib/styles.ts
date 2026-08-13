@@ -5,7 +5,9 @@
  * pixel-identically; the wizard imports `ed`/`eyebrow`/`webNoOutline` from here.
  */
 import {
+  type EditorialOverlays,
   type EditorialPalette,
+  editorialOverlays,
   editorialPalette,
   editorialPaletteDark,
 } from "@patch-careers/tokens";
@@ -26,11 +28,7 @@ export const eyebrow = {
 export const webNoOutline =
   Platform.OS === "web" ? ({ outlineStyle: "none" } as unknown as ViewStyle) : null;
 
-// Overlay washes that aren't derivable from the palette itself: modal scrims
-// and the destructive hover tint, tuned per scheme.
-type OverlayColors = { scrim: string; dangerTint: string };
-
-const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
+const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
   // @style-allow stylesheet: themed editorial style factory consumed by N components (parity with DS internal pattern)
   StyleSheet.create({
     root: { flex: 1, backgroundColor: authTokens.bg },
@@ -242,7 +240,7 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       alignItems: "center",
       justifyContent: "center",
       paddingHorizontal: 28,
-      backgroundColor: overlay.scrim,
+      backgroundColor: overlay.scrimModal,
     },
     pickerCard: {
       width: "100%",
@@ -428,7 +426,7 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    cardRemoveActive: { backgroundColor: overlay.dangerTint },
+    cardRemoveActive: { backgroundColor: overlay.dangerWash },
     addRow: {
       flexDirection: "row",
       alignItems: "center",
@@ -448,7 +446,7 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: overlay.scrim,
+      backgroundColor: overlay.scrimModal,
     },
     editorModalBackdrop: { ...StyleSheet.absoluteFillObject },
     editorModalCard: {
@@ -877,18 +875,8 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
 
 // Precomputed per theme so style-object identity is stable across renders.
 const edByTheme = {
-  light: createEd(editorialPalette, {
-    // @style-allow color: modal/picker scrim overlay wash (light) — not derivable from the palette
-    scrim: "rgba(10,10,10,0.45)",
-    // @style-allow color: destructive (remove) hover tint (light) — not derivable from the palette
-    dangerTint: "rgba(220,38,38,0.08)",
-  }),
-  dark: createEd(editorialPaletteDark, {
-    // @style-allow color: modal/picker scrim overlay wash (dark) — not derivable from the palette
-    scrim: "rgba(0,0,0,0.6)",
-    // @style-allow color: destructive (remove) hover tint (dark) — not derivable from the palette
-    dangerTint: "rgba(248,113,113,0.12)",
-  }),
+  light: createEd(editorialPalette, editorialOverlays.light),
+  dark: createEd(editorialPaletteDark, editorialOverlays.dark),
 } as const;
 
 /** Theme-aware accessor for the shared editorial wizard/editor styles. */

@@ -14,6 +14,7 @@
  * ✕, Android back, and Escape on web (mirrored by the "esc" hint chip).
  */
 
+import { editorialOverlays } from "@patch-careers/tokens";
 import { Icon, Input, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
@@ -42,8 +43,6 @@ import { SearchEmptyState } from "./search-empty-state";
 import { SearchResultRow } from "./search-result-row";
 import { SearchSectionLabel } from "./search-section-label";
 
-// @style-allow color: modal scrim overlay (intentional alpha wash, not a theme token)
-const SCRIM = { light: "rgba(10,10,10,0.32)", dark: "rgba(0,0,0,0.55)" } as const;
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 // Gap between the safe area and the card, and between card and keyboard.
 const TOP_GAP = 10;
@@ -185,7 +184,10 @@ export function SearchModal({
     >
       {/* Soft scrim — tap anywhere outside the card to dismiss. */}
       <Animated.View
-        style={[StyleSheet.absoluteFill, { backgroundColor: SCRIM[themeName], opacity: anim }]}
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: editorialOverlays[themeName].scrimDialog, opacity: anim },
+        ]}
       >
         <Pressable
           accessibilityRole="button"
