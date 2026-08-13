@@ -92,3 +92,64 @@ export const editorialPalettes = {
 } as const;
 
 export type EditorialColor = keyof typeof editorialPalette;
+
+/**
+ * Alpha washes the palette above can't model: the scrim behind a modal, and the
+ * frosted drawer material (a translucent wash over a blur, plus the text/rule
+ * ramp that sits on top of that dark glass).
+ *
+ * Deliberately NOT slots on `EditorialPalette` — every palette value is an
+ * opaque 6-digit hex (asserted in `editorial.spec.ts`) and these need alpha.
+ * Components resolve the active set exactly like the palette: keyed by theme.
+ */
+export type EditorialOverlays = {
+  /**
+   * Dim behind a modal/drawer. Light paper takes a soft wash — a heavy dim
+   * reads wrong on it; dark needs a deeper one so the panel separates from an
+   * already-dark backdrop.
+   */
+  scrim: string;
+  /** Translucent material painted over the drawer's blur. */
+  glassWash: string;
+  /** Tint + strength of that same blur. */
+  glassTint: "dark";
+  glassIntensity: number;
+  /**
+   * Text/rule ramp for content sitting ON the dark glass. Near-identical across
+   * schemes by design — the glass is black in both, so the ramp answers to the
+   * material, not to the app background.
+   */
+  onGlassInk: string;
+  onGlassBody: string;
+  onGlassMuted: string;
+  onGlassSubtle: string;
+  onGlassPressed: string;
+  onGlassHairline: string;
+};
+
+export const editorialOverlays = {
+  light: {
+    scrim: "rgba(10,10,10,0.18)",
+    glassWash: "rgba(12,12,14,0.46)",
+    glassTint: "dark",
+    glassIntensity: 92,
+    onGlassInk: "rgba(255,255,255,0.96)",
+    onGlassBody: "rgba(255,255,255,0.82)",
+    onGlassMuted: "rgba(255,255,255,0.62)",
+    onGlassSubtle: "rgba(255,255,255,0.42)",
+    onGlassPressed: "rgba(255,255,255,0.09)",
+    onGlassHairline: "rgba(255,255,255,0.14)",
+  },
+  dark: {
+    scrim: "rgba(0,0,0,0.5)",
+    glassWash: "rgba(18,17,15,0.52)",
+    glassTint: "dark",
+    glassIntensity: 82,
+    onGlassInk: "rgba(255,255,255,0.96)",
+    onGlassBody: "rgba(255,255,255,0.82)",
+    onGlassMuted: "rgba(255,255,255,0.62)",
+    onGlassSubtle: "rgba(255,255,255,0.42)",
+    onGlassPressed: "rgba(255,255,255,0.08)",
+    onGlassHairline: "rgba(255,255,255,0.12)",
+  },
+} as const satisfies Record<keyof typeof editorialPalettes, EditorialOverlays>;

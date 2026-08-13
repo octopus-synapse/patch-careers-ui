@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { editorialPalette, editorialPaletteDark, editorialPalettes } from "./editorial";
+import {
+  editorialOverlays,
+  editorialPalette,
+  editorialPaletteDark,
+  editorialPalettes,
+} from "./editorial";
 
 describe("editorialPalette", () => {
   const slots = [
@@ -69,5 +74,49 @@ describe("editorialPalette", () => {
   it("maps theme names to palettes", () => {
     expect(editorialPalettes.light).toBe(editorialPalette);
     expect(editorialPalettes.dark).toBe(editorialPaletteDark);
+  });
+});
+
+describe("editorialOverlays", () => {
+  const colorSlots = [
+    "scrim",
+    "glassWash",
+    "onGlassInk",
+    "onGlassBody",
+    "onGlassMuted",
+    "onGlassSubtle",
+    "onGlassPressed",
+    "onGlassHairline",
+  ] as const;
+
+  it("covers the same themes as the palettes", () => {
+    expect(Object.keys(editorialOverlays).sort()).toEqual(Object.keys(editorialPalettes).sort());
+  });
+
+  it("dark mirrors light's slots exactly", () => {
+    expect(Object.keys(editorialOverlays.dark).sort()).toEqual(
+      Object.keys(editorialOverlays.light).sort(),
+    );
+  });
+
+  it("every color slot carries alpha — that is the point of this set", () => {
+    const rgba = /^rgba\(\d+,\d+,\d+,0?\.\d+\)$/;
+    for (const overlays of Object.values(editorialOverlays)) {
+      for (const slot of colorSlots) expect(overlays[slot]).toMatch(rgba);
+    }
+  });
+
+  it("dims harder in dark so the panel separates from an already-dark backdrop", () => {
+    const alpha = (c: string): number => Number(c.slice(c.lastIndexOf(",") + 1, -1));
+    expect(alpha(editorialOverlays.dark.scrim)).toBeGreaterThan(
+      alpha(editorialOverlays.light.scrim),
+    );
+  });
+
+  it("keeps the glass dark in both schemes — the on-glass ramp depends on it", () => {
+    for (const overlays of Object.values(editorialOverlays)) {
+      expect(overlays.glassTint).toBe("dark");
+      expect(overlays.glassIntensity).toBeGreaterThan(0);
+    }
   });
 });

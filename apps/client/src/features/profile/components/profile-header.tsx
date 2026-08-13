@@ -4,7 +4,7 @@
  * / links edit sheets (the old body sections collapsed into entry points; the
  * tab's body now belongs to the sub-tabs).
  */
-import { Avatar, ScoreChip, scoreGrade } from "@patch-careers/ui";
+import { Avatar, ScoreChip, scoreGrade, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Camera, MapPin, Settings } from "lucide-react-native";
@@ -122,7 +122,7 @@ function ReadinessBand(): ReactElement | null {
   if (!scores) return null;
   const score = scores.readiness.score;
   return (
-    <View style={{ marginTop: 14 }}>
+    <YStack marginTop={14}>
       <ScoreChip
         score={score}
         grade
@@ -147,6 +147,6 @@ function ReadinessBand(): ReactElement | null {
           </Text>
         )}
       />
-    </View>
+    </YStack>
   );
 }
