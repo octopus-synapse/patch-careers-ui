@@ -35,7 +35,17 @@
     },
     "typecheck": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "_comment": [
+        "`^build` was a no-op: no package defines a build target, so nothing",
+        "ordered these tasks and `tsc -p` (which, unlike `tsc --build`, does",
+        "not build project references) hit TS6305 on a clean checkout.",
+        "The packages are `composite` and emit declarations, so an upstream",
+        "typecheck IS the build its dependents need — depend on that instead.",
+        "`outputs` is required alongside it: without it a cache hit would",
+        "replay the task without restoring dist/, and TS6305 would return."
+      ],
+      "dependsOn": ["^typecheck"],
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/tsconfig.tsbuildinfo"],
       "inputs": ["default", "^production", "{workspaceRoot}/tsconfig.base.json"]
     }
   },
