@@ -17,7 +17,7 @@ import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { getNotificationService } from "../service/notification-service";
 import { useRegisterDevice, useUnregisterDevice } from "./queries";
 
-export function usePushRegistration(): { ensureRegistered: () => Promise<void> } {
+export function usePushRegistration(): { ensureRegistered: () => Promise<boolean> } {
   const { isAuthenticated } = useAuthState();
   const { hasBootstrapped } = useAuthBootstrap();
   const { register } = useRegisterDevice();
@@ -25,13 +25,19 @@ export function usePushRegistration(): { ensureRegistered: () => Promise<void> }
   const registeredRef = useRef(false);
 
   const ensureRegistered = useCallback(async () => {
-    if (registeredRef.current) return;
+    if (registeredRef.current) return true;
     const service = getNotificationService();
-    if ((await service.getPermissionStatus()) !== "granted") return;
+    if ((await service.getPermissionStatus()) !== "granted") return false;
     const token = await service.registerForPushToken();
-    if (token) {
+    if (!token) return false;
+
+    try {
+      await register(token);
       registeredRef.current = true;
-      register(token);
+      return true;
+    } catch (error) {
+      console.warn("[notifications] failed to register push device", error);
+      return false;
     }
   }, [register]);
 

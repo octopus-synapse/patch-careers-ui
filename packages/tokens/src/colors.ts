@@ -78,6 +78,18 @@ export const palette = {
     800: "#166534",
     900: "#14532d",
   },
+  amber: {
+    50: "#fffbeb",
+    100: "#fef3c7",
+    200: "#fde68a",
+    300: "#fcd34d",
+    400: "#fbbf24",
+    500: "#f59e0b",
+    600: "#d97706",
+    700: "#b45309",
+    800: "#92400e",
+    900: "#78350f",
+  },
 } as const satisfies Record<string, ColorRamp>;
 
 export type Palette = typeof palette;
@@ -98,7 +110,7 @@ export type IntentVariant = {
   dark: IntentTokens;
 };
 
-export type IntentName = "neutral" | "accent" | "danger" | "success";
+export type IntentName = "neutral" | "accent" | "warn" | "danger" | "success";
 
 export const intent: Record<IntentName, IntentVariant> = {
   neutral: {
@@ -142,6 +154,31 @@ export const intent: Record<IntentName, IntentVariant> = {
       pressBg: palette.blue[200],
       subtleBg: "#22324A",
       subtleFg: palette.blue[300],
+    },
+  },
+  // `warn` mirrors the editorial ring/gauge "fair" band (amber) so a
+  // 40-59 score reads the same colour on a chip as on a ring. Light uses
+  // amber-700 as the fill (amber-600 fails 4.5:1 against white); dark uses
+  // the bright editorial warn as the fill with dark ink, like the other
+  // dark intents.
+  warn: {
+    light: {
+      bg: palette.amber[700],
+      fg: palette.gray[50],
+      border: palette.amber[800],
+      hoverBg: palette.amber[800],
+      pressBg: palette.amber[900],
+      subtleBg: palette.amber[50],
+      subtleFg: palette.amber[700],
+    },
+    dark: {
+      bg: editorialPaletteDark.warn,
+      fg: editorialPaletteDark.bg,
+      border: editorialPaletteDark.warn,
+      hoverBg: palette.amber[300],
+      pressBg: palette.amber[200],
+      subtleBg: "#3B2E12",
+      subtleFg: palette.amber[300],
     },
   },
   danger: {

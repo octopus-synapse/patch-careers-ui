@@ -26,6 +26,7 @@ export {
 export { useEditorialPalette } from "../internal/use-editorial-palette";
 export { useThemeName } from "../internal/use-theme-name";
 export { AnimatedField } from "./animated-field";
+export { AuthCard } from "./auth-card";
 export { AuthShell } from "./auth-shell";
 export { Banner, type BannerIntent, type BannerProps } from "./banner";
 export { BrandMark } from "./brand-mark";
@@ -47,6 +48,7 @@ export {
   type FrostedPillTabsProps,
 } from "./frosted-pill-tabs";
 export { InlineLink, type InlineLinkProps } from "./inline-link";
+export { editorialFadeInDown } from "./motion";
 export { OAuthButton, type OAuthButtonProps } from "./oauth-button";
 export { OrDivider } from "./or-divider";
 export { PasswordInput, type PasswordInputProps } from "./password-input";

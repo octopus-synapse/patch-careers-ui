@@ -5,7 +5,6 @@ const SNAPSHOT_KEY = "onboarding:session-snapshot";
 const DRAFT_PREFIX = "onboarding:draft:";
 const PHONE_COUNTRY_KEY = "onboarding:phone-country";
 const WELCOME_SEEN_KEY = "onboarding:welcome-seen";
-const RESUME_DISMISSED_KEY = "onboarding:resume-dismissed";
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 type SnapshotPayload = {
@@ -56,7 +55,6 @@ function makeFlag(key: string) {
 }
 
 const welcomeSeenFlag = makeFlag(WELCOME_SEEN_KEY);
-const resumeDismissedFlag = makeFlag(RESUME_DISMISSED_KEY);
 
 export async function saveSessionSnapshot(session: OnboardingSession): Promise<void> {
   const payload: SnapshotPayload = { savedAt: Date.now(), session };
@@ -107,9 +105,3 @@ export async function readPhoneCountry(): Promise<string | null> {
  *  reload of an unstarted session. */
 export const markWelcomeSeen = welcomeSeenFlag.mark;
 export const readWelcomeSeen = welcomeSeenFlag.read;
-
-/** Remember that the user dismissed the "continue where you left off" banner so
- *  it doesn't reappear on every reload. Cleared on complete / fresh restart. */
-export const markResumeDismissed = resumeDismissedFlag.mark;
-export const readResumeDismissed = resumeDismissedFlag.read;
-export const clearResumeDismissed = resumeDismissedFlag.clear;

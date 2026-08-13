@@ -15,9 +15,11 @@
  * (notify-resume-quality-rank-change.use-case) exactly:
  *   S >= 90 · A >= 80 · B >= 70 · C >= 60 · D >= 50 · F < 50
  *
- * Two color resolvers because the two surfaces draw from different palettes:
- *   - chips/pills resolve `intent` tokens (which expose `neutral`, not `warn`)
- *   - rings/gauges resolve the editorial palette (which exposes `warn`)
+ * Two color resolvers, one ramp: both now map "fair" to amber `warn` so a
+ * score is the same colour on a chip as on a ring. They differ only in
+ * palette source:
+ *   - chips/pills resolve `intent` tokens (bg/fg pairs for filled pills)
+ *   - rings/gauges resolve the editorial palette (stroke colours)
  */
 
 import { intent as intentTokens } from "@patch-careers/tokens";
@@ -28,6 +30,19 @@ export type ScoreGrade = "S" | "A" | "B" | "C" | "D" | "F";
 
 /** Severity of a score issue (quality / match / style), shared across surfaces. */
 export type ScoreSeverity = "low" | "medium" | "high";
+
+/**
+ * Single source of truth for issue-severity → intent colour, shared by
+ * every score breakdown (quality panel, style breakdown, match gaps) so
+ * a "medium" dot is the same colour everywhere. Previously the style
+ * breakdown used `accent` for medium while the quality panel used `warn`
+ * — this reconciles them on `warn`.
+ */
+export const SCORE_SEVERITY_TO_INTENT: Record<ScoreSeverity, Intent> = {
+  high: "danger",
+  medium: "warn",
+  low: "neutral",
+};
 
 /** Editorial-palette color key a tone resolves to on ring/gauge surfaces. */
 export type EditorialToneKey = "success" | "accent" | "warn" | "danger";
@@ -60,7 +75,9 @@ export function scoreGrade(score: number): ScoreGrade {
   return "F";
 }
 
-/** Token intent for chip/pill surfaces (intent tokens have no `warn`). */
+/** Token intent for chip/pill surfaces. Now that `intent` exposes an
+ * amber `warn`, the "fair" band resolves to the SAME amber the ring/gauge
+ * uses via `toneToEditorialKey` — chips and rings finally agree. */
 export function toneToIntent(tone: ScoreTone): Intent {
   switch (tone) {
     case "excellent":
@@ -68,7 +85,7 @@ export function toneToIntent(tone: ScoreTone): Intent {
     case "good":
       return "accent";
     case "fair":
-      return "neutral";
+      return "warn";
     case "poor":
       return "danger";
   }

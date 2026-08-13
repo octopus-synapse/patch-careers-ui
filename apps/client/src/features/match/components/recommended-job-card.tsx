@@ -2,7 +2,7 @@
  * <RecommendedJobCard> — a compact carousel card for a match-ranked external
  * listing: company · title · location, with the match score as a grade chip.
  */
-import { FitScoreChip } from "@patch-careers/ui";
+import { MatchScoreChip } from "@patch-careers/ui";
 import type { ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useMt } from "../lib/styles";
@@ -29,7 +29,7 @@ export function RecommendedJobCard({
         <Text style={s.company} numberOfLines={1}>
           {job.company}
         </Text>
-        <FitScoreChip
+        <MatchScoreChip
           score={job.matchScore}
           size="sm"
           grade

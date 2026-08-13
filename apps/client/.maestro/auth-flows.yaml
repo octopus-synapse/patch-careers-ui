@@ -47,7 +47,7 @@ appId: com.patchcareers.app
 - launchApp:
     clearState: true
 - assertVisible:
-    text: "Entre na sua conta|Sign in to your account"
+    text: "Entrar|Sign in"
 - tapOn:
     id: "auth.email"
 - inputText: ${MAESTRO_SEED_USER_EMAIL:-user@example.com}

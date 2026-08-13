@@ -58,7 +58,11 @@ const mtFor = (p: EditorialPalette) =>
       borderColor: p.hairline,
       minHeight: 168,
     },
+    gateWrapRoomy: {
+      minHeight: 196,
+    },
     gateTeaser: { flexDirection: "row", gap: 12, padding: 14 },
+    gateTeaserRoomy: { padding: 18 },
     gateTeaserCard: { width: 200, height: 120, borderRadius: 12, backgroundColor: p.bg },
     gateOverlay: {
       ...StyleSheet.absoluteFillObject,
@@ -66,6 +70,10 @@ const mtFor = (p: EditorialPalette) =>
       justifyContent: "center",
       gap: 8,
       paddingHorizontal: 24,
+    },
+    gateOverlayRoomy: {
+      paddingHorizontal: 28,
+      paddingVertical: 24,
     },
     gateTitle: {
       fontFamily: fonts.serif,

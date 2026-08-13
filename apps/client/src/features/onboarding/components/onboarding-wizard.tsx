@@ -19,14 +19,7 @@ import { WizardStoreProvider } from "../model/wizard-store-context";
 import type { OnboardingField } from "../types";
 import { sectionArtFor } from "./onboarding-art";
 import { TestFillBar } from "./test-fill-bar";
-import {
-  AckCheckbox,
-  CenteredState,
-  Masthead,
-  ResumeBanner,
-  RetryBanner,
-  StepHeading,
-} from "./wizard-chrome";
+import { AckCheckbox, CenteredState, Masthead, RetryBanner, StepHeading } from "./wizard-chrome";
 import {
   LanguageStep,
   ResumeStylePicker,
@@ -76,7 +69,6 @@ function OnboardingWizardInner(): ReactElement {
     setNoItemsAck,
     phoneCountryIso,
     setPhoneCountry,
-    resumeBanner,
     saveError,
     completeError,
     isPending,
@@ -92,7 +84,6 @@ function OnboardingWizardInner(): ReactElement {
     handleAddSection,
     retrySave,
     commitSave,
-    dismissResumeBanner,
     markWelcomeSeenAndAdvance,
   } = useOnboardingFlow();
 
@@ -201,13 +192,6 @@ function OnboardingWizardInner(): ReactElement {
             only the body's own content moves (centered, or scrolled if taller). */}
         <View style={[ed.page, { paddingHorizontal: horizontalPadding }]}>
           <View style={[ed.column, { maxWidth: columnMaxWidth }]}>
-            {resumeBanner ? (
-              <ResumeBanner
-                phaseLabel={resumeBanner.phaseLabel}
-                onDismiss={dismissResumeBanner}
-                t={t}
-              />
-            ) : null}
             {editStep || !flowStep.hideMasthead ? (
               <Masthead
                 phaseLabel={phase ? t(phase.labelKey) : ""}

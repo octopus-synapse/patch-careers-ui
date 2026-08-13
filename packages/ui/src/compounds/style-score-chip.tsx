@@ -3,7 +3,7 @@
  *
  * A `<ScoreChip>` with a leading palette glyph so it reads as the template's
  * *Style Score* (visual ATS-safety), distinct from Match/Fit scores that use
- * the bare `<FitScoreChip>`. Tappable via `onPress` (e.g. open the breakdown).
+ * the bare `<MatchScoreChip>`. Tappable via `onPress` (e.g. open the breakdown).
  * The accessibility label is localised by the caller (this package is
  * i18n-free); a neutral fallback keeps it usable without one.
  */

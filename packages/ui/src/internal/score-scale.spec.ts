@@ -43,7 +43,8 @@ describe("toneToIntent (chips)", () => {
   it("maps each tone to an intent token name", () => {
     expect(toneToIntent("excellent")).toBe("success");
     expect(toneToIntent("good")).toBe("accent");
-    expect(toneToIntent("fair")).toBe("neutral");
+    // "fair" now resolves to amber `warn` so chips match the ring/gauge.
+    expect(toneToIntent("fair")).toBe("warn");
     expect(toneToIntent("poor")).toBe("danger");
   });
 });
@@ -61,7 +62,7 @@ describe("scoreIntent", () => {
   it("composes scoreTone + toneToIntent", () => {
     expect(scoreIntent(95)).toBe("success");
     expect(scoreIntent(70)).toBe("accent");
-    expect(scoreIntent(50)).toBe("neutral");
+    expect(scoreIntent(50)).toBe("warn");
     expect(scoreIntent(20)).toBe("danger");
   });
 });

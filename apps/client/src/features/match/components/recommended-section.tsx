@@ -42,6 +42,7 @@ export function RecommendedSection({
           body={t("match.gate.body")}
           ctaLabel={status === "expired" ? t("match.gate.ctaExpired") : t("match.gate.ctaNever")}
           onPress={() => router.push("/fit-questionnaire")}
+          roomy
         />
       </View>
     );

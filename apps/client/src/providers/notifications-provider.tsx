@@ -42,10 +42,10 @@ import {
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
-type NotificationsContextValue = { ensureRegistered: () => Promise<void> };
+type NotificationsContextValue = { ensureRegistered: () => Promise<boolean> };
 
 const NotificationsContext = createContext<NotificationsContextValue>({
-  ensureRegistered: async () => undefined,
+  ensureRegistered: async () => false,
 });
 
 type ToastApi = ReturnType<typeof useToast>;

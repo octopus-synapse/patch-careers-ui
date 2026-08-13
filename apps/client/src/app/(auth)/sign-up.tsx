@@ -1,10 +1,9 @@
 /**
- * Sign-up screen (D95-D98) — "Editorial Calm" refinement.
+ * Sign-up screen (D95-D98) — "Editorial Calm", the sign-in screen's twin.
  *
- * Single-page form: email + password (with refined 4-segment strength
- * meter + check chips) + consent checkbox with inline Terms / Privacy
- * links. Same chrome (AuthShell + IntroBlock + PrimaryAction) as
- * sign-in for visual continuity.
+ * Same card, same title block, same provider chips, same field rhythm as
+ * `sign-in`; the two only diverge where sign-up genuinely needs more — the
+ * password strength meter and the consent gate.
  *
  * Form: React Hook Form (ADR-0005); the resolver reuses validateSignup
  * (Zod + i18n messages). Consent is a separate gate (not a form field).
@@ -13,13 +12,14 @@
 
 import { signup } from "@patch-careers/api-client";
 import { exchangeSessionForTokens, login } from "@patch-careers/auth";
-import { YStack } from "@patch-careers/ui";
+import { Text, XStack, YStack } from "@patch-careers/ui";
 import {
+  AuthCard,
   AuthShell,
   CheckboxField,
   ConsentCheckbox,
+  editorialFonts,
   FooterPrompt,
-  IntroBlock,
   PasswordStrengthMeter,
   PrimaryAction,
 } from "@patch-careers/ui/editorial";
@@ -28,12 +28,14 @@ import { useForm } from "react-hook-form";
 import { Platform, type TextInput } from "react-native";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
+import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keep-signed-in-preference";
+import { OAuthBrandButton } from "@/components/auth/oauth-brand-button";
+import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { type AuthFieldErrors, validateSignup } from "@/components/auth/validation";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
-import { GhostButton } from "@/features/sections";
 import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms";
 
 // Versions sent with the consent payload. Backend rejects with
@@ -46,6 +48,7 @@ type SignUpForm = { email: string; password: string };
 
 export default function SignUpScreen(): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();
+  const { handleOAuth } = useOAuthSignIn();
   const { submitting, run } = useSubmit();
 
   const [consent, setConsent] = useState(false);
@@ -146,97 +149,150 @@ export default function SignUpScreen(): ReactElement {
   });
 
   return (
-    <AuthShell showEra={false}>
-      <IntroBlock
-        prefix={t("app.signUp.heroPrefix")}
-        emphasis={t("app.signUp.heroEmphasis")}
-        subtitle={t("app.signUp.subtitle")}
-        showWordmark={false}
-      />
-
-      {isDevTestFillEnabled() ? (
-        <YStack marginBottom={8}>
-          <GhostButton label="test" onPress={fillSignupTest} />
-        </YStack>
-      ) : null}
-
-      <YStack gap={24}>
-        <FormEmailField
-          control={form.control}
-          name="email"
-          testID="signup.email"
-          onSubmitEditing={() => passwordRef.current?.focus()}
-        />
-
-        <FormPasswordField
-          control={form.control}
-          name="password"
-          inputRef={passwordRef}
-          testID="signup.password"
-          returnKeyType="next"
-          isNew
+    <AuthShell variant="card">
+      <AuthCard>
+        {/* Deliberately the same shape as sign-in — same title block, same chip
+            row, same field rhythm — so the two screens read as one surface. The
+            extras (strength meter, consent gate) are what sign-up genuinely
+            needs on top. */}
+        <Text
+          textAlign="center"
+          fontFamily={editorialFonts.sans}
+          fontSize={28}
+          lineHeight={34}
+          fontWeight="600"
+          letterSpacing={-0.4}
+          color="$ink"
         >
-          <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
-        </FormPasswordField>
+          {t("auth.signUp")}
+        </Text>
 
-        <ConsentCheckbox
-          checked={consent}
-          onToggle={() => {
-            setConsent((v) => !v);
-            if (consentError) setConsentError(undefined);
-          }}
-          intro="I agree to the"
-          termsLabel={t("auth.consentTerms")}
-          onTermsPress={() =>
-            router.push({
-              pathname: "/legal-webview",
-              params: { kind: "terms", title: t("auth.legalTerms") },
-            })
-          }
-          conjunction="and"
-          privacyLabel={t("auth.consentPrivacy")}
-          onPrivacyPress={() =>
-            router.push({
-              pathname: "/legal-webview",
-              params: { kind: "privacy", title: t("auth.legalPrivacy") },
-            })
-          }
-          {...(consentError ? { error: consentError } : {})}
-          testID="signup.consent"
-        />
+        <XStack justifyContent="center" gap={12} marginTop={22} marginBottom={30}>
+          <OAuthBrandButton
+            provider="google"
+            glyph={GoogleGlyph}
+            delay={180}
+            label={t("auth.continueWith", { provider: "Google" })}
+            onPress={() => handleOAuth("google")}
+            testID="signup.google"
+          />
+          <OAuthBrandButton
+            provider="linkedin"
+            glyph={LinkedinGlyph}
+            delay={240}
+            label={t("auth.continueWith", { provider: "LinkedIn" })}
+            onPress={() => handleOAuth("linkedin")}
+            testID="signup.linkedin"
+          />
+          <OAuthBrandButton
+            provider="github"
+            glyph={GithubGlyph}
+            delay={300}
+            label={t("auth.continueWith", { provider: "GitHub" })}
+            onPress={() => handleOAuth("github")}
+            testID="signup.github"
+          />
+        </XStack>
 
-        {isWeb ? (
-          <CheckboxField
-            checked={rememberMe}
-            onToggle={() =>
-              setRememberMe((v) => {
-                const next = !v;
-                void saveKeepSignedIn(next);
-                return next;
+        {isDevTestFillEnabled() ? (
+          <YStack alignItems="flex-end" marginBottom={2}>
+            <Text
+              onPress={fillSignupTest}
+              accessibilityRole="button"
+              cursor="pointer"
+              fontFamily={editorialFonts.mono}
+              fontSize={10}
+              letterSpacing={1.4}
+              color="$inkSubtle"
+              paddingVertical={4}
+              paddingHorizontal={6}
+              testID="signup.devFill"
+            >
+              test
+            </Text>
+          </YStack>
+        ) : null}
+
+        <YStack gap={24}>
+          <FormEmailField
+            control={form.control}
+            name="email"
+            testID="signup.email"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+          />
+
+          <FormPasswordField
+            control={form.control}
+            name="password"
+            inputRef={passwordRef}
+            testID="signup.password"
+            returnKeyType="next"
+            isNew
+          >
+            <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
+          </FormPasswordField>
+
+          <ConsentCheckbox
+            checked={consent}
+            onToggle={() => {
+              setConsent((v) => !v);
+              if (consentError) setConsentError(undefined);
+            }}
+            intro={t("auth.consentIntro")}
+            termsLabel={t("auth.consentTerms")}
+            onTermsPress={() =>
+              router.push({
+                pathname: "/legal-webview",
+                params: { kind: "terms", title: t("auth.legalTerms") },
               })
             }
-            label={t("auth.rememberMe")}
-            delay={400}
-            testID="signup.rememberMe"
+            conjunction={t("auth.consentAnd")}
+            privacyLabel={t("auth.consentPrivacy")}
+            onPrivacyPress={() =>
+              router.push({
+                pathname: "/legal-webview",
+                params: { kind: "privacy", title: t("auth.legalPrivacy") },
+              })
+            }
+            {...(consentError ? { error: consentError } : {})}
+            testID="signup.consent"
           />
+        </YStack>
+
+        {isWeb ? (
+          <YStack alignItems="center" marginTop={20}>
+            <CheckboxField
+              checked={rememberMe}
+              onToggle={() =>
+                setRememberMe((v) => {
+                  const next = !v;
+                  void saveKeepSignedIn(next);
+                  return next;
+                })
+              }
+              label={t("auth.rememberMe")}
+              delay={400}
+              testID="signup.rememberMe"
+            />
+          </YStack>
         ) : null}
-      </YStack>
 
-      <YStack marginTop={32}>
-        <PrimaryAction
-          label={t("auth.signUp")}
-          loading={submitting}
-          onPress={onSubmit}
-          testID="signup.submit"
+        <YStack marginTop={26}>
+          <PrimaryAction
+            label={t("auth.signUp")}
+            loading={submitting}
+            onPress={onSubmit}
+            testID="signup.submit"
+          />
+        </YStack>
+
+        <FooterPrompt
+          prompt={t("auth.haveAccount")}
+          linkLabel={t("auth.signInInstead")}
+          onPress={() => router.push("/(auth)/sign-in")}
+          testID="signup.signInLink"
         />
-      </YStack>
-
-      <FooterPrompt
-        prompt={t("auth.haveAccount")}
-        linkLabel={t("auth.signInInstead")}
-        onPress={() => router.push("/(auth)/sign-in")}
-        testID="signup.signInLink"
-      />
+      </AuthCard>
     </AuthShell>
   );
 }

@@ -6,7 +6,7 @@
  */
 import type { Translator } from "@patch-careers/i18n";
 import { AnimatedField, PatchLogo, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { AlertCircle, Check, RefreshCw, X } from "lucide-react-native";
+import { AlertCircle, Check, RefreshCw } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text as RNText, SafeAreaView, View } from "react-native";
 import { GhostButton, useEd } from "@/features/sections";
@@ -103,7 +103,7 @@ export function AckCheckbox({
       <View style={[ed.ackBox, checked ? ed.ackBoxChecked : null]}>
         {checked ? <Check size={12} color={authTokens.surface} strokeWidth={3} /> : null}
       </View>
-      <RNText style={[ed.ghostLabel, disabled ? ed.dim : null]}>{label}</RNText>
+      <RNText style={[ed.ghostLabel, ed.ackLabel, disabled ? ed.dim : null]}>{label}</RNText>
     </Pressable>
   );
 }
@@ -125,38 +125,6 @@ export function CenteredState({
       <RNText style={ed.centeredText}>{label}</RNText>
       {actionLabel && onAction ? <GhostButton label={actionLabel} onPress={onAction} /> : null}
     </SafeAreaView>
-  );
-}
-
-/** "Continue where you left off" banner on a resumed session. */
-export function ResumeBanner({
-  onDismiss,
-  phaseLabel,
-  t,
-}: {
-  onDismiss: () => void;
-  phaseLabel: string;
-  t: Translator;
-}): ReactElement {
-  const ed = useEd();
-  const authTokens = useEditorialPalette();
-  return (
-    <View style={ed.resumeBanner}>
-      <View style={ed.resumeBannerBody}>
-        <RNText style={ed.resumeBannerTitle}>
-          {t("onboarding.resume.title", { phase: phaseLabel })}
-        </RNText>
-        <RNText style={ed.resumeBannerSubtitle}>{t("onboarding.resume.subtitle")}</RNText>
-      </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="dismiss"
-        hitSlop={8}
-        onPress={onDismiss}
-      >
-        <X size={18} color={authTokens.muted} />
-      </Pressable>
-    </View>
   );
 }
 

@@ -1,22 +1,22 @@
 /**
- * Brand glyphs for `<OAuthButton icon=...>`.
+ * Brand glyphs for the OAuth buttons.
  *
  * `@patch-careers/ui/editorial` is icon-agnostic and lucide-react-native ships
- * no brand marks, so the app supplies its own. These adapt `@expo/vector-icons`
- * AntDesign to the lucide-style `{size,color}` component shape OAuthButton
- * expects.
+ * no brand marks, so the app supplies its own in the lucide-style
+ * `{size,color}` component shape.
+ *
+ * GitHub and LinkedIn are monochrome and take their color from the caller (on
+ * `OAuthBrandButton` they sit on a brand-colored chip, so they render in that
+ * chip's foreground). Google is the official four-color "G" and ignores
+ * `color` — it is a fixed mark, not a themeable icon.
  */
 
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import type { ReactElement } from "react";
 import Svg, { Path } from "react-native-svg";
 
 type GlyphProps = { size?: number; color?: string; strokeWidth?: number };
 
-// Official brand marks keep their own colors, ignoring the theme ink — these
-// are not design tokens.
-// @style-allow color: official LinkedIn brand blue (brand mark, not a theme token)
-const LINKEDIN_BLUE = "#0A66C2";
 // @style-allow color: official Google "G" brand palette (brand mark, not theme tokens)
 const GOOGLE = { red: "#EA4335", blue: "#4285F4", yellow: "#FBBC05", green: "#34A853" } as const;
 
@@ -24,10 +24,17 @@ export function GithubGlyph({ size, color }: GlyphProps): ReactElement {
   return <AntDesign name="github" size={size} color={color} />;
 }
 
-export function LinkedinGlyph({ size }: GlyphProps): ReactElement {
-  // `linkedin-square` is the solid filled mark (blue square, cut-out "in");
-  // AntDesign's `linkedin` is a thin outline, so we use FontAwesome here.
-  return <FontAwesome name="linkedin-square" size={size} color={LINKEDIN_BLUE} />;
+export function LinkedinGlyph({ size = 20, color }: GlyphProps): ReactElement {
+  // The bare "in" wordmark — not FontAwesome's `linkedin-square`, whose blue
+  // container would fight the chip it now sits on.
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        {...(color ? { fill: color } : {})}
+        d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.02 8h4.96v16H.02V8zm7.52 0h4.75v2.2h.07c.66-1.25 2.27-2.57 4.67-2.57 5 0 5.92 3.29 5.92 7.57V24h-4.96v-7.6c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4v7.74H7.54V8z"
+      />
+    </Svg>
+  );
 }
 
 export function GoogleGlyph({ size = 18 }: GlyphProps): ReactElement {

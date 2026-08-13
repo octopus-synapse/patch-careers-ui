@@ -12,3 +12,15 @@ export function isDevTestFillEnabled(): boolean {
   const dev = typeof __DEV__ !== "undefined" ? __DEV__ : false;
   return dev && process.env.EXPO_PUBLIC_DEV_TEST_FILL === "true";
 }
+
+/**
+ * Credentials the sign-in "test" button pre-fills. Unlike sign-up (which can
+ * mint a fresh address), signing in needs an account that already exists — and
+ * every machine seeds a different one, so both halves are env-overridable.
+ */
+export function devTestCredentials(): { email: string; password: string } {
+  return {
+    email: process.env.EXPO_PUBLIC_DEV_TEST_EMAIL ?? "test@example.com",
+    password: process.env.EXPO_PUBLIC_DEV_TEST_PASSWORD ?? "TestPass123!",
+  };
+}

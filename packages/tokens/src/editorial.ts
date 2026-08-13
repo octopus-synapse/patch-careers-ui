@@ -20,6 +20,12 @@
 export type EditorialPalette = {
   bg: string;
   surface: string;
+  /**
+   * The standalone panel (auth card) — a lift off `bg` in both schemes, so the
+   * card reads as paper laid on the screen rather than a hole cut into it.
+   * Neither end goes to pure #fff / #000.
+   */
+  panel: string;
   ink: string;
   body: string;
   muted: string;
@@ -39,8 +45,9 @@ export type EditorialPalette = {
 };
 
 export const editorialPalette = {
-  bg: "#FAFAF6", // warm paper
-  surface: "#FFFFFF",
+  bg: "#F2F1EC", // warm paper — held off white so long sessions don't glare
+  surface: "#FAFAF7",
+  panel: "#FDFDFC",
   ink: "#0A0A0A",
   body: "#3F3F46",
   muted: "#71717A",
@@ -59,8 +66,9 @@ export const editorialPalette = {
 } as const satisfies EditorialPalette;
 
 export const editorialPaletteDark = {
-  bg: "#161512", // warm dark paper
-  surface: "#1E1D19",
+  bg: "#1A1916", // warm dark paper — soft, held well off true black
+  surface: "#2B2A26",
+  panel: "#232220",
   ink: "#F5F5F0",
   body: "#C8C8C2",
   muted: "#8A8A84",
@@ -71,7 +79,7 @@ export const editorialPaletteDark = {
   accentDeep: "#93C5FD",
   primary: "#F5F5F0", // CTA inverts: light fill, dark content
   primaryPress: "#E4E4DE",
-  onPrimary: "#161512",
+  onPrimary: "#1A1916",
   danger: "#F87171",
   success: "#4ADE80",
   warn: "#FBBF24",

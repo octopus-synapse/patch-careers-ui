@@ -21,14 +21,22 @@ const flexStyle = { flex: 1 } as const;
 export function AuthShell({
   children,
   showEra = true,
+  variant = "default",
 }: {
   children: ReactNode;
   /** Shows the "EST · 2025" masthead flourish. Off on sign-in/sign-up. */
   showEra?: boolean;
+  /**
+   * `card` hands the whole viewport to the child (no masthead, no gutter, no
+   * 420pt clamp) and centers it vertically — the shape `AuthCard` needs, since
+   * it paints its own inverted surface edge to edge of its 90% column.
+   */
+  variant?: "default" | "card";
 }): ReactElement {
   const insets = useSafeAreaInsets();
   const editorialPalette = useEditorialPalette();
   const barStyle = useThemeName() === "dark" ? "light-content" : "dark-content";
+  const isCard = variant === "card";
   return (
     <View style={[flexStyle, { backgroundColor: editorialPalette.bg }]}>
       <StatusBar barStyle={barStyle} backgroundColor={editorialPalette.bg} />
@@ -39,36 +47,43 @@ export function AuthShell({
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            paddingHorizontal: 28,
-            paddingTop: insets.top + 20,
-            paddingBottom: insets.bottom + 32,
+            paddingHorizontal: isCard ? 0 : 28,
+            paddingTop: insets.top + (isCard ? 16 : 20),
+            paddingBottom: insets.bottom + (isCard ? 16 : 32),
+            justifyContent: isCard ? "center" : "flex-start",
           }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* Masthead — tiny editorial flourish at the top edge */}
-          <Animated.View entering={FadeIn.duration(400)}>
-            <TXStack alignItems="center" justifyContent="space-between" marginBottom={56}>
-              <TXStack alignItems="center">
-                <BrandMark size={22} />
+          {isCard ? null : (
+            <Animated.View entering={FadeIn.duration(400)}>
+              <TXStack alignItems="center" justifyContent="space-between" marginBottom={56}>
+                <TXStack alignItems="center">
+                  <BrandMark size={22} />
+                </TXStack>
+                {showEra ? (
+                  <TText
+                    fontFamily={editorialFonts.mono}
+                    fontSize={10}
+                    letterSpacing={1.8}
+                    color="$inkSubtle"
+                  >
+                    EST · 2025
+                  </TText>
+                ) : null}
               </TXStack>
-              {showEra ? (
-                <TText
-                  fontFamily={editorialFonts.mono}
-                  fontSize={10}
-                  letterSpacing={1.8}
-                  color="$inkSubtle"
-                >
-                  EST · 2025
-                </TText>
-              ) : null}
-            </TXStack>
-          </Animated.View>
+            </Animated.View>
+          )}
 
           {/* Form column — left-aligned, generous whitespace */}
-          <TYStack width="100%" maxWidth={420} alignSelf="center">
-            {children}
-          </TYStack>
+          {isCard ? (
+            children
+          ) : (
+            <TYStack width="100%" maxWidth={420} alignSelf="center">
+              {children}
+            </TYStack>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

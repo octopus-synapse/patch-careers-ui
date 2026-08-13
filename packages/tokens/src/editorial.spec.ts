@@ -5,6 +5,7 @@ describe("editorialPalette", () => {
   const slots = [
     "bg",
     "surface",
+    "panel",
     "ink",
     "body",
     "muted",
@@ -40,14 +41,29 @@ describe("editorialPalette", () => {
   });
 
   it("keeps the warm paper bg and deep-ink primary", () => {
-    expect(editorialPalette.bg).toBe("#FAFAF6");
+    expect(editorialPalette.bg).toBe("#F2F1EC");
     expect(editorialPalette.primary).toBe("#0F172A");
   });
 
   it("dark keeps the warm dark paper bg and inverts the CTA", () => {
-    expect(editorialPaletteDark.bg).toBe("#161512");
+    expect(editorialPaletteDark.bg).toBe("#1A1916");
     expect(editorialPaletteDark.primary).toBe("#F5F5F0");
-    expect(editorialPaletteDark.onPrimary).toBe("#161512");
+    expect(editorialPaletteDark.onPrimary).toBe("#1A1916");
+  });
+
+  it("panel lifts off the bg in both schemes, and neither hits pure black/white", () => {
+    const luminance = (hex: string): number =>
+      Number.parseInt(hex.slice(1, 3), 16) +
+      Number.parseInt(hex.slice(3, 5), 16) +
+      Number.parseInt(hex.slice(5, 7), 16);
+
+    for (const p of [editorialPalette, editorialPaletteDark]) {
+      expect(luminance(p.panel)).toBeGreaterThan(luminance(p.bg));
+      for (const slot of [p.bg, p.panel]) {
+        expect(slot).not.toBe("#FFFFFF");
+        expect(slot).not.toBe("#000000");
+      }
+    }
   });
 
   it("maps theme names to palettes", () => {

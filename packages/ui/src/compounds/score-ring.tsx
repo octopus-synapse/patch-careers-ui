@@ -24,6 +24,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle, G } from "react-native-svg";
 import { editorialFonts as fonts } from "../editorial/fonts";
+import { scoreArcGeometry } from "../internal/score-arc";
 import { clampScore, scoreGrade, scoreTone, toneToEditorialKey } from "../internal/score-scale";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
 import { Text } from "../primitives/text";
@@ -58,9 +59,7 @@ export function ScoreRing({
   const target = clampScore(score);
   const color = palette[toneToEditorialKey(scoreTone(score))];
 
-  const center = size / 2;
-  const r = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * r;
+  const { center, r, circumference } = scoreArcGeometry(size, strokeWidth);
 
   const progress = useSharedValue(animate ? 0 : 1);
   const [display, setDisplay] = useState(animate ? 0 : target);

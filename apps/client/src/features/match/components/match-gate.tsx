@@ -16,19 +16,21 @@ export function MatchGate({
   body,
   ctaLabel,
   onPress,
+  roomy = false,
 }: {
   title: string;
   body: string;
   ctaLabel: string;
   onPress: () => void;
+  roomy?: boolean;
 }): ReactElement {
   const s = useMt();
   const palette = useEditorialPalette();
   const themeName = useThemeName();
 
   return (
-    <View style={s.gateWrap}>
-      <View style={s.gateTeaser} pointerEvents="none">
+    <View style={[s.gateWrap, roomy && s.gateWrapRoomy]}>
+      <View style={[s.gateTeaser, roomy && s.gateTeaserRoomy]} pointerEvents="none">
         <View style={s.gateTeaserCard} />
         <View style={s.gateTeaserCard} />
       </View>
@@ -38,7 +40,7 @@ export function MatchGate({
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
-      <View style={s.gateOverlay}>
+      <View style={[s.gateOverlay, roomy && s.gateOverlayRoomy]}>
         <Lock size={22} color={palette.muted} strokeWidth={1.75} />
         <Text style={s.gateTitle}>{title}</Text>
         <Text style={s.gateBody}>{body}</Text>

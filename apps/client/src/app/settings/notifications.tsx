@@ -12,7 +12,7 @@ import {
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, ToggleField, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import {
   getNotificationService,
@@ -21,6 +21,7 @@ import {
 } from "@/features/notifications";
 import { SectionHeader, useSet } from "@/features/settings";
 import { useI18n } from "@/providers/i18n-provider";
+import { useNotifications } from "@/providers/notifications-provider";
 
 type Channels = { inAppEnabled: boolean; emailEnabled: boolean; pushEnabled: boolean };
 const DEFAULTS: Channels = { inAppEnabled: true, emailEnabled: true, pushEnabled: false };
@@ -34,6 +35,7 @@ export default function NotificationsScreen(): ReactElement {
   const palette = useEditorialPalette();
   const query = useGetV1NotificationsPreferences();
   const put = usePutV1NotificationsPreferencesType();
+  const { ensureRegistered } = useNotifications();
   const [state, setState] = useState<Record<string, Channels>>({});
 
   const labelFor = (key: string): string =>
@@ -76,14 +78,40 @@ export default function NotificationsScreen(): ReactElement {
 
   const ready = Object.keys(state).length > 0;
 
-  const save = (typeKey: string, patch: Partial<Channels>): void => {
-    const current = state[typeKey] ?? DEFAULTS;
-    const merged: Channels = { ...current, ...patch };
+  const persist = (typeKey: string, merged: Channels): void => {
     setState((s) => ({ ...s, [typeKey]: merged }));
     put.mutate({
       type: typeKey as PutV1NotificationsPreferencesTypePathParamsTypeEnum,
       data: merged,
     });
+  };
+
+  const save = (typeKey: string, patch: Partial<Channels>): void => {
+    const current = state[typeKey] ?? DEFAULTS;
+    const merged: Channels = { ...current, ...patch };
+
+    if (patch.pushEnabled === true && !current.pushEnabled) {
+      void (async () => {
+        const service = getNotificationService();
+        const status = await service.requestPermission();
+        if (status !== "granted") return;
+        const registered = await ensureRegistered();
+        if (!registered) {
+          const reason = service.getLastRegistrationError?.();
+          Alert.alert(
+            "Não foi possível ativar notificações",
+            reason
+              ? `O iOS concedeu permissão, mas o app não conseguiu registrar o Expo Push Token neste device.\n\n${reason}`
+              : "O iOS concedeu permissão, mas o app não conseguiu registrar o Expo Push Token neste device.",
+          );
+          return;
+        }
+        persist(typeKey, merged);
+      })();
+      return;
+    }
+
+    persist(typeKey, merged);
   };
 
   return (

@@ -18,6 +18,7 @@ export {
   type ResumeSectionsManagerProps,
   type SectionsManagerHandle,
 } from "./components/resume-sections-manager";
+export { RolePicker, type RolePickerProps } from "./components/role-picker";
 export { SectionCard } from "./components/section-card";
 export { SectionForm } from "./components/section-form";
 export { SectionItemEditor } from "./components/section-item-editor";

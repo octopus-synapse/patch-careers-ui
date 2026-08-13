@@ -28,6 +28,7 @@ const TToastViewport = asLoose<ComponentType<LooseProps>>(TamaguiToastViewport);
 const INTENT_TO_HAPTIC: Record<Intent, HapticImpact> = {
   neutral: "light",
   accent: "light",
+  warn: "warning",
   danger: "error",
   success: "success",
 };

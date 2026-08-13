@@ -240,6 +240,7 @@ function editorialThemeKeys(p: EditorialPalette) {
     // editorial palette (same names as the global `$` tokens — theme wins)
     paper: p.bg,
     surface: p.surface,
+    panel: p.panel,
     ink: p.ink,
     inkBody: p.body,
     inkMuted: p.muted,

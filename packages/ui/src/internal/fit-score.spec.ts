@@ -18,7 +18,7 @@ describe("fitScoreIntent", () => {
   it("maps buckets to intents", () => {
     expect(fitScoreIntent(95)).toBe("success");
     expect(fitScoreIntent(70)).toBe("accent");
-    expect(fitScoreIntent(50)).toBe("neutral");
+    expect(fitScoreIntent(50)).toBe("warn");
     expect(fitScoreIntent(20)).toBe("danger");
   });
 });

@@ -12,13 +12,9 @@
  */
 
 import { logout } from "@patch-careers/auth";
-import {
-  type EditorialPalette,
-  editorialPalette,
-  editorialPaletteDark,
-} from "@patch-careers/tokens";
 import { Avatar } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
+import { BlurView } from "expo-blur";
 import { type Href, useRouter } from "expo-router";
 import { ChevronRight, LogOut, MapPin, Settings } from "lucide-react-native";
 import type { ComponentType, ReactElement } from "react";
@@ -40,10 +36,38 @@ import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 import { ConfirmDialog } from "./confirm-dialog";
 
-// Soft, light scrim — heavy dim reads wrong on light paper; dark mode needs
-// a deeper wash so the panel separates from the already-dark backdrop.
+// Soft scrim — heavy dim reads wrong on light paper; dark mode needs a deeper
+// wash so the panel separates from the already-dark backdrop.
 // @style-allow color: modal scrim overlay (intentional alpha wash, not a theme token)
-const SCRIM = { light: "rgba(10,10,10,0.18)", dark: "rgba(0,0,0,0.5)" } as const;
+const BACKDROP = {
+  light: "rgba(10,10,10,0.18)",
+  dark: "rgba(0,0,0,0.5)",
+} as const;
+// Black frosted drawer material, matching the EditorialTabBar's dark
+// translucent glass rather than the previous flat grey paper.
+// @style-allow color: frosted drawer wash (intentional translucent material over blur)
+const PANEL_GLASS = {
+  light: { tint: "dark" as const, intensity: 92, wash: "rgba(12,12,14,0.46)" },
+  dark: { tint: "dark" as const, intensity: 82, wash: "rgba(18,17,15,0.52)" },
+} as const;
+const MENU_CHROME = {
+  light: {
+    ink: "rgba(255,255,255,0.96)",
+    body: "rgba(255,255,255,0.82)",
+    muted: "rgba(255,255,255,0.62)",
+    subtle: "rgba(255,255,255,0.42)",
+    pressed: "rgba(255,255,255,0.09)",
+    hairline: "rgba(255,255,255,0.14)",
+  },
+  dark: {
+    ink: "rgba(255,255,255,0.96)",
+    body: "rgba(255,255,255,0.82)",
+    muted: "rgba(255,255,255,0.62)",
+    subtle: "rgba(255,255,255,0.42)",
+    pressed: "rgba(255,255,255,0.08)",
+    hairline: "rgba(255,255,255,0.12)",
+  },
+} as const;
 // translateX/opacity ride the native driver; web falls back to JS animation.
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
@@ -73,9 +97,11 @@ function MenuRow({
   onPress: () => void;
   danger?: boolean;
 }): ReactElement {
+  const theme = useThemeName();
   const editorialPalette = useEditorialPalette();
-  const styles = stylesByTheme[useThemeName()];
-  const tint = danger ? editorialPalette.danger : editorialPalette.ink;
+  const chrome = MENU_CHROME[theme];
+  const styles = stylesByTheme[theme];
+  const tint = danger ? editorialPalette.danger : chrome.ink;
   return (
     <Pressable
       accessibilityRole="button"
@@ -83,15 +109,9 @@ function MenuRow({
       onPress={onPress}
       style={({ pressed }) => [styles.row, pressed ? styles.rowPressed : null]}
     >
-      <Icon
-        size={20}
-        color={danger ? editorialPalette.danger : editorialPalette.body}
-        strokeWidth={1.75}
-      />
+      <Icon size={20} color={danger ? editorialPalette.danger : chrome.body} strokeWidth={1.75} />
       <Text style={[styles.rowLabel, { color: tint }]}>{label}</Text>
-      {danger ? null : (
-        <ChevronRight size={18} color={editorialPalette.subtle} strokeWidth={1.75} />
-      )}
+      {danger ? null : <ChevronRight size={18} color={chrome.subtle} strokeWidth={1.75} />}
     </Pressable>
   );
 }
@@ -106,7 +126,9 @@ export function ProfileMenu({
 }: ProfileMenuProps): ReactElement {
   const { t } = useI18n();
   const editorialPalette = useEditorialPalette();
-  const styles = stylesByTheme[useThemeName()];
+  const theme = useThemeName();
+  const styles = stylesByTheme[theme];
+  const panelGlass = PANEL_GLASS[theme];
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { width: screenW } = useWindowDimensions();
@@ -203,6 +225,15 @@ export function ProfileMenu({
               },
             ]}
           >
+            <BlurView
+              tint={panelGlass.tint}
+              intensity={panelGlass.intensity}
+              style={StyleSheet.absoluteFill}
+            />
+            <View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, { backgroundColor: panelGlass.wash }]}
+            />
             <ScrollView
               style={styles.scroll}
               showsVerticalScrollIndicator={false}
@@ -275,7 +306,7 @@ export function ProfileMenu({
   );
 }
 
-const stylesFor = (p: EditorialPalette, scrim: string) =>
+const stylesFor = (scrim: string) =>
   // @style-allow stylesheet: animated profile drawer (Animated.Value slide-in transitions)
   StyleSheet.create({
     root: { flex: 1 },
@@ -285,15 +316,15 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       left: 0,
       top: 0,
       bottom: 0,
-      backgroundColor: p.surface,
       borderRightWidth: 1,
-      borderRightColor: p.hairline,
+      borderRightColor: MENU_CHROME.light.hairline,
+      overflow: "hidden",
       paddingHorizontal: 24,
       shadowColor: "#000",
-      shadowOpacity: 0.12,
-      shadowRadius: 20,
-      shadowOffset: { width: 4, height: 0 },
-      elevation: 16,
+      shadowOpacity: 0.2,
+      shadowRadius: 24,
+      shadowOffset: { width: 6, height: 0 },
+      elevation: 18,
     },
     scroll: { flex: 1 },
     scrollBody: { gap: 6, paddingTop: 4 },
@@ -305,20 +336,20 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       paddingHorizontal: 4,
       borderRadius: 16,
     },
-    cardPressed: { backgroundColor: p.bg },
+    cardPressed: { backgroundColor: MENU_CHROME.light.pressed },
     cardText: { gap: 6, width: "100%", alignItems: "center" },
     name: {
       fontFamily: editorialFonts.serif,
       fontSize: 24,
       lineHeight: 30,
-      color: p.ink,
+      color: MENU_CHROME.light.ink,
       textAlign: "center",
     },
     headline: {
       fontFamily: editorialFonts.sans,
       fontSize: 14,
       lineHeight: 20,
-      color: p.body,
+      color: MENU_CHROME.light.body,
       textAlign: "center",
     },
     locationRow: {
@@ -328,10 +359,10 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       gap: 5,
       marginTop: 3,
     },
-    location: { fontFamily: editorialFonts.sans, fontSize: 13, color: p.muted },
+    location: { fontFamily: editorialFonts.sans, fontSize: 13, color: MENU_CHROME.light.muted },
     divider: {
       height: 1,
-      backgroundColor: p.hairline,
+      backgroundColor: MENU_CHROME.light.hairline,
       marginTop: 16,
     },
     row: {
@@ -342,11 +373,11 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
       paddingHorizontal: 4,
       borderRadius: 12,
     },
-    rowPressed: { backgroundColor: p.bg },
+    rowPressed: { backgroundColor: MENU_CHROME.light.pressed },
     rowLabel: { flex: 1, fontFamily: editorialFonts.sans, fontSize: 15.5 },
     footer: {
       borderTopWidth: 1,
-      borderTopColor: p.hairline,
+      borderTopColor: MENU_CHROME.light.hairline,
       paddingTop: 10,
       marginTop: 12,
     },
@@ -354,6 +385,6 @@ const stylesFor = (p: EditorialPalette, scrim: string) =>
 
 // Precomputed per theme so style-object identity is stable across renders.
 const stylesByTheme = {
-  light: stylesFor(editorialPalette, SCRIM.light),
-  dark: stylesFor(editorialPaletteDark, SCRIM.dark),
+  light: stylesFor(BACKDROP.light),
+  dark: stylesFor(BACKDROP.dark),
 } as const;

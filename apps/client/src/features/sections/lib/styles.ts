@@ -38,7 +38,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
     // Page fills the viewport and centers the cluster vertically. Because the body
     // is a fixed height (set inline from the viewport), the cluster's total height
     // is constant — the masthead and footer land at the same Y on every step.
-    page: { flex: 1, justifyContent: "center", paddingTop: 24, paddingBottom: 28 },
+    page: {
+      flex: 1,
+      justifyContent: "center",
+      paddingTop: 24,
+      paddingBottom: 28,
+    },
     column: { width: "100%", maxWidth: 460, alignSelf: "center" },
     // Body content sits at the TOP of the fixed box (right under the subtitle), so
     // short steps read top-anchored while the box itself stays centered in the
@@ -109,8 +114,15 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       marginTop: 36,
     },
     footerError: { alignItems: "flex-end", marginTop: 10 },
-    skipRow: { alignItems: "center", marginTop: 22 },
-    ackRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 6 },
+    // Stretch (not center): the row spans the column so a long label wraps
+    // inside it instead of pushing the box off-screen.
+    skipRow: { marginTop: 22 },
+    ackRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 10,
+      paddingVertical: 6,
+    },
     ackBox: {
       width: 18,
       height: 18,
@@ -119,8 +131,16 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       borderColor: authTokens.hairlineStrong,
       alignItems: "center",
       justifyContent: "center",
+      // RN defaults flexShrink to 0 for the label but the box must never give
+      // way either — the label flexes instead (see `ackLabel`).
+      flexShrink: 0,
+      marginTop: 1,
     },
-    ackBoxChecked: { backgroundColor: authTokens.ink, borderColor: authTokens.ink },
+    ackLabel: { flex: 1 },
+    ackBoxChecked: {
+      backgroundColor: authTokens.ink,
+      borderColor: authTokens.ink,
+    },
     ghost: { paddingVertical: 10, paddingHorizontal: 2 },
     ghostLabel: {
       ...eyebrow,
@@ -152,7 +172,11 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       minHeight: 92,
       textAlignVertical: "top",
     },
-    fieldLine: { height: 1, width: "100%", backgroundColor: authTokens.hairlineStrong },
+    fieldLine: {
+      height: 1,
+      width: "100%",
+      backgroundColor: authTokens.hairlineStrong,
+    },
     fieldLineFocused: { height: 1.5, backgroundColor: authTokens.accent },
     fieldLineError: { height: 1.5, backgroundColor: authTokens.danger },
 
@@ -166,7 +190,10 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       paddingVertical: 9,
       backgroundColor: authTokens.surface,
     },
-    pillSelected: { borderColor: authTokens.ink, backgroundColor: authTokens.ink },
+    pillSelected: {
+      borderColor: authTokens.ink,
+      backgroundColor: authTokens.ink,
+    },
     pillLabel: {
       fontFamily: fonts.sans,
       fontSize: 13,
@@ -231,7 +258,11 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       shadowOffset: { width: 0, height: 12 },
       elevation: 12,
     },
-    pickerTitle: { fontFamily: fonts.serif, fontSize: 20, color: authTokens.ink },
+    pickerTitle: {
+      fontFamily: fonts.serif,
+      fontSize: 20,
+      color: authTokens.ink,
+    },
     pickerYearRow: {
       flexDirection: "row",
       alignItems: "center",
@@ -261,7 +292,10 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       borderColor: authTokens.hairline,
       backgroundColor: authTokens.surface,
     },
-    pickerMonthSelected: { backgroundColor: authTokens.ink, borderColor: authTokens.ink },
+    pickerMonthSelected: {
+      backgroundColor: authTokens.ink,
+      borderColor: authTokens.ink,
+    },
     pickerMonthText: {
       fontFamily: fonts.sans,
       fontSize: 14,
@@ -294,7 +328,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
     langCardSelected: { borderColor: authTokens.ink },
     langText: { flex: 1, gap: 3 },
     langLabel: { fontFamily: fonts.serif, fontSize: 19, color: authTokens.ink },
-    langHint: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 17, color: authTokens.muted },
+    langHint: {
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      lineHeight: 17,
+      color: authTokens.muted,
+    },
 
     // step context — fills out short steps (link preview + reassurance notes)
     context: { marginTop: 28 },
@@ -311,25 +350,33 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       color: authTokens.muted,
       marginBottom: 8,
     },
-    contextBody: { fontFamily: fonts.sans, fontSize: 13.5, lineHeight: 20, color: authTokens.body },
-    linkCard: {
-      borderWidth: 1,
-      borderColor: authTokens.hairline,
-      borderRadius: 14,
-      backgroundColor: authTokens.surface,
-      paddingHorizontal: 16,
-      paddingVertical: 14,
-      gap: 6,
+    contextBody: {
+      fontFamily: fonts.sans,
+      fontSize: 13.5,
+      lineHeight: 20,
+      color: authTokens.body,
     },
+    // No frame: the preview reads as a caption under the field, not a card.
+    linkCard: { gap: 6 },
     linkCardLabel: {
       ...eyebrow,
       fontSize: 10,
       letterSpacing: 1.8,
       color: authTokens.muted,
     },
-    linkUrl: { fontFamily: fonts.mono, fontSize: 14, letterSpacing: 0.2, color: authTokens.subtle },
+    linkUrl: {
+      fontFamily: fonts.mono,
+      fontSize: 14,
+      letterSpacing: 0.2,
+      color: authTokens.subtle,
+    },
     linkHandle: { color: authTokens.ink },
-    linkNote: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 17, color: authTokens.muted },
+    linkNote: {
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      lineHeight: 17,
+      color: authTokens.muted,
+    },
 
     // multi-item — saved entry cards
     list: { gap: 10 },
@@ -368,7 +415,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       letterSpacing: 0.1,
       color: authTokens.ink,
     },
-    cardMeta: { fontFamily: fonts.sans, fontSize: 12.5, lineHeight: 16, color: authTokens.muted },
+    cardMeta: {
+      fontFamily: fonts.sans,
+      fontSize: 12.5,
+      lineHeight: 16,
+      color: authTokens.muted,
+    },
     cardRemove: {
       width: 38,
       height: 38,
@@ -421,8 +473,16 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       borderBottomWidth: 1,
       borderBottomColor: authTokens.hairline,
     },
-    editorModalTitle: { fontFamily: fonts.serif, fontSize: 22, color: authTokens.ink },
-    editorModalScroll: { paddingHorizontal: 24, paddingTop: 24, paddingBottom: 32 },
+    editorModalTitle: {
+      fontFamily: fonts.serif,
+      fontSize: 22,
+      color: authTokens.ink,
+    },
+    editorModalScroll: {
+      paddingHorizontal: 24,
+      paddingTop: 24,
+      paddingBottom: 32,
+    },
     editorModalFooter: {
       flexDirection: "row",
       alignItems: "center",
@@ -446,11 +506,21 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       padding: 14,
     },
     styleCardSelected: { borderColor: authTokens.ink },
-    styleImage: { width: 60, height: 80, borderRadius: 10, backgroundColor: authTokens.hairline },
+    styleImage: {
+      width: 60,
+      height: 80,
+      borderRadius: 10,
+      backgroundColor: authTokens.hairline,
+    },
     styleBody: { flex: 1, gap: 4, justifyContent: "center" },
     styleNameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
     styleName: { fontFamily: fonts.serif, fontSize: 18, color: authTokens.ink },
-    styleDesc: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 18, color: authTokens.muted },
+    styleDesc: {
+      fontFamily: fonts.sans,
+      fontSize: 13,
+      lineHeight: 18,
+      color: authTokens.muted,
+    },
     styleAts: {
       fontFamily: fonts.mono,
       fontSize: 11,
@@ -467,20 +537,51 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       padding: 18,
       marginBottom: 12,
     },
-    reviewHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 },
+    reviewHead: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginBottom: 12,
+    },
     reviewLabel: {
       ...eyebrow,
       fontSize: 10,
       letterSpacing: 1.6,
       color: authTokens.muted,
     },
-    reviewSkipped: { fontFamily: fonts.sans, fontSize: 14, color: authTokens.subtle },
+    reviewSkipped: {
+      fontFamily: fonts.sans,
+      fontSize: 14,
+      color: authTokens.subtle,
+    },
     reviewStyleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-    reviewStyleName: { fontFamily: fonts.serif, fontSize: 17, color: authTokens.ink },
-    reviewImage: { width: 48, height: 64, borderRadius: 8, backgroundColor: authTokens.hairline },
-    reviewPreviewBox: { overflow: "hidden", backgroundColor: authTokens.surface },
-    reviewEntry: { flexDirection: "row", justifyContent: "space-between", gap: 12, marginTop: 7 },
-    reviewEntryLabel: { fontFamily: fonts.sans, fontSize: 12, color: authTokens.muted, flex: 1 },
+    reviewStyleName: {
+      fontFamily: fonts.serif,
+      fontSize: 17,
+      color: authTokens.ink,
+    },
+    reviewImage: {
+      width: 48,
+      height: 64,
+      borderRadius: 8,
+      backgroundColor: authTokens.hairline,
+    },
+    reviewPreviewBox: {
+      overflow: "hidden",
+      backgroundColor: authTokens.surface,
+    },
+    reviewEntry: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      gap: 12,
+      marginTop: 7,
+    },
+    reviewEntryLabel: {
+      fontFamily: fonts.sans,
+      fontSize: 12,
+      color: authTokens.muted,
+      flex: 1,
+    },
     reviewEntryValue: {
       fontFamily: fonts.sans,
       fontSize: 14,
@@ -570,24 +671,22 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       fontWeight: "600",
       color: authTokens.ink,
     },
-    welcomeCta: { width: "100%", marginTop: 8, alignItems: "stretch" },
-    welcomeBack: { alignItems: "center", marginTop: 12 },
-
-    // resume banner
-    resumeBanner: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 12,
-      borderWidth: 1,
-      borderColor: authTokens.hairlineStrong,
-      borderRadius: 14,
-      backgroundColor: authTokens.surface,
-      padding: 14,
-      marginBottom: 20,
+    welcomeCta: {
+      width: "100%",
+      marginTop: 8,
+      alignItems: "stretch",
     },
-    resumeBannerBody: { flex: 1, gap: 2 },
-    resumeBannerTitle: { fontFamily: fonts.serif, fontSize: 16, color: authTokens.ink },
-    resumeBannerSubtitle: { fontFamily: fonts.sans, fontSize: 13, color: authTokens.muted },
+    // Top-left corner. `top` is supplied by the caller from the safe-area
+    // inset: RN's own SafeAreaView is a no-op on Android, so an absolute child
+    // would otherwise sit under the status bar.
+    welcomeBack: {
+      position: "absolute",
+      left: 20,
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
     // retry banner
     retryBanner: {
@@ -602,7 +701,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       paddingVertical: 12,
       marginTop: 12,
     },
-    retryText: { flex: 1, fontFamily: fonts.sans, fontSize: 13, color: authTokens.danger },
+    retryText: {
+      flex: 1,
+      fontFamily: fonts.sans,
+      fontSize: 13,
+      color: authTokens.danger,
+    },
 
     // missing-required banner
     missingBanner: {
@@ -614,7 +718,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       marginBottom: 16,
       gap: 4,
     },
-    missingHead: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
+    missingHead: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginBottom: 6,
+    },
     missingTitle: {
       ...eyebrow,
       fontSize: 10,
@@ -630,7 +739,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       borderTopWidth: 1,
       borderTopColor: authTokens.hairline,
     },
-    missingLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 14, color: authTokens.ink },
+    missingLabel: {
+      flex: 1,
+      fontFamily: fonts.sans,
+      fontSize: 14,
+      color: authTokens.ink,
+    },
     missingFix: {
       ...eyebrow,
       fontSize: 11,
@@ -644,7 +758,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       gap: 12,
       paddingVertical: 20,
     },
-    emptyTitle: { fontFamily: fonts.serif, fontSize: 20, color: authTokens.ink, marginTop: 4 },
+    emptyTitle: {
+      fontFamily: fonts.serif,
+      fontSize: 20,
+      color: authTokens.ink,
+      marginTop: 4,
+    },
     emptyBody: {
       fontFamily: fonts.sans,
       fontSize: 14,
@@ -699,7 +818,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       color: authTokens.subtle,
       marginTop: 2,
     },
-    modalScroll: { gap: 16, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 24 },
+    modalScroll: {
+      gap: 16,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      paddingBottom: 24,
+    },
     modalFooter: {
       paddingHorizontal: 20,
       paddingTop: 12,
@@ -716,7 +840,11 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
     },
     modalPreviewEmpty: { borderWidth: 1, borderColor: authTokens.hairline },
     modalPreviewCenter: { alignItems: "center", justifyContent: "center" },
-    modalPreviewHint: { fontFamily: fonts.sans, fontSize: 13, color: authTokens.muted },
+    modalPreviewHint: {
+      fontFamily: fonts.sans,
+      fontSize: 13,
+      color: authTokens.muted,
+    },
     modalDesc: {
       fontFamily: fonts.sans,
       fontSize: 14,
@@ -739,7 +867,12 @@ const createEd = (authTokens: EditorialPalette, overlay: OverlayColors) =>
       letterSpacing: 0.4,
       color: authTokens.ink,
     },
-    atsSealBlurb: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 19, color: authTokens.muted },
+    atsSealBlurb: {
+      fontFamily: fonts.sans,
+      fontSize: 13,
+      lineHeight: 19,
+      color: authTokens.muted,
+    },
   });
 
 // Precomputed per theme so style-object identity is stable across renders.

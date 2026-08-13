@@ -21,16 +21,6 @@ export const appPtBR: TranslationDict = {
   confirmDialog: {
     close: "Fechar",
   },
-  signIn: {
-    heroPrefix: "Bem-vindo de ",
-    heroEmphasis: "volta.",
-    subtitle: "Entre para continuar sua busca.",
-  },
-  signUp: {
-    heroPrefix: "Crie sua ",
-    heroEmphasis: "conta.",
-    subtitle: "Alguns detalhes para você entrar.",
-  },
   verifyEmail: {
     testCodeSent: "Codigo enviado (teste): {code}",
   },
@@ -51,16 +41,6 @@ export const appEn: TranslationDict = {
   },
   confirmDialog: {
     close: "Close",
-  },
-  signIn: {
-    heroPrefix: "Welcome ",
-    heroEmphasis: "back.",
-    subtitle: "Sign in to continue your search.",
-  },
-  signUp: {
-    heroPrefix: "Create your ",
-    heroEmphasis: "account.",
-    subtitle: "A few details to get you in the door.",
   },
   verifyEmail: {
     testCodeSent: "Code sent (test): {code}",

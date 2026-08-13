@@ -72,7 +72,8 @@ export const en: TranslationDict = {
     orDivider: "or",
     rememberMe: "Remember me",
     keepSignedIn: "Keep me signed in",
-    consentLine: "I have read and agree to the {terms} and the {privacy}",
+    consentIntro: "I have read and agree to the",
+    consentAnd: "and the",
     consentTerms: "Terms of Service",
     consentPrivacy: "Privacy Policy",
     consentRequired: "You must accept to continue",
@@ -247,19 +248,14 @@ export const en: TranslationDict = {
       timeRemainingOne: "~{min} min left",
     },
     welcome: {
-      tagline: "Build a recruiter-ready resume, optimized to pass ATS screens.",
+      tagline:
+        "Tell your story once. Patch rewrites your resume for every job — and gets it in front of the people who decide.",
       timePromise: "Ready in ~3 minutes",
       cta: "Get started",
     },
     review: {
       missingTitle: "Finish these required steps",
       fix: "Fix",
-    },
-    resume: {
-      title: "You left off at {phase}",
-      subtitle: "Pick up where you stopped, or start over.",
-      continue: "Continue",
-      restart: "Start over",
     },
     resumeStyle: {
       use: "Use this template",
@@ -281,7 +277,7 @@ export const en: TranslationDict = {
     },
     section: {
       emptyTitle: "Nothing here yet",
-      emptyBody: "Add your first entry — or skip and come back later.",
+      emptyBody: "Add your first entry.",
       noFieldsTitle: "Section unavailable right now",
       noFieldsBody: "We couldn't load this section's fields. You can skip it for now.",
     },
@@ -319,7 +315,6 @@ export const en: TranslationDict = {
       },
       username: {
         title: "Pick a username",
-        subtitle: "This becomes your public profile link.",
         linkLabel: "Your public link",
         linkNote: "Recruiters open this to see your profile.",
       },
@@ -337,7 +332,7 @@ export const en: TranslationDict = {
       },
       education: {
         title: "Your education",
-        subtitle: "Degrees, bootcamps, courses — or skip it.",
+        subtitle: "Degrees, bootcamps, courses.",
       },
       resumeStyle: {
         title: "Pick a style",
@@ -363,7 +358,7 @@ export const en: TranslationDict = {
       statusEntrepreneur: "Entrepreneur",
       statusRetired: "Retired",
       hintCurrent: "Add your current job first (leave the end date empty), then any past roles.",
-      hintPast: "Add any past experience, including volunteer work — or skip if you have none.",
+      hintPast: "Add any past experience, including volunteer work.",
     },
   },
 };

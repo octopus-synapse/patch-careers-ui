@@ -29,7 +29,7 @@ const themeBootstrap = `
       (scheme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
     var root = document.documentElement;
     root.style.colorScheme = dark ? "dark" : "light";
-    root.style.backgroundColor = dark ? "#161512" : "#FAFAF6";
+    root.style.backgroundColor = dark ? "#1A1916" : "#F2F1EC";
   } catch (e) {}
 })();
 `;

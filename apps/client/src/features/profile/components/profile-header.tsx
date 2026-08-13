@@ -4,13 +4,14 @@
  * / links edit sheets (the old body sections collapsed into entry points; the
  * tab's body now belongs to the sub-tabs).
  */
-import { Avatar } from "@patch-careers/ui";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { Avatar, ScoreChip, scoreGrade } from "@patch-careers/ui";
+import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Camera, MapPin, Settings } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
+import { useMeScores } from "../hooks/use-me-scores";
 import { usePf } from "../lib/styles";
 import { CompletenessRing } from "./completeness-ring";
 
@@ -106,6 +107,46 @@ export function ProfileHeader({
           <Text style={pf.location}>{profile.location}</Text>
         </View>
       ) : null}
+      <ReadinessBand />
+    </View>
+  );
+}
+
+/** Glanceable Readiness band under the identity block — the header's hero
+ * score. Shares the `/me/scores` cache with the Desempenho hub and taps
+ * through to it. Renders nothing until loaded so there's no layout jump. */
+function ReadinessBand(): ReactElement | null {
+  const { t } = useI18n();
+  const router = useRouter();
+  const { scores } = useMeScores();
+  if (!scores) return null;
+  const score = scores.readiness.score;
+  return (
+    <View style={{ marginTop: 14 }}>
+      <ScoreChip
+        score={score}
+        grade
+        size="md"
+        onPress={() => router.push("/(tabs)/profile?tab=desempenho")}
+        accessibilityLabel={t("profile.scores.headerBandA11y", {
+          score: String(score),
+          grade: scoreGrade(score),
+        })}
+        leading={(fg) => (
+          <Text
+            style={{
+              fontFamily: fonts.sans,
+              fontSize: 11,
+              fontWeight: "700",
+              letterSpacing: 0.6,
+              textTransform: "uppercase",
+              color: fg,
+            }}
+          >
+            {t("profile.scores.readiness.label")}
+          </Text>
+        )}
+      />
     </View>
   );
 }

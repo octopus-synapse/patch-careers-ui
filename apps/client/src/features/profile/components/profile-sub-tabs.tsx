@@ -15,7 +15,7 @@ import { useI18n } from "@/providers/i18n-provider";
 
 type IoniconName = keyof typeof Ionicons.glyphMap;
 
-export type ProfileSubTab = "perfil" | "curriculos";
+export type ProfileSubTab = "perfil" | "curriculos" | "desempenho";
 
 // Filled glyph when active, outline when inactive — same pattern as Jobs.
 const ionIcon =
@@ -42,6 +42,11 @@ export function ProfileSubTabs({
       key: "curriculos",
       label: t("profile.subTabs.resumes"),
       renderIcon: ionIcon("documents", "documents-outline"),
+    },
+    {
+      key: "desempenho",
+      label: t("profile.subTabs.performance"),
+      renderIcon: ionIcon("stats-chart", "stats-chart-outline"),
     },
   ];
   return <FrostedPillTabs tabs={tabs} value={value} onChange={onChange} size="md" />;

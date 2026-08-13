@@ -7,7 +7,7 @@
  * warn / danger), consistent with every other score in the app. The avatar is
  * rendered as `children` in the center; the arc overlays without affecting layout.
  */
-import { scoreTone, toneToEditorialKey } from "@patch-careers/ui";
+import { arcDashOffset, scoreArcGeometry, scoreTone, toneToEditorialKey } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode } from "react";
 import { View } from "react-native";
@@ -29,11 +29,9 @@ export function CompletenessRing({
   const palette = useEditorialPalette();
   const ringSize = size + OUTSET * 2;
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
-  const r = (ringSize - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * r;
-  const offset = circumference * (1 - clamped / 100);
+  const { center, r, circumference } = scoreArcGeometry(ringSize, strokeWidth);
+  const offset = arcDashOffset(circumference, clamped / 100);
   const color = palette[toneToEditorialKey(scoreTone(clamped))];
-  const center = ringSize / 2;
 
   return (
     <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>

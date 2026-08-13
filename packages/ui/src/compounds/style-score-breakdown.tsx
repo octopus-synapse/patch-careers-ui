@@ -8,6 +8,7 @@
  */
 
 import { intent as intentTokens } from "@patch-careers/tokens";
+import { SCORE_SEVERITY_TO_INTENT } from "../internal/score-scale";
 import { TStack } from "../internal/tamagui-shim";
 import { useThemeName } from "../internal/use-theme-name";
 import { Divider } from "../primitives/divider";
@@ -28,12 +29,6 @@ export type StyleScoreBreakdownProps = {
   emptyIssuesLabel: string;
   scoreAccessibilityLabel?: string;
 };
-
-const SEVERITY_TO_INTENT = {
-  high: "danger",
-  medium: "accent",
-  low: "neutral",
-} as const;
 
 export function StyleScoreBreakdown({
   score,
@@ -77,7 +72,7 @@ export function StyleScoreBreakdown({
           <Text preset="caption">{emptyIssuesLabel}</Text>
         ) : (
           issues.map((i) => {
-            const tokens = intentTokens[SEVERITY_TO_INTENT[i.severity]][themeName];
+            const tokens = intentTokens[SCORE_SEVERITY_TO_INTENT[i.severity]][themeName];
             return (
               <TStack
                 key={`${i.severity}-${i.label}`}

@@ -14,9 +14,11 @@
 export * from "./compounds";
 export * from "./icons";
 export { type HapticHandler, type HapticImpact, setHapticHandler } from "./internal/haptics";
+export { arcDashOffset, type ScoreArcGeometry, scoreArcGeometry } from "./internal/score-arc";
 export {
   clampScore,
   type EditorialToneKey,
+  SCORE_SEVERITY_TO_INTENT,
   type ScoreGrade,
   type ScoreSeverity,
   type ScoreTone,

@@ -17,7 +17,7 @@ import {
   PrimaryAction,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-import { Check, Minus, MonitorSmartphone, Moon, Sun, X } from "lucide-react-native";
+import { ArrowLeft, Check, Minus, MonitorSmartphone, Moon, Sun, X } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import {
   ActivityIndicator,
@@ -30,9 +30,10 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import { StyleScoreBadge } from "@/components/style-score-badge";
-import { AddRow, FieldRenderer, GhostButton, OverlayModal, useEd } from "@/features/sections";
+import { AddRow, FieldRenderer, OverlayModal, useEd } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
 import {
@@ -140,7 +141,12 @@ export function LanguageStep({
   // `hint` is written in each target language (like `native`), so it reads the
   // same regardless of the current UI locale — and it gives the short language
   // step enough body to fill the step without looking sparse.
-  const options: ReadonlyArray<{ value: Locale; label: string; native: string; hint: string }> = [
+  const options: ReadonlyArray<{
+    value: Locale;
+    label: string;
+    native: string;
+    hint: string;
+  }> = [
     {
       value: "en",
       label: t("onboarding.language.english.native"),
@@ -700,12 +706,25 @@ export function WelcomeScreen({
 }): ReactElement {
   const ed = useEd();
   const authTokens = useEditorialPalette();
+  const insets = useSafeAreaInsets();
   return (
     <SafeAreaView style={ed.root}>
+      {/* Absolute so the centered cluster below keeps its exact position
+          whether or not there is somewhere to go back to. `top` comes from the
+          inset because the surrounding SafeAreaView doesn't pad on Android. */}
+      {onBack ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("onboarding.back")}
+          onPress={onBack}
+          hitSlop={12}
+          style={[ed.welcomeBack, { top: insets.top + 8 }]}
+          testID="onboarding.welcome.back"
+        >
+          <ArrowLeft size={22} color={authTokens.ink} strokeWidth={1.75} />
+        </Pressable>
+      ) : null}
       <View style={ed.welcomeWrap}>
-        <AnimatedField delay={60}>
-          <PatchLogo size={42} />
-        </AnimatedField>
         <AnimatedField delay={140}>
           <View style={ed.welcomeArt}>
             <WelcomeArt size={148} />
@@ -732,11 +751,6 @@ export function WelcomeScreen({
               onPress={onStart}
               testID="onboarding.welcome.start"
             />
-            {onBack ? (
-              <View style={ed.welcomeBack}>
-                <GhostButton label={t("onboarding.back")} onPress={onBack} />
-              </View>
-            ) : null}
           </View>
         </AnimatedField>
       </View>

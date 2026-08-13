@@ -35,6 +35,8 @@ export interface NotificationService {
   getPermissionStatus(): Promise<PermissionStatus>;
   /** Resolve an Expo push token (real) or a fake one (mock); null on failure. */
   registerForPushToken(): Promise<string | null>;
+  /** Last push registration failure, shown in dev-facing diagnostics. */
+  getLastRegistrationError?(): string | null;
   /** Last token this service handed out, if any (used to unregister on logout). */
   getStoredToken(): Promise<string | null>;
   /** Configure foreground presentation + forward received notifications. Returns an unsubscribe fn. */

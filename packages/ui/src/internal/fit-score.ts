@@ -1,6 +1,6 @@
 /**
  * fit-score.ts — backward-compatible aliases. The canonical score ramp now
- * lives in `score-scale.ts`; these re-exports keep existing FitScoreChip /
+ * lives in `score-scale.ts`; these re-exports keep existing MatchScoreChip /
  * ScoreChip / StyleScoreChip imports working unchanged. New code should
  * import from `score-scale.ts` directly.
  */

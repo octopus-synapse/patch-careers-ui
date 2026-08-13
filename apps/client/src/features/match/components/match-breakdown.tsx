@@ -6,7 +6,7 @@
  * role-derived fit signal feeds the "Perfil" sub-score.
  */
 import { usePostV1ResumesResumeIdTailor } from "@patch-careers/api-client";
-import { ScoreExplainSheet, ScoreRing, Text, useToast, XStack, YStack } from "@patch-careers/ui";
+import { ScoreExplainSheet, ScorePanel, Text, useToast, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Info } from "lucide-react-native";
@@ -135,91 +135,91 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
   const gaps = b.subScores.keyword.detail?.missing ?? [];
 
   return (
-    <YStack gap={16}>
-      <XStack alignItems="center" justifyContent="space-between">
-        {heading}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("match.explain.a11y")}
-          onPress={() => setExplainOpen(true)}
-          hitSlop={8}
-        >
-          <Info size={16} color={palette.muted} />
-        </Pressable>
-      </XStack>
-      <XStack alignItems="center" gap={16}>
-        <ScoreRing score={b.overallScore} grade />
-        <YStack flex={1} gap={7}>
-          {SUB_KEYS.map((key) => {
-            const score = b.subScores[key].score;
-            return (
-              <XStack key={key} alignItems="center" justifyContent="space-between">
-                <Text fontFamily={fonts.sans} fontSize={13} color={palette.body}>
-                  {t(`match.breakdown.sub.${key}`)}
-                </Text>
-                <Text fontFamily={fonts.mono} fontSize={13} color={palette.ink}>
-                  {score === null ? "—" : score}
-                </Text>
-              </XStack>
-            );
-          })}
-        </YStack>
-      </XStack>
-
-      {gaps.length > 0 ? (
-        <YStack gap={10}>
-          <Text
-            fontFamily={fonts.sans}
-            fontSize={10}
-            fontWeight="600"
-            letterSpacing={1.8}
-            textTransform="uppercase"
-            color={palette.muted}
-          >
-            {t("match.breakdown.gapsTitle")}
-          </Text>
-          <XStack flexWrap="wrap" gap={8}>
-            {gaps.map((g) => (
-              <Chip key={g} label={g} />
-            ))}
-          </XStack>
+    <>
+      <ScorePanel
+        labelPlacement="header"
+        label={t("match.breakdown.heading")}
+        score={b.overallScore}
+        grade
+        action={
           <Pressable
             accessibilityRole="button"
-            onPress={() => router.push({ pathname: "/resume/[id]", params: { id: resumeId } })}
+            accessibilityLabel={t("match.explain.a11y")}
+            onPress={() => setExplainOpen(true)}
             hitSlop={8}
           >
-            <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.accent}>
-              {t("match.breakdown.improveCta")}
+            <Info size={16} color={palette.muted} />
+          </Pressable>
+        }
+        details={SUB_KEYS.map((key) => {
+          const score = b.subScores[key].score;
+          return (
+            <XStack key={key} alignItems="center" justifyContent="space-between">
+              <Text fontFamily={fonts.sans} fontSize={13} color={palette.body}>
+                {t(`match.breakdown.sub.${key}`)}
+              </Text>
+              <Text fontFamily={fonts.mono} fontSize={13} color={palette.ink}>
+                {score === null ? "—" : score}
+              </Text>
+            </XStack>
+          );
+        })}
+      >
+        {gaps.length > 0 ? (
+          <YStack gap={10}>
+            <Text
+              fontFamily={fonts.sans}
+              fontSize={10}
+              fontWeight="600"
+              letterSpacing={1.8}
+              textTransform="uppercase"
+              color={palette.muted}
+            >
+              {t("match.breakdown.gapsTitle")}
+            </Text>
+            <XStack flexWrap="wrap" gap={8}>
+              {gaps.map((g) => (
+                <Chip key={g} label={g} />
+              ))}
+            </XStack>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.push({ pathname: "/resume/[id]", params: { id: resumeId } })}
+              hitSlop={8}
+            >
+              <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.accent}>
+                {t("match.breakdown.improveCta")}
+              </Text>
+            </Pressable>
+          </YStack>
+        ) : null}
+
+        <YStack gap={8}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ disabled: tailor.isPending || tailorLocked }}
+            onPress={onTailor}
+            disabled={tailor.isPending || tailorLocked}
+            style={[s.tailorBtn, tailor.isPending || tailorLocked ? s.tailorBtnDisabled : null]}
+          >
+            {tailor.isPending ? <ActivityIndicator size="small" color={palette.body} /> : null}
+            <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.ink}>
+              {tailor.isPending ? t("match.breakdown.tailoring") : t("match.breakdown.tailorCta")}
             </Text>
           </Pressable>
+          {tailorLocked ? (
+            <Text
+              fontFamily={fonts.sans}
+              fontSize={12}
+              lineHeight={17}
+              color={palette.muted}
+              textAlign="center"
+            >
+              {t("match.breakdown.tailorLocked")}
+            </Text>
+          ) : null}
         </YStack>
-      ) : null}
-
-      <YStack gap={8}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ disabled: tailor.isPending || tailorLocked }}
-          onPress={onTailor}
-          disabled={tailor.isPending || tailorLocked}
-          style={[s.tailorBtn, tailor.isPending || tailorLocked ? s.tailorBtnDisabled : null]}
-        >
-          {tailor.isPending ? <ActivityIndicator size="small" color={palette.body} /> : null}
-          <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.ink}>
-            {tailor.isPending ? t("match.breakdown.tailoring") : t("match.breakdown.tailorCta")}
-          </Text>
-        </Pressable>
-        {tailorLocked ? (
-          <Text
-            fontFamily={fonts.sans}
-            fontSize={12}
-            lineHeight={17}
-            color={palette.muted}
-            textAlign="center"
-          >
-            {t("match.breakdown.tailorLocked")}
-          </Text>
-        ) : null}
-      </YStack>
+      </ScorePanel>
 
       <ScoreExplainSheet
         open={explainOpen}
@@ -234,7 +234,7 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
         }))}
         footnote={t("match.explain.footnote")}
       />
-    </YStack>
+    </>
   );
 }
 

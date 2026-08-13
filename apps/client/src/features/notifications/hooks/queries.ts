@@ -85,11 +85,12 @@ function currentPlatform(): DevicePlatform {
 }
 
 /** Register an Expo push token for this device. */
-export function useRegisterDevice(): { register: (expoPushToken: string) => void } {
+export function useRegisterDevice(): { register: (expoPushToken: string) => Promise<void> } {
   const mutation = usePostV1NotificationsDevices();
   return {
-    register: (expoPushToken: string) =>
-      mutation.mutate({ data: { expoPushToken, platform: currentPlatform() } }),
+    register: async (expoPushToken: string) => {
+      await mutation.mutateAsync({ data: { expoPushToken, platform: currentPlatform() } });
+    },
   };
 }
 

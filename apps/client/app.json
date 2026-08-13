@@ -12,7 +12,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/REPLACE_WITH_EAS_PROJECT_ID",
+      "url": "https://u.expo.dev/e060e5cf-0c1f-40d1-83a9-42ce0562eac5",
       "requestHeaders": {
         "expo-channel-name": "production"
       }
@@ -20,7 +20,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.patchcareers.app",
-      "associatedDomains": ["applinks:patchcareers.com"]
+      "associatedDomains": ["applinks:patchcareers.com"],
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.patchcareers.app",
@@ -41,7 +44,8 @@
           ],
           "category": ["BROWSABLE", "DEFAULT"]
         }
-      ]
+      ],
+      "permissions": ["android.permission.USE_BIOMETRIC", "android.permission.USE_FINGERPRINT"]
     },
     "web": {
       "bundler": "metro",
@@ -71,8 +75,9 @@
         "root": "./src/app"
       },
       "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+        "projectId": "e060e5cf-0c1f-40d1-83a9-42ce0562eac5"
       }
-    }
+    },
+    "owner": "efpatti"
   }
 }

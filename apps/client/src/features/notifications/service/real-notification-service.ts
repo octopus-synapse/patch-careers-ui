@@ -23,12 +23,35 @@ import type { NotificationService } from "./notification-service";
 
 const TOKEN_STORAGE_KEY = "push.expoToken";
 
+function messageFromError(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return "Erro desconhecido";
+  }
+}
+
+function validProjectId(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed || trimmed === "REPLACE_WITH_EAS_PROJECT_ID") return undefined;
+  return trimmed;
+}
+
 function resolveProjectId(): string | undefined {
   const extra = (Constants.expoConfig?.extra ?? {}) as { eas?: { projectId?: string } };
-  return extra.eas?.projectId;
+  const constants = Constants as typeof Constants & { easConfig?: { projectId?: string } };
+  return (
+    validProjectId(process.env.EXPO_PUBLIC_EAS_PROJECT_ID) ??
+    validProjectId(extra.eas?.projectId) ??
+    validProjectId(constants.easConfig?.projectId)
+  );
 }
 
 export function createRealNotificationService(): NotificationService {
+  let lastRegistrationError: string | null = null;
+
   return {
     isMock: false,
     requestPermission,
@@ -41,6 +64,8 @@ export function createRealNotificationService(): NotificationService {
     async registerForPushToken() {
       const projectId = resolveProjectId();
       if (!projectId) {
+        lastRegistrationError =
+          "EAS projectId ausente. Rode eas init ou defina EXPO_PUBLIC_EAS_PROJECT_ID.";
         console.warn(
           "[notifications] missing expo.extra.eas.projectId — skipping push token registration",
         );
@@ -49,11 +74,17 @@ export function createRealNotificationService(): NotificationService {
       try {
         const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
         await mundane.setItem(TOKEN_STORAGE_KEY, token);
+        lastRegistrationError = null;
         return token;
       } catch (error) {
+        lastRegistrationError = messageFromError(error);
         console.warn("[notifications] failed to get Expo push token", error);
         return null;
       }
+    },
+
+    getLastRegistrationError() {
+      return lastRegistrationError;
     },
 
     async getStoredToken() {

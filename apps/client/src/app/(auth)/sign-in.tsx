@@ -1,10 +1,14 @@
 /**
- * Sign-in screen — "Editorial Calm" refinement.
+ * Sign-in screen — "Editorial Calm", on a standalone card.
  *
- * Layout: brand wordmark + serif italic headline ("Welcome *back.*") +
- * underlined inputs + deep-ink primary CTA + OAuth row + footer prompt.
- * All animations come from `@patch-careers/ui/editorial` (stagger reveal on
- * mount + animated focus underline + CTA arrow nudge).
+ * The whole form lives inside `AuthCard`: a 90%-wide panel, vertically
+ * centered, on the scheme's `panel` paper — a lift off the screen in both
+ * light and dark.
+ *
+ * Above the fields sits a row of small brand-colored provider chips, each in
+ * its provider's own fixed colors (they do not flip with the scheme — a brand
+ * mark that restyled itself would stop reading as that brand). They are
+ * deliberately small: the credentials form is the primary path.
  *
  * Form: React Hook Form (ADR-0005) with a resolver that reuses validateLogin
  * (same Zod-backed checks + i18n messages); backend field errors are bridged
@@ -16,28 +20,28 @@
  */
 
 import { type LoginResult, login } from "@patch-careers/auth";
-import { YStack } from "@patch-careers/ui";
+import { Text, XStack, YStack } from "@patch-careers/ui";
 import {
+  AuthCard,
   AuthShell,
   CheckboxField,
+  editorialFonts,
   FooterPrompt,
-  InlineLink,
-  IntroBlock,
-  OAuthButton,
-  OrDivider,
   PrimaryAction,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Platform, type TextInput, View } from "react-native";
+import { Platform, type TextInput } from "react-native";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keep-signed-in-preference";
+import { OAuthBrandButton } from "@/components/auth/oauth-brand-button";
 import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
 import { type AuthFieldErrors, validateLogin } from "@/components/auth/validation";
+import { devTestCredentials, isDevTestFillEnabled } from "@/config/dev-flags";
 import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms";
 
 type LoginForm = { email: string; password: string };
@@ -75,6 +79,13 @@ export default function SignInScreen(): ReactElement {
     }
   }
 
+  // DEV-only: drop the seeded account into the form so signing in is one tap.
+  function fillSignInTest(): void {
+    const { email, password } = devTestCredentials();
+    form.setValue("email", email, { shouldValidate: true });
+    form.setValue("password", password, { shouldValidate: true });
+  }
+
   const onSubmit = form.handleSubmit(async ({ email, password }) => {
     const trimmedEmail = email.trim();
     // Remember the choice for next time (web only).
@@ -110,98 +121,136 @@ export default function SignInScreen(): ReactElement {
   });
 
   return (
-    <AuthShell showEra={false}>
-      <IntroBlock
-        prefix={t("app.signIn.heroPrefix")}
-        emphasis={t("app.signIn.heroEmphasis")}
-        subtitle={t("app.signIn.subtitle")}
-        showWordmark={false}
-      />
-
-      <YStack gap={24}>
-        <FormEmailField
-          control={form.control}
-          name="email"
-          testID="auth.email"
-          onSubmitEditing={() => passwordRef.current?.focus()}
-        />
-
-        <FormPasswordField
-          control={form.control}
-          name="password"
-          inputRef={passwordRef}
-          testID="auth.password"
-          returnKeyType="go"
-          onSubmitEditing={onSubmit}
+    <AuthShell variant="card">
+      <AuthCard>
+        {/* Colors below come from Tamagui tokens ($ink/$accentBlue/…) so they
+            follow the active scheme without a palette hook here. */}
+        <Text
+          textAlign="center"
+          fontFamily={editorialFonts.sans}
+          fontSize={28}
+          lineHeight={34}
+          fontWeight="600"
+          letterSpacing={-0.4}
+          color="$ink"
         >
-          <InlineLink
-            label={t("auth.forgotPassword")}
-            onPress={() => router.push("/(auth)/forgot-password")}
-            align="right"
-            testID="auth.forgotLink"
-          />
-        </FormPasswordField>
-      </YStack>
+          {t("auth.signIn")}
+        </Text>
 
-      {isWeb ? (
-        <YStack marginTop={20}>
-          <CheckboxField
-            checked={keepSignedIn}
-            onToggle={() =>
-              setKeepSignedIn((v) => {
-                const next = !v;
-                void saveKeepSignedIn(next);
-                return next;
-              })
-            }
-            label={t("auth.keepSignedIn")}
+        <XStack justifyContent="center" gap={12} marginTop={22} marginBottom={30}>
+          <OAuthBrandButton
+            provider="google"
+            glyph={GoogleGlyph}
+            delay={180}
+            label={t("auth.continueWith", { provider: "Google" })}
+            onPress={() => handleOAuth("google")}
+            testID="auth.google"
+          />
+          <OAuthBrandButton
+            provider="linkedin"
+            glyph={LinkedinGlyph}
+            delay={240}
+            label={t("auth.continueWith", { provider: "LinkedIn" })}
+            onPress={() => handleOAuth("linkedin")}
+            testID="auth.linkedin"
+          />
+          <OAuthBrandButton
+            provider="github"
+            glyph={GithubGlyph}
             delay={300}
-            testID="auth.keepSignedIn"
+            label={t("auth.continueWith", { provider: "GitHub" })}
+            onPress={() => handleOAuth("github")}
+            testID="auth.github"
+          />
+        </XStack>
+
+        {isDevTestFillEnabled() ? (
+          <YStack alignItems="flex-end" marginBottom={2}>
+            <Text
+              onPress={fillSignInTest}
+              accessibilityRole="button"
+              cursor="pointer"
+              fontFamily={editorialFonts.mono}
+              fontSize={10}
+              letterSpacing={1.4}
+              color="$inkSubtle"
+              paddingVertical={4}
+              paddingHorizontal={6}
+              testID="auth.devFill"
+            >
+              test
+            </Text>
+          </YStack>
+        ) : null}
+
+        <YStack gap={24}>
+          <FormEmailField
+            control={form.control}
+            name="email"
+            testID="auth.email"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+          />
+
+          <FormPasswordField
+            control={form.control}
+            name="password"
+            inputRef={passwordRef}
+            testID="auth.password"
+            returnKeyType="go"
+            onSubmitEditing={onSubmit}
           />
         </YStack>
-      ) : null}
 
-      <YStack marginTop={28}>
-        <PrimaryAction
-          label={t("auth.signIn")}
-          loading={submitting}
-          onPress={onSubmit}
-          testID="auth.submit"
-        />
-      </YStack>
+        {isWeb ? (
+          <YStack alignItems="center" marginTop={20}>
+            <CheckboxField
+              checked={keepSignedIn}
+              onToggle={() =>
+                setKeepSignedIn((v) => {
+                  const next = !v;
+                  void saveKeepSignedIn(next);
+                  return next;
+                })
+              }
+              label={t("auth.keepSignedIn")}
+              delay={300}
+              testID="auth.keepSignedIn"
+            />
+          </YStack>
+        ) : null}
 
-      <OrDivider text={t("auth.orDivider")} />
+        <YStack marginTop={26}>
+          <PrimaryAction
+            label={t("auth.signIn")}
+            loading={submitting}
+            onPress={onSubmit}
+            testID="auth.submit"
+          />
+        </YStack>
 
-      <View>
-        <OAuthButton
-          icon={GithubGlyph}
-          delay={700}
-          label={t("auth.continueWith", { provider: "GitHub" })}
-          onPress={() => handleOAuth("github")}
-          testID="auth.github"
-        />
-        <OAuthButton
-          icon={LinkedinGlyph}
-          delay={800}
-          label={t("auth.continueWith", { provider: "LinkedIn" })}
-          onPress={() => handleOAuth("linkedin")}
-          testID="auth.linkedin"
-        />
-        <OAuthButton
-          icon={GoogleGlyph}
-          delay={900}
-          label={t("auth.continueWith", { provider: "Google" })}
-          onPress={() => handleOAuth("google")}
-          testID="auth.google"
-        />
-      </View>
+        <YStack alignItems="center" marginTop={14}>
+          <Text
+            onPress={() => router.push("/(auth)/forgot-password")}
+            accessibilityRole="link"
+            cursor="pointer"
+            fontFamily={editorialFonts.sans}
+            fontSize={13}
+            fontWeight="500"
+            color="$accentBlue"
+            paddingVertical={6}
+            testID="auth.forgotLink"
+          >
+            {t("auth.forgotPassword")}
+          </Text>
+        </YStack>
 
-      <FooterPrompt
-        prompt={t("auth.noAccount")}
-        linkLabel={t("auth.createOne")}
-        onPress={() => router.push("/(auth)/sign-up")}
-        testID="auth.signUpLink"
-      />
+        <FooterPrompt
+          prompt={t("auth.noAccount")}
+          linkLabel={t("auth.createOne")}
+          onPress={() => router.push("/(auth)/sign-up")}
+          testID="auth.signUpLink"
+        />
+      </AuthCard>
     </AuthShell>
   );
 }

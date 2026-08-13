@@ -8,7 +8,6 @@ export {
 export { ConfirmModal, type ConfirmModalProps, DangerConfirmModal } from "./confirm-modal";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { FAB, type FABProps } from "./fab";
-export { FitScoreChip, type FitScoreChipProps } from "./fit-score-chip";
 export { FormField, type FormFieldProps } from "./form-field";
 export {
   ListPicker,
@@ -20,6 +19,7 @@ export {
   type LongPressMenuItem,
   type LongPressMenuProps,
 } from "./long-press-menu";
+export { MatchScoreChip, type MatchScoreChipProps } from "./match-score-chip";
 export { Modal, type ModalProps } from "./modal";
 export { OTPInput, type OTPInputProps } from "./otp-input";
 export { PasswordStrengthBar, type PasswordStrengthBarProps } from "./password-strength-bar";
@@ -31,6 +31,7 @@ export {
   ScoreExplainSheet,
   type ScoreExplainSheetProps,
 } from "./score-explain-sheet";
+export { ScorePanel, type ScorePanelProps } from "./score-panel";
 export { ScoreRing, type ScoreRingProps } from "./score-ring";
 export {
   SegmentedControl,

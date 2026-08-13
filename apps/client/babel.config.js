@@ -5,8 +5,9 @@
  *   `metro-react-native-babel-preset`)
  * - `@tamagui/babel-plugin` performs ahead-of-time compilation of
  *   styled props → StyleSheet (D11, ~3-5× perf gains in long lists).
- *   We point it at our config + the shared UI package so optimizations
- *   transfer across the monorepo.
+ *   Keep `components` scoped to Tamagui itself: the `@patch-careers/ui`
+ *   barrel exports real Expo components, and the compiler runs in Node
+ *   while native Expo modules are unavailable.
  * - Reanimated v4 worklet transforms are injected automatically by
  *   `babel-preset-expo` (→ `react-native-worklets/plugin` when the
  *   worklets package is installed). Do NOT add the legacy
@@ -21,9 +22,9 @@ module.exports = (api) => {
       [
         "@tamagui/babel-plugin",
         {
-          components: ["tamagui", "@patch-careers/ui"],
+          components: ["tamagui"],
           config: "./tamagui.config.ts",
-          logTimings: true,
+          logTimings: false,
           disableExtraction: process.env.NODE_ENV === "development",
         },
       ],

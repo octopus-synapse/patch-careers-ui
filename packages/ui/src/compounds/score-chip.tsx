@@ -1,5 +1,5 @@
 /**
- * `<ScoreChip>` — shared base for score pills (FitScoreChip, StyleScoreChip).
+ * `<ScoreChip>` — shared base for score pills (MatchScoreChip, StyleScoreChip).
  *
  * Renders a 0-100 score in a pill coloured by the `fitScoreIntent` ramp
  * (80+ green / 60-79 blue / 40-59 neutral / <40 red). Optional leading

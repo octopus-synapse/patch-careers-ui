@@ -7,8 +7,10 @@
 import {
   type DuplicateResumeRequest,
   type GetV1Resumes200,
+  getV1MeScoresQueryKey,
   getV1ResumesQueryKey,
   getV1ResumesResumeIdQueryKey,
+  getV1ResumesResumeIdScoresQueryKey,
   getV1ResumesSlotsQueryKey,
   useDeleteV1ResumesResumeId,
   useGetV1ResumeStyles,
@@ -61,6 +63,10 @@ export function useResumeSlots(): {
 export function useMasterResumeId(): {
   resumeId: string | undefined;
   language: string | undefined;
+  /** Master `updatedAt` — drives the quality panel's stale/recompute polling. */
+  updatedAt: string | undefined;
+  /** Desired role label (drives the market-relative Readiness Score). */
+  targetRoleLabel: string | null;
   isLoading: boolean;
   isError: boolean;
 } {
@@ -70,6 +76,8 @@ export function useMasterResumeId(): {
   return {
     resumeId: master?.id,
     language: master?.language,
+    updatedAt: master?.updatedAt,
+    targetRoleLabel: master?.targetRoleLabel ?? null,
     isLoading: query.isLoading,
     isError: query.isError,
   };
@@ -96,6 +104,8 @@ export function useResumeMutations(): {
   renameResume: (resumeId: string, title: string) => Promise<void>;
   deleteResume: (resumeId: string) => Promise<void>;
   duplicateResume: (sourceResumeId: string, data: DuplicateResumeRequest) => Promise<string>;
+  /** Set the résumé's desired role (drives the market-relative Readiness). */
+  setTargetRole: (resumeId: string, label: string | null) => Promise<void>;
   isPending: boolean;
 } {
   const queryClient = useQueryClient();
@@ -132,10 +142,22 @@ export function useResumeMutations(): {
     return created.id;
   };
 
+  const setTargetRole = async (resumeId: string, label: string | null): Promise<void> => {
+    await patch.mutateAsync({ resumeId, data: { targetRoleLabel: label, targetRoleId: null } });
+    // Refresh the scores so Readiness recomputes with the new target role.
+    await Promise.all([
+      invalidateList(),
+      queryClient.invalidateQueries({ queryKey: getV1ResumesResumeIdQueryKey(resumeId) }),
+      queryClient.invalidateQueries({ queryKey: getV1MeScoresQueryKey() }),
+      queryClient.invalidateQueries({ queryKey: getV1ResumesResumeIdScoresQueryKey(resumeId) }),
+    ]);
+  };
+
   return {
     renameResume,
     deleteResume,
     duplicateResume,
+    setTargetRole,
     isPending: patch.isPending || remove.isPending || duplicate.isPending,
   };
 }

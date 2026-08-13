@@ -24,13 +24,11 @@ import { translateBackendCode } from "@/lib/errors/backend-error";
 import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 import {
-  countedIndexOf,
   FLOW_PLAN,
   type FlowStep,
   type FlowStepId,
   flowIndexOf,
   nextFlowStep,
-  phaseForFlowStep,
   prevFlowStep,
 } from "../lib/flow-plan";
 import {
@@ -51,13 +49,10 @@ import {
   visibleFields,
 } from "../lib/helpers";
 import {
-  clearResumeDismissed,
   clearSessionSnapshot,
   clearStepDraft,
-  markResumeDismissed,
   markWelcomeSeen,
   readPhoneCountry,
-  readResumeDismissed,
   readSessionSnapshot,
   readStepDraft,
   readWelcomeSeen,
@@ -98,12 +93,10 @@ export function useOnboardingFlow() {
   const [phoneCountryIso, setPhoneCountryIso] = useState<string | undefined>(undefined);
   const [attemptedSteps, setAttemptedSteps] = useState<ReadonlySet<string>>(() => new Set());
   const [saveError, setSaveError] = useState("");
-  const [resumeBanner, setResumeBanner] = useState<{ phaseLabel: string } | null>(null);
   const refreshedAuthRef = useRef(false);
   const resyncedStepRef = useRef(false);
   const welcomeSeenRef = useRef(false);
   const welcomeCheckedRef = useRef(false);
-  const resumeDismissedRef = useRef(false);
   const lastSaveRef = useRef<{
     stepId: string;
     payload: Parameters<typeof saveBackendStep>[1];
@@ -125,8 +118,6 @@ export function useOnboardingFlow() {
   const retryLoad = async () => {
     setFallbackSession(null);
     await clearSessionSnapshot();
-    await clearResumeDismissed();
-    resumeDismissedRef.current = false;
     resyncedStepRef.current = false;
     refreshedAuthRef.current = false;
     await sessionQuery.refetch();
@@ -151,7 +142,6 @@ export function useOnboardingFlow() {
     mutation: {
       async onSuccess() {
         await clearSessionSnapshot();
-        await clearResumeDismissed();
         await bootstrap().catch(() => undefined);
         router.replace(getCompletedOnboardingRoute());
       },
@@ -198,11 +188,7 @@ export function useOnboardingFlow() {
     const resumed = flowStepForBackendStep(session, session.currentStep);
     if (!resumed) return;
     setFlowStepId(resumed.id);
-    if (countedIndexOf(resumed.id) > 0 && !resumeDismissedRef.current) {
-      const phase = phaseForFlowStep(resumed.id);
-      setResumeBanner({ phaseLabel: phase ? t(phase.labelKey) : "" });
-    }
-  }, [session, t]);
+  }, [session]);
 
   useEffect(() => {
     void readPhoneCountry().then((iso) => {
@@ -216,9 +202,6 @@ export function useOnboardingFlow() {
     welcomeCheckedRef.current = true;
     void readWelcomeSeen().then((seen) => {
       welcomeSeenRef.current = seen;
-    });
-    void readResumeDismissed().then((dismissed) => {
-      resumeDismissedRef.current = dismissed;
     });
   }, []);
 
@@ -386,12 +369,6 @@ export function useOnboardingFlow() {
     setEditStepId(stepId);
   }
 
-  function dismissResumeBanner() {
-    setResumeBanner(null);
-    resumeDismissedRef.current = true;
-    void markResumeDismissed();
-  }
-
   function firstInvalidProfileStep(): string | null {
     if (!session) return null;
     for (const step of session.steps) {
@@ -461,7 +438,6 @@ export function useOnboardingFlow() {
     setNoItemsAck,
     phoneCountryIso,
     setPhoneCountry,
-    resumeBanner,
     saveError,
     completeError,
     // mutation flags
@@ -480,7 +456,6 @@ export function useOnboardingFlow() {
     handleComplete,
     handleAddSection,
     retrySave,
-    dismissResumeBanner,
     markWelcomeSeenAndAdvance,
   };
 }

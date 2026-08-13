@@ -72,7 +72,8 @@ export const ptBR: TranslationDict = {
     orDivider: "ou",
     rememberMe: "Lembrar de mim",
     keepSignedIn: "Continuar conectado",
-    consentLine: "Li e aceito os {terms} e a {privacy}",
+    consentIntro: "Li e aceito os",
+    consentAnd: "e a",
     consentTerms: "Termos de Uso",
     consentPrivacy: "Política de Privacidade",
     consentRequired: "Você precisa aceitar para continuar",
@@ -249,19 +250,13 @@ export const ptBR: TranslationDict = {
     },
     welcome: {
       tagline:
-        "Monte um currículo pronto para recrutadores, otimizado para passar pelos filtros ATS.",
+        "Conte sua história uma vez. O Patch reescreve seu currículo para cada vaga — e faz ele chegar a quem decide.",
       timePromise: "Pronto em ~3 minutos",
       cta: "Começar",
     },
     review: {
       missingTitle: "Conclua estas etapas obrigatórias",
       fix: "Corrigir",
-    },
-    resume: {
-      title: "Você parou em {phase}",
-      subtitle: "Continue de onde parou, ou recomece.",
-      continue: "Continuar",
-      restart: "Recomeçar",
     },
     resumeStyle: {
       use: "Usar este modelo",
@@ -283,7 +278,7 @@ export const ptBR: TranslationDict = {
     },
     section: {
       emptyTitle: "Nada por aqui ainda",
-      emptyBody: "Adicione o primeiro item — ou pule e volte depois.",
+      emptyBody: "Adicione o primeiro item.",
       noFieldsTitle: "Seção indisponível no momento",
       noFieldsBody:
         "Não foi possível carregar os campos desta seção. Você pode pular por enquanto.",
@@ -322,7 +317,6 @@ export const ptBR: TranslationDict = {
       },
       username: {
         title: "Escolha um usuário",
-        subtitle: "Vira o link público do seu perfil.",
         linkLabel: "Seu link público",
         linkNote: "Recrutadores abrem isto para ver seu perfil.",
       },
@@ -340,7 +334,7 @@ export const ptBR: TranslationDict = {
       },
       education: {
         title: "Sua formação",
-        subtitle: "Graduações, cursos, bootcamps — ou pule.",
+        subtitle: "Graduações, cursos, bootcamps.",
       },
       resumeStyle: {
         title: "Escolha um estilo",
@@ -367,8 +361,7 @@ export const ptBR: TranslationDict = {
       statusRetired: "Aposentado",
       hintCurrent:
         "Adicione seu emprego atual primeiro (deixe a data de término vazia) e depois experiências anteriores.",
-      hintPast:
-        "Adicione experiências anteriores, incluindo trabalho voluntário — ou pule se não tiver nenhuma.",
+      hintPast: "Adicione experiências anteriores, incluindo trabalho voluntário.",
     },
   },
 };

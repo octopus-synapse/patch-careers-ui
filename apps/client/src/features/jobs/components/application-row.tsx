@@ -6,7 +6,7 @@
  */
 
 import { labelFor } from "@patch-careers/api-client";
-import { FitScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
+import { MatchScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { memo, type ReactElement } from "react";
 import { Pressable, View } from "react-native";
@@ -92,7 +92,7 @@ function ApplicationRowInner({
           </Text>
           {/* Match Score frozen at apply time — internal applies only. */}
           {application.matchScore !== null ? (
-            <FitScoreChip
+            <MatchScoreChip
               score={application.matchScore}
               size="sm"
               grade

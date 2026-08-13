@@ -10,6 +10,7 @@
 
 import {
   ScoreExplainSheet,
+  ScorePanel,
   type ScoreSeverity,
   scoreGrade,
   Text,
@@ -27,7 +28,6 @@ import { ActivityIndicator, Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { useRankPulse } from "../hooks/use-rank-pulse";
 import { useResumeQuality } from "../hooks/use-resume-quality";
-import { ScoreRing } from "./score-ring";
 
 export type ResumeQualityPanelProps = {
   resumeId: string;
@@ -108,20 +108,55 @@ export function ResumeQualityPanel({
   ].join("   ·   ");
 
   return (
-    <YStack gap={18}>
-      {rankDelta ? (
-        <Text
-          fontFamily={fonts.sans}
-          fontSize={13}
-          fontWeight="600"
-          color={rankDelta === "up" ? palette.success : palette.warn}
-        >
-          {t(`resumes.quality.rank.${rankDelta}`, { grade: scoreGrade(overall) })}
-        </Text>
-      ) : null}
-      <XStack alignItems="center" gap={16}>
-        <ScoreRing score={overall} />
-        <YStack flex={1} gap={5}>
+    <>
+      <ScorePanel
+        labelPlacement="summary"
+        label={t("resumes.quality.overallLabel")}
+        score={overall}
+        above={
+          rankDelta ? (
+            <Text
+              fontFamily={fonts.sans}
+              fontSize={13}
+              fontWeight="600"
+              color={rankDelta === "up" ? palette.success : palette.warn}
+            >
+              {t(`resumes.quality.rank.${rankDelta}`, { grade: scoreGrade(overall) })}
+            </Text>
+          ) : null
+        }
+        action={
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("resumes.quality.explain.a11y")}
+            onPress={() => setExplainOpen(true)}
+            hitSlop={8}
+          >
+            <Info size={16} color={palette.muted} />
+          </Pressable>
+        }
+        details={
+          <>
+            <Text fontFamily={fonts.mono} fontSize={13} letterSpacing={0.2} color={palette.body}>
+              {subScoreText}
+            </Text>
+            {calculating ? (
+              <XStack alignItems="center" gap={8}>
+                <ActivityIndicator size="small" color={palette.muted} />
+                <Text
+                  fontFamily={fonts.sans}
+                  fontSize={11}
+                  letterSpacing={0.3}
+                  color={palette.muted}
+                >
+                  {t("resumes.quality.calculating")}
+                </Text>
+              </XStack>
+            ) : null}
+          </>
+        }
+      >
+        <YStack gap={10}>
           <Text
             fontFamily={fonts.sans}
             fontSize={10}
@@ -130,81 +165,49 @@ export function ResumeQualityPanel({
             textTransform="uppercase"
             color={palette.muted}
           >
-            {t("resumes.quality.overallLabel")}
+            {t("resumes.quality.issuesHeading")}
           </Text>
-          <Text fontFamily={fonts.mono} fontSize={13} letterSpacing={0.2} color={palette.body}>
-            {subScoreText}
-          </Text>
-          {calculating ? (
-            <XStack alignItems="center" gap={8}>
-              <ActivityIndicator size="small" color={palette.muted} />
-              <Text fontFamily={fonts.sans} fontSize={11} letterSpacing={0.3} color={palette.muted}>
-                {t("resumes.quality.calculating")}
-              </Text>
-            </XStack>
-          ) : null}
+          {issues.length === 0 ? (
+            <Text
+              fontFamily={fonts.sans}
+              fontSize={14}
+              lineHeight={20}
+              fontStyle="italic"
+              color={palette.subtle}
+            >
+              {t("resumes.quality.noIssues")}
+            </Text>
+          ) : (
+            issues.map((issue) => {
+              const dotColor =
+                issue.severity === "high"
+                  ? palette.danger
+                  : issue.severity === "medium"
+                    ? palette.warn
+                    : palette.subtle;
+              const dot: ReactNode = (
+                <YStack width={8} height={8} borderRadius={4} backgroundColor={dotColor} />
+              );
+              return (
+                <EditableRow
+                  key={issue.id}
+                  label={issue.label}
+                  value={issue.detail}
+                  leading={dot}
+                  onPress={issue.onPress ?? (() => {})}
+                  {...(issue.onPress ? {} : { trailing: <YStack /> })}
+                />
+              );
+            })
+          )}
         </YStack>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("resumes.quality.explain.a11y")}
-          onPress={() => setExplainOpen(true)}
-          hitSlop={8}
-        >
-          <Info size={16} color={palette.muted} />
-        </Pressable>
-      </XStack>
 
-      <YStack gap={10}>
-        <Text
-          fontFamily={fonts.sans}
-          fontSize={10}
-          fontWeight="600"
-          letterSpacing={1.8}
-          textTransform="uppercase"
-          color={palette.muted}
-        >
-          {t("resumes.quality.issuesHeading")}
-        </Text>
-        {issues.length === 0 ? (
-          <Text
-            fontFamily={fonts.sans}
-            fontSize={14}
-            lineHeight={20}
-            fontStyle="italic"
-            color={palette.subtle}
-          >
-            {t("resumes.quality.noIssues")}
+        {quality.state === "aiUnavailable" ? (
+          <Text fontFamily={fonts.sans} fontSize={12.5} lineHeight={18} color={palette.subtle}>
+            {t("resumes.quality.aiUnavailable")}
           </Text>
-        ) : (
-          issues.map((issue) => {
-            const dotColor =
-              issue.severity === "high"
-                ? palette.danger
-                : issue.severity === "medium"
-                  ? palette.warn
-                  : palette.subtle;
-            const dot: ReactNode = (
-              <YStack width={8} height={8} borderRadius={4} backgroundColor={dotColor} />
-            );
-            return (
-              <EditableRow
-                key={issue.id}
-                label={issue.label}
-                value={issue.detail}
-                leading={dot}
-                onPress={issue.onPress ?? (() => {})}
-                {...(issue.onPress ? {} : { trailing: <YStack /> })}
-              />
-            );
-          })
-        )}
-      </YStack>
-
-      {quality.state === "aiUnavailable" ? (
-        <Text fontFamily={fonts.sans} fontSize={12.5} lineHeight={18} color={palette.subtle}>
-          {t("resumes.quality.aiUnavailable")}
-        </Text>
-      ) : null}
+        ) : null}
+      </ScorePanel>
 
       <ScoreExplainSheet
         open={explainOpen}
@@ -226,7 +229,7 @@ export function ResumeQualityPanel({
         ]}
         footnote={t("resumes.quality.explain.footnote")}
       />
-    </YStack>
+    </>
   );
 }
 

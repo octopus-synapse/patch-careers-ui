@@ -63,7 +63,7 @@ export function MasterSectionsTab({
   const palette = useEditorialPalette();
   const pf = usePf();
   const router = useRouter();
-  const { resumeId, language, isLoading } = useMasterResumeId();
+  const { resumeId, language, updatedAt, isLoading } = useMasterResumeId();
   const locale = resumeLanguageToLocale(language);
   const { visible } = useResumeSections(resumeId, locale);
   const [cvOpen, setCvOpen] = useState(false);
@@ -96,6 +96,7 @@ export function MasterSectionsTab({
       {resumeId ? (
         <ResumeQualityPanel
           resumeId={resumeId}
+          {...(updatedAt ? { updatedAt } : {})}
           onOpenIssue={(sectionKey) => router.push(`/profile/section/${sectionKey}`)}
         />
       ) : null}

@@ -28,6 +28,7 @@ import { usePf } from "../lib/styles";
 import { AvatarActionSheet } from "./avatar-action-sheet";
 import { MasterAddSection } from "./master-add-section";
 import { MasterSectionsTab } from "./master-sections-tab";
+import { PerformanceTab } from "./performance-tab";
 import { ProfileHeader } from "./profile-header";
 import { ProfileSkeleton } from "./profile-skeleton";
 import { type ProfileSubTab, ProfileSubTabs } from "./profile-sub-tabs";
@@ -50,7 +51,12 @@ export function ProfileScreen(): ReactElement {
   // re-renders / back navigation without local state.
   const router = useRouter();
   const params = useLocalSearchParams<{ tab?: string }>();
-  const tab: ProfileSubTab = params.tab === "curriculos" ? "curriculos" : "perfil";
+  const tab: ProfileSubTab =
+    params.tab === "curriculos"
+      ? "curriculos"
+      : params.tab === "desempenho"
+        ? "desempenho"
+        : "perfil";
   const setTab = (next: ProfileSubTab): void => {
     router.setParams({ tab: next });
   };
@@ -154,7 +160,13 @@ export function ProfileScreen(): ReactElement {
 
         <ProfileSubTabs value={tab} onChange={setTab} />
 
-        {onPerfil ? <MasterSectionsTab profile={profile} /> : <ResumeListTab />}
+        {tab === "perfil" ? (
+          <MasterSectionsTab profile={profile} />
+        ) : tab === "curriculos" ? (
+          <ResumeListTab />
+        ) : (
+          <PerformanceTab />
+        )}
       </ScrollView>
 
       {onPerfil ? (

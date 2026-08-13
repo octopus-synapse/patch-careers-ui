@@ -6,7 +6,7 @@
  * types just to pass an `intent="accent"` prop.
  */
 
-export type Intent = "neutral" | "accent" | "danger" | "success";
+export type Intent = "neutral" | "accent" | "warn" | "danger" | "success";
 
 export type Size = "sm" | "md" | "lg";
 

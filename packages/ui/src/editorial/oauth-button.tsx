@@ -62,7 +62,7 @@ export function OAuthButton({
         <TText
           fontFamily={editorialFonts.sans}
           fontSize={14}
-          color="$ink"
+          color={editorialPalette.ink}
           fontWeight="500"
           letterSpacing={0.1}
         >
