@@ -111,10 +111,17 @@ jobs:
       - name: Architecture specs
         run: pnpm verify:arch
 
-      - name: Build (affected on PR, all on push)
+      # `export` (expo export), not `build`. The @nx/expo-inferred `build`
+      # target shells out to `eas build` — a cloud build needing eas-cli and an
+      # Expo account, so it can only ever fail here ("eas: not found"). No
+      # library package defines a build target at all, so `-t build` resolved
+      # to that one broken task and nothing else. `expo export` is the real
+      # question CI should ask: does the app still bundle? It emits the web,
+      # Android and iOS bundles locally, no account required.
+      - name: Bundle (affected on PR, all on push)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm exec nx affected -t build --parallel=3
+            pnpm exec nx affected -t export --parallel=3
           else
-            pnpm exec nx run-many -t build --parallel=3
+            pnpm exec nx run-many -t export --parallel=3
           fi
