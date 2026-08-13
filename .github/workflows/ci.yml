@@ -76,6 +76,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
+      # Kubb output (src/generated/{hooks,ts,zod}) is gitignored but the
+      # committed src/generated/index.ts re-exports it, so a clean checkout
+      # fails typecheck with TS2307 until this runs. Same step the iOS
+      # workflow already carries.
+      - name: Generate API SDK
+        run: pnpm --filter @patch-careers/api-client sdk:generate
+
       # Derive the base ref for `nx affected` so PRs only run on touched
       # projects; pushes to main run the full graph via run-many.
       - name: Set Nx SHAs
