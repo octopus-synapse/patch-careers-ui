@@ -15,13 +15,13 @@ import type { ReactElement, ReactNode, Ref } from "react";
 import type { ReturnKeyTypeOptions, TextInput } from "react-native";
 import { useTranslator } from "@/providers/i18n-provider";
 
-export function AuthEmailField({
+export function AuthNameField({
   value,
   onChangeText,
   error,
   testID,
   onSubmitEditing,
-  delay = 300,
+  delay = 260,
 }: {
   value: string;
   onChangeText: (v: string) => void;
@@ -34,6 +34,47 @@ export function AuthEmailField({
   return (
     <AnimatedField delay={delay}>
       <UnderlineInput
+        label={t("auth.fullName")}
+        placeholder={t("auth.fullNamePlaceholder")}
+        value={value}
+        onChangeText={onChangeText}
+        autoCapitalize="words"
+        autoComplete="name"
+        textContentType="name"
+        autoCorrect={false}
+        returnKeyType="next"
+        blurOnSubmit={false}
+        hasError={!!error}
+        testID={testID}
+        {...(onSubmitEditing ? { onSubmitEditing } : {})}
+      />
+      {error ? <FieldError text={error} /> : null}
+    </AnimatedField>
+  );
+}
+
+export function AuthEmailField({
+  value,
+  onChangeText,
+  error,
+  testID,
+  inputRef,
+  onSubmitEditing,
+  delay = 300,
+}: {
+  value: string;
+  onChangeText: (v: string) => void;
+  error?: string | undefined;
+  testID: string;
+  inputRef?: Ref<TextInput>;
+  onSubmitEditing?: () => void;
+  delay?: number;
+}): ReactElement {
+  const t = useTranslator();
+  return (
+    <AnimatedField delay={delay}>
+      <UnderlineInput
+        {...(inputRef ? { ref: inputRef } : {})}
         label={t("auth.email")}
         placeholder={t("auth.emailPlaceholder")}
         value={value}

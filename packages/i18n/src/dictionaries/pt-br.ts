@@ -34,7 +34,7 @@ export const ptBR: TranslationDict = {
     // "Candidaturas" is no longer a tab — it's a scope inside Vagas — but the
     // label is reused there (see jobs.scope.applications).
     applications: "Candidaturas",
-    notifications: "Notificações",
+    resumes: "Currículos",
     profile: "Perfil",
   },
   common: {
@@ -57,6 +57,8 @@ export const ptBR: TranslationDict = {
     signUp: "Criar conta",
     signInTitle: "Entre na sua conta",
     signUpTitle: "Crie sua conta",
+    fullName: "Nome completo",
+    fullNamePlaceholder: "Seu nome",
     email: "E-mail",
     emailPlaceholder: "voce@exemplo.com",
     password: "Senha",
@@ -107,6 +109,7 @@ export const ptBR: TranslationDict = {
     legalTerms: "Termos de Uso",
     legalPrivacy: "Política de Privacidade",
     validation: {
+      nameRequired: "Informe seu nome",
       emailRequired: "Informe seu e-mail",
       emailInvalid: "E-mail inválido",
       passwordRequired: "Informe sua senha",
@@ -135,7 +138,7 @@ export const ptBR: TranslationDict = {
     next: "Continuar",
     back: "Voltar",
     complete: "Concluir",
-    skip: "Pular esta etapa",
+    skipCta: "Pular",
     addItem: "Adicionar",
     editItem: "Editar",
     removeItem: "Remover",
@@ -147,7 +150,6 @@ export const ptBR: TranslationDict = {
     missingRequired: "Complete as etapas obrigatórias antes de concluir.",
     fixBeforeComplete: "Revise os campos destacados antes de concluir.",
     field: {
-      required: "obrigatório",
       optional: "opcional",
     },
     validation: {
@@ -244,9 +246,8 @@ export const ptBR: TranslationDict = {
       taken: "Indisponível",
       error: "Não foi possível verificar — toque para tentar",
     },
-    progress: {
-      timeRemaining: "~{min} min restantes",
-      timeRemainingOne: "~{min} min restante",
+    links: {
+      add: "Adicionar link",
     },
     welcome: {
       tagline:
@@ -257,24 +258,16 @@ export const ptBR: TranslationDict = {
     review: {
       missingTitle: "Conclua estas etapas obrigatórias",
       fix: "Corrigir",
+      items: "{count} itens",
+      itemsOne: "1 item",
+    },
+    done: {
+      title: "Seu currículo está pronto.",
+      cta: "Começar",
     },
     resumeStyle: {
       use: "Usar este modelo",
       previewHint: "Toque para visualizar",
-    },
-    ats: {
-      high: {
-        label: "Alta compatibilidade ATS",
-        blurb: "Coluna única, sem tabelas — fácil de ler pelos robôs.",
-      },
-      good: {
-        label: "Boa compatibilidade ATS",
-        blurb: "Estrutura limpa que a maioria dos robôs lê bem.",
-      },
-      fair: {
-        label: "Compatibilidade ATS média",
-        blurb: "Mais estilizado — melhor para candidaturas avaliadas por pessoas.",
-      },
     },
     section: {
       emptyTitle: "Nada por aqui ainda",
@@ -284,65 +277,53 @@ export const ptBR: TranslationDict = {
         "Não foi possível carregar os campos desta seção. Você pode pular por enquanto.",
     },
     flow: {
-      phases: {
-        identity: "Identidade",
-        history: "Histórico",
-        resume: "Currículo",
-      },
       welcome: {
         title: "Boas-vindas",
         subtitle: "",
       },
       language: {
         title: "Escolha seu idioma",
-        subtitle: "Selecione o idioma para continuar.",
+        subtitle: "",
       },
       theme: {
         title: "Escolha seu tema",
-        subtitle: "O app muda na hora — dá pra trocar depois no menu da conta.",
+        subtitle: "",
       },
       location: {
         title: "Onde você mora?",
-        subtitle: "Ajustamos vagas e formatação à sua região.",
-        contextLabel: "Por que pedimos",
-        contextNote:
-          "Usamos sua cidade para mostrar vagas perto de você e ajustar formatos locais de salário e data.",
+        subtitle: "",
       },
       personal: {
         title: "Sobre você",
-        subtitle: "O essencial que os recrutadores veem primeiro.",
-        contextLabel: "Fica privado",
-        contextNote:
-          "Seu telefone só é compartilhado quando você se candidata — nunca aparece no perfil público.",
+        subtitle: "",
       },
       username: {
         title: "Escolha um usuário",
         linkLabel: "Seu link público",
-        linkNote: "Recrutadores abrem isto para ver seu perfil.",
       },
       experience: {
         title: "Sua experiência",
-        subtitle: "Adicione suas experiências — comece pela mais recente.",
+        subtitle: "Adicione suas experiências.",
       },
       headline: {
-        title: "Sua headline",
-        subtitle: "Uma frase de impacto e, se quiser, uma bio curta.",
+        title: "Seu título profissional",
+        subtitle: "",
       },
       links: {
         title: "Seus links",
-        subtitle: "LinkedIn, GitHub, portfólio — todos opcionais.",
+        subtitle: "",
       },
       education: {
         title: "Sua formação",
-        subtitle: "Graduações, cursos, bootcamps.",
+        subtitle: "",
       },
       resumeStyle: {
         title: "Escolha um estilo",
-        subtitle: "Defina o visual do currículo. Dá pra mudar depois.",
+        subtitle: "",
       },
       review: {
         title: "Quase lá",
-        subtitle: "Revise tudo e adicione seções opcionais.",
+        subtitle: "",
       },
     },
     date: {

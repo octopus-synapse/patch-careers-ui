@@ -16,6 +16,8 @@ export type ReviewSection = {
   stepId: string;
   entries: Array<{ label: string; value: string; long?: boolean }>;
   skipped?: boolean;
+  /** Item count for multi-item sections (drives the checklist row value). */
+  count?: number;
   styleName?: string;
   stylePreviewUrl?: string | null;
 };

@@ -14,11 +14,12 @@ import {
 import { editorialFonts as fonts, useThemeName } from "@patch-careers/ui/editorial";
 import { Platform, StyleSheet, type ViewStyle } from "react-native";
 
-/** Shared "small-caps eyebrow" recipe; entries add fontSize/letterSpacing/color. */
+/** Shared sentence-case label recipe; entries add fontSize/letterSpacing/color.
+ *  (Formerly the uppercase "eyebrow" — the all-caps treatment was dropped for
+ *  a calmer read; the export name stays for compatibility.) */
 export const eyebrow = {
   fontFamily: fonts.sans,
   fontWeight: "600",
-  textTransform: "uppercase",
 } as const;
 
 // RN Web paints a default blue focus outline on Pressables; the saved-entry
@@ -50,21 +51,11 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
 
     // masthead + progress
     mastheadWrap: { marginBottom: 36 },
-    mastheadBrand: {
-      alignItems: "center",
-      marginBottom: 26,
-    },
     mastheadMeta: {
       flexDirection: "row",
       alignItems: "baseline",
       justifyContent: "space-between",
       marginTop: 14,
-    },
-    phaseLabel: {
-      ...eyebrow,
-      fontSize: 10,
-      letterSpacing: 1.8,
-      color: authTokens.ink,
     },
     timeText: {
       fontFamily: fonts.mono,
@@ -112,38 +103,11 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       marginTop: 36,
     },
     footerError: { alignItems: "flex-end", marginTop: 10 },
-    // Stretch (not center): the row spans the column so a long label wraps
-    // inside it instead of pushing the box off-screen.
-    skipRow: { marginTop: 22 },
-    ackRow: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: 10,
-      paddingVertical: 6,
-    },
-    ackBox: {
-      width: 18,
-      height: 18,
-      borderRadius: 4,
-      borderWidth: 1.5,
-      borderColor: authTokens.hairlineStrong,
-      alignItems: "center",
-      justifyContent: "center",
-      // RN defaults flexShrink to 0 for the label but the box must never give
-      // way either — the label flexes instead (see `ackLabel`).
-      flexShrink: 0,
-      marginTop: 1,
-    },
-    ackLabel: { flex: 1 },
-    ackBoxChecked: {
-      backgroundColor: authTokens.ink,
-      borderColor: authTokens.ink,
-    },
     ghost: { paddingVertical: 10, paddingHorizontal: 2 },
     ghostLabel: {
       ...eyebrow,
-      fontSize: 12,
-      letterSpacing: 1.6,
+      fontSize: 13,
+      letterSpacing: 0.4,
       color: authTokens.muted,
     },
     ghostDanger: { color: authTokens.danger },
@@ -155,10 +119,11 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     gatedField: { opacity: 0.35 },
     fieldLabel: {
       ...eyebrow,
-      fontSize: 10,
-      letterSpacing: 1.8,
+      fontSize: 13,
+      fontWeight: "500",
+      letterSpacing: 0.2,
       color: authTokens.muted,
-      marginBottom: 10,
+      marginBottom: 8,
     },
     fieldLabelError: { color: authTokens.danger },
     textarea: {
@@ -180,6 +145,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
 
     // option pills
     pillWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    // Suggestion chips under a form field (e.g. headline suggestions).
+    suggestionRow: { marginTop: 12 },
     pill: {
       borderWidth: 1,
       borderColor: authTokens.hairlineStrong,
@@ -218,9 +185,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     chipDot: { width: 6, height: 6, borderRadius: 3 },
     chipText: {
       fontFamily: fonts.mono,
-      fontSize: 11,
-      letterSpacing: 0.6,
-      textTransform: "uppercase",
+      fontSize: 12,
+      letterSpacing: 0.4,
     },
 
     // date field (trigger mimics the underline input)
@@ -304,8 +270,9 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     pickerClear: { alignItems: "center", paddingVertical: 6 },
     pickerClearText: {
       ...eyebrow,
-      fontSize: 12,
-      letterSpacing: 1.4,
+      fontSize: 13,
+      fontWeight: "500",
+      letterSpacing: 0.3,
       color: authTokens.muted,
     },
 
@@ -333,33 +300,15 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       color: authTokens.muted,
     },
 
-    // step context — fills out short steps (link preview + reassurance notes)
+    // step context — the username live link preview
     context: { marginTop: 28 },
-    contextRule: {
-      height: 1,
-      width: 28,
-      backgroundColor: authTokens.hairlineStrong,
-      marginBottom: 12,
-    },
-    contextLabel: {
-      ...eyebrow,
-      fontSize: 10,
-      letterSpacing: 1.8,
-      color: authTokens.muted,
-      marginBottom: 8,
-    },
-    contextBody: {
-      fontFamily: fonts.sans,
-      fontSize: 13.5,
-      lineHeight: 20,
-      color: authTokens.body,
-    },
     // No frame: the preview reads as a caption under the field, not a card.
     linkCard: { gap: 6 },
     linkCardLabel: {
       ...eyebrow,
-      fontSize: 10,
-      letterSpacing: 1.8,
+      fontSize: 12,
+      fontWeight: "500",
+      letterSpacing: 0.3,
       color: authTokens.muted,
     },
     linkUrl: {
@@ -369,11 +318,20 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       color: authTokens.subtle,
     },
     linkHandle: { color: authTokens.ink },
-    linkNote: {
+    // Links step add-modal: platform picker rows.
+    linkKindRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      paddingVertical: 14,
+      borderBottomWidth: 1,
+      borderBottomColor: authTokens.hairline,
+    },
+    linkKindLabel: {
       fontFamily: fonts.sans,
-      fontSize: 12.5,
-      lineHeight: 17,
-      color: authTokens.muted,
+      fontSize: 16,
+      color: authTokens.ink,
     },
 
     // multi-item — saved entry cards
@@ -398,13 +356,6 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       shadowOffset: { width: 0, height: 5 },
       elevation: 2,
     },
-    cardIndex: {
-      fontFamily: fonts.mono,
-      fontSize: 12,
-      letterSpacing: 0.5,
-      color: authTokens.subtle,
-      minWidth: 18,
-    },
     cardBody: { flex: 1, gap: 3 },
     cardPrimary: {
       fontFamily: fonts.sans,
@@ -427,6 +378,15 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       justifyContent: "center",
     },
     cardRemoveActive: { backgroundColor: overlay.dangerWash },
+    // Native swipe-to-delete action behind a saved-entry card.
+    cardSwipeAction: {
+      width: 68,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 14,
+      marginLeft: 8,
+      backgroundColor: overlay.dangerWash,
+    },
     addRow: {
       flexDirection: "row",
       alignItems: "center",
@@ -437,8 +397,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     },
     addLabel: {
       ...eyebrow,
-      fontSize: 12,
-      letterSpacing: 1.4,
+      fontSize: 13,
+      letterSpacing: 0.3,
       color: authTokens.ink,
     },
     // full-screen item editor modal
@@ -513,81 +473,47 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     styleBody: { flex: 1, gap: 4, justifyContent: "center" },
     styleNameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
     styleName: { fontFamily: fonts.serif, fontSize: 18, color: authTokens.ink },
+    // Still used by the resumes derive-wizard style picker (not onboarding).
     styleDesc: {
       fontFamily: fonts.sans,
       fontSize: 13,
       lineHeight: 18,
       color: authTokens.muted,
     },
-    styleAts: {
-      fontFamily: fonts.mono,
-      fontSize: 11,
-      letterSpacing: 0.5,
-      color: authTokens.success,
-    },
 
-    // review
-    reviewCard: {
+    // review — the résumé preview leads, the steps read as a quiet checklist
+    reviewHero: { alignItems: "center", marginBottom: 20 },
+    // A4 portrait box for the live preview (also the completion screen's).
+    reviewPreviewBox: {
+      width: 176,
+      aspectRatio: 1 / Math.SQRT2,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: authTokens.hairline,
-      borderRadius: 18,
-      backgroundColor: authTokens.surface,
-      padding: 18,
-      marginBottom: 12,
-    },
-    reviewHead: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-      marginBottom: 12,
-    },
-    reviewLabel: {
-      ...eyebrow,
-      fontSize: 10,
-      letterSpacing: 1.6,
-      color: authTokens.muted,
-    },
-    reviewSkipped: {
-      fontFamily: fonts.sans,
-      fontSize: 14,
-      color: authTokens.subtle,
-    },
-    reviewStyleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-    reviewStyleName: {
-      fontFamily: fonts.serif,
-      fontSize: 17,
-      color: authTokens.ink,
-    },
-    reviewImage: {
-      width: 48,
-      height: 64,
-      borderRadius: 8,
-      backgroundColor: authTokens.hairline,
-    },
-    reviewPreviewBox: {
       overflow: "hidden",
       backgroundColor: authTokens.surface,
     },
-    reviewEntry: {
+    reviewList: { marginBottom: 8 },
+    reviewRow: {
       flexDirection: "row",
-      justifyContent: "space-between",
-      gap: 12,
-      marginTop: 7,
+      alignItems: "center",
+      gap: 10,
+      paddingVertical: 13,
+      borderBottomWidth: 1,
+      borderBottomColor: authTokens.hairline,
     },
-    reviewEntryLabel: {
-      fontFamily: fonts.sans,
-      fontSize: 12,
-      color: authTokens.muted,
+    reviewRowLabel: {
       flex: 1,
-    },
-    reviewEntryValue: {
       fontFamily: fonts.sans,
-      fontSize: 14,
+      fontSize: 14.5,
       color: authTokens.ink,
-      flex: 2,
-      textAlign: "right",
     },
-    reviewEntryLong: { textAlign: "left" },
+    reviewRowValue: {
+      fontFamily: fonts.sans,
+      fontSize: 13,
+      color: authTokens.muted,
+      maxWidth: "45%",
+    },
     addSection: {
       flexDirection: "row",
       alignItems: "center",
@@ -602,8 +528,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     },
     addSectionLabel: {
       ...eyebrow,
-      fontSize: 12,
-      letterSpacing: 1.2,
+      fontSize: 13,
+      letterSpacing: 0.3,
       color: authTokens.ink,
     },
 
@@ -724,8 +650,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     },
     missingTitle: {
       ...eyebrow,
-      fontSize: 10,
-      letterSpacing: 1.6,
+      fontSize: 12,
+      letterSpacing: 0.3,
       color: authTokens.warn,
     },
     missingRow: {
@@ -745,8 +671,8 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     },
     missingFix: {
       ...eyebrow,
-      fontSize: 11,
-      letterSpacing: 1.2,
+      fontSize: 12,
+      letterSpacing: 0.3,
       color: authTokens.accent,
     },
 
@@ -843,33 +769,21 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       fontSize: 13,
       color: authTokens.muted,
     },
-    modalDesc: {
-      fontFamily: fonts.sans,
-      fontSize: 14,
-      lineHeight: 20,
-      color: authTokens.body,
-      alignSelf: "stretch",
+    // body scrollbar — thin editorial track/thumb signalling overflow
+    scrollTrack: {
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      right: 0,
+      width: 3,
+      borderRadius: 2,
+      backgroundColor: authTokens.hairline,
+      overflow: "hidden",
     },
-    atsSeal: {
-      alignSelf: "stretch",
-      borderWidth: 1,
-      borderColor: authTokens.hairlineStrong,
-      borderRadius: 14,
-      backgroundColor: authTokens.surface,
-      padding: 14,
-      gap: 4,
-    },
-    atsSealLabel: {
-      fontFamily: fonts.mono,
-      fontSize: 12,
-      letterSpacing: 0.4,
-      color: authTokens.ink,
-    },
-    atsSealBlurb: {
-      fontFamily: fonts.sans,
-      fontSize: 13,
-      lineHeight: 19,
-      color: authTokens.muted,
+    scrollThumb: {
+      width: 3,
+      borderRadius: 2,
+      backgroundColor: authTokens.subtle,
     },
   });
 

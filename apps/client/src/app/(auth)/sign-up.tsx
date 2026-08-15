@@ -36,7 +36,7 @@ import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { type AuthFieldErrors, validateSignup } from "@/components/auth/validation";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
-import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms";
+import { FormEmailField, FormNameField, FormPasswordField, fieldErrorsResolver } from "@/forms";
 
 // Versions sent with the consent payload. Backend rejects with
 // CONSENT_VERSION_MISMATCH if these don't match the live published
@@ -44,7 +44,7 @@ import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms"
 const TOS_VERSION = "1.0.0";
 const PRIVACY_VERSION = "1.0.0";
 
-type SignUpForm = { email: string; password: string };
+type SignUpForm = { name: string; email: string; password: string };
 
 export default function SignUpScreen(): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();
@@ -57,14 +57,16 @@ export default function SignUpScreen(): ReactElement {
   // sign-in (cookie mode). Hidden on native.
   const isWeb = Platform.OS === "web";
   const [rememberMe, setRememberMe] = useState(false);
+  const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
   const form = useForm<SignUpForm>({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { name: "", email: "", password: "" },
     mode: "onTouched",
     resolver: fieldErrorsResolver<SignUpForm>((values) =>
       validateSignup(
         {
+          name: values.name.trim(),
           email: values.email.trim(),
           password: values.password,
           acceptedTosVersion: TOS_VERSION,
@@ -82,7 +84,7 @@ export default function SignUpScreen(): ReactElement {
   }, [isWeb]);
 
   function applyFieldErrors(fields: AuthFieldErrors): void {
-    for (const key of ["email", "password"] as const) {
+    for (const key of ["name", "email", "password"] as const) {
       const message = fields[key];
       if (message) form.setError(key, { message });
     }
@@ -92,13 +94,14 @@ export default function SignUpScreen(): ReactElement {
   // accept consent, so sign-up testing is one tap. Gated by the same flag as
   // the onboarding test-fill. Stays on the screen (the user taps Sign up).
   function fillSignupTest(): void {
+    form.setValue("name", "Test User", { shouldValidate: true });
     form.setValue("email", `testuser${Date.now()}@example.com`, { shouldValidate: true });
     form.setValue("password", "TestPass123!", { shouldValidate: true });
     setConsent(true);
     setConsentError(undefined);
   }
 
-  const onSubmit = form.handleSubmit(async ({ email, password: pw }) => {
+  const onSubmit = form.handleSubmit(async ({ name, email, password: pw }) => {
     // Consent is gated separately from field validation (UI checkbox).
     if (!consent) {
       setConsentError(t("auth.consentRequired"));
@@ -107,6 +110,7 @@ export default function SignUpScreen(): ReactElement {
     setConsentError(undefined);
     const trimmedEmail = email.trim();
     const payload = {
+      name: name.trim(),
       email: trimmedEmail,
       password: pw,
       acceptedTosVersion: TOS_VERSION,
@@ -214,10 +218,18 @@ export default function SignUpScreen(): ReactElement {
         ) : null}
 
         <YStack gap={24}>
+          <FormNameField
+            control={form.control}
+            name="name"
+            testID="signup.name"
+            onSubmitEditing={() => emailRef.current?.focus()}
+          />
+
           <FormEmailField
             control={form.control}
             name="email"
             testID="signup.email"
+            inputRef={emailRef}
             onSubmitEditing={() => passwordRef.current?.focus()}
           />
 

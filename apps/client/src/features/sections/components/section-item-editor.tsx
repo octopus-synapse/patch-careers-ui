@@ -15,7 +15,8 @@
 import { AnimatedField, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { AlertCircle, Trash2 } from "lucide-react-native";
 import { type ComponentType, type ReactElement, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useI18n } from "@/providers/i18n-provider";
 import { useSectionItemForm } from "../hooks/use-section-item-form";
 import { itemCardParts, itemSummary } from "../lib/helpers";
@@ -28,18 +29,18 @@ import { SectionItemModal } from "./section-item-modal";
 type SectionArt = ComponentType<{ size?: number }>;
 
 /**
- * A saved section entry rendered as an editorial card: mono ordinal · headline /
- * meta · subtle delete. The whole card taps to edit.
+ * A saved section entry rendered as an editorial card: headline / meta. The
+ * whole card taps to edit. Removal is swipe-to-delete on native (no
+ * always-visible trash; delete also lives in the edit modal) and a hover
+ * trash button on web, where there's no swipe gesture.
  */
 function ItemCard({
-  index,
   item,
   fields,
   onEdit,
   onRemove,
   removeLabel,
 }: {
-  index: number;
   item: SectionItem;
   fields?: SectionField[] | undefined;
   onEdit: () => void;
@@ -52,8 +53,8 @@ function ItemCard({
   const { primary, meta } = itemCardParts(item, locale, fields);
   const [active, setActive] = useState(false);
   const [removeActive, setRemoveActive] = useState(false);
-  const ordinal = String(index + 1).padStart(2, "0");
-  return (
+  const isWeb = Platform.OS === "web";
+  const card = (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={primary}
@@ -65,7 +66,6 @@ function ItemCard({
       onBlur={() => setActive(false)}
       style={({ pressed }) => [ed.card, (active || pressed) && ed.cardActive, webNoOutline]}
     >
-      <Text style={ed.cardIndex}>{ordinal}</Text>
       <View style={ed.cardBody}>
         <Text style={ed.cardPrimary} numberOfLines={1}>
           {primary}
@@ -76,28 +76,50 @@ function ItemCard({
           </Text>
         ) : null}
       </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={removeLabel}
-        onPress={onRemove}
-        onHoverIn={() => setRemoveActive(true)}
-        onHoverOut={() => setRemoveActive(false)}
-        onFocus={() => setRemoveActive(true)}
-        onBlur={() => setRemoveActive(false)}
-        hitSlop={10}
-        style={({ pressed }) => [
-          ed.cardRemove,
-          (removeActive || pressed) && ed.cardRemoveActive,
-          webNoOutline,
-        ]}
-      >
-        <Trash2
-          size={16}
-          color={removeActive ? authTokens.danger : authTokens.muted}
-          strokeWidth={1.75}
-        />
-      </Pressable>
+      {isWeb ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={removeLabel}
+          onPress={onRemove}
+          onHoverIn={() => setRemoveActive(true)}
+          onHoverOut={() => setRemoveActive(false)}
+          onFocus={() => setRemoveActive(true)}
+          onBlur={() => setRemoveActive(false)}
+          hitSlop={10}
+          style={({ pressed }) => [
+            ed.cardRemove,
+            (removeActive || pressed) && ed.cardRemoveActive,
+            webNoOutline,
+          ]}
+        >
+          <Trash2
+            size={16}
+            color={removeActive ? authTokens.danger : authTokens.muted}
+            strokeWidth={1.75}
+          />
+        </Pressable>
+      ) : null}
     </Pressable>
+  );
+  if (isWeb) return card;
+  return (
+    <ReanimatedSwipeable
+      overshootRight={false}
+      friction={2}
+      rightThreshold={40}
+      renderRightActions={() => (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={removeLabel}
+          onPress={onRemove}
+          style={ed.cardSwipeAction}
+        >
+          <Trash2 size={18} color={authTokens.danger} strokeWidth={1.75} />
+        </Pressable>
+      )}
+    >
+      {card}
+    </ReanimatedSwipeable>
   );
 }
 
@@ -264,7 +286,6 @@ export function SectionItemEditor({
         {items.map((item, index) => (
           <ItemCard
             key={item.id ?? `${index}-${itemSummary(item)}`}
-            index={index}
             item={item}
             fields={fields}
             onEdit={() => openExisting(index)}

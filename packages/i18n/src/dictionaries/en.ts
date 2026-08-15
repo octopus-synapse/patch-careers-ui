@@ -34,7 +34,7 @@ export const en: TranslationDict = {
     // "Applications" is no longer a tab — it's a scope inside Jobs — but the
     // label is reused there (see jobs.scope.applications).
     applications: "Applications",
-    notifications: "Notifications",
+    resumes: "Resumes",
     profile: "Profile",
   },
   common: {
@@ -57,6 +57,8 @@ export const en: TranslationDict = {
     signUp: "Create account",
     signInTitle: "Sign in to your account",
     signUpTitle: "Create your account",
+    fullName: "Full name",
+    fullNamePlaceholder: "Your name",
     email: "Email",
     emailPlaceholder: "you@example.com",
     password: "Password",
@@ -107,6 +109,7 @@ export const en: TranslationDict = {
     legalTerms: "Terms of Service",
     legalPrivacy: "Privacy Policy",
     validation: {
+      nameRequired: "Enter your name",
       emailRequired: "Enter your email",
       emailInvalid: "Invalid email",
       passwordRequired: "Enter your password",
@@ -135,7 +138,7 @@ export const en: TranslationDict = {
     next: "Continue",
     back: "Back",
     complete: "Complete",
-    skip: "Skip this step",
+    skipCta: "Skip",
     addItem: "Add",
     editItem: "Edit",
     removeItem: "Remove",
@@ -147,7 +150,6 @@ export const en: TranslationDict = {
     missingRequired: "Complete the required steps before finishing.",
     fixBeforeComplete: "Review the highlighted fields before finishing.",
     field: {
-      required: "required",
       optional: "optional",
     },
     validation: {
@@ -243,9 +245,8 @@ export const en: TranslationDict = {
       taken: "Taken",
       error: "Couldn't check — tap to retry",
     },
-    progress: {
-      timeRemaining: "~{min} min left",
-      timeRemainingOne: "~{min} min left",
+    links: {
+      add: "Add link",
     },
     welcome: {
       tagline:
@@ -256,24 +257,16 @@ export const en: TranslationDict = {
     review: {
       missingTitle: "Finish these required steps",
       fix: "Fix",
+      items: "{count} items",
+      itemsOne: "1 item",
+    },
+    done: {
+      title: "Your resume is ready.",
+      cta: "Get started",
     },
     resumeStyle: {
       use: "Use this template",
       previewHint: "Tap to preview",
-    },
-    ats: {
-      high: {
-        label: "High ATS match",
-        blurb: "Single column, no tables — easy for parsers to read.",
-      },
-      good: {
-        label: "Good ATS match",
-        blurb: "Clean structure that most parsers handle well.",
-      },
-      fair: {
-        label: "Fair ATS match",
-        blurb: "More styling — best for human-first applications.",
-      },
     },
     section: {
       emptyTitle: "Nothing here yet",
@@ -282,65 +275,53 @@ export const en: TranslationDict = {
       noFieldsBody: "We couldn't load this section's fields. You can skip it for now.",
     },
     flow: {
-      phases: {
-        identity: "Identity",
-        history: "History",
-        resume: "Resume",
-      },
       welcome: {
         title: "Welcome",
         subtitle: "",
       },
       language: {
         title: "Choose your language",
-        subtitle: "Pick the language you'd like to continue in.",
+        subtitle: "",
       },
       theme: {
         title: "Choose your theme",
-        subtitle: "The app updates instantly — you can change it later from the account menu.",
+        subtitle: "",
       },
       location: {
         title: "Where are you based?",
-        subtitle: "We tailor roles and formatting to your region.",
-        contextLabel: "Why we ask",
-        contextNote:
-          "We use your city to surface roles open near you and match local salary and date formats.",
+        subtitle: "",
       },
       personal: {
         title: "About you",
-        subtitle: "The essentials recruiters see first.",
-        contextLabel: "Stays private",
-        contextNote:
-          "Your phone is only shared after you apply — it's never shown on your public profile.",
+        subtitle: "",
       },
       username: {
         title: "Pick a username",
         linkLabel: "Your public link",
-        linkNote: "Recruiters open this to see your profile.",
       },
       experience: {
         title: "Your experience",
-        subtitle: "Add your roles — start with your most recent.",
+        subtitle: "Add your roles.",
       },
       headline: {
         title: "Your headline",
-        subtitle: "A one-line pitch, plus a short bio if you like.",
+        subtitle: "",
       },
       links: {
         title: "Your links",
-        subtitle: "LinkedIn, GitHub, portfolio — all optional.",
+        subtitle: "",
       },
       education: {
         title: "Your education",
-        subtitle: "Degrees, bootcamps, courses.",
+        subtitle: "",
       },
       resumeStyle: {
         title: "Pick a style",
-        subtitle: "Choose the look of your resume. You can change it later.",
+        subtitle: "",
       },
       review: {
         title: "Almost there",
-        subtitle: "Review everything and add any optional sections.",
+        subtitle: "",
       },
     },
     date: {

@@ -8,7 +8,7 @@
 import type { ReactElement, ReactNode, Ref } from "react";
 import { type Control, Controller, type FieldPath, type FieldValues } from "react-hook-form";
 import type { ReturnKeyTypeOptions, TextInput } from "react-native";
-import { AuthEmailField, AuthPasswordField } from "@/components/auth/fields";
+import { AuthEmailField, AuthNameField, AuthPasswordField } from "@/components/auth/fields";
 
 type BaseFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -17,7 +17,7 @@ type BaseFieldProps<T extends FieldValues> = {
   onSubmitEditing?: () => void;
 };
 
-export function FormEmailField<T extends FieldValues>({
+export function FormNameField<T extends FieldValues>({
   control,
   name,
   testID,
@@ -28,11 +28,36 @@ export function FormEmailField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
+        <AuthNameField
+          value={String(field.value ?? "")}
+          onChangeText={field.onChange}
+          error={fieldState.error?.message}
+          testID={testID}
+          {...(onSubmitEditing ? { onSubmitEditing } : {})}
+        />
+      )}
+    />
+  );
+}
+
+export function FormEmailField<T extends FieldValues>({
+  control,
+  name,
+  testID,
+  inputRef,
+  onSubmitEditing,
+}: BaseFieldProps<T> & { inputRef?: Ref<TextInput> }): ReactElement {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
         <AuthEmailField
           value={String(field.value ?? "")}
           onChangeText={field.onChange}
           error={fieldState.error?.message}
           testID={testID}
+          {...(inputRef ? { inputRef } : {})}
           {...(onSubmitEditing ? { onSubmitEditing } : {})}
         />
       )}

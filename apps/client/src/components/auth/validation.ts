@@ -28,6 +28,7 @@ import {
 } from "@/lib/errors/backend-error";
 
 export interface AuthFieldErrors {
+  name?: string | undefined;
   email?: string | undefined;
   password?: string | undefined;
 }
@@ -70,6 +71,7 @@ function emailIssueKey(value: string): string {
 // ────────────────────────────────────────────────────────────
 
 export interface SignupPayload {
+  name: string;
   email: string;
   password: string;
   acceptedTosVersion: string;
@@ -82,12 +84,16 @@ export interface SignupPayload {
  *
  * NOTE: consent is checked separately (UI checkbox) since the schema
  * only validates *that the versions are present*, not that the user
- * actually ticked the box.
+ * actually ticked the box. The name is optional in the contract but
+ * required here — it seeds the onboarding profile prefill.
  */
 export function validateSignup(payload: SignupPayload, t: Translator): AuthFieldErrors | null {
   const result = createAccountRequestSchema.safeParse(payload);
-  if (result.success) return null;
-  return zodErrorToFields(result.error, payload, t);
+  const errors = result.success ? {} : zodErrorToFields(result.error, payload, t);
+  if (payload.name.trim().length < 2) {
+    errors.name = t("auth.validation.nameRequired");
+  }
+  return Object.keys(errors).length > 0 ? errors : null;
 }
 
 export interface LoginPayload {

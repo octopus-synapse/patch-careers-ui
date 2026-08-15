@@ -22,6 +22,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { translateBackendCode } from "@/lib/errors/backend-error";
 import { getCompletedOnboardingRoute } from "@/navigation/auth-redirect";
+import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import {
   FLOW_PLAN,
@@ -60,7 +61,7 @@ import {
   saveSessionSnapshot,
   saveStepDraft,
 } from "../lib/storage";
-import { suggestHeadlineFromExperience } from "../lib/suggestions";
+import { suggestUsernameFromName } from "../lib/suggestions";
 import type { OnboardingSession } from "../types";
 import { useWizardStore } from "./wizard-store-context";
 
@@ -77,6 +78,7 @@ export function useOnboardingFlow() {
   const { width, height } = useWindowDimensions();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { currentUser } = useAuthState();
   const sessionKey = useMemo(() => getV1OnboardingSessionQueryKey({ locale }), [locale]);
 
   const formData = useWizardStore((s) => s.formData);
@@ -85,7 +87,7 @@ export function useOnboardingFlow() {
   const setItems = useWizardStore((s) => s.setItems);
 
   const [fallbackSession, setFallbackSession] = useState<OnboardingSession | null>(null);
-  const [noItemsAck, setNoItemsAck] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [completeError, setCompleteError] = useState("");
   const [flowStepId, setFlowStepId] = useState<FlowStepId>("language");
@@ -142,8 +144,10 @@ export function useOnboardingFlow() {
     mutation: {
       async onSuccess() {
         await clearSessionSnapshot();
-        await bootstrap().catch(() => undefined);
-        router.replace(getCompletedOnboardingRoute());
+        // Show the completion screen BEFORE refreshing auth: bootstrap flips
+        // `hasCompletedOnboarding`, and the onboarding route guard redirects
+        // the moment it does. Both run in `finishOnboarding` (the CTA).
+        setCompleted(true);
       },
       onError(error) {
         const data = error.response?.data as { code?: unknown; message?: unknown } | undefined;
@@ -211,9 +215,23 @@ export function useOnboardingFlow() {
     if (prevBackendStepIdRef.current === backendStepId) return;
     prevBackendStepIdRef.current = backendStepId;
     const saved = getSavedDataForStep(session, currentStep);
+    // Prefill so typing steps become confirming steps: the signup name seeds
+    // personal-info, and the name seeds a username suggestion (the live
+    // availability check runs on it like any typed value).
+    if (backendStepId === "personal-info" && !saved.fullName?.trim() && currentUser?.name) {
+      saved.fullName = currentUser.name;
+    }
+    if (backendStepId === "username" && !saved.username?.trim() && !session.username) {
+      const personalInfo = session.personalInfo as Record<string, unknown> | undefined;
+      const sourceName =
+        typeof personalInfo?.fullName === "string" && personalInfo.fullName.trim()
+          ? personalInfo.fullName
+          : (currentUser?.name ?? "");
+      const suggested = suggestUsernameFromName(sourceName);
+      if (suggested) saved.username = suggested;
+    }
     setFormData(saved);
     setItems(getSavedItemsForStep(session, currentStep));
-    setNoItemsAck(false);
     setErrors(
       backendStepId && currentStep && attemptedSteps.has(backendStepId)
         ? validateStepFields(currentStep, saved, t)
@@ -225,15 +243,7 @@ export function useOnboardingFlow() {
       if (Object.keys(draft.data).length > 0) setFormData((prev) => ({ ...prev, ...draft.data }));
       if (draft.items.length > 0) setItems(draft.items);
     });
-  }, [currentStep, session, attemptedSteps, setFormData, setItems, t]);
-
-  useEffect(() => {
-    if (flowStepId !== "headline" || editStepId) return;
-    const workStep = session?.steps.find((step) => step.sectionTypeKey === "work_experience_v1");
-    const suggested = suggestHeadlineFromExperience(getSavedItemsForStep(session, workStep));
-    if (!suggested) return;
-    setFormData((prev) => (prev.headline?.trim() ? prev : { ...prev, headline: suggested }));
-  }, [flowStepId, editStepId, session, setFormData]);
+  }, [currentStep, session, attemptedSteps, currentUser, setFormData, setItems, t]);
 
   useEffect(() => {
     if (!currentStep) return;
@@ -311,7 +321,8 @@ export function useOnboardingFlow() {
       return;
     }
     if (currentStep) {
-      if (flowStep.optional && stepIsEmpty && noItemsAck) {
+      // Optional steps left empty skip directly — no acknowledgement gate.
+      if (flowStep.optional && stepIsEmpty) {
         await handleSkip();
         return;
       }
@@ -401,6 +412,13 @@ export function useOnboardingFlow() {
     advanceFlow();
   }
 
+  /** Leave the completion screen: refresh auth (flips the onboarding flag,
+   *  which also unlocks the guarded routes) and enter the app. */
+  async function finishOnboarding() {
+    await bootstrap().catch(() => undefined);
+    router.replace(getCompletedOnboardingRoute());
+  }
+
   function setPhoneCountry(iso: string) {
     setPhoneCountryIso(iso);
     void savePhoneCountry(iso);
@@ -434,8 +452,6 @@ export function useOnboardingFlow() {
     // step-local ui state
     errors,
     setErrors,
-    noItemsAck,
-    setNoItemsAck,
     phoneCountryIso,
     setPhoneCountry,
     saveError,
@@ -457,5 +473,7 @@ export function useOnboardingFlow() {
     handleAddSection,
     retrySave,
     markWelcomeSeenAndAdvance,
+    completed,
+    finishOnboarding,
   };
 }

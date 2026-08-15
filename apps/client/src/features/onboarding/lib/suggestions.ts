@@ -22,15 +22,46 @@ export function isCurrentJob(item: SectionItem): boolean {
 }
 
 /**
- * Suggest a professional headline from the current work experience, e.g.
- * "Frontend Engineer @ Vercel". Returns `""` when there's nothing to
- * suggest — the headline step then starts blank.
+ * Suggest up to three professional headlines from the work experience, e.g.
+ * ["Frontend Engineer @ Vercel", "Frontend Engineer"]. The current job leads;
+ * shown as tappable chips on the headline step (never silently pre-filled,
+ * so the user stays in control). Empty when there's nothing to suggest.
  */
-export function suggestHeadlineFromExperience(items: readonly SectionItem[]): string {
-  const current = items.find(isCurrentJob) ?? items[0];
-  if (!current) return "";
-  const role = readField(current.content, ["role", "jobTitle", "title", "position"]);
-  const company = readField(current.content, ["company", "employer", "organization"]);
-  if (role && company) return `${role} @ ${company}`;
-  return role || "";
+export function suggestHeadlinesFromExperience(items: readonly SectionItem[]): string[] {
+  const current = items.find(isCurrentJob);
+  const ordered = current ? [current, ...items.filter((item) => item !== current)] : [...items];
+  const suggestions: string[] = [];
+  const push = (value: string) => {
+    if (value && !suggestions.includes(value) && suggestions.length < 3) suggestions.push(value);
+  };
+  for (const item of ordered) {
+    const role = readField(item.content, ["role", "jobTitle", "title", "position"]);
+    const company = readField(item.content, ["company", "employer", "organization"]);
+    if (role && company) push(`${role} @ ${company}`);
+    push(role);
+  }
+  return suggestions;
+}
+
+// Backend username charset (lowercase letters, digits, underscore).
+const USERNAME_MIN = 3;
+const USERNAME_MAX = 30;
+
+/**
+ * Suggest a username handle from a person's name, e.g. "Maria Silva" →
+ * "maria_silva". Strips diacritics and anything outside the allowed charset;
+ * returns `""` when the result would be too short to be valid.
+ */
+export function suggestUsernameFromName(name: string): string {
+  const handle = name
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s_]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .join("_")
+    .slice(0, USERNAME_MAX);
+  return handle.length >= USERNAME_MIN ? handle : "";
 }

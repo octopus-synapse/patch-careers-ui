@@ -3,13 +3,10 @@ import {
   countedFlowSteps,
   countedIndexOf,
   countedTotal,
-  estimatedRemainingMinutes,
-  FLOW_PHASES,
   FLOW_PLAN,
   flowIndexOf,
   flowStepsForServerStep,
   nextFlowStep,
-  phaseForFlowStep,
   prevFlowStep,
 } from "./flow-plan";
 
@@ -67,25 +64,5 @@ describe("flowPlan", () => {
   it("every step has a unique id", () => {
     const ids = FLOW_PLAN.map((s) => s.id);
     expect(new Set(ids).size).toBe(ids.length);
-  });
-
-  it("phases cover every counted step exactly once, in order", () => {
-    const phaseIds = FLOW_PHASES.flatMap((phase) => phase.stepIds);
-    expect(phaseIds).toEqual(countedFlowSteps().map((step) => step.id));
-    expect(new Set(phaseIds).size).toBe(phaseIds.length);
-  });
-
-  it("maps a step to its phase (and intro to none)", () => {
-    expect(phaseForFlowStep("username")?.key).toBe("identity");
-    expect(phaseForFlowStep("education")?.key).toBe("history");
-    expect(phaseForFlowStep("review")?.key).toBe("resume");
-    expect(phaseForFlowStep("welcome")).toBeUndefined();
-  });
-
-  it("estimates non-increasing time as the flow advances, floored at 1", () => {
-    const atLanguage = estimatedRemainingMinutes("language");
-    const atResume = estimatedRemainingMinutes("resume-style");
-    expect(atLanguage).toBeGreaterThanOrEqual(atResume);
-    expect(estimatedRemainingMinutes("review")).toBeGreaterThanOrEqual(1);
   });
 });

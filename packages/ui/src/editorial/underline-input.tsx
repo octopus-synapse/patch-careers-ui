@@ -46,6 +46,7 @@ export type UnderlineInputProps = {
     | "name"
     | "oneTimeCode";
   autoCorrect?: boolean;
+  autoFocus?: boolean;
   returnKeyType?: ReturnKeyTypeOptions;
   onSubmitEditing?: (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void;
   blurOnSubmit?: boolean;

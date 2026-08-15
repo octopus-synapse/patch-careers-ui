@@ -18,8 +18,8 @@ import {
   useThemeName,
 } from "@patch-careers/ui/editorial";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
-import { type ReactElement, useCallback, useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { type ReactElement, type Ref, useCallback, useEffect, useState } from "react";
+import { Pressable, type ReturnKeyTypeOptions, Text, TextInput, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { monthLabel, parseYearMonth } from "../lib/helpers";
 import { useEd } from "../lib/styles";
@@ -206,8 +206,10 @@ const usernameStateMetaByTheme = {
 } as const;
 
 export function FieldRenderer({
+  autoFocus,
   error,
   field,
+  inputRef,
   institutionName,
   lockHint,
   lockedOption,
@@ -215,10 +217,17 @@ export function FieldRenderer({
   onCompanyPick,
   onCoursePick,
   onRolePick,
+  onSubmitEditing,
+  returnKeyType,
   value,
 }: {
+  /** Focus this field's text input on mount (text/textarea fields only). */
+  autoFocus?: boolean | undefined;
   error?: string;
   field: SectionField;
+  /** Ref to the underlying text input (text/textarea fields only) — lets the
+   *  host chain keyboard focus across fields. */
+  inputRef?: Ref<TextInput> | undefined;
   /** Sibling `institution` value — present only in sections that have one. */
   institutionName?: string | undefined;
   /** When set on an options field, only `lockedOption` is selectable (others
@@ -232,6 +241,9 @@ export function FieldRenderer({
   onCoursePick?: ((course: PickedCourse | null) => void) | undefined;
   /** Forwarded to the role picker so the editor can sync `roleSeniority`. */
   onRolePick?: ((seniority: string | null) => void) | undefined;
+  /** Keyboard-submit handler (single-line text fields only). */
+  onSubmitEditing?: (() => void) | undefined;
+  returnKeyType?: ReturnKeyTypeOptions | undefined;
   value: string;
 }): ReactElement {
   const ed = useEd();
@@ -377,6 +389,7 @@ export function FieldRenderer({
     return (
       <FieldShell label={field.label} error={error} focused={focused}>
         <TextInput
+          ref={inputRef}
           value={value}
           onChangeText={onChange}
           onFocus={() => setFocused(true)}
@@ -384,6 +397,7 @@ export function FieldRenderer({
           placeholder={placeholder}
           placeholderTextColor={authTokens.subtle}
           multiline
+          {...(autoFocus ? { autoFocus } : {})}
           style={ed.textarea}
         />
       </FieldShell>
@@ -393,11 +407,15 @@ export function FieldRenderer({
   return (
     <View>
       <UnderlineInput
+        ref={inputRef}
         label={field.label}
         value={value}
         onChangeText={onChange}
         placeholder={placeholder}
         hasError={Boolean(error)}
+        {...(autoFocus ? { autoFocus } : {})}
+        {...(returnKeyType ? { returnKeyType } : {})}
+        {...(onSubmitEditing ? { onSubmitEditing, blurOnSubmit: returnKeyType !== "next" } : {})}
         keyboardType={
           field.type === "email" ? "email-address" : field.type === "url" ? "url" : "default"
         }

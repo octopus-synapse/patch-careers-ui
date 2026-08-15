@@ -297,6 +297,7 @@ export function buildReviewSections(
       label: step.label,
       stepId: step.id,
       entries: section.items.map((item) => ({ label: "", value: itemSummary(item) })),
+      count: section.items.length,
     });
   }
 
@@ -373,17 +374,6 @@ export function defaultCountryFromLocale(locale: string | undefined): string | u
   if (lower.startsWith("en")) return "US";
   const region = lower.split(/[-_]/)[1];
   return region ? region.toUpperCase() : undefined;
-}
-
-export type AtsBandKey = "high" | "good" | "fair";
-
-/** Bucket an ATS score into a band whose label/blurb copy lives under
- *  `onboarding.ats.<band>` in the dictionaries. */
-export function atsBand(score: number | null | undefined): AtsBandKey | null {
-  if (typeof score !== "number") return null;
-  if (score >= 90) return "high";
-  if (score >= 75) return "good";
-  return "fair";
 }
 
 export function extrasToActivate(session: OnboardingSession | undefined): string[] {

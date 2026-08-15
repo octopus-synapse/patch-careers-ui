@@ -1,5 +1,6 @@
 /**
- * EditorialLabel — tiny uppercase tracked label above an input.
+ * EditorialLabel — small sentence-case label above an input. (The all-caps
+ * tracked treatment was dropped for a calmer, cleaner read.)
  */
 
 import type { ReactElement, ReactNode } from "react";
@@ -19,11 +20,10 @@ export function EditorialLabel({
   return (
     <TText
       fontFamily={editorialFonts.sans}
-      fontSize={10}
-      letterSpacing={1.8}
-      fontWeight="600"
+      fontSize={13}
+      letterSpacing={0.2}
+      fontWeight="500"
       marginBottom={4}
-      textTransform="uppercase"
       color={resolveLabelColor(editorialPalette, error)}
     >
       {children}

@@ -53,13 +53,6 @@ export interface FlowStep {
   readonly hideMasthead?: boolean;
 }
 
-/** A named, contiguous group of counted steps, surfaced in the masthead. */
-export interface FlowPhase {
-  readonly key: "identity" | "history" | "resume";
-  readonly labelKey: string;
-  readonly stepIds: readonly FlowStepId[];
-}
-
 /**
  * The canonical linear order. The review hub (last) surfaces optional
  * sections (skills, languages, projects, certifications, awards,
@@ -167,46 +160,6 @@ export const FLOW_PLAN: readonly FlowStep[] = [
   },
 ] as const;
 
-/**
- * Named phases over the counted steps (welcome is excluded). Each phase covers
- * a contiguous range so the masthead can show "Identidade / Histórico /
- * Currículo" alongside the step counter.
- */
-export const FLOW_PHASES: readonly FlowPhase[] = [
-  {
-    key: "identity",
-    labelKey: "onboarding.flow.phases.identity",
-    stepIds: ["language", "theme", "location", "personal", "username"],
-  },
-  {
-    key: "history",
-    labelKey: "onboarding.flow.phases.history",
-    stepIds: ["experience", "headline", "links", "education"],
-  },
-  {
-    key: "resume",
-    labelKey: "onboarding.flow.phases.resume",
-    stepIds: ["resume-style", "review"],
-  },
-] as const;
-
-/** Rough per-step time weights (seconds) used only for the "~N min restantes"
- *  estimate. Approximate by design — they drive a hint, not a contract. */
-const STEP_SECONDS: Record<FlowStepId, number> = {
-  welcome: 0,
-  theme: 5,
-  language: 5,
-  location: 20,
-  personal: 30,
-  username: 20,
-  experience: 45,
-  headline: 35,
-  links: 25,
-  education: 45,
-  "resume-style": 20,
-  review: 15,
-};
-
 export function flowIndexOf(id: FlowStepId): number {
   return FLOW_PLAN.findIndex((step) => step.id === id);
 }
@@ -223,23 +176,6 @@ export function countedIndexOf(id: FlowStepId): number {
 
 export function countedTotal(): number {
   return countedFlowSteps().length;
-}
-
-export function phaseForFlowStep(id: FlowStepId): FlowPhase | undefined {
-  return FLOW_PHASES.find((phase) => phase.stepIds.includes(id));
-}
-
-/** Estimated seconds left from the given step to the end (current step
- *  inclusive). Intro steps estimate from the first counted step. */
-export function estimatedRemainingSeconds(id: FlowStepId): number {
-  const counted = countedFlowSteps();
-  const from = Math.max(0, countedIndexOf(id));
-  return counted.slice(from).reduce((sum, step) => sum + STEP_SECONDS[step.id], 0);
-}
-
-/** Whole-minute remaining estimate, floored at 1 so it never reads "~0 min". */
-export function estimatedRemainingMinutes(id: FlowStepId): number {
-  return Math.max(1, Math.round(estimatedRemainingSeconds(id) / 60));
 }
 
 export function flowStepAt(index: number): FlowStep | undefined {

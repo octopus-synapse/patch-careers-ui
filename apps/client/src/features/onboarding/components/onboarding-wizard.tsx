@@ -1,27 +1,31 @@
 import { FieldError, PrimaryAction } from "@patch-careers/ui/editorial";
-import type { ReactElement } from "react";
+import { type ReactElement, useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, View } from "react-native";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
 import { GhostButton, SectionItemEditor, useEd } from "@/features/sections";
 import { useColorSchemeStore } from "@/providers/color-scheme";
-import {
-  countedIndexOf,
-  countedTotal,
-  estimatedRemainingMinutes,
-  phaseForFlowStep,
-  prevFlowStep,
-} from "../lib/flow-plan";
-import { canContinueStep, isResumeStyleStep, isSectionStep } from "../lib/helpers";
+import { countedIndexOf, countedTotal, prevFlowStep } from "../lib/flow-plan";
+import { getSavedItemsForStep, isResumeStyleStep, isSectionStep } from "../lib/helpers";
 import { isProfileFieldRequired } from "../lib/profile-validation";
+import { suggestHeadlinesFromExperience } from "../lib/suggestions";
 import { useOnboardingFlow } from "../model/use-onboarding-flow";
 import { useTestFill } from "../model/use-test-fill";
 import { WizardStoreProvider } from "../model/wizard-store-context";
 import type { OnboardingField } from "../types";
 import { sectionArtFor } from "./onboarding-art";
 import { TestFillBar } from "./test-fill-bar";
-import { AckCheckbox, CenteredState, Masthead, RetryBanner, StepHeading } from "./wizard-chrome";
 import {
+  BodyScrollBar,
+  CenteredState,
+  Masthead,
+  RetryBanner,
+  StepHeading,
+  StepTransition,
+} from "./wizard-chrome";
+import {
+  CompletionScreen,
   LanguageStep,
+  LinksEditor,
   ResumeStylePicker,
   ReviewSummary,
   StepContext,
@@ -57,7 +61,6 @@ function OnboardingWizardInner(): ReactElement {
     editStepId,
     currentStep,
     flowFields,
-    activeFieldKeys,
     stepIsEmpty,
     formData,
     setFormData,
@@ -65,8 +68,6 @@ function OnboardingWizardInner(): ReactElement {
     setItems,
     errors,
     setErrors,
-    noItemsAck,
-    setNoItemsAck,
     phoneCountryIso,
     setPhoneCountry,
     saveError,
@@ -85,10 +86,49 @@ function OnboardingWizardInner(): ReactElement {
     retrySave,
     commitSave,
     markWelcomeSeenAndAdvance,
+    completed,
+    finishOnboarding,
   } = useOnboardingFlow();
 
   const scheme = useColorSchemeStore((s) => s.scheme);
   const setScheme = useColorSchemeStore((s) => s.setScheme);
+
+  // Body scroll metrics for the editorial scrollbar (BodyScrollBar): the body
+  // is a fixed-height box, so overflow is invisible without an indicator.
+  // The offset is stored with the step key it belongs to — a step change
+  // remounts the keyed ScrollView at y=0, so a stale offset reads as 0.
+  const headingKey = `${flowStepId}:${editStepId ?? ""}`;
+  const [bodyScroll, setBodyScroll] = useState({ key: "", y: 0 });
+  const bodyScrollY = bodyScroll.key === headingKey ? bodyScroll.y : 0;
+  const [bodyContentHeight, setBodyContentHeight] = useState(0);
+  const [bodyViewportHeight, setBodyViewportHeight] = useState(0);
+
+  // Direction of the step transition, set by the navigation that caused the
+  // step change (the mount-keyed StepTransition reads it on mount).
+  const directionRef = useRef<1 | -1>(1);
+  const goNext = (): void => {
+    directionRef.current = 1;
+    void handleNext();
+  };
+  const goBack = (): void => {
+    directionRef.current = -1;
+    handleBack();
+  };
+
+  // Single-choice steps (language/theme) auto-advance shortly after a tap —
+  // a short beat lets the selection land visibly before the flow moves on.
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
+  const selectAndAdvance = (apply: () => void): void => {
+    apply();
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(goNext, 320);
+  };
 
   // DEV-only test-fill engine. Hook is always called (no conditional hooks);
   // the UI is gated by `isDevTestFillEnabled()` so it never renders in prod.
@@ -102,6 +142,19 @@ function OnboardingWizardInner(): ReactElement {
     setLocale,
     setScheme,
   });
+
+  // Post-complete payoff: shown before the auth flag flips (bootstrap runs on
+  // the CTA), so the route guard doesn't unmount the wizard mid-moment.
+  if (completed) {
+    return (
+      <CompletionScreen
+        locale={locale}
+        styleId={session?.resumeStyleId}
+        t={t}
+        onDone={finishOnboarding}
+      />
+    );
+  }
 
   if (sessionQuery.isLoading && !fallbackSession) {
     return <CenteredState label={t("common.loading")} />;
@@ -123,7 +176,7 @@ function OnboardingWizardInner(): ReactElement {
       <WelcomeScreen
         t={t}
         onStart={markWelcomeSeenAndAdvance}
-        onBack={prevFlowStep(flowStepId) ? handleBack : undefined}
+        onBack={prevFlowStep(flowStepId) ? goBack : undefined}
       />
     );
   }
@@ -131,7 +184,7 @@ function OnboardingWizardInner(): ReactElement {
   const isLocal = !editStep && flowStep.kind === "local";
   const isReview = !editStep && flowStep.kind === "review";
   const showComplete = isReview;
-  const showSkip = !showComplete && !isLocal && !editStep && flowStep.optional;
+  const isOptionalFlow = !showComplete && !isLocal && !editStep && flowStep.optional;
   const showBack = Boolean(editStep) || Boolean(prevFlowStep(flowStepId));
   // Requiredness: a field is required when the contract's complete-time schema
   // requires it (`isProfileFieldRequired` — e.g. `summary`, even though the
@@ -139,38 +192,34 @@ function OnboardingWizardInner(): ReactElement {
   // `validateStepFields` uses the same rule, so the label and the gate agree.
   const fieldIsRequired = (field: OnboardingField): boolean =>
     isProfileFieldRequired(field.key) || Boolean(field.required);
-  // Suffix every label with its requiredness so each step always shows what's
-  // obrigatório vs opcional.
-  const labeledFields = flowFields.map((field) => ({
-    ...field,
-    label: `${field.label} · ${t(
-      fieldIsRequired(field) ? "onboarding.field.required" : "onboarding.field.optional",
-    )}`,
-  }));
-  const canContinue = ((): boolean => {
-    if (editStep) return canContinueStep(editStep, formData, items, t);
-    if (!currentStep) return true;
-    // Optional empty steps (sections AND the links step) need an explicit
-    // "skip this step" acknowledgement before "Continuar" unlocks — once an
-    // item/field is filled the normal validation below takes over.
-    if (showSkip && stepIsEmpty) return noItemsAck;
-    if (isSectionStep(currentStep)) return items.length > 0;
-    // Form/style steps: canContinueStep → validateStepFields enforces the
-    // contract requiredness, so steps like "username" or the summary on the
-    // headline step can't be left empty.
-    return canContinueStep(currentStep, formData, items, t, activeFieldKeys);
-  })();
+  // Only the exceptions get marked: optional fields carry an "· opcional"
+  // suffix, required fields show the bare label.
+  const labeledFields = flowFields.map((field) =>
+    fieldIsRequired(field)
+      ? field
+      : { ...field, label: `${field.label} · ${t("onboarding.field.optional")}` },
+  );
+  // Honest CTA: an optional step left empty is skipped by the primary action,
+  // and the button says so. The CTA is never disabled — pressing it validates
+  // (handleNext) and surfaces inline errors instead of a dead button.
+  const showSkipCta = isOptionalFlow && stepIsEmpty;
+
+  // Tappable headline suggestions from the saved work experience — shown as
+  // chips under the empty field instead of silently pre-filling it.
+  const workStep = session.steps.find((step) => step.sectionTypeKey === "work_experience_v1");
+  const headlineSuggestions =
+    !editStep && flowStepId === "headline"
+      ? suggestHeadlinesFromExperience(getSavedItemsForStep(session, workStep))
+      : [];
 
   const total = countedTotal();
   const stepNumber = editStep ? total : countedIndexOf(flowStepId) + 1;
-  const phase = phaseForFlowStep(editStep ? "review" : flowStepId);
   const stepTitle = editStep ? editStep.label : t(flowStep.titleKey);
   const stepSubtitle = editStep
     ? (editStep.description ?? "")
     : t(flowStep.titleKey.replace(".title", ".subtitle"));
   // A subtitle key that isn't translated falls back to the raw key path — hide it.
   const subtitleText = stepSubtitle.startsWith("onboarding.flow.") ? "" : stepSubtitle;
-  const headingKey = `${flowStepId}:${editStepId ?? ""}`;
 
   // Tighten gutters on small phones; cap the column to the available width.
   const horizontalPadding = width > 0 && width < 375 ? 20 : 28;
@@ -179,7 +228,6 @@ function OnboardingWizardInner(): ReactElement {
   // never shift between steps — short steps just center their content in it,
   // taller steps scroll within it. Scaled to the viewport, clamped for sanity.
   const bodyHeight = height > 0 ? Math.max(300, Math.min(440, Math.round(height * 0.46))) : 380;
-  const remainingMin = editStep ? 1 : estimatedRemainingMinutes(flowStepId);
 
   return (
     <SafeAreaView style={ed.root}>
@@ -194,18 +242,12 @@ function OnboardingWizardInner(): ReactElement {
           <View style={[ed.column, { maxWidth: columnMaxWidth }]}>
             {editStep || !flowStep.hideMasthead ? (
               <Masthead
-                phaseLabel={phase ? t(phase.labelKey) : ""}
-                timeText={t(
-                  remainingMin === 1
-                    ? "onboarding.progress.timeRemainingOne"
-                    : "onboarding.progress.timeRemaining",
-                  { min: remainingMin },
-                )}
+                counter={`${stepNumber} / ${total}`}
                 progressPct={(stepNumber / total) * 100}
               />
             ) : null}
 
-            <View key={headingKey}>
+            <StepTransition key={headingKey} direction={directionRef.current}>
               {isDevTestFillEnabled() && !editStep ? (
                 <TestFillBar
                   flowStepId={flowStepId}
@@ -215,23 +257,39 @@ function OnboardingWizardInner(): ReactElement {
                 />
               ) : null}
               <StepHeading title={stepTitle} subtitle={subtitleText} />
-            </View>
+            </StepTransition>
 
             {/* Fixed-height body: same on every step. Content centers inside it;
-                if a step is taller than the box, it scrolls within the box. */}
+                if a step is taller than the box, it scrolls within the box —
+                with the editorial scrollbar signalling the overflow. */}
             <View style={[ed.body, { height: bodyHeight }]}>
               <ScrollView
+                key={`scroll:${headingKey}`}
                 style={ed.flex}
                 contentContainerStyle={ed.bodyScroll}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
+                scrollEventThrottle={16}
+                onScroll={(event) =>
+                  setBodyScroll({ key: headingKey, y: event.nativeEvent.contentOffset.y })
+                }
+                onContentSizeChange={(_w, h) => setBodyContentHeight(h)}
+                onLayout={(event) => setBodyViewportHeight(event.nativeEvent.layout.height)}
               >
-                <View key={`body:${headingKey}`}>
+                <StepTransition key={`body:${headingKey}`} direction={directionRef.current}>
                   {isLocal ? (
                     flowStepId === "theme" ? (
-                      <ThemeStep scheme={scheme} onSelect={setScheme} t={t} />
+                      <ThemeStep
+                        scheme={scheme}
+                        onSelect={(next) => selectAndAdvance(() => setScheme(next))}
+                        t={t}
+                      />
                     ) : (
-                      <LanguageStep locale={locale} onSelect={setLocale} t={t} />
+                      <LanguageStep
+                        locale={locale}
+                        onSelect={(next) => selectAndAdvance(() => setLocale(next))}
+                        t={t}
+                      />
                     )
                   ) : isReview ? (
                     <ReviewSummary
@@ -243,15 +301,18 @@ function OnboardingWizardInner(): ReactElement {
                       t={t}
                     />
                   ) : !currentStep ? null : isResumeStyleStep(currentStep) ? (
-                    <ResumeStylePicker
-                      step={currentStep}
-                      selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
-                      t={t}
-                      onSelect={(resumeStyleId) => {
-                        setFormData({ resumeStyleId });
-                        setErrors({});
-                      }}
-                    />
+                    <>
+                      <ResumeStylePicker
+                        step={currentStep}
+                        selectedId={formData.resumeStyleId ?? session.resumeStyleId ?? ""}
+                        t={t}
+                        onSelect={(resumeStyleId) => {
+                          setFormData({ resumeStyleId });
+                          setErrors({});
+                        }}
+                      />
+                      {errors.resumeStyleId ? <FieldError text={errors.resumeStyleId} /> : null}
+                    </>
                   ) : isSectionStep(currentStep) ? (
                     <SectionItemEditor
                       step={currentStep}
@@ -261,57 +322,67 @@ function OnboardingWizardInner(): ReactElement {
                       art={sectionArtFor(currentStep.sectionTypeKey)}
                       t={t}
                     />
+                  ) : !editStep && flowStepId === "links" ? (
+                    <LinksEditor fields={flowFields} data={formData} onChange={setFormData} t={t} />
                   ) : (
                     <StepForm
                       fields={labeledFields}
                       data={formData}
                       errors={errors}
                       onChange={setFormData}
+                      onSubmit={goNext}
                       phoneCountryIso={phoneCountryIso}
                       onPhoneCountry={setPhoneCountry}
+                      {...(headlineSuggestions.length > 0
+                        ? { suggestions: { key: "headline", values: headlineSuggestions } }
+                        : {})}
                     />
                   )}
-                </View>
 
-                <StepContext flowStepId={flowStepId} formData={formData} session={session} t={t} />
-
-                {showSkip && stepIsEmpty ? (
-                  <View style={ed.skipRow}>
-                    <AckCheckbox
-                      label={currentStep?.noDataLabel ?? t("onboarding.skip")}
-                      checked={noItemsAck}
-                      onToggle={() => setNoItemsAck((value) => !value)}
-                      disabled={isPending}
-                    />
-                  </View>
-                ) : null}
+                  <StepContext
+                    flowStepId={flowStepId}
+                    formData={formData}
+                    session={session}
+                    t={t}
+                  />
+                </StepTransition>
               </ScrollView>
+              <BodyScrollBar
+                contentHeight={bodyContentHeight}
+                viewportHeight={bodyViewportHeight}
+                scrollY={bodyScrollY}
+              />
             </View>
 
             <View style={ed.footer}>
               {showBack ? (
-                <GhostButton
-                  label={t("onboarding.back")}
-                  onPress={handleBack}
-                  disabled={isPending}
-                />
+                <GhostButton label={t("onboarding.back")} onPress={goBack} disabled={isPending} />
               ) : (
                 <View />
               )}
-              {showComplete ? (
+              {/* Local single-choice steps auto-advance on tap — no CTA. The
+                  CTA is otherwise always pressable (never a dead button):
+                  pressing it validates and surfaces inline errors. */}
+              {isLocal ? null : showComplete ? (
                 <PrimaryAction
                   label={t("onboarding.complete")}
                   loading={complete.isPending}
-                  disabled={isPending || Boolean(session.missingRequired?.length)}
+                  disabled={isPending}
                   onPress={handleComplete}
                   testID="onboarding.complete"
                 />
               ) : (
                 <PrimaryAction
-                  label={editStep ? t("common.save") : t("onboarding.next")}
+                  label={
+                    editStep
+                      ? t("common.save")
+                      : showSkipCta
+                        ? t("onboarding.skipCta")
+                        : t("onboarding.next")
+                  }
                   loading={nextStep.isPending || gotoStep.isPending}
-                  disabled={isPending || !canContinue}
-                  onPress={() => void handleNext()}
+                  disabled={isPending}
+                  onPress={goNext}
                   testID="onboarding.next"
                 />
               )}

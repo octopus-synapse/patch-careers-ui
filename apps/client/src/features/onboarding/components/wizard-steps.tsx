@@ -13,12 +13,22 @@ import type { ColorScheme } from "@patch-careers/state";
 import { PhoneInput } from "@patch-careers/ui";
 import {
   AnimatedField,
-  PatchLogo,
+  FieldError,
   PrimaryAction,
+  UnderlineInput,
   useEditorialPalette,
 } from "@patch-careers/ui/editorial";
-import { ArrowLeft, Check, Minus, MonitorSmartphone, Moon, Sun, X } from "lucide-react-native";
-import { type ReactElement, useState } from "react";
+import {
+  ArrowLeft,
+  Check,
+  ChevronRight,
+  Minus,
+  MonitorSmartphone,
+  Moon,
+  Sun,
+  X,
+} from "lucide-react-native";
+import { type ReactElement, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -28,16 +38,16 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  type TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import { StyleScoreBadge } from "@/components/style-score-badge";
-import { AddRow, FieldRenderer, OverlayModal, useEd } from "@/features/sections";
+import { AddRow, FieldRenderer, OptionPill, OverlayModal, useEd } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
 import type { FlowStepId } from "../lib/flow-plan";
 import {
-  atsBand,
   buildReviewSections,
   missingRequiredTargets,
   parseResumeStyles,
@@ -49,19 +59,27 @@ import type {
   OnboardingSession,
   OnboardingStep,
   ResumeStyleOption,
+  ReviewSection,
 } from "../types";
 import { LocationPicker } from "./location-picker";
 import { WelcomeArt } from "./onboarding-art";
 import { SectionAddPicker } from "./section-add-picker";
 import { MissingBanner } from "./wizard-chrome";
 
+/** Fields whose text input can join the keyboard focus chain. */
+function isTypedField(field: OnboardingField): boolean {
+  return field.key !== "location" && field.key !== "phone" && !field.options?.length;
+}
+
 export function StepForm({
   data,
   errors,
   fields,
   onChange,
+  onSubmit,
   phoneCountryIso,
   onPhoneCountry,
+  suggestions,
 }: {
   data: FormData;
   errors: Record<string, string>;
@@ -69,15 +87,24 @@ export function StepForm({
   // current flow step (the wizard splits one backend step across screens).
   fields: OnboardingField[];
   onChange: (data: FormData) => void;
+  /** Keyboard submit on the last text field advances the step. */
+  onSubmit?: (() => void) | undefined;
   // Phone country is owned by the wizard so it survives the location → personal
   // hop and reloads; falls back to local state for forms without a phone field.
   phoneCountryIso?: string | undefined;
   onPhoneCountry?: (iso: string) => void;
+  /** Tappable value suggestions rendered under the matching (empty) field. */
+  suggestions?: { key: string; values: string[] } | undefined;
 }): ReactElement {
   const ed = useEd();
   const [localCountryIso, setLocalCountryIso] = useState<string | undefined>(undefined);
+  const inputRefs = useRef<Record<string, TextInput | null>>({});
   const countryIso = phoneCountryIso ?? localCountryIso;
   const setCountryIso = onPhoneCountry ?? setLocalCountryIso;
+  const typedKeys = fields.filter(isTypedField).map((field) => field.key);
+  // Focus the first field when the step opens with the cursor ready — only
+  // when it's an actual text input (never a picker, which would pop a modal).
+  const autoFocusKey = fields[0] && isTypedField(fields[0]) ? fields[0].key : undefined;
   return (
     <View style={ed.fieldStack}>
       {fields.map((field, index) => {
@@ -108,18 +135,55 @@ export function StepForm({
             />
           );
         } else {
+          // Chain the keyboard through the typed fields: "next" focuses the
+          // following text input, the last one submits the step.
+          const chainIndex = typedKeys.indexOf(field.key);
+          const nextTypedKey = chainIndex >= 0 ? typedKeys[chainIndex + 1] : undefined;
+          const isTextArea = field.type === "textarea";
+          const keyboardProps =
+            chainIndex < 0 || isTextArea
+              ? {}
+              : nextTypedKey
+                ? {
+                    returnKeyType: "next" as const,
+                    onSubmitEditing: () => inputRefs.current[nextTypedKey]?.focus(),
+                  }
+                : onSubmit
+                  ? { returnKeyType: "done" as const, onSubmitEditing: onSubmit }
+                  : {};
           node = (
             <FieldRenderer
               field={field}
               value={data[field.key] ?? ""}
               {...errorProps}
+              {...(field.key === autoFocusKey ? { autoFocus: true } : {})}
+              inputRef={(el: TextInput | null) => {
+                inputRefs.current[field.key] = el;
+              }}
+              {...keyboardProps}
               onChange={(value) => onChange({ ...data, [field.key]: value })}
             />
           );
         }
+        const fieldSuggestions =
+          suggestions?.key === field.key && !(data[field.key] ?? "").trim()
+            ? suggestions.values
+            : [];
         return (
           <AnimatedField key={field.key} delay={120 + index * 70}>
             {node}
+            {fieldSuggestions.length > 0 ? (
+              <View style={[ed.pillWrap, ed.suggestionRow]}>
+                {fieldSuggestions.map((value) => (
+                  <OptionPill
+                    key={value}
+                    label={value}
+                    selected={false}
+                    onPress={() => onChange({ ...data, [field.key]: value })}
+                  />
+                ))}
+              </View>
+            ) : null}
           </AnimatedField>
         );
       })}
@@ -238,27 +302,14 @@ export function ThemeStep({
 // Public profile link, shown as a live preview on the username step.
 const PROFILE_URL_HOST = "patchcareers.com";
 
-function ContextNote({ body, label }: { body: string; label: string }): ReactElement {
-  const ed = useEd();
-  return (
-    <View>
-      <View style={ed.contextRule} />
-      <RNText style={ed.contextLabel}>{label}</RNText>
-      <RNText style={ed.contextBody}>{body}</RNText>
-    </View>
-  );
-}
-
 function LinkPreview({
   handle,
   host,
   label,
-  note,
 }: {
   handle: string;
   host: string;
   label: string;
-  note: string;
 }): ReactElement {
   const ed = useEd();
   return (
@@ -267,7 +318,6 @@ function LinkPreview({
       <RNText style={ed.linkUrl} numberOfLines={1}>
         {host}/<RNText style={ed.linkHandle}>@{handle}</RNText>
       </RNText>
-      <RNText style={ed.linkNote}>{note}</RNText>
     </View>
   );
 }
@@ -284,31 +334,170 @@ export function StepContext({
   t: (key: string) => string;
 }): ReactElement | null {
   const ed = useEd();
-  if (flowStepId === "username") {
-    const handle = (formData.username ?? session.username ?? "").trim();
-    if (!handle) return null;
-    return (
-      <View style={ed.context}>
-        <LinkPreview
-          host={PROFILE_URL_HOST}
-          handle={handle}
-          label={t("onboarding.flow.username.linkLabel")}
-          note={t("onboarding.flow.username.linkNote")}
-        />
-      </View>
-    );
-  }
-  if (flowStepId === "location" || flowStepId === "personal") {
-    return (
-      <View style={ed.context}>
-        <ContextNote
-          label={t(`onboarding.flow.${flowStepId}.contextLabel`)}
-          body={t(`onboarding.flow.${flowStepId}.contextNote`)}
-        />
-      </View>
-    );
-  }
-  return null;
+  if (flowStepId !== "username") return null;
+  const handle = (formData.username ?? session.username ?? "").trim();
+  if (!handle) return null;
+  return (
+    <View style={ed.context}>
+      <LinkPreview
+        host={PROFILE_URL_HOST}
+        handle={handle}
+        label={t("onboarding.flow.username.linkLabel")}
+      />
+    </View>
+  );
+}
+
+/** Links step — filled links render as quiet cards; a single "+ Adicionar
+ *  link" affordance opens a compact modal (pick the platform → enter the
+ *  URL), replacing four always-empty URL inputs. Values live in the same
+ *  step form data, so persistence/validation are unchanged. */
+export function LinksEditor({
+  data,
+  fields,
+  onChange,
+  t,
+}: {
+  data: FormData;
+  fields: OnboardingField[];
+  onChange: (data: FormData) => void;
+  t: Translator;
+}): ReactElement {
+  const ed = useEd();
+  const authTokens = useEditorialPalette();
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [draftUrl, setDraftUrl] = useState("");
+  const [draftError, setDraftError] = useState("");
+
+  const filled = fields.filter((field) => (data[field.key] ?? "").trim().length > 0);
+  const empty = fields.filter((field) => !(data[field.key] ?? "").trim());
+  const editingField = fields.find((field) => field.key === editingKey) ?? null;
+
+  const openEditor = (key: string): void => {
+    setDraftUrl((data[key] ?? "").trim());
+    setDraftError("");
+    setPickerOpen(false);
+    setEditingKey(key);
+  };
+  const closeModal = (): void => {
+    setPickerOpen(false);
+    setEditingKey(null);
+  };
+  const saveDraft = (): void => {
+    if (!editingField) return;
+    const url = draftUrl.trim();
+    // Validated here (same rule as the step validator) so a saved link can
+    // never block "Continuar" with an error the step no longer renders.
+    if (!/^https?:\/\/\S+/i.test(url)) {
+      setDraftError(t("onboarding.validation.invalidUrl"));
+      return;
+    }
+    onChange({ ...data, [editingField.key]: url });
+    closeModal();
+  };
+  const removeLink = (key: string): void => {
+    const next = { ...data };
+    delete next[key];
+    onChange(next);
+  };
+
+  return (
+    <View>
+      {filled.length > 0 ? (
+        <View style={ed.list}>
+          {filled.map((field, index) => (
+            <AnimatedField key={field.key} delay={120 + index * 70}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={field.label}
+                onPress={() => openEditor(field.key)}
+                style={ed.card}
+              >
+                <View style={ed.cardBody}>
+                  <RNText style={ed.cardPrimary} numberOfLines={1}>
+                    {field.label}
+                  </RNText>
+                  <RNText style={ed.cardMeta} numberOfLines={1}>
+                    {data[field.key]}
+                  </RNText>
+                </View>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("onboarding.removeItem")}
+                  onPress={() => removeLink(field.key)}
+                  hitSlop={10}
+                  style={ed.cardRemove}
+                >
+                  <X size={16} color={authTokens.muted} strokeWidth={1.75} />
+                </Pressable>
+              </Pressable>
+            </AnimatedField>
+          ))}
+        </View>
+      ) : null}
+
+      {empty.length > 0 ? (
+        <AnimatedField delay={filled.length > 0 ? 200 : 120}>
+          <AddRow
+            label={t("onboarding.links.add")}
+            onPress={() => setPickerOpen(true)}
+            style={filled.length > 0 ? ed.addRow : ed.addSection}
+            {...(filled.length > 0 ? {} : { labelStyle: ed.addSectionLabel })}
+          />
+        </AnimatedField>
+      ) : null}
+
+      <OverlayModal visible={pickerOpen || Boolean(editingField)} onRequestClose={closeModal}>
+        <Pressable style={ed.pickerOverlay} onPress={closeModal}>
+          {/* Absorb taps inside the card so they don't dismiss it. */}
+          <Pressable style={ed.pickerCard} onPress={() => undefined}>
+            {editingField ? (
+              <>
+                <RNText style={ed.pickerTitle}>{editingField.label}</RNText>
+                <UnderlineInput
+                  label={t("sections.links.urlLabel")}
+                  value={draftUrl}
+                  onChangeText={(value) => {
+                    setDraftUrl(value);
+                    if (draftError) setDraftError("");
+                  }}
+                  placeholder={t("sections.links.urlPlaceholder")}
+                  autoFocus
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="url"
+                  returnKeyType="done"
+                  onSubmitEditing={saveDraft}
+                  hasError={Boolean(draftError)}
+                />
+                {draftError ? <FieldError text={draftError} /> : null}
+                <PrimaryAction label={t("common.save")} onPress={saveDraft} />
+              </>
+            ) : (
+              <>
+                <RNText style={ed.pickerTitle}>{t("onboarding.links.add")}</RNText>
+                <View>
+                  {empty.map((field) => (
+                    <Pressable
+                      key={field.key}
+                      accessibilityRole="button"
+                      accessibilityLabel={field.label}
+                      onPress={() => openEditor(field.key)}
+                      style={ed.linkKindRow}
+                    >
+                      <RNText style={ed.linkKindLabel}>{field.label}</RNText>
+                      <ChevronRight size={18} color={authTokens.subtle} strokeWidth={1.75} />
+                    </Pressable>
+                  ))}
+                </View>
+              </>
+            )}
+          </Pressable>
+        </Pressable>
+      </OverlayModal>
+    </View>
+  );
 }
 
 export function ResumeStylePicker({
@@ -358,7 +547,6 @@ export function ResumeStylePicker({
       ))}
       <ResumeStyleModal
         option={previewed}
-        liveScore={previewed ? scoreById.get(previewed.id) : undefined}
         selected={previewed?.id === selectedId}
         t={t}
         onClose={() => setPreviewId(null)}
@@ -401,7 +589,6 @@ function ResumeStyleCard({
           <RNText style={ed.styleName}>{option.name}</RNText>
           {selected ? <Check size={16} color={authTokens.ink} strokeWidth={2} /> : null}
         </View>
-        {option.description ? <RNText style={ed.styleDesc}>{option.description}</RNText> : null}
         {typeof liveScore === "number" ? (
           <StyleScoreBadge styleId={option.id} styleScore={liveScore} />
         ) : null}
@@ -481,11 +668,37 @@ function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
   );
 }
 
-/** Compact, non-interactive live thumbnail of the user's real résumé in the
- *  selected style — replaces the generic style thumbnail in the review card.
- *  Same endpoint/data as the modal preview (shares the query cache). The A4
- *  page auto-fits to this tiny box via the document's own fit script.
- *  `pointerEvents="none"` keeps the parent review card tappable. */
+/** Non-interactive embedded résumé document (web iframe / native WebView). */
+function PreviewFrame({ html }: { html: string }): ReactElement {
+  return Platform.OS === "web" ? (
+    <iframe
+      srcDoc={html}
+      title="preview"
+      style={
+        {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          border: "none",
+        } as unknown as undefined
+      }
+    />
+  ) : (
+    <WebView
+      originWhitelist={["*"]}
+      source={{ html }}
+      style={StyleSheet.absoluteFill}
+      scrollEnabled={false}
+    />
+  );
+}
+
+/** Live preview of the user's real résumé in the selected style — the review
+ *  hub's hero ("this exists because of you"). Same endpoint/data as the modal
+ *  preview (shares the query cache); the A4 page auto-fits via the document's
+ *  own fit script. `pointerEvents="none"` keeps the surface inert. */
 function ReviewStylePreview({ styleId }: { styleId: string }): ReactElement | null {
   const ed = useEd();
   const { locale } = useI18n();
@@ -496,56 +709,30 @@ function ReviewStylePreview({ styleId }: { styleId: string }): ReactElement | nu
   const html = preview.data?.html;
   if (!html) return null;
   return (
-    <View style={[ed.reviewImage, ed.reviewPreviewBox]} pointerEvents="none">
-      {Platform.OS === "web" ? (
-        <iframe
-          srcDoc={html}
-          title="preview"
-          style={
-            {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              border: "none",
-            } as unknown as undefined
-          }
-        />
-      ) : (
-        <WebView
-          originWhitelist={["*"]}
-          source={{ html }}
-          style={StyleSheet.absoluteFill}
-          scrollEnabled={false}
-        />
-      )}
+    <View style={ed.reviewPreviewBox} pointerEvents="none">
+      <PreviewFrame html={html} />
     </View>
   );
 }
 
-/** Preview of a résumé template + ATS-band explanation (item: resume-style
- *  modal). Centered card over a scrim — same size/positioning as the
- *  add-education/experience editor (`MultiItemEditorModal`). Selection is
- *  confirmed here. */
+/** Preview of a résumé template (item: resume-style modal). Centered card
+ *  over a scrim — same size/positioning as the add-education/experience
+ *  editor (`MultiItemEditorModal`). Selection is confirmed here. */
 function ResumeStyleModal({
   onClose,
   onUse,
   option,
-  liveScore,
   selected,
   t,
 }: {
   onClose: () => void;
   onUse: (id: string) => void;
   option: ResumeStyleOption | null;
-  liveScore?: number | undefined;
   selected: boolean;
   t: Translator;
 }): ReactElement {
   const ed = useEd();
   const authTokens = useEditorialPalette();
-  const band = atsBand(liveScore);
   return (
     <OverlayModal visible={Boolean(option)} onRequestClose={onClose}>
       <View style={ed.editorModalOverlay}>
@@ -570,18 +757,6 @@ function ResumeStyleModal({
           </View>
           <ScrollView style={ed.flex} contentContainerStyle={ed.modalScroll}>
             {option ? <StylePreview option={option} /> : null}
-            {band ? (
-              <View style={ed.atsSeal}>
-                <RNText style={ed.atsSealLabel}>
-                  {typeof liveScore === "number" ? `${liveScore}/100 · ` : ""}
-                  {t(`onboarding.ats.${band}.label`)}
-                </RNText>
-                <RNText style={ed.atsSealBlurb}>{t(`onboarding.ats.${band}.blurb`)}</RNText>
-              </View>
-            ) : null}
-            {option?.description ? (
-              <RNText style={ed.modalDesc}>{option.description}</RNText>
-            ) : null}
           </ScrollView>
           <View style={ed.modalFooter}>
             <PrimaryAction
@@ -608,7 +783,7 @@ export function ReviewSummary({
   onEdit: (stepId: string) => void;
   session: OnboardingSession;
   steps: OnboardingStep[];
-  t: (key: string) => string;
+  t: Translator;
 }): ReactElement {
   const ed = useEd();
   const authTokens = useEditorialPalette();
@@ -619,53 +794,56 @@ export function ReviewSummary({
   const options = (session.availableExtras ?? [])
     .filter((extra) => !activated.has(extra.id))
     .map((extra) => ({ id: extra.id, label: extra.label, icon: extra.icon }));
+  // Right column of a checklist row: the chosen style's name, an item count
+  // for multi-item sections, "—" for skipped ones, nothing for form steps.
+  const rowValue = (section: ReviewSection): string => {
+    if (section.styleName) return section.styleName;
+    if (section.skipped) return "—";
+    if (typeof section.count === "number") {
+      return section.count === 1
+        ? t("onboarding.review.itemsOne")
+        : t("onboarding.review.items", { count: section.count });
+    }
+    return "";
+  };
   return (
     <View>
       {missing.length > 0 ? <MissingBanner targets={missing} onFix={onEdit} t={t} /> : null}
-      {sections.map((section, index) => (
-        <AnimatedField key={section.stepId} delay={100 + index * 50}>
-          <Pressable style={ed.reviewCard} onPress={() => onEdit(section.stepId)}>
-            <View style={ed.reviewHead}>
+
+      {/* The résumé itself leads — the payoff the flow has been building to. */}
+      {session.resumeStyleId ? (
+        <AnimatedField delay={100}>
+          <View style={ed.reviewHero}>
+            <ReviewStylePreview styleId={session.resumeStyleId} />
+          </View>
+        </AnimatedField>
+      ) : null}
+
+      <AnimatedField delay={160}>
+        <View style={ed.reviewList}>
+          {sections.map((section) => (
+            <Pressable
+              key={section.stepId}
+              accessibilityRole="button"
+              accessibilityLabel={section.label}
+              onPress={() => onEdit(section.stepId)}
+              style={ed.reviewRow}
+            >
               {section.skipped ? (
                 <Minus size={13} color={authTokens.subtle} />
               ) : (
                 <Check size={13} color={authTokens.success} strokeWidth={2.5} />
               )}
-              <RNText style={ed.reviewLabel}>{section.label}</RNText>
-            </View>
-            {section.skipped ? (
-              <RNText style={ed.reviewSkipped}>—</RNText>
-            ) : section.styleName ? (
-              <View style={ed.reviewStyleRow}>
-                {session.resumeStyleId ? (
-                  // Live thumbnail of the user's real résumé in the selected
-                  // style — falls back to the generic style thumbnail.
-                  <ReviewStylePreview styleId={session.resumeStyleId} />
-                ) : section.stylePreviewUrl ? (
-                  <Image source={{ uri: section.stylePreviewUrl }} style={ed.reviewImage} />
-                ) : null}
-                <RNText style={ed.reviewStyleName}>{section.styleName}</RNText>
-              </View>
-            ) : (
-              <View>
-                {section.entries.map((entry) => (
-                  <View key={`${entry.label}:${entry.value}`} style={ed.reviewEntry}>
-                    {entry.label ? (
-                      <RNText style={ed.reviewEntryLabel}>{entry.label}</RNText>
-                    ) : null}
-                    <RNText
-                      style={[ed.reviewEntryValue, entry.long ? ed.reviewEntryLong : null]}
-                      numberOfLines={entry.long ? 4 : 2}
-                    >
-                      {entry.value}
-                    </RNText>
-                  </View>
-                ))}
-              </View>
-            )}
-          </Pressable>
-        </AnimatedField>
-      ))}
+              <RNText style={ed.reviewRowLabel} numberOfLines={1}>
+                {section.label}
+              </RNText>
+              <RNText style={ed.reviewRowValue} numberOfLines={1}>
+                {rowValue(section)}
+              </RNText>
+            </Pressable>
+          ))}
+        </View>
+      </AnimatedField>
 
       {options.length > 0 ? (
         <AddRow
@@ -750,6 +928,61 @@ export function WelcomeScreen({
               label={t("onboarding.welcome.cta")}
               onPress={onStart}
               testID="onboarding.welcome.start"
+            />
+          </View>
+        </AnimatedField>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+/** Post-complete payoff screen — the narrative close the welcome opens: the
+ *  finished résumé plus one CTA into the app. Shown BEFORE the auth flag
+ *  flips (bootstrap runs on the CTA), so the onboarding route guard doesn't
+ *  yank the user away mid-moment. The preview is a cache-only read: the
+ *  review step already rendered it, and post-complete the session endpoint
+ *  may reject, so this never fetches (`enabled: false`). */
+export function CompletionScreen({
+  locale,
+  onDone,
+  styleId,
+  t,
+}: {
+  locale: Locale;
+  onDone: () => Promise<void>;
+  styleId: string | null | undefined;
+  t: Translator;
+}): ReactElement {
+  const ed = useEd();
+  const [busy, setBusy] = useState(false);
+  const preview = useGetV1OnboardingSessionResumePreview(
+    { styleId: styleId ?? "", locale },
+    { query: { enabled: false } },
+  );
+  const html = styleId ? preview.data?.html : undefined;
+  return (
+    <SafeAreaView style={ed.root}>
+      <View style={ed.welcomeWrap}>
+        {html ? (
+          <AnimatedField delay={120}>
+            <View style={ed.reviewPreviewBox} pointerEvents="none">
+              <PreviewFrame html={html} />
+            </View>
+          </AnimatedField>
+        ) : null}
+        <AnimatedField delay={240}>
+          <RNText style={ed.welcomeHeading}>{t("onboarding.done.title")}</RNText>
+        </AnimatedField>
+        <AnimatedField delay={340}>
+          <View style={ed.welcomeCta}>
+            <PrimaryAction
+              label={t("onboarding.done.cta")}
+              loading={busy}
+              onPress={() => {
+                setBusy(true);
+                void onDone().finally(() => setBusy(false));
+              }}
+              testID="onboarding.done"
             />
           </View>
         </AnimatedField>

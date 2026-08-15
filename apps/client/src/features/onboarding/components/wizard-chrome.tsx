@@ -1,44 +1,84 @@
 /**
  * Onboarding wizard chrome — the presentational frame around each step:
- * masthead/progress, step heading, the skip-ack checkbox, the loading/error
- * centered state, and the resume/retry/missing banners. Extracted from
+ * masthead/progress, step heading, the loading/error centered state, the
+ * body scrollbar, and the resume/retry/missing banners. Extracted from
  * onboarding-wizard.tsx so the wizard is just orchestration + a step switch.
  */
 import type { Translator } from "@patch-careers/i18n";
-import { AnimatedField, PatchLogo, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { AlertCircle, Check, RefreshCw } from "lucide-react-native";
-import type { ReactElement } from "react";
-import { ActivityIndicator, Pressable, Text as RNText, SafeAreaView, View } from "react-native";
+import { AnimatedField, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { AlertCircle, RefreshCw } from "lucide-react-native";
+import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
+import {
+  ActivityIndicator,
+  Animated,
+  Easing,
+  Pressable,
+  Text as RNText,
+  SafeAreaView,
+  View,
+} from "react-native";
 import { GhostButton, useEd } from "@/features/sections";
 import type { MissingRequiredTarget } from "../lib/helpers";
 
 export function Masthead({
-  phaseLabel,
+  counter,
   progressPct,
-  timeText,
 }: {
-  phaseLabel: string;
+  /** Quiet step counter, e.g. "4 / 10". */
+  counter: string;
   progressPct: number;
-  timeText: string;
 }): ReactElement {
   const ed = useEd();
   const pct = Math.max(0, Math.min(100, progressPct));
   return (
     <View style={ed.mastheadWrap}>
-      {/* Brand isolated + centered, with breathing room above the progress. */}
-      <View style={ed.mastheadBrand}>
-        <PatchLogo />
-      </View>
       {/* The progress bar leads as the section divider/rule. */}
       <View style={ed.track}>
         <View style={[ed.fill, { width: `${pct}%` }]} />
       </View>
-      {/* Justified byline beneath the rule: section (left) ↔ time (right). */}
       <View style={ed.mastheadMeta}>
-        {phaseLabel ? <RNText style={ed.phaseLabel}>{phaseLabel}</RNText> : <View />}
-        <RNText style={ed.timeText}>{timeText}</RNText>
+        <View />
+        <RNText style={ed.timeText}>{counter}</RNText>
       </View>
     </View>
+  );
+}
+
+/** Directional entrance for step content — a subtle slide + fade that gives
+ *  the flow a physical direction (forward slides in from the right, back from
+ *  the left). Mount-keyed by the wizard, so it runs once per step change. */
+export function StepTransition({
+  children,
+  direction,
+}: {
+  children: ReactNode;
+  direction: 1 | -1;
+}): ReactElement {
+  const progress = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 240,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [progress]);
+  return (
+    <Animated.View
+      style={{
+        opacity: progress,
+        transform: [
+          {
+            translateX: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [direction * 24, 0],
+            }),
+          },
+        ],
+      }}
+    >
+      {children}
+    </Animated.View>
   );
 }
 
@@ -75,36 +115,30 @@ export function StepHeading({
   );
 }
 
-/** Acknowledgement checkbox — gates "Continuar" on an empty optional section
- *  ("Não tenho X"): the user must add an item or tick this to proceed. */
-export function AckCheckbox({
-  checked,
-  disabled,
-  label,
-  onToggle,
+/** Thin editorial scrollbar for the fixed-height step body. Rendered only
+ *  when the content overflows the box, so the user can tell there's more
+ *  below the fold (e.g. the review list) without hunting for it. */
+export function BodyScrollBar({
+  contentHeight,
+  scrollY,
+  viewportHeight,
 }: {
-  checked: boolean;
-  disabled?: boolean;
-  label: string;
-  onToggle: () => void;
-}): ReactElement {
+  contentHeight: number;
+  scrollY: number;
+  viewportHeight: number;
+}): ReactElement | null {
   const ed = useEd();
-  const authTokens = useEditorialPalette();
+  if (viewportHeight <= 0 || contentHeight <= viewportHeight + 1) return null;
+  const thumbHeight = Math.max(28, (viewportHeight / contentHeight) * viewportHeight);
+  const maxScroll = contentHeight - viewportHeight;
+  const maxThumbTravel = viewportHeight - thumbHeight;
+  const offset = Math.min(maxThumbTravel, Math.max(0, (scrollY / maxScroll) * maxThumbTravel));
   return (
-    <Pressable
-      accessibilityRole="checkbox"
-      accessibilityState={{ checked, disabled: Boolean(disabled) }}
-      accessibilityLabel={label}
-      disabled={disabled}
-      onPress={onToggle}
-      hitSlop={8}
-      style={ed.ackRow}
-    >
-      <View style={[ed.ackBox, checked ? ed.ackBoxChecked : null]}>
-        {checked ? <Check size={12} color={authTokens.surface} strokeWidth={3} /> : null}
-      </View>
-      <RNText style={[ed.ghostLabel, ed.ackLabel, disabled ? ed.dim : null]}>{label}</RNText>
-    </Pressable>
+    <View pointerEvents="none" style={ed.scrollTrack}>
+      <View
+        style={[ed.scrollThumb, { height: thumbHeight, transform: [{ translateY: offset }] }]}
+      />
+    </View>
   );
 }
 

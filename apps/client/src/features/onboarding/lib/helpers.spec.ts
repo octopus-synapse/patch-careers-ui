@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import type { OnboardingSession, OnboardingStep, SectionItem } from "../types";
 import { FLOW_PLAN } from "./flow-plan";
 import {
-  atsBand,
   backendStepForFlow,
   buildNextPayload,
   buildReviewSections,
@@ -248,13 +247,5 @@ describe("onboarding helpers", () => {
     expect(defaultCountryFromLocale("en")).toBe("US");
     expect(defaultCountryFromLocale("es-MX")).toBe("MX");
     expect(defaultCountryFromLocale(undefined)).toBeUndefined();
-  });
-
-  it("buckets ATS scores into bands", () => {
-    expect(atsBand(96)).toBe("high");
-    expect(atsBand(80)).toBe("good");
-    expect(atsBand(60)).toBe("fair");
-    expect(atsBand(null)).toBeNull();
-    expect(atsBand(undefined)).toBeNull();
   });
 });
