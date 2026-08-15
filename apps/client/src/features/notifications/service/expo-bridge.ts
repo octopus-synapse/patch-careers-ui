@@ -72,6 +72,10 @@ export function addResponseListener(onTap: (data: NotificationPayload) => void):
 }
 
 export async function getInitialTap(): Promise<NotificationPayload | null> {
+  // `getLastNotificationResponseAsync` is not implemented on web — calling it
+  // throws an uncaught "not available on web" error. Push is mobile-only, so
+  // a web session can never cold-start from a notification tap.
+  if (Platform.OS === "web") return null;
   const response = await Notifications.getLastNotificationResponseAsync();
   if (!response) return null;
   return parsePayload(response.notification.request.content.data);
