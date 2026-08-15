@@ -1,6 +1,6 @@
 /**
  * <RecommendedJobCard> — a compact carousel card for a match-ranked external
- * listing: company · title · location, with the match score as a grade chip.
+ * listing: company · title · location, with the compatibility chip ("92%").
  */
 import { MatchScoreChip } from "@patch-careers/ui";
 import type { ReactElement } from "react";
@@ -32,8 +32,7 @@ export function RecommendedJobCard({
         <MatchScoreChip
           score={job.matchScore}
           size="sm"
-          grade
-          accessibilityLabel={`${matchLabel} ${job.matchScore}`}
+          accessibilityLabel={`${job.matchScore}% ${matchLabel}`}
         />
       </View>
       <Text style={s.title} numberOfLines={2}>

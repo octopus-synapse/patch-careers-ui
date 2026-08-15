@@ -122,10 +122,11 @@ const BRAND_NAMES = new Set([
 const GRAMMAR_PARTICLES = new Set(["às"]);
 
 /**
- * Dev-only scaffolding: sample onboarding data + the "test all" auto-fill bar.
+ * Dev-only scaffolding: sample onboarding data + the "test all" auto-fill
+ * bars (any `*test-fill-bar.tsx` — onboarding's, fit's, future ones).
  * Not shipped user copy, so its pt-BR fixtures aren't translation targets.
  */
-const DEV_SCAFFOLDING_RX = /(^|[/\\])(test-fixtures|test-fill-bar)\.(ts|tsx)$/;
+const DEV_SCAFFOLDING_RX = /(^|[/\\])(test-fixtures|[\w-]*test-fill-bar)\.(ts|tsx)$/;
 
 const NUMERIC_OR_PUNCT_RX = /^[\d\s\-–—·:./,%+()]+$/;
 const SLUG_RX = /^[a-z][a-zA-Z0-9_-]*$/;

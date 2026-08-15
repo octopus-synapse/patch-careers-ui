@@ -30,9 +30,7 @@ describe("routeForNotification", () => {
     );
   });
 
-  it("routes unknown types to the Notifications tab", () => {
-    expect(routeForNotification({ type: "POST_LIKED", entityId: "p1" })).toBe(
-      "/(tabs)/notifications",
-    );
+  it("routes unknown types to the stacked notifications inbox", () => {
+    expect(routeForNotification({ type: "POST_LIKED", entityId: "p1" })).toBe("/notifications");
   });
 });

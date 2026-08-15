@@ -111,6 +111,9 @@ export const settingsPtBR: TranslationDict = {
   notifications: {
     title: "Notificações",
     intro: "Escolha como quer ser avisado.",
+    pushErrorTitle: "Não foi possível ativar notificações",
+    pushErrorBody:
+      "O iOS concedeu permissão, mas o app não conseguiu registrar o Expo Push Token neste device.",
     channels: {
       device: "No celular",
       email: "E-mail",
@@ -262,6 +265,9 @@ export const settingsEn: TranslationDict = {
   notifications: {
     title: "Notifications",
     intro: "Choose how you want to be notified.",
+    pushErrorTitle: "Couldn't enable notifications",
+    pushErrorBody:
+      "iOS granted permission, but the app couldn't register the Expo Push Token on this device.",
     channels: {
       device: "On your phone",
       email: "Email",

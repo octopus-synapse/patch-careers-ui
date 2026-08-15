@@ -39,9 +39,9 @@ import {
   View,
 } from "react-native";
 import { setHeaderCollapsed } from "@/components/header-collapse-store";
-import { RecommendedSection } from "@/features/match";
+import { RecommendedSection, useListMatchScores } from "@/features/match";
 import { useI18n } from "@/providers/i18n-provider";
-import { EXTERNAL_JOBS_BASE, useExternalJobs } from "../hooks/queries";
+import { seedExternalJob, useExternalJobs } from "../hooks/queries";
 import {
   type ApplicationRow as ApplicationRowData,
   type ApplicationSection,
@@ -109,6 +109,15 @@ export function JobsScreen(): ReactElement {
 
   const jobSections = useMemo(() => groupJobsByPeriod(list.jobs, now), [list.jobs, now]);
   const sections: Section[] = isApplications ? apps.sections : jobSections;
+
+  // Per-row compatibility for the "Todas" scope (fit-gated, batch-computed,
+  // server-cached). Saved rows are keyed by savedId — their listing may be
+  // swept — so they stay chip-less.
+  const listedJobIds = useMemo(
+    () => (scope === "all" ? list.jobs.map((job) => job.id) : []),
+    [scope, list.jobs],
+  );
+  const matchScores = useListMatchScores(listedJobIds);
 
   // Scroll-driven pinning: the scope bar floats just below the chrome and rides
   // up with the scroll until it locks at the top, where it stays.
@@ -257,11 +266,7 @@ export function JobsScreen(): ReactElement {
       {scope === "all" ? (
         <RecommendedSection
           onOpenJob={(job) => {
-            // The detail screen resolves external jobs from the list cache;
-            // seed this recommended item so the deep link isn't a cold miss.
-            queryClient.setQueryData([EXTERNAL_JOBS_BASE, "recommended-seed", job.id], {
-              items: [job],
-            });
+            seedExternalJob(queryClient, job);
             router.push({ pathname: "/job/[id]", params: { id: job.id } });
           }}
         />
@@ -350,6 +355,7 @@ export function JobsScreen(): ReactElement {
               onPress={openJob}
               onToggleSave={toggleSave}
               savePending={pendingId === item.externalId}
+              matchScore={matchScores[item.id]}
             />
           )
         }

@@ -6,7 +6,8 @@
  *   MESSAGE_RECEIVED            → conversation thread (push-only type)
  *   MATCH_RECOMMENDATIONS_READY → Jobs tab
  *   RESUME_QUALITY_*            → Profile tab
- *   everything else             → the Notifications tab (no specific entity)
+ *   everything else             → the stacked notifications inbox (no
+ *                                 specific entity)
  */
 
 import type { Href } from "expo-router";
@@ -27,6 +28,6 @@ export function routeForNotification(payload: {
     case "RESUME_QUALITY_REGRESSED":
       return "/(tabs)/profile";
     default:
-      return "/(tabs)/notifications";
+      return "/notifications";
   }
 }

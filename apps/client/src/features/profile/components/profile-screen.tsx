@@ -1,37 +1,35 @@
 /**
- * Profile tab — the user's master-resume manager. Identity header on top
- * (avatar / name / headline / location + edit-sheet triggers), then two
- * Instagram-style sub-tabs:
+ * Profile tab — the user's master-resume home, now a single page (the old
+ * Instagram-style sub-tabs are gone: Currículos became its own bottom-bar
+ * tab and Desempenho became the score hero's sheet):
  *
- *   Perfil      → section manager of the master resume (add via the single
- *                 bottom box, tap to edit, swipe to delete — no reordering);
- *   Currículos  → the user's resumes (master first, slots, derive-from-master
- *                 wizard, per-resume preview/detail).
+ *   identity header → score hero (fixed scores; tap = Desempenho sheet) →
+ *   Fit Profile card (unlocks per-job Match) → master sections (add via the
+ *   floating "Adicionar ao perfil" CTA, tap to edit, swipe to delete).
  *
  * The old completeness card and public-profile link are gone by design.
  */
 
-import { getV1ResumesQueryKey } from "@patch-careers/api-client";
+import { getV1MeScoresQueryKey, getV1ResumesQueryKey } from "@patch-careers/api-client";
 import { EmptyState } from "@patch-careers/ui";
 import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import { TriangleAlert } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { ResumeListTab } from "@/features/resumes";
 import { useI18n } from "@/providers/i18n-provider";
 import { useProfile, useProfileCompleteness, useProfileMutations } from "../hooks/queries";
 import { usePf } from "../lib/styles";
 import { AvatarActionSheet } from "./avatar-action-sheet";
+import { FitProfileCard } from "./fit-profile-card";
 import { MasterAddSection } from "./master-add-section";
 import { MasterSectionsTab } from "./master-sections-tab";
-import { PerformanceTab } from "./performance-tab";
+import { PerformanceSheet } from "./performance-sheet";
 import { ProfileHeader } from "./profile-header";
 import { ProfileSkeleton } from "./profile-skeleton";
-import { type ProfileSubTab, ProfileSubTabs } from "./profile-sub-tabs";
+import { ScoreHero } from "./score-hero";
 
 export function ProfileScreen(): ReactElement {
   const { t } = useI18n();
@@ -46,29 +44,17 @@ export function ProfileScreen(): ReactElement {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
+  const [performanceOpen, setPerformanceOpen] = useState(false);
 
-  // Sub-tab is URL-driven so it's deep-linkable (?tab=curriculos) and survives
-  // re-renders / back navigation without local state.
-  const router = useRouter();
-  const params = useLocalSearchParams<{ tab?: string }>();
-  const tab: ProfileSubTab =
-    params.tab === "curriculos"
-      ? "curriculos"
-      : params.tab === "desempenho"
-        ? "desempenho"
-        : "perfil";
-  const setTab = (next: ProfileSubTab): void => {
-    router.setParams({ tab: next });
-  };
-
-  // Pull-to-refresh re-pulls the profile and the resume list (which drives the
-  // master sections, completeness gauge, and quality panel).
+  // Pull-to-refresh re-pulls the profile, the resume list (which drives the
+  // master sections, completeness gauge, and quality panel), and the scores.
   const onRefresh = async (): Promise<void> => {
     setRefreshing(true);
     try {
       await Promise.all([
         profileQuery.refetch(),
         queryClient.invalidateQueries({ queryKey: getV1ResumesQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getV1MeScoresQueryKey() }),
       ]);
     } finally {
       setRefreshing(false);
@@ -130,18 +116,14 @@ export function ProfileScreen(): ReactElement {
     );
   }
 
-  // The "Perfil" sub-tab pins a floating add CTA over the scroll; reserve room
-  // at the bottom so the last list items clear it.
-  const onPerfil = tab === "perfil";
+  // The floating add CTA is pinned over the scroll; reserve room at the
+  // bottom so the last list items clear it.
   const floatingAddHeight = 58 + 32; // slab height + breathing room
 
   return (
     <View style={pf.root}>
       <ScrollView
-        contentContainerStyle={[
-          pf.scroll,
-          { paddingBottom: tabBarHeight + (onPerfil ? floatingAddHeight : 0) },
-        ]}
+        contentContainerStyle={[pf.scroll, { paddingBottom: tabBarHeight + floatingAddHeight }]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -158,22 +140,17 @@ export function ProfileScreen(): ReactElement {
           completeness={completeness}
         />
 
-        <ProfileSubTabs value={tab} onChange={setTab} />
+        <ScoreHero onOpen={() => setPerformanceOpen(true)} />
+        <FitProfileCard />
 
-        {tab === "perfil" ? (
-          <MasterSectionsTab profile={profile} />
-        ) : tab === "curriculos" ? (
-          <ResumeListTab />
-        ) : (
-          <PerformanceTab />
-        )}
+        <MasterSectionsTab profile={profile} />
       </ScrollView>
 
-      {onPerfil ? (
-        <View pointerEvents="box-none" style={[pf.floatingAdd, { bottom: tabBarHeight + 16 }]}>
-          <MasterAddSection />
-        </View>
-      ) : null}
+      <View pointerEvents="box-none" style={[pf.floatingAdd, { bottom: tabBarHeight + 16 }]}>
+        <MasterAddSection />
+      </View>
+
+      <PerformanceSheet open={performanceOpen} onOpenChange={setPerformanceOpen} />
 
       <AvatarActionSheet
         open={photoSheetOpen}

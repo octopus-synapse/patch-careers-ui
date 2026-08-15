@@ -1,16 +1,16 @@
 /**
- * <MatchBreakdown> — the Match Score panel on a job detail. Fit-gated: shows
- * the blur/lock gate until the user has a fit profile, then the overall score
- * ring + the four sub-scores, the skill gaps (deep-linking to improve the
- * résumé), and an AI-tailor CTA. Culture is never surfaced — only the
- * role-derived fit signal feeds the "Perfil" sub-score.
+ * <MatchBreakdown> — the compatibility panel on a job detail. Fit-gated:
+ * shows the blur/lock gate until the user has a fit profile, then the
+ * overall score ring + the four sub-scores and the skill gaps (deep-linking
+ * to improve the résumé). Tailoring moved into the job detail's apply flow.
+ * Culture is never surfaced — only the role-derived fit signal feeds the
+ * "Perfil" sub-score.
  */
-import { usePostV1ResumesResumeIdTailor } from "@patch-careers/api-client";
-import { ScoreExplainSheet, ScorePanel, Text, useToast, XStack, YStack } from "@patch-careers/ui";
+import { ScoreExplainSheet, ScorePanel, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { Info } from "lucide-react-native";
-import { type ReactElement, useCallback, useState } from "react";
+import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { useFitStatus } from "@/features/fit";
 import { useI18n } from "@/providers/i18n-provider";
@@ -31,36 +31,12 @@ const SUB_KEYS = ["keyword", "requirements", "semantic", "fit"] as const;
 export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElement | null {
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const s = useMt();
   const router = useRouter();
-  const toast = useToast();
   const fit = useFitStatus();
   const responded = fit.data?.status === "responded";
-  const { resumeId, quality } = useDefaultMatchResume();
+  const { resumeId } = useDefaultMatchResume();
   const match = useMatch(responded ? resumeId : undefined, job.id);
-  const tailor = usePostV1ResumesResumeIdTailor();
-  // Backend gates tailoring on the résumé's Quality Score (min 50); reflect it.
-  const tailorLocked = quality !== null && quality < 50;
   const [explainOpen, setExplainOpen] = useState(false);
-
-  const onTailor = useCallback(() => {
-    if (!resumeId || tailor.isPending || tailorLocked) return;
-    tailor.mutate(
-      {
-        resumeId,
-        data: {
-          jobTitle: job.title,
-          jobCompany: job.company,
-          ...(job.description ? { jobDescription: job.description } : {}),
-        },
-      },
-      {
-        onSuccess: () =>
-          toast.show({ title: t("match.breakdown.tailorSuccess"), intent: "success" }),
-        onError: () => toast.show({ title: t("match.breakdown.tailorError"), intent: "danger" }),
-      },
-    );
-  }, [resumeId, tailor, tailorLocked, job, toast, t]);
 
   if (fit.isPending) return null;
 
@@ -193,32 +169,6 @@ export function MatchBreakdown({ job }: { job: MatchBreakdownJob }): ReactElemen
             </Pressable>
           </YStack>
         ) : null}
-
-        <YStack gap={8}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityState={{ disabled: tailor.isPending || tailorLocked }}
-            onPress={onTailor}
-            disabled={tailor.isPending || tailorLocked}
-            style={[s.tailorBtn, tailor.isPending || tailorLocked ? s.tailorBtnDisabled : null]}
-          >
-            {tailor.isPending ? <ActivityIndicator size="small" color={palette.body} /> : null}
-            <Text fontFamily={fonts.sans} fontSize={14} fontWeight="600" color={palette.ink}>
-              {tailor.isPending ? t("match.breakdown.tailoring") : t("match.breakdown.tailorCta")}
-            </Text>
-          </Pressable>
-          {tailorLocked ? (
-            <Text
-              fontFamily={fonts.sans}
-              fontSize={12}
-              lineHeight={17}
-              color={palette.muted}
-              textAlign="center"
-            >
-              {t("match.breakdown.tailorLocked")}
-            </Text>
-          ) : null}
-        </YStack>
       </ScorePanel>
 
       <ScoreExplainSheet

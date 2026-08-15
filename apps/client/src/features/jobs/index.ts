@@ -6,5 +6,5 @@
  */
 export { JobDetailScreen } from "./components/job-detail-screen";
 export { JobsScreen } from "./components/jobs-screen";
-export { findExternalJob, useExternalJobs } from "./hooks/queries";
+export { findExternalJob, seedExternalJob, useExternalJobs } from "./hooks/queries";
 export type { ExternalJob, JobsFilters, JobsScope } from "./types";

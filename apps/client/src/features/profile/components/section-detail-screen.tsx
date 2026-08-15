@@ -16,7 +16,7 @@ export function SectionDetailScreen({ sectionKey }: { sectionKey: string }): Rea
   const { resumeId, language } = useMasterResumeId();
   const locale = resumeLanguageToLocale(language);
   const { catalog } = useResumeSections(resumeId, locale);
-  const title = catalog.find((c) => c.key === sectionKey)?.title ?? t("profile.subTabs.profile");
+  const title = catalog.find((c) => c.key === sectionKey)?.title ?? t("tabs.profile");
 
   return (
     <SettingsScreenShell title={title}>

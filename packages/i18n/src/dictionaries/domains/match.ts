@@ -7,9 +7,16 @@
 import type { TranslationDict } from "../../types";
 
 export const matchPtBR: TranslationDict = {
-  matchLabel: "Match",
+  compatLabel: "de compatibilidade",
   recommended: {
     title: "Recomendadas pra você",
+  },
+  marketPulse: {
+    label: "No mercado",
+    caption: "de compatibilidade em {count} vagas recomendadas",
+    captionOne: "de compatibilidade em 1 vaga recomendada",
+    a11y: "No mercado: {range} de compatibilidade em {count} vagas recomendadas. Toque para ver por vaga",
+    rowA11y: "{company}, {title}, {score}% de compatibilidade",
   },
   gate: {
     title: "Descubra suas vagas ideais",
@@ -18,8 +25,7 @@ export const matchPtBR: TranslationDict = {
     ctaExpired: "Revalidar meu fit",
   },
   breakdown: {
-    heading: "Seu match com esta vaga",
-    overallLabel: "Compatibilidade",
+    heading: "Compatibilidade com esta vaga",
     sub: {
       keyword: "Palavras-chave",
       requirements: "Requisitos",
@@ -28,18 +34,13 @@ export const matchPtBR: TranslationDict = {
     },
     gapsTitle: "O que falta no seu currículo",
     improveCta: "Melhorar meu currículo",
-    tailorCta: "Adaptar currículo para esta vaga",
-    tailoring: "Adaptando…",
-    tailorLocked: "Melhore seu currículo (mín. 50 de qualidade) para adaptá-lo à vaga.",
-    tailorSuccess: "Currículo adaptado! Veja na aba Currículos.",
-    tailorError: "Não foi possível adaptar agora. Tente mais tarde.",
-    noResume: "Crie um currículo para ver seu match.",
-    error: "Não foi possível calcular o match.",
+    noResume: "Crie um currículo para ver sua compatibilidade.",
+    error: "Não foi possível calcular a compatibilidade.",
     retry: "Tentar de novo",
   },
   explain: {
     a11y: "Como calculamos",
-    title: "Como calculamos o match",
+    title: "Como calculamos a compatibilidade",
     keyword: "Palavras-chave — habilidades da vaga presentes no seu currículo.",
     requirements: "Requisitos — anos, idiomas e certificações pedidos vs. os seus.",
     semantic: "Semântica — proximidade de sentido entre seu currículo e a descrição.",
@@ -49,9 +50,16 @@ export const matchPtBR: TranslationDict = {
 };
 
 export const matchEn: TranslationDict = {
-  matchLabel: "Match",
+  compatLabel: "compatibility",
   recommended: {
     title: "Recommended for you",
+  },
+  marketPulse: {
+    label: "In the market",
+    caption: "compatibility across {count} recommended jobs",
+    captionOne: "compatibility across 1 recommended job",
+    a11y: "In the market: {range} compatibility across {count} recommended jobs. Tap to see per job",
+    rowA11y: "{company}, {title}, {score}% compatibility",
   },
   gate: {
     title: "Discover your ideal jobs",
@@ -60,8 +68,7 @@ export const matchEn: TranslationDict = {
     ctaExpired: "Revalidate my fit",
   },
   breakdown: {
-    heading: "Your match for this job",
-    overallLabel: "Compatibility",
+    heading: "Compatibility with this job",
     sub: {
       keyword: "Keywords",
       requirements: "Requirements",
@@ -70,18 +77,13 @@ export const matchEn: TranslationDict = {
     },
     gapsTitle: "Missing from your résumé",
     improveCta: "Improve my résumé",
-    tailorCta: "Tailor résumé for this job",
-    tailoring: "Tailoring…",
-    tailorLocked: "Improve your résumé (min. 50 quality) to tailor it to the job.",
-    tailorSuccess: "Résumé tailored! Check the Résumés tab.",
-    tailorError: "Couldn't tailor right now. Try later.",
-    noResume: "Create a résumé to see your match.",
-    error: "Couldn't compute the match.",
+    noResume: "Create a résumé to see your compatibility.",
+    error: "Couldn't compute the compatibility.",
     retry: "Try again",
   },
   explain: {
     a11y: "How we calculate it",
-    title: "How we calculate the match",
+    title: "How we calculate compatibility",
     keyword: "Keywords — the job's skills found in your résumé.",
     requirements: "Requirements — years, languages and certifications asked vs. yours.",
     semantic: "Semantic — meaning-level closeness between your résumé and the description.",

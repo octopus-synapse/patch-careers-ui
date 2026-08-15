@@ -133,6 +133,12 @@ export default function RootLayout(): ReactElement {
                             name="resume/[id]"
                             options={{ headerShown: false, animation: "slide_from_right" }}
                           />
+                          {/* Notifications inbox slides in over the tabs from the
+                          AppHeader bell. */}
+                          <Stack.Screen
+                            name="notifications"
+                            options={{ headerShown: false, animation: "slide_from_right" }}
+                          />
                           {/* Settings slides in over the tabs from the account menu. */}
                           <Stack.Screen
                             name="settings"

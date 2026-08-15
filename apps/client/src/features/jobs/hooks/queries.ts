@@ -141,6 +141,15 @@ function isSavedEnvelope(page: AnyEnvelope): page is GetV1JobsExternalSavedQuery
  * envelopes from the generated hooks. Returns `null` when nothing matches —
  * e.g. a cold deep link before either list ever loaded.
  */
+/**
+ * Seed one listing into the detail-resolvable cache before deep-linking to
+ * `/job/[id]` from outside the lists (recommended carousel, market pulse) —
+ * the detail screen reads from these caches, so this avoids a cold miss.
+ */
+export function seedExternalJob(queryClient: QueryClient, job: ExternalJob): void {
+  queryClient.setQueryData([EXTERNAL_JOBS_BASE, "recommended-seed", job.id], { items: [job] });
+}
+
 export function findExternalJob(queryClient: QueryClient, id: string): ExternalJob | null {
   const entries = [
     ...queryClient.getQueriesData<unknown>({ queryKey: [EXTERNAL_JOBS_BASE] }),

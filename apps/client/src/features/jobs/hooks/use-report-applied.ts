@@ -19,15 +19,22 @@ import { SAVED_JOBS_BASE } from "./queries";
 
 const APPLICATIONS_BASE = { url: "/api/v1/jobs/applications" } as const;
 
+/** The CV that backed the application (recorded by the apply flow). */
+export type AppliedCv = {
+  resumeId: string;
+  tailoredVersionId: string | null;
+  matchScore: number | null;
+};
+
 export function useReportApplied(): {
-  report: (job: ExternalJob, didApply: boolean) => Promise<void>;
+  report: (job: ExternalJob, didApply: boolean, cv?: AppliedCv | null) => Promise<void>;
   pending: boolean;
 } {
   const queryClient = useQueryClient();
   const [pending, setPending] = useState(false);
 
   const report = useCallback(
-    async (job: ExternalJob, didApply: boolean): Promise<void> => {
+    async (job: ExternalJob, didApply: boolean, cv?: AppliedCv | null): Promise<void> => {
       setPending(true);
       try {
         let savedId = job.savedId;
@@ -37,7 +44,16 @@ export function useReportApplied(): {
           const saved = await postV1JobsExternalIdSave(job.id);
           savedId = saved.savedId;
         }
-        await postV1JobsExternalSavedIdDidApply(savedId, { didApply });
+        await postV1JobsExternalSavedIdDidApply(savedId, {
+          didApply,
+          ...(didApply && cv
+            ? {
+                resumeId: cv.resumeId,
+                ...(cv.tailoredVersionId ? { tailoredVersionId: cv.tailoredVersionId } : {}),
+                ...(cv.matchScore !== null ? { matchScore: cv.matchScore } : {}),
+              }
+            : {}),
+        });
         // Refresh the saved list (membership/applied flag) and the
         // Candidaturas scope so the new application shows up.
         await Promise.all([

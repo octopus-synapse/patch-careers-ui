@@ -63,7 +63,7 @@ export function RecommendedSection({
           <RecommendedJobCard
             key={job.id}
             job={job}
-            matchLabel={t("match.matchLabel")}
+            matchLabel={t("match.compatLabel")}
             onPress={() => onOpenJob(job)}
           />
         ))}

@@ -25,6 +25,9 @@ export type ScoreChipProps = {
   accessibilityLabel: string;
   /** When true, appends the letter grade after the number ("82 · A"). */
   grade?: boolean;
+  /** When true, renders the number as a percentage ("82%") — the phrasing
+   * for compatibility scores. Composes with `grade` ("82% · A"). */
+  percent?: boolean;
   /** Optional leading slot; receives the resolved foreground colour so an
    * icon can match the pill's intent colour. */
   leading?: (foreground: string) => ReactNode;
@@ -43,6 +46,7 @@ export function ScoreChip({
   size = "md",
   accessibilityLabel,
   grade = false,
+  percent = false,
   leading,
   onPress,
 }: ScoreChipProps) {
@@ -50,7 +54,8 @@ export function ScoreChip({
   const safeScore = clampScore(score);
   const tokens = intentTokens[scoreIntent(safeScore)][themeName];
   const pad = SIZE_TO_PAD[size];
-  const label = grade ? `${safeScore} · ${scoreGrade(safeScore)}` : `${safeScore}`;
+  const number = percent ? `${safeScore}%` : `${safeScore}`;
+  const label = grade ? `${number} · ${scoreGrade(safeScore)}` : number;
 
   const pill = (
     <TStack

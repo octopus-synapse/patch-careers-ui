@@ -11,6 +11,8 @@ export const appPtBR: TranslationDict = {
     openAccountMenu: "Abrir menu da conta",
     messages: "Mensagens",
     messagesUnread: "Mensagens, {count} não lidas",
+    notifications: "Notificações",
+    notificationsUnread: "Notificações, {count} não lidas",
   },
   netInfoBanner: {
     offline: "Erro — offline",
@@ -32,6 +34,8 @@ export const appEn: TranslationDict = {
     openAccountMenu: "Open account menu",
     messages: "Messages",
     messagesUnread: "Messages, {count} unread",
+    notifications: "Notifications",
+    notificationsUnread: "Notifications, {count} unread",
   },
   netInfoBanner: {
     offline: "Error — offline",

@@ -117,7 +117,9 @@ export function useApplications(enabled: boolean): {
           appliedAtIso: row.appliedAt ?? row.savedAt,
           status: "review",
           jobRouteId: row.savedId,
-          matchScore: null,
+          // Compatibility recorded by the apply flow, when the user went
+          // through it; older self-reports have none.
+          matchScore: row.appliedMatchScore ?? null,
         }));
 
       return [...internalRows, ...externalRows].sort((a, b) =>

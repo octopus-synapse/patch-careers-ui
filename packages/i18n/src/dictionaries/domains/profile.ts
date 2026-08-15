@@ -51,10 +51,22 @@ export const profilePtBR: TranslationDict = {
     gallery: "Escolher da galeria",
     remove: "Remover foto",
   },
-  subTabs: {
-    profile: "Perfil",
-    resumes: "Currículos",
-    performance: "Desempenho",
+  performance: {
+    title: "Desempenho",
+  },
+  scoreHero: {
+    label: "Pontuação do perfil",
+    content: "Conteúdo (IA)",
+    completeness: "Completude",
+    style: "Estilo",
+    a11y: "Pontuação do perfil {score} de 100, nota {grade}. Toque para ver seu desempenho",
+  },
+  fitCard: {
+    title: "Fit Profile",
+    body: "Responda 5 minutos de questionário para desbloquear o Match por vaga.",
+    bodyExpired: "Seu Fit Profile expirou. Refaça o questionário para manter o Match por vaga.",
+    cta: "Começar questionário",
+    ctaExpired: "Refazer questionário",
   },
   scores: {
     readiness: {
@@ -114,7 +126,6 @@ export const profilePtBR: TranslationDict = {
       footnote: "O Readiness combina Qualidade, cobertura de skills e seu Fit.",
       a11y: "Como calculamos o Readiness Score",
     },
-    headerBandA11y: "Readiness Score {score}, nota {grade}. Toque para ver seu desempenho",
     loadFailed: "Não foi possível carregar seus scores.",
   },
   master: {
@@ -225,10 +236,22 @@ export const profileEn: TranslationDict = {
     gallery: "Choose from library",
     remove: "Remove photo",
   },
-  subTabs: {
-    profile: "Profile",
-    resumes: "Resumes",
-    performance: "Performance",
+  performance: {
+    title: "Performance",
+  },
+  scoreHero: {
+    label: "Profile score",
+    content: "Content (AI)",
+    completeness: "Completeness",
+    style: "Style",
+    a11y: "Profile score {score} of 100, grade {grade}. Tap to see your performance",
+  },
+  fitCard: {
+    title: "Fit Profile",
+    body: "Answer a 5-minute questionnaire to unlock per-job Match.",
+    bodyExpired: "Your Fit Profile expired. Retake the questionnaire to keep per-job Match.",
+    cta: "Start questionnaire",
+    ctaExpired: "Retake questionnaire",
   },
   scores: {
     readiness: {
@@ -288,7 +311,6 @@ export const profileEn: TranslationDict = {
       footnote: "Readiness blends Quality, skill coverage, and your Fit.",
       a11y: "How we calculate the Readiness Score",
     },
-    headerBandA11y: "Readiness Score {score}, grade {grade}. Tap to view your performance",
     loadFailed: "Couldn't load your scores.",
   },
   master: {

@@ -90,13 +90,12 @@ function ApplicationRowInner({
           <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
             {ago}
           </Text>
-          {/* Match Score frozen at apply time — internal applies only. */}
+          {/* Compatibility frozen at apply time. */}
           {application.matchScore !== null ? (
             <MatchScoreChip
               score={application.matchScore}
               size="sm"
-              grade
-              accessibilityLabel={`${t("match.matchLabel")} ${application.matchScore}`}
+              accessibilityLabel={`${application.matchScore}% ${t("match.compatLabel")}`}
             />
           ) : null}
         </XStack>

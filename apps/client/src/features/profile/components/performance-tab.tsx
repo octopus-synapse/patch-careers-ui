@@ -1,10 +1,12 @@
 /**
- * <PerformanceTab> — the "Desempenho" sub-tab: the master resume's scores
- * as the hero of the Profile. A large Readiness gauge (number is the
- * protagonist, letter grade reinforces), a one-line editorial summary, a
- * trend sparkline for momentum, and the job-independent sub-scores
- * (Quality · Style · Fit) as a bullet grid. Cold-start shows an inviting
- * "discover your strength" state instead of empty rings.
+ * <PerformanceTab> — the "Desempenho" hub, rendered inside the score-hero's
+ * sheet (it used to be a Profile sub-tab): the master resume's scores in
+ * full. A large Readiness gauge (number is the protagonist, letter grade
+ * reinforces), a one-line editorial summary, a trend sparkline for momentum,
+ * and the job-independent sub-scores (Quality · Style · Fit) as a bullet
+ * grid. Cold-start shows an inviting "discover your strength" state instead
+ * of empty rings. `onDismiss` closes the hosting sheet (the CTAs land the
+ * user back on the profile page to act).
  *
  * Consumes the unified `GET /v1/me/scores` (via `useMeScores`) so the whole
  * hub is one request; the header Readiness band shares the same cache.
@@ -22,7 +24,6 @@ import {
 } from "@patch-careers/ui";
 import { editorialFonts as fonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
 import { Info } from "lucide-react-native";
 import { type ReactElement, type ReactNode, useCallback, useState } from "react";
 import { ActivityIndicator, Platform, Pressable } from "react-native";
@@ -41,10 +42,9 @@ import { useReadinessPulse } from "../hooks/use-readiness-pulse";
 
 const HERO_SIZE = 132;
 
-export function PerformanceTab(): ReactElement {
+export function PerformanceTab({ onDismiss }: { onDismiss?: () => void }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
-  const router = useRouter();
   const { scores, isPending, isError, refetch, isColdStart } = useMeScores();
   const [explainOpen, setExplainOpen] = useState(false);
 
@@ -67,7 +67,7 @@ export function PerformanceTab(): ReactElement {
     );
   }
 
-  if (isColdStart) return <ColdStart onStart={() => router.setParams({ tab: "perfil" })} />;
+  if (isColdStart) return <ColdStart onStart={() => onDismiss?.()} />;
 
   const readiness = scores.readiness;
   const summary = t(`profile.scores.summary.${scoreTone(readiness.score)}`);
@@ -152,10 +152,7 @@ export function PerformanceTab(): ReactElement {
 
       <TargetRoleEditor />
 
-      <CtaButton
-        onPress={() => router.setParams({ tab: "perfil" })}
-        label={t("profile.scores.cta")}
-      />
+      <CtaButton onPress={() => onDismiss?.()} label={t("profile.scores.cta")} />
 
       <ScoreExplainSheet
         open={explainOpen}

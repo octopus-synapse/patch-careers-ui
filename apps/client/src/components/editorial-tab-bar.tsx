@@ -3,9 +3,10 @@
  *
  * Active tab = ink + filled icon + ink small-caps label; inactive = muted +
  * outline icon. No sliding rail — the active state reads purely from ink/fill
- * contrast, matching the rest of the Editorial Calm system. Notifications and
- * Messages each carry a live count badge; the Profile tab renders the avatar
- * (with a presence dot) via its screen's `tabBarIcon`.
+ * contrast, matching the rest of the Editorial Calm system. Messages carries a
+ * live count badge (notifications' badge moved to the AppHeader bell); the
+ * Profile tab renders the avatar (with a presence dot) via its screen's
+ * `tabBarIcon`.
  *
  * The frosted surface and the icon-over-label columns come from the shared
  * `FrostedBar`/`TabBarItem` primitives (`@patch-careers/ui/editorial`), so this
@@ -17,7 +18,7 @@
  * from `descriptors[route.key].options`), so this bar is a pure presenter over
  * the navigation state.
  */
-import { useGetV1ChatUnread, useGetV1NotificationsUnreadCount } from "@patch-careers/api-client";
+import { useGetV1ChatUnread } from "@patch-careers/api-client";
 import {
   CountBadge,
   FrostedBar,
@@ -33,8 +34,8 @@ import { type ReactElement, useContext } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// The screens whose icons carry a live unread badge.
-const NOTIFICATIONS_ROUTE = "notifications";
+// The screen whose icon carries a live unread badge (notifications' badge
+// lives on the AppHeader bell now).
 const MESSAGES_ROUTE = "messages";
 
 export function EditorialTabBar({
@@ -49,11 +50,7 @@ export function EditorialTabBar({
   // has something to frost.
   const setTabBarHeight = useContext(BottomTabBarHeightCallbackContext);
 
-  // Live counts, polled (React Query dedupes against any other caller).
-  const notifications = useGetV1NotificationsUnreadCount({
-    query: { refetchInterval: 30_000 },
-  });
-  const unreadNotifications = notifications.data?.count ?? 0;
+  // Live count, polled (React Query dedupes against any other caller).
   const chat = useGetV1ChatUnread({ query: { refetchInterval: 30_000 } });
   const unreadMessages = chat.data?.totalUnread ?? 0;
 
@@ -88,13 +85,7 @@ export function EditorialTabBar({
               focused={focused}
               onPress={onPress}
               renderIcon={(args) => options.tabBarIcon?.(args) ?? null}
-              badge={
-                route.name === NOTIFICATIONS_ROUTE ? (
-                  <CountBadge count={unreadNotifications} />
-                ) : route.name === MESSAGES_ROUTE ? (
-                  <CountBadge count={unreadMessages} />
-                ) : null
-              }
+              badge={route.name === MESSAGES_ROUTE ? <CountBadge count={unreadMessages} /> : null}
             />
           );
         })}

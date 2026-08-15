@@ -4,16 +4,28 @@
  * progress masthead + a Likert/binary control, then a submit that commits all
  * 25 answers and unlocks the Match Score. Reached from the match blur/lock
  * gate and (optionally) a post-onboarding nudge.
+ *
+ * DEV-only test-fill controls (same double gate as onboarding's
+ * `TestFillBar`): "test" answers the current question with a random valid
+ * value and advances; "test all" answers everything left and submits —
+ * available from the intro too, so a dev never taps through 25 screens.
  */
 import { PrimaryAction, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { ActivityIndicator, Pressable, SafeAreaView, Text, View } from "react-native";
+import { isDevTestFillEnabled } from "@/config/dev-flags";
 import { useI18n } from "@/providers/i18n-provider";
 import { useFitQuestions, useSubmitFitAnswers } from "../hooks/queries";
 import { useFit } from "../lib/styles";
-import type { FitAnswerDraft } from "../types";
+import type { FitAnswerDraft, FitScaleType } from "../types";
+import { FitTestFillBar } from "./fit-test-fill-bar";
 import { LikertScale } from "./likert-scale";
+
+/** A random valid raw answer per scale: binary → 0|1, Likert → 1..5. */
+function randomRaw(scaleType: FitScaleType): number {
+  return scaleType === "binary" ? (Math.random() < 0.5 ? 0 : 1) : 1 + Math.floor(Math.random() * 5);
+}
 
 export function FitQuestionnaireScreen(): ReactElement {
   const { t, locale } = useI18n();
@@ -35,6 +47,24 @@ export function FitQuestionnaireScreen(): ReactElement {
 
   const close = () => {
     if (router.canGoBack()) router.back();
+  };
+
+  // DEV-only: answer everything still unanswered with random valid values
+  // and submit in one go. Callable from the intro and from any question.
+  const testFillAll = () => {
+    if (!data || submit.isPending) return;
+    const filled: FitAnswerDraft = { ...answers };
+    for (const q of questions) {
+      if (filled[q.id] === undefined) filled[q.id] = randomRaw(q.scaleType);
+    }
+    setAnswers(filled);
+    setStarted(true);
+    setIndex(total - 1);
+    const payload = questions.map((q) => ({ questionId: q.id, rawValue: filled[q.id] ?? 0 }));
+    submit.mutate(
+      { data: { questionSetId: data.questionSetId, answers: payload } },
+      { onSuccess: () => setSubmitted(true) },
+    );
   };
 
   // Loading
@@ -82,6 +112,9 @@ export function FitQuestionnaireScreen(): ReactElement {
     return (
       <SafeAreaView style={s.safe}>
         <View style={s.container}>
+          {isDevTestFillEnabled() ? (
+            <FitTestFillBar onFillAll={testFillAll} disabled={submit.isPending} />
+          ) : null}
           <View style={s.introWrap}>
             <Text style={s.introTitle}>{t("fit.intro.title")}</Text>
             <Text style={s.introSubtitle}>{t("fit.intro.subtitle")}</Text>
@@ -111,6 +144,13 @@ export function FitQuestionnaireScreen(): ReactElement {
 
   const onAnswer = (raw: number) => {
     setAnswers((prev) => ({ ...prev, [question.id]: raw }));
+  };
+
+  // DEV-only: answer the current question randomly; advance unless it's the
+  // last one (then the enabled submit is one tap away).
+  const testFillCurrent = () => {
+    setAnswers((prev) => ({ ...prev, [question.id]: randomRaw(question.scaleType) }));
+    if (!isLast) setIndex(index + 1);
   };
 
   const goBack = () => {
@@ -143,6 +183,14 @@ export function FitQuestionnaireScreen(): ReactElement {
             {t("fit.question.progress", { current: index + 1, total })}
           </Text>
         </View>
+
+        {isDevTestFillEnabled() ? (
+          <FitTestFillBar
+            onFillCurrent={testFillCurrent}
+            onFillAll={testFillAll}
+            disabled={submit.isPending}
+          />
+        ) : null}
 
         <View style={s.body}>
           <Text style={s.questionText}>{questionText}</Text>

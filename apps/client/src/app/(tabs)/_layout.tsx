@@ -3,11 +3,13 @@ import type { ReactElement } from "react";
 /**
  * Bottom tab bar (D51 — fixed bottom tab) with 4 tabs:
  *
- *   Vagas · Mensagens · Notificações · Perfil
+ *   Vagas · Mensagens · Currículos · Perfil
  *
  * "Candidaturas" was folded into the Vagas tab as a third scope
  * (Todas · Salvas · Candidaturas), so it no longer has its own tab. Messages
- * was promoted from an AppHeader quick-action to its own tab.
+ * was promoted from an AppHeader quick-action to its own tab. Notificações
+ * left the bar for the AppHeader bell (its inbox is the stacked
+ * `/notifications` screen), freeing the slot for Currículos.
  *
  * Labels come from the i18n dictionaries (`tabs.*`) so they follow the
  * user's locale. Icons come from Expo Vector Icons so active tabs can use
@@ -83,10 +85,10 @@ export default function TabsLayout(): ReactElement | null {
         }}
       />
       <Tabs.Screen
-        name="notifications"
+        name="curriculos"
         options={{
-          title: t("tabs.notifications"),
-          tabBarIcon: tabIcon("notifications-outline", "notifications"),
+          title: t("tabs.resumes"),
+          tabBarIcon: tabIcon("documents-outline", "documents"),
         }}
       />
       <Tabs.Screen

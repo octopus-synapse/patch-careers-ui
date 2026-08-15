@@ -297,6 +297,18 @@ const rzFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       color: p.muted,
       textAlign: "center",
     },
+
+    // Currículos tab screen (frame around the list body)
+    screenRoot: { flex: 1, backgroundColor: p.bg },
+    screenScroll: { paddingHorizontal: 22, paddingTop: 12, gap: 18 },
+    screenTitle: {
+      fontFamily: fonts.serif,
+      fontSize: 30,
+      lineHeight: 40,
+      letterSpacing: -0.6,
+      fontWeight: "400",
+      color: p.ink,
+    },
   });
 
 // Precomputed per theme so style-object identity is stable across renders.

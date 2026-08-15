@@ -1,11 +1,12 @@
 /**
  * One listing row, editorial treatment: no card surface — generous vertical
  * padding between hairlines, company kicker · serif title · meta line ·
- * recency + publisher footer, plus a right-aligned bookmark toggle.
- * Memoized — it renders inside the endless-scroll list.
+ * compatibility ("92%", when the score is known) + recency + publisher
+ * footer, plus a right-aligned bookmark toggle. Memoized — it renders
+ * inside the endless-scroll list.
  */
 
-import { Text, XStack, YStack } from "@patch-careers/ui";
+import { MatchScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Bookmark } from "lucide-react-native";
 import { memo, type ReactElement } from "react";
@@ -20,12 +21,15 @@ function JobRowInner({
   onPress,
   onToggleSave,
   savePending,
+  matchScore,
 }: {
   job: ExternalJob;
   now: number;
   onPress: (job: ExternalJob) => void;
   onToggleSave: (job: ExternalJob) => void;
   savePending: boolean;
+  /** Compatibility for this listing; undefined = not (yet) computed → no chip. */
+  matchScore?: number | undefined;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const { t, locale } = useI18n();
@@ -69,9 +73,18 @@ function JobRowInner({
             </Text>
           ) : null}
           <XStack alignItems="center" justifyContent="space-between" gap={8}>
-            <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
-              {ago}
-            </Text>
+            <XStack alignItems="center" gap={8}>
+              {typeof matchScore === "number" ? (
+                <MatchScoreChip
+                  score={matchScore}
+                  size="sm"
+                  accessibilityLabel={`${matchScore}% ${t("match.compatLabel")}`}
+                />
+              ) : null}
+              <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
+                {ago}
+              </Text>
+            </XStack>
             {job.publisher ? (
               <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
                 {t("jobs.row.viaPublisher", { publisher: job.publisher })}

@@ -1,10 +1,11 @@
 /**
  * AppHeader — the global top app bar for the authed tab stack.
  *
- * Mobile-first: the user's rounded avatar on the left (→ the account menu)
- * and the global search trigger centered (→ the SearchModal command palette).
- * Messages moved to its own bottom tab, so the right side is just a spacer
- * that keeps the search optically centered (and collapses with the avatar).
+ * Mobile-first: the user's rounded avatar on the left (→ the account menu),
+ * the global search trigger centered (→ the SearchModal command palette),
+ * and the notifications bell on the right (→ the stacked `/notifications`
+ * inbox) carrying the live unread badge — the tab slot notifications used
+ * to occupy now belongs to Currículos.
  *
  * Rendered as the react-navigation `header` for every tab so it stays put
  * while the bottom tab bar switches screens; it owns the top safe-area
@@ -13,9 +14,11 @@
  * name's initials until a photo exists.
  */
 
-import { useGetV1UsersProfile } from "@patch-careers/api-client";
+import { useGetV1NotificationsUnreadCount, useGetV1UsersProfile } from "@patch-careers/api-client";
 import { Avatar, XStack } from "@patch-careers/ui";
-import { useEditorialPalette } from "@patch-careers/ui/editorial";
+import { CountBadge, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { useRouter } from "expo-router";
+import { Bell } from "lucide-react-native";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -86,6 +89,14 @@ export function AppHeader(): ReactElement {
   const photoURL = profile.data?.photoURL ?? undefined;
   const name = profile.data?.name ?? currentUser?.name ?? currentUser?.email ?? t("app.header.you");
 
+  // Live unread count for the bell, polled (React Query dedupes against any
+  // other caller of the same query).
+  const notifications = useGetV1NotificationsUnreadCount({
+    query: { enabled: isAuthenticated, refetchInterval: 30_000 },
+  });
+  const unreadNotifications = notifications.data?.count ?? 0;
+  const router = useRouter();
+
   return (
     <View style={{ paddingTop: insets.top }}>
       {/* Surface + bottom hairline as a fading layer behind the content, so the
@@ -124,9 +135,26 @@ export function AppHeader(): ReactElement {
           />
         </Animated.View>
 
-        {/* Right — spacer matching the avatar column so the search stays
-            optically centered (Messages now lives in the bottom tab bar). */}
-        <Animated.View style={sideStyle} />
+        {/* Right — notifications bell → stacked inbox; matches the avatar
+            column so the search stays optically centered, and slides away
+            together with it when collapsed. */}
+        <Animated.View style={[{ alignItems: "flex-end" }, sideStyle]}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={
+              unreadNotifications > 0
+                ? t("app.header.notificationsUnread", { count: unreadNotifications })
+                : t("app.header.notifications")
+            }
+            onPress={() => router.push("/notifications")}
+            hitSlop={8}
+          >
+            <View>
+              <Bell size={22} color={editorialPalette.ink} strokeWidth={1.75} />
+              <CountBadge count={unreadNotifications} />
+            </View>
+          </Pressable>
+        </Animated.View>
       </XStack>
 
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />

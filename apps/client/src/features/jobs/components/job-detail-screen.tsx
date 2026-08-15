@@ -10,8 +10,10 @@
  * memoized cache snapshot, so the optimistic cache write alone would not
  * re-render this screen.
  *
- * One primary CTA — "Candidatar-se" — opens the publisher's apply URL in
- * the in-app browser; the caption under it makes the handoff explicit.
+ * One primary CTA — "Candidatar-se" — opens the ApplyFlow sheet (master ×
+ * tailored → review → download-first ready screen); the flow hands back
+ * here to open the publisher's apply URL in the in-app browser, and the
+ * "did you apply?" prompt then records which CV backed the application.
  */
 
 import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
@@ -26,9 +28,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MatchBreakdown } from "@/features/match";
 import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
-import { useReportApplied } from "../hooks/use-report-applied";
+import { type AppliedCv, useReportApplied } from "../hooks/use-report-applied";
 import { useToggleSaveJob } from "../hooks/use-save-job";
 import { jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
+import { ApplyFlow } from "./apply-flow";
 import { DidYouApplySheet } from "./did-you-apply-sheet";
 
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
@@ -43,12 +46,19 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const job = useMemo(() => findExternalJob(queryClient, id), [queryClient, id]);
   const [saved, setSaved] = useState(job?.isSaved ?? false);
   const savePending = job !== null && pendingId === job.externalId;
+  const [applyOpen, setApplyOpen] = useState(false);
   const [didApplyOpen, setDidApplyOpen] = useState(false);
+  // The CV chosen in the apply flow — threaded into the did-apply report so
+  // the application records which resume/variant + compatibility backed it.
+  const [appliedCv, setAppliedCv] = useState<AppliedCv | null>(null);
 
   // External jobs apply on the publisher's site, so we can't observe the
-  // outcome: open the apply URL, then ask "você se candidatou?" on return.
-  async function onApply(): Promise<void> {
+  // outcome: the flow ends by opening the apply URL, then we ask "você se
+  // candidatou?" on return.
+  async function onOpenJobSite(cv: AppliedCv): Promise<void> {
     if (job === null) return;
+    setAppliedCv(cv);
+    setApplyOpen(false);
     await WebBrowser.openBrowserAsync(job.applyUrl);
     setDidApplyOpen(true);
   }
@@ -56,7 +66,11 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
   async function onDidApplyAnswer(didApply: boolean): Promise<void> {
     if (job !== null) {
       const fresh = findExternalJob(queryClient, id) ?? job;
-      await reportApplied({ ...fresh, isSaved: saved, savedId: fresh.savedId }, didApply);
+      await reportApplied(
+        { ...fresh, isSaved: saved, savedId: fresh.savedId },
+        didApply,
+        appliedCv,
+      );
       if (didApply) setSaved(true);
     }
     setDidApplyOpen(false);
@@ -196,7 +210,7 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
             borderTopWidth={1}
             borderTopColor={editorialPalette.hairline}
           >
-            <PrimaryAction label={t("jobs.detail.apply")} onPress={() => void onApply()} />
+            <PrimaryAction label={t("jobs.detail.apply")} onPress={() => setApplyOpen(true)} />
             <Text preset="caption" fontSize={12} color={editorialPalette.subtle} textAlign="center">
               {job.publisher
                 ? t("jobs.detail.opensPublisherSiteNamed", { publisher: job.publisher })
@@ -205,6 +219,15 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
           </YStack>
         </>
       )}
+
+      {job !== null ? (
+        <ApplyFlow
+          job={job}
+          open={applyOpen}
+          onOpenChange={setApplyOpen}
+          onOpenJobSite={(cv) => void onOpenJobSite(cv)}
+        />
+      ) : null}
 
       <DidYouApplySheet
         open={didApplyOpen}

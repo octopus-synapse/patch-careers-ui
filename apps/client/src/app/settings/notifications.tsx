@@ -99,10 +99,10 @@ export default function NotificationsScreen(): ReactElement {
         if (!registered) {
           const reason = service.getLastRegistrationError?.();
           Alert.alert(
-            "Não foi possível ativar notificações",
+            t("settings.notifications.pushErrorTitle"),
             reason
-              ? `O iOS concedeu permissão, mas o app não conseguiu registrar o Expo Push Token neste device.\n\n${reason}`
-              : "O iOS concedeu permissão, mas o app não conseguiu registrar o Expo Push Token neste device.",
+              ? `${t("settings.notifications.pushErrorBody")}\n\n${reason}`
+              : t("settings.notifications.pushErrorBody"),
           );
           return;
         }

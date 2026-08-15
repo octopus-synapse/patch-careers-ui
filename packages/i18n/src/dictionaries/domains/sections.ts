@@ -6,7 +6,7 @@
 import type { TranslationDict } from "../../types";
 
 export const sectionsPtBR: TranslationDict = {
-  addToResume: "Adicionar ao currículo",
+  addToResume: "Adicionar ao perfil",
   back: "Voltar",
   loadError: "Não foi possível carregar as seções do currículo.",
   atCapacity: "Limite de itens atingido",
@@ -42,7 +42,7 @@ export const sectionsPtBR: TranslationDict = {
 };
 
 export const sectionsEn: TranslationDict = {
-  addToResume: "Add to resume",
+  addToResume: "Add to profile",
   back: "Back",
   loadError: "Could not load the resume sections.",
   atCapacity: "Item limit reached",

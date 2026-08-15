@@ -1,8 +1,8 @@
 /**
- * Notifications — a bottom-tab screen (Vagas · Mensagens · Notificações ·
- * Perfil). A grouped, polled inbox (Hoje / Esta semana / Antes) under the
- * global AppHeader. Tapping a row marks it read and deep-links to the related
- * entity; the header carries a "mark all read" action.
+ * Notifications — a stacked screen reached from the AppHeader bell (the tab
+ * slot it used to occupy now belongs to Currículos). A grouped, polled inbox
+ * (Hoje / Esta semana / Antes) with a "mark all read" action; tapping a row
+ * marks it read and deep-links to the related entity.
  *
  * On the first visit we show a soft pre-prompt before the OS permission dialog
  * (a denial is permanent until the user opens system settings), and only
@@ -10,11 +10,10 @@
  */
 
 import { mundane } from "@patch-careers/storage";
-import { Text, XStack, YStack } from "@patch-careers/ui";
-import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { XStack, YStack } from "@patch-careers/ui";
 import { useFocusEffect, useRouter } from "expo-router";
 import { type ReactElement, useCallback, useState } from "react";
-import { View } from "react-native";
+import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import {
   getNotificationService,
   MarkAllReadAction,
@@ -35,7 +34,6 @@ import { useNotifications } from "@/providers/notifications-provider";
 const PREPROMPT_SEEN_KEY = "push.prepromptSeen";
 
 export default function NotificationsScreen(): ReactElement {
-  const palette = useEditorialPalette();
   const { t } = useI18n();
   const router = useRouter();
   const inbox = useNotificationInbox();
@@ -84,33 +82,22 @@ export default function NotificationsScreen(): ReactElement {
   }, [ensureRegistered]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: palette.bg }}>
-      <YStack paddingHorizontal={20} paddingTop={16} paddingBottom={16}>
-        <Text
-          fontFamily={editorialFonts.serif}
-          fontSize={30}
-          lineHeight={40}
-          letterSpacing={-0.6}
-          fontWeight="400"
-          color={palette.ink}
-          textAlign="center"
-        >
-          {t("notifications.title")}
-        </Text>
-        <XStack justifyContent="flex-end" marginTop={4} minHeight={20}>
-          <MarkAllReadAction disabled={unread === 0} onPress={markAll} />
-        </XStack>
-      </YStack>
+    <SettingsScreenShell title={t("notifications.title")} scroll={false}>
+      <XStack justifyContent="flex-end" paddingHorizontal={20} minHeight={24}>
+        <MarkAllReadAction disabled={unread === 0} onPress={markAll} />
+      </XStack>
 
-      {inbox.isLoading ? (
-        <NotificationListSkeleton />
-      ) : inbox.isError ? (
-        <NotificationErrorState onRetry={inbox.refetch} />
-      ) : inbox.items.length === 0 ? (
-        <NotificationEmptyState />
-      ) : (
-        <NotificationSectionList items={inbox.items} now={now} onPressItem={onPressItem} />
-      )}
+      <YStack flex={1} marginTop={4}>
+        {inbox.isLoading ? (
+          <NotificationListSkeleton />
+        ) : inbox.isError ? (
+          <NotificationErrorState onRetry={inbox.refetch} />
+        ) : inbox.items.length === 0 ? (
+          <NotificationEmptyState />
+        ) : (
+          <NotificationSectionList items={inbox.items} now={now} onPressItem={onPressItem} />
+        )}
+      </YStack>
 
       <PushPrepromptSheet
         open={prepromptOpen}
@@ -118,6 +105,6 @@ export default function NotificationsScreen(): ReactElement {
         onEnable={enablePush}
         onDismiss={dismissPreprompt}
       />
-    </View>
+    </SettingsScreenShell>
   );
 }
