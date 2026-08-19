@@ -74,6 +74,15 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     fill: { height: "100%", backgroundColor: authTokens.ink, borderRadius: 2 },
 
     // heading
+    stepTag: {
+      fontFamily: fonts.mono,
+      fontSize: 11.5,
+      fontWeight: "600",
+      letterSpacing: 1.4,
+      textTransform: "uppercase",
+      color: authTokens.subtle,
+      marginBottom: 10,
+    },
     heading: {
       fontFamily: fonts.serif,
       fontSize: 34,

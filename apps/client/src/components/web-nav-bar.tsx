@@ -4,9 +4,10 @@
  *
  * On web at the desktop breakpoint this single bar replaces BOTH pieces of the
  * mobile chrome: the AppHeader (avatar · search · bell) and the bottom
- * EditorialTabBar. One row: global search on the left (no wordmark for now),
- * then the destinations as icon-over-sentence-case-label columns — active =
- * ink + filled glyph + a 2px underline riding the bar's bottom edge — and the
+ * EditorialTabBar. One centered cluster (capped at BAR_MAX_WIDTH): brand
+ * lockup, global search, then the destinations as
+ * icon-over-sentence-case-label columns — active = ink + filled glyph + a
+ * 2px underline riding the bar's bottom edge — and the
  * account folded into a LinkedIn-style "Eu" tab (mini avatar + caret) that
  * opens the MeMenu dropdown (view profile / settings / sign out) instead of
  * the mobile ProfileMenu drawer.
@@ -27,25 +28,30 @@ import {
   useGetV1UsersProfile,
 } from "@patch-careers/api-client";
 import { Avatar, Text, XStack, YStack } from "@patch-careers/ui";
-import { CountBadge, useEditorialPalette } from "@patch-careers/ui/editorial";
+import { BrandLockup, CountBadge, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { usePathname, useRouter } from "expo-router";
 import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { SearchModal, SearchTrigger } from "@/features/search";
-import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import { MeMenu } from "./me-menu";
 
-// Bar row height — matches the mobile AppHeader's 56 so the chrome feels like
-// the same system across breakpoints.
-const BAR_HEIGHT = 56;
-// Fixed column per destination; sentence-case labels are narrower than the
-// old small caps, so the columns tightened from 96 ("NOTIFICAÇÕES") to 88.
-const NAV_ITEM_WIDTH = 88;
-// The search pill flexes between these (it's the row's only flexible piece).
-const SEARCH_MAX_WIDTH = 280;
-const SEARCH_MIN_WIDTH = 140;
+// Bar row height — taller than the mobile AppHeader's 56 so the full brand
+// lockup (mark + wordmark) breathes at the left edge.
+const BAR_HEIGHT = 72;
+// The lockup's render height inside the bar.
+const LOCKUP_HEIGHT = 48;
+// Fixed column per destination — sized for the widest label
+// ("Notificações") at the 13px label size.
+const NAV_ITEM_WIDTH = 96;
+// The search pill sits between two equal flex spacers, so it has one fixed
+// width instead of a flex range.
+const SEARCH_WIDTH = 360;
+// The row is a centered cluster, not edge-pinned: logo and destinations stay
+// close to the search instead of hugging the window corners.
+const BAR_MAX_WIDTH = 1200;
 
 type IoniconName = keyof typeof Ionicons.glyphMap;
 type NavKey = "jobs" | "messages" | "curriculos" | "notifications" | "profile";
@@ -128,18 +134,18 @@ function WebNavItem({
         height={BAR_HEIGHT}
         alignItems="center"
         justifyContent="center"
-        gap={3}
+        gap={4}
       >
         {/* Fixed-height glyph band so an avatar glyph never shifts baselines;
             a tight relative wrapper anchors the corner badge. */}
-        <YStack height={24} alignItems="center" justifyContent="center">
+        <YStack height={26} alignItems="center" justifyContent="center">
           <YStack position="relative">
-            {renderIcon({ focused, color, size: 22 })}
+            {renderIcon({ focused, color, size: 24 })}
             {badge}
           </YStack>
         </YStack>
-        <XStack alignItems="center" gap={2}>
-          <Text fontSize={12} lineHeight={14} color={color} numberOfLines={1}>
+        <XStack alignItems="center" gap={3}>
+          <Text fontSize={13} lineHeight={16} color={color} numberOfLines={1}>
             {label}
           </Text>
           {trailing ? trailing(color) : null}
@@ -232,15 +238,28 @@ export function WebNavBar(): ReactElement | null {
     >
       <XStack
         width="100%"
-        maxWidth={DESKTOP_CONTENT_MAX_WIDTH}
+        maxWidth={BAR_MAX_WIDTH}
         height={BAR_HEIGHT}
-        paddingHorizontal={16}
+        paddingHorizontal={24}
         alignItems="center"
-        gap={16}
       >
-        {/* Global search — same trigger + command palette as mobile. The
-            row's only flexible piece: grows to the cap, shrinks first. */}
-        <XStack flexGrow={1} flexShrink={1} maxWidth={SEARCH_MAX_WIDTH} minWidth={SEARCH_MIN_WIDTH}>
+        {/* Brand lockup opens the row and acts as "home" — it re-enters the
+            Vagas tab. Web-only by construction: this whole bar renders
+            exclusively on desktop web. */}
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel="Patch Careers"
+          onPress={() => router.push("/jobs")}
+        >
+          <BrandLockup height={LOCKUP_HEIGHT} />
+        </Pressable>
+
+        <XStack flex={1} />
+
+        {/* Global search — same trigger + command palette as mobile. The two
+            equal spacers keep it balanced between logo and destinations, all
+            three reading as one centered cluster. */}
+        <XStack width={SEARCH_WIDTH}>
           <YStack flex={1}>
             <SearchTrigger onPress={() => setSearchOpen(true)} active={searchOpen} inset />
           </YStack>
@@ -302,7 +321,7 @@ export function WebNavBar(): ReactElement | null {
               trailing={(color) => (
                 <Ionicons
                   name="chevron-down"
-                  size={11}
+                  size={12}
                   color={color}
                   // Caret flips while the dropdown is open.
                   style={{ transform: [{ rotate: menuOpen ? "180deg" : "0deg" }] }}

@@ -201,71 +201,100 @@ export function JobsScreen(): ReactElement {
     return t(`jobs.count.${variant}.${plural}`, { count: total });
   }
 
+  // The frosted "Filtrar" trigger renders in two homes: inside the count row
+  // on mobile, and inside the pinned scope bar (next to the pills) on desktop
+  // web — where the sparse three-band header collapses into two lines.
+  const filterButton = showFilters ? (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t("jobs.filters.buttonA11y")}
+      accessibilityState={{ selected: filtersActive }}
+      onPress={() => setSheetOpen(true)}
+      hitSlop={{ top: 6, bottom: 6, left: 2, right: 2 }}
+      style={({ pressed }) => ({
+        flexDirection: "row" as const,
+        alignItems: "center" as const,
+        gap: 8,
+        paddingHorizontal: 14,
+        height: 34,
+        borderRadius: 17,
+        borderWidth: 1,
+        borderColor: editorialPalette.hairlineStrong,
+        backgroundColor: pressed ? editorialPalette.bg : editorialPalette.surface,
+      })}
+    >
+      <Icon as={SlidersHorizontal} size={14} color={editorialPalette.body} />
+      <Text preset="caption" fontSize={13} color={editorialPalette.body}>
+        {t("jobs.filters.button")}
+      </Text>
+      {filtersActive ? (
+        <View
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: editorialPalette.primary,
+          }}
+        />
+      ) : null}
+    </Pressable>
+  ) : null;
+
   // The chrome that scrolls away (everything but the pinned scope bar), plus a
   // spacer reserving the floating bar's footprint so rows start below it.
   const listHeader = (
     <View>
       <View onLayout={(e) => setChromeHeight(e.nativeEvent.layout.height)}>
-        <YStack gap={16} paddingTop={18} paddingBottom={14}>
-          <Text
-            fontFamily={editorialFonts.serif}
-            fontSize={26}
-            // Without an explicit lineHeight the serif descenders ("g") get
-            // clipped by the default line box.
-            lineHeight={34}
-            color={editorialPalette.ink}
-            textAlign={isDesktopWeb ? "left" : "center"}
-            paddingHorizontal={20}
-          >
-            {t("jobs.title")}
-          </Text>
-
-          <XStack
-            paddingHorizontal={20}
-            alignItems="center"
-            justifyContent="space-between"
-            gap={12}
-            minHeight={34}
-          >
-            <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
-              {countLine()}
-            </Text>
-            {showFilters ? (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("jobs.filters.buttonA11y")}
-                accessibilityState={{ selected: filtersActive }}
-                onPress={() => setSheetOpen(true)}
-                hitSlop={{ top: 6, bottom: 6, left: 2, right: 2 }}
-                style={({ pressed }) => ({
-                  flexDirection: "row" as const,
-                  alignItems: "center" as const,
-                  gap: 8,
-                  paddingHorizontal: 14,
-                  height: 34,
-                  borderRadius: 17,
-                  borderWidth: 1,
-                  borderColor: editorialPalette.hairlineStrong,
-                  backgroundColor: pressed ? editorialPalette.bg : editorialPalette.surface,
-                })}
-              >
-                <Icon as={SlidersHorizontal} size={14} color={editorialPalette.body} />
-                <Text preset="caption" fontSize={13} color={editorialPalette.body}>
-                  {t("jobs.filters.button")}
+        <YStack gap={16} paddingTop={isDesktopWeb ? 28 : 18} paddingBottom={isDesktopWeb ? 4 : 14}>
+          {isDesktopWeb ? (
+            // Desktop reads as one editorial masthead line: serif title with
+            // the count sitting on its baseline, hairline rule beneath. The
+            // filter trigger lives in the pinned bar alongside the pills.
+            <YStack paddingHorizontal={20} gap={14}>
+              <XStack alignItems="baseline" gap={14}>
+                <Text
+                  fontFamily={editorialFonts.serif}
+                  fontSize={30}
+                  lineHeight={38}
+                  color={editorialPalette.ink}
+                >
+                  {t("jobs.title")}
                 </Text>
-                {filtersActive ? (
-                  <View
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: 3,
-                      backgroundColor: editorialPalette.primary,
-                    }}
-                  />
-                ) : null}
-              </Pressable>
-            ) : null}
-          </XStack>
+                <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
+                  {countLine()}
+                </Text>
+              </XStack>
+              <Divider color={editorialPalette.hairline} />
+            </YStack>
+          ) : (
+            <>
+              <Text
+                fontFamily={editorialFonts.serif}
+                fontSize={26}
+                // Without an explicit lineHeight the serif descenders ("g") get
+                // clipped by the default line box.
+                lineHeight={34}
+                color={editorialPalette.ink}
+                textAlign="center"
+                paddingHorizontal={20}
+              >
+                {t("jobs.title")}
+              </Text>
+
+              <XStack
+                paddingHorizontal={20}
+                alignItems="center"
+                justifyContent="space-between"
+                gap={12}
+                minHeight={34}
+              >
+                <Text preset="caption" fontSize={12} color={editorialPalette.subtle}>
+                  {countLine()}
+                </Text>
+                {filterButton}
+              </XStack>
+            </>
+          )}
 
           {showFilters ? <ActiveFilterChips filters={filters} onChange={setFilters} /> : null}
         </YStack>
@@ -449,11 +478,18 @@ export function JobsScreen(): ReactElement {
             locations={[0, 0.5, 1]}
             style={stickyStyles.fade}
           >
-            <JobsScopeTabs
-              value={scope}
-              onChange={setScope}
-              align={isDesktopWeb ? "start" : "center"}
-            />
+            {isDesktopWeb ? (
+              // Pills left, filter trigger right — one control line, so the
+              // header above stays a clean masthead.
+              <XStack alignItems="center" paddingLeft={4} paddingRight={20} gap={12}>
+                <YStack flex={1}>
+                  <JobsScopeTabs value={scope} onChange={setScope} align="start" />
+                </YStack>
+                {filterButton}
+              </XStack>
+            ) : (
+              <JobsScopeTabs value={scope} onChange={setScope} align="center" />
+            )}
           </LinearGradient>
         </Animated.View>
       </View>

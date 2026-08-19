@@ -193,9 +193,11 @@ function OnboardingWizardInner(): ReactElement {
   const fieldIsRequired = (field: OnboardingField): boolean =>
     isProfileFieldRequired(field.key) || Boolean(field.required);
   // Only the exceptions get marked: optional fields carry an "· opcional"
-  // suffix, required fields show the bare label.
+  // suffix, required fields show the bare label. When the whole step is
+  // optional the heading already carries the "Opcional" tag, so repeating
+  // the suffix on every field would be noise — fields stay bare there.
   const labeledFields = flowFields.map((field) =>
-    fieldIsRequired(field)
+    fieldIsRequired(field) || isOptionalFlow
       ? field
       : { ...field, label: `${field.label} · ${t("onboarding.field.optional")}` },
   );
@@ -256,7 +258,11 @@ function OnboardingWizardInner(): ReactElement {
                   disabled={isPending || testFill.isRunning}
                 />
               ) : null}
-              <StepHeading title={stepTitle} subtitle={subtitleText} />
+              <StepHeading
+                title={stepTitle}
+                subtitle={subtitleText}
+                {...(isOptionalFlow ? { tag: t("onboarding.step.optional") } : {})}
+              />
             </StepTransition>
 
             {/* Fixed-height body: same on every step. Content centers inside it;

@@ -29,6 +29,7 @@ export { AnimatedField } from "./animated-field";
 export { AuthCard } from "./auth-card";
 export { AuthShell } from "./auth-shell";
 export { Banner, type BannerIntent, type BannerProps } from "./banner";
+export { BrandLockup } from "./brand-lockup";
 export { BrandMark } from "./brand-mark";
 export { CaptionButton, type CaptionButtonProps } from "./caption-button";
 export { CheckboxField, type CheckboxFieldProps } from "./checkbox-field";

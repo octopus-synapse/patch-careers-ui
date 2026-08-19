@@ -163,6 +163,9 @@ export const en: TranslationDict = {
     field: {
       optional: "optional",
     },
+    step: {
+      optional: "Optional",
+    },
     validation: {
       required: "Required field",
       invalidUrl: "Enter a valid URL",

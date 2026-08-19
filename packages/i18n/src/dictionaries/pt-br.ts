@@ -163,6 +163,9 @@ export const ptBR: TranslationDict = {
     field: {
       optional: "opcional",
     },
+    step: {
+      optional: "Opcional",
+    },
     validation: {
       required: "Campo obrigatório",
       invalidUrl: "Informe uma URL válida",

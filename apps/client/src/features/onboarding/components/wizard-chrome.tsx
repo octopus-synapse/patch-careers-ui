@@ -91,15 +91,24 @@ function splitHeading(title: string): { head: string; tail: string } {
 
 export function StepHeading({
   subtitle,
+  tag,
   title,
 }: {
   subtitle?: string;
+  /** Small mono label above the title — only the exception is marked
+   *  (optional steps get "Opcional"; required steps stay bare). */
+  tag?: string;
   title: string;
 }): ReactElement {
   const ed = useEd();
   const { head, tail } = splitHeading(title);
   return (
     <View>
+      {tag ? (
+        <AnimatedField delay={40}>
+          <RNText style={ed.stepTag}>{tag}</RNText>
+        </AnimatedField>
+      ) : null}
       <AnimatedField delay={80}>
         <RNText style={ed.heading}>
           {head ? <RNText style={ed.headingRegular}>{head}</RNText> : null}
