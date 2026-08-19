@@ -56,7 +56,15 @@ export function SearchResultRow({
             </View>
           ) : null}
           <YStack flex={1}>
-            <Text preset="label" numberOfLines={1} color={editorialPalette.ink} fontWeight="600">
+            {/* Roomier title at normal weight — the ink color already carries
+                the hierarchy against the caption snippet below. */}
+            <Text
+              preset="label"
+              fontSize={15}
+              numberOfLines={1}
+              color={editorialPalette.ink}
+              fontWeight="400"
+            >
               {title}
             </Text>
             {snippet ? (

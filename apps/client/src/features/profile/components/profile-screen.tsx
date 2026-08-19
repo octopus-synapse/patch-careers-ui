@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { TriangleAlert } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { useProfile, useProfileCompleteness, useProfileMutations } from "../hooks/queries";
 import { usePf } from "../lib/styles";
@@ -29,6 +30,7 @@ import { MasterSectionsTab } from "./master-sections-tab";
 import { PerformanceSheet } from "./performance-sheet";
 import { ProfileHeader } from "./profile-header";
 import { ProfileSkeleton } from "./profile-skeleton";
+import { ResumePreviewCard } from "./resume-preview-card";
 import { ScoreHero } from "./score-hero";
 
 export function ProfileScreen(): ReactElement {
@@ -37,6 +39,9 @@ export function ProfileScreen(): ReactElement {
   const pf = usePf();
   // Bar floats over content; pad the scroll so the last items clear it.
   const tabBarHeight = useBottomTabBarHeight();
+  // Desktop web: two-column body (sections main + insights rail) and the add
+  // CTA lives inline in the rail instead of floating over a bottom bar.
+  const isDesktopWeb = useIsDesktopWeb();
   const profileQuery = useProfile();
   const profile = profileQuery.data;
   const { updatePhoto, removePhoto, photoPending } = useProfileMutations();
@@ -123,7 +128,10 @@ export function ProfileScreen(): ReactElement {
   return (
     <View style={pf.root}>
       <ScrollView
-        contentContainerStyle={[pf.scroll, { paddingBottom: tabBarHeight + floatingAddHeight }]}
+        contentContainerStyle={[
+          pf.scroll,
+          { paddingBottom: isDesktopWeb ? 56 : tabBarHeight + floatingAddHeight },
+        ]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -140,15 +148,33 @@ export function ProfileScreen(): ReactElement {
           completeness={completeness}
         />
 
-        <ScoreHero onOpen={() => setPerformanceOpen(true)} />
-        <FitProfileCard />
+        {isDesktopWeb ? (
+          <View style={pf.bodyWide}>
+            <View style={pf.mainColWide}>
+              <MasterSectionsTab profile={profile} showPreview={false} />
+              <MasterAddSection variant="ink" />
+            </View>
+            <View style={pf.railWide}>
+              <ScoreHero onOpen={() => setPerformanceOpen(true)} />
+              <FitProfileCard />
+              <ResumePreviewCard />
+            </View>
+          </View>
+        ) : (
+          <>
+            <ScoreHero onOpen={() => setPerformanceOpen(true)} />
+            <FitProfileCard />
 
-        <MasterSectionsTab profile={profile} />
+            <MasterSectionsTab profile={profile} />
+          </>
+        )}
       </ScrollView>
 
-      <View pointerEvents="box-none" style={[pf.floatingAdd, { bottom: tabBarHeight + 16 }]}>
-        <MasterAddSection />
-      </View>
+      {isDesktopWeb ? null : (
+        <View pointerEvents="box-none" style={[pf.floatingAdd, { bottom: tabBarHeight + 16 }]}>
+          <MasterAddSection />
+        </View>
+      )}
 
       <PerformanceSheet open={performanceOpen} onOpenChange={setPerformanceOpen} />
 

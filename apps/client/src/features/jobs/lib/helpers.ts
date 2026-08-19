@@ -10,6 +10,14 @@ import { JobType, labelFor, RemotePolicy } from "@patch-careers/api-client";
 import type { Locale, Translator } from "@patch-careers/i18n";
 import type { ExternalJob, JobsFilters, PostedWithin, SavedExternalJobItem } from "../types";
 
+/**
+ * Desktop web caps the Jobs surface (list + detail) to this centered reading
+ * column. The app-wide 960 scene stretches single-column rows into
+ * unreadable lines; ~660 keeps the serif titles and meta at a book-like
+ * measure while the paper bleeds full-width behind it.
+ */
+export const DESKTOP_JOBS_COLUMN = 660;
+
 /** Chip order: most common employment types first. */
 export const EMPLOYMENT_TYPE_OPTIONS: readonly JobType[] = [
   JobType.FULL_TIME,

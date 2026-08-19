@@ -17,7 +17,12 @@ import {
 import { useI18n } from "@/providers/i18n-provider";
 import { AddSectionButton } from "./add-section-button";
 
-export function MasterAddSection(): ReactElement {
+export function MasterAddSection({
+  variant = "frosted",
+}: {
+  /** Passed through to the button: "frosted" when floating, "ink" inline. */
+  variant?: "frosted" | "ink";
+}): ReactElement {
   const { t } = useI18n();
   const { resumeId, language } = useMasterResumeId();
   const locale = resumeLanguageToLocale(language);
@@ -38,6 +43,7 @@ export function MasterAddSection(): ReactElement {
         label={t("sections.addToResume")}
         onPress={() => setAddOpen(true)}
         disabled={!resumeId}
+        variant={variant}
       />
       <AddSectionFlowModal
         visible={addOpen}

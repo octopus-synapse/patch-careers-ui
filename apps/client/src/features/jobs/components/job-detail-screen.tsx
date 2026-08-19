@@ -26,17 +26,24 @@ import { type ReactElement, useMemo, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MatchBreakdown } from "@/features/match";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { findExternalJob } from "../hooks/queries";
 import { type AppliedCv, useReportApplied } from "../hooks/use-report-applied";
 import { useToggleSaveJob } from "../hooks/use-save-job";
-import { jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
+import { DESKTOP_JOBS_COLUMN, jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
 import { ApplyFlow } from "./apply-flow";
 import { DidYouApplySheet } from "./did-you-apply-sheet";
 
 export function JobDetailScreen({ id }: { id: string }): ReactElement {
   const editorialPalette = useEditorialPalette();
   const insets = useSafeAreaInsets();
+  // Desktop web narrows every band (top bar, article, CTA) to the shared jobs
+  // reading column so the detail doesn't stretch across the 960 scene.
+  const isDesktopWeb = useIsDesktopWeb();
+  const columnProps = isDesktopWeb
+    ? ({ width: "100%", maxWidth: DESKTOP_JOBS_COLUMN, alignSelf: "center" } as const)
+    : null;
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t, locale } = useI18n();
@@ -93,7 +100,13 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
 
   return (
     <View style={{ flex: 1, backgroundColor: editorialPalette.bg, paddingTop: insets.top }}>
-      <XStack alignItems="center" justifyContent="space-between" height={44} paddingHorizontal={8}>
+      <XStack
+        alignItems="center"
+        justifyContent="space-between"
+        height={44}
+        paddingHorizontal={8}
+        {...columnProps}
+      >
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("jobs.detail.back")}
@@ -138,7 +151,12 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
           <ScrollView
             // @style-allow inline: RN ScrollView fill (not a Tamagui component)
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 40 }}
+            contentContainerStyle={{
+              paddingHorizontal: 24,
+              paddingTop: 16,
+              paddingBottom: 40,
+              ...columnProps,
+            }}
           >
             <YStack gap={14}>
               <Text
@@ -202,7 +220,6 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
           </ScrollView>
 
           <YStack
-            gap={8}
             paddingHorizontal={24}
             paddingTop={12}
             paddingBottom={insets.bottom + 12}
@@ -210,12 +227,20 @@ export function JobDetailScreen({ id }: { id: string }): ReactElement {
             borderTopWidth={1}
             borderTopColor={editorialPalette.hairline}
           >
-            <PrimaryAction label={t("jobs.detail.apply")} onPress={() => setApplyOpen(true)} />
-            <Text preset="caption" fontSize={12} color={editorialPalette.subtle} textAlign="center">
-              {job.publisher
-                ? t("jobs.detail.opensPublisherSiteNamed", { publisher: job.publisher })
-                : t("jobs.detail.opensPublisherSite")}
-            </Text>
+            {/* The hairline bleeds across the scene; the CTA stays on the column. */}
+            <YStack gap={8} {...columnProps}>
+              <PrimaryAction label={t("jobs.detail.apply")} onPress={() => setApplyOpen(true)} />
+              <Text
+                preset="caption"
+                fontSize={12}
+                color={editorialPalette.subtle}
+                textAlign="center"
+              >
+                {job.publisher
+                  ? t("jobs.detail.opensPublisherSiteNamed", { publisher: job.publisher })
+                  : t("jobs.detail.opensPublisherSite")}
+              </Text>
+            </YStack>
           </YStack>
         </>
       )}

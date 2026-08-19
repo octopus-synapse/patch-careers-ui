@@ -26,6 +26,7 @@ import {
   useInbox,
   useUserSearch,
 } from "@/features/messages";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 
 function RowSeparator(): ReactElement {
@@ -36,6 +37,8 @@ function RowSeparator(): ReactElement {
 export default function MessagesScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const tabBarHeight = useBottomTabBarHeight();
+  // Desktop web reads left-to-right like a page; mobile keeps the centered title.
+  const isDesktopWeb = useIsDesktopWeb();
   const router = useRouter();
   const { t } = useI18n();
   const queryClient = useQueryClient();
@@ -81,7 +84,7 @@ export default function MessagesScreen(): ReactElement {
           letterSpacing={-0.6}
           fontWeight="400"
           color={editorialPalette.ink}
-          textAlign="center"
+          textAlign={isDesktopWeb ? "left" : "center"}
         >
           {t("messages.title")}
         </Text>

@@ -9,7 +9,7 @@
 import { MatchScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
 import { Bookmark } from "lucide-react-native";
-import { memo, type ReactElement } from "react";
+import { memo, type ReactElement, useState } from "react";
 import { Pressable } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import { jobMetaLine, postedAgo, toTitleCase } from "../lib/helpers";
@@ -36,14 +36,19 @@ function JobRowInner({
   const meta = jobMetaLine(job, locale);
   const ago = postedAgo(job, now, t, locale);
   const title = toTitleCase(job.title);
+  // Pointer feedback on web — hover events never fire on touch, so this is
+  // desktop-only by nature.
+  const [hovered, setHovered] = useState(false);
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={t("jobs.row.a11y", { title, company: job.company })}
       onPress={() => onPress(job)}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
       style={({ pressed }) => ({
-        backgroundColor: pressed ? editorialPalette.surface : "transparent",
+        backgroundColor: pressed || hovered ? editorialPalette.surface : "transparent",
       })}
     >
       <XStack gap={12} paddingHorizontal={20} paddingVertical={24} alignItems="flex-start">

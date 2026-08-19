@@ -36,6 +36,9 @@ export const en: TranslationDict = {
     applications: "Applications",
     resumes: "Resumes",
     profile: "Profile",
+    // Desktop-web navbar only — the account tab (LinkedIn's "Me"); the mobile
+    // bottom bar keeps "Profile".
+    me: "Me",
   },
   common: {
     hello: "Hello",
@@ -90,9 +93,17 @@ export const en: TranslationDict = {
     resetInvalidToken: "Invalid or expired link. Please request a new one.",
     verifyTitle: "Verify your email",
     verifyIntro: "Enter the 6-digit code sent to {email}.",
+    verifyIntroShort: "We sent a 6-digit code to",
+    verifyChangeEmail: "Use another email",
+    verifyChecking: "Verifying…",
+    verifyCodeResent: "New code sent.",
+    verifyNotReceived: "Didn't get it?",
+    verifyResendPrefix: "Resend in",
+    verifyCodeLabel: "Verification code",
     verifyResend: "Resend code",
     verifyResendIn: "Resend in {seconds}s",
     verifySuccess: "Email verified!",
+    verifiedTitle: "Email verified.",
     verifyInvalidToken: "Invalid or expired code. Please request a new one.",
     twoFaTitle: "Two-factor verification",
     twoFaIntro: "Enter the code from your authenticator app.",

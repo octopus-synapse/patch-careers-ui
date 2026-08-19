@@ -27,9 +27,12 @@ const SCOPES: ReadonlyArray<{ key: JobsScope; outline: IoniconName; filled: Ioni
 export function JobsScopeTabs({
   value,
   onChange,
+  align = "center",
 }: {
   value: JobsScope;
   onChange: (scope: JobsScope) => void;
+  /** Desktop web left-aligns the row with the screen's chrome. */
+  align?: "center" | "start";
 }): ReactElement {
   const { t } = useI18n();
 
@@ -37,6 +40,7 @@ export function JobsScopeTabs({
     <FrostedPillTabs
       value={value}
       onChange={onChange}
+      align={align}
       tabs={SCOPES.map((scope) => ({
         key: scope.key,
         label: t(`jobs.scope.${scope.key}`),

@@ -40,6 +40,7 @@ import {
 } from "react-native";
 import { setHeaderCollapsed } from "@/components/header-collapse-store";
 import { RecommendedSection, useListMatchScores } from "@/features/match";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { seedExternalJob, useExternalJobs } from "../hooks/queries";
 import {
@@ -48,7 +49,12 @@ import {
   useApplications,
 } from "../hooks/use-applications";
 import { useToggleSaveJob } from "../hooks/use-save-job";
-import { groupJobsByPeriod, hasActiveFilters, type JobSection } from "../lib/helpers";
+import {
+  DESKTOP_JOBS_COLUMN,
+  groupJobsByPeriod,
+  hasActiveFilters,
+  type JobSection,
+} from "../lib/helpers";
 import { EMPTY_JOBS_FILTERS, type ExternalJob, type JobsFilters, type JobsScope } from "../types";
 import { ActiveFilterChips } from "./active-filter-chips";
 import { ApplicationRow } from "./application-row";
@@ -84,6 +90,9 @@ export function JobsScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   // Bottom bar floats over content; pad the list so the last rows clear it.
   const tabBarHeight = useBottomTabBarHeight();
+  // Desktop web reads left-to-right like a page: title + scope tabs align
+  // left with the count line instead of the mobile centered stack.
+  const isDesktopWeb = useIsDesktopWeb();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useI18n();
@@ -205,7 +214,8 @@ export function JobsScreen(): ReactElement {
             // clipped by the default line box.
             lineHeight={34}
             color={editorialPalette.ink}
-            textAlign="center"
+            textAlign={isDesktopWeb ? "left" : "center"}
+            paddingHorizontal={20}
           >
             {t("jobs.title")}
           </Text>
@@ -342,91 +352,111 @@ export function JobsScreen(): ReactElement {
 
   return (
     <View style={{ flex: 1, backgroundColor: editorialPalette.bg }}>
-      <AnimatedSectionList
-        sections={sections}
-        keyExtractor={(item: Row) => item.id}
-        renderItem={({ item }: { item: Row }) =>
-          isApplicationRow(item) ? (
-            <ApplicationRow application={item} now={now} onPress={openApplication} />
-          ) : (
-            <JobRow
-              job={item}
-              now={now}
-              onPress={openJob}
-              onToggleSave={toggleSave}
-              savePending={pendingId === item.externalId}
-              matchScore={matchScores[item.id]}
-            />
-          )
-        }
-        renderSectionHeader={({ section }: { section: Section }) => (
-          <JobSectionHeader
-            title={
-              PERIOD_KEYS.has(section.key)
-                ? t(`jobs.sections.${section.key}`)
-                : t(`jobs.applications.status.${section.key}`)
-            }
-          />
-        )}
-        stickySectionHeadersEnabled={false}
-        ItemSeparatorComponent={RowSeparator}
-        ListHeaderComponent={listHeader}
-        ListEmptyComponent={emptyContent()}
-        onEndReachedThreshold={0.4}
-        onEndReached={() => {
-          // Only the discovery/saved lists paginate; applications load in one page.
-          if (!isApplications && list.hasNextPage && !list.isFetchingNextPage) {
-            list.fetchNextPage();
-          }
+      {/* Desktop web narrows the whole surface (list + pinned scope bar) to a
+          centered reading column — the pinned bar is absolute against this
+          wrapper, so it hugs the same edges as the rows beneath it. */}
+      <View
+        style={{
+          flex: 1,
+          ...(isDesktopWeb
+            ? {
+                width: "100%" as const,
+                maxWidth: DESKTOP_JOBS_COLUMN,
+                alignSelf: "center" as const,
+              }
+            : null),
         }}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={refetch}
-            tintColor={editorialPalette.muted}
-            // Spinner clears the pinned bar instead of hiding behind it.
-            progressViewOffset={scopeBarHeight}
-          />
-        }
-        ListFooterComponent={
-          !isApplications && list.isFetchingNextPage ? (
-            <YStack paddingVertical={20}>
-              <ActivityIndicator size="small" color={editorialPalette.muted} />
-            </YStack>
-          ) : null
-        }
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarHeight + 24 }}
-      />
+      >
+        <AnimatedSectionList
+          sections={sections}
+          keyExtractor={(item: Row) => item.id}
+          renderItem={({ item }: { item: Row }) =>
+            isApplicationRow(item) ? (
+              <ApplicationRow application={item} now={now} onPress={openApplication} />
+            ) : (
+              <JobRow
+                job={item}
+                now={now}
+                onPress={openJob}
+                onToggleSave={toggleSave}
+                savePending={pendingId === item.externalId}
+                matchScore={matchScores[item.id]}
+              />
+            )
+          }
+          renderSectionHeader={({ section }: { section: Section }) => (
+            <JobSectionHeader
+              title={
+                PERIOD_KEYS.has(section.key)
+                  ? t(`jobs.sections.${section.key}`)
+                  : t(`jobs.applications.status.${section.key}`)
+              }
+            />
+          )}
+          stickySectionHeadersEnabled={false}
+          ItemSeparatorComponent={RowSeparator}
+          ListHeaderComponent={listHeader}
+          ListEmptyComponent={emptyContent()}
+          onEndReachedThreshold={0.4}
+          onEndReached={() => {
+            // Only the discovery/saved lists paginate; applications load in one page.
+            if (!isApplications && list.hasNextPage && !list.isFetchingNextPage) {
+              list.fetchNextPage();
+            }
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={refetch}
+              tintColor={editorialPalette.muted}
+              // Spinner clears the pinned bar instead of hiding behind it.
+              progressViewOffset={scopeBarHeight}
+            />
+          }
+          ListFooterComponent={
+            !isApplications && list.isFetchingNextPage ? (
+              <YStack paddingVertical={20}>
+                <ActivityIndicator size="small" color={editorialPalette.muted} />
+              </YStack>
+            ) : null
+          }
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarHeight + 24 }}
+        />
 
-      {/* The only thing pinned on scroll: the glass scope capsule. A top fade
+        {/* The only thing pinned on scroll: the glass scope capsule. A top fade
           lets rows dissolve into the background as they scroll up under it.
           Hidden until the chrome is measured so it lands in place. */}
-      <Animated.View
-        pointerEvents="box-none"
-        style={[
-          stickyStyles.wrap,
-          { opacity: chromeHeight > 0 ? 1 : 0, transform: [{ translateY: scopeBarTranslateY }] },
-        ]}
-        onLayout={(e) => setScopeBarHeight(e.nativeEvent.layout.height)}
-      >
-        <LinearGradient
+        <Animated.View
           pointerEvents="box-none"
-          // 3-stop fade (bg 90% → 60% → transparent) — matches the reference so
-          // the capsule emerges from the background instead of a hard band.
-          colors={[
-            `${editorialPalette.bg}E6`,
-            `${editorialPalette.bg}99`,
-            `${editorialPalette.bg}00`,
+          style={[
+            stickyStyles.wrap,
+            { opacity: chromeHeight > 0 ? 1 : 0, transform: [{ translateY: scopeBarTranslateY }] },
           ]}
-          locations={[0, 0.5, 1]}
-          style={stickyStyles.fade}
+          onLayout={(e) => setScopeBarHeight(e.nativeEvent.layout.height)}
         >
-          <JobsScopeTabs value={scope} onChange={setScope} />
-        </LinearGradient>
-      </Animated.View>
+          <LinearGradient
+            pointerEvents="box-none"
+            // 3-stop fade (bg 90% → 60% → transparent) — matches the reference so
+            // the capsule emerges from the background instead of a hard band.
+            colors={[
+              `${editorialPalette.bg}E6`,
+              `${editorialPalette.bg}99`,
+              `${editorialPalette.bg}00`,
+            ]}
+            locations={[0, 0.5, 1]}
+            style={stickyStyles.fade}
+          >
+            <JobsScopeTabs
+              value={scope}
+              onChange={setScope}
+              align={isDesktopWeb ? "start" : "center"}
+            />
+          </LinearGradient>
+        </Animated.View>
+      </View>
 
       <JobsFilterSheet
         open={sheetOpen}

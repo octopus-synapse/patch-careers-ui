@@ -896,10 +896,13 @@ export function WelcomeScreen({
           accessibilityLabel={t("onboarding.back")}
           onPress={onBack}
           hitSlop={12}
-          style={[ed.welcomeBack, { top: insets.top + 8 }]}
+          style={[ed.welcomeBack, { top: insets.top + (Platform.OS === "web" ? 20 : 8) }]}
           testID="onboarding.welcome.back"
         >
           <ArrowLeft size={22} color={authTokens.ink} strokeWidth={1.75} />
+          {Platform.OS === "web" ? (
+            <RNText style={ed.welcomeBackLabel}>{t("onboarding.back").toUpperCase()}</RNText>
+          ) : null}
         </Pressable>
       ) : null}
       <View style={ed.welcomeWrap}>
@@ -916,13 +919,7 @@ export function WelcomeScreen({
         <AnimatedField delay={300}>
           <RNText style={ed.welcomeTagline}>{t("onboarding.welcome.tagline")}</RNText>
         </AnimatedField>
-        <AnimatedField delay={360}>
-          <View style={ed.welcomeBadge}>
-            <Check size={14} color={authTokens.accent} strokeWidth={2.5} />
-            <RNText style={ed.welcomeBadgeText}>{t("onboarding.welcome.timePromise")}</RNText>
-          </View>
-        </AnimatedField>
-        <AnimatedField delay={440}>
+        <AnimatedField delay={400}>
           <View style={ed.welcomeCta}>
             <PrimaryAction
               label={t("onboarding.welcome.cta")}

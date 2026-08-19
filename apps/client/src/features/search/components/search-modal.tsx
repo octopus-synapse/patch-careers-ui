@@ -215,7 +215,9 @@ export function SearchModal({
       >
         {/* Top row — the real search input, styled as the header trigger in its
             active "V3" state (accent focus ring + accent glyph) so the palette
-            reads as the same field lighting up as it grows out of the header. */}
+            reads as the same field lighting up as it grows out of the header.
+            Same paper-well fill as the navbar's inset trigger, so the pill
+            reads as the SAME field across the two surfaces. */}
         <XStack
           alignItems="center"
           gap={10}
@@ -225,7 +227,7 @@ export function SearchModal({
           borderRadius={23}
           borderWidth={2}
           borderColor={`${editorialPalette.accent}4D`}
-          backgroundColor={editorialPalette.surface}
+          backgroundColor={editorialPalette.bg}
         >
           <Icon as={Search} size={22} color={editorialPalette.accent} />
           <Input
@@ -234,7 +236,7 @@ export function SearchModal({
             value={term}
             onChangeText={setTerm}
             placeholder={t("search.placeholder")}
-            placeholderTextColor={editorialPalette.subtle}
+            placeholderTextColor={editorialPalette.muted}
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="search"
@@ -244,6 +246,11 @@ export function SearchModal({
             minHeight={36}
             fontSize={15}
             color={editorialPalette.ink}
+            // The outer pill IS the focus treatment — kill the inner input's
+            // own Tamagui/browser focus ring (a second blue box on web).
+            outlineStyle="none"
+            focusStyle={{ outlineWidth: 0, outlineStyle: "none", borderWidth: 0 }}
+            focusVisibleStyle={{ outlineWidth: 0, outlineStyle: "none" }}
           />
           {term.length > 0 ? (
             <Pressable

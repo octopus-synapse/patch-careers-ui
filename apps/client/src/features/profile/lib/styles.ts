@@ -19,8 +19,28 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     // content scrolling behind it); `bottom` is set inline from the tab height.
     floatingAdd: { position: "absolute", left: 22, right: 22 },
 
+    // Desktop web (≥1024): the page reads left-to-right — wide identity band
+    // up top (a masthead closed by a hairline), then a two-column body
+    // (sections main + insights rail). The floating CTA becomes an inline ink
+    // slab under the sections list.
+    bodyWide: { flexDirection: "row", alignItems: "flex-start", gap: 36 },
+    mainColWide: { flex: 1, minWidth: 0, gap: 26 },
+    railWide: { width: 320, gap: 20 },
+
     // header
     header: { alignItems: "center", gap: 12, paddingTop: 20 },
+    // Desktop header: avatar left, identity text beside it, page-aligned left,
+    // closed by a hairline rule so it reads as the page's masthead.
+    headerWide: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 30,
+      paddingTop: 36,
+      paddingBottom: 30,
+      borderBottomWidth: 1,
+      borderBottomColor: p.hairline,
+    },
+    headerWideBody: { flex: 1, minWidth: 0, gap: 7, alignItems: "flex-start" },
     settingsButton: { position: "absolute", top: 16, right: 0, padding: 6, zIndex: 1 },
     avatarWrap: { position: "relative" },
     avatarUploading: {
@@ -34,6 +54,8 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       alignItems: "center",
       justifyContent: "center",
     },
+    // Matches the larger desktop avatar (112px) so the scrim stays circular.
+    avatarUploadingWide: { borderRadius: 56 },
     avatarBadge: {
       position: "absolute",
       right: -2,
@@ -73,6 +95,7 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       color: p.ink,
       textAlign: "center",
     },
+    nameWide: { fontSize: 36, lineHeight: 44, letterSpacing: -0.6, textAlign: "left" },
     headline: {
       fontFamily: fonts.sans,
       fontSize: 14.5,
@@ -81,6 +104,7 @@ const pfFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       color: p.body,
       textAlign: "center",
     },
+    headlineWide: { fontSize: 15.5, lineHeight: 22, textAlign: "left" },
     locationRow: { flexDirection: "row", alignItems: "center", gap: 5 },
     location: { fontFamily: fonts.sans, fontSize: 13, letterSpacing: 0.2, color: p.muted },
     headlinePlaceholder: { color: p.subtle, fontStyle: "italic" },

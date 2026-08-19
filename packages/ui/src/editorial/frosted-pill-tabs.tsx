@@ -32,6 +32,12 @@ export interface FrostedPillTabsProps<T extends string> {
   onChange: (key: T) => void;
   /** Pill density. Defaults to `sm` — the compact tab/scope size. */
   size?: FrostedPillSize;
+  /**
+   * Row alignment when the pills fit without scrolling. Defaults to the
+   * mobile-native `center`; desktop-web screens pass `start` so the row
+   * lines up with their left-aligned chrome.
+   */
+  align?: "center" | "start";
 }
 
 export function FrostedPillTabs<T extends string>({
@@ -39,6 +45,7 @@ export function FrostedPillTabs<T extends string>({
   value,
   onChange,
   size = "sm",
+  align = "center",
 }: FrostedPillTabsProps<T>): ReactElement {
   return (
     <ScrollView
@@ -48,7 +55,7 @@ export function FrostedPillTabs<T extends string>({
         flexGrow: 1,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: align === "center" ? "center" : "flex-start",
         gap: 10,
         paddingHorizontal: 16,
       }}

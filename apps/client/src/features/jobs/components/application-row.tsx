@@ -8,7 +8,7 @@
 import { labelFor } from "@patch-careers/api-client";
 import { MatchScoreChip, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { memo, type ReactElement } from "react";
+import { memo, type ReactElement, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useI18n } from "@/providers/i18n-provider";
 import type { ApplicationRow as ApplicationRowData } from "../hooks/use-applications";
@@ -42,6 +42,9 @@ function ApplicationRowInner({
   );
   const title = toTitleCase(application.title);
   const pressable = application.jobRouteId !== null;
+  // Pointer feedback on web — hover events never fire on touch, so this is
+  // desktop-only by nature.
+  const [hovered, setHovered] = useState(false);
 
   const body = (
     <XStack gap={12} paddingHorizontal={20} paddingVertical={24} alignItems="flex-start">
@@ -112,8 +115,10 @@ function ApplicationRowInner({
         company: application.company,
       })}
       onPress={() => onPress(application)}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
       style={({ pressed }) => ({
-        backgroundColor: pressed ? editorialPalette.surface : "transparent",
+        backgroundColor: pressed || hovered ? editorialPalette.surface : "transparent",
       })}
     >
       {body}

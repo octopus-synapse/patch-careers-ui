@@ -23,16 +23,20 @@ import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import { PlayfairDisplay_500Medium, useFonts } from "@expo-google-fonts/playfair-display";
 import { editorialPalettes } from "@patch-careers/tokens";
 import { ToastProvider } from "@patch-careers/ui";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { PortalProvider } from "@tamagui/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { type ReactElement, useEffect } from "react";
+import { type ReactElement, useEffect, useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NetInfoBanner } from "@/components/net-info-banner";
+import { WebNavBar } from "@/components/web-nav-bar";
+import { DESKTOP_CONTENT_MAX_WIDTH, useIsDesktopWeb } from "@/hooks/use-desktop-web";
+import { ensureWebButtonTextReset } from "@/lib/web-button-text-reset";
 import { AppTamaguiProvider } from "@/providers/app-tamagui-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { useColorSchemeStore, useResolvedScheme } from "@/providers/color-scheme";
@@ -59,12 +63,52 @@ const queryClient = new QueryClient({
 // a plain `style`, so it lives as a stable module const rather than inline.
 const ROOT_FLEX = { flex: 1 };
 
+// Web-only global CSS patch (see the module doc) — before first render so no
+// centered-text flash. No-op on native.
+ensureWebButtonTextReset();
+
 export default function RootLayout(): ReactElement {
   const scheme = useResolvedScheme();
   const palette = editorialPalettes[scheme];
+  const isDesktopWeb = useIsDesktopWeb();
   // Editorial display serif + technical mono (bundled assets — no network).
   // editorialFonts maps to these exact family keys.
   const [fontsLoaded] = useFonts({ PlayfairDisplay_500Medium, JetBrainsMono_500Medium });
+
+  // React Navigation paints its own Background behind every scene; on desktop
+  // web the scenes are narrower than the window (centered column), so that
+  // background shows in the gutters — align it with the editorial paper
+  // instead of the stock navigation grey/near-black.
+  const navigationTheme = useMemo(() => {
+    const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        primary: palette.accent,
+        background: palette.bg,
+        card: palette.surface,
+        text: palette.ink,
+        border: palette.hairline,
+        notification: palette.danger,
+      },
+    };
+  }, [scheme, palette]);
+
+  // Desktop web reads as a web app: every stack scene becomes a centered
+  // column over full-bleed paper. Mobile/native keeps full-width scenes.
+  const contentStyle = useMemo(
+    () =>
+      isDesktopWeb
+        ? {
+            backgroundColor: palette.bg,
+            width: "100%" as const,
+            maxWidth: DESKTOP_CONTENT_MAX_WIDTH,
+            alignSelf: "center" as const,
+          }
+        : { backgroundColor: palette.bg },
+    [isDesktopWeb, palette],
+  );
 
   useEffect(() => {
     // Hold the splash until BOTH the persisted color scheme hydrates (so an
@@ -100,63 +144,69 @@ export default function RootLayout(): ReactElement {
                         {/* Follow the in-app choice, not the OS ("auto" tracks the OS). */}
                         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
                         <NetInfoBanner />
-                        <Stack
-                          screenOptions={{
-                            headerShown: false,
-                            // Paper-colored scene background so push transitions
-                            // don't flash white on dark.
-                            contentStyle: { backgroundColor: palette.bg },
-                          }}
-                        >
-                          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                          <Stack.Screen
-                            name="conversation/[id]"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          {/* Profile supersection detail screens (Identidade /
+                        <ThemeProvider value={navigationTheme}>
+                          {/* Desktop-web chrome: the LinkedIn-style top navbar.
+                            Self-gates to authed desktop-web app screens. */}
+                          <WebNavBar />
+                          <Stack
+                            screenOptions={{
+                              headerShown: false,
+                              // Paper-colored scene background so push transitions
+                              // don't flash white on dark; on desktop web the same
+                              // style also centers the scene into the content column.
+                              contentStyle,
+                            }}
+                          >
+                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                            <Stack.Screen
+                              name="conversation/[id]"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            {/* Profile supersection detail screens (Identidade /
                           per-section) slide in over the tabs from the Perfil list. */}
-                          <Stack.Screen
-                            name="profile/identity"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          <Stack.Screen
-                            name="profile/section/[key]"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          {/* Job detail pushes over the tabs from a list card. */}
-                          <Stack.Screen
-                            name="job/[id]"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          {/* Resume detail pushes over the tabs from the Currículos sub-tab. */}
-                          <Stack.Screen
-                            name="resume/[id]"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          {/* Notifications inbox slides in over the tabs from the
+                            <Stack.Screen
+                              name="profile/identity"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            <Stack.Screen
+                              name="profile/section/[key]"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            {/* Job detail pushes over the tabs from a list card. */}
+                            <Stack.Screen
+                              name="job/[id]"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            {/* Resume detail pushes over the tabs from the Currículos sub-tab. */}
+                            <Stack.Screen
+                              name="resume/[id]"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            {/* Notifications inbox slides in over the tabs from the
                           AppHeader bell. */}
-                          <Stack.Screen
-                            name="notifications"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          {/* Settings slides in over the tabs from the account menu. */}
-                          <Stack.Screen
-                            name="settings"
-                            options={{ headerShown: false, animation: "slide_from_right" }}
-                          />
-                          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                          <Stack.Screen
-                            name="fit-questionnaire"
-                            options={{ headerShown: false, animation: "slide_from_bottom" }}
-                          />
-                          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                          <Stack.Screen name="reset-password" options={{ headerShown: false }} />
-                          <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
-                          <Stack.Screen
-                            name="legal-webview"
-                            options={{ headerShown: true, title: "" }}
-                          />
-                        </Stack>
+                            <Stack.Screen
+                              name="notifications"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            {/* Settings slides in over the tabs from the account menu. */}
+                            <Stack.Screen
+                              name="settings"
+                              options={{ headerShown: false, animation: "slide_from_right" }}
+                            />
+                            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                            <Stack.Screen
+                              name="fit-questionnaire"
+                              options={{ headerShown: false, animation: "slide_from_bottom" }}
+                            />
+                            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                            <Stack.Screen name="reset-password" options={{ headerShown: false }} />
+                            <Stack.Screen name="oauth-callback" options={{ headerShown: false }} />
+                            <Stack.Screen
+                              name="legal-webview"
+                              options={{ headerShown: true, title: "" }}
+                            />
+                          </Stack>
+                        </ThemeProvider>
                       </NotificationsProvider>
                     </AuthProvider>
                   </I18nProvider>

@@ -133,6 +133,8 @@ export const profilePtBR: TranslationDict = {
     viewResumeA11y: "Ver currículo",
     viewResume: "Ver currículo (CV)",
     previewHint: "Toque para ver e baixar em PDF",
+    resumeCardLabel: "Currículo",
+    previewClickHint: "Clique para ver e baixar em PDF",
   },
   rows: {
     groupLabel: "PERFIL",
@@ -318,6 +320,8 @@ export const profileEn: TranslationDict = {
     viewResumeA11y: "View resume",
     viewResume: "View resume (CV)",
     previewHint: "Tap to view and download as PDF",
+    resumeCardLabel: "Resume",
+    previewClickHint: "Click to view and download as PDF",
   },
   rows: {
     groupLabel: "PROFILE",

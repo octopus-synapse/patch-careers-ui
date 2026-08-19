@@ -56,8 +56,11 @@ function iconForSection(section: MergedSection): Glyph {
 
 export function MasterSectionsTab({
   profile,
+  showPreview = true,
 }: {
   profile: EditableProfile | undefined;
+  /** Desktop moves the CV preview into the insights rail; hide the banner there. */
+  showPreview?: boolean;
 }): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
@@ -101,7 +104,7 @@ export function MasterSectionsTab({
         />
       ) : null}
 
-      {resumeId ? (
+      {resumeId && showPreview ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("profile.master.viewResumeA11y")}

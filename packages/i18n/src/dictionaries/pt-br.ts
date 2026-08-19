@@ -36,6 +36,9 @@ export const ptBR: TranslationDict = {
     applications: "Candidaturas",
     resumes: "Currículos",
     profile: "Perfil",
+    // Desktop-web navbar only — the account tab (LinkedIn's "Me"); the mobile
+    // bottom bar keeps "Perfil".
+    me: "Eu",
   },
   common: {
     hello: "Olá",
@@ -90,9 +93,17 @@ export const ptBR: TranslationDict = {
     resetInvalidToken: "Link inválido ou expirado. Solicite um novo.",
     verifyTitle: "Verifique seu e-mail",
     verifyIntro: "Digite o código de 6 dígitos enviado para {email}.",
+    verifyIntroShort: "Enviamos um código de 6 dígitos para",
+    verifyChangeEmail: "Usar outro e-mail",
+    verifyChecking: "Verificando…",
+    verifyCodeResent: "Novo código enviado.",
+    verifyNotReceived: "Não recebeu?",
+    verifyResendPrefix: "Reenviar em",
+    verifyCodeLabel: "Código de verificação",
     verifyResend: "Reenviar código",
     verifyResendIn: "Reenviar em {seconds}s",
     verifySuccess: "E-mail verificado!",
+    verifiedTitle: "E-mail verificado.",
     verifyInvalidToken: "Código inválido ou expirado. Solicite um novo.",
     twoFaTitle: "Verificação em duas etapas",
     twoFaIntro: "Digite o código do seu app autenticador.",

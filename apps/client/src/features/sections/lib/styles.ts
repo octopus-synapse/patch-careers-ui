@@ -571,11 +571,11 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     },
     welcomeTagline: {
       fontFamily: fonts.sans,
-      fontSize: 15,
-      lineHeight: 22,
+      fontSize: 13.5,
+      lineHeight: 20,
       color: authTokens.body,
       textAlign: "center",
-      maxWidth: 340,
+      maxWidth: 320,
     },
     welcomeBadge: {
       flexDirection: "row",
@@ -606,10 +606,19 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
     welcomeBack: {
       position: "absolute",
       left: 20,
-      width: 40,
       height: 40,
+      flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
+      gap: 8,
+      paddingHorizontal: 6,
+      borderRadius: 999,
+    },
+    welcomeBackLabel: {
+      fontFamily: fonts.mono,
+      fontSize: 10,
+      letterSpacing: 2,
+      color: authTokens.muted,
+      paddingRight: 8,
     },
 
     // retry banner

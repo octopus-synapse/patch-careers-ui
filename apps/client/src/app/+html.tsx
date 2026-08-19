@@ -45,6 +45,11 @@ export default function Root({ children }: PropsWithChildren): ReactElement {
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: pre-paint theme bootstrap must run inline */}
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <ScrollViewStyleReset />
+        {/* react-native-web renders accessibilityRole="button" Pressables as
+            real <button>s but doesn't neutralize the UA's `text-align: center`,
+            which the row text then inherits — every tappable list row rendered
+            centered on web. Restore inheritance so rows align as authored. */}
+        <style>{"button { text-align: inherit; }"}</style>
       </head>
       <body>{children}</body>
     </html>

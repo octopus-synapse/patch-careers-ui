@@ -15,6 +15,10 @@ import type { ReactElement } from "react";
  * user's locale. Icons come from Expo Vector Icons so active tabs can use
  * filled icons while inactive tabs stay outlined. Active color uses our
  * accent intent so the tab bar follows the theme.
+ *
+ * Desktop web (≥ breakpoint) drops this chrome entirely — no bottom bar, no
+ * AppHeader — because the root layout mounts the WebNavBar, which carries the
+ * same destinations in a single LinkedIn-style top bar.
  */
 
 import { Ionicons } from "@expo/vector-icons";
@@ -24,6 +28,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppHeader } from "@/components/app-header";
 import { EditorialTabBar } from "@/components/editorial-tab-bar";
 import { ProfileTabIcon } from "@/components/profile-tab-icon";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { AUTH_SIGN_IN_ROUTE, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
@@ -42,6 +47,9 @@ export default function TabsLayout(): ReactElement | null {
   const palette = useEditorialPalette();
   const insets = useSafeAreaInsets();
   const { t } = useI18n();
+  // Desktop web replaces both the bottom bar and the AppHeader with the
+  // root-level WebNavBar (see the header comment).
+  const isDesktopWeb = useIsDesktopWeb();
 
   // Opt a tab out of the global AppHeader: drop the navbar *and* reserve the
   // safe-area top space on the scene so content isn't clipped by the status
@@ -58,10 +66,10 @@ export default function TabsLayout(): ReactElement | null {
 
   return (
     <Tabs
-      tabBar={(props) => <EditorialTabBar {...props} />}
+      tabBar={isDesktopWeb ? () => null : (props) => <EditorialTabBar {...props} />}
       screenOptions={{
         // Global top app bar: avatar (left) · brand (center) · messages (right).
-        headerShown: true,
+        headerShown: !isDesktopWeb,
         header: () => <AppHeader />,
         // The custom EditorialTabBar owns the bar's look; only the scene bg
         // stays here. `title` feeds each tab's label/a11y; `tabBarIcon` feeds
