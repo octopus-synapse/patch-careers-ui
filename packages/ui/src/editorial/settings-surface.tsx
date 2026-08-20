@@ -34,14 +34,18 @@ export function SettingsRow({
   onPress,
   first = false,
   danger = false,
+  dense = false,
 }: {
-  icon: Glyph;
+  /** Optional — the desktop settings panes drop leading icons (per the demo). */
+  icon?: Glyph | undefined;
   label: string;
   value?: string | undefined;
   badge?: string | undefined;
   onPress: () => void;
   first?: boolean;
   danger?: boolean;
+  /** Desktop-web density: 52px rows with the demo's smaller type. */
+  dense?: boolean;
 }): ReactElement {
   const styles = stylesByTheme[useThemeName()];
   const palette = editorialPaletteFor(useThemeName());
@@ -53,21 +57,33 @@ export function SettingsRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.row,
+        dense ? styles.rowDense : null,
         first ? null : styles.rowDivider,
         pressed ? styles.rowPressed : null,
       ]}
     >
-      <RowIcon size={20} color={danger ? palette.danger : palette.body} strokeWidth={1.75} />
-      <Text style={[styles.rowLabel, { color: tint }]} numberOfLines={1}>
+      {RowIcon ? (
+        <RowIcon
+          size={dense ? 16 : 20}
+          color={danger ? palette.danger : palette.body}
+          strokeWidth={1.75}
+        />
+      ) : null}
+      <Text
+        style={[styles.rowLabel, dense ? styles.rowLabelDense : null, { color: tint }]}
+        numberOfLines={1}
+      >
         {label}
       </Text>
       {badge ? <Text style={styles.rowBadge}>{badge}</Text> : null}
       {value ? (
-        <Text style={styles.rowValue} numberOfLines={1}>
+        <Text style={[styles.rowValue, dense ? styles.rowValueDense : null]} numberOfLines={1}>
           {value}
         </Text>
       ) : null}
-      {danger ? null : <ChevronRight size={18} color={palette.subtle} strokeWidth={1.75} />}
+      {danger ? null : (
+        <ChevronRight size={dense ? 15 : 18} color={palette.subtle} strokeWidth={1.75} />
+      )}
     </Pressable>
   );
 }
@@ -88,10 +104,13 @@ const stylesFor = (p: EditorialPalette) =>
       paddingVertical: 16,
       paddingHorizontal: 16,
     },
+    rowDense: { height: 52, paddingVertical: 0, gap: 12 },
     rowDivider: { borderTopWidth: 1, borderTopColor: p.hairline },
     rowPressed: { backgroundColor: p.bg },
     rowLabel: { flex: 1, fontFamily: fonts.sans, fontSize: 15.5, color: p.ink },
+    rowLabelDense: { fontSize: 13.5 },
     rowValue: { fontFamily: fonts.sans, fontSize: 14, color: p.muted },
+    rowValueDense: { fontSize: 13 },
     rowBadge: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.5, color: p.warn },
   });
 

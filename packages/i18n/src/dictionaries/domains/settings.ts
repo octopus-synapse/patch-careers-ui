@@ -17,13 +17,14 @@ export const settingsPtBR: TranslationDict = {
   },
   account: {
     title: "Conta",
+    description: "Seus dados de acesso e identidade.",
     emailRow: "E-mail",
     passwordRow: "Senha",
     usernameRow: "Nome de usuário",
     languageRow: "Idioma",
     languageNames: { ptBR: "Português", en: "English" },
     connectedRow: "Contas conectadas",
-    actions: "AÇÕES DA CONTA",
+    actions: "Ações da conta",
     languageSaved: "Idioma atualizado.",
     emailUnverified: "Não verificado",
     changeEmail: {
@@ -83,14 +84,17 @@ export const settingsPtBR: TranslationDict = {
   },
   privacy: {
     title: "Privacidade",
+    description: "Controle quem vê e quem fala com você.",
     visibility: {
-      label: "VISIBILIDADE DO PERFIL",
+      label: "Visibilidade do perfil",
+      description: "Quem encontra seu perfil na busca.",
       public: "Público",
       recruiters: "Só recrutadores",
       private: "Privado",
     },
     messaging: {
-      label: "QUEM PODE TE ENVIAR MENSAGEM",
+      label: "Mensagens",
+      description: "Quem pode iniciar uma conversa.",
       everyone: "Todos",
       recruiters: "Só recrutadores",
       nobody: "Ninguém",
@@ -116,6 +120,7 @@ export const settingsPtBR: TranslationDict = {
       "O iOS concedeu permissão, mas o app não conseguiu registrar o Expo Push Token neste device.",
     channels: {
       device: "No celular",
+      push: "Push",
       email: "E-mail",
     },
     types: {
@@ -127,8 +132,11 @@ export const settingsPtBR: TranslationDict = {
   },
   preferences: {
     title: "Preferências",
-    themeLabel: "TEMA",
-    languageLabel: "IDIOMA",
+    description: "Aparência e idioma do aplicativo.",
+    themeLabel: "Tema",
+    themeDescription: "Como o Patch aparece para você.",
+    languageLabel: "Idioma",
+    languageDescription: "Textos e formatos de data.",
   },
   danger: {
     title: "Zona perigosa",
@@ -171,13 +179,14 @@ export const settingsEn: TranslationDict = {
   },
   account: {
     title: "Account",
+    description: "Your sign-in and identity details.",
     emailRow: "Email",
     passwordRow: "Password",
     usernameRow: "Username",
     languageRow: "Language",
     languageNames: { ptBR: "Português", en: "English" },
     connectedRow: "Connected accounts",
-    actions: "ACCOUNT ACTIONS",
+    actions: "Account actions",
     languageSaved: "Language updated.",
     emailUnverified: "Unverified",
     changeEmail: {
@@ -237,14 +246,17 @@ export const settingsEn: TranslationDict = {
   },
   privacy: {
     title: "Privacy",
+    description: "Control who sees you and who can reach you.",
     visibility: {
-      label: "PROFILE VISIBILITY",
+      label: "Profile visibility",
+      description: "Who can find your profile in search.",
       public: "Public",
       recruiters: "Recruiters only",
       private: "Private",
     },
     messaging: {
-      label: "WHO CAN MESSAGE YOU",
+      label: "Messages",
+      description: "Who can start a conversation.",
       everyone: "Everyone",
       recruiters: "Recruiters only",
       nobody: "Nobody",
@@ -270,6 +282,7 @@ export const settingsEn: TranslationDict = {
       "iOS granted permission, but the app couldn't register the Expo Push Token on this device.",
     channels: {
       device: "On your phone",
+      push: "Push",
       email: "Email",
     },
     types: {
@@ -281,8 +294,11 @@ export const settingsEn: TranslationDict = {
   },
   preferences: {
     title: "Preferences",
-    themeLabel: "THEME",
-    languageLabel: "LANGUAGE",
+    description: "The app's appearance and language.",
+    themeLabel: "Theme",
+    themeDescription: "How Patch looks for you.",
+    languageLabel: "Language",
+    languageDescription: "Text and date formats.",
   },
   danger: {
     title: "Danger zone",

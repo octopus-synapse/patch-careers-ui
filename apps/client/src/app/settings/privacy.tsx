@@ -16,8 +16,10 @@ import {
   PillSelect,
   type ProfileVisibility,
   SectionHeader,
+  SettingSelectRow,
   useSet,
 } from "@/features/settings";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function PrivacyScreen(): ReactElement {
@@ -25,6 +27,7 @@ export default function PrivacyScreen(): ReactElement {
   const styles = useSet();
   const palette = useEditorialPalette();
   const router = useRouter();
+  const isDesktopWeb = useIsDesktopWeb();
   const prefsQuery = useGetV1UsersPreferencesFull();
   const patch = usePatchV1UsersPreferencesFull();
 
@@ -57,7 +60,10 @@ export default function PrivacyScreen(): ReactElement {
   ];
 
   return (
-    <SettingsScreenShell title={t("settings.privacy.title")}>
+    <SettingsScreenShell
+      title={t("settings.privacy.title")}
+      description={t("settings.privacy.description")}
+    >
       {prefsQuery.isPending ? (
         <YStack marginTop={32}>
           <ActivityIndicator color={palette.ink} />
@@ -71,6 +77,37 @@ export default function PrivacyScreen(): ReactElement {
             </Text>
           </Pressable>
         </YStack>
+      ) : isDesktopWeb ? (
+        // Desktop web mirrors the approved demo: one card, each preference a
+        // row with its description and a segmented control, Blocked at the end.
+        <SettingsCard>
+          <SettingSelectRow<ProfileVisibility>
+            first
+            label={t("settings.privacy.visibility.label")}
+            description={t("settings.privacy.visibility.description")}
+            options={visOptions}
+            value={visValue}
+            onChange={(v) => {
+              setVisibility(v);
+              patch.mutate({ data: { profileVisibility: v } });
+            }}
+          />
+          <SettingSelectRow<MessagePrivacy>
+            label={t("settings.privacy.messaging.label")}
+            description={t("settings.privacy.messaging.description")}
+            options={msgOptions}
+            value={msgValue}
+            onChange={(v) => {
+              setMessaging(v);
+              patch.mutate({ data: { messagePrivacy: v } });
+            }}
+          />
+          <SettingsRow
+            dense
+            label={t("settings.privacy.blockedRow")}
+            onPress={() => router.push("/settings/blocked")}
+          />
+        </SettingsCard>
       ) : (
         <>
           <SectionHeader label={t("settings.privacy.visibility.label")} />

@@ -6,17 +6,23 @@
 import { logout } from "@patch-careers/auth";
 import { YStack } from "@patch-careers/ui";
 import { SettingsCard, SettingsRow } from "@patch-careers/ui/editorial";
-import { type Href, useRouter } from "expo-router";
+import { type Href, Redirect, useRouter } from "expo-router";
 import { Bell, LockKeyhole, LogOut, Palette, UserRound } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function SettingsHome(): ReactElement {
   const { t } = useI18n();
   const router = useRouter();
+  const isDesktopWeb = useIsDesktopWeb();
   const go = (path: Href): void => router.push(path);
+
+  // Desktop web has no hub screen — the shell's rail plays that role, so land
+  // on the first section with it highlighted (mirrors the approved demo).
+  if (isDesktopWeb) return <Redirect href="/settings/account" />;
 
   async function signOut(): Promise<void> {
     await logout();

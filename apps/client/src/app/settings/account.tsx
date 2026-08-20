@@ -17,6 +17,7 @@ import { type ReactElement, useState } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { SectionHeader } from "@/features/settings";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { AUTH_SIGN_IN_ROUTE } from "@/navigation/auth-redirect";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
@@ -32,6 +33,10 @@ export default function AccountScreen(): ReactElement {
   const router = useRouter();
   const toast = useToast();
   const { currentUser } = useAuthState();
+  // Desktop web mirrors the approved demo: denser rows, no leading icons on
+  // the identity card (the actions card keeps its glyphs).
+  const isDesktopWeb = useIsDesktopWeb();
+  const dense = isDesktopWeb;
 
   const gdpr = useGetV1MeGdprExport({ query: { enabled: false } });
   const deactivate = useDeleteV1AccountsDeactivate();
@@ -91,11 +96,15 @@ export default function AccountScreen(): ReactElement {
   };
 
   return (
-    <SettingsScreenShell title={t("settings.account.title")}>
+    <SettingsScreenShell
+      title={t("settings.account.title")}
+      description={t("settings.account.description")}
+    >
       <SettingsCard>
         <SettingsRow
           first
-          icon={Mail}
+          dense={dense}
+          icon={isDesktopWeb ? undefined : Mail}
           label={t("settings.account.emailRow")}
           value={currentUser?.email ?? ""}
           badge={
@@ -104,18 +113,22 @@ export default function AccountScreen(): ReactElement {
           onPress={() => router.push("/settings/change-email")}
         />
         <SettingsRow
-          icon={KeyRound}
+          dense={dense}
+          icon={isDesktopWeb ? undefined : KeyRound}
           label={t("settings.account.passwordRow")}
+          value="••••••••"
           onPress={() => router.push("/settings/change-password")}
         />
         <SettingsRow
-          icon={AtSign}
+          dense={dense}
+          icon={isDesktopWeb ? undefined : AtSign}
           label={t("settings.account.usernameRow")}
           value={currentUser?.username ? `@${currentUser.username}` : ""}
           onPress={() => router.push("/settings/username")}
         />
         <SettingsRow
-          icon={Link2}
+          dense={dense}
+          icon={isDesktopWeb ? undefined : Link2}
           label={t("settings.account.connectedRow")}
           onPress={() => router.push("/settings/connected-accounts")}
         />
@@ -125,6 +138,7 @@ export default function AccountScreen(): ReactElement {
       <SettingsCard>
         <SettingsRow
           first
+          dense={dense}
           icon={Download}
           label={t("settings.danger.export.row")}
           value={exported ? t("settings.danger.export.requested") : undefined}
@@ -132,12 +146,14 @@ export default function AccountScreen(): ReactElement {
         />
         <SettingsRow
           danger
+          dense={dense}
           icon={UserMinus}
           label={t("settings.danger.deactivate.row")}
           onPress={() => setConfirmDeactivate(true)}
         />
         <SettingsRow
           danger
+          dense={dense}
           icon={Trash2}
           label={t("settings.danger.delete.row")}
           onPress={() => setConfirmDelete(true)}

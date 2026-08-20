@@ -3,7 +3,13 @@
  * only from this barrel (ADR-0002).
  */
 
-export { type PillOption, PillSelect, SectionHeader } from "./components/settings-ui";
+export {
+  type PillOption,
+  PillSelect,
+  SectionHeader,
+  SegmentedSelect,
+  SettingSelectRow,
+} from "./components/settings-ui";
 export { useSet } from "./lib/styles";
 export type {
   ConnectedProvider,

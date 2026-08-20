@@ -126,6 +126,11 @@ export type EditorialOverlays = {
    */
   dangerWash: string;
   /**
+   * Faint pointer wash for hoverable rows on desktop web — alpha over the
+   * paper bg, flipped per scheme so it lifts instead of dimming on dark.
+   */
+  rowHover: string;
+  /**
    * Text/rule ramp for content sitting ON frosted dark glass (see
    * `editorialGlass.ink`). Near-identical across schemes by design — that glass
    * is black in both, so the ramp answers to the material, not to the app
@@ -146,6 +151,7 @@ export const editorialOverlays = {
     scrimModal: "rgba(10,10,10,0.45)",
     scrimMedia: "rgba(0,0,0,0.4)",
     dangerWash: "rgba(220,38,38,0.08)",
+    rowHover: "rgba(10,10,10,0.04)",
     onGlassInk: "rgba(255,255,255,0.96)",
     onGlassBody: "rgba(255,255,255,0.82)",
     onGlassMuted: "rgba(255,255,255,0.62)",
@@ -159,6 +165,7 @@ export const editorialOverlays = {
     scrimModal: "rgba(0,0,0,0.6)",
     scrimMedia: "rgba(0,0,0,0.4)",
     dangerWash: "rgba(248,113,113,0.12)",
+    rowHover: "rgba(245,245,240,0.06)",
     onGlassInk: "rgba(255,255,255,0.96)",
     onGlassBody: "rgba(255,255,255,0.82)",
     onGlassMuted: "rgba(255,255,255,0.62)",

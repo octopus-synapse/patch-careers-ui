@@ -20,6 +20,7 @@ import {
   type NotificationRoutableType,
 } from "@/features/notifications";
 import { SectionHeader, useSet } from "@/features/settings";
+import { useIsDesktopWeb } from "@/hooks/use-desktop-web";
 import { useI18n } from "@/providers/i18n-provider";
 import { useNotifications } from "@/providers/notifications-provider";
 
@@ -36,6 +37,7 @@ export default function NotificationsScreen(): ReactElement {
   const query = useGetV1NotificationsPreferences();
   const put = usePutV1NotificationsPreferencesType();
   const { ensureRegistered } = useNotifications();
+  const isDesktopWeb = useIsDesktopWeb();
   const [state, setState] = useState<Record<string, Channels>>({});
 
   const labelFor = (key: string): string =>
@@ -115,12 +117,50 @@ export default function NotificationsScreen(): ReactElement {
   };
 
   return (
-    <SettingsScreenShell title={t("settings.notifications.title")}>
-      <Text style={styles.intro}>{t("settings.notifications.intro")}</Text>
+    <SettingsScreenShell
+      title={t("settings.notifications.title")}
+      description={t("settings.notifications.intro")}
+    >
+      {isDesktopWeb ? null : <Text style={styles.intro}>{t("settings.notifications.intro")}</Text>}
       {!ready ? (
         <YStack marginTop={24}>
           <ActivityIndicator color={palette.ink} />
         </YStack>
+      ) : isDesktopWeb ? (
+        // Desktop web mirrors the approved demo: channel headers float above
+        // the card, one 52px row per type with a toggle per channel column.
+        <View>
+          <View style={styles.matrixHeader}>
+            <View style={styles.matrixHeaderSpacer} />
+            <Text style={styles.matrixHeaderLabel}>
+              {t("settings.notifications.channels.push")}
+            </Text>
+            <Text style={styles.matrixHeaderLabel}>
+              {t("settings.notifications.channels.email")}
+            </Text>
+          </View>
+          <SettingsCard>
+            {TYPE_KEYS.map((key, index) => {
+              const cs = state[key] ?? DEFAULTS;
+              return (
+                <View
+                  key={key}
+                  style={[styles.matrixRow, index === 0 ? null : styles.selectRowDivider]}
+                >
+                  <Text style={styles.matrixRowLabel}>{labelFor(key)}</Text>
+                  {rows.map((row) => (
+                    <View key={row.label} style={styles.matrixCell}>
+                      <ToggleField
+                        value={row.value(cs)}
+                        onValueChange={(v) => save(key, row.patch(v))}
+                      />
+                    </View>
+                  ))}
+                </View>
+              );
+            })}
+          </SettingsCard>
+        </View>
       ) : (
         TYPE_KEYS.map((key) => {
           const cs = state[key] ?? DEFAULTS;
