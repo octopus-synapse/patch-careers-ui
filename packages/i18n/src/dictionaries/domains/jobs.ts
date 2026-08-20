@@ -9,6 +9,15 @@ import type { TranslationDict } from "../../types";
 export const jobsPtBR: TranslationDict = {
   title: "Vagas",
   loading: "Carregando vagas",
+  home: {
+    seeAll: "Ver tudo",
+    seeAllA11y: "Ver tudo em {section}",
+    emptyTitle: "Nada ainda por aqui",
+    emptyAll: "As vagas do dia chegam toda manhã.",
+    emptySaved: "Toque no marcador de uma vaga para guardá-la.",
+    emptyApplications: "Quando você se candidatar a uma vaga, o acompanhamento aparece aqui.",
+    explore: "Explorar vagas",
+  },
   scope: {
     all: "Todas",
     saved: "Salvas",
@@ -178,6 +187,15 @@ export const jobsPtBR: TranslationDict = {
 export const jobsEn: TranslationDict = {
   title: "Jobs",
   loading: "Loading jobs",
+  home: {
+    seeAll: "See all",
+    seeAllA11y: "See all in {section}",
+    emptyTitle: "Nothing here yet",
+    emptyAll: "The day's jobs arrive every morning.",
+    emptySaved: "Tap a job's bookmark to keep it here.",
+    emptyApplications: "When you apply to a job, its tracking shows up here.",
+    explore: "Explore jobs",
+  },
   scope: {
     all: "All",
     saved: "Saved",

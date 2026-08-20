@@ -15,7 +15,7 @@
 
 import { Divider, EmptyState, Icon, Text, XStack, YStack } from "@patch-careers/ui";
 import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -24,6 +24,7 @@ import {
   type ComponentType,
   type ReactElement,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -86,17 +87,24 @@ function RowSeparator(): ReactElement {
   return <Divider color={editorialPalette.hairline} marginLeft={20} />;
 }
 
-export function JobsScreen(): ReactElement {
+export function JobsScreen({
+  initialScope = "all",
+}: {
+  /** Scope the screen opens on (the home shelves push their own). */
+  initialScope?: JobsScope;
+} = {}): ReactElement {
   const editorialPalette = useEditorialPalette();
   // Bottom bar floats over content; pad the list so the last rows clear it.
-  const tabBarHeight = useBottomTabBarHeight();
+  // Context (not the throwing hook): the screen also mounts on the stacked
+  // /job-list route, outside any tab navigator, where the height is simply 0.
+  const tabBarHeight = useContext(BottomTabBarHeightContext) ?? 0;
   // Desktop web reads left-to-right like a page: title + scope tabs align
   // left with the count line instead of the mobile centered stack.
   const isDesktopWeb = useIsDesktopWeb();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { t } = useI18n();
-  const [scope, setScope] = useState<JobsScope>("all");
+  const [scope, setScope] = useState<JobsScope>(initialScope);
   const [filters, setFilters] = useState<JobsFilters>(EMPTY_JOBS_FILTERS);
   const [sheetOpen, setSheetOpen] = useState(false);
   const isApplications = scope === "applications";
@@ -248,7 +256,7 @@ export function JobsScreen(): ReactElement {
         <YStack gap={16} paddingTop={isDesktopWeb ? 28 : 18} paddingBottom={isDesktopWeb ? 4 : 14}>
           {isDesktopWeb ? (
             // Desktop reads as one editorial masthead line: serif title with
-            // the count sitting on its baseline, hairline rule beneath. The
+            // the count sitting on its baseline. The
             // filter trigger lives in the pinned bar alongside the pills.
             <YStack paddingHorizontal={20} gap={14}>
               <XStack alignItems="baseline" gap={14}>
@@ -264,7 +272,6 @@ export function JobsScreen(): ReactElement {
                   {countLine()}
                 </Text>
               </XStack>
-              <Divider color={editorialPalette.hairline} />
             </YStack>
           ) : (
             <>

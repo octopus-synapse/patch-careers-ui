@@ -22,6 +22,10 @@ export const messagesPtBR: TranslationDict = {
     errorTitle: "Não foi possível carregar suas conversas",
     errorDescription: "Verifique sua conexão e tente novamente.",
   },
+  desktop: {
+    emptyTitle: "Suas conversas",
+    emptyDescription: "Escolha uma conversa ao lado ou busque alguém para começar.",
+  },
   thread: {
     fallbackTitle: "Conversa",
     loadError: "Não foi possível carregar as mensagens.",
@@ -60,6 +64,10 @@ export const messagesEn: TranslationDict = {
     emptyDescription: "Search for someone above to start a conversation.",
     errorTitle: "Couldn't load your conversations",
     errorDescription: "Check your connection and try again.",
+  },
+  desktop: {
+    emptyTitle: "Your conversations",
+    emptyDescription: "Pick a conversation on the left or search for someone to get started.",
   },
   thread: {
     fallbackTitle: "Conversation",

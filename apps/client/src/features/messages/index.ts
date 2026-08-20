@@ -8,6 +8,7 @@ export { ConversationListSkeleton } from "./components/conversation-list-skeleto
 export { ConversationRow } from "./components/conversation-row";
 export { MessageBubble } from "./components/message-bubble";
 export { MessageComposer } from "./components/message-composer";
+export { MessagesSplitView } from "./components/messages-split-view";
 export { UserResultRow } from "./components/user-result-row";
 export { UserSearchField } from "./components/user-search-field";
 export {

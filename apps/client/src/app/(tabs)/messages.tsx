@@ -20,6 +20,7 @@ import {
   ConversationListSkeleton,
   ConversationRow,
   lookupConversationWithUser,
+  MessagesSplitView,
   participantLabel,
   UserResultRow,
   UserSearchField,
@@ -35,10 +36,16 @@ function RowSeparator(): ReactElement {
 }
 
 export default function MessagesScreen(): ReactElement {
+  // Desktop web renders the two-pane messenger (inbox rail + inline thread);
+  // the push-navigation inbox below is the mobile idiom.
+  const isDesktopWeb = useIsDesktopWeb();
+  if (isDesktopWeb) return <MessagesSplitView />;
+  return <MobileMessagesScreen />;
+}
+
+function MobileMessagesScreen(): ReactElement {
   const editorialPalette = useEditorialPalette();
   const tabBarHeight = useBottomTabBarHeight();
-  // Desktop web reads left-to-right like a page; mobile keeps the centered title.
-  const isDesktopWeb = useIsDesktopWeb();
   const router = useRouter();
   const { t } = useI18n();
   const queryClient = useQueryClient();
@@ -84,7 +91,7 @@ export default function MessagesScreen(): ReactElement {
           letterSpacing={-0.6}
           fontWeight="400"
           color={editorialPalette.ink}
-          textAlign={isDesktopWeb ? "left" : "center"}
+          textAlign="center"
         >
           {t("messages.title")}
         </Text>

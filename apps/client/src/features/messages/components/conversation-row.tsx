@@ -37,12 +37,16 @@ export function ConversationRow({
   conversation,
   now,
   onPress,
+  selected = false,
 }: {
   conversation: Conversation;
   now: number;
   onPress: (conversation: Conversation) => void;
+  /** Desktop split view: the row whose thread is open in the right pane. */
+  selected?: boolean;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
+  const chatColors = useChatColors();
   const { t } = useI18n();
   const { participant, lastMessage, unreadCount } = conversation;
   const name = participantLabel(participant, t);
@@ -52,9 +56,14 @@ export function ConversationRow({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={t("messages.inbox.rowLabel", { name })}
+      accessibilityState={{ selected }}
       onPress={() => onPress(conversation)}
       style={({ pressed }) => ({
-        backgroundColor: pressed ? editorialPalette.bg : editorialPalette.surface,
+        backgroundColor: pressed || selected ? editorialPalette.bg : editorialPalette.surface,
+        // The open thread carries a slim accent spine; others reserve the space
+        // so text never shifts on selection.
+        borderLeftWidth: 2,
+        borderLeftColor: selected ? chatColors.unread : "transparent",
       })}
     >
       <XStack alignItems="center" gap={12} paddingHorizontal={20} paddingVertical={14}>
