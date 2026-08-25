@@ -22,8 +22,8 @@ describe("isProfileFieldRequired", () => {
 
 describe("validateProfileField", () => {
   it("flags a required empty name, accepts a valid one", () => {
-    expect(validateProfileField("name", "   ", t)).toBe("profile.validation.name.required");
-    expect(validateProfileField("name", "A", t)).toBe("profile.validation.name.invalid");
+    expect(validateProfileField("name", "   ", t)).toBe("validation.required");
+    expect(validateProfileField("name", "A", t)).toBe("validation.minLength");
     expect(validateProfileField("name", "Ana Souza", t)).toBeNull();
   });
 
@@ -35,16 +35,14 @@ describe("validateProfileField", () => {
 
   it("enforces the headline max length", () => {
     expect(validateProfileField("headline", "x".repeat(120), t)).toBeNull();
-    expect(validateProfileField("headline", "x".repeat(121), t)).toBe(
-      "profile.validation.headline.invalid",
-    );
+    expect(validateProfileField("headline", "x".repeat(121), t)).toBe("validation.maxLength");
   });
 
   it("accepts BR landline/mobile phones and rejects junk", () => {
     expect(validateProfileField("phone", "(11) 99999-8888", t)).toBeNull();
     expect(validateProfileField("phone", "(11) 3333-4444", t)).toBeNull();
     expect(validateProfileField("phone", "+55 11 99999-8888", t)).toBeNull();
-    expect(validateProfileField("phone", "12345", t)).toBe("profile.validation.phone.invalid");
+    expect(validateProfileField("phone", "12345", t)).toBe("validation.phoneInvalid");
   });
 });
 

@@ -10,7 +10,6 @@
  */
 
 import { postV1AuthForgotPassword } from "@patch-careers/api-client";
-import { isValidEmail } from "@patch-careers/auth";
 import { YStack } from "@patch-careers/ui";
 import { AuthShell, Banner, IntroBlock, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useMemo, useState } from "react";
@@ -19,6 +18,7 @@ import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { FormEmailField, useZodForm } from "@/forms";
+import { validateEmail } from "@/lib/validation";
 
 export default function ForgotPasswordScreen(): ReactElement {
   const { t, router } = useAuthScreen();
@@ -28,7 +28,7 @@ export default function ForgotPasswordScreen(): ReactElement {
   const schema = useMemo(
     () =>
       z.object({
-        email: z.string().refine((v) => isValidEmail(v.trim()), t("auth.invalidEmail")),
+        email: z.string().refine((v) => validateEmail(v) === null, t("validation.emailInvalid")),
       }),
     [t],
   );

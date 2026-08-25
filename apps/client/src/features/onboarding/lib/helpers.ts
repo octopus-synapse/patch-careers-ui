@@ -1,4 +1,5 @@
 import type { Translator } from "@patch-careers/i18n";
+import { validateGenericField } from "@/lib/validation";
 import type {
   FormData,
   OnboardingField,
@@ -160,7 +161,7 @@ export function validateStepFields(
     // Required = backend flag OR the contract (complete-time) requiredness —
     // the session marks summary/phone/location optional, but complete needs them.
     if ((field.required || isProfileFieldRequired(field.key)) && value.length === 0) {
-      errors[field.key] = t("onboarding.validation.required");
+      errors[field.key] = t("validation.required");
       continue;
     }
     if (value.length === 0) continue;
@@ -174,27 +175,8 @@ export function validateStepFields(
       continue;
     }
     if (hasProfileFieldRule(field.key)) continue;
-    if (field.minLength !== undefined && value.length < field.minLength) {
-      errors[field.key] = t("onboarding.validation.minLength", { count: field.minLength });
-      continue;
-    }
-    if (field.maxLength !== undefined && value.length > field.maxLength) {
-      errors[field.key] = t("onboarding.validation.maxLength", { count: field.maxLength });
-      continue;
-    }
-    if ((field.type === "url" || field.key === "website") && !/^https?:\/\/\S+/i.test(value)) {
-      errors[field.key] = t("onboarding.validation.invalidUrl");
-      continue;
-    }
-    if (field.pattern) {
-      try {
-        if (!new RegExp(field.pattern).test(value)) {
-          errors[field.key] = t("onboarding.validation.invalidPattern");
-        }
-      } catch {
-        // Backend owns malformed dynamic patterns; keep the UI usable.
-      }
-    }
+    const genericError = validateGenericField(field, value, t);
+    if (genericError) errors[field.key] = genericError;
   }
   return errors;
 }

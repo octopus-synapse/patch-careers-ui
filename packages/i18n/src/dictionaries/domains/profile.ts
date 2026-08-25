@@ -180,16 +180,6 @@ export const profilePtBR: TranslationDict = {
     loadFailed: "Não foi possível carregar seu perfil.",
     retry: "Tentar de novo",
   },
-  validation: {
-    name: {
-      required: "Informe seu nome.",
-      invalid: "O nome deve ter entre 2 e 100 caracteres.",
-    },
-    headline: { invalid: "O título deve ter no máximo 120 caracteres." },
-    bio: { invalid: "O resumo deve ter no máximo 500 caracteres." },
-    location: { invalid: "A localização deve ter no máximo 100 caracteres." },
-    phone: { invalid: "Telefone inválido. Use DDD + número." },
-  },
 };
 
 export const profileEn: TranslationDict = {
@@ -366,15 +356,5 @@ export const profileEn: TranslationDict = {
     photoFailed: "Couldn't update the photo.",
     loadFailed: "Couldn't load your profile.",
     retry: "Try again",
-  },
-  validation: {
-    name: {
-      required: "Enter your name.",
-      invalid: "Name must be 2–100 characters.",
-    },
-    headline: { invalid: "Title must be at most 120 characters." },
-    bio: { invalid: "Summary must be at most 500 characters." },
-    location: { invalid: "Location must be at most 100 characters." },
-    phone: { invalid: "Invalid phone number. Use area code + number." },
   },
 };

@@ -390,7 +390,7 @@ export function LinksEditor({
     // Validated here (same rule as the step validator) so a saved link can
     // never block "Continuar" with an error the step no longer renders.
     if (!/^https?:\/\/\S+/i.test(url)) {
-      setDraftError(t("onboarding.validation.invalidUrl"));
+      setDraftError(t("validation.invalidUrl"));
       return;
     }
     onChange({ ...data, [editingField.key]: url });

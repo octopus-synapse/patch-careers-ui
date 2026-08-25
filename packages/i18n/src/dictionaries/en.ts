@@ -54,6 +54,25 @@ export const en: TranslationDict = {
     submit: "Submit",
     continue: "Continue",
   },
+  // Field-level validation — field-agnostic sentences rendered under the
+  // input. Same codes/wording as the backend's VALIDATION_DICTIONARY, so a
+  // local check and a server `fields[]` message read identically.
+  validation: {
+    required: "This field is required",
+    minLength: "Minimum of {min} characters",
+    maxLength: "Maximum of {max} characters",
+    emailInvalid: "Enter a valid e-mail",
+    invalidUrl: "Enter a valid URL",
+    invalidPattern: "Invalid format",
+    username: "Use only lowercase letters, numbers, and _",
+    phoneInvalid: "Invalid phone number. Use area code + number.",
+    passwordNeedsUppercase: "Add at least one uppercase letter",
+    passwordNeedsLowercase: "Add at least one lowercase letter",
+    passwordNeedsDigit: "Add at least one number",
+    passwordNeedsSymbol: "Add at least one symbol ({chars})",
+    passwordWeak: "Password does not meet security requirements",
+    passwordMismatch: "Passwords don't match",
+  },
   auth: {
     signIn: "Sign in",
     signOut: "Sign out",
@@ -81,7 +100,6 @@ export const en: TranslationDict = {
     consentAnd: "and the",
     consentTerms: "Terms of Service",
     consentPrivacy: "Privacy Policy",
-    consentRequired: "You must accept to continue",
     consentDialogTitle: "Terms and privacy",
     consentDialogBody:
       "To create your account, you need to read and accept the Terms of Service and the Privacy Policy.",
@@ -92,7 +110,6 @@ export const en: TranslationDict = {
     resetTitle: "Set a new password",
     resetNewPassword: "New password",
     resetConfirmPassword: "Confirm new password",
-    resetMismatch: "Passwords don’t match",
     resetSuccess: "Password updated. Sign in to continue.",
     resetInvalidToken: "Invalid or expired link. Please request a new one.",
     verifyTitle: "Verify your email",
@@ -120,22 +137,8 @@ export const en: TranslationDict = {
     oauthFailed: "Could not complete sign-in. Please try again.",
     loginFailed: "Could not sign in. Check your email and password.",
     signupFailed: "Could not create the account.",
-    invalidEmail: "Invalid email",
     legalTerms: "Terms of Service",
     legalPrivacy: "Privacy Policy",
-    validation: {
-      nameRequired: "Enter your name",
-      emailRequired: "Enter your email",
-      emailInvalid: "Invalid email",
-      passwordRequired: "Enter your password",
-      passwordTooShort: "Password must be at least 8 characters",
-      passwordTooLong: "Password must be at most 128 characters",
-      passwordNeedsUppercase: "Add at least one uppercase letter",
-      passwordNeedsLowercase: "Add at least one lowercase letter",
-      passwordNeedsDigit: "Add at least one number",
-      passwordNeedsSymbol: "Add at least one symbol (@$!%*?&)",
-      passwordWeak: "Password does not meet security requirements",
-    },
     passwordStrength: {
       weak: "Weak",
       fair: "Fair",
@@ -169,14 +172,6 @@ export const en: TranslationDict = {
     },
     step: {
       optional: "Optional",
-    },
-    validation: {
-      required: "Required field",
-      invalidUrl: "Enter a valid URL",
-      invalidPattern: "Invalid format",
-      minLength: "Minimum of {count} characters",
-      maxLength: "Maximum of {count} characters",
-      username: "Use only lowercase letters, numbers, and _",
     },
     sectionPicker: {
       empty: "You've already added all the available sections.",

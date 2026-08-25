@@ -30,7 +30,6 @@ import {
   PrimaryAction,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Platform, type TextInput } from "react-native";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
@@ -42,7 +41,7 @@ import { OAuthBrandButton } from "@/components/auth/oauth-brand-button";
 import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
 import { type AuthFieldErrors, validateLogin } from "@/components/auth/validation";
 import { devTestCredentials, isDevTestFillEnabled } from "@/config/dev-flags";
-import { FormEmailField, FormPasswordField, fieldErrorsResolver } from "@/forms";
+import { FormEmailField, FormPasswordField, useFieldErrorsForm } from "@/forms";
 
 type LoginForm = { email: string; password: string };
 
@@ -58,13 +57,10 @@ export default function SignInScreen(): ReactElement {
   const [keepSignedIn, setKeepSignedIn] = useState(false);
   const passwordRef = useRef<TextInput>(null);
 
-  const form = useForm<LoginForm>({
-    defaultValues: { email: "", password: "" },
-    mode: "onTouched",
-    resolver: fieldErrorsResolver<LoginForm>((values) =>
-      validateLogin({ email: values.email.trim(), password: values.password }, t),
-    ),
-  });
+  const form = useFieldErrorsForm<LoginForm>(
+    (values) => validateLogin({ email: values.email.trim(), password: values.password }, t),
+    { defaultValues: { email: "", password: "" } },
+  );
 
   useEffect(() => {
     if (!isWeb) return;
@@ -114,7 +110,6 @@ export default function SignInScreen(): ReactElement {
           toast,
           setFieldErrors: applyFieldErrors,
           fallbackKey: "auth.loginFailed",
-          payload: { email: trimmedEmail, password },
         });
       }
     });

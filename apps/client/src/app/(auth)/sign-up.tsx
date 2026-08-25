@@ -24,7 +24,6 @@ import {
   PrimaryAction,
 } from "@patch-careers/ui/editorial";
 import { type ReactElement, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Platform, type TextInput } from "react-native";
 import { ConsentDialog } from "@/components/auth/consent-dialog";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
@@ -37,7 +36,7 @@ import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { type AuthFieldErrors, validateSignup } from "@/components/auth/validation";
 import { isDevTestFillEnabled } from "@/config/dev-flags";
-import { FormEmailField, FormNameField, FormPasswordField, fieldErrorsResolver } from "@/forms";
+import { FormEmailField, FormNameField, FormPasswordField, useFieldErrorsForm } from "@/forms";
 
 // Versions sent with the consent payload. Backend rejects with
 // CONSENT_VERSION_MISMATCH if these don't match the live published
@@ -60,22 +59,14 @@ export default function SignUpScreen(): ReactElement {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
-  const form = useForm<SignUpForm>({
-    defaultValues: { name: "", email: "", password: "" },
-    mode: "onTouched",
-    resolver: fieldErrorsResolver<SignUpForm>((values) =>
+  const form = useFieldErrorsForm<SignUpForm>(
+    (values) =>
       validateSignup(
-        {
-          name: values.name.trim(),
-          email: values.email.trim(),
-          password: values.password,
-          acceptedTosVersion: TOS_VERSION,
-          acceptedPrivacyVersion: PRIVACY_VERSION,
-        },
+        { name: values.name.trim(), email: values.email.trim(), password: values.password },
         t,
       ),
-    ),
-  });
+    { defaultValues: { name: "", email: "", password: "" } },
+  );
   const password = form.watch("password");
 
   useEffect(() => {
@@ -153,7 +144,6 @@ export default function SignUpScreen(): ReactElement {
           toast,
           setFieldErrors: applyFieldErrors,
           fallbackKey: "auth.signupFailed",
-          payload: { email: trimmedEmail, password: pw },
         });
       }
     });

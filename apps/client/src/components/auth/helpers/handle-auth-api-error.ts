@@ -11,18 +11,16 @@ export interface HandleAuthApiErrorOptions {
   setFieldErrors: (fields: AuthFieldErrors) => void;
   /** i18n key for the generic toast title when no specific code resolves. */
   fallbackKey: string;
-  payload?: { email?: string; password?: string };
 }
 
 /**
- * Turns a backend auth rejection into a toast + inline field errors —
- * the catch block sign-in and sign-up were copy-pasting. Surfaces inline
- * field errors when the backend returns `fields[]`, and always shows a
- * danger toast with the resolved title.
+ * Turns a backend auth rejection into inline field errors, or a danger
+ * toast when the error has no field to live under (ACCOUNT_LOCKED, network).
+ * Never both — the message under the input is the whole feedback.
  */
 export function handleAuthApiError(err: unknown, options: HandleAuthApiErrorOptions): void {
-  const { locale, t, toast, setFieldErrors, fallbackKey, payload } = options;
-  const { toast: title, fields } = extractApiErrorMessages(err, locale, t, fallbackKey, payload);
+  const { locale, t, toast, setFieldErrors, fallbackKey } = options;
+  const { toast: title, fields } = extractApiErrorMessages(err, locale, t, fallbackKey);
   if (Object.keys(fields).length > 0) setFieldErrors(fields);
-  toast.show({ title, intent: "danger" });
+  if (title) toast.show({ title, intent: "danger" });
 }

@@ -19,11 +19,11 @@ import {
 } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams } from "expo-router";
 import type { ReactElement } from "react";
-import { useForm } from "react-hook-form";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
-import { FormPasswordField, fieldErrorsResolver } from "@/forms";
+import { FormPasswordField, useFieldErrorsForm } from "@/forms";
+import { messageOf, validatePassword } from "@/lib/validation";
 
 type ResetForm = { newPassword: string; confirmPassword: string };
 
@@ -34,13 +34,20 @@ export default function ResetPasswordScreen(): ReactElement {
 
   const tokenMissing = !params.token || params.token.length === 0;
 
-  const form = useForm<ResetForm>({
-    defaultValues: { newPassword: "", confirmPassword: "" },
-    mode: "onTouched",
-    resolver: fieldErrorsResolver<ResetForm>((v) =>
-      v.newPassword !== v.confirmPassword ? { confirmPassword: t("auth.resetMismatch") } : null,
-    ),
-  });
+  // New password is held to the full policy (the backend applies
+  // PasswordSchema on reset); confirm only has to match.
+  const form = useFieldErrorsForm<ResetForm>(
+    (v) => {
+      const errors: Partial<Record<keyof ResetForm, string>> = {};
+      const pw = messageOf(validatePassword(v.newPassword), t);
+      if (pw) errors.newPassword = pw;
+      if (v.confirmPassword && v.newPassword !== v.confirmPassword) {
+        errors.confirmPassword = t("validation.passwordMismatch");
+      }
+      return Object.keys(errors).length > 0 ? errors : null;
+    },
+    { defaultValues: { newPassword: "", confirmPassword: "" } },
+  );
   const newPassword = form.watch("newPassword");
 
   const onSubmit = form.handleSubmit(async ({ newPassword: pw }) => {

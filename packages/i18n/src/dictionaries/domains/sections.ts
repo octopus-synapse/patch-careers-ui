@@ -32,13 +32,6 @@ export const sectionsPtBR: TranslationDict = {
   errors: {
     noResume: "Sem currículo para editar",
   },
-  validation: {
-    required: "Campo obrigatório",
-    invalidUrl: "Informe uma URL válida",
-    invalidPattern: "Formato inválido",
-    minLength: "Mínimo de {count} caracteres",
-    maxLength: "Máximo de {count} caracteres",
-  },
 };
 
 export const sectionsEn: TranslationDict = {
@@ -67,12 +60,5 @@ export const sectionsEn: TranslationDict = {
   },
   errors: {
     noResume: "No resume to edit",
-  },
-  validation: {
-    required: "Required field",
-    invalidUrl: "Enter a valid URL",
-    invalidPattern: "Invalid format",
-    minLength: "Minimum of {count} characters",
-    maxLength: "Maximum of {count} characters",
   },
 };

@@ -54,6 +54,25 @@ export const ptBR: TranslationDict = {
     submit: "Enviar",
     continue: "Continuar",
   },
+  // Field-level validation — field-agnostic sentences rendered under the
+  // input. Same codes/wording as the backend's VALIDATION_DICTIONARY, so a
+  // local check and a server `fields[]` message read identically.
+  validation: {
+    required: "Campo obrigatório",
+    minLength: "Mínimo de {min} caracteres",
+    maxLength: "Máximo de {max} caracteres",
+    emailInvalid: "E-mail inválido",
+    invalidUrl: "Informe uma URL válida",
+    invalidPattern: "Formato inválido",
+    username: "Use apenas letras minúsculas, números e _",
+    phoneInvalid: "Telefone inválido. Use DDD + número.",
+    passwordNeedsUppercase: "Inclua ao menos uma letra maiúscula",
+    passwordNeedsLowercase: "Inclua ao menos uma letra minúscula",
+    passwordNeedsDigit: "Inclua ao menos um número",
+    passwordNeedsSymbol: "Inclua ao menos um símbolo ({chars})",
+    passwordWeak: "A senha não atende aos requisitos de segurança",
+    passwordMismatch: "As senhas não coincidem",
+  },
   auth: {
     signIn: "Entrar",
     signOut: "Sair",
@@ -81,7 +100,6 @@ export const ptBR: TranslationDict = {
     consentAnd: "e a",
     consentTerms: "Termos de Uso",
     consentPrivacy: "Política de Privacidade",
-    consentRequired: "Você precisa aceitar para continuar",
     consentDialogTitle: "Termos e privacidade",
     consentDialogBody:
       "Para criar sua conta, você precisa ler e aceitar os Termos de Uso e a Política de Privacidade.",
@@ -92,7 +110,6 @@ export const ptBR: TranslationDict = {
     resetTitle: "Defina uma nova senha",
     resetNewPassword: "Nova senha",
     resetConfirmPassword: "Confirme a nova senha",
-    resetMismatch: "As senhas não coincidem",
     resetSuccess: "Senha atualizada. Faça login para continuar.",
     resetInvalidToken: "Link inválido ou expirado. Solicite um novo.",
     verifyTitle: "Verifique seu e-mail",
@@ -120,22 +137,8 @@ export const ptBR: TranslationDict = {
     oauthFailed: "Falha ao concluir login. Tente novamente.",
     loginFailed: "Não foi possível entrar. Verifique e-mail e senha.",
     signupFailed: "Não foi possível criar a conta.",
-    invalidEmail: "E-mail inválido",
     legalTerms: "Termos de Uso",
     legalPrivacy: "Política de Privacidade",
-    validation: {
-      nameRequired: "Informe seu nome",
-      emailRequired: "Informe seu e-mail",
-      emailInvalid: "E-mail inválido",
-      passwordRequired: "Informe sua senha",
-      passwordTooShort: "A senha deve ter pelo menos 8 caracteres",
-      passwordTooLong: "A senha deve ter no máximo 128 caracteres",
-      passwordNeedsUppercase: "Inclua ao menos uma letra maiúscula",
-      passwordNeedsLowercase: "Inclua ao menos uma letra minúscula",
-      passwordNeedsDigit: "Inclua ao menos um número",
-      passwordNeedsSymbol: "Inclua ao menos um símbolo (@$!%*?&)",
-      passwordWeak: "A senha não atende aos requisitos de segurança",
-    },
     passwordStrength: {
       weak: "Fraca",
       fair: "Razoável",
@@ -169,14 +172,6 @@ export const ptBR: TranslationDict = {
     },
     step: {
       optional: "Opcional",
-    },
-    validation: {
-      required: "Campo obrigatório",
-      invalidUrl: "Informe uma URL válida",
-      invalidPattern: "Formato inválido",
-      minLength: "Mínimo de {count} caracteres",
-      maxLength: "Máximo de {count} caracteres",
-      username: "Use apenas letras minúsculas, números e _",
     },
     sectionPicker: {
       empty: "Você já adicionou todas as seções disponíveis.",
