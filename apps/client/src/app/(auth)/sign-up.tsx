@@ -91,20 +91,11 @@ export default function SignUpScreen(): ReactElement {
   }
 
   // "Create account" only validates the fields and raises the consent gate;
-  // the request is sent from `acceptAndSignup` once the user accepts.
+  // the request is sent from `acceptAndSignup` once the user has scrolled
+  // through both documents and accepted.
   const onSubmit = form.handleSubmit(() => {
     setConsentOpen(true);
   });
-
-  // Reading a document from the dialog: close it first so the pushed screen
-  // isn't hidden under the RN Modal on native. The user re-taps to resume.
-  function openLegal(kind: "terms" | "privacy"): void {
-    setConsentOpen(false);
-    router.push({
-      pathname: "/legal-webview",
-      params: { kind, title: t(kind === "terms" ? "auth.legalTerms" : "auth.legalPrivacy") },
-    });
-  }
 
   async function acceptAndSignup(): Promise<void> {
     const { name, email, password: pw } = form.getValues();
@@ -284,8 +275,6 @@ export default function SignUpScreen(): ReactElement {
         onOpenChange={setConsentOpen}
         loading={submitting}
         onAccept={() => void acceptAndSignup()}
-        onOpenTerms={() => openLegal("terms")}
-        onOpenPrivacy={() => openLegal("privacy")}
         testID="signup.consent"
       />
     </AuthShell>

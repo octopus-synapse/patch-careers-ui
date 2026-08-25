@@ -2,6 +2,7 @@ import type { TranslationDict } from "../types";
 import { appEn } from "./domains/app";
 import { fitEn } from "./domains/fit";
 import { jobsEn } from "./domains/jobs";
+import { legalEn } from "./domains/legal";
 import { matchEn } from "./domains/match";
 import { messagesEn } from "./domains/messages";
 import { notificationsEn } from "./domains/notifications";
@@ -20,6 +21,7 @@ export const en: TranslationDict = {
   app: appEn,
   fit: fitEn,
   jobs: jobsEn,
+  legal: legalEn,
   match: matchEn,
   messages: messagesEn,
   notifications: notificationsEn,
@@ -101,9 +103,9 @@ export const en: TranslationDict = {
     consentTerms: "Terms of Service",
     consentPrivacy: "Privacy Policy",
     consentDialogTitle: "Terms and privacy",
-    consentDialogBody:
-      "To create your account, you need to read and accept the Terms of Service and the Privacy Policy.",
     consentAccept: "Accept and create account",
+    consentScrollHint: "Scroll to the end to accept",
+    consentClose: "Close",
     forgotTitle: "Forgot your password?",
     forgotIntro: "Enter the email for your account and we’ll send a reset link.",
     forgotSuccess: "If an account with that email exists, we sent reset instructions.",

@@ -2,6 +2,7 @@ import type { TranslationDict } from "../types";
 import { appPtBR } from "./domains/app";
 import { fitPtBR } from "./domains/fit";
 import { jobsPtBR } from "./domains/jobs";
+import { legalPtBR } from "./domains/legal";
 import { matchPtBR } from "./domains/match";
 import { messagesPtBR } from "./domains/messages";
 import { notificationsPtBR } from "./domains/notifications";
@@ -20,6 +21,7 @@ export const ptBR: TranslationDict = {
   app: appPtBR,
   fit: fitPtBR,
   jobs: jobsPtBR,
+  legal: legalPtBR,
   match: matchPtBR,
   messages: messagesPtBR,
   notifications: notificationsPtBR,
@@ -101,9 +103,9 @@ export const ptBR: TranslationDict = {
     consentTerms: "Termos de Uso",
     consentPrivacy: "Política de Privacidade",
     consentDialogTitle: "Termos e privacidade",
-    consentDialogBody:
-      "Para criar sua conta, você precisa ler e aceitar os Termos de Uso e a Política de Privacidade.",
     consentAccept: "Aceitar e criar conta",
+    consentScrollHint: "Role até o fim para aceitar",
+    consentClose: "Fechar",
     forgotTitle: "Esqueceu sua senha?",
     forgotIntro: "Informe o e-mail da sua conta e enviaremos um link para redefinir a senha.",
     forgotSuccess: "Se houver uma conta com esse e-mail, enviamos um link com instruções.",
