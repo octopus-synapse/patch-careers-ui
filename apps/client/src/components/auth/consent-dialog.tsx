@@ -20,6 +20,7 @@ import {
   radius,
 } from "@patch-careers/tokens";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
+import { BlurView } from "expo-blur";
 import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -67,7 +68,7 @@ export function ConsentDialog({
   const theme = useThemeName();
   const styles = stylesByTheme[theme];
   const { width: screenW, height: screenH } = useWindowDimensions();
-  const cardWidth = Math.min(520, screenW - 48);
+  const cardWidth = Math.min(560, screenW - 48);
   const cardMaxHeight = Math.min(720, screenH - 64);
 
   const anim = useRef(new Animated.Value(0)).current;
@@ -119,7 +120,15 @@ export function ConsentDialog({
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={dismiss}>
       <View style={styles.root}>
-        <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: anim }]}>
+        {/* Frosted scrim — blur under a dialog-strength wash, the same material
+            the global search uses when active, so the form fades back. */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim }]}>
+          <BlurView
+            tint={theme === "dark" ? "dark" : "light"}
+            intensity={40}
+            style={StyleSheet.absoluteFill}
+          />
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.scrim]} />
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t("auth.consentClose")}
@@ -232,16 +241,16 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       justifyContent: "space-between",
       paddingLeft: 26,
       paddingRight: 16,
-      paddingTop: 22,
-      paddingBottom: 16,
+      paddingTop: 26,
+      paddingBottom: 18,
       borderBottomWidth: 1,
       borderBottomColor: p.hairline,
     },
     title: {
       fontFamily: editorialFonts.serif,
-      fontSize: 22,
-      lineHeight: 28,
-      letterSpacing: -0.3,
+      fontSize: 30,
+      lineHeight: 36,
+      letterSpacing: -0.5,
       color: p.ink,
     },
     close: {
@@ -257,33 +266,33 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     docSpacing: { marginTop: 32, paddingTop: 28, borderTopWidth: 1, borderTopColor: p.hairline },
     docTitle: {
       fontFamily: editorialFonts.serif,
-      fontSize: 19,
-      lineHeight: 24,
-      letterSpacing: -0.2,
+      fontSize: 24,
+      lineHeight: 30,
+      letterSpacing: -0.4,
       color: p.ink,
     },
     docMeta: {
       fontFamily: editorialFonts.mono,
-      fontSize: 11,
+      fontSize: 12,
       lineHeight: 16,
       color: p.subtle,
-      marginTop: 4,
-      marginBottom: 6,
+      marginTop: 6,
+      marginBottom: 8,
     },
-    section: { marginTop: 14 },
+    section: { marginTop: 18 },
     sectionHeading: {
       fontFamily: editorialFonts.sans,
-      fontSize: 13.5,
-      lineHeight: 20,
+      fontSize: 15.5,
+      lineHeight: 22,
       fontWeight: "600",
       color: p.ink,
     },
     sectionBody: {
       fontFamily: editorialFonts.sans,
-      fontSize: 13.5,
-      lineHeight: 21,
+      fontSize: 15,
+      lineHeight: 24,
       color: p.muted,
-      marginTop: 2,
+      marginTop: 4,
     },
     footer: {
       paddingHorizontal: 26,
