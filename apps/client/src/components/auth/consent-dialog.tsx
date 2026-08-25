@@ -19,7 +19,12 @@ import {
   editorialPaletteDark,
   radius,
 } from "@patch-careers/tokens";
-import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
+import {
+  editorialFonts,
+  FrostedFill,
+  useEditorialPalette,
+  useThemeName,
+} from "@patch-careers/ui/editorial";
 import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -142,6 +147,9 @@ export function ConsentDialog({
           ]}
           {...(testID ? { testID } : {})}
         >
+          {/* Frosted card: blur + panel wash, so the form reads through the
+              dialog instead of vanishing under an opaque surface. */}
+          <FrostedFill variant="panel" />
           <View style={styles.header}>
             <Text style={styles.title}>{t("auth.consentDialogTitle")}</Text>
             <Pressable
@@ -216,7 +224,7 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
     scrim: { backgroundColor: ov.scrimDialog },
     card: {
-      backgroundColor: p.surface,
+      backgroundColor: "transparent",
       borderRadius: 24,
       borderWidth: 1,
       borderColor: p.hairline,
