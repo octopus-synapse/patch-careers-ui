@@ -82,6 +82,10 @@ export const en: TranslationDict = {
     consentTerms: "Terms of Service",
     consentPrivacy: "Privacy Policy",
     consentRequired: "You must accept to continue",
+    consentDialogTitle: "Terms and privacy",
+    consentDialogBody:
+      "To create your account, you need to read and accept the Terms of Service and the Privacy Policy.",
+    consentAccept: "Accept and create account",
     forgotTitle: "Forgot your password?",
     forgotIntro: "Enter the email for your account and we’ll send a reset link.",
     forgotSuccess: "If an account with that email exists, we sent reset instructions.",

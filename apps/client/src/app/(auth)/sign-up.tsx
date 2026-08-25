@@ -6,8 +6,9 @@
  * password strength meter and the consent gate.
  *
  * Form: React Hook Form (ADR-0005); the resolver reuses validateSignup
- * (Zod + i18n messages). Consent is a separate gate (not a form field).
- * On success → `/verify-email` with the email param.
+ * (Zod + i18n messages). Consent is not a form field: "Create account"
+ * validates the fields, then opens <ConsentDialog>; accepting there is what
+ * actually submits. On success → `/verify-email` with the email param.
  */
 
 import { signup } from "@patch-careers/api-client";
@@ -17,7 +18,6 @@ import {
   AuthCard,
   AuthShell,
   CheckboxField,
-  ConsentCheckbox,
   editorialFonts,
   FooterPrompt,
   PasswordStrengthMeter,
@@ -26,6 +26,7 @@ import {
 import { type ReactElement, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Platform, type TextInput } from "react-native";
+import { ConsentDialog } from "@/components/auth/consent-dialog";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
@@ -51,12 +52,11 @@ export default function SignUpScreen(): ReactElement {
   const { handleOAuth } = useOAuthSignIn();
   const { submitting, run } = useSubmit();
 
-  const [consent, setConsent] = useState(false);
-  const [consentError, setConsentError] = useState<string | undefined>(undefined);
-  // Web-only "remember me" — persisted so it pre-fills the post-verification
-  // sign-in (cookie mode). Hidden on native.
+  const [consentOpen, setConsentOpen] = useState(false);
+  // Web-only "keep me signed in" — same row/label as sign-in; persisted so it
+  // pre-fills the post-verification sign-in (cookie mode). Hidden on native.
   const isWeb = Platform.OS === "web";
-  const [rememberMe, setRememberMe] = useState(false);
+  const [keepSignedIn, setKeepSignedIn] = useState(false);
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
@@ -80,7 +80,7 @@ export default function SignUpScreen(): ReactElement {
 
   useEffect(() => {
     if (!isWeb) return;
-    void readKeepSignedIn().then(setRememberMe);
+    void readKeepSignedIn().then(setKeepSignedIn);
   }, [isWeb]);
 
   function applyFieldErrors(fields: AuthFieldErrors): void {
@@ -90,24 +90,33 @@ export default function SignUpScreen(): ReactElement {
     }
   }
 
-  // DEV-only: pre-fill the form with a unique email + a valid password and
-  // accept consent, so sign-up testing is one tap. Gated by the same flag as
-  // the onboarding test-fill. Stays on the screen (the user taps Sign up).
+  // DEV-only: pre-fill the form with a unique email + a valid password, so
+  // sign-up testing is one tap. Gated by the same flag as the onboarding
+  // test-fill. Stays on the screen (the user taps Sign up, then accepts).
   function fillSignupTest(): void {
     form.setValue("name", "Test User", { shouldValidate: true });
     form.setValue("email", `testuser${Date.now()}@example.com`, { shouldValidate: true });
     form.setValue("password", "TestPass123!", { shouldValidate: true });
-    setConsent(true);
-    setConsentError(undefined);
   }
 
-  const onSubmit = form.handleSubmit(async ({ name, email, password: pw }) => {
-    // Consent is gated separately from field validation (UI checkbox).
-    if (!consent) {
-      setConsentError(t("auth.consentRequired"));
-      return;
-    }
-    setConsentError(undefined);
+  // "Create account" only validates the fields and raises the consent gate;
+  // the request is sent from `acceptAndSignup` once the user accepts.
+  const onSubmit = form.handleSubmit(() => {
+    setConsentOpen(true);
+  });
+
+  // Reading a document from the dialog: close it first so the pushed screen
+  // isn't hidden under the RN Modal on native. The user re-taps to resume.
+  function openLegal(kind: "terms" | "privacy"): void {
+    setConsentOpen(false);
+    router.push({
+      pathname: "/legal-webview",
+      params: { kind, title: t(kind === "terms" ? "auth.legalTerms" : "auth.legalPrivacy") },
+    });
+  }
+
+  async function acceptAndSignup(): Promise<void> {
+    const { name, email, password: pw } = form.getValues();
     const trimmedEmail = email.trim();
     const payload = {
       name: name.trim(),
@@ -127,11 +136,7 @@ export default function SignUpScreen(): ReactElement {
         // sign-in instead of onboarding. Wrapped so a failure still falls back
         // to the prior behavior (user can verify + sign in manually).
         try {
-          const result = await login(
-            trimmedEmail,
-            pw,
-            isWeb ? { keepSignedIn: rememberMe } : undefined,
-          );
+          const result = await login(trimmedEmail, pw, isWeb ? { keepSignedIn } : undefined);
           if (result.sessionExchangeId) {
             await exchangeSessionForTokens(result.sessionExchangeId);
           }
@@ -140,6 +145,8 @@ export default function SignUpScreen(): ReactElement {
         }
         router.replace({ pathname: "/(auth)/verify-email", params: { email: trimmedEmail } });
       } catch (err) {
+        // Back to the form so field errors (e.g. e-mail taken) are visible.
+        setConsentOpen(false);
         handleAuthApiError(err, {
           locale,
           t,
@@ -150,7 +157,7 @@ export default function SignUpScreen(): ReactElement {
         });
       }
     });
-  });
+  }
 
   return (
     <AuthShell variant="card">
@@ -243,53 +250,29 @@ export default function SignUpScreen(): ReactElement {
           >
             <PasswordStrengthMeter password={password} {...passwordMeterLabels(t)} />
           </FormPasswordField>
-
-          <ConsentCheckbox
-            checked={consent}
-            onToggle={() => {
-              setConsent((v) => !v);
-              if (consentError) setConsentError(undefined);
-            }}
-            intro={t("auth.consentIntro")}
-            termsLabel={t("auth.consentTerms")}
-            onTermsPress={() =>
-              router.push({
-                pathname: "/legal-webview",
-                params: { kind: "terms", title: t("auth.legalTerms") },
-              })
-            }
-            conjunction={t("auth.consentAnd")}
-            privacyLabel={t("auth.consentPrivacy")}
-            onPrivacyPress={() =>
-              router.push({
-                pathname: "/legal-webview",
-                params: { kind: "privacy", title: t("auth.legalPrivacy") },
-              })
-            }
-            {...(consentError ? { error: consentError } : {})}
-            testID="signup.consent"
-          />
         </YStack>
 
+        {/* Web: same quiet row as sign-in — checkbox left-aligned under the
+            fields — so the two screens keep one rhythm. Native has none. */}
         {isWeb ? (
-          <YStack alignItems="center" marginTop={20}>
+          <XStack alignItems="center" marginTop={26}>
             <CheckboxField
-              checked={rememberMe}
+              checked={keepSignedIn}
               onToggle={() =>
-                setRememberMe((v) => {
+                setKeepSignedIn((v) => {
                   const next = !v;
                   void saveKeepSignedIn(next);
                   return next;
                 })
               }
-              label={t("auth.rememberMe")}
-              delay={400}
-              testID="signup.rememberMe"
+              label={t("auth.keepSignedIn")}
+              delay={300}
+              testID="signup.keepSignedIn"
             />
-          </YStack>
+          </XStack>
         ) : null}
 
-        <YStack marginTop={26}>
+        <YStack marginTop={isWeb ? 30 : 26}>
           <PrimaryAction
             label={t("auth.signUp")}
             loading={submitting}
@@ -305,6 +288,16 @@ export default function SignUpScreen(): ReactElement {
           testID="signup.signInLink"
         />
       </AuthCard>
+
+      <ConsentDialog
+        open={consentOpen}
+        onOpenChange={setConsentOpen}
+        loading={submitting}
+        onAccept={() => void acceptAndSignup()}
+        onOpenTerms={() => openLegal("terms")}
+        onOpenPrivacy={() => openLegal("privacy")}
+        testID="signup.consent"
+      />
     </AuthShell>
   );
 }

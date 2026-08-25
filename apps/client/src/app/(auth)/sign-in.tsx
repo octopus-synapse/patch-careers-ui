@@ -222,7 +222,7 @@ export default function SignInScreen(): ReactElement {
             under the fields (left/right), so neither floats alone in the
             column. Native has no checkbox: the link is centered below the CTA. */}
         {isWeb ? (
-          <XStack alignItems="center" justifyContent="space-between" marginTop={18}>
+          <XStack alignItems="center" justifyContent="space-between" marginTop={26}>
             <CheckboxField
               checked={keepSignedIn}
               onToggle={() =>
@@ -240,7 +240,7 @@ export default function SignInScreen(): ReactElement {
           </XStack>
         ) : null}
 
-        <YStack marginTop={isWeb ? 24 : 26}>
+        <YStack marginTop={isWeb ? 30 : 26}>
           <PrimaryAction
             label={t("auth.signIn")}
             loading={submitting}

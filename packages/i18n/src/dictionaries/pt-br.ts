@@ -82,6 +82,10 @@ export const ptBR: TranslationDict = {
     consentTerms: "Termos de Uso",
     consentPrivacy: "Política de Privacidade",
     consentRequired: "Você precisa aceitar para continuar",
+    consentDialogTitle: "Termos e privacidade",
+    consentDialogBody:
+      "Para criar sua conta, você precisa ler e aceitar os Termos de Uso e a Política de Privacidade.",
+    consentAccept: "Aceitar e criar conta",
     forgotTitle: "Esqueceu sua senha?",
     forgotIntro: "Informe o e-mail da sua conta e enviaremos um link para redefinir a senha.",
     forgotSuccess: "Se houver uma conta com esse e-mail, enviamos um link com instruções.",
