@@ -40,6 +40,8 @@ interface Dictionaries {
     { title: LocalizedMessages; body: LocalizedMessages; params: readonly string[] }
   >;
   readonly success: Record<string, LocalizedMessages>;
+  /** Request-validation codes (400 `fields[]`), `{min}`/`{max}`… templates. */
+  readonly validation: Record<string, LocalizedMessages>;
 }
 
 function readJson<T>(path: string): T {
@@ -75,6 +77,30 @@ export type Locale = keyof LocalizedMessages;
 export const DICTIONARIES = ${JSON.stringify(dict, null, 2)} as const;
 
 export type Dictionaries = typeof DICTIONARIES;
+
+export type ValidationCode = keyof Dictionaries['validation'];
+
+const PLACEHOLDER_RE = /{s*([a-zA-Z_][a-zA-Z0-9_]*)s*}/g;
+
+/**
+ * Renders a backend validation code (\`fields[].code\`) in \`locale\`,
+ * interpolating \`{min}\`/\`{max}\`… from \`params\`. Same template syntax the
+ * backend's I18nService uses, so a client-side fallback reads identically
+ * to a server-rendered \`fields[].message\`. Returns \`undefined\` for codes
+ * the dictionary doesn't know — the caller picks its own fallback.
+ */
+export function translateValidationCode(
+  code: string,
+  locale: Locale,
+  params: Readonly<Record<string, string | number | boolean | null>> = {},
+): string | undefined {
+  const entry = (DICTIONARIES.validation as Record<string, LocalizedMessages>)[code];
+  if (!entry) return undefined;
+  return entry[locale].replace(PLACEHOLDER_RE, (match, key: string) => {
+    const value = params[key];
+    return value === undefined || value === null ? match : String(value);
+  });
+}
 `;
 }
 
@@ -157,7 +183,8 @@ function main(): void {
   writeFile(resolve(GENERATED_DIR, "error-codes.ts"), emitErrorCodes(errorCodes));
 
   console.log(
-    `[post-kubb] wrote dictionaries (${Object.keys(dict.errors).length} errors), ` +
+    `[post-kubb] wrote dictionaries (${Object.keys(dict.errors).length} errors, ` +
+      `${Object.keys(dict.validation).length} validation), ` +
       `enums (${Object.keys(enums).length} prisma enums), ` +
       `error-codes (${errorCodes.length} codes)`,
   );
