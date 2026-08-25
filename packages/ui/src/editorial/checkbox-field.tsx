@@ -1,7 +1,7 @@
 /**
  * CheckboxField — square checkbox + a plain text label.
  *
- * The link-bearing variant is `ConsentCheckbox`; this one is for simple
+ * Plain square checkbox + label (no inline links); this one is for simple
  * boolean options ("Remember me" / "Keep me signed in"). Router-agnostic:
  * the caller owns the state via `checked` + `onToggle`.
  */

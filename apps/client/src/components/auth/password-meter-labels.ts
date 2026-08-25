@@ -8,12 +8,16 @@
 
 import type { Translator } from "@patch-careers/i18n";
 import type { PasswordHints, StrengthLabels } from "@patch-careers/ui/editorial";
+import { PASSWORD_POLICY } from "@/lib/validation";
 
 export function passwordMeterLabels(t: Translator): {
   hints: PasswordHints;
   strengthLabels: StrengthLabels;
+  symbolChars: string;
 } {
   return {
+    // The chip must agree with what the API accepts — not "any symbol".
+    symbolChars: PASSWORD_POLICY.specialChars,
     hints: {
       length: t("auth.passwordStrength.hintChars"),
       case: t("auth.passwordStrength.hintCase"),

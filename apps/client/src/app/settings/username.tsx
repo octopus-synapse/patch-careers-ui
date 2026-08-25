@@ -8,7 +8,12 @@ import {
 } from "@patch-careers/api-client";
 import { formatDate } from "@patch-careers/i18n";
 import { YStack } from "@patch-careers/ui";
-import { PrimaryAction, UnderlineInput, useEditorialPalette } from "@patch-careers/ui/editorial";
+import {
+  FieldError,
+  PrimaryAction,
+  UnderlineInput,
+  useEditorialPalette,
+} from "@patch-careers/ui/editorial";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Clock } from "lucide-react-native";
@@ -16,6 +21,7 @@ import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { useSet } from "@/features/settings";
+import { validateUsername } from "@/lib/validation";
 import { useAuthState } from "@/providers/auth-provider";
 import { useI18n } from "@/providers/i18n-provider";
 
@@ -41,7 +47,8 @@ export default function UsernameScreen(): ReactElement {
     : null;
 
   const normalized = value.trim().toLowerCase();
-  const changed = normalized.length >= 3 && normalized !== (currentUser?.username ?? "");
+  const changed =
+    validateUsername(normalized) === null && normalized !== (currentUser?.username ?? "");
 
   const submit = (): void => {
     setError("");
@@ -87,7 +94,7 @@ export default function UsernameScreen(): ReactElement {
         </View>
       ) : null}
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <FieldError text={error} /> : null}
 
       <YStack marginTop={12}>
         <PrimaryAction

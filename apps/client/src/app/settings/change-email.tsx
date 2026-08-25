@@ -2,12 +2,13 @@
 
 import { usePostV1MeEmailChangeRequest } from "@patch-careers/api-client";
 import { YStack } from "@patch-careers/ui";
-import { PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
+import { FieldError, PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { useSet } from "@/features/settings";
+import { validateEmail } from "@/lib/validation";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function ChangeEmailScreen(): ReactElement {
@@ -19,7 +20,8 @@ export default function ChangeEmailScreen(): ReactElement {
   const [newEmail, setNewEmail] = useState("");
   const [error, setError] = useState("");
 
-  const canSubmit = currentPassword.length > 0 && /\S+@\S+\.\S+/.test(newEmail) && !req.isPending;
+  const canSubmit =
+    currentPassword.length > 0 && validateEmail(newEmail) === null && !req.isPending;
 
   const submit = (): void => {
     setError("");
@@ -57,7 +59,7 @@ export default function ChangeEmailScreen(): ReactElement {
           autoCapitalize="none"
         />
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <FieldError text={error} /> : null}
       <YStack marginTop={12}>
         <PrimaryAction
           label={t("settings.account.changeEmail.submit")}

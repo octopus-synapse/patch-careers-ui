@@ -22,13 +22,24 @@ export interface PasswordSignals {
   hasSymbol: boolean;
 }
 
-export function passwordSignals(input: string): PasswordSignals {
+const escapeForCharClass = (chars: string): string => chars.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * `symbolChars` narrows the symbol signal to an explicit set (the backend
+ * password policy's `@$!%*?&`); without it any non-alphanumeric counts.
+ * Pass the policy set from forms that submit to the API, so the meter
+ * never shows a green "Symbol" chip for a character the server rejects.
+ */
+export function passwordSignals(input: string, symbolChars?: string): PasswordSignals {
   const password = input ?? "";
+  const symbolRe = symbolChars
+    ? new RegExp(`[${escapeForCharClass(symbolChars)}]`)
+    : /[^A-Za-z0-9]/;
   return {
     longEnough: password.length >= 8,
     mixedCase: /[a-z]/.test(password) && /[A-Z]/.test(password),
     hasDigit: /\d/.test(password),
-    hasSymbol: /[^A-Za-z0-9]/.test(password),
+    hasSymbol: symbolRe.test(password),
   };
 }
 

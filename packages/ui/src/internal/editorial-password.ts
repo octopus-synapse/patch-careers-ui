@@ -18,10 +18,13 @@ export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
  * for the empty field (meter is collapsed then) — any typed password is
  * at least "weak" (1), so the indicator never shows the neutral "—".
  */
-export function scorePassword(password: string): PasswordStrengthScore {
+export function scorePassword(password: string, symbolChars?: string): PasswordStrengthScore {
   if (!password) return 0;
   if (password.length < 6) return 1;
-  return Math.max(1, passwordScore(passwordSignals(password))) as PasswordStrengthScore;
+  return Math.max(
+    1,
+    passwordScore(passwordSignals(password, symbolChars)),
+  ) as PasswordStrengthScore;
 }
 
 /** Strength words keyed by score. Index 0 is unused (empty → collapsed). */
@@ -56,12 +59,21 @@ export type PasswordHints = {
 
 export type PasswordCheck = { ok: boolean; label: string };
 
-/** The 4 requirement chips shown under the meter, with i18n-able labels. */
-export function passwordChecks(password: string, hints?: PasswordHints): PasswordCheck[] {
+/**
+ * The 4 requirement chips shown under the meter, with i18n-able labels.
+ * Same predicates as the score (`passwordSignals`), so a chip and the bar
+ * can't disagree; `symbolChars` = the policy's accepted symbol set.
+ */
+export function passwordChecks(
+  password: string,
+  hints?: PasswordHints,
+  symbolChars?: string,
+): PasswordCheck[] {
+  const s = passwordSignals(password, symbolChars);
   return [
-    { ok: password.length >= 8, label: hints?.length ?? "8+ chars" },
-    { ok: /[A-Z]/.test(password) && /[a-z]/.test(password), label: hints?.case ?? "Aa" },
-    { ok: /\d/.test(password), label: hints?.digit ?? "0-9" },
-    { ok: /[^A-Za-z0-9]/.test(password), label: hints?.symbol ?? "Symbol" },
+    { ok: s.longEnough, label: hints?.length ?? "8+ chars" },
+    { ok: s.mixedCase, label: hints?.case ?? "Aa" },
+    { ok: s.hasDigit, label: hints?.digit ?? "0-9" },
+    { ok: s.hasSymbol, label: hints?.symbol ?? "Symbol" },
   ];
 }

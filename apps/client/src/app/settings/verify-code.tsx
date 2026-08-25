@@ -10,6 +10,7 @@ import {
 } from "@patch-careers/api-client";
 import { logout } from "@patch-careers/auth";
 import { OTPInput, Text } from "@patch-careers/ui";
+import { FieldError } from "@patch-careers/ui/editorial";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
@@ -55,7 +56,7 @@ export default function VerifyCodeScreen(): ReactElement {
     <SettingsScreenShell title={t("settings.account.verifyCode.title")}>
       <Text style={styles.intro}>{intro}</Text>
       <OTPInput value={code} onChangeText={setCode} onComplete={onComplete} autoFocus />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <FieldError text={error} /> : null}
     </SettingsScreenShell>
   );
 }

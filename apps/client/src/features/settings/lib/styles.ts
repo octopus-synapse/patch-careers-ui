@@ -211,12 +211,6 @@ const stylesFor = (p: EditorialPalette) =>
       lineHeight: 18,
       color: p.body,
     },
-    errorText: {
-      fontFamily: editorialFonts.mono,
-      fontSize: 11,
-      color: p.danger,
-      marginTop: 6,
-    },
     okText: {
       fontFamily: editorialFonts.mono,
       fontSize: 11,

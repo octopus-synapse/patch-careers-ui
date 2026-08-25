@@ -1,5 +1,9 @@
 /**
  * FieldError — small danger text below an input, fades in.
+ *
+ * Mono like the DS's other captions, but with NO tracking: letter-spacing
+ * in this system is reserved for uppercase labels (1.2–1.8); on a
+ * sentence-length monospace line it read as "spread out".
  */
 
 import type { ReactElement } from "react";
@@ -13,9 +17,9 @@ export function FieldError({ text }: { text: string }): ReactElement {
       <TText
         marginTop={8}
         fontFamily={editorialFonts.mono}
-        fontSize={11}
+        fontSize={12}
+        lineHeight={16}
         color="$editorialDanger"
-        letterSpacing={0.4}
       >
         {text}
       </TText>

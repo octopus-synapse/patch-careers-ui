@@ -43,7 +43,7 @@ export function resolveOAuthColors(
   };
 }
 
-/** ConsentCheckbox square — checked wins over error wins over default. */
+/** CheckboxField square — checked wins over error wins over default. */
 export function resolveConsentBoxColors(
   p: EditorialPalette,
   checked: boolean,

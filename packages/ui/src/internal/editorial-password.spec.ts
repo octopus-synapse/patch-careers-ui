@@ -71,3 +71,14 @@ describe("passwordChecks", () => {
     expect(checks.map((c) => c.label)).toEqual(["8+ chars", "Aa", "0-9", "Symbol"]);
   });
 });
+
+describe("passwordChecks with a policy symbol set", () => {
+  it("only lights the symbol chip for characters the policy accepts", async () => {
+    const { passwordChecks } = await import("./editorial-password");
+    const symbol = (pw: string) => passwordChecks(pw, undefined, "@$!%*?&")[3]?.ok;
+    expect(symbol("Abcdef1!")).toBe(true);
+    expect(symbol("Abcdef1#")).toBe(false);
+    // Without a set, any non-alphanumeric still counts (generic meter).
+    expect(passwordChecks("Abcdef1#")[3]?.ok).toBe(true);
+  });
+});

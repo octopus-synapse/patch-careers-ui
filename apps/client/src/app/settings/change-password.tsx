@@ -2,12 +2,13 @@
 
 import { usePostV1MePasswordChangeRequest } from "@patch-careers/api-client";
 import { YStack } from "@patch-careers/ui";
-import { PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
+import { FieldError, PrimaryAction, UnderlineInput } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Text, View } from "react-native";
 import { SettingsScreenShell } from "@/components/settings-screen-shell";
 import { useSet } from "@/features/settings";
+import { messageOf, validatePassword } from "@/lib/validation";
 import { useI18n } from "@/providers/i18n-provider";
 
 export default function ChangePasswordScreen(): ReactElement {
@@ -20,8 +21,11 @@ export default function ChangePasswordScreen(): ReactElement {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
 
+  // Full policy, same rules and wording as sign-up (and as the API's
+  // fields[] when it rejects) — shown once the user has typed something.
+  const policyError = next.length > 0 ? messageOf(validatePassword(next), t) : undefined;
   const mismatch = confirm.length > 0 && next !== confirm;
-  const canSubmit = current.length > 0 && next.length >= 8 && next === confirm && !req.isPending;
+  const canSubmit = current.length > 0 && !policyError && next === confirm && !req.isPending;
 
   const submit = (): void => {
     setError("");
@@ -54,7 +58,9 @@ export default function ChangePasswordScreen(): ReactElement {
           onChangeText={setNext}
           secureTextEntry
           autoCapitalize="none"
+          hasError={Boolean(policyError)}
         />
+        {policyError ? <FieldError text={policyError} /> : null}
       </View>
       <View style={styles.fieldBlock}>
         <UnderlineInput
@@ -65,11 +71,9 @@ export default function ChangePasswordScreen(): ReactElement {
           autoCapitalize="none"
           hasError={mismatch}
         />
-        {mismatch ? (
-          <Text style={styles.errorText}>{t("settings.account.changePassword.mismatch")}</Text>
-        ) : null}
+        {mismatch ? <FieldError text={t("validation.passwordMismatch")} /> : null}
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <FieldError text={error} /> : null}
       <YStack marginTop={12}>
         <PrimaryAction
           label={t("settings.account.changePassword.submit")}

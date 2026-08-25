@@ -6,7 +6,7 @@
  * `editorial` token sub-theme (`@patch-careers/tokens`), keeping Reanimated 4
  * for the bespoke micro-animations (focus underline, CTA nudge, stagger).
  *
- * Router-agnostic by design: InlineLink/FooterPrompt/ConsentCheckbox take
+ * Router-agnostic by design: InlineLink/FooterPrompt take
  * `onPress` callbacks; OAuthButton takes its brand glyph as an `icon` prop.
  */
 
@@ -33,7 +33,6 @@ export { BrandLockup } from "./brand-lockup";
 export { BrandMark } from "./brand-mark";
 export { CaptionButton, type CaptionButtonProps } from "./caption-button";
 export { CheckboxField, type CheckboxFieldProps } from "./checkbox-field";
-export { ConsentCheckbox, type ConsentCheckboxProps } from "./consent-checkbox";
 export { CountBadge, type CountBadgeProps } from "./count-badge";
 export { DisplayHeading, IntroBlock, SubtitleLine } from "./display-heading";
 export { EditableRow, type EditableRowProps } from "./editable-row";

@@ -36,17 +36,20 @@ export function PasswordStrengthMeter({
   password,
   hints,
   strengthLabels,
+  symbolChars,
 }: {
   password: string;
   hints?: PasswordHints;
   strengthLabels?: StrengthLabels;
+  /** Accepted symbol set (backend policy). Omit for "any non-alphanumeric". */
+  symbolChars?: string;
 }): ReactElement {
   const editorialPalette = useEditorialPalette();
-  const score = scorePassword(password);
+  const score = scorePassword(password, symbolChars);
   const color = strengthColor(editorialPalette, score);
   const label =
     score === 0 ? STRENGTH_LABEL[0] : (strengthLabels?.[score] ?? STRENGTH_LABEL[score]);
-  const checks = passwordChecks(password, hints);
+  const checks = passwordChecks(password, hints, symbolChars);
 
   const visible = password.length > 0;
   const [contentHeight, setContentHeight] = useState(0);
@@ -115,7 +118,7 @@ export function PasswordStrengthMeter({
                   <TText
                     fontFamily={editorialFonts.mono}
                     fontSize={10}
-                    letterSpacing={0.4}
+                    letterSpacing={0.2}
                     color={c.ok ? "$inkBody" : "$inkSubtle"}
                   >
                     {c.label}
