@@ -20,7 +20,6 @@ import {
   radius,
 } from "@patch-careers/tokens";
 import { editorialFonts, useEditorialPalette, useThemeName } from "@patch-careers/ui/editorial";
-import { BlurView } from "expo-blur";
 import { X } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -120,15 +119,8 @@ export function ConsentDialog({
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={dismiss}>
       <View style={styles.root}>
-        {/* Frosted scrim — blur under a dialog-strength wash, the same material
-            the global search uses when active, so the form fades back. */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim }]}>
-          <BlurView
-            tint={theme === "dark" ? "dark" : "light"}
-            intensity={40}
-            style={StyleSheet.absoluteFill}
-          />
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.scrim]} />
+        {/* Soft scrim — the same wash the global search modal uses. */}
+        <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: anim }]}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t("auth.consentClose")}
@@ -236,11 +228,9 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       elevation: 20,
     },
     header: {
-      flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
-      paddingLeft: 26,
-      paddingRight: 16,
+      justifyContent: "center",
+      paddingHorizontal: 56,
       paddingTop: 26,
       paddingBottom: 18,
       borderBottomWidth: 1,
@@ -248,12 +238,16 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     },
     title: {
       fontFamily: editorialFonts.serif,
-      fontSize: 30,
-      lineHeight: 36,
-      letterSpacing: -0.5,
+      fontSize: 26,
+      lineHeight: 32,
+      letterSpacing: -0.4,
       color: p.ink,
+      textAlign: "center",
     },
     close: {
+      position: "absolute",
+      right: 16,
+      top: 22,
       width: 36,
       height: 36,
       borderRadius: radius.full,
@@ -266,9 +260,9 @@ const stylesFor = (p: EditorialPalette, ov: EditorialOverlays) =>
     docSpacing: { marginTop: 32, paddingTop: 28, borderTopWidth: 1, borderTopColor: p.hairline },
     docTitle: {
       fontFamily: editorialFonts.serif,
-      fontSize: 24,
-      lineHeight: 30,
-      letterSpacing: -0.4,
+      fontSize: 19,
+      lineHeight: 24,
+      letterSpacing: -0.2,
       color: p.ink,
     },
     docMeta: {
