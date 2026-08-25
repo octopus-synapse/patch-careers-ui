@@ -26,9 +26,11 @@ describe.each(palettes)("resolveUnderlineColors (%s)", (_name, p) => {
 });
 
 describe.each(palettes)("resolveLabelColor (%s)", (_name, p) => {
-  it("muted normally, danger on error", () => {
-    expect(resolveLabelColor(p, false)).toBe(p.muted);
+  it("body normally, ink when active, danger on error", () => {
+    expect(resolveLabelColor(p, false)).toBe(p.body);
+    expect(resolveLabelColor(p, false, true)).toBe(p.ink);
     expect(resolveLabelColor(p, true)).toBe(p.danger);
+    expect(resolveLabelColor(p, true, true)).toBe(p.danger);
   });
 });
 

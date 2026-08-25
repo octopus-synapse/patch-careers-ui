@@ -5,9 +5,12 @@
  */
 
 import type { ReactElement } from "react";
+import { Platform } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { TText, TXStack } from "../internal/tamagui-shim";
 import { editorialFonts } from "./fonts";
+
+const FOOTER_SIZE = Platform.OS === "web" ? 14 : 13;
 
 export type FooterPromptProps = {
   prompt: string;
@@ -25,7 +28,7 @@ export function FooterPrompt({
   return (
     <Animated.View entering={FadeIn.delay(900).duration(500)}>
       <TXStack flexWrap="wrap" justifyContent="center" alignItems="center" marginTop={36}>
-        <TText fontFamily={editorialFonts.sans} fontSize={13} color="$inkMuted">
+        <TText fontFamily={editorialFonts.sans} fontSize={FOOTER_SIZE} color="$inkMuted">
           {prompt}{" "}
         </TText>
         <TText
@@ -33,7 +36,7 @@ export function FooterPrompt({
           accessibilityRole="link"
           cursor="pointer"
           fontFamily={editorialFonts.sans}
-          fontSize={13}
+          fontSize={FOOTER_SIZE}
           color="$ink"
           fontWeight="600"
           {...(testID ? { testID } : {})}

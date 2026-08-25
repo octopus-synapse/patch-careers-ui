@@ -120,6 +120,23 @@ export default function SignInScreen(): ReactElement {
     });
   });
 
+  const forgotLink = (
+    <Text
+      onPress={() => router.push("/(auth)/forgot-password")}
+      accessibilityRole="link"
+      cursor="pointer"
+      fontFamily={editorialFonts.sans}
+      fontSize={isWeb ? 14 : 13}
+      fontWeight="500"
+      color="$accentBlue"
+      paddingVertical={6}
+      hoverStyle={{ opacity: 0.8 }}
+      testID="auth.forgotLink"
+    >
+      {t("auth.forgotPassword")}
+    </Text>
+  );
+
   return (
     <AuthShell variant="card">
       <AuthCard>
@@ -128,8 +145,8 @@ export default function SignInScreen(): ReactElement {
         <Text
           textAlign="center"
           fontFamily={editorialFonts.sans}
-          fontSize={28}
-          lineHeight={34}
+          fontSize={isWeb ? 30 : 28}
+          lineHeight={isWeb ? 36 : 34}
           fontWeight="600"
           letterSpacing={-0.4}
           color="$ink"
@@ -201,8 +218,11 @@ export default function SignInScreen(): ReactElement {
           />
         </YStack>
 
+        {/* Web: "keep me signed in" and "forgot password" share one quiet row
+            under the fields (left/right), so neither floats alone in the
+            column. Native has no checkbox: the link is centered below the CTA. */}
         {isWeb ? (
-          <YStack alignItems="center" marginTop={20}>
+          <XStack alignItems="center" justifyContent="space-between" marginTop={18}>
             <CheckboxField
               checked={keepSignedIn}
               onToggle={() =>
@@ -216,10 +236,11 @@ export default function SignInScreen(): ReactElement {
               delay={300}
               testID="auth.keepSignedIn"
             />
-          </YStack>
+            {forgotLink}
+          </XStack>
         ) : null}
 
-        <YStack marginTop={26}>
+        <YStack marginTop={isWeb ? 24 : 26}>
           <PrimaryAction
             label={t("auth.signIn")}
             loading={submitting}
@@ -228,21 +249,11 @@ export default function SignInScreen(): ReactElement {
           />
         </YStack>
 
-        <YStack alignItems="center" marginTop={14}>
-          <Text
-            onPress={() => router.push("/(auth)/forgot-password")}
-            accessibilityRole="link"
-            cursor="pointer"
-            fontFamily={editorialFonts.sans}
-            fontSize={13}
-            fontWeight="500"
-            color="$accentBlue"
-            paddingVertical={6}
-            testID="auth.forgotLink"
-          >
-            {t("auth.forgotPassword")}
-          </Text>
-        </YStack>
+        {isWeb ? null : (
+          <YStack alignItems="center" marginTop={14}>
+            {forgotLink}
+          </YStack>
+        )}
 
         <FooterPrompt
           prompt={t("auth.noAccount")}

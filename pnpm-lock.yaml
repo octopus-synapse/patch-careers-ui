@@ -41,6 +41,9 @@ importers:
       '@nx/react':
         specifier: ^22.7.3
         version: 22.7.4(patu6nyswzrhkexqqjcizn3lci)
+      '@octopus-synapse/precommit':
+        specifier: ^1.3.0
+        version: 1.3.0
       '@playwright/test':
         specifier: ^1.60.0
         version: 1.60.0
@@ -2665,6 +2668,10 @@ packages:
 
   '@nx/workspace@22.7.4':
     resolution: {integrity: sha512-MBvWQQYXLFF/N7tWDFNQ+cKLWvYAmk3/A+Bt2olyydsVEigq96stUJnF8Yu44PICEqckG61SwXEziqQkLKDi/A==}
+
+  '@octopus-synapse/precommit@1.3.0':
+    resolution: {integrity: sha512-oKdAxlxVqzpglnIFttlps/Xtrsbs+BQKNzwpWfuQ2jUcGoek5Wo9/cpkBg8tfmqo3tWrcxdWYi2+QZLTt1Ni4Q==, tarball: https://npm.pkg.github.com/download/@octopus-synapse/precommit/1.3.0/8744b4bd3b54bcf04aecf19fade181d4e21fb480}
+    hasBin: true
 
   '@oxc-resolver/binding-android-arm-eabi@11.19.1':
     resolution: {integrity: sha512-aUs47y+xyXHUKlbhqHUjBABjvycq6YSD7bpxSW7vplUmdzAlJ93yXY6ZR0c1o1x5A/QKbENCvs3+NlY8IpIVzg==}
@@ -12728,6 +12735,8 @@ snapshots:
       - '@swc-node/register'
       - '@swc/core'
       - debug
+
+  '@octopus-synapse/precommit@1.3.0': {}
 
   '@oxc-resolver/binding-android-arm-eabi@11.19.1':
     optional: true

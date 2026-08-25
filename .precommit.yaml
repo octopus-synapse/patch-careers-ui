@@ -1,0 +1,13 @@
+# Pre-commit checks consumed by `octopus-run-parallel` (@octopus-synapse/precommit),
+# the same runner profile-services uses. All checks run concurrently; the commit
+# is blocked if any of them fails.
+checks:
+  - name: lint
+    cmd: pnpm exec biome check .
+  - name: typecheck
+    cmd: pnpm exec nx run-many -t typecheck --output-style=static
+  - name: arch
+    # Architectural boundary specs (feature graph + DS adoption + Tamagui-first).
+    # The style/i18n migration specs stay out of the gate until green (ADR-0007).
+    cmd: pnpm verify:arch
+    runner: vitest

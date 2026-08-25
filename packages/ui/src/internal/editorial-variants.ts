@@ -24,8 +24,9 @@ export function resolveUnderlineColors(
 }
 
 /** EditorialLabel text color. */
-export function resolveLabelColor(p: EditorialPalette, error: boolean): string {
-  return error ? p.danger : p.muted;
+export function resolveLabelColor(p: EditorialPalette, error: boolean, active = false): string {
+  if (error) return p.danger;
+  return active ? p.ink : p.body;
 }
 
 /** OAuthButton ghost surface — flips on press. */

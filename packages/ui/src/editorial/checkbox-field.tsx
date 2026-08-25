@@ -8,6 +8,7 @@
 
 import { Check } from "lucide-react-native";
 import type { ReactElement } from "react";
+import { Platform } from "react-native";
 import Animated from "react-native-reanimated";
 import { Icon } from "../icons/icon";
 import { resolveConsentBoxColors } from "../internal/editorial-variants";
@@ -41,14 +42,15 @@ export function CheckboxField({
         accessibilityRole="checkbox"
         accessibilityState={{ checked }}
         alignItems="center"
-        gap={10}
+        gap={9}
         cursor="pointer"
+        hoverStyle={{ opacity: 0.85 }}
         {...(testID ? { testID } : {})}
       >
         <TStack
-          width={18}
-          height={18}
-          borderRadius={3}
+          width={17}
+          height={17}
+          borderRadius={5}
           borderWidth={1.5}
           alignItems="center"
           justifyContent="center"
@@ -56,10 +58,14 @@ export function CheckboxField({
           borderColor={box.borderColor}
         >
           {checked ? (
-            <Icon as={Check} size={12} color={editorialPalette.onPrimary} strokeWidth={3} />
+            <Icon as={Check} size={11} color={editorialPalette.onPrimary} strokeWidth={3} />
           ) : null}
         </TStack>
-        <TText fontFamily={editorialFonts.sans} fontSize={13} color="$inkBody">
+        <TText
+          fontFamily={editorialFonts.sans}
+          fontSize={Platform.OS === "web" ? 14 : 13}
+          color={checked ? "$ink" : "$inkBody"}
+        >
           {label}
         </TText>
       </TXStack>

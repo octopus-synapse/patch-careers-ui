@@ -219,10 +219,19 @@ const rzFor = (p: EditorialPalette, ov: EditorialOverlays) =>
       elevation: 14,
     },
     wizardScroll: { flexShrink: 1 },
-    // top progress strip — flush to the card's top edge, fills per step
-    progressTrack: { height: 3, width: "100%", backgroundColor: p.hairline },
-    progressFillHalf: { height: "100%", width: "50%", backgroundColor: p.ink },
-    progressFillFull: { height: "100%", width: "100%", backgroundColor: p.ink },
+    // top progress strip — inset from the card's rounded corners (a flush
+    // 3px ink bar got clipped by the 24px radius and read as a scrim gap at
+    // the top-left), fills per step
+    progressTrack: {
+      height: 3,
+      marginTop: 14,
+      marginHorizontal: 24,
+      borderRadius: 2,
+      overflow: "hidden",
+      backgroundColor: p.hairline,
+    },
+    progressFillHalf: { height: "100%", width: "50%", borderRadius: 2, backgroundColor: p.ink },
+    progressFillFull: { height: "100%", width: "100%", borderRadius: 2, backgroundColor: p.ink },
     wizardHint: { fontFamily: fonts.sans, fontSize: 13.5, lineHeight: 20, color: p.muted },
 
     // step-1 checklist — each master section is a card; items are hairline-divided rows

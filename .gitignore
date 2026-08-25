@@ -76,3 +76,9 @@ playwright/.cache
 # Misc
 npm-debug.*
 
+
+# pre-commit attestation metrics (temporary, per-run)
+.attestation-metrics.json
+
+# written by @octopus-synapse/precommit postinstall; this repo is pnpm-only
+bunfig.toml

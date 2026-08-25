@@ -29,6 +29,8 @@ concurrency:
 env:
   PNPM_VERSION: 9.15.4
   NODE_VERSION: 20.x
+  # @octopus-synapse/precommit is served from GitHub Packages (see .npmrc)
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   CLIENT_DIR: apps/client
   ARTIFACT_NAME: patch-careers-ui-unsigned
 

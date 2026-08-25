@@ -4,7 +4,7 @@
  *
  *   1. checklist of the master's sections/items to include (sections with
  *      zero items have nothing to copy and aren't listed);
- *   2. title + language + visual style.
+ *   2. optional title (defaults to "Resume #N") + language + visual style.
  *
  * On success the caller receives the new resume id (it pushes the detail).
  */
@@ -42,7 +42,7 @@ import {
   useResumeSections,
 } from "@/features/sections";
 import { useI18n } from "@/providers/i18n-provider";
-import { useResumeMutations, useResumeStyles } from "../hooks/queries";
+import { useResumeList, useResumeMutations, useResumeStyles } from "../hooks/queries";
 import { resumeLanguageToLocale } from "../lib/helpers";
 import { useRz } from "../lib/styles";
 
@@ -91,6 +91,11 @@ export function CreateResumeWizard({
   );
   const stylesQuery = useResumeStyles();
   const { duplicateResume, isPending } = useResumeMutations();
+  // Fallback name when the user leaves the title empty ("Currículo #N").
+  const { resumes } = useResumeList();
+  const defaultTitle = t("resumes.wizard.defaultName", { n: resumes.length + 1 });
+  // Only the two system styles are user-pickable (fixtures/custom rows are not).
+  const pickableStyles = (stylesQuery.data?.items ?? []).filter((style) => style.isSystem);
 
   const copyable = useMemo(
     () => masterSections.filter((section) => section.items.length > 0),
@@ -147,14 +152,15 @@ export function CreateResumeWizard({
   };
 
   const create = async (): Promise<void> => {
-    if (!sourceResumeId || title.trim().length === 0) return;
+    if (!sourceResumeId) return;
+    const finalTitle = (title.trim() || defaultTitle).slice(0, 100);
     const include = [...effective.entries()]
       .filter(([, items]) => items.size > 0)
       .map(([sectionTypeKey, items]) => ({ sectionTypeKey, itemIds: [...items] }));
     setError(null);
     try {
       const id = await duplicateResume(sourceResumeId, {
-        title: title.trim(),
+        title: finalTitle,
         language,
         ...(styleId ? { styleId } : {}),
         include,
@@ -297,7 +303,7 @@ export function CreateResumeWizard({
                   label={t("resumes.wizard.nameLabel")}
                   value={title}
                   onChangeText={setTitle}
-                  placeholder={t("resumes.wizard.namePlaceholder")}
+                  placeholder={defaultTitle}
                 />
                 <View style={styles.fieldBlock}>
                   <Text style={rz.sectionLabel}>{t("resumes.wizard.languageLabel")}</Text>
@@ -315,7 +321,7 @@ export function CreateResumeWizard({
                 <View style={styles.fieldBlock}>
                   <Text style={rz.sectionLabel}>{t("resumes.wizard.styleLabel")}</Text>
                   <View style={ed.styleStack}>
-                    {(stylesQuery.data?.items ?? []).map((style) => {
+                    {pickableStyles.map((style) => {
                       const selected = styleId === style.id;
                       return (
                         <Pressable
@@ -363,7 +369,7 @@ export function CreateResumeWizard({
                 label={t("resumes.wizard.create")}
                 onPress={() => void create()}
                 loading={isPending}
-                disabled={title.trim().length === 0 || isPending}
+                disabled={isPending}
               />
             )}
           </View>
