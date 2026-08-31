@@ -1,79 +1,55 @@
 /**
- * Sign-in screen — "Editorial Calm", on a standalone card.
+ * Sign-in screen — "Editorial Calm", on a standalone card with the mascot.
  *
- * The whole form lives inside `AuthCard`: a 90%-wide panel, vertically
- * centered, on the scheme's `panel` paper — a lift off the screen in both
- * light and dark.
- *
- * Above the fields sits a row of small brand-colored provider chips, each in
- * its provider's own fixed colors (they do not flip with the scheme — a brand
- * mark that restyled itself would stop reading as that brand). They are
- * deliberately small: the credentials form is the primary path.
- *
- * Form: React Hook Form (ADR-0005) with a resolver that reuses validateLogin
- * (same Zod-backed checks + i18n messages); backend field errors are bridged
- * onto the form via setError. Flow preserved:
+ * Shares its whole surface with sign-up through `CredentialsCard` (shell,
+ * mascot, title, provider chips, dev-fill); what is specific here is the
+ * two fields, the "keep me signed in / forgot password" row and the flow:
  *   1. `login()` from `@patch-careers/auth`
  *   2. `twoFactorRequired` → push `/2fa-verify` with userId
  *   3. `sessionExchangeId` → `exchangeSessionForTokens()`
  *   4. `bootstrap()` then redirect to the post-auth home
+ * The mascot only "clicks" on a real success; a rejected login grimaces.
  */
 
 import { type LoginResult, login } from "@patch-careers/auth";
-import { Text, XStack, YStack } from "@patch-careers/ui";
+import { Text, YStack } from "@patch-careers/ui";
 import {
-  AuthCard,
-  AuthShell,
-  CheckboxField,
   editorialFonts,
   FooterPrompt,
   PrimaryAction,
+  useAuthMascot,
 } from "@patch-careers/ui/editorial";
-import { type ReactElement, useEffect, useRef, useState } from "react";
+import { type ReactElement, useRef } from "react";
 import { Platform, type TextInput } from "react-native";
+import { CredentialsCard } from "@/components/auth/credentials-card";
+import { fieldErrorsSetter } from "@/components/auth/helpers/apply-field-errors";
 import { handleAuthApiError } from "@/components/auth/helpers/handle-auth-api-error";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
-import { useOAuthSignIn } from "@/components/auth/hooks/use-oauth-sign-in";
+import { useKeepSignedIn } from "@/components/auth/hooks/use-keep-signed-in";
+import { useMascotForm } from "@/components/auth/hooks/use-mascot-form";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
-import { readKeepSignedIn, saveKeepSignedIn } from "@/components/auth/keep-signed-in-preference";
-import { OAuthBrandButton } from "@/components/auth/oauth-brand-button";
-import { GithubGlyph, GoogleGlyph, LinkedinGlyph } from "@/components/auth/oauth-glyphs";
-import { type AuthFieldErrors, validateLogin } from "@/components/auth/validation";
-import { devTestCredentials, isDevTestFillEnabled } from "@/config/dev-flags";
+import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
+import { validateLogin } from "@/components/auth/validation";
+import { devTestCredentials } from "@/config/dev-flags";
 import { FormEmailField, FormPasswordField, useFieldErrorsForm } from "@/forms";
 
 type LoginForm = { email: string; password: string };
 
 export default function SignInScreen(): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();
-  const { handleOAuth } = useOAuthSignIn();
   const { finishAuthentication } = useCompleteAuth();
   const { submitting, run } = useSubmit();
-
-  // Web-only "keep me signed in" — cookie mode. Default unchecked; restore the
-  // user's last choice. Native uses persistent secure-store and shows no box.
+  const keep = useKeepSignedIn();
   const isWeb = Platform.OS === "web";
-  const [keepSignedIn, setKeepSignedIn] = useState(false);
   const passwordRef = useRef<TextInput>(null);
+  const mascot = useAuthMascot();
 
   const form = useFieldErrorsForm<LoginForm>(
     (values) => validateLogin({ email: values.email.trim(), password: values.password }, t),
     { defaultValues: { email: "", password: "" } },
   );
-
-  useEffect(() => {
-    if (!isWeb) return;
-    void readKeepSignedIn().then(setKeepSignedIn);
-  }, [isWeb]);
-
-  // Surface backend field errors (from handleAuthApiError) on the RHF form.
-  function applyFieldErrors(fields: AuthFieldErrors): void {
-    for (const key of ["email", "password"] as const) {
-      const message = fields[key];
-      if (message) form.setError(key, { message });
-    }
-  }
+  const bind = useMascotForm(mascot, form);
 
   // DEV-only: drop the seeded account into the form so signing in is one tap.
   function fillSignInTest(): void {
@@ -83,20 +59,20 @@ export default function SignInScreen(): ReactElement {
   }
 
   const onSubmit = form.handleSubmit(async ({ email, password }) => {
+    mascot.reset();
     const trimmedEmail = email.trim();
-    // Remember the choice for next time (web only).
-    if (isWeb) void saveKeepSignedIn(keepSignedIn);
     await run(async () => {
       try {
         const result: LoginResult = await login(
           trimmedEmail,
           password,
-          isWeb ? { keepSignedIn } : undefined,
+          keep.enabled ? { keepSignedIn: keep.keepSignedIn } : undefined,
         );
+        mascot.celebrate();
         if (result.twoFactorRequired) {
           router.replace({
             pathname: "/(auth)/2fa-verify",
-            params: { userId: result.userId, keepSignedIn: keepSignedIn ? "1" : "0" },
+            params: { userId: result.userId, keepSignedIn: keep.keepSignedIn ? "1" : "0" },
           });
           return;
         }
@@ -104,11 +80,12 @@ export default function SignInScreen(): ReactElement {
           result.sessionExchangeId ? { sessionExchangeId: result.sessionExchangeId } : undefined,
         );
       } catch (err) {
+        mascot.grimace();
         handleAuthApiError(err, {
           locale,
           t,
           toast,
-          setFieldErrors: applyFieldErrors,
+          setFieldErrors: fieldErrorsSetter(form, ["email", "password"]),
           fallbackKey: "auth.loginFailed",
         });
       }
@@ -133,130 +110,63 @@ export default function SignInScreen(): ReactElement {
   );
 
   return (
-    <AuthShell variant="card">
-      <AuthCard>
-        {/* Colors below come from Tamagui tokens ($ink/$accentBlue/…) so they
-            follow the active scheme without a palette hook here. */}
-        <Text
-          textAlign="center"
-          fontFamily={editorialFonts.sans}
-          fontSize={isWeb ? 30 : 28}
-          lineHeight={isWeb ? 36 : 34}
-          fontWeight="600"
-          letterSpacing={-0.4}
-          color="$ink"
-        >
-          {t("auth.signIn")}
-        </Text>
-
-        <XStack justifyContent="center" gap={12} marginTop={22} marginBottom={30}>
-          <OAuthBrandButton
-            provider="google"
-            glyph={GoogleGlyph}
-            delay={180}
-            label={t("auth.continueWith", { provider: "Google" })}
-            onPress={() => handleOAuth("google")}
-            testID="auth.google"
-          />
-          <OAuthBrandButton
-            provider="linkedin"
-            glyph={LinkedinGlyph}
-            delay={240}
-            label={t("auth.continueWith", { provider: "LinkedIn" })}
-            onPress={() => handleOAuth("linkedin")}
-            testID="auth.linkedin"
-          />
-          <OAuthBrandButton
-            provider="github"
-            glyph={GithubGlyph}
-            delay={300}
-            label={t("auth.continueWith", { provider: "GitHub" })}
-            onPress={() => handleOAuth("github")}
-            testID="auth.github"
-          />
-        </XStack>
-
-        {isDevTestFillEnabled() ? (
-          <YStack alignItems="flex-end" marginBottom={2}>
-            <Text
-              onPress={fillSignInTest}
-              accessibilityRole="button"
-              cursor="pointer"
-              fontFamily={editorialFonts.mono}
-              fontSize={10}
-              letterSpacing={1.4}
-              color="$inkSubtle"
-              paddingVertical={4}
-              paddingHorizontal={6}
-              testID="auth.devFill"
-            >
-              test
-            </Text>
-          </YStack>
-        ) : null}
-
-        <YStack gap={24}>
-          <FormEmailField
-            control={form.control}
-            name="email"
-            testID="auth.email"
-            onSubmitEditing={() => passwordRef.current?.focus()}
-          />
-
-          <FormPasswordField
-            control={form.control}
-            name="password"
-            inputRef={passwordRef}
-            testID="auth.password"
-            returnKeyType="go"
-            onSubmitEditing={onSubmit}
-          />
-        </YStack>
-
-        {/* Web: "keep me signed in" and "forgot password" share one quiet row
-            under the fields (left/right), so neither floats alone in the
-            column. Native has no checkbox: the link is centered below the CTA. */}
-        {isWeb ? (
-          <XStack alignItems="center" justifyContent="space-between" marginTop={26}>
-            <CheckboxField
-              checked={keepSignedIn}
-              onToggle={() =>
-                setKeepSignedIn((v) => {
-                  const next = !v;
-                  void saveKeepSignedIn(next);
-                  return next;
-                })
-              }
-              label={t("auth.keepSignedIn")}
-              delay={300}
-              testID="auth.keepSignedIn"
-            />
-            {forgotLink}
-          </XStack>
-        ) : null}
-
-        <YStack marginTop={isWeb ? 30 : 26}>
-          <PrimaryAction
-            label={t("auth.signIn")}
-            loading={submitting}
-            onPress={onSubmit}
-            testID="auth.submit"
-          />
-        </YStack>
-
-        {isWeb ? null : (
-          <YStack alignItems="center" marginTop={14}>
-            {forgotLink}
-          </YStack>
-        )}
-
-        <FooterPrompt
-          prompt={t("auth.noAccount")}
-          linkLabel={t("auth.createOne")}
-          onPress={() => router.push("/(auth)/sign-up")}
-          testID="auth.signUpLink"
+    <CredentialsCard
+      title={t("auth.signIn")}
+      mascot={mascot}
+      testIDPrefix="auth"
+      onDevFill={fillSignInTest}
+    >
+      <YStack gap={24}>
+        <FormEmailField
+          control={form.control}
+          name="email"
+          testID="auth.email"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          {...bind.text("email", "email")}
         />
-      </AuthCard>
-    </AuthShell>
+        <FormPasswordField
+          control={form.control}
+          name="password"
+          inputRef={passwordRef}
+          testID="auth.password"
+          returnKeyType="go"
+          onSubmitEditing={onSubmit}
+          {...bind.password("password")}
+        />
+      </YStack>
+
+      {/* Web: checkbox and "forgot password" share one row; native has no
+          checkbox, so the link sits centred under the CTA instead. */}
+      {keep.enabled ? (
+        <KeepSignedInRow
+          checked={keep.keepSignedIn}
+          onToggle={keep.toggle}
+          testID="auth.keepSignedIn"
+          right={forgotLink}
+        />
+      ) : null}
+
+      <YStack marginTop={isWeb ? 30 : 26}>
+        <PrimaryAction
+          label={t("auth.signIn")}
+          loading={submitting}
+          onPress={onSubmit}
+          testID="auth.submit"
+        />
+      </YStack>
+
+      {keep.enabled ? null : (
+        <YStack alignItems="center" marginTop={14}>
+          {forgotLink}
+        </YStack>
+      )}
+
+      <FooterPrompt
+        prompt={t("auth.noAccount")}
+        linkLabel={t("auth.createOne")}
+        onPress={() => router.push("/(auth)/sign-up")}
+        testID="auth.signUpLink"
+      />
+    </CredentialsCard>
   );
 }

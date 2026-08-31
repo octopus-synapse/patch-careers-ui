@@ -11,7 +11,7 @@
 
 import { useEditorialPalette } from "@patch-careers/ui";
 import { editorialFonts } from "@patch-careers/ui/editorial";
-import { type ReactElement, useEffect, useRef, useState } from "react";
+import { type ReactElement, type RefObject, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import Animated, {
   FadeIn,
@@ -36,6 +36,7 @@ export function EditorialOtp({
   state,
   accessibilityLabel,
   autoFocus,
+  inputRef: externalRef,
   testID,
 }: {
   value: string;
@@ -43,10 +44,13 @@ export function EditorialOtp({
   state: EditorialOtpState;
   accessibilityLabel: string;
   autoFocus?: boolean;
+  /** Lets the screen focus the field itself (e.g. after an intro finishes). */
+  inputRef?: RefObject<TextInput | null>;
   testID?: string;
 }): ReactElement {
   const palette = useEditorialPalette();
-  const inputRef = useRef<TextInput>(null);
+  const internalRef = useRef<TextInput>(null);
+  const inputRef = externalRef ?? internalRef;
   const [focused, setFocused] = useState(false);
   const shake = useSharedValue(0);
 

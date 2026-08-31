@@ -23,6 +23,7 @@ import {
   type ReturnKeyTypeOptions,
   StyleSheet,
   TextInput,
+  type TextInputSelectionChangeEventData,
   type TextInputSubmitEditingEventData,
 } from "react-native";
 import Animated, {
@@ -82,11 +83,27 @@ export type UnderlineInputProps = {
   hasError?: boolean;
   /** Slot for an action icon at the right edge of the input row. */
   rightSlot?: ReactNode;
+  /** Observers only — the focus crossfade stays internal. */
+  onFocus?: () => void;
+  onBlur?: () => void;
+  /** Caret position, for callers that follow the cursor (e.g. the auth mascot). */
+  onSelectionChange?: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
 };
 
 export const UnderlineInput = forwardRef<TextInput, UnderlineInputProps>(
   (
-    { label, value, onChangeText, hasError = false, rightSlot, testID, placeholder, ...rest },
+    {
+      label,
+      value,
+      onChangeText,
+      hasError = false,
+      rightSlot,
+      testID,
+      placeholder,
+      onFocus,
+      onBlur,
+      ...rest
+    },
     ref,
   ): ReactElement => {
     const [focused, setFocused] = useState(false);
@@ -200,8 +217,14 @@ export const UnderlineInput = forwardRef<TextInput, UnderlineInputProps>(
             // Web: tag the node so the autofill reset below can target it.
             {...(isWeb ? { dataSet: { editorialInput: "" } } : {})}
             placeholderTextColor={editorialPalette.subtle}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
+            onFocus={() => {
+              setFocused(true);
+              onFocus?.();
+            }}
+            onBlur={() => {
+              setFocused(false);
+              onBlur?.();
+            }}
             selectionColor={editorialPalette.accent}
             cursorColor={editorialPalette.accent}
             {...(testID ? { testID } : {})}

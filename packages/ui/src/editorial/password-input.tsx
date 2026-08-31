@@ -3,7 +3,7 @@
  */
 
 import { Eye, EyeOff } from "lucide-react-native";
-import { forwardRef, type ReactElement, useState } from "react";
+import { forwardRef, type ReactElement, useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, type TextInput } from "react-native";
 import { Icon } from "../icons/icon";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
@@ -17,15 +17,29 @@ export type PasswordInputProps = Omit<
   hideLabel: string;
   /** Use "new-password" / "newPassword" for sign-up flows; defaults to "password". */
   isNew?: boolean;
+  /** Fires when the eye toggle flips the text between hidden and shown. */
+  onVisibilityChange?: (visible: boolean) => void;
 };
 
 export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
-  ({ showLabel, hideLabel, isNew = false, ...rest }, ref): ReactElement => {
+  ({ showLabel, hideLabel, isNew = false, onVisibilityChange, ...rest }, ref): ReactElement => {
     const [show, setShow] = useState(false);
     const editorialPalette = useEditorialPalette();
+    // Keep our own handle so the eye toggle can hand focus straight back to
+    // the field: pressing the button would otherwise blur it, and the auth
+    // mascot's hands (cover ↔ peek) key off the field being active.
+    const inner = useRef<TextInput | null>(null);
+    const setRefs = useCallback(
+      (node: TextInput | null) => {
+        inner.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      },
+      [ref],
+    );
     return (
       <UnderlineInput
-        ref={ref}
+        ref={setRefs}
         {...rest}
         secureTextEntry={!show}
         autoComplete={isNew ? "new-password" : "password"}
@@ -36,7 +50,12 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(
         autoCorrect={false}
         rightSlot={
           <Pressable
-            onPress={() => setShow((v) => !v)}
+            onPress={() => {
+              const next = !show;
+              setShow(next);
+              onVisibilityChange?.(next);
+              inner.current?.focus();
+            }}
             accessibilityRole="button"
             accessibilityLabel={show ? hideLabel : showLabel}
             hitSlop={10}

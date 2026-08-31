@@ -23,10 +23,19 @@ export {
   type StrengthLabels,
   scorePassword,
 } from "../internal/editorial-password";
+export { type MascotFlags, poseFor } from "../internal/mascot-model";
 export { useEditorialPalette } from "../internal/use-editorial-palette";
 export { useThemeName } from "../internal/use-theme-name";
 export { AnimatedField } from "./animated-field";
-export { AuthCard } from "./auth-card";
+export { AUTH_CARD_PADDING_Y, AuthCard } from "./auth-card";
+export {
+  AuthMascot,
+  type AuthMascotController,
+  type AuthMascotProps,
+  MASCOT_CARD_TOP_SPACE,
+  useAuthMascot,
+} from "./auth-mascot";
+export { AuthMascotCard } from "./auth-mascot-card";
 export { AuthShell } from "./auth-shell";
 export { Banner, type BannerIntent, type BannerProps } from "./banner";
 export { BrandLockup } from "./brand-lockup";

@@ -26,6 +26,7 @@ import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 
 export default function TwoFactorVerifyScreen(): ReactElement {
+  const isWeb = Platform.OS === "web";
   const { t, router, toast } = useAuthScreen();
   const { finishAuthentication } = useCompleteAuth();
   const { submitting, run } = useSubmit();
@@ -64,7 +65,11 @@ export default function TwoFactorVerifyScreen(): ReactElement {
   }
 
   return (
-    <AuthShell>
+    <AuthShell
+      {...(isWeb
+        ? { corner: <BackToSignInLink variant="corner" testID="twofa.backToSignIn" /> }
+        : {})}
+    >
       <IntroBlock
         emphasis={mode === "totp" ? t("auth.twoFaTitle") : t("auth.twoFaBackupTitle")}
         subtitle={mode === "totp" ? t("auth.twoFaIntro") : t("auth.twoFaBackupIntro")}
@@ -103,7 +108,7 @@ export default function TwoFactorVerifyScreen(): ReactElement {
           onPress={() => setMode(mode === "totp" ? "backup" : "totp")}
           testID="twofa.toggleMode"
         />
-        <BackToSignInLink testID="twofa.backToSignIn" />
+        {isWeb ? null : <BackToSignInLink testID="twofa.backToSignIn" />}
       </YStack>
     </AuthShell>
   );

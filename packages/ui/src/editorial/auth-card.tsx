@@ -7,28 +7,59 @@
  *
  * `maxWidth` keeps the 90% column from spanning a desktop browser; on phones
  * the clamp never engages.
+ *
+ * `panelStyle` lets a screen drive the panel with a Reanimated style (the
+ * sign-up → verify-email "account created" stage clamps its height); the
+ * panel clips, so its content keeps its natural layout underneath and
+ * `onContentLayout` reports that natural size.
  */
 
 import type { ReactElement, ReactNode } from "react";
+import {
+  type LayoutChangeEvent,
+  type StyleProp,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { TYStack } from "../internal/tamagui-shim";
 import { useEditorialPalette } from "../internal/use-editorial-palette";
 
-export function AuthCard({ children }: { children: ReactNode }): ReactElement {
+export const AUTH_CARD_PADDING_Y = 34;
+
+export function AuthCard({
+  children,
+  panelStyle,
+  onContentLayout,
+  animateIn = true,
+}: {
+  children: ReactNode;
+  panelStyle?: StyleProp<ViewStyle>;
+  onContentLayout?: (e: LayoutChangeEvent) => void;
+  /** Off when the screen must open on another screen's exact frame. */
+  animateIn?: boolean;
+}): ReactElement {
   const editorialPalette = useEditorialPalette();
   return (
-    <Animated.View entering={FadeIn.duration(420)}>
-      <TYStack
-        width="90%"
-        maxWidth={460}
-        alignSelf="center"
-        borderRadius={30}
-        backgroundColor={editorialPalette.panel}
-        paddingHorizontal={26}
-        paddingVertical={34}
+    <Animated.View {...(animateIn ? { entering: FadeIn.duration(420) } : {})}>
+      <Animated.View
+        style={[styles.panel, { backgroundColor: editorialPalette.panel }, panelStyle]}
       >
-        {children}
-      </TYStack>
+        <View onLayout={onContentLayout}>{children}</View>
+      </Animated.View>
     </Animated.View>
   );
 }
+
+// @style-allow stylesheet: the panel is Reanimated-driven (animated height clamp on the created stage)
+const styles = StyleSheet.create({
+  panel: {
+    width: "90%",
+    maxWidth: 460,
+    alignSelf: "center",
+    borderRadius: 30,
+    paddingHorizontal: 26,
+    paddingVertical: AUTH_CARD_PADDING_Y,
+    overflow: "hidden",
+  },
+});

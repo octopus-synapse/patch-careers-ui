@@ -13,6 +13,7 @@ import { postV1AuthForgotPassword } from "@patch-careers/api-client";
 import { YStack } from "@patch-careers/ui";
 import { AuthShell, Banner, IntroBlock, PrimaryAction } from "@patch-careers/ui/editorial";
 import { type ReactElement, useMemo, useState } from "react";
+import { Platform } from "react-native";
 import { z } from "zod";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
@@ -21,6 +22,7 @@ import { FormEmailField, useZodForm } from "@/forms";
 import { validateEmail } from "@/lib/validation";
 
 export default function ForgotPasswordScreen(): ReactElement {
+  const isWeb = Platform.OS === "web";
   const { t, router } = useAuthScreen();
   const { submitting, run } = useSubmit();
   const [sent, setSent] = useState(false);
@@ -47,7 +49,9 @@ export default function ForgotPasswordScreen(): ReactElement {
   });
 
   return (
-    <AuthShell>
+    <AuthShell
+      {...(isWeb ? { corner: <BackToSignInLink variant="corner" testID="forgot.backLink" /> } : {})}
+    >
       <IntroBlock
         emphasis={t("auth.forgotTitle")}
         subtitle={sent ? t("auth.forgotSuccess") : t("auth.forgotIntro")}
@@ -80,7 +84,7 @@ export default function ForgotPasswordScreen(): ReactElement {
               testID="forgot.submit"
             />
           </YStack>
-          <BackToSignInLink testID="forgot.backLink" />
+          {isWeb ? null : <BackToSignInLink testID="forgot.backLink" />}
         </YStack>
       )}
     </AuthShell>

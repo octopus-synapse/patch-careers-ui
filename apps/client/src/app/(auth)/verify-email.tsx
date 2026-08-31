@@ -14,20 +14,34 @@
  * cells funnel into a line-work envelope stamped with the accent seal, the
  * composition re-stacks (icon above the words) and after a 2.5s hold the app
  * routes on by itself via `finishAuthentication()`.
+ *
+ * The mascot perches on the card throughout, settled in its `sealed` rest:
+ * its pupils follow the cells as digits land, it grimaces on a bad code and
+ * beams (^ ^) as the seal stamps. Arriving from sign-up (`created=1`) the
+ * screen opens on sign-up's final frame — card clamped to the stage height
+ * under "Account created." — then grows the card and reveals the verify
+ * content, so the character never appears to move (see `created-stage.tsx`).
  */
 
 import { postV1AuthEmailVerificationSend, verify as verifyApi } from "@patch-careers/api-client";
 import { cooldownSecondsRemaining, maskEmail } from "@patch-careers/auth";
 import { Text, useEditorialPalette } from "@patch-careers/ui";
-import { AuthCard, AuthShell, editorialFonts } from "@patch-careers/ui/editorial";
+import {
+  AUTH_CARD_PADDING_Y,
+  AuthMascotCard,
+  AuthShell,
+  editorialFonts,
+  useAuthMascot,
+} from "@patch-careers/ui/editorial";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pencil } from "lucide-react-native";
 import { type ReactElement, useCallback, useEffect, useRef, useState } from "react";
-import type { LayoutChangeEvent } from "react-native";
+import type { LayoutChangeEvent, TextInput } from "react-native";
 import {
   ActivityIndicator,
   Keyboard,
+  Platform,
   Pressable,
   Text as RNText,
   StyleSheet,
@@ -43,6 +57,11 @@ import Animated, {
 import Svg, { Circle } from "react-native-svg";
 import { BackToSignInLink } from "@/components/auth/back-to-sign-in-link";
 import { ConvergingCodeCells } from "@/components/auth/converging-code-cells";
+import {
+  ARRIVAL_TIMELINE,
+  CREATED_STAGE_CARD_HEIGHT,
+  CreatedStageTitle,
+} from "@/components/auth/created-stage";
 import { EditorialOtp, type EditorialOtpState } from "@/components/auth/editorial-otp";
 import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useCompleteAuth } from "@/components/auth/hooks/use-complete-auth";
@@ -61,18 +80,28 @@ const NAVIGATE_AT_MS = 1900 + VERIFIED_HOLD_MS;
 
 type Phase = "input" | "sealing";
 type Status = "none" | "loading" | "error" | "sent";
+/** Very large = no clamp; the panel keeps its natural height. */
+const UNCLAMPED = 100_000;
+const OTP_CELLS = 6;
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 export default function VerifyEmailScreen(): ReactElement {
+  const isWeb = Platform.OS === "web";
   const { t } = useAuthScreen();
   const { finishAuthentication } = useCompleteAuth();
   const { run } = useSubmit();
   const router = useRouter();
   const palette = useEditorialPalette();
-  const params = useLocalSearchParams<{ email?: string; token?: string }>();
+  const params = useLocalSearchParams<{ email?: string; token?: string; created?: string }>();
+  const mascot = useAuthMascot();
 
   const email = params.email ?? "";
+  // Arriving from sign-up: open on its final "Account created." frame.
+  const [arriving, setArriving] = useState(params.created === "1" && !params.token);
+  // The card must already be on screen on the first frame (no fade-in), or
+  // it would dip under the mascot during the route crossfade.
+  const arrivedRef = useRef(arriving);
   const [code, setCode] = useState("");
   const [testCode, setTestCode] = useState<string | null>(null);
   const [lastResendAt, setLastResendAt] = useState<number | null>(null);
@@ -83,6 +112,12 @@ export default function VerifyEmailScreen(): ReactElement {
   const autoSubmitTokenRef = useRef(false);
   const autoSendCodeRef = useRef(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const otpRef = useRef<TextInput>(null);
+  const contentHeightRef = useRef(0);
+
+  const panelMaxHeight = useSharedValue(arriving ? CREATED_STAGE_CARD_HEIGHT : UNCLAMPED);
+  const contentOpacity = useSharedValue(arriving ? 0 : 1);
+  const stageTitleOpacity = useSharedValue(arriving ? 1 : 0);
 
   const titleProgress = useSharedValue(0);
   const auxOpacity = useSharedValue(1);
@@ -114,18 +149,66 @@ export default function VerifyEmailScreen(): ReactElement {
     timersRef.current.push(setTimeout(fn, at));
   }, []);
 
+  // The mascot settles in its sealed rest the moment the screen appears
+  // (once: the controller identity changes with every expression).
+  const sealedOnceRef = useRef(false);
+  useEffect(() => {
+    if (sealedOnceRef.current) return;
+    sealedOnceRef.current = true;
+    mascot.seal();
+  }, [mascot]);
+
+  // Arrival from sign-up: grow the card from the stage frame, then reveal.
+  const arrivalStartedRef = useRef(false);
+  useEffect(() => {
+    if (!arriving || arrivalStartedRef.current) return;
+    arrivalStartedRef.current = true;
+    schedule(() => {
+      const natural = contentHeightRef.current + AUTH_CARD_PADDING_Y * 2;
+      panelMaxHeight.value = withTiming(natural > 0 ? natural : UNCLAMPED, {
+        duration: ARRIVAL_TIMELINE.growMs,
+        easing: Easing.bezier(0.3, 0.9, 0.3, 1),
+      });
+      stageTitleOpacity.value = withTiming(0, { duration: 300 });
+    }, ARRIVAL_TIMELINE.growAt);
+    schedule(() => {
+      contentOpacity.value = withTiming(1, {
+        duration: ARRIVAL_TIMELINE.revealMs,
+        easing: Easing.out(Easing.cubic),
+      });
+    }, ARRIVAL_TIMELINE.revealAt);
+    schedule(() => {
+      panelMaxHeight.value = UNCLAMPED;
+      setArriving(false);
+      otpRef.current?.focus();
+    }, ARRIVAL_TIMELINE.done);
+  }, [arriving, schedule, panelMaxHeight, stageTitleOpacity, contentOpacity]);
+
+  // Pupils follow the cells as digits land.
+  useEffect(() => {
+    if (phase !== "input") return;
+    mascot.lookAt(code.length === 0 ? 0 : Math.min(1, (code.length - 0.5) / OTP_CELLS), 8);
+  }, [code.length, phase, mascot]);
+
   const playVerifiedTransition = useCallback(() => {
     Keyboard.dismiss();
     setPhase("sealing");
     setStatus("none");
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    mascot.lookAt(0.5, 4);
     titleProgress.value = withDelay(
       TITLE_SWAP_AT_MS,
       withTiming(1, { duration: 380, easing: Easing.out(Easing.cubic) }),
     );
     auxOpacity.value = withTiming(0, { duration: 250 });
     // Deep-link verifications never typed a code — skip the funnel.
-    schedule(() => setSealVisible(true), code.length > 0 ? SEAL_AT_MS : TITLE_SWAP_AT_MS);
+    schedule(
+      () => {
+        setSealVisible(true);
+        mascot.beam();
+      },
+      code.length > 0 ? SEAL_AT_MS : TITLE_SWAP_AT_MS,
+    );
     // Re-stack via transforms only — every row stays mounted (opacity 0), so
     // the card never changes height and nothing reflows mid-flight. The
     // envelope glides up and the heading glides down until they meet as a
@@ -151,6 +234,7 @@ export default function VerifyEmailScreen(): ReactElement {
   }, [
     code.length,
     finishAuthentication,
+    mascot,
     titleProgress,
     auxOpacity,
     composeProgress,
@@ -168,15 +252,17 @@ export default function VerifyEmailScreen(): ReactElement {
           playVerifiedTransition();
         } catch {
           setStatus("error");
+          mascot.grimace();
           void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
           schedule(() => {
             setCode("");
             setStatus("none");
+            mascot.seal();
           }, ERROR_RESET_MS);
         }
       });
     },
-    [run, playVerifiedTransition, schedule],
+    [run, playVerifiedTransition, schedule, mascot],
   );
 
   // The sixth digit IS the submit — mirror of the demo's auto-submit.
@@ -235,6 +321,9 @@ export default function VerifyEmailScreen(): ReactElement {
   const codeGlideStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: codeDy.value * composeProgress.value }],
   }));
+  const panelStyle = useAnimatedStyle(() => ({ maxHeight: panelMaxHeight.value }));
+  const contentStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
+  const stageTitleStyle = useAnimatedStyle(() => ({ opacity: stageTitleOpacity.value }));
 
   const otpState: EditorialOtpState =
     phase !== "input"
@@ -289,7 +378,8 @@ export default function VerifyEmailScreen(): ReactElement {
           }}
           state={otpState}
           accessibilityLabel={t("auth.verifyCodeLabel")}
-          autoFocus
+          autoFocus={!arriving}
+          inputRef={otpRef}
           testID="verify.code"
         />
       ) : (
@@ -306,11 +396,36 @@ export default function VerifyEmailScreen(): ReactElement {
   );
 
   return (
-    <AuthShell variant="card">
-      <AuthCard>
-        <View
-          style={styles.column}
-          pointerEvents={phase === "input" ? "auto" : "none"}
+    <AuthShell
+      variant="card"
+      {...(isWeb && phase === "input" && !arriving
+        ? { corner: <BackToSignInLink variant="corner" testID="verify.backToSignIn" /> }
+        : {})}
+    >
+      <AuthMascotCard
+        mascot={mascot}
+        animateIn={!arrivedRef.current}
+        panelStyle={panelStyle}
+        onContentLayout={(e) => {
+          contentHeightRef.current = e.nativeEvent.layout.height;
+        }}
+        below={
+          isWeb ? undefined : (
+            <Animated.View
+              style={[styles.backRow, auxStyle, contentStyle]}
+              pointerEvents={phase === "input" && !arriving ? "auto" : "none"}
+            >
+              <BackToSignInLink testID="verify.backToSignIn" />
+            </Animated.View>
+          )
+        }
+      >
+        {arriving ? (
+          <CreatedStageTitle title={t("auth.accountCreatedTitle")} style={stageTitleStyle} />
+        ) : null}
+        <Animated.View
+          style={[styles.column, contentStyle]}
+          pointerEvents={phase === "input" && !arriving ? "auto" : "none"}
           onLayout={(e) => {
             layoutsRef.current.column = e.nativeEvent.layout.height;
           }}
@@ -395,14 +510,8 @@ export default function VerifyEmailScreen(): ReactElement {
               </Text>
             </Animated.View>
           ) : null}
-        </View>
-      </AuthCard>
-      <Animated.View
-        style={[styles.backRow, auxStyle]}
-        pointerEvents={phase === "input" ? "auto" : "none"}
-      >
-        <BackToSignInLink testID="verify.backToSignIn" />
-      </Animated.View>
+        </Animated.View>
+      </AuthMascotCard>
     </AuthShell>
   );
 }

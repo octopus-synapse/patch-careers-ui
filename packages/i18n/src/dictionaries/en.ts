@@ -2,6 +2,7 @@ import type { TranslationDict } from "../types";
 import { appEn } from "./domains/app";
 import { fitEn } from "./domains/fit";
 import { jobsEn } from "./domains/jobs";
+import { landingEn } from "./domains/landing";
 import { legalEn } from "./domains/legal";
 import { matchEn } from "./domains/match";
 import { messagesEn } from "./domains/messages";
@@ -21,6 +22,7 @@ export const en: TranslationDict = {
   app: appEn,
   fit: fitEn,
   jobs: jobsEn,
+  landing: landingEn,
   legal: legalEn,
   match: matchEn,
   messages: messagesEn,
@@ -127,6 +129,7 @@ export const en: TranslationDict = {
     verifyResendIn: "Resend in {seconds}s",
     verifySuccess: "Email verified!",
     verifiedTitle: "Email verified.",
+    accountCreatedTitle: "Account created.",
     verifyInvalidToken: "Invalid or expired code. Please request a new one.",
     twoFaTitle: "Two-factor verification",
     twoFaIntro: "Enter the code from your authenticator app.",

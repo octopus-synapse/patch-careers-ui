@@ -2,6 +2,7 @@ import type { TranslationDict } from "../types";
 import { appPtBR } from "./domains/app";
 import { fitPtBR } from "./domains/fit";
 import { jobsPtBR } from "./domains/jobs";
+import { landingPtBR } from "./domains/landing";
 import { legalPtBR } from "./domains/legal";
 import { matchPtBR } from "./domains/match";
 import { messagesPtBR } from "./domains/messages";
@@ -21,6 +22,7 @@ export const ptBR: TranslationDict = {
   app: appPtBR,
   fit: fitPtBR,
   jobs: jobsPtBR,
+  landing: landingPtBR,
   legal: legalPtBR,
   match: matchPtBR,
   messages: messagesPtBR,
@@ -127,6 +129,7 @@ export const ptBR: TranslationDict = {
     verifyResendIn: "Reenviar em {seconds}s",
     verifySuccess: "E-mail verificado!",
     verifiedTitle: "E-mail verificado.",
+    accountCreatedTitle: "Conta criada.",
     verifyInvalidToken: "Código inválido ou expirado. Solicite um novo.",
     twoFaTitle: "Verificação em duas etapas",
     twoFaIntro: "Digite o código do seu app autenticador.",

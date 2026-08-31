@@ -12,8 +12,34 @@ import {
   UnderlineInput,
 } from "@patch-careers/ui/editorial";
 import type { ReactElement, ReactNode, Ref } from "react";
-import type { ReturnKeyTypeOptions, TextInput } from "react-native";
+import type {
+  NativeSyntheticEvent,
+  ReturnKeyTypeOptions,
+  TextInput,
+  TextInputSelectionChangeEventData,
+} from "react-native";
 import { useTranslator } from "@/providers/i18n-provider";
+
+/** Focus/caret observers (the auth mascot follows the form through these). */
+export type FieldObservers = {
+  onFocus?: () => void;
+  onBlur?: () => void;
+  onCaretChange?: (caretIndex: number) => void;
+};
+
+function observerProps(o: FieldObservers): {
+  onFocus?: () => void;
+  onBlur?: () => void;
+  onSelectionChange?: (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => void;
+} {
+  return {
+    ...(o.onFocus ? { onFocus: o.onFocus } : {}),
+    ...(o.onBlur ? { onBlur: o.onBlur } : {}),
+    ...(o.onCaretChange
+      ? { onSelectionChange: (e) => o.onCaretChange?.(e.nativeEvent.selection.end) }
+      : {}),
+  };
+}
 
 export function AuthNameField({
   value,
@@ -22,6 +48,7 @@ export function AuthNameField({
   testID,
   onSubmitEditing,
   delay = 260,
+  ...observers
 }: {
   value: string;
   onChangeText: (v: string) => void;
@@ -29,7 +56,7 @@ export function AuthNameField({
   testID: string;
   onSubmitEditing?: () => void;
   delay?: number;
-}): ReactElement {
+} & FieldObservers): ReactElement {
   const t = useTranslator();
   return (
     <AnimatedField delay={delay}>
@@ -47,6 +74,7 @@ export function AuthNameField({
         hasError={!!error}
         testID={testID}
         {...(onSubmitEditing ? { onSubmitEditing } : {})}
+        {...observerProps(observers)}
       />
       {error ? <FieldError text={error} /> : null}
     </AnimatedField>
@@ -61,6 +89,7 @@ export function AuthEmailField({
   inputRef,
   onSubmitEditing,
   delay = 300,
+  ...observers
 }: {
   value: string;
   onChangeText: (v: string) => void;
@@ -69,7 +98,7 @@ export function AuthEmailField({
   inputRef?: Ref<TextInput>;
   onSubmitEditing?: () => void;
   delay?: number;
-}): ReactElement {
+} & FieldObservers): ReactElement {
   const t = useTranslator();
   return (
     <AnimatedField delay={delay}>
@@ -89,6 +118,7 @@ export function AuthEmailField({
         hasError={!!error}
         testID={testID}
         {...(onSubmitEditing ? { onSubmitEditing } : {})}
+        {...observerProps(observers)}
       />
       {error ? <FieldError text={error} /> : null}
     </AnimatedField>
@@ -108,6 +138,8 @@ export function AuthPasswordField({
   isNew = false,
   delay = 380,
   children,
+  onVisibilityChange,
+  ...observers
 }: {
   value: string;
   onChangeText: (v: string) => void;
@@ -121,7 +153,8 @@ export function AuthPasswordField({
   isNew?: boolean;
   delay?: number;
   children?: ReactNode;
-}): ReactElement {
+  onVisibilityChange?: (visible: boolean) => void;
+} & FieldObservers): ReactElement {
   const t = useTranslator();
   return (
     <AnimatedField delay={delay}>
@@ -138,6 +171,8 @@ export function AuthPasswordField({
         isNew={isNew}
         testID={testID}
         {...(onSubmitEditing ? { onSubmitEditing } : {})}
+        {...(onVisibilityChange ? { onVisibilityChange } : {})}
+        {...observerProps(observers)}
       />
       {error ? <FieldError text={error} /> : null}
       {children}

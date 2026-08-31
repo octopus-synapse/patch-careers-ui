@@ -22,8 +22,14 @@ export function AuthShell({
   children,
   showEra = true,
   variant = "default",
+  corner,
 }: {
   children: ReactNode;
+  /**
+   * Screen-anchored control in the top-left corner (e.g. a web "Back"):
+   * rendered outside the scroll column, offset by the safe-area inset.
+   */
+  corner?: ReactNode;
   /** Shows the "EST · 2025" masthead flourish. Off on sign-in/sign-up. */
   showEra?: boolean;
   /**
@@ -86,6 +92,18 @@ export function AuthShell({
           )}
         </ScrollView>
       </KeyboardAvoidingView>
+      {corner ? (
+        // Web: `fixed` escapes the centred content column, so the control sits
+        // near the viewport's corner (with breathing room), not the column's.
+        <TYStack
+          position={Platform.OS === "web" ? "fixed" : "absolute"}
+          top={insets.top + (Platform.OS === "web" ? 28 : 20)}
+          left={Platform.OS === "web" ? 32 : 24}
+          zIndex={10}
+        >
+          {corner}
+        </TYStack>
+      ) : null}
     </View>
   );
 }
