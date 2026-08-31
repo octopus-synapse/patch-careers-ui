@@ -11,6 +11,7 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import { type ReactElement, useState } from "react";
 import { Pressable, TextInput } from "react-native";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useI18n } from "@/providers/i18n-provider";
 import { landingSans } from "../lib/landing-fonts";
 
@@ -18,10 +19,11 @@ export function HeroInput(): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const router = useRouter();
+  const localized = useLocalizedHref();
   const [value, setValue] = useState("");
 
   const submit = (): void => {
-    router.push("/(auth)/sign-up");
+    router.push(localized("/(auth)/sign-up"));
   };
 
   return (

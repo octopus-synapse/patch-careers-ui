@@ -20,10 +20,12 @@ import { useAuthScreen } from "@/components/auth/hooks/use-auth-screen";
 import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { FormEmailField, useZodForm } from "@/forms";
 import { validateEmail } from "@/lib/validation";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 
 export default function ForgotPasswordScreen(): ReactElement {
   const isWeb = Platform.OS === "web";
   const { t, router } = useAuthScreen();
+  const localized = useLocalizedHref();
   const { submitting, run } = useSubmit();
   const [sent, setSent] = useState(false);
 
@@ -64,7 +66,7 @@ export default function ForgotPasswordScreen(): ReactElement {
           </Banner>
           <PrimaryAction
             label={t("auth.signIn")}
-            onPress={() => router.replace("/(auth)/sign-in")}
+            onPress={() => router.replace(localized("/(auth)/sign-in"))}
             testID="forgot.backToSignIn"
           />
         </YStack>

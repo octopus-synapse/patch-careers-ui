@@ -40,6 +40,7 @@ import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { validateSignup } from "@/components/auth/validation";
 import { FormEmailField, FormNameField, FormPasswordField, useFieldErrorsForm } from "@/forms";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 
 // Versions sent with the consent payload. Backend rejects with
 // CONSENT_VERSION_MISMATCH if these don't match the live published
@@ -55,6 +56,7 @@ const UNCLAMPED = 100_000;
 
 export default function SignUpScreen(): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();
+  const localized = useLocalizedHref();
   const { submitting, run } = useSubmit();
   const keep = useKeepSignedIn();
   const isWeb = Platform.OS === "web";
@@ -260,7 +262,7 @@ export default function SignUpScreen(): ReactElement {
       <FooterPrompt
         prompt={t("auth.haveAccount")}
         linkLabel={t("auth.signInInstead")}
-        onPress={() => router.push("/(auth)/sign-in")}
+        onPress={() => router.push(localized("/(auth)/sign-in"))}
         testID="signup.signInLink"
       />
     </CredentialsCard>

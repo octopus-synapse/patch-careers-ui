@@ -11,19 +11,26 @@
 import { Redirect, Stack, usePathname } from "expo-router";
 import type { ReactElement } from "react";
 import { getAuthenticatedRoute, VERIFY_EMAIL_ROUTE } from "@/navigation/auth-redirect";
+import { useEnglishTwinRedirect, useLocalizedHref } from "@/navigation/locale-prefix";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
 
 export default function AuthLayout(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
   const { currentUser, isAuthenticated } = useAuthState();
   const pathname = usePathname();
+  const englishTwin = useEnglishTwinRedirect();
+  const localized = useLocalizedHref();
 
   if (!hasBootstrapped) return null;
+  // Web: the address mirrors the language. Flows anywhere in the app can
+  // keep sending users to the unprefixed auth routes — this bounce puts
+  // English visitors on the `/en` twin (query string preserved).
+  if (englishTwin) return <Redirect href={englishTwin} />;
   if (isAuthenticated && currentUser?.needsEmailVerification) {
     if (pathname.includes("verify-email")) {
       return <Stack screenOptions={{ headerShown: false, animation: "fade" }} />;
     }
-    return <Redirect href={VERIFY_EMAIL_ROUTE} />;
+    return <Redirect href={localized(VERIFY_EMAIL_ROUTE)} />;
   }
   if (isAuthenticated) return <Redirect href={getAuthenticatedRoute(currentUser)} />;
 

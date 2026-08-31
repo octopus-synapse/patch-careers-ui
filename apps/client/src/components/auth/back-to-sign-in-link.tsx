@@ -17,6 +17,7 @@ import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import { type ReactElement, useRef } from "react";
 import { Pressable } from "react-native";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useTranslator } from "@/providers/i18n-provider";
 
 export function BackToSignInLink({
@@ -28,6 +29,7 @@ export function BackToSignInLink({
 }): ReactElement {
   const t = useTranslator();
   const router = useRouter();
+  const localized = useLocalizedHref();
   const palette = useEditorialPalette();
   const leaving = useRef(false);
   const goBack = (): void => {
@@ -37,7 +39,7 @@ export function BackToSignInLink({
     // network call fails, which is exactly what lets sign-in render.
     void logout().finally(() => {
       leaving.current = false;
-      router.replace("/(auth)/sign-in");
+      router.replace(localized("/(auth)/sign-in"));
     });
   };
 

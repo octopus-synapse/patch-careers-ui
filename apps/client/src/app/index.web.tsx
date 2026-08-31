@@ -14,22 +14,21 @@ import { Redirect } from "expo-router";
 import type { ReactElement } from "react";
 import { LandingHead, LandingScreen } from "@/features/landing";
 import { getAuthenticatedRoute } from "@/navigation/auth-redirect";
+import { useEnglishTwinRedirect } from "@/navigation/locale-prefix";
 import { useAuthBootstrap, useAuthState } from "@/providers/auth-provider";
-import { useI18n } from "@/providers/i18n-provider";
 
 export default function Index(): ReactElement | null {
   const { hasBootstrapped } = useAuthBootstrap();
   const { currentUser, isAuthenticated } = useAuthState();
-  const { locale, hydrated } = useI18n();
+  const englishTwin = useEnglishTwinRedirect();
 
-  // Hold the frame while the session and the locale resolve, so a
-  // signed-in reload doesn't flash the marketing page and an English
-  // visitor doesn't flash pt-BR before landing on /en.
-  if (!hasBootstrapped || !hydrated) return null;
+  // Hold the frame while the session resolves, so a signed-in reload
+  // doesn't flash the marketing page before redirecting.
+  if (!hasBootstrapped) return null;
   if (isAuthenticated) return <Redirect href={getAuthenticatedRoute(currentUser)} />;
   // The address mirrors the language: `/` is the pt-BR canonical, the
   // English landing lives at `/en` (browser language or saved choice).
-  if (locale === "en") return <Redirect href="/en" />;
+  if (englishTwin) return <Redirect href={englishTwin} />;
   return (
     <>
       <LandingHead />

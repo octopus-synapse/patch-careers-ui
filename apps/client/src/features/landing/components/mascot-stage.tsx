@@ -28,6 +28,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useI18n } from "@/providers/i18n-provider";
 import type { LandingMascot } from "../hooks/use-landing-mascot";
 import type { ScenePetLine } from "../hooks/use-scene-director";
@@ -106,6 +107,7 @@ export function MascotStage({
   const grid = landingGrid(windowWidth);
   const palette = useEditorialPalette();
   const router = useRouter();
+  const localized = useLocalizedHref();
   const { t } = useI18n();
 
   const walkX = useSharedValue(0);
@@ -277,7 +279,7 @@ export function MascotStage({
             >
               {showButton ? (
                 <Pressable
-                  onPress={() => router.push("/(auth)/sign-up")}
+                  onPress={() => router.push(localized("/(auth)/sign-up"))}
                   accessibilityRole="button"
                 >
                   <XStack

@@ -13,6 +13,7 @@ import { editorialFonts, useEditorialPalette } from "@patch-careers/ui/editorial
 import { useRouter } from "expo-router";
 import type { ReactElement, ReactNode } from "react";
 import { Pressable, useWindowDimensions } from "react-native";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useI18n } from "@/providers/i18n-provider";
 import { useCountUp } from "../hooks/use-count-up";
 import { landingSans } from "../lib/landing-fonts";
@@ -423,6 +424,7 @@ function CallToAction({ accent, width, active }: BodyProps): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const router = useRouter();
+  const localized = useLocalizedHref();
   const { height } = useWindowDimensions();
   const isDesktop = width >= 1024;
   const footer = `${t("landing.footer.copyright")} · ${t("landing.footer.privacy")} · ${t("landing.footer.terms")} · ${t("landing.footer.recruiterPrompt")} ${t("landing.footer.recruiterLink")}`;
@@ -440,7 +442,10 @@ function CallToAction({ accent, width, active }: BodyProps): ReactElement {
           {t("landing.chapters.cta.body")}
         </ChapterParagraph>
         <XStack gap={20} alignItems="center">
-          <Pressable onPress={() => router.push("/(auth)/sign-up")} accessibilityRole="button">
+          <Pressable
+            onPress={() => router.push(localized("/(auth)/sign-up"))}
+            accessibilityRole="button"
+          >
             <XStack
               backgroundColor={palette.primary}
               borderRadius={999}

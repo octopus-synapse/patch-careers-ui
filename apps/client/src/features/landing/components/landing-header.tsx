@@ -10,6 +10,7 @@ import { useEditorialPalette } from "@patch-careers/ui/editorial";
 import { useRouter } from "expo-router";
 import type { ReactElement } from "react";
 import { Pressable } from "react-native";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 import { useI18n } from "@/providers/i18n-provider";
 import { landingSans } from "../lib/landing-fonts";
 import { BrandFace } from "./brand-face";
@@ -20,6 +21,7 @@ export function LandingHeader(): ReactElement {
   const { t } = useI18n();
   const palette = useEditorialPalette();
   const router = useRouter();
+  const localized = useLocalizedHref();
 
   return (
     <XStack
@@ -33,17 +35,23 @@ export function LandingHeader(): ReactElement {
       justifyContent="space-between"
       paddingHorizontal={28}
     >
-      <Pressable onPress={() => router.push("/")} accessibilityRole="link">
+      <Pressable onPress={() => router.push(localized("/"))} accessibilityRole="link">
         <BrandFace height={54} />
       </Pressable>
 
       <XStack alignItems="center" gap={20}>
-        <Pressable onPress={() => router.push("/(auth)/sign-in")} accessibilityRole="link">
+        <Pressable
+          onPress={() => router.push(localized("/(auth)/sign-in"))}
+          accessibilityRole="link"
+        >
           <Text fontFamily={landingSans} fontSize={15} color={palette.muted}>
             {t("landing.header.signIn")}
           </Text>
         </Pressable>
-        <Pressable onPress={() => router.push("/(auth)/sign-up")} accessibilityRole="button">
+        <Pressable
+          onPress={() => router.push(localized("/(auth)/sign-up"))}
+          accessibilityRole="button"
+        >
           <XStack
             backgroundColor={palette.primary}
             borderRadius={999}

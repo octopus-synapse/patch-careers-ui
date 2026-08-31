@@ -33,11 +33,13 @@ import { KeepSignedInRow } from "@/components/auth/keep-signed-in-row";
 import { validateLogin } from "@/components/auth/validation";
 import { devTestCredentials } from "@/config/dev-flags";
 import { FormEmailField, FormPasswordField, useFieldErrorsForm } from "@/forms";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 
 type LoginForm = { email: string; password: string };
 
 export default function SignInScreen(): ReactElement {
   const { t, locale, router, toast } = useAuthScreen();
+  const localized = useLocalizedHref();
   const { finishAuthentication } = useCompleteAuth();
   const { submitting, run } = useSubmit();
   const keep = useKeepSignedIn();
@@ -94,7 +96,7 @@ export default function SignInScreen(): ReactElement {
 
   const forgotLink = (
     <Text
-      onPress={() => router.push("/(auth)/forgot-password")}
+      onPress={() => router.push(localized("/(auth)/forgot-password"))}
       accessibilityRole="link"
       cursor="pointer"
       fontFamily={editorialFonts.sans}
@@ -164,7 +166,7 @@ export default function SignInScreen(): ReactElement {
       <FooterPrompt
         prompt={t("auth.noAccount")}
         linkLabel={t("auth.createOne")}
-        onPress={() => router.push("/(auth)/sign-up")}
+        onPress={() => router.push(localized("/(auth)/sign-up"))}
         testID="auth.signUpLink"
       />
     </CredentialsCard>

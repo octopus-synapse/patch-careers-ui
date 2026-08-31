@@ -24,11 +24,13 @@ import { useSubmit } from "@/components/auth/hooks/use-submit";
 import { passwordMeterLabels } from "@/components/auth/password-meter-labels";
 import { FormPasswordField, useFieldErrorsForm } from "@/forms";
 import { messageOf, validatePassword } from "@/lib/validation";
+import { useLocalizedHref } from "@/navigation/locale-prefix";
 
 type ResetForm = { newPassword: string; confirmPassword: string };
 
 export default function ResetPasswordScreen(): ReactElement {
   const { t, router, toast } = useAuthScreen();
+  const localized = useLocalizedHref();
   const { submitting, run } = useSubmit();
   const params = useLocalSearchParams<{ token?: string }>();
 
@@ -56,7 +58,7 @@ export default function ResetPasswordScreen(): ReactElement {
       try {
         await postV1AuthResetPassword({ token: params.token as string, newPassword: pw });
         toast.show({ title: t("auth.resetSuccess"), intent: "success" });
-        router.replace("/(auth)/sign-in");
+        router.replace(localized("/(auth)/sign-in"));
       } catch {
         toast.show({ title: t("auth.resetInvalidToken"), intent: "danger" });
       }
@@ -73,7 +75,7 @@ export default function ResetPasswordScreen(): ReactElement {
           </Banner>
           <PrimaryAction
             label={t("auth.forgotPassword")}
-            onPress={() => router.replace("/(auth)/forgot-password")}
+            onPress={() => router.replace(localized("/(auth)/forgot-password"))}
             testID="reset.requestNew"
           />
         </YStack>
