@@ -17,5 +17,7 @@ COPY apps/client/dist /usr/share/nginx/html
 
 EXPOSE 7142
 
+# 127.0.0.1, not localhost: alpine resolves localhost to ::1 first and
+# nginx only listens on IPv4 here — wget would get connection refused.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -q -O /dev/null http://localhost:7142/ || exit 1
+  CMD wget -q -O /dev/null http://127.0.0.1:7142/ || exit 1
