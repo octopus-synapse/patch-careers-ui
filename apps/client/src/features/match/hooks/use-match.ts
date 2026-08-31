@@ -1,5 +1,5 @@
 /**
- * Reads the Match Score for a (résumé, job) pair. Cached server-side, computed
+ * Reads the Match Score for a (resume, job) pair. Cached server-side, computed
  * on demand — external listings are matchable via the job-match engine's
  * external loader. Gated by `resumeId` presence; the breakdown gates on the
  * fit profile separately (via `useFitStatus`) so we never fire this without a

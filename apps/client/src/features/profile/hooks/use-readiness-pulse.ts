@@ -4,7 +4,7 @@
  * one-time "level-up" moment (haptic + a subtle gauge pulse). Persists the
  * last-seen Readiness score in `mundane` so it fires once and survives
  * restarts. Readiness is master-level (one per user), so a single storage
- * key — unlike the per-résumé quality `useRankPulse`.
+ * key — unlike the per-resume quality `useRankPulse`.
  */
 import { mundane } from "@patch-careers/storage";
 import { scoreGrade } from "@patch-careers/ui";

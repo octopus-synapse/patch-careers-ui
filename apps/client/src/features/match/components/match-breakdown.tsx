@@ -2,7 +2,7 @@
  * <MatchBreakdown> — the compatibility panel on a job detail. Fit-gated:
  * shows the blur/lock gate until the user has a fit profile, then the
  * overall score ring + the four sub-scores and the skill gaps (deep-linking
- * to improve the résumé). Tailoring moved into the job detail's apply flow.
+ * to improve the resume). Tailoring moved into the job detail's apply flow.
  * Culture is never surfaced — only the role-derived fit signal feeds the
  * "Perfil" sub-score.
  */

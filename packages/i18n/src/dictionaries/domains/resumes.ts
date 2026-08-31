@@ -213,13 +213,13 @@ export const resumesEn: TranslationDict = {
     explain: {
       a11y: "How we calculate it",
       title: "How we calculate quality",
-      completeness: "Completeness — how filled-in and consistent the résumé is (40%).",
+      completeness: "Completeness — how filled-in and consistent the resume is (40%).",
       content: "Content (AI) — strength of your bullets: verbs, metrics, clarity (60%).",
       footnote: "Informational — never blocks publishing. Without AI we show completeness only.",
     },
     rank: {
-      up: "Your résumé rose to {grade}.",
-      down: "Your résumé dropped to {grade} — see what to improve.",
+      up: "Your resume rose to {grade}.",
+      down: "Your resume dropped to {grade} — see what to improve.",
     },
     subScoresHeading: "Breakdown",
     completeness: "Completeness",

@@ -1,8 +1,8 @@
 /**
- * Picks the résumé to match against by default: the one with the highest
+ * Picks the resume to match against by default: the one with the highest
  * Resume Quality Score (the user's strongest CV), falling back to the
- * master/primary résumé, then the first. Quality is fanned over the user's
- * résumés (capped at a handful of slots) via `useQueries`, best-effort — the
+ * master/primary resume, then the first. Quality is fanned over the user's
+ * resumes (capped at a handful of slots) via `useQueries`, best-effort — the
  * match doesn't block on those fetches; it upgrades to the best as they land.
  */
 import { getV1ResumesResumeIdQualityQueryOptions } from "@patch-careers/api-client";
@@ -11,7 +11,7 @@ import { useMasterResumeId, useResumeList } from "@/features/resumes";
 
 export function useDefaultMatchResume(): {
   resumeId: string | undefined;
-  /** Overall Quality Score of the chosen résumé (null when not yet known). */
+  /** Overall Quality Score of the chosen resume (null when not yet known). */
   quality: number | null;
   isLoading: boolean;
 } {

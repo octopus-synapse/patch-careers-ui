@@ -490,7 +490,7 @@ const createEd = (authTokens: EditorialPalette, overlay: EditorialOverlays) =>
       color: authTokens.muted,
     },
 
-    // review — the résumé preview leads, the steps read as a quiet checklist
+    // review — the resume preview leads, the steps read as a quiet checklist
     reviewHero: { alignItems: "center", marginBottom: 20 },
     // A4 portrait box for the live preview (also the completion screen's).
     reviewPreviewBox: {

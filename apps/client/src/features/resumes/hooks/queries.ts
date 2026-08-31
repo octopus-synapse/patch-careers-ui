@@ -104,7 +104,7 @@ export function useResumeMutations(): {
   renameResume: (resumeId: string, title: string) => Promise<void>;
   deleteResume: (resumeId: string) => Promise<void>;
   duplicateResume: (sourceResumeId: string, data: DuplicateResumeRequest) => Promise<string>;
-  /** Set the résumé's desired role (drives the market-relative Readiness). */
+  /** Set the resume's desired role (drives the market-relative Readiness). */
   setTargetRole: (resumeId: string, label: string | null) => Promise<void>;
   isPending: boolean;
 } {

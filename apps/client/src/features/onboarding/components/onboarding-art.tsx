@@ -17,7 +17,7 @@ export interface OnboardingArtProps {
   readonly size?: number;
 }
 
-/** A résumé page with an accent check — used on the welcome screen. */
+/** A resume page with an accent check — used on the welcome screen. */
 export function WelcomeArt({ size = 132 }: OnboardingArtProps): ReactElement {
   const { subtle: STROKE, accent: ACCENT } = useEditorialPalette();
   const h = Math.round(size * 0.86);

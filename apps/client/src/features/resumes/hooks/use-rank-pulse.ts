@@ -1,9 +1,9 @@
 /**
- * Detects when a résumé's Quality grade (S/A/B/C/D/F) has changed since the
+ * Detects when a resume's Quality grade (S/A/B/C/D/F) has changed since the
  * user last saw it, so the panel can surface a one-time highlight on reopen.
  * The backend already routes `RESUME_QUALITY_IMPROVED/REGRESSED` notifications;
  * this is the in-app companion. Persists the last-seen overall score per
- * résumé in `mundane` so the signal survives app restarts and fires once.
+ * resume in `mundane` so the signal survives app restarts and fires once.
  */
 import { mundane } from "@patch-careers/storage";
 import { scoreGrade } from "@patch-careers/ui";

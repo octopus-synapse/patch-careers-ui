@@ -363,13 +363,13 @@ export const landingEn: TranslationDict = {
   chapters: {
     hero: {
       headingLead: "You're good.",
-      headingSecond: "Your résumé",
+      headingSecond: "Your resume",
       headingEm: "isn't saying so.",
-      bodyLead: "A living résumé: rewritten for every job in",
+      bodyLead: "A living resume: rewritten for every job in",
       bodyEm: "5 seconds",
       bodyTail: ", built to clear the robot and reach a person.",
       inputPlaceholder: "Paste the job link or its text…",
-      cta: "See my résumé for this job",
+      cta: "See my resume for this job",
       reassurance: "You see the result before creating an account.",
     },
     dor: {
@@ -385,9 +385,9 @@ export const landingEn: TranslationDict = {
     robo: {
       headingLead: "Before you convince the recruiter,",
       headingEm: "convince the robot.",
-      body: 'Software reads your résumé before any person does. It looks for the job\'s words. If you wrote "customer service" and the posting asked for "support", to it you don\'t qualify.',
+      body: 'Software reads your resume before any person does. It looks for the job\'s words. If you wrote "customer service" and the posting asked for "support", to it you don\'t qualify.',
       statTail:
-        "of Brazilian companies already screen résumés with AI. In the US, 97.8% of the Fortune 500 use a robot — and 88% of them admit it discards qualified people.",
+        "of Brazilian companies already screen resumes with AI. In the US, 97.8% of the Fortune 500 use a robot — and 88% of them admit it discards qualified people.",
       gupyLead: "On Gupy alone,",
       gupyMillions: "{count} million",
       gupyMid: "applications a month pass through the filter before anyone reads them. Fewer than",
@@ -409,10 +409,10 @@ export const landingEn: TranslationDict = {
       headingEm: "different version",
       headingTail: "of you.",
       bodyLead: "You write",
-      bodyEm: "one résumé",
+      bodyEm: "one resume",
       bodyTail:
         ". For every job, Patch highlights what matters, hides what gets in the way and speaks that company's language — in 5 seconds.",
-      statLead: "A résumé carrying the job's exact title gets",
+      statLead: "A resume carrying the job's exact title gets",
       statInterviews: "{count}× more interviews",
       statMid: ". Tailoring by hand takes",
       statMinutes: "30 to 90 minutes",
@@ -433,7 +433,7 @@ export const landingEn: TranslationDict = {
       body: "The feedback no company ever gave you. Seven scores, each with what it measures, why you got it and what to do to raise it. The colour tells you how close you are.",
       typoLead: "Bad writing is the number one reason for rejection in Brazil:",
       typoShareBr: "30%",
-      typoMid: "of résumés are dropped for it, more than for lack of experience. In the US,",
+      typoMid: "of resumes are dropped for it, more than for lack of experience. In the US,",
       typoShareUs: "77%",
       typoTail: "of employers reject over a typo. The Content score warns you first.",
       sources: "Sources: 30% — Catho, survey of 400 recruiters, 2019 · 77% — CareerBuilder, 2023",
@@ -452,7 +452,7 @@ export const landingEn: TranslationDict = {
       line1: "You need to sleep. It doesn't.",
       line2: "Hunger, sleep, discouragement, Sunday night. None of that exists for it.",
       bodyLead:
-        "While you sleep, it finds the job, tailors your résumé, writes the cover letter and applies. Below",
+        "While you sleep, it finds the job, tailors your resume, writes the cover letter and applies. Below",
       bodyEm: "80% fit",
       bodyTail: ", it doesn't even try.",
       note1: "— and you hear about every submission.",
@@ -494,9 +494,9 @@ export const landingEn: TranslationDict = {
       text: "For every 100 candidates, 3 get called for an interview.",
       source: "Source: CareerPlug, 10 million applications, 2025",
     },
-    robo: { text: "Your résumé is being read by a robot. I speak its language." },
+    robo: { text: "Your resume is being read by a robot. I speak its language." },
     vivo: {
-      text: "A tailored résumé gets 2× more interviews. Only 1 in 4 candidates tailor theirs to the job.",
+      text: "A tailored resume gets 2× more interviews. Only 1 in 4 candidates tailor theirs to the job.",
       source: "Sources: Huntr, 2025 · Novoresume, 2026",
     },
     vivo2: { text: "Paste the job. I'll show you what's missing and fix it in 5 seconds." },
@@ -504,12 +504,12 @@ export const landingEn: TranslationDict = {
       text: "People who never tailor are 3× more likely to end up with zero interviews. The scores show what to adjust.",
       source: "Source: Novoresume, 2026",
     },
-    notas2: { text: "I read 244 résumés today. I know exactly why yours didn't make it." },
+    notas2: { text: "I read 244 resumes today. I know exactly why yours didn't make it." },
     auto: {
-      text: "I rewrite your résumé for every job and only apply where you stand a chance.",
+      text: "I rewrite your resume for every job and only apply where you stand a chance.",
     },
     auto2: { text: "You need to sleep. I don't." },
-    clique: { text: "One résumé. A version for every job. Without you rewriting a thing." },
+    clique: { text: "One resume. A version for every job. Without you rewriting a thing." },
   },
 
   demo: {
@@ -583,12 +583,12 @@ export const landingEn: TranslationDict = {
   scores: {
     style: {
       name: "Style & robot readability",
-      what: "Whether software can read your résumé: layout, columns, fonts.",
+      what: "Whether software can read your resume: layout, columns, fonts.",
       why: "Two columns confuse the automatic reader.",
       fix: "Template B (single column).",
     },
     quality: {
-      name: "Résumé quality",
+      name: "Resume quality",
       what: "How good it is, independent of any job.",
       why: "Complete, but with experiences missing results.",
       fix: "Raise the two subscores below.",

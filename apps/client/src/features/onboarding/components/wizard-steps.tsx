@@ -598,7 +598,7 @@ function ResumeStyleCard({
   );
 }
 
-/** Live HTML preview of the user's IN-PROGRESS résumé rendered in the
+/** Live HTML preview of the user's IN-PROGRESS resume rendered in the
  *  candidate style (`GET …/onboarding/session/resume-preview`) — the user's
  *  real onboarding data, not the baked sample. Same realtime AST→HTML the
  *  Resume tab shows: embedded via `srcDoc` on web and `WebView` on native.
@@ -668,7 +668,7 @@ function StylePreview({ option }: { option: ResumeStyleOption }): ReactElement {
   );
 }
 
-/** Non-interactive embedded résumé document (web iframe / native WebView). */
+/** Non-interactive embedded resume document (web iframe / native WebView). */
 function PreviewFrame({ html }: { html: string }): ReactElement {
   return Platform.OS === "web" ? (
     <iframe
@@ -695,7 +695,7 @@ function PreviewFrame({ html }: { html: string }): ReactElement {
   );
 }
 
-/** Live preview of the user's real résumé in the selected style — the review
+/** Live preview of the user's real resume in the selected style — the review
  *  hub's hero ("this exists because of you"). Same endpoint/data as the modal
  *  preview (shares the query cache); the A4 page auto-fits via the document's
  *  own fit script. `pointerEvents="none"` keeps the surface inert. */
@@ -715,7 +715,7 @@ function ReviewStylePreview({ styleId }: { styleId: string }): ReactElement | nu
   );
 }
 
-/** Preview of a résumé template (item: resume-style modal). Centered card
+/** Preview of a resume template (item: resume-style modal). Centered card
  *  over a scrim — same size/positioning as the add-education/experience
  *  editor (`MultiItemEditorModal`). Selection is confirmed here. */
 function ResumeStyleModal({
@@ -810,7 +810,7 @@ export function ReviewSummary({
     <View>
       {missing.length > 0 ? <MissingBanner targets={missing} onFix={onEdit} t={t} /> : null}
 
-      {/* The résumé itself leads — the payoff the flow has been building to. */}
+      {/* The resume itself leads — the payoff the flow has been building to. */}
       {session.resumeStyleId ? (
         <AnimatedField delay={100}>
           <View style={ed.reviewHero}>
@@ -934,7 +934,7 @@ export function WelcomeScreen({
 }
 
 /** Post-complete payoff screen — the narrative close the welcome opens: the
- *  finished résumé plus one CTA into the app. Shown BEFORE the auth flag
+ *  finished resume plus one CTA into the app. Shown BEFORE the auth flag
  *  flips (bootstrap runs on the CTA), so the onboarding route guard doesn't
  *  yank the user away mid-moment. The preview is a cache-only read: the
  *  review step already rendered it, and post-complete the session endpoint
